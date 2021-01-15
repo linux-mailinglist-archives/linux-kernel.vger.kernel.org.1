@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D96D2F8482
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD2F2F848D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387756AbhAOScw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:32:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733262AbhAOScv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:32:51 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684ACC061799;
-        Fri, 15 Jan 2021 10:32:06 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id 143so12565029qke.10;
-        Fri, 15 Jan 2021 10:32:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NWIVG2KxAyCSAbHgbe1kK1Pe6u+Em4RwT5uHY88V9T0=;
-        b=Ez0mmPRzsxM/TG3NrKfui7SxfYHktje0S5IwnWOP7YnFh4Ok5C476FVRp9tq9ioOvg
-         KIwk2rkZpkn+F8zGgKIm2JGernqgfp7RRAp3qSxDQd8OgM71pnlGB9jBmd+ciRNVLyO8
-         GgsoKEKTTOgVZbYpDaGgL3XnPr1R5raCdxTxPRbBT8SNrGJmKeX9BJa3NELIqV55KhVE
-         Ggi8TsRkT0wUqev0htvQXHTF/unuAL8X+AqS2rfc+vAMorTAUvzrmytvktQYClRkIwbu
-         TRgRLVknJ4kaEErLfqA3UuYGt3r2WJZNR4p3YPZz5ptjHX5V2p8xdahMKfXTLSkf0Llt
-         Ra9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NWIVG2KxAyCSAbHgbe1kK1Pe6u+Em4RwT5uHY88V9T0=;
-        b=H5p3zAyYmm2qSbG5HOdvU0oQOYWZLtlhxWSjp1dgXsEWMGIRKeHjp8XxS3AxizfxQP
-         D+q5PxuKxT3JyKqNP7efSh23tU3Va8TEk1/FibdbsQ7aSTcdPOACQ4lpHlmvHpZLCJO3
-         VnL+2IL4r/niETcdKVpg+77teJJIGaMAKr8C+O/3wYygWLoX6Zb5TQUm3gP+vOw4tDVP
-         Ih5dpDYUh/toHYZUBp2Vm+kEiMD+D0nbLfWs6DSyeypdgfgn/Zfc6jn9f+HWpueNWglq
-         R51WMMvBpY1gBI9yH21F1VxcUinosQK+q9FTJibbU2bRJ8qHowI/ZGC2A2S4Fxehx74H
-         itVg==
-X-Gm-Message-State: AOAM5318OVF0YQt5ssu/ZbazRp3NWr9UsaVbJHwA7pwbFZeqglx49o+X
-        YxayWffYAvPM4cUPqmYnwVqMnvlaCR0=
-X-Google-Smtp-Source: ABdhPJwJFmezxePs+vr6dhIZlGppx+ulXQvwsTneiKkN5Z0IA6Q3OS/LkzTi+fn89ulFPVYXsu3Nzw==
-X-Received: by 2002:a37:4796:: with SMTP id u144mr13186207qka.235.1610735525568;
-        Fri, 15 Jan 2021 10:32:05 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id c136sm5556114qkg.71.2021.01.15.10.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:32:04 -0800 (PST)
-Date:   Fri, 15 Jan 2021 11:32:03 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210115183203.GA1991122@ubuntu-m3-large-x86>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <20210115182300.GD9138@zn.tnic>
+        id S1732099AbhAOSgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:36:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725946AbhAOSgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:36:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF892371F;
+        Fri, 15 Jan 2021 18:36:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610735762;
+        bh=nrEh5qKyFfcqrhQvojtYrOk8oDWspF+B8YHetNxIp/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iud4H4qhXR7cQadVrAZeKW3YsK9FY+a6ESBYwIDqPuHCrVo1FTirO4xZK11ZOcx4w
+         lhdZ3iWiiuaAn4db+D3/pACYwfMX4PgMM+8a8xbdgSVUg7jiPuTF7k5ib0JRsxJSKN
+         KVHM0ZKAqeNP8SirE7ocjw16rqeDu9UblTqtmNxE9ILFVn6VZm8ZouQno8BaYniDS9
+         w5JgP0NzqNUtXEwrQWs06NtyLpp7p+YZE71C0qfm6seHnuP4bmj6AzuO4Xr9H03IIh
+         efYdqRW3fXg/wbTZooTu8cCrpK04KhjyeRoNQ4YCcqFFboCllOz7SB/nZ5LhcnH2wM
+         T2NdtCgMzFaIQ==
+Date:   Fri, 15 Jan 2021 18:35:27 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Rob Herring <robh@kernel.org>, kuninori.morimoto.gx@renesas.com,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210115183527.GG4384@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
+ <20210113160917.GF4641@sirena.org.uk>
+ <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
+ <20210115131142.GA4384@sirena.org.uk>
+ <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
+ <20210115152004.GD4384@sirena.org.uk>
+ <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="reI/iBAAp9kzkmX4"
 Content-Disposition: inline
-In-Reply-To: <20210115182300.GD9138@zn.tnic>
+In-Reply-To: <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 07:23:00PM +0100, Borislav Petkov wrote:
-> On Thu, Jan 07, 2021 at 11:34:15PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > When 5-level page tables are enabled, clang triggers a BUILD_BUG_ON():
-> 
-> I have CONFIG_X86_5LEVEL=y, CONFIG_EFI=y and am using Debian clang
-> version 10.0.1-8+b1 but my .config builds just fine.
-> 
-> How do you trigger this?
 
-I triggered it with CONFIG_UBSAN=y + CONFIG_UBSAN_UNSIGNED_OVERFLOW=y
-(it can be exposed with an allyesconfig/allmodconfig on mainline
-currently).
+--reI/iBAAp9kzkmX4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Nathan
+On Fri, Jan 15, 2021 at 04:15:21PM +0000, Richard Fitzgerald wrote:
+
+> If I do:
+>  	sound {
+>  		clocks =3D <&clock>;
+>  	};
+>=20
+> 	clock: clock {
+> 		compatible =3D "fixed-clock";
+> 		clock-frequency =3D <98304000>;
+> 	};
+>=20
+> I can clk_bulk_get_all().
+> But if I remove the 'compatible' from the clock node, clk_bulk_get_all()
+> will return -EPROBE_DEFER and log:
+
+OK, so if this is only supposed to represent a fixed clock on the board
+separate to the CODEC then yes, of course you do need to instantiate a
+driver for it like you do for every device on the board.  However it
+shouldn't be a subdevice of the CODEC as you had it originally, it
+should be a distinct device as the above has it since that is what
+physically exists.  This obviously won't configure the FLL at all though
+(which was what the binding you were proposing was for, the above is
+definitely not a direct substitute for the binding you originally
+proposed).
+
+> > When we say to use the clock binding what we are saying is to use the
+> > actual clock bindings to describe the clocks, not make a custom binding
+> > that looks kind of like them - making a custom binding doesn't address
+> > the problem.
+
+> But I don't know what you mean by "use the actual clock bindings to
+> describe the clocks".
+
+> What is not clear to me is how you want me to use a clock binding to
+> describe something that isn't a clk-framework clk. If you know what you
+> want, then please.. an example would help explain.
+
+The concept of a clock framework is an implementation detail of Linux
+which should not affect how the DT bindings for a device or system are
+written, DT bindings should be clear and idiomatic as DT bindings.  The
+goal is to represent the system in a clear and standardized fashion
+which is useful to OSs in general, not just something convenient for
+Linux as it happens to be implemented right now.  Current Linux
+internals are not a constraint for DT bindings.
+
+In this case if you can't figure out how to parse clock bindings without
+moving the clocks over to standard Linux clock APIs (which seems likely)
+then it follows that if you want to describe the clock configuration in
+DT then the driver support for these clocks should use the standard
+Linux clock framework.  This seems like a good idea in general anyway.
+
+--reI/iBAAp9kzkmX4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAB4G4ACgkQJNaLcl1U
+h9Ajugf/V/c7kkx7kjE3+tn6nJNrg21PFVDm4St0hGGrFYbLX5tp94E++n7e+0S4
+1O72CIgQcws/PAoj49e1eR9ucRcZztKs5ahuZNxEtGti7ASiGaVfsP63/496zQZN
+VPW5tOl/xrSw4kNiMkoCSZXT4Izm05XeLtLvV2SQxeVevR2ifnp38Ms5KTEG9PXT
+q5Kecf+CmTuIXlFFvyY3eD5Pqdvqe7F7obdoOxUET3NEEfuPYtRCA7YLHmFu/EfH
+Co3vKlM5RmSi8s4RJ4jXplNFEGMDSjfdLbvrIUPFl/fC4aHMIRk0sAQnKftj9vkO
+rs0GP4a8Qfuiyb0YYpMLrw2ora7WTQ==
+=sFv+
+-----END PGP SIGNATURE-----
+
+--reI/iBAAp9kzkmX4--
