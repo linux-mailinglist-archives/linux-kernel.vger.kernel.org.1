@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE302F70EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8AF2F70ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 04:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbhAODXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 22:23:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49308 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhAODXW (ORCPT
+        id S1732371AbhAODY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 22:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbhAODYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:23:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KCLk168130;
-        Fri, 15 Jan 2021 03:22:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=IOXbYHXHreW/DM/cC1BlOLyDYYZQRT6FD474gUtPV4A=;
- b=bEPJJSBKEY26381CteMXcM4TUtEgoNn7H/6Rj2Fypaq1KcWpgvxWwf+JT51UyPqMBfLU
- z4XGtzk1ndfrc/YAierZRu8Y86WIPMsivOrf/Y0gSoD3VutNeQ14tbaclOeHXO6zDT2U
- JDqZC1A1fdnzmxHZJY87mMZdb55T7Z+HczXUWTjsiU6OYzicqpmmTE6AtcFnknnwMjLg
- aXWGjJkmveVKL93gWjnihgvAyIxdmP8K2uKCqQWMSRElLbNy3MpZZTbY6Hq3znlVDiy2
- th6Uds65hwxEYViQeguOCfM9EEcXPWxXXjPogQle01Bu/mBImohggC0CRTiZiBXkdjVI /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kd0355f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 03:22:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3M1SL106622;
-        Fri, 15 Jan 2021 03:22:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 360keaps4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 03:22:04 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F3LUj3020589;
-        Fri, 15 Jan 2021 03:21:31 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 19:21:30 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to
- finish on cpu online
-In-Reply-To: <87k0tritvq.fsf@oracle.com>
-References: <20201203171431.256675-1-aklimov@redhat.com>
- <20201207083827.GD3040@hirez.programming.kicks-ass.net>
- <87k0tritvq.fsf@oracle.com>
-Date:   Thu, 14 Jan 2021 22:21:25 -0500
-Message-ID: <87im7yc2bu.fsf@oracle.com>
+        Thu, 14 Jan 2021 22:24:25 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE59BC061575;
+        Thu, 14 Jan 2021 19:23:44 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id o17so11192810lfg.4;
+        Thu, 14 Jan 2021 19:23:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8bof/9UT0KgyjHC36RQ3/jNqdyR1Op8Ft0YEcB0dzb8=;
+        b=saGWmQcv7f4npbnhTNj89g/8kMaCmow5jNC6kG6vY7q0X7VjkQ28fjpeAQF+xjL8cK
+         XqPetTGA44jcNTZMTA58sxbVMYQO20r2RZmGTb58yE1zF33Soz3is0FT8Vz+TPzUyBeZ
+         aAWI/8qgRoOqCP0aJqhtjFVrl2EhiW4erVYlH9LoywQOabwaHrmaJHWzI/Judp0LEUCO
+         T5FAMuD/Mm+GsjJ0XlkRcvU80I+e/WTzhFyaOLbn2GKEMTq7xhBqFDt0AEneyuSFvYDB
+         g8SlKsRwbrgEjfBxnHZcU3OjmG7l5nM3s6oZfRrpByux6xGIa7Y+Zdxu383NSet8efnZ
+         Wrpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8bof/9UT0KgyjHC36RQ3/jNqdyR1Op8Ft0YEcB0dzb8=;
+        b=h24OkO7Obj0gfPoik3CpN12fD+Ei3QSMspS+SVOzCu7cqyQaI1oqgSMU7aC04sD5k6
+         ZOwOULwqxK5Vgx8gaKdjeAxxohNibUvF9Jq9e5gtok+gJ6oiq0zuOtrshmONo3EOuypE
+         wh7hihJ02OFcLNpeLmwNAC8hi4BanbNmoXK0467qaKke/cUkV+JR/2wUbVdmI6dOVnOm
+         cjljU7YSidDbagswgghpZjPzHiFqnJo+h+oaA6P4sNxY0LLZZpk2g0D/MtkiW/hoPXSU
+         mYfApH0KwjU4ibou6iSSWTegkZrCCxVetrCdfnlsiy0yPc06OPVidLgZx0w8SsxFH5e2
+         lEng==
+X-Gm-Message-State: AOAM530BvPGFqeeW4DchNx0dLEQXSq08YjuB2U7CaVuLI0BwLNcxNdUW
+        kj/1f8Iho9sim+34j78bgwizkNw0sREHlF7txpg=
+X-Google-Smtp-Source: ABdhPJwLtb8FK71GrQRyVoDSXloI3NLRe5oRlaoEK+WgSH5AKXF2H9nzJfX70g53mufw/iNddSvd9VJsnStxB5c1evw=
+X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr5088387lfn.540.1610681023413;
+ Thu, 14 Jan 2021 19:23:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150015
+References: <20210114181751.768687-1-jackmanb@google.com>
+In-Reply-To: <20210114181751.768687-1-jackmanb@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 Jan 2021 19:23:32 -0800
+Message-ID: <CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 00/11] Atomics for eBPF
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Jordan <daniel.m.jordan@oracle.com> writes:
-> Peter Zijlstra <peterz@infradead.org> writes:
->>> The nature of this bug is also described here (with different consequences):
->>> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
->>
->> Yeah, pesky deadlocks.. someone was going to try again.
+On Thu, Jan 14, 2021 at 10:18 AM Brendan Jackman <jackmanb@google.com> wrote:
 >
-> I dug up the synchronous patch
+> There's still one unresolved review comment from John[3] which I
+> will resolve with a followup patch.
 >
->     https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
+> Differences from v6->v7 [1]:
 >
-> but surprisingly wasn't able to reproduce the lockdep splat from
->
->     https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
->
-> even though I could hit it a few weeks ago.
+> * Fixed riscv build error detected by 0-day robot.
 
-oh okay, you need to mount a legacy cpuset hierarchy.
+Applied.
+Thanks a lot.
 
-So as the above splat shows, making cpuset_hotplug_workfn() synchronous
-means cpu_hotplug_lock (and "cpuhp_state-down") can be acquired before
-cgroup_mutex.
+Please address John's request in a followup and these few issues:
 
-But there are at least four cgroup paths that take the locks in the
-opposite order.  They're all the same, they take cgroup_mutex and then
-cpu_hotplug_lock later on to modify one or more static keys.
+- rst doesn't look correct. Example:
+rst2man Documentation/networking/filter.rst >/dev/null
+Documentation/networking/filter.rst:1053: (WARNING/2) Inline emphasis
+start-string without end-string.
 
-cpu_hotplug_lock should probably be ahead of cgroup_mutex because the
-latter is taken in a hotplug callback, and we should keep the static
-branches in cgroup, so the only way out I can think of is moving
-cpu_hotplug_lock to just before cgroup_mutex is taken and switching to
-_cpuslocked flavors of the static key calls.
+> Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4 byte
+> atomic operations require alu32 mode. Clang enables this mode by default in
+> architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
+> ``-Xclang -target-feature -Xclang +alu32``.
 
-lockdep quiets down with that change everywhere, but it puts another big
-lock around a lot of cgroup paths.  Seems less heavyhanded to go with
-this RFC.  What do you all think?
+It reads confusing to me.
+I would rephrase 'clang enables this mode by default' into
+'clang can generate new atomic instruction when -mcpu=v3 is enabled'.
 
-Absent further discussion, Alexey, do you plan to post another version?
+'For older versions...'
+This part I didn't get. The users need clang 12 that is capable to
+emit these insns.
+What 'older versions' you're talking about?
