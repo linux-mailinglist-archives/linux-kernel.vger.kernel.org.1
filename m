@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E927E2F792C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E412F79B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732968AbhAOMcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:32:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38656 "EHLO mail.kernel.org"
+        id S2387416AbhAOMjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:39:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbhAOMcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:32:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7131236FB;
-        Fri, 15 Jan 2021 12:31:42 +0000 (UTC)
+        id S1732190AbhAOMjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:39:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85791239D0;
+        Fri, 15 Jan 2021 12:39:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713903;
-        bh=UcUSkdhomd29qxtAEw3WoWLxg0l1edWhcBOCyhJSGL4=;
+        s=korg; t=1610714344;
+        bh=UQLqRvyhXl1RJS1qS38hjC7R1YuS7rM9Xrg8FoCRFEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mSbQksgucma+EPHwl/BsshUU6ktf546dkBhO7ovd9XnqW8QR5m7Wf+3MkpIFTmaV0
-         lhcSOHlIuBadPa+Kh1+izSjheqUFs1DOPDssrbbN7htPIT1aZMGI6qi+PwG2JrvRf9
-         KAHLFo5HjNfLGkcaBclc8V/2rk7+q/Xq4os/UpcA=
+        b=HWqD9nGjgK0DGsIQlPsNBOPIT3JSyg6YoCD2r1nbPlDU7WiSwF1SxCoWJiG2arZs+
+         u/pD9AjbDiIsd0utK27vT3Aq+kMYOu2Xqi3bZGaht3rjZzEfrUFT2D8DV/TXqYXd4f
+         GOAIMgx6mAuPc672zeKNnmkwcmkY5t76yOe9YeUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.14 22/28] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Subject: [PATCH 5.10 066/103] interconnect: imx: Add a missing of_node_put after of_device_is_available
 Date:   Fri, 15 Jan 2021 13:27:59 +0100
-Message-Id: <20210115121957.858460673@linuxfoundation.org>
+Message-Id: <20210115122009.235131633@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-References: <20210115121956.731354372@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
+commit c6174c0e058fc0a54e0b9787c44cb24b0a8d0217 upstream.
 
-When irq_domain_get_irq_data() or irqd_cfg() fails
-at i == 0, data allocated by kzalloc() has not been
-freed before returning, which leads to memleak.
+Add an 'of_node_put()' call when a tested device node is not available.
 
-Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: f0d8048525d7 ("interconnect: Add imx core driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201206121304.29381-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/intel_irq_remapping.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/interconnect/imx/imx.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iommu/intel_irq_remapping.c
-+++ b/drivers/iommu/intel_irq_remapping.c
-@@ -1367,6 +1367,8 @@ static int intel_irq_remapping_alloc(str
- 		irq_data = irq_domain_get_irq_data(domain, virq + i);
- 		irq_cfg = irqd_cfg(irq_data);
- 		if (!irq_data || !irq_cfg) {
-+			if (!i)
-+				kfree(data);
- 			ret = -EINVAL;
- 			goto out_free_data;
+--- a/drivers/interconnect/imx/imx.c
++++ b/drivers/interconnect/imx/imx.c
+@@ -99,6 +99,7 @@ static int imx_icc_node_init_qos(struct
+ 		if (!dn || !of_device_is_available(dn)) {
+ 			dev_warn(dev, "Missing property %s, skip scaling %s\n",
+ 				 adj->phandle_name, node->name);
++			of_node_put(dn);
+ 			return 0;
  		}
+ 
 
 
