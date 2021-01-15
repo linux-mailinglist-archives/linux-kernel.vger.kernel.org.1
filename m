@@ -2,526 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CED2F737E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293CE2F7373
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 08:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730696AbhAOHEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 02:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S1731133AbhAOHDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 02:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAOHEb (ORCPT
+        with ESMTP id S1727143AbhAOHDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:04:31 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA24C061575;
-        Thu, 14 Jan 2021 23:03:50 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id b3so4925437pft.3;
-        Thu, 14 Jan 2021 23:03:50 -0800 (PST)
+        Fri, 15 Jan 2021 02:03:52 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5EFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:03:12 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id i5so5448567pgo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 23:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GHiYLWes15995yc06JXjproFwSKI9EhRTzfJK8Em9SI=;
-        b=VuQxLNreZ35kgOv9t50bPmMmRYfdkoMyenmcQ/EDiL+khkwLjA9TiaeWqm8RE+0z5J
-         dJMnoqkNtpJ1vG4fRJ04X1k47+3GXa8DrrEpMY9XbvvaQDogHwCuIKtSthDXdn7B+psV
-         LLMjBR/e+Dkqs27AHDNisqoPuW0e47Zp2vCrNUEJRIsM65Y1hyOF60ujN5G+mVYCqmRt
-         lE+aEa9thbHHIIwH/bcuweSMJ/b5Zp+RON0M0MddkMSsHMojeueLCI6AYwxpCXSqVODX
-         3qjJY+iwd58/bhyAB4Ak0o5l/ViRZO3c3fC0mS1r/UaLnBREjoKNbKdVPsSTW8eGAeJr
-         TlQQ==
+        bh=Jl2+hlh3x6jkGwlX8WqlsLyequQpH3wXfp/SkKRuhe4=;
+        b=Z+cBgFMgXTm78gUF5OKaiv/CgSP2yAzAPQDOk8e7Okn8sxsQ4vpnFw8EOlzyzMDao9
+         om3ph+cY69yK3tHyKd9mF/1IOKtChvr8Wyu8QbG/fgz94sjloBk7MP2w8sNiHHa8YxfC
+         Qzs2gfrkxUeCuXZ0GHRHA4kdl3ff44yIgJ/xE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GHiYLWes15995yc06JXjproFwSKI9EhRTzfJK8Em9SI=;
-        b=Svm4X1qu0SxEfD41qvCe89/nBaUL+EB26KqMZwXa0esM3vSxGFoZP7LCqqodEUHAJ9
-         P8FnL2Lahm0nwAgdsfEZcXDangJFYvLY/CKFVBGzmqItfgNVEd2kmZBJuYqHGYel5XDM
-         g06y/wfiaPA6LfOt0LyxrupNPHxyDOmmQw7/a9VQti4/SNC1uDVb+/oX8WN3HgnDj7G4
-         N7c68kEkcsLI43z6lM/jZBMZFrDoIAePIZAvVpnwr5adIN5SRgtZhZTYeZKN0ZdjMB39
-         DGZnYi/4hH5ebcT77/19PFTkwFaoQa1QfdI+ySo1Ca6RJD8tgrFgzLeR1U73UHTCMfcB
-         ATmQ==
-X-Gm-Message-State: AOAM530tsb5SUONvTY/9rCFXCYqjWlWl7X6LalrshMT7NlhOyTlh12UL
-        UoA3foY5zbdP8CtIt+fSrQ4=
-X-Google-Smtp-Source: ABdhPJy33sFGOuEJVL/71ZTFrs1JqOaDhD02Tw/th8z46pDfvhRBV6ViKBsRBoDKqTo0JFodgh2g5A==
-X-Received: by 2002:a62:8050:0:b029:19d:e8b4:ba1 with SMTP id j77-20020a6280500000b029019de8b40ba1mr11371438pfd.69.1610694229866;
-        Thu, 14 Jan 2021 23:03:49 -0800 (PST)
-Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
-        by smtp.gmail.com with ESMTPSA id h8sm8399086pjc.2.2021.01.14.23.03.45
+        bh=Jl2+hlh3x6jkGwlX8WqlsLyequQpH3wXfp/SkKRuhe4=;
+        b=X0BXVOq8kXZJ+L1URw4uoiqmRsTGYpjiatX43sB4Iq9N/2JrKK1px6w2LwxESuvSbh
+         5R83/v8idCL7mCTDFFc7krVbL3NbCnvYeNxfKfWDTdK9bRuiNBkOcfCu73W+OKyj737I
+         Uac8xQOFOZTgmdTj8lk8lYk2lRGM1YvXlu6+ToV5uGahwaBQJOyy97mA5yrlSQoPf7L8
+         78PtyP3v4U3qQLkDozcanZVAeJTjvPXTeMM+LYhQYyd6hX5Gfc9/giUE4l5ACppQLAQN
+         89RRSKdzvKLn1t6D4dOUkrcMWoqObfyxS1nWU8sNR8DFWqndniQD6UAecDUdw1BysO87
+         jKHg==
+X-Gm-Message-State: AOAM533wdmdlbaopV05YoIA2MI1dF1u5M2eFS7l/leTTVnX0BtvgHjji
+        QRdizP5otmufwx9TOZEKo+q6fA==
+X-Google-Smtp-Source: ABdhPJyfblq3yeliOQGfgSMELoffZ1xsuuDx5AbEg/nZkDji079XClxuemor1VUY8+ydtI9Oo8u8Pw==
+X-Received: by 2002:a65:488d:: with SMTP id n13mr10912182pgs.315.1610694191580;
+        Thu, 14 Jan 2021 23:03:11 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id x12sm7101064pfj.25.2021.01.14.23.03.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 23:03:49 -0800 (PST)
-From:   sonicadvance1@gmail.com
-X-Google-Original-From: Sonicadvance1@gmail.com
-Cc:     Ryan Houdek <Sonicadvance1@gmail.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jan Kara <jack@suse.cz>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
-Date:   Thu, 14 Jan 2021 23:02:50 -0800
-Message-Id: <20210115070326.294332-1-Sonicadvance1@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210106064807.253112-1-Sonicadvance1@gmail.com>
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+        Thu, 14 Jan 2021 23:03:11 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Xin Ji <xji@analogixsemi.com>, David Airlie <airlied@linux.ie>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH v3 2/2] drm/bridge: anx7625: disable regulators when power off
+Date:   Fri, 15 Jan 2021 15:02:52 +0800
+Message-Id: <20210115070250.2271571-2-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+In-Reply-To: <20210115070250.2271571-1-hsinyi@chromium.org>
+References: <20210115070250.2271571-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryan Houdek <Sonicadvance1@gmail.com>
+When suspending the driver, anx7625_power_standby() will be called to
+turn off reset-gpios and enable-gpios. However, power supplies are not
+disabled. To save power, the driver can get the power supply regulators
+and turn off them in anx7625_power_standby().
 
-Problem presented:
-A backwards compatibility layer that allows running x86-64 and x86
-processes inside of an AArch64 process.
-  - CPU is emulated
-  - Syscall interface is mostly passthrough
-  - Some syscalls require patching or emulation depending on behaviour
-  - Not viable from the emulator design to use an AArch32 host process
-
-x86-64 and x86 userspace emulator source:
-https://github.com/FEX-Emu/FEX
-Usage of ioctl32 is currently in a downstream fork. This will be the
-first user of the syscall.
-
-Cross documentation:
-https://github.com/FEX-Emu/FEX/wiki/32Bit-x86-Woes#ioctl---54
-
-ioctls are opaque from the emulator perspective and the data wants to be
-passed through a syscall as unimpeded as possible.
-Sadly due to ioctl struct differences between x86 and x86-64, we need a
-syscall that exposes the compatibility ioctl handler to userspace in a
-64bit process.
-
-This is necessary behaves of the behaviour differences that occur
-between an x86 process doing an ioctl and an x86-64 process doing an
-ioctl.
-
-Both of which are captured and passed through the AArch64 ioctl space.
-This is implementing a new ioctl32 syscall that allows us to pass 32bit
-x86 ioctls through to the kernel with zero or minimal manipulation.
-
-The only supported hosts where we care about this currently is AArch64
-and x86-64 (For testing purposes).
-PPC64LE, MIPS64LE, and RISC-V64 might be interesting to support in the
-future; But I don't have any platforms that get anywhere near Cortex-A77
-performance in those architectures. Nor do I have the time to bring up
-the emulator on them.
-x86-64 can get to the compatibility ioctl through the int $0x80 handler.
-
-This does not solve the following problems:
-1) compat_alloc_user_space inside ioctl
-2) ioctls that check task mode instead of entry point for behaviour
-3) ioctls allocating memory
-4) struct packing problems between architectures
-
-Workarounds for the problems presented:
-1a) Do a stack pivot to the lower 32bits from userspace
-  - Forces host 64bit process to have its thread stacks to live in 32bit
-  space. Not ideal.
-  - Only do a stack pivot on ioctl to save previous 32bit VA space
-1b) Teach kernel that compat_alloc_userspace can return a 64bit pointer
-  - x86-64 truncates stack from this function
-  - AArch64 returns the full stack pointer
-  - Only ~29 users. Validating all of them support a 64bit stack is
-  trivial?
-
-2a) Any application using these can be checked for compatibility in
-userspace and put on a block list.
-2b) Fix any ioctls doing broken behaviour based on task mode rather than
-ioctl entry point
-
-3a) Userspace consumes all VA space above 32bit. Forcing allocations to
-occur in lower 32bits
-  - This is the current implementation
-3b) Ensure any allocation in the ioctl handles ioctl entrypoint rather
-than just allow generic memory allocations in full VA space
-  - This is hard to guarantee
-
-4a) Blocklist any application using ioctls that have different struct
-packing across the boundary
-  - Can happen when struct packing of 32bit x86 application goes down
-  the aarch64 compat_ioctl path
-  - Userspace is a AArch64 process passing 32bit x86 ioctl structures
-  through the compat_ioctl path which is typically for AArch32 processes
-  - None currently identified
-4b) Work with upstream kernel and userspace projects to evaluate and fix
-  - Identify the problem ioctls
-  - Implement a new ioctl with more sane struct packing that matches
-  cross-arch
-  - Implement new ioctl while maintaining backwards compatibility with
-  previous ioctl handler
-  - Change upstream project to use the new compatibility ioctl
-  - ioctl deprecation will be case by case per device and project
-4b) Userspace implements a full ioctl emulation layer
-  - Parses the full ioctl tree
-  - Either passes through ioctls that it doesn't understand or
-  transforms ioctls that it knows are trouble
-  - Has the downside that it can still run in to edge cases that will
-  fail
-  - Performance of additional tracking is a concern
-  - Prone to failure keeping the kernel ioctl and userspace ioctl
-  handling in sync
-  - Really want to have it in the kernel space as much as possible
-
-Signed-off-by: Ryan Houdek <Sonicadvance1@gmail.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
- arch/arm/tools/syscall.tbl                  |  1 +
- arch/arm64/include/asm/unistd.h             |  2 +-
- arch/arm64/include/asm/unistd32.h           |  2 ++
- arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
- arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
- arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
- arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_n64.tbl   |  2 ++
- arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
- arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
- arch/s390/kernel/syscalls/syscall.tbl       |  1 +
- arch/sh/kernel/syscalls/syscall.tbl         |  1 +
- arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
- fs/ioctl.c                                  | 18 ++++++++++++++++--
- include/linux/syscalls.h                    |  4 ++++
- include/uapi/asm-generic/unistd.h           |  9 ++++++++-
- kernel/sys_ni.c                             |  3 +++
- tools/include/uapi/asm-generic/unistd.h     |  9 ++++++++-
- 23 files changed, 59 insertions(+), 5 deletions(-)
+Change:
+v3: add delays between regulators power on
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 34 +++++++++++++++++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h |  1 +
+ 2 files changed, 35 insertions(+)
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index a6617067dbe6..81e70fd241d7 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -481,3 +481,4 @@
- 549	common	faccessat2			sys_faccessat2
- 550	common	process_madvise			sys_process_madvise
- 551	common	epoll_pwait2			sys_epoll_pwait2
-+552	common	ioctl32			sys_ni_syscall
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 20e1170e2e0a..98fbf1af1169 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -455,3 +455,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	ioctl32			sys_ni_syscall
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 86a9d7b3eabe..949788f5ba40 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		442
-+#define __NR_compat_syscalls		443
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index cccfbbefbf95..35e3bc83dbdc 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
- __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
-+#define __NR_ioctl32 442
-+__SYSCALL(__NR_ioctl32, compat_sys_ioctl)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index bfc00f2bd437..087fc9627357 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -362,3 +362,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	sys_ioctl32			sys_ioctl32
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 7fe4e45c864c..502b2f87ab60 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -441,3 +441,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	ioctl32			sys_ni_syscall
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index a522adf194ab..e69be6c836d2 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -447,3 +447,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	ioctl32			sys_ni_syscall
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index 0f03ad223f33..ba395218446f 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -380,3 +380,4 @@
- 439	n32	faccessat2			sys_faccessat2
- 440	n32	process_madvise			sys_process_madvise
- 441	n32	epoll_pwait2			compat_sys_epoll_pwait2
-+442	n32	ioctl32			sys_ni_syscall
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index 91649690b52f..f42f939702e2 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -356,3 +356,5 @@
- 439	n64	faccessat2			sys_faccessat2
- 440	n64	process_madvise			sys_process_madvise
- 441	n64	epoll_pwait2			sys_epoll_pwait2
-+441	n64	epoll_pwait2			sys_epoll_pwait2
-+442	n64	ioctl32			sys_ioctl32
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index 4bad0c40aed6..b08ff6066f06 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -429,3 +429,4 @@
- 439	o32	faccessat2			sys_faccessat2
- 440	o32	process_madvise			sys_process_madvise
- 441	o32	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	o32	ioctl32			sys_ni_syscall
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index 6bcc31966b44..84d2b88d92fa 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -439,3 +439,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	64	ioctl32			sys_ioctl32
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index f744eb5cba88..9f04d73cf649 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -531,3 +531,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	64	sys_ioctl32				sys_ioctl32
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index d443423495e5..2c90c0ecb5c7 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -444,3 +444,4 @@
- 439  common	faccessat2		sys_faccessat2			sys_faccessat2
- 440  common	process_madvise		sys_process_madvise		sys_process_madvise
- 441  common	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	64	sys_ioctl32			sys_ni_syscall
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index 9df40ac0ebc0..1e02a13fa049 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -444,3 +444,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	ioctl32			sys_ni_syscall
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index 40d8c7cd8298..f7d24678d0b1 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -487,3 +487,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	64	sys_ioctl32			sys_ioctl32
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 874aeacde2dd..b1a3461e1e20 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -446,3 +446,4 @@
- 439	i386	faccessat2		sys_faccessat2
- 440	i386	process_madvise		sys_process_madvise
- 441	i386	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-+442	i386	ioctl32		sys_ni_syscall
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 78672124d28b..0250a04df0df 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -363,6 +363,7 @@
- 439	common	faccessat2		sys_faccessat2
- 440	common	process_madvise		sys_process_madvise
- 441	common	epoll_pwait2		sys_epoll_pwait2
-+442	64	ioctl32		sys_ioctl32
- 
- #
- # Due to a historical design error, certain syscalls are numbered differently
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 46116a28eeed..34b653b36b7b 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -412,3 +412,4 @@
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
- 441	common	epoll_pwait2			sys_epoll_pwait2
-+442	common	ioctl32			sys_ni_syscall
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 4e6cc0a7d69c..7b324a21a257 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -790,8 +790,8 @@ long compat_ptr_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- }
- EXPORT_SYMBOL(compat_ptr_ioctl);
- 
--COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
--		       compat_ulong_t, arg)
-+long do_ioctl32(unsigned int fd, unsigned int cmd,
-+			compat_ulong_t arg)
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 65cc05982f82..23283ba0c4f9 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+@@ -875,12 +876,25 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
+ static void anx7625_power_on(struct anx7625_data *ctx)
  {
- 	struct fd f = fdget(fd);
- 	int error;
-@@ -850,4 +850,18 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
+ 	struct device *dev = &ctx->client->dev;
++	int ret, i;
  
- 	return error;
+ 	if (!ctx->pdata.low_power_mode) {
+ 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+ 		return;
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(ctx->pdata.supplies); i++) {
++		ret = regulator_enable(ctx->pdata.supplies[i].consumer);
++		if (ret < 0) {
++			DRM_DEV_DEBUG_DRIVER(dev, "cannot enable supply %d: %d\n",
++					     i, ret);
++			goto reg_err;
++		}
++		usleep_range(2000, 2100);
++	}
++
++	usleep_range(4000, 4100);
++
+ 	/* Power on pin enable */
+ 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
+ 	usleep_range(10000, 11000);
+@@ -889,11 +903,16 @@ static void anx7625_power_on(struct anx7625_data *ctx)
+ 	usleep_range(10000, 11000);
+ 
+ 	DRM_DEV_DEBUG_DRIVER(dev, "power on !\n");
++	return;
++reg_err:
++	for (--i; i >= 0; i--)
++		regulator_disable(ctx->pdata.supplies[i].consumer);
  }
+ 
+ static void anx7625_power_standby(struct anx7625_data *ctx)
+ {
+ 	struct device *dev = &ctx->client->dev;
++	int ret;
+ 
+ 	if (!ctx->pdata.low_power_mode) {
+ 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+@@ -904,6 +923,12 @@ static void anx7625_power_standby(struct anx7625_data *ctx)
+ 	usleep_range(1000, 1100);
+ 	gpiod_set_value(ctx->pdata.gpio_p_on, 0);
+ 	usleep_range(1000, 1100);
 +
-+COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
-+			compat_ulong_t, arg)
-+{
-+	return do_ioctl32(fd, cmd, arg);
-+}
++	ret = regulator_bulk_disable(ARRAY_SIZE(ctx->pdata.supplies),
++				     ctx->pdata.supplies);
++	if (ret < 0)
++		DRM_DEV_DEBUG_DRIVER(dev, "cannot disable supplies %d\n", ret);
 +
-+#if BITS_PER_LONG == 64
-+SYSCALL_DEFINE3(ioctl32, unsigned int, fd, unsigned int, cmd,
-+			compat_ulong_t, arg)
-+{
-+	return do_ioctl32(fd, cmd, arg);
-+}
-+#endif
- #endif
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index f3929aff39cf..fb7bac17167a 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -386,6 +386,10 @@ asmlinkage long sys_inotify_rm_watch(int fd, __s32 wd);
- /* fs/ioctl.c */
- asmlinkage long sys_ioctl(unsigned int fd, unsigned int cmd,
- 				unsigned long arg);
-+#if defined(CONFIG_COMPAT) && BITS_PER_LONG == 64
-+asmlinkage long sys_ioctl32(unsigned int fd, unsigned int cmd,
-+				compat_ulong_t arg);
-+#endif
+ 	DRM_DEV_DEBUG_DRIVER(dev, "power down\n");
+ }
  
- /* fs/ioprio.c */
- asmlinkage long sys_ioprio_set(int which, int who, int ioprio);
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 728752917785..18279e5b7b4f 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -862,8 +862,15 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+@@ -1742,6 +1767,15 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+ 	platform->client = client;
+ 	i2c_set_clientdata(client, platform);
  
-+#define __NR_ioctl32 442
-+#ifdef CONFIG_COMPAT
-+__SC_COMP(__NR_ioctl32, sys_ioctl32, compat_sys_ioctl)
-+#else
-+__SC_COMP(__NR_ioctl32, sys_ni_syscall, sys_ni_syscall)
-+#endif
-+
- #undef __NR_syscalls
--#define __NR_syscalls 442
-+#define __NR_syscalls 443
++	pdata->supplies[0].supply = "vdd10";
++	pdata->supplies[1].supply = "vdd18";
++	pdata->supplies[2].supply = "vdd33";
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(pdata->supplies),
++				      pdata->supplies);
++	if (ret) {
++		DRM_DEV_ERROR(dev, "fail to get power supplies: %d\n", ret);
++		return ret;
++	}
+ 	anx7625_init_gpio(platform);
  
- /*
-  * 32 bit systems traditionally used different
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index 19aa806890d5..5a2f25eb341c 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -302,6 +302,9 @@ COND_SYSCALL(recvmmsg_time32);
- COND_SYSCALL_COMPAT(recvmmsg_time32);
- COND_SYSCALL_COMPAT(recvmmsg_time64);
- 
-+COND_SYSCALL(ioctl32);
-+COND_SYSCALL_COMPAT(ioctl32);
-+
- /*
-  * Architecture specific syscalls: see further below
-  */
-diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
-index 728752917785..18279e5b7b4f 100644
---- a/tools/include/uapi/asm-generic/unistd.h
-+++ b/tools/include/uapi/asm-generic/unistd.h
-@@ -862,8 +862,15 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
- 
-+#define __NR_ioctl32 442
-+#ifdef CONFIG_COMPAT
-+__SC_COMP(__NR_ioctl32, sys_ioctl32, compat_sys_ioctl)
-+#else
-+__SC_COMP(__NR_ioctl32, sys_ni_syscall, sys_ni_syscall)
-+#endif
-+
- #undef __NR_syscalls
--#define __NR_syscalls 442
-+#define __NR_syscalls 443
- 
- /*
-  * 32 bit systems traditionally used different
+ 	atomic_set(&platform->power_status, 0);
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+index 193ad86c5450..e4a086b3a3d7 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.h
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+@@ -350,6 +350,7 @@ struct s_edid_data {
+ struct anx7625_platform_data {
+ 	struct gpio_desc *gpio_p_on;
+ 	struct gpio_desc *gpio_reset;
++	struct regulator_bulk_data supplies[3];
+ 	struct drm_bridge *panel_bridge;
+ 	int intp_irq;
+ 	u32 low_power_mode;
 -- 
-2.27.0
+2.30.0.284.gd98b1dd5eaa7-goog
 
