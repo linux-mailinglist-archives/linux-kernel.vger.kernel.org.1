@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFFA2F6F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4F12F6F77
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731195AbhAOA1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:27:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S1731245AbhAOA3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:29:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731034AbhAOA1Y (ORCPT
+        with ESMTP id S1731207AbhAOA3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:27:24 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1F4C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:26:43 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id z21so4908495pgj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:26:43 -0800 (PST)
+        Thu, 14 Jan 2021 19:29:17 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED04C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:28:37 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id m5so4185592pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:28:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VrR4pCt2QpQ9EObd7CgJ7W4oxOaFcsdsZorMfy/tWv0=;
-        b=tWHF9b7E+s658hVcVQWZ7xA7N39BrCFFPLzoS0ymT8X3+KazjEqdCiYhzgz9fN9qj+
-         5dWtOWUIgnrqGVT6/86ihJfKIkeqRsfBWheF6ZeIgyqkaBFkA2KzRM2PK8887qeFpz5h
-         hbajFFpi8WKfnzNsAv2zg3gIW3RTfGPf5Pvo47H7g+3eErORkbVzZI46rnsN5uxigBZ5
-         isJ8CIrkjq0spXsL0L8vpa3Nz6MwJDiKtgSKys9I8xD6q/PgAAvbWmWNmDYU7neWVaVm
-         iJ0WQbCPnbVPXPUR9CoOMJkSH1gk8xO58aKcdt1OWq9T5qYgLbhc3fQd+wFiQ5SkZivR
-         q2pw==
+        bh=DadB4dMZfg/PLRa3chi8uXwQiVldY6EMSgs5DP9rrBo=;
+        b=oXVhkH6dCM2gjm68QD6+hm1iRHcUxyvZs11zaQG/5mJgPOO8GR49OJrTw524YZnZlp
+         Bl+oUUNXRkg7Xx2mWaPt057iWZOyu6k3+FDJj99pMxYxYG2ro4+oxBu6DixH9mt8A7ej
+         kM+uSP6DaP8wcLBhk9vRhS/V3UGdx/E/V101DJZXFmhyGdHLkjRGzbzhXYiHZDg9uoNG
+         uteInz7XDpl33zyPHiHjKP6FwbnXO6m7M6ZO3rIAh63T/KeX1cHXrk7zCNR+DqDU/yOJ
+         AEVjqKHCg548bfKMuUUQPQjljnozesgvlkROwrp4GHWKWNHMXa56SwY81i00wW0f3lVF
+         8Fxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VrR4pCt2QpQ9EObd7CgJ7W4oxOaFcsdsZorMfy/tWv0=;
-        b=MaP6n6QlLvo67BrFcjKe4faG/0a5bEl51iwtTu98bBjSJwCwOtPJsD/z6b8uH4eh9Z
-         FzDKp8UkX8CtBuqLKlCShKIOIPimHDJwDpwtgj6Frm5dYDrJvnbUSSIcuvPyQpi1rN5Y
-         3Cv0ksajgb3ycmE+pLrZV317+CYredSlXWR5v3CjsLNe8rw4K5k3t32YcAtwCvdI6Svg
-         QXQt9JsJfMYKjSAkD+pmT6K3E+FGpQPU66yrS1jjg0K90ttc9vBiUOlLkUrq+GV2Vuma
-         qCpXIZjhe2Zzi+mu6yKxXXUHv0oifa9NbopdXP6IR1nR0CcNgxy6bNIBnIA+05kM40/R
-         5V0A==
-X-Gm-Message-State: AOAM5322Z+n4zQz2VGej8pzU1lGHEgxO1hA7kDmFAhR857yBiZwzxi/8
-        ozIU6o4Hn+Ame2z5XW6ihi8ZNzAqemP4McRBypdx8g==
-X-Google-Smtp-Source: ABdhPJxu3zfPxFZyoIathC3722ixEjnt64UfpFHbWXcvYgdgtrv91Naw97mNoXKEslKAcpYV6r3ZPMILsPZntqZb7R0=
-X-Received: by 2002:a63:5d7:: with SMTP id 206mr10239836pgf.384.1610670403049;
- Thu, 14 Jan 2021 16:26:43 -0800 (PST)
+        bh=DadB4dMZfg/PLRa3chi8uXwQiVldY6EMSgs5DP9rrBo=;
+        b=Wb22nbclAHlUqV7gztegFr5fvdvdMsTEsgtj2Maa0ByukduWazqFrKVCTVxyT9yasD
+         S8jl+L25eI5W3IbeJsjvC3rRYiVHD2llf+BiF+OVEHKRIQ2ZLNZyLTqB12P+mlnOKhFW
+         nImqvnlvyfb8hRsP+BB+B40UjoFUdtIOBv6GW+9qOl1G3BVutNtgIwBFUl/bDSJm1uY7
+         H7urB/qXqPWwGmGDsUhL/NNk93jBUI2hdMRsG8qzHyhIVivNLRNbjr8b2rp9J0ty+anO
+         TGR8Q2iWOL3949xWSocuU1NZz1nrNsu2Zi/kYhKRiMeVnUgsbD7O/n49X1MOghf91P7g
+         m4aA==
+X-Gm-Message-State: AOAM533WJQiQSgZ1pYkysP3Ed14x1f+r3CCcvZU8MvhswmR0pnmJvyn0
+        rHCMp6OwaU8iY1LF7o1gxhhN4yLDqGiiRk2Q178JxA==
+X-Google-Smtp-Source: ABdhPJys+dJ+QBolCgxszC0GuoEzeOYfrtCrTYKp3dTkUKqnqu5sT8cfZ4T2ZXf8z3EY7Bil7K/cw3b3eNX5WXD7Ojw=
+X-Received: by 2002:a17:902:fe87:b029:da:5d3b:4a84 with SMTP id
+ x7-20020a170902fe87b02900da5d3b4a84mr10049761plm.51.1610670516665; Thu, 14
+ Jan 2021 16:28:36 -0800 (PST)
 MIME-Version: 1.0
 References: <20201211223232.697679-1-davidgow@google.com>
 In-Reply-To: <20201211223232.697679-1-davidgow@google.com>
 From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 14 Jan 2021 16:26:32 -0800
-Message-ID: <CAFd5g45xaOE0KOeOoHzY9NsJRbtDUimto1rDs0+aD6hw4zbogw@mail.gmail.com>
+Date:   Thu, 14 Jan 2021 16:28:25 -0800
+Message-ID: <CAFd5g46UQtLeLoJYtOC=F1zhfz9FaHkYxUcqPjhC+7CQjshz_Q@mail.gmail.com>
 Subject: Re: [PATCH] kunit: tool: Fix spelling of "diagnostic" in kunit_parser
 To:     David Gow <davidgow@google.com>
 Cc:     Shuah Khan <skhan@linuxfoundation.org>,
@@ -69,4 +70,4 @@ On Fri, Dec 11, 2020 at 2:32 PM David Gow <davidgow@google.com> wrote:
 >
 > Signed-off-by: David Gow <davidgow@google.com>
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
