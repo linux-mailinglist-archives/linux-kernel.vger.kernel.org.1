@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220AB2F83D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7512F83DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388333AbhAOSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:16:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388029AbhAOSQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:16:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6611223A58;
-        Fri, 15 Jan 2021 18:15:49 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 18:15:46 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 fixes for 5.11-rc4
-Message-ID: <20210115181544.GA8353@gaia>
+        id S2388545AbhAOSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387681AbhAOSR0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:17:26 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C5C0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:28 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id v184so4178578wma.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ist2qaMcFyPJ0b0T5b259LCtzdvkGcAXrLj6GtIUIKA=;
+        b=VQCHrIKm7/CTiVE6GNmynsfACZnXKCYS24SYjRRSWQ+0E7tkdGKZR2D8B5JfDmP19u
+         Sp7x6uR0JcsH+gX+hBMcorqNaWjt5kkEZWiq1KQ9sX80mKilNN2fcQdYDB0sj0gQdIDM
+         xOTymz8SN/aWa8nc0cbTl1fEvoUQazZGZwRF+pIykVYFRwLr4ceFAj0jc00u2CNhRSCa
+         nMpG+Pbs+uD4PaxoIBC+uFiuituSY2qRQkU6wEblTpNd45QpRZS5M75KS2r/21r8df35
+         p/BYCeY15O9TymDlEFBXeFShpazqpjehgB+1SSBuFRFbRNffl/gyA/2QXw3pZchw9M0n
+         Tl3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ist2qaMcFyPJ0b0T5b259LCtzdvkGcAXrLj6GtIUIKA=;
+        b=GtFzAaLLH0bBICywN5Hg6yTezZ+0M3UtRmjZ6sYwDTWEf8DqgeO7/irVwQBD+V9i0Y
+         8S3vzg+VOOb7HWvOC/DJFBfdSdgEb6//yvNfPPlOYReh0XbiFe5RkvWPMld6avC2RWpR
+         WQ6nNQLoaymLCqIh0jbxdbIker3+lsOCk3Ujf5/Vre3IIGE5XiJNFELDUQEzF9hUwbDg
+         Jmr/F4N9Q9RFIQhf4ND0kMUK3wit4JioVWIuKCJ/ZDDL5OdD8UBm49PU6ykWlsYl+wSi
+         +8coS8dTRrSyCaQ4NtYUgDsoiNxZgk1+LJxqT7kjlEkFRq3mEZU02zqJLTQmzhocwvcr
+         7Nxw==
+X-Gm-Message-State: AOAM531vpyloiGb+e3GhU7pP0QUVSdtLRR84MgABBWHekmBvHjiASLsB
+        eXQ18vlOQP+IorWnNde9II0IjQ==
+X-Google-Smtp-Source: ABdhPJwsR4sddknZLa7jcLTBaIuE7RjisKawBK3M+o+x1MC/HL2jnakWZ3qsJqRtEF6Kzb7QNJ2M+Q==
+X-Received: by 2002:a1c:3206:: with SMTP id y6mr9699299wmy.127.1610734587226;
+        Fri, 15 Jan 2021 10:16:27 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id b133sm14405979wme.33.2021.01.15.10.16.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 10:16:26 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 15/29] drm/gma500/cdv_intel_display: Demote kernel-doc abuse in 'cdv_intel_panel_fitter_pipe()'s header
+Date:   Fri, 15 Jan 2021 18:15:47 +0000
+Message-Id: <20210115181601.3432599-16-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210115181601.3432599-1-lee.jones@linaro.org>
+References: <20210115181601.3432599-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Fixes the following W=1 kernel build warning(s):
 
-Please pull the arm64 fixes below. Thanks.
+ drivers/gpu/drm/gma500/cdv_intel_display.c:559: warning: Function parameter or member 'dev' not described in 'cdv_intel_panel_fitter_pipe'
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Eric Anholt <eric@anholt.net>
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpu/drm/gma500/cdv_intel_display.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to 3a57a643a851dbb1c4a1819394ca009e3bfa4813:
-
-  arm64: selftests: Fix spelling of 'Mismatch' (2021-01-15 10:05:27 +0000)
-
-----------------------------------------------------------------
-arm64 fixes:
-
-- Set the minimum GCC version to 5.1 for arm64 due to earlier compiler
-  bugs.
-
-- Make atomic helpers __always_inline to avoid a section mismatch when
-  compiling with clang.
-
-- Fix the CMA and crashkernel reservations to use ZONE_DMA (remove the
-  arm64_dma32_phys_limit variable, no longer needed with a dynamic
-  ZONE_DMA sizing in 5.11).
-
-- Remove redundant IRQ flag tracing that was leaving lockdep
-  inconsistent with the hardware state.
-
-- Revert perf events based hard lockup detector that was causing
-  smp_processor_id() to be called in preemptible context.
-
-- Some trivial cleanups - spelling fix, renaming S_FRAME_SIZE to
-  PT_REGS_SIZE, function prototypes added.
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      arm64: make atomic helpers __always_inline
-
-Catalin Marinas (1):
-      arm64: Remove arm64_dma32_phys_limit and its uses
-
-Jianlin Lv (1):
-      arm64: rename S_FRAME_SIZE to PT_REGS_SIZE
-
-Mark Brown (1):
-      arm64: selftests: Fix spelling of 'Mismatch'
-
-Mark Rutland (2):
-      arm64: entry: remove redundant IRQ flag tracing
-      arm64: syscall: include prototype for EL0 SVC functions
-
-Will Deacon (2):
-      Revert "arm64: Enable perf events based hard lockup detector"
-      compiler.h: Raise minimum version of GCC to 5.1 for arm64
-
- arch/arm64/Kconfig                             |  2 --
- arch/arm64/include/asm/atomic.h                | 10 +++----
- arch/arm64/include/asm/processor.h             |  3 +-
- arch/arm64/kernel/asm-offsets.c                |  2 +-
- arch/arm64/kernel/entry-ftrace.S               | 12 ++++----
- arch/arm64/kernel/entry.S                      | 14 ++++-----
- arch/arm64/kernel/perf_event.c                 | 41 ++------------------------
- arch/arm64/kernel/probes/kprobes_trampoline.S  |  6 ++--
- arch/arm64/kernel/signal.c                     |  7 -----
- arch/arm64/kernel/syscall.c                    | 10 ++-----
- arch/arm64/mm/init.c                           | 33 +++++++++++----------
- drivers/perf/arm_pmu.c                         |  5 ----
- include/asm-generic/bitops/atomic.h            |  6 ++--
- include/linux/compiler-gcc.h                   |  6 ++++
- include/linux/perf/arm_pmu.h                   |  2 --
- tools/testing/selftests/arm64/fp/fpsimd-test.S |  2 +-
- tools/testing/selftests/arm64/fp/sve-test.S    |  2 +-
- 17 files changed, 56 insertions(+), 107 deletions(-)
-
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_display.c b/drivers/gpu/drm/gma500/cdv_intel_display.c
+index 686385a66167b..5d33022497793 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_display.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_display.c
+@@ -551,7 +551,7 @@ void cdv_update_wm(struct drm_device *dev, struct drm_crtc *crtc)
+ 	}
+ }
+ 
+-/**
++/*
+  * Return the pipe currently connected to the panel fitter,
+  * or -1 if the panel fitter is not present or not in use
+  */
 -- 
-Catalin
+2.25.1
+
