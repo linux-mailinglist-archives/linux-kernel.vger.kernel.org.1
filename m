@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B022F83C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3912F8398
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387969AbhAOSPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S2387887AbhAOSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728241AbhAOSOy (ORCPT
+        with ESMTP id S1728306AbhAOSOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 13:14:54 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE7EC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:50 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id h17so8029278wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:50 -0800 (PST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA1FC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:52 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a9so6747905wrt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:13:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dP3O8GvG4KjVneRsCzuySK+Xofh1JQYhFAzp9Cmygd0=;
-        b=NvYZ7daMri4pWwZQmsX5ru4VU0SpWalBIl53yLzN3/Cv4z4K9Il8axaTUtk/Mlvcau
-         +1zefGgSce+JpOwuRVKR3bjhjjlic21dn6xpsJbCJKdmtIUTgynojMfsyD1RiRLzRcOS
-         BUazqGqqSbbAxNfZw4rLZ1d+zkIPJuftk5Y/Van2ipPmeFYkmxf5jYJHtfiDr2togNJ5
-         busT5EsVamr7PP37HD9pDJ//Ea6+P+0UPXBKsSTwXk304J/xX2a3ngh/9eaGz9wRpcMu
-         MW83FaYOeNLaGah3GsQPDVsikgx72qqFoQ4+YNRiBI3lwcFC9yojl5gaQtTx6w54zp3P
-         Vy8A==
+        bh=4aoNCmjio9l+rvMx1zGsBoMkbgJVfYu39oKJNZ/3uls=;
+        b=oO4p2Qt7e2zzJjwbtmcEgQslHf38O4Ll5XneLSPcedcp/U955WUp7OBBo6XiOUrCQR
+         9bHWdzJcJe3/sydkNSJNTJOreeX4oOTwpUTCktEaWWW8sttfSHXciVTMy22hD9F3+Z7u
+         dla+xlHuqn4W6StDx1+0ZvM8+HJevlmInFOs5KwEZ7Rb6VUMPb9aqqL+XHDsjQMlQlMz
+         a0CdfQ38BCdPa9Y/pkBO7Wo2o6ZeA4Opq/q7PR2FSheFdYQdiLgVB44MHFLilMYiYVG9
+         ZysciPyZ2KEm1ky3FthuachRs994pMprRdfD9QOSZiWP6Eez1kOX5QFHhyk9YwJhmTEl
+         acgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dP3O8GvG4KjVneRsCzuySK+Xofh1JQYhFAzp9Cmygd0=;
-        b=IcQ3buRb27muR/iN253V6ptg88Y4Lv14/p6Jq5Tdr7dA6jzQc1sW50CDy+Ub7VWcmF
-         28YczxcQaFVdI0MFOT0nLKCXQmO4r2x4JHLL8XjEqj2vZSYypRQZZC4fKS6+a4x46Ue6
-         V6oAJ7dBvVAj+8kcup97Pdg6nY/i4RXJtOsoM1sNi1tHJwr3G502X6E7EfqZyEQa4yj+
-         tVBntlVcd1HjQPMxN6R7XwJAKuEhA8nhC1XNc8PC4wSa/b9k2WVCdIqKfgMmjEtz8Ejn
-         X5vtDnNDkpvAou+7/hLgyW4i2Irc7dhAIMq8QZcIDZq6deCgPZAVK76PnMXDO3IaXd42
-         k9MA==
-X-Gm-Message-State: AOAM532FSeQmsXWuZ3uOcuBLpGdGE8ld8H6IYwyDyzPHgusZTODhq3TP
-        sY2yuh1Xtnz+94Lho+6IXRhEgw==
-X-Google-Smtp-Source: ABdhPJylLVYhZtPQf2lvdbnpBfE2TpTiOfADIk0wEfZBOn1gHRWMAPa8rKFyyYAyBG8ecnMgxD3D8g==
-X-Received: by 2002:a7b:c385:: with SMTP id s5mr9873876wmj.170.1610734429439;
-        Fri, 15 Jan 2021 10:13:49 -0800 (PST)
+        bh=4aoNCmjio9l+rvMx1zGsBoMkbgJVfYu39oKJNZ/3uls=;
+        b=dvo0GjKt/Cx6ogjTdAvsupfnvfuozGxhlY/xorGO3rgrt+whhGsz4w3HY6313lgD/4
+         gtdzcB2JvKGbSbHmX1QqAEDGwYoVkJbZaoAHpog8nYTyIi60p2FJYsSULY+k7WK9IObx
+         /NenF4XPrqF0zP3mCvm6F0z8fOnSJ1WEeK1r7ZuZWXRTuG0/QpUMPnw3g36YJtTCTm+l
+         /GBhllQb78BnInkjDvARET2symDywpkCX6YgcZZcXZy+6O0uGnyDYumX1ixM57ctqsRk
+         ZvnfQUjOFKMZK5lMZW1o4PtnVcLTJUf1XB4eVQX6703lzAp36s/rOduRYJU74IaZKMIM
+         hM4w==
+X-Gm-Message-State: AOAM530nJgDuF944UoO4aEGkPD+VYjxVhOVWgabzTlqXQKyqR+x6pQZJ
+        qhw39wlSIhz74f7Ta9Kx2KM/Hw==
+X-Google-Smtp-Source: ABdhPJyPDU+rAWr+95CjBqCha9HFpSx3cJkKiSRB/6/qt1lCEMkfnxYyUnFr5HtNk7VsyimbxHcgyw==
+X-Received: by 2002:a5d:4c45:: with SMTP id n5mr14778574wrt.396.1610734431166;
+        Fri, 15 Jan 2021 10:13:51 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.48
+        by smtp.gmail.com with ESMTPSA id j2sm16123484wrh.78.2021.01.15.10.13.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 10:13:48 -0800 (PST)
+        Fri, 15 Jan 2021 10:13:50 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 21/40] drm/gma500/gma_display: Demote kernel-doc abuses to standard comment blocks
-Date:   Fri, 15 Jan 2021 18:12:54 +0000
-Message-Id: <20210115181313.3431493-22-lee.jones@linaro.org>
+Subject: [PATCH 22/40] drm/gma500/gma_device: Include our own header containing prototypes
+Date:   Fri, 15 Jan 2021 18:12:55 +0000
+Message-Id: <20210115181313.3431493-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210115181313.3431493-1-lee.jones@linaro.org>
 References: <20210115181313.3431493-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,63 +70,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/gma500/gma_display.c:27: warning: Function parameter or member 'crtc' not described in 'gma_pipe_has_type'
- drivers/gpu/drm/gma500/gma_display.c:27: warning: Function parameter or member 'type' not described in 'gma_pipe_has_type'
- drivers/gpu/drm/gma500/gma_display.c:190: warning: Function parameter or member 'crtc' not described in 'gma_crtc_dpms'
- drivers/gpu/drm/gma500/gma_display.c:190: warning: Function parameter or member 'mode' not described in 'gma_crtc_dpms'
- drivers/gpu/drm/gma500/gma_display.c:573: warning: Function parameter or member 'crtc' not described in 'gma_crtc_save'
- drivers/gpu/drm/gma500/gma_display.c:616: warning: Function parameter or member 'crtc' not described in 'gma_crtc_restore'
+ drivers/gpu/drm/gma500/gma_device.c:10:6: warning: no previous prototype for ‘gma_get_core_freq’ [-Wmissing-prototypes]
 
 Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Eric Anholt <eric@anholt.net>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/gma500/gma_display.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/gma500/gma_device.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/gma500/gma_display.c b/drivers/gpu/drm/gma500/gma_display.c
-index cadae842a0e9e..b03f7b8241f2b 100644
---- a/drivers/gpu/drm/gma500/gma_display.c
-+++ b/drivers/gpu/drm/gma500/gma_display.c
-@@ -20,7 +20,7 @@
- #include "psb_intel_drv.h"
- #include "psb_intel_reg.h"
+diff --git a/drivers/gpu/drm/gma500/gma_device.c b/drivers/gpu/drm/gma500/gma_device.c
+index cfbeb010ede0d..4c91e86f4b142 100644
+--- a/drivers/gpu/drm/gma500/gma_device.c
++++ b/drivers/gpu/drm/gma500/gma_device.c
+@@ -6,6 +6,7 @@
+  **************************************************************************/
  
--/**
-+/*
-  * Returns whether any output on the specified pipe is of the specified type
-  */
- bool gma_pipe_has_type(struct drm_crtc *crtc, int type)
-@@ -180,7 +180,7 @@ int gma_crtc_gamma_set(struct drm_crtc *crtc, u16 *red, u16 *green, u16 *blue,
- 	return 0;
- }
+ #include "psb_drv.h"
++#include "gma_device.h"
  
--/**
-+/*
-  * Sets the power management mode of the pipe and plane.
-  *
-  * This code should probably grow support for turning the cursor off and back
-@@ -566,7 +566,7 @@ int gma_crtc_set_config(struct drm_mode_set *set,
- 	return ret;
- }
- 
--/**
-+/*
-  * Save HW states of given crtc
-  */
- void gma_crtc_save(struct drm_crtc *crtc)
-@@ -609,7 +609,7 @@ void gma_crtc_save(struct drm_crtc *crtc)
- 		crtc_state->savePalette[i] = REG_READ(palette_reg + (i << 2));
- }
- 
--/**
-+/*
-  * Restore HW states of given crtc
-  */
- void gma_crtc_restore(struct drm_crtc *crtc)
+ void gma_get_core_freq(struct drm_device *dev)
+ {
 -- 
 2.25.1
 
