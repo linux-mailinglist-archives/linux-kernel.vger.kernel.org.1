@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF472F7A84
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7302F7B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387810AbhAOMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:36:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
+        id S2387514AbhAOM5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:57:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387751AbhAOMfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91CD3235F9;
-        Fri, 15 Jan 2021 12:35:11 +0000 (UTC)
+        id S2387458AbhAOMeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:34:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C49223E0;
+        Fri, 15 Jan 2021 12:34:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714112;
-        bh=UPK2wr1C0tq+9x7urNAkWTBAnGfruomE3IzDJbT1LQI=;
+        s=korg; t=1610714041;
+        bh=uh2dK3nnlUxFeYmUJ5NAK8gx46824cSHwA+Q2b8A/Ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+8sv91LbbvRJ4101rP5xEyP/CGK7bdeOr4To1G5DOzbkxv5siv7HpChZSBrEbFN3
-         MA0dCc5k0u7OC4QQI2VwLGmdLcOd9J8X8XBCMro0qhmLEzhC3QPkqbuWngfJvKnF9Y
-         Mb4BaZIef59Fy5kV56ZxNLSX8jqXMhKk7TOCsIPA=
+        b=BN5zbJzeUTZGnVT4k6UVggBlHh9KvmP7BltQsaUjHk6SIk8maHDA362AV6k+t/RNn
+         Cno05sL5EGGE9zAL1+4wjxfey+NuOcxpEcwtkwiF7Je70cle7AxYlc/BnbuM+hDnlw
+         Fru3teE08ZegGq6JkpsEX7Hu/MwtYo+Q63n7hrB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
-        David Ahern <dsahern@kernel.org>,
+        stable@vger.kernel.org, Stefano Brivio <sbrivio@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 11/62] tools: selftests: add test for changing routes with PTMU exceptions
-Date:   Fri, 15 Jan 2021 13:27:33 +0100
-Message-Id: <20210115121958.947465732@linuxfoundation.org>
+Subject: [PATCH 5.4 12/62] net: fix pmtu check in nopmtudisc mode
+Date:   Fri, 15 Jan 2021 13:27:34 +0100
+Message-Id: <20210115121958.996015548@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
 References: <20210115121958.391610178@linuxfoundation.org>
@@ -40,126 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Tranchetti <stranche@codeaurora.org>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 5316a7c0130acf09bfc8bb0092407006010fcccc ]
+[ Upstream commit 50c661670f6a3908c273503dfa206dfc7aa54c07 ]
 
-Adds new 2 new tests to the PTMU script: pmtu_ipv4/6_route_change.
+For some reason ip_tunnel insist on setting the DF bit anyway when the
+inner header has the DF bit set, EVEN if the tunnel was configured with
+'nopmtudisc'.
 
-These tests explicitly test for a recently discovered problem in the
-IPv6 routing framework where PMTU exceptions were not properly released
-when replacing a route via "ip route change ...".
+This means that the script added in the previous commit
+cannot be made to work by adding the 'nopmtudisc' flag to the
+ip tunnel configuration. Doing so breaks connectivity even for the
+without-conntrack/netfilter scenario.
 
-After creating PMTU exceptions, the route from the device A to R1 will be
-replaced with a new route, then device A will be deleted. If the PMTU
-exceptions were properly cleaned up by the kernel, this device deletion
-will succeed. Otherwise, the unregistration of the device will stall, and
-messages such as the following will be logged in dmesg:
+When nopmtudisc is set, the tunnel will skip the mtu check, so no
+icmp error is sent to client. Then, because inner header has DF set,
+the outer header gets added with DF bit set as well.
 
-unregister_netdevice: waiting for veth_A-R1 to become free. Usage count = 4
+IP stack then sends an error to itself because the packet exceeds
+the device MTU.
 
-Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Link: https://lore.kernel.org/r/1609892546-11389-2-git-send-email-stranche@quicinc.com
+Fixes: 23a3647bc4f93 ("ip_tunnels: Use skb-len to PMTU check.")
+Cc: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/net/pmtu.sh |   71 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 2 deletions(-)
+ net/ipv4/ip_tunnel.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
---- a/tools/testing/selftests/net/pmtu.sh
-+++ b/tools/testing/selftests/net/pmtu.sh
-@@ -119,7 +119,15 @@
- # - list_flush_ipv6_exception
- #	Using the same topology as in pmtu_ipv6, create exceptions, and check
- #	they are shown when listing exception caches, gone after flushing them
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -765,8 +765,11 @@ void ip_tunnel_xmit(struct sk_buff *skb,
+ 		goto tx_error;
+ 	}
+ 
+-	if (tnl_update_pmtu(dev, skb, rt, tnl_params->frag_off, inner_iph,
+-			    0, 0, false)) {
++	df = tnl_params->frag_off;
++	if (skb->protocol == htons(ETH_P_IP) && !tunnel->ignore_df)
++		df |= (inner_iph->frag_off & htons(IP_DF));
++
++	if (tnl_update_pmtu(dev, skb, rt, df, inner_iph, 0, 0, false)) {
+ 		ip_rt_put(rt);
+ 		goto tx_error;
+ 	}
+@@ -794,10 +797,6 @@ void ip_tunnel_xmit(struct sk_buff *skb,
+ 			ttl = ip4_dst_hoplimit(&rt->dst);
+ 	}
+ 
+-	df = tnl_params->frag_off;
+-	if (skb->protocol == htons(ETH_P_IP) && !tunnel->ignore_df)
+-		df |= (inner_iph->frag_off&htons(IP_DF));
 -
-+#
-+# - pmtu_ipv4_route_change
-+#	Use the same topology as in pmtu_ipv4, but issue a route replacement
-+#	command and delete the corresponding device afterward. This tests for
-+#	proper cleanup of the PMTU exceptions by the route replacement path.
-+#	Device unregistration should complete successfully
-+#
-+# - pmtu_ipv6_route_change
-+#	Same as above but with IPv6
- 
- # Kselftest framework requirement - SKIP code is 4.
- ksft_skip=4
-@@ -161,7 +169,9 @@ tests="
- 	cleanup_ipv4_exception		ipv4: cleanup of cached exceptions	1
- 	cleanup_ipv6_exception		ipv6: cleanup of cached exceptions	1
- 	list_flush_ipv4_exception	ipv4: list and flush cached exceptions	1
--	list_flush_ipv6_exception	ipv6: list and flush cached exceptions	1"
-+	list_flush_ipv6_exception	ipv6: list and flush cached exceptions	1
-+	pmtu_ipv4_route_change		ipv4: PMTU exception w/route replace	1
-+	pmtu_ipv6_route_change		ipv6: PMTU exception w/route replace	1"
- 
- NS_A="ns-A"
- NS_B="ns-B"
-@@ -1316,6 +1326,63 @@ test_list_flush_ipv6_exception() {
- 	return ${fail}
- }
- 
-+test_pmtu_ipvX_route_change() {
-+	family=${1}
-+
-+	setup namespaces routing || return 2
-+	trace "${ns_a}"  veth_A-R1    "${ns_r1}" veth_R1-A \
-+	      "${ns_r1}" veth_R1-B    "${ns_b}"  veth_B-R1 \
-+	      "${ns_a}"  veth_A-R2    "${ns_r2}" veth_R2-A \
-+	      "${ns_r2}" veth_R2-B    "${ns_b}"  veth_B-R2
-+
-+	if [ ${family} -eq 4 ]; then
-+		ping=ping
-+		dst1="${prefix4}.${b_r1}.1"
-+		dst2="${prefix4}.${b_r2}.1"
-+		gw="${prefix4}.${a_r1}.2"
-+	else
-+		ping=${ping6}
-+		dst1="${prefix6}:${b_r1}::1"
-+		dst2="${prefix6}:${b_r2}::1"
-+		gw="${prefix6}:${a_r1}::2"
-+	fi
-+
-+	# Set up initial MTU values
-+	mtu "${ns_a}"  veth_A-R1 2000
-+	mtu "${ns_r1}" veth_R1-A 2000
-+	mtu "${ns_r1}" veth_R1-B 1400
-+	mtu "${ns_b}"  veth_B-R1 1400
-+
-+	mtu "${ns_a}"  veth_A-R2 2000
-+	mtu "${ns_r2}" veth_R2-A 2000
-+	mtu "${ns_r2}" veth_R2-B 1500
-+	mtu "${ns_b}"  veth_B-R2 1500
-+
-+	# Create route exceptions
-+	run_cmd ${ns_a} ${ping} -q -M want -i 0.1 -w 1 -s 1800 ${dst1}
-+	run_cmd ${ns_a} ${ping} -q -M want -i 0.1 -w 1 -s 1800 ${dst2}
-+
-+	# Check that exceptions have been created with the correct PMTU
-+	pmtu_1="$(route_get_dst_pmtu_from_exception "${ns_a}" ${dst1})"
-+	check_pmtu_value "1400" "${pmtu_1}" "exceeding MTU" || return 1
-+	pmtu_2="$(route_get_dst_pmtu_from_exception "${ns_a}" ${dst2})"
-+	check_pmtu_value "1500" "${pmtu_2}" "exceeding MTU" || return 1
-+
-+	# Replace the route from A to R1
-+	run_cmd ${ns_a} ip route change default via ${gw}
-+
-+	# Delete the device in A
-+	run_cmd ${ns_a} ip link del "veth_A-R1"
-+}
-+
-+test_pmtu_ipv4_route_change() {
-+	test_pmtu_ipvX_route_change 4
-+}
-+
-+test_pmtu_ipv6_route_change() {
-+	test_pmtu_ipvX_route_change 6
-+}
-+
- usage() {
- 	echo
- 	echo "$0 [OPTIONS] [TEST]..."
+ 	max_headroom = LL_RESERVED_SPACE(rt->dst.dev) + sizeof(struct iphdr)
+ 			+ rt->dst.header_len + ip_encap_hlen(&tunnel->encap);
+ 	if (max_headroom > dev->needed_headroom)
 
 
