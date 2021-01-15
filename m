@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F562F79A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362952F7A90
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388281AbhAOMjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:39:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
+        id S2388397AbhAOMvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:51:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388279AbhAOMjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:39:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAD0823356;
-        Fri, 15 Jan 2021 12:38:29 +0000 (UTC)
+        id S2387778AbhAOMgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:36:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F07C622473;
+        Fri, 15 Jan 2021 12:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714310;
-        bh=m/xcYm1HRXoPHGCDcU1w3VhFJWdUhN2QimTywFBeXyw=;
+        s=korg; t=1610714147;
+        bh=8X6I/2MBpox0hCLP6J9XLprleMfsCCAEUqUV+Fq+YEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRTJENX1KqkHuGOLdoveeAZQ5uiBzAAnSdbh9cwRB68jYQF515KOcFFG2maR4K/oM
-         YfsaUvGNWgG5QmfEFOzHZTWjDqHPRJSL9Vd/7Rk4MmnzBhcWwgGLJ3t0iB8h9zOSPX
-         wEJi9zAPXxaArA3z00527ajuUTasey3/O0OmjLYA=
+        b=WcADx9dcP7m4u6wrOH6TUI6E5t8J26MQHpFSMLRl2q6nxtXmpIXKwkikxwsHYBF+Y
+         8tI6QTFL9otmCIwRXjO71nK1i1ty4NwmL5A+GFmzPkn6Tyu+1/9I2Y62BaOPRHHsTS
+         ABblbRO3Y/cWBtfmQLm5HrB2Flg6uzF8UHR0iUiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: [PATCH 5.10 079/103] zonefs: select CONFIG_CRC32
-Date:   Fri, 15 Jan 2021 13:28:12 +0100
-Message-Id: <20210115122009.848313856@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.4 51/62] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+Date:   Fri, 15 Jan 2021 13:28:13 +0100
+Message-Id: <20210115122000.855971473@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
-References: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
+References: <20210115121958.391610178@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 4f8b848788f77c7f5c3bd98febce66b7aa14785f upstream.
+commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
 
-When CRC32 is disabled, zonefs cannot be linked:
+When irq_domain_get_irq_data() or irqd_cfg() fails
+at i == 0, data allocated by kzalloc() has not been
+freed before returning, which leads to memleak.
 
-ld: fs/zonefs/super.o: in function `zonefs_fill_super':
-
-Add a Kconfig 'select' statement for it.
-
-Fixes: 8dcc1a9d90c1 ("fs: New zonefs file system")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/zonefs/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iommu/intel_irq_remapping.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/zonefs/Kconfig
-+++ b/fs/zonefs/Kconfig
-@@ -3,6 +3,7 @@ config ZONEFS_FS
- 	depends on BLOCK
- 	depends on BLK_DEV_ZONED
- 	select FS_IOMAP
-+	select CRC32
- 	help
- 	  zonefs is a simple file system which exposes zones of a zoned block
- 	  device (e.g. host-managed or host-aware SMR disk drives) as files.
+--- a/drivers/iommu/intel_irq_remapping.c
++++ b/drivers/iommu/intel_irq_remapping.c
+@@ -1400,6 +1400,8 @@ static int intel_irq_remapping_alloc(str
+ 		irq_data = irq_domain_get_irq_data(domain, virq + i);
+ 		irq_cfg = irqd_cfg(irq_data);
+ 		if (!irq_data || !irq_cfg) {
++			if (!i)
++				kfree(data);
+ 			ret = -EINVAL;
+ 			goto out_free_data;
+ 		}
 
 
