@@ -2,72 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ECB2F8959
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04D22F895F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbhAOXY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 18:24:29 -0500
-Received: from mga18.intel.com ([134.134.136.126]:42084 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726495AbhAOXY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 18:24:29 -0500
-IronPort-SDR: WqdxCW4u0AS92VBz43GxkFoSaYd7GwkpYfXPLatreLUjgLA+uIBYXmSGfvd43Cb8OjlvMxvCSj
- 78VzKiTc5F2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="166290202"
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="166290202"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 15:23:48 -0800
-IronPort-SDR: 7gXHaJJl7pLab/RhcPWWxWPifCml+C+HQtTefTRRM4NPihwK/TL1eymOTTxNfIb7YS9PgPkzIr
- ClHk1mvq2RFw==
-X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
-   d="scan'208";a="382833317"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 15:23:48 -0800
-Date:   Fri, 15 Jan 2021 15:23:46 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-1-tony.luck@intel.com>
- <20210115003817.23657-1-tony.luck@intel.com>
- <20210115152754.GC9138@zn.tnic>
- <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
- <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
+        id S1728374AbhAOXZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 18:25:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725863AbhAOXZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 18:25:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610753049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hi1wWTTxsSrh2eZC6d26sBLUQWgqiaGuZmJlj3AaGNk=;
+        b=dHg6MsaJOSBv9I+8I1bGWt8NdeC/VHQTWk7wvLOEa9kEeDSau4rj61DqamjfX7wBp0Tur6
+        5AcZ/e4QmUvH/5KDFGbWZJJyzzOTwlxLaVVPZ3GyDoip/qCi+z8o8O5ITHaYPaNsgG0Mtn
+        hKne0mdKfR27r4O55zB9cqGdvqe+3Io=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-uCbG_PrpNRm72u80Zfo6-w-1; Fri, 15 Jan 2021 18:24:05 -0500
+X-MC-Unique: uCbG_PrpNRm72u80Zfo6-w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D174802B40;
+        Fri, 15 Jan 2021 23:24:02 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CFC505D763;
+        Fri, 15 Jan 2021 23:24:00 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 16:23:59 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH 2/6] vfio/iommu_type1: Ignore external domain when
+ promote pinned_scope
+Message-ID: <20210115162359.749e8d0d@omen.home.shazbot.org>
+In-Reply-To: <20210107044401.19828-3-zhukeqian1@huawei.com>
+References: <20210107044401.19828-1-zhukeqian1@huawei.com>
+        <20210107044401.19828-3-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:51:03PM -0800, Luck, Tony wrote:
->  static void kill_me_now(struct callback_head *ch)
->  {
-> +	p->mce_count = 0;
->  	force_sig(SIGBUS);
+On Thu, 7 Jan 2021 12:43:57 +0800
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
+
+> The pinned_scope of external domain's groups are always true, that's
+> to say we can safely ignore external domain when promote pinned_scope
+> status of vfio_iommu.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 334a8240e1da..110ada24ee91 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -1637,14 +1637,7 @@ static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+>  		}
+>  	}
+>  
+> -	if (iommu->external_domain) {
+> -		domain = iommu->external_domain;
+> -		list_for_each_entry(group, &domain->group_list, next) {
+> -			if (!group->pinned_page_dirty_scope)
+> -				return;
+> -		}
+> -	}
+> -
+> +	/* The external domain always passes check */
+>  	iommu->pinned_page_dirty_scope = true;
 >  }
+>  
+> @@ -2347,7 +2340,6 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	if (iommu->external_domain) {
+>  		group = find_iommu_group(iommu->external_domain, iommu_group);
+>  		if (group) {
+> -			promote_dirty_scope = !group->pinned_page_dirty_scope;
 
-Brown paper bag time ... I just pasted that line from kill_me_maybe()
-and I thought I did a re-compile ... but obviously not since it gives
 
-error: ‘p’ undeclared (first use in this function)
+With this, vfio_group.pinned_page_dirty_scope is effectively a dead
+field on the struct for groups on the external_domain group list and
+handled specially.  That's not great.
 
-Option a) (just like kill_me_maybe)
+If you actually want to make more than a trivial improvement to scope
+tracking, what about making a counter on our struct vfio_iommu for all
+the non-pinned-page (ie. all-dma) scope groups attached to the
+container.  Groups on the external domain would still set their group
+dirty scope to pinned pages, groups making use of an iommu domain would
+have an all-dma scope initially and increment that counter when
+attached.  Groups that still have an all-dma scope on detach would
+decrement the counter.  If a group changes from all-dma to pinned-page
+scope, the counter is also decremented.  We'd never need to search
+across group lists.  Thanks,
 
-struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+Alex
 
-Option b) (simpler ... not sure why PeterZ did the container_of thing
+>  			list_del(&group->next);
+>  			kfree(group);
+>  
+> @@ -2360,7 +2352,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  				kfree(iommu->external_domain);
+>  				iommu->external_domain = NULL;
+>  			}
+> -			goto detach_group_done;
+> +			mutex_unlock(&iommu->lock);
+> +			return;
+>  		}
+>  	}
+>  
+> @@ -2408,7 +2401,6 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	else
+>  		vfio_iommu_iova_free(&iova_copy);
+>  
+> -detach_group_done:
+>  	/*
+>  	 * Removal of a group without dirty tracking may allow the iommu scope
+>  	 * to be promoted.
 
-	current->mce_count = 0;
-
--Tony
