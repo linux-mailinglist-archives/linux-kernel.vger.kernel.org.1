@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EF32F6FF2
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1F72F6FF1
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbhAOBYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
+        id S1727903AbhAOBX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbhAOBX7 (ORCPT
+        with ESMTP id S1726017AbhAOBX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:23:59 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A15C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:23:19 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id c132so4991579pga.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Nuw9usw0vxK8JD4tBT70Yn4lhH4gOj/XaaGUqb4BaE=;
-        b=FbU886KZrJyOI4IkY+mSvN4dU54Vi5z9wX8ScVy+WjwzehHKpM6A1mlWnvRxv3gHoi
-         NyTFhMnHM6+0KeyJ3xfyW4ES9XlAHf+IQ9kIHrUy5Jq0sAuWg4OyCIr6B4ISh1tvXfrB
-         zRYVrca0JPFgr44vrvxKnjTjbj31dda5+uUj5aonIxeD/ja2TMo+dmKxaRCQvKwYee0p
-         FlA8rC5QDqcWUWiuh1EJZz5Tm6leF9D3KB7POq1QOUerKWX1Wq1N/6mv7qSBIB3nNb1/
-         ovmsh5P+xFzXI1BU/3W2QYklaDRWxgXkWvvnrCoPUBPbtYywIiOiT6DBab6sRZkXdb0f
-         Y6/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Nuw9usw0vxK8JD4tBT70Yn4lhH4gOj/XaaGUqb4BaE=;
-        b=eJxlN5jsSytgTV3f6VHvnXqLAQcD58S2u0IeIbsYTmKDiy+NASqj7TGyZK14zMImgC
-         JL87MMxTVaR6OjZlq7tmwsjVqbhCfdLa57RPNs+jwXVwQNTX5uKeuHY0B/9P+4cEDKdN
-         0uIW+DwjNcfkRHZgdU9HDIgVdPG2gzHA+z0wlQUEi2JmTX5cOYG9vT2qxoPsYyFxP4mE
-         fWZnvzfuK6InCe4G8T5M9fCJ+lpe4uiRNtAGs2Cyuot3ZfCwe7SY7zX/GSCW3jGIQAjO
-         NQeo8+ds+nAygFP67bibu2jaI2WwhkT/l8EQ8oyoLrgOSEnWda1DuEpTEsizw4+mS3Wj
-         ie4A==
-X-Gm-Message-State: AOAM53146UvlscTBBkFH9PPkJq5QsusBA6qYw13CD08wk1iBRh7WiO5Z
-        IYGUn6nmnnpHXOnE6r/EVMZ0eVUyVsHHty4V5sbM9f0E
-X-Google-Smtp-Source: ABdhPJxK+LFZSeZ1lko6pCTRs3w/M11yHcav5S9ILAMuMSJ4VFhPIc7OCxJb2ufLonhBLl/8gq1xxII26K5sdgx+BBg=
-X-Received: by 2002:a63:1519:: with SMTP id v25mr10262466pgl.217.1610673799229;
- Thu, 14 Jan 2021 17:23:19 -0800 (PST)
+        Thu, 14 Jan 2021 20:23:58 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F11C061575;
+        Thu, 14 Jan 2021 17:23:17 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DH3N04yNjz9sVr;
+        Fri, 15 Jan 2021 12:23:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610673794;
+        bh=HuR/UqsyYV6V2u8mtzj/Ev7wCFWabBAH4XNDWYxTz6A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ee+XO8v5HN+j72pKq6l6bqD93UKVTfLr+C9twDIrMFrBPj8rU9yo51mQv4lS7Zl3Q
+         RrihKh0wbRhJbjXge1mpqc3KM0gboWpb2AAznpn00ntXyYDx42ikRo9zSFNc3AtClU
+         Iet8U61KPV/xfMhbySBlg2b7B7ov4Dars1J9OGw9Xnkc2IYiqXFMECl5UIMFaT1d/m
+         J7KEbm7uSbMU/N8GZenMIZKR1igONxvW1cL4PW16wjcQhbxxHqiqNFUcemqJ9LgrD9
+         PlTRUb4b+OzavmU8WDJ1LLetru5wp3QHWRuOa+viWVN2QI+uxib65wyEkP2UV1K+j3
+         gRrpSGEA3gFPA==
+Date:   Fri, 15 Jan 2021 12:23:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Darren Salt <devspam@moreofthesa.me.uk>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the drm-misc tree
+Message-ID: <20210115122310.7dd6bb11@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210115002134.117637-1-dave@stgolabs.net>
-In-Reply-To: <20210115002134.117637-1-dave@stgolabs.net>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Thu, 14 Jan 2021 19:23:08 -0600
-Message-ID: <CABb+yY381GYcfAkLuzSTvNz2yHGs4Ap7Kgwiy9r0pXGGQt+ozg@mail.gmail.com>
-Subject: Re: [PATCH] mailbox: bcm: Replace tasklet with threaded irq
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Vpa+x8VRDC3FcD559.RaF=y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 6:21 PM Davidlohr Bueso <dave@stgolabs.net> wrote:
->
-> Tasklets have long been deprecated as being too heavy on the system
-> by running in irq context - and this is not a performance critical
-> path. If a higher priority process wants to run, it must wait for
-> the tasklet to finish before doing so.
->
-> Use a more suitable alternative such as threaded irqs and do the
-> async work in process context.
->
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-> ---
-Please cc the author and other contributors to this file, esp when
-this is vendor specific code.
+--Sig_/Vpa+x8VRDC3FcD559.RaF=y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-thanks.
+Hi all,
+
+After merging the drm-misc tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
+
+drivers/gpu/drm/amd/amdgpu/amdgpu_display.c: In function 'amdgpu_display_us=
+er_framebuffer_create':
+drivers/gpu/drm/amd/amdgpu/amdgpu_display.c:929:24: warning: unused variabl=
+e 'adev' [-Wunused-variable]
+  929 |  struct amdgpu_device *adev =3D drm_to_adev(dev);
+      |                        ^~~~
+
+Introduced by commit
+
+  8f66090b7bb7 ("drm/amdgpu: Remove references to struct drm_device.pdev")
+
+drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function 'amdgpu_device_resi=
+ze_fb_bar':
+drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1109:6: warning: unused variable=
+ 'space_needed' [-Wunused-variable]
+ 1109 |  u64 space_needed =3D roundup_pow_of_two(adev->gmc.real_vram_size);
+      |      ^~~~~~~~~~~~
+
+Introduced by commit
+
+  453f617a30aa ("drm/amdgpu: Resize BAR0 to the maximum available size, eve=
+n if it doesn't cover VRAM")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Vpa+x8VRDC3FcD559.RaF=y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAA7n4ACgkQAVBC80lX
+0GwDEwf/fmr7nK+fiyHfcFlaNUOW7oDnJ8N3XqSam65tbF5eqAFACd79w+UrHr3l
+nRofuChmVJ1cXGKC0HegELL7XakKuqinfxuqOle4k0lqkN+ZRlMlUo99TQDfEY+J
+WSXhCkLYf6jSwUtpg1WEmCc81ljhcJy3HonWN/UqlFdC9oSDg5MvTQMfakXl0/SO
+kaGp/Gjw7+w99zb8gZhofC+jcow6Uq7qftXn4vRsrL4pUAjbQu/dq4YtExewXBQs
+qAIX3yKN2sSTz6opGWFnPH+grzf8MAgfIO61vWfHsbfxt0WAwsA+KmnQAhwU7sxJ
+ZpGvaBUlk25Ub7Kv6JJVDyHtTdc0Xg==
+=Hkir
+-----END PGP SIGNATURE-----
+
+--Sig_/Vpa+x8VRDC3FcD559.RaF=y--
