@@ -2,96 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B777C2F70AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB072F70B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732252AbhAOCjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhAOCjp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:39:45 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD76C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:39:05 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id w2so4539616pfc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:39:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=fRDLUAnMV4W5LTd7YwU8Eg9d/U3dd23J9T5poIBKzTo=;
-        b=jLBlylEfglXyMt337Jovv+Tj4cspqn1eEHvm6tZ3FHWdMeiMEE0oWQTFuT8BagEg3P
-         5DwygBEYcPvWQ0xIXXTzjZ6QI4nkturzNVxKVs647SLxgCSUd5WriTXfpjKbGp5x97rP
-         j/D0A0wVQJk31MUwH1owYyHKzQwHcB9ZKYdWQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=fRDLUAnMV4W5LTd7YwU8Eg9d/U3dd23J9T5poIBKzTo=;
-        b=YQBE2yfVKq3wZM3MuL/jPu6vnX8InkavkjcDlPl709IszYEfC1yDgeQhvOG1/Jqu52
-         rli8kLcv3v5wqPdfHmrJJcpukHWVqE5WXSHQNWJMrCaciB2b857Jtsmb2vMc4mCJCFPJ
-         PswdUqZi+KWYgH0VbQtH5MSEBwwpEYmddukt8r5vCDPniMNmAT158DHDXxfb6i/e9Fic
-         2ZkwKKRXo2V7u/FLSPE6BCahgMzjC7t7JlCpWVBe8rYS9RAwBfYd0+/AzOS/vGZGvP3s
-         J4KHULUO6XKcOLuUHv42i+/LTVe88AiadrzgFEDngNY/+DP+uTPje4yNTB7RzqrtMUU/
-         aDiA==
-X-Gm-Message-State: AOAM530DaX28RcTPt+LnkfQJKuGplPXFWJQ5vKlUHzQaLutOnv5Qz+K0
-        pSTG+/g4mXCW1KmYL8alycZssA==
-X-Google-Smtp-Source: ABdhPJx5jSeXLUAkNliCTE5Rl1V0h6B0hP37E5oRYNx00LoRSNaRtQDIOXUMdWG9+VXsEeOYNACLHw==
-X-Received: by 2002:aa7:95b6:0:b029:1ae:8a7b:59ac with SMTP id a22-20020aa795b60000b02901ae8a7b59acmr10373413pfk.15.1610678345177;
-        Thu, 14 Jan 2021 18:39:05 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id s7sm6086154pfh.207.2021.01.14.18.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:39:04 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1732271AbhAOCuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:50:37 -0500
+Received: from mga09.intel.com ([134.134.136.24]:17228 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732212AbhAOCug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:50:36 -0500
+IronPort-SDR: Y2++N2Yeu2m13DuBDWqs7CyOWCgiWUXL231IC7i77gfE8RxMuYYpXc/k7FZJqPIxSJ+L2aMPzq
+ hYvStdZMhU/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="178635431"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="178635431"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 18:49:55 -0800
+IronPort-SDR: ebdsqn0PweN4mbAiiVH2+aBu4aCNwJUh55v11gyEc/C0igEvDoqF0d+FuJ83QciAKNOEvIpx70
+ Rh9aRKnE22Uw==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; 
+   d="scan'208";a="354131970"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 18:49:51 -0800
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
+ inject it to guest
+To:     Sean Christopherson <seanjc@google.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <YACTnkdi1rxfrRCg@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <a0b5dc29-e63f-6ec9-a03f-6435cb3373c6@intel.com>
+Date:   Fri, 15 Jan 2021 10:49:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210114183010.v6.2.I2c219435b0d06a84411ae35c3154e123c52fcd7d@changeid>
-References: <20210114183010.v6.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid> <20210114183010.v6.2.I2c219435b0d06a84411ae35c3154e123c52fcd7d@changeid>
-Subject: Re: [PATCH v6 2/2] Input: cros-ec-keyb - Expose function row physical map to userspace
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        dmitry.torokhov@gmail.com
-Date:   Thu, 14 Jan 2021 18:39:03 -0800
-Message-ID: <161067834304.3661239.10444715775164261177@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <YACTnkdi1rxfrRCg@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-14 18:30:31)
-> The top-row keys in a keyboard usually have dual functionalities.
-> E.g. A function key "F1" is also an action key "Browser back".
->=20
-> Therefore, when an application receives an action key code from
-> a top-row key press, the application needs to know how to correlate
-> the action key code with the function key code and do the conversion
-> whenever necessary.
->=20
-> Since the userpace already knows the key scanlines (row/column)
-> associated with a received key code. Essentially, the userspace only
-> needs a mapping between the key row/column and the matching physical
-> location in the top row.
->=20
-> So, enhance the cros-ec-keyb driver to create such a mapping
-> and expose it to userspace in the form of a function_row_physmap
-> attribute. The attribute would be a space separated ordered list of
-> row/column codes, for the keys in the function row, in a left-to-right
-> order.
->=20
-> The attribute will only be present when the device has a custom design
-> for the top-row keys.
->=20
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+On 2021/1/15 2:55, Sean Christopherson wrote:
+> On Mon, Jan 04, 2021, Like Xu wrote:
+>> ---
+>>   arch/x86/events/intel/ds.c | 62 ++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 62 insertions(+)
+>>
+>> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+>> index b47cc4226934..c499bdb58373 100644
+>> --- a/arch/x86/events/intel/ds.c
+>> +++ b/arch/x86/events/intel/ds.c
+>> @@ -1721,6 +1721,65 @@ intel_pmu_save_and_restart_reload(struct perf_event *event, int count)
+>>   	return 0;
+>>   }
+>>   
+>> +/*
+>> + * We may be running with guest PEBS events created by KVM, and the
+>> + * PEBS records are logged into the guest's DS and invisible to host.
+>> + *
+>> + * In the case of guest PEBS overflow, we only trigger a fake event
+>> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+>> + * The guest will then vm-entry and check the guest DS area to read
+>> + * the guest PEBS records.
+>> + *
+>> + * The guest PEBS overflow PMI may be dropped when both the guest and
+>> + * the host use PEBS. Therefore, KVM will not enable guest PEBS once
+>> + * the host PEBS is enabled since it may bring a confused unknown NMI.
+>> + *
+>> + * The contents and other behavior of the guest event do not matter.
+>> + */
+>> +static int intel_pmu_handle_guest_pebs(struct cpu_hw_events *cpuc,
+>> +				       struct pt_regs *iregs,
+>> +				       struct debug_store *ds)
+>> +{
+>> +	struct perf_sample_data data;
+>> +	struct perf_event *event = NULL;
+>> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+>> +	int bit;
+>> +
+>> +	/*
+>> +	 * Ideally, we should check guest DS to understand if it's
+>> +	 * a guest PEBS overflow PMI from guest PEBS counters.
+>> +	 * However, it brings high overhead to retrieve guest DS in host.
+>> +	 * So we check host DS instead for performance.
+>> +	 *
+>> +	 * If PEBS interrupt threshold on host is not exceeded in a NMI, there
+>> +	 * must be a PEBS overflow PMI generated from the guest PEBS counters.
+>> +	 * There is no ambiguity since the reported event in the PMI is guest
+>> +	 * only. It gets handled correctly on a case by case base for each event.
+>> +	 *
+>> +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
+> By "KVM", do you mean KVM's loading of the MSRs provided by intel_guest_get_msrs()?
+> Because the PMU should really be the entity that controls guest vs. host.  KVM
+> should just be a dumb pipe that handles the mechanics of how values are context
+> switch.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+The intel_guest_get_msrs() and atomic_switch_perf_msrs()
+will work together to disable the co-existence of guest PEBS and host PEBS:
+
+https://lore.kernel.org/kvm/961e6135-ff6d-86d1-3b7b-a1846ad0e4c4@intel.com/
+
++
+
+static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
+...
+     if (nr_msrs > 2 && (msrs[1].guest & msrs[0].guest)) {
+         msrs[2].guest = pmu->ds_area;
+         if (nr_msrs > 3)
+             msrs[3].guest = pmu->pebs_data_cfg;
+     }
+
+    for (i = 0; i < nr_msrs; i++)
+...
+
+>
+> For example, commit 7099e2e1f4d9 ("KVM: VMX: disable PEBS before a guest entry"),
+> where KVM does an explicit WRMSR(PEBS_ENABLE) to (attempt to) force PEBS
+> quiescence, is flawed in that the PMU can re-enable PEBS after the WRMSR if a
+> PMI arrives between the WRMSR and VM-Enter (because VMX can't block NMIs).  The
+> PMU really needs to be involved in the WRMSR workaround.
+
+Thanks, I will carefully confirm the PEBS quiescent behavior on the ICX.
+But we're fine to keep "wrmsrl(MSR_IA32_PEBS_ENABLE, 0);" here
+since we will load a new guest value (if any) for this msr later.
+
+>
+>> +	 */
+>> +	if (!guest_pebs_idxs || !in_nmi() ||
+> Are PEBS updates guaranteed to be isolated in both directions on relevant
+> hardware?
+
+I think it's true on the ICX.
+
+> By that I mean, will host updates be fully processed before VM-Enter
+> compeletes, and guest updates before VM-Exit completes?
+
+The situation is more complicated.
+
+> If that's the case,
+> then this path could be optimized to change the KVM invocation of the NMI
+> handler so that the "is this a guest PEBS PMI" check is done if and only if the
+> PMI originated from with the guest.
+
+When we have a PEBS PMI due to guest workload and vm-exits,
+the code path from vm-exit to the host PEBS PMI handler may also
+bring PEBS PMI and mark the status bit. The current PMI handler
+can't distinguish them and would treat the later one as a suspicious
+PMI and output a warning.
+
+This is the main reason why we choose to disable the co-existence
+of guest PEBS and host PEBS, and future hardware enhancements
+may break this limitation.
+
+---
+thx, likexu
+>
+>> +		ds->pebs_index >= ds->pebs_interrupt_threshold)
+>> +		return 0;
+>> +
+>> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+>> +			INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+>> +
+>> +		event = cpuc->events[bit];
+>> +		if (!event->attr.precise_ip)
+>> +			continue;
+>> +
+>> +		perf_sample_data_init(&data, 0, event->hw.last_period);
+>> +		if (perf_event_overflow(event, &data, iregs))
+>> +			x86_pmu_stop(event, 0);
+>> +
+>> +		/* Inject one fake event is enough. */
+>> +		return 1;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+
