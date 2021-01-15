@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97ED32F817F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5619A2F816D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbhAOREm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:04:42 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10665 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725923AbhAOREk (ORCPT
+        id S1727190AbhAORB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbhAORB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:04:40 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHSDH3lPDz15tQD;
-        Sat, 16 Jan 2021 01:02:55 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 16 Jan 2021 01:03:48 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>, <arnd@arndb.de>,
-        <akpm@linux-foundation.org>, <xuwei5@hisilicon.com>,
-        <lorenzo.pieralisi@arm.com>, <helgaas@kernel.org>,
-        <jiaxun.yang@flygoat.com>, <song.bao.hua@hisilicon.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linuxarm@openeuler.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC 4/4] logic_pio: Warn on and discard accesses to addresses below IO_SPACE_BASE
-Date:   Sat, 16 Jan 2021 00:58:49 +0800
-Message-ID: <1610729929-188490-5-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
-References: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
+        Fri, 15 Jan 2021 12:01:28 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ADAC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:00:48 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n10so6352312pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PpClgSgoL5qlpfbaIDgx+JiK7CY1YGls1Kpu5D2pXJM=;
+        b=uyCixVTzoIdCHTSe73V5pVNgDxg9Tc74jsDQCYZviBWeWUEbZMNEktX9LrepMGaYU7
+         tnxspVujy3IKRPQOO6zcRWDPT26Mg7w+JuuiRmDz+K9loh/hhiVX7nRo+gZe933/541V
+         c37METKgJmpTGM+GebawsbqaGafQRtZcEr+Il2S7j4V6DMMHdfh3ZxS1oLRtKbnSu7Lm
+         eMkG33dh/bhPlWCEOqxjzIwcZ3bzkggOf6hbETA+P71OQTY1DAR6O9v9um/KU/oQph70
+         fy3MvHLGCjJDRymq6Z8cGbTY+oUv889luwLB5aU5NJo4uiNb8Q8IRH94P8z51AfdTad4
+         AR6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PpClgSgoL5qlpfbaIDgx+JiK7CY1YGls1Kpu5D2pXJM=;
+        b=EJjQE8cR1bu4jJMTh+t8VtBRJaSQ900rCoReOP0DIV6gOv66o6WGkeHH52NfgrKkKM
+         qCaNLS0I2qAfyzCi/9I3EJOZoKkeMjPlmq1cbDenK8ocYVplJZ7ZgSSYQxSqbmxBNH/0
+         wLgvm2ItWHrsIwqZqkjArZ6PbKH6/LpuP+E1id9Fa+sPRwGRIA63SRs8odPDySP3nATq
+         yMqiUa33sYxlwr19T/yANONPiYEGacab8Dh3mBkbOgpAfInYyKkRBR7r/8BzSwOG0Voc
+         VKhEhw/pnAezqAi0I4cAZjXg7zn8PLql+Q+fkDlwuv/uymgm4pyPWn/Kyw7FdV7HYzOg
+         tToQ==
+X-Gm-Message-State: AOAM530frwbwuK3YhHeRBKdI0+Oyp9ICYcn7rmXqiXKlnBf+b25ebsz3
+        TZEr03V6s65r2Bw21bStsjLvAZD8rw6bIgmeObJH/w==
+X-Google-Smtp-Source: ABdhPJwhvahtE9d/id+FvyRynN9rz4lvtkignWGxUEkpYTA/x0WQhQ3wphGYDQ3Rgn2Cr058ucCafMD+GA+cb7whaMs=
+X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
+ g9-20020a62e3090000b02901ae5b4a3199mr13254266pfh.24.1610730047501; Fri, 15
+ Jan 2021 09:00:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+References: <cover.1610553773.git.andreyknvl@google.com> <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
+ <20210113165441.GC27045@gaia> <CAAeHK+y8VyBnAmx_c6N6-40RqKSUKpn-vzfeOEhzAnij93hnqw@mail.gmail.com>
+ <20210115165558.GF16707@gaia>
+In-Reply-To: <20210115165558.GF16707@gaia>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 15 Jan 2021 18:00:36 +0100
+Message-ID: <CAAeHK+wNOcA4Zgi5R8+ODMuDkLuMSYHoLinPhoeGstd78TsPjQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Start the PCI MMIO region at IO_SPACE_BASE, and warn on any accesses below
-that address. Those accesses are also discarded.
+On Fri, Jan 15, 2021 at 5:56 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Fri, Jan 15, 2021 at 05:30:40PM +0100, Andrey Konovalov wrote:
+> > On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
+> > > > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
+> > > > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
+> > > > while KASAN uses 0xFX format (note the difference in the top 4 bits).
+> > > >
+> > > > Fix up the pointer tag before calling kasan_report.
+> > > >
+> > > > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
+> > > > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
+> > > > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
+> > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > ---
+> > > >  arch/arm64/mm/fault.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> > > > index 3c40da479899..a218f6f2fdc8 100644
+> > > > --- a/arch/arm64/mm/fault.c
+> > > > +++ b/arch/arm64/mm/fault.c
+> > > > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
+> > > >  {
+> > > >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
+> > > >
+> > > > +     /* The format of KASAN tags is 0xF<x>. */
+> > > > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
+> > >
+> > > Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
+> > > was added, the only tag faults were generated for user addresses.
+> > >
+> > > Anyway, I'd rather fix it in there based on bit 55, something like (only
+> > > compile-tested):
+> > >
+> > > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> > > index 3c40da479899..2b71079d2d32 100644
+> > > --- a/arch/arm64/mm/fault.c
+> > > +++ b/arch/arm64/mm/fault.c
+> > > @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
+> > >                               struct pt_regs *regs)
+> > >  {
+> > >         /*
+> > > -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
+> > > -        * check faults. Mask them out now so that userspace doesn't see them.
+> > > +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
+> > > +        * for tag check faults. Set them to the corresponding bits in the
+> > > +        * untagged address.
+> > >          */
+> > > -       far &= (1UL << 60) - 1;
+> > > +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
+> > >         do_bad_area(far, esr, regs);
+> > >         return 0;
+> > >  }
+> >
+> > BTW, we can do "untagged_addr(far) | (far & MTE_TAG_MASK)" here, as
+> > untagged_addr() doesn't change kernel pointers.
+>
+> untagged_addr() does change tagged kernel pointers, it sign-extends from
+> bit 55. So the top byte becomes 0xff and you can no longer or the tag
+> bits in.
 
-This is only for CONFIG_INDIRECT_PIO currently, and support can be added
-later for !CONFIG_INDIRECT_PIO.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- include/linux/logic_pio.h |  5 +++++
- lib/logic_pio.c           | 20 ++++++++++++++------
- 2 files changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/logic_pio.h b/include/linux/logic_pio.h
-index 54945aa824b4..425369f2ddd5 100644
---- a/include/linux/logic_pio.h
-+++ b/include/linux/logic_pio.h
-@@ -111,7 +111,12 @@ void logic_outsl(unsigned long addr, const void *buffer, unsigned int count);
- #else
- #define PIO_INDIRECT_SIZE 0
- #endif /* CONFIG_INDIRECT_PIO */
-+
- #define MMIO_UPPER_LIMIT (IO_SPACE_LIMIT - PIO_INDIRECT_SIZE)
-+#define MMIO_LOWER_LIMIT IO_SPACE_BASE
-+#if MMIO_LOWER_LIMIT >= MMIO_UPPER_LIMIT
-+#error MMIO_UPPPER_LIMIT should be above MMIO_LOWER_LIMIT
-+#endif
- 
- struct logic_pio_hwaddr *find_io_range_by_fwnode(struct fwnode_handle *fwnode);
- unsigned long logic_pio_trans_hwaddr(struct fwnode_handle *fwnode,
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index f32fe481b492..cbb12260ede6 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -36,7 +36,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 	struct logic_pio_hwaddr *range;
- 	resource_size_t start;
- 	resource_size_t end;
--	resource_size_t mmio_end = 0;
-+	resource_size_t mmio_end = MMIO_LOWER_LIMIT;
- 	resource_size_t iio_sz = MMIO_UPPER_LIMIT;
- 	int ret = 0;
- 
-@@ -234,7 +234,9 @@ type logic_in##bwl(unsigned long addr)					\
- {									\
- 	type ret = (type)~0;						\
- 									\
--	if (addr < MMIO_UPPER_LIMIT) {					\
-+	if (addr < MMIO_LOWER_LIMIT) {					\
-+		WARN_ON_ONCE(1);					\
-+	} else if (addr < MMIO_UPPER_LIMIT) {					\
- 		ret = _in##bwl(addr);					\
- 	} else if (addr >= MMIO_UPPER_LIMIT && addr < IO_SPACE_LIMIT) { \
- 		struct logic_pio_hwaddr *entry = find_io_range(addr);	\
-@@ -250,8 +252,10 @@ type logic_in##bwl(unsigned long addr)					\
- 									\
- void logic_out##bwl(type value, unsigned long addr)			\
- {									\
--	if (addr < MMIO_UPPER_LIMIT) {					\
--		_out##bwl(value, addr);				\
-+	if (addr < MMIO_LOWER_LIMIT) {					\
-+		WARN_ON_ONCE(1);					\
-+	} else if (addr < MMIO_UPPER_LIMIT) {				\
-+		_out##bwl(value, addr);					\
- 	} else if (addr >= MMIO_UPPER_LIMIT && addr < IO_SPACE_LIMIT) {	\
- 		struct logic_pio_hwaddr *entry = find_io_range(addr);	\
- 									\
-@@ -266,7 +270,9 @@ void logic_out##bwl(type value, unsigned long addr)			\
- void logic_ins##bwl(unsigned long addr, void *buffer,			\
- 		    unsigned int count)					\
- {									\
--	if (addr < MMIO_UPPER_LIMIT) {					\
-+	if (addr < MMIO_LOWER_LIMIT) {					\
-+		WARN_ON_ONCE(1);					\
-+	} else if (addr < MMIO_UPPER_LIMIT) {				\
- 		reads##bwl(PCI_IOBASE + addr, buffer, count);		\
- 	} else if (addr >= MMIO_UPPER_LIMIT && addr < IO_SPACE_LIMIT) {	\
- 		struct logic_pio_hwaddr *entry = find_io_range(addr);	\
-@@ -283,7 +289,9 @@ void logic_ins##bwl(unsigned long addr, void *buffer,			\
- void logic_outs##bwl(unsigned long addr, const void *buffer,		\
- 		     unsigned int count)				\
- {									\
--	if (addr < MMIO_UPPER_LIMIT) {					\
-+	if (addr < MMIO_LOWER_LIMIT) {					\
-+		WARN_ON_ONCE(1);					\
-+	} else if (addr < MMIO_UPPER_LIMIT) {				\
- 		writes##bwl(PCI_IOBASE + addr, buffer, count);		\
- 	} else if (addr >= MMIO_UPPER_LIMIT && addr < IO_SPACE_LIMIT) {	\
- 		struct logic_pio_hwaddr *entry = find_io_range(addr);	\
--- 
-2.26.2
-
+That's __untagged_addr(), untagged_addr() keeps the bits for kernel
+pointers as of  597399d0cb91.
