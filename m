@@ -2,141 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9962F8890
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA692F889E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 23:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727760AbhAOWl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 17:41:28 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54231 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726615AbhAOWl1 (ORCPT
+        id S1726893AbhAOWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 17:44:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726282AbhAOWoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 17:41:27 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-8-lXDDyAc-MTCPOuhWUXC4Tg-1;
- Fri, 15 Jan 2021 22:39:47 +0000
-X-MC-Unique: lXDDyAc-MTCPOuhWUXC4Tg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 15 Jan 2021 22:39:44 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 15 Jan 2021 22:39:44 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>
-CC:     "sonicadvance1@gmail.com" <sonicadvance1@gmail.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "Rich Felker" <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        "Willem de Bruijn" <willemb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Brian Gerst" <brgerst@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jan Kara <jack@suse.cz>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Fri, 15 Jan 2021 17:44:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610750570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EB7kXdoaDpBllJxSevGo6kiwu0Drr9UL6vk+q3d3RfU=;
+        b=A8AGXK775UiJVqKHpD2/mOMMfVsvkAX1uNIL5br7DoewEF7xg7We5hJP85SwxratYkuDUc
+        TgHOkNYOC9qDPOWxQUTrzS6kk8igeqPPtI94ZZ42TqrlLoA4pfuV6nAayqdiatz6Ak9WHA
+        6rR5pNkZEexrJzC10rFkeccX25XvN1s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-423-ZUP2g_LEO8uQpZeiFfHExg-1; Fri, 15 Jan 2021 17:42:46 -0500
+X-MC-Unique: ZUP2g_LEO8uQpZeiFfHExg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEA5F806666;
+        Fri, 15 Jan 2021 22:42:42 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 02A635D9C6;
+        Fri, 15 Jan 2021 22:42:40 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 15:42:40 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Subject: RE: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
- layers
-Thread-Topic: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
- layers
-Thread-Index: AQHW6wzXd1V6Thk8U0iiUgMFo8hTJqopEBwAgAAyHoCAAARq4A==
-Date:   Fri, 15 Jan 2021 22:39:44 +0000
-Message-ID: <313c380c4b1b477fbd09aac66eed4505@AcuMS.aculab.com>
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
- <20210115070326.294332-1-Sonicadvance1@gmail.com>
- <b15672b1caec4cf980f2753d06b03596@AcuMS.aculab.com>
- <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a1gqt-gBCPTdNeY+8SaG8eUGN4zkCrNKSjA=aEL-TkaUQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH 1/6] vfio/iommu_type1: Make an explicit "promote"
+ semantic
+Message-ID: <20210115154240.0d3ee455@omen.home.shazbot.org>
+In-Reply-To: <20210107044401.19828-2-zhukeqian1@huawei.com>
+References: <20210107044401.19828-1-zhukeqian1@huawei.com>
+        <20210107044401.19828-2-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+IEhlJ3MgYWxyZWFkeSBkb2luZyB0aGUgc3lzdGVtIGNhbGwgZW11bGF0aW9uIGZvciBh
-bGwgdGhlIHN5c3RlbQ0KPiBjYWxscyBvdGhlciB0aGFuIGlvY3RsIGluIHVzZXIgc3BhY2UgdGhv
-dWdoLiBJbiBteSBleHBlcmllbmNlLA0KPiB0aGVyZSBhcmUgYWN0dWFsbHkgZmFpcmx5IGZldyBp
-b2N0bCBjb21tYW5kcyB0aGF0IGFyZSBkaWZmZXJlbnQNCj4gYmV0d2VlbiBhcmNoaXRlY3R1cmVz
-IC0tIG1vc3Qgb2YgdGhlbSBoYXZlIG5vIG1pc2FsaWduZWQNCj4gb3IgYXJjaGl0ZWN0dXJlLWRl
-ZmluZWQgc3RydWN0IG1lbWJlcnMgYXQgYWxsLg0KDQpBcmVuJ3QgdGhlcmUgYWxzbyBzb21lIGlu
-dHJhY3RhYmxlIGlzc3VlcyB3aXRoIHNvY2tldCBvcHRpb25zPw0KSUlSQyB0aGUga2VybmVsIGNv
-ZGUgdGhhdCB0cmllZCB0byBjaGFuZ2UgdGhlbSB0byA2NGJpdCB3YXMNCmhvcnJpYmx5IGJyb2tl
-biBpbiBzb21lIG9ic2N1cmUgY2FzZXMuDQoNClB1c2hpbmcgdGhlIGNvbnZlcnNpb24gZG93biB0
-aGUgc3RhY2sgbm90IG9ubHkgaWRlbnRpZmllZCB0aGUNCmlzc3VlcywgaXQgYWxzbyBtYWRlIHRo
-ZW0gZWFzaWVyIHRvIGZpeC4NCg0KSWYgeW91IGNoYW5nZSB0aGUga2VybmVsIHNvIGEgNjRiaXQg
-cHJvY2VzcyBjYW4gZXhlY3V0ZSAzMmJpdA0Kc3lzdGVtIGNhbGxzIHRoZW4gYSBsb3Qgb2YgdGhl
-IHByb2JsZW1zIGRvIGdvIGF3YXkuDQpUaGlzIGlzIHByb2JhYmx5IGVhc2llc3QgZG9uZSBieSBz
-ZXR0aW5nIGEgaGlnaCBiaXQgb24gdGhlDQpzeXN0ZW0gY2FsbCBudW1iZXIgLSBhcyB4ODZfNjQg
-ZG9lcyBmb3IgeDMyIGNhbGxzLg0KDQpZb3Ugc3RpbGwgaGF2ZSB0byBzb2x2ZSB0aGUgZGlmZmVy
-ZW50IGFsaWdubWVudCBvZiA2NGJpdCBkYXRhDQpvbiBpMzg2Lg0KDQpPZiBjb3Vyc2UgdGhlIHN5
-c3RlbSBjYWxsIG51bWJlcnMgYXJlIGRpZmZlcmVudCAtIGJ1dCB0aGF0IGlzDQpqdXN0IGEgbG9v
-a3VwLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Thu, 7 Jan 2021 12:43:56 +0800
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
+
+> When we want to promote the pinned_page_dirty_scope of vfio_iommu,
+> we call the "update" function to visit all vfio_group, but when we
+> want to downgrade this, we can set the flag as false directly.
+
+I agree that the transition can only go in one direction, but it's
+still conditional on the scope of all groups involved.  We are
+"updating" the iommu state based on the change of a group.  Renaming
+this to "promote" seems like a matter of personal preference.
+
+> So we'd better make an explicit "promote" semantic to the "update"
+> function. BTW, if vfio_iommu already has been promoted, then return
+> early.
+
+Currently it's the caller that avoids using this function when the
+iommu scope is already correct.  In fact the changes induces a
+redundant test in the pin_pages code path, we're changing a group from
+non-pinned-page-scope to pinned-page-scope, therefore the iommu scope
+cannot initially be scope limited.  In the attach_group call path,
+we're moving that test from the caller, so at best we've introduced an
+additional function call.
+
+The function as it exists today is also more versatile whereas the
+"promote" version here forces it to a single task with no appreciable
+difference in complexity or code.  This seems like a frivolous change.
+Thanks,
+
+Alex
+
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 0b4dedaa9128..334a8240e1da 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -148,7 +148,7 @@ static int put_pfn(unsigned long pfn, int prot);
+>  static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
+>  					       struct iommu_group *iommu_group);
+>  
+> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu);
+> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu);
+>  /*
+>   * This code handles mapping and unmapping of user data buffers
+>   * into DMA'ble space using the IOMMU
+> @@ -714,7 +714,7 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
+>  	group = vfio_iommu_find_iommu_group(iommu, iommu_group);
+>  	if (!group->pinned_page_dirty_scope) {
+>  		group->pinned_page_dirty_scope = true;
+> -		update_pinned_page_dirty_scope(iommu);
+> +		promote_pinned_page_dirty_scope(iommu);
+>  	}
+>  
+>  	goto pin_done;
+> @@ -1622,27 +1622,26 @@ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
+>  	return group;
+>  }
+>  
+> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+>  {
+>  	struct vfio_domain *domain;
+>  	struct vfio_group *group;
+>  
+> +	if (iommu->pinned_page_dirty_scope)
+> +		return;
+> +
+>  	list_for_each_entry(domain, &iommu->domain_list, next) {
+>  		list_for_each_entry(group, &domain->group_list, next) {
+> -			if (!group->pinned_page_dirty_scope) {
+> -				iommu->pinned_page_dirty_scope = false;
+> +			if (!group->pinned_page_dirty_scope)
+>  				return;
+> -			}
+>  		}
+>  	}
+>  
+>  	if (iommu->external_domain) {
+>  		domain = iommu->external_domain;
+>  		list_for_each_entry(group, &domain->group_list, next) {
+> -			if (!group->pinned_page_dirty_scope) {
+> -				iommu->pinned_page_dirty_scope = false;
+> +			if (!group->pinned_page_dirty_scope)
+>  				return;
+> -			}
+>  		}
+>  	}
+>  
+> @@ -2057,8 +2056,7 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
+>  			 * addition of a dirty tracking group.
+>  			 */
+>  			group->pinned_page_dirty_scope = true;
+> -			if (!iommu->pinned_page_dirty_scope)
+> -				update_pinned_page_dirty_scope(iommu);
+> +			promote_pinned_page_dirty_scope(iommu);
+>  			mutex_unlock(&iommu->lock);
+>  
+>  			return 0;
+> @@ -2341,7 +2339,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	struct vfio_iommu *iommu = iommu_data;
+>  	struct vfio_domain *domain;
+>  	struct vfio_group *group;
+> -	bool update_dirty_scope = false;
+> +	bool promote_dirty_scope = false;
+>  	LIST_HEAD(iova_copy);
+>  
+>  	mutex_lock(&iommu->lock);
+> @@ -2349,7 +2347,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	if (iommu->external_domain) {
+>  		group = find_iommu_group(iommu->external_domain, iommu_group);
+>  		if (group) {
+> -			update_dirty_scope = !group->pinned_page_dirty_scope;
+> +			promote_dirty_scope = !group->pinned_page_dirty_scope;
+>  			list_del(&group->next);
+>  			kfree(group);
+>  
+> @@ -2379,7 +2377,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  			continue;
+>  
+>  		vfio_iommu_detach_group(domain, group);
+> -		update_dirty_scope = !group->pinned_page_dirty_scope;
+> +		promote_dirty_scope = !group->pinned_page_dirty_scope;
+>  		list_del(&group->next);
+>  		kfree(group);
+>  		/*
+> @@ -2415,8 +2413,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  	 * Removal of a group without dirty tracking may allow the iommu scope
+>  	 * to be promoted.
+>  	 */
+> -	if (update_dirty_scope)
+> -		update_pinned_page_dirty_scope(iommu);
+> +	if (promote_dirty_scope)
+> +		promote_pinned_page_dirty_scope(iommu);
+>  	mutex_unlock(&iommu->lock);
+>  }
+>  
 
