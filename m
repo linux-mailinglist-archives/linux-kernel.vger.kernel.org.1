@@ -2,87 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8922F7DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004A52F7DE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732267AbhAOOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S1732827AbhAOOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728586AbhAOOMd (ORCPT
+        with ESMTP id S1731745AbhAOOOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:12:33 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B8DC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:11:52 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id e15so6035492qte.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:11:52 -0800 (PST)
+        Fri, 15 Jan 2021 09:14:16 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98172C061757;
+        Fri, 15 Jan 2021 06:13:36 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id e9so603114plh.3;
+        Fri, 15 Jan 2021 06:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2gEonePWvzu8OtY+gNiF+A5sU1b7iiv5oXrRT2xFrUA=;
-        b=EZ8VlQWZsvspepqQrNYbFkiG3YeAjO4Uky3v0HA2bfDqp1HNIQbb0/eIQYAl+u7mx0
-         SwImgqTlH86h3NBIK3+/8iSnJDsJvtxcnbv0dGPyZ7pwCXvHqBbagaL/H2XEsVLoLur+
-         fNymgaYne9X+U8clgfNxyHK0kKhrmwSt80lec+D2m6bRRq0tOg7xq0ItCZOBahwGKpTN
-         K5bNm6yTE6XDaerJSwpqLGL/sNE2ll3aBN4Z2mjIStZGtHET4nz7tsQ1dwLfdxFgGAby
-         MYMZQZpTz8K4MmRSrX+WezyiEYJ4QHHxICs9L6Apk65Htw2HfleBSXmzAEKPDMOwRy93
-         AqIA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CbZNeMTYUi7Mg7VyMn/xUQXZnoLVOk+YmqoECElgO5I=;
+        b=QUTm2d97niOvJWqofhkNL9W7lxALHkiFYLbsnmHT0j6+l2dfDaVQyUZVkUTC1l0mdl
+         EICM5zti7BnGQNrwu4DiXRWqFvaBLTaXJp/19o0TYCNYaDP2Snwoj15htcJAHpvMwipe
+         NSqam4a9wE5z+mxPyB7GAYPZNLg+w0K4Eal2jElAfNitB8PrVW0VEIN2iAm2FetBHQLN
+         W3WhorgQ03TvG6kvqY2qIEI3tH8uYI2+a2xEGi3Jw3GKnrmGg4lsIyr4GXpqFdlkTxQe
+         lncTy92kOlFjxnnKl0b7d31JCFUFAgEfJgjr5DMfVuhvkOEkoO5xcdJIOahzNQUrx8b2
+         EApg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2gEonePWvzu8OtY+gNiF+A5sU1b7iiv5oXrRT2xFrUA=;
-        b=C0U0P18XfzgbY3mM31v8EeYiQw28MQDst8/5ktrFOHiQZLCugX1ckGEN2AAUNgjWTI
-         Zwn4rk6UPOdtuNbwIbrnsnBvpv/7xvRJtIFpGsXzxEsr8stOsrYB7Lx43zdt83utsVeZ
-         aO9xNg8V5RatBQof1fcAW145jJ6+ymojR5JvpPEVa/YiatPdfq0dWWCC/RHGDCqyUYFJ
-         20fNIpYM2XNtVsFq2TsVrMPxxhrDGyV+u9blNHFe6nNWzUQAhZxAJyaqbTegZ/MfRpma
-         YDS0ERm2f4lta3EQOHPVQiWBFO1XTvj1Svf68/7C7/MuOPpvCHMofL48JUnYmUaNTX/e
-         sbzw==
-X-Gm-Message-State: AOAM532J52w6e5U29P7HK9dKORGMIzVdYuYxLX/ZHx3lCCxJoanwAPYA
-        toNuIYZUywiMjttft1rrW0DrDeLW7RKYPoz3gbcVTw==
-X-Google-Smtp-Source: ABdhPJyxSI1F6HClbjvqLLR+s+hldMswtShzI/Y9lPCG/P3ZkcnV9ds5+hNrIdXazySsXeUPjd5DysBvJDnZH7aHH/8=
-X-Received: by 2002:ac8:6f32:: with SMTP id i18mr11814637qtv.175.1610719911742;
- Fri, 15 Jan 2021 06:11:51 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1610652890.git.andreyknvl@google.com> <73283ddcceed173966041f9ce1734f50ea3e9a41.1610652890.git.andreyknvl@google.com>
-In-Reply-To: <73283ddcceed173966041f9ce1734f50ea3e9a41.1610652890.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 15 Jan 2021 15:11:40 +0100
-Message-ID: <CAG_fn=VC=UPtVWfz81KeX+hEO1eC2PkZowWyFJbqz+jmiEeOQA@mail.gmail.com>
-Subject: Re: [PATCH v3 08/15] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CbZNeMTYUi7Mg7VyMn/xUQXZnoLVOk+YmqoECElgO5I=;
+        b=XwFawtYvV5QlbxxTMkHlvzkkKzA2h3kooPLAIsskyGnezCwpCT5SXET05bUoKE6gad
+         DHxZpztMx7N4RomIvQ+xsiXqqTyzAOjKvG/A8JMNs0WRI6xVolucu3zWIt9dpI6Be8qO
+         C8wlbtpKhd01UOVLq0kUPpJKn+E9ncSrYSgRnJ+RSA12ThWUe14mtHBntuKX9ewBjWWE
+         zmLl9bffBjsFli0HIO1TklZGjWyQpV0SmBH17eniGWlsLt651P/4aI62b6V7RNYDL5E8
+         h16NBK4eW4heYutMDT2IAEFevIanm6yt2qZ0dT4M2oKUaaYmWzbDx5ahUWZJWIRlsWBK
+         0yEw==
+X-Gm-Message-State: AOAM532SCis/6kwWrrSqch+JFg20x6O+LOwke/wrjdqZSjLDWfdcpw3a
+        pGRQIZ5qQ1riqQuIBZh2VdGMO1XLNms=
+X-Google-Smtp-Source: ABdhPJyGv8T8Tw0nXwlkPBk1os5KvQGNW2rZCV/3HHX43JkUZJkmNwkV4CuqIo7ieQn+gWYnNXksow==
+X-Received: by 2002:a17:90a:b395:: with SMTP id e21mr10781383pjr.197.1610720015990;
+        Fri, 15 Jan 2021 06:13:35 -0800 (PST)
+Received: from localhost.localdomain (1-171-15-80.dynamic-ip.hinet.net. [1.171.15.80])
+        by smtp.gmail.com with ESMTPSA id h5sm8898408pgl.86.2021.01.15.06.13.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Jan 2021 06:13:34 -0800 (PST)
+From:   cy_huang <u0084500@gmail.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, gene_chen@richtek.com,
+        devicetree@vger.kernel.org
+Subject: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and external vbus supply control
+Date:   Fri, 15 Jan 2021 22:13:20 +0800
+Message-Id: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:36 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> It might not be obvious to the compiler that the expression must be
-> executed between writing and reading to fail_data. In this case, the
-> compiler might reorder or optimize away some of the accesses, and
-> the tests will fail.
->
-> Add compiler barriers around the expression in KUNIT_EXPECT_KASAN_FAIL
-> and use READ/WRITE_ONCE() for accessing fail_data fields.
->
-> Link: https://linux-review.googlesource.com/id/I046079f48641a1d36fe627fc8827a9249102fd50
-> Reviewed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+From: ChiYuan Huang <cy_huang@richtek.com>
+
+MT6360 not support for TCPC command to control source and sink.
+Uses external 5V vbus regulator as the vbus source control.
+
+Also adds the capability to report vsafe0v.
+
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+index f1bd9e0..0edf4b6 100644
+--- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
++++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+@@ -11,6 +11,7 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/usb/tcpm.h>
+ 
+ #include "tcpci.h"
+@@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
+ 	struct tcpci_data tdata;
+ 	struct tcpci *tcpci;
+ 	struct device *dev;
++	struct regulator *vbus;
+ 	int irq;
+ };
+ 
+@@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct regmap *regmap,
+ 	return regmap_raw_write(regmap, reg, &val, sizeof(u16));
+ }
+ 
++static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_data *data, bool src, bool snk)
++{
++	struct mt6360_tcpc_info *mti = container_of(data, struct mt6360_tcpc_info, tdata);
++	int ret;
++
++	/* To correctly handle the already enabled vbus and disable its supply first */
++	if (regulator_is_enabled(mti->vbus)) {
++		ret = regulator_disable(mti->vbus);
++		if (ret)
++			return ret;
++	}
++
++	if (src) {
++		ret = regulator_enable(mti->vbus);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
+ static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *tdata)
+ {
+ 	struct regmap *regmap = tdata->regmap;
+@@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_device *pdev)
+ 	if (mti->irq < 0)
+ 		return mti->irq;
+ 
++	mti->vbus = devm_regulator_get(&pdev->dev, "vbus");
++	if (IS_ERR(mti->vbus))
++		return PTR_ERR(mti->vbus);
++
+ 	mti->tdata.init = mt6360_tcpc_init;
++	mti->tdata.set_vbus = mt6360_tcpc_set_vbus;
++	mti->tdata.vbus_vsafe0v = 1;
+ 	mti->tcpci = tcpci_register_port(&pdev->dev, &mti->tdata);
+ 	if (IS_ERR(mti->tcpci)) {
+ 		dev_err(&pdev->dev, "Failed to register tcpci port\n");
+-- 
+2.7.4
+
