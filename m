@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15A12F6F92
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80692F6F94
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731271AbhAOAdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731360AbhAOAdr (ORCPT
+        id S1731402AbhAOAeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:34:12 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55444 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729048AbhAOAeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:33:47 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907FDC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:33:07 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 30so4909447pgr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SUYuR2ZeWLptFmzH3l3TxUNJHP8jNhkIOgD1q5XF+v0=;
-        b=U5kaSqU8NQDpq76/j18K7dxeOJglQrK99pkGmnUZR/FXs45wKVYSR94rtZFjcK9K1Z
-         4yVqX3WwCVn+iB7gIcNvhVmYHef6YlxZ+uzlq3kAfG8f/TQQoInFTfKkXeE0vv7FKhYI
-         C5jwWk7N2pTgLlO9fbJd72AaQxodANKXQBEyjY4eFeub7Tp0QhioMBlEpRhmQeb2leMx
-         yg5T7mAzDcZ2GswB1B2ILYl8Fw6+1/M3xwFOaHR39jcVDgV6I/vuTyCVcDaeCU21y3le
-         E79Vy2d8MCcEE5RyDVpaZ03C/G/TZL+wc3AoDN1LUFyFpuK9/z4eWzVxVlKuwVzZdsp8
-         Mekg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SUYuR2ZeWLptFmzH3l3TxUNJHP8jNhkIOgD1q5XF+v0=;
-        b=NWYghjaV8qtwo4tsEaHcRKCmsg2p/ytuLjWQ6l/0LA65S2QvkhkzhXB/wbpidpFHbn
-         TEs54gW8xDxeuo8Cif1Uty+fKUC0k+daDn3vSeU1KFblmNHvV+rrYmqogRagnefjqRHy
-         weJbADjWLzQi1bvNgpEIas1pkybN+L4FwKt6pvyKLC3y1FOtH8GhfN3z6I09UNfKQRjM
-         cJPRZLWGV+iYEGS1LLLdk3RlV2SPwSrEZX3YFyHbLOOLZ6uVdFa6pLYLQ7HasaoSMR5h
-         CIgmVXB9Qs1vaDjgL/EOT9IEl87koJhTG4iv2JUuifor6w4J4UNODbnjpFXPM7uwrbEZ
-         5BZQ==
-X-Gm-Message-State: AOAM530El5AD3nGKMvwCqCjifaXADN3M//yhyHr0Y6GQZYxM5jIZJXly
-        YcERTM5sGWU6YsNesQu4Bo8rdVpkUKm58LCP1qieqA==
-X-Google-Smtp-Source: ABdhPJxiw+7lNLWGAXohSizZByonl5S2vkEz0rosqq3HNNMmooo8tSsJAke6QQYufha07Hf147tzvepTZ7ftpd17nl8=
-X-Received: by 2002:a62:1409:0:b029:19e:14d1:efb0 with SMTP id
- 9-20020a6214090000b029019e14d1efb0mr9763585pfu.14.1610670786880; Thu, 14 Jan
- 2021 16:33:06 -0800 (PST)
+        Thu, 14 Jan 2021 19:34:11 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0F1Sm192568;
+        Fri, 15 Jan 2021 00:33:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=EoYf07ye+2pvEM8W2e9X5zV3+hXXa21IpM2ZAyZNnz4=;
+ b=XE7kWDv7toO88nfu3YaqyDyntOiUkYXKCmJ+K04xbeuMnf28mzsk2SfsbUs58ZtV7rHt
+ St3M57Q6yUYe18yF6RZ/7aNMfBVNIvd8T9WgpIE9jj42WeMhZLV+mreISV9iV310A9fB
+ vq5DpFEg8r2DZcqjAkQG368+bB7xUZXxbzIOo4/XXonXNv8H/GDgtFVHiyNewLY+hzm0
+ mEcb8+f3ahXUv4WbykEx66HcZbsJ51+ZnOkJtyNbKzsASUru5K1l4snAoewjcITMXEgO
+ u3YHq+Wu7isV65gVdsrwUr6akusatrm77HH4/1h8I5LWgDub99aC9UJvYVdcjjor17GL WA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 360kg22vm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 00:33:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F0GErJ137495;
+        Fri, 15 Jan 2021 00:33:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 360kf2tnf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 00:33:14 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F0XCHX006621;
+        Fri, 15 Jan 2021 00:33:12 GMT
+Received: from [10.39.240.226] (/10.39.240.226)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 16:33:12 -0800
+Subject: Re: [PATCH 15/21] x86/xen/pvh: Convert indirect jump to retpoline
+To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Miroslav Benes <mbenes@suse.cz>,
+        Juergen Gross <jgross@suse.com>
+References: <cover.1610652862.git.jpoimboe@redhat.com>
+ <adfa2afe5ddc831017222db9f48ad0fbff17c807.1610652862.git.jpoimboe@redhat.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <f7335fd4-6204-101c-c628-e5f30c9d4463@oracle.com>
+Date:   Thu, 14 Jan 2021 19:33:10 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210107234803.1096592-1-dlatypov@google.com>
-In-Reply-To: <20210107234803.1096592-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 14 Jan 2021 16:32:55 -0800
-Message-ID: <CAFd5g46uH=ax-L=pn84HNPHoesxsQ9JB_LsQ945OORHL9dNVOw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] kunit: tool: surface and address more typing issues
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <adfa2afe5ddc831017222db9f48ad0fbff17c807.1610652862.git.jpoimboe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:48 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> The authors of this tool were more familiar with a different
-> type-checker, https://github.com/google/pytype.
->
-> That's open source, but mypy seems more prevalent (and runs faster).
-> And unlike pytype, mypy doesn't try to infer types so it doesn't check
-> unanotated functions.
->
-> So annotate ~all functions in kunit tool to increase type-checking
-> coverage.
-> Note: per https://www.python.org/dev/peps/pep-0484/, `__init__()` should
-> be annotated as `-> None`.
->
-> Doing so makes mypy discover a number of new violations.
-> Exclude main() since we reuse `request` for the different types of
-> requests, which mypy isn't happy about.
->
-> This commit fixes all but one error, where `TestSuite.status` might be
-> None.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
 
-Hey, I just tried applying this series as a pre-check before sending
-it off to Shuah and it no longer applies to torvalds/master.
+On 1/14/21 2:40 PM, Josh Poimboeuf wrote:
+> It's kernel policy to not have (unannotated) indirect jumps because of
+> Spectre v2.  This one's probably harmless, but better safe than sorry.
+> Convert it to a retpoline.
+>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Please fix and resend.
+
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
