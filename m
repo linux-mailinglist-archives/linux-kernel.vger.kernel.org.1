@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97102F7A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35732F79AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732834AbhAOMfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
+        id S2388339AbhAOMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:39:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387720AbhAOMfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:35:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C80EB223E0;
-        Fri, 15 Jan 2021 12:35:24 +0000 (UTC)
+        id S2388284AbhAOMjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:39:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D2D235F9;
+        Fri, 15 Jan 2021 12:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714125;
-        bh=9MU4LmVgyyReGjyQ4bO0Mk8SP7C9PS3SsmbE7CqzHXw=;
+        s=korg; t=1610714330;
+        bh=OfHwcpKeF5C1319OmThlbPWXSa63NkVHz8FSKR2z9AM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KS/JnGsHFIUOLZR5sochHxMnpYLCGnOI2vROXhhtvnBqtC1ugtn97ef7ux0rZNL13
-         2etG8agqCDukP4OY1gOLZDSbTZJNUNbQXrDV9mdrH9a7AJLexjY59H2BHz3hD4+fij
-         RtysNsM8xT7dHb8M4C2sw5leyOMnxTpr+sgjxPPY=
+        b=JVcouQSxwVThOvN1YUCc4OuNMs2125ed3BF1z3XuQwWp5UUN/d0XrAMAV0CAhaDDF
+         cpDsxlQ6o9jGadMNYl3k7wB881Pzrr0H+DHQ9YdurAVpQTDwY/wSYoYB3wbln7dZlV
+         i81CCrBsLxxGZ9Tg2tb3ljdLVR2zZscvuU0/aoW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 58/62] net: mvpp2: disable force link UP during port init procedure
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 087/103] wan: ds26522: select CONFIG_BITREVERSE
 Date:   Fri, 15 Jan 2021 13:28:20 +0100
-Message-Id: <20210115122001.194443189@linuxfoundation.org>
+Message-Id: <20210115122010.224549699@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 87508224485323ce2d4e7fb929ec80f51adcc238 upstream.
+commit 69931e11288520c250152180ecf9b6ac5e6e40ed upstream.
 
-Force link UP can be enabled by bootloader during tftpboot
-and breaks NFS support.
-Force link UP disabled during port init procedure.
+Without this, the driver runs into a link failure
 
-Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Link: https://lore.kernel.org/r/1608216735-14501-1-git-send-email-stefanc@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_ds26522_probe':
+slic_ds26522.c:(.text+0x100c): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: slic_ds26522.c:(.text+0x1cdc): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/net/wan/slic_ds26522.o: in function `slic_write':
+slic_ds26522.c:(.text+0x1e4c): undefined reference to `byte_rev_table'
+
+Fixes: c37d4a0085c5 ("Maxim/driver: Add driver for maxim ds26522")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/net/wan/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -4545,7 +4545,7 @@ static int mvpp2_port_init(struct mvpp2_
- 	struct mvpp2 *priv = port->priv;
- 	struct mvpp2_txq_pcpu *txq_pcpu;
- 	unsigned int thread;
--	int queue, err;
-+	int queue, err, val;
- 
- 	/* Checks for hardware constraints */
- 	if (port->first_rxq + port->nrxqs >
-@@ -4559,6 +4559,18 @@ static int mvpp2_port_init(struct mvpp2_
- 	mvpp2_egress_disable(port);
- 	mvpp2_port_disable(port);
- 
-+	if (mvpp2_is_xlg(port->phy_interface)) {
-+		val = readl(port->base + MVPP22_XLG_CTRL0_REG);
-+		val &= ~MVPP22_XLG_CTRL0_FORCE_LINK_PASS;
-+		val |= MVPP22_XLG_CTRL0_FORCE_LINK_DOWN;
-+		writel(val, port->base + MVPP22_XLG_CTRL0_REG);
-+	} else {
-+		val = readl(port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-+		val &= ~MVPP2_GMAC_FORCE_LINK_PASS;
-+		val |= MVPP2_GMAC_FORCE_LINK_DOWN;
-+		writel(val, port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-+	}
-+
- 	port->tx_time_coal = MVPP2_TXDONE_COAL_USEC;
- 
- 	port->txqs = devm_kcalloc(dev, port->ntxqs, sizeof(*port->txqs),
+--- a/drivers/net/wan/Kconfig
++++ b/drivers/net/wan/Kconfig
+@@ -282,6 +282,7 @@ config SLIC_DS26522
+ 	tristate "Slic Maxim ds26522 card support"
+ 	depends on SPI
+ 	depends on FSL_SOC || ARCH_MXC || ARCH_LAYERSCAPE || COMPILE_TEST
++	select BITREVERSE
+ 	help
+ 	  This module initializes and configures the slic maxim card
+ 	  in T1 or E1 mode.
 
 
