@@ -2,124 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559A12F80BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F5E2F80C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732728AbhAOQ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S1730070AbhAOQ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbhAOQ0y (ORCPT
+        with ESMTP id S1726402AbhAOQ2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:26:54 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D128AC0613C1;
-        Fri, 15 Jan 2021 08:26:13 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id d26so9853420wrb.12;
-        Fri, 15 Jan 2021 08:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nWLmc3yR2tv/EqCP45DZyypeULeeDqAZ/zy0X3SdJ5s=;
-        b=QJB/43JqyTc1Gi68NiR+A3I1qp5KyVQrvM5MJJ/0u86ADDxhG/NCpLGJmGDzakounI
-         Xc3fNEifdzB4tW1iLbNNB+lDEqTGiB3zKVmDOdR/k/L0SxymPeckR2twJicjdJ1Bir+2
-         WItkF9dN3RRo9cgne1PedOxpOJNrOahbVg4kKKut9GJwpQU+UsIQBCnmcMd/sRzdEJ1Y
-         xhcW+Vn5zsgasBELDibw9FLPFHM7qSddwBPsL6bMnJC+HS0/mhWCLkeA2Ua5wiemxKdQ
-         +Fv5D7GKK2pCHHgtTyl4D/MLWqWbnjMpoKHviF86d6H3YVaoVnYMGFN0JwPP9SOOxF/V
-         7c0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nWLmc3yR2tv/EqCP45DZyypeULeeDqAZ/zy0X3SdJ5s=;
-        b=OUm70Yueaaqw+GQkOVq6MqeN6ejBeXW05andau4yLxWVP3IfErsCTQhpcHmRWfR4r8
-         Ihw2N3tNrlmaRW8irj9JIncYbrjb+1gil7SUlhIK4dvJRWTVTZvOGvcDKsWwR90oIjyj
-         Rdk3Hptm+LFazGKw6RRaPJmXnqJWyH3fe4e/t3Ldbe7t9cFZcfQXDFM0LQEOVXfH9BWA
-         jGV1+ZSECxLZWtjfh+rs9nTJQAj6jsLCOV189hpw1NOWOuyHuK50rcaeLUDzgfvFm5ob
-         UxnlrmKewyiLOj5me7RdBygpaOXq2UQYA1VxPfhg3viuDk/ZxXKTU/n67omiLoEDz2jP
-         DZaQ==
-X-Gm-Message-State: AOAM5307cTG8agZv1TzGcblrU60/im3k8VVXeCa39XUgVgKGYcBlaJMJ
-        /lk/EFdv/HloV2UVBDTZrz4Tq7+lO+8=
-X-Google-Smtp-Source: ABdhPJxh8Z+P44Wu1c7fkR9xWwjvx8qEckdtWrwy9Mu4uUNFcydekCsOgd9NCGDZ2vrbTt++pa2J+w==
-X-Received: by 2002:adf:f6c9:: with SMTP id y9mr14160847wrp.121.1610727972657;
-        Fri, 15 Jan 2021 08:26:12 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id v20sm12822294wml.34.2021.01.15.08.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 08:26:11 -0800 (PST)
-Date:   Fri, 15 Jan 2021 17:26:10 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/tegra: fix reference leak when pm_runtime_get_sync
- fails
-Message-ID: <YAHCIsQtRUANr+m+@ulmo>
-References: <20201201125631.142590-1-miaoqinglang@huawei.com>
+        Fri, 15 Jan 2021 11:28:10 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D50C061757;
+        Fri, 15 Jan 2021 08:27:29 -0800 (PST)
+Date:   Fri, 15 Jan 2021 17:27:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610728047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Lcn9A4KvylV3hNZuTJN63mQXyrp3wr9aYHHWJlFb5s=;
+        b=ipBFsuPBLr0Zb3ltSIFfW0FWvcBuaAmK+T7dJyt0bWGYdP4Zpj/0tCzrY1Kbz1byUwhRPo
+        9FPhc4fYRXwhKdwPxAIz1Qaeo5sWhXhEO4ulWALGOf0uTxsQV26K6SlpxiKHgdQgf/6GJA
+        wFqHcoZKlnKj+Nz+0mKfLco9K+K6YaPWLwK3vDt0+DX2DSlBVjupKEd7yndjHBTSLDOau2
+        CQ8DtAK+m6C65Ry/fxyAG45YKmlga6O8143mIfE3UOKX0dx5dInto1F+TcAh9Qp5NtUC50
+        3LGmZlSI2AglnO7DJEflmVWrKFCx9l43r8irfv0C97dDZ2xZZXhqgICCHQA1NQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610728047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Lcn9A4KvylV3hNZuTJN63mQXyrp3wr9aYHHWJlFb5s=;
+        b=keecvwfPdKbKd3+RDv51NsRfXtSBKYpNwRPdqegzrikcJk/PEsCodr6VYy6d/jrx/GUv49
+        AaVeEd/4R4zzoIDw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     John Garry <john.garry@huawei.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
+Message-ID: <YAHCbcNea47Zk+4w@lx-t490>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
+ <X/2h0yNqtmgoLIb+@lx-t490>
+ <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
+ <X/3dUkPCC1SrLT4m@lx-t490>
+ <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mXEwpiDczBzJuSir"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201125631.142590-1-miaoqinglang@huawei.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 14, 2021 at 09:51:35AM +0000, John Garry wrote:
+...
+>
+> To me, the series looks fine. Well, the end result - I didn't go through
+> patch by patch. So:
+>
+> Reviewed-by: John Garry <john.garry@huawei.com>
+>
 
---mXEwpiDczBzJuSir
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks!
 
-On Tue, Dec 01, 2020 at 08:56:31PM +0800, Qinglang Miao wrote:
-> The PM reference count is not expected to be incremented on
-> return in these tegra functions.
->=20
-> However, pm_runtime_get_sync will increment the PM reference
-> count even failed. Forgetting to putting operation will result
-> in a reference leak here.
->=20
-> Replace it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
->=20
-> Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/gpu/drm/tegra/dc.c   | 2 +-
->  drivers/gpu/drm/tegra/dsi.c  | 2 +-
->  drivers/gpu/drm/tegra/hdmi.c | 2 +-
->  drivers/gpu/drm/tegra/hub.c  | 2 +-
->  drivers/gpu/drm/tegra/sor.c  | 2 +-
->  drivers/gpu/drm/tegra/vic.c  | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
+Shall I add you r-b tag to the whole series then, or only to the ones
+which directly touch libsas (#3, #12, #16, and #19)?
 
-Applied, thanks.
+>
+> As an aside, your analysis showed some quite poor usage of spinlocks in some
+> drivers, specifically grabbing a lock and then calling into a depth of 3 or
+> 4 functions.
+>
 
-Thierry
+Correct.
 
---mXEwpiDczBzJuSir
-Content-Type: application/pgp-signature; name="signature.asc"
+Kind regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABwiEACgkQ3SOs138+
-s6Gq+g//aYAXqOKKZgi5czRT2/84OFx4O+y4q5hyEU08WTnNtySKAdW/EZ7hAFeo
-hmeLvPOoa5zjIUx9/4M53lbxnRi8HC4acWL8s+r/WIlGgR6A1zyIIQygYjgQsYAj
-UJcN5tWbmTduH2RM/JgrZ5RusiYLrMtxDlZHeGVeC5Zl0UoQulQQFjEdm+lMrlHo
-1Lw3CHUnIvhscWzR0AjnQzRIgwCLmGbKRKA7/+kqpgBv6oi+BsR9tWieQhu6fktH
-opfas2mz3KILuDTOa4UiBZCbMxEyeXOGIaJsU7+jRiBFEAG8G5I4Of/xXPpqXYV7
-o5sVE1xe3W1u9rNha09Ir9cHny7vPWCsg1JHePiFuKzlSjj6Y/vf1YVFg/myrltn
-76sCbPDb7aJQ3WbrOeUqJlIMONJGVj69cdhRKe4xbwTQPmAaoS1ywCO3Sm+VyyBf
-IfY/SSDJHlqTowdDdGpxOx0mVEdT3OAz+xbEzxjfjX26n76iFKs5UfkG9IWp7lgk
-uwsQkE9Y5POipaQNTJ0fuiUmgBCjruQWjnVdBFYAkPBSb/crGgP+8Kq+vAXdU4w1
-+T1WLsPBProSSsEqKajIxfsKFqOuwKT5Zb9vi5f0jJZ/ERPybQVEVgxPyIr72dRE
-PlYy48vD1184Bbn541hcgtp7eaqMIEizIq+/sHGjKBP5c+SQOGQ=
-=TYn/
------END PGP SIGNATURE-----
-
---mXEwpiDczBzJuSir--
+--
+Ahmed S. Darwish
