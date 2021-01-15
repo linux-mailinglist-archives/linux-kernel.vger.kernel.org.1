@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753F92F8156
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B812F8158
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbhAOQ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:56:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42708 "EHLO mail.kernel.org"
+        id S1728448AbhAOQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:57:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbhAOQ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:56:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA3F20738;
-        Fri, 15 Jan 2021 16:56:01 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 16:55:59 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] kasan, arm64: fix pointer tags in KASAN reports
-Message-ID: <20210115165558.GF16707@gaia>
-References: <cover.1610553773.git.andreyknvl@google.com>
- <1965508bcbec62699715d32bef91628ef55b4b44.1610553774.git.andreyknvl@google.com>
- <20210113165441.GC27045@gaia>
- <CAAeHK+y8VyBnAmx_c6N6-40RqKSUKpn-vzfeOEhzAnij93hnqw@mail.gmail.com>
+        id S1727475AbhAOQ52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:57:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7979C20738;
+        Fri, 15 Jan 2021 16:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610729807;
+        bh=65KME7dlQ6ZxSIcs/tBhxcihrYV+4nzB/aZGW3JS39U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iW5vxKMW9vNDJos4it09xTOONBPZKklsLnEyxEmE4xEDwArUAAIjUc6JNJFqx7Ijw
+         DyGUNyWEQI19X/6El61kkAvRhz4DXcIaGio0nqsD8aSOld7nU8cL2WOHM817fNloUF
+         bRJsslHS7zn51K8eZee/SERyxtjaG9PT8mU/+Iz6VtMcwkYZgkiVusJE1xYp8IpK3c
+         Y7pJgKlcI/1XyLYRlU4875q9xrd8YpE2GDuJM3JPykPxcZ+5gKYBq/0Zl5nJ/pZvRr
+         7iH+PfMh+QvJHiDK9j99EYhdStd2dpM7vx3ND4d8ntZqm8bBB7rXitiWgoecnzTKQk
+         oBFQNYyCMINqA==
+Date:   Fri, 15 Jan 2021 08:56:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Durrant <paul@xen.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Cammaert <pc@denkart.be>,
+        Paul Mackerras <paulus@samba.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Santiago Leon <santi_leon@yahoo.com>,
+        xen-devel@lists.xenproject.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Daris A Nevil <dnevil@snmc.com>,
+        Lijun Pan <ljp@linux.ibm.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Geoff Levand <geoff@infradead.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Erik Stahlman <erik@vt.edu>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <rmk@arm.linux.org.uk>
+Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
+Message-ID: <20210115085645.0f27864a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210115133848.GK3975472@dell>
+References: <20210113164123.1334116-1-lee.jones@linaro.org>
+        <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210114083349.GI3975472@dell>
+        <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210114195422.GB3975472@dell>
+        <20210115111823.GH3975472@dell>
+        <bc775cc3-fda3-0280-5f92-53058996f02f@csgroup.eu>
+        <20210115133848.GK3975472@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+y8VyBnAmx_c6N6-40RqKSUKpn-vzfeOEhzAnij93hnqw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:30:40PM +0100, Andrey Konovalov wrote:
-> On Wed, Jan 13, 2021 at 5:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Wed, Jan 13, 2021 at 05:03:30PM +0100, Andrey Konovalov wrote:
-> > > As of the "arm64: expose FAR_EL1 tag bits in siginfo" patch, the address
-> > > that is passed to report_tag_fault has pointer tags in the format of 0x0X,
-> > > while KASAN uses 0xFX format (note the difference in the top 4 bits).
-> > >
-> > > Fix up the pointer tag before calling kasan_report.
-> > >
-> > > Link: https://linux-review.googlesource.com/id/I9ced973866036d8679e8f4ae325de547eb969649
-> > > Fixes: dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
-> > > Fixes: 4291e9ee6189 ("kasan, arm64: print report from tag fault handler")
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > ---
-> > >  arch/arm64/mm/fault.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > > index 3c40da479899..a218f6f2fdc8 100644
-> > > --- a/arch/arm64/mm/fault.c
-> > > +++ b/arch/arm64/mm/fault.c
-> > > @@ -304,6 +304,8 @@ static void report_tag_fault(unsigned long addr, unsigned int esr,
-> > >  {
-> > >       bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-> > >
-> > > +     /* The format of KASAN tags is 0xF<x>. */
-> > > +     addr |= (0xF0UL << MTE_TAG_SHIFT);
-> >
-> > Ah, I see, that top 4 bits are zeroed by do_tag_check_fault(). When this
-> > was added, the only tag faults were generated for user addresses.
-> >
-> > Anyway, I'd rather fix it in there based on bit 55, something like (only
-> > compile-tested):
-> >
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index 3c40da479899..2b71079d2d32 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -709,10 +709,11 @@ static int do_tag_check_fault(unsigned long far, unsigned int esr,
-> >                               struct pt_regs *regs)
-> >  {
-> >         /*
-> > -        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN for tag
-> > -        * check faults. Mask them out now so that userspace doesn't see them.
-> > +        * The architecture specifies that bits 63:60 of FAR_EL1 are UNKNOWN
-> > +        * for tag check faults. Set them to the corresponding bits in the
-> > +        * untagged address.
-> >          */
-> > -       far &= (1UL << 60) - 1;
-> > +       far = (untagged_addr(far) & ~MTE_TAG_MASK) | (far & MTE_TAG_MASK) ;
-> >         do_bad_area(far, esr, regs);
-> >         return 0;
-> >  }
-> 
-> BTW, we can do "untagged_addr(far) | (far & MTE_TAG_MASK)" here, as
-> untagged_addr() doesn't change kernel pointers.
+On Fri, 15 Jan 2021 13:38:48 +0000 Lee Jones wrote:
+> Okay, so what would you like me to do?  Would you like me to re-submit
+> the set based only on net-next
 
-untagged_addr() does change tagged kernel pointers, it sign-extends from
-bit 55. So the top byte becomes 0xff and you can no longer or the tag
-bits in.
-
--- 
-Catalin
+Yes, rebase your patches on net-next, recheck everything builds okay
+and resubmit. You should always develop against the tree that will
+merge your patches. I appreciate for your janitorial work using
+linux-next is more expedient, but as you can see it causes trouble,
+this is not the first time your patches don't apply to net-next IIRC.
