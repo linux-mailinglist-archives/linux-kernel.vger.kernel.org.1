@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04852F7E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBAE2F7E5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732700AbhAOOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:35:49 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:12019 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731805AbhAOOfs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:35:48 -0500
-Date:   Fri, 15 Jan 2021 14:34:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610721305; bh=TQQJqIAOl8U91/OpE5V91qeQpQLEEGZk67YCSZa+8Lo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mffgRhhwcN97uCvyqIBv0S412R4INgXfk74WYkNomIF2o/yBP/5oH7pcKMWx0SqWH
-         N1Od6MyrojuRDXmUs6E6JUllsHLmTD5dHyLhm46gzWrc6lmJsbx2Ei3BHtrxkosfXc
-         tVuu8bzPBeEYVs4gFtaUk3YgteTwCHdFXWx34E7xQk/zILkM3DhRSWy709DpjQ46iy
-         kL7dtppXXgi5EcouJYniwZS/ZrOtj84TkyQ1yREPKKpcd4+emWxCygaUjm69cpwozt
-         yw/QAT+gJHrJE7MylyF8k+QrBvYVOTNATHCjriekzEPTI33P4G4nrtaUK5cKK3w2om
-         BraQVaNjLyKoQ==
-To:     Eric Dumazet <edumazet@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Marco Elver <elver@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net] skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
-Message-ID: <20210115143424.83784-1-alobakin@pm.me>
-In-Reply-To: <CANn89iKi8jsBsCPqNvfQ9Wx6k6EZy5daL33c8YnAfkXZS+QWHw@mail.gmail.com>
-References: <20210114235423.232737-1-alobakin@pm.me> <CANn89iKi8jsBsCPqNvfQ9Wx6k6EZy5daL33c8YnAfkXZS+QWHw@mail.gmail.com>
+        id S1732792AbhAOOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:36:51 -0500
+Received: from mga02.intel.com ([134.134.136.20]:7609 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731576AbhAOOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:36:50 -0500
+IronPort-SDR: gjHZIlOCddXYaurNM9Kjmg87YbKOH1MfruPil6OgMSAmZzTIc3AA3kdU+D9JbpRV87nnTpk3zc
+ vkHWXG7XqwZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="165640361"
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="165640361"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:35:04 -0800
+IronPort-SDR: ATa+yG739o+UtxOSWB/MgrBB0TUM9LSfvWVeKqlrrE5nVfKvCtSMtNC35DvNZsEjGIQxu8qKy+
+ gC/zzNxfiqTg==
+X-IronPort-AV: E=Sophos;i="5.79,349,1602572400"; 
+   d="scan'208";a="382682114"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.58]) ([10.249.226.58])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 06:35:02 -0800
+Subject: Re: [PATCH v2 5/6] perf stat: Enable iiostat mode for x86 platforms
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
+ <20201223130320.3930-6-alexander.antonov@linux.intel.com>
+ <CAM9d7cgQC7ap6sDympEoNAtFxNy_ibtW3phMDLh-VmzSDB7FXQ@mail.gmail.com>
+ <358dd76f-c6ec-b894-14be-659df0802c87@linux.intel.com>
+ <CAM9d7cjuX8AHpL6hs5AHObOPCjExLg1_GHN-vDdi4hYQmrC5dQ@mail.gmail.com>
+ <20f98862-9087-0368-7124-19a8f2b54db9@linux.intel.com>
+ <CAM9d7cjueVS_MJZxuADi-xw=EWXgncZ++jGDewamxZF8CkvhRw@mail.gmail.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <913f2743-b5dd-f7e0-1bd0-d3c1d2ad1c7c@linux.intel.com>
+Date:   Fri, 15 Jan 2021 17:34:59 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <CAM9d7cjueVS_MJZxuADi-xw=EWXgncZ++jGDewamxZF8CkvhRw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 15 Jan 2021 15:28:37 +0100
 
-> On Fri, Jan 15, 2021 at 12:55 AM Alexander Lobakin <alobakin@pm.me> wrote=
-:
->>
->> Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
->> tiny skbs") ensured that skbs with data size lower than 1025 bytes
->> will be kmalloc'ed to avoid excessive page cache fragmentation and
->> memory consumption.
->> However, the same issue can still be achieved manually via
->> __netdev_alloc_skb(), where the check for size hasn't been changed.
->> Mirror the condition from __napi_alloc_skb() to prevent from that.
->>
->> Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny=
- skbs")
->
-> No, this tag is wrong, if you fix a bug, bug is much older than linux-5.1=
-1
->
-> My fix was about GRO head and virtio_net heads, both using pre-sized
-> small buffers.
->
-> You want to fix something else, and this is fine, because some drivers
-> are unfortunately
-> doing copy break ( at the cost of additional copy, even for packets
-> that might be consumed right away)
-
-You're right, it's about copybreak. I thought about wrong "Fixes"
-right after sending, but... Sorry.
-Will send v2 soon.
+On 1/15/2021 10:33 AM, Namhyung Kim wrote:
+> On Fri, Jan 15, 2021 at 1:41 AM Alexander Antonov
+> <alexander.antonov@linux.intel.com> wrote:
+>> On 1/14/2021 6:39 AM, Namhyung Kim wrote:
+>>> On Wed, Jan 13, 2021 at 9:08 PM Alexander Antonov
+>>> <alexander.antonov@linux.intel.com> wrote:
+>>>> On 1/6/2021 12:02 PM, Namhyung Kim wrote:
+>>>>> On Wed, Dec 23, 2020 at 10:03 PM Alexander Antonov
+>>>>>> diff --git a/tools/perf/perf-iiostat.sh b/tools/perf/perf-iiostat.sh
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..2c5168d2550b
+>>>>>> --- /dev/null
+>>>>>> +++ b/tools/perf/perf-iiostat.sh
+>>>>>> @@ -0,0 +1,12 @@
+>>>>>> +#!/bin/bash
+>>>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>>>> +# perf iiostat
+>>>>>> +# Alexander Antonov <alexander.antonov@linux.intel.com>
+>>>>>> +
+>>>>>> +if [[ "$1" == "show" ]] || [[ "$1" =~ ([a-f0-9A-F]{1,}):([a-f0-9A-F]{1,2})(,)? ]]; then
+>>>>>> +        DELIMITER="="
+>>>>>> +else
+>>>>>> +        DELIMITER=" "
+>>>>>> +fi
+>>>>>> +
+>>>>>> +perf stat --iiostat$DELIMITER$*
+>>>>> Why is this needed?
+>>>>>
+>>>>> Thanks,
+>>>>> Namhyung
+>>>> Arnaldo raised question relates to format of 'perf stat --iiostat'
+>>>> subcommand
+>>>> and explained how it can be changed to 'perf iiostat' through the aliases
+>>>> mechanism in perf.
+>>> Yeah, I know that.  What I'm asking is the DELIMITER part.
+>>>
+>>> Thanks,
+>>> Namhyung
+>> I'm using DELIMITER to resolve two different cases for format of iiostat
+>> command:
+>> The first one is the command with an option for iiostat mode, for example:
+>> 'perf iiostat show' which should be converted to 'perf stat
+>> --iiostat=show' or
+>> 'perf iiostat 0000:ae,0000:5d' to 'perf stat --iiostat=0000:ae,0000:5d'.
+>> The second is the command without any option for iiostat: 'perf iiostat
+>> -I 1000'
+>> should be converted to 'perf stat --iiostat -I 1000'.
+> Can't we simply use a whitespace ?
+We need to use the equal sign to pass arguments to iiostat mode.
 
 Thanks,
-Al
-
+Alexander
