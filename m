@@ -2,76 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CD92F784D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E6B2F7878
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729361AbhAOMIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:08:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59830 "EHLO mx2.suse.de"
+        id S1728287AbhAOMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:14:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:37426 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728439AbhAOMII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:08:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610712442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MUCy1SQ0o4x8Wtv0k08Ub3mFXz5f8q3f/r3Ggt02lEY=;
-        b=AoBO0m2O2AABV6+ZcHLKc06diYXoIP5lfFS1PMe2onCIrau2Dpak5iuERGNHWGQRSvcoQO
-        cH2rHSjZuxlXTKCV5iGTr/XoljNKxmuWH8U95dBDfAi9w8QdhKooocddcCdCr38+MKpTAc
-        lDmqF5IdBfkULk9K+Aqaj+Qa1da/wHQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EA028AC63;
-        Fri, 15 Jan 2021 12:07:21 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 13:07:21 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-Message-ID: <YAGFebfPNLwjyhcl@alley>
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
- <YAGE1O/nG57hyRs4@alley>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAGE1O/nG57hyRs4@alley>
+        id S1725910AbhAOMOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:14:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A55A11B3;
+        Fri, 15 Jan 2021 04:13:52 -0800 (PST)
+Received: from usa.arm.com (a074945.blr.arm.com [10.162.16.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C64663F70D;
+        Fri, 15 Jan 2021 04:13:47 -0800 (PST)
+From:   Vivek Gautam <vivek.gautam@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will.deacon@arm.com, mst@redhat.com,
+        robin.murphy@arm.com, jean-philippe@linaro.org,
+        eric.auger@redhat.com, alex.williamson@redhat.com,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
+        shameerali.kolothum.thodi@huawei.com, vivek.gautam@arm.com
+Subject: [PATCH RFC v1 00/15] iommu/virtio: Nested stage support with Arm
+Date:   Fri, 15 Jan 2021 17:43:27 +0530
+Message-Id: <20210115121342.15093-1-vivek.gautam@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-01-15 13:04:37, Petr Mladek wrote:
-> On Thu 2021-01-14 18:10:12, John Ogness wrote:
-> > Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
-> > msg_print_text() would only write up to size-1 bytes into the
-> > provided buffer. Some callers expect this behavior and append
-> > a terminator to returned string. In particular:
-> > 
-> > arch/powerpc/xmon/xmon.c:dump_log_buf()
-> > arch/um/kernel/kmsg_dump.c:kmsg_dumper_stdout()
-> > 
-> > msg_print_text() has been replaced by record_print_text(), which
-> > currently fills the full size of the buffer. This causes a
-> > buffer overflow for the above callers.
-> > 
-> > Change record_print_text() so that it will only use size-1 bytes
-> > for text data. Also, for paranoia sakes, add a terminator after
-> > the text data.
-> > 
-> > And finally, document this behavior so that it is clear that only
-> > size-1 bytes are used and a terminator is added.
-> > 
-> > Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-> > Signed-off-by: John Ogness <john.ogness@linutronix.de>
+This patch-series aims at enabling Nested stage translation in guests
+using virtio-iommu as the paravirtualized iommu. The backend is supported
+with Arm SMMU-v3 that provides nested stage-1 and stage-2 translation.
 
-I forgot one thing. We should add stable here:
+This series derives its purpose from various efforts happening to add
+support for Shared Virtual Addressing (SVA) in host and guest. On Arm,
+most of the support for SVA has already landed. The support for nested
+stage translation and fault reporting to guest has been proposed [1].
+The related changes required in VFIO [2] framework have also been put
+forward.
 
-Cc: stable@vger.kernel.org # 5.10+
+This series proposes changes in virtio-iommu to program PASID tables
+and related stage-1 page tables. A simple iommu-pasid-table library
+is added for this purpose that interacts with vendor drivers to
+allocate and populate PASID tables.
+In Arm SMMUv3 we propose to pull the Context Descriptor (CD) management
+code out of the arm-smmu-v3 driver and add that as a glue vendor layer
+to support allocating CD tables, and populating them with right values.
+These CD tables are essentially the PASID tables and contain stage-1
+page table configurations too.
+A request to setup these CD tables come from virtio-iommu driver using
+the iommu-pasid-table library when running on Arm. The virtio-iommu
+then pass these PASID tables to the host using the right virtio backend
+and support in VMM.
 
-No need to resend the patch. I'll add it when pushing the patch.
+For testing we have added necessary support in kvmtool. The changes in
+kvmtool are based on virtio-iommu development branch by Jean-Philippe
+Brucker [3].
 
-Best Regards,
-Petr
+The tested kernel branch contains following in the order bottom to top
+on the git hash -
+a) v5.11-rc3
+b) arm-smmu-v3 [1] and vfio [2] changes from Eric to add nested page
+   table support for Arm.
+c) Smmu test engine patches from Jean-Philippe's branch [4]
+d) This series
+e) Domain nesting info patches [5][6][7].
+f) Changes to add arm-smmu-v3 specific nesting info (to be sent to
+   the list).
+
+This kernel is tested on Neoverse reference software stack with
+Fixed virtual platform. Public version of the software stack and
+FVP is available here[8][9].
+
+A big thanks to Jean-Philippe for his contributions towards this work
+and for his valuable guidance.
+
+[1] https://lore.kernel.org/linux-iommu/20201118112151.25412-1-eric.auger@redhat.com/T/
+[2] https://lore.kernel.org/kvmarm/20201116110030.32335-12-eric.auger@redhat.com/T/
+[3] https://jpbrucker.net/git/kvmtool/log/?h=virtio-iommu/devel
+[4] https://jpbrucker.net/git/linux/log/?h=sva/smmute
+[5] https://lore.kernel.org/kvm/1599734733-6431-2-git-send-email-yi.l.liu@intel.com/
+[6] https://lore.kernel.org/kvm/1599734733-6431-3-git-send-email-yi.l.liu@intel.com/
+[7] https://lore.kernel.org/kvm/1599734733-6431-4-git-send-email-yi.l.liu@intel.com/
+[8] https://developer.arm.com/tools-and-software/open-source-software/arm-platforms-software/arm-ecosystem-fvps
+[9] https://git.linaro.org/landing-teams/working/arm/arm-reference-platforms.git/about/docs/rdn1edge/user-guide.rst
+
+Jean-Philippe Brucker (6):
+  iommu/virtio: Add headers for table format probing
+  iommu/virtio: Add table format probing
+  iommu/virtio: Add headers for binding pasid table in iommu
+  iommu/virtio: Add support for INVALIDATE request
+  iommu/virtio: Attach Arm PASID tables when available
+  iommu/virtio: Add support for Arm LPAE page table format
+
+Vivek Gautam (9):
+  iommu/arm-smmu-v3: Create a Context Descriptor library
+  iommu: Add a simple PASID table library
+  iommu/arm-smmu-v3: Update drivers to work with iommu-pasid-table
+  iommu/arm-smmu-v3: Update CD base address info for user-space
+  iommu/arm-smmu-v3: Set sync op from consumer driver of cd-lib
+  iommu: Add asid_bits to arm smmu-v3 stage1 table info
+  iommu/virtio: Update table format probing header
+  iommu/virtio: Prepare to add attach pasid table infrastructure
+  iommu/virtio: Update fault type and reason info for viommu fault
+
+ drivers/iommu/arm/arm-smmu-v3/Makefile        |   2 +-
+ .../arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c      | 283 +++++++
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  16 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 268 +------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |   4 +-
+ drivers/iommu/iommu-pasid-table.h             | 140 ++++
+ drivers/iommu/virtio-iommu.c                  | 692 +++++++++++++++++-
+ include/uapi/linux/iommu.h                    |   2 +-
+ include/uapi/linux/virtio_iommu.h             | 158 +++-
+ 9 files changed, 1303 insertions(+), 262 deletions(-)
+ create mode 100644 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c
+ create mode 100644 drivers/iommu/iommu-pasid-table.h
+
+-- 
+2.17.1
+
