@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517672F7E74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006D12F7E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731718AbhAOOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:44:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S1732120AbhAOOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728559AbhAOOog (ORCPT
+        with ESMTP id S1729056AbhAOOpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:44:36 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B982C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:43:56 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id n42so8675635ota.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 06:43:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x0jeRffU+yop2UeLzXkeiDQE3IGPjGYo516b3eTS6oY=;
-        b=IJ+4HWXUdwcAH3GtOhYa7ypaWMxhh5MbHnIQIlibpi840ZZ02W/dhYFnc5rH20mGNY
-         2j6gViUNbEwJ8P8kJktJN6VHMMlRbOMzCRMyHhNYqYfe0J2e9g1R9jDBNUVAd8YeAh/e
-         UnaXRNXhH5OtAZk7GlTbSBzLDOaj7K7ylyIXBcQs47u5LmTRHKAOxoC81VPBJc7197fo
-         IDbB/nAPrSO23dHFAajc+A0m8bbOKSAoauPfBo9/ALGAwmDUHct2YYpcPVFzlkC5z/KG
-         qCs17nZy3BmyuqPx6F09zdIGNeJ09QzAynUqXrKN2qcmrZQ3UO7Pudaa1llDn5CGE5IR
-         Fziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x0jeRffU+yop2UeLzXkeiDQE3IGPjGYo516b3eTS6oY=;
-        b=KpBhMe82udFc+Q7xu0jDS7SlEhU0xDWKoqcoi31c5HXDNqj6GGqzpjT0wHktQBC1np
-         seEsAVcPqfRw6gBYarfoTgiBJdz9FrVpz2vjlnng7ZTYdavespW7RcULPVnlm6Cx1+CP
-         gTtOX7WuPJS/pjdA8Y10ruzu+zYidp2k5I10//+bvyeziEjUHi0L1zRTymwnC4AMumkV
-         DvL1GbRGjiFNx9TKnjUkUuanVk6b6Rg+46+Q1RSqkoB5RH7Dxi5kcKAMi93jnpMcZRSA
-         Id2COnNapOshr/ySLQ6hhQXPwp9QZnYjKjH5vB6LqyaGDP1a6MMDq0oj/TJretZCDY0w
-         4GsQ==
-X-Gm-Message-State: AOAM532f7bWvgsst4QAjlKJDzScPx/AgeCssaY3I15Xx6MhROCKbYMsq
-        SY6REu+tCBsPkXX1OoEWfJt7Nw==
-X-Google-Smtp-Source: ABdhPJxjeiUubZZgCiEeMMb59uqjChQ3EteGlfG88/A7rOidXAq3ujcrFUAaVhSD6WWTbVBchNAgXw==
-X-Received: by 2002:a9d:3e0d:: with SMTP id a13mr8552934otd.194.1610721835721;
-        Fri, 15 Jan 2021 06:43:55 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w10sm1695715oic.44.2021.01.15.06.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 06:43:55 -0800 (PST)
-Date:   Fri, 15 Jan 2021 08:43:53 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, ulf.hansson@linaro.org,
-        viresh.kumar@linaro.org
-Cc:     robh+dt@kernel.org, wsa@kernel.org, swboyd@chromium.org,
-        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
-        rnayak@codeaurora.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
- 'assigned-performance-states'
-Message-ID: <YAGqKfDfB7EEuZVn@builder.lan>
-References: <20201224111210.1214-1-rojay@codeaurora.org>
- <20201224111210.1214-4-rojay@codeaurora.org>
+        Fri, 15 Jan 2021 09:45:46 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E11DC0613C1;
+        Fri, 15 Jan 2021 06:45:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HAt7yi8Bk1IOhi77FGzsXARD2yxrPISnLfMrCWR3Idw=; b=MpDbTwohxLvh/kyNgOG1M+x/LJ
+        Ef3ZQ+n5b+cpH09Z41tFCdpjWg4bjR8kXmQWV1hv7rMImabhl6xDSl2guNqm7s8K83DU+z+laeLWP
+        J6ubnIiaXhDGc4cishgMyEsrNBmuuOfwcnlwkyJq4CbASShypUHGiPnqznEylW1jZKbpefskw0hqt
+        rjCapFt2v1fbhsDpMH8WVAGTgFIeFxCctuuXFK8/o9mwsABzjh1kmuXq50QEWgUEuSll6D1mGOSZs
+        8AziIHvCvPqs/E+wyI6g0kAltcjUwMqgGqP9CvOutfoeo0UL11Rf7nN0ZlEiwozJ8BTbfs8XhjXEQ
+        0xlUG3dw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0QLE-000884-JS; Fri, 15 Jan 2021 14:44:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 62FFD301324;
+        Fri, 15 Jan 2021 15:44:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4F59E20B5D691; Fri, 15 Jan 2021 15:44:40 +0100 (CET)
+Date:   Fri, 15 Jan 2021 15:44:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+ <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
+ <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+ <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201224111210.1214-4-rojay@codeaurora.org>
+In-Reply-To: <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
+On Fri, Jan 15, 2021 at 10:30:13PM +0800, Xu, Like wrote:
 
-> @@ -629,6 +658,16 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
->  	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
->  
->  	disable_irq(gi2c->irq);
-> +
-> +	/* Drop the assigned performance state */
-> +	if (gi2c->assigned_pstate) {
-> +		ret = dev_pm_genpd_set_performance_state(dev, 0);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to set performance state\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-
-Ulf, Viresh, I think we discussed this at the time of introducing the
-performance states.
-
-The client's state does not affect if its performance_state should
-be included in the calculation of the aggregated performance_state, so
-each driver that needs to keep some minimum performance state needs to
-have these two snippets.
-
-Would it not make sense to on enable/disable re-evaluate the
-performance_state and potentially reconfigure the hardware
-automatically?
-
-Regards,
-Bjorn
-
->  	ret = geni_se_resources_off(&gi2c->se);
->  	if (ret) {
->  		enable_irq(gi2c->irq);
-> @@ -654,6 +693,16 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
->  	if (ret)
->  		return ret;
->  
-> +	/* Set the assigned performance state */
-> +	if (gi2c->assigned_pstate) {
-> +		ret = dev_pm_genpd_set_performance_state(dev,
-> +							 gi2c->assigned_pstate);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to set performance state\n");
-> +			return ret;
-> +		}
-> +	}
-> +
->  	enable_irq(gi2c->irq);
->  	gi2c->suspended = 0;
->  	return 0;
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> > Are you sure? Spurious NMI/PMIs are known to happen anyway. We have far
+> > too much code to deal with them.
 > 
+> https://lore.kernel.org/lkml/20170628130748.GI5981@leverpostej/T/
+> 
+> In the rr workload, the commit change "the PMI interrupts in skid region
+> should be dropped"
+> is reverted since some users complain that:
+> 
+> > It seems to me that it might be reasonable to ignore the interrupt if
+> > the purpose of the interrupt is to trigger sampling of the CPUs
+> > register state.  But if the interrupt will trigger some other
+> > operation, such as a signal on an fd, then there's no reason to drop
+> > it.
+> 
+> I assume that if the PMI drop is unacceptable, either will spurious PMI
+> injection.
+> 
+> I'm pretty open if you insist that we really need to do this for guest PEBS
+> enabling.
+
+That was an entirely different issue. We were dropping events on the
+floor because they'd passed priv boundaries. So there was an actual
+event, and we made it go away.
+
+What we're talking about here is raising an PMI with BUFFER_OVF set,
+even if the DS is empty. That should really be harmless. We'll take the
+PMI, find there's nothing there, and do nothing.
