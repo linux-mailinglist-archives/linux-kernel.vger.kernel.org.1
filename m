@@ -2,140 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015DC2F7679
+	by mail.lfdr.de (Postfix) with ESMTP id DB5E82F767B
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727696AbhAOKSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:18:32 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:57720 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbhAOKSb (ORCPT
+        id S1730147AbhAOKSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbhAOKSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:18:31 -0500
-Received: from [192.168.1.41] ([92.131.99.25])
-        by mwinf5d49 with ME
-        id GyGn240180Ys01Y03yGoD2; Fri, 15 Jan 2021 11:16:49 +0100
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 15 Jan 2021 11:16:49 +0100
-X-ME-IP: 92.131.99.25
-Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
- profile_name[]
-To:     Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210111114638.16530-1-colin.king@canonical.com>
- <20210112100706.GF5083@kadam>
- <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
- <f57062ac-499d-95bb-cf4f-bb7b5b1dea5b@wanadoo.fr>
- <01121c1c-5e7c-9d47-2400-c7644f6b8254@canonical.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <2e688654-cbac-ea86-b248-c863a2dc6747@wanadoo.fr>
-Date:   Fri, 15 Jan 2021 11:16:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 15 Jan 2021 05:18:49 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD040C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:18:09 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id r4so7106888wmh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 02:18:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TqH714PYK9AN3xEW+SZ/vpTilG38WEqVTfd4SHibhpU=;
+        b=k8kyRSzrnG765BGTIPNhq6tt7jXTRJHBPp4MqW4LtK6qXVxSLqkAAGHtK6GcnTv/x7
+         ckZIyS2Vbzdl78O7H+mh57H2ZmsTu31Wu6EdtppM3KCswyenJkKrr2moN5ZqLi7ua0G1
+         UfjX6XCNJSyaT+UCv12mVSpoWQzfE6tvufWfSfsWPIngwcTvFXRuEi5jcqVJ1H2y+w+M
+         f9gOCGXaNPYYzxmL5F4d8JNtVP2sHej+pAM5enJmATHG4Ts7NV5IdTcQ7UeuoYJ1rsE6
+         X46SYJW4COFQZv4JOx7Qo0G1PtVv2p/KHtnGo3S1+oBHgOfAHLoMjuU/7a5qgziSq7UU
+         JV2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TqH714PYK9AN3xEW+SZ/vpTilG38WEqVTfd4SHibhpU=;
+        b=Fp8cSI3mBn9e2MnJJ5gUXb8uIZtLexGmC/YeHoSAXdxxF8Z6y1IN5WAWZSPmL5VGhU
+         PpxqFm8wmy/fjoHvoSJZmMozCeHETSNB8yclhOUPvJegKAivnJNouPWZiIw/gdRgYFpo
+         TGX8jHWYVUKRcxC95zZZeGlXjcA6kZLdX29MRAzUaSDe6l4OWjZGs7fo7919sQblMR5W
+         6TBxRVtRDs3+IkBDrhSUzcp8zhwxRKU3viEjaKiu4XiAQfK33d5Iye5SxOGZbEGG/S23
+         gTbNVqKFFtNxwf3IKovcG43wX+EVwXf7MF65PMyW8ADSLCjuhdDTEglqse3gS9LqEZRb
+         pkEw==
+X-Gm-Message-State: AOAM5337e9IDBl1Un0AlnNFNTqF/dbgkWZCI5naEtkodMIvSwgsL/FOm
+        UCR0gFu5ctF2wPouVJ3HzzBWpqwlg76mXQO3mfYC6Q==
+X-Google-Smtp-Source: ABdhPJxYWzDRdgGlzCf8uk9kNIzYgdLFZbmwDSF/f2ysaeKZwjAgLQjIZthiqy8sag3DXUvMAfB6+kPI+hUZMBj9faA=
+X-Received: by 2002:a7b:c7d3:: with SMTP id z19mr8124506wmk.31.1610705888619;
+ Fri, 15 Jan 2021 02:18:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <01121c1c-5e7c-9d47-2400-c7644f6b8254@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210115083933.50522-1-zhang.lyra@gmail.com>
+In-Reply-To: <20210115083933.50522-1-zhang.lyra@gmail.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 15 Jan 2021 10:17:57 +0000
+Message-ID: <CAJ9a7VgxqZw7F8P2TE_javqq-XqunOupu8iKgyMppb211gserw@mail.gmail.com>
+Subject: Re: [PATCH] coresight: etm4x: add AMBA id for Cortex-A55 and Cortex-A75
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Bin Ji <bin.ji@unisoc.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 15/01/2021 à 11:10, Colin Ian King a écrit :
-> On 15/01/2021 10:07, Christophe JAILLET wrote:
->> Le 15/01/2021 à 10:37, Colin Ian King a écrit :
->>> On 12/01/2021 10:07, Dan Carpenter wrote:
->>>> On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
->>>>> From: Colin Ian King <colin.king@canonical.com>
->>>>>
->>>>> A recent change added a new BOOTUP_DEFAULT power profile mode
->>>>> to the PP_SMC_POWER_PROFILE enum but omitted updating the
->>>>> corresponding profile_name array.  Fix this by adding in the
->>>>> missing BOOTUP_DEFAULT to profile_name[].
->>>>>
->>>>
->>>> Still not enough to prevent the array overflow.  It needs POWERSAVE as
->>>> well.
->>>
->>> Thanks for checking, but there is a 1-to-1 relation ship now:
->>>
->>> enum PP_SMC_POWER_PROFILE {
->>>           PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT = 0x0,
->>>           PP_SMC_POWER_PROFILE_FULLSCREEN3D = 0x1,
->>>           PP_SMC_POWER_PROFILE_POWERSAVING  = 0x2,
->>>           PP_SMC_POWER_PROFILE_VIDEO        = 0x3,
->>>           PP_SMC_POWER_PROFILE_VR           = 0x4,
->>>           PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,
->>>           PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,
->>>           PP_SMC_POWER_PROFILE_COUNT,
->>> };
->>>
->>> vs
->>>
->>>           static const char *profile_name[] = {
->>>                                           "BOOTUP_DEFAULT",
->>>                                           "3D_FULL_SCREEN",
->>>                                           "POWER_SAVING",
->>
->> This line has been added yesterday in commit f727ebeb589d.
->> So Dan was right when he sent his patch, but some else fixed it.
-> 
-> Ah, my bad for not seeing that. :-/
+Hi Chunyan,
 
-However, I wonder if this commit is complete.
-The description of the commit is about 5 modes, but 6 are listed in 
-PP_SMC_POWER_PROFILE.
+On Fri, 15 Jan 2021 at 08:39, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+>
+> From: Bin Ji <bin.ji@unisoc.com>
+>
+> Add ETM amba id to support Cortex-A55(Ananke) and Cortex-A75(Promethus).
+>
+> Signed-off-by: Bin Ji <bin.ji@unisoc.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index b20b6ff17cf6..66c6641c71ea 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1709,9 +1709,11 @@ static int etm4_remove(struct amba_device *adev)
+>
+>  static const struct amba_id etm4_ids[] = {
+>         CS_AMBA_ID(0x000bb95d),                 /* Cortex-A53 */
+> +       CS_AMBA_ID(0x000bbd05),                 /* Cortex-A55 */
 
-In the hunk:
-+static struct cmn2asic_mapping 
-vangogh_workload_map[PP_SMC_POWER_PROFILE_COUNT] = {
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_FULLSCREEN3D,	 
-WORKLOAD_PPLIB_FULL_SCREEN_3D_BIT),
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_VIDEO,		WORKLOAD_PPLIB_VIDEO_BIT),
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_VR,			WORKLOAD_PPLIB_VR_BIT),
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_COMPUTE,		WORKLOAD_PPLIB_COMPUTE_BIT),
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_CUSTOM,		WORKLOAD_PPLIB_CUSTOM_BIT),
-+};
+Use AMBA_UCI_ID(). See UCI  comment below.
 
-It would look logical to have something like:
-+	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_POWERSAVING,	 
-WORKLOAD_PPLIB_POWER_SAVING_BIT),
+>         CS_AMBA_ID(0x000bb95e),                 /* Cortex-A57 */
+>         CS_AMBA_ID(0x000bb95a),                 /* Cortex-A72 */
+>         CS_AMBA_ID(0x000bb959),                 /* Cortex-A73 */
+> +       CS_AMBA_ID(0x000bbd0a),                 /* Cortex-A75 */
 
-Not sure at all if correct.
+This AMBA ID is used for PMU, ETM, debug block and CTI for this core.
+Please use the CS_AMBA_UCI_ID macro to correctly identify this
+component.
+See CoreSight 3.0 Architecture Manual 3.0 (IHI 0029E) section B2.1.2
+for an explanation of UCI.
 
-Just my 2c,
+Regards
 
-CJ
+Mike
 
-> 
->>
->> CJ
->>
->>>                                           "VIDEO",
->>>                                           "VR",
->>>                                           "COMPUTE",
->>>                                           "CUSTOM"};
->>>
->>>
->>> unless I'm missing something because I've not had enough coffee.
->>>
->>> Colin
->>>
->>>>
->>>> regards,
->>>> dan carpenter
->>>>
->>>
->>>
->>
-> 
-> 
 
+
+>         CS_AMBA_UCI_ID(0x000bb9da, uci_id_etm4),/* Cortex-A35 */
+>         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
+>         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> CoreSight mailing list
+> CoreSight@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/coresight
+
+
+
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
