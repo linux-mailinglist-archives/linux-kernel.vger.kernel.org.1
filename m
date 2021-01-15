@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CA92F7552
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5552F754D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 10:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbhAOJ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 04:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730317AbhAOJ1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 04:27:48 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAF5C06179E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:29 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id s11so1469119edd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NPpTp6a6u7fOZ3GfoVMqP0h5qwWkDaaqGx3MQZmmFIU=;
-        b=uMAA8EshSzFzDykdzTxOtz+DOjd9oB+lBVytXRmkeZbkPOvJcWqiycin0jTas0XdPR
-         Abx7o0jv/ZFIpGgUyOdpdwufLQpzCbgh7khYlSroxcprt0ZC//THezzvYBxX15pVrEB0
-         oC8YMc7jYOYu/9FwnfbCmkgKNocSg3QNnWYKeJBOm1gzE3nYTxNh5snzdRiAgtqFqpZ/
-         6NSEnUyZfGsg6A3YXrCXYTcfAFNoGFyCFv4j8EdpzBDAGYkTt6QyNt5RLBS3F2/PtKN8
-         GTqDetFFpRmSBx2LI3hHvRC4CiBSOnSeRf0L5mu9mJWs94RFTHiAWQ0rVKfea4WUcTdD
-         Y35A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=NPpTp6a6u7fOZ3GfoVMqP0h5qwWkDaaqGx3MQZmmFIU=;
-        b=Vvt18V2O/GChFkFi9Bnk7TGy1AQHZL3RaUCNd4ZjoDkGD7Ur2CGHv3kD7airR43e1Z
-         2bm4k7RGE30LLn7TASsOAOfRqv52ic59m6dGmXW8CXI+FObLQDPvOJtbm1iBDQr+fgEX
-         dll3T/x8Ps20wMzeBYcy69LzQ7/YMjWHatTCStUnVm02oWFxm6xFH//tTrUlowDkwZVB
-         OxzDO2PRtEUKkyFGP6WmKbQbcCbxmjj2vG0ALmontOvjQ6dS2zQDwKVIILT54u4uWFrF
-         kHzcbM5r9AwvmX9INpL8Vcc6Woaq4eLmeuJyjN7h0cQrDpAamitN+l5BbjvQ7/0dqsu0
-         utZA==
-X-Gm-Message-State: AOAM531gIQ6cXQ9ZQHeN6kmMK/LvJvTT5BKQTGGaLmoUHn39jtRlTBHw
-        l9ZOL9EbSNHQKH2yW6ydsv758w==
-X-Google-Smtp-Source: ABdhPJw84zuV4cS7/a+LJQv0YdUKaq2TAeJk8mtppmG+PidICGNdaA6qBwFXKRGGNfr0Lj30tSEqiA==
-X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr7291383edd.92.1610702788407;
-        Fri, 15 Jan 2021 01:26:28 -0800 (PST)
-Received: from localhost.localdomain (hst-221-63.medicom.bg. [84.238.221.63])
-        by smtp.gmail.com with ESMTPSA id u24sm3004140eje.71.2021.01.15.01.26.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 01:26:27 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 4/4] docs: Deprecate mfc display delay controls
-Date:   Fri, 15 Jan 2021 11:26:07 +0200
-Message-Id: <20210115092607.29849-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210115092607.29849-1-stanimir.varbanov@linaro.org>
-References: <20210115092607.29849-1-stanimir.varbanov@linaro.org>
+        id S1729938AbhAOJ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 04:27:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728807AbhAOJ1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 04:27:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E59D2343B
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610702792;
+        bh=MsmYg64gbUSN25ldXEMW1GVPCc9OvEpGcvUMo0/syYo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uqNGfYawiVFnEZlClWikFsk7jvqdm4WX++k1IxKyePCy7cITEk/8ukXCTwPDIbY31
+         NYdO7iiTX8uRw7t1NzMyZLMdJDCZhTzV9H7XahJBPSsnJBXWQyFR8eCwsKvVsPrevy
+         0tah4oLIzS0LZX27U2StsKI4mbwoYaLsdqzHZS7bohm7K3bULsHu8JdO9Rl/84/C7r
+         6LF2NdhzHi06ea1lYTcAfhlyhGg2D9EbGmvalez0cEU7mcGic4u/90wGX9GQ/X+DmJ
+         0101e3PU0d86Iw1BRJejLk2xpSrmGXyZ8dW8JMhOs0VHwMaRCkGlOCnxRvl23l/LPD
+         Hg5T0Yz+rMWyA==
+Received: by mail-oi1-f175.google.com with SMTP id q205so8857772oig.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 01:26:32 -0800 (PST)
+X-Gm-Message-State: AOAM531unAZeusm2VZNrtN1SEbTbEeOqJUZWjRfXHqZPNujWYcEg658T
+        qkFUnON2FCt8B6Ix+NHC3zEVDM1gfUy8fhkVEes=
+X-Google-Smtp-Source: ABdhPJx67fcSlAjzJcLLJTZgMZtCyxxWQ0M3Q7fZdkaDyZ+rbSasRfNZu0+OmONxmKONGbJsXd3+Uq6heapEAjlYBzQ=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr4872739oig.11.1610702791868;
+ Fri, 15 Jan 2021 01:26:31 -0800 (PST)
+MIME-Version: 1.0
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <CAK8P3a2DZ8xQp7R=H=wewHnT2=a_=M53QsZOueMVEf7tOZLKNg@mail.gmail.com> <60013F54.9050305@hisilicon.com>
+In-Reply-To: <60013F54.9050305@hisilicon.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 15 Jan 2021 10:26:15 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a26Ca_59NiGGGv+CHYZSmkTRESpgV4aGFPhrY=KBa8aBA@mail.gmail.com>
+Message-ID: <CAK8P3a26Ca_59NiGGGv+CHYZSmkTRESpgV4aGFPhrY=KBa8aBA@mail.gmail.com>
+Subject: Re: [v2] Old platforms: bring out your dead
+To:     Wei Xu <xuwei5@hisilicon.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deprecate mfc private display delay and display enable controls for
-new clients and use the standard controls instead.
+On Fri, Jan 15, 2021 at 8:08 AM Wei Xu <xuwei5@hisilicon.com> wrote:
+> On 2021/1/14 0:14, Arnd Bergmann wrote:
+> > On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > * mmp -- added in 2009, DT support is active, but board files might go
+> > * cns3xxx -- added in 2010, last fixed in 2019, probably no users left
+> > * hisi (hip01/hip05) -- servers added in 2013, replaced with arm64 in 2016
+>
+> I think it is OK to drop the support of the hip01(arm32) and hip05(arm64).
+> Could you also help to drop the support of the hip04(arm32) which I think nobody use as well?
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Thank you for your reply! I actually meant to write hip04 instead of hip05,
+so I was only asking about the two 32-bit targets. I would expect that
+hip05 still has a few users, but wouldn't mind removing that as well if you
+are sure there are none.
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 5d7c47837035..815c6eb4a0d0 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -2111,6 +2111,11 @@ MFC 5.1 Control IDs
-     feature can be used for example for generating thumbnails of videos.
-     Applicable to the H264 decoder.
- 
-+    .. note::
-+
-+       This control is deprecated. Use the standard
-+       ``V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE`` control instead.
-+
- ``V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY (integer)``
-     Display delay value for H264 decoder. The decoder is forced to
-     return a decoded frame after the set 'display delay' number of
-@@ -2118,6 +2123,11 @@ MFC 5.1 Control IDs
-     of display order, in addition the hardware may still be using the
-     returned buffer as a reference picture for subsequent frames.
- 
-+    .. note::
-+
-+       This control is deprecated. Use the standard
-+       ``V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY`` control instead.
-+
- ``V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P (integer)``
-     The number of reference pictures used for encoding a P picture.
-     Applicable to the H264 encoder.
--- 
-2.17.1
+Since Zhen Lei is starting to upstream Kunpeng506 and Kunpeng509
+support, can you clarify how much reuse of IP blocks there is between
+hip04 and those? In particular, hip04 has custom code for (at least)
+platmcpm, clk, irqchip, ethernet, and hw_rng, probably more as those
+were only the ones I see on a quick grep.
 
+If we remove hip04, should we remove all these drivers right away,
+or keep some of them around?
+
+      Arnd
