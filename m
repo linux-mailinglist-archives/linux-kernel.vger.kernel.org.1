@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42CE2F7CE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED1D2F7CF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732738AbhAONkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 08:40:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56042 "EHLO mx2.suse.de"
+        id S1731716AbhAONna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 08:43:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728593AbhAONkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:40:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EAFEAC63;
-        Fri, 15 Jan 2021 13:39:29 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 14:39:24 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 05/21] x86/fpu/xstate: Add a new variable to indicate
- dynamic user states
-Message-ID: <20210115133924.GE11337@zn.tnic>
-References: <20201223155717.19556-1-chang.seok.bae@intel.com>
- <20201223155717.19556-6-chang.seok.bae@intel.com>
+        id S1727716AbhAONn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 08:43:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F012323382;
+        Fri, 15 Jan 2021 13:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610718168;
+        bh=wj532yWZYS0o7o1BgNfV+51J3eKIr9MV1erMfuZz0p8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jm29pmQliCc9q4xjZOk6DNrUSC1j4Vg2Km3WXfK1DOkoUQmqnBDtYqR3JrwYM3ejI
+         S1pWT7iYPCFQ9dYxAyyhTDbu9JTiGDP/HTlMB2MDsE3u1QsQu0bPI7vZHcuiiby7BZ
+         56+pHP7UxebAnn/csIRf/tQpt07CVsJosMTMIYliqymj1cqUxQ4cBMaDz1UijDG1RU
+         nsUw0XUi94oKfkRnMtH7aSfmgYIMMu+R1gdhouIzxJblZg3mRoe19DTwwLcaR7qAmF
+         2qRma9rsMyQx1sUmM3ugPlJVZQEOMM7hV94Jr0Al9wtkG43n9RDAfTlvLk13W+D7vD
+         DJAw5aoPkbjdw==
+Date:   Fri, 15 Jan 2021 13:42:14 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210115134213.GB4384@sirena.org.uk>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20210104181825.GB27043@kozik-lap>
+ <20210104182734.GH5645@sirena.org.uk>
+ <20210104183821.GA29033@kozik-lap>
+ <20210104212449.GJ5645@sirena.org.uk>
+ <20210105165529.GB20401@kozik-lap>
+ <20210106145931.GE4752@sirena.org.uk>
+ <20210108161635.1b9303c8.timon.baetz@protonmail.com>
+ <20210108161653.GA4554@sirena.org.uk>
+ <20210115071914.0407a928.timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201223155717.19556-6-chang.seok.bae@intel.com>
+In-Reply-To: <20210115071914.0407a928.timon.baetz@protonmail.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:57:01AM -0800, Chang S. Bae wrote:
-> The perf has a buffer that is allocated on demand. The states saved in the
 
-What's "the perf"? I hope to find out when I countinue reading...
+--BwCQnh7xodEAoBMC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> buffer were named as 'dynamic' (supervisor) states but the buffer is not
-> updated in every context switch.
-> 
-> The context switch buffer is in preparation to be dynamic for user states.
-> Make the wording to differentiate between those 'dynamic' states.
-> 
-> Add a new variable -- xfeatures_mask_user_dynamic to indicate the dynamic
-> user states, and rename some define and helper as related to the dynamic
-> supervisor states:
-> 	xfeatures_mask_supervisor_dynamic()
-> 	XFEATURE_MASK_SUPERVISOR_DYNAMIC
-> 
-> No functional change.
+On Fri, Jan 15, 2021 at 06:19:28AM +0000, Timon Baetz wrote:
+> On Fri, 8 Jan 2021 16:16:53 +0000, Mark Brown wrote:
+> > On Fri, Jan 08, 2021 at 03:16:48PM +0000, Timon Baetz wrote:
 
-Text needs cleaning up.
+> > > Muic needs a node to be used with extcon_get_edev_by_phandle().
+> > > Charger needs a node to reference a regulator. =20
 
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Cc: x86@kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
-> Changes from v2:
-> * Updated the changelog for clarification.
-> ---
->  arch/x86/include/asm/fpu/xstate.h | 12 +++++++-----
->  arch/x86/kernel/fpu/xstate.c      | 29 +++++++++++++++++++----------
->  2 files changed, 26 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> index 24bf8d3f559a..6ce8350672c2 100644
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -56,7 +56,7 @@
->   * - Don't set the bit corresponding to the dynamic supervisor feature in
->   *   IA32_XSS at run time, since it has been set at boot time.
->   */
-> -#define XFEATURE_MASK_DYNAMIC (XFEATURE_MASK_LBR)
-> +#define XFEATURE_MASK_SUPERVISOR_DYNAMIC (XFEATURE_MASK_LBR)
+> > The pattern is to use the parent device's node.
 
-Is XFEATURE_MASK_USER_DYNAMIC coming too?
+> So is extcon going to be a self-reference then?
 
--- 
-Regards/Gruss,
-    Boris.
+I guess, assuming you even need to look this up via the device tree.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> Just for my understanding: I can see sub-nodes for MFD all over the
+> place. It is still not clear to me why sub-nodes aren't the right
+> choice in this specific case?
+
+They probably aren't the right choice for a lot of the other usages
+either, there's a great tendency to just encode the specific way that
+Linux currently handles things into the DT without really thinking about
+what it means.
+
+--BwCQnh7xodEAoBMC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmABm7UACgkQJNaLcl1U
+h9B6Cwf/Qf3U0S1f0c2IO8s9Lt5WSXX9YyodDDALaTx2Q+FDh7p0U8w7R+T8cu5B
+7qxuRPJt1cKrg6+px0vePMoPP1ls8i/GxpmvFq4CQ2SHToa2xQXSVc7Y8xscAMCU
+fej+U7snogytrmfmOcfavNlujd4DWbomXyRKz58AKcG7x/LNVLNw8PN+5sOrmf0T
+OxHD/4HsqYl3R6aC1U6e7bl9jXXXnDcMIStad0+BYLxqi4pWStCCpaeIZFX9wl9D
+8vijp8OPSb5lrqnUjJfifjBIrcJfKaHaBcVtjZKS8ys0J3wuRL5kZOonxVOuJVfq
+MfWB+HNd05Rq3eluZuyzJy2X4Gp9hw==
+=8nOi
+-----END PGP SIGNATURE-----
+
+--BwCQnh7xodEAoBMC--
