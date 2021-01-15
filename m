@@ -2,131 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD2F2F848D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3042F848B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 19:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732099AbhAOSgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 13:36:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50234 "EHLO mail.kernel.org"
+        id S1727869AbhAOSgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 13:36:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56104 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbhAOSgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 13:36:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF892371F;
-        Fri, 15 Jan 2021 18:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610735762;
-        bh=nrEh5qKyFfcqrhQvojtYrOk8oDWspF+B8YHetNxIp/I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iud4H4qhXR7cQadVrAZeKW3YsK9FY+a6ESBYwIDqPuHCrVo1FTirO4xZK11ZOcx4w
-         lhdZ3iWiiuaAn4db+D3/pACYwfMX4PgMM+8a8xbdgSVUg7jiPuTF7k5ib0JRsxJSKN
-         KVHM0ZKAqeNP8SirE7ocjw16rqeDu9UblTqtmNxE9ILFVn6VZm8ZouQno8BaYniDS9
-         w5JgP0NzqNUtXEwrQWs06NtyLpp7p+YZE71C0qfm6seHnuP4bmj6AzuO4Xr9H03IIh
-         efYdqRW3fXg/wbTZooTu8cCrpK04KhjyeRoNQ4YCcqFFboCllOz7SB/nZ5LhcnH2wM
-         T2NdtCgMzFaIQ==
-Date:   Fri, 15 Jan 2021 18:35:27 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Rob Herring <robh@kernel.org>, kuninori.morimoto.gx@renesas.com,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
- sysclks properties
-Message-ID: <20210115183527.GG4384@sirena.org.uk>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-3-rf@opensource.cirrus.com>
- <20210113152225.GA2334778@robh.at.kernel.org>
- <20210113160917.GF4641@sirena.org.uk>
- <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
- <20210115131142.GA4384@sirena.org.uk>
- <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
- <20210115152004.GD4384@sirena.org.uk>
- <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
+        id S1725946AbhAOSgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 13:36:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE96EACAD;
+        Fri, 15 Jan 2021 18:35:53 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH] mm, slub: splice cpu and page freelists in deactivate_slab()
+Date:   Fri, 15 Jan 2021 19:35:43 +0100
+Message-Id: <20210115183543.15097-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="reI/iBAAp9kzkmX4"
-Content-Disposition: inline
-In-Reply-To: <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
-X-Cookie: Debug is human, de-fix divine.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In deactivate_slab() we currently move all but one objects on the cpu freelist
+to the page freelist one by one using the costly cmpxchg_double() operation.
+Then we unfreeze the page while moving the last object on page freelist, with
+a final cmpxchg_double().
 
---reI/iBAAp9kzkmX4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This can be optimized to avoid the cmpxchg_double() per object. Just count the
+objects on cpu freelist (to adjust page->inuse properly) and also remember the
+last object in the chain. Then splice page->freelist to the last object and
+effectively add the whole cpu freelist to page->freelist while unfreezing the
+page, with a single cmpxchg_double().
 
-On Fri, Jan 15, 2021 at 04:15:21PM +0000, Richard Fitzgerald wrote:
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+Hi,
 
-> If I do:
->  	sound {
->  		clocks =3D <&clock>;
->  	};
->=20
-> 	clock: clock {
-> 		compatible =3D "fixed-clock";
-> 		clock-frequency =3D <98304000>;
-> 	};
->=20
-> I can clk_bulk_get_all().
-> But if I remove the 'compatible' from the clock node, clk_bulk_get_all()
-> will return -EPROBE_DEFER and log:
+I stumbled on the optimization while pondering over what to do with the percpu
+partial list memory wastage [1], but it should be useful on its own. I haven't
+run any measurements yet, but eliminating cmpxchg_double() operations should be
+obviously faster [TM]. Passed some basic testing, including hardened freelist
+and slub_debug.
 
-OK, so if this is only supposed to represent a fixed clock on the board
-separate to the CODEC then yes, of course you do need to instantiate a
-driver for it like you do for every device on the board.  However it
-shouldn't be a subdevice of the CODEC as you had it originally, it
-should be a distinct device as the above has it since that is what
-physically exists.  This obviously won't configure the FLL at all though
-(which was what the binding you were proposing was for, the above is
-definitely not a direct substitute for the binding you originally
-proposed).
+[1] https://lore.kernel.org/linux-mm/CAG48ez2Qx5K1Cab-m8BdSibp6wLTip6ro4=-umR7BLsEgjEYzA@mail.gmail.com/
 
-> > When we say to use the clock binding what we are saying is to use the
-> > actual clock bindings to describe the clocks, not make a custom binding
-> > that looks kind of like them - making a custom binding doesn't address
-> > the problem.
+ mm/slub.c | 59 ++++++++++++++++++++++---------------------------------
+ 1 file changed, 24 insertions(+), 35 deletions(-)
 
-> But I don't know what you mean by "use the actual clock bindings to
-> describe the clocks".
+diff --git a/mm/slub.c b/mm/slub.c
+index 0d4bdf6783ee..c3141aa962be 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2167,9 +2167,9 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ {
+ 	enum slab_modes { M_NONE, M_PARTIAL, M_FULL, M_FREE };
+ 	struct kmem_cache_node *n = get_node(s, page_to_nid(page));
+-	int lock = 0;
++	int lock = 0, free_delta = 0;
+ 	enum slab_modes l = M_NONE, m = M_NONE;
+-	void *nextfree;
++	void *nextfree, *freelist_iter, *freelist_tail;
+ 	int tail = DEACTIVATE_TO_HEAD;
+ 	struct page new;
+ 	struct page old;
+@@ -2180,45 +2180,34 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 	}
+ 
+ 	/*
+-	 * Stage one: Free all available per cpu objects back
+-	 * to the page freelist while it is still frozen. Leave the
+-	 * last one.
+-	 *
+-	 * There is no need to take the list->lock because the page
+-	 * is still frozen.
++	 * Stage one: Count the objects on cpu's freelist as free_delta and
++	 * remember the last object in freelist_tail for later splicing.
+ 	 */
+-	while (freelist && (nextfree = get_freepointer(s, freelist))) {
+-		void *prior;
+-		unsigned long counters;
++	freelist_tail = NULL;
++	freelist_iter = freelist;
++	while (freelist_iter) {
++		nextfree = get_freepointer(s, freelist_iter);
+ 
+ 		/*
+ 		 * If 'nextfree' is invalid, it is possible that the object at
+-		 * 'freelist' is already corrupted.  So isolate all objects
+-		 * starting at 'freelist'.
++		 * 'freelist_iter' is already corrupted.  So isolate all objects
++		 * starting at 'freelist_iter' by skipping them.
+ 		 */
+-		if (freelist_corrupted(s, page, &freelist, nextfree))
++		if (freelist_corrupted(s, page, &freelist_iter, nextfree))
+ 			break;
+ 
+-		do {
+-			prior = page->freelist;
+-			counters = page->counters;
+-			set_freepointer(s, freelist, prior);
+-			new.counters = counters;
+-			new.inuse--;
+-			VM_BUG_ON(!new.frozen);
++		freelist_tail = freelist_iter;
++		free_delta++;
+ 
+-		} while (!__cmpxchg_double_slab(s, page,
+-			prior, counters,
+-			freelist, new.counters,
+-			"drain percpu freelist"));
+-
+-		freelist = nextfree;
++		freelist_iter = nextfree;
+ 	}
+ 
+ 	/*
+-	 * Stage two: Ensure that the page is unfrozen while the
+-	 * list presence reflects the actual number of objects
+-	 * during unfreeze.
++	 * Stage two: Unfreeze the page while splicing the per-cpu
++	 * freelist to the head of page's freelist.
++	 *
++	 * Ensure that the page is unfrozen while the list presence
++	 * reflects the actual number of objects during unfreeze. 
+ 	 *
+ 	 * We setup the list membership and then perform a cmpxchg
+ 	 * with the count. If there is a mismatch then the page
+@@ -2231,15 +2220,15 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 	 */
+ redo:
+ 
+-	old.freelist = page->freelist;
+-	old.counters = page->counters;
++	old.freelist = READ_ONCE(page->freelist);
++	old.counters = READ_ONCE(page->counters);
+ 	VM_BUG_ON(!old.frozen);
+ 
+ 	/* Determine target state of the slab */
+ 	new.counters = old.counters;
+-	if (freelist) {
+-		new.inuse--;
+-		set_freepointer(s, freelist, old.freelist);
++	if (freelist_tail) {
++		new.inuse -= free_delta;
++		set_freepointer(s, freelist_tail, old.freelist);
+ 		new.freelist = freelist;
+ 	} else
+ 		new.freelist = old.freelist;
+-- 
+2.29.2
 
-> What is not clear to me is how you want me to use a clock binding to
-> describe something that isn't a clk-framework clk. If you know what you
-> want, then please.. an example would help explain.
-
-The concept of a clock framework is an implementation detail of Linux
-which should not affect how the DT bindings for a device or system are
-written, DT bindings should be clear and idiomatic as DT bindings.  The
-goal is to represent the system in a clear and standardized fashion
-which is useful to OSs in general, not just something convenient for
-Linux as it happens to be implemented right now.  Current Linux
-internals are not a constraint for DT bindings.
-
-In this case if you can't figure out how to parse clock bindings without
-moving the clocks over to standard Linux clock APIs (which seems likely)
-then it follows that if you want to describe the clock configuration in
-DT then the driver support for these clocks should use the standard
-Linux clock framework.  This seems like a good idea in general anyway.
-
---reI/iBAAp9kzkmX4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAB4G4ACgkQJNaLcl1U
-h9Ajugf/V/c7kkx7kjE3+tn6nJNrg21PFVDm4St0hGGrFYbLX5tp94E++n7e+0S4
-1O72CIgQcws/PAoj49e1eR9ucRcZztKs5ahuZNxEtGti7ASiGaVfsP63/496zQZN
-VPW5tOl/xrSw4kNiMkoCSZXT4Izm05XeLtLvV2SQxeVevR2ifnp38Ms5KTEG9PXT
-q5Kecf+CmTuIXlFFvyY3eD5Pqdvqe7F7obdoOxUET3NEEfuPYtRCA7YLHmFu/EfH
-Co3vKlM5RmSi8s4RJ4jXplNFEGMDSjfdLbvrIUPFl/fC4aHMIRk0sAQnKftj9vkO
-rs0GP4a8Qfuiyb0YYpMLrw2ora7WTQ==
-=sFv+
------END PGP SIGNATURE-----
-
---reI/iBAAp9kzkmX4--
