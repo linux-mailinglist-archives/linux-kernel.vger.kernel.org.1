@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB2C2F763A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C742F763D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbhAOKHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:07:43 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:46210 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726660AbhAOKHm (ORCPT
+        id S1728821AbhAOKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:09:21 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:45000 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbhAOKJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:07:42 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0ULoF6Qe_1610705212;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULoF6Qe_1610705212)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Jan 2021 18:06:57 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     pkshih@realtek.com
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        Larry.Finger@lwfinger.net, chiu@endlessos.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] rtlwifi/rtl8192se: Simplify bool comparison.
-Date:   Fri, 15 Jan 2021 18:06:51 +0800
-Message-Id: <1610705211-22865-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 15 Jan 2021 05:09:21 -0500
+Received: from [192.168.1.41] ([92.131.99.25])
+        by mwinf5d49 with ME
+        id Gy7a2400L0Ys01Y03y7agg; Fri, 15 Jan 2021 11:07:37 +0100
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 15 Jan 2021 11:07:37 +0100
+X-ME-IP: 92.131.99.25
+Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
+ profile_name[]
+To:     Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210111114638.16530-1-colin.king@canonical.com>
+ <20210112100706.GF5083@kadam>
+ <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f57062ac-499d-95bb-cf4f-bb7b5b1dea5b@wanadoo.fr>
+Date:   Fri, 15 Jan 2021 11:07:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <51efd2a7-f2cf-dc28-4b86-5e89d13564ca@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the follow coccicheck warnings:
+Le 15/01/2021 à 10:37, Colin Ian King a écrit :
+> On 12/01/2021 10:07, Dan Carpenter wrote:
+>> On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> A recent change added a new BOOTUP_DEFAULT power profile mode
+>>> to the PP_SMC_POWER_PROFILE enum but omitted updating the
+>>> corresponding profile_name array.  Fix this by adding in the
+>>> missing BOOTUP_DEFAULT to profile_name[].
+>>>
+>>
+>> Still not enough to prevent the array overflow.  It needs POWERSAVE as
+>> well.
+> 
+> Thanks for checking, but there is a 1-to-1 relation ship now:
+> 
+> enum PP_SMC_POWER_PROFILE {
+>          PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT = 0x0,
+>          PP_SMC_POWER_PROFILE_FULLSCREEN3D = 0x1,
+>          PP_SMC_POWER_PROFILE_POWERSAVING  = 0x2,
+>          PP_SMC_POWER_PROFILE_VIDEO        = 0x3,
+>          PP_SMC_POWER_PROFILE_VR           = 0x4,
+>          PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,
+>          PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,
+>          PP_SMC_POWER_PROFILE_COUNT,
+> };
+> 
+> vs
+> 
+>          static const char *profile_name[] = {
+>                                          "BOOTUP_DEFAULT",
+>                                          "3D_FULL_SCREEN",
+>                                          "POWER_SAVING",
 
-./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:2305:6-27:
-WARNING: Comparison of 0/1 to bool variable.
+This line has been added yesterday in commit f727ebeb589d.
+So Dan was right when he sent his patch, but some else fixed it.
 
-./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:1376:5-26:
-WARNING: Comparison of 0/1 to bool variable.
+CJ
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-index 47fabce..aff8ab0 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-@@ -1373,7 +1373,7 @@ static void _rtl92se_gen_refreshledstate(struct ieee80211_hw *hw)
- 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
- 	struct rtl_led *pled0 = &rtlpriv->ledctl.sw_led0;
- 
--	if (rtlpci->up_first_time == 1)
-+	if (rtlpci->up_first_time)
- 		return;
- 
- 	if (rtlpriv->psc.rfoff_reason == RF_CHANGE_BY_IPS)
-@@ -2302,7 +2302,7 @@ bool rtl92se_gpio_radio_on_off_checking(struct ieee80211_hw *hw, u8 *valid)
- 	bool turnonbypowerdomain = false;
- 
- 	/* just 8191se can check gpio before firstup, 92c/92d have fixed it */
--	if ((rtlpci->up_first_time == 1) || (rtlpci->being_init_adapter))
-+	if (rtlpci->up_first_time || rtlpci->being_init_adapter)
- 		return false;
- 
- 	if (ppsc->swrf_processing)
--- 
-1.8.3.1
+>                                          "VIDEO",
+>                                          "VR",
+>                                          "COMPUTE",
+>                                          "CUSTOM"};
+> 
+> 
+> unless I'm missing something because I've not had enough coffee.
+> 
+> Colin
+> 
+>>
+>> regards,
+>> dan carpenter
+>>
+> 
+> 
 
