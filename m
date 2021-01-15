@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448C42F6FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE8C2F6FB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 01:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731288AbhAOAtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 19:49:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbhAOAtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:49:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 064D423A34;
-        Fri, 15 Jan 2021 00:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610671731;
-        bh=RVokMZWq9rRs3WD8NYZX1AGE4s6tHutTCt7qQgO1RHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cGcfBG6yJU5GdFCiw6HY1fX/UEGG6i9KWRHRCQvC4PZ4neD3VfwMfsM13lnYQ/V8e
-         XONfeGM0Pfu4eo/ZLPLbNV/7ZzHfXaVapyRMQGvRFxFGYychd5VAZ0WZdLFIHk/EKl
-         1sRSxLo125mQzO0C6IkQikIcIQCUGpL1LdLwSjD15Rrq0Zm1KkxoYUCnr7txw+cf6n
-         4++nQf8erYksmBgUlr4k4+zbxmUkF2IlLIoTDqL36J3tR8m9XNa8J6tLIHXeC8YXCI
-         8Ze05uG8aX5mZ2wmEeAWKcoHmKNM4LRaPED2Gk0mzrXs6EltSQl3LULi9xKfzNZ3wI
-         hojYS2+6uJbtg==
-Date:   Fri, 15 Jan 2021 02:48:46 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v5] scripts: use pkg-config to locate libcrypto
-Message-ID: <YADmbs3UppSovYT2@kernel.org>
-References: <20538915.Wj2CyUsUYa@devpool35>
- <2278760.8Yd83Mgoko@devpool35>
- <3394639.6NgGvCfkNl@devpool47>
+        id S1731356AbhAOAuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 19:50:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbhAOAt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:49:59 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38ADC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:49:18 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id b3so4434149pft.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 16:49:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K9nC3QQZLVZ4Wv/SC3g8XKvTcDq2HllT/OIRGR+DemI=;
+        b=eoaDMyvE9hEGLi2P02/5G7fMeSOZtY36oU4zD9eUgtpQQVNoNoLUIGrkTCNYjt0LVZ
+         s032TNq6guNr9fdkr83bKlDcglJZO9xDsySf4Np+3+rirZPYEtrBwhWE/hU1Ggm1FaCc
+         6a97Tyqe0uZC5A4Iyxz/zyoabFAP8bnGR0PagYQE+tVQFT0c9jpuzRjRrC+TKyCs/3y2
+         D+Lr3L1Tc4iiuxmru4pwsxtQj8BXTsfvMyhOq3MjSUgjLuLJ/nOqcVOYxR7eeBnhFjcI
+         Qv3utxK9onXvCKYUeylDHXP5ePqUcLe9wlp1mCnmh4VmfuUK0jUQFfgm8TS07/0RWfM/
+         +oww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K9nC3QQZLVZ4Wv/SC3g8XKvTcDq2HllT/OIRGR+DemI=;
+        b=PXCl8A7WcBd38cA3nZEGfez1+nwy0g1hIpfQmRkv3baCMswCA3wlK2ABL0IEfXc66f
+         i+Zy1mbKAoKAKkMvQsLMXyeO9uqjh/cqr0sOIhDC0q4S3h5vEdB6ksEiDOJOVcW+ZkJ+
+         Hf2LwmgUmshzi7C+wA0Xt2uog3BTQpEG3kfRxwjO6SBSnkOGYwJYHKPAV6rFdXsJFspz
+         qQBmYWCqxxOOT8fuhGAXe2FylVTWgyW9xcDCNXEk3ngMmwROHzWYowKI9CIE7CKMoKjP
+         DrqMGfyQ1QODRCkhlnl3Ua/9BtPWldSebfcnw4emdMTujv2C68mgr5Aaa6woq6Zk+rJ0
+         5cTA==
+X-Gm-Message-State: AOAM532zG3L8XC5gWAswdYLNePvhIPE45jKFa/MavMp+XJ2z5nDkaMJ3
+        XLpRy9ifZcf0MqLwQxPdHFgMsY3VdDPtfSmaI+6A4A==
+X-Google-Smtp-Source: ABdhPJyQfgK3ShGyhXp9/MtVdv3b081GHz5Y1Zj3YyZ0kTUGqOCRcf/Sb56ACCdH0EAe/aHSwusTPq6Oxw2VVTbk4tA=
+X-Received: by 2002:a63:1f47:: with SMTP id q7mr10150136pgm.10.1610671758192;
+ Thu, 14 Jan 2021 16:49:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3394639.6NgGvCfkNl@devpool47>
+References: <cover.1610652862.git.jpoimboe@redhat.com> <CABCJKudgPc5FFAD5BKX2dK7BJYs_Dpa_JRFgKgGh8b2Xs6khUA@mail.gmail.com>
+In-Reply-To: <CABCJKudgPc5FFAD5BKX2dK7BJYs_Dpa_JRFgKgGh8b2Xs6khUA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 Jan 2021 16:49:07 -0800
+Message-ID: <CAKwvOd=J9LykjdzRLZ73uzd_BJaZUhO7uhNgF=FOHL4uDaRjHg@mail.gmail.com>
+Subject: Re: [PATCH 00/21] objtool: vmlinux.o and CLANG LTO support
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 01:49:12PM +0100, Rolf Eike Beer wrote:
-> Otherwise build fails if the headers are not in the default location. While at
-> it also ask pkg-config for the libs, with fallback to the existing value.
-> 
-> Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-> Cc: stable@vger.kernel.org # 5.6.x
+On Thu, Jan 14, 2021 at 4:41 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> I can confirm that all the warnings I previously saw are now fixed,
+> but I'm seeing a few new ones:
+>
+> vmlinux.o: warning: objtool: balance_leaf_when_delete()+0x17d4: stack
+> state mismatch: cfa1=7+192 cfa2=7+176
+> vmlinux.o: warning: objtool: internal_move_pointers_items()+0x9f7:
+> stack state mismatch: cfa1=7+160 cfa2=7+176
+> vmlinux.o: warning: objtool: strncpy_from_user()+0x181: call to
+> do_strncpy_from_user() with UACCESS enabled
+> vmlinux.o: warning: objtool: strnlen_user()+0x12b: call to
+> do_strnlen_user() with UACCESS enabled
+> vmlinux.o: warning: objtool: i915_gem_execbuffer2_ioctl()+0x390: call
+> to __ubsan_handle_negate_overflow() with UACCESS enabled
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+^ https://github.com/ClangBuiltLinux/linux/issues/1246, FWIW
 
-/Jarkko
+> vmlinux.o: warning: objtool: .text.snd_trident_free_voice: unexpected
+> end of section
+>
+> I haven't had a chance to take a closer look yet, but some of these
+> are probably related to
+> https://github.com/ClangBuiltLinux/linux/issues/1192. However, I can
+> reproduce these also with ToT Clang, not just with Clang 11.
+>
+> Sami
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
