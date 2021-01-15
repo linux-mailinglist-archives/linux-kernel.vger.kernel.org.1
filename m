@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3E02F703A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5252F703C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731738AbhAOBvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729298AbhAOBvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:51:44 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153ECC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:51:04 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id x18so3885139pln.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 17:51:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=BIjYDm3K1KHRZmio2zuA7xfkvJuK8fsOdB0aS9Jm5uM=;
-        b=oQ8Lsyq6NEzBmzSWyR0Gb3cToeR6LHZ7l1dFXKFksSWHxM+Qire3jBJ6sWnC0ykPi2
-         nad+2wIobBg2tkgz2qLwXuBB7FsMbs43pOGxb1P55B0DL325JSAeHyjbi3g5K3TkFBeT
-         LmqBXSyLTPF5fYz452yaYUE1KDHh28Gj4gWiAFXLoSFpryg/aDtZ1tdZe/mh7yE+WuvY
-         1nQoRlzpd2/72I51vPMuHnVXjYWFb86KA8KIb+uDwmIhkTWapx2q79KbCITKElefRAjo
-         diaDzKw8oaa6sCqp47lPtKHnDcoVEg8Q325L70QUyj3eLgFcQC7pT46IOydnr7+eWOUb
-         OZXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BIjYDm3K1KHRZmio2zuA7xfkvJuK8fsOdB0aS9Jm5uM=;
-        b=D87boifrKjrvlhwQfK/futlOyU+0ApggGw29fnlY00t6BS/z0wPoJFv6AV+8TsVf3s
-         yIoTwMI9+RG0nSBUEqH+zM1UTLYcgDu0VM90gLkz6bPTP6tEr0r5fnPcd8bglHUTqFTl
-         /pYJJqh0UubMJJsrSAY/YNAsnZw177RZEcTXDUNSyJR28gNju+CtCcrWwIXQcBnHMJ0G
-         aoxBBpqW7UO8CLzC9wAIW7mRlEjB8Fcg9CL1YD/1gXcHZNq4uaB0GeL8tF0IAsIo4bu/
-         iEJK3CF9RIPTgut20MLRqIVfe5ulgTI5tGo2G0gaX+XZNdyo5dcsa1m+yJ14PFb1CTw4
-         Jf1w==
-X-Gm-Message-State: AOAM5324CrVXwbbfcnkokrWZJDsFs5svhmJGN1uuq/H5SdNd7XFT6UEp
-        /CfRyeU1KMdlpgAZctAESd+efizG1hPScjtN
-X-Google-Smtp-Source: ABdhPJxXI9+kZQGHT5rpi4YFnrbq8m4aaXKxLLzO411ujl3IAQjnivfFzz58FFAMpmaD658+zeWm7A==
-X-Received: by 2002:a17:902:426:b029:db:65c4:dbf7 with SMTP id 35-20020a1709020426b02900db65c4dbf7mr10493393ple.3.1610675463623;
-        Thu, 14 Jan 2021 17:51:03 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id t5sm6548354pjr.22.2021.01.14.17.51.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 17:51:03 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     rdunlap@infradead.org, yejune.deng@gmail.com,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] lib: dynamic_queue_limits: use memset and offsetof init
-Date:   Fri, 15 Jan 2021 09:50:53 +0800
-Message-Id: <1610675453-14603-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S1731750AbhAOBwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:52:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:58922 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727152AbhAOBwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 20:52:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADFF6D6E;
+        Thu, 14 Jan 2021 17:51:51 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9521E3F66E;
+        Thu, 14 Jan 2021 17:51:49 -0800 (PST)
+Subject: Re: [PATCH V2 07/11] arm64: Add TRBE definitions
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org
+References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
+ <1610511498-4058-8-git-send-email-anshuman.khandual@arm.com>
+ <d6af6dae-f3ba-cd35-2ffb-cfbc9d222469@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <cb73f274-c8d0-a069-e274-f8994f007315@arm.com>
+Date:   Fri, 15 Jan 2021 07:22:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <d6af6dae-f3ba-cd35-2ffb-cfbc9d222469@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dql_reset(), use memset and offsetof instead of '= 0'.
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- lib/dynamic_queue_limits.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/lib/dynamic_queue_limits.c b/lib/dynamic_queue_limits.c
-index fde0aa2..21f0745 100644
---- a/lib/dynamic_queue_limits.c
-+++ b/lib/dynamic_queue_limits.c
-@@ -116,13 +116,7 @@ void dql_completed(struct dql *dql, unsigned int count)
- void dql_reset(struct dql *dql)
- {
- 	/* Reset all dynamic values */
--	dql->limit = 0;
--	dql->num_queued = 0;
--	dql->num_completed = 0;
--	dql->last_obj_cnt = 0;
--	dql->prev_num_queued = 0;
--	dql->prev_last_obj_cnt = 0;
--	dql->prev_ovlimit = 0;
-+	memset(dql, 0, offsetof(struct dql, lowest_slack));
- 	dql->lowest_slack = UINT_MAX;
- 	dql->slack_start_time = jiffies;
- }
--- 
-1.9.1
+On 1/13/21 2:51 PM, Suzuki K Poulose wrote:
+> On 1/13/21 4:18 AM, Anshuman Khandual wrote:
+>> This adds TRBE related registers and corresponding feature macros.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   arch/arm64/include/asm/sysreg.h | 49 +++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 49 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>> index 4acff97..d60750e7 100644
+>> --- a/arch/arm64/include/asm/sysreg.h
+>> +++ b/arch/arm64/include/asm/sysreg.h
+>> @@ -329,6 +329,55 @@
+>>     /*** End of Statistical Profiling Extension ***/
+>>   +/*
+>> + * TRBE Registers
+>> + */
+>> +#define SYS_TRBLIMITR_EL1        sys_reg(3, 0, 9, 11, 0)
+>> +#define SYS_TRBPTR_EL1            sys_reg(3, 0, 9, 11, 1)
+>> +#define SYS_TRBBASER_EL1        sys_reg(3, 0, 9, 11, 2)
+>> +#define SYS_TRBSR_EL1            sys_reg(3, 0, 9, 11, 3)
+>> +#define SYS_TRBMAR_EL1            sys_reg(3, 0, 9, 11, 4)
+>> +#define SYS_TRBTRG_EL1            sys_reg(3, 0, 9, 11, 6)
+>> +#define SYS_TRBIDR_EL1            sys_reg(3, 0, 9, 11, 7)
+>> +
+>> +#define TRBLIMITR_LIMIT_MASK        GENMASK_ULL(51, 0)
+>> +#define TRBLIMITR_LIMIT_SHIFT        12
+>> +#define TRBLIMITR_NVM            BIT(5)
+>> +#define TRBLIMITR_TRIG_MODE_MASK    GENMASK(1, 0)
+>> +#define TRBLIMITR_TRIG_MODE_SHIFT    2
+> 
+> This must be 3.
 
+Changed.
+
+> 
+> Rest looks fine to me
+> 
+> Suzuki
