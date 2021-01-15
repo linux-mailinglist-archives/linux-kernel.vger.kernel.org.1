@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7452F799F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71EB2F79A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388227AbhAOMiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:38:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45834 "EHLO mail.kernel.org"
+        id S1733256AbhAOMjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:39:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387616AbhAOMis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:38:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 370322333E;
-        Fri, 15 Jan 2021 12:38:32 +0000 (UTC)
+        id S1733225AbhAOMjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:39:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86098236FB;
+        Fri, 15 Jan 2021 12:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714312;
-        bh=pYvsIQ3m+v4HkQIbMDv6EVsgtV4Q99P4GNDs7iJxQUU=;
+        s=korg; t=1610714315;
+        bh=Ohvj5MoWfLEuNKrtfujEERe7LIG0LnBBL+ERZCS8wa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hz8xbvHh6po6NY4ixLxU7d8KxlvItIbg4MGBGQqEq7JRJxBjToehupA+TJayL0pQV
-         YEAAfsbt9/xRsZL7rge8AZBvOgo9WuHhrGFb4G1vSR1cS2cU2aG2zT1VVEoF3IKHtd
-         EjjEceTk5JYSREWzkubrxx0w2/fuWIEcJ+JcYu8s=
+        b=pBcL1JaeSV0s7uo+Hba6qorWnFpRhi6MNBLYGKSUBBt1LJuzxX7bqoleeBufRvQDN
+         Ws0iKbMBAuoScTxSMdrPxPGrufbU6FQxO1xtmt0TlPiZpfOSx4aMB1lCyHO7lA19RW
+         CAHZc2pU5FUH9X+em+T1Z8GpubZIHR7I5KkeXfws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
         Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 080/103] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
-Date:   Fri, 15 Jan 2021 13:28:13 +0100
-Message-Id: <20210115122009.894424636@linuxfoundation.org>
+Subject: [PATCH 5.10 081/103] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+Date:   Fri, 15 Jan 2021 13:28:14 +0100
+Message-Id: <20210115122009.943038282@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
 References: <20210115122006.047132306@linuxfoundation.org>
@@ -39,34 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 1efd17e7acb6692bffc6c58718f41f27fdfd62f5 upstream.
+commit ff2b46d7cff80d27d82f7f3252711f4ca1666129 upstream.
 
-Use IS_ALIGNED() instead. Otherwise, an unaligned address will be ignored.
+When irq_domain_get_irq_data() or irqd_cfg() fails
+at i == 0, data allocated by kzalloc() has not been
+freed before returning, which leads to memleak.
 
-Fixes: 33cd6e642d6a ("iommu/vt-d: Flush PASID-based iotlb for iova over first level")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20201231005323.2178523-1-baolu.lu@linux.intel.com
+Fixes: b106ee63abcc ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20210105051837.32118-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/intel/dmar.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iommu/intel/irq_remapping.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1461,8 +1461,8 @@ void qi_flush_piotlb(struct intel_iommu
- 		int mask = ilog2(__roundup_pow_of_two(npages));
- 		unsigned long align = (1ULL << (VTD_PAGE_SHIFT + mask));
- 
--		if (WARN_ON_ONCE(!ALIGN(addr, align)))
--			addr &= ~(align - 1);
-+		if (WARN_ON_ONCE(!IS_ALIGNED(addr, align)))
-+			addr = ALIGN_DOWN(addr, align);
- 
- 		desc.qw0 = QI_EIOTLB_PASID(pasid) |
- 				QI_EIOTLB_DID(did) |
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1390,6 +1390,8 @@ static int intel_irq_remapping_alloc(str
+ 		irq_data = irq_domain_get_irq_data(domain, virq + i);
+ 		irq_cfg = irqd_cfg(irq_data);
+ 		if (!irq_data || !irq_cfg) {
++			if (!i)
++				kfree(data);
+ 			ret = -EINVAL;
+ 			goto out_free_data;
+ 		}
 
 
