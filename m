@@ -2,225 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3762F7648
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C7C2F7641
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 11:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731198AbhAOKJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 05:09:58 -0500
-Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:48489 "EHLO
-        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730307AbhAOKJt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:09:49 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id 9A0DB7802C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 10:08:56 +0000 (GMT)
-Received: (qmail 28303 invoked from network); 15 Jan 2021 10:08:56 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 15 Jan 2021 10:08:56 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-Date:   Fri, 15 Jan 2021 10:08:55 +0000
-Message-Id: <20210115100855.23679-6-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210115100855.23679-1-mgorman@techsingularity.net>
-References: <20210115100855.23679-1-mgorman@techsingularity.net>
+        id S1729959AbhAOKJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 05:09:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50854 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727184AbhAOKJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 05:09:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610705337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Faumz9gT2pY3vY0mqp7ThUzNaq8hQ/0YmK2KtYGiqU=;
+        b=PikZd6Loq/f4lJ+0IwfPS4ziRz35aVE9uvjHZIwv3nfwj4vHIdyBtSUTm6roFQZCfNII9N
+        hAx4VOnTH24PH3u6SUQTuEqb4uhDFA/h43axBKJ4eX3JsSJgPEP7DeB8NvzK6zuADoKoQv
+        8480w8AivaghOJFUj+u26EGpztI/4vg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 543BCB7C6;
+        Fri, 15 Jan 2021 10:08:57 +0000 (UTC)
+Date:   Fri, 15 Jan 2021 11:08:55 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     chenzhou <chenzhou10@huawei.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+Message-ID: <YAFpt6aYW4nVQoZf@blackbook>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
+ <YAB3Wuu+hFpN698N@blackbook>
+ <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aW+Hjh85VlI7M/Bn"
+Content-Disposition: inline
+In-Reply-To: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Both select_idle_core() and select_idle_cpu() do a loop over the same
-cpumask. Observe that by clearing the already visited CPUs, we can
-fold the iteration and iterate a core at a time.
+--aW+Hjh85VlI7M/Bn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All we need to do is remember any non-idle CPU we encountered while
-scanning for an idle core. This way we'll only iterate every CPU once.
+On Fri, Jan 15, 2021 at 09:55:43AM +0800, chenzhou <chenzhou10@huawei.com> =
+wrote:
+> Yeah, this will select all enabled controllers, but which doesn't the beh=
+avior we want.
+I see what the issue is now.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 97 +++++++++++++++++++++++++++------------------
- 1 file changed, 59 insertions(+), 38 deletions(-)
+> See above. Just the mount behavior isn't what we what.
+I agree this a bug and your I find your approach correct
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 12e08da90024..6c0f841e9e75 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6006,6 +6006,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
- 	return new_cpu;
- }
- 
-+static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus)
-+{
-+	if (available_idle_cpu(core) || sched_idle_cpu(core))
-+		return core;
-+
-+	return -1;
-+}
-+
- #ifdef CONFIG_SCHED_SMT
- DEFINE_STATIC_KEY_FALSE(sched_smt_present);
- EXPORT_SYMBOL_GPL(sched_smt_present);
-@@ -6066,40 +6074,34 @@ void __update_idle_core(struct rq *rq)
-  * there are no idle cores left in the system; tracked through
-  * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
-  */
--static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
--	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
--	int core, cpu;
-+	bool idle = true;
-+	int cpu;
- 
- 	if (!static_branch_likely(&sched_smt_present))
--		return -1;
--
--	if (!test_idle_cores(target, false))
--		return -1;
--
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+		return __select_idle_cpu(p, core, cpus);
- 
--	for_each_cpu_wrap(core, cpus, target) {
--		bool idle = true;
--
--		for_each_cpu(cpu, cpu_smt_mask(core)) {
--			if (!available_idle_cpu(cpu)) {
--				idle = false;
--				break;
-+	for_each_cpu(cpu, cpu_smt_mask(core)) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle = false;
-+			if (*idle_cpu == -1) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+					*idle_cpu = cpu;
-+					break;
-+				}
-+				continue;
- 			}
-+			break;
- 		}
--
--		if (idle)
--			return core;
--
--		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+			*idle_cpu = cpu;
- 	}
- 
--	/*
--	 * Failed to find an idle core; stop looking for one.
--	 */
--	set_idle_cores(target, 0);
-+	if (idle)
-+		return core;
- 
-+	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	return -1;
- }
- 
-@@ -6107,9 +6109,18 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- 
- #define sched_smt_weight	1
- 
--static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static inline void set_idle_cores(int cpu, int val)
- {
--	return -1;
-+}
-+
-+static inline bool test_idle_cores(int cpu, bool def)
-+{
-+	return def;
-+}
-+
-+static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-+{
-+	return __select_idle_cpu(p, core, cpus);
- }
- 
- #endif /* CONFIG_SCHED_SMT */
-@@ -6124,10 +6135,11 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-+	int i, cpu, idle_cpu = -1, nr = INT_MAX;
-+	bool smt = test_idle_cores(target, false);
-+	int this = smp_processor_id();
- 	struct sched_domain *this_sd;
- 	u64 time;
--	int this = smp_processor_id();
--	int cpu, nr = INT_MAX;
- 
- 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
- 	if (!this_sd)
-@@ -6135,7 +6147,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
- 		/*
-@@ -6159,16 +6171,29 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
-+		if (smt) {
-+			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-+			if ((unsigned int)i < nr_cpumask_bits)
-+				return i;
-+
-+		} else {
-+			i = __select_idle_cpu(p, cpu, cpus);
-+			if ((unsigned int)i < nr_cpumask_bits) {
-+				idle_cpu = i;
-+				break;
-+			}
-+		}
- 	}
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (smt)
-+		set_idle_cores(this, false);
-+
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		time = cpu_clock(this) - time;
- 		update_avg(&this_sd->avg_scan_cost, time);
- 	}
- 
--	return cpu;
-+	return idle_cpu;
- }
- 
- /*
-@@ -6297,10 +6322,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (!sd)
- 		return target;
- 
--	i = select_idle_core(p, sd, target);
--	if ((unsigned)i < nr_cpumask_bits)
--		return i;
--
- 	i = select_idle_cpu(p, sd, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
--- 
-2.26.2
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
+> The behavior was changed since commit f5dfb5315d34 ("cgroup: take
+> options parsing into ->parse_monolithic()"), will add this as Fixes.
+Thanks.
+
+Michal
+
+--aW+Hjh85VlI7M/Bn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmABabMACgkQia1+riC5
+qSgNFg/9HhaSDxHBhPH86Pcz71+vllYTelnF1P8Bgbquc6o7w6cFhAsmQh9LpwpI
+zHp+FSSxSzkdW7kjQpQpVPnmyUVvroFYqkLl2htJQMF8F6DfR1XlqtR47xOfqbDL
+54slEHktuATW7SxwGu6P8wAE/Orq3gelNarEaW2I+nH3bg0SAUkdj6ThhbwZF9Tk
+1Fd5AttK8/727Gw67YBl13CN8EYol8AfG+qC1SRtdtTSrk50EF9mLZy8PtlyYyyl
+CYSetNahCaKaoYzBjl0UJQ8d3CPt8LAxyEMgjW/oieD7rYDyLffaqh7GcfXbFVpt
+yBCIG4CWGlyDDqdJbXUA645nvXGUDGOB6K0cOTUBZlMPmHB/g0QJi6Mr7bMJ6XuN
+gg5dhMcLLAbIoZfUmMsCjUOr+r5hShnId2L+0XLuzgFA6wYR2oV/2EAfmjXPKcGF
+nznrKyYld8okjzYe/3SAwq5VJ/P71rwjIbHAxB/aVWpL0Kr7WQl0ygoknm4Lsx3r
+zy9vMomoF1PibdROuX7Cuv1CDkullQsInTS4B33Wh8dtQjJRcZH8Kdkz2QwyXww3
+IBQ+dYPV9ZSEAfRk1WRT4bGXmV4dLJIUWNuhwCTYkVG2KqKD7BiUfLGfDuzm3syR
+BkXq0TXboV8LDaLliErZqwQcQJU9RjSz9UiPgHMXSmE/bKFk5QM=
+=I1mY
+-----END PGP SIGNATURE-----
+
+--aW+Hjh85VlI7M/Bn--
