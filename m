@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217532F86B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32AE2F86BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 21:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388729AbhAOUaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 15:30:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50090 "EHLO mx2.suse.de"
+        id S2388025AbhAOUb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 15:31:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733254AbhAOUaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 15:30:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02CDBB945;
-        Fri, 15 Jan 2021 20:29:19 +0000 (UTC)
-Date:   Fri, 15 Jan 2021 21:29:15 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/3] hugetlb: convert page_huge_active() to
- HPageMigratable flag
-Message-ID: <20210115202915.GA3322@localhost.localdomain>
-References: <20210111210152.118394-1-mike.kravetz@oracle.com>
- <20210111210152.118394-3-mike.kravetz@oracle.com>
- <20210115091755.GB4092@linux>
- <d98039ef-8489-6d8c-a323-44e3f0d8acee@oracle.com>
- <41ca9f90-63e3-f991-3f78-433f77250527@oracle.com>
+        id S1726467AbhAOUb1 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 15:31:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A2F23A5A;
+        Fri, 15 Jan 2021 20:30:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610742646;
+        bh=pBJybeyb9dtJbpJVNW+yRCO6JbuqCDAgA9WZSvcUr7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VraRXpQORvQB+RBjkPBNBTXMCqHVaclwz1+zCgrmdpbprX/T4mq+HUSC4JItvLrJQ
+         WqSA9M5TnhNVgYubZbUKzjv6rnv3i1HALdnVL8s0z4A9Nu4ShAPBkM6UP6iMdY3loj
+         nikREI6LNqqwOssIKFSOQwvoTlZV3Y/6cwqC0OI5HpYQQPJ2jnrst1DOgg43KW18pt
+         mGHQYl+cbcloG4m9ov87By67/Wcb9ErhxXYj5KBtRLT0Xxr68ONr8B2hjsSMgEak89
+         U+m3uiZs/TvZFufHsa9IkfFWqBHNeWzU1zL2t5stTCmqYtxZ0qIZrGSdIy19RGbQZU
+         x/YGMRXAUptLA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 29C6140522; Fri, 15 Jan 2021 17:31:19 -0300 (-03)
+Date:   Fri, 15 Jan 2021 17:31:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        ying.huang@intel.com
+Subject: Re: [PATCH v6] perf stat: Fix wrong skipping for per-die aggregation
+Message-ID: <20210115203119.GN457607@kernel.org>
+References: <20210114012755.1106-1-yao.jin@linux.intel.com>
+ <20210114190032.GC1416940@krava>
+ <20210115202814.GM457607@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <41ca9f90-63e3-f991-3f78-433f77250527@oracle.com>
+In-Reply-To: <20210115202814.GM457607@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:05:29PM -0800, Mike Kravetz wrote:
-> I went back and took a closer look.  Migration is the reason the existing
-> page_huge_active interfaces were introduced.  And, the only use of the
-> page_huge_active check is to determine if a page can be migrated.  So,
-> I think 'Migratable' may be the most suitable name.
+Em Fri, Jan 15, 2021 at 05:28:14PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Thu, Jan 14, 2021 at 08:00:32PM +0100, Jiri Olsa escreveu:
+> > On Thu, Jan 14, 2021 at 09:27:55AM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > >      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+> > >      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+> > >      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+> > >      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+> > >      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+> > >      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+> > >      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+> > >      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+> > >      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+> > >      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+> > >      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+> > >      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+> > >      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+> > >      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+> > > 
+> > > On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+> > > is not changed.
+> > > 
+> > > Reported-by: Huang Ying <ying.huang@intel.com>
+> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> > > ---
+> > > v6:
+> > >  Fix the perf test python failure by adding hashmap.c to python-ext-sources.
+> > > 
+> > >  root@kbl-ppc:~# ./perf test python
+> > >  19: 'import perf' in python                                         : Ok
+> > 
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> 
+> Jin, this is breaking the build in some 32-bit system, can you please
+> take a look to validate these warnings?
 
-Ok, I did not know that. Let us stick with 'Migratable' then.
+One such system:
 
-> To address the concern about not all hugetlb sizes are migratable, we can
-> just make a check before setting the flag.  This should even help in the
-> migration/offline paths as we will know sooner if the page can be
-> migrated or not.
+  28    13.75 debian:experimental-x-mipsel  : FAIL mipsel-linux-gnu-gcc (Debian 10.2.1-3) 10.2.1 20201224
 
-This sounds like a good idea to me.
-
-> We can address naming in the 'migrating free hugetlb pages' issue when
-> that code is written.
-
-Sure, it was just a suggestion as when I though about that something
-like 'InUse' or 'Active' made more sense to me, but your point is valid.
-
-Sorry for the confusion.
-
-About that alloc_contig_range topic, I would like to take a look unless
-someone is already on it or about to be.
-
-Thanks Mike for the time ;-)
-
+ 
+>   CC       /tmp/build/perf/util/srcline.o
+> util/stat.c: In function 'pkg_id_hash':
+> util/stat.c:285:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>   return (int64_t)key & 0xffffffff;
+>          ^
+> util/stat.c: In function 'pkg_id_equal':
+> util/stat.c:291:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>   return (int64_t)key1 == (int64_t)key2;
+>          ^
+> util/stat.c:291:26: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>   return (int64_t)key1 == (int64_t)key2;
+>                           ^
+> util/stat.c: In function 'check_per_pkg':
+> util/stat.c:342:26: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>   if (hashmap__find(mask, (void *)key, NULL))
+>                           ^
+> util/stat.c:345:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>    ret = hashmap__add(mask, (void *)key, (void *)1);
+>                             ^
+>   CC       /tmp/build/perf/tests/expand-cgroup.o
 
 -- 
-Oscar Salvador
-SUSE L3
+
+- Arnaldo
