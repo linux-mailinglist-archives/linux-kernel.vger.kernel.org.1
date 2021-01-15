@@ -2,138 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA2F2F70A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339D82F70A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732082AbhAOChA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:37:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:59178 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbhAOCg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:36:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3801FD6E;
-        Thu, 14 Jan 2021 18:36:14 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FF153F66E;
-        Thu, 14 Jan 2021 18:36:11 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH V2 08/11] coresight: core: Add support for dedicated
- percpu sinks
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-9-git-send-email-anshuman.khandual@arm.com>
- <83939b79-31de-2984-7418-7e4c026dba3a@arm.com>
-Message-ID: <6dc0baeb-cc9b-562b-ac4d-03fe894be099@arm.com>
-Date:   Fri, 15 Jan 2021 08:06:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732228AbhAOCir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbhAOCir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:38:47 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FDEC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:38:06 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id g15so5060793pgu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 18:38:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=IfkswvJ+WT98pmcPH/y83e9uI74Y39PRJ7kSQcG7VDE=;
+        b=OLMKXlKGUaSp/DoMdWjeLPA8oKDvg/T0PB5ioM/AQpS5MuZjjQYk8OToEyig4x62Am
+         g4/AWLBPxQdDsVHMEQEdUs2E94r0GLl0W81uaZTyuXgP1RP9LCiuIEhAOdBW54lrrgO2
+         h0YppKIj0sFUg/0bMSMvOvUfdBiYbKlysWFXk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=IfkswvJ+WT98pmcPH/y83e9uI74Y39PRJ7kSQcG7VDE=;
+        b=Pj4O+Ua9sP44Ez+67fS/+0as8Wf4XP19EoRZsC/OvJQEhxjyXOWSsCnkOjTtDUXVCI
+         NJOjBkPSI+obv5yL9z1q3/leaA1e4OzEvSbd/BKUzocOw9Hq6uNjV8Tn84ph8UUBG87j
+         utWdXXMiehvxdYbgVPMqFiPzZwqaEK29YOq7vbZdu9SYx60U9wolIaFgq9Cn4QGDbhnP
+         VPnnjQ4GE21A1/N/MFn5/KcDBbVYs7DAxuoq2gvj7hzXNPKpmVMC3iMx7LDrBJktGtrO
+         51P1HPcwVAAjRyKxuMXXVIcji5eTPtxt9GTAvXphKaaJhook8Va6HrrOR1QpU/veiK2j
+         HH2A==
+X-Gm-Message-State: AOAM532yhMHPfq59c+O+jb6IQlgsG/KgZh9DcdsSg9DfmmUE3+r6TGnh
+        uearcVntsJ2Z7hAeWSG1q6ck9Q==
+X-Google-Smtp-Source: ABdhPJxq3/PXGO4zHNtGU/8aBUboJyQEuN+jDyp8SClyYxh5r8aS7YFiBZMJIxc3mNMEl34NhzMjmQ==
+X-Received: by 2002:a62:6845:0:b029:1ae:2731:8a89 with SMTP id d66-20020a6268450000b02901ae27318a89mr10641554pfc.73.1610678286400;
+        Thu, 14 Jan 2021 18:38:06 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id d36sm6536270pgm.77.2021.01.14.18.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 18:38:05 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <83939b79-31de-2984-7418-7e4c026dba3a@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210114183010.v6.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+References: <20210114183010.v6.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+Subject: Re: [PATCH v6 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>,
+        dmitry.torokhov@gmail.com
+Date:   Thu, 14 Jan 2021 18:38:04 -0800
+Message-ID: <161067828422.3661239.16933057782247961610@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Philip Chen (2021-01-14 18:30:30)
+> Add a new property `function-row-physmap` to the
+> device tree for the custom keyboard top row design.
+>=20
+> The property describes the rows/columns of the top row keys
+> from left to right.
+>=20
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
 
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-On 1/13/21 3:13 PM, Suzuki K Poulose wrote:
-> On 1/13/21 4:18 AM, Anshuman Khandual wrote:
->> Add support for dedicated sinks that are bound to individual CPUs. (e.g,
->> TRBE). To allow quicker access to the sink for a given CPU bound source,
->> keep a percpu array of the sink devices. Also, add support for building
->> a path to the CPU local sink from the ETM.
->>
->> This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
->> This new sink type is exclusively available and can only work with percpu
->> source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
->>
->> This defines a percpu structure that accommodates a single coresight_device
->> which can be used to store an initialized instance from a sink driver. As
->> these sinks are exclusively linked and dependent on corresponding percpu
->> sources devices, they should also be the default sink device during a perf
->> session.
->>
->> Outwards device connections are scanned while establishing paths between a
->> source and a sink device. But such connections are not present for certain
->> percpu source and sink devices which are exclusively linked and dependent.
->> Build the path directly and skip connection scanning for such devices.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-core.c | 14 ++++++++++++++
->>   include/linux/coresight.h                    | 12 ++++++++++++
->>   2 files changed, 26 insertions(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
->> index 0062c89..b300606 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -23,6 +23,7 @@
->>   #include "coresight-priv.h"
->>     static DEFINE_MUTEX(coresight_mutex);
->> +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
->>     /**
->>    * struct coresight_node - elements of a path, from source to sink
->> @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
->>       if (csdev == sink)
->>           goto out;
->>   +    if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
->> +        sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
->> +        _coresight_build_path(sink, sink, path);
->> +        found = true;
->> +        goto out;
->> +    }
->> +
->>       /* Not a sink - recursively explore each port found on this element */
->>       for (i = 0; i < csdev->pdata->nr_outport; i++) {
->>           struct coresight_device *child_dev;
->> @@ -998,6 +1006,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
->>   {
->>       int depth = 0;
->>   +    if (coresight_is_percpu_source(csdev)) {
-> 
-> On a system without per_cpu sink, this would reset the default sink for the source device
-> every single time and fallback to searching every single time.
+One nit below.
 
-Right.
+> diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.=
+yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> index 8e50c14a9d778..a742b0777ee6d 100644
+> --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> @@ -43,6 +54,18 @@ examples:
+>          keypad,num-rows =3D <8>;
+>          keypad,num-columns =3D <13>;
+>          google,needs-ghost-filter;
+> +        function-row-physmap =3D <
+> +                0x00020000      /* T1 */
+> +                0x03020000      /* T2 */
+> +                0x02020000      /* T3 */
+> +                0x01020000      /* T4 */
+> +                0x03040000      /* T5 */
+> +                0x02040000      /* T6 */
+> +                0x01040000      /* T7 */
+> +                0x02090000      /* T8 */
+> +                0x01090000      /* T9 */
+> +                0x00040000      /* T10 */
 
-> So I think it would be better if did check if the def_sink was not set.
-> We could fold this into the case below may be. i.e,
-> 
-> 
->     if (!csdev->def_sink) {
->         if (coresight_is_percpu_source(csdev))
->             csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
->         if (!csdev->def_sink)            csdev->def_sink = coresight_find_sink(csdev, &depth);
->     }
-> 
-> Otherwise looks good to me.
-
-struct coresight_device *
-coresight_find_default_sink(struct coresight_device *csdev)
-{
-        int depth = 0;
-
-        /* look for a default sink if we have not found for this device */
-        if (!csdev->def_sink) {
-                if (coresight_is_percpu_source(csdev))
-                        csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
-                if (!csdev->def_sink)
-                        csdev->def_sink = coresight_find_sink(csdev, &depth);
-        }
-        return csdev->def_sink;
-}
-
-Would this be better instead ? coresight_find_sink() is invoked both when the
-source is not percpu (traditional coresight sources) and also as a fallback in
-case a percpu sink is not found for the percpu source device.
+Can we include the header file for MATRIX_KEY so we can use the macro
+here?
