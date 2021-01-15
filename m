@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCFF2F7BB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427B62F7B2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 14:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732665AbhAOMbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:31:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
+        id S1733090AbhAOMdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:33:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732552AbhAOMbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:31:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8C723356;
-        Fri, 15 Jan 2021 12:30:47 +0000 (UTC)
+        id S1731147AbhAOMdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:33:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5B3823370;
+        Fri, 15 Jan 2021 12:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610713848;
-        bh=gQXy+mR9D1IBVflhFmLHtMzWnt6Si8GyfQOWY9wZi1k=;
+        s=korg; t=1610713971;
+        bh=NjIcjsNUDRZit9ds32hhnoD0fdbR8WXH7Dg2O1I7FH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Blx4PZ5ahhfrk4vXLn2Jz7LHg+Tc5+Vn+nuUzSQXEjNuU4YIS8FBs9pFBuM71SZM6
-         0H0LW6bDbJkZ4jGriXLYGF0cq+l9CFCmUEgA0tMLw1+PIO6ekMZ3V4H5OByC2x1A1V
-         VJfYjJ+QEt9y60+brcKfijayNXXrUV53Zey0D4Co=
+        b=Ze/g+niQX20lQ6j8Cx3Cv791XPrCT2Og3T2nJsxZjEZkfSMpSyI4FThY8bOx+5578
+         sXoMFZb1h7zHM8Lv3rYYWjJnTaebL1NeEHX0fjatItVAtvbDQJp8VUl9OtwBENdjly
+         /QejUfzeTH0v9izKuNOnZbRmqOlxzx6+iPpkt6ms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Perle <christian.perle@secunet.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
+        David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 08/25] net: ip: always refragment ip defragmented packets
+Subject: [PATCH 4.19 09/43] net: ipv6: fib: flush exceptions when purging route
 Date:   Fri, 15 Jan 2021 13:27:39 +0100
-Message-Id: <20210115121957.096031181@linuxfoundation.org>
+Message-Id: <20210115121957.491877723@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
-References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
+References: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Sean Tranchetti <stranche@codeaurora.org>
 
-[ Upstream commit bb4cc1a18856a73f0ff5137df0c2a31f4c50f6cf ]
+[ Upstream commit d8f5c29653c3f6995e8979be5623d263e92f6b86 ]
 
-Conntrack reassembly records the largest fragment size seen in IPCB.
-However, when this gets forwarded/transmitted, fragmentation will only
-be forced if one of the fragmented packets had the DF bit set.
+Route removal is handled by two code paths. The main removal path is via
+fib6_del_route() which will handle purging any PMTU exceptions from the
+cache, removing all per-cpu copies of the DST entry used by the route, and
+releasing the fib6_info struct.
 
-In that case, a flag in IPCB will force fragmentation even if the
-MTU is large enough.
+The second removal location is during fib6_add_rt2node() during a route
+replacement operation. This path also calls fib6_purge_rt() to handle
+cleaning up the per-cpu copies of the DST entries and releasing the
+fib6_info associated with the older route, but it does not flush any PMTU
+exceptions that the older route had. Since the older route is removed from
+the tree during the replacement, we lose any way of accessing it again.
 
-This should work fine, but this breaks with ip tunnels.
-Consider client that sends a UDP datagram of size X to another host.
+As these lingering DSTs and the fib6_info struct are holding references to
+the underlying netdevice struct as well, unregistering that device from the
+kernel can never complete.
 
-The client fragments the datagram, so two packets, of size y and z, are
-sent. DF bit is not set on any of these packets.
-
-Middlebox netfilter reassembles those packets back to single size-X
-packet, before routing decision.
-
-packet-size-vs-mtu checks in ip_forward are irrelevant, because DF bit
-isn't set.  At output time, ip refragmentation is skipped as well
-because x is still smaller than the mtu of the output device.
-
-If ttransmit device is an ip tunnel, the packet size increases to
-x+overhead.
-
-Also, tunnel might be configured to force DF bit on outer header.
-
-In this case, packet will be dropped (exceeds MTU) and an ICMP error is
-generated back to sender.
-
-But sender already respects the announced MTU, all the packets that
-it sent did fit the announced mtu.
-
-Force refragmentation as per original sizes unconditionally so ip tunnel
-will encapsulate the fragments instead.
-
-The only other solution I see is to place ip refragmentation in
-the ip_tunnel code to handle this case.
-
-Fixes: d6b915e29f4ad ("ip_fragment: don't forward defragmented DF packet")
-Reported-by: Christian Perle <christian.perle@secunet.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 2b760fcf5cfb3 ("ipv6: hook up exception table to store dst cache")
+Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Link: https://lore.kernel.org/r/1609892546-11389-1-git-send-email-stranche@quicinc.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_output.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/ip6_fib.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -300,7 +300,7 @@ static int ip_finish_output(struct net *
- 	if (skb_is_gso(skb))
- 		return ip_finish_output_gso(net, sk, skb, mtu);
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -906,6 +906,8 @@ static void fib6_purge_rt(struct fib6_in
+ {
+ 	struct fib6_table *table = rt->fib6_table;
  
--	if (skb->len > mtu || (IPCB(skb)->flags & IPSKB_FRAG_PMTU))
-+	if (skb->len > mtu || IPCB(skb)->frag_max_size)
- 		return ip_fragment(net, sk, skb, mtu, ip_finish_output2);
++	/* Flush all cached dst in exception table */
++	rt6_flush_exceptions(rt);
+ 	if (rt->rt6i_pcpu)
+ 		fib6_drop_pcpu_from(rt, table);
  
- 	return ip_finish_output2(net, sk, skb);
+@@ -1756,9 +1758,6 @@ static void fib6_del_route(struct fib6_t
+ 	net->ipv6.rt6_stats->fib_rt_entries--;
+ 	net->ipv6.rt6_stats->fib_discarded_routes++;
+ 
+-	/* Flush all cached dst in exception table */
+-	rt6_flush_exceptions(rt);
+-
+ 	/* Reset round-robin state, if necessary */
+ 	if (rcu_access_pointer(fn->rr_ptr) == rt)
+ 		fn->rr_ptr = NULL;
 
 
