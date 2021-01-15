@@ -2,85 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC852F87CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5322F87B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 22:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbhAOVmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 16:42:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S1726266AbhAOVcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 16:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbhAOVmb (ORCPT
+        with ESMTP id S1725805AbhAOVck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:42:31 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE55C061757;
-        Fri, 15 Jan 2021 13:41:51 -0800 (PST)
-Received: from dslb-188-096-136-022.188.096.pools.vodafone-ip.de ([188.96.136.22] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1l0WRp-00052t-MJ; Fri, 15 Jan 2021 22:15:57 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v4] PCI: brcmstb: Remove chained IRQ handler and data in one go
-Date:   Fri, 15 Jan 2021 22:15:32 +0100
-Message-Id: <20210115211532.19837-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201108184208.19790-1-martin@kaiser.cx>
-References: <20201108184208.19790-1-martin@kaiser.cx>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 15 Jan 2021 16:32:40 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81802C061757;
+        Fri, 15 Jan 2021 13:31:59 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id t29so1178465pfg.11;
+        Fri, 15 Jan 2021 13:31:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=daB8SKpGoYp46Xadk+GW4C9RuVGs4Ns6xxK2/c/M4MU=;
+        b=UqaWxJEd68lv54fW0hnFrhSSnn7PZeLuMOUFfl+E6+RQoeRqQSYrb2IdPG5GpH8Ont
+         ESmnjvp5HuyGNNHtmygqq4cT59G3LoQdelHlRoDED0j7FHM/XagKJscCpjT0J0NwmmSM
+         V5hy6MPokLOo1e7DDRZ5wDLdmhBih/WqdZlNv1i0USXAvGgH25LqYpaBxivf/zo+USWA
+         wSW2yFDrLp3tsdzLwlggJaRRAW3nn3DfOULO9uockYQvEmKvYqd46nAiH6caNDb40jKv
+         qNX7/5pJCSiR2dbawJOFY0NsL6nJuGmAPxrDo7R4TCzWfplx8rM8IFN5H5Q3BLgPa5PI
+         HKsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=daB8SKpGoYp46Xadk+GW4C9RuVGs4Ns6xxK2/c/M4MU=;
+        b=EpNwUL9bq60fB0ueqb403P3nfB2g3gjmTnBVsqwqInEy6RDGKC7kpmybEJBPiY5uX1
+         kZ3KIxKxZvea1DMjb01bm7qFdT593VI6hNIx4aF+vcC275Fu6V6y9WjGJWypzvZfwhIp
+         2nmxSkBvYgtGQk4+wpo7wshP72P6DQ4TeiZSsAPF4BfpHKl0mTCjv+HMiLWxhqixCfvI
+         jNGk1Bj5RBfZn9pDps3+5OA5yX/IXCSJLsUxx4vgpk6S6K+5uQKZhGEKaVrPaL8XTr77
+         d6W99r/wXfU/EdUxPEbkPbyFsZevx7pQVXierYgDeElTrzKsOOFTO1jUCniL5FfTH+Vn
+         qzBA==
+X-Gm-Message-State: AOAM533hMygA4UkV1NPqecs7FU8R3geXeO1vnHbeZybJMYjijVyWVAoK
+        9IbDanWiTX6Y2Z3+hCZHyC1Zi8PobMw=
+X-Google-Smtp-Source: ABdhPJxDQTrH5NaVjuHXHKhKIBYFgbOsd48youJAXEKgLfsPN9Y3H21P6fWdngiz8j2HeC/ubihCyA==
+X-Received: by 2002:a63:4c4f:: with SMTP id m15mr14492223pgl.54.1610746318686;
+        Fri, 15 Jan 2021 13:31:58 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id m22sm9252250pgj.46.2021.01.15.13.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 13:31:58 -0800 (PST)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Subject: [PATCH] usb: bdc: Remove the BDC PCI driver
+Date:   Fri, 15 Jan 2021 16:31:42 -0500
+Message-Id: <20210115213142.35003-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call irq_set_chained_handler_and_data() to clear the chained handler
-and the handler's data under irq_desc->lock.
+The BDC PCI driver was only used for design verification with
+an PCI/FPGA board. The board no longer exists and is not in use
+anywhere. All instances of this core now exist as a memory mapped
+device on the platform bus.
 
-See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained
-IRQ handler").
+NOTE: This only removes the PCI driver and does not remove the
+platform driver.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
 ---
-Hi Lorenzo,
-I sent this simple patch back in November, it seems that it got lost
-somehow. Is there any chance that you can apply it?
-Thanks, Martin
+ drivers/usb/gadget/udc/bdc/Kconfig   |  11 ---
+ drivers/usb/gadget/udc/bdc/Makefile  |   2 -
+ drivers/usb/gadget/udc/bdc/bdc_pci.c | 128 ---------------------------
+ 3 files changed, 141 deletions(-)
+ delete mode 100644 drivers/usb/gadget/udc/bdc/bdc_pci.c
 
-v4:
- - resend after two months
- - clean up the commit message while at it
-v3:
- - rewrite the commit message again. this is no race condition if we
-   remove the interrupt handler. sorry for the noise.
-v2:
- - rewrite the commit message to clarify that this is a bugfix
-
- drivers/pci/controller/pcie-brcmstb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index d41257f43a8f..95f6dd93ceae 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -603,8 +603,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+diff --git a/drivers/usb/gadget/udc/bdc/Kconfig b/drivers/usb/gadget/udc/bdc/Kconfig
+index 3e88c7670b2e..8bedb7f64eba 100644
+--- a/drivers/usb/gadget/udc/bdc/Kconfig
++++ b/drivers/usb/gadget/udc/bdc/Kconfig
+@@ -11,14 +11,3 @@ config USB_BDC_UDC
  
- 	if (!msi)
- 		return;
--	irq_set_chained_handler(msi->irq, NULL);
--	irq_set_handler_data(msi->irq, NULL);
-+	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
- 	brcm_free_domains(msi);
- }
- 
+ 	Say "y" here to link the driver statically, or "m" to build a dynamically
+ 	linked module called "bdc".
+-
+-if USB_BDC_UDC
+-
+-comment "Platform Support"
+-config	USB_BDC_PCI
+-	tristate "BDC support for PCIe based platforms"
+-	depends on USB_PCI
+-	default USB_BDC_UDC
+-	help
+-		Enable support for platforms which have BDC connected through PCIe, such as Lego3 FPGA platform.
+-endif
+diff --git a/drivers/usb/gadget/udc/bdc/Makefile b/drivers/usb/gadget/udc/bdc/Makefile
+index 52cb5ea48bbe..1b21c9518efc 100644
+--- a/drivers/usb/gadget/udc/bdc/Makefile
++++ b/drivers/usb/gadget/udc/bdc/Makefile
+@@ -5,5 +5,3 @@ bdc-y	:= bdc_core.o bdc_cmd.o bdc_ep.o bdc_udc.o
+ ifneq ($(CONFIG_USB_GADGET_VERBOSE),)
+ 	bdc-y			+= bdc_dbg.o
+ endif
+-
+-obj-$(CONFIG_USB_BDC_PCI)	+= bdc_pci.o
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_pci.c b/drivers/usb/gadget/udc/bdc/bdc_pci.c
+deleted file mode 100644
+index 6dbc489513cd..000000000000
+--- a/drivers/usb/gadget/udc/bdc/bdc_pci.c
++++ /dev/null
+@@ -1,128 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-/*
+- * bdc_pci.c - BRCM BDC USB3.0 device controller PCI interface file.
+- *
+- * Copyright (C) 2014 Broadcom Corporation
+- *
+- * Author: Ashwini Pahuja
+- *
+- * Based on drivers under drivers/usb/
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/slab.h>
+-#include <linux/pci.h>
+-#include <linux/pci_ids.h>
+-#include <linux/platform_device.h>
+-
+-#include "bdc.h"
+-
+-#define BDC_PCI_PID 0x1570
+-
+-struct bdc_pci {
+-	struct device *dev;
+-	struct platform_device *bdc;
+-};
+-
+-static int bdc_setup_msi(struct pci_dev *pci)
+-{
+-	int ret;
+-
+-	ret = pci_enable_msi(pci);
+-	if (ret) {
+-		pr_err("failed to allocate MSI entry\n");
+-		return ret;
+-	}
+-
+-	return ret;
+-}
+-
+-static int bdc_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+-{
+-	struct resource res[2];
+-	struct platform_device *bdc;
+-	struct bdc_pci *glue;
+-	int ret = -ENOMEM;
+-
+-	glue = devm_kzalloc(&pci->dev, sizeof(*glue), GFP_KERNEL);
+-	if (!glue)
+-		return -ENOMEM;
+-
+-	glue->dev = &pci->dev;
+-	ret = pci_enable_device(pci);
+-	if (ret) {
+-		dev_err(&pci->dev, "failed to enable pci device\n");
+-		return -ENODEV;
+-	}
+-	pci_set_master(pci);
+-
+-	bdc = platform_device_alloc(BRCM_BDC_NAME, PLATFORM_DEVID_AUTO);
+-	if (!bdc)
+-		return -ENOMEM;
+-
+-	memset(res, 0x00, sizeof(struct resource) * ARRAY_SIZE(res));
+-	bdc_setup_msi(pci);
+-
+-	res[0].start	= pci_resource_start(pci, 0);
+-	res[0].end	= pci_resource_end(pci, 0);
+-	res[0].name	= BRCM_BDC_NAME;
+-	res[0].flags	= IORESOURCE_MEM;
+-
+-	res[1].start	= pci->irq;
+-	res[1].name	= BRCM_BDC_NAME;
+-	res[1].flags	= IORESOURCE_IRQ;
+-
+-	ret = platform_device_add_resources(bdc, res, ARRAY_SIZE(res));
+-	if (ret) {
+-		dev_err(&pci->dev,
+-			"couldn't add resources to bdc device\n");
+-		platform_device_put(bdc);
+-		return ret;
+-	}
+-
+-	pci_set_drvdata(pci, glue);
+-
+-	dma_set_coherent_mask(&bdc->dev, pci->dev.coherent_dma_mask);
+-
+-	bdc->dev.dma_mask = pci->dev.dma_mask;
+-	bdc->dev.dma_parms = pci->dev.dma_parms;
+-	bdc->dev.parent = &pci->dev;
+-	glue->bdc = bdc;
+-
+-	ret = platform_device_add(bdc);
+-	if (ret) {
+-		dev_err(&pci->dev, "failed to register bdc device\n");
+-		platform_device_put(bdc);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static void bdc_pci_remove(struct pci_dev *pci)
+-{
+-	struct bdc_pci *glue = pci_get_drvdata(pci);
+-
+-	platform_device_unregister(glue->bdc);
+-	pci_disable_msi(pci);
+-}
+-
+-static struct pci_device_id bdc_pci_id_table[] = {
+-	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, BDC_PCI_PID), },
+-	{} /* Terminating Entry */
+-};
+-
+-MODULE_DEVICE_TABLE(pci, bdc_pci_id_table);
+-
+-static struct pci_driver bdc_pci_driver = {
+-	.name = "bdc-pci",
+-	.id_table = bdc_pci_id_table,
+-	.probe = bdc_pci_probe,
+-	.remove = bdc_pci_remove,
+-};
+-
+-MODULE_AUTHOR("Ashwini Pahuja <ashwini.linux@gmail.com>");
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("BRCM BDC USB3 PCI Glue layer");
+-module_pci_driver(bdc_pci_driver);
 -- 
-2.20.1
+2.17.1
 
