@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D912F7ADC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8251F2F7A33
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732351AbhAOMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:35:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
+        id S2388056AbhAOMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387517AbhAOMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:34:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B75E23339;
-        Fri, 15 Jan 2021 12:34:03 +0000 (UTC)
+        id S2388055AbhAOMhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:37:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A44221F7;
+        Fri, 15 Jan 2021 12:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610714043;
-        bh=k8S64b0wGE0CoK+4B8j03894/8mWYmuq6azR1OqCu9o=;
+        s=korg; t=1610714250;
+        bh=wE75PDFaHZkN7JcxnkK7MJaJs7Pq9I4BTZG8r9FSRRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzSlQ3l+0hIoetFutkdvGh6PXe+UKaZiM+TdUWOi77CHNxKJPFhKCL06HmShQUJs6
-         UZ4Ek3zxoI2xeKmYIPjbdlHQztAm6LMX+pGSDR+2ooGQrzZE2ziqfm9he8O2/Qa4yT
-         hna2X7CdD6y/3H2cnZEesaI9ko06+tmA2/68+GI0=
+        b=vNQAessvayhzKZWAyNP8Ao0/cLPXfGASvMAxB3wkHSIOoRag1/iCFLnh+NgG99YLN
+         VFGso0GJmKKY+uWi+JBSBeeoC77+I7e5kVVUG62SpkfbLLx4eEMZT/4m05nTuuc+o+
+         ZYhw7JJA5mX4wsvp1abbq6BCuDwZLef4yLsSPWSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 21/62] chtls: Fix hardware tid leak
-Date:   Fri, 15 Jan 2021 13:27:43 +0100
-Message-Id: <20210115121959.431107821@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Jasiak?= <pawel@jasiak.xyz>,
+        Brian Gerst <brgerst@gmail.com>, Borislav Petkov <bp@suse.de>,
+        Jan Kara <jack@suse.cz>, Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH 5.10 051/103] fanotify: Fix sys_fanotify_mark() on native x86-32
+Date:   Fri, 15 Jan 2021 13:27:44 +0100
+Message-Id: <20210115122008.527139997@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210115121958.391610178@linuxfoundation.org>
-References: <20210115121958.391610178@linuxfoundation.org>
+In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+References: <20210115122006.047132306@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +41,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ayush Sawal <ayush.sawal@chelsio.com>
+From: Brian Gerst <brgerst@gmail.com>
 
-[ Upstream commit 717df0f4cdc9044c415431a3522b3e9ccca5b4a3 ]
+commit 2ca408d9c749c32288bc28725f9f12ba30299e8f upstream.
 
-send_abort_rpl() is not calculating cpl_abort_req_rss offset and
-ends up sending wrong TID with abort_rpl WR causng tid leaks.
-Replaced send_abort_rpl() with chtls_send_abort_rpl() as it is
-redundant.
+Commit
 
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
-Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+  121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
+
+converted native x86-32 which take 64-bit arguments to use the
+compat handlers to allow conversion to passing args via pt_regs.
+sys_fanotify_mark() was however missed, as it has a general compat
+handler. Add a config option that will use the syscall wrapper that
+takes the split args for native 32-bit.
+
+ [ bp: Fix typo in Kconfig help text. ]
+
+Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
+Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Jan Kara <jack@suse.cz>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20201130223059.101286-1-brgerst@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/crypto/chelsio/chtls/chtls_cm.c |   39 ++------------------------------
- 1 file changed, 3 insertions(+), 36 deletions(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -1828,39 +1828,6 @@ static void send_defer_abort_rpl(struct
- 	kfree_skb(skb);
+---
+ arch/Kconfig                       |    6 ++++++
+ arch/x86/Kconfig                   |    1 +
+ fs/notify/fanotify/fanotify_user.c |   17 +++++++----------
+ include/linux/syscalls.h           |   24 ++++++++++++++++++++++++
+ 4 files changed, 38 insertions(+), 10 deletions(-)
+
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1053,6 +1053,12 @@ config ARCH_WANT_LD_ORPHAN_WARN
+ 	  by the linker, since the locations of such sections can change between linker
+ 	  versions.
+ 
++config ARCH_SPLIT_ARG64
++	bool
++	help
++	   If a 32-bit architecture requires 64-bit arguments to be split into
++	   pairs of 32-bit arguments, select this option.
++
+ source "kernel/gcov/Kconfig"
+ 
+ source "scripts/gcc-plugins/Kconfig"
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -18,6 +18,7 @@ config X86_32
+ 	select MODULES_USE_ELF_REL
+ 	select OLD_SIGACTION
+ 	select GENERIC_VDSO_32
++	select ARCH_SPLIT_ARG64
+ 
+ config X86_64
+ 	def_bool y
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -1285,26 +1285,23 @@ fput_and_out:
+ 	return ret;
  }
  
--static void send_abort_rpl(struct sock *sk, struct sk_buff *skb,
--			   struct chtls_dev *cdev, int status, int queue)
--{
--	struct cpl_abort_req_rss *req = cplhdr(skb);
--	struct sk_buff *reply_skb;
--	struct chtls_sock *csk;
--
--	csk = rcu_dereference_sk_user_data(sk);
--
--	reply_skb = alloc_skb(sizeof(struct cpl_abort_rpl),
--			      GFP_KERNEL);
--
--	if (!reply_skb) {
--		req->status = (queue << 1);
--		send_defer_abort_rpl(cdev, skb);
--		return;
--	}
--
--	set_abort_rpl_wr(reply_skb, GET_TID(req), status);
--	kfree_skb(skb);
--
--	set_wr_txq(reply_skb, CPL_PRIORITY_DATA, queue);
--	if (csk_conn_inline(csk)) {
--		struct l2t_entry *e = csk->l2t_entry;
--
--		if (e && sk->sk_state != TCP_SYN_RECV) {
--			cxgb4_l2t_send(csk->egress_dev, reply_skb, e);
--			return;
--		}
--	}
--	cxgb4_ofld_send(cdev->lldi->ports[0], reply_skb);
--}
--
++#ifndef CONFIG_ARCH_SPLIT_ARG64
+ SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
+ 			      __u64, mask, int, dfd,
+ 			      const char  __user *, pathname)
+ {
+ 	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
+ }
++#endif
+ 
+-#ifdef CONFIG_COMPAT
+-COMPAT_SYSCALL_DEFINE6(fanotify_mark,
++#if defined(CONFIG_ARCH_SPLIT_ARG64) || defined(CONFIG_COMPAT)
++SYSCALL32_DEFINE6(fanotify_mark,
+ 				int, fanotify_fd, unsigned int, flags,
+-				__u32, mask0, __u32, mask1, int, dfd,
++				SC_ARG64(mask), int, dfd,
+ 				const char  __user *, pathname)
+ {
+-	return do_fanotify_mark(fanotify_fd, flags,
+-#ifdef __BIG_ENDIAN
+-				((__u64)mask0 << 32) | mask1,
+-#else
+-				((__u64)mask1 << 32) | mask0,
+-#endif
+-				 dfd, pathname);
++	return do_fanotify_mark(fanotify_fd, flags, SC_VAL64(__u64, mask),
++				dfd, pathname);
+ }
+ #endif
+ 
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -251,6 +251,30 @@ static inline int is_syscall_trace_event
+ 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+ #endif /* __SYSCALL_DEFINEx */
+ 
++/* For split 64-bit arguments on 32-bit architectures */
++#ifdef __LITTLE_ENDIAN
++#define SC_ARG64(name) u32, name##_lo, u32, name##_hi
++#else
++#define SC_ARG64(name) u32, name##_hi, u32, name##_lo
++#endif
++#define SC_VAL64(type, name) ((type) name##_hi << 32 | name##_lo)
++
++#ifdef CONFIG_COMPAT
++#define SYSCALL32_DEFINE1 COMPAT_SYSCALL_DEFINE1
++#define SYSCALL32_DEFINE2 COMPAT_SYSCALL_DEFINE2
++#define SYSCALL32_DEFINE3 COMPAT_SYSCALL_DEFINE3
++#define SYSCALL32_DEFINE4 COMPAT_SYSCALL_DEFINE4
++#define SYSCALL32_DEFINE5 COMPAT_SYSCALL_DEFINE5
++#define SYSCALL32_DEFINE6 COMPAT_SYSCALL_DEFINE6
++#else
++#define SYSCALL32_DEFINE1 SYSCALL_DEFINE1
++#define SYSCALL32_DEFINE2 SYSCALL_DEFINE2
++#define SYSCALL32_DEFINE3 SYSCALL_DEFINE3
++#define SYSCALL32_DEFINE4 SYSCALL_DEFINE4
++#define SYSCALL32_DEFINE5 SYSCALL_DEFINE5
++#define SYSCALL32_DEFINE6 SYSCALL_DEFINE6
++#endif
++
  /*
-  * Add an skb to the deferred skb queue for processing from process context.
-  */
-@@ -1924,8 +1891,8 @@ static void bl_abort_syn_rcv(struct sock
- 
- 	skb->sk	= NULL;
- 	do_abort_syn_rcv(child, lsk);
--	send_abort_rpl(child, skb, BLOG_SKB_CB(skb)->cdev,
--		       CPL_ABORT_NO_RST, queue);
-+	chtls_send_abort_rpl(child, skb, BLOG_SKB_CB(skb)->cdev,
-+			     CPL_ABORT_NO_RST, queue);
- }
- 
- static int abort_syn_rcv(struct sock *sk, struct sk_buff *skb)
-@@ -1956,7 +1923,7 @@ static int abort_syn_rcv(struct sock *sk
- 		int queue = csk->txq_idx;
- 
- 		do_abort_syn_rcv(sk, psk);
--		send_abort_rpl(sk, skb, cdev, CPL_ABORT_NO_RST, queue);
-+		chtls_send_abort_rpl(sk, skb, cdev, CPL_ABORT_NO_RST, queue);
- 	} else {
- 		skb->sk = sk;
- 		BLOG_SKB_CB(skb)->backlog_rcv = bl_abort_syn_rcv;
+  * Called before coming back to user-mode. Returning to user-mode with an
+  * address limit different than USER_DS can allow to overwrite kernel memory.
 
 
