@@ -2,191 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6422F777C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8442F777F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 12:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbhAOLTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 06:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
+        id S1728249AbhAOLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 06:19:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbhAOLTI (ORCPT
+        with ESMTP id S1727009AbhAOLTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 06:19:08 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D05C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:18:28 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id i63so7001927wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 03:18:28 -0800 (PST)
+        Fri, 15 Jan 2021 06:19:22 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C8C061793;
+        Fri, 15 Jan 2021 03:18:41 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h205so12584105lfd.5;
+        Fri, 15 Jan 2021 03:18:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1v0kX8Ej1D5vKbj6l4aBaWcu5DlgLp/Dsh/tnFpcg+Y=;
-        b=q3yaL+9Dr08XGvGA9C6LCEyO8dv4MnZdXyFkQYqmFx0J6077BQyNrC3ZfumRsecp3C
-         jhWw5mwhLJPw0Cs1JbrRKisZLtJwnz1td5U9T0NGKs1Du/ixjp/OJBAzJfzKRI6OcJk7
-         jMEwkkp1Tkj+4L5MV7I56bqhm0b41JzVf87hKjB9+45TNRkOJr4vpR/ubLc/6rtvmcJ5
-         7mCbPO3LDc6oV5qxhdZ2mVZdYUEoFwtOSOsE5jhkTTaKb96r2hJSt5iuNgvxYG8TmgQR
-         6/dS/oeqnNfc5YG3pyRPZOkm06JhrYQzWk/YJrzGR6qgls7QN+s9q82XGRS8f8pSX4Qd
-         is3g==
+         :content-disposition:in-reply-to:user-agent;
+        bh=8lRJYc4BKAdg1abXpS4nArMEOY798PG8SuBDu3ZJSlk=;
+        b=Z5AjfT+9sIEoizTRGkvN4w7h+aIbEWUFfVlvbDDmlnjohr4b0yWluxpJGKYyhP8D/V
+         I1i0WOneHrJlvabZSEV484vqeRo06wzgYuy4/74GQxjPiexyiI2Fkm1ofKktZpg7HkEF
+         r4ZvbU4mI0geYG/QB4JeSCJf9N8xgug1O0oF5ndx9wZAMViLLczKz9zrs25GRrbzUDEv
+         BJMyglfRGKtxkz4nP7IGeIWrG8nPeHLzf8SGJ9CXAJE6BD9YW/chFgczD1Sznmje0srx
+         hhkjxqAvvBo8ZwYRisJz7S9OxGneqG3bM72c4IQ6Shyld3PwIXKv9EAlWxxvF/sX+Hcn
+         DGOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1v0kX8Ej1D5vKbj6l4aBaWcu5DlgLp/Dsh/tnFpcg+Y=;
-        b=AKiJQuwghAYtaXuuXftyJNxPcpUhB8Q7Zc/tE3HJM/Jevw8CztZt9Ylp4jLGUVz1wt
-         PYTnyoKJJOoN8w45Rjesoe/KdATQzR5A04CuPFQ7KuEEAlXhW1mNroMZSuCoy5Qj1dti
-         Rxj2MRTWx29H+LXYd6438SFJ+0S6Fr3hwG0mweZFATfE31KCTvesfj6j31k/psXswS5p
-         Dji55Q4fmwl0PHgGdLc0+HqWdPYEZEgaJWaYvPi2hGUGnMhKpjPseJlSq7CBGVjsLAkF
-         9KzaYzYZnWTapOVc3hsaWh1dTVVcYw2FI/acfWYvDK80eco06lme3RvECWHRAgYlQ/gL
-         6t+w==
-X-Gm-Message-State: AOAM530rU3aj763noAgUu5WMl7fbqXCSiX4i6FT2seso2lnMBUClhbYv
-        PGIypCQwTBZoer6SaY0hVdF55A==
-X-Google-Smtp-Source: ABdhPJy6Ksm7TL3YP23vSBkfPg6+Ma2TEXquqULAQIh92rfS/zIKFK4APldrd16rYZnbmfKF7kRaEA==
-X-Received: by 2002:a05:600c:4417:: with SMTP id u23mr8306553wmn.100.1610709506910;
-        Fri, 15 Jan 2021 03:18:26 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id i18sm14818507wrp.74.2021.01.15.03.18.25
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8lRJYc4BKAdg1abXpS4nArMEOY798PG8SuBDu3ZJSlk=;
+        b=LrrYOgSvoFZZfGFNnQCC1EQB/hB+Mr7Iso+Vzx9YfpVJRYyTJBPT0AcVd9Zf2ycQkn
+         MMXWM+janQbwgGN73MKpjv/Of04ZJN5R/wU6VnATR6bW4mQdJKV6LzCt5aLNQelwhu/W
+         FpwFCnr7pVTL1hAlzK0bPbMpuIhRbGNbr4sLKYxSWq7dF4/mWtYy/unzBP2dfKgSv+Sd
+         xKtJ4veYKsG1iTUPWhhCC6bPThztZ9vtv72ZVfaI5FSEWMy0qeAuPqi75ekfPT9qkj1O
+         h6G0utJdCIX4lgGSuie1/eEFLalFB3EqVf4X7SRHcF/HDZOmXeiI1kgf66rx/o4HoBvC
+         zIjg==
+X-Gm-Message-State: AOAM5310ZbAGUg937/+/B6hZAW+6yXt0m4q0tsLjTE1oOjpBROFmbJYe
+        nUDAgUTF3RGvv9CzG83MYrc=
+X-Google-Smtp-Source: ABdhPJzgPbg0C6JprZSQzMH73kmf9AQHoEvG+h92c+jF6B1XAfqd45EqfR1dJgICUMDoG+cffcK6Cw==
+X-Received: by 2002:a05:6512:3157:: with SMTP id s23mr5355726lfi.275.1610709520473;
+        Fri, 15 Jan 2021 03:18:40 -0800 (PST)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id x125sm864994lff.58.2021.01.15.03.18.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 03:18:26 -0800 (PST)
-Date:   Fri, 15 Jan 2021 11:18:23 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Dany Madden <drt@linux.ibm.com>,
-        Daris A Nevil <dnevil@snmc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Erik Stahlman <erik@vt.edu>,
-        Geoff Levand <geoff@infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Allen <jallen@linux.vnet.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
-        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
-Message-ID: <20210115111823.GH3975472@dell>
-References: <20210113164123.1334116-1-lee.jones@linaro.org>
- <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114083349.GI3975472@dell>
- <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114195422.GB3975472@dell>
+        Fri, 15 Jan 2021 03:18:39 -0800 (PST)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 10FBIaNw004539;
+        Fri, 15 Jan 2021 14:18:37 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 10FBITBj004538;
+        Fri, 15 Jan 2021 14:18:29 +0300
+Date:   Fri, 15 Jan 2021 14:18:29 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Ernesto Corona <ernesto.corona@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Amithash Prasad <amithash@fb.com>, Rgrs <rgrs@protonmail.com>,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Yiwei Zhang <zzyiwei@google.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Steven Filary <steven.a.filary@intel.com>,
+        Alessandro Rubini <rubini@gnudd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Johan Hovold <johan@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>, Tony Luck <tony.luck@intel.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Patrick Williams <patrickw3@fb.com>,
+        Federico Vaga <federico.vaga@cern.ch>,
+        Oleksandr Shamray <oleksandrs@mellanox.com>,
+        Vadim Pasternak <vadimp@mellanox.com>
+Subject: Re: [PATCH v29 1/6] drivers: jtag: Add JTAG core driver
+Message-ID: <20210115111829.GB2971@home.paul.comp>
+References: <20200413222920.4722-1-ernesto.corona@intel.com>
+ <20200413222920.4722-2-ernesto.corona@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210114195422.GB3975472@dell>
+In-Reply-To: <20200413222920.4722-2-ernesto.corona@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021, Lee Jones wrote:
+On Mon, Apr 13, 2020 at 03:29:15PM -0700, Ernesto Corona wrote:
+> --- /dev/null
+> +++ b/drivers/jtag/jtag.c
+> +	 case JTAG_SIOCFREQ:
+> +		if (!jtag->ops->freq_set)
+> +			return -EOPNOTSUPP;
+> +
+> +		if (get_user(value, (__u32 __user *)arg))
+> +			return -EFAULT;
 
-> On Thu, 14 Jan 2021, Jakub Kicinski wrote:
-> 
-> > On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
-> > > On Wed, 13 Jan 2021, Jakub Kicinski wrote:
-> > > 
-> > > > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:  
-> > > > > Resending the stragglers again.                                                                                  
-> > > > > 
-> > > > > This set is part of a larger effort attempting to clean-up W=1                                                   
-> > > > > kernel builds, which are currently overwhelmingly riddled with                                                   
-> > > > > niggly little warnings.                                                                                          
-> > > > >                                                                                                                  
-> > > > > v2:                                                                                                              
-> > > > >  - Squashed IBM patches                                                                                      
-> > > > >  - Fixed real issue in SMSC
-> > > > >  - Added Andrew's Reviewed-by tags on remainder  
-> > > > 
-> > > > Does not apply, please rebase on net-next/master.  
-> > > 
-> > > These are based on Tuesday's next/master.
-> > 
-> > What's next/master?
-> 
-> I'm not sure if this is a joke, or not? :)
-> 
-> next/master == Linux Next.  The daily merged repo where all of the
-> *-next branches end up to ensure interoperability.  It's also the
-> branch that is most heavily tested by the auto-builders to ensure the
-> vast majority of issues are ironed out before hitting Mainline.
-> 
-> > This is net-next:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
-> 
-> Looks like net-next gets merged into next/master:
-> 
-> commit 452958f1f3d1c8980a8414f9c37c8c6de24c7d32
-> Merge: 1eabba209a17a f50e2f9f79164
-> Author: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date:   Thu Jan 14 10:35:40 2021 +1100
-> 
->     Merge remote-tracking branch 'net-next/master'
-> 
-> So I'm not sure what it's conflicting with.
-> 
-> Do you have patches in net-next that didn't make it into next/master
-> for some reason?
-> 
-> I'll try to rebase again tomorrow.
-> 
-> Hopefully I am able to reproduce your issue by then.
+Does this need to be a pointer to a variable even if it's just a
+number?
 
-Okay so my development branch rebased again with no issue.
+> +	case JTAG_IOCXFER:
+> +		if (copy_from_user(&xfer, (const void __user *)arg,
+> +				   sizeof(struct jtag_xfer)))
+> +			return -EFAULT;
+> +
+> +		if (xfer.length >= JTAG_MAX_XFER_DATA_LEN)
+> +			return -EINVAL;
+> +
+> +		if (xfer.type > JTAG_SDR_XFER)
+> +			return -EINVAL;
+> +
+> +		if (xfer.direction > JTAG_READ_WRITE_XFER)
+> +			return -EINVAL;
+> +
+> +		if (xfer.endstate > JTAG_STATE_UPDATEIR)
+> +			return -EINVAL;
+> +
+> +		data_size = DIV_ROUND_UP(xfer.length, BITS_PER_BYTE);
+> +		xfer_data = memdup_user(u64_to_user_ptr(xfer.tdio), data_size);
 
-I also took the liberty to checkout net-next and cherry-pick the
-patches [0], which again didn't cause a problem.
+So this might copy more bits than the user specified, but that's
+probably OK.
 
-I'm not sure what else to suggest.  Is your local copy up-to-date?
+> +		if (IS_ERR(xfer_data))
+> +			return -EFAULT;
+> +
+> +		err = jtag->ops->xfer(jtag, &xfer, xfer_data);
+> +		if (err) {
+> +			kfree(xfer_data);
+> +			return err;
+> +		}
+> +
+> +		err = copy_to_user(u64_to_user_ptr(xfer.tdio),
+> +				   (void *)xfer_data, data_size);
 
-[0]
+And this might overwrite some bits and it's not OK, at least not
+without a warning in the documentation.
 
-lee@dell:~/projects/linux/kernel [net-next]$ gcp 0cea4b05acd57..924e1f46aba5e
-Auto-merging drivers/net/ethernet/smsc/smc91x.c
-[net-next 19811db3120a2] net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
- Date: Mon Oct 19 12:47:11 2020 +0100
- 1 file changed, 1 insertion(+), 1 deletion(-)
-[net-next dc6f4490cb64e] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
- Date: Tue Oct 20 08:00:43 2020 +0100
- 1 file changed, 2 insertions(+), 2 deletions(-)
-[net-next a3363cb09ae59] net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function header
- Date: Tue Oct 20 09:05:38 2020 +0100
- 1 file changed, 1 insertion(+), 1 deletion(-)
-[net-next 005462f886c3e] net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en' parameter
- Date: Tue Oct 20 09:06:57 2020 +0100
- 1 file changed, 1 insertion(+), 1 deletion(-)
-Auto-merging drivers/net/xen-netfront.c
-[net-next 9fcc32e395e09] net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
- Date: Tue Oct 20 09:42:19 2020 +0100
- 2 files changed, 16 insertions(+), 17 deletions(-)
-[net-next 15ba865fef481] net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc misdemeanours
- Date: Tue Oct 20 10:10:14 2020 +0100
- 1 file changed, 5 insertions(+), 3 deletions(-)
-[net-next f815eb7cbd7f5] net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
- Date: Tue Oct 20 10:18:21 2020 +0100
- 1 file changed, 11 insertions(+), 7 deletions(-)
+> --- /dev/null
+> +++ b/include/uapi/linux/jtag.h
+> @@ -0,0 +1,194 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +// include/uapi/linux/jtag.h - JTAG class driver uapi
+> +//
+> +// Copyright (c) 2018 Mellanox Technologies. All rights reserved.
+> +// Copyright (c) 2018 Oleksandr Shamray <oleksandrs@mellanox.com>
+> +
+> +#ifndef __UAPI_LINUX_JTAG_H
+> +#define __UAPI_LINUX_JTAG_H
+> +
+
+Missing <linux/types.h>
+
+Other API comments will be sent as a reply to the "Documentation:
+jtag: Add ABI documentation" patch as they are not
+implementation-specific.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
