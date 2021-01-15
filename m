@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3172F7A31
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D44B2F7A5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 13:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388069AbhAOMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 07:46:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33474 "EHLO mx2.suse.de"
+        id S1732679AbhAOMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 07:48:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731350AbhAOMqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 07:46:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67E87AC8F;
-        Fri, 15 Jan 2021 12:45:53 +0000 (UTC)
-Subject: Re: [PATCH] MAINTAINERS: add myself as slab allocators maintainer
-To:     David Rientjes <rientjes@google.com>
-Cc:     Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20210108110353.19971-1-vbabka@suse.cz>
- <alpine.DEB.2.22.394.2101081845130.19092@www.lameter.com>
- <7e0356e7-6152-a51c-3d3e-4b1906e694ed@suse.cz>
- <91c1ee2-1dff-a68-bfe2-dee9e482b6c@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <92ecf308-f860-d715-f875-1cb0e2fa023d@suse.cz>
-Date:   Fri, 15 Jan 2021 13:45:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1732588AbhAOMsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:48:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C099208BA;
+        Fri, 15 Jan 2021 12:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610714861;
+        bh=eTI7ILWKYaLFNuONtwhCzjcLb2VJvQujfi2l3S4BFVc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PVHT669oWu/cn7kUmawuwpOg2yDBO6GOp55yt8PnHkDn8A33PkunAxX07qGsn3Mpx
+         KJnz2h2ecFIjDNxgB4vc+QGNeu1h+PqY0QwgWGzduxkjMygrjq+Pr0tpwWPc+9qwCa
+         7EbDnvfE60myfDJ9vLv4KpM2mpMmuLAsffpjkJA0bKQ/1Q3z20CN0MORzL3kVJvOGg
+         pOxI9S+PeCtCoxJxxQL1RF9eRgEJH9EwxI5XE6WgnZ4bvY7URfqX1I4yRJhreELtZ2
+         HuFUFyU0bSQqNIEa3IAwAKMB+TVL6SMnAcrI1TYxZNoIOpYH/fXeaVLM6lFngr1vd/
+         +5BGdsfhxDWaw==
+Date:   Fri, 15 Jan 2021 18:17:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Jack Pham <jackp@codeaurora.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/4] phy: qcom-qmp: Add SM8350 USB QMP PHYs
+Message-ID: <20210115124736.GF2771@vkoul-mobl>
+References: <20210115104047.3460-1-jackp@codeaurora.org>
+ <20210115104047.3460-2-jackp@codeaurora.org>
+ <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <91c1ee2-1dff-a68-bfe2-dee9e482b6c@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 10:03 AM, David Rientjes wrote:
-> On Thu, 14 Jan 2021, Vlastimil Babka wrote:
+On 15-01-21, 12:54, Konrad Dybcio wrote:
+> Hi,
 > 
->> On 1/8/21 7:46 PM, Christoph Lameter wrote:
->> > I am ok with you as a slab maintainer. I have seen some good work from
->> > you.
->> > 
->> > Acked-by: Christoph Lameter <cl@linux.com>
->> 
->> Thanks!
->> 
 > 
-> Acked-by: David Rientjes <rientjes@google.com>
+> I might be wrong but it looks as if you forgot to add a compatible for the "sm8350_usb3_uniphy_cfg" configuration.
+
+It seems to be documented in patch 2, ideally we should have the
+bindings patches first and this as patch 3...
+
 > 
-> Great addition!
+> 
+> Konrad
 
-Thanks, David!
-
-
+-- 
+~Vinod
