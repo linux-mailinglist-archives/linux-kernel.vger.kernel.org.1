@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760FF2F70BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AF32F70C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 03:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbhAOCvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 21:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732180AbhAOCvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 21:51:50 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72746C061575;
-        Thu, 14 Jan 2021 18:51:10 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id n25so5110916pgb.0;
-        Thu, 14 Jan 2021 18:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TJG+6kgfjZjK189KqMiGV0hwONF59DnMbu1jbDOMzZ8=;
-        b=gqk5SvNWsJauD8t2n1R0I7d0ylZI8NQyTKbPkaketoQ4c//ObudvxVa4C/67jZjKg9
-         1brkuQXv3sOhUdpzLEUDj0GjP8eNf9Jfwn3GlPs8L/DpOVnnUMaI3Ic1ksvG9Hu3nRw5
-         3A5RI1ux3sZqwICDELrYZVs7Ug+0JekwD+N/LKaLwWRg/8F8nvjtKx5GvDlXx6JVyiuH
-         uwsWUfos6+ibFL1e2fPp6TEbV6w3s6niVq9pcUbNx7LNe0XwtUWo54n5XHXxhKzWyzbu
-         GVu/pn3MpC4jrTGdclYmHAXVvMANmIJhfn1/2r14svb4QxPwGKU0phA97oh3VBN6W7Xh
-         ux0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TJG+6kgfjZjK189KqMiGV0hwONF59DnMbu1jbDOMzZ8=;
-        b=VkcGKRXzhR3p0nNYe760+oT5UBCZrPI8M5Dq/KzDr75LZ8d1ZYTpTDAo2IX0TMKXpS
-         UtrxmBrHQG7PMjDsSnERZZwKRZ2nnAx5vgzYh87ANqHNd72Do4PrJe0HP+d3L4H8NDDV
-         L9xdccFb2UiepPNGQeOAMGDaSeuiUoLJYVMtnmxF1YJv4+AEJkFghTz1l25oHIwWZclf
-         By5+PFTN9A+je3nPifE6XGUpiH+KdPEMoR4yYJesSY+G5Qm09bA9iBvJ51VEb3rZpbAx
-         tTxpKXnfSD/gMPAFYK34kbTeal1PeRNIiXjD34OmBwNvRqzoL8LxWyGhIfqj5GWCKgp8
-         CRBA==
-X-Gm-Message-State: AOAM531mPw30cnof6xujza3pGdqIZfIEUoBqvoyJD0OwYjZYv8rB6co/
-        BHoQpWHTY4fPUABTDmyBOyMqQ5S5qfM=
-X-Google-Smtp-Source: ABdhPJzVnky1wYd5Zm0EKEQs7K4mN7cwuFs1QMcl+Ww9tXIiG69Db1cNgKufSu+PIxMDMR64dxrzFw==
-X-Received: by 2002:a63:445a:: with SMTP id t26mr10475355pgk.402.1610679070006;
-        Thu, 14 Jan 2021 18:51:10 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id gf23sm6671302pjb.48.2021.01.14.18.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 18:51:09 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v2] pata_rb532_cf: remove redundant error print in probe() method
-Date:   Thu, 14 Jan 2021 18:51:04 -0800
-Message-Id: <20210115025104.5033-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S1732317AbhAOC5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 21:57:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730528AbhAOC5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:57:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A0D623AC6;
+        Fri, 15 Jan 2021 02:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610679399;
+        bh=gVsYalf7CrnQWYli9+w4MJODH5TBXQrYG70lmtMUJYE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=W6mjLhLFQdL+2nItQ8QbQVUl8f6fScYdHk5VgMRwmXeqTKpmVk/24yI4q5TAIJtdC
+         bk/j+Dstdna7Kk69dkzg/G873hS2v19vvFgCIW4yHV7tpZXtEBWSY+G0N5ApFzLbeF
+         Bfk9V5vwSZ51vMM7u44o0AToRPkmpcb8O78JEJQh6pYr/5UA43bWElX/yI98+SHR+p
+         Myegb7Fx83q7QVCNVZPDASyDILDioC8wnXk5xpJUVWHiqHGWVuoU2SVT2Y2zd61E5/
+         bk2CzTw3pjV7x7XZEbchvmmRj6dzvpYNdJjvd6mfMNPOGbmivSxJSOtEbqAJc43Z5V
+         NxfQWV9Er6PDA==
+Subject: Re: [PATCH] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for unhashed
+ addresses
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Roman Fietze <roman.fietze@magna.com>,
+        Kees Cook <keescook@chromium.org>
+References: <20210106213547.1077789-1-timur@tabi.org> <X/wkMMiPPBAJb9+A@alley>
+ <20210111173009.fe2383539e5ca2c23b135262@linux-foundation.org>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <d067f15a-8816-8879-e575-b610707c5189@kernel.org>
+Date:   Thu, 14 Jan 2021 20:56:36 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111173009.fe2383539e5ca2c23b135262@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 1/11/21 7:30 PM, Andrew Morton wrote:
+> I doubt if Kees (or I or anyone else) can review this change because
+> there are no callers which actually use the new DUMP_PREFIX_UNHASHED.
+> Is it intended that some other places in the kernel be changed to use
+> this?  If so, please describe where and why, so that others can better
+> understand both the requirement and the security implications.
 
-Coccinelle reports a redundant error print in rb532_pata_driver_probe.
-As 'platform_get_irq' already prints the error message, error print
-here is redundant and can be removed.
+In my opinion, hashed addresses make no sense in a hexdump, so I would 
+say that ALL callers should change.  But none of the drivers I've 
+written call print_hex_dump(), so I can't make those changes myself.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
-v2:
-- change patch summary.
----
- drivers/ata/pata_rb532_cf.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> If it is intended that this be used mainly for developer debug and not
+> to be shipped in the mainline kernel then let's get this info into the
+> changelog as well.
 
-diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
-index 479c4b29b856..dcde84f571c4 100644
---- a/drivers/ata/pata_rb532_cf.c
-+++ b/drivers/ata/pata_rb532_cf.c
-@@ -115,10 +115,8 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
--		dev_err(&pdev->dev, "no IRQ resource found\n");
-+	if (irq <= 0)
- 		return -ENOENT;
--	}
- 
- 	gpiod = devm_gpiod_get(&pdev->dev, NULL, GPIOD_IN);
- 	if (IS_ERR(gpiod)) {
--- 
-2.25.1
+I definitely want this patch included in the mainline kernel.  Just 
+because there aren't any users today doesn't mean that there won't be. 
+In fact, I suspect that most current users haven't noticed that the 
+addresses have changed or don't care any more, but if they were to write 
+the code today, they would use unhashed addresses.
 
+If you want, I can include a patch that changes a few callers of 
+print_hex_dump() to use DUMP_PREFIX_UNHASHED, based on what I think 
+would be useful.
