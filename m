@@ -2,136 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297182F7FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF052F7FED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733158AbhAOPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 10:46:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726137AbhAOPqB (ORCPT
+        id S1733075AbhAOPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 10:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729698AbhAOPpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 10:46:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610725474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HUKZWLTTSl2Yn8XOp/LDxkSHznbyRPG2DpGK5co76Kk=;
-        b=K99CgHt2qA7TQg0i9duUppGWsX+gpXNBJMgX4mlxNYUj/dg5SU0GB+0Id0S+zWqck0HMPw
-        pw76IY/UX/EBoK7c23UOhHgtwKOdBeWsoXvKcUKNN/SUm6TKSaVBpgebDqTOQUGRICQ+c0
-        zyQEymR4X+pUBgWlLHv/c4XIl7ocfh8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-ImxyA3izMi6-MMh599JmYA-1; Fri, 15 Jan 2021 10:44:31 -0500
-X-MC-Unique: ImxyA3izMi6-MMh599JmYA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D06498144E1;
-        Fri, 15 Jan 2021 15:44:29 +0000 (UTC)
-Received: from [10.10.114.127] (ovpn-114-127.rdu2.redhat.com [10.10.114.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B3CA65D756;
-        Fri, 15 Jan 2021 15:44:28 +0000 (UTC)
-Subject: Re: [PATCH 00/18] drivers: Remove oprofile and dcookies
-To:     Robert Richter <rric@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        oprofile-list@lists.sf.net,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-References: <cover.1610622251.git.viresh.kumar@linaro.org>
- <YAC8sf6v8+QAXHD3@rric.localdomain>
-From:   William Cohen <wcohen@redhat.com>
-Message-ID: <927ed742-914c-bbc2-d397-dabaaa6643e7@redhat.com>
-Date:   Fri, 15 Jan 2021 10:44:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 15 Jan 2021 10:45:24 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A996C0613C1;
+        Fri, 15 Jan 2021 07:44:44 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id h17so7584805wmq.1;
+        Fri, 15 Jan 2021 07:44:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=v8S8qEdVz3GDJ+77anbenPYreFZ0YsaL7qAKkmhD9uk=;
+        b=EUGbHoTQfbzJ+kkwO5O+XPiigwOXJulEPDH5oQ1EWpoodmnWZy9jaslxD87JVaa7B9
+         KAGo6qviSfw30M1GfDLV29RHbV0jveROpYLmM7nY5YuUPKEOAG//d4XnL2y8YYyWUYlE
+         rC8GdhyIDuU4nRiCzxzs+ky4ozCILj3vZZNXSNMGXdQ+ZKNjc6ZJRPny4aTKXEr+N8/h
+         ltIiU+ZQX15IpWiegVgQC2gssKPtK8ccfTH/myEge4IaGHYR3Nt1rgIkMA0nsOg7ECmR
+         Mczez7WJYQKjgP22ItBo3AnpFviXS9eJCzVAereLaVAOAbQORhw5HD0fykOql+mMnqd4
+         Li3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v8S8qEdVz3GDJ+77anbenPYreFZ0YsaL7qAKkmhD9uk=;
+        b=C79N5QC9wlIP305spag2rblZlaH+TGOY7WrodWvCx098OUxE8gikdWV7BdgtxDF22k
+         tpWmeijGb8kFzg3nM6BDRw/3+0EN9T0JVGtkgHw6yRMQ1R5l2e1BE2TshDrGhExiWKLa
+         CUI9Y+rPLNs14osNxjH0jtWSCJfxE3XY0xhWUJxuwFgbnlBzvbPEzFfpB+d1xaIYAfow
+         CiEXh9O4VAWnB9fa7nR39bHGhq1WfbAJ6eWZnIjE50l5P6GtdLNaDGHbHHFrf4HymeBr
+         1w4dskCcchZKAqmyDZ3tw69+UNglHjLR3EYBgZbhwd7DHLPjNxHM/eYFSxwad+j6B2I6
+         mGhA==
+X-Gm-Message-State: AOAM533h6u/IsQWhDI4sTsCurlqAUo7r3+5OB23Jz8nMly5pvIcsAfT/
+        VaXSdR9seLHs7pemhXq1UCL00Dv2sP0=
+X-Google-Smtp-Source: ABdhPJyBM7/z8OiWXdolpSI28qwFk3Z03j+PwAK1KiJ8lNUsCDtKkqn41q74ZppsrBrX3SS23Fcs/w==
+X-Received: by 2002:a1c:5459:: with SMTP id p25mr8890538wmi.19.1610725482714;
+        Fri, 15 Jan 2021 07:44:42 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id i59sm11757982wri.3.2021.01.15.07.44.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 07:44:41 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:44:40 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] ASoC: tegra: ahub: Reset hardware properly
+Message-ID: <YAG4aFADwo7dh/oR@ulmo>
+References: <20210112125834.21545-1-digetx@gmail.com>
+ <20210112125834.21545-6-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YAC8sf6v8+QAXHD3@rric.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nBwVPcTqRFm05mUj"
+Content-Disposition: inline
+In-Reply-To: <20210112125834.21545-6-digetx@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/14/21 4:50 PM, Robert Richter wrote:
-> On 14.01.21 17:04:24, Viresh Kumar wrote:
->> Hello,
->>
->> The "oprofile" user-space tools don't use the kernel OPROFILE support
->> any more, and haven't in a long time. User-space has been converted to
->> the perf interfaces.
->>
->> Remove oprofile and dcookies (whose only user is oprofile) support from
->> the kernel.
->>
->> This was suggested here [1] earlier.
->>
->> This is build/boot tested by kernel test robot (Intel) and Linaro's
->> Tuxmake[2] for a lot of architectures and no failures were reported.
->>
->> --
->> Viresh
->>
->> [1] https://lore.kernel.org/lkml/CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com/
->> [2] https://lwn.net/Articles/841624/
->>
->> Viresh Kumar (18):
->>   arch: alpha: Remove CONFIG_OPROFILE support
->>   arch: arm: Remove CONFIG_OPROFILE support
->>   arch: arc: Remove CONFIG_OPROFILE support
->>   arch: hexagon: Don't select HAVE_OPROFILE
->>   arch: ia64: Remove CONFIG_OPROFILE support
->>   arch: ia64: Remove rest of perfmon support
->>   arch: microblaze: Remove CONFIG_OPROFILE support
->>   arch: mips: Remove CONFIG_OPROFILE support
->>   arch: parisc: Remove CONFIG_OPROFILE support
->>   arch: powerpc: Stop building and using oprofile
->>   arch: powerpc: Remove oprofile
->>   arch: s390: Remove CONFIG_OPROFILE support
->>   arch: sh: Remove CONFIG_OPROFILE support
->>   arch: sparc: Remove CONFIG_OPROFILE support
->>   arch: x86: Remove CONFIG_OPROFILE support
->>   arch: xtensa: Remove CONFIG_OPROFILE support
->>   drivers: Remove CONFIG_OPROFILE support
->>   fs: Remove dcookies support
-> 
-> After oprofile userland moved to version 1.x, the kernel support for
-> it isn't needed anymore. The switch was back in 2014 when oprofile
-> started using the perf syscall:
-> 
->  https://sourceforge.net/p/oprofile/oprofile/ci/ba9edea2bdfe2c9475749fc83105632bd916b96c
-> 
-> Since then I haven't received any significant patches to implement new
-> features or add support for newer platforms in the kernel. There
-> haven't been bug reports sent or questions asked on the mailing list
-> for quite a while, which indicates there are no or less users. Users
-> (if any) should switch to oprofile 1.x or the perf tool. No need to
-> carry kernel support any longer with us.
-> 
-> So time to get rid of it. For the whole series:
-> 
-> Acked-by: Robert Richter <rric@kernel.org>
 
-The oprofile daemon that used the older oprofile kernel support was removed before OProfile 1.0 release by the following commit in August 2014:
+--nBwVPcTqRFm05mUj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://sourceforge.net/p/oprofile/oprofile/ci/0c142c3a096d3e9ec42cc9b0ddad994fea60d135
+On Tue, Jan 12, 2021 at 03:58:34PM +0300, Dmitry Osipenko wrote:
+> Assert hardware reset before clocks are enabled and then de-assert it
+> after clocks are enabled. This brings hardware into a predictable state
+> and removes relying on implicit de-assertion of resets which is done by
+> the clk driver.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  sound/soc/tegra/tegra30_ahub.c | 33 ++++++++++++++++-----------------
+>  sound/soc/tegra/tegra30_ahub.h |  1 +
+>  2 files changed, 17 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahu=
+b.c
+> index 4dbb58f7ea36..246cf6a373a1 100644
+> --- a/sound/soc/tegra/tegra30_ahub.c
+> +++ b/sound/soc/tegra/tegra30_ahub.c
+> @@ -65,10 +65,20 @@ static int tegra30_ahub_runtime_resume(struct device =
+*dev)
+>  {
+>  	int ret;
+> =20
+> +	ret =3D reset_control_assert(ahub->reset);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret =3D clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
+>  	if (ret)
+>  		return ret;
+> =20
+> +	ret =3D reset_control_reset(ahub->reset);
+> +	if (ret) {
+> +		clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
+> +		return ret;
+> +	}
+> +
+>  	regcache_cache_only(ahub->regmap_apbif, false);
+>  	regcache_cache_only(ahub->regmap_ahub, false);
+> =20
+> @@ -462,7 +472,6 @@ static int tegra30_ahub_probe(struct platform_device =
+*pdev)
+>  {
+>  	const struct of_device_id *match;
+>  	const struct tegra30_ahub_soc_data *soc_data;
+> -	struct reset_control *rst;
+>  	struct resource *res0;
+>  	void __iomem *regs_apbif, *regs_ahub;
+>  	int ret =3D 0;
+> @@ -475,22 +484,6 @@ static int tegra30_ahub_probe(struct platform_device=
+ *pdev)
+>  		return -EINVAL;
+>  	soc_data =3D match->data;
+> =20
+> -	/*
+> -	 * The AHUB hosts a register bus: the "configlink". For this to
+> -	 * operate correctly, all devices on this bus must be out of reset.
+> -	 * Ensure that here.
+> -	 */
+> -	rst =3D of_reset_control_array_get_exclusive(pdev->dev.of_node);
+> -	if (IS_ERR(rst)) {
+> -		dev_err(&pdev->dev, "Can't get reset: %p\n", rst);
+> -		return PTR_ERR(rst);
+> -	}
+> -
+> -	ret =3D reset_control_deassert(rst);
+> -	reset_control_put(rst);
+> -	if (ret)
+> -		return ret;
+> -
+>  	ahub =3D devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+>  			    GFP_KERNEL);
+>  	if (!ahub)
+> @@ -507,6 +500,12 @@ static int tegra30_ahub_probe(struct platform_device=
+ *pdev)
+>  	if (ret)
+>  		return ret;
+> =20
+> +	ahub->reset =3D devm_reset_control_array_get_exclusive(&pdev->dev);
+> +	if (IS_ERR(ahub->reset)) {
+> +		dev_err(&pdev->dev, "Can't get reset: %p\n", ahub->reset);
 
-At this point it makes sense to clean up the kernel and remove this unused code.
+I didn't notice that the prior patch already introduced this, but I'd
+prefer for this to either be %pe so that the symbolic error name is
+printed, or %ld with PTR_ERR(ahub->reset) to format this in a more
+standard way that can be more easily grepped for and parsed.
 
-Acked-by: William Cohen <wcohen@redhat.com>
+It also seems like the prior patch that converts this to use
+of_reset_control_array_get_exclusive() is a bit pointless now. Why not
+just move to this directly instead?
 
-> 
-> 
-> _______________________________________________
-> oprofile-list mailing list
-> oprofile-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/oprofile-list
-> 
+Thierry
 
+--nBwVPcTqRFm05mUj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmABuGgACgkQ3SOs138+
+s6HpEg/9ELKKB/l2VIM6U1hL0jP6a3U3a6FcQ4eM1uoBvicpEZH0FEJeJxYDyxBF
+zAtT473WDtsUNRsUqE1Vhuril6cQJ8Y69885n3UCqQ85lzo0Tn7Gcse9gNqehkDY
+6Zwh4R6juN7+83ek1oQ/3K7jdzaUDS032WAWUT/KhIoTSs7WpvM4ZQuROGdG4a2V
+uIFiFPqa4TNDiMPuSEpNmNsrcJo4xww+QGuq+ySqsOJnF74b+rGboimcNMoSQbVs
+1ZPB1GBvt+k9ixhJRdS/jVm+31vK4bFKtrbVTd3BxEtP6OLEBWXIv2anQwETWIvO
+gOBjAhRuzNL9fSGZToyfdRqo7a2Or+t10Of1R0aMiKdaguYQr8FXLfY9rjq/19pw
+/9HuEIfneYEZqicos2urNnk0r5gTNcWdo1gNsmqfkZGy9d/DEjZGN/xuhGCUpicq
+cBEkfIkg/YvhYcVszhdSVGCs0PuaZ60PHCjTYp1l5ExF/n5J4spMyhWp9AR9cLvz
+dX6HeXrmaU98XYYdut2HIQZJ6AJa3UtLTOfqfSrgdwUGgqelPaBXRYmQ5dZda12X
+rJ0SWAjplPQmQ3Sj7llJCL2V2Z3X9liphP8q70puqwGhY8QUcb1yiU37fVczvR8S
+EuCd40QajKHa3Xj9QS4djfrZ4h7Oh3535k7AJybZ7yeRlgHIhSc=
+=g2ZT
+-----END PGP SIGNATURE-----
+
+--nBwVPcTqRFm05mUj--
