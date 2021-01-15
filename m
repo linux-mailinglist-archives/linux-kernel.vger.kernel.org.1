@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844692F8108
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D6E2F811A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727690AbhAOQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727408AbhAOQlu (ORCPT
+        id S1727402AbhAOQrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:47:22 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53720 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbhAOQrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:41:50 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A5CC061757;
-        Fri, 15 Jan 2021 08:41:10 -0800 (PST)
-Date:   Fri, 15 Jan 2021 17:41:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610728868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8mjyhjGfj4NiGEQSD0Bw/n6kHPpFmLv4qkOT4y+QB8=;
-        b=U7BX1/kqOAVeXHrLPTZHULsGFqy/kAuFni5jhnoDwiDdp//c3Vtb2qMdce1ITECmtgpN4c
-        g5hAkXSw3UBLG0VgUY2FjdkeGu+zgh10nW7bpaRP6xlX1VRCa6JyFjDhab6emjKZk+Wd7c
-        So29CO1bX4HEsbbNjDVipjt4Lsmv/YBOayflxBADsxM//xtbNohanmn5XKGHA5Aco/8XUl
-        xogjse2Ai/gJ7AwdtM2RwbrxrIF8t6IqVtf4NDewnse3IqEkrSujmTtlc48cC2Im18wYhV
-        UiMrK5CoJ88IkKfPI7RW44heXwRE/T+QdEoXxgpa48Y3FZQulxzDEbswvVnAwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610728868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8mjyhjGfj4NiGEQSD0Bw/n6kHPpFmLv4qkOT4y+QB8=;
-        b=pfzm7LPZy4TJ5zs9xLjfo019l+cHtdaoixYxNxCNaxMDAQTKapiVdy9uZyS5WKW1gvTHsi
-        uyvlXFysmkGJ5mCQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
-Message-ID: <YAHFnk2r+islHd77@lx-t490>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
- <X/2h0yNqtmgoLIb+@lx-t490>
- <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
- <X/3dUkPCC1SrLT4m@lx-t490>
- <20e1034c-98af-a000-65ed-ae5f0e7a758f@huawei.com>
- <YAHCbcNea47Zk+4w@lx-t490>
- <869c00f4-a9a6-e124-3104-906957754dc5@huawei.com>
+        Fri, 15 Jan 2021 11:47:21 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10FGjtRF008746;
+        Fri, 15 Jan 2021 10:45:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610729155;
+        bh=zchShokG7/uvqn5K80CFp02tXojD8KiM9r/o+giCB4E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=iYbhCDhPcH8tQ2LYnMwQ2jmrKD0AM4eBLOG26lC09fDbeRNNeyB1bIVixWK2WdKG4
+         EQY1lTzpOcXaPmT7WOx0WpavlwtVrP6wzy+BpcOnq+SlLhGQHTVxKsRkZivIUEkdSI
+         Oe9M7uaR50SnGVEhh4jmrunP9FiX8biOpKcxZPB0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10FGjtxI100716
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 10:45:55 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 10:45:54 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 10:45:54 -0600
+Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10FGjsS7087268;
+        Fri, 15 Jan 2021 10:45:54 -0600
+Subject: Re: [PATCH 1/2] dt-bindings: soc: ti: ti,pruss: add ti,am1806-pruss
+To:     David Lechner <david@lechnology.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20210104183021.330112-1-david@lechnology.com>
+ <20210104183021.330112-2-david@lechnology.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <f03b9e77-510a-2ad4-4cb8-4aa3919abeb5@ti.com>
+Date:   Fri, 15 Jan 2021 10:45:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <869c00f4-a9a6-e124-3104-906957754dc5@huawei.com>
+In-Reply-To: <20210104183021.330112-2-david@lechnology.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:29:51PM +0000, John Garry wrote:
-> On 15/01/2021 16:27, Ahmed S. Darwish wrote:
-> > Thanks!
-> >
-> > Shall I add you r-b tag to the whole series then, or only to the ones
-> > which directly touch libsas (#3, #12, #16, and #19)?
->
-> The whole series, if you like. But there was a nit about fitting some code
-> on a single line still, and I think Christoph also had some issue on that
-> related topic.
->
++ Sekhar and Bartosz
 
-Nice. Then I'll send a v3 to fixing these 80 col issues -- including in
-the intermediate patches.
+Hi David,
 
-> >
-> > > As an aside, your analysis showed some quite poor usage of spinlocks in some
-> > > drivers, specifically grabbing a lock and then calling into a depth of 3 or
-> > > 4 functions.
-> > >
-> > Correct.
->
-> BTW, testing report looked all good.
->
+On 1/4/21 12:30 PM, David Lechner wrote:
+> This adds a "ti,am1806-pruss" compatible type for the PRUSS found in
+> TI AM18xx/OMAP-L138 SoCs.
+> 
+> Signed-off-by: David Lechner <david@lechnology.com>
+> ---
+>  Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> index 037c51b2f972..a6ed23fdbc00 100644
+> --- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> +++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> @@ -61,6 +61,7 @@ properties:
+>  
+>    compatible:
+>      enum:
+> +      - ti,am1806-pruss  # for AM18xx/OMAP-L138 SoC family
 
-Oh, that's good to hear :)
+Almost all the drivers for these SoCs use the prefix "ti,da850-xxx" for the
+compatibles. Can we switch to using those instead of ti,am1806?
 
-Have a nice weekend,
+regards
+Suman
 
---
-Ahmed S. Darwish
-Linutronix GmbH
+>        - ti,am3356-pruss  # for AM335x SoC family
+>        - ti,am4376-pruss0 # for AM437x SoC family and PRUSS unit 0
+>        - ti,am4376-pruss1 # for AM437x SoC family and PRUSS unit 1
+> @@ -321,6 +322,7 @@ if:
+>      compatible:
+>        contains:
+>          enum:
+> +          - ti,am1806-pruss
+>            - ti,k2g-pruss
+>            - ti,am654-icssg
+>            - ti,j721e-icssg
+> 
+
