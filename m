@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13562F8117
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D9B2F8123
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 17:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbhAOQqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 11:46:49 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44709 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbhAOQqs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 11:46:48 -0500
-Received: by mail-oi1-f179.google.com with SMTP id d189so10132832oig.11;
-        Fri, 15 Jan 2021 08:46:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1qpxgp00wN0qYeZYo3gwL+8xqHIsplT0Ne8rJnwk8ts=;
-        b=KsZ/O6m8hgOIw0mVCyeoeRDrKK4RzATfmtxIiHOAfsdvv35n4PAkeK2Qk4jE1C9YbQ
-         G/COLNV3PlcNbPgC+zMC8U67HS9uveN8kktZBEEaca3gmejVLPW9V7rwH0WgNwHl2Xk7
-         NZjqaIe+vnIJ0rLFuWBf5sEavC/uwHGJ/SqxvJ4Blrs5JX+odP+/5b+wvIBNVX3eQtR+
-         HhYrQAWWCCTogo15o8LfTheyII/6H0isnY9gCNzKM2k12yyNW4jnRwYvfp1V9s1/ewDT
-         GyNW4xTSqV0rnJtHiM2qjdzMZjf2vfNH/AQQehorWK7I7qel088zbICoInoEU7yRvHCs
-         PJPQ==
-X-Gm-Message-State: AOAM530hjGthgOzC8x/hvd14LWhLlP/LCg741gGJBZLhxd631K6InFl7
-        /BD8HgEQQt4+nRysDxE3Bw==
-X-Google-Smtp-Source: ABdhPJxKezkGGuZxt6aZaHY+EN1XL8Y0TAJjDKLYIpjZp2/2mGPnNi7TzBIl4AbOYWHBYa4pJgI1hg==
-X-Received: by 2002:a05:6808:a90:: with SMTP id q16mr6157461oij.107.1610729167054;
-        Fri, 15 Jan 2021 08:46:07 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s24sm1782964oij.20.2021.01.15.08.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 08:46:06 -0800 (PST)
-Received: (nullmailer pid 1426045 invoked by uid 1000);
-        Fri, 15 Jan 2021 16:46:05 -0000
-Date:   Fri, 15 Jan 2021 10:46:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20210115164605.GA1425845@robh.at.kernel.org>
-References: <20210115112105.58652-1-cristian.pop@analog.com>
+        id S1727653AbhAOQsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 11:48:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:45098 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727457AbhAOQsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 11:48:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD964D6E;
+        Fri, 15 Jan 2021 08:47:22 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3A273F719;
+        Fri, 15 Jan 2021 08:47:20 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:47:18 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org, linux-doc@vgert.kernel.org
+Subject: Re: [PATCH v3] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210115164718.GE44111@C02TD0UTHF1T.local>
+References: <20210115142446.13880-1-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115112105.58652-1-cristian.pop@analog.com>
+In-Reply-To: <20210115142446.13880-1-broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 13:21:03 +0200, Cristian Pop wrote:
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> ---
-> Changelog v6:
-> 	- Use microvolt unit
-> 	- Remove unrelevant to the binding comment
->  .../bindings/iio/dac/adi,ad5766.yaml          | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
+Hi Mark,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Fri, Jan 15, 2021 at 02:24:46PM +0000, Mark Brown wrote:
+> +.. Table of Contents:
+> +
+> +    1. Introduction
+> +    2. Requirements
+> +    3. Considerations
+> +       3.1 Identifying successful termination
+> +       3.2 Identifying unwindable code
+> +       3.3 Unwinding across interrupts and exceptions
+> +       3.4 Rewriting of return addresses
+> +       3.5 Obscuring of return addresses
+> +       3.6 Link register unreliability
+>
+
+It looks like we forgot to update this with the addition of the new
+section 3, so this needs a trivial update to add that and fix the
+numbering.
+
+Otherwise this looks good; thanks for taking this off my hands! :)
+
+Mark.
