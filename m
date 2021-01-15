@@ -2,141 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442DF2F6FDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BDA2F6FE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 02:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731471AbhAOBJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Jan 2021 20:09:08 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44730 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726125AbhAOBJH (ORCPT
+        id S1727336AbhAOBOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Jan 2021 20:14:18 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:28094 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbhAOBOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Jan 2021 20:09:07 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10F13AVv167512;
-        Thu, 14 Jan 2021 20:08:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=XOeSzX9xb6InbeP9NV1F2CyB2AXbY0GV7E32ThriA+I=;
- b=jBVtj1eod2YOMAruM741kW141nR2JmzIeE5Wb8L6pHWagOOov/+4Zo6wnHBhv27Ccl6n
- wUppyGZWEBFK+cKqKKR8nzHz1Bcuu48Hk9VOiqbZHeubwzMDy1KgYvx1UnzgSQvrHGJ2
- x6McXDUvF9Pribn9FJ2D3DVpkV/cfXCKLOdWC697yY5PVuD3GVr+ESTmYS0JGxQqP4mS
- 6NEepd7pYUhwPuzCACCo4jgvgWcFs+VuZcmHvZHDVn3kZX5qu/nKGQ5tluOYANMXlJkP
- U+ADFXceykHDhufxe6CO6mOuRhnuy4yr1WL+9Si4J1VMQI8NadxP9kc3ILpfZ5eyxrIM yA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3630rv8ey9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 20:08:26 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10F15WgP177099;
-        Thu, 14 Jan 2021 20:08:25 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3630rv8exf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Jan 2021 20:08:25 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10F16C7N023565;
-        Fri, 15 Jan 2021 01:08:23 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdendd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jan 2021 01:08:23 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10F18K2816515396
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 01:08:20 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 675E64C046;
-        Fri, 15 Jan 2021 01:08:20 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4BD24C040;
-        Fri, 15 Jan 2021 01:08:19 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.66.6])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 15 Jan 2021 01:08:19 +0000 (GMT)
-Date:   Fri, 15 Jan 2021 02:08:16 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 06/15] s390/vfio-ap: allow assignment of unavailable
- AP queues to mdev device
-Message-ID: <20210115020816.3e0226bd.pasic@linux.ibm.com>
-In-Reply-To: <270e192b-b88d-b072-428c-6cbfc0f9a280@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-7-akrowiak@linux.ibm.com>
-        <20210111214037.477f0f03.pasic@linux.ibm.com>
-        <270e192b-b88d-b072-428c-6cbfc0f9a280@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 14 Jan 2021 20:14:17 -0500
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 10F1DMuT021862;
+        Fri, 15 Jan 2021 10:13:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 10F1DMuT021862
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610673203;
+        bh=gQ/RwFs5PWoR2SEEMGT7lEv/knCoOXqDWqUOuxqfUzU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0k7OT8BOE3ksIs5m0aQO0nyH0Lok2wVEIeGevS5QBPcA7bhW6Avjebnn+W2ExfPPG
+         NyDuY+1UKrvKMapPcuEehwUaLsi27XW7DFWF43HwVQ7ZBMKWcDZ0pBYbZ2LJq9WnFq
+         t2fOfcWztDiOpwWzX+RxpLFnZPi4X/ZR8FcZlred9aPm0vuVH9fpwPi0O6xrsbjZmC
+         /5sAJkwaeWeT2nwsWvHxSdBEHHL4q+BnwkFU7rW6fkiyOvW96jCz307PxGw7Vpsoix
+         nAgONjj1B62nzkwUoBdvACnP/m4D6uT3yAKyO8t5GyNZe/MhTrGvBM1vrEt+rC2E5O
+         XGJy0uPtDLdIw==
+X-Nifty-SrcIP: [209.85.215.172]
+Received: by mail-pg1-f172.google.com with SMTP id 15so4964515pgx.7;
+        Thu, 14 Jan 2021 17:13:23 -0800 (PST)
+X-Gm-Message-State: AOAM532rr3gDq2E9pVLE/c5zMEktfYO19q7IHgijoU8bTtf2iska05xl
+        pAu0RrxgSVMavBglZQ8YOs2BDe8VtOvANAAKPy0=
+X-Google-Smtp-Source: ABdhPJxzUpmUcJjmVLWnA5oELtKMrSv8yo0Bvbi7Hzav6EibhHUFBuLW+W8RHRjePT54Waena/fvoCTMJ/2u7OqHHCs=
+X-Received: by 2002:a63:ff09:: with SMTP id k9mr10219720pgi.175.1610673202305;
+ Thu, 14 Jan 2021 17:13:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_10:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=990 adultscore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- malwarescore=0 phishscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150003
+References: <1610500731-30960-2-git-send-email-jjohnson@codeaurora.org> <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
+In-Reply-To: <1610660990-18812-1-git-send-email-jjohnson@codeaurora.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 15 Jan 2021 10:12:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASHC5sNWxL0Ve8=f6=Gpf8ekVS41ETacBCTv5p72SVkNA@mail.gmail.com>
+Message-ID: <CAK7LNASHC5sNWxL0Ve8=f6=Gpf8ekVS41ETacBCTv5p72SVkNA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: handle excessively long argument lists
+To:     Jeff Johnson <jjohnson@codeaurora.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Prasad Sodagudi <psodagud@quicinc.com>, eberman@quicinc.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 12:54:39 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Fri, Jan 15, 2021 at 6:50 AM Jeff Johnson <jjohnson@codeaurora.org> wrote:
+>
+> From: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+>
+> Modules with a large number of compilation units may be
+> exceeding AR and LD command argument list. Handle this gracefully by
+> writing the long argument list in a file. The command line options
+> read from file are inserted in place of the original @file option.
+>
+> The usage is well documented at
+> https://www.gnu.org/software/make/manual/html_node/File-Function.html
+>
+> Signed-off-by: Mahesh Kumar Kalikot Veetil <mkalikot@codeaurora.org>
+> Signed-off-by: Jeff Johnson <jjohnson@codeaurora.org>
+> ---
 
-> On 1/11/21 3:40 PM, Halil Pasic wrote:
-> > On Tue, 22 Dec 2020 20:15:57 -0500
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >  
-> >> The current implementation does not allow assignment of an AP adapter or
-> >> domain to an mdev device if each APQN resulting from the assignment
-> >> does not reference an AP queue device that is bound to the vfio_ap device
-> >> driver. This patch allows assignment of AP resources to the matrix mdev as
-> >> long as the APQNs resulting from the assignment:
-> >>     1. Are not reserved by the AP BUS for use by the zcrypt device drivers.
-> >>     2. Are not assigned to another matrix mdev.
-> >>
-> >> The rationale behind this is twofold:
-> >>     1. The AP architecture does not preclude assignment of APQNs to an AP
-> >>        configuration that are not available to the system.
-> >>     2. APQNs that do not reference a queue device bound to the vfio_ap
-> >>        device driver will not be assigned to the guest's CRYCB, so the
-> >>        guest will not get access to queues not bound to the vfio_ap driver.  
-> > You didn't tell us about the changed error code.  
-> 
-> I am assuming you are talking about returning -EBUSY from
-> the vfio_ap_mdev_verify_no_sharing() function instead of
-> -EADDRINUSE. I'm going to change this back per your comments
-> below.
-> 
-> >
-> > Also notice that this point we don't have neither filtering nor in-use.
-> > This used to be patch 11, and most of that stuff used to be in place. But
-> > I'm going to trust you, if you say its fine to enable it this early.  
-> 
-> The patch order was changed due to your review comments in
-> in Message ID <20201126165431.6ef1457a.pasic@linux.ibm.com>,
-> patch 07/17 in the v12 series. In order to ensure that only queues
-> bound to the vfio_ap driver are given to the guest, I'm going to
-> create a patch that will preceded this one which introduces the
-> filtering code currently introduced in the patch 12/17, the hot
-> plug patch.
-> 
 
-I don't want to delay this any further, so it's up to you. I don't think
-we will get the in-between steps perfect anyway.
 
-I've re-readthe Message ID
- <20201126165431.6ef1457a.pasic@linux.ibm.com> and I didn't
-ask for this change. I pointed out a problem, and said, maybe it can be
-solved by reordering, I didn't think it through.
 
-[..]
+First, is this a real problem?
+If so, which module is exceeding the command line limit?
+
+
+$(file ) is only supported by GNU Make 4.0 or later.
+
+The current minimum version is GNU Make 3.81.
+
+If we need this feature,
+Documentation/process/changes.rst must be updated.
+
+
+
+
+But, more importantly, none of your patches
+works correctly.
+
+
+
+Since $(file ...) is evaluated into an empty string,
+your patches would break the Kbuild ability
+that detects the command changes.
+
+
+
+
+Steps to reproduce the problem
+------------------------------
+
+
+
+[1] add a module foo that consists of
+    three objects foo1.o, foo2.o, foo3.o
+
+For example, like follows:
+
+
+obj-m += foo.o
+foo-objs := foo1.o foo2.o foo3.o
+
+
+
+[2] Run 'make modules'
+
+You will get the module foo.
+
+
+
+[3] Drop foo3.o from the module members
+
+Change Makefile as follows:
+
+obj-m += foo.o
+foo-objs := foo1.o foo2.o
+
+
+
+[4] Re-run 'make modules'
+
+
+
+
+
+The current build system cleverly
+notices the Makefile change, and
+correctly rebuilds the foo module.
+
+With your patch set applied,
+the build system would not rebuild
+the module.
+
+
+
+
+
+
+
+> Changes in v2:
+>   - Remove spurious endif
+>
+> scripts/Makefile.build | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 252b7d2..787dca2 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -425,7 +425,10 @@ $(obj)/lib.a: $(lib-y) FORCE
+>  # module is turned into a multi object module, $^ will contain header file
+>  # dependencies recorded in the .*.cmd file.
+>  quiet_cmd_link_multi-m = LD [M]  $@
+> -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+> +      cmd_link_multi-m =                                       \
+> +       $(file >$@.in,$(filter %.o,$^))                         \
+> +       $(LD) $(ld_flags) -r -o $@ @$@.in;                      \
+> +       rm -f $@.in
+>
+>  $(multi-used-m): FORCE
+>         $(call if_changed,link_multi-m)
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
