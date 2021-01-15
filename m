@@ -2,125 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FCB2F7EAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 15:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14802F7EBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 16:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbhAOO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 09:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbhAOO52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:57:28 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7546C061757;
-        Fri, 15 Jan 2021 06:56:47 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id x203so2253086ooa.9;
-        Fri, 15 Jan 2021 06:56:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NO0K0dXCtZelpuNUhec8CuaDzfXTrQY8G8j/RO4RKUQ=;
-        b=FmdnjoGeom+NzYjZMF8xspzWt7P4wbaYEKKf4CoWFs3Kdkd0A87H5cVKvHJ0Bte5sR
-         RBoMKG6eibhcoufqOS9aUBHTUScKunWrFdK73ZroK4w/fgwm64bAWF680q3D5t4uH69j
-         Pz7K5AlL8RflekVrpU5iwcyz8uhTibWljAJ9HJOHIRD1JuY8isVS9AesQAt4K+zpoonY
-         naozFAfBXLDWh/l6aLqCxrLMZ3TuWwEe0zESi4qRkY12Plo5Kx4MkaHW9Y8lf6QWMd0E
-         LbUtjaqLnBBtFQC+iLKe5UaVEBAVJV1o72PeVwDDCLsJr2nJzNJPGA5MScBQ+ZcmyC1/
-         DeYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NO0K0dXCtZelpuNUhec8CuaDzfXTrQY8G8j/RO4RKUQ=;
-        b=n2o1N2DmJzRlC/6mfJqorOF8K/K8AeVoqVBYcFKViRE8pwGeinjrY+R9FvX7gW/Ezh
-         zF/WnfYq/d2dUBCMtZk25PEvkvRbacI39PyopcPh3ukXjVbYI/2fk9D/q25Bmf+cOFCS
-         3LPxnE8akHgj8JUZqoDsBveWyo5MWYhbPX2vk3OkbQc8zsQoTAgAvHbV+dsEWt6BTK9o
-         urWcUyWpV/uyt7bJV+IfP+NUGmt7ZgSyNmvVT/LBiWxopm0aGDlKKwGOM39f9NcVH6ZM
-         vvjihAwF/CDxlTAwB1vchx2niwSw3cVjrRxMPNx616tBXVFCXTwNkH/HbLiXxufAWpxa
-         t8zw==
-X-Gm-Message-State: AOAM531D6a9kiSpDtMjJT1SQUEu5YHQQFg2PWzfxQnl9g1Mboy51f8bn
-        8ZA2UJ5PayWuV4GHu/OnVdHJ7enCE+7gjD1OZVk=
-X-Google-Smtp-Source: ABdhPJzgaiG/3gsS8pa90VDlTf938WbevA6Pure/5BnlbJkOOiwQbElE6ZbMNYsLwSg7BYtcN/GEmRXgm2aCIvqR4R4=
-X-Received: by 2002:a4a:a2c5:: with SMTP id r5mr8405442ool.72.1610722606624;
- Fri, 15 Jan 2021 06:56:46 -0800 (PST)
+        id S1731979AbhAOO7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 09:59:55 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:53656 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729489AbhAOO7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:59:53 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 3CFFB20478;
+        Fri, 15 Jan 2021 14:58:59 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [RFC PATCH v3 0/8] Count rlimits in each user namespace
+Date:   Fri, 15 Jan 2021 15:57:21 +0100
+Message-Id: <cover.1610722473.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210115163505.4132a5b3@canb.auug.org.au> <20210115055703.GA1258199@hr-amd>
- <MWHPR12MB12481AE693629C4F60368519ECA70@MWHPR12MB1248.namprd12.prod.outlook.com>
-In-Reply-To: <MWHPR12MB12481AE693629C4F60368519ECA70@MWHPR12MB1248.namprd12.prod.outlook.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 15 Jan 2021 09:56:35 -0500
-Message-ID: <CADnq5_NqvfQZLfuYFqz7rimPA82qGxA2RUP=gyzt-mqSFrVyTw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-To:     "Huang, Ray" <Ray.Huang@amd.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Fri, 15 Jan 2021 14:59:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 3:46 AM Huang, Ray <Ray.Huang@amd.com> wrote:
->
-> [AMD Public Use]
->
-> Could you please help to check whether this patch can fix the issue?
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-Looks good.  Might want to add a comment where you set cpu_core_num
-that this is only used on APUs which are x86 only.
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.11-rc2
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
 
->
-> Thanks,
-> Ray
->
-> -----Original Message-----
-> From: Huang, Ray <ray.huang@amd.com>
-> Sent: Friday, January 15, 2021 1:57 PM
-> To: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Alex Deucher <alexdeucher@gmail.com>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@vger.kernel.org>
-> Subject: Re: linux-next: build failure after merge of the amdgpu tree
->
-> On Fri, Jan 15, 2021 at 01:35:05PM +0800, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > After merging the amdgpu tree, today's linux-next build (powerpc
-> > allyesconfig) failed like this:
-> >
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_get_smu_metrics_data':
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:300:10: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
->
-> Ah, vangogh is an x86 cpu, let me look at this issue.
->
-> Could you share me the config file you tested?
->
-> Thanks,
-> Ray
->
-> >   300 |          boot_cpu_data.x86_max_cores * sizeof(uint16_t));
-> >       |          ^~~~~~~~~~~~~
-> >       |          boot_cpuid
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_read_sensor':
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1320:11: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
-> >  1320 |   *size = boot_cpu_data.x86_max_cores * sizeof(uint16_t);
-> >       |           ^~~~~~~~~~~~~
-> >       |           boot_cpuid
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: In function 'vangogh_od_edit_dpm_table':
-> > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:1460:19: error: 'boot_cpu_data' undeclared (first use in this function); did you mean 'boot_cpuid'?
-> >  1460 |   if (input[0] >= boot_cpu_data.x86_max_cores) {
-> >       |                   ^~~~~~~~~~~~~
-> >       |                   boot_cpuid
-> >
-> > Caused by commits
-> >
-> >   517cb957c43b ("drm/amd/pm: implement the processor clocks which read by metric")
-> >   0d90d0ddd10e ("drm/amd/pm: implement processor fine grain feature for vangogh (v3)")
-> >
-> > The only thing I could do easily is to disable CONFIG_DRM_AMDGPU for today.
-> >
-> > --
-> > Cheers,
-> > Stephen Rothwell
->
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
+
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
+
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
+
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
+
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
+
+Eric W. Biederman mentioned this issue [2][3].
+
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (8):
+  Use refcount_t for ucounts reference counting
+  Add a reference to ucounts for each cred
+  Move RLIMIT_NPROC counter to ucounts
+  Move RLIMIT_MSGQUEUE counter to ucounts
+  Move RLIMIT_SIGPENDING counter to ucounts
+  Move RLIMIT_MEMLOCK counter to ucounts
+  Move RLIMIT_NPROC check to the place where we increment the counter
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+
+ fs/exec.c                                     |   2 +-
+ fs/hugetlbfs/inode.c                          |  17 +-
+ fs/io-wq.c                                    |  22 ++-
+ fs/io-wq.h                                    |   2 +-
+ fs/io_uring.c                                 |   2 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   3 +
+ include/linux/hugetlb.h                       |   3 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   6 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  31 +++-
+ ipc/mqueue.c                                  |  29 ++--
+ ipc/shm.c                                     |  31 ++--
+ kernel/cred.c                                 |  46 ++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  12 +-
+ kernel/signal.c                               |  53 +++---
+ kernel/sys.c                                  |  13 --
+ kernel/ucount.c                               | 111 +++++++++---
+ kernel/user.c                                 |   2 -
+ kernel/user_namespace.c                       |   7 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  35 ++--
+ mm/mmap.c                                     |   3 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 32 files changed, 445 insertions(+), 182 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
+-- 
+2.29.2
+
