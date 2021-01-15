@@ -2,119 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330032F82BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239D62F82C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733020AbhAORnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732438AbhAORnH (ORCPT
+        id S1728188AbhAORoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:44:39 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:59562 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbhAORoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:43:07 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2127EC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:42:27 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id x12so5053841plr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HHcrPMunMXLd4pGO1neHtBLweNEDPBq5DPbqA2qARP4=;
-        b=X2Ksib9kXtDryNhSQ2hrFIt7jHXSUocyXuM3sn5o25k/6kIj16YW909qGlRcjBPsBH
-         pm24WVQNJFcJqWbFSJ76NZPhJsP+LaVdZRdlSX+WHjgREmn+jUtg9qzukGXWDH9TqroB
-         3tKkzH6EAA9nEMoxrKuB1RAo14QAVswlSM+ZHr7Mg89D36XwFMzBq/p3743nFi7UL20n
-         ZH8dwyflEjKUXu1aSDsF1KQMbkeOTpZmR4hC8p2yhQwmtni5fEj7YVJX28pvfrjdrmTq
-         YuFGxV6NP3ir2Q+wdfLnmvMHMBk1B2FofM031HEGQ+H07vPkWrwqPuum1FjYGJj1bYZ4
-         oqqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HHcrPMunMXLd4pGO1neHtBLweNEDPBq5DPbqA2qARP4=;
-        b=KUq5jTULzTuQOx1WyF8UYEeu/Zai8J6nUhQZh4YOdsUPCo3cTdqOvgKC8qSmIWBToz
-         0YJh0+Y2AHHAGlMaY9mQsS3c1Lca9uxkEr19wlRo7YqTMR+kgmGhfmdYctcps9+oLAlc
-         AYqT18uhONP24Sgp/qcHfdBakGrvvhdNtQLjsPLIC3xF/Atk4J9s5QQUJeHvWzJYwQgY
-         VgG9UOtzWPBWSSCxa4npHp2aEvPbbs7xnsH4/5+lh64qskY/bqAWapwpoiejSl7OBkX0
-         0zehR6skYG0GXicK6dO7Q2Qe8ybZajsacIXRQG4sqH5d0QvWLAM4yfqPy222pTUbCF93
-         snsQ==
-X-Gm-Message-State: AOAM532kTlpHtDig0jA93K89lC7iHFaK37WsTySmw0VhclNWlMx7OdQf
-        G3q6MGEAo9OXi0Ej0IMEMZJlbg==
-X-Google-Smtp-Source: ABdhPJyGe1fBDfRzm2pWQF9LtOY7aTP9ZGtLusYGtA+MIr2vinxVAwQ9y1P1BY/3WFklEnP+5VTNig==
-X-Received: by 2002:a17:90a:708b:: with SMTP id g11mr11390902pjk.23.1610732546469;
-        Fri, 15 Jan 2021 09:42:26 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id r79sm8341027pfc.166.2021.01.15.09.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:42:25 -0800 (PST)
-Date:   Fri, 15 Jan 2021 09:42:19 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Like Xu <like.xu@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
- and inject it to guest
-Message-ID: <YAHT+zLiIg/oUygZ@google.com>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-5-like.xu@linux.intel.com>
- <YACTnkdi1rxfrRCg@google.com>
- <a0b5dc29-e63f-6ec9-a03f-6435cb3373c6@intel.com>
+        Fri, 15 Jan 2021 12:44:38 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FHe2m3190194;
+        Fri, 15 Jan 2021 17:43:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Ml/fErxJ4JuHhBzsQjxTSI597dwX+lHlDTScxN9HNMQ=;
+ b=yll1db4fZQ/x09N8mKtXDKLqkU4hSGBXqDBhBSS5+K8uqVaVQz5NOGx+GU+/EUtu1JGV
+ c62jijtDzNkBFsNHCva3TDYjJr8bum3GW6iQfjJ42wfD6YXppRDT7Y/1uSQaJgH9Byau
+ p9aW704tVBqnN71LpZK9QaK2VoAqyz+cvbAWRiCs26fXNBUOO2flNv/Qcb79Nur8gW96
+ S2qLaLXPfHEix2ucGL+lqxq4+vHH6rGoxPANHAqs0/1YdrA92s0zJXj/mO09cHYn33my
+ 7dYZj8BVFiQjKR8vtQo2iNsFJ83z1PQRyDgRn/cEFiI4/aW8TEoD9Wl6JtksZspihQIf kg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 360kd06104-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 17:43:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10FHfEfc155294;
+        Fri, 15 Jan 2021 17:43:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 360keq62ur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 17:43:42 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10FHhcC7014078;
+        Fri, 15 Jan 2021 17:43:38 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 15 Jan 2021 09:43:38 -0800
+Subject: Re: [RFC PATCH 2/3] hugetlb: convert page_huge_active() to
+ HPageMigratable flag
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210111210152.118394-1-mike.kravetz@oracle.com>
+ <20210111210152.118394-3-mike.kravetz@oracle.com>
+ <20210115091755.GB4092@linux>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <d98039ef-8489-6d8c-a323-44e3f0d8acee@oracle.com>
+Date:   Fri, 15 Jan 2021 09:43:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0b5dc29-e63f-6ec9-a03f-6435cb3373c6@intel.com>
+In-Reply-To: <20210115091755.GB4092@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9865 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021, Xu, Like wrote:
-> On 2021/1/15 2:55, Sean Christopherson wrote:
-> > On Mon, Jan 04, 2021, Like Xu wrote:
-> > > +	 * Note: KVM disables the co-existence of guest PEBS and host PEBS.
-> > By "KVM", do you mean KVM's loading of the MSRs provided by intel_guest_get_msrs()?
-> > Because the PMU should really be the entity that controls guest vs. host.  KVM
-> > should just be a dumb pipe that handles the mechanics of how values are context
-> > switch.
+On 1/15/21 1:17 AM, Oscar Salvador wrote:
+> On Mon, Jan 11, 2021 at 01:01:51PM -0800, Mike Kravetz wrote:
+>> Use the new hugetlb page specific flag to replace the page_huge_active
+>> interfaces.  By it's name, page_huge_active implied that a huge page
+>> was on the active list.  However, that is not really what code checking
+>> the flag wanted to know.  It really wanted to determine if the huge
+>> page could be migrated.  This happens when the page is actually added
+>> the page cache and/or task page table.  This is the reasoning behind the
+>> name change.
+>>
+>> The VM_BUG_ON_PAGE() calls in the interfaces were not really necessary
+>> as in all case but one we KNOW the page is a hugetlb page.  Therefore,
+>> they are removed.  In one call to HPageMigratable() is it possible for
+>> the page to not be a hugetlb page due to a race.  However, the code
+>> making the call (scan_movable_pages) is inherently racy, and page state
+>> will be validated later in the migration process.
+>>
+>> Note:  Since HPageMigratable is used outside hugetlb.c, it can not be
+>> static.  Therefore, a new set of hugetlb page flag macros is added for
+>> non-static flag functions.
 > 
-> The intel_guest_get_msrs() and atomic_switch_perf_msrs()
-> will work together to disable the co-existence of guest PEBS and host PEBS:
+> Two things about this one:
 > 
-> https://lore.kernel.org/kvm/961e6135-ff6d-86d1-3b7b-a1846ad0e4c4@intel.com/
+> I am not sure about the name of this one.
+> It is true that page_huge_active() was only called by memory-hotplug and all
+> it wanted to know was whether the page was in-use and so if it made sense
+> to migrate it, so I see some value in the new PageMigratable flag.
 > 
-> +
-> 
-> static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
-> ...
->     if (nr_msrs > 2 && (msrs[1].guest & msrs[0].guest)) {
->         msrs[2].guest = pmu->ds_area;
->         if (nr_msrs > 3)
->             msrs[3].guest = pmu->pebs_data_cfg;
->     }
-> 
->    for (i = 0; i < nr_msrs; i++)
-> ...
+> However, not all in-use hugetlb can be migrated, e.g: we might have constraints
+> when it comes to migrate certain sizes of hugetlb, right?
+> So setting HPageMigratable to all active hugetlb pages might be a bit misleading?
+> HPageActive maybe? (Sorry, don't have a replacement)
 
-Yeah, that's exactly what I'm complaining about.  Splitting the logic for
-determining the guest values is unnecessarily confusing, and as evidenced by the
-PEBS_ENABLE bug, potentially fragile.  Perf should have full knowledge and
-control of what values are loaded for the guest.  And, the above indexing magic
-is nigh impossible to follow and _super_ fragile.
+You concerns about the name change are correct.
 
-If we change .guest_get_msrs() to take a struct kvm_pmu pointer, then it can
-generate the full set of guest values by grabbing ds_area and pebs_data_cfg.
-Alternatively, .guest_get_msrs() could take the desired guest MSR values
-directly (ds_area and pebs_data_cfg), but kvm_pmu is vendor agnostic, so I don't
-see any reason to not just pass the pointer.
+The reason for the change came about from discussions about Muchun's series
+of fixes and the need for a new 'page is freed' status to fix a race.  In
+that discussion, Michal asked 'Why can't we simply set page_huge_active when
+the page is allocated and put on the active list?'.  That is mentioned above,
+but we really do not want to try and migrate pages after they are allocated
+and before they are in use.  That causes problems in the fault handling code.
+
+Anyway, that is how the suggestion for Migration came about.
+
+In that discussion David Hildenbrand noted that code in alloc_contig_range
+should migrate free hugetlb pages, but there is no support for that today.
+I plan to look at that if nobody else does.  When such code is added, the
+name 'Migratable' will become less applicable.
+
+I'm not great at naming.  Perhaps 'In_Use' as a flag name might fit better.
+
+> The other thing is that you are right that scan_movable_pages is racy, but
+> page_huge_active() was checking if the page had the Head flag set before
+> retrieving page[1].
+> 
+> Before the page_huge_active() in scan_movable_pages() we have the
+> if (!PageHuge(page)) check, but could it be that between that check and
+> the page_huge_active(), the page gets dissolved, and so we are checking
+> a wrong page[1]? Am I making sense? 
+
+Yes, you are making sense.
+
+The reason I decided to drop the check is because it does not eliminate the
+race.  Even with that check in page_huge_active, the page could be dissolved
+between that check and check of page[1].  There really is no way to eliminate
+the race without holding a reference to the page (or hugetlb_lock).  That
+check in page_huge_active just shortens the race window.
+
+-- 
+Mike Kravetz
