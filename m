@@ -2,224 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911DC2F81C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503BF2F81AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 18:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387459AbhAORLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 12:11:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29964 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732001AbhAORLg (ORCPT
+        id S1732286AbhAORKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 12:10:05 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:61744 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732153AbhAORKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 12:11:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610730609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qc9c/gofLjGafrTcbLQ3n1guQABnxcjbcx/uBfZWm9I=;
-        b=YtqMBB5JI2/Qjx+GnkLZDruv51TeCKJfna4z0ip8UNXXBjTeAfZwKIMJNIct90MDeTLgNU
-        MjdQ3BHI/ftUMUK+78RQNmgVY1/IKwT0X7cDdEwSGxoZaBA0qq2tpOOcRYKLluQua20kwR
-        rMspU9XI6dhnHy+H87WOgQd2qUkbD/8=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-ascgd0LDOTyDi1yCpvFzOg-1; Fri, 15 Jan 2021 12:10:08 -0500
-X-MC-Unique: ascgd0LDOTyDi1yCpvFzOg-1
-Received: by mail-qv1-f71.google.com with SMTP id k16so8245748qve.19
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 09:10:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qc9c/gofLjGafrTcbLQ3n1guQABnxcjbcx/uBfZWm9I=;
-        b=BBrKZ2eyHLyRvE5GR7fEUFUdiFlulf86Xqy808aQSyWBcPnxe0aZpdKN34xVzvThRv
-         hrYcWTdCCE1yq7ynvo3eIgrupIM8UkoH5Sxaw2Jos1g1RzdFZY+JlXxpk1qw5guKrmSu
-         XC23UfRw+UwWe1Z26t/sfAmg8HThCeyQ3ATTGLcWbz7w/br9LTBHdPlVf8xl0zWA4bCX
-         IbGPBKu0IpztwZ7iHPo0LEF5Sg0dZsiAvn1dKiwM+okJpPLuL5Faf7pcUzIRD/trSFeb
-         76ppaB6w05osi64scn2RYnep3H2D2Hhzo6LhWSk6NKFPFtZagQuiWM4haS1SpZLu+AX2
-         Y3ig==
-X-Gm-Message-State: AOAM531PpLLdcVCVS+XQnqJPVHfjcYv/jCIZ8VshG32AV2y1fDFnsbNA
-        SHdiwUlSrhfSEdNeaioUwOYKMIgQZza4V0Ak1RrMAuChU77eDlZvOBG2Sk10GjlCVxcWpvDSyz+
-        vs/wxJN+ggvN/nNoVoI5Lt4zwczLvp7mkWRAym9H8+IbHzkYWttL/Hf/iO/7+4rH6gGw/ByaqZA
-        ==
-X-Received: by 2002:ac8:4553:: with SMTP id z19mr12589532qtn.278.1610730605835;
-        Fri, 15 Jan 2021 09:10:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxoMgM51c/GHRmaGeJ+Zy2tSzT8SlyOfu7E1vA+zEc9W0Bb9NoJGtjyJUxMHvZEaMYWNpZWYw==
-X-Received: by 2002:ac8:4553:: with SMTP id z19mr12589487qtn.278.1610730605474;
-        Fri, 15 Jan 2021 09:10:05 -0800 (PST)
-Received: from localhost.localdomain ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id d123sm5187840qke.95.2021.01.15.09.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 09:10:04 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: [PATCH RFC 29/30] userfaultfd: Enable write protection for shmem & hugetlbfs
-Date:   Fri, 15 Jan 2021 12:09:06 -0500
-Message-Id: <20210115170907.24498-30-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210115170907.24498-1-peterx@redhat.com>
-References: <20210115170907.24498-1-peterx@redhat.com>
+        Fri, 15 Jan 2021 12:10:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610730582; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=aiKLgWl9D/qmUkm2ChFG0sCHujSYfskh5yLKLQlSwFY=; b=j9JPfPcMTUHe5kP5D8xMWKgp5k84N5757ZmP8zfuS9yqr3r2D2B5+t3m/8123HnuaeR+BRjm
+ dzZQYljKtDqo73CnDgKLHxpBb7fsoMK4GL8sr8+o6U+5icisBOle/xSOz3QuHOhiL+XUtDBj
+ RgICt+gzCDfm0JY/l19NwB+xowk=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6001cc37859d74370ddbd08f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Jan 2021 17:09:11
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4965FC43468; Fri, 15 Jan 2021 17:09:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 590D7C43464;
+        Fri, 15 Jan 2021 17:09:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 590D7C43464
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Fri, 15 Jan 2021 09:09:06 -0800
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/4] phy: qcom-qmp: Add SM8350 USB QMP PHYs
+Message-ID: <20210115170906.GB5063@jackp-linux.qualcomm.com>
+References: <20210115104047.3460-1-jackp@codeaurora.org>
+ <20210115104047.3460-2-jackp@codeaurora.org>
+ <2c5481fe-f5be-5d6a-f62f-c93d04b9210e@somainline.org>
+ <20210115124736.GF2771@vkoul-mobl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115124736.GF2771@vkoul-mobl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've had all the necessary changes ready for both shmem and hugetlbfs.  Turn
-on all the shmem/hugetlbfs switches for userfaultfd-wp.
+Hi Vinod,
 
-Now we can remove the flags parameter for vma_can_userfault() since not used
-any more.  Meanwhile, we can expand UFFD_API_RANGE_IOCTLS_BASIC with
-_UFFDIO_WRITEPROTECT too because all existing types now support write
-protection mode.
+On Fri, Jan 15, 2021 at 06:17:36PM +0530, Vinod Koul wrote:
+> On 15-01-21, 12:54, Konrad Dybcio wrote:
+> > I might be wrong but it looks as if you forgot to add a compatible
+> > for the "sm8350_usb3_uniphy_cfg" configuration.
 
-Since vma_can_userfault() will be used elsewhere, move into userfaultfd_k.h.
+I believe Konrad was referring to the driver in which I had neglected to
+add the compatible to the qcom_qmp_phy_of_match_table. My mistake.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- fs/userfaultfd.c                 | 17 ++++-------------
- include/linux/userfaultfd_k.h    |  7 +++++++
- include/uapi/linux/userfaultfd.h |  3 ++-
- mm/userfaultfd.c                 | 10 +++-------
- 4 files changed, 16 insertions(+), 21 deletions(-)
+> It seems to be documented in patch 2, ideally we should have the
+> bindings patches first and this as patch 3...
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 3264ec46242b..88ad90fc8539 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -1307,15 +1307,6 @@ static __always_inline int validate_range(struct mm_struct *mm,
- 	return 0;
- }
- 
--static inline bool vma_can_userfault(struct vm_area_struct *vma,
--				     unsigned long vm_flags)
--{
--	/* FIXME: add WP support to hugetlbfs and shmem */
--	return vma_is_anonymous(vma) ||
--		((is_vm_hugetlb_page(vma) || vma_is_shmem(vma)) &&
--		 !(vm_flags & VM_UFFD_WP));
--}
--
- static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 				unsigned long arg)
- {
-@@ -1394,7 +1385,7 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 
- 		/* check not compatible vmas */
- 		ret = -EINVAL;
--		if (!vma_can_userfault(cur, vm_flags))
-+		if (!vma_can_userfault(cur))
- 			goto out_unlock;
- 
- 		/*
-@@ -1453,7 +1444,7 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 	do {
- 		cond_resched();
- 
--		BUG_ON(!vma_can_userfault(vma, vm_flags));
-+		BUG_ON(!vma_can_userfault(vma));
- 		BUG_ON(vma->vm_userfaultfd_ctx.ctx &&
- 		       vma->vm_userfaultfd_ctx.ctx != ctx);
- 		WARN_ON(!(vma->vm_flags & VM_MAYWRITE));
-@@ -1602,7 +1593,7 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
- 		 * provides for more strict behavior to notice
- 		 * unregistration errors.
- 		 */
--		if (!vma_can_userfault(cur, cur->vm_flags))
-+		if (!vma_can_userfault(cur))
- 			goto out_unlock;
- 
- 		found = true;
-@@ -1616,7 +1607,7 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
- 	do {
- 		cond_resched();
- 
--		BUG_ON(!vma_can_userfault(vma, vma->vm_flags));
-+		BUG_ON(!vma_can_userfault(vma));
- 
- 		/*
- 		 * Nothing to do: this vma is already registered into this
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index 7d14444862d4..fd7031173949 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -16,6 +16,7 @@
- #include <linux/fcntl.h>
- #include <linux/mm.h>
- #include <asm-generic/pgtable_uffd.h>
-+#include <linux/hugetlb_inline.h>
- 
- /*
-  * CAREFUL: Check include/uapi/asm-generic/fcntl.h when defining
-@@ -88,6 +89,12 @@ static inline bool userfaultfd_armed(struct vm_area_struct *vma)
- 	return vma->vm_flags & (VM_UFFD_MISSING | VM_UFFD_WP);
- }
- 
-+static inline bool vma_can_userfault(struct vm_area_struct *vma)
-+{
-+	return vma_is_anonymous(vma) || vma_is_shmem(vma) ||
-+	    is_vm_hugetlb_page(vma);
-+}
-+
- extern int dup_userfaultfd(struct vm_area_struct *, struct list_head *);
- extern void dup_userfaultfd_complete(struct list_head *);
- 
-diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-index e7e98bde221f..83bcd739de50 100644
---- a/include/uapi/linux/userfaultfd.h
-+++ b/include/uapi/linux/userfaultfd.h
-@@ -39,7 +39,8 @@
- 	 (__u64)1 << _UFFDIO_WRITEPROTECT)
- #define UFFD_API_RANGE_IOCTLS_BASIC		\
- 	((__u64)1 << _UFFDIO_WAKE |		\
--	 (__u64)1 << _UFFDIO_COPY)
-+	 (__u64)1 << _UFFDIO_COPY |		\
-+	 (__u64)1 << _UFFDIO_WRITEPROTECT)
- 
- /*
-  * Valid ioctl command number range with this API is from 0x00 to
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 1dff5b9a2c26..3ad52f01553b 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -445,7 +445,6 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
- 			err = mfill_zeropage_pte(dst_mm, dst_pmd,
- 						 dst_vma, dst_addr);
- 	} else {
--		VM_WARN_ON_ONCE(wp_copy);
- 		if (!zeropage)
- 			err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd,
- 						     dst_vma, dst_addr,
-@@ -671,15 +670,12 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
- 
- 	err = -ENOENT;
- 	dst_vma = find_dst_vma(dst_mm, start, len);
--	/*
--	 * Make sure the vma is not shared, that the dst range is
--	 * both valid and fully within a single existing vma.
--	 */
--	if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
-+
-+	if (!dst_vma)
- 		goto out_unlock;
- 	if (!userfaultfd_wp(dst_vma))
- 		goto out_unlock;
--	if (!vma_is_anonymous(dst_vma))
-+	if (!vma_can_userfault(dst_vma))
- 		goto out_unlock;
- 
- 	if (is_vm_hugetlb_page(dst_vma)) {
+Ok. I think driver change would be patch 2 rather, with the bindings in
+patch 1? Patch 3 and 4 are dt-bindings updates to the SNPS Femto PHY and
+DWC3 QCOM docs respectively.
+
+Will send v2, thanks.
+
+Jack
 -- 
-2.26.2
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
