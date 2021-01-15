@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1852F740A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F5A2F740B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Jan 2021 09:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732360AbhAOIKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732313AbhAOIKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Jan 2021 03:10:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54370 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:54382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732123AbhAOIKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725950AbhAOIKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Jan 2021 03:10:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 620E0221F7;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DCA22240;
         Fri, 15 Jan 2021 08:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610698207;
-        bh=73sR10wECqQUqw6UkBdoCbc/733OkO6ECg5/oQb+LQs=;
+        bh=xa37m5Q/FryyLUx/FnM3xo2yMtvSkpnfWMgpl5fR0oo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDeJ13UnQ2lDho86FNm1kzDSYFy/JyoRSLcyTR1ThPh4oyE5KB0MUNeYoWCdPoPxx
-         qrvfRwzSKi3uXv/mzkwRhKMxULAVoxcP/bs0aXA6q8VN1wAu0tWUrLt8mHHz2kQ8ml
-         KeZ4AtFrBkrvn0jV0ZSK/NMtDs/kUk7RlS4+uBhNVH2QppXgiQ0Mu3FU7GUNeDxyp+
-         UGzhv5WhHPq8UmVnpAemj2PPPZLZwfQwMmARIE3mo3ebSl88gZt4BFiRytBDTwp48h
-         9r1TCACFI7s/Vqs2C/BkbCdSSWt1FF2AchEclBi439B7EXXeQlSnJstbP97dVfvXKA
-         EsBkESookIyYQ==
+        b=ENL5Yll/V6vbZpJaTVYA9JC4Zdt7I2HM1M9TfWMmpm2UWAT+JCFsfw1jke1IKtAom
+         cnwhDNE9qXXscQQIAl8R3ivBOteDVxjyHY/HV8YpKLmuipzwAJIpe5WvUi00nuNJUS
+         pu9NZfFHM1bfzpDKv38jUVXh8et947jmSmCumagywtProc5S2mXapRWKQbgTR9pkYD
+         fi6gZT3C4slT4q96k4TYm92cNAYuzKVkdNQjMcLb6aRcbc0j7QS57ShlhZDR7qf2VF
+         JpWCjb+TQWQLj8Dds3bXYFu/EemULFyA+kf5tPWROQNatnWHMauRH6AJbrreMsk9Fb
+         6yLvg1sQMeS9Q==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l0KBJ-00FiGK-00; Fri, 15 Jan 2021 09:10:05 +0100
+        id 1l0KBJ-00FiGM-0p; Fri, 15 Jan 2021 09:10:05 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/4] staging: hikey9xx: phy-hi3670-usb3.c: adjust retry logic
-Date:   Fri, 15 Jan 2021 09:10:01 +0100
-Message-Id: <8a5d59d49acba14d0cc9f8e720d9892a21240d22.1610697726.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 3/4] staging: hikey9xx: phy-hi3670-usb3.c: hi3670_is_abbclk_seleted() returns bool
+Date:   Fri, 15 Jan 2021 09:10:02 +0100
+Message-Id: <d1e0d94381e214157545d6808835fdfe99448f76.1610697726.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610697726.git.mchehab+huawei@kernel.org>
 References: <cover.1610697726.git.mchehab+huawei@kernel.org>
@@ -46,41 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of running a loop up to 100k times, add a small
-delay inside it, running it up to 10 times, waiting up
-to 100-200 us.
-
-It should be noticed that I don't have the datasheet for
-this PHY. So, not sure if this time will cover all
-situations.
+Instead of using 1/0 for true/false, change the type to boolean
+and change the returned value.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/phy-hi3670-usb3.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/staging/hikey9xx/phy-hi3670-usb3.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-index 722cabaa9bd9..cffe6c58dfd7 100644
+index cffe6c58dfd7..b5fed306fcbf 100644
 --- a/drivers/staging/hikey9xx/phy-hi3670-usb3.c
 +++ b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-@@ -185,7 +185,7 @@ static int hi3670_phy_cr_start(struct regmap *usb31misc, int direction)
- static int hi3670_phy_cr_wait_ack(struct regmap *usb31misc)
+@@ -326,24 +326,24 @@ static int hi3670_phy_set_params(struct hi3670_priv *priv)
+ 	return ret;
+ }
+ 
+-static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
++static bool hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
  {
  	u32 reg;
--	int retry = 100000;
-+	int retry = 10;
- 	int ret;
  
- 	while (retry-- > 0) {
-@@ -198,6 +198,8 @@ static int hi3670_phy_cr_wait_ack(struct regmap *usb31misc)
- 		ret = hi3670_phy_cr_clk(usb31misc);
- 		if (ret)
- 			return ret;
-+
-+		usleep_range(10, 20);
+ 	if (!priv->sctrl) {
+ 		dev_err(priv->dev, "priv->sctrl is null!\n");
+-		return 1;
++		return true;
  	}
  
- 	return -ETIMEDOUT;
+ 	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
+ 		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
+-		return 1;
++		return true;
+ 	}
+ 
+ 	if ((reg & USB_CLK_SELECTED) == 0)
+-		return 1;
++		return true;
+ 
+-	return 0;
++	return false;
+ }
+ 
+ static int hi3670_config_phy_clock(struct hi3670_priv *priv)
 -- 
 2.29.2
 
