@@ -2,70 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E762F8F1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FEC2F8F23
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbhAPUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 15:12:04 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:18242
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726083AbhAPUL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 15:11:56 -0500
-X-IronPort-AV: E=Sophos;i="5.79,352,1602540000"; 
-   d="scan'208";a="370224224"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 21:11:13 +0100
-Date:   Sat, 16 Jan 2021 21:11:13 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        =?ISO-8859-15?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kbuild-all@lists.01.org
-Subject: [PATCH] media: i2c: fix odd_ptr_err.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2101162109350.2697@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1726954AbhAPUSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 15:18:35 -0500
+Received: from vern.gendns.com ([98.142.107.122]:45478 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbhAPUSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 15:18:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=m08zOXqNQtpcD4gKaTDISoVY1ErE89DNHarinAmmR2g=; b=fgKDZdoxgug+ACCGAz7N0ieQG8
+        w9qCykFUop+Sq+SxBXsHtIAMoSfzRag6MK84PtqyDWfSiAujX6okuOW2lInl3L/D0Vm7m9qiq+JYb
+        vMH6ICaljqhMQGl0XoW46WzgLbRBGJQS9Y0Ji0YTbTp77FYn9556POs/qvMYDlljtHDsq/O5/xmOR
+        Z8U3BAUHkSO5sqoTRrmUyLDiz1yLqajUgZrvRgVKSZW0Tib/koaAwQ9hzj3RJ2EDmKxio2hTXNSs2
+        wFl8+amWxxms0tzo4wvRbslba0zcrAULOVPKfVJy2R7cGOqtKviGUtoVFLcZQitn5gLxWFmHvzmkY
+        pnPveggA==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:52410 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1l0rz2-000369-5r; Sat, 16 Jan 2021 15:15:40 -0500
+Subject: Re: [PATCH 2/2] soc: ti: pruss: add support for AM18XX/OMAP-L138
+ PRUSS
+To:     Suman Anna <s-anna@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210104183021.330112-1-david@lechnology.com>
+ <20210104183021.330112-3-david@lechnology.com>
+ <4b60b60b-7e59-28fb-dc3a-f3f097e4cc8a@ti.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <2ae31c89-fe5c-bc80-f7cc-a24f55616d9a@lechnology.com>
+Date:   Sat, 16 Jan 2021 14:15:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <4b60b60b-7e59-28fb-dc3a-f3f097e4cc8a@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On 1/15/21 6:52 PM, Suman Anna wrote:
+> Hi David,
+> 
+> On 1/4/21 12:30 PM, David Lechner wrote:
+>> This adds support for the PRUSS found in AM18XX/OMAP-L138. This PRUSS
+>> doesn't have a CFG register, so that is made optional as selected by
+>> the device tree compatible string.
+>>
+>> ARCH_DAVINCI is added in the Kconfig so that the driver can be selected
+>> on that platform.
+>>
+>> Signed-off-by: David Lechner <david@lechnology.com>
+>> ---
+>>   drivers/soc/ti/Kconfig |  2 +-
+>>   drivers/soc/ti/pruss.c | 76 ++++++++++++++++++++++++------------------
+>>   2 files changed, 45 insertions(+), 33 deletions(-)
+>>
+>> diff --git a/drivers/soc/ti/Kconfig b/drivers/soc/ti/Kconfig
+>> index 7e2fb1c16af1..7a692a21480a 100644
+>> --- a/drivers/soc/ti/Kconfig
+>> +++ b/drivers/soc/ti/Kconfig
+>> @@ -85,7 +85,7 @@ config TI_K3_SOCINFO
+>>   
+>>   config TI_PRUSS
+>>   	tristate "TI PRU-ICSS Subsystem Platform drivers"
+>> -	depends on SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
+>> +	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
+>>   	select MFD_SYSCON
+>>   	help
+>>   	  TI PRU-ICSS Subsystem platform specific support.
+>> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
+>> index 5d6e7132a5c4..bfaf3ff74b01 100644
+>> --- a/drivers/soc/ti/pruss.c
+>> +++ b/drivers/soc/ti/pruss.c
+>> @@ -24,10 +24,12 @@
+>>    * struct pruss_private_data - PRUSS driver private data
+>>    * @has_no_sharedram: flag to indicate the absence of PRUSS Shared Data RAM
+>>    * @has_core_mux_clock: flag to indicate the presence of PRUSS core clock
+>> + * @has_cfg: flag to indicate the presence of PRUSS CFG registers
+> 
+> I recommend to change this to a negative flag as the Davinci platforms are the
+> only ones that don't have CFG (being the very first SoCs with a PRUSS IP)
+> sub-module.
 
-PTR_ERR should access the value just tested by IS_ERR
+Negative flags hurt my brain. :-)
 
-Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
+I was actually thinking about submitting a patch to convert
+has_no_sharedram to a positive flag as well. But I understand
+the sentiment of only setting the flag true for the odd case
+rather than the usual case.
 
-Fixes: 11c0d8fdccc5 ("media: i2c: Add support for the OV8865 image sensor")
-CC: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+> 
+>>    */
+>>   struct pruss_private_data {
+>>   	bool has_no_sharedram;
+>>   	bool has_core_mux_clock;
+>> +	bool has_cfg;
+>>   };
+>>   
+>>   static void pruss_of_free_clk_provider(void *data)
+>> @@ -239,42 +241,44 @@ static int pruss_probe(struct platform_device *pdev)
+>>   		goto rpm_disable;
+>>   	}
+>>   
+> 
+> And use it here to skip all the cfg code parsing. All the below delta is just
+> for the additional indentation for the flag. If you don't like goto's in
+> non-error paths, then we can refactor the CFG parse code into a separate function.
+> 
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   b3a3cbdec55b090d22a09f75efb7c7d34cb97f25
-commit: 11c0d8fdccc56fa15cb15906480b4737c31dd085 [2650/3956] media: i2c: Add support for the OV8865 image sensor
-:::::: branch date: 2 days ago
-:::::: commit date: 4 days ago
-
- ov8865.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/media/i2c/ov8865.c
-+++ b/drivers/media/i2c/ov8865.c
-@@ -2849,7 +2849,7 @@ static int ov8865_probe(struct i2c_clien
- 	sensor->avdd = devm_regulator_get(dev, "avdd");
- 	if (IS_ERR(sensor->avdd)) {
- 		dev_err(dev, "cannot get AVDD (analog) regulator\n");
--		ret = PTR_ERR(sensor->dvdd);
-+		ret = PTR_ERR(sensor->avdd);
- 		goto error_endpoint;
- 	}
-
+Refactoring to a separate function sounds good to me.
