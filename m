@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937C62F8C16
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC22F8C1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbhAPHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 02:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S1726640AbhAPHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 02:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbhAPHmv (ORCPT
+        with ESMTP id S1725797AbhAPHsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 02:42:51 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4738C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:42:10 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id u19so12080883edx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:42:10 -0800 (PST)
+        Sat, 16 Jan 2021 02:48:05 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05F0C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:47:24 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id hs11so14214884ejc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:47:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=mzN4ky5LJAN7o6Gjr7qou54ao7859x7d7VxUbl7+ufs=;
-        b=YkJBOwJHaHjAm7z6A1iEysNQZBq88KDb1rzLGvSB2F2+8E5lsj1bVuciO0e8NqZLbs
-         Mj269Ros9GUhAWURiw8JMYUvC30glm+nS7wa2dNvBZheA9acRP/RmbqTHnMshS+tm/1F
-         OCLYI6wjzd/Esqkdf/K9s0H3IM2WsRPjsXmHh3gofi6v2Wy/LR95jsNBOkreNebBdH9y
-         qG7YNmqr8VdxvXQ3MUQFftPEHzeUk8E/KCbBklGx2XHLtBc6dn1jVUr3aSeBxWxaHN7X
-         xAXN8sA99Jy42FvzN+3ZQmg5r2GufUSs+okilJZdfJixFJNsj7VQenBWqYeTDqpVAZVW
-         kABg==
+        bh=z2djUeHW29PTHcAEATrXB6Rh6D3MKzCt0CW0H5NmlIE=;
+        b=H4OO9pau+K++OnZfwglsrDV0vo0ZhkPRyorppHcHYRmwiOwAo7WfYKvkr6Ab5DITNo
+         XQBc/WX0TWAvd9DNLoRfdIAvrGEgyR5GTTaKglL1Teb9JJO55rKiw+tqk89r2YGMFAWg
+         lLAccA9s1AXDh3gKCSF3jQThFx1SCMvzsucewMUgzzCr5esmEoIpf6EtXi3hY5SfMtHY
+         C7vlytO40ucCk8+A9CBL/SZTpMFTbahD3n0LKP7DNK85PksuyV4YktRYYnIZmphjQzMZ
+         fKT2IojnTPU6XD+nHm4l5NPt0A2R+AooJH3BFLAiqV9QCgBrnUZe68HFIfhbtWVJurmr
+         /CkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mzN4ky5LJAN7o6Gjr7qou54ao7859x7d7VxUbl7+ufs=;
-        b=bSLXs2UpByzSqYABk7uP+buE3vVuZFCUpqBMvvPWzhioElp+tPm1J7BSVfPdOvBTIO
-         9jGU+u2nS2qYoNXnRYZTwXdw3+gnIJQm2JXjDAPEpzndT8vXkVaO30z3YWUcDSXDaUvT
-         wvhWHuAXMJRwh3rBJRE3swy3hCLwsEtZkew2LUjqHyjQ/IE1TuojAr0gzEPYvzyvlw3K
-         LFv+nc24gLCbiX3aU76RH1mUmpJDxvVarcXH2vd3pMZwJ9lFFVn+DDnZGyyQXUaiGBDf
-         VBOvDJlfqX6KMBLp6c2JwNqSMWMguXPbOrzqO2fJlUAmBpX9f2eX7ReYEfQFFeyQ0inX
-         7i1w==
-X-Gm-Message-State: AOAM532iTG7zbej+gt7VKHl3yopdkUislueVSZtE69UNbVIBXEKsFsmw
-        N/LRodlUuVwFaPJ3G2ZQuKChxxoaPOkSKA7rDyD31w==
-X-Google-Smtp-Source: ABdhPJx98zZX/lfMD1Q06Ungq2aMVYlrAiAr65UndZPhu8ilTzqKGkrBw3e3mMBnSf+bZiLMTiD5F8HXURBnLAnwurc=
-X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr12570863edb.365.1610782929253;
- Fri, 15 Jan 2021 23:42:09 -0800 (PST)
+        bh=z2djUeHW29PTHcAEATrXB6Rh6D3MKzCt0CW0H5NmlIE=;
+        b=kZpPlU+l9hQ4qY+UlDHl+LwGQHm9TogCAOsjbbvITtG5hnrDC7G85xb/CKspP0Fz5Z
+         hxrl4+DIA+M7Y+06XvGr/9G/3Q7OKqm3Qf9QUqQP3gpzUeOMnkv15JFLIjDP0GG3hsSG
+         kav7zP6yRR5rg+BNbK8LQilCpL3hl42qTqT6esdsSHktSo5wyA/dfXCmxzGFmYwHmkgB
+         X5/953rK6dEOq5ttgFnQxTZRaYDceb8RSO/hw+G0iXt6JXfeQGLQgacDiyeRgvqggJ9a
+         ATq4w+r1vrfflb9jo7s2yb8Fgd5fAl2LFzCA2SUwfe2gCV+Sg50ESDXdko0rcIyUgXDL
+         A77A==
+X-Gm-Message-State: AOAM533Oj6JKV5VkBiquoH7KuVanHij3HlaLyjCMOO3+olEf2eLIkX0F
+        sdtxBKtfk9bzYhuJL84S35OAcVkqTZ23BHq7yoLMz0gGUgmFf3bH
+X-Google-Smtp-Source: ABdhPJxJWGoveSlfEPO/P1QYLiRauSD7iFf3lgyX9dShnuAWCrdE9QOfuqYum/ncQNlSFtpoEZlcVtQPVGn4fdEVpIs=
+X-Received: by 2002:a17:906:1498:: with SMTP id x24mr11055946ejc.170.1610783243181;
+ Fri, 15 Jan 2021 23:47:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115121956.679956165@linuxfoundation.org>
-In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+References: <20210115121955.112329537@linuxfoundation.org>
+In-Reply-To: <20210115121955.112329537@linuxfoundation.org>
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 16 Jan 2021 13:11:57 +0530
-Message-ID: <CA+G9fYtasoYtaWr_BFQ3NFpLtRDQHNYjP6mVnakCaApZcPSG+w@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/25] 4.9.252-rc1 review
+Date:   Sat, 16 Jan 2021 13:17:11 +0530
+Message-ID: <CA+G9fYtzpFF-Q9p5mDmcjjczVXvKgrqEWDjwk5eb=pz7UOrQ_w@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/18] 4.4.252-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
@@ -68,8 +68,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, 15 Jan 2021 at 18:02, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.9.252 release.
-> There are 25 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.4.252 release.
+> There are 18 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -78,10 +78,10 @@ On Fri, 15 Jan 2021 at 18:02, Greg Kroah-Hartman
 >
 > The whole patch series can be found in one patch at:
 >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.252-rc1.gz
+4.4.252-rc1.gz
 > or in the git tree and branch at:
 >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
+-rc.git linux-4.4.y
 > and the diffstat can be found below.
 >
 > thanks,
@@ -97,27 +97,26 @@ Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 Summary
 ------------------------------------------------------------------------
 
-kernel: 4.9.252-rc1
+kernel: 4.4.252-rc1
 git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
 le-rc.git
-git branch: linux-4.9.y
-git commit: 5728b2608cec5ac986e96fec329c9afce3c6e6fd
-git describe: v4.9.251-26-g5728b2608cec
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.251-26-g5728b2608cec
+git branch: linux-4.4.y
+git commit: bca740d5a2a15e70a7b3cba962dc1d27f26204f7
+git describe: v4.4.251-19-gbca740d5a2a1
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.251-19-gbca740d5a2a1
 
-No regressions (compared to build v4.9.251)
+No regressions (compared to build v4.4.251)
 
-No fixes (compared to build v4.9.251)
 
-Ran 39849 total tests in the following environments and test suites.
+No fixes (compared to build v4.4.251)
+
+Ran 31040 total tests in the following environments and test suites.
 
 Environments
 --------------
 - arm
 - arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
 - i386
 - juno-r2 - arm64
 - juno-r2-compat
@@ -141,8 +140,7 @@ Test Suites
 -----------
 * build
 * linux-log-parser
-* install-android-platform-tools-r2600
-* kvm-unit-tests
+* libhugetlbfs
 * ltp-cap_bounds-tests
 * ltp-commands-tests
 * ltp-containers-tests
@@ -162,18 +160,68 @@ Test Suites
 * ltp-ipc-tests
 * ltp-math-tests
 * ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
 * ltp-sched-tests
+* ltp-securebits-tests
 * ltp-syscalls-tests
 * ltp-tracing-tests
+* network-basic-tests
 * perf
 * v4l2-compliance
+* kvm-unit-tests
+* install-android-platform-tools-r2600
 * fwts
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.252-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.252-rc1-hikey-20210115-897
+git commit: 9a7f50b4ecb8e05511460280c4e43f3d9e7f01c1
+git describe: 4.4.252-rc1-hikey-20210115-897
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.252-rc1-hikey-20210115-897
+
+
+No regressions (compared to build 4.4.251-rc1-hikey-20210111-893)
+
+
+No fixes (compared to build 4.4.251-rc1-hikey-20210111-893)
+
+Ran 623 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
 * libhugetlbfs
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* ltp-open-posix-tests
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
 
 --=20
 Linaro LKFT
