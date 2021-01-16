@@ -2,174 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0766F2F8EBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D4F2F8EC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbhAPSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 13:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
+        id S1727864AbhAPSxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 13:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbhAPStf (ORCPT
+        with ESMTP id S1726959AbhAPSxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 13:49:35 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1406FC061573;
-        Sat, 16 Jan 2021 10:48:55 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id z6so1456983qtn.0;
-        Sat, 16 Jan 2021 10:48:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X2bjEjVEcanHHKTBZQZPkGXKfsmOeDviCXiXcIortNA=;
-        b=E1DjK98MWwxC9OkCtVHta5dUI7MLDAvrsR0TTAZmHI8g4zacVwt6yyAcoLdOvSk4/D
-         leuILrkRvmamwJrbpmae25ufFCxNT23soThLZBj2hILrawRfUr1aRE2UXkXLGTr8fqtZ
-         4HT3MZmB8jK+JnAqcufAUHvfQ9KBW4CykRNaxuNfSGafPkxb9qz6SEJRriyboqtu/pqM
-         2ftIOF0eww4zJZ9uJiHVaIyaTbvCMaSWpSoIHaX3OsKCq8o6cz/o+VshLxstAOqQdWEO
-         H5m6i1H8wWDonPXrVwNYZUW9gKz2j+bBrUwMqc4ew3/KJBQ4wmFBsmlAqV7LquEbufzH
-         FIsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X2bjEjVEcanHHKTBZQZPkGXKfsmOeDviCXiXcIortNA=;
-        b=C0z/TtFvDCrIdi4N3W9kjeuYYOd5u/7rhJEdFeidAys3PT8pDHDmPjWIZ6qJvlwnG6
-         MmBW8NSud+knWTL5tXgATlQk5Yu8CUr+/WTbatdYewRw6gQRgoUBepe00E3rHo2oMKnj
-         Ymc/TIb7nI6yzGGLTbqqbHyeSOa+2h/D04zrft25FM0yYXKLtCCQnWPf2DXeeVgqd9rx
-         yigiXSK10AtFKZF2P/Mm1W/b9ZocugCZZVgWypXABmrRY2nwKmEODG6MOWEj710q3Lv1
-         S8Hp8yvPircZbLjeoVeyF61y0HmcZSebErJEz9QDyXN0jjOpdkb8OJkGmT9mH6gl/mh4
-         AYOQ==
-X-Gm-Message-State: AOAM533RoGIy/XTfHUPoFpxX1qAvF0arqG+7DVjq6tejCOUC7J7uhWoz
-        B5qlFy62sZ1qguIn5RKdepA=
-X-Google-Smtp-Source: ABdhPJyQKmaEeMDeSGS4BpTCiU37UOmFMliYbbat4DvjsbQ8mH9NkLCyk39bekIGaMT65pN5ARSajg==
-X-Received: by 2002:ac8:6cf:: with SMTP id j15mr16800710qth.180.1610822934151;
-        Sat, 16 Jan 2021 10:48:54 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id n66sm7395327qkn.136.2021.01.16.10.48.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 10:48:53 -0800 (PST)
-Date:   Sat, 16 Jan 2021 11:48:51 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5.4 40/62] spi: spi-geni-qcom: Fix geni_spi_isr() NULL
- dereference in timeout case
-Message-ID: <20210116184851.GA2491015@ubuntu-m3-large-x86>
-References: <20210115121958.391610178@linuxfoundation.org>
- <20210115122000.333323971@linuxfoundation.org>
+        Sat, 16 Jan 2021 13:53:03 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337F2C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 10:52:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R8F3xBxlsMBABQhb2ZMSVvfylIUUbLanBXkQvIaDRlk=; b=U8rkdJp2DBNE7/35W9GbaOZKEI
+        IhvcOjlAYCMevhBfmvL3WNOV+h/lPwn748peWBXQG+9om/10twfmhwiCDCFeRFe4Muj3OAUScZYqv
+        vsUlbUVDZ2/pB8DEeYwwXsWkfkffeeOJEs7N7J/KDrWt231O7TCAwmbbK9bk42lcBIwNJR+pYeEPJ
+        cktf2NhXevuS+2iuGKRdff0IoM2010vs1k73X8xg6eo+KStvifAgh1VoBC/qvL3bJ1TU4tJ9TALbj
+        HmXiGYh9FJj82iLxOn3SGOwg97kUt5FOozfl3cugaetkvwaoYYzM5ZS9L5flWKNvHzZmw+Z1RoKjf
+        obp5H5ZQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0qfg-00Aamo-TO; Sat, 16 Jan 2021 18:51:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4DB72300F7A;
+        Sat, 16 Jan 2021 19:51:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3C36C20290D25; Sat, 16 Jan 2021 19:51:35 +0100 (CET)
+Date:   Sat, 16 Jan 2021 19:51:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, valentin.schneider@arm.com, cai@redhat.com,
+        vincent.donnefort@arm.com, decui@microsoft.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH 0/8] sched: Fix hot-unplug regressions
+Message-ID: <YAM1t2Qzr7Rib3bN@hirez.programming.kicks-ass.net>
+References: <20210116113033.608340773@infradead.org>
+ <YAMFhsXamvCT2tzM@hirez.programming.kicks-ass.net>
+ <20210116154542.GQ2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115122000.333323971@linuxfoundation.org>
+In-Reply-To: <20210116154542.GQ2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 01:28:02PM +0100, Greg Kroah-Hartman wrote:
-> From: Douglas Anderson <dianders@chromium.org>
+On Sat, Jan 16, 2021 at 07:45:42AM -0800, Paul E. McKenney wrote:
+> On Sat, Jan 16, 2021 at 04:25:58PM +0100, Peter Zijlstra wrote:
+> > On Sat, Jan 16, 2021 at 12:30:33PM +0100, Peter Zijlstra wrote:
+> > > Hi,
+> > > 
+> > > These patches (no longer 4), seems to fix all the hotplug regressions as per
+> > > nearly a 100 18*SRCU-P runs over-night.
+> > > 
+> > > I did clean up the patches, so possibly I wrecked it again. I've started new
+> > > runs and will again leave them running over-night.
+> > 
+> > Hurph... I've got one splat from this version, one I've not seen before:
+> > 
+> > [   68.712848] Dying CPU not properly vacated!
+> > ...
+> > [   68.744448] CPU1 enqueued tasks (2 total):
+> > [   68.745018]  pid: 14, name: rcu_preempt
+> > [   68.745557]  pid: 18, name: migration/1
+> > 
+> > Paul, rcu_preempt, is from rcu_spawn_gp_kthread(), right? Afaict that
+> > doesn't even have affinity.. /me wonders HTH that ended up on the
+> > runqueue so late.
 > 
-> commit 4aa1464acbe3697710279a4bd65cb4801ed30425 upstream.
+> Yes, rcu_preempt is from rcu_spawn_gp_kthread(), and you are right that
+> the kernel code does not bind it anywhere.  If this is rcutorture,
+> there isn't enough of a userspace to do the binding there, eihter.
+> Wakeups for the rcu_preempt task can happen in odd places, though.
 > 
-> In commit 7ba9bdcb91f6 ("spi: spi-geni-qcom: Don't keep a local state
-> variable") we changed handle_fifo_timeout() so that we set
-> "mas->cur_xfer" to NULL to make absolutely sure that we don't mess
-> with the buffers from the previous transfer in the timeout case.
-> 
-> Unfortunately, this caused the IRQ handler to dereference NULL in some
-> cases.  One case:
-> 
->   CPU0                           CPU1
->   ----                           ----
->                                  setup_fifo_xfer()
->                                   geni_se_setup_m_cmd()
->                                  <hardware starts transfer>
->                                  <transfer completes in hardware>
->                                  <hardware sets M_RX_FIFO_WATERMARK_EN in m_irq>
->                                  ...
->                                  handle_fifo_timeout()
->                                   spin_lock_irq(mas->lock)
->                                   mas->cur_xfer = NULL
->                                   geni_se_cancel_m_cmd()
->                                   spin_unlock_irq(mas->lock)
-> 
->   geni_spi_isr()
->    spin_lock(mas->lock)
->    if (m_irq & M_RX_FIFO_WATERMARK_EN)
->     geni_spi_handle_rx()
->      mas->cur_xfer NULL dereference!
-> 
-> tl;dr: Seriously delayed interrupts for RX/TX can lead to timeout
-> handling setting mas->cur_xfer to NULL.
-> 
-> Let's check for the NULL transfer in the TX and RX cases and reset the
-> watermark or clear out the fifo respectively to put the hardware back
-> into a sane state.
-> 
-> NOTE: things still could get confused if we get timeouts all the way
-> through handle_fifo_timeout() and then start a new transfer because
-> interrupts from the old transfer / cancel / abort could still be
-> pending.  A future patch will help this corner case.
-> 
-> Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Link: https://lore.kernel.org/r/20201217142842.v3.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> ---
->  drivers/spi/spi-geni-qcom.c |   14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> --- a/drivers/spi/spi-geni-qcom.c
-> +++ b/drivers/spi/spi-geni-qcom.c
-> @@ -415,6 +415,12 @@ static void geni_spi_handle_tx(struct sp
->  	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
->  	unsigned int i = 0;
->  
-> +	/* Stop the watermark IRQ if nothing to send */
-> +	if (!mas->cur_xfer) {
-> +		writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
-> +		return false;
-> +	}
-> +
->  	max_bytes = (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_word;
->  	if (mas->tx_rem_bytes < max_bytes)
->  		max_bytes = mas->tx_rem_bytes;
-> @@ -454,6 +460,14 @@ static void geni_spi_handle_rx(struct sp
->  		if (rx_last_byte_valid && rx_last_byte_valid < 4)
->  			rx_bytes -= bytes_per_fifo_word - rx_last_byte_valid;
->  	}
-> +
-> +	/* Clear out the FIFO and bail if nowhere to put it */
-> +	if (!mas->cur_xfer) {
-> +		for (i = 0; i < DIV_ROUND_UP(rx_bytes, bytes_per_fifo_word); i++)
-> +			readl(se->base + SE_GENI_RX_FIFOn);
-> +		return;
-> +	}
-> +
->  	if (mas->rx_rem_bytes < rx_bytes)
->  		rx_bytes = mas->rx_rem_bytes;
->  
-> 
-> 
+> Grasping at straws...
 
-This commit breaks the build with clang:
+My current straw is that the wakeup lands on the wakelist before ttwu()
+will refuse to wake to the CPU, and then lands on the RQ after we've
+waited. Which seems near impossible..
 
-drivers/spi/spi-geni-qcom.c:421:3: error: void function
-'geni_spi_handle_tx' should not return a value [-Wreturn-type]
-                return false;
-                ^      ~~~~~
-1 error generated.
-
-It looks like commit 6d66507d9b55 ("spi: spi-geni-qcom: Don't wait to
-start 1st transfer if transmitting") would resolve this.
-
-It might be worth picking up commit 172aad81a882 ("kbuild: enforce
--Werror=return-type") so that GCC behaves like clang does.
-
-Cheers,
-Nathan
+I'll keep staring..
