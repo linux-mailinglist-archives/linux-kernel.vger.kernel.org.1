@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC082F89BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E282F89C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbhAPACo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:02:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        id S1728819AbhAPADj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbhAPACo (ORCPT
+        with ESMTP id S1726650AbhAPADi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:02:44 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6A0C061794
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:03 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id l23so6144598pjg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:03 -0800 (PST)
+        Fri, 15 Jan 2021 19:03:38 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27376C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:58 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id p18so7007175pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FY8VpQNfhIxBmUN0CCall3v72xLkiHt1IqHsb3quwR4=;
-        b=luKEj3UoOFPuOKbYwRLoqFsDstinvsZbmPyy851wXrrnY6L+VRXyETTqdGgw5hGxLP
-         q82oal/qKPyYEtADP0J+9+aBTHtWcStqg7f1d2isGuDnoxu5PU5w2R93MXCZlyflx7l7
-         2o23TrL3joPsXdxh4adFBgmxw8KI6tA70dzTICQIh6Z6okR/z0pWkGEKOZgja4fDXYdG
-         DyEQN0FCTeWyAWBEferv1Qib1rPFv4dHvg3qKJ+/zKLnUD9LMAW64+23msX/mrMix17s
-         vqPEIc6shaHkKBmGEJoepfmcUzY6UCsQYw68cMqc890Tb5k1Xwy/ExMW6A4K+8uwTgVs
-         azuA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WFx/F2a337GN3zwqNOD7iXQOOHYeEmZ62a3KeLo+VSA=;
+        b=FAl4ne1TgJ+b6aXfP13BMx6boigr8gF546SOdYwutRbfGMrVLhW5/YQjeSCWv9MnJK
+         fjFVkqfMPw5o20cOsu/oHvxPktKjsd2hCc5ZJDnT4CU74ljPGK9iapSbE39IM4+oTtZu
+         jOXOPR9Y4ji6K0HpHLeXAAkA2XA1e9IbLr0+pXxq8NJt4mk80e3WpXtsnpODU+ickgi/
+         F75TATcI3RC/TvTZKJD1polGq28uoA2F/c8kxHWW1OKWwWztzfvZjLadeWFKbCQ6w+kr
+         eL2dc8CPW+8iU1nxypJStahsZHCbLeJjtmtcyvhtCbv8MhVpK2uWkC+HNfHsch/Qr0L5
+         aRSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FY8VpQNfhIxBmUN0CCall3v72xLkiHt1IqHsb3quwR4=;
-        b=nb4HYxLyozBbOEBxoiDWuRa1k5UxCreMYYtxKwiN5GjimpzzgaUuQpctXShacurRV6
-         VchK2pg96EhtM8lFbZ8NlFkTIJEMdWAUs7kRyd70lrf/AueW1ueP1xsK8/AWVBzEqIz8
-         9nBLWH11zyGxArOzxlGn/1AOKFWeaabOvAe9uCOHasD81rC25mJgqopipXnAXibsHoF2
-         98HZh1yurNpqXpSbURKCPw1mxNot+P2fRy30zYRwR1rmdHrY0HYSYsBjmZdRS+2MOCun
-         w7XkvukGNpOQ/upQhlk7KLKY5iW/l9KrHFOpDNzQemvh+NOaOWYeFpPZmcVJTb50RnaI
-         5B5Q==
-X-Gm-Message-State: AOAM531iSczJtfnFRxDi0bMTnNCzF2dW6toXqQtJOTHxLw3UnkWqEI9v
-        SbvtfPUqcTqVsmv8JT8ZBZOVNdogw3Vpf7wHEk8PmQ==
-X-Google-Smtp-Source: ABdhPJzv8hrDv7j8QxBRMT8DbWGNHAjn2SFadQCf6V/1mYcyv79IOw9cqliku5v7+LW/FEZaY2ZCORI+UiGpp+SD2WU=
-X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr13549703pjj.32.1610755322387;
- Fri, 15 Jan 2021 16:02:02 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WFx/F2a337GN3zwqNOD7iXQOOHYeEmZ62a3KeLo+VSA=;
+        b=UateLKcrbaX28LvWSajwbyITrJKLVVGHcmFOjec5bzPLQlZYTcCrfZljAuCAcmfv+q
+         MBRP4irOxOkwHwT229yLgYuW+h3K5L/X1Ai2QCXnwNFKR2oVoiWxZTac5NuI6YmOKuN8
+         EBYTNltjosMXGj18v8XPRjKN63vsPlL20UI4jQ33+nMQPfLiLf67hgkAEz7MllxDhhyS
+         tqrSeYHKg+Qm9Bo6UTXqsQLaawyRCLTBkUGzVRCy58F5dqK2Q9gsu/IUV6a3DXZGqoCn
+         WHMR0FfXm4CbS7LrYq+w+SRP0Zsz8eNBuav6F5VkJVPfGmlF3vBD7bbQfY5YLPne7WIr
+         x1+Q==
+X-Gm-Message-State: AOAM532Am/y7yqDG73CfA9JsurBiv+tKpgTThubRCKlDzm573MG1trW9
+        nV3r8u5XSW8o+CmoIitBWYdUqA==
+X-Google-Smtp-Source: ABdhPJz5JLyoykloTcJIV6mJIvCkLo2bUWGXy25NqJDkE7lNF5Uy2EU7DNr/+lXYQrUVAjngZjTEzw==
+X-Received: by 2002:a62:cd49:0:b029:1b5:4e48:6f1a with SMTP id o70-20020a62cd490000b02901b54e486f1amr1640904pfg.14.1610755377518;
+        Fri, 15 Jan 2021 16:02:57 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 19sm8981531pfu.85.2021.01.15.16.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 16:02:56 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:02:50 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>, Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+Subject: Re: [PATCH 4/6] KVM: selftests: Fix population stage in
+ dirty_log_perf_test
+Message-ID: <YAItKpyPGkxevK2T@google.com>
+References: <20210112214253.463999-1-bgardon@google.com>
+ <20210112214253.463999-5-bgardon@google.com>
 MIME-Version: 1.0
-References: <20210112053113.4180271-1-morbo@google.com> <20210113061958.886723-1-morbo@google.com>
- <20210113205547.GA21653@Ryzen-9-3900X.localdomain> <CAKwvOd=0wWz4o652EoZNvfu1L+fuhuGZusqpxiJ+561DtCh7Eg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=0wWz4o652EoZNvfu1L+fuhuGZusqpxiJ+561DtCh7Eg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 15 Jan 2021 16:01:51 -0800
-Message-ID: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
-Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112214253.463999-5-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > However, I see an issue with actually using the data:
-> >
-> > $ sudo -s
-> > # mount -t debugfs none /sys/kernel/debug
-> > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> > # chown nathan:nathan vmlinux.profraw
-> > # exit
-> > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
-> > error: No profiles could be merged.
-> >
-> > Am I holding it wrong? :) Note, this is virtualized, I do not have any
-> > "real" x86 hardware that I can afford to test on right now.
->
-> Same.
->
-> I think the magic calculation in this patch may differ from upstream
-> llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Currently the population stage in the dirty_log_perf_test does nothing
+> as the per-vCPU iteration counters are not initialized and the loop does
+> not wait for each vCPU. Remedy those errors.
+> 
+> Reviewed-by: Jacob Xu <jacobhxu@google.com>
+> Reviewed-by: Makarand Sonare <makarandsonare@google.com>
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  tools/testing/selftests/kvm/dirty_log_perf_test.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index 3875f22d7283..fb6eb7fa0b45 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -139,14 +139,19 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  
+>  	clock_gettime(CLOCK_MONOTONIC, &start);
+>  	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +		vcpu_last_completed_iteration[vcpu_id] = -1;
+> +
+>  		pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
+>  			       &perf_test_args.vcpu_args[vcpu_id]);
+>  	}
+>  
+> -	/* Allow the vCPU to populate memory */
+> +	/* Allow the vCPUs to populate memory */
+>  	pr_debug("Starting iteration %d - Populating\n", iteration);
+> -	while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
+> -		;
+> +	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +		while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) !=
+> +		       iteration)
 
-Err...it looks like it was the padding calculation.  With that fixed
-up, we can query the profile data to get insights on the most heavily
-called functions.  Here's what my top 20 are (reset, then watch 10
-minutes worth of cat videos on youtube while running `find /` and
-sleeping at my desk).  Anything curious stand out to anyone?
+Same comment as earlier.  I vote to let this poke out, or shorten the variables
+so that the lines aren't so long.
 
-$ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
-Instrumentation level: IR  entry_first = 0
-Total functions: 48970
-Maximum function count: 62070879
-Maximum internal block count: 83221158
-Top 20 functions with the largest internal block counts:
-  drivers/tty/n_tty.c:n_tty_write, max count = 83221158
-  rcu_read_unlock_strict, max count = 62070879
-  _cond_resched, max count = 25486882
-  rcu_all_qs, max count = 25451477
-  drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
-  _raw_spin_unlock_irqrestore, max count = 18874121
-  drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
-  _raw_spin_lock_irqsave, max count = 18509161
-  memchr, max count = 15525452
-  _raw_spin_lock, max count = 15484254
-  __mod_memcg_state, max count = 14604619
-  __mod_memcg_lruvec_state, max count = 14602783
-  fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
-  __mod_lruvec_state, max count = 12527154
-  __mod_node_page_state, max count = 12525172
-  native_sched_clock, max count = 8904692
-  sched_clock_cpu, max count = 8895832
-  sched_clock, max count = 8894627
-  kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
-  fpregs_assert_state_consistent, max count = 8287198
-
--- 
-Thanks,
-~Nick Desaulniers
+> +			;
+> +	}
+>  
+>  	ts_diff = timespec_elapsed(start);
+>  	pr_info("Populate memory time: %ld.%.9lds\n",
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
