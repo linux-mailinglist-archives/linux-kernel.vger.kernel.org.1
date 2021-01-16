@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CA12F8D2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA202F8D1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727375AbhAPLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 06:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727169AbhAPLoo (ORCPT
+        id S1726513AbhAPLib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 06:38:31 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47858 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbhAPLia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 06:44:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB2EC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 03:44:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=f8Vh7AFAxggxFJw8yVBsAmoWyW5qOJyrzUkSYRd7lUw=; b=TrOwlh+9ZWPNlGLmAXHmq1r3w2
-        aPONeraxM+U1JN19coUQ64ga0QqU8grEEK3I1JdRTZwqUh/b8Zqq9ISRL55/siivQVUt+MZV5N1pI
-        hZXpqaWYKtKTIjgH/jNnIdmdBtyYzIl5asg8S1Wb6DOuFNtymWxmEK+Js672IXmWbYxU06ee7F8BB
-        2VjvMFSLb+5h0Ibxy6r2qfG55Cx8zl4e+hFT1kKsY9xF1gZGONvJGy5Ss/BTjqsFWTb2ftCK+SZZ2
-        GCE8YTNiBV05iSDK9a7SCz7lQ52cB9wT0xbb/mCRPtTz0Nio2IT8OD6ZhrTuOW5Fu1fOOtnzDtTaB
-        OcvVEb/w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0jyx-00ADQv-R7; Sat, 16 Jan 2021 11:43:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 037853070D5;
-        Sat, 16 Jan 2021 12:42:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 37A6620285FB3; Sat, 16 Jan 2021 12:42:30 +0100 (CET)
-Message-ID: <20210116113920.187137770@infradead.org>
-User-Agent: quilt/0.66
-Date:   Sat, 16 Jan 2021 12:30:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        valentin.schneider@arm.com, cai@redhat.com,
-        vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
-        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org,
-        peterz@infradead.org
-Subject: [PATCH 8/8] sched: Relax the set_cpus_allowed_ptr() semantics
-References: <20210116113033.608340773@infradead.org>
+        Sat, 16 Jan 2021 06:38:30 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 205A81F458E8
+Received: by earth.universe (Postfix, from userid 1000)
+        id 5C8A33C0C94; Sat, 16 Jan 2021 12:37:46 +0100 (CET)
+Date:   Sat, 16 Jan 2021 12:37:46 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: ds2780: Switch to using the new API
+ kobj_to_dev()
+Message-ID: <20210116113746.e7gtlmblvsolygc2@earth.universe>
+References: <1607994024-32199-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="whse6vmqu653lut3"
+Content-Disposition: inline
+In-Reply-To: <1607994024-32199-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have KTHREAD_IS_PER_CPU to denote the critical per-cpu
-tasks to retain during CPU offline, we can relax the warning in
-set_cpus_allowed_ptr(). Any spurious kthread that wants to get on at
-the last minute will get pushed off before it can run.
 
-While during CPU online there is no harm, and actual benefit, to
-allowing kthreads back on early, it simplifies hotplug code.
+--whse6vmqu653lut3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/core.c |   20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+Hi,
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2342,7 +2342,9 @@ static int __set_cpus_allowed_ptr(struct
- 
- 	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
- 		/*
--		 * Kernel threads are allowed on online && !active CPUs.
-+		 * Kernel threads are allowed on online && !active CPUs,
-+		 * however, during cpu-hot-unplug, even these might get pushed
-+		 * away if not KTHREAD_IS_PER_CPU.
- 		 *
- 		 * Specifically, migration_disabled() tasks must not fail the
- 		 * cpumask_any_and_distribute() pick below, esp. so on
-@@ -2386,16 +2388,6 @@ static int __set_cpus_allowed_ptr(struct
- 
- 	__do_set_cpus_allowed(p, new_mask, flags);
- 
--	if (p->flags & PF_KTHREAD) {
--		/*
--		 * For kernel threads that do indeed end up on online &&
--		 * !active we want to ensure they are strict per-CPU threads.
--		 */
--		WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
--			!cpumask_intersects(new_mask, cpu_active_mask) &&
--			p->nr_cpus_allowed != 1);
--	}
--
- 	return affine_move_task(rq, p, &rf, dest_cpu, flags);
- 
- out:
-@@ -7519,6 +7511,12 @@ int sched_cpu_deactivate(unsigned int cp
- 	 */
- 	synchronize_rcu();
- 
-+	/*
-+	 * From this point forward, this CPU will refuse to run any task that
-+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-+	 * push those tasks away until this gets cleared, see
-+	 * sched_cpu_dying().
-+	 */
- 	balance_push_set(cpu, true);
- 
- 	rq_lock_irqsave(rq, &rf);
+On Tue, Dec 15, 2020 at 09:00:24AM +0800, Tian Tao wrote:
+> fixed the following coccicheck:
+> drivers/power/supply/ds2780_battery.c:627:60-61: WARNING opportunity for
+> kobj_to_dev()
+> drivers/power/supply/ds2780_battery.c:672:60-61: WARNING opportunity for
+> kobj_to_dev()
+> drivers/power/supply/ds2780_battery.c:640:60-61: WARNING opportunity for
+> kobj_to_dev()
+> drivers/power/supply/ds2780_battery.c:685:60-61: WARNING opportunity for
+> kobj_to_dev()
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
 
+Thanks, queued.
 
+-- Sebastian
+
+>  drivers/power/supply/ds2780_battery.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/ds2780_battery.c b/drivers/power/supply=
+/ds2780_battery.c
+> index dd57a47..2b8c90d 100644
+> --- a/drivers/power/supply/ds2780_battery.c
+> +++ b/drivers/power/supply/ds2780_battery.c
+> @@ -624,7 +624,7 @@ static ssize_t ds2780_read_param_eeprom_bin(struct fi=
+le *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2780_device_info *dev_info =3D to_ds2780_device_info(psy);
+> =20
+> @@ -637,7 +637,7 @@ static ssize_t ds2780_write_param_eeprom_bin(struct f=
+ile *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2780_device_info *dev_info =3D to_ds2780_device_info(psy);
+>  	int ret;
+> @@ -669,7 +669,7 @@ static ssize_t ds2780_read_user_eeprom_bin(struct fil=
+e *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2780_device_info *dev_info =3D to_ds2780_device_info(psy);
+> =20
+> @@ -682,7 +682,7 @@ static ssize_t ds2780_write_user_eeprom_bin(struct fi=
+le *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2780_device_info *dev_info =3D to_ds2780_device_info(psy);
+>  	int ret;
+> --=20
+> 2.7.4
+>=20
+
+--whse6vmqu653lut3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAC0AUACgkQ2O7X88g7
++prqlhAAi0RthW4Ac5Mw1MsiSP1Qv1Xm9hxMEshztQd3w0za/AgKTVaHf4QZylrS
+Tt08CUwKDF1HDolnQjEtuLi2cLwYMrCbbCuwyUpL7FVexYc3JaiYjd4wrxgU1sN7
+U8D4EIr4PZe0mi5joFG3uAPRdW7Xvu49dWZoeVNbdTueBiQwsllXw38lkSPOtbz4
+59oASOPiFjJVhdLSEj0tyoUlQw6oEA+niU0d405d38bK14Z4RjjkU4Kfipk/8Pfj
+xNz3SuX8xE1OZlH6Qux8YAERFcZOuF864rPMiLlyBHdOxmIUpZBujyko5cSWuB9h
+iq/i+26AJOa4A41dRBAwh1hMJA1fyPGdfNW6MN2zawnATdSjovpDdmJ6OKie870q
+Ok9tVCPsEGyTKF2iifyJeTDG81L3gNNONbNLpFRdhzeippYaudjUHZuehBKOrHK9
+atctXuXSkjBzuUXpBtFdtpkRvV7dlwzuirJ0cpj9vFz7/ZGBhX86rmKZF/xFe9AN
+BkFEkIde2aTAhzt3wsATPyYKnNlaCSWOwtET/XxsYm5Ldi4l9b6kj3ui42y0URdf
+hq3mF6K2uPw+RfuF5PwAvLapy9cx5PGHf1giaKYYWUjX4Wj6TwHflgQYz9335gio
+V+HZKD4lOSqDDq9ZcV/hkcPd21Xf4WYgm4XpR7W9Upo+wze/kQ8=
+=woPi
+-----END PGP SIGNATURE-----
+
+--whse6vmqu653lut3--
