@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64582F8BA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052DD2F8BAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbhAPF2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 00:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbhAPF2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 00:28:10 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F89C061798
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 21:27:16 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id b24so10822760otj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 21:27:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MQG99hmEs+jm/LvVCjiZprhkiqjwfzt+Jg3xINgEKjM=;
-        b=LiZxsf4OcoSXehQoNzHnUlYjJxMgCQ+3xFvngfwsqKwT7lQizZj1IzW2M1345vvWCb
-         sI/JB1jG55Ntixm1svalk1mLKw4m8FFZGRnDpnXOzZD2WHk2i+Iw3L9eUILQzH93vfG3
-         OhP5nldvH311qffuxlpI2my3+06D+tvfKT020=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MQG99hmEs+jm/LvVCjiZprhkiqjwfzt+Jg3xINgEKjM=;
-        b=nW2q/QC1ypybYFrvCIDof43G1lUpWSa/e7ChYC7UZVe1PygBHZX71/SvO5+lZO1Y9I
-         O2Y7jhDHqO2rNx6H+835WoMZNC365XVrtEPrNgMBK3vMqY7grGgQegGT7TY6N9X0/o7/
-         4cMJ289Dtsit/at2iwlmtB4L8C3PGF4gInLIUWlQPQgbboKaaIDR6llE8quhy9WKXTG0
-         pBNDcWpf+cmTwLfFanybSMAIdA/Y1dZDuaGa/LaD4L2fJ0kQ4qSIlavVUVf3ET+3rj6D
-         8M1pIsjJjS+bS4k5SV0652oOKB0Nq2Cq8Z0Tvjs2BFKGsIHY1I0Yt/abSmVPCAtG8Eab
-         jjAA==
-X-Gm-Message-State: AOAM533wrAhH7/TVbqlepkE+53xFkcaeXphiGrUyiLp8sZI5hMETzTDa
-        hzuaVd80ZLXmtsPE8B8T9X9lpg==
-X-Google-Smtp-Source: ABdhPJxukKQ1dpghDQU4L5E3YI7oypsEzcF9dQOmplV8O2VC++cgA+TXNjwmeGXB4BlVVbqLoxMT8w==
-X-Received: by 2002:a05:6830:1605:: with SMTP id g5mr10750341otr.369.1610774834421;
-        Fri, 15 Jan 2021 21:27:14 -0800 (PST)
-Received: from grundler-glapstation.lan ([70.134.62.80])
-        by smtp.gmail.com with ESMTPSA id 94sm2359230otw.41.2021.01.15.21.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 21:27:13 -0800 (PST)
-From:   Grant Grundler <grundler@chromium.org>
-To:     Oliver Neukum <oliver@neukum.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Grant Grundler <grundler@chromium.org>
-Subject: [PATCH 3/3] net: usb: cdc_ncm: don't spew notifications
-Date:   Fri, 15 Jan 2021 21:26:23 -0800
-Message-Id: <20210116052623.3196274-3-grundler@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210116052623.3196274-1-grundler@chromium.org>
-References: <20210116052623.3196274-1-grundler@chromium.org>
+        id S1726016AbhAPFhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 00:37:45 -0500
+Received: from mga05.intel.com ([192.55.52.43]:64833 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbhAPFhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 00:37:45 -0500
+IronPort-SDR: q9Y2KiMJFUGfiZwLcUfneo13c7rlHLrQZJgzg+elmHFqyEpR2oPowP4O71836ZRG8BgKC1WMzY
+ 4TxNR9wcYXfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="263440618"
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="263440618"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:37:04 -0800
+IronPort-SDR: 2LYrdsxYr31tfoueBWJs74+eUXWYTBjZ3kuDW7t8K6Ea2Gq+RoL/uiW6O1hBXbVAxLZZgBoeCp
+ QGZYQPBorwUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="346378866"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Jan 2021 21:37:02 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l0eGj-0000jg-U4; Sat, 16 Jan 2021 05:37:01 +0000
+Date:   Sat, 16 Jan 2021 13:36:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Jani Nikula <jani.nikula@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: drivers/gpu/drm/i915/gem/i915_gem_region.c:166:27: warning:
+ Uninitialized variable: obj
+Message-ID: <202101161308.BZvnDcpd-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RTL8156 sends notifications about every 32ms.
-Only display/log notifications when something changes.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1d94330a437a573cfdf848f6743b1ed169242c8a
+commit: c6d4a099a240a8742173f8e02db0ba08ffd37ef1 drm/i915: reimplement header test feature
+date:   1 year ago
+compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 
-This issue has been reported by others:
-	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
-	https://lkml.org/lkml/2020/8/27/1083
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-...
-[785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
-[785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
-[785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-[785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
-[785962.929954] usb 1-1: Manufacturer: Realtek
-[785962.929956] usb 1-1: SerialNumber: 000000001
-[785962.991755] usbcore: registered new interface driver cdc_ether
-[785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
-[785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
-[785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
-[785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
-[785963.019211] usbcore: registered new interface driver cdc_ncm
-[785963.023856] usbcore: registered new interface driver cdc_wdm
-[785963.025461] usbcore: registered new interface driver cdc_mbim
-[785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
-[785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-...
 
-This is about 2KB per second and will overwrite all contents of a 1MB
-dmesg buffer in under 10 minutes rendering them useless for debugging
-many kernel problems.
+"cppcheck warnings: (new ones prefixed by >>)"
+>> drivers/gpu/drm/i915/gem/i915_gem_region.c:166:27: warning: Uninitialized variable: obj [uninitvar]
+    if (overflows_type(size, obj->base.size))
+                             ^
+--
 
-This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
-the majority of those logs useless too.
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-When the link is up (expected state), spew amount is >2x higher:
-...
-[786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-...
+>> drivers/gpu/drm/i915/display/intel_overlay.c:678:12: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
+     flags |= DST_KEY_ENABLE;
+              ^
 
-Chrome OS cannot support RTL8156 until this is fixed.
+vim +166 drivers/gpu/drm/i915/gem/i915_gem_region.c
 
-Signed-off-by: Grant Grundler <grundler@chromium.org>
+232a6ebae41919 Matthew Auld 2019-10-08  132  
+232a6ebae41919 Matthew Auld 2019-10-08  133  struct drm_i915_gem_object *
+232a6ebae41919 Matthew Auld 2019-10-08  134  i915_gem_object_create_region(struct intel_memory_region *mem,
+232a6ebae41919 Matthew Auld 2019-10-08  135  			      resource_size_t size,
+232a6ebae41919 Matthew Auld 2019-10-08  136  			      unsigned int flags)
+232a6ebae41919 Matthew Auld 2019-10-08  137  {
+232a6ebae41919 Matthew Auld 2019-10-08  138  	struct drm_i915_gem_object *obj;
+232a6ebae41919 Matthew Auld 2019-10-08  139  
+232a6ebae41919 Matthew Auld 2019-10-08  140  	/*
+232a6ebae41919 Matthew Auld 2019-10-08  141  	 * NB: Our use of resource_size_t for the size stems from using struct
+232a6ebae41919 Matthew Auld 2019-10-08  142  	 * resource for the mem->region. We might need to revisit this in the
+232a6ebae41919 Matthew Auld 2019-10-08  143  	 * future.
+232a6ebae41919 Matthew Auld 2019-10-08  144  	 */
+232a6ebae41919 Matthew Auld 2019-10-08  145  
+2f0b97ca021186 Matthew Auld 2019-10-08  146  	GEM_BUG_ON(flags & ~I915_BO_ALLOC_FLAGS);
+2f0b97ca021186 Matthew Auld 2019-10-08  147  
+232a6ebae41919 Matthew Auld 2019-10-08  148  	if (!mem)
+232a6ebae41919 Matthew Auld 2019-10-08  149  		return ERR_PTR(-ENODEV);
+232a6ebae41919 Matthew Auld 2019-10-08  150  
+232a6ebae41919 Matthew Auld 2019-10-08  151  	size = round_up(size, mem->min_page_size);
+232a6ebae41919 Matthew Auld 2019-10-08  152  
+232a6ebae41919 Matthew Auld 2019-10-08  153  	GEM_BUG_ON(!size);
+232a6ebae41919 Matthew Auld 2019-10-08  154  	GEM_BUG_ON(!IS_ALIGNED(size, I915_GTT_MIN_ALIGNMENT));
+232a6ebae41919 Matthew Auld 2019-10-08  155  
+232a6ebae41919 Matthew Auld 2019-10-08  156  	/*
+232a6ebae41919 Matthew Auld 2019-10-08  157  	 * XXX: There is a prevalence of the assumption that we fit the
+232a6ebae41919 Matthew Auld 2019-10-08  158  	 * object's page count inside a 32bit _signed_ variable. Let's document
+232a6ebae41919 Matthew Auld 2019-10-08  159  	 * this and catch if we ever need to fix it. In the meantime, if you do
+232a6ebae41919 Matthew Auld 2019-10-08  160  	 * spot such a local variable, please consider fixing!
+232a6ebae41919 Matthew Auld 2019-10-08  161  	 */
+232a6ebae41919 Matthew Auld 2019-10-08  162  
+232a6ebae41919 Matthew Auld 2019-10-08  163  	if (size >> PAGE_SHIFT > INT_MAX)
+232a6ebae41919 Matthew Auld 2019-10-08  164  		return ERR_PTR(-E2BIG);
+232a6ebae41919 Matthew Auld 2019-10-08  165  
+232a6ebae41919 Matthew Auld 2019-10-08 @166  	if (overflows_type(size, obj->base.size))
+
+:::::: The code at line 166 was first introduced by commit
+:::::: 232a6ebae419193f5b8da4fa869ae5089ab105c2 drm/i915: introduce intel_memory_region
+
+:::::: TO: Matthew Auld <matthew.auld@intel.com>
+:::::: CC: Chris Wilson <chris@chris-wilson.co.uk>
+
 ---
- drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
- include/linux/usb/usbnet.h |  2 ++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index 25498c311551..5de096545b86 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1827,6 +1827,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
- 	uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
- 	uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
- 
-+	/* if the speed hasn't changed, don't report it.
-+	 * RTL8156 shipped before 2021 sends notification about every 32ms.
-+	 */
-+	if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
-+		return;
-+
-+	dev->rx_speed = rx_speed;
-+	dev->tx_speed = tx_speed;
-+
- 	/*
- 	 * Currently the USB-NET API does not support reporting the actual
- 	 * device speed. Do print it instead.
-@@ -1867,7 +1876,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
- 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
- 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
- 		 */
--		usbnet_link_change(dev, !!event->wValue, 0);
-+		if (netif_carrier_ok(dev->net) != !!event->wValue)
-+			usbnet_link_change(dev, !!event->wValue, 0);
- 		break;
- 
- 	case USB_CDC_NOTIFY_SPEED_CHANGE:
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index 88a7673894d5..cfbfd6fe01df 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -81,6 +81,8 @@ struct usbnet {
- #		define EVENT_LINK_CHANGE	11
- #		define EVENT_SET_RX_MODE	12
- #		define EVENT_NO_IP_ALIGN	13
-+	u32			rx_speed;	/* in bps - NOT Mbps */
-+	u32			tx_speed;	/* in bps - NOT Mbps */
- };
- 
- static inline struct usb_driver *driver_of(struct usb_interface *intf)
--- 
-2.29.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
