@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135EA2F8D60
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153642F8D5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbhAPMvg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 07:51:36 -0500
-Received: from wnbcorp.com ([175.126.38.143]:38076 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727055AbhAPMvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 07:51:35 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GCkAUY003087;
-        Sat, 16 Jan 2021 21:47:04 +0900
-Message-Id: <202101161247.10GCkAUY003087@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1726934AbhAPMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 07:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbhAPMtw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 07:49:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623D3C061793
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 04:49:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Fx62Z007nfHIGbl4rcsP9LfvQotUGJl9LmsZY3stC7U=; b=EBIABI1nI80lMi4cwmLZCfUMka
+        h63IQat9ZDwT70MW2YMXOh5aEe/McyASu8vwcpOuCp4jd9vQGsd4cHqTm8Tfn24VqigjJ66qpZSeg
+        DLUClalYrR4Lsjo8nwrffiPzwiuXYFmWtNv0rrTL7IXnQS74yvrUiKV47jSrrzabqtZLgu6vXmDMK
+        YPxKoxCyZJKhd17esJJ4WzXpMb9H6dzaKwgc95tku+JssK3G7bbaLDiAxemyhBXMLZQgfixUTbz5U
+        9OMtOl2D3c0nYmKk2cwRqCNoxwl2nYNz6Eh2eRJz6WpJLhrv+6G3H2SXb73F5krwSGD8KUMEjk7n9
+        sxGHeJ2Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0l0G-00AGdF-4V; Sat, 16 Jan 2021 12:48:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43627300F7A;
+        Sat, 16 Jan 2021 13:48:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2C5BE20299B4E; Sat, 16 Jan 2021 13:48:27 +0100 (CET)
+Date:   Sat, 16 Jan 2021 13:48:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Zhang, Rui" <rui.zhang@intel.com>
+Cc:     "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>
+Subject: Re: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
+Message-ID: <YALgm2b0YNkO7Qtd@hirez.programming.kicks-ass.net>
+References: <20210115092208.20866-1-rui.zhang@intel.com>
+ <20210115092208.20866-2-rui.zhang@intel.com>
+ <YAH1DPNLltqN4zFR@hirez.programming.kicks-ass.net>
+ <dfc2fc320c96408e86c2f23b21979a5b@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sat, 16 Jan 2021 13:47:28 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfc2fc320c96408e86c2f23b21979a5b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Sat, Jan 16, 2021 at 08:19:35AM +0000, Zhang, Rui wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > Sent: Saturday, January 16, 2021 4:03 AM
+> > To: Zhang, Rui <rui.zhang@intel.com>
+> > Cc: mingo@redhat.com; acme@kernel.org; mark.rutland@arm.com;
+> > alexander.shishkin@linux.intel.com; jolsa@redhat.com;
+> > namhyung@kernel.org; linux-kernel@vger.kernel.org; x86@kernel.org;
+> > kan.liang@linux.intel.com; ak@linux.intel.com
+> > Subject: Re: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
+> > Importance: High
+> > 
+> > On Fri, Jan 15, 2021 at 05:22:07PM +0800, Zhang Rui wrote:
+> > > In the RAPL ENERGY_COUNTER MSR, only the lower 32bits represent the
+> > > energy counter, and the higher 32bits are reserved.
+> > >
+> > > Add the MSR mask for these MSRs to fix a problem that the RAPL PMU
+> > > events are added erroneously when higher 32bits contain non-zero value.
+> > 
+> > Why would these high bits be non-zero?
+> 
+> On SPR platform, the high bits of Psys energy counter are reused for other purpose.
+> High bits for other RAPL domains energy counters still return 0.
+> 
+> I didn't mention this because I thought this patch should be okay as a generic fix.
 
-Sir/Madam,
-
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+But it doesn't fix anything.. there's not anything broken, except on
+that daft SPR thing.
