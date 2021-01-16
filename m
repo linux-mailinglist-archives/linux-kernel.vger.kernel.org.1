@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718972F8E0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F63A2F8E45
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728915AbhAPRNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727898AbhAPRKf (ORCPT
+        id S1727276AbhAPRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:24:47 -0500
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:26806 "EHLO
+        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbhAPRYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E6CC061345
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 07:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vNVmJZrKuDj2vCmvC6xmw3IOo/UXqLVwa5kqiwmHnOM=; b=WBecyrpweeNtImZCWcy824UlHO
-        r1opbQjX8uSRffKDuKTa58rlFLwBTE9fUcUQeMBD8w2zqSBYl4kxBK8mtHFFOQAJy5qCQFuVe623Z
-        p2YX2bI7hnr3iCy6JOJES5IdfKU1Dqlej21iCD0DozrbN3uzKVPyDNT1ihi945fNZ/29JXMM8dPuy
-        NhSBLY/sS3Hl/d8OlYMTpwpVsmTlmII7ahrBlLAAXFJVkeMTm7xv+lKhblUCwJYtF4UxumFXuZoVZ
-        oFXWqubfrovuffr+HGIN6R5Jh1k985JT4N98o//4UhV/6LbthKIeVAVVgZ1bOc5lSO1l2vzimhybG
-        wAUfUNJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0nTj-0005vW-R8; Sat, 16 Jan 2021 15:27:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70B423010CF;
-        Sat, 16 Jan 2021 16:27:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 619D7202A3F5A; Sat, 16 Jan 2021 16:27:02 +0100 (CET)
-Date:   Sat, 16 Jan 2021 16:27:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        valentin.schneider@arm.com, cai@redhat.com,
-        vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
-        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
-Subject: Re: [PATCH 3/8] sched: Dont run cpu-online with balance_push()
- enabled
-Message-ID: <YAMFxk311hkpQYl3@hirez.programming.kicks-ass.net>
-References: <20210116113033.608340773@infradead.org>
- <20210116113919.760767084@infradead.org>
+        Sat, 16 Jan 2021 12:24:46 -0500
+Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 4E6F3200576A
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 15:29:02 +0000 (UTC)
+Authentication-Results: mail-41104.protonmail.ch;
+        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="GY1ol3C9"
+Date:   Sat, 16 Jan 2021 15:27:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610810857; bh=ewLrxUjradkPA1ru1Wz2k9bHtjXJsODmOn92IB7cjQE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=GY1ol3C9eZiVNw2YFAP0h7hmKMQ5WULAQN33gm4LWs4zvT7US/paN1oaHFkxGnne8
+         RyalSLdFtHfXvgwY/6DFnEf7C1Dsv8YIEfc74JTA07/fcwBLPBJPOUdSizKaqlw4rV
+         TVXFVwEWLfhmbDatVyZUgv3VDsjSPpcQtRx5O0CBzJonzTdL0WMmfoNNJbQnZHtH3N
+         YScFQwe2vKKdZuYgO70Ae7JKMkmWJi3QWTEftsx+Hg2FjhM/U3EsUMVAXJYceTKLJE
+         ZC0p8FkkbKECoGfAMjihEByW6n0dDeV/3I4t6YEcjxQ48jiUv3/Dfnf8TZVz+jST82
+         ZCJM7weNrwaWg==
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH pci-next] PCI: dwc: put struct dw_pcie::{ep,pp} into a union to reduce its size
+Message-ID: <20210116152711.23411-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116113919.760767084@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 12:30:36PM +0100, Peter Zijlstra wrote:
-> @@ -7608,6 +7614,12 @@ int sched_cpu_dying(unsigned int cpu)
->  	}
->  	rq_unlock_irqrestore(rq, &rf);
->  
-> +	/*
-> +	 * Should really be after we clear cpu_online(), but we're in
-> +	 * stop_machine(), so it all works.
-> +	 */
-> +	balance_push_set(cpu, false);
+A single dw_pcie entity can't be a root complex and an endpoint at
+the same time.
+We can use this to reduce the size of dw_pcie by 80, from 280 to 200
+bytes (on x32, guess more on x64), by putting the related embedded
+structures (struct pcie_port and struct dw_pcie_ep) into a union.
 
-Looking at the RCU thing just now made me realize we run all the DYING
-notifiers with cpu_online() already false, so the above comment is wrong
-and ordering in fact perfect.
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/pci/controller/dwc/pcie-designware.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/con=
+troller/dwc/pcie-designware.h
+index 5d979953800d..924ebeaa3885 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -265,8 +265,10 @@ struct dw_pcie {
+ =09size_t=09=09=09atu_size;
+ =09u32=09=09=09num_ib_windows;
+ =09u32=09=09=09num_ob_windows;
+-=09struct pcie_port=09pp;
+-=09struct dw_pcie_ep=09ep;
++=09union {
++=09=09struct pcie_port=09pp;
++=09=09struct dw_pcie_ep=09ep;
++=09};
+ =09const struct dw_pcie_ops *ops;
+ =09unsigned int=09=09version;
+ =09int=09=09=09num_lanes;
+--=20
+2.30.0
 
 
