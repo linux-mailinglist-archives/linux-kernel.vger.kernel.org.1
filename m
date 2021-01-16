@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58B92F8C3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 09:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3D42F8C3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 09:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbhAPI0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 03:26:03 -0500
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:35671 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbhAPI0D (ORCPT
+        id S1726498AbhAPIcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 03:32:06 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:43305 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbhAPIcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 03:26:03 -0500
-Received: by mail-wr1-f50.google.com with SMTP id l12so6278110wry.2;
-        Sat, 16 Jan 2021 00:25:46 -0800 (PST)
+        Sat, 16 Jan 2021 03:32:06 -0500
+Received: by mail-wr1-f54.google.com with SMTP id y17so11501355wrr.10;
+        Sat, 16 Jan 2021 00:31:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JmhbPurPSVD5VLpI5z4dGbmxDmWIlmfp4bwY/EK3sRU=;
-        b=Z7KUBkVCsRtjqYndEDTCnX3ZeOhpt4gkmabu5HWgQYTZqrSRaA+xeGQ0ZoX1SutN9m
-         +iJeW0m1pQPnEZHHFYQ/afqFzY0mFv6DZBdAwdnMcK7r1YqI394y2gMxI6VFzQOKMhvi
-         uI1ivUi0vjmIk2M2Yb1xdrVFP2CMz4cNLfSKz/zwg4I03Smu/kD0Gyk3lGzauGqj+Etk
-         JScqJzMcb7MGDNz1NXPHp41YOjiAb9NvMNWeJ34MYGs0f6DKgauOwbeGth8oUm4R7SVf
-         XslUhKjWpIh55plg7g6jtjYrxD/GnvO/LFisTxb9nA2bvdsWd7QhkjK5Zc5l7dRb6JBu
-         o4xQ==
-X-Gm-Message-State: AOAM530T3xXJ38hA1yX0fdIgm9HNjTQWjvgfBkosXOLBd8h4x74u8ElN
-        XxiwU7MUim5d87473dyRVu30mD+PeNE=
-X-Google-Smtp-Source: ABdhPJxI2YMqAP9y5A0a0/6o3Xv5Uc+2dWotBogllirLtXXAr0FSq48bstOqvQS0EfcYsDa22lhKYQ==
-X-Received: by 2002:a5d:6c66:: with SMTP id r6mr16581493wrz.86.1610785521186;
-        Sat, 16 Jan 2021 00:25:21 -0800 (PST)
+        bh=C1s6L4p8Sf8kJTcJb4k3ToX2/C1U5xuvZGOPjO3tRUE=;
+        b=XmWUOtsar0MVb1IXYldefcS0vd6+MiOUlM/SiNVKXmKGnyejkw4P28rWxSSajef6yK
+         dQ7fzonSEo2I28PlUSTG5j89tHlvsOTCE3ImH7+QDxxuhyqVVoV+ZyjN1PFJ+p1vkxWk
+         3FKzvub0zrnG+ylGHOJbSyPbUzAAQcRniW/hFJmD0ERC/cAxpPovg8gVAaGni52TVWPW
+         AZ4XtNZfHC2evJ5aF1DFeplQTShMIzuzHh3nnU+exADAP3Bi9fKv7gHuX0ibPu1a2S34
+         VraSFpSMigDNQGeVBln3MP6q8cAY5tGmcQaM6DxkI6sJ+OSr6F7hgwJNk6dfNLcKqZSi
+         EHlw==
+X-Gm-Message-State: AOAM530i+rpbNHK0YU4E6QJ0Vav/y+fZBnMWvDSPum9VUTHniGezQHvD
+        VNEWtL5kCNq+f7v3kW4WYwE=
+X-Google-Smtp-Source: ABdhPJyLXhQ8B8JUo2DBZNeqvGOuQVhMqlQ6OsXwIEdvY6ALpZCs8VgevLL/fpcev/MW+3obP+l79Q==
+X-Received: by 2002:adf:a1d5:: with SMTP id v21mr16904404wrv.24.1610785884600;
+        Sat, 16 Jan 2021 00:31:24 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id u205sm14962205wme.42.2021.01.16.00.25.19
+        by smtp.googlemail.com with ESMTPSA id f9sm19807482wrw.81.2021.01.16.00.31.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 00:25:20 -0800 (PST)
-Date:   Sat, 16 Jan 2021 09:25:18 +0100
+        Sat, 16 Jan 2021 00:31:23 -0800 (PST)
+Date:   Sat, 16 Jan 2021 09:31:22 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] soc: samsung: pm_domains: Convert to regular platform
- driver
-Message-ID: <20210116082518.GA2841@kozik-lap>
-References: <CGME20210113110330eucas1p1e7efa719b5db55ccf3774450a8c1e452@eucas1p1.samsung.com>
- <20210113110320.13149-1-m.szyprowski@samsung.com>
- <CAGETcx9wJVnBAe6mKxfi9DC9YFf6DLzAyxBC8DxhQUqpfTDR3A@mail.gmail.com>
- <58e1cfb2-cd35-badf-0238-7c62122e2d05@samsung.com>
- <CAGETcx_Q_FvdL7ghC9Z7p9RcoBRYHeyTB1PRYk==HMv+NzJBzw@mail.gmail.com>
- <20210115151520.GA43049@kozik-lap>
- <CAGETcx_TE8M5x-iQTFvjjVQEVS7tzhPiy2sq7a1OWgjRpm9-Ww@mail.gmail.com>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/3] arm64: dts: imx: Add i.mx8mm nitrogen8mm basic
+ dts support
+Message-ID: <20210116083122.GA3704@kozik-lap>
+References: <20210115210124.507282-1-adrien.grassein@gmail.com>
+ <20210115210124.507282-3-adrien.grassein@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAGETcx_TE8M5x-iQTFvjjVQEVS7tzhPiy2sq7a1OWgjRpm9-Ww@mail.gmail.com>
+In-Reply-To: <20210115210124.507282-3-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 01:11:36PM -0800, Saravana Kannan wrote:
-> Hi Krzysztof,
+On Fri, Jan 15, 2021 at 10:01:23PM +0100, Adrien Grassein wrote:
+> Tested with a basic Build Root configuration booting from sdcard.
 > 
-> When you pull this in, can you please add this tag too for completeness?
-> 
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../dts/freescale/imx8mm-nitrogen8mm_rev2.dts | 415 ++++++++++++++++++
+>  2 files changed, 416 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2.dts
 
-I actually removed that commit SHA from the message because it's still
-only in next. It might not be valid and I don't have a control whether
-it will be changed or not.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
-
