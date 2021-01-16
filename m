@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C70F2F8DD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8125B2F8E42
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbhAPRKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:10:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbhAPRKS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:18 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8B5C06179E
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 05:44:43 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 23so17350633lfg.10
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 05:44:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FNhGar/ixldlY+SFdNHhUUClLY5raSV5R71u6rIvoU8=;
-        b=PXKPyFOobv4j13l7WfEy2vHHf/PKw4Szyo2nYiJARHk8Trm3r2ZqJQgp+87baSfO87
-         ghdr3mpwhTSOWOXLIVz+3nbXVCZITtEOsooplXXxWViKwpLIY+fOhtF1tolu4kLWP8Vq
-         RqJIAG3o7rxS3bAfS/v3e0oRbObhZOw6F1EHaDidHSh1iijeSQ3/3JuXMlPEvhekXvVf
-         L7LO3EvKMVn+nS3dC/OQPTdvKVv7+QJ3RMJewtN14KApSSWEmUxpiDkeU5y0SnqIHk1x
-         Y/WbZ0s8J8vif53Aj8d7B68Wo00D4+Lu3jR+PcvUmn0A0Tl+k0fQDaWMFZhP6QJqLLdd
-         XVIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FNhGar/ixldlY+SFdNHhUUClLY5raSV5R71u6rIvoU8=;
-        b=osTjU3tMwLCxHE58envNgnwZpNP81QbxjTQZrFXU+CVXxeOKxhJ+pqOVzaGiZo2Crb
-         hu3BYDWbE0PsQXc5cPGbZmttv5AO4j/mPGoNgbYzYpIeGpsNGKf/EqFnVF9prsySDYL9
-         +Zc7uJR7r1oTU+VK8AeT9SSa9Y/33FtJhEwU3o4FoqCw5GnxtOzGDgwVAHxzNaeEIvma
-         EuKpheJomctIE1eFgKBsgXXcVIhJBO+C2Jqse1DmrWJ+pqUQSncbeYD91MuXj2sShzSH
-         8QpPi4MoLaLMbC7otlkg9sKcJr9fG5USl7zD25Ao9MHgFVpIqeU8V1JApGfmZmIFTYsY
-         asLw==
-X-Gm-Message-State: AOAM5315ugBiXbSeZBIrjS0DcAORkH84d1pcPhsZPnyMMzXDg5B0D970
-        g6QqyzARN7Fm77G/+dkYFXQTNtNScqr0hoFgtcM=
-X-Google-Smtp-Source: ABdhPJxwVQAWBK58o6BP6rAw+L4QzBWswyYulqUVfPlOYNjLDXq73+Wpl0MJKzRqkM61Qr0KIk0Oukzalw+hVXPrnvk=
-X-Received: by 2002:a19:4856:: with SMTP id v83mr7412006lfa.583.1610804682059;
- Sat, 16 Jan 2021 05:44:42 -0800 (PST)
+        id S1727264AbhAPRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:23:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:54142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726754AbhAPRXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:23:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E1A9106F;
+        Sat, 16 Jan 2021 05:45:29 -0800 (PST)
+Received: from [10.37.8.30] (unknown [10.37.8.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D44A3F719;
+        Sat, 16 Jan 2021 05:45:26 -0800 (PST)
+Subject: Re: [PATCH v3 2/4] arm64: mte: Add asynchronous mode support
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
+ <20210115120043.50023-3-vincenzo.frascino@arm.com>
+ <20210115151327.GB44111@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <2fde5816-35a7-1e21-e42c-f6e413f30aec@arm.com>
+Date:   Sat, 16 Jan 2021 13:49:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
- <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
- <20210110153532.GA7264@ripley> <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
- <20210110200606.GD7264@ripley> <CAOMZO5DJUm4zutTB1oi5M0zj4_PFZEAbGzX6_LUAkX_dvEz=Qg@mail.gmail.com>
- <20210116124856.GA3406@portage>
-In-Reply-To: <20210116124856.GA3406@portage>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sat, 16 Jan 2021 10:44:30 -0300
-Message-ID: <CAOMZO5DKann0ojZrhjyXOqrRq9owtgrrZTGwttD_bU0-KO=aBg@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210115151327.GB44111@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 9:49 AM Oliver Graute <oliver.graute@gmail.com> wrote:
-
-> > power-supply = <&reg_touch_3v3> is not correct, as the reg_touch_3v3
-> > does not power the LCD.
+On 1/15/21 3:13 PM, Mark Rutland wrote:
+> On Fri, Jan 15, 2021 at 12:00:41PM +0000, Vincenzo Frascino wrote:
+>> MTE provides an asynchronous mode for detecting tag exceptions. In
+>> particular instead of triggering a fault the arm64 core updates a
+>> register which is checked by the kernel after the asynchronous tag
+>> check fault has occurred.
+>>
+>> Add support for MTE asynchronous mode.
+>>
+>> The exception handling mechanism will be added with a future patch.
+>>
+>> Note: KASAN HW activates async mode via kasan.mode kernel parameter.
+>> The default mode is set to synchronous.
+>> The code that verifies the status of TFSR_EL1 will be added with a
+>> future patch.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  arch/arm64/kernel/mte.c | 26 ++++++++++++++++++++++++--
+>>  1 file changed, 24 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 53a6d734e29b..df7a1ae26d7c 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -153,8 +153,30 @@ void mte_init_tags(u64 max_tag)
+>>  
+>>  void mte_enable_kernel(enum kasan_hw_tags_mode mode)
+>>  {
+>> -	/* Enable MTE Sync Mode for EL1. */
+>> -	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+>> +	const char *m;
+>> +
+>> +	/* Preset parameter values based on the mode. */
+>> +	switch (mode) {
+>> +	case KASAN_HW_TAGS_ASYNC:
+>> +		/* Enable MTE Async Mode for EL1. */
+>> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_ASYNC);
+>> +		m = "asynchronous";
+>> +		break;
+>> +	case KASAN_HW_TAGS_SYNC:
+>> +		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+>> +		m = "synchronous";
+>> +		break;
+>> +	default:
+>> +		/*
+>> +		 * kasan mode should be always set hence we should
+>> +		 * not reach this condition.
+>> +		 */
+>> +		WARN_ON_ONCE(1);
+>> +		return;
+>> +	}
+>> +
+>> +	pr_info_once("MTE: enabled in %s mode at EL1\n", m);
+>> +
+>>  	isb();
+>>  }
+> 
+> For clarity, we should have that ISB before the pr_info_once().
 >
-> yes, but how is the LCD correctly powered then?
 
-J4 is powered by VCC_5V and VCC_3V#.
+Good point, I will fix it in v4.
 
-> [    7.795980] pwm-backlight backlight: supply power not found, using dummy regulator
-> [    7.804436] OF: /backlight: #pwm-cells = 3 found -1
-> [    7.806563] of_pwm_get(): can't parse "pwms" property
-> [    7.812026] pwm-backlight backlight: unable to request PWM
-> [    7.822929] pwm-backlight: probe of backlight failed with error -22
+> As with my comment on patch 1, I think with separate functions this
+> would be much clearer and simpler:
+> 
+> static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
+> {
+> 	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, tcf);
+> 	isb();
+> 
+> 	pr_info_once("MTE: enabled in %s mode at EL1\n", mode);
+> }
+> 
+> void mte_enable_kernel_sync(void)
+> {
+> 	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
+> }
+> 
+> void mte_enable_kernel_async(void)
+> {
+> 	__mte_enable_kernel("asynchronous", SCTLR_ELx_TCF_ASYNC);
+> }
+> 
 
-You need to fix this.
+Ok, seems cleaner like this, will adapt my code accordingly.
 
-> [    7.876831] imx-sdma 20ec000.sdma: Direct firmware load for imx/sdma/sdma-imx6q.bin failed with error -2
-> [    7.884231] imx-sdma 20ec000.sdma: Falling back to sysfs fallback for: imx/sdma/sdma-imx6q.bin
-> [    7.916013] printk: console [ttymxc0] enabled
-> [    7.916013] printk: console [ttymxc0] enabled
-> [    7.922351] printk: bootconsole [ec_imx6q0] disabled
-> [    7.922351] printk: bootconsole [ec_imx6q0] disabled
-> [    7.952397] 21e8000.serial: ttymxc1 at MMIO 0x21e8000 (irq = 68, base_baud = 5000000) is a IMX
-> [    7.970794] 21ec000.serial: ttymxc2 at MMIO 0x21ec000 (irq = 69, base_baud = 5000000) is a IMX
-> [    8.033015] ------------[ cut here ]------------
-> [    8.037826] WARNING: CPU: 0 PID: 1 at ../drivers/gpu/drm/panel/panel-simple.c:577 panel_simple_probe+0x5dc/0x6b8
+> Thanks,
+> Mark.
+> 
 
-And this too
-
-> [    8.846104] imx6ul-pinctrl 20e0000.pinctrl: pin MX6UL_PAD_NAND_CE0_B already requested by regulator-gpio; cannot claim for 1806000.nand-controller
-> [    8.859641] imx6ul-pinctrl 20e0000.pinctrl: pin-107 (1806000.nand-controller) status -22
-> [    8.867851] imx6ul-pinctrl 20e0000.pinctrl: could not request pin 107 (MX6UL_PAD_NAND_CE0_B) from group gpminandgrp  on device 20e0000.pinctrl
-> [    8.880930] gpmi-nand 1806000.nand-controller: Error applying setting, reverse things back
-> [    8.889726] gpmi-nand: probe of 1806000.nand-controller failed with error -22
-
-And this pin conflict too.
+-- 
+Regards,
+Vincenzo
