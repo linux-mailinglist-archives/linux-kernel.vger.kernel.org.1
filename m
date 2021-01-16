@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22442F8DF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 459762F8DD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbhAPRMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        id S1728457AbhAPRKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:10:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728424AbhAPRKt (ORCPT
+        with ESMTP id S1728383AbhAPRKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:49 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E315C061793;
-        Sat, 16 Jan 2021 05:02:11 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id m187so3394583wme.2;
-        Sat, 16 Jan 2021 05:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C2JP0xKJYBxZO1WeICFkIE+mCTKdXxqepJkA8Lj212o=;
-        b=kbKTROjfQFJUwD/4rNC/DAhfG1lMJGO5jFmHYF44t0ZsxDShBzvRPF6+eK9HI5F5Y8
-         rvB/FRPmenRFNERN/1LHtR77IYiCJiY/6SAEe0afUddyb9+XBsF2yUn11yTrf1JBox0O
-         pTp/AYOmgtDQLnRJt4GEV38fgAsvsJdk7Us6pb7D1Li4ebLXNTAfR4BaOe2c5IDhf3kV
-         kYUhrJKhwSGdpMCItKlQ0lD7NMMHzWCNe8BxVPUTsx/Q8QN6BbC633Ze5j/s9+X5T4Er
-         CTGJ3070ZCn584HSF9vJLCW5HMryOwBawLAHhdUfdHRntnmqcDuDkUYfYXmZz1tOj4gy
-         GD1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C2JP0xKJYBxZO1WeICFkIE+mCTKdXxqepJkA8Lj212o=;
-        b=CGd3mR3Q0RzQ/C9JaJ4K7//rHtPqBYwYvKJwsHR4OJkjNXXJUZS63fcwNOjDdMsMB6
-         zoy71Yst10/48lX2swJWWZYXl9UdT4SI7QKhOFllk8ivf2Uhu1r2FOvRJHB1swGrJ5wC
-         +FKuHP4Dsyl/yV6vGzw2a83l/RTFwqh1BJI9QlXu204aghYx1byJduwDWOp+jKH1KOh3
-         55GHDtSsf2yNRYbM97VK8yYXnur266n2Fg4sVyTgNezDBoeMvHiubWew/5Daj7yHI9ns
-         NpqTbX8Y4+A4gMaDACqIU3r9b3M/mAVjgulLkR4hPv+8zbr29EZ28ELoicQ3qQBBWS2r
-         TE+Q==
-X-Gm-Message-State: AOAM533n7XpKp+0FZ7K4iKMQ9oro1np4DBsc4LUhjsSwtBA7cNVDnAE6
-        J6b724vdjZkUouvIEwFJv8Q=
-X-Google-Smtp-Source: ABdhPJwv27p7CsJkNcxsvOJ3l0roT0VTEtXuYGbqGvyeDNgjF31dRyGVWpgWs7zy4PbLuisd4XHa+Q==
-X-Received: by 2002:a7b:c4c7:: with SMTP id g7mr13406870wmk.29.1610802129834;
-        Sat, 16 Jan 2021 05:02:09 -0800 (PST)
-Received: from anparri (host-79-50-177-118.retail.telecomitalia.it. [79.50.177.118])
-        by smtp.gmail.com with ESMTPSA id x18sm21306944wrg.55.2021.01.16.05.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 05:02:09 -0800 (PST)
-Date:   Sat, 16 Jan 2021 14:02:01 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2] hv_netvsc: Add (more) validation for untrusted
- Hyper-V values
-Message-ID: <20210116130201.GA1579@anparri>
-References: <20210114202628.119541-1-parri.andrea@gmail.com>
- <20210115203022.7005e66a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Sat, 16 Jan 2021 12:10:44 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B15CC061796;
+        Sat, 16 Jan 2021 05:05:20 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id C33431F44A76
+Received: by earth.universe (Postfix, from userid 1000)
+        id 5E2923C0C94; Sat, 16 Jan 2021 14:05:16 +0100 (CET)
+Date:   Sat, 16 Jan 2021 14:05:16 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Benson Leung <bleung@google.com>
+Cc:     Daisuke Nojiri <dnojiri@chromium.org>, vpalatin@chromium.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Alex Levin <levinale@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Vijay Hiremath <vijay.p.hiremath@intel.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] power: supply: PCHG: Peripheral device charger
+Message-ID: <20210116130516.j3fumvkajdzh2bdq@earth.universe>
+References: <20201216163416.2969209-1-dnojiri@chromium.org>
+ <YACLQBf4KA4uJ6rW@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t7sanakdvwjl2car"
 Content-Disposition: inline
-In-Reply-To: <20210115203022.7005e66a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YACLQBf4KA4uJ6rW@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:30:22PM -0800, Jakub Kicinski wrote:
-> On Thu, 14 Jan 2021 21:26:28 +0100 Andrea Parri (Microsoft) wrote:
-> > For additional robustness in the face of Hyper-V errors or malicious
-> > behavior, validate all values that originate from packets that Hyper-V
-> > has sent to the guest.  Ensure that invalid values cannot cause indexing
-> > off the end of an array, or subvert an existing validation via integer
-> > overflow.  Ensure that outgoing packets do not have any leftover guest
-> > memory that has not been zeroed out.
-> > 
-> > Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: netdev@vger.kernel.org
-> > Cc: bpf@vger.kernel.org
-> > ---
-> > Applies to 5.11-rc3 (and hyperv-next).
-> 
-> So this is for hyperv-next or should we take it via netdev trees?
 
-No preference, either way is good for me.
+--t7sanakdvwjl2car
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-  Andrea
+Hi Benson,
+
+On Thu, Jan 14, 2021 at 10:19:44AM -0800, Benson Leung wrote:
+> On Wed, Dec 16, 2020 at 08:34:15AM -0800, Daisuke Nojiri wrote:
+> > This patch adds a driver for PCHG (Peripheral CHarGer). PCHG is a
+> > framework managing power supplies for peripheral devices.
+> >=20
+> > This driver creates a sysfs node for each peripheral charge port:
+> >=20
+> > 	/sys/class/power_supply/PCHGn
+> >=20
+> > where <n> is the index of a charge port.
+> >=20
+> > For example, when a stylus is connected to a NFC/WLC port, the node
+> > prints:
+> >=20
+> > 	/sys/class/power_supply/PCHG0/
+> > 		capacity=3D50
+> > 		status=3DCharging
+> > 		type=3DWireless
+> >=20
+> > Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
+>=20
+> This change seems reasonable to me. I've reviewed the cros_ec_commands he=
+ader,
+> and it looks good.
+>=20
+> Sebastian, do you have any comments on this? I can merge this through the
+> chrome/platform tree if we have your Acked-By.
+
+There is an unresolved feedback from Guenter Roeck. I wanted to
+provide a link to lore, but it looks like it did not made it
+through. I guess that's why there was no further reply to his
+mail.
+
+-- Sebastian
+
+--t7sanakdvwjl2car
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAC5IcACgkQ2O7X88g7
++prrPg/9HiYBDf1G/Ys7TuHrXlHtclDGe96/qX12OSqQFyAhRAvoS+910jV9Wi3I
+w2NG2o/RqVtqZdcGa3ybw0eNsefAF3/Em4oWOKRLf+cxvs2rflwIdevgMeNI85TP
+b+QOM38e2JuGs19vT3QL/qZLAQmK1oAXk9V35LYfmRfhZtAmWXGVKR6JJlQA0vac
+fZZ/55FvTkQblDIv6JSuLKIk18FooXKbrlTFAtxMEOCg7Mda56ffTnskjArQ1xKU
+giFmlx+KaGY+4vP449a8iFVLzOK8QXCApeKtIC+lcva9cC/6k2kmbDNTmHdXswGQ
+8Xqmngjd09aLpvXlA+UAOpN0zFqwzJKG8GPft3ZTCp12qmOY9OMhACuduhHXhJD0
+J1FEfhuF2fwjQqUKWj2fEVpIhbgFJyjdmMAzzTf2RLrOjeHXU9zdMKRYKUvXP5ki
+YKNZ8rmqrpPuxumU83Nc4J6mm5Mo5r0jSSq27hAvfqF7K+/Is8DZAn5SXLufaeqh
+NNs6bll/Gf11T6yXNPBpOhVGQGvdcXRGcZen9LYU1YaY0gC1xoNdtjJRYEPWZsvU
+Xz29PlxtwkveF+UMGLS1g4K7hTntemZPhGrr0xA7KPRAWjum2yAC5suwySb7Mq/H
+mfiv5JW4gLVzxlbU/9rZm92xacIq2OMPKv0HCadV0fh+y13EgkA=
+=TAyM
+-----END PGP SIGNATURE-----
+
+--t7sanakdvwjl2car--
