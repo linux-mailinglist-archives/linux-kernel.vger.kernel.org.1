@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2362F8C6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C013C2F8C92
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbhAPJIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 04:08:16 -0500
-Received: from verein.lst.de ([213.95.11.211]:43015 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726533AbhAPJIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 04:08:06 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2912A6736F; Sat, 16 Jan 2021 10:07:22 +0100 (CET)
-Date:   Sat, 16 Jan 2021 10:07:21 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Ryan Houdek <sonicadvance1@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Amanieu d'Antras <amanieu@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
- layers
-Message-ID: <20210116090721.GA30277@lst.de>
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com> <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com> <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com> <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com> <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
+        id S1727605AbhAPJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 04:10:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11548 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbhAPJKH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 04:10:07 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHsdt1dXvzMGdM;
+        Sat, 16 Jan 2021 17:08:02 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Sat, 16 Jan 2021
+ 17:09:12 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] hugetlbfs: make BUG_ON(!inode) takes effect in hugetlbfs_setattr
+Date:   Sat, 16 Jan 2021 04:09:10 -0500
+Message-ID: <20210116090910.5671-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:07:46PM -0800, Andy Lutomirski wrote:
-> Finally, I'm not convinced that this patch works correctly.  We have
-> in_compat_syscall(), and code that uses it may well be reachable from
-> ioctl.
+When we reach here with inode = NULL, we should have crashed as inode has
+already been dereferenced via hstate_inode. In order to make BUG_ON(!inode)
+takes effect, we should defer initializing hstate until we really need it.
+Also do this for hugetlbfs_inode_info as it's only used when ia_valid is
+verified with ATTR_SIZE.
 
-ioctls are the prime user of in_compat_syscall().
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ fs/hugetlbfs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> I personally would like to see in_compat_syscall() go away,
-> but some other people (Hi, Christoph!) disagree, and usage seems to be
-> increasing, not decreasing.
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 740693d7f255..9b221b87fbea 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -755,10 +755,8 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+ static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
+ {
+ 	struct inode *inode = d_inode(dentry);
+-	struct hstate *h = hstate_inode(inode);
+ 	int error;
+ 	unsigned int ia_valid = attr->ia_valid;
+-	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
+ 
+ 	BUG_ON(!inode);
+ 
+@@ -767,6 +765,8 @@ static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
+ 		return error;
+ 
+ 	if (ia_valid & ATTR_SIZE) {
++		struct hstate *h = hstate_inode(inode);
++		struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
+ 		loff_t oldsize = inode->i_size;
+ 		loff_t newsize = attr->ia_size;
+ 
+-- 
+2.19.1
 
-I'm absolutely against it going away.  in_compat_syscall helped to
-remove so much crap compared to the explicit compat syscalls.
