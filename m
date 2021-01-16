@@ -2,217 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4C12F8E99
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF732F8E81
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbhAPSLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 13:11:45 -0500
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:13754 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727718AbhAPSLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 13:11:45 -0500
-Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id C37332000A74
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 15:04:26 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="SYvyT19s"
-Date:   Sat, 16 Jan 2021 15:02:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610809382; bh=a71jRuwHG49p+rEiIK2HsboKsC4ZpRrTSk9k/EY42YM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=SYvyT19s9omQInLAU0wuHr/3iYLXt0OeU6fCva7KLyAs9L93jHWRRf/0RUzvPuQ9r
-         v4ZcmN77a2/0siTs1ShKzLMgUyIrPnglgwrq23KX11k2Jx7LO9T9WtUqes96dw3mru
-         K4cfsO7io96BS1BG4C9kEhsqDp2BESvmNzaVlsX4e8evZtwumm5yzoYTuBy3bpXnte
-         MN9yOCUUfncMAvCyunpW1uf7KyB6Gtf0F7zjiPl8fUehVlj+o16rwJTJaBVx5udixy
-         0X1j7jBNPSl+ok+AZnekfnGt2JTHQgkDFNn60qN4Ha0XD/XhPpcOAOMFRphATaP9yK
-         9dCiHZHB9zdGg==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next 2/2] MIPS: relocatable: optimize the relocation process
-Message-ID: <20210116150225.21127-2-alobakin@pm.me>
-In-Reply-To: <20210116150225.21127-1-alobakin@pm.me>
-References: <20210116150126.20693-1-alobakin@pm.me> <20210116150225.21127-1-alobakin@pm.me>
+        id S1727755AbhAPSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 13:01:46 -0500
+Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:59360
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727328AbhAPSBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 13:01:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKezYiRWbR/aGzdopjwVkMEhU4W7vW5swOb/idbDEzcvABS9KTwjhXyFpemAyKhOW+qwDZtvsT1Ffxa0rITa6Ufn1/6AomqrlEet1Y4RyVBT86qWAtD5uhR0Un8Dx7ofMRHBobG+MKohSrl7Bq2zUxec8fcu4ZHabJctPNnEoc3q9li6dpe2TzXhVlFfnlnGSiR0Ed193S/mQO/c1jVxwMJSl1HoRNWpgqbyTNBEMSjSo9N8ygacwelDcbRzXZmwQyJersUiq1d1Uaf+yHgpUzM0DImZlM12vPkqdxV87ySP+R1OFMn0wI314k8P7EIkGBpLOqXcqmpFOQhCL4zjpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rTNFYFJWBh2VTIDmCmvs2k7cn9qNyJSUvjZuM2iG4wQ=;
+ b=Avo0PCeRi3/n35om2CrZQYPAMfs+fAXa75Ksmw4YaHGVO7uxQ9oBwJY6jyC9Xtm1gmWaCks3zh1RSUZ0a/Ar3XkWWhaGPFb03O5rE3DzNBaXMqPWl3O7VTUOu/AyG5RhAwXsq7zlPBfD7Tw3hwn9VJBRR5/SBgdHhEI7ICbxkOf7X2Xf7feuSn/35GEfzABN3VfsPnHxPCAMq0wBnmFJRP6JDFtgUMhjpCcI05iFsmIC8WCsPLU6C9JGfOHb3pPKzj/6UD7xaarluylBbtWQ3RuMn7Df5z9XkJ/BwddIPwjiKkCAktbHWvwpWjV40jsTqHdW4Ex/ouueZDYen73Wyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rTNFYFJWBh2VTIDmCmvs2k7cn9qNyJSUvjZuM2iG4wQ=;
+ b=F01NL4mXeHaunmEh9xwd909zXtVQ3v+QUgROEs6r3jo3619O2jnH2cvLGjRsGl9bjDJBaRLplGmum8S27HxHxVwKz4xSkW9C8t+5//QibfdqAhiF/3VnMOhv0wkZ6/B7HbAJDLBEW8GUMjlumFVHuhZhmy0hT92vh/M5UkkBcvo=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR10MB2023.namprd10.prod.outlook.com
+ (2603:10b6:903:127::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.9; Sat, 16 Jan
+ 2021 15:23:26 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::e83b:f5de:35:9fa7]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::e83b:f5de:35:9fa7%7]) with mapi id 15.20.3742.012; Sat, 16 Jan 2021
+ 15:23:25 +0000
+From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: loadkeys --mktable fi >
+ /usr/src/linux/drivers/tty/vt/defkeymap.c_shipped OOPSes the kernel 5.4.89
+Thread-Topic: loadkeys --mktable fi >
+ /usr/src/linux/drivers/tty/vt/defkeymap.c_shipped OOPSes the kernel 5.4.89
+Thread-Index: AQHW7BuIgaO8dxc0RkmaNZ8xN1Ya6A==
+Date:   Sat, 16 Jan 2021 15:23:25 +0000
+Message-ID: <8176b7a170604460aa5e695370c821364390dd6f.camel@infinera.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.3 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bde83a37-838d-4acf-7407-08d8ba32ab65
+x-ms-traffictypediagnostic: CY4PR10MB2023:
+x-microsoft-antispam-prvs: <CY4PR10MB2023C09081CEE9EFC24FB91AF4A60@CY4PR10MB2023.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4yenZcPK+hUXl+64v/RkYeaRQ1Zl5Z6WVIARfcUOy0vVlREmMaEJIoABaU0uWIPmHcVny9GiDFKMAEiWtWMurSxssyxLDSWEYdVA1YsCqmWxFxiRB/Z6dBucVGBN9cJmy875QnNvAHuQ39JgcTbApjeg5xiMj9M1N77FKDZNeOc/IYxm5/JyqOaAbvdEPYLOAlylmNwRjg/tAU36N+xon+KcSfnunImV8MfTuXjVaGpwWRAz6wA6KOA6vmbrM2Ap2QgWv2VwPDFeYX+1KFvo8bPhMR9IoBdIJHcBagBfpniB6nzmOkoXzRupIKBY4oaxlbuzgGUgza5lCKWssaFDP0/j5Ze02VC+mDyyuRHr6iKY9WgYZMmpwrG9gYEHV8opBJAG+UPzgaEeMPCGhXmxPg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(39850400004)(136003)(6512007)(36756003)(66946007)(76116006)(66556008)(6506007)(66476007)(478600001)(71200400001)(91956017)(64756008)(66446008)(2616005)(6486002)(8936002)(86362001)(316002)(186003)(5660300002)(6916009)(2906002)(4744005)(26005)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?L204Yld3ZEFZVTFic0FrcDEzbmR4RDlrb01LM2JXNlR5YmxHTW01eHpjVFNT?=
+ =?utf-8?B?YjNIVzFJeGxOMWcrWFRWWFU5N3JsZ2dnSnJ1Y1J2emhKMk5KN2JHcE50M2hV?=
+ =?utf-8?B?SXhGa081Wm9vdU1SU0o3NXNJOVZ1ZDY5bCtsbzZ6U0VkRTllVGY1RkFRemt6?=
+ =?utf-8?B?ZmU2dngzTUtJbWtzUUd0b1dpeGxJa2ZwR0hjakhSN3M3Z2dxTUVOcUI5Qjdl?=
+ =?utf-8?B?endqdUJCQ2gzSEREK3RMVGZEcGJER1dpcW9qNTVaREY0bFh0aWRjNVMzTFpp?=
+ =?utf-8?B?OUJvOHNVSzMyTStwU0hoR0hyRFlPdkdjTW8zRlNIbmVGdmdENHZuWUJEcnN0?=
+ =?utf-8?B?RXZUbXFNcDVkVDRkYURKWC9HaThyVTdQbXNVS1lyQnkzbE81bFFDNG1GeDFq?=
+ =?utf-8?B?QmEyRS8yZWVUTVV5RXRkelBHOE5Ba1VOeG9Vakl3eTFLcDBEcGhEUVhzbU1T?=
+ =?utf-8?B?bDVaVEpXbE9pdE1MNjJOM3dpZlViVU9JM292TU1vdDYzdHRtYyttd1lNNnBH?=
+ =?utf-8?B?UTVBTWFNZmVSai9oWGk2SmR5VXgwdGlwaEM1bzlrRkdIRTdyaEQ4eHRMUXBG?=
+ =?utf-8?B?alZyNHlwLzlPcVdwckl2eEpjREVqMXdqdUcxaXFHbXlVUCtXb1ZwWUpxRFhw?=
+ =?utf-8?B?bm02UG1ZOGhKUGNIZHNXNTIyZ1BtR0V3aER6TjZtUlhOTG1jV2VUaEZBZWVs?=
+ =?utf-8?B?TU1PcjNJeG5HVVFFem5kSDNmVXR5YnFqZjBGYnlzY1JvUU5oUUtwbmRBenJ4?=
+ =?utf-8?B?VlJpZFNrcVU1dkxQR2xIR2VjcU1jMkR6aUw2M3RGd2pnbEdjMi9iNjVaWVhH?=
+ =?utf-8?B?QzNjTkQ2RmxzaHBvdC9RcE9BZXVjU1lXR3VwQ2M2MytJblZyVnNGOWltWWpE?=
+ =?utf-8?B?d2Z6N2FpNFpDSlNoSEpHTE5LU1BHQXUwS0hBVmhzR05QekQ3NWZNT2VTNisx?=
+ =?utf-8?B?bEhRSHlkTVFhTUd6VFJTWmw0VklWU1B5VWJHLzUwbXNJTFdneXpHQW9MaVcw?=
+ =?utf-8?B?ZktIRkEvQzJSKzh4UDE5ZVczdEVUa0IrTkdaVTRaQjl0WUNENXRRUDM0Qmd5?=
+ =?utf-8?B?aDdFcnU3NHF4K1VTYko3OHJ2ck9Oa1UzeUlDUm5EOC9tL0I5NmQ3QksxUndE?=
+ =?utf-8?B?TTVoeFR6VWZwK1NhbktYejBHV2pLUlVqQ2krSGZCNHBob0hFR1lpZ2p4YWNn?=
+ =?utf-8?B?QkRHV0VzM3hNaFcrMkRnYnhFUnoydDBFK2FHbE5kaWdHZlVsMDYybDlsMkZT?=
+ =?utf-8?B?NVovekdENUp3U3J4OWN3SnZMeEh6dXV5QTZaNCtYaWcyMklTbVQrRUpibnNL?=
+ =?utf-8?Q?CM7ujZ0wOkR19yNIWxiAmHQEct/1Zkmppx?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <29617DF2002A5B458DC1E66BF8876EFF@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bde83a37-838d-4acf-7407-08d8ba32ab65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2021 15:23:25.8289
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VMveN2rTSkrVEqj2KHCHGo5YPYrcekkcExbdxnLU3iVWHZsDlRLU8WnN6nUrYQ53mPDQGymCphvdu6MGwF53iQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB2023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For now, vmlinux relocation functions for relocatable kernel are
-implemented as an array of handlers of a particular type.
-
-Convert that array into a single switch-case function to:
- - remove unused arguments;
- - change the return type of simple handlers to void;
- - remove the array and don't use any data at all;
- - avoid using indirect calls;
- - allow the compiler to inline and greatly optimize
-   the relocation function[s];
-
-and also mark do_relocations() and show_kernel_relocation() static
-as they aren't used anywhere else.
-
-The result on MIPS32 R2 with GCC 10.2 -O2 is:
-
-scripts/bloat-o-meter -c arch/mips/kernel/__relocate.o arch/mips/kernel/rel=
-ocate.o
-add/remove: 0/6 grow/shrink: 1/0 up/down: 356/-640 (-284)
-Function                                     old     new   delta
-relocate_kernel                              852    1208    +356
-apply_r_mips_32_rel                           20       -     -20
-apply_r_mips_hi16_rel                         40       -     -40
-apply_r_mips_64_rel                           44       -     -44
-apply_r_mips_26_rel                          144       -    -144
-show_kernel_relocation                       164       -    -164
-do_relocations                               228       -    -228
-Total: Before=3D1780, After=3D1496, chg -15.96%
-add/remove: 0/1 grow/shrink: 0/0 up/down: 0/-76 (-76)
-Data                                         old     new   delta
-reloc_handlers_rel                            76       -     -76
-Total: Before=3D92, After=3D16, chg -82.61%
-add/remove: 0/0 grow/shrink: 0/0 up/down: 0/0 (0)
-RO Data                                      old     new   delta
-Total: Before=3D0, After=3D0, chg +0.00%
-
-All functions were collapsed into the main one, relocate_kernel().
-
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/kernel/relocate.c | 54 ++++++++++++++++++++-----------------
- 1 file changed, 30 insertions(+), 24 deletions(-)
-
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 47aeb3350a76..c643c816cbe0 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -70,18 +70,14 @@ static void __init sync_icache(void *kbase, unsigned lo=
-ng kernel_length)
- =09__sync();
- }
-=20
--static int __init apply_r_mips_64_rel(u32 *loc_orig, u32 *loc_new, long of=
-fset)
-+static void __init apply_r_mips_64_rel(u32 *loc_new, long offset)
- {
- =09*(u64 *)loc_new +=3D offset;
--
--=09return 0;
- }
-=20
--static int __init apply_r_mips_32_rel(u32 *loc_orig, u32 *loc_new, long of=
-fset)
-+static void __init apply_r_mips_32_rel(u32 *loc_new, long offset)
- {
- =09*loc_new +=3D offset;
--
--=09return 0;
- }
-=20
- static int __init apply_r_mips_26_rel(u32 *loc_orig, u32 *loc_new, long of=
-fset)
-@@ -114,7 +110,8 @@ static int __init apply_r_mips_26_rel(u32 *loc_orig, u3=
-2 *loc_new, long offset)
- }
-=20
-=20
--static int __init apply_r_mips_hi16_rel(u32 *loc_orig, u32 *loc_new, long =
-offset)
-+static void __init apply_r_mips_hi16_rel(u32 *loc_orig, u32 *loc_new,
-+=09=09=09=09=09 long offset)
- {
- =09unsigned long insn =3D *loc_orig;
- =09unsigned long target =3D (insn & 0xffff) << 16; /* high 16bits of targe=
-t */
-@@ -122,17 +119,33 @@ static int __init apply_r_mips_hi16_rel(u32 *loc_orig=
-, u32 *loc_new, long offset
- =09target +=3D offset;
-=20
- =09*loc_new =3D (insn & ~0xffff) | ((target >> 16) & 0xffff);
--=09return 0;
- }
-=20
--static int (*reloc_handlers_rel[]) (u32 *, u32 *, long) __initdata =3D {
--=09[R_MIPS_64]=09=09=3D apply_r_mips_64_rel,
--=09[R_MIPS_32]=09=09=3D apply_r_mips_32_rel,
--=09[R_MIPS_26]=09=09=3D apply_r_mips_26_rel,
--=09[R_MIPS_HI16]=09=09=3D apply_r_mips_hi16_rel,
--};
-+static int __init reloc_handler(u32 type, u32 *loc_orig, u32 *loc_new,
-+=09=09=09=09long offset)
-+{
-+=09switch (type) {
-+=09case R_MIPS_64:
-+=09=09apply_r_mips_64_rel(loc_new, offset);
-+=09=09break;
-+=09case R_MIPS_32:
-+=09=09apply_r_mips_32_rel(loc_new, offset);
-+=09=09break;
-+=09case R_MIPS_26:
-+=09=09return apply_r_mips_26_rel(loc_orig, loc_new, offset);
-+=09case R_MIPS_HI16:
-+=09=09apply_r_mips_hi16_rel(loc_orig, loc_new, offset);
-+=09=09break;
-+=09default:
-+=09=09pr_err("Unhandled relocation type %d at 0x%pK\n", type,
-+=09=09       loc_orig);
-+=09=09return -ENOEXEC;
-+=09}
-=20
--int __init do_relocations(void *kbase_old, void *kbase_new, long offset)
-+=09return 0;
-+}
-+
-+static int __init do_relocations(void *kbase_old, void *kbase_new, long of=
-fset)
- {
- =09u32 *r;
- =09u32 *loc_orig;
-@@ -149,14 +162,7 @@ int __init do_relocations(void *kbase_old, void *kbase=
-_new, long offset)
- =09=09loc_orig =3D kbase_old + ((*r & 0x00ffffff) << 2);
- =09=09loc_new =3D RELOCATED(loc_orig);
-=20
--=09=09if (reloc_handlers_rel[type] =3D=3D NULL) {
--=09=09=09/* Unsupported relocation */
--=09=09=09pr_err("Unhandled relocation type %d at 0x%pK\n",
--=09=09=09       type, loc_orig);
--=09=09=09return -ENOEXEC;
--=09=09}
--
--=09=09res =3D reloc_handlers_rel[type](loc_orig, loc_new, offset);
-+=09=09res =3D reloc_handler(type, loc_orig, loc_new, offset);
- =09=09if (res)
- =09=09=09return res;
- =09}
-@@ -412,7 +418,7 @@ void *__init relocate_kernel(void)
- /*
-  * Show relocation information on panic.
-  */
--void show_kernel_relocation(const char *level)
-+static void show_kernel_relocation(const char *level)
- {
- =09unsigned long offset;
-=20
---=20
-2.30.0
-
-
+QnVpbGRpbmcgYSBrZXJuZWwgYW5kIGhhdmluZyB0aGUgZGVmYXVsdCBrZXltYXAgcmVwbGFjZWQg
+d2l0aA0KICBsb2Fka2V5cyAtLW1rdGFibGUgZmkgPiAvdXNyL3NyYy9saW51eC9kcml2ZXJzL3R0
+eS92dC9kZWZrZXltYXAuY19zaGlwcGVkDQptYWtlcyB0aGUga2VybmVsIE9PUFMgZHVyaW5nIHN0
+YXJ0dXAuDQpUaGUgT09QUyBzY3JvbGxzIGF3YXkgYW5kIEkgY2FuIG9ubHkgc2VlIGEgZmV3IHJl
+Z2lzdGVycy4NCg0KVGhlIE9PUFMgc2VlbXMgdG8gaGFwcGVuIHdoZW4gcnVubmluZyB0aGUgbG9h
+ZGtleXMgY29tbWFuZC4NCldvcmtpbmcga2VybmVsIGlzIDUuNC44MA0KDQogSm9ja2UNCg==
