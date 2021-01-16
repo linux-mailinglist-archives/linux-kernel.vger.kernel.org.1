@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96212F8A56
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBF52F8A70
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbhAPBZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:25:19 -0500
-Received: from mout.gmx.net ([212.227.15.18]:56503 "EHLO mout.gmx.net"
+        id S1729272AbhAPB0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:26:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57304 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbhAPBZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:25:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610760218;
-        bh=F2qbFf9qKdSsBJa23tXe6T1HNDHCDzPhYtNTXVVRWNI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=cGv3Il2tFQ+HsVAoOo36bWX56A+r6RminW/Q8CypSWJvSj2gRxWP9zUgK5oWVT/F7
-         t5NyZ8d4pvcnVclZxPJF/Ws6onII2AOJ4aJLNj8fHJFgReEYno2RE3/udJO8M52orI
-         uuhPPUhcOjeo1OAaj7JnchieBoGLzjfNkVQkllIY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0X8o-1lwyK62LEi-00wXvB; Sat, 16
- Jan 2021 02:23:38 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org
-Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        LinoSanfilippo@gmx.de, p.rosenberger@kunbus.com,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: [PATCH 4/4] tpm: Provide a function tpm_chip_free() to free tpm chips
-Date:   Sat, 16 Jan 2021 02:22:41 +0100
-Message-Id: <1610760161-21982-5-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610760161-21982-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <1610760161-21982-1-git-send-email-LinoSanfilippo@gmx.de>
+        id S1728207AbhAPB0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 20:26:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610760359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OgKrm1eUqKSfGn7bceu+w+8caqwlMsQwlQqrULX8q6w=;
+        b=mtD+kkD8UO9uWv7cOM8yu1chHaje/GO3BvjGVG677fp3Umux44LwNyfD+g3zVSTwovTjdK
+        9YrNEK2TjdZq2f9ZBknVOAXtML9B26GmiJ2yxTaYnhj3Lgbnt/f/1Pw7eTqgNIat7ruF+w
+        GWmTdqa16RRza+ZFeFPOhV/sPmvuz/g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D853EACAD;
+        Sat, 16 Jan 2021 01:25:58 +0000 (UTC)
+Message-ID: <0a32e141d8929f75025a0d9544a4552f2a916c5d.camel@suse.com>
+Subject: Re: [PATCH] kvm: tracing: Fix unmatched kvm_entry and kvm_exit
+ events
+From:   Dario Faggioli <dfaggioli@suse.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lorenzo Brescia <lorenzo.brescia@edu.unito.it>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org
+Date:   Sat, 16 Jan 2021 02:25:57 +0100
+In-Reply-To: <160873470698.11652.13483635328769030605.stgit@Wayrath>
+References: <160873470698.11652.13483635328769030605.stgit@Wayrath>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-Qzk5xTc+W0ATjFC4asLe"
+User-Agent: Evolution 3.38.3 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:7LO2kLHLpuJ1Obj7yG/NKIjDEnDYivUDdHMjXgTExtjAzWCbONM
- mTIDxVRb3DLKOuFTtshO/Xwgch1z04dQ4gOlbl6toVDX0FadqCJjQy7N/R21/XWbi2euEwV
- jbxGtsjBnoeq8TbX+fQ4dmuJxEQa3HbuTMQwFxMuREAibhbOr5NjWjU39IviBeQxiVdfsiV
- qDNc/UlcPcGOCFy543LEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mwMJBVypbFI=:rVDhbqRFT9bOq2TPD8SKJi
- zCHkp9PfQMxP4PWG7uMdIbf32zrVhLl6HfSc55JyR+VuuwEgcML4WOJLzYf4BEa7eDceXBdx1
- 5qa87L/OsSuZeWf2OhF0fxGtnSYo3NbFlDTSFuYz+AzFyXDlFJq9mmdylRf6JWqza5d4iXw1z
- 6c5KHTaZxX5YHQOj8oo+Or6Q+DFXtD6IX2ljkzR6KVCml6h5QfFmJ9DZeU+nELZef5rTqdeHx
- UrBBuwy3WK5DEsHR2+h4laBhpgPBzclvMlogHQ0RIWwao+MZ8IHubH+vx7K4juByaxrQlXapx
- 8CRcBLtWPCEn69BamDDQzQGcmo5H4LlT/vug/rShFFTCu3JquqqI46VqNhuaClc2Oy2EZ7AaC
- C1dqDRrbrhHPTYhk5SgjN3IqvdzBoiTRmjTaA1DqkjvZUdUlzZFmDuvmLh8u4MkiAQ+c7vh85
- /Sh4gIdBUqKXEg5s90GVomkiD2x/KgehYZDOpDu+oqbKlNe0/eQIcPK/2f2835WM4mwvaCCL6
- 4HnM4w6MGTaf6uiY7E9a3/u+Aa1ZBuyKCM4r3BqgD7tCDdnGtOY18FnsfwEltmk9Fy1PxKovR
- TmjEfQ5LS5yu+qs/scaphsxJwtslFhgfOgfSdL5ylJgQ6qt90zzySZl6J0zwJU41sS66coYvu
- QPYC/IYyDId7x5muLSenRAwMbXexo9R81aV+WNf1eynu8BWIvWLuArd3ak9o6qlq3LhqXoD8v
- mq8IUK5uT+v+wvX/njPH4pgutA84pDz5P3B829jy+kFbAMUoqpTR6Ls5RgXFVjJsfsleDRC/7
- gqJgV4yGghwcSKLECuCjFGF2VBJuQ4Zfr2Z49cONNk5SF/zSFizP054C4fvYH5GCLd71G06UV
- 2MUc/hrMg129SN2PcRiA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlubyBTYW5maWxpcHBvIDxsLnNhbmZpbGlwcG9Aa3VuYnVzLmNvbT4KClByb3ZpZGUg
-YSBmdW5jdGlvbiB0cG1fY2hpcF9mcmVlKCkgYXMgYSBjb3VudGVycGFydCB0byB0cG1fY2hpcF9h
-bGxvYygpLgpUaGUgZnVuY3Rpb24gaGlkZXMgdGhlIGludGVybmFscyBvZiBmcmVlaW5nIGEgc3Ry
-dWN0IHRwbV9jaGlwIGluc3RhbmNlCmJ5IHB1dHRpbmcgdGhlIGRldmljZSByZWZlcmVuY2VzIHdo
-aWNoIGFyZSBwYXJ0IG9mIHRoaXMgc3RydWN0dXJlLgoKVXNlIHRoZSBuZXcgZnVuY3Rpb24gYXQg
-dGhlIGFwcHJvcHJpYXRlIHBsYWNlcy4KClNpZ25lZC1vZmYtYnk6IExpbm8gU2FuZmlsaXBwbyA8
-bC5zYW5maWxpcHBvQGt1bmJ1cy5jb20+Ci0tLQogZHJpdmVycy9jaGFyL3RwbS90cG0tY2hpcC5j
-ICAgICAgIHwgMTYgKysrKysrKysrKysrKysrKwogZHJpdmVycy9jaGFyL3RwbS90cG0uaCAgICAg
-ICAgICAgIHwgIDEgKwogZHJpdmVycy9jaGFyL3RwbS90cG1fZnRwbV90ZWUuYyAgIHwgIDYgKyst
-LS0tCiBkcml2ZXJzL2NoYXIvdHBtL3RwbV92dHBtX3Byb3h5LmMgfCAgMyArLS0KIDQgZmlsZXMg
-Y2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL2NoYXIvdHBtL3RwbS1jaGlwLmMgYi9kcml2ZXJzL2NoYXIvdHBtL3RwbS1jaGlwLmMK
-aW5kZXggNTk2ODI0Yy4uODVlOTg3YiAxMDA2NDQKLS0tIGEvZHJpdmVycy9jaGFyL3RwbS90cG0t
-Y2hpcC5jCisrKyBiL2RyaXZlcnMvY2hhci90cG0vdHBtLWNoaXAuYwpAQCAtNDAyLDYgKzQwMiwy
-MiBAQCBzdHJ1Y3QgdHBtX2NoaXAgKnRwbV9jaGlwX2FsbG9jKHN0cnVjdCBkZXZpY2UgKnBkZXYs
-CiBFWFBPUlRfU1lNQk9MX0dQTCh0cG1fY2hpcF9hbGxvYyk7CiAKIC8qKgorICogdHBtX2NoaXBf
-ZnJlZSgpIC0gZnJlZSBhbiBpbnN0YW5jZSBvZiBzdHJ1Y3QgdHBtX2NoaXAgdGhhdCBoYXMgYmVl
-bgorICogYWxsb2NhdGVkIHdpdGggdHBtX2NoaXBfYWxsb2MoKSBiZWZvcmUuCisgKiBAY2hpcDog
-Y2hpcCB0byBmcmVlCisgKgorICogRnJlZXMgYW4gaW5zdGFuY2Ugb2Ygc3RydWN0IHRwbV9jaGlw
-IGJ5IHJlbGVhc2luZyBpbnRlcm5hbCBkZXZpY2UgcmVmZXJlbmNlcy4KKyAqIFRoaXMgZnVuY3Rp
-b24gaXMgdXNlZCB0byBoaWRlIHRoZSBpbnRlcm5hbHMgbmVlZGVkIHRvIGZyZWUgYSBzdHJ1Y3Qg
-dHBtX2NoaXAKKyAqIGluc3RhbmNlIHRoYXMgaGFzIGJlZW4gYWxsb2NhdGVkIHdpdGggdHBtX2No
-aXBfYWxsb2MoKSBiZWZvcmUuCisgKi8KK3ZvaWQgdHBtX2NoaXBfZnJlZShzdHJ1Y3QgdHBtX2No
-aXAgKmNoaXApCit7CisJcHV0X2RldmljZSgmY2hpcC0+ZGV2cyk7CisJcHV0X2RldmljZSgmY2hp
-cC0+ZGV2KTsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKHRwbV9jaGlwX2ZyZWUpOworCisvKioKICAq
-IHRwbW1fY2hpcF9hbGxvYygpIC0gYWxsb2NhdGUgYSBuZXcgc3RydWN0IHRwbV9jaGlwIGluc3Rh
-bmNlCiAgKiBAcGRldjogcGFyZW50IGRldmljZSB0byB3aGljaCB0aGUgY2hpcCBpcyBhc3NvY2lh
-dGVkCiAgKiBAb3BzOiBzdHJ1Y3QgdHBtX2NsYXNzX29wcyBpbnN0YW5jZQpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9jaGFyL3RwbS90cG0uaCBiL2RyaXZlcnMvY2hhci90cG0vdHBtLmgKaW5kZXggOTQ3
-ZDFkYi4uZTZiYjZhZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9jaGFyL3RwbS90cG0uaAorKysgYi9k
-cml2ZXJzL2NoYXIvdHBtL3RwbS5oCkBAIC0xOTksNiArMTk5LDcgQEAgdm9pZCB0cG1fcHV0X29w
-cyhzdHJ1Y3QgdHBtX2NoaXAgKmNoaXApOwogCiBzdHJ1Y3QgdHBtX2NoaXAgKnRwbV9jaGlwX2Fs
-bG9jKHN0cnVjdCBkZXZpY2UgKmRldiwKIAkJCQljb25zdCBzdHJ1Y3QgdHBtX2NsYXNzX29wcyAq
-b3BzKTsKK3ZvaWQgdHBtX2NoaXBfZnJlZShzdHJ1Y3QgdHBtX2NoaXAgKmNoaXApOwogc3RydWN0
-IHRwbV9jaGlwICp0cG1tX2NoaXBfYWxsb2Moc3RydWN0IGRldmljZSAqcGRldiwKIAkJCQkgY29u
-c3Qgc3RydWN0IHRwbV9jbGFzc19vcHMgKm9wcyk7CiBpbnQgdHBtX2NoaXBfcmVnaXN0ZXIoc3Ry
-dWN0IHRwbV9jaGlwICpjaGlwKTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci90cG0vdHBtX2Z0
-cG1fdGVlLmMgYi9kcml2ZXJzL2NoYXIvdHBtL3RwbV9mdHBtX3RlZS5jCmluZGV4IDgyODU4YzIu
-LjQ3ZmZhYWUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvY2hhci90cG0vdHBtX2Z0cG1fdGVlLmMKKysr
-IGIvZHJpdmVycy9jaGFyL3RwbS90cG1fZnRwbV90ZWUuYwpAQCAtMjg1LDggKzI4NSw3IEBAIHN0
-YXRpYyBpbnQgZnRwbV90ZWVfcHJvYmUoc3RydWN0IGRldmljZSAqZGV2KQogCXJldHVybiAwOwog
-CiBvdXRfY2hpcDoKLQlwdXRfZGV2aWNlKCZwdnRfZGF0YS0+Y2hpcC0+ZGV2KTsKLQlwdXRfZGV2
-aWNlKCZwdnRfZGF0YS0+Y2hpcC0+ZGV2cyk7CisJdHBtX2NoaXBfZnJlZShjaGlwKTsKIG91dF9j
-aGlwX2FsbG9jOgogCXRlZV9zaG1fZnJlZShwdnRfZGF0YS0+c2htKTsKIG91dF9zaG1fYWxsb2M6
-CkBAIC0zMTksOCArMzE4LDcgQEAgc3RhdGljIGludCBmdHBtX3RlZV9yZW1vdmUoc3RydWN0IGRl
-dmljZSAqZGV2KQogCXRwbV9jaGlwX3VucmVnaXN0ZXIocHZ0X2RhdGEtPmNoaXApOwogCiAJLyog
-ZnJlZXMgY2hpcCAqLwotCXB1dF9kZXZpY2UoJnB2dF9kYXRhLT5jaGlwLT5kZXZzKTsKLQlwdXRf
-ZGV2aWNlKCZwdnRfZGF0YS0+Y2hpcC0+ZGV2KTsKKwl0cG1fY2hpcF9mcmVlKHB2dF9kYXRhLT5j
-aGlwKTsKIAogCS8qIEZyZWUgdGhlIHNoYXJlZCBtZW1vcnkgcG9vbCAqLwogCXRlZV9zaG1fZnJl
-ZShwdnRfZGF0YS0+c2htKTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci90cG0vdHBtX3Z0cG1f
-cHJveHkuYyBiL2RyaXZlcnMvY2hhci90cG0vdHBtX3Z0cG1fcHJveHkuYwppbmRleCA5N2I2MGY4
-Li5mODg3YmIzIDEwMDY0NAotLS0gYS9kcml2ZXJzL2NoYXIvdHBtL3RwbV92dHBtX3Byb3h5LmMK
-KysrIGIvZHJpdmVycy9jaGFyL3RwbS90cG1fdnRwbV9wcm94eS5jCkBAIC01MjAsOCArNTIwLDcg
-QEAgc3RhdGljIHN0cnVjdCBwcm94eV9kZXYgKnZ0cG1fcHJveHlfY3JlYXRlX3Byb3h5X2Rldih2
-b2lkKQogICovCiBzdGF0aWMgaW5saW5lIHZvaWQgdnRwbV9wcm94eV9kZWxldGVfcHJveHlfZGV2
-KHN0cnVjdCBwcm94eV9kZXYgKnByb3h5X2RldikKIHsKLQlwdXRfZGV2aWNlKCZwcm94eV9kZXYt
-PmNoaXAtPmRldnMpOwotCXB1dF9kZXZpY2UoJnByb3h5X2Rldi0+Y2hpcC0+ZGV2KTsgLyogZnJl
-ZXMgY2hpcCAqLworCXRwbV9jaGlwX2ZyZWUocHJveHlfZGV2LT5jaGlwKTsKIAlrZnJlZShwcm94
-eV9kZXYpOwogfQogCi0tIAoyLjcuNAoK
+
+--=-Qzk5xTc+W0ATjFC4asLe
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2020-12-23 at 14:45 +0000, Dario Faggioli wrote:
+> From: Lorenzo Brescia <lorenzo.brescia@edu.unito.it>
+>=20
+> On VMX, if we exit and then re-enter immediately without leaving
+> the vmx_vcpu_run() function, the kvm_entry event is not logged.
+> That means we will see one (or more) kvm_exit, without its (their)
+> corresponding kvm_entry, as shown here:
+>=20
+> =C2=A0CPU-1979 [002] 89.871187: kvm_entry: vcpu 1
+> =C2=A0CPU-1979 [002] 89.871218: kvm_exit:=C2=A0 reason MSR_WRITE
+> =C2=A0CPU-1979 [002] 89.871259: kvm_exit:=C2=A0 reason MSR_WRITE
+>=20
+> It also seems possible for a kvm_entry event to be logged, but then
+> we leave vmx_vcpu_run() right away (if vmx->emulation_required is
+> true). In this case, we will have a spurious kvm_entry event in the
+> trace.
+>=20
+Gentle ping... :-)
+
+Thanks and Regards
+
+--=20
+Dario Faggioli, Ph.D
+http://about.me/dario.faggioli
+Virtualization Software Engineer
+SUSE Labs, SUSE https://www.suse.com/
+-------------------------------------------------------------------
+<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+
+--=-Qzk5xTc+W0ATjFC4asLe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmACQKUACgkQFkJ4iaW4
+c+5RKQ//a6ToUu0sWhqEUEfvtvWB92cs7qxz5G8NtccK1p/E8X28l8pTBxT7W37G
+rH4hZ/0RKHFxlAxklRV4TFpNBHOQTTTCxPi2xmGachkQRbTRKrlldafgPUQH1SSO
+hMkDCwYWiR97W3FnhXnTxOjWpBpDifGLRh4/y3f+2AYvNWTmRaf5FmKsitGHAq/W
+MbNc6VASM+QoBIwJPaWbt/InvSOo5sX487fhbDixF1BDZR2ujVkCHvm/U+jp3fcs
+8EwAxkOqQSiTmwge0fEhR6AEbTdUGqlE8Yx5jGN0gIbpRv2v5I8QfccicCPVH007
+SIqlZIMEUvfMYzLZZATVg/gHeqs8p2FKgZ8YkIVmQ5rnwVhWvIyQOI4k+/LVVkYL
+NeYMibnMBje9YqeRlGLMYqSRQigIhaIA0OUibldVx/HB/dIXDUK1Xg14a8Mggud8
+kQ1+jfsPHV7jnngxCD7Un2S/ZIT20PsrtSSB1PLOjzszJIwZRnSOU0wtmC2lQF0l
+hzcmlLRqq0md/5ZXdpJanLfG4QT/dqKmcrYYOfgOssdUH5c8b50EBVjPMwHI6rA/
+vgCHLtN7k9sqfZMtC4SUTPN5QOFJJW4jbzOcAaDHaRvKcF5xv4YZKh7hcKDBGz/X
+JuuTzoyaSiYV4ASf/VCgwbQlkXgoIhw4LCpzhh+x2z4zrDhXrfQ=
+=L5Uz
+-----END PGP SIGNATURE-----
+
+--=-Qzk5xTc+W0ATjFC4asLe--
+
