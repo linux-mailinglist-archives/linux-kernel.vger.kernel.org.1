@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6676C2F8D48
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F59F2F8D50
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbhAPMXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 07:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbhAPMXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 07:23:32 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B33C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 04:22:52 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id b26so17213554lff.9
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 04:22:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=VZQgXJ3sozKQS+EOLjQhPRf8+tiITg33CWg9Ya6+elE=;
-        b=U15IpH/80IkVMuRVSTT+D0VqtAzhnCWcvJAoz99h0HDGz1vGpfRdtbEYL6h314gFpA
-         qnELWLtY7TZTqwHHB62CCnDscY/7nJ/e6V5uFYWEMZ0oazQrhXBmZNOV+OpCkNyjOhdf
-         myUMlzmpmPxEQ/LrASWVx4mTLlSvdL41zNRWQ0Ymxm6T/Nl8FBtMsGrFad3dyJWT1oV3
-         ApSIx00WDfK1lYw1/5R3nooLT/X1jtVtNES+yccSBl3tWbhEKmmodnbi9PDWGetSsJCz
-         LIsSSKq10FBFxy9G/eqLqlY+C2mQ5ooMANxTLs0xkH5hm0fNt9guDE6noTcfcezmsDw0
-         E2cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=VZQgXJ3sozKQS+EOLjQhPRf8+tiITg33CWg9Ya6+elE=;
-        b=EdHIx3zX8JXOrO1quNcwmbC5eeL0xHzdYbvMBh5IJ4MMcaXVYf1C4tMofUC7Jnwb/P
-         +cQ4eK5fq3dBmB0d49eKo+nE46Cmf79J1h6hBvuz5g/Jf2qRCKSSdYg1XQ+plae4kXj3
-         42gyaDMFURTZIaicpeKLiy4cK81UFQxDg+zPQBb7zhgIcRm3UsuBzrTaF9P88Oz3Rvlt
-         zFJyrIBFjs8fZPNIW0TBjxKHC4fZ5BhcX1ojYR4HSOHyLPO7mZELr3B3M2CGyVNaheIP
-         fUFUU78p5c/9Lm9oyOvjE434fqmXRcmsIpMkyAR6JQ0Z40bmksU3WTAZ3qM446+O9I1v
-         rUKQ==
-X-Gm-Message-State: AOAM531abhP4jXLOlcLDy0osrWedH8iyd6NMfelSywUU1KDKxmIMVz6I
-        ZPLISqbB9drH/Nrlfkv5hEYAySRYk2FQLvIW
-X-Google-Smtp-Source: ABdhPJwv8yd2BfxvPK6uYIqrG/oujdKSdPPU+zoPhi+sLcdwy9JZFT/bcOkxu3d9QE+YTmHKCTL7gg==
-X-Received: by 2002:a19:3806:: with SMTP id f6mr8206820lfa.242.1610799770651;
-        Sat, 16 Jan 2021 04:22:50 -0800 (PST)
-Received: from wkz-x280 (h-236-82.A259.priv.bahnhof.se. [98.128.236.82])
-        by smtp.gmail.com with ESMTPSA id n20sm1252416lfh.133.2021.01.16.04.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 04:22:50 -0800 (PST)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] net: dsa: mv88e6xxx: use mv88e6185_g1_vtu_getnext() for the 6250
-In-Reply-To: <20210116023937.6225-3-rasmus.villemoes@prevas.dk>
-References: <20210116023937.6225-1-rasmus.villemoes@prevas.dk> <20210116023937.6225-3-rasmus.villemoes@prevas.dk>
-Date:   Sat, 16 Jan 2021 13:22:49 +0100
-Message-ID: <878s8tkr52.fsf@waldekranz.com>
+        id S1726532AbhAPM3u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 07:29:50 -0500
+Received: from wnbcorp.com ([175.126.38.143]:39998 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725979AbhAPM3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 07:29:50 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GCGY3j031396;
+        Sat, 16 Jan 2021 21:23:10 +0900
+Message-Id: <202101161223.10GCGY3j031396@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 13:23:22 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 03:39, Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
-> mv88e6250_g1_vtu_getnext is almost identical to
-> mv88e6185_g1_vtu_getnext, except for the 6250 only having 64 databases
-> instead of 256. We can reduce code duplication by simply masking off
-> the extra two garbage bits when assembling the fid from VTU op [3:0]
-> and [11:8].
->
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-We might also want to give mv88e6250_g1_vtu_loadpurge the same
-treatment.
+Sir/Madam,
 
-Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
-Tested-by: Tobias Waldekranz <tobias@waldekranz.com>
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
