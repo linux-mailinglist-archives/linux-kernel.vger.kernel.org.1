@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E667F2F8B02
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 04:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E03C2F8B03
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 04:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbhAPDdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 22:33:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbhAPDdw (ORCPT
+        id S1726810AbhAPDl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 22:41:28 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3019 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbhAPDl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 22:33:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E5CC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 19:33:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=eZT6tHWRhXXRhQv4aQp2/PCdg2nPnQ4d2Dc2ZbwaK5o=; b=Dxy0y9YO61K0FCOl3ZJZhBIp1i
-        mPlN+EsRB4OSa9b9mkKNiHF0CVtPLIzX9mg69crjsFDkMhDG8XT63lRxA2HING0IfOD1rnIUCK3zY
-        p/GR8QsnhiyxBq0xfjDYYC4uabwIJoJqVVAIIqImPl9HD/ivWSSALEVRPBKvdKx6HqL7eb9bBtqlJ
-        7ORDYeMVdWXyRPeSdyY+/YGah1lNfLagta1yqA1ql7JAi9HHLa883M58iY8LW6sFzaHT8pmZHK6y2
-        OuowKpMPRA3+pgAFTDN1HcDHpfDgxzB7dnrRDopwjV0lrfTLLN0QAaZ85zKWU/LGGVwJYFj/m4uyB
-        TKagu9iQ==;
-Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0cKo-0008FZ-1I; Sat, 16 Jan 2021 03:33:06 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>
-Subject: [PATCH] imx: select SOC_BUS to fix firmware build
-Date:   Fri, 15 Jan 2021 19:32:59 -0800
-Message-Id: <20210116033259.31941-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Fri, 15 Jan 2021 22:41:28 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6002603f0000>; Fri, 15 Jan 2021 19:40:47 -0800
+Received: from [10.2.48.179] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 16 Jan
+ 2021 03:40:47 +0000
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+To:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Oleg Nesterov" <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+References: <20210110004435.26382-1-aarcange@redhat.com>
+ <bb071419-bf40-c5ed-4b2d-d5eb03031b0a@redhat.com>
+ <20210115183721.GG4605@ziepe.ca>
+ <a21e6fdf-5cac-6fda-242e-7909af96027a@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <cba836c6-4054-c966-8254-a11915351b6b@nvidia.com>
+Date:   Fri, 15 Jan 2021 19:40:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a21e6fdf-5cac-6fda-242e-7909af96027a@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610768447; bh=8WRo2pSy6GmhiZT69BhPZn1RMDf4lV1wNtgydXKBlEQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=LqRvAiHwiZoGNsjzttB+2zzVFY2LZDqGPUV4h0dc6gGlfnJsO6Bpnc5d2m9kQMyZY
+         /Gytqa09GBKhM4FoCOcDhlMXzyRL0apx8gdUCF2Woue76BX4BlrTIRSNx/V+9f5+4E
+         bFoAdV0zxcXMMg0w9OegSqghXOn5ik7qwDIFimLlDw3FtjbooqgjUJJIYks+UhEbaN
+         2Qg9Bh3pWgS875JBk2m9JPmYkpFR2F7BeobTgnB5ACc70m69i/olhPz+YX3sD/111F
+         jiV91bIaDPjKyw4xeirAcUrHElnSslRKQVhqr9nlFHJcWjDP/cUTkdojt+OXTEMgTf
+         Gkp6q7lVcVFCw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build error in firmware/imx/ selecting SOC_BUS.
+On 1/15/21 11:46 AM, David Hildenbrand wrote:
+>>> 7) There is no easy way to detect if a page really was pinned: we might
+>>> have false positives. Further, there is no way to distinguish if it was
+>>> pinned with FOLL_WRITE or not (R vs R/W). To perform reliable tracking
+>>> we most probably would need more counters, which we cannot fit into
+>>> struct page. (AFAIU, for huge pages it's easier).
+>>
+>> I think this is the real issue. We can only store so much information,
+>> so we have to decide which things work and which things are broken. So
+>> far someone hasn't presented a way to record everything at least..
+> 
+> I do wonder how many (especially long-term) GUP readers/writers we have
+> to expect, and especially, support for a single base page. Do we have a
+> rough estimate?
+> 
+> With RDMA, I would assume we only need a single one (e.g., once RDMA
+> device; I'm pretty sure I'm wrong, sounds too easy).
+> With VFIO I guess we need one for each VFIO container (~ in the worst
+> case one for each passthrough device).
+> With direct I/O, vmsplice and other GUP users ?? No idea.
+> 
+> If we could somehow put a limit on the #GUP we support, and fail further
+> GUP (e.g., -EAGAIN?) once a limit is reached, we could partition the
+> refcount into something like (assume max #15 GUP READ and #15 GUP R/W,
+> which is most probably a horribly bad choice)
+> 
+> [ GUP READ ][ GUP R/W ] [  ordinary ]
+> 31  ...  28 27  ...  24 23   ....   0
+> 
+> But due to saturate handling in "ordinary", we would lose further 2 bits
+> (AFAIU), leaving us "only" 22 bits for "ordinary". Now, I have no idea
+> how many bits we actually need in practice.
+> 
+> Maybe we need less for GUP READ, because most users want GUP R/W? No idea.
+> 
+> Just wild ideas. Most probably that has already been discussed, and most
+> probably people figured that it's impossible :)
+> 
 
-riscv32-linux-ld: drivers/firmware/imx/imx-scu-soc.o: in function `.L9':
-imx-scu-soc.c:(.text+0x1b0): undefined reference to `soc_device_register'
+I proposed this exact idea a few days ago [1]. It's remarkable that we both
+picked nearly identical values for the layout! :)
 
-Fixes: edbee095fafb ("firmware: imx: add SCU firmware driver support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Atish Patra <atish.patra@wdc.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Anson Huang <Anson.Huang@nxp.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>
----
- drivers/firmware/imx/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+But as the responses show, security problems prevent pursuing that approach.
 
---- linux-next-20210115.orig/drivers/firmware/imx/Kconfig
-+++ linux-next-20210115/drivers/firmware/imx/Kconfig
-@@ -13,6 +13,7 @@ config IMX_DSP
- config IMX_SCU
- 	bool "IMX SCU Protocol driver"
- 	depends on IMX_MBOX
-+	select SOC_BUS
- 	help
- 	  The System Controller Firmware (SCFW) is a low-level system function
- 	  which runs on a dedicated Cortex-M core to provide power, clock, and
+
+[1] https://lore.kernel.org/r/45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
