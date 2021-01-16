@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CC82F8B22
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2E2F8B24
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729612AbhAPEUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 23:20:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728608AbhAPEUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 23:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 54C2E23A75;
-        Sat, 16 Jan 2021 04:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610770808;
-        bh=4Hjf+SYTiUwRYEi7Ch8ciAf1Kf+uxPk3UycOlwbAOP4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=T5s1fLVtK6DmptrPCct/ycA0dCoxDMBFndq3EcEhOMCrSwM907xKlMD4gG/xQqVVO
-         HU3eNt1ayzLMlvWV/5dlGr3hwbwyCbe1Qhe/Cxwr/lwRlqbJncV21w5bcQGu+8lGHX
-         TGMKZrEua1/eILeesm8h2Byb0ETjaBUJ0Yd5CoMD/hsw7P2CtWXKYautH1H9qZza8e
-         rOO3FJ4bvbzzWUJE29zA8gzNmKaVawizGTcqYWa3uXzrMED1J+5/2LhmBE19dPxI0V
-         ekCAGrTRH/JQDFdt7SSOsuRPKvYNaLIGR8RbZehJ8K+Im29LvQNUt+oALxTgvpmpnE
-         grerCx3D0VCbg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 4950860649;
-        Sat, 16 Jan 2021 04:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1729260AbhAPEZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 23:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbhAPEZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 23:25:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37E3C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:24:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=He/hT/oQkPJQm2nleWl8RWqaTlTD1mTAFB541L6qdLg=; b=j2dUSnMHdwizBxQ4XGAN//H+Cw
+        e3FgwsjZ1iNtuThBhEGVfkbmMzJ5LLXzRYKO23EtPJpXfURl27L4XXYgVqY4rduYqEvZi7OMMdHqO
+        75hA0CR8o8SvKgmZ+pD7JvDNOT11eUqa+qaplNG5TsZBOYh8A1CgDMTXt+eovvSemeW+mUkg8hHE2
+        NpZkIW2ghP8sUKCA4g5C2/ENW1UqU7c82hG0E8P6K5y6stVD8479smctgMpmo8/hy3xHax/jLZlG+
+        opsHsz9bNAQV+Mdo5g99788t9qK8e9MpqNq+kqTw0/ILvNVEq6lTRv3b7wriPHYzaypZMebhVVs8T
+        UvuLaEJA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l0d8K-009qWA-9K; Sat, 16 Jan 2021 04:24:22 +0000
+Date:   Sat, 16 Jan 2021 04:24:16 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/5] hugetlb: convert page_huge_active() to HP_Migratable
+ flag
+Message-ID: <20210116042416.GA2260413@casper.infradead.org>
+References: <20210116003105.182918-1-mike.kravetz@oracle.com>
+ <20210116003105.182918-3-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] net: tap: check vlan with eth_type_vlan() method
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161077080829.25355.1708567039756626049.git-patchwork-notify@kernel.org>
-Date:   Sat, 16 Jan 2021 04:20:08 +0000
-References: <20210115023238.4681-1-dong.menglong@zte.com.cn>
-In-Reply-To: <20210115023238.4681-1-dong.menglong@zte.com.cn>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, dong.menglong@zte.com.cn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116003105.182918-3-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Jan 15, 2021 at 04:31:02PM -0800, Mike Kravetz wrote:
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -735,7 +735,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>  
+>  		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+>  
+> -		set_page_huge_active(page);
+> +		hugetlb_set_page_flag(page, HP_Migratable);
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+I had understood the request to be more like ...
 
-On Thu, 14 Jan 2021 18:32:38 -0800 you wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> Replace some checks for ETH_P_8021Q and ETH_P_8021AD in
-> drivers/net/tap.c with eth_type_vlan.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> [...]
+		SetHPageMigratable(page);
 
-Here is the summary with links:
-  - [v2,net-next] net: tap: check vlan with eth_type_vlan() method
-    https://git.kernel.org/netdev/net-next/c/b69df2608281
+> +++ b/include/linux/hugetlb.h
+> @@ -480,9 +480,13 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+>   * HP_Restore_Reserve - Set when a hugetlb page consumes a reservation at
+>   *	allocation time.  Cleared when page is fully instantiated.  Free
+>   *	routine checks flag to restore a reservation on error paths.
+> + * HP_Migratable - Set after a newly allocated page is added to the page
+> + *	cache and/or page tables.  Indicates the page is a candidate for
+> + *	migration.
+>   */
+>  enum hugetlb_page_flags {
+>  	HP_Restore_Reserve = 0,
+> +	HP_Migratable,
+>  };
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+and name these HPG_restore_reserve and HPG_migratable
 
+and generate the calls to hugetlb_set_page_flag etc from macros, eg:
 
+#define TESTHPAGEFLAG(uname, lname)					\
+static __always_inline bool HPage##uname(struct page *page)		\
+{ return test_bit(HPG_##lname, &page->private); }
+...
+#define HPAGEFLAG(uname, lname)						\
+	TESTHPAGEFLAG(uname, lname)					\
+	SETHPAGEFLAG(uname, lname)					\
+	CLEARHPAGEFLAG(uname, lname)
+
+HPAGEFLAG(RestoreReserve, restore_reserve)
+HPAGEFLAG(Migratable, migratable)
+
+just to mirror page-flags.h more closely.
