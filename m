@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CF92F8D2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256752F8D28
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727336AbhAPLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 06:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S1727217AbhAPLoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 06:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbhAPLom (ORCPT
+        with ESMTP id S1725979AbhAPLog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 06:44:42 -0500
+        Sat, 16 Jan 2021 06:44:36 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBA2C061799
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E05C061794
         for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 03:43:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=5+bURMTjNsaUVU325HY+fLJyyZiMYGp5PZEDOTyZKTo=; b=PkvNQvydv0LX+77SO6uqp2nGDl
-        HQK17l2TmPUNGvuKFE0oEe1UpVJaCkDQ8a3HUZXwl8gBcALWb0ujWCAfKNSS2nGF856ncw5/mIThT
-        P4snQVJIKAC6ewfghjBylmQe7a/eIlYysb/J2Zr7SYpXiIIksuSfr0u/pMB7p2UuF7AOt7mGzbDlx
-        PZYz+pOuFTlMWehl2NZGkyG/GRr7JJLpxVR4V0JMriYp/J3QsQJD9QsPvwIvQTxtybg6abeUKSDic
-        a0D7RHclAtz62zJs+6GejV50ieUmPAOzLnfrlWPEvhP0EZ+PdZKNttSFpTBptVZgxK8+k+77qupDb
-        4hFU+oPQ==;
+        bh=Oh7lrRt5oilfVSMIiVwfXj1sKUuD0GvuQD8uxMTs6qo=; b=V6wvKR+q/1HdBXyKXgEdCug93L
+        lIU5hE0/9D5fsj9ezhsucScQmzXLrPp/TQA4+mTJ7rbwXr9p/+9OBxDlWYoDBtV6iL/xik5fhuDKZ
+        zeK4DdEAoSh8r4VlHQTgx1UMS9FyZFrp4KiTrMArK0Ty5pcWn89LpvPDwG/n5CnAr9grZi8Qk8X7D
+        vH5iiIdWfCYmoYTv+ecLFSAVP4Si1X4f7dWzVuUW1IoLJEOKZl5kjQmu8DRvI99PCZSutmqsbKR0S
+        fWREDalc/K/7ES52n0d6TNWmLc1qHk3ABfZUKZyW2AdLrDO1yxbUX+fsCO3c7ZZU1kvaHYm8WfK6y
+        JopZdrIA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0jyT-00ADOE-M6; Sat, 16 Jan 2021 11:42:47 +0000
+        id 1l0jyT-00ADOC-MF; Sat, 16 Jan 2021 11:42:47 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5ADDD30377D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2A3E3060C5;
         Sat, 16 Jan 2021 12:42:30 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 278932028A2D0; Sat, 16 Jan 2021 12:42:30 +0100 (CET)
-Message-ID: <20210116113919.848133467@infradead.org>
+        id 2B71E20285FAC; Sat, 16 Jan 2021 12:42:30 +0100 (CET)
+Message-ID: <20210116113919.933156564@infradead.org>
 User-Agent: quilt/0.66
-Date:   Sat, 16 Jan 2021 12:30:37 +0100
+Date:   Sat, 16 Jan 2021 12:30:38 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
@@ -45,7 +45,7 @@ Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
         vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
         vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org,
         peterz@infradead.org
-Subject: [PATCH 4/8] kthread: Extract KTHREAD_IS_PER_CPU
+Subject: [PATCH 5/8] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
 References: <20210116113033.608340773@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,94 +53,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a need to distinguish geniune per-cpu kthreads from kthreads
-that happen to have a single CPU affinity.
+Mark the per-cpu workqueue workers as KTHREAD_IS_PER_CPU.
 
-Geniune per-cpu kthreads are kthreads that are CPU affine for
-correctness, these will obviously have PF_KTHREAD set, but must also
-have PF_NO_SETAFFINITY set, lest userspace modify their affinity and
-ruins things.
+Workqueues have unfortunate semantics in that per-cpu workers are not
+default flushed and parked during hotplug, however a subset does
+manual flush on hotplug and hard relies on them for correctness.
 
-However, these two things are not sufficient, PF_NO_SETAFFINITY is
-also set on other tasks that have their affinities controlled through
-other means, like for instance workqueues.
-
-Therefore another bit is needed; it turns out kthread_create_per_cpu()
-already has such a bit: KTHREAD_IS_PER_CPU, which is used to make
-kthread_park()/kthread_unpark() work correctly.
-
-Expose this flag and remove the implicit setting of it from
-kthread_create_on_cpu(); the io_uring usage of it seems dubious at
-best.
+Therefore play silly games..
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/kthread.h |    3 +++
- kernel/kthread.c        |   30 ++++++++++++++++++++++++++++--
- kernel/smpboot.c        |    1 +
- 3 files changed, 32 insertions(+), 2 deletions(-)
+ kernel/workqueue.c |   25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -33,6 +33,9 @@ struct task_struct *kthread_create_on_cp
- 					  unsigned int cpu,
- 					  const char *namefmt);
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct
+ 	 */
+ 	if (pool->flags & POOL_DISASSOCIATED)
+ 		worker->flags |= WORKER_UNBOUND;
++	else
++		kthread_set_per_cpu(worker->task, pool->cpu);
  
-+void kthread_set_per_cpu(struct task_struct *k, int cpu);
-+bool kthread_is_per_cpu(struct task_struct *k);
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
+@@ -1883,6 +1885,7 @@ static void worker_detach_from_pool(stru
+ 
+ 	mutex_lock(&wq_pool_attach_mutex);
+ 
++	kthread_set_per_cpu(worker->task, -1);
+ 	list_del(&worker->node);
+ 	worker->pool = NULL;
+ 
+@@ -2368,6 +2371,7 @@ static int worker_thread(void *__worker)
+ 	/* tell the scheduler that this is a workqueue worker */
+ 	set_pf_worker(true);
+ woke_up:
++	kthread_parkme();
+ 	raw_spin_lock_irq(&pool->lock);
+ 
+ 	/* am I supposed to die? */
+@@ -2425,7 +2429,7 @@ static int worker_thread(void *__worker)
+ 			move_linked_works(work, &worker->scheduled, NULL);
+ 			process_scheduled_works(worker);
+ 		}
+-	} while (keep_working(pool));
++	} while (keep_working(pool) && !kthread_should_park());
+ 
+ 	worker_set_flags(worker, WORKER_PREP);
+ sleep:
+@@ -2437,9 +2441,12 @@ static int worker_thread(void *__worker)
+ 	 * event.
+ 	 */
+ 	worker_enter_idle(worker);
+-	__set_current_state(TASK_IDLE);
++	set_current_state(TASK_IDLE);
+ 	raw_spin_unlock_irq(&pool->lock);
+-	schedule();
 +
- /**
-  * kthread_run - create and wake a thread.
-  * @threadfn: the function to run until signal_pending(current).
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -493,11 +494,36 @@ struct task_struct *kthread_create_on_cp
- 		return p;
- 	kthread_bind(p, cpu);
- 	/* CPU hotplug need to bind once again when unparking the thread. */
--	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
- 	to_kthread(p)->cpu = cpu;
- 	return p;
++	if (!kthread_should_park())
++		schedule();
++
+ 	goto woke_up;
  }
  
-+void kthread_set_per_cpu(struct task_struct *k, int cpu)
-+{
-+	struct kthread *kthread = to_kthread(k);
-+	if (!kthread)
-+		return;
-+
-+	WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-+
-+	if (cpu < 0) {
-+		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+		return;
+@@ -4919,8 +4926,10 @@ static void unbind_workers(int cpu)
+ 
+ 		raw_spin_unlock_irq(&pool->lock);
+ 
+-		for_each_pool_worker(worker, pool)
++		for_each_pool_worker(worker, pool) {
++			kthread_set_per_cpu(worker->task, -1);
+ 			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
++		}
+ 
+ 		mutex_unlock(&wq_pool_attach_mutex);
+ 
+@@ -4972,9 +4981,11 @@ static void rebind_workers(struct worker
+ 	 * of all workers first and then clear UNBOUND.  As we're called
+ 	 * from CPU_ONLINE, the following shouldn't fail.
+ 	 */
+-	for_each_pool_worker(worker, pool)
+-		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+-						  pool->attrs->cpumask) < 0);
++	for_each_pool_worker(worker, pool) {
++		WARN_ON_ONCE(kthread_park(worker->task) < 0);
++		kthread_set_per_cpu(worker->task, pool->cpu);
++		kthread_unpark(worker->task);
 +	}
-+
-+	kthread->cpu = cpu;
-+	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+}
-+
-+bool kthread_is_per_cpu(struct task_struct *k)
-+{
-+	struct kthread *kthread = to_kthread(k);
-+	if (!kthread)
-+		return false;
-+
-+	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+}
-+
- /**
-  * kthread_unpark - unpark a thread created by kthread_create().
-  * @k:		thread created by kthread_create().
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -188,6 +188,7 @@ __smpboot_create_thread(struct smp_hotpl
- 		kfree(td);
- 		return PTR_ERR(tsk);
- 	}
-+	kthread_set_per_cpu(tsk, cpu);
- 	/*
- 	 * Park the thread so that it could start right on the CPU
- 	 * when it is available.
+ 
+ 	raw_spin_lock_irq(&pool->lock);
+ 
 
 
