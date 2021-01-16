@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4882F8DE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F952F8E38
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbhAPRLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:11:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728573AbhAPRLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:11:07 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6F3C06179A
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 09:09:25 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1l0oij-007MTH-H2; Sat, 16 Jan 2021 17:46:37 +0100
-Message-ID: <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
-Subject: Re: Splicing to/from a tty
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Oliver Giles <ohw.giles@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>
-Date:   Sat, 16 Jan 2021 17:46:33 +0100
-In-Reply-To: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S1727396AbhAPRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:20:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726862AbhAPRUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:20:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D2722C7D;
+        Sat, 16 Jan 2021 16:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610815736;
+        bh=pMRmEfmK5x7Y5a3dLDsXXNF4VdLrvyiV1rn4YphuYew=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fVkFxmC294BzdBLz+Ab4b4PULBzTa06oft8SvVS58cZs4UfrjHXkvlgzlF6TjhGCZ
+         9qNlLFJc9pVOhINFcnihOuB4CCHg9rdFXx69+mykiIbEg9sU62/87fsUgHVro54e3S
+         sIAj6MJXA7d7E5RGHfI3YPT6qcTcf1Fjouw8xczYyTfMqqPTVTaVVBP8KzLd92F6qo
+         H7Ousc4TfW9bMF0xV1P07iGBeV5aEQGNbYPmeUayd95jqLwBTBfEArWwdtXp8qQPBd
+         8jFXiQsmE1MMINm4zbeK4Y6+ZhWz88G3Mh/tAIRnEVGg6DWwqY7JrMO+blZou4Nst5
+         wx9r43sngMYnw==
+Received: by mail-oi1-f171.google.com with SMTP id d203so13088647oia.0;
+        Sat, 16 Jan 2021 08:48:56 -0800 (PST)
+X-Gm-Message-State: AOAM531L+ozTXRLzRP0eqR2D8NbTg7S6wNxlkhzhe8XM+JOoDiB0+x7x
+        Qzl4bulPQWCQio4bYPrKT4fGoxoKkvcR20Tkls8=
+X-Google-Smtp-Source: ABdhPJz3aVQKYdFzZAElS5YeQckBrqVvMe0bdcRA9AlrYV1YQTnLoqQQe8RJvABoARwVBurVSsndkjYP6gTvcIdcq1g=
+X-Received: by 2002:aca:210f:: with SMTP id 15mr8952220oiz.174.1610815736088;
+ Sat, 16 Jan 2021 08:48:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <1608325864-4033-4-git-send-email-megha.dey@intel.com> <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
+ <dfb5f2e0-027d-2b9c-aec7-313ff0275381@intel.com> <83d87dec-dd76-1ddc-1e20-4bf1c7db7918@intel.com>
+ <YAJJmzWm3rPcdxMs@gmail.com> <7cdbce42-2d40-95bc-d719-62a1580d6ebf@intel.com>
+In-Reply-To: <7cdbce42-2d40-95bc-d719-62a1580d6ebf@intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 16 Jan 2021 17:48:45 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHVGQhMO83qtkVGBV9ghTDrYv+VRz4+vwp91bVoJFqGiw@mail.gmail.com>
+Message-ID: <CAMj1kXHVGQhMO83qtkVGBV9ghTDrYv+VRz4+vwp91bVoJFqGiw@mail.gmail.com>
+Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, wajdi.k.feghali@intel.com,
+        greg.b.tucker@intel.com, robert.a.kasten@intel.com,
+        rajendrakumar.chinnaiyan@intel.com, tomasz.kantecki@intel.com,
+        ryan.d.saffores@intel.com, ilya.albrekht@intel.com,
+        kyung.min.park@intel.com, Tony Luck <tony.luck@intel.com>,
+        ira.weiny@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-16 at 20:35 +1300, Oliver Giles wrote:
-> Commit 36e2c7421f02 (fs: don't allow splice read/write without
-> explicit ops) broke my userspace application which talks to an SSL VPN
-> by splice()ing between "openssl s_client" and "pppd". The latter
-> operates over a pty, and since that commit there is no fallback for
-> splice()ing between a pipe and a pty, or any tty for that matter.
-> 
-> The above commit mentions switching them to the iter ops and using
-> generic_file_splice_read. IIUC, this would require implementing iter
-> ops also on the line disciplines, which sounds pretty disruptive.
-> 
-> For my case, I attempted to instead implement splice_write and
-> splice_read in tty_fops; I managed to get splice_write working calling
-> ld->ops->write, but splice_read is not so simple because the
-> tty_ldisc_ops read method expects a userspace buffer. So I cannot see
-> how to implement this without either (a) using set_fs, or (b)
-> implementing iter ops on all line disciplines.
-> 
-> Is splice()ing between a tty and a pipe worth supporting at all? Not a
-> big deal for my use case at least, but it used to work.
+On Sat, 16 Jan 2021 at 06:13, Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 1/15/21 6:04 PM, Eric Biggers wrote:
+> > On Fri, Jan 15, 2021 at 04:20:44PM -0800, Dave Hansen wrote:
+> >> On 1/15/21 4:14 PM, Dey, Megha wrote:
+> >>> Also, I do not know of any cores that implement PCLMULQDQ and not AES-NI.
+> >> That's true, bit it's also possible that a hypervisor could enumerate
+> >> support for PCLMULQDQ and not AES-NI.  In general, we've tried to
+> >> implement x86 CPU features independently, even if they never show up in
+> >> a real CPU independently.
+> > We only add optimized implementations of crypto algorithms if they are actually
+> > useful, though.  If they would never be used in practice, that's not useful.
+>
+> Yes, totally agree.  If it's not of practical use, it doesn't get merged.
+>
+> I just wanted to share what we do for other related but independent CPU
+> features.
 
-Is it even strictly related to the tty?
+Thanks for the insight.
 
-I was just now looking into why my cgit/fcgi/nginx setup no longer
-works, and the reason is getting -EINVAL from sendfile() when the input
-is a file and the output is a pipe().
+The issue with the current GHASH driver is that it uses infrastructure
+that we may decide to remove (the async cryptd helper [0]). So adding
+more dependencies on that without any proven benefit should obviously
+be avoided at this time as well.
 
-So I wrote a simple test program (below) and that errors out on kernel
-5.10.4, while it works fine on the 5.9.16 I currently have. Haven't
-tried reverting anything yet, but now that I haev a test program it
-should be simple to even bisect.
-
-johannes
-
-
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/sendfile.h>
-#include <stdio.h>
-#include <assert.h>
-
-int main(int argc, char **argv)
-{
-	int in = open(argv[0], O_RDONLY);
-	int p[2], out;
-	off_t off = 0;
-	int err;
-
-	assert(in >= 0);
-	assert(pipe(p) >= 0);
-	out = p[1];
-	err = sendfile(out, in, &off, 1024);
-	if (err < 0)
-		perror("sendfile");
-	assert(err == 1024);
-
-	return 0;
-}
-
-
+[0] https://lore.kernel.org/linux-arm-kernel/20201218170106.23280-1-ardb@kernel.org/
