@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC56E2F8F3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1112F8F3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727215AbhAPUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 15:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbhAPUfk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 15:35:40 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3533C061573;
-        Sat, 16 Jan 2021 12:34:59 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id d22so2360978edy.1;
-        Sat, 16 Jan 2021 12:34:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a73n5pAnB+P6IPG8V8MfXs8zF34tD/FahmEduHIQin8=;
-        b=mDehsDSBxWifluWe6tgscuDC8QikOu9YnvTFnvYnSDmOCbPXPuqGrP76Ez2W+y9z3r
-         Ue/NNCgjR9HVnfCfdFYWXPdNNpzOHWF7qpjoOJwBIelCkPYtBsJlI8kVf8CBSZJ05NRX
-         8ozkKrPiSWkejB3AoBnUtSf+wdftD7HD5dCtSfrmFE0xVE2rb6uq/4o5oyYZYCltNmB0
-         SXlMorTPLI2oImft90+5DZ+vNjyL86mFlZ2qoVgCGze2/wY004jXDIiVx6p5atWUczfg
-         l1Q5zNTib3SDXWacBOOqGbWHLP0IY1JHF7irtKHjHxL+AWcs5jJnSV02w0dFM3czDF6y
-         zDcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a73n5pAnB+P6IPG8V8MfXs8zF34tD/FahmEduHIQin8=;
-        b=qhb2wdhUZn1gKyh3IpMPDN1Qy4ZlhmF9aRhEbZQjXcIw6Md1fqAcALzg0lpVmDaPU+
-         4CAxqsUnUxY9Hp5TZbTmA5GbVig2GLUH7mqbdMlEi2YGyw1qlp9fKJ8nA9CZHUlT7PS3
-         k7hEBWdFml+t6c81KAmA484rIvkGnGuWjaBO+76yqyo9wX4a6GJJbHohHD5XB+nNGQxJ
-         8ayRvrtTwyT6gwouqAWSEDriYUT22em7ev5gBFC0YbiUOLnuFMVSQ2ODEzeocNY7o1cc
-         a8XH5rKkrd8A9pqOv4hUWwrX37TW3tWCG26foIZ5okJNFu6D4eCJ3tZnRV/YFFpXIgAv
-         narw==
-X-Gm-Message-State: AOAM533Jt9dRih357U3QpH/wf4QI9gY+VzE5QnJHi7qrRk3z1i5VxqB1
-        gMndaX3rIb9BbXuDK4/QJCo=
-X-Google-Smtp-Source: ABdhPJzekSyc4UA44U+r1BdsHaXKpFKU6E7EhcOHoru7JjTIgxbV0NhL1BeqbJ1VPGBRkdagBel+3Q==
-X-Received: by 2002:aa7:c652:: with SMTP id z18mr13534552edr.60.1610829298552;
-        Sat, 16 Jan 2021 12:34:58 -0800 (PST)
-Received: from localhost.localdomain (p200300f13723cb00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3723:cb00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id d13sm7751959edx.27.2021.01.16.12.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 12:34:58 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     olek2@wp.pl
-Cc:     devicetree@vger.kernel.org, john@phrozen.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        robh+dt@kernel.org, tsbogend@alpha.franken.de
-Subject: RE: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway EBU bindings
-Date:   Sat, 16 Jan 2021 21:34:46 +0100
-Message-Id: <20210116203446.148603-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210101213759.2070-1-olek2@wp.pl>
-References: <20210101213759.2070-1-olek2@wp.pl>
+        id S1727313AbhAPUgv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 15:36:51 -0500
+Received: from wnbcorp.com ([175.126.38.143]:55826 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726083AbhAPUgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 15:36:42 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GKTBmW000320;
+        Sun, 17 Jan 2021 05:34:52 +0900
+Message-Id: <202101162034.10GKTBmW000320@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 21:35:01 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(again, sorry for seeing this patch late)
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - lantiq,ebu-xway
-I think this compatible string is very generic and with that comes some
-problems.
-There is actually two different versions of this IP: one which has
-support for controlling the interrupt of the PCI controller on some
-SoCs (Danube, xRX100, xRX200). Other SoC variants (Falcon, Amazon-SE)
-don't have that interrupt-controller as they don't have PCI support.
+Sir/Madam,
 
-Also there is at least one clock input. I *assume* we need to describe
-it but I am not sure (as this platform doesn't use the common clock
-framework yet).
+CONGRATULATIONS!!!
 
-My version of this can be found here [0]. It's still sitting in my
-tree because it has a dependency on an ICU patch in my tree which I
-could not make work properly yet.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
 
 
-Best regards,
-Martin
 
-
-[0] https://github.com/xdarklight/linux/blob/8d5c632e11fe0ca14497efc2f9d99b69f75590ba/Documentation/devicetree/bindings/mips/lantiq/lantiq%2Cebu.yaml
