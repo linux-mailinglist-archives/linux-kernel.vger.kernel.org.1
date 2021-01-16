@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E282F89C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C272F89C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbhAPADj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbhAPADi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:03:38 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27376C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:58 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id p18so7007175pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WFx/F2a337GN3zwqNOD7iXQOOHYeEmZ62a3KeLo+VSA=;
-        b=FAl4ne1TgJ+b6aXfP13BMx6boigr8gF546SOdYwutRbfGMrVLhW5/YQjeSCWv9MnJK
-         fjFVkqfMPw5o20cOsu/oHvxPktKjsd2hCc5ZJDnT4CU74ljPGK9iapSbE39IM4+oTtZu
-         jOXOPR9Y4ji6K0HpHLeXAAkA2XA1e9IbLr0+pXxq8NJt4mk80e3WpXtsnpODU+ickgi/
-         F75TATcI3RC/TvTZKJD1polGq28uoA2F/c8kxHWW1OKWwWztzfvZjLadeWFKbCQ6w+kr
-         eL2dc8CPW+8iU1nxypJStahsZHCbLeJjtmtcyvhtCbv8MhVpK2uWkC+HNfHsch/Qr0L5
-         aRSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WFx/F2a337GN3zwqNOD7iXQOOHYeEmZ62a3KeLo+VSA=;
-        b=UateLKcrbaX28LvWSajwbyITrJKLVVGHcmFOjec5bzPLQlZYTcCrfZljAuCAcmfv+q
-         MBRP4irOxOkwHwT229yLgYuW+h3K5L/X1Ai2QCXnwNFKR2oVoiWxZTac5NuI6YmOKuN8
-         EBYTNltjosMXGj18v8XPRjKN63vsPlL20UI4jQ33+nMQPfLiLf67hgkAEz7MllxDhhyS
-         tqrSeYHKg+Qm9Bo6UTXqsQLaawyRCLTBkUGzVRCy58F5dqK2Q9gsu/IUV6a3DXZGqoCn
-         WHMR0FfXm4CbS7LrYq+w+SRP0Zsz8eNBuav6F5VkJVPfGmlF3vBD7bbQfY5YLPne7WIr
-         x1+Q==
-X-Gm-Message-State: AOAM532Am/y7yqDG73CfA9JsurBiv+tKpgTThubRCKlDzm573MG1trW9
-        nV3r8u5XSW8o+CmoIitBWYdUqA==
-X-Google-Smtp-Source: ABdhPJz5JLyoykloTcJIV6mJIvCkLo2bUWGXy25NqJDkE7lNF5Uy2EU7DNr/+lXYQrUVAjngZjTEzw==
-X-Received: by 2002:a62:cd49:0:b029:1b5:4e48:6f1a with SMTP id o70-20020a62cd490000b02901b54e486f1amr1640904pfg.14.1610755377518;
-        Fri, 15 Jan 2021 16:02:57 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 19sm8981531pfu.85.2021.01.15.16.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 16:02:56 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:02:50 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>, Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>
-Subject: Re: [PATCH 4/6] KVM: selftests: Fix population stage in
- dirty_log_perf_test
-Message-ID: <YAItKpyPGkxevK2T@google.com>
-References: <20210112214253.463999-1-bgardon@google.com>
- <20210112214253.463999-5-bgardon@google.com>
+        id S1728518AbhAPAIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:08:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbhAPAIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 19:08:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D20C923A01;
+        Sat, 16 Jan 2021 00:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610755645;
+        bh=yYr2q7lNAq/q/Obg++NQkrKqBVKTH2282wttNpy5bM8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OiR5cD0oCTw30+tm55FACqWBQc8Tq5JCFpac9JbwqQM/dgPzt34V+hCcsgCs1p9P5
+         BYiKibSThr8u+d5Ac6ViitpJjlqMsewFTcEhEycsGtXxP/Q34wm58tNrzBVlY4Y6Fa
+         oOjDJ+WT85Nn9Fnm4UWhufxz24HiXkTOwjAtc1csTNfyocrHqKY9yoazMuSqk1+xFD
+         VdRlN6h3tJcSHSsdh+auZ3GtzXOv4xwyttgDQt81KKo5vn3GyA1Tiap6NKTSJNXfcz
+         Mi7CnKxrNQUHv8FvsGeFYUpHBygUqgSoK+DKa1ZKNLPL74bgiS7nhnDdgfh0XGbrHL
+         xuxVZAN02rA0A==
+Date:   Fri, 15 Jan 2021 16:07:23 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>,
+        syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com,
+        kernel@pengutronix.de, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net 1/2] net: introduce CAN specific pointer in the
+ struct net_device
+Message-ID: <20210115160723.7abd75ec@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210115143036.31275-1-o.rempel@pengutronix.de>
+References: <20210115143036.31275-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112214253.463999-5-bgardon@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Ben Gardon wrote:
-> Currently the population stage in the dirty_log_perf_test does nothing
-> as the per-vCPU iteration counters are not initialized and the loop does
-> not wait for each vCPU. Remedy those errors.
+On Fri, 15 Jan 2021 15:30:35 +0100 Oleksij Rempel wrote:
+> Since 20dd3850bcf8 ("can: Speed up CAN frame receiption by using
+> ml_priv") the CAN framework uses per device specific data in the AF_CAN
+> protocol. For this purpose the struct net_device->ml_priv is used. Later
+> the ml_priv usage in CAN was extended for other users, one of them being
+> CAN_J1939.
 > 
-> Reviewed-by: Jacob Xu <jacobhxu@google.com>
-> Reviewed-by: Makarand Sonare <makarandsonare@google.com>
+> Later in the kernel ml_priv was converted to an union, used by other
+> drivers. E.g. the tun driver started storing it's stats pointer.
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  tools/testing/selftests/kvm/dirty_log_perf_test.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+> Since tun devices can claim to be a CAN device, CAN specific protocols
+> will wrongly interpret this pointer, which will cause system crashes.
+> Mostly this issue is visible in the CAN_J1939 stack.
 > 
-> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> index 3875f22d7283..fb6eb7fa0b45 100644
-> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> @@ -139,14 +139,19 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->  
->  	clock_gettime(CLOCK_MONOTONIC, &start);
->  	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
-> +		vcpu_last_completed_iteration[vcpu_id] = -1;
-> +
->  		pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
->  			       &perf_test_args.vcpu_args[vcpu_id]);
->  	}
->  
-> -	/* Allow the vCPU to populate memory */
-> +	/* Allow the vCPUs to populate memory */
->  	pr_debug("Starting iteration %d - Populating\n", iteration);
-> -	while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
-> -		;
-> +	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
-> +		while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) !=
-> +		       iteration)
+> To fix this issue, we request a dedicated CAN pointer within the
+> net_device struct.
 
-Same comment as earlier.  I vote to let this poke out, or shorten the variables
-so that the lines aren't so long.
+No strong objection, others already added their pointers, but 
+I wonder if we can't save those couple of bytes by adding a
+ml_priv_type, to check instead of dev->type? And leave it 0
+for drivers using stats?
 
-> +			;
-> +	}
->  
->  	ts_diff = timespec_elapsed(start);
->  	pr_info("Populate memory time: %ld.%.9lds\n",
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+That way other device types which are limited by all being 
+ARPHDR_ETHER can start using ml_priv as well?
+
+> +#if IS_ENABLED(CONFIG_CAN)
+> +	struct can_ml_priv	*can;
+> +#endif
+
+Perhaps put it next to all the _ptr fields?
