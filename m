@@ -2,113 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C957C2F8CC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C462F8CC5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 11:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbhAPJzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 04:55:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbhAPJzx (ORCPT
+        id S1726294AbhAPKNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 05:13:23 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47138 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbhAPKNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 04:55:53 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83972C061757;
-        Sat, 16 Jan 2021 01:55:12 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id u25so16899631lfc.2;
-        Sat, 16 Jan 2021 01:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y28tRJhhoiCvoELiMGKRKxElE6yxaeeck1yAOz8t9W8=;
-        b=czdMl4/Ku/KwisqwYx7KcjKBaYlnKeThg912tzF/uIRJbOhIlk8/52MbhNjr9elSN7
-         09NNCpDQaxTfVRcB3Z929Xmd8PSTmFTGMbQqdd8yjImeVmPBk+OCM0PUrjpJDAzP0ISU
-         iKcInFIcLyVlwOV2yR/Fds5vU4uSHBhwUGFpUG4StXMviwtNrWwDzHfhd0FPXiCSHcUi
-         NN1dRTFSFC6/nE8sjsHKz+FnL1PEa5be29c8HZmfU0R7Y5Fm/4arFLNIONv4X4eGtagW
-         XTzKQKV4ak/C49rjC4oxWkU/TEzs+jz9Jpj3T6eBtPJGNCOazFzLMQr+9JoMM1gZCFXG
-         FpWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=y28tRJhhoiCvoELiMGKRKxElE6yxaeeck1yAOz8t9W8=;
-        b=hPfxlpFrs3Sj4w3meHUleaTRgiMwc1wKSzIWLu6HpoGRzELPyiz9/jHXnvv6MxR+et
-         4letNOBzzjx/8Mf/heCwaEpjh9BZd2+wxyeq8Zye280JS0bXSzLDZDWPGi5LuKyjIESW
-         oAIeub8wNRkr3okwno8NFkzvno2fRyW4fqZ0E0AcKkUu8q5noq9+M/29iIlusaOryvXO
-         US0jF85f+0xsIyAJg/K4Nakz8Z70bBEq2PxbTtzFV+5nNDCnKHouc/ZZ5qx3UMrVlizq
-         /rJy9KwQzsq2c0VcN4Wsnm0pJpjom9mXYgqfY8/L2AozlDAtCQayck32Ctdr5i8LZ16P
-         Tnrg==
-X-Gm-Message-State: AOAM530Vc6wi5PLEmfcPTrAOyaHV4tIWX0Wk6W9qpDzMjukDup0BfOQj
-        3vX5iRV7I5L1Op+nxGt8brFnqTteKWpbkA==
-X-Google-Smtp-Source: ABdhPJwcz8Y5CfHPAsfZekp4IqvI4xm/ySjeRI1I9E9GuyrBQw9Hi7qxJEQQc/8CGjp0LEs0BaXeeQ==
-X-Received: by 2002:a19:997:: with SMTP id 145mr8093829lfj.588.1610790910957;
-        Sat, 16 Jan 2021 01:55:10 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.75.157])
-        by smtp.gmail.com with ESMTPSA id t17sm1221138lfr.5.2021.01.16.01.55.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Jan 2021 01:55:10 -0800 (PST)
-Subject: Re: [PATCH V2 4/4] net: ethernet: ravb: Enable optional refclk
-To:     Adam Ford <aford173@gmail.com>, linux-renesas-soc@vger.kernel.org
-Cc:     aford@beaconembedded.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210115201953.443710-1-aford173@gmail.com>
- <20210115201953.443710-4-aford173@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <ce35708b-34ee-cc0a-3cf7-ff955f14db2d@gmail.com>
-Date:   Sat, 16 Jan 2021 12:55:07 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sat, 16 Jan 2021 05:13:21 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 7E51A1F4604D
+Received: by earth.universe (Postfix, from userid 1000)
+        id 73B7C3C0C94; Sat, 16 Jan 2021 11:12:37 +0100 (CET)
+Date:   Sat, 16 Jan 2021 11:12:37 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v3 2/2] power: supply: mt6360_charger: add MT6360 charger
+ support
+Message-ID: <20210116101237.vktppv2ec7kvtz3v@earth.universe>
+References: <1608796084-29418-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1608796084-29418-3-git-send-email-gene.chen.richtek@gmail.com>
+ <20210106201654.lkmqorlgcecgqqkf@earth.universe>
+ <CAE+NS37t-Gf7fjK0crZ+9qxWxfxm3k8hoEvwystdNP4CjM=KXQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210115201953.443710-4-aford173@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ochbwuxpqessdn2a"
+Content-Disposition: inline
+In-Reply-To: <CAE+NS37t-Gf7fjK0crZ+9qxWxfxm3k8hoEvwystdNP4CjM=KXQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
 
-On 15.01.2021 23:19, Adam Ford wrote:
+--ochbwuxpqessdn2a
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> For devices that use a programmable clock for the avb reference clock,
+Hi,
 
-    AVB.
+On Mon, Jan 11, 2021 at 08:15:33PM +0800, Gene Chen wrote:
+> Sebastian Reichel <sebastian.reichel@collabora.com> =E6=96=BC 2021=E5=B9=
+=B41=E6=9C=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=884:16=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+> > > +static int mt6360_charger_get_ichg(struct mt6360_chg_info *mci,
+> > > +                                union power_supply_propval *val)
+> > > +{
+> > > +     int ret;
+> > > +     unsigned int regval;
+> > > +
+> > > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL7, &regval);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > > +     regval =3D (regval & MT6360_ICHG_MASK) >> MT6360_ICHG_SHFT;
+> > > +     val->intval =3D mt6360_map_real_val(regval,
+> > > +                                       MT6360_ICHG_MIN,
+> > > +                                       MT6360_ICHG_MAX,
+> > > +                                       MT6360_ICHG_STEP);
+> > > +     return 0;
+> > > +}
+> >
+> > It's unusual, that you do not need any scaling. Does the hardware
+> > really report voltages in =C2=B5V and currents in =C2=B5A?
+> >
+>=20
+> Should I replace MT6360_ICHG_MIN by MT6360_ICHG_MINUA?
 
-> the driver may need to enable them.  Add code to find the optional clock
-> and enable it when available.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+I just noticed, that you already have uA/uV comments above the
+#defines. Should be good enough. Just keep it the way it is.
+
 [...]
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index bd30505fbc57..739e30f45daa 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2148,6 +2148,14 @@ static int ravb_probe(struct platform_device *pdev)
->   		goto out_release;
->   	}
->   
-> +	priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
-> +	if (IS_ERR(priv->refclk)) {
-> +		error = PTR_ERR(priv->refclk);
-> +		goto out_release;
-> +	} else {
+=20
+> > > +     last_usb_type =3D mci->psy_usb_type;
+> > > +     /* Plug in */
+> > > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_USB_STATUS1, &usb_s=
+tatus);
+> > > +     if (ret < 0)
+> > > +             goto out;
+> > > +     usb_status &=3D MT6360_USB_STATUS_MASK;
+> > > +     usb_status >>=3D MT6360_USB_STATUS_SHFT;
+> > > +     switch (usb_status) {
+> > > +     case MT6360_CHG_TYPE_UNDER_GOING:
+> > > +             dev_info(mci->dev, "%s: under going...\n", __func__);
+> > > +             goto out;
+> >
+> > IDK what this is supposed to tell me. Do you mean "detection in
+> > progress"? Also why is this info level? I would expect either
+> > debug (assuming it happens regularly and is normal) or warning
+> > (assuming it should not happen).
+> >
+>=20
+> When handling attach interrupt and cable plug out at the same
+> time, HW change register status. So we don' need to handle this
+> attach interrupt at this case.
 
-    No need for *else* after *goto*.
+So this is basically for debouncing? I suggest adding a comment:
 
-> +		(void)clk_prepare_enable(priv->refclk);
-
-    You can really omit (void)...
-    Also, I'm not seeing where do you call clk_disable_unprepare()...
+/* Received attach IRQ followed by detach event, so nothing to do */
+dev_dbg(mci->dev, "under going...\n");
+goto out;
 
 [...]
 
-MBR, Sergei
+> > > +     config.dev =3D &pdev->dev;
+> > > +     config.regmap =3D mci->regmap;
+> > > +     mci->otg_rdev =3D devm_regulator_register(&pdev->dev, &mt6360_o=
+tg_rdesc,
+> > > +                                             &config);
+> > > +     if (IS_ERR(mci->otg_rdev))
+> > > +             return PTR_ERR(mci->otg_rdev);
+> > > +
+> > > +     ret =3D mt6360_sysfs_create_group(mci);
+> > > +     if (ret) {
+> > > +             dev_err(&pdev->dev,
+> > > +                     "%s: Failed to create sysfs attrs\n", __func__);
+> > > +             return ret;
+> > > +     }
+> >
+> > Use charger_cfg.attr_grp to register custom sysfs group for
+> > power-supply devices. Otherwise your code is racy (udev may not pick
+> > up the sysfs attributes). Also custom sysfs attributes need to be
+> > documented in Documentation/ABI/testing/sysfs-class-power-<driver>.
+> >
+> > Looking at the attributes you are planning to expose, I don't think they
+> > are suitable for sysfs anyways. Looks more like a debug interface, which
+> > should go into debugfs instead. But it's hard to tell without any docum=
+entation
+> > being provided :)
+>=20
+> ACK, I will change to charger_cfg.attr_grp.
+> I assumed the charger algorithm thread is in user space, and take
+> control by sysfs node from charger device, like bq24190.c.
+> Should I change to debugfs?
+
+It's hard to tell without knowing more about the attributes
+your are trying to expose. In debugfs we have relaxed ABI rules,
+so it's easier to adopt naming e.t.c. later.
+
+-- Sebastian
+
+--ochbwuxpqessdn2a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmACvAsACgkQ2O7X88g7
++pp1TBAApwZbiBR41pqeQofuNzK3+gUsuqMvf/I6MR24aWvXAqxlkuihN4oHY4uk
+VqlPBlH2+KFEOkn0JedYY+e19KV+9vmI/2ph+KTd3FkS3WToUWMIoBH3yuHqoeZ2
+ZkNIwXX3H/CNYw1nXYky4sdHWKn2vYdN5RFeJ4gAzMvv6JI/ziaKemcLPL1n7jE1
+jylQxYKVhA4ABFpjBfUk3eXv7cytmT4H64UPSt8cppPuGIfaz6ZPYwsRZ9PCMdy2
+pWg3VGKhc7v+jgXymTe8OlhTA0xaaOuolfFHdquJrNRGUkF3bt94AECtB95IWXQH
+s+dnHL7wbi79JSuK9Wl03u5e3dGOlwr5j/U2J0JHpS9uGMpkyTsQbB+BPh8MDSql
+CCextokIZqIwvWWic+LXH9Oc5lSJud8ZXLaqy9fDoc8mR2/bFF3k9acEwo9GDBMq
+rI//a/D7YMKs2h1fecm574yCTxchgSN5sJhHCa8tU/oHXRIg382pp/gF+uCoSQW7
+07/lDzOes62QcRQf+gSLo0BjlJ5hGfRjFdQcVFlaGEw4HAAvhtSLNl+BjSDkQLD5
+kFof8kWnX+CrczibZLyfuzucXbCiN7KHjrltaYwD1MvA1n0lRUT4S3xfc8SS3+YV
+NubNmRQNmiOiOv0JA7ieE6KTma6F2AQI0ggnDQQUH9+tK5OwASw=
+=r4DG
+-----END PGP SIGNATURE-----
+
+--ochbwuxpqessdn2a--
