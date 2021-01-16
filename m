@@ -2,124 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FCE2F89B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC082F89BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbhAPAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S1728757AbhAPACo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbhAPAB2 (ORCPT
+        with ESMTP id S1725863AbhAPACo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:01:28 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869A9C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:00:33 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id x12so5509182plr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:00:33 -0800 (PST)
+        Fri, 15 Jan 2021 19:02:44 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6A0C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:03 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id l23so6144598pjg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:02:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GbcRTwO4Py9PCASiY1YuohO9XCn71Gsdi46hwQnWEl8=;
-        b=u6hXBbQKO2N4x8nIBPEaVhO/0sCJTrI6FL+Ens0rAcn+RjZcf9pFfg3xgjKMB5F4u3
-         C18ArZDs1Rircdgu01RJPaV2Mxub8HMgAdJrtCipPzVIvWwTsIfq1idVIGENwwnuU3VA
-         5OG/JcczDt5zL45Na2Rm9t1Ap5idXZThyG9OCpub4m2iAfXul122zjKDY5cesZWA/jx/
-         LTS5V9lsHOM2SLckp65DzRan3RpdRbVvHzvBc308gdiHoT7pLF2jZvQBbS9C6C1v8Aen
-         NUhnOLuYEnmntPWE2NZ44W8TXKOfJmt7xKi1zmxEFgI9AIrTUBoHEO2fCdxRrqEuBH8k
-         YNyg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FY8VpQNfhIxBmUN0CCall3v72xLkiHt1IqHsb3quwR4=;
+        b=luKEj3UoOFPuOKbYwRLoqFsDstinvsZbmPyy851wXrrnY6L+VRXyETTqdGgw5hGxLP
+         q82oal/qKPyYEtADP0J+9+aBTHtWcStqg7f1d2isGuDnoxu5PU5w2R93MXCZlyflx7l7
+         2o23TrL3joPsXdxh4adFBgmxw8KI6tA70dzTICQIh6Z6okR/z0pWkGEKOZgja4fDXYdG
+         DyEQN0FCTeWyAWBEferv1Qib1rPFv4dHvg3qKJ+/zKLnUD9LMAW64+23msX/mrMix17s
+         vqPEIc6shaHkKBmGEJoepfmcUzY6UCsQYw68cMqc890Tb5k1Xwy/ExMW6A4K+8uwTgVs
+         azuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GbcRTwO4Py9PCASiY1YuohO9XCn71Gsdi46hwQnWEl8=;
-        b=d1gErklMPee16XjIiWcYxTiy6V0ArYVw1s5Y32GVUEGuBiXvM94q9F5sgqe8yAHjMJ
-         cq70506M3OonqFymPOpKXwkZ2kfzTnZFZ3QnCHqGb+lRp1/rQWd1gbpfXnqAiB4zbhfR
-         JPPTKOtL1lAPO2DZZQ6kLXXtxIHIa3Q8kJBezljIrlzXcVffeR1D0QIWAL7a/SYbhmlu
-         9GdkVXVv03u75v7tqISiQZw1+yho1QXQETFon/tIXk5fcAcKyaspHkeehYmbzYrFNOdj
-         hB7HxmZz5Ujt1XdvZj+5+VS2COAfqT4MhKt1tbVMicwk7QcRWmhmebWROQPpEg5ek3Pw
-         gdiQ==
-X-Gm-Message-State: AOAM531E0ogdgQbV1W3xhGfRbXOuSL9ZWL482btv6hyhfOAKEBpxGNnS
-        U7vtKg1kjHaAEIJZv5nm2Dncuw==
-X-Google-Smtp-Source: ABdhPJwW1D63rhPKUfuQucpNll3MeH9K0by+Htu81WVwB0qMY/SS1W07DD42HefctcLFL0htvuDj1g==
-X-Received: by 2002:a17:90b:204:: with SMTP id fy4mr13136166pjb.57.1610755232980;
-        Fri, 15 Jan 2021 16:00:32 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a29sm9016193pfr.73.2021.01.15.16.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 16:00:31 -0800 (PST)
-Date:   Fri, 15 Jan 2021 16:00:24 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>, Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>
-Subject: Re: [PATCH 2/6] KVM: selftests: Avoid flooding debug log while
- populating memory
-Message-ID: <YAIsmMrB1hwX804F@google.com>
-References: <20210112214253.463999-1-bgardon@google.com>
- <20210112214253.463999-3-bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FY8VpQNfhIxBmUN0CCall3v72xLkiHt1IqHsb3quwR4=;
+        b=nb4HYxLyozBbOEBxoiDWuRa1k5UxCreMYYtxKwiN5GjimpzzgaUuQpctXShacurRV6
+         VchK2pg96EhtM8lFbZ8NlFkTIJEMdWAUs7kRyd70lrf/AueW1ueP1xsK8/AWVBzEqIz8
+         9nBLWH11zyGxArOzxlGn/1AOKFWeaabOvAe9uCOHasD81rC25mJgqopipXnAXibsHoF2
+         98HZh1yurNpqXpSbURKCPw1mxNot+P2fRy30zYRwR1rmdHrY0HYSYsBjmZdRS+2MOCun
+         w7XkvukGNpOQ/upQhlk7KLKY5iW/l9KrHFOpDNzQemvh+NOaOWYeFpPZmcVJTb50RnaI
+         5B5Q==
+X-Gm-Message-State: AOAM531iSczJtfnFRxDi0bMTnNCzF2dW6toXqQtJOTHxLw3UnkWqEI9v
+        SbvtfPUqcTqVsmv8JT8ZBZOVNdogw3Vpf7wHEk8PmQ==
+X-Google-Smtp-Source: ABdhPJzv8hrDv7j8QxBRMT8DbWGNHAjn2SFadQCf6V/1mYcyv79IOw9cqliku5v7+LW/FEZaY2ZCORI+UiGpp+SD2WU=
+X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr13549703pjj.32.1610755322387;
+ Fri, 15 Jan 2021 16:02:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112214253.463999-3-bgardon@google.com>
+References: <20210112053113.4180271-1-morbo@google.com> <20210113061958.886723-1-morbo@google.com>
+ <20210113205547.GA21653@Ryzen-9-3900X.localdomain> <CAKwvOd=0wWz4o652EoZNvfu1L+fuhuGZusqpxiJ+561DtCh7Eg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=0wWz4o652EoZNvfu1L+fuhuGZusqpxiJ+561DtCh7Eg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 15 Jan 2021 16:01:51 -0800
+Message-ID: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
+Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Ben Gardon wrote:
-> Peter Xu pointed out that a log message printed while waiting for the
-> memory population phase of the dirty_log_perf_test will flood the debug
-> logs as there is no delay after printing the message. Since the message
-> does not provide much value anyway, remove it.
+On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > However, I see an issue with actually using the data:
+> >
+> > $ sudo -s
+> > # mount -t debugfs none /sys/kernel/debug
+> > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > # chown nathan:nathan vmlinux.profraw
+> > # exit
+> > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
+> > error: No profiles could be merged.
+> >
+> > Am I holding it wrong? :) Note, this is virtualized, I do not have any
+> > "real" x86 hardware that I can afford to test on right now.
+>
+> Same.
+>
+> I think the magic calculation in this patch may differ from upstream
+> llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
 
-Does it provide value if something goes wrong?  E.g. if a vCPU doesn't finish,
-how would one go about debugging?  Would it make sense to make the print
-ratelimited instead of removing it altogether?
- 
-> Reviewed-by: Jacob Xu <jacobhxu@google.com>
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  tools/testing/selftests/kvm/dirty_log_perf_test.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> index 16efe6589b43..15a9c45bdb5f 100644
-> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> @@ -146,8 +146,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->  	/* Allow the vCPU to populate memory */
->  	pr_debug("Starting iteration %lu - Populating\n", iteration);
->  	while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
-> -		pr_debug("Waiting for vcpu_last_completed_iteration == %lu\n",
-> -			iteration);
-> +		;
->  
->  	ts_diff = timespec_elapsed(start);
->  	pr_info("Populate memory time: %ld.%.9lds\n",
-> @@ -171,9 +170,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->  
->  		pr_debug("Starting iteration %lu\n", iteration);
->  		for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
-> -			while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
-> -				pr_debug("Waiting for vCPU %d vcpu_last_completed_iteration == %lu\n",
-> -					 vcpu_id, iteration);
-> +			while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id])
-> +			       != iteration)
+Err...it looks like it was the padding calculation.  With that fixed
+up, we can query the profile data to get insights on the most heavily
+called functions.  Here's what my top 20 are (reset, then watch 10
+minutes worth of cat videos on youtube while running `find /` and
+sleeping at my desk).  Anything curious stand out to anyone?
 
-I like the original better.  Poking out past 80 chars isn't the end of the world.
+$ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
+Instrumentation level: IR  entry_first = 0
+Total functions: 48970
+Maximum function count: 62070879
+Maximum internal block count: 83221158
+Top 20 functions with the largest internal block counts:
+  drivers/tty/n_tty.c:n_tty_write, max count = 83221158
+  rcu_read_unlock_strict, max count = 62070879
+  _cond_resched, max count = 25486882
+  rcu_all_qs, max count = 25451477
+  drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
+  _raw_spin_unlock_irqrestore, max count = 18874121
+  drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
+  _raw_spin_lock_irqsave, max count = 18509161
+  memchr, max count = 15525452
+  _raw_spin_lock, max count = 15484254
+  __mod_memcg_state, max count = 14604619
+  __mod_memcg_lruvec_state, max count = 14602783
+  fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
+  __mod_lruvec_state, max count = 12527154
+  __mod_node_page_state, max count = 12525172
+  native_sched_clock, max count = 8904692
+  sched_clock_cpu, max count = 8895832
+  sched_clock, max count = 8894627
+  kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
+  fpregs_assert_state_consistent, max count = 8287198
 
-> +				;
->  		}
->  
->  		ts_diff = timespec_elapsed(start);
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+-- 
+Thanks,
+~Nick Desaulniers
