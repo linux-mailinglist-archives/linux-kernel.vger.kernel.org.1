@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4F2F8EC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48872F8EC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbhAPSxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 13:53:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        id S1727913AbhAPSxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 13:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbhAPSxD (ORCPT
+        with ESMTP id S1726918AbhAPSxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 13:53:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337F2C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 10:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R8F3xBxlsMBABQhb2ZMSVvfylIUUbLanBXkQvIaDRlk=; b=U8rkdJp2DBNE7/35W9GbaOZKEI
-        IhvcOjlAYCMevhBfmvL3WNOV+h/lPwn748peWBXQG+9om/10twfmhwiCDCFeRFe4Muj3OAUScZYqv
-        vsUlbUVDZ2/pB8DEeYwwXsWkfkffeeOJEs7N7J/KDrWt231O7TCAwmbbK9bk42lcBIwNJR+pYeEPJ
-        cktf2NhXevuS+2iuGKRdff0IoM2010vs1k73X8xg6eo+KStvifAgh1VoBC/qvL3bJ1TU4tJ9TALbj
-        HmXiGYh9FJj82iLxOn3SGOwg97kUt5FOozfl3cugaetkvwaoYYzM5ZS9L5flWKNvHzZmw+Z1RoKjf
-        obp5H5ZQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l0qfg-00Aamo-TO; Sat, 16 Jan 2021 18:51:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4DB72300F7A;
-        Sat, 16 Jan 2021 19:51:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3C36C20290D25; Sat, 16 Jan 2021 19:51:35 +0100 (CET)
-Date:   Sat, 16 Jan 2021 19:51:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        jiangshanlai@gmail.com, valentin.schneider@arm.com, cai@redhat.com,
-        vincent.donnefort@arm.com, decui@microsoft.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
-Subject: Re: [PATCH 0/8] sched: Fix hot-unplug regressions
-Message-ID: <YAM1t2Qzr7Rib3bN@hirez.programming.kicks-ass.net>
-References: <20210116113033.608340773@infradead.org>
- <YAMFhsXamvCT2tzM@hirez.programming.kicks-ass.net>
- <20210116154542.GQ2743@paulmck-ThinkPad-P72>
+        Sat, 16 Jan 2021 13:53:30 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E021C061574;
+        Sat, 16 Jan 2021 10:52:50 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id w79so15074823qkb.5;
+        Sat, 16 Jan 2021 10:52:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ua/LuZsrNlCeFTfbXFziWkITBqn89svS3225QAvKj0A=;
+        b=n12xMXlTU2DXR1uyiW4fXaINLmYT6of49oHn1WdmZ3Cl8itKncigwstKfybe20it5r
+         +XBL9vo0t8S0SgTed0h6f/poowmdAb89scyZ9n/CI4cgJJuu1Qk43cg5mRMkl8S30V0S
+         gNip6vOZJ748GPi7RCK8gZgl7jixCIJ9Ej1GzSoDQt9hwanLc4dNegiri7ZFG5hRPURu
+         88aseBMY+iepKoZ+4hbaSedCImZU2hroSSH3pzVXBKGMVxzQxuk42C3HFPIfjPfP6Y33
+         hSFIKE6pun1l6hiZ7emfdEo01uDho+975t46ArnU2jPyTz5NUl1xSJmp8LktXyWfb6v5
+         +/dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ua/LuZsrNlCeFTfbXFziWkITBqn89svS3225QAvKj0A=;
+        b=Lj0D9gDNqYbXjAR9MWsRQ0VXrnDpx9R3heJ9IOyRKHqfRA3+flMMhGd2hLLaFjjNQi
+         +bl6Z+R5BJk0F37MgpzaEvwTFHVK+bjzxm/dERYwdBjnQEwDy2lzAjXVuwDQyIrn03Yg
+         p6gra9W/BF10OEij/YwH5SvsW57aQUMsWzzLpHtfbF9QyMIthJMCQrQ84Z+tr7j7nKv+
+         vywHWnND/odKLJRY7JDNwBD+1e5QU7FmVBOO48RTEf2ouNU29kQkymOPTmgaBFcl9Y86
+         ViF7EAI11ZUXoJlbPf8gyuExZm2hpleXesaCN/ALU4eeTUqMCgvzekLGo5YCpcOHWZuM
+         yQ0w==
+X-Gm-Message-State: AOAM531X7PvBa/Y8DeLlfys45ImI7WeQ5jwB6gfBJXRxiEETnLRw2fHN
+        ZoaJ8LZXrtC+h2dwO2cKDjYsIP8mSlE=
+X-Google-Smtp-Source: ABdhPJyWYkwjtMd7leSGPGTxr/2BxKXW6DNoXxh1e/n8q51VXlOSWufCd0l5E3S9cKNsl/xRvnTKDw==
+X-Received: by 2002:a05:620a:b0f:: with SMTP id t15mr18389126qkg.485.1610823169107;
+        Sat, 16 Jan 2021 10:52:49 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id w42sm4349496qtw.22.2021.01.16.10.52.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Jan 2021 10:52:48 -0800 (PST)
+Date:   Sat, 16 Jan 2021 11:52:47 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] powerpc: Handle .text.{hot,unlikely}.* in linker
+ script
+Message-ID: <20210116185247.GA2491296@ubuntu-m3-large-x86>
+References: <20210104204850.990966-1-natechancellor@gmail.com>
+ <20210104205952.1399409-1-natechancellor@gmail.com>
+ <20210116184438.GE30983@gate.crashing.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210116154542.GQ2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210116184438.GE30983@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 07:45:42AM -0800, Paul E. McKenney wrote:
-> On Sat, Jan 16, 2021 at 04:25:58PM +0100, Peter Zijlstra wrote:
-> > On Sat, Jan 16, 2021 at 12:30:33PM +0100, Peter Zijlstra wrote:
-> > > Hi,
-> > > 
-> > > These patches (no longer 4), seems to fix all the hotplug regressions as per
-> > > nearly a 100 18*SRCU-P runs over-night.
-> > > 
-> > > I did clean up the patches, so possibly I wrecked it again. I've started new
-> > > runs and will again leave them running over-night.
-> > 
-> > Hurph... I've got one splat from this version, one I've not seen before:
-> > 
-> > [   68.712848] Dying CPU not properly vacated!
-> > ...
-> > [   68.744448] CPU1 enqueued tasks (2 total):
-> > [   68.745018]  pid: 14, name: rcu_preempt
-> > [   68.745557]  pid: 18, name: migration/1
-> > 
-> > Paul, rcu_preempt, is from rcu_spawn_gp_kthread(), right? Afaict that
-> > doesn't even have affinity.. /me wonders HTH that ended up on the
-> > runqueue so late.
+On Sat, Jan 16, 2021 at 12:44:38PM -0600, Segher Boessenkool wrote:
+> Hi!
 > 
-> Yes, rcu_preempt is from rcu_spawn_gp_kthread(), and you are right that
-> the kernel code does not bind it anywhere.  If this is rcutorture,
-> there isn't enough of a userspace to do the binding there, eihter.
-> Wakeups for the rcu_preempt task can happen in odd places, though.
+> Very late of course, and the patch is fine, but:
 > 
-> Grasping at straws...
+> On Mon, Jan 04, 2021 at 01:59:53PM -0700, Nathan Chancellor wrote:
+> > Commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input
+> > sections") added ".text.unlikely.*" and ".text.hot.*" due to an LLVM
+> > change [1].
+> > 
+> > After another LLVM change [2], these sections are seen in some PowerPC
+> > builds, where there is a orphan section warning then build failure:
+> > 
+> > $ make -skj"$(nproc)" \
+> >        ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- LLVM=1 O=out \
+> >        distclean powernv_defconfig zImage.epapr
+> > ld.lld: warning: kernel/built-in.a(panic.o):(.text.unlikely.) is being placed in '.text.unlikely.'
+> 
+> Is the section really called ".text.unlikely.", i.e. the name ending in
+> a dot?  How very unusual, is there some bug elsewhere?
 
-My current straw is that the wakeup lands on the wakelist before ttwu()
-will refuse to wake to the CPU, and then lands on the RQ after we've
-waited. Which seems near impossible..
+No, this was an intention change done by LLVM:
+https://reviews.llvm.org/D79600
 
-I'll keep staring..
+Cheers,
+Nathan
