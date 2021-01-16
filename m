@@ -2,110 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C221C2F8A12
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C70A2F8A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbhAPAvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbhAPAvt (ORCPT
+        id S1727439AbhAPAy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:54:28 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33178 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbhAPAy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:51:49 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794DBC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:51:09 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id h10so6550133pfo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:51:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ewFYxtYqPNzg40mZBd2AGRSAZFUjPc2qJGU6EIbYFbk=;
-        b=Rog7Hfpy0pXP7D9eH7CFOkTZWlpSYobXdMpzim/AvTmeEAK644nGkmDhjBpwJ6VijO
-         Rk9UDldD1GDcD/pMbMF/oBKpcBlQg5513muIYpyEfrjEQ56ojwX2VaoTdfNpYPT4/ljZ
-         TbX5PCxlY23BsnE25htdmmfpHsthaSWsRQmsedoHMpUTAPnAgkACx6yEC4ILdWZF7v5L
-         5U5O8UXtn2dglxyeK5kBG/4cb/9YRY1uKnnOIiUFQhaum2Ziv0VtqreQE/AUfKynwegd
-         P7N8FdaNmjmhpwPtHrGjJn2MDE2JMaFt80nqoFx4J0ZO/vytGr3Ze8wC2kxZWXESO/hG
-         +1nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ewFYxtYqPNzg40mZBd2AGRSAZFUjPc2qJGU6EIbYFbk=;
-        b=EI0VpO4fjHyFTHHVvYcLHIGVnVb3Ak9IIHkP/Yi6bkGFH/pwzvrfDaapFh87YCt+Bc
-         a5M7hKZFMUp90QkP436/uHQ0dC7BqKkIQng+aDZcepw2dOFA38oGoNBVR58z8P/Nt+FZ
-         ODOeSenOJzHCNh53RK/QoF1ewZPK9Q7EBHvR5RxOrEeCGmoo5KXH5RMzVjlEGji0N/AW
-         A1mbR/b4LX2raG9Ra2dHIxjcd7oZPqUwzMMU0TFE7wuLVyfSvPshQEjQilE3gt8Bke+Y
-         f4FKWylpBxNHt42sGjbqxg328EuXZFtrEP0vbAYhehAoitwaFpkhnCCjQN/VKS93t8rr
-         WEeQ==
-X-Gm-Message-State: AOAM5339SHpCF5bC6A05+9vH3V4mJ/Wj0La+3QPh0Agbo/wu2JgjwRft
-        IFjNQoj3vxmTCmQNan3pVhDB5g==
-X-Google-Smtp-Source: ABdhPJw3wAHlVjBdHOhDOvq8ZnBqcG/OrKvEEmnyJueNo8Dju6G+4cLk1irhR3gxapaiPg2Hogsdeg==
-X-Received: by 2002:a63:1c13:: with SMTP id c19mr15034301pgc.359.1610758269076;
-        Fri, 15 Jan 2021 16:51:09 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id c24sm9097502pgi.71.2021.01.15.16.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 16:51:08 -0800 (PST)
-Date:   Sat, 16 Jan 2021 08:50:46 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/7] perf cs-etm: Calculate per CPU metadata array size
-Message-ID: <20210116005046.GB5418@leoy-ThinkPad-X240s>
-References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-4-leo.yan@linaro.org>
- <96ec434e-4103-02ac-a05a-761a9ca8cb0d@arm.com>
- <CAJ9a7VjtUuRRYBBu63kSXKwrGdB8ZoWJz-bE1g9tMLSbkFVDGg@mail.gmail.com>
- <20210115224658.GC375055@xps15>
+        Fri, 15 Jan 2021 19:54:27 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10G0q3Hp126853;
+        Fri, 15 Jan 2021 18:52:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610758323;
+        bh=DzUbwP7nb2tbbYzvsD7uYmHzOGYXMnQzBTsU5fUEmLc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=YiVhyya3xnv9/xRWTbhQF2BFkr+rVWx3I4B12TtoeZ89ACUycTOtwC3fNAGd6iJlP
+         8Sx71tUG82TVFf4ayS9E+0xwfcCHsH3h1IXEQYLwPyRY5Zuf8Ke8nGhp3sQH/VqXfK
+         I4VEMS0RE9ucn5YWhfOuBs7iZ/hXzPj8B3rujoiw=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10G0q3ar055654
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 18:52:03 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 18:52:03 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 18:52:03 -0600
+Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10G0q2ib113879;
+        Fri, 15 Jan 2021 18:52:02 -0600
+Subject: Re: [PATCH 2/2] soc: ti: pruss: add support for AM18XX/OMAP-L138
+ PRUSS
+To:     David Lechner <david@lechnology.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210104183021.330112-1-david@lechnology.com>
+ <20210104183021.330112-3-david@lechnology.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <4b60b60b-7e59-28fb-dc3a-f3f097e4cc8a@ti.com>
+Date:   Fri, 15 Jan 2021 18:52:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115224658.GC375055@xps15>
+In-Reply-To: <20210104183021.330112-3-david@lechnology.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+Hi David,
 
-On Fri, Jan 15, 2021 at 03:46:58PM -0700, Mathieu Poirier wrote:
-> On Mon, Jan 11, 2021 at 12:09:12PM +0000, Mike Leach wrote:
-> > Hi Leo,
-> > 
-> > I think there is an issue here in that your modification assumes that
-> > all cpus in the system are of the same ETM type. The original routine
-> > allowed for differing ETM types, thus differing cpu ETM field lengths
-> > between ETMv4 / ETMv3, the field size was used after the relevant
-> > magic number for the cpu ETM was read.
-> > 
-> > You have replaced two different sizes - with a single calculated size.
+On 1/4/21 12:30 PM, David Lechner wrote:
+> This adds support for the PRUSS found in AM18XX/OMAP-L138. This PRUSS
+> doesn't have a CFG register, so that is made optional as selected by
+> the device tree compatible string.
 > 
-> I usually go through an entire patchset before looking at the comments people
-> have made.  In this case Mike and I are coming to the exact same conclusion.
+> ARCH_DAVINCI is added in the Kconfig so that the driver can be selected
+> on that platform.
+> 
+> Signed-off-by: David Lechner <david@lechnology.com>
+> ---
+>  drivers/soc/ti/Kconfig |  2 +-
+>  drivers/soc/ti/pruss.c | 76 ++++++++++++++++++++++++------------------
+>  2 files changed, 45 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/soc/ti/Kconfig b/drivers/soc/ti/Kconfig
+> index 7e2fb1c16af1..7a692a21480a 100644
+> --- a/drivers/soc/ti/Kconfig
+> +++ b/drivers/soc/ti/Kconfig
+> @@ -85,7 +85,7 @@ config TI_K3_SOCINFO
+>  
+>  config TI_PRUSS
+>  	tristate "TI PRU-ICSS Subsystem Platform drivers"
+> -	depends on SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
+> +	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
+>  	select MFD_SYSCON
+>  	help
+>  	  TI PRU-ICSS Subsystem platform specific support.
+> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
+> index 5d6e7132a5c4..bfaf3ff74b01 100644
+> --- a/drivers/soc/ti/pruss.c
+> +++ b/drivers/soc/ti/pruss.c
+> @@ -24,10 +24,12 @@
+>   * struct pruss_private_data - PRUSS driver private data
+>   * @has_no_sharedram: flag to indicate the absence of PRUSS Shared Data RAM
+>   * @has_core_mux_clock: flag to indicate the presence of PRUSS core clock
+> + * @has_cfg: flag to indicate the presence of PRUSS CFG registers
 
-Agreed, now this work depends on Mike's patch for extending metadata
-version; otherwise if without Mike's patch, it will cause compability
-issue.
+I recommend to change this to a negative flag as the Davinci platforms are the
+only ones that don't have CFG (being the very first SoCs with a PRUSS IP)
+sub-module.
 
-> I will look at Mike's patch on Monday.
+>   */
+>  struct pruss_private_data {
+>  	bool has_no_sharedram;
+>  	bool has_core_mux_clock;
+> +	bool has_cfg;
+>  };
+>  
+>  static void pruss_of_free_clk_provider(void *data)
+> @@ -239,42 +241,44 @@ static int pruss_probe(struct platform_device *pdev)
+>  		goto rpm_disable;
+>  	}
+>  
 
-Cool!
+And use it here to skip all the cfg code parsing. All the below delta is just
+for the additional indentation for the flag. If you don't like goto's in
+non-error paths, then we can refactor the CFG parse code into a separate function.
 
-Thanks for review,
-Leo
+regards
+Suman
+
+> -	child = of_get_child_by_name(np, "cfg");
+> -	if (!child) {
+> -		dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
+> -		ret = -ENODEV;
+> -		goto rpm_put;
+> -	}
+> +	if (data->has_cfg) {
+> +		child = of_get_child_by_name(np, "cfg");
+> +		if (!child) {
+> +			dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
+> +			ret = -ENODEV;
+> +			goto rpm_put;
+> +		}
+>  
+> -	if (of_address_to_resource(child, 0, &res)) {
+> -		ret = -ENOMEM;
+> -		goto node_put;
+> -	}
+> +		if (of_address_to_resource(child, 0, &res)) {
+> +			ret = -ENOMEM;
+> +			goto node_put;
+> +		}
+>  
+> -	pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
+> -	if (!pruss->cfg_base) {
+> -		ret = -ENOMEM;
+> -		goto node_put;
+> -	}
+> +		pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
+> +		if (!pruss->cfg_base) {
+> +			ret = -ENOMEM;
+> +			goto node_put;
+> +		}
+>  
+> -	regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
+> -				     (u64)res.start);
+> -	regmap_conf.max_register = resource_size(&res) - 4;
+> -
+> -	pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
+> -						  &regmap_conf);
+> -	kfree(regmap_conf.name);
+> -	if (IS_ERR(pruss->cfg_regmap)) {
+> -		dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
+> -			PTR_ERR(pruss->cfg_regmap));
+> -		ret = PTR_ERR(pruss->cfg_regmap);
+> -		goto node_put;
+> -	}
+> +		regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
+> +					     (u64)res.start);
+> +		regmap_conf.max_register = resource_size(&res) - 4;
+> +
+> +		pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
+> +							  &regmap_conf);
+> +		kfree(regmap_conf.name);
+> +		if (IS_ERR(pruss->cfg_regmap)) {
+> +			dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
+> +				PTR_ERR(pruss->cfg_regmap));
+> +			ret = PTR_ERR(pruss->cfg_regmap);
+> +			goto node_put;
+> +		}
+>  
+> -	ret = pruss_clk_init(pruss, child);
+> -	if (ret) {
+> -		dev_err(dev, "failed to setup coreclk-mux\n");
+> -		goto node_put;
+> +		ret = pruss_clk_init(pruss, child);
+> +		if (ret) {
+> +			dev_err(dev, "failed to setup coreclk-mux\n");
+> +			goto node_put;
+> +		}
+>  	}
+>  
+>  	ret = devm_of_platform_populate(dev);
+> @@ -309,19 +313,27 @@ static int pruss_remove(struct platform_device *pdev)
+>  }
+>  
+>  /* instance-specific driver private data */
+> +static const struct pruss_private_data am18xx_pruss_data = {
+> +	.has_no_sharedram = true,
+> +};
+> +
+>  static const struct pruss_private_data am437x_pruss1_data = {
+>  	.has_no_sharedram = false,
+> +	.has_cfg = true,
+>  };
+>  
+>  static const struct pruss_private_data am437x_pruss0_data = {
+>  	.has_no_sharedram = true,
+> +	.has_cfg = true,
+>  };
+>  
+>  static const struct pruss_private_data am65x_j721e_pruss_data = {
+>  	.has_core_mux_clock = true,
+> +	.has_cfg = true,
+>  };
+>  
+>  static const struct of_device_id pruss_of_match[] = {
+> +	{ .compatible = "ti,am1806-pruss", .data = &am18xx_pruss_data, },
+>  	{ .compatible = "ti,am3356-pruss" },
+>  	{ .compatible = "ti,am4376-pruss0", .data = &am437x_pruss0_data, },
+>  	{ .compatible = "ti,am4376-pruss1", .data = &am437x_pruss1_data, },
+> 
+
