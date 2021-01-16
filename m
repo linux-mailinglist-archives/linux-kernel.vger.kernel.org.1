@@ -2,95 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C102F8B63
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B172A2F8B65
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbhAPFIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 00:08:40 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8963 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbhAPFIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 00:08:39 -0500
-IronPort-SDR: WAYycEPBLpMpDfvR7PYwSmeH0US7LKOBIh+3RzlzlKETV7lkt/IK/ftBhI/nqr2JlVC9qzn59F
- kj+N8d5sYuHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="242714444"
-X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
-   d="scan'208";a="242714444"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:07:54 -0800
-IronPort-SDR: u3td4UgxEexaKLnafZbBqA/S73h9dHPvHTMC7JKYrOF0EIbV5IUvaTzpzx4fVlfOk/XJkYTSTa
- OApCJGrWG7SA==
-X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
-   d="scan'208";a="425552013"
-Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.254.14.175]) ([10.254.14.175])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:07:52 -0800
-Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
-        andi.kleen@intel.com, dave.hansen@intel.com,
-        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
-        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
-        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
-        ilya.albrekht@intel.com, kyung.min.park@intel.com,
-        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
- <1608325864-4033-4-git-send-email-megha.dey@intel.com>
- <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
- <dfb5f2e0-027d-2b9c-aec7-313ff0275381@intel.com> <YAJEu1esw0zPA7Qh@gmail.com>
-From:   "Dey, Megha" <megha.dey@intel.com>
-Message-ID: <79ecc4a3-3bbb-77b2-4f2c-32ff17719086@intel.com>
-Date:   Fri, 15 Jan 2021 21:07:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726398AbhAPFIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 00:08:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbhAPFIr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 00:08:47 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DD2C061757;
+        Fri, 15 Jan 2021 21:08:06 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id q2so20741665iow.13;
+        Fri, 15 Jan 2021 21:08:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nIQUS/B/jxToiqnwVuNwCI5mEHFlIKg/uOPqX0C2Wtw=;
+        b=BCEzZ30PpAdSDzvGeBNvIxjLUhqvauhhAl08F+tQoLc59jXBr1FvyFXf2eo3W/BYiE
+         3cIW6Dgr2xcqCjktlH3uGVpPq2sEsqEpa1SCF6vUCgqGGS/j3jhvtI7PqWTAiW7NqSzU
+         QtUg/wD0ASrA38VhyTUxa5gcEZnFmV9V8DAIKwvvZplU5kNlL7UGB9NWQ6RKC7dRUEu8
+         naxvkB1mwnLk/0AMJDMjQzDCGWq3ykhc+lTDyooONYwI/rvpHtXYgm7FlNsCuwL1hdPQ
+         DoM/OJHebKbfCYW3oQLXMLuB0SQOxJB5yb07dSWJPAOnSZlRlqquIJLLSTGAFamOaBV8
+         n8Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nIQUS/B/jxToiqnwVuNwCI5mEHFlIKg/uOPqX0C2Wtw=;
+        b=tzrG70KG5s8FIDIm7ejwLPhyLRLXNzjc0yNybFj1B/2zlbBtcsNctXqOai7dwo7X/v
+         ILUS/MYjlDzWhy/mY+NkRlsOhCNn6qAg8MCy+f+WOs2eXtyL/2/YBc3aK0ZJiPhzDBBl
+         ZolcRPZDnYvM9MAwIHrQH12tcvSPzmSRqGVjH7TWqOvNGyvSAYgDv/mW+LBncC21k0Hx
+         q6qtTtQZ2ElR3khQQ0Xhmq0vC3Smkl1GyDZ8En8+E15/4A0oqDeL1kkbckq8+zFaB4qF
+         tUgTH2QmQos2NTNsA50759nr+1HquFfb8lXMuhP4XZBZUdGM0OLhZwcPuhIRC9Yaa3HN
+         GKTg==
+X-Gm-Message-State: AOAM531npuaIRTBohxD3W/gpAWTcoejWOroBq3x7Apjwh6e/tODpC0Dz
+        XG9pRBddJdT7+1oEiKbruv+cI6Ggf/EebYmSgZ4=
+X-Google-Smtp-Source: ABdhPJyPjV1sBVYh8T4dGG+mSL9ZbpSIEQVKTLnhQsLRDQrWB9TFmTVeAnntknYImejmwyotyR0/9/qNPDrdm+x1Pis=
+X-Received: by 2002:a92:8593:: with SMTP id f141mr9063480ilh.112.1610773685903;
+ Fri, 15 Jan 2021 21:08:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAJEu1esw0zPA7Qh@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
+ <20210116001324.2865-1-nick.desaulniers@gmail.com>
+In-Reply-To: <20210116001324.2865-1-nick.desaulniers@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 16 Jan 2021 06:07:54 +0100
+Message-ID: <CA+icZUW-H4LjVhJHSr2W3UJotvB6Eq1bFO_bQWT8=GQqcB4A1A@mail.gmail.com>
+Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Nick Desaulniers <nick.desaulniers@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        akpm@linux-foundation.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 1/15/2021 5:43 PM, Eric Biggers wrote:
-> On Fri, Jan 15, 2021 at 04:14:40PM -0800, Dey, Megha wrote:
->>> Hello Megha,
->>>
->>> What is the purpose of this separate GHASH module? GHASH is only used
->>> in combination with AES-CTR to produce GCM, and this series already
->>> contains a GCM driver.
->>>
->>> Do cores exist that implement PCLMULQDQ but not AES-NI?
->>>
->>> If not, I think we should be able to drop this patch (and remove the
->>> existing PCLMULQDQ GHASH driver as well)
->> AFAIK, dm-verity (authenticated but not encrypted file system) is one use
->> case for authentication only.
->>
->> Although I am not sure if GHASH is specifically used for this or SHA?
->>
->> Also, I do not know of any cores that implement PCLMULQDQ and not AES-NI.
->>
-> dm-verity only uses unkeyed hash algorithms.  So no, it doesn't use GHASH.
-
-Hmm, I see. If that is the case, I am not aware of any other use case 
-apart from GCM.
-
-I see that the existing GHASH module in the kernel from 2009. I am not 
-sure if there was a use case then, which now is no longer valid.
-
-There many be out-of-tree kernel modules which may be using it but again 
-its only speculation.
-
-So, in the next version should I remove the existing GHASH module? (And 
-of course remove this patch as well?)
-
--Megha
-
+On Sat, Jan 16, 2021 at 1:13 AM Nick Desaulniers
+<nick.desaulniers@gmail.com> wrote:
 >
-> - Eric
+> > On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
+> > > <natechancellor@gmail.com> wrote:
+> > > >
+> > > > However, I see an issue with actually using the data:
+> > > >
+> > > > $ sudo -s
+> > > > # mount -t debugfs none /sys/kernel/debug
+> > > > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > > > # chown nathan:nathan vmlinux.profraw
+> > > > # exit
+> > > > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > > > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
+> > > > error: No profiles could be merged.
+> > > >
+> > > > Am I holding it wrong? :) Note, this is virtualized, I do not have any
+> > > > "real" x86 hardware that I can afford to test on right now.
+> > >
+> > > Same.
+> > >
+> > > I think the magic calculation in this patch may differ from upstream
+> > > llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
+> >
+> > Err...it looks like it was the padding calculation.  With that fixed
+> > up, we can query the profile data to get insights on the most heavily
+> > called functions.  Here's what my top 20 are (reset, then watch 10
+> > minutes worth of cat videos on youtube while running `find /` and
+> > sleeping at my desk).  Anything curious stand out to anyone?
+>
+> Hello world from my personal laptop whose kernel was rebuilt with
+> profiling data!  Wow, I can run `find /` and watch cat videos on youtube
+> so fast!  Users will love this! /s
+>
+> Checking the sections sizes of .text.hot. and .text.unlikely. looks
+> good!
+>
+
+Is that the latest status of Bill's patch?
+
+Or do you have me a lore link?
+
+- Sedat -
+
+[1] https://github.com/gwelymernans/linux/commits/gwelymernans/linux
+
+
+> >
+> > $ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
+> > Instrumentation level: IR  entry_first = 0
+> > Total functions: 48970
+> > Maximum function count: 62070879
+> > Maximum internal block count: 83221158
+> > Top 20 functions with the largest internal block counts:
+> >   drivers/tty/n_tty.c:n_tty_write, max count = 83221158
+> >   rcu_read_unlock_strict, max count = 62070879
+> >   _cond_resched, max count = 25486882
+> >   rcu_all_qs, max count = 25451477
+> >   drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
+> >   _raw_spin_unlock_irqrestore, max count = 18874121
+> >   drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
+> >   _raw_spin_lock_irqsave, max count = 18509161
+> >   memchr, max count = 15525452
+> >   _raw_spin_lock, max count = 15484254
+> >   __mod_memcg_state, max count = 14604619
+> >   __mod_memcg_lruvec_state, max count = 14602783
+> >   fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
+> >   __mod_lruvec_state, max count = 12527154
+> >   __mod_node_page_state, max count = 12525172
+> >   native_sched_clock, max count = 8904692
+> >   sched_clock_cpu, max count = 8895832
+> >   sched_clock, max count = 8894627
+> >   kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
+> >   fpregs_assert_state_consistent, max count = 8287198
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210116001324.2865-1-nick.desaulniers%40gmail.com.
