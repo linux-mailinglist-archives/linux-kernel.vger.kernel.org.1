@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD402F8F48
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7A82F8F4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbhAPUqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 15:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbhAPUqI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 15:46:08 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655BBC061573;
-        Sat, 16 Jan 2021 12:45:27 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id i63so10270202wma.4;
-        Sat, 16 Jan 2021 12:45:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1bOdjlQaGWQ8aWyfQJKQhH8VYqrUnQwXrgWi9Mree3I=;
-        b=JVLUSXN/s1nK2Icd010Ugl0WvUG8e2CogSLbdUBFSOCqzl8Viq35eqiCorrawBbqOP
-         lZdjcJr04Wpdfl0I5R5AF5jAS0inbViR+2YrmTTSNV4t668qWTILE5++Nf1XvS2wOCYD
-         LySvYMj2/eickyHPLaVIuS1zfuAn76npFktWUqmNc42VN2bJTPQJC1+B/Mb9IVS8wEoz
-         dqC3FavixxVSFWz1Xc2lbDjdUeBAdmxZX+s+g/mVTNC+9PA3UWodxnfHwcdlFA1zlP11
-         ujZM1QALLVQrEHB2Ire3ONAEyvBYfEeXY0Ulr28zoRfDDobOQ91WYmA/qf8c/Cgiavaq
-         dkAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1bOdjlQaGWQ8aWyfQJKQhH8VYqrUnQwXrgWi9Mree3I=;
-        b=cJPexEoi3sbWyFkRztO0P0e9otZK5CN/n7L1iS/YLT1jr9JiUr/NXo+ry6ZEwQE4dd
-         bW0eBXD62j8hHbPtB7wFLNbkTTt7jzy7prCcQoDv5hK2UUT+r1n/3yIXQhHegWMVU0gJ
-         W+bdw+2QLwz2ZVCJq/vfss0vPtb24lV+OHTXoWrC4PdmcVW880jMB2itPGaycfPxCeL4
-         MZfFwiBMarejerkLmUIhKggEp+gYQkRFST1RlSxS6X74P6bTgENOuyCtWWszVHKn+WCq
-         c/r/eEj2xpAXsa7mOOlZgwp3BVlf/yS45MC+pEu4Kg1u3LaUpI9xbqDoLaUstHEw35fr
-         rjTA==
-X-Gm-Message-State: AOAM532tPU4DeIFT7wGnDUO8SSbNg+Rvb29O7lF2GY2cx4xjGZ94bQxt
-        CiTR+gWMtdt6QDWxbEXPjsE=
-X-Google-Smtp-Source: ABdhPJwElVqFppdHo/z59LybTiKhI0iTID9QTEnWtvUWk4UygqYhNQIsB8EmTnF1JLq5RzR48DOtPw==
-X-Received: by 2002:a05:600c:2255:: with SMTP id a21mr14522086wmm.122.1610829925978;
-        Sat, 16 Jan 2021 12:45:25 -0800 (PST)
-Received: from localhost.localdomain (p200300f13723cb00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3723:cb00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id c2sm15180609wrt.87.2021.01.16.12.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 12:45:25 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     olek2@wp.pl
-Cc:     devicetree@vger.kernel.org, john@phrozen.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        robh+dt@kernel.org, tsbogend@alpha.franken.de
-Subject: RE: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway DMA bindings
-Date:   Sat, 16 Jan 2021 21:45:21 +0100
-Message-Id: <20210116204521.150091-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210103101803.2123-1-olek2@wp.pl>
-References: <20210103101803.2123-1-olek2@wp.pl>
+        id S1727297AbhAPU4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 15:56:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbhAPU4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 15:56:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76CAA22CAD
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 20:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610830530;
+        bh=BeMsLgtzunhMmzgm0Vjq/a3pyJRmRQYXYMnno+68i84=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fBbfAjXkte7MqCp6NS6IXyvVwdRVLvlKA9iLbTfsVqW8ULvYPBjS6vwSGMnr4sLs1
+         KlPEa4zY+RsASveDkHBsLWYdZZGsTuVJXPOPffepL7gvOIUZb/pbjTAPxcmwqVUSqS
+         8GBR7Gkuk0hluUgUWWd25kG/Mbcs2j8Sel5VRQ0080jOuaDTCGhjRjTizHs//6zx4w
+         yDRpxf4Zyz+OUVCa10viyNdpkLZkHNa+BIPOuNfcCAZkNuInNiIecDtagvptwF/pFu
+         9IUAfBYyKVKyBUYLbC2FVKQ3fRW734Y0swApK+6jpI9mHMRuMJO+slmM6OaX6QZDJB
+         VWRc4iitNVdNg==
+Received: by mail-qt1-f171.google.com with SMTP id e15so8671513qte.9
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 12:55:30 -0800 (PST)
+X-Gm-Message-State: AOAM533iiHoYrxMG9n81J+c0kNqFNS5rUkKp1LP7HPfcwVEOWEKHmmzJ
+        F8Zv8vnGLOgI73ZNEsZZ0+M5b+kn0mNaPv58CzY=
+X-Google-Smtp-Source: ABdhPJyVqC6YZ3AAkpaYTbwJbC5yFrzUrqln3Xh3Pl64/pwMkcExpotcf6ca+ruH1RERS/+wusfDwoKv6Z1D+w0C8vs=
+X-Received: by 2002:ac8:70c1:: with SMTP id g1mr17226966qtp.108.1610830529719;
+ Sat, 16 Jan 2021 12:55:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210106213547.1077789-1-timur@tabi.org> <X/wkMMiPPBAJb9+A@alley>
+ <20210111173009.fe2383539e5ca2c23b135262@linux-foundation.org>
+ <d067f15a-8816-8879-e575-b610707c5189@kernel.org> <YAFenc9MHvPNrZ06@alley>
+In-Reply-To: <YAFenc9MHvPNrZ06@alley>
+From:   Timur Tabi <timur@kernel.org>
+Date:   Sat, 16 Jan 2021 14:54:52 -0600
+X-Gmail-Original-Message-ID: <CAOZdJXUO9nC2JoadaZ8HgwuAGEYV=Hiz8g6y94jzCLp2mJP8nA@mail.gmail.com>
+Message-ID: <CAOZdJXUO9nC2JoadaZ8HgwuAGEYV=Hiz8g6y94jzCLp2mJP8nA@mail.gmail.com>
+Subject: Re: [PATCH] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for unhashed addresses
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Roman Fietze <roman.fietze@magna.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(another late reply from me, sorry)
+On Fri, Jan 15, 2021 at 3:24 AM Petr Mladek <pmladek@suse.com> wrote:
 
-> +required:
-> +  - compatible
-> +  - reg
-This is actually an older IP variant of what can be found in the Intel
-LGM SoCs. The dt-bindings are currently being upstreamed for that newer
-SoC in [0].
+> By other words, every print_hex_dump() used need to be reviewed in
+> which context might be called.
 
-Based on "DOs and DON’Ts for designing and writing Devicetree bindings"
-I think some more mandatory properties are needed, even though our
-driver currently uses none of them:
-- interrupts: as far as I know the IP on the Lantiq SoCs has (at least)
-  one interrupt for each DMA channel. That means: 28 interrupts on the
-  xRX200 SoCs
-- I *assume* (but I have not researched if that's really the case) that
-  the Lantiq variant also has at least one clock input and a reset line
-- since we don't have a proper DMA driver yet I can't comment what we
-  should use for #dma-cells
+I did a rough analysis of all current usage of DUMP_PREFIX_ADDRESS in
+the kernel, compared to the introduction of %px and hashed addresses,
+using git-blame to find the most recent commit that modifies a line
+that contains _ADDRESS.  Of 150 cases, 110 of them are newer than %px,
+so I'm assuming that these developers chose _ADDRESS instead of
+_OFFSET knowing that the addresses are hashed.
 
-> +examples:
-> +  - |
-> +    dma@e104100 {
-note to self: it seems that both dma@ and dma-controller@ are used in
-existing schemas (the latter having twice as many occurrences though):
-$ grep -R dma@ Documentation/devicetree/bindings/dma/* | wc -l
-20
-$ grep -R dma-controller@ Documentation/devicetree/bindings/dma/* | wc -l
-45
+> > If you want, I can include a patch that changes a few callers of
+> > print_hex_dump() to use DUMP_PREFIX_UNHASHED, based on what I think would be
+> > useful.
+>
+> It would be nice.
 
-
-Best regards,
-Martin
-
-
-[0] https://patchwork.ozlabs.org/project/devicetree-bindings/patch/0864b9bfa6e2b8b5e7ad9a7a739ca3274f66493c.1610703653.git.mallikarjunax.reddy@linux.intel.com/
-[1] https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-bindings.html
+I have a v2 that I'm about to post, and I included a patch that
+modifies check_poison_mem() in mm/page_poison.c.  I chose this file
+because I figured actual addresses would probably be necessary for
+tracking memory-related errors.  Also, that call to print_hex_dump()
+was added back in 2009, so it predates the introduction of %px.
