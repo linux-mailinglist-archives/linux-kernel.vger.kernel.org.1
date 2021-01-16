@@ -2,384 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258162F8B70
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087D02F8B74
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbhAPFTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 00:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1726489AbhAPFTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 00:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbhAPFTD (ORCPT
+        with ESMTP id S1725866AbhAPFTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 00:19:03 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3477C061757;
-        Fri, 15 Jan 2021 21:18:22 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l0dyc-00Ai54-Ky; Sat, 16 Jan 2021 05:18:18 +0000
-Date:   Sat, 16 Jan 2021 05:18:18 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iov_iter: optimise iter type checking
-Message-ID: <20210116051818.GF3579531@ZenIV.linux.org.uk>
-References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
- <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
- <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
- <20210109170359.GT3579531@ZenIV.linux.org.uk>
- <b04df39d77114547811d7bfc2c0d4c8c@AcuMS.aculab.com>
- <1783c58f-1016-0c6b-be7f-a93bc2f8f2a4@gmail.com>
+        Sat, 16 Jan 2021 00:19:43 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26481C0613D3;
+        Fri, 15 Jan 2021 21:19:03 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id d9so22426268iob.6;
+        Fri, 15 Jan 2021 21:19:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=gChp3Ep/CrC3UnC7Pc81i2t4QTcDYgPfC0i71sk22a0=;
+        b=DzlotEExKCzA5Hl+PpX0huN82hIM0gEvAucf2wZIFhO7EWMbHPefc/OGF7i367xhPD
+         PZ+wuddRyMjLFkcadaPTGlUV2Xm9/2v/I7OB4jNApvHeaNzeWMIFc5uWovfcEZNuBH+i
+         NixlpIK5xbIudMNjxpMLfm7lu9uDR0Is232AW5J25yN/5Y44ZG9ps3cWsttpza6JGkak
+         pvfty3hZ02CAq3ch1F5fiocOlBuwXEDXJy99Kjekj2Z3M1QU9+JUPa0koybimhEVdxYr
+         k2sC59VbhFja4D+vuClwx5tKukDeEmKufbGLp3mZX95A2Zxu0Qt6aRI4OsvJ7MxeQ5gF
+         AYew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=gChp3Ep/CrC3UnC7Pc81i2t4QTcDYgPfC0i71sk22a0=;
+        b=bYdZMDO+tOIVL9R0qR7/Oye+nxGVrvVv5G1vGqyeUjOKqbeA4DlgHB7+Sr8onNnvDO
+         ZxHMJezH/yeq3QtQPvug4t3EaoG+2cLo747Yswn45kjfs3HiQBvAY4FXnBYR0g2T8rpl
+         F8cR2DxqeoqxPKvtofncHPHEJmgocVTENMltKRIqStmlN/r2WtdCvmTg2NVUfxRVoZF+
+         BZju2UuCqRNsdnS/wC8ZpI9dBXSv26UI9+mYmiiX4/pBRy1WfUdDhKUMANRStXleOPO/
+         /fJcMJwdPItKGMkv/uEmj4/obkSh0pPCzD9a04+fNc/xs1nolzIVn2xlbdkzHdYq2iBW
+         0oHg==
+X-Gm-Message-State: AOAM532lJHZHjmWv/EG9Mqhzl4RRqwrkI7ZmJq5BGZmaSl+t1gn3bhex
+        7ukLEQ9crty/lv6/6aUBKOAtgGcRtHuLz0Af+YI=
+X-Google-Smtp-Source: ABdhPJxr7TPb36mhp54MUXkg/vneWFEkAS6dH3UCsiVbPH+HEnc/vnT/kZ7PGeOv1BGhFkFq2teKDDqM9CYN4XvXqWo=
+X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr7112393iog.57.1610774342527;
+ Fri, 15 Jan 2021 21:19:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1783c58f-1016-0c6b-be7f-a93bc2f8f2a4@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
+ <20210116001324.2865-1-nick.desaulniers@gmail.com> <CA+icZUW-H4LjVhJHSr2W3UJotvB6Eq1bFO_bQWT8=GQqcB4A1A@mail.gmail.com>
+In-Reply-To: <CA+icZUW-H4LjVhJHSr2W3UJotvB6Eq1bFO_bQWT8=GQqcB4A1A@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 16 Jan 2021 06:18:51 +0100
+Message-ID: <CA+icZUVSmfNgFvZB5qojYu59zdGWgijeKRRqFek=8Q-a=y=--g@mail.gmail.com>
+Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Nick Desaulniers <nick.desaulniers@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        akpm@linux-foundation.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 10:11:09PM +0000, Pavel Begunkov wrote:
+On Sat, Jan 16, 2021 at 6:07 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Sat, Jan 16, 2021 at 1:13 AM Nick Desaulniers
+> <nick.desaulniers@gmail.com> wrote:
+> >
+> > > On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
+> > > > <natechancellor@gmail.com> wrote:
+> > > > >
+> > > > > However, I see an issue with actually using the data:
+> > > > >
+> > > > > $ sudo -s
+> > > > > # mount -t debugfs none /sys/kernel/debug
+> > > > > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > > > > # chown nathan:nathan vmlinux.profraw
+> > > > > # exit
+> > > > > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > > > > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
+> > > > > error: No profiles could be merged.
+> > > > >
+> > > > > Am I holding it wrong? :) Note, this is virtualized, I do not have any
+> > > > > "real" x86 hardware that I can afford to test on right now.
+> > > >
+> > > > Same.
+> > > >
+> > > > I think the magic calculation in this patch may differ from upstream
+> > > > llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
+> > >
+> > > Err...it looks like it was the padding calculation.  With that fixed
+> > > up, we can query the profile data to get insights on the most heavily
+> > > called functions.  Here's what my top 20 are (reset, then watch 10
+> > > minutes worth of cat videos on youtube while running `find /` and
+> > > sleeping at my desk).  Anything curious stand out to anyone?
+> >
+> > Hello world from my personal laptop whose kernel was rebuilt with
+> > profiling data!  Wow, I can run `find /` and watch cat videos on youtube
+> > so fast!  Users will love this! /s
+> >
+> > Checking the sections sizes of .text.hot. and .text.unlikely. looks
+> > good!
+> >
+>
+> Is that the latest status of Bill's patch?
+>
+> Or do you have me a lore link?
+>
 
-> > Does any code actually look at the fields as a pair?
-> > Would it even be better to use separate bytes?
-> > Even growing the on-stack structure by a word won't really matter.
-> 
-> u8 type, rw;
-> 
-> That won't bloat the struct. I like the idea. If used together compilers
-> can treat it as u16.
+I tried with the message-id of Bill's initial email:
 
-Reasonable, and from what I remember from looking through the users,
-no readers will bother with looking at both at the same time.
+link="https://lore.kernel.org/r/20210111081821.3041587-1-morbo@google.com"
+b4 -d am $link
 
-On the write side... it's only set in iov_iter_{kvec,bvec,pipe,discard,init}.
-I sincerely doubt anyone would give a fuck, not to mention that something
-like
-void iov_iter_pipe(struct iov_iter *i, unsigned int direction,
-                        struct pipe_inode_info *pipe,
-                        size_t count)
-{
-        BUG_ON(direction != READ);
-        WARN_ON(pipe_full(pipe->head, pipe->tail, pipe->ring_size));
-	*i = (struct iov_iter) {
-		.iter_type = ITER_PIPE,
-		.data_source = false,
-		.pipe = pipe,
-		.head = pipe->head,
-		.start_head = pipe->head,
-		.count = count,
-		.iov_offset = 0
-	};
-}
+This gives me:
 
-would make more sense anyway - we do want to overwrite everything in the
-object, and let the compiler do whatever it likes to do.
+v4_20210112_morbo_pgo_add_clang_s_profile_guided_optimization_infrastructure.mbx
 
-So... something like (completely untested) variant below, perhaps?
+- Sedat -
 
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 72d88566694e..ed8ad2c5d384 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -19,20 +19,16 @@ struct kvec {
- 
- enum iter_type {
- 	/* iter types */
--	ITER_IOVEC = 4,
--	ITER_KVEC = 8,
--	ITER_BVEC = 16,
--	ITER_PIPE = 32,
--	ITER_DISCARD = 64,
-+	ITER_IOVEC,
-+	ITER_KVEC,
-+	ITER_BVEC,
-+	ITER_PIPE,
-+	ITER_DISCARD
- };
- 
- struct iov_iter {
--	/*
--	 * Bit 0 is the read/write bit, set if we're writing.
--	 * Bit 1 is the BVEC_FLAG_NO_REF bit, set if type is a bvec and
--	 * the caller isn't expecting to drop a page reference when done.
--	 */
--	unsigned int type;
-+	u8 iter_type;
-+	bool data_source;
- 	size_t iov_offset;
- 	size_t count;
- 	union {
-@@ -52,7 +48,7 @@ struct iov_iter {
- 
- static inline enum iter_type iov_iter_type(const struct iov_iter *i)
- {
--	return i->type & ~(READ | WRITE);
-+	return i->iter_type;
- }
- 
- static inline bool iter_is_iovec(const struct iov_iter *i)
-@@ -82,7 +78,7 @@ static inline bool iov_iter_is_discard(const struct iov_iter *i)
- 
- static inline unsigned char iov_iter_rw(const struct iov_iter *i)
- {
--	return i->type & (READ | WRITE);
-+	return i->data_source ? WRITE : READ;
- }
- 
- /*
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 1635111c5bd2..133c03b2dcae 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -81,19 +81,18 @@
- #define iterate_all_kinds(i, n, v, I, B, K) {			\
- 	if (likely(n)) {					\
- 		size_t skip = i->iov_offset;			\
--		if (unlikely(i->type & ITER_BVEC)) {		\
-+		if (likely(i->iter_type == ITER_IOVEC)) {	\
-+			const struct iovec *iov;		\
-+			struct iovec v;				\
-+			iterate_iovec(i, n, v, iov, skip, (I))	\
-+		} else if (i->iter_type == ITER_BVEC) {		\
- 			struct bio_vec v;			\
- 			struct bvec_iter __bi;			\
- 			iterate_bvec(i, n, v, __bi, skip, (B))	\
--		} else if (unlikely(i->type & ITER_KVEC)) {	\
-+		} else if (i->iter_type == ITER_KVEC) {		\
- 			const struct kvec *kvec;		\
- 			struct kvec v;				\
- 			iterate_kvec(i, n, v, kvec, skip, (K))	\
--		} else if (unlikely(i->type & ITER_DISCARD)) {	\
--		} else {					\
--			const struct iovec *iov;		\
--			struct iovec v;				\
--			iterate_iovec(i, n, v, iov, skip, (I))	\
- 		}						\
- 	}							\
- }
-@@ -103,7 +102,17 @@
- 		n = i->count;					\
- 	if (i->count) {						\
- 		size_t skip = i->iov_offset;			\
--		if (unlikely(i->type & ITER_BVEC)) {		\
-+		if (likely(i->iter_type == ITER_IOVEC)) {	\
-+			const struct iovec *iov;		\
-+			struct iovec v;				\
-+			iterate_iovec(i, n, v, iov, skip, (I))	\
-+			if (skip == iov->iov_len) {		\
-+				iov++;				\
-+				skip = 0;			\
-+			}					\
-+			i->nr_segs -= iov - i->iov;		\
-+			i->iov = iov;				\
-+		} else if (i->iter_type == ITER_BVEC) {		\
- 			const struct bio_vec *bvec = i->bvec;	\
- 			struct bio_vec v;			\
- 			struct bvec_iter __bi;			\
-@@ -111,7 +120,7 @@
- 			i->bvec = __bvec_iter_bvec(i->bvec, __bi);	\
- 			i->nr_segs -= i->bvec - bvec;		\
- 			skip = __bi.bi_bvec_done;		\
--		} else if (unlikely(i->type & ITER_KVEC)) {	\
-+		} else if (i->iter_type == ITER_KVEC) {		\
- 			const struct kvec *kvec;		\
- 			struct kvec v;				\
- 			iterate_kvec(i, n, v, kvec, skip, (K))	\
-@@ -121,18 +130,8 @@
- 			}					\
- 			i->nr_segs -= kvec - i->kvec;		\
- 			i->kvec = kvec;				\
--		} else if (unlikely(i->type & ITER_DISCARD)) {	\
-+		} else if (i->iter_type == ITER_DISCARD) {	\
- 			skip += n;				\
--		} else {					\
--			const struct iovec *iov;		\
--			struct iovec v;				\
--			iterate_iovec(i, n, v, iov, skip, (I))	\
--			if (skip == iov->iov_len) {		\
--				iov++;				\
--				skip = 0;			\
--			}					\
--			i->nr_segs -= iov - i->iov;		\
--			i->iov = iov;				\
- 		}						\
- 		i->count -= n;					\
- 		i->iov_offset = skip;				\
-@@ -434,7 +433,7 @@ int iov_iter_fault_in_readable(struct iov_iter *i, size_t bytes)
- 	int err;
- 	struct iovec v;
- 
--	if (!(i->type & (ITER_BVEC|ITER_KVEC))) {
-+	if (i->iter_type == ITER_IOVEC) {
- 		iterate_iovec(i, bytes, v, iov, skip, ({
- 			err = fault_in_pages_readable(v.iov_base, v.iov_len);
- 			if (unlikely(err))
-@@ -450,19 +449,26 @@ void iov_iter_init(struct iov_iter *i, unsigned int direction,
- 			size_t count)
- {
- 	WARN_ON(direction & ~(READ | WRITE));
--	direction &= READ | WRITE;
- 
- 	/* It will get better.  Eventually... */
--	if (uaccess_kernel()) {
--		i->type = ITER_KVEC | direction;
--		i->kvec = (struct kvec *)iov;
--	} else {
--		i->type = ITER_IOVEC | direction;
--		i->iov = iov;
--	}
--	i->nr_segs = nr_segs;
--	i->iov_offset = 0;
--	i->count = count;
-+	if (uaccess_kernel())
-+		*i = (struct iov_iter) {
-+			.iter_type = ITER_KVEC,
-+			.data_source = direction,
-+			.kvec = (struct kvec *)iov,
-+			.nr_segs = nr_segs,
-+			.iov_offset = 0,
-+			.count = count
-+		};
-+	else
-+		*i = (struct iov_iter) {
-+			.iter_type = ITER_IOVEC,
-+			.data_source = direction,
-+			.iov = iov,
-+			.nr_segs = nr_segs,
-+			.iov_offset = 0,
-+			.count = count
-+		};
- }
- EXPORT_SYMBOL(iov_iter_init);
- 
-@@ -915,17 +921,20 @@ size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
- {
- 	if (unlikely(!page_copy_sane(page, offset, bytes)))
- 		return 0;
--	if (i->type & (ITER_BVEC|ITER_KVEC)) {
-+	if (likely(i->iter_type == ITER_IOVEC))
-+		return copy_page_to_iter_iovec(page, offset, bytes, i);
-+	if (i->iter_type == ITER_BVEC || i->iter_type == ITER_KVEC) {
- 		void *kaddr = kmap_atomic(page);
- 		size_t wanted = copy_to_iter(kaddr + offset, bytes, i);
- 		kunmap_atomic(kaddr);
- 		return wanted;
--	} else if (unlikely(iov_iter_is_discard(i)))
--		return bytes;
--	else if (likely(!iov_iter_is_pipe(i)))
--		return copy_page_to_iter_iovec(page, offset, bytes, i);
--	else
-+	}
-+	if (i->iter_type == ITER_PIPE)
- 		return copy_page_to_iter_pipe(page, offset, bytes, i);
-+	if (i->iter_type == ITER_DISCARD)
-+		return bytes;
-+	WARN_ON(1);
-+	return 0;
- }
- EXPORT_SYMBOL(copy_page_to_iter);
- 
-@@ -934,17 +943,16 @@ size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
- {
- 	if (unlikely(!page_copy_sane(page, offset, bytes)))
- 		return 0;
--	if (unlikely(iov_iter_is_pipe(i) || iov_iter_is_discard(i))) {
--		WARN_ON(1);
--		return 0;
--	}
--	if (i->type & (ITER_BVEC|ITER_KVEC)) {
-+	if (likely(i->iter_type == ITER_IOVEC))
-+		return copy_page_from_iter_iovec(page, offset, bytes, i);
-+	if (i->iter_type == ITER_BVEC || i->iter_type == ITER_KVEC) {
- 		void *kaddr = kmap_atomic(page);
- 		size_t wanted = _copy_from_iter(kaddr + offset, bytes, i);
- 		kunmap_atomic(kaddr);
- 		return wanted;
--	} else
--		return copy_page_from_iter_iovec(page, offset, bytes, i);
-+	}
-+	WARN_ON(1);
-+	return 0;
- }
- EXPORT_SYMBOL(copy_page_from_iter);
- 
-@@ -1172,11 +1180,14 @@ void iov_iter_kvec(struct iov_iter *i, unsigned int direction,
- 			size_t count)
- {
- 	WARN_ON(direction & ~(READ | WRITE));
--	i->type = ITER_KVEC | (direction & (READ | WRITE));
--	i->kvec = kvec;
--	i->nr_segs = nr_segs;
--	i->iov_offset = 0;
--	i->count = count;
-+	*i = (struct iov_iter) {
-+		.iter_type = ITER_KVEC,
-+		.data_source = direction,
-+		.kvec = kvec,
-+		.nr_segs = nr_segs,
-+		.iov_offset = 0,
-+		.count = count
-+	};
- }
- EXPORT_SYMBOL(iov_iter_kvec);
- 
-@@ -1185,11 +1196,14 @@ void iov_iter_bvec(struct iov_iter *i, unsigned int direction,
- 			size_t count)
- {
- 	WARN_ON(direction & ~(READ | WRITE));
--	i->type = ITER_BVEC | (direction & (READ | WRITE));
--	i->bvec = bvec;
--	i->nr_segs = nr_segs;
--	i->iov_offset = 0;
--	i->count = count;
-+	*i = (struct iov_iter) {
-+		.iter_type = ITER_BVEC,
-+		.data_source = direction,
-+		.bvec = bvec,
-+		.nr_segs = nr_segs,
-+		.iov_offset = 0,
-+		.count = count
-+	};
- }
- EXPORT_SYMBOL(iov_iter_bvec);
- 
-@@ -1199,12 +1213,15 @@ void iov_iter_pipe(struct iov_iter *i, unsigned int direction,
- {
- 	BUG_ON(direction != READ);
- 	WARN_ON(pipe_full(pipe->head, pipe->tail, pipe->ring_size));
--	i->type = ITER_PIPE | READ;
--	i->pipe = pipe;
--	i->head = pipe->head;
--	i->iov_offset = 0;
--	i->count = count;
--	i->start_head = i->head;
-+        *i = (struct iov_iter) {
-+		.iter_type = ITER_PIPE,
-+		.data_source = false,
-+		.pipe = pipe,
-+		.head = pipe->head,
-+		.start_head = pipe->head,
-+		.count = count,
-+		.iov_offset = 0
-+	};
- }
- EXPORT_SYMBOL(iov_iter_pipe);
- 
-@@ -1220,9 +1237,11 @@ EXPORT_SYMBOL(iov_iter_pipe);
- void iov_iter_discard(struct iov_iter *i, unsigned int direction, size_t count)
- {
- 	BUG_ON(direction != READ);
--	i->type = ITER_DISCARD | READ;
--	i->count = count;
--	i->iov_offset = 0;
-+	*i = (struct iov_iter) {
-+		.iter_type = ITER_DISCARD,
-+		.data_source = false,
-+		.count = count,
-+	};
- }
- EXPORT_SYMBOL(iov_iter_discard);
- 
+>
+> [1] https://github.com/gwelymernans/linux/commits/gwelymernans/linux
+>
+>
+> > >
+> > > $ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
+> > > Instrumentation level: IR  entry_first = 0
+> > > Total functions: 48970
+> > > Maximum function count: 62070879
+> > > Maximum internal block count: 83221158
+> > > Top 20 functions with the largest internal block counts:
+> > >   drivers/tty/n_tty.c:n_tty_write, max count = 83221158
+> > >   rcu_read_unlock_strict, max count = 62070879
+> > >   _cond_resched, max count = 25486882
+> > >   rcu_all_qs, max count = 25451477
+> > >   drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
+> > >   _raw_spin_unlock_irqrestore, max count = 18874121
+> > >   drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
+> > >   _raw_spin_lock_irqsave, max count = 18509161
+> > >   memchr, max count = 15525452
+> > >   _raw_spin_lock, max count = 15484254
+> > >   __mod_memcg_state, max count = 14604619
+> > >   __mod_memcg_lruvec_state, max count = 14602783
+> > >   fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
+> > >   __mod_lruvec_state, max count = 12527154
+> > >   __mod_node_page_state, max count = 12525172
+> > >   native_sched_clock, max count = 8904692
+> > >   sched_clock_cpu, max count = 8895832
+> > >   sched_clock, max count = 8894627
+> > >   kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
+> > >   fpregs_assert_state_consistent, max count = 8287198
+> > >
+> > > --
+> > > Thanks,
+> > > ~Nick Desaulniers
+> > >
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210116001324.2865-1-nick.desaulniers%40gmail.com.
