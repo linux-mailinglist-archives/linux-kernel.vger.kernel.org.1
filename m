@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEB42F8EB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B682F8EB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbhAPSfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 13:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbhAPSfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 13:35:02 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16945C061574;
-        Sat, 16 Jan 2021 10:34:22 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id u17so24811891iow.1;
-        Sat, 16 Jan 2021 10:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=haCNNMLEdzsVTpRh+QKEOezUp3vmDWCORLXoscT61rg=;
-        b=LLaT7umahNBRF/yvo/DrQ0/nyLC2UPJi2OXHwmC6xZihlYi4mQz253mbEn1qFHVCse
-         xWMOF5lSDia7aNDzjDeUDWikpNM8g4dTd2xY454uYTDVp454GQk3sumuGpM7xEz9Edu9
-         DWWw0oau5/H6RAGsfziTbIDHnNFlr1yJD0CJ/p7uQdMU1RO2kA5514mwGn9dgGMdNf2T
-         npKmIepaoNcvnGO6WLo764f4VnfSHApdqijEVcMPVbtxd3RVRPcuAf35oKXDBxxbicnp
-         cS4xNGxfhW+pqo/lHMixjc0XluPqHfKmrwQWlmzB6YN2B2Jd7PYqkaH06T/7YCaAQuyB
-         eVvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=haCNNMLEdzsVTpRh+QKEOezUp3vmDWCORLXoscT61rg=;
-        b=lEhpaU8BbaFh4tQso8MPmchTV7d49G+UCrsJIOsh7Iw3eFzPu5fSxkWhI3Tdr9VzWE
-         0/OVEfhe348Vx6TUGrb8p9tr6Nmlh4/LZnViv1MWTpPUdQkPGJ7gt5pDRdNulLxSbZ8T
-         SzpRraVHIFVG4mzjcveWVFvIc3J5GYlMzpxp+vY0lkk44Jr9hXr5oT0X13+C7skmaVBx
-         bTiamLIHlzcegwedDuUz/wc8OdpDidvhf56USxlMm4OKP0Ki+mJhgp5DIlSF9ZBj0RfX
-         HH5bPKdX+OZsbKQs/6+skKrmFLC5cJ1g/ig+XKL5REeE9EvlTGXvo9I0h1H7TCHnLy7u
-         G2zg==
-X-Gm-Message-State: AOAM532IZCLKirqsgSBnsb8GHViF/LMb0Mb3uvvd7WDC6rNNPZ/PhTOt
-        V8zBIN7uzpwFBE+EXH1YPcAGHVI8BkAa2PLdfPzpbY9TYzBoI6Yp
-X-Google-Smtp-Source: ABdhPJzpQNemTcMpDSUTGQzNMPMHsJF5ft+33M2D6OUvkLVfT2AZy8C0p6fW2I5l4pxXAkh5/fFyqJc7d2Anka1uVT8=
-X-Received: by 2002:a92:cd8c:: with SMTP id r12mr15390669ilb.221.1610822061262;
- Sat, 16 Jan 2021 10:34:21 -0800 (PST)
+        id S1727807AbhAPSf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 13:35:59 -0500
+Received: from mga11.intel.com ([192.55.52.93]:34785 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727663AbhAPSf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 13:35:58 -0500
+IronPort-SDR: OpYSYeQ+XoZ9OvXwmdjpRydNX3fNgSQrklvanCvXqMswQKN7zwQJzwHCwzP9Z7wzCuEcDfk/6K
+ qrTuoQhao6LQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9866"; a="175176646"
+X-IronPort-AV: E=Sophos;i="5.79,352,1602572400"; 
+   d="scan'208";a="175176646"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 10:35:17 -0800
+IronPort-SDR: GnY77fKiXYavFnIKZdk81hwMunvmCoQzDAPM0H4i+usCOE8dWoBfuJ9SwOnsWI/r4cv9nRxIAE
+ /nYvNVQ1YSNg==
+X-IronPort-AV: E=Sophos;i="5.79,352,1602572400"; 
+   d="scan'208";a="401634468"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.212.36.189]) ([10.212.36.189])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 10:35:16 -0800
+Subject: Re: [RFC V1 0/7] Introduce AVX512 optimized crypto algorithms
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, Dave Hansen <dave.hansen@intel.com>,
+        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
+        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
+        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
+        ilya.albrekht@intel.com, kyung.min.park@intel.com,
+        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com,
+        X86 ML <x86@kernel.org>
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <X+Et0ubPcBVZOURL@sol.localdomain>
+ <caa90522-14ac-c674-b6f5-22a7d8359a3c@intel.com>
+ <CAMj1kXGFsQMpWCYCB8Vqeq2Kj+WBiXkVv=dom13PJhbR3EZKFQ@mail.gmail.com>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <07b2cb98-1a3d-0bce-98ff-e0250220e9fd@intel.com>
+Date:   Sat, 16 Jan 2021 10:35:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1610817523-6789-1-git-send-email-glqinhongwei@gmail.com> <40f475e1-2352-5bc5-3823-ddc40de3299e@web.de>
-In-Reply-To: <40f475e1-2352-5bc5-3823-ddc40de3299e@web.de>
-From:   Hongwei Qin <glqinhongwei@gmail.com>
-Date:   Sun, 17 Jan 2021 02:34:10 +0800
-Message-ID: <CAKvRR0QXuETjF3zMb_CBPhGt9h_WeYp8y3TVL7fK4FvS8hqQqA@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gSW4gdGhlIGN1cnJlbnQgaW1wbGVtZW50YXRpb24sIHNob3VsZF9jaA==?=
-        =?UTF-8?B?ZWNrX3JhdGUoKSDigKY=?=
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMj1kXGFsQMpWCYCB8Vqeq2Kj+WBiXkVv=dom13PJhbR3EZKFQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Makus,
-My apology for sending to the wrong mail list. Please ignore this
-email. I'll reformat it and send it to the fio maillist.
+Hi Ard,
 
-Regards,
-Hongwei
-
-On Sun, Jan 17, 2021 at 2:10 AM Markus Elfring <Markus.Elfring@web.de> wrote:
+On 1/16/2021 8:52 AM, Ard Biesheuvel wrote:
+> On Mon, 28 Dec 2020 at 20:11, Dey, Megha <megha.dey@intel.com> wrote:
+>> Hi Eric,
+>>
+>> On 12/21/2020 3:20 PM, Eric Biggers wrote:
+>>> On Fri, Dec 18, 2020 at 01:10:57PM -0800, Megha Dey wrote:
+>>>> Optimize crypto algorithms using VPCLMULQDQ and VAES AVX512 instructions
+>>>> (first implemented on Intel's Icelake client and Xeon CPUs).
+>>>>
+>>>> These algorithms take advantage of the AVX512 registers to keep the CPU
+>>>> busy and increase memory bandwidth utilization. They provide substantial
+>>>> (2-10x) improvements over existing crypto algorithms when update data size
+>>>> is greater than 128 bytes and do not have any significant impact when used
+>>>> on small amounts of data.
+>>>>
+>>>> However, these algorithms may also incur a frequency penalty and cause
+>>>> collateral damage to other workloads running on the same core(co-scheduled
+>>>> threads). These frequency drops are also known as bin drops where 1 bin
+>>>> drop is around 100MHz. With the SpecCPU and ffmpeg benchmark, a 0-1 bin
+>>>> drop(0-100MHz) is observed on Icelake desktop and 0-2 bin drops (0-200Mhz)
+>>>> are observed on the Icelake server.
+>>>>
+>>> Do these new algorithms all pass the self-tests, including the fuzz tests that
+>>> are enabled when CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
+>> I had tested these algorithms with CRYPTO_MANAGER_DISABLE_TESTS=n and
+>> tcrypt, not with
+>> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y (I wasn't aware this existed, my bad).
+>> I see a couple of errors after enabling it and am working on fixing those.
+>>
+> Hello Megha,
 >
-> > This patch addresses the issue by not checking td->bytes_done in should_check_rate.
+> I think the GHASH changes can be dropped (as discussed in the other
+> thread), given the lack of a use case. The existing GHASH driver could
+> also be removed in the future, but I don't think it needs to be part
+> of this series.
+Ok, I will remove the GHASH patch from the next series.
 >
-> I suggest to improve the change description.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=1d94330a437a573cfdf848f6743b1ed169242c8a#n89
->
-> Please choose a succinct patch subject.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=1d94330a437a573cfdf848f6743b1ed169242c8a#n569
->
->
-> > +++ b/fio.h
->
-> Do you refer to a header file from a special repository here?
-> https://github.com/axboe/fio/blame/4008b7fc8e2bff60a4e98de0005e6bc71b1a8641/fio.h#L765
->
-> Regards,
-> Markus
+> Could you please rebase this onto the latest AES-NI changes that are
+> in Herbert's tree? (as well as the ones I sent out today) They address
+> some issues with indirect calls and excessive disabling of preemption,
+> and your GCM and CTR changes are definitely going to be affected by
+> this as well.
+Yeah sure, will do, thanks for the headsup!
