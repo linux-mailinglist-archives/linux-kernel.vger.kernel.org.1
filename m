@@ -2,259 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9619F2F8B67
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73A72F8B6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbhAPFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 00:12:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbhAPFMV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 00:12:21 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16EBC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 21:11:40 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id md11so6241721pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 21:11:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PXzS8aDWu6xxUoSTQEQCGpy3cWp/RHPt68K5SBPTpHU=;
-        b=f6u9NKw6hlB4+gXP3wa9Vu/V1R+SfR0yaU/Nfda14ttnWZ7ytHOxjIksewCb/W+KjA
-         bGIZcyadotyKfsdLdNnqZdk1oDG4AG5MEQ0691U0XAak4FBuMVHLrph9us+g2AaLJWOd
-         +YrD1pIJAPMxAe+/MQv6cjGSv+jW8Bgwj8pRmdG3MxpkwSjQ0rW4fo+DRIofFlO6CYrC
-         EyEQCCrvKOUlrwrNdGELpg+JjZCwJddM7e9gubVOLEtgP/QQeAmjyxhwhbOvZufFZOX1
-         6jLgUiUKB7zvwVQsp7GYIRv2KRGN4g5cNG5TErOekEYC8x/PQBkQYWqn9ytpppdfpgC2
-         ly0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=PXzS8aDWu6xxUoSTQEQCGpy3cWp/RHPt68K5SBPTpHU=;
-        b=HcOy2qgOtINhpEE8xpxt/XORpA9n1FFJB3HbLnLXQbyRQvl0Hv78k6VNdnVe3CWmNw
-         SpOXX4YaIDXD+XhDiunTyvXPEAn4LTwVNtr3srzpV5y0nNxX427WuhXb2RDQQhgPazi8
-         rS5Mbv1tyrI+5AyYQ6YTGLOCAIO6o07qNFzKT+5+3mPdAK0x3zBjsJQMPGLY7rnyWRgL
-         19YL8KjBB7T90bmV2Q0hm2F+ninBcTwMIo5RHUNRAl5tKnUuGufV79vp6GXP8j6lP2Vd
-         hlIZAby+YBqkl7mA2rfTRPmivxy/EQrAbScNXDCPqUURKOKL1WbA1ZhcB9QOH5tM5Q7j
-         p/6g==
-X-Gm-Message-State: AOAM531NiZSglHI8GiVeu7i7zI+F6sAdsGkY5cQ0i2o46vUveIbAY2Cg
-        prXWoEAlbSwYTX9DRRc6cnSEpyOm+CXHlbYZ
-X-Google-Smtp-Source: ABdhPJxB+QocAYEUnaEzCn9prdchvObT7nXTPWNr7kqcqRpt50UbpIRTL0K1obB3JmklJQn923zzOg==
-X-Received: by 2002:a17:90a:2e83:: with SMTP id r3mr13736820pjd.112.1610773899773;
-        Fri, 15 Jan 2021 21:11:39 -0800 (PST)
-Received: from [127.0.0.1] ([14.33.99.107])
-        by smtp.gmail.com with ESMTPSA id o83sm2285975pfd.158.2021.01.15.21.11.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 21:11:39 -0800 (PST)
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <c742707e-eb6d-6a22-3006-52dc3bf458d8@gmail.com>
- <161072980241.18103.11713889922046524226@build.alporthouse.com>
- <161073047349.18103.16410031184146072179@build.alporthouse.com>
-From:   Jinoh Kang <jinoh.kang.kr@gmail.com>
-Autocrypt: addr=jinoh.kang.kr@gmail.com; keydata=
- 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
- Nv8WeK9sQ0q6RmWqnT1HwyCBsVRR18k6XBM=
-Subject: Re: [PATCH] drm/i915/userptr: detect un-GUP-able pages early
-Message-ID: <e3ef8af7-f3fb-a6aa-9838-a90b6d5516ac@gmail.com>
-Date:   Sat, 16 Jan 2021 05:11:16 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0
+        id S1726229AbhAPFOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 00:14:18 -0500
+Received: from mga11.intel.com ([192.55.52.93]:63066 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbhAPFOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 00:14:17 -0500
+IronPort-SDR: JvhV61z+55KqT3N8oSC43R1AiTBw3uHAG8q2+slOmEoP8HfxdodA6o9qM6H+zogtzpvLSSXX8o
+ EBhbs/UpFy2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="175139043"
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="175139043"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:13:35 -0800
+IronPort-SDR: VO+fWAxNMX9qXWNXppPU80NtrrzAshrDDmQCIsJ3+on3YPQpTRsNEF11y40mi0b4OyIscOD8hW
+ MDC5agiIMOPg==
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="405679921"
+Received: from arbindbx-mobl.amr.corp.intel.com (HELO [10.213.184.69]) ([10.213.184.69])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:13:34 -0800
+Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Dey, Megha" <megha.dey@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, wajdi.k.feghali@intel.com,
+        greg.b.tucker@intel.com, robert.a.kasten@intel.com,
+        rajendrakumar.chinnaiyan@intel.com, tomasz.kantecki@intel.com,
+        ryan.d.saffores@intel.com, ilya.albrekht@intel.com,
+        kyung.min.park@intel.com, Tony Luck <tony.luck@intel.com>,
+        ira.weiny@intel.com
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <1608325864-4033-4-git-send-email-megha.dey@intel.com>
+ <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
+ <dfb5f2e0-027d-2b9c-aec7-313ff0275381@intel.com>
+ <83d87dec-dd76-1ddc-1e20-4bf1c7db7918@intel.com> <YAJJmzWm3rPcdxMs@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7cdbce42-2d40-95bc-d719-62a1580d6ebf@intel.com>
+Date:   Fri, 15 Jan 2021 21:13:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <161073047349.18103.16410031184146072179@build.alporthouse.com>
+In-Reply-To: <YAJJmzWm3rPcdxMs@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 5:07 PM, Chris Wilson wrote:
-> Quoting Chris Wilson (2021-01-15 16:56:42)
->> Quoting Jinoh Kang (2021-01-15 16:23:31)
->>> If GUP-ineligible pages are passed to a GEM userptr object, -EFAULT is
->>> returned only when the object is actually bound.
->>>
->>> The xf86-video-intel userspace driver cannot differentiate this
->>> condition, and marks the GPU as wedged.
->>
->> The idea was to call gem_set_domain on the object to validate the pages
->> after creation. I only did that for read-only... I did however make mesa
->> use set-domain for validation.
-> 
-> Hmm, I remember a reason why we wanted to be lazy in populating the
-> pages was that we would often be called to create a map that was never
-> used. So the additional gup + bind was measurable, and we would rather
-> just have a probe.
-> -Chris
-> 
+On 1/15/21 6:04 PM, Eric Biggers wrote:
+> On Fri, Jan 15, 2021 at 04:20:44PM -0800, Dave Hansen wrote:
+>> On 1/15/21 4:14 PM, Dey, Megha wrote:
+>>> Also, I do not know of any cores that implement PCLMULQDQ and not AES-NI.
+>> That's true, bit it's also possible that a hypervisor could enumerate
+>> support for PCLMULQDQ and not AES-NI.  In general, we've tried to
+>> implement x86 CPU features independently, even if they never show up in
+>> a real CPU independently.
+> We only add optimized implementations of crypto algorithms if they are actually
+> useful, though.  If they would never be used in practice, that's not useful.
 
-try_upload__blt uses the map immediately, so I guess that would be an
-appropriate place to patch.
+Yes, totally agree.  If it's not of practical use, it doesn't get merged.
 
-> Basically XShmAttachFd, which is not exposed on libX11.
-
-To clarify: privcmd pages cannot actually be passed by fd, since it's
-tightly bound with current->mm.  There's some sysv shmop hooking hack
-involved, which is injected in Xorg side.
-
----
-
-Besides, is there an equivalent code path that lets you eagerly *unpin*
-pages when closing an userptr object without waiting for the worker?
-
-This is actually more of a problem in drivers/xen/grant-table.c side,
-since it hangs the current task until all page refs are released, and
-it didn't even use ZONE_DEVICE pages until recently (while still not
-using dev_pagemap_ops::page_free, since the unpopulated-alloc pgmap
-is not MEMORY_DEVICE_FS_DAX apparently).
-
-(You could say that we should switch to DMA-BUF instead and that would
-be a valid criticism.  I'm merely figuring out what the best workaround
-for the current status quo would be.)
-
-I'm using something like the following:
----
- drivers/gpu/drm/i915/gem/i915_gem_object.c       | 8 ++++++++
- drivers/gpu/drm/i915/gem/i915_gem_object_types.h | 1 +
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c      | 3 ++-
- drivers/gpu/drm/i915/i915_params.c               | 3 +++
- drivers/gpu/drm/i915/i915_params.h               | 1 +
- 5 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-index 00d24000b5e8..4352a5788fd8 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-@@ -167,6 +167,14 @@ static void i915_gem_close_object(struct drm_gem_object *gem, struct drm_file *f
- 		i915_lut_handle_free(lut);
- 		i915_gem_object_put(obj);
- 	}
-+
-+	if (i915_modparams.gem_userptr_close_immediate &&
-+	    i915_gem_object_type_has(obj, I915_GEM_OBJECT_IMM_RELEASE) &&
-+	    i915_gem_object_is_shrinkable(obj) &&
-+	    !atomic_read(&obj->mm.shrink_pin) &&
-+	    i915_gem_object_unbind(obj, I915_GEM_OBJECT_UNBIND_ACTIVE |
-+					I915_GEM_OBJECT_UNBIND_TEST) == 0)
-+		__i915_gem_object_put_pages(obj);
- }
- 
- static void __i915_gem_free_object_rcu(struct rcu_head *head)
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object_types.h b/drivers/gpu/drm/i915/gem/i915_gem_object_types.h
-index e2d9b7e1e152..0ac1dfed0b91 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_object_types.h
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_object_types.h
-@@ -36,6 +36,7 @@ struct drm_i915_gem_object_ops {
- #define I915_GEM_OBJECT_IS_PROXY	BIT(3)
- #define I915_GEM_OBJECT_NO_MMAP		BIT(4)
- #define I915_GEM_OBJECT_ASYNC_CANCEL	BIT(5)
-+#define I915_GEM_OBJECT_IMM_RELEASE	BIT(7)
- 
- 	/* Interface between the GEM object and its backing storage.
- 	 * get_pages() is called once prior to the use of the associated set
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-index f2eaed6aca3d..baa91daf43a1 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -705,7 +705,8 @@ static const struct drm_i915_gem_object_ops i915_gem_userptr_ops = {
- 	.flags = I915_GEM_OBJECT_HAS_STRUCT_PAGE |
- 		 I915_GEM_OBJECT_IS_SHRINKABLE |
- 		 I915_GEM_OBJECT_NO_MMAP |
--		 I915_GEM_OBJECT_ASYNC_CANCEL,
-+		 I915_GEM_OBJECT_ASYNC_CANCEL |
-+		 I915_GEM_OBJECT_IMM_RELEASE,
- 	.get_pages = i915_gem_userptr_get_pages,
- 	.put_pages = i915_gem_userptr_put_pages,
- 	.dmabuf_export = i915_gem_userptr_dmabuf_export,
-diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-index 7f139ea4a90b..4d056fd1b6e7 100644
---- a/drivers/gpu/drm/i915/i915_params.c
-+++ b/drivers/gpu/drm/i915/i915_params.c
-@@ -197,6 +197,9 @@ i915_param_named_unsafe(fake_lmem_start, ulong, 0400,
- 	"Fake LMEM start offset (default: 0)");
- #endif
- 
-+i915_param_named(gem_userptr_close_immediate, bool, 0600,
-+	"Immediately release pages when userptr GEM object is closed (default:false)");
-+
- static __always_inline void _print_param(struct drm_printer *p,
- 					 const char *name,
- 					 const char *type,
-diff --git a/drivers/gpu/drm/i915/i915_params.h b/drivers/gpu/drm/i915/i915_params.h
-index 330c03e2b4f7..a94367a0345b 100644
---- a/drivers/gpu/drm/i915/i915_params.h
-+++ b/drivers/gpu/drm/i915/i915_params.h
-@@ -79,6 +79,7 @@ struct drm_printer;
- 	param(bool, disable_display, false, 0400) \
- 	param(bool, verbose_state_checks, true, 0) \
- 	param(bool, nuclear_pageflip, false, 0400) \
-+	param(bool, gem_userptr_close_immediate, false, 0600) \
- 	param(bool, enable_dp_mst, true, 0600) \
- 	param(bool, enable_gvt, false, 0400)
- 
--- 
-Sincerely,
-Jinoh Kang
+I just wanted to share what we do for other related but independent CPU
+features.
