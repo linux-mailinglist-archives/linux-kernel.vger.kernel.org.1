@@ -2,101 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435482F8C11
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937C62F8C16
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbhAPHj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 02:39:57 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:46946 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbhAPHj4 (ORCPT
+        id S1726722AbhAPHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 02:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbhAPHmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 02:39:56 -0500
-Received: by mail-io1-f69.google.com with SMTP id a2so19222412iod.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:39:41 -0800 (PST)
+        Sat, 16 Jan 2021 02:42:51 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4738C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:42:10 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id u19so12080883edx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 23:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mzN4ky5LJAN7o6Gjr7qou54ao7859x7d7VxUbl7+ufs=;
+        b=YkJBOwJHaHjAm7z6A1iEysNQZBq88KDb1rzLGvSB2F2+8E5lsj1bVuciO0e8NqZLbs
+         Mj269Ros9GUhAWURiw8JMYUvC30glm+nS7wa2dNvBZheA9acRP/RmbqTHnMshS+tm/1F
+         OCLYI6wjzd/Esqkdf/K9s0H3IM2WsRPjsXmHh3gofi6v2Wy/LR95jsNBOkreNebBdH9y
+         qG7YNmqr8VdxvXQ3MUQFftPEHzeUk8E/KCbBklGx2XHLtBc6dn1jVUr3aSeBxWxaHN7X
+         xAXN8sA99Jy42FvzN+3ZQmg5r2GufUSs+okilJZdfJixFJNsj7VQenBWqYeTDqpVAZVW
+         kABg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=XNO2X9QsJWsMKa6x0kj7dO5GxScLbpJTTbVeJMjwKF0=;
-        b=Vacd9C7WJKGhO+kYr7sNIdBSYr9J+CZj411tkinXV1JPx7NcJLBCZjNw6KQsS8GJB+
-         ddZuYMLYLlxenI5Cq32kKMMl4hrHoEVUXdnrvXmLIeptu58jNmOAU9of972cN3C/Rs/n
-         TTpd6VV9ZDCrt8jYPklXDAOTGejAOawVMitsm4/BnauijG1t+KT0ywVOZc8HqGRpxlKD
-         aV9uNiE8lVfWVSTxajlxKbZ4Q+DT/9RIdDTB5gwEC1Brxdv24irYwzI5qsRmdWfPm/PL
-         26hBMluLm2f/pKyDU03Q5cCozFJ6V7LZuJO4/nYtr3iBZPjeOGpQmTDj/NZGFkR0Yjie
-         I0Kw==
-X-Gm-Message-State: AOAM533XuDt8y+5hbyzYV1GpnsFAz2q9ah59OqhowyLgn5Qg56rpj7P0
-        HZYr2mHAvnA/zwAnxpul5B3BOLi6lnjE/CHXgYffI1ch99oV
-X-Google-Smtp-Source: ABdhPJxa0rcWUGUhDHoDvxnBVeJm7kaO1d4flGmxk2bqPMwv2znPn0nWNhhfTrtQgnct1KCP1rf7Ubjrv838fDwfJv2sSk/yWZ8P
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mzN4ky5LJAN7o6Gjr7qou54ao7859x7d7VxUbl7+ufs=;
+        b=bSLXs2UpByzSqYABk7uP+buE3vVuZFCUpqBMvvPWzhioElp+tPm1J7BSVfPdOvBTIO
+         9jGU+u2nS2qYoNXnRYZTwXdw3+gnIJQm2JXjDAPEpzndT8vXkVaO30z3YWUcDSXDaUvT
+         wvhWHuAXMJRwh3rBJRE3swy3hCLwsEtZkew2LUjqHyjQ/IE1TuojAr0gzEPYvzyvlw3K
+         LFv+nc24gLCbiX3aU76RH1mUmpJDxvVarcXH2vd3pMZwJ9lFFVn+DDnZGyyQXUaiGBDf
+         VBOvDJlfqX6KMBLp6c2JwNqSMWMguXPbOrzqO2fJlUAmBpX9f2eX7ReYEfQFFeyQ0inX
+         7i1w==
+X-Gm-Message-State: AOAM532iTG7zbej+gt7VKHl3yopdkUislueVSZtE69UNbVIBXEKsFsmw
+        N/LRodlUuVwFaPJ3G2ZQuKChxxoaPOkSKA7rDyD31w==
+X-Google-Smtp-Source: ABdhPJx98zZX/lfMD1Q06Ungq2aMVYlrAiAr65UndZPhu8ilTzqKGkrBw3e3mMBnSf+bZiLMTiD5F8HXURBnLAnwurc=
+X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr12570863edb.365.1610782929253;
+ Fri, 15 Jan 2021 23:42:09 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:11a5:: with SMTP id 5mr2110532ilj.294.1610782755889;
- Fri, 15 Jan 2021 23:39:15 -0800 (PST)
-Date:   Fri, 15 Jan 2021 23:39:15 -0800
-In-Reply-To: <0000000000003e36df05b8ed6677@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9ab3905b8ff959f@google.com>
-Subject: Re: WARNING in smk_write_net4addr
-From:   syzbot <syzbot+bf76b4978f531b8e2edb@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
+References: <20210115121956.679956165@linuxfoundation.org>
+In-Reply-To: <20210115121956.679956165@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 16 Jan 2021 13:11:57 +0530
+Message-ID: <CA+G9fYtasoYtaWr_BFQ3NFpLtRDQHNYjP6mVnakCaApZcPSG+w@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/25] 4.9.252-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, 15 Jan 2021 at 18:02, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.252 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 17 Jan 2021 12:19:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.252-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-HEAD commit:    f4e087c6 Merge tag 'acpi-5.11-rc4' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=161212d0d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=bf76b4978f531b8e2edb
-compiler:       clang version 11.0.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1449f3e0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a71868d00000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bf76b4978f531b8e2edb@syzkaller.appspotmail.com
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8454 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Modules linked in:
-CPU: 0 PID: 8454 Comm: syz-executor791 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc9000945f940 EFLAGS: 00010246
-RAX: ffffc9000945f9c0 RBX: ffffc9000945f9c0 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc9000945f9e8
-RBP: ffffc9000945fa80 R08: dffffc0000000000 R09: ffffc9000945f9c0
-R10: fffff5200128bf3d R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000012 R14: 1ffff9200128bf34 R15: 0000000000040cc0
-FS:  0000000000ffe880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000140 CR3: 000000001c506000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
- memdup_user_nul+0x26/0xf0 mm/util.c:260
- smk_write_net4addr+0xde/0x13d0 security/smack/smackfs.c:1173
- vfs_write+0x289/0xc90 fs/read_write.c:603
- ksys_write+0x171/0x2a0 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440249
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff42192178 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440249
-RDX: 00000000200001e2 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a50
-R13: 0000000000401ae0 R14: 0000000000000000 R15: 0000000000000000
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.252-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 5728b2608cec5ac986e96fec329c9afce3c6e6fd
+git describe: v4.9.251-26-g5728b2608cec
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.251-26-g5728b2608cec
+
+No regressions (compared to build v4.9.251)
+
+No fixes (compared to build v4.9.251)
+
+Ran 39849 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kvm-unit-tests
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* libhugetlbfs
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* ltp-open-posix-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
