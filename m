@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901EE2F8B3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155B12F8B49
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbhAPEdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 23:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S1726384AbhAPEhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 23:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729740AbhAPEdF (ORCPT
+        with ESMTP id S1725781AbhAPEhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 23:33:05 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBEAC061794
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p18so7297180pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
+        Fri, 15 Jan 2021 23:37:33 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE99C061757;
+        Fri, 15 Jan 2021 20:36:53 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id d203so11883765oia.0;
+        Fri, 15 Jan 2021 20:36:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
-        b=AhCJrurJWr5qakhtTFitP0L+ZLAyEUUdfmPca3QpxNzNGFZrZqXzwK7rGFldzEKG/g
-         rJg/IJDxekMuO8bfkHTyYr74RzsMadcBKp3YR9g06tgDFSHtXj+chssKalfaIawkjxih
-         BRVvlJPQYIvd4KdUAxAhR4o75d35icXrZB/EFP+iGbzySEycNsF4pX+FdJ9wg3SoTuE5
-         rFtP8JHAXY+SgOM6dFnjOivvQw+GG6iyCeM1dcpiO6/ytRmGQmhhFtnGXUsk/g7/6di8
-         Vd538ChRdWi0U4cRJs4gB1uu7Phm5CVMgdVGwZ8UBewEAtTIVAqqGMDPKErXtfOpnTpg
-         SEvw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BlqeqK9wTksAgD2a/ZAPhDPWkNZFCYi2+FM4QG1cpWU=;
+        b=jPX5qW+kkUmViBqBOpkM5uFR5te3xnSYlu20llkjP3Wv+8HL3Tsvm9Oby5fGzzVb22
+         Md+/8/Qu0YWRSEp5A/fq7az7qC95xHxk+Kq9pQkoksxp8nJXu72k9vKR/XN+/MN5SwPh
+         VW7e7wdUMBL8uw3HLBjSL1xGPV4GDhc8x6GTOufeAvMr3KNnTjPCL8kHTYD/dBvB67EC
+         GU4ApzHIrqKUT2Qxv40hjWMCQEpbW0creBMeTIRq/meuWPp9bwf1FL64tHOWklqZzCyO
+         /CFBNELl3IAZX9zN5EjngNSHFe6Zt9wA5EX1N5velT15WA8E/7PonEQXD8GiDfALxpka
+         lcoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
-        b=rbVVthGYKjmDysJooU+siKaRc0jJWdCo2LJnsiA3Lw8oKu681JQN+waGSIjcJXQ15i
-         0QV3shbAX7oUR3EOCVpXsy4oL0ZqQJuHB6nV6XcJt5zjsa7QCIywrWeGxuAMyx4gr33h
-         zNds5ONyXHMSimG3joLRNPC1CFdOP3Z2sPnP9TkEnK4RC1eDvwYW3VSRqcOOzvWLZPdY
-         rYL8Ooim+lyzaXmv3GlBWomhs2nbvJG5iDGzdPExrjBLiNAme5lHt9yn+rA0EQz/xZoX
-         eMQAMkdzX5fZuNQXLK+nYhsO4YGSnNQQOQz9nk2v6c5A9B35W9t3g+aueVhtM4KIdorJ
-         p14w==
-X-Gm-Message-State: AOAM531G3z7MjpN4rrlHpEAynirmeOrWoQgLBBr00EJHRI23LKzZkl8G
-        Um7do0mE34LuHY8o32J6UIi74A==
-X-Google-Smtp-Source: ABdhPJyKP8sU4ECWM/iW0Xk589JXcKQYdttY9E5LYxNTDUNToqzSmjvyhu/nR8SzTobIC2lS6ErK0A==
-X-Received: by 2002:a62:7d90:0:b029:19d:917b:6c65 with SMTP id y138-20020a627d900000b029019d917b6c65mr16224433pfc.28.1610771544088;
-        Fri, 15 Jan 2021 20:32:24 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id a29sm9378348pfr.73.2021.01.15.20.32.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 20:32:23 -0800 (PST)
-Date:   Fri, 15 Jan 2021 20:32:19 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YAJsUyH2zspZxF2S@google.com>
-References: <20210108012846.4134815-1-vipinsh@google.com>
- <20210108012846.4134815-2-vipinsh@google.com>
- <YAICLR8PBXxAcOMz@mtj.duckdns.org>
- <YAIUwGUPDmYfUm/a@google.com>
- <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BlqeqK9wTksAgD2a/ZAPhDPWkNZFCYi2+FM4QG1cpWU=;
+        b=AfgT/TGp12biqZU0POzyUuzc6OwDPKUBlMUzy3vdVsNUUZKI/BNU+kMUxnYyK+27ad
+         9PqtB2dDvBkTMVS/ye3KEJ7UdnCc81UtABnr8RL3llOdYUZiFK6H9vu3p4n796vBn4wd
+         FlBk1N/xn7FxfMDOi4i23/6KuphvBehnMNUKs+hL2A4j8Ic6yaMQQkJ0QEBhUjb5NWxl
+         j5oR69U1iQpFiAucmjQVzv+frXy55Efq7bMcxJyvCvrvhlxzvic+5uR3Bh81GdLlNetE
+         Y36mid6rLE+wa4KnS7dCCFS+5/dalUzh7PTyf1C1Bcfz7rRDEacqmmU2OSz98fHWoIBo
+         CLZw==
+X-Gm-Message-State: AOAM532ZhgdRZSnQYQyB1v84rnXDqtvHpyY+jqvaVIc1dfDbXH+YZDyi
+        PpkPiYZJ1HHxpxaXX+VtCCe25S0fA0E=
+X-Google-Smtp-Source: ABdhPJxW3VM7pLY9g37IyPNGmfblCLM9y/rxa1IyDqSuYsO0CyH07LlQf3DIxHe2u3Ui/Lvmyqw+qg==
+X-Received: by 2002:aca:cc17:: with SMTP id c23mr8031954oig.80.1610771812674;
+        Fri, 15 Jan 2021 20:36:52 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.6.112.224])
+        by smtp.googlemail.com with ESMTPSA id b188sm2075313oif.49.2021.01.15.20.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 20:36:52 -0800 (PST)
+Subject: Re: [PATCH net 1/2] ipv6: create multicast route with RTPROT_KERNEL
+To:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210115184209.78611-1-mcroce@linux.microsoft.com>
+ <20210115184209.78611-2-mcroce@linux.microsoft.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <5a553d08-2b3f-79a2-2c0e-b1ad644a43d4@gmail.com>
+Date:   Fri, 15 Jan 2021 21:36:51 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+In-Reply-To: <20210115184209.78611-2-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:43:32PM -0500, Tejun Heo wrote:
-> On Fri, Jan 15, 2021 at 02:18:40PM -0800, Vipin Sharma wrote:
-> > > * Why is .sev a separate namespace? Isn't the controller supposed to cover
-> > >   encryption ids across different implementations? It's not like multiple
-> > >   types of IDs can be in use on the same machine, right?
-> > > 
-> > 
-> > On AMD platform we have two types SEV and SEV-ES which can exists
-> > simultaneously and they have their own quota.
+On 1/15/21 11:42 AM, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> Can you please give a brief explanation of the two and lay out a scenario
-> where the two are being used / allocated disjointly?
+> The ff00::/8 multicast route is created without specifying the fc_protocol
+> field, so the default RTPROT_BOOT value is used:
+> 
+>   $ ip -6 -d route
+>   unicast ::1 dev lo proto kernel scope global metric 256 pref medium
+>   unicast fe80::/64 dev eth0 proto kernel scope global metric 256 pref medium
+>   unicast ff00::/8 dev eth0 proto boot scope global metric 256 pref medium
+> 
+> As the documentation says, this value identifies routes installed during
+> boot, but the route is created when interface is set up.
+> Change the value to RTPROT_KERNEL which is a better value.
+> 
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> ---
+>  net/ipv6/addrconf.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+> index eff2cacd5209..19bf6822911c 100644
+> --- a/net/ipv6/addrconf.c
+> +++ b/net/ipv6/addrconf.c
+> @@ -2469,6 +2469,7 @@ static void addrconf_add_mroute(struct net_device *dev)
+>  		.fc_flags = RTF_UP,
+>  		.fc_type = RTN_UNICAST,
+>  		.fc_nlinfo.nl_net = dev_net(dev),
+> +		.fc_protocol = RTPROT_KERNEL,
+>  	};
+>  
+>  	ipv6_addr_set(&cfg.fc_dst, htonl(0xFF000000), 0, 0, 0);
 > 
 
-SEV-ES has stronger memory encryption gurantees compared to SEV, apart
-from encrypting the application memory it also encrypts register state
-among other things. In a single host ASIDs can be distributed between
-these two types by BIOS settings.
 
-Currently, Google Cloud has Confidential VM machines offering using SEV.
-ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
-cannot run on SEV-ES and vice versa
-
-There are use cases for both types of VMs getting used in future.
-
-> > > > Other ID types can be easily added in the controller in the same way.
-> > > 
-> > > I'm not sure this is necessarily a good thing.
-> > 
-> > This is to just say that when Intel and PowerPC changes are ready it
-> > won't be difficult for them to add their controller.
-> 
-> I'm not really enthused about having per-hardware-type control knobs. None
-> of other controllers behave that way. Unless it can be abstracted into
-> something common, I'm likely to object.
-
-There was a discussion in Patch v1 and consensus was to have individual
-files because it makes kernel implementation extremely simple.
-
-https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
-
-> 
-> > > > +static int enc_id_cg_stat_show(struct seq_file *sf, void *v)
-> > > > +{
-> > > > +	unsigned long flags;
-> > > > +	enum encryption_id_type type = seq_cft(sf)->private;
-> > > > +
-> > > > +	spin_lock_irqsave(&enc_id_cg_lock, flags);
-> > > > +
-> > > > +	seq_printf(sf, "total %u\n", enc_id_capacity[type]);
-> > > > +	seq_printf(sf, "used %u\n", root_cg.res[type].usage);
-> > > 
-> > > Dup with .current and no need to show total on every cgroup, right?
-> > 
-> > This is for the stat file which will only be seen in the root cgroup
-> > directory.  It is to know overall picture for the resource, what is the
-> > total capacity and what is the current usage. ".current" file is not
-> > shown on the root cgroup.
-> 
-> Ah, missed the flags. It's odd for the usage to be presented in two
-> different ways tho. I think it'd make more sense w/ cgroup.current at root
-> level. Is the total number available somewhere else in the system?
-
-This information is not available anywhere else in the system. Only
-other way to get this value is to use CPUID instruction (0x8000001F) of
-the processor. Which also has disdvantage if sev module in kernel
-doesn't use all of the available ASIDs for its work (right now it uses
-all) then there will be a mismatch between what user get through their
-code and what is actually getting used in the kernel by sev.
-
-In cgroup v2, I didn't see current files for other cgroups in root
-folder that is why I didn't show that file in root folder.
-
-Will you be fine if I show two files in the root, something like:
-
-encids.sev.capacity
-encids.sev.current
-
-In non root folder, it will be:
-encids.sev.max
-encids.sev.current
-
-I still prefer encids.sev.stat, as it won't repeat same information in
-each cgroup but let me know what you think.
-
-Thanks
+What's the motivation for changing this? ie., what s/w cares that it is
+kernel vs boot?
