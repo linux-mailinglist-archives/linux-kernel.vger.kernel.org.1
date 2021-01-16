@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860D72F8C1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D272F8C1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 08:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbhAPH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 02:58:32 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54114 "EHLO
+        id S1726656AbhAPH71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 02:59:27 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54190 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbhAPH6c (ORCPT
+        with ESMTP id S1725917AbhAPH71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 02:58:32 -0500
+        Sat, 16 Jan 2021 02:59:27 -0500
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 618E71C0B78; Sat, 16 Jan 2021 08:57:32 +0100 (CET)
-Date:   Sat, 16 Jan 2021 08:57:31 +0100
+        id 4F03D1C0B7D; Sat, 16 Jan 2021 08:58:29 +0100 (CET)
+Date:   Sat, 16 Jan 2021 08:58:28 +0100
 From:   Pavel Machek <pavel@denx.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
         patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
         stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.8-rc1 review
-Message-ID: <20210116075731.GA14187@amd>
-References: <20210115122006.047132306@linuxfoundation.org>
+Subject: Re: [PATCH 4.19 00/43] 4.19.168-rc1 review
+Message-ID: <20210116075828.GB14187@amd>
+References: <20210115121957.037407908@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
 Content-Disposition: inline
-In-Reply-To: <20210115122006.047132306@linuxfoundation.org>
+In-Reply-To: <20210115121957.037407908@linuxfoundation.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---MGYHOYXEY6WxJCY8
+--hHWLQfXTYDoKhP50
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> This is the start of the stable review cycle for the 5.10.8 release.
-> There are 103 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.19.168 release.
+> There are 43 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 
 CIP testing did not find any problems here:
 
 https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
+4.19.y
 
 Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
 Best regards,
                                                                 Pavel
+							=09
+
 --=20
 DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
 HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---MGYHOYXEY6WxJCY8
+--hHWLQfXTYDoKhP50
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmACnGsACgkQMOfwapXb+vLc+wCgvJ5q/zK53bNv45E3onJTPPcN
-vCEAoIkm61ucSdYyzQe2TP5oOe49C5J1
-=cwFe
+iEYEARECAAYFAmACnKQACgkQMOfwapXb+vKt6QCeI3MmJPWTItwoW2C6d6aqAthr
+ioQAoKbChXJX/SUHuqy8xwA0kyuHh0UR
+=eimj
 -----END PGP SIGNATURE-----
 
---MGYHOYXEY6WxJCY8--
+--hHWLQfXTYDoKhP50--
