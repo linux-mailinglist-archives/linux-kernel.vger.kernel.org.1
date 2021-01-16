@@ -2,233 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EDD2F8E31
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5052F8E3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbhAPRRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:17:32 -0500
-Received: from smtp-42ad.mail.infomaniak.ch ([84.16.66.173]:35077 "EHLO
-        smtp-42ad.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727091AbhAPRR3 (ORCPT
+        id S1727559AbhAPRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727307AbhAPRUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:17:29 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DJ4Th0JkRzMqHHH;
-        Sat, 16 Jan 2021 18:16:40 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DJ4Tc5tpwzlh8TM;
-        Sat, 16 Jan 2021 18:16:36 +0100 (CET)
-Subject: Re: [PATCH v26 07/12] landlock: Support filesystem access-control
-To:     Jann Horn <jannh@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201209192839.1396820-1-mic@digikod.net>
- <20201209192839.1396820-8-mic@digikod.net>
- <CAG48ez1wbAQwU-eoC9DngHyUM_5F01MJQpRnLaJFvfRUrnXBdA@mail.gmail.com>
- <aeb3e152-8108-89d2-0577-4b130368f14f@digikod.net>
- <CAG48ez2HJCFvmFALDYDYnufE755Dqh3JquAMf-1mnzmRrdKaoQ@mail.gmail.com>
- <9be6481f-9c03-dd32-378f-20bc7c52315c@digikod.net>
- <CAG48ez1O0VTwEiRd3KqexoF78WR+cmP5bGk5Kh5Cs7aPepiDVg@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <28d2a149-0fe0-764b-85b3-6f979d1dd931@digikod.net>
-Date:   Sat, 16 Jan 2021 18:16:57 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <CAG48ez1O0VTwEiRd3KqexoF78WR+cmP5bGk5Kh5Cs7aPepiDVg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Sat, 16 Jan 2021 12:20:33 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26875C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 09:19:53 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id i7so8163632pgc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 09:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CStLKt4XFMfuxZea2+GjDkCtdNe09x7PTfiHnBFMo64=;
+        b=Rxi/VSvmtr3Dd4fQJwZfow2M1tDFpF8ahyHG/rYNe2rHWVb5f6/3yj6kFrgX2Ld5VQ
+         JkypfrqZcdZ7vC8VOT6/vWQBSDwlUqsxPu1F+fur1FA9iZVVZ2nEclZHVzkA7HuAFYc9
+         i6mRMUOaKDzcL7/g9QGEih1kYzYl9Rpl52GJ3Lp/dqkJjBv9Fuo6m6Dw9UcehzFqS3i2
+         GymWSrIdfDYIZYFQbvdjWEWth1Ao6PIhPhOD1606Z35nfUzJuDvR6/Z8mNI2mVqMctSJ
+         EwXuAEnTiMbxzd6jbBD29iBwAdpu06gywvzR7gwuKIkZ/97aTi1Od3Zqbk7h8x4gdGV1
+         BYIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CStLKt4XFMfuxZea2+GjDkCtdNe09x7PTfiHnBFMo64=;
+        b=N7svaLLzc7WQozLjmdkNuNCS6uMHe9Ffq5yFqT4RS9er+a7C0D1ji+xyAdhS57Tp8D
+         aKFYhKLQbIiPgQrLu94j1SXP1G7HIVINtL2xzpixZ/3q0hFTT18ilpIsGg6d252DyKcR
+         4gUFxf1SX0IaTWSzk2aV1FpQk/rgraAbFfwbG/dbnuEUfwcexFj6nmEOSfI7KHXOSTaZ
+         SQ6Soe7r7K5bjNlw+xGdZmJ0tRXcOcxCraT1ZtsTJaVOb+mFhdx3aQVC6egLD/2v5UP1
+         F9tC+rQnSgX7/k8UTrivgexhM6l/AXXtcBhz7teM2HLFFmpZgMw836Q+Az6uz95byGWx
+         hgXg==
+X-Gm-Message-State: AOAM533NNiaOnY4p/+avDdKG19DD1Htphlc3Ny1ut6QuvepF6QAvj7NO
+        5TS+SO5AfPxxkK/Zy/DV3uftFiQ+ryQ=
+X-Google-Smtp-Source: ABdhPJyo7761B5w4B4vQfwBuVUXl25lFhlurW44tLF2LNRFIprjV3m66mGLfjyYpheFF4xathBy7VQ==
+X-Received: by 2002:a62:d5:0:b029:1b4:144c:f217 with SMTP id 204-20020a6200d50000b02901b4144cf217mr7439883pfa.13.1610817592533;
+        Sat, 16 Jan 2021 09:19:52 -0800 (PST)
+Received: from localhost.localdomain.localdomain ([115.156.140.39])
+        by smtp.gmail.com with ESMTPSA id v11sm11515456pju.40.2021.01.16.09.19.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Jan 2021 09:19:51 -0800 (PST)
+From:   HongweiQin <glqinhongwei@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     HongweiQin <glqinhongwei@gmail.com>
+Subject: [PATCH] In the current implementation, should_check_rate() returns false if ddir_rw_sum(td->bytes_done)==0. Therefore, a thread may violate the rate if iodepth*bs > rate.
+Date:   Sun, 17 Jan 2021 01:18:43 +0800
+Message-Id: <1610817523-6789-1-git-send-email-glqinhongwei@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch addresses the issue by not checking td->bytes_done in should_check_rate.
 
-On 15/01/2021 19:31, Jann Horn wrote:
-> On Fri, Jan 15, 2021 at 10:10 AM Mickaël Salaün <mic@digikod.net> wrote:
->> On 14/01/2021 23:43, Jann Horn wrote:
->>> On Thu, Jan 14, 2021 at 7:54 PM Mickaël Salaün <mic@digikod.net> wrote:
->>>> On 14/01/2021 04:22, Jann Horn wrote:
->>>>> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
->>>>>> Thanks to the Landlock objects and ruleset, it is possible to identify
->>>>>> inodes according to a process's domain.  To enable an unprivileged
->>>>>> process to express a file hierarchy, it first needs to open a directory
->>>>>> (or a file) and pass this file descriptor to the kernel through
->>>>>> landlock_add_rule(2).  When checking if a file access request is
->>>>>> allowed, we walk from the requested dentry to the real root, following
->>>>>> the different mount layers.  The access to each "tagged" inodes are
->>>>>> collected according to their rule layer level, and ANDed to create
->>>>>> access to the requested file hierarchy.  This makes possible to identify
->>>>>> a lot of files without tagging every inodes nor modifying the
->>>>>> filesystem, while still following the view and understanding the user
->>>>>> has from the filesystem.
->>>>>>
->>>>>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
->>>>>> keep the same struct inodes for the same inodes whereas these inodes are
->>>>>> in use.
->>>>>>
->>>>>> This commit adds a minimal set of supported filesystem access-control
->>>>>> which doesn't enable to restrict all file-related actions.  This is the
->>>>>> result of multiple discussions to minimize the code of Landlock to ease
->>>>>> review.  Thanks to the Landlock design, extending this access-control
->>>>>> without breaking user space will not be a problem.  Moreover, seccomp
->>>>>> filters can be used to restrict the use of syscall families which may
->>>>>> not be currently handled by Landlock.
->>>>> [...]
->>>>>> +static bool check_access_path_continue(
->>>>>> +               const struct landlock_ruleset *const domain,
->>>>>> +               const struct path *const path, const u32 access_request,
->>>>>> +               u64 *const layer_mask)
->>>>>> +{
->>>>> [...]
->>>>>> +       /*
->>>>>> +        * An access is granted if, for each policy layer, at least one rule
->>>>>> +        * encountered on the pathwalk grants the access, regardless of their
->>>>>> +        * position in the layer stack.  We must then check not-yet-seen layers
->>>>>> +        * for each inode, from the last one added to the first one.
->>>>>> +        */
->>>>>> +       for (i = 0; i < rule->num_layers; i++) {
->>>>>> +               const struct landlock_layer *const layer = &rule->layers[i];
->>>>>> +               const u64 layer_level = BIT_ULL(layer->level - 1);
->>>>>> +
->>>>>> +               if (!(layer_level & *layer_mask))
->>>>>> +                       continue;
->>>>>> +               if ((layer->access & access_request) != access_request)
->>>>>> +                       return false;
->>>>>> +               *layer_mask &= ~layer_level;
->>>>>
->>>>> Hmm... shouldn't the last 5 lines be replaced by the following?
->>>>>
->>>>> if ((layer->access & access_request) == access_request)
->>>>>     *layer_mask &= ~layer_level;
->>>>>
->>>>> And then, since this function would always return true, you could
->>>>> change its return type to "void".
->>>>>
->>>>>
->>>>> As far as I can tell, the current version will still, if a ruleset
->>>>> looks like this:
->>>>>
->>>>> /usr read+write
->>>>> /usr/lib/ read
->>>>>
->>>>> reject write access to /usr/lib, right?
->>>>
->>>> If these two rules are from different layers, then yes it would work as
->>>> intended. However, if these rules are from the same layer the path walk
->>>> will not stop at /usr/lib but go down to /usr, which grants write
->>>> access.
->>>
->>> I don't see why the code would do what you're saying it does. And an
->>> experiment seems to confirm what I said; I checked out landlock-v26,
->>> and the behavior I get is:
->>
->> There is a misunderstanding, I was responding to your proposition to
->> modify check_access_path_continue(), not about the behavior of landlock-v26.
->>
->>>
->>> user@vm:~/landlock$ dd if=/dev/null of=/tmp/aaa
->>> 0+0 records in
->>> 0+0 records out
->>> 0 bytes copied, 0.00106365 s, 0.0 kB/s
->>> user@vm:~/landlock$ LL_FS_RO='/lib' LL_FS_RW='/' ./sandboxer dd
->>> if=/dev/null of=/tmp/aaa
->>> 0+0 records in
->>> 0+0 records out
->>> 0 bytes copied, 0.000491814 s, 0.0 kB/s
->>> user@vm:~/landlock$ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd
->>> if=/dev/null of=/tmp/aaa
->>> dd: failed to open '/tmp/aaa': Permission denied
->>> user@vm:~/landlock$
->>>
->>> Granting read access to /tmp prevents writing to it, even though write
->>> access was granted to /.
->>>
->>
->> It indeed works like this with landlock-v26. However, with your above
->> proposition, it would work like this:
->>
->> $ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd if=/dev/null of=/tmp/aaa
->> 0+0 records in
->> 0+0 records out
->> 0 bytes copied, 0.000187265 s, 0.0 kB/s
->>
->> …which is not what users would expect I guess. :)
-> 
-> Ah, so we are disagreeing about what the right semantics are. ^^ To
-> me, that is exactly the behavior I would expect.
-> 
-> Imagine that someone wants to write a program that needs to be able to
-> load libraries from /usr/lib (including subdirectories) and needs to
-> be able to write output to some user-specified output directory. So
-> they use something like this to sandbox their program (plus error
-> handling):
-> 
-> static void add_fs_rule(int ruleset_fd, char *path, u64 allowed_access) {
->   int fd = open(path, O_PATH);
->   struct landlock_path_beneath_attr path_beneath = {
->     .parent_fd = fd,
->     .allowed_access = allowed_access
->   };
->   landlock_add_rule(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,
->           &path_beneath, 0);
->   close(fd);
-> }
-> int main(int argc, char **argv) {
->   char *output_dir = argv[1];
->   int ruleset_fd = landlock_create_ruleset(&ruleset_attr,
-> sizeof(ruleset_attr, 0);
->   add_fs_rule(ruleset_fd, "/usr/lib", ACCESS_FS_ROUGHLY_READ);
->   add_fs_rule(ruleset_fd, output_dir,
-> LANDLOCK_ACCESS_FS_WRITE_FILE|LANDLOCK_ACCESS_FS_MAKE_REG|LANDLOCK_ACCESS_FS_REMOVE_FILE);
->   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
->   landlock_enforce_ruleset_current(ruleset_fd, 0);
-> }
-> 
-> This will *almost* always work; but if the output directory is
-> /usr/lib/x86_64-linux-gnu/ , loading libraries from that directory
-> won't work anymore, right? So if userspace wanted this to *always*
-> works correctly, it would have to somehow figure out whether there is
-> a path upwards from the output directory (under any mount) that will
-> encounter /usr/lib, and set different permissions if that is the case.
-> That seems unnecessarily messy to me; and I think that this will make
-> it harder for generic commandline tools and such to adopt landlock.
-> 
-> 
-> If you do want to have the ability to deny access to subtrees of trees
-> to which access is permitted, I think that that should be made
-> explicit in the UAPI - e.g. you could (at a later point, after this
-> series has landed) introduce a new EXCLUDE flag for
-> landlock_add_rule() that means "I want to deny the access specified by
-> this rule", or something like that. (And you'd have to very carefully
-> document under which circumstances such rules are actually effective -
-> e.g. if someone grants full access to $HOME, but excludes $HOME/.ssh,
-> an attacker would still be able to rename $HOME/.ssh to $HOME/old_ssh,
-> and then if the program is later restarted and creates the ruleset
-> from scratch again, the old SSH folder will be accessible.)
-> 
+An example of the issue:
 
-OK, it's indeed a more pragmatic approach. I'll take your change and
-merge check_access_path_continue() with check_access_path(). Thanks!
+[root@localhost test]# cat fio_randwrite
+[global]
+thread
+kb_base=1000
+direct=1
+size=28GiB
+group_reporting
+io_size=16384
+ioengine=libaio
+iodepth=2
+bs=4096
+iodepth_batch_submit=1
+iodepth_batch_complete=1
+filename=/dev/qblkdev
+
+[fio_randwrite]
+rw=randwrite
+rate_iops=,1
+iodepth_batch_submit=1
+thinktime_blocks=1
+rate_cycle=1000
+thinktime=3s
+rate_ignore_thinktime=1
+
+[root@localhost test]# fio fio_randwrite
+
+blktrace output:
+259,1   11        1     0.100550729  6135  Q  WS 3541608 + 8 [fio]
+259,1   11        2     0.100552183  6135  G  WS 3541608 + 8 [fio]
+259,1   11        3     0.100560373  6135  D  WS 3541608 + 8 [fio]
+259,1   11        4     0.100570436  6135  C  WS 3541608 + 8 [0]
+259,1   11        5     0.100599816  6135  Q  WS 43470024 + 8 [fio]
+259,1   11        6     0.100600513  6135  G  WS 43470024 + 8 [fio]
+259,1   11        7     0.100601579  6135  D  WS 43470024 + 8 [fio]
+259,1   11        8     0.100612750  6135  C  WS 43470024 + 8 [0]
+259,1   11        9     3.101034407  6135  Q  WS 49511928 + 8 [fio]
+259,1   11       10     3.101036067  6135  G  WS 49511928 + 8 [fio]
+259,1   11       11     3.101054487  6135  D  WS 49511928 + 8 [fio]
+259,1   11       12     3.101068699  6135  C  WS 49511928 + 8 [0]
+259,1   11       13     6.101267480  6135  Q  WS 27599368 + 8 [fio]
+259,1   11       14     6.101269216  6135  G  WS 27599368 + 8 [fio]
+259,1   11       15     6.101277050  6135  D  WS 27599368 + 8 [fio]
+259,1   11       16     6.101287956  6135  C  WS 27599368 + 8 [0]
+
+Signed-off-by: HongweiQin <glqinhongwei@gmail.com>
+---
+ fio.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fio.h b/fio.h
+index 4d439d9..f5b3990 100644
+--- a/fio.h
++++ b/fio.h
+@@ -767,7 +767,7 @@ static inline bool should_check_rate(struct thread_data *td)
+ 	if (!__should_check_rate(td))
+ 		return false;
+ 
+-	return ddir_rw_sum(td->bytes_done) != 0;
++	return true;
+ }
+ 
+ static inline unsigned long long td_max_bs(struct thread_data *td)
+-- 
+1.8.3.1
+
