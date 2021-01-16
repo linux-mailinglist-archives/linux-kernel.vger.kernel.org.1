@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44662F89C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F8F2F89C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbhAPAIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:08:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727410AbhAPAIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:08:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5940B23B04
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 00:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610755680;
-        bh=+2AMcX5I9sdDNTAf5qRgriFiAplt2ZW+PvqTt0Q1cUw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=H30QuLLOfjwdKuGBWtbgERQsAf1AN+Ct/IbxmYsYZJ5roGAYPbGUX1GNWprD1p8fr
-         ISjj49tsECmhYofO7aFOr6R+t9/3Z4z6FRn5sBiy9Y/vgE8xnqQVi9AGidUxjJCsiL
-         WKRLZ0nACF0uIkL+e/VDVPFabM0+EJniPtKrzfllgLjUqnRV2rC6rEpjmmtHKUCTEu
-         uT3rNVKWXYCQT0PiKS7ads1+/7dSNJwnuWZSHaOXV/fFNi0xfnUNocMVQKnIYXPvA8
-         tWLuBOLUsWBs3mPQx4xUPrILf3Rp/+uIZesho5UIUKqCLiwASPIjo8MqklUh5bkMgk
-         b8JtA+oeG3vpQ==
-Received: by mail-ed1-f47.google.com with SMTP id g24so11403346edw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:08:00 -0800 (PST)
-X-Gm-Message-State: AOAM531ayWxqX6DIt9w3Q0VOZ7GnPd5YzXy2Zrz2s3MPET5Bi/LGOyT5
-        MIwujc9rwg2tj13Nq0fF00WKbVmuUrtKNx1ckag7xQ==
-X-Google-Smtp-Source: ABdhPJwA0R2ivqxfLZj25fjGEkl6YCppBiN4+N4FJIG/Q6L6/jH79qY/NR2oZiGDsSgT9/JyW8mJ9D5qzsk1TFAAdjk=
-X-Received: by 2002:a05:6402:a5b:: with SMTP id bt27mr11884235edb.222.1610755677728;
- Fri, 15 Jan 2021 16:07:57 -0800 (PST)
+        id S1728928AbhAPAJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:09:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727912AbhAPAJr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 19:09:47 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B68C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:09:06 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id i6so10311899otr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:09:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T96/LrmrX4v1El2ImPseDYJC7X8vCHw3ch5hAsrm1bA=;
+        b=JgHq9YwcfkarHPYgR2P0+n7SkGpYtgtsd6SnV9KRsUnKQ+BAcHjRdpmSiHIT6lsMOL
+         7K1ltiSeekgfO/OdzsON8YHZEboJy8cswSlrGzH7qud3Iec4wRwuVRvKv1O37BWLMzr0
+         9R4/24oXo3TAAyO0VhtPA3IGx5mLPbvpEGZBsoWg7bVjdezaLKC/Bq2gC4psRNvcfz+/
+         pMTffgA1G7YHF1f5L4APsZlf2WpCM7Zl5Pe2yem0uoxO+kadgw49Lt7PUgIDDWHm2tlX
+         rKZstY3UWdNJEvKlJ674kY3lf/JY3XQpoPMJ6pf7vVyUWAO/Du4rbJgfusxe/zv9vaGd
+         3P1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T96/LrmrX4v1El2ImPseDYJC7X8vCHw3ch5hAsrm1bA=;
+        b=nLRsjBa/PWTOfmpsbQdRpEB1kv4DBt1ITw1YCOHdUl99TTq8adHeLfXfr/JzYIrwih
+         zC3z5kuWetN/XV/AX9m1LW6C+jaDrMmYaNiTA/tt9FG3RgiOd2wY/aOXsof3JVWJxN0R
+         8XLwR01Q1eZeY0qLzvWpkHqk8HNuk2MmRifyqmFii5AqONwOk2T4MURxNXfXl6KMAyH4
+         8IHQXZfup9lj/YOfidNNgbaysjJmN5t6KwgAIh+PzCibUPmNJ2DRRoEI0tmISVLGsKUU
+         emVtedkkSaWBa+7fv5aOT8NaOuy1awUXDo5YCVUHlXDSXHOT/P2cxZzyEFvp3IJRfVr8
+         8x7g==
+X-Gm-Message-State: AOAM531OCEaWlvdbUQumh8oJfjcCaIKT9zRDnvn42lwruFsbURkODpYG
+        emY2ireFjETgtaNTdGr2Qm3cUXDDdaOIqm6LcrAfrg==
+X-Google-Smtp-Source: ABdhPJyX5epGpS79rxarctVemmuXjNYVy1RFTLvTcq4yLzceLtn/p5JPoe5zCaa+iDP/L3UzLB9UZZRrm4vKmT6/Ky4=
+X-Received: by 2002:a9d:620d:: with SMTP id g13mr10334421otj.56.1610755745980;
+ Fri, 15 Jan 2021 16:09:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
- <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com>
- <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com> <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 15 Jan 2021 16:07:46 -0800
-X-Gmail-Original-Message-ID: <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
-Message-ID: <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
-Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
-To:     Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Ryan Houdek <sonicadvance1@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Amanieu d'Antras" <amanieu@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
+References: <20200903141122.72908-1-mgamal@redhat.com>
+In-Reply-To: <20200903141122.72908-1-mgamal@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 15 Jan 2021 16:08:54 -0800
+Message-ID: <CALMp9eT7yDGncP-G9v3fC=9PP3FD=uE1SBy1EPBbqkbrWSAXSg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Mohammed Gamal <mgamal@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 1:03 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Sep 3, 2020 at 7:12 AM Mohammed Gamal <mgamal@redhat.com> wrote:
 >
-> On Fri, Jan 15, 2021 at 3:06 AM Ryan Houdek <sonicadvance1@gmail.com> wrote:
-> > On Wed, Jan 6, 2021 at 12:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> On Wed, Jan 6, 2021 at 7:48 AM <sonicadvance1@gmail.com> wrote:
-> >> > From: Ryan Houdek <Sonicadvance1@gmail.com>
-> >> ...
-> >>
-> >> For x86, this has another complication, as some ioctls also need to
-> >> check whether they are in an ia32 task (with packed u64 and 32-bit
-> >> __kernel_old_time_t) or an x32 task (with aligned u64 and 64-bit
-> >> __kernel_old_time_t). If the new syscall gets wired up on x86 as well,
-> >> you'd need to decide which of the two behaviors you want.
-> >
-> >
-> > I can have a follow-up patch that makes this do ni-syscall on x86_64 since
-> > we can go through the int 0x80 handler, or x32 handler path and choose
-> > whichever one there.
+> This patch exposes allow_smaller_maxphyaddr to the user as a module parameter.
 >
-> I'd say for consistency
+> Since smaller physical address spaces are only supported on VMX, the parameter
+> is only exposed in the kvm_intel module.
+> Modifications to VMX page fault and EPT violation handling will depend on whether
+> that parameter is enabled.
 >
+> Also disable support by default, and let the user decide if they want to enable
+> it.
+>
+> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 15 ++++++---------
+>  arch/x86/kvm/vmx/vmx.h |  3 +++
+>  arch/x86/kvm/x86.c     |  2 +-
+>  3 files changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 819c185adf09..dc778c7b5a06 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -129,6 +129,9 @@ static bool __read_mostly enable_preemption_timer = 1;
+>  module_param_named(preemption_timer, enable_preemption_timer, bool, S_IRUGO);
+>  #endif
+>
+> +extern bool __read_mostly allow_smaller_maxphyaddr;
 
-We need to make it crystal clear on x86 what this ioctl does.  We have
-a silly selection of options:
-
- - ioctl32() via SYSCALL, x32 bit clear -- presumably does an i386 ioctl?
- - ioctl32() via SYSCALL, x32 bit set -- this needs to do something
-clearly documented.
- - ioctl32() via int80 -- presumably you're not wiring this up
-
-In any case, the compat alloc thing should just go away.  It's a hack
-and serves no real purpose.
-
-Finally, I'm not convinced that this patch works correctly.  We have
-in_compat_syscall(), and code that uses it may well be reachable from
-ioctl.  I personally would like to see in_compat_syscall() go away,
-but some other people (Hi, Christoph!) disagree, and usage seems to be
-increasing, not decreasing.
+Since this variable is in the kvm module rather than the kvm_intel
+module, its current setting is preserved across "rmmod kvm_intel;
+modprobe kvm_intel." That is, if set to true, it doesn't revert to
+false after "rmmod kvm_intel." Is that the intended behavior?
