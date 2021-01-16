@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58292F8F42
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD402F8F48
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 21:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbhAPUiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 15:38:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S1727096AbhAPUqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 15:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbhAPUia (ORCPT
+        with ESMTP id S1726385AbhAPUqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 15:38:30 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2371C061573;
-        Sat, 16 Jan 2021 12:37:49 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id md11so7000825pjb.0;
-        Sat, 16 Jan 2021 12:37:49 -0800 (PST)
+        Sat, 16 Jan 2021 15:46:08 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655BBC061573;
+        Sat, 16 Jan 2021 12:45:27 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id i63so10270202wma.4;
+        Sat, 16 Jan 2021 12:45:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W4LZHeYhMSwXOoFtnoqyYzOTzcNb7/z3BzpfRHAYl4U=;
-        b=AbVQZeaGTQZPOm6/Tkyv2qAiuVCtaKS3OjKaee8txBtHazejtQvqEg07Sre2J90Y++
-         38sE8BzEQBGAOgPn15atmpm5v+Wa3Cdg7P6Dd4ED6EL7OTV9jgnGuvEaN2PFMYcwtal9
-         OWleqneQhsVBjjI0SGjxGtwVPnD5ArbumxaGRMFWiKHyl6NKB1zwloiPET3/8meLQ3Wq
-         ZOBQTY/twv/3DPC+oBFF23wmk78pTb0CceFlFGA/9InWUJnSwsHw6XrX+4dHLExGdLc9
-         oGoz9A8bbTMtvVPjaLYJ4W4R7YxB9iD1pDEJVTWa+k/xJ+7Lmyu4SRXjCmHsY8YHVY9T
-         1rog==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1bOdjlQaGWQ8aWyfQJKQhH8VYqrUnQwXrgWi9Mree3I=;
+        b=JVLUSXN/s1nK2Icd010Ugl0WvUG8e2CogSLbdUBFSOCqzl8Viq35eqiCorrawBbqOP
+         lZdjcJr04Wpdfl0I5R5AF5jAS0inbViR+2YrmTTSNV4t668qWTILE5++Nf1XvS2wOCYD
+         LySvYMj2/eickyHPLaVIuS1zfuAn76npFktWUqmNc42VN2bJTPQJC1+B/Mb9IVS8wEoz
+         dqC3FavixxVSFWz1Xc2lbDjdUeBAdmxZX+s+g/mVTNC+9PA3UWodxnfHwcdlFA1zlP11
+         ujZM1QALLVQrEHB2Ire3ONAEyvBYfEeXY0Ulr28zoRfDDobOQ91WYmA/qf8c/Cgiavaq
+         dkAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W4LZHeYhMSwXOoFtnoqyYzOTzcNb7/z3BzpfRHAYl4U=;
-        b=IKKpZCwk/jD5UYTABi+QtuHDiT0Wxtj3CTwhkepwvaQ+P5HO52mKrWICYGt10J/m/g
-         Q3OVLKmmK3WbYFIR1Ffmvh5VBtEXkisP2VaWZto990kWTCkUZT7gP4hpBFE4Ts/YcGFA
-         j/xCnNlkjIa2PAaXud4nzbs2QoKz2S4QjIZRaBj6B/UJ4wpyNEVwobsWG/NOM6LHngRI
-         YclhWVpeKTauA42qp7h3h5NoqyITZ/KnaJ6MjgjexDZhVhSYlgZjZhZLJHGH84bbcA7V
-         MRmxq3jLRsODR29ovv9w/ArV2Ojz01ogAvRIH+CcEAt2ptYPGbzCOOLcA7EuZbOFr81E
-         248Q==
-X-Gm-Message-State: AOAM533KflK1IpODB9L4GdVfdHB4PxLDOSo6sqFIIMzPZtmcNZjFbog6
-        aDuxoXzEzP75UxTlhGHfgwgOu10QvPeYFD2lCVU=
-X-Google-Smtp-Source: ABdhPJw1VWvqWMXY73Do1StrgoqHlDIeQAC+szJA1f9C5Ez1tHYHDs7vhlfb75VodwT7ZdxyqLfgjxtZbXkUPLFHksA=
-X-Received: by 2002:a17:902:7b96:b029:de:7ae6:b8db with SMTP id
- w22-20020a1709027b96b02900de7ae6b8dbmr7534407pll.0.1610829469554; Sat, 16 Jan
- 2021 12:37:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1bOdjlQaGWQ8aWyfQJKQhH8VYqrUnQwXrgWi9Mree3I=;
+        b=cJPexEoi3sbWyFkRztO0P0e9otZK5CN/n7L1iS/YLT1jr9JiUr/NXo+ry6ZEwQE4dd
+         bW0eBXD62j8hHbPtB7wFLNbkTTt7jzy7prCcQoDv5hK2UUT+r1n/3yIXQhHegWMVU0gJ
+         W+bdw+2QLwz2ZVCJq/vfss0vPtb24lV+OHTXoWrC4PdmcVW880jMB2itPGaycfPxCeL4
+         MZfFwiBMarejerkLmUIhKggEp+gYQkRFST1RlSxS6X74P6bTgENOuyCtWWszVHKn+WCq
+         c/r/eEj2xpAXsa7mOOlZgwp3BVlf/yS45MC+pEu4Kg1u3LaUpI9xbqDoLaUstHEw35fr
+         rjTA==
+X-Gm-Message-State: AOAM532tPU4DeIFT7wGnDUO8SSbNg+Rvb29O7lF2GY2cx4xjGZ94bQxt
+        CiTR+gWMtdt6QDWxbEXPjsE=
+X-Google-Smtp-Source: ABdhPJwElVqFppdHo/z59LybTiKhI0iTID9QTEnWtvUWk4UygqYhNQIsB8EmTnF1JLq5RzR48DOtPw==
+X-Received: by 2002:a05:600c:2255:: with SMTP id a21mr14522086wmm.122.1610829925978;
+        Sat, 16 Jan 2021 12:45:25 -0800 (PST)
+Received: from localhost.localdomain (p200300f13723cb00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3723:cb00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id c2sm15180609wrt.87.2021.01.16.12.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Jan 2021 12:45:25 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     olek2@wp.pl
+Cc:     devicetree@vger.kernel.org, john@phrozen.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        robh+dt@kernel.org, tsbogend@alpha.franken.de
+Subject: RE: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway DMA bindings
+Date:   Sat, 16 Jan 2021 21:45:21 +0100
+Message-Id: <20210116204521.150091-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210103101803.2123-1-olek2@wp.pl>
+References: <20210103101803.2123-1-olek2@wp.pl>
 MIME-Version: 1.0
-References: <20210116011412.3211292-1-saravanak@google.com>
-In-Reply-To: <20210116011412.3211292-1-saravanak@google.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 16 Jan 2021 22:37:33 +0200
-Message-ID: <CAHp75Vdrio-sdvHuqV4GrUQe3=6HaAV_ZTh3_Od974DpDty_cw@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 3:15 AM Saravana Kannan <saravanak@google.com> wrote:
+(another late reply from me, sorry)
 
-> v1 -> v2:
-> - Fixed up compilation errors that were introduced accidentally
-> - Fixed a missing put_device()
+> +required:
+> +  - compatible
+> +  - reg
+This is actually an older IP variant of what can be found in the Intel
+LGM SoCs. The dt-bindings are currently being upstreamed for that newer
+SoC in [0].
 
-See my comments as per v1 and address.
+Based on "DOs and DON’Ts for designing and writing Devicetree bindings"
+I think some more mandatory properties are needed, even though our
+driver currently uses none of them:
+- interrupts: as far as I know the IP on the Lantiq SoCs has (at least)
+  one interrupt for each DMA channel. That means: 28 interrupts on the
+  xRX200 SoCs
+- I *assume* (but I have not researched if that's really the case) that
+  the Lantiq variant also has at least one clock input and a reset line
+- since we don't have a proper DMA driver yet I can't comment what we
+  should use for #dma-cells
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +examples:
+> +  - |
+> +    dma@e104100 {
+note to self: it seems that both dma@ and dma-controller@ are used in
+existing schemas (the latter having twice as many occurrences though):
+$ grep -R dma@ Documentation/devicetree/bindings/dma/* | wc -l
+20
+$ grep -R dma-controller@ Documentation/devicetree/bindings/dma/* | wc -l
+45
+
+
+Best regards,
+Martin
+
+
+[0] https://patchwork.ozlabs.org/project/devicetree-bindings/patch/0864b9bfa6e2b8b5e7ad9a7a739ca3274f66493c.1610703653.git.mallikarjunax.reddy@linux.intel.com/
+[1] https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-bindings.html
