@@ -2,130 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDBC2F8C56
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 09:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D0E2F8C5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbhAPIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 03:49:38 -0500
-Received: from mga12.intel.com ([192.55.52.136]:16777 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725928AbhAPIth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 03:49:37 -0500
-IronPort-SDR: QrcMJpPP3t0aga8mfWetrJIVl0QIvRaBEvYI/ayLVlJsyO9sPNZhtKirqKbZGmf7DIgzxQfbTw
- MmN90JCFWG4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="157831525"
-X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
-   d="scan'208";a="157831525"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 00:47:49 -0800
-IronPort-SDR: Gj/omGDMmq5AO7KBN65mxz3lEEwVQD2syYrIuFabArE/8qsIUdiZlMW4e2Jk9w1sp+nDfhhSW0
- oN/oXoelA7TQ==
-X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
-   d="scan'208";a="382943669"
-Received: from jliao3-mobl1.ccr.corp.intel.com (HELO [10.249.172.191]) ([10.249.172.191])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 00:47:42 -0800
-Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
-        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
-        dwmw2@infradead.org, alex.williamson@redhat.com,
-        bhelgaas@google.com, dan.j.williams@intel.com, will@kernel.org,
-        joro@8bytes.org, dmaengine@vger.kernel.org, eric.auger@redhat.com,
-        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
-        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
-        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
-        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
-        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
-        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
-To:     Leon Romanovsky <leon@kernel.org>
-References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
- <20210114013003.297050-2-baolu.lu@linux.intel.com>
- <20210114132627.GA944463@unreal>
- <b0c8b260-8e23-a5bd-d2da-ca1d67cdfa8a@linux.intel.com>
- <20210115063108.GI944463@unreal>
- <c58adc13-306a-8df8-19e1-27f834b3a7c9@linux.intel.com>
- <20210116083904.GN944463@unreal>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <eda6ae9f-76eb-3254-ce58-ea355418a4b1@linux.intel.com>
-Date:   Sat, 16 Jan 2021 16:47:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726733AbhAPI7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 03:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbhAPI7M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 03:59:12 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9CFC061793
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 00:58:30 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id l9so10954527ejx.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 00:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=SupsnYSf6GR5mRtK2ldxHv8f6Whjr7qQ6XQqX2Fhnio=;
+        b=gAhSi2F9+XmROyQU3zckFH/AKmGabpyTlfMpI2E1o1PDvkq4d8glSLSTdF3iM++WJN
+         dWwEc7ngG7gMFgeW3w/pb9YTsrsveu+GWf5v4edGU61dkOKQAxlRQvuy3uDR37s4d2pB
+         q2wNaGzlPrZOYL9GZY7w9T4aUfzot8NMuIiI/FbhECfAJtrYf5ZDu70bRePHA+1EUuRC
+         2ftvJWT1b5m4IndKrdf/why1CLZc9O8jHftMrI9Nj/URHnLy0IPDc4ozKZ4kLendEI4C
+         uZWiRLQcSYup+ly19ANGq0wv1Nb5xpTxUQCbTbrEAI/gSXf0kE4JFBhdPvhvlHpAFBo/
+         XfdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=SupsnYSf6GR5mRtK2ldxHv8f6Whjr7qQ6XQqX2Fhnio=;
+        b=nEr1APCbRa2pobxelCrIjKC7Mot6xEHze3npF8WYfmjguNZvZsbIVD+/AiAC7ohMcW
+         C9Le3PZX+1NBkAE7rILjjdSCNFVrn0D05Rs5BW+8i3MKvAtpsCFMT+21LwChWuk+7fdB
+         8QYcvs4+o/rjqVES+ctbegeOQRNzrTqX6gPw6ACXpGZQfdfdAU1lOAHhDqiQtqhD+Kps
+         xkHiBRjrFIhFyARGKQ0eoOYwXee4X8O4YbQZvpPUnEG6t5YjJTGD1oQjLfzhKNA1wx4F
+         MXclwdmI5+HLRz5G9HcdrpCZZXA8mumIf5emSeGJELOUsXlzGC8/8j4LpLtZDbWOHWkU
+         SDVg==
+X-Gm-Message-State: AOAM530a05P1Oq+n0AjXQTlKqWqxBkUq3Hz2nYTFVtouJ+BxefI1o6ss
+        HlOU+UuUVTjTAacADeMPQO8Fz4GWtRZEiycrJrw=
+X-Google-Smtp-Source: ABdhPJy8F53vMPdadzEMY1JdVaYz7GOQvt6lNINtheB34phrS2T6TcDPPqzztttQZCILDWbzMeNuQ7/pZlYDPoFE12c=
+X-Received: by 2002:a17:906:4c55:: with SMTP id d21mr11696761ejw.116.1610787509300;
+ Sat, 16 Jan 2021 00:58:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210116083904.GN944463@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: atm_visacardoffice@t-online.de
+Sender: ecob962@gmail.com
+Received: by 2002:a54:3f09:0:0:0:0:0 with HTTP; Sat, 16 Jan 2021 00:58:28
+ -0800 (PST)
+From:   lotto winner <lottoaward9@gmail.com>
+Date:   Sat, 16 Jan 2021 08:58:28 +0000
+X-Google-Sender-Auth: -uqFgvgFaYsP8g2fSFhjod2JjjM
+Message-ID: <CALQGt45pEbcKSs0FFGNcsew0DZ7MKMEBFBPYea2uY5_9tiVHKg@mail.gmail.com>
+Subject: DEAR LUCKY WINNER !!!CONGRATULATIONS!!!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
+Date: Saturday 16th January 2021 03:41:54 +1200
+Subject: CONTACT:FOR YOUR PRIZE YOU WON
+Website/ www.lotto.nl
 
-On 2021/1/16 16:39, Leon Romanovsky wrote:
-> On Sat, Jan 16, 2021 at 09:20:16AM +0800, Lu Baolu wrote:
->> Hi,
->>
->> On 2021/1/15 14:31, Leon Romanovsky wrote:
->>> On Fri, Jan 15, 2021 at 07:49:47AM +0800, Lu Baolu wrote:
->>>> Hi Leon,
->>>>
->>>> On 1/14/21 9:26 PM, Leon Romanovsky wrote:
->>>>> On Thu, Jan 14, 2021 at 09:30:02AM +0800, Lu Baolu wrote:
->>>>>> Some vendor IOMMU drivers are able to declare that it is running in a VM
->>>>>> context. This is very valuable for the features that only want to be
->>>>>> supported on bare metal. Add a capability bit so that it could be used.
->>>>>
->>>>> And how is it used? Who and how will set it?
->>>>
->>>> Use the existing iommu_capable(). I should add more descriptions about
->>>> who and how to use it.
->>>
->>> I want to see the code that sets this capability.
->>
->> Currently we have Intel VT-d and the virt-iommu setting this capability.
->>
->>   static bool intel_iommu_capable(enum iommu_cap cap)
->>   {
->>   	if (cap == IOMMU_CAP_CACHE_COHERENCY)
->>   		return domain_update_iommu_snooping(NULL) == 1;
->>   	if (cap == IOMMU_CAP_INTR_REMAP)
->>   		return irq_remapping_enabled == 1;
->> +	if (cap == IOMMU_CAP_VIOMMU)
->> +		return caching_mode_enabled();
->>
->>   	return false;
->>   }
->>
->> And,
->>
->> +static bool viommu_capable(enum iommu_cap cap)
->> +{
->> +	if (cap == IOMMU_CAP_VIOMMU)
->> +		return true;
->> +
->> +	return false;
->> +}
-> 
-> These two functions are reading this cap and not setting.
-> Where can I see code that does "cap = IOMMU_CAP_VIOMMU" and not "=="?
+The Acculotto Group Organization Collaburation with New Zealand lotto
+award, Operators of The National Lottery.
 
-The iommu_capable() is a generic IOMMU interface to query IOMMU
-capabilities. It takes @bus and @cap as input, and calls the callback
-of vendor iommu. If the vendor iommu driver supports the specific
-capability, it returns true. Otherwise, it returns false.
+12th AVENUE KWAME NKRUMAH 01 BP, ouagadougou Burkina Faso,
+REF N=C2=BA:AL/74-A0802742020.
+BATCH N=C2=BA: 2020AL-01
+REF Number: AL/74-A0802742020
 
-bool iommu_capable(struct bus_type *bus, enum iommu_cap cap)
-{
-         if (!bus->iommu_ops || !bus->iommu_ops->capable)
-                 return false;
+Congratulations to you as we bring to your notice, the results of the
+First Category draws of THE LOTTO PROMO INT We are happy to inform you
+that you have emerged a winner under the First Category, which is part
+of our promotional draws.
 
-         return bus->iommu_ops->capable(cap);
-}
-EXPORT_SYMBOL_GPL(iommu_capable);
+The draws are being officially announced today 16th  January 2021.
+Participants were selected through a computer ballot system drawn from
+2,500,000 email addresses of individuals and companies from Africa,
+America, Asia, Australia, Europe, Middle East, and Oceania as part of
+our International Promotions Program.
 
-In the vendor iommu's callback, it checks the capability and returns a
-value according to its capability, just as showed above.
+Your e-mail address, attached to ticket number 20511465463-7655, with
+serial number 472-9768-79 drew the lucky numbers 8-66-97-22-65-55 and
+consequently won in the First Category. You have therefore been
+awarded a lump sum pay out of =E2=82=AC2.500,000,000,00 (Two Million Five
+Hundred Thousand Euro), which is the winning payout for Category A
+winners. This is from a total cash prize of =E2=82=AC20,000,000.00 {Twenty
+Million Euro) shared amongst the first Eight (8) lucky winners in this
+category.
 
-Best regards,
-baolu
+CONGRATULATIONS ! ! !
+
+Your fund is now deposited with the paying Bank.In your best interest
+to avoid mix up of numbers and names of any kind, we request that you
+keep the entire details of your award strictly from public notice
+until the process of transferring your claims has been completed, and
+your funds remitted to your account.
+
+This is part of our security protocol to avoid double claiming or
+unscrupulous acts by participants/nonparticipants of this
+program.Please contact Eco-Bank through the (International Remittance
+Dept)immediately for due processing and remittance of your prize money
+to a designated account of your choice:
+
+NOTE: For easy reference and identification, find below your Reference
+and Batch numbers. Remember to quote these numbers in your
+correspondence with claims agent.
+
+REF Number: AL/74-A0802742020
+BATCH No: UOS/15/096/TVFS
+TICKET No:20511465463-7655
+SERIAL No:472-9768-79
+LUCKY No:8-66-97-22-65-5
+
+To claim your funds, please contact your claim officer.
+
+International Remittance Department.(Eco-Bank)
+Contact Director: Mr Ibrahime S. Zongo.
+E-mail: atm_visacardoffice@t-online.de
+
+Your are advice to provide him with the following bellow?
+
+Personal Verification Form:
+
+1.) Full Name:
+2.) Age:
+3.) Sex:
+4.) Address:
+5.) Zip/Postal Code:
+6.) State/Province:
+7) Country:
+8) Phone:
+9.) Occupation/Position:
+10.) Company:
+11.) International Passport;
+12.) Email Address:
+13.) Ref N=C2=BA:
+14.) Batch N=C2=BA:
+
+Bank account information;
+
+15.) Account Name;
+16.) Account Number;
+17.) Bank Name;
+18.) Bank Address;
+19.) Iban;
+20.) Swift Code;
+
+Congratulations once again from all our staff and thank you for being
+part of our promotions program.
+
+Yours Sincerely,
+
+The Management,
+Lottery Organisation.
+
+N.B: All claims must be completed within 7 working days of notification.
