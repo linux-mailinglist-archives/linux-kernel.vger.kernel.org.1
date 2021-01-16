@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432BA2F8DEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF72F2F8E43
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbhAPRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728462AbhAPRKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:51 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1DDC0617A7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:09:43 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id p18so7917088pgm.11
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:09:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uFVX+DeCBEJmZ4NDpg1ld7xFOp/fCxGCVOO/JOHrLKI=;
-        b=vYrM/XUA5E/W7pTWUsoSVJZGO0cH0ZnaciHWyRWJDJnfdHau8ffPSBso/eSffHct1E
-         XFhhsx0QmaUjUB5pMsbeKN3Dc/xLN+ich345UnOPVQ4vrU0qU9pKOB3YgQszKRhMNuKZ
-         YDcgLEn8a9x9+U+EOt6a+3dIybtRhHUCvGMDS0dTGbtgCoZALsfFm3/6AqzUlfvCODjz
-         0ftwWXYiAByHd4DPex8y2xCgG4CF24ALF0gLvhAotT9UjQL4S+Y4ct55YWLdQglXwqXb
-         i3uuKtvhD67M/g3MB0Q0mbcwVBBs3TJD6x6pr19fSZhqFDQ70vyWnmrg51vmuJ640+xB
-         i2ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uFVX+DeCBEJmZ4NDpg1ld7xFOp/fCxGCVOO/JOHrLKI=;
-        b=G66mxBpWW1/6tUCY5/Vuet4ZYHj1Uz54V+hZnaHbnzedtxMux8YuwRIGjkki9a4pKj
-         vMInIcZBzBHwzqnWZDfEokTLGGEbYsSAOsfAD3d4gNfhJcxQK6sO8a17ZMbPViYOFFlS
-         nIor+rHk9Rk2ne3R23WOEIcw1jD61midwS2hWAraAxnZ/QQouxmHuhJFDPzN0HXGLYjm
-         uxRn3be1a2/lyyCer1FOAi3qUVfWuGCfKe4eaC7uO6Yopi0zjKMEtn3t1vZYojGHsxHg
-         3razkZvieBfdYzvy6H6+Z9WhKsxmVM9jtZho55osazKubktZCPNenklb/rd4TkURrAi9
-         VCTw==
-X-Gm-Message-State: AOAM531yoJMy7mne/bGLA8EHti1w/q1WRqyFhDRoH323JY3TETBfq3Ck
-        o6cneCCDVMnwLyOoq4EN+gWB+4Nz0CQoAQuM4eUtKw==
-X-Google-Smtp-Source: ABdhPJzxdtpsdiFJAHgXDYTuSblCWSFnVEpEbMOPFJdf5Wj8VoBnnbuidyYX7xTzXxq3AWASW42S//c3dmTwPZiuj8o=
-X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
- g9-20020a62e3090000b02901ae5b4a3199mr17504790pfh.24.1610806182375; Sat, 16
- Jan 2021 06:09:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-2-vincenzo.frascino@arm.com> <20210115150811.GA44111@C02TD0UTHF1T.local>
- <ba23ab9b-8f49-bdb7-87d8-3eb99ddf54b6@arm.com>
-In-Reply-To: <ba23ab9b-8f49-bdb7-87d8-3eb99ddf54b6@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Sat, 16 Jan 2021 15:09:31 +0100
-Message-ID: <CAAeHK+x36J6a4GOpEpff0BKwCKgFTuRsGiyXyScRek3hVAbSJA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] kasan, arm64: Add KASAN light mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Marco Elver <elver@google.com>,
+        id S1727129AbhAPRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:23:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:54140 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726629AbhAPRXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:23:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57E6712FC;
+        Sat, 16 Jan 2021 06:18:23 -0800 (PST)
+Received: from [10.37.8.30] (unknown [10.37.8.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A19953F719;
+        Sat, 16 Jan 2021 06:18:20 -0800 (PST)
+Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
+ <20210115120043.50023-5-vincenzo.frascino@arm.com>
+ <20210115154520.GD44111@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
+Date:   Sat, 16 Jan 2021 14:22:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210115154520.GD44111@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 2:43 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
-> On 1/15/21 3:08 PM, Mark Rutland wrote:
-> > On Fri, Jan 15, 2021 at 12:00:40PM +0000, Vincenzo Frascino wrote:
-> >> Architectures supported by KASAN HW can provide a light mode of
-> >> execution. On an MTE enabled arm64 hw for example this can be identified
-> >> with the asynch mode of execution.
-> >> In this mode, if a tag check fault occurs, the TFSR_EL1 register is
-> >> updated asynchronously. The kernel checks the corresponding bits
-> >> periodically.
-> >
-> > What's the expected usage of this relative to prod, given that this has
-> > to be chosen at boot time? When/where is this expected to be used
-> > relative to prod mode?
-
 Hi Mark,
 
-Sync + no panic (what is called prod right now) + logging is for the
-initial MTE integration stage as causing panics is risky. There's no
-way to know how often MTE-detected bugs will happen during normal
-usage as the kernel is buggy.
+On 1/15/21 3:45 PM, Mark Rutland wrote:
+> On Fri, Jan 15, 2021 at 12:00:43PM +0000, Vincenzo Frascino wrote:
+>> mte_assign_mem_tag_range() is called on production KASAN HW hot
+>> paths. It makes sense to optimize it in an attempt to reduce the
+>> overhead.
+>>
+>> Optimize mte_assign_mem_tag_range() based on the indications provided at
+>> [1].
+> 
+> ... what exactly is the optimization?
+> 
+> I /think/ you're just trying to have it inlined, but you should mention
+> that explicitly.
+> 
 
-Eventually, we're hoping to switch to sync + panic to allow MTE to act
-as a security mitigation. For devices where the slowdown caused by
-sync is untolerable, there'll be an option to use async, which is
-significantly faster. The exact perf numbers are yet to be measured
-properly, I'll share them with one of the future patches.
+Good point, I will change it in the next version. I used "Optimize" as a
+continuation of the topic in the previous thread but you are right it is not
+immediately obvious.
 
-Thanks!
+>>
+>> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
+>>  arch/arm64/lib/mte.S         | 15 ---------------
+>>  2 files changed, 25 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+>> index 1a715963d909..9730f2b07b79 100644
+>> --- a/arch/arm64/include/asm/mte.h
+>> +++ b/arch/arm64/include/asm/mte.h
+>> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
+>>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
+>>  			 unsigned long addr, unsigned long data);
+>>  
+>> -void mte_assign_mem_tag_range(void *addr, size_t size);
+>> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>> +{
+>> +	u64 _addr = (u64)addr;
+>> +	u64 _end = _addr + size;
+>> +
+>> +	/*
+>> +	 * This function must be invoked from an MTE enabled context.
+>> +	 *
+>> +	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+>> +	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
+>> +	 */
+>> +	do {
+>> +		/*
+>> +		 * 'asm volatile' is required to prevent the compiler to move
+>> +		 * the statement outside of the loop.
+>> +		 */
+>> +		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
+>> +			     :
+>> +			     : "r" (_addr)
+>> +			     : "memory");
+>> +
+>> +		_addr += MTE_GRANULE_SIZE;
+>> +	} while (_addr < _end);
+> 
+> Is there any chance that this can be used for the last bytes of the
+> virtual address space? This might need to change to `_addr == _end` if
+> that is possible, otherwise it'll terminate early in that case.
+> 
+
+Theoretically it is a possibility. I will change the condition and add a note
+for that.
+
+>> +}
+> 
+> What does the code generation look like for this, relative to the
+> assembly version?
+> 
+
+The assembly looks like this:
+
+ 390:   8b000022        add     x2, x1, x0
+ 394:   aa0003e1        mov     x1, x0
+ 398:   d9200821        stg     x1, [x1]
+ 39c:   91004021        add     x1, x1, #0x10
+ 3a0:   eb01005f        cmp     x2, x1
+ 3a4:   54ffffa8        b.hi    398 <mte_set_mem_tag_range+0x48>
+
+You can see the handcrafted one below.
+
+> Thanks,
+> Mark.
+> 
+>> +
+>>  
+>>  #else /* CONFIG_ARM64_MTE */
+>>  
+>> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
+>> index 9e1a12e10053..a0a650451510 100644
+>> --- a/arch/arm64/lib/mte.S
+>> +++ b/arch/arm64/lib/mte.S
+>> @@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
+>>  	ret
+>>  SYM_FUNC_END(mte_restore_page_tags)
+>>  
+>> -/*
+>> - * Assign allocation tags for a region of memory based on the pointer tag
+>> - *   x0 - source pointer
+>> - *   x1 - size
+>> - *
+>> - * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+>> - * size must be non-zero and MTE_GRANULE_SIZE aligned.
+>> - */
+>> -SYM_FUNC_START(mte_assign_mem_tag_range)
+>> -1:	stg	x0, [x0]
+>> -	add	x0, x0, #MTE_GRANULE_SIZE
+>> -	subs	x1, x1, #MTE_GRANULE_SIZE
+>> -	b.gt	1b
+>> -	ret
+>> -SYM_FUNC_END(mte_assign_mem_tag_range)
+>> -- 
+>> 2.30.0
+>>
+
+-- 
+Regards,
+Vincenzo
