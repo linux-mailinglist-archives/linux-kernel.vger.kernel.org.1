@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE3F2F8B5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C102F8B63
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 06:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbhAPFCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 00:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbhAPFCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 00:02:35 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D1DC0613D3;
-        Fri, 15 Jan 2021 21:01:55 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id m5so6408060pjv.5;
-        Fri, 15 Jan 2021 21:01:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8yo9AzO/ZabABQi66kHrWNM+xtQus7FFVTP6b1wnq3Y=;
-        b=YCGeZsB+JstSJy6Nt1JoVnhQdbUCphvl3Q9qTwRsAqqZz+FlQeqyVwmKTnvs8wO6kB
-         IMGEfJASJhiy5WNLBKaND2zOiXdtRq/NyoV/gVPZUtNu4GzusTL274QOxP2j/WYNIFCk
-         i0zwVkDuqvUZ41rKVSxxXx98m0LGs0+u9RLmtcrJ7mOCECU416Sd7qT0Vw0wxhQVcjN9
-         9JAAXeYPiM+7jSSmndh3fPs8jp2fKZeIysDBVAta1CubpOLxW4WE2tNRd61pgNyDVo6D
-         vnHr5dM2UQTChiHIYTaxS//GeZakx/8byK7V+UXlRpM7SJqgMawDEglySrUyWZ3HvJsg
-         5sdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8yo9AzO/ZabABQi66kHrWNM+xtQus7FFVTP6b1wnq3Y=;
-        b=tRfskkdSyQi2OhhULr4kucmUkWgLJyaK9gKfxmEhpr3UnMrJ/GXva+RzWRA4UCqgN0
-         wkarn24a+e9RvNaoe60iPQdpuFHWkaxQGeOz4eS+qKfTgZTjRV4ZXbh5xRzO1rSPZS3o
-         GDEW/+c2IT6C/6fqAIFNc713HfYzzEK3pJ07EXB9NfAx5N//sO6Y0mWPAm7jGVLDdDuT
-         cP5Ckx5C4vKiDxjur5t0sfiKEFKLkymSlM6zyskqiAWMUopC02Jl0N7lFMdjgMQ+c3pk
-         v+qoA3SmrF3RKeTH0xo4Cktp54qBcHQ8nnnUxqDKALpDV3HBjSJkzA1zswFjpoZh8OXj
-         5d7Q==
-X-Gm-Message-State: AOAM532JMic6eG7IERI3XuGFX6sLPK0esg4wV1IxoEAnqz+yHvthYOeN
-        yLaIDtpqIXQIpEQHqOBUZgwwOjkaANA=
-X-Google-Smtp-Source: ABdhPJzp+lxTQQb9D/f8gND7OXokVp/5JX/ectgnQ1K7WNV6FfDoSo0fl1mZdYVXfZUhgi4qalNdmA==
-X-Received: by 2002:a17:902:d2d2:b029:de:7581:8ae1 with SMTP id n18-20020a170902d2d2b02900de75818ae1mr5477615plc.73.1610773314444;
-        Fri, 15 Jan 2021 21:01:54 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i10sm9697002pgt.85.2021.01.15.21.01.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jan 2021 21:01:53 -0800 (PST)
-Subject: Re: [PATCH net-next 2/2] net: dsa: mv88e6xxx: use
- mv88e6185_g1_vtu_getnext() for the 6250
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        id S1726094AbhAPFIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 00:08:40 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8963 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbhAPFIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 00:08:39 -0500
+IronPort-SDR: WAYycEPBLpMpDfvR7PYwSmeH0US7LKOBIh+3RzlzlKETV7lkt/IK/ftBhI/nqr2JlVC9qzn59F
+ kj+N8d5sYuHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="242714444"
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="242714444"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:07:54 -0800
+IronPort-SDR: u3td4UgxEexaKLnafZbBqA/S73h9dHPvHTMC7JKYrOF0EIbV5IUvaTzpzx4fVlfOk/XJkYTSTa
+ OApCJGrWG7SA==
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="425552013"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.254.14.175]) ([10.254.14.175])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 21:07:52 -0800
+Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Tobias Waldekranz <tobias@waldekranz.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210116023937.6225-1-rasmus.villemoes@prevas.dk>
- <20210116023937.6225-3-rasmus.villemoes@prevas.dk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <04cc328a-5e5b-bccc-340b-db074055bf78@gmail.com>
-Date:   Fri, 15 Jan 2021 21:01:51 -0800
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com,
+        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
+        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
+        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
+        ilya.albrekht@intel.com, kyung.min.park@intel.com,
+        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <1608325864-4033-4-git-send-email-megha.dey@intel.com>
+ <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
+ <dfb5f2e0-027d-2b9c-aec7-313ff0275381@intel.com> <YAJEu1esw0zPA7Qh@gmail.com>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <79ecc4a3-3bbb-77b2-4f2c-32ff17719086@intel.com>
+Date:   Fri, 15 Jan 2021 21:07:52 -0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210116023937.6225-3-rasmus.villemoes@prevas.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YAJEu1esw0zPA7Qh@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 1/15/2021 5:43 PM, Eric Biggers wrote:
+> On Fri, Jan 15, 2021 at 04:14:40PM -0800, Dey, Megha wrote:
+>>> Hello Megha,
+>>>
+>>> What is the purpose of this separate GHASH module? GHASH is only used
+>>> in combination with AES-CTR to produce GCM, and this series already
+>>> contains a GCM driver.
+>>>
+>>> Do cores exist that implement PCLMULQDQ but not AES-NI?
+>>>
+>>> If not, I think we should be able to drop this patch (and remove the
+>>> existing PCLMULQDQ GHASH driver as well)
+>> AFAIK, dm-verity (authenticated but not encrypted file system) is one use
+>> case for authentication only.
+>>
+>> Although I am not sure if GHASH is specifically used for this or SHA?
+>>
+>> Also, I do not know of any cores that implement PCLMULQDQ and not AES-NI.
+>>
+> dm-verity only uses unkeyed hash algorithms.  So no, it doesn't use GHASH.
 
-On 1/15/2021 6:39 PM, Rasmus Villemoes wrote:
-> mv88e6250_g1_vtu_getnext is almost identical to
-> mv88e6185_g1_vtu_getnext, except for the 6250 only having 64 databases
-> instead of 256. We can reduce code duplication by simply masking off
-> the extra two garbage bits when assembling the fid from VTU op [3:0]
-> and [11:8].
-> 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Hmm, I see. If that is the case, I am not aware of any other use case 
+apart from GCM.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I see that the existing GHASH module in the kernel from 2009. I am not 
+sure if there was a use case then, which now is no longer valid.
+
+There many be out-of-tree kernel modules which may be using it but again 
+its only speculation.
+
+So, in the next version should I remove the existing GHASH module? (And 
+of course remove this patch as well?)
+
+-Megha
+
+>
+> - Eric
