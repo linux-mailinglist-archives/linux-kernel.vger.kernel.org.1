@@ -2,296 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADFA2F8E2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EDD2F8E31
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbhAPRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:17:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbhAPRRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:17:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A56AD227C3;
-        Sat, 16 Jan 2021 17:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610817388;
-        bh=0xEHndJAgV7b746LctS4SnJRW0J0zVbPTwTSc4dep+8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=clTkJKTMXnup73UI6P2pa2pJ4TO0KJkIO4wJ9AFRuoepBEqzmEOmZYQbgKF55Baup
-         4DD+OqwVUwJebP7oFCJb15vsVqWTO06SFzL0yJQhXveLMeVt4+JqULKDuMjnzf1u2P
-         Qs2FNnSBimGY8mhBmdbTfCLvwmI9kVrPBIS9tvj6z/O/AIwKR6FrnM1AHKNLPbIioO
-         W3rzVJzO4udf13ar5S6gaBZRvE2wwmvkNtuGJhSnrvhD8V0wrVJRzB0kUiytKy7gns
-         pEdOMH7XK9SinZE2Q+vUA18rGGb9cmHTjSeTNQs7YHanFW4XDTWDKH5AEqkHnz3h2+
-         G1xr0NFJiyvBA==
-Received: by mail-ot1-f41.google.com with SMTP id n42so11881317ota.12;
-        Sat, 16 Jan 2021 09:16:28 -0800 (PST)
-X-Gm-Message-State: AOAM532MdITs0KZu5KVlwCJw0z3LAAZRdJiEcblZD5q6dFXcNV0nHgBn
-        yImDy9cFfrgM1/YsnWYPNhVZHiCckFsOcFkNVw8=
-X-Google-Smtp-Source: ABdhPJwCnAXl4nofDeP1LJ6N3qmeHJ8/xReGNnn05oPVwrQQj2guAQy2VeJuvaUC27ts4RKzHlnPOoLRaqvhtZbPGIw=
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr12601240oto.90.1610817387910;
- Sat, 16 Jan 2021 09:16:27 -0800 (PST)
+        id S1727889AbhAPRRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:17:32 -0500
+Received: from smtp-42ad.mail.infomaniak.ch ([84.16.66.173]:35077 "EHLO
+        smtp-42ad.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727091AbhAPRR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:17:29 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DJ4Th0JkRzMqHHH;
+        Sat, 16 Jan 2021 18:16:40 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DJ4Tc5tpwzlh8TM;
+        Sat, 16 Jan 2021 18:16:36 +0100 (CET)
+Subject: Re: [PATCH v26 07/12] landlock: Support filesystem access-control
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201209192839.1396820-1-mic@digikod.net>
+ <20201209192839.1396820-8-mic@digikod.net>
+ <CAG48ez1wbAQwU-eoC9DngHyUM_5F01MJQpRnLaJFvfRUrnXBdA@mail.gmail.com>
+ <aeb3e152-8108-89d2-0577-4b130368f14f@digikod.net>
+ <CAG48ez2HJCFvmFALDYDYnufE755Dqh3JquAMf-1mnzmRrdKaoQ@mail.gmail.com>
+ <9be6481f-9c03-dd32-378f-20bc7c52315c@digikod.net>
+ <CAG48ez1O0VTwEiRd3KqexoF78WR+cmP5bGk5Kh5Cs7aPepiDVg@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <28d2a149-0fe0-764b-85b3-6f979d1dd931@digikod.net>
+Date:   Sat, 16 Jan 2021 18:16:57 +0100
+User-Agent: 
 MIME-Version: 1.0
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com> <1608325864-4033-8-git-send-email-megha.dey@intel.com>
-In-Reply-To: <1608325864-4033-8-git-send-email-megha.dey@intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 16 Jan 2021 18:16:17 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEOs_x9jHTmksgRZ1bkDV2+je+JaaqLRXyL0hg5uC9gBg@mail.gmail.com>
-Message-ID: <CAMj1kXEOs_x9jHTmksgRZ1bkDV2+je+JaaqLRXyL0hg5uC9gBg@mail.gmail.com>
-Subject: Re: [RFC V1 7/7] crypto: aesni - AVX512 version of AESNI-GCM using VPCLMULQDQ
-To:     Megha Dey <megha.dey@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
-        andi.kleen@intel.com, Dave Hansen <dave.hansen@intel.com>,
-        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
-        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
-        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
-        ilya.albrekht@intel.com, kyung.min.park@intel.com,
-        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG48ez1O0VTwEiRd3KqexoF78WR+cmP5bGk5Kh5Cs7aPepiDVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 22:08, Megha Dey <megha.dey@intel.com> wrote:
->
-> Introduce the AVX512 implementation that optimizes the AESNI-GCM encode
-> and decode routines using VPCLMULQDQ.
->
-> The glue code in AESNI module overrides the existing AVX2 GCM mode
-> encryption/decryption routines with the AX512 AES GCM mode ones when the
-> following criteria are met:
-> At compile time:
-> 1. CONFIG_CRYPTO_AVX512 is enabled
-> 2. toolchain(assembler) supports VPCLMULQDQ instructions
-> At runtime:
-> 1. VPCLMULQDQ and AVX512VL features are supported on a platform
->    (currently only Icelake)
-> 2. aesni_intel.use_avx512 module parameter is set at boot time. For this
->    algorithm, switching from AVX512 optimized version is not possible
->    once set at boot time because of how the code is structured today.(Can
->    be changed later if required)
->
-> The functions aesni_gcm_init_avx_512, aesni_gcm_enc_update_avx_512,
-> aesni_gcm_dec_update_avx_512 and aesni_gcm_finalize_avx_512 are adapted
-> from the Intel Optimized IPSEC Cryptographic library.
->
-> On a Icelake desktop, with turbo disabled and all CPUs running at
-> maximum frequency, the AVX512 GCM mode optimization shows better
-> performance across data & key sizes as measured by tcrypt.
->
-> The average performance improvement of the AVX512 version over the AVX2
-> version is as follows:
-> For all key sizes(128/192/256 bits),
->         data sizes < 128 bytes/block, negligible improvement (~7.5%)
->         data sizes > 128 bytes/block, there is an average improvement of
->         40% for both encryption and decryption.
->
-> A typical run of tcrypt with AES GCM mode encryption/decryption of the
-> AVX2 and AVX512 optimization on a Icelake desktop shows the following
-> results:
->
->   ----------------------------------------------------------------------
->   |   key  | bytes | cycles/op (lower is better)   | Percentage gain/  |
->   | length |   per |   encryption  |  decryption   |      loss         |
->   | (bits) | block |-------------------------------|-------------------|
->   |        |       | avx2 | avx512 | avx2 | avx512 | Encrypt | Decrypt |
->   |---------------------------------------------------------------------
->   |  128   | 16    | 689  |  701   | 689  |  707   |  -1.7   |  -2.61  |
->   |  128   | 64    | 731  |  660   | 771  |  649   |   9.7   |  15.82  |
->   |  128   | 256   | 911  |  750   | 900  |  721   |  17.67  |  19.88  |
->   |  128   | 512   | 1181 |  814   | 1161 |  782   |  31.07  |  32.64  |
->   |  128   | 1024  | 1676 |  1052  | 1685 |  1030  |  37.23  |  38.87  |
->   |  128   | 2048  | 2475 |  1447  | 2456 |  1419  |  41.53  |  42.22  |
->   |  128   | 4096  | 3806 |  2154  | 3820 |  2119  |  43.41  |  44.53  |
->   |  128   | 8192  | 9169 |  3806  | 6997 |  3718  |  58.49  |  46.86  |
->   |  192   | 16    | 754  |  683   | 737  |  672   |   9.42  |   8.82  |
->   |  192   | 64    | 735  |  686   | 715  |  640   |   6.66  |  10.49  |
->   |  192   | 256   | 949  |  738   | 2435 |  729   |  22.23  |  70     |
->   |  192   | 512   | 1235 |  854   | 1200 |  833   |  30.85  |  30.58  |
->   |  192   | 1024  | 1777 |  1084  | 1763 |  1051  |  38.99  |  40.39  |
->   |  192   | 2048  | 2574 |  1497  | 2592 |  1459  |  41.84  |  43.71  |
->   |  192   | 4096  | 4086 |  2317  | 4091 |  2244  |  43.29  |  45.14  |
->   |  192   | 8192  | 7481 |  4054  | 7505 |  3953  |  45.81  |  47.32  |
->   |  256   | 16    | 755  |  682   | 720  |  683   |   9.68  |   5.14  |
->   |  256   | 64    | 744  |  677   | 719  |  658   |   9     |   8.48  |
->   |  256   | 256   | 962  |  758   | 948  |  749   |  21.21  |  21     |
->   |  256   | 512   | 1297 |  862   | 1276 |  836   |  33.54  |  34.48  |
->   |  256   | 1024  | 1831 |  1114  | 1819 |  1095  |  39.16  |  39.8   |
->   |  256   | 2048  | 2767 |  1566  | 2715 |  1524  |  43.4   |  43.87  |
->   |  256   | 4096  | 4378 |  2382  | 4368 |  2354  |  45.6   |  46.11  |
->   |  256   | 8192  | 8075 |  4262  | 8080 |  4186  |  47.22  |  48.19  |
->   ----------------------------------------------------------------------
->
-> This work was inspired by the AES GCM mode optimization published in
-> Intel Optimized IPSEC Cryptographic library.
-> https://github.com/intel/intel-ipsec-mb/blob/master/lib/avx512/gcm_vaes_avx512.asm
->
-> Co-developed-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
-> Signed-off-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
-> Signed-off-by: Megha Dey <megha.dey@intel.com>
-> ---
->  arch/x86/crypto/Makefile                    |    1 +
->  arch/x86/crypto/aesni-intel_avx512-x86_64.S | 1788 +++++++++++++++++++++++++++
->  arch/x86/crypto/aesni-intel_glue.c          |   62 +-
->  crypto/Kconfig                              |   12 +
->  4 files changed, 1858 insertions(+), 5 deletions(-)
->  create mode 100644 arch/x86/crypto/aesni-intel_avx512-x86_64.S
->
-...
-> diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-> index 9e56cdf..8fc5bac 100644
-> --- a/arch/x86/crypto/aesni-intel_glue.c
-> +++ b/arch/x86/crypto/aesni-intel_glue.c
-> @@ -55,13 +55,16 @@ MODULE_PARM_DESC(use_avx512, "Use AVX512 optimized algorithm, if available");
->   * This needs to be 16 byte aligned.
->   */
->  struct aesni_rfc4106_gcm_ctx {
-> -       u8 hash_subkey[16] AESNI_ALIGN_ATTR;
-> +       /* AVX512 optimized algorithms use 48 hash keys to conduct
-> +        * multiple PCLMULQDQ operations in parallel
-> +        */
-> +       u8 hash_subkey[16 * 48] AESNI_ALIGN_ATTR;
->         struct crypto_aes_ctx aes_key_expanded AESNI_ALIGN_ATTR;
->         u8 nonce[4];
->  };
->
->  struct generic_gcmaes_ctx {
-> -       u8 hash_subkey[16] AESNI_ALIGN_ATTR;
-> +       u8 hash_subkey[16 * 48] AESNI_ALIGN_ATTR;
->         struct crypto_aes_ctx aes_key_expanded AESNI_ALIGN_ATTR;
->  };
->
-> @@ -82,7 +85,7 @@ struct gcm_context_data {
->         u8 current_counter[GCM_BLOCK_LEN];
->         u64 partial_block_len;
->         u64 unused;
-> -       u8 hash_keys[GCM_BLOCK_LEN * 16];
-> +       u8 hash_keys[48 * 16];
->  };
->
 
-This structure gets allocated on the stack, and gets inflated
-significantly by this change, even though the code is not enabled by
-default, and not even supported for most users.
+On 15/01/2021 19:31, Jann Horn wrote:
+> On Fri, Jan 15, 2021 at 10:10 AM Mickaël Salaün <mic@digikod.net> wrote:
+>> On 14/01/2021 23:43, Jann Horn wrote:
+>>> On Thu, Jan 14, 2021 at 7:54 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>> On 14/01/2021 04:22, Jann Horn wrote:
+>>>>> On Wed, Dec 9, 2020 at 8:28 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>>>> Thanks to the Landlock objects and ruleset, it is possible to identify
+>>>>>> inodes according to a process's domain.  To enable an unprivileged
+>>>>>> process to express a file hierarchy, it first needs to open a directory
+>>>>>> (or a file) and pass this file descriptor to the kernel through
+>>>>>> landlock_add_rule(2).  When checking if a file access request is
+>>>>>> allowed, we walk from the requested dentry to the real root, following
+>>>>>> the different mount layers.  The access to each "tagged" inodes are
+>>>>>> collected according to their rule layer level, and ANDed to create
+>>>>>> access to the requested file hierarchy.  This makes possible to identify
+>>>>>> a lot of files without tagging every inodes nor modifying the
+>>>>>> filesystem, while still following the view and understanding the user
+>>>>>> has from the filesystem.
+>>>>>>
+>>>>>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
+>>>>>> keep the same struct inodes for the same inodes whereas these inodes are
+>>>>>> in use.
+>>>>>>
+>>>>>> This commit adds a minimal set of supported filesystem access-control
+>>>>>> which doesn't enable to restrict all file-related actions.  This is the
+>>>>>> result of multiple discussions to minimize the code of Landlock to ease
+>>>>>> review.  Thanks to the Landlock design, extending this access-control
+>>>>>> without breaking user space will not be a problem.  Moreover, seccomp
+>>>>>> filters can be used to restrict the use of syscall families which may
+>>>>>> not be currently handled by Landlock.
+>>>>> [...]
+>>>>>> +static bool check_access_path_continue(
+>>>>>> +               const struct landlock_ruleset *const domain,
+>>>>>> +               const struct path *const path, const u32 access_request,
+>>>>>> +               u64 *const layer_mask)
+>>>>>> +{
+>>>>> [...]
+>>>>>> +       /*
+>>>>>> +        * An access is granted if, for each policy layer, at least one rule
+>>>>>> +        * encountered on the pathwalk grants the access, regardless of their
+>>>>>> +        * position in the layer stack.  We must then check not-yet-seen layers
+>>>>>> +        * for each inode, from the last one added to the first one.
+>>>>>> +        */
+>>>>>> +       for (i = 0; i < rule->num_layers; i++) {
+>>>>>> +               const struct landlock_layer *const layer = &rule->layers[i];
+>>>>>> +               const u64 layer_level = BIT_ULL(layer->level - 1);
+>>>>>> +
+>>>>>> +               if (!(layer_level & *layer_mask))
+>>>>>> +                       continue;
+>>>>>> +               if ((layer->access & access_request) != access_request)
+>>>>>> +                       return false;
+>>>>>> +               *layer_mask &= ~layer_level;
+>>>>>
+>>>>> Hmm... shouldn't the last 5 lines be replaced by the following?
+>>>>>
+>>>>> if ((layer->access & access_request) == access_request)
+>>>>>     *layer_mask &= ~layer_level;
+>>>>>
+>>>>> And then, since this function would always return true, you could
+>>>>> change its return type to "void".
+>>>>>
+>>>>>
+>>>>> As far as I can tell, the current version will still, if a ruleset
+>>>>> looks like this:
+>>>>>
+>>>>> /usr read+write
+>>>>> /usr/lib/ read
+>>>>>
+>>>>> reject write access to /usr/lib, right?
+>>>>
+>>>> If these two rules are from different layers, then yes it would work as
+>>>> intended. However, if these rules are from the same layer the path walk
+>>>> will not stop at /usr/lib but go down to /usr, which grants write
+>>>> access.
+>>>
+>>> I don't see why the code would do what you're saying it does. And an
+>>> experiment seems to confirm what I said; I checked out landlock-v26,
+>>> and the behavior I get is:
+>>
+>> There is a misunderstanding, I was responding to your proposition to
+>> modify check_access_path_continue(), not about the behavior of landlock-v26.
+>>
+>>>
+>>> user@vm:~/landlock$ dd if=/dev/null of=/tmp/aaa
+>>> 0+0 records in
+>>> 0+0 records out
+>>> 0 bytes copied, 0.00106365 s, 0.0 kB/s
+>>> user@vm:~/landlock$ LL_FS_RO='/lib' LL_FS_RW='/' ./sandboxer dd
+>>> if=/dev/null of=/tmp/aaa
+>>> 0+0 records in
+>>> 0+0 records out
+>>> 0 bytes copied, 0.000491814 s, 0.0 kB/s
+>>> user@vm:~/landlock$ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd
+>>> if=/dev/null of=/tmp/aaa
+>>> dd: failed to open '/tmp/aaa': Permission denied
+>>> user@vm:~/landlock$
+>>>
+>>> Granting read access to /tmp prevents writing to it, even though write
+>>> access was granted to /.
+>>>
+>>
+>> It indeed works like this with landlock-v26. However, with your above
+>> proposition, it would work like this:
+>>
+>> $ LL_FS_RO='/tmp' LL_FS_RW='/' ./sandboxer dd if=/dev/null of=/tmp/aaa
+>> 0+0 records in
+>> 0+0 records out
+>> 0 bytes copied, 0.000187265 s, 0.0 kB/s
+>>
+>> …which is not what users would expect I guess. :)
+> 
+> Ah, so we are disagreeing about what the right semantics are. ^^ To
+> me, that is exactly the behavior I would expect.
+> 
+> Imagine that someone wants to write a program that needs to be able to
+> load libraries from /usr/lib (including subdirectories) and needs to
+> be able to write output to some user-specified output directory. So
+> they use something like this to sandbox their program (plus error
+> handling):
+> 
+> static void add_fs_rule(int ruleset_fd, char *path, u64 allowed_access) {
+>   int fd = open(path, O_PATH);
+>   struct landlock_path_beneath_attr path_beneath = {
+>     .parent_fd = fd,
+>     .allowed_access = allowed_access
+>   };
+>   landlock_add_rule(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,
+>           &path_beneath, 0);
+>   close(fd);
+> }
+> int main(int argc, char **argv) {
+>   char *output_dir = argv[1];
+>   int ruleset_fd = landlock_create_ruleset(&ruleset_attr,
+> sizeof(ruleset_attr, 0);
+>   add_fs_rule(ruleset_fd, "/usr/lib", ACCESS_FS_ROUGHLY_READ);
+>   add_fs_rule(ruleset_fd, output_dir,
+> LANDLOCK_ACCESS_FS_WRITE_FILE|LANDLOCK_ACCESS_FS_MAKE_REG|LANDLOCK_ACCESS_FS_REMOVE_FILE);
+>   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+>   landlock_enforce_ruleset_current(ruleset_fd, 0);
+> }
+> 
+> This will *almost* always work; but if the output directory is
+> /usr/lib/x86_64-linux-gnu/ , loading libraries from that directory
+> won't work anymore, right? So if userspace wanted this to *always*
+> works correctly, it would have to somehow figure out whether there is
+> a path upwards from the output directory (under any mount) that will
+> encounter /usr/lib, and set different permissions if that is the case.
+> That seems unnecessarily messy to me; and I think that this will make
+> it harder for generic commandline tools and such to adopt landlock.
+> 
+> 
+> If you do want to have the ability to deny access to subtrees of trees
+> to which access is permitted, I think that that should be made
+> explicit in the UAPI - e.g. you could (at a later point, after this
+> series has landed) introduce a new EXCLUDE flag for
+> landlock_add_rule() that means "I want to deny the access specified by
+> this rule", or something like that. (And you'd have to very carefully
+> document under which circumstances such rules are actually effective -
+> e.g. if someone grants full access to $HOME, but excludes $HOME/.ssh,
+> an attacker would still be able to rename $HOME/.ssh to $HOME/old_ssh,
+> and then if the program is later restarted and creates the ruleset
+> from scratch again, the old SSH folder will be accessible.)
+> 
 
-Is it really necessary for this to be per-request data? If these are
-precomputed powers of H, they can be moved into the TFM context
-structure instead, which lives on the heap (and can be shared by all
-concurrent users of the TFM)
-
->  asmlinkage int aesni_set_key(struct crypto_aes_ctx *ctx, const u8 *in_key,
-> @@ -266,6 +269,47 @@ static const struct aesni_gcm_tfm_s aesni_gcm_tfm_avx_gen2 = {
->         .finalize = &aesni_gcm_finalize_avx_gen2,
->  };
->
-> +#ifdef CONFIG_CRYPTO_AES_GCM_AVX512
-> +/*
-> + * asmlinkage void aesni_gcm_init_avx_512()
-> + * gcm_data *my_ctx_data, context data
-> + * u8 *hash_subkey,  the Hash sub key input. Data starts on a 16-byte boundary.
-> + */
-> +asmlinkage void aesni_gcm_init_avx_512(void *my_ctx_data,
-> +                                      struct gcm_context_data *gdata,
-> +                                      u8 *iv,
-> +                                      u8 *hash_subkey,
-> +                                      const u8 *aad,
-> +                                      unsigned long aad_len);
-> +asmlinkage void aesni_gcm_enc_update_avx_512(void *ctx,
-> +                                            struct gcm_context_data *gdata,
-> +                                            u8 *out,
-> +                                            const u8 *in,
-> +                                            unsigned long plaintext_len);
-> +asmlinkage void aesni_gcm_dec_update_avx_512(void *ctx,
-> +                                            struct gcm_context_data *gdata,
-> +                                            u8 *out,
-> +                                            const u8 *in,
-> +                                            unsigned long ciphertext_len);
-> +asmlinkage void aesni_gcm_finalize_avx_512(void *ctx,
-> +                                          struct gcm_context_data *gdata,
-> +                                          u8 *auth_tag,
-> +                                          unsigned long auth_tag_len);
-> +
-> +asmlinkage void aes_gcm_precomp_avx_512(struct crypto_aes_ctx *ctx, u8 *hash_subkey);
-> +
-> +static const struct aesni_gcm_tfm_s aesni_gcm_tfm_avx_512 = {
-> +       .init = &aesni_gcm_init_avx_512,
-> +       .enc_update = &aesni_gcm_enc_update_avx_512,
-> +       .dec_update = &aesni_gcm_dec_update_avx_512,
-> +       .finalize = &aesni_gcm_finalize_avx_512,
-> +};
-> +#else
-> +static void aes_gcm_precomp_avx_512(struct crypto_aes_ctx *ctx, u8 *hash_subkey)
-> +{}
-> +static const struct aesni_gcm_tfm_s aesni_gcm_tfm_avx_512 = {};
-> +#endif
-> +
-
-Please drop the alternative dummy definitions.
-
->  /*
->   * asmlinkage void aesni_gcm_init_avx_gen4()
->   * gcm_data *my_ctx_data, context data
-> @@ -669,7 +713,11 @@ rfc4106_set_hash_subkey(u8 *hash_subkey, const u8 *key, unsigned int key_len)
->         /* We want to cipher all zeros to create the hash sub key. */
->         memset(hash_subkey, 0, RFC4106_HASH_SUBKEY_SIZE);
->
-> -       aes_encrypt(&ctx, hash_subkey, hash_subkey);
-> +       if (IS_ENABLED(CONFIG_CRYPTO_AES_GCM_AVX512) && use_avx512 &&
-> +           cpu_feature_enabled(X86_FEATURE_VPCLMULQDQ))
-> +               aes_gcm_precomp_avx_512(&ctx, hash_subkey);
-> +       else
-> +               aes_encrypt(&ctx, hash_subkey, hash_subkey);
->
-
-I suppose this answers my question about the subkeys. Please find a
-way to move these out of struct gcm_context_data so they don't need to
-be copied to the stack for each request.
-
-
->         memzero_explicit(&ctx, sizeof(ctx));
->         return 0;
-> @@ -1114,7 +1162,11 @@ static int __init aesni_init(void)
->         if (!x86_match_cpu(aesni_cpu_id))
->                 return -ENODEV;
->  #ifdef CONFIG_X86_64
-> -       if (boot_cpu_has(X86_FEATURE_AVX2)) {
-> +       if (use_avx512 && IS_ENABLED(CONFIG_CRYPTO_AES_GCM_AVX512) &&
-> +           cpu_feature_enabled(X86_FEATURE_VPCLMULQDQ)) {
-> +               pr_info("AVX512 version of gcm_enc/dec engaged.\n");
-> +               aesni_gcm_tfm = &aesni_gcm_tfm_avx_512;
-
-This was changed in the cryptodev tree to use static keys.
-
-> +       } else if (boot_cpu_has(X86_FEATURE_AVX2)) {
->                 pr_info("AVX2 version of gcm_enc/dec engaged.\n");
->                 aesni_gcm_tfm = &aesni_gcm_tfm_avx_gen4;
->         } else if (boot_cpu_has(X86_FEATURE_AVX)) {
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index 3043849..8c8a68d 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -661,6 +661,18 @@ config CRYPTO_AES_CTR_AVX512
->         depends on CRYPTO_AES_NI_INTEL
->         depends on AS_VAES_AVX512
->
-> +# We default CRYPTO_AES_GCM_AVX512 to Y but depend on CRYPTO_AVX512 in
-> +# order to have a singular option (CRYPTO_AVX512) select multiple algorithms
-> +# when supported. Specifically, if the platform and/or toolset does not
-> +# support VPLMULQDQ. Then this algorithm should not be supported as part of
-> +# the set that CRYPTO_AVX512 selects.
-> +config CRYPTO_AES_GCM_AVX512
-> +       bool
-> +       default y
-> +       depends on CRYPTO_AVX512
-> +       depends on CRYPTO_AES_NI_INTEL
-> +       depends on AS_VPCLMULQDQ
-> +
->  config CRYPTO_CRC32C_SPARC64
->         tristate "CRC32c CRC algorithm (SPARC64)"
->         depends on SPARC64
-> --
-> 2.7.4
->
+OK, it's indeed a more pragmatic approach. I'll take your change and
+merge check_access_path_continue() with check_access_path(). Thanks!
