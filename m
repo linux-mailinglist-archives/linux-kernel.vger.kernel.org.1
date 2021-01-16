@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3612F8D37
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0942F8D3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 13:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbhAPMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 07:01:42 -0500
-Received: from m12-12.163.com ([220.181.12.12]:57152 "EHLO m12-12.163.com"
+        id S1726440AbhAPMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 07:07:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38852 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbhAPMBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 07:01:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=PL/Jq
-        HSck/4HYIlMBJO7I9Krmfq9sE0LU3UwCK14FsA=; b=oF7csRQpgjxY1Rk7eykVO
-        ZM+UVqiDRg9Boa/wfs9y1KMx289//0Ki0qjWmUbNWyPYz4wGrmVGyoxzPBsP1rJD
-        Y+TeWW8AXHXoxuEF4qn7NFwgGkcGyLMBCIGHhAx1HJE+mWB2wUkobFxvlzk0UfLG
-        yLtAKW44Epn2GjldXmI4NE=
-Received: from yangjunlin.ccdomain.com (unknown [119.137.52.218])
-        by smtp8 (Coremail) with SMTP id DMCowAAXWOM40QJgnUpiMQ--.32724S2;
-        Sat, 16 Jan 2021 19:42:49 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     sre@kernel.org, yangjunlin@yulong.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: charger-manager: fix the wrong status of health
-Date:   Sat, 16 Jan 2021 19:41:20 +0800
-Message-Id: <20210116114120.3531-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S1726018AbhAPMHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 07:07:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13E4AAD2B;
+        Sat, 16 Jan 2021 12:06:32 +0000 (UTC)
+Date:   Sat, 16 Jan 2021 13:06:28 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/5] hugetlb: convert page_huge_active() to HP_Migratable
+ flag
+Message-ID: <20210116120628.GA3024@localhost.localdomain>
+References: <20210116003105.182918-1-mike.kravetz@oracle.com>
+ <20210116003105.182918-3-mike.kravetz@oracle.com>
+ <20210116042416.GA2260413@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAAXWOM40QJgnUpiMQ--.32724S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4UXr4DXryxJr1UKF1kuFg_yoWkGrgEka
-        ykA340qFya9r1ayrnrKFn3Zry09ayrXayxWa92grZ8A3WYqw4kJrykZF98Jw47GF43uFZI
-        qas8JFn5CFy8KjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5HxR3UUUUU==
-X-Originating-IP: [119.137.52.218]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBFBkcI1aD+EUA9AAAsu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116042416.GA2260413@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On Sat, Jan 16, 2021 at 04:24:16AM +0000, Matthew Wilcox wrote:
+> and name these HPG_restore_reserve and HPG_migratable
+> 
+> and generate the calls to hugetlb_set_page_flag etc from macros, eg:
+> 
+> #define TESTHPAGEFLAG(uname, lname)					\
+> static __always_inline bool HPage##uname(struct page *page)		\
+> { return test_bit(HPG_##lname, &page->private); }
+> ...
+> #define HPAGEFLAG(uname, lname)						\
+> 	TESTHPAGEFLAG(uname, lname)					\
+> 	SETHPAGEFLAG(uname, lname)					\
+> 	CLEARHPAGEFLAG(uname, lname)
+> 
+> HPAGEFLAG(RestoreReserve, restore_reserve)
+> HPAGEFLAG(Migratable, migratable)
+> 
+> just to mirror page-flags.h more closely.
 
-cm->emergency_stop will only be the value in the enumeration,
-and can not be less than zero, it will get an exception value.
-So replace it with the corresponding value.
+That is on me.
+I thought that given the low number of flags, we coud get away with:
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/power/supply/charger-manager.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+hugetlb_{set,test,clear}_page_flag(page, flag)
 
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index 6fcebe4..0d28741 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -723,9 +723,9 @@ static int charger_get_property(struct power_supply *psy,
- 		val->intval = cm->battery_status;
- 		break;
- 	case POWER_SUPPLY_PROP_HEALTH:
--		if (cm->emergency_stop > 0)
-+		if (cm->emergency_stop == CM_BATT_OVERHEAT)
- 			val->intval = POWER_SUPPLY_HEALTH_OVERHEAT;
--		else if (cm->emergency_stop < 0)
-+		else if (cm->emergency_stop == CM_BATT_COLD)
- 			val->intval = POWER_SUPPLY_HEALTH_COLD;
- 		else
- 			val->intval = POWER_SUPPLY_HEALTH_GOOD;
+and call it from the code.
+But some of the flags need to be set/tested outside hugetlb code, so
+it indeed looks nicer and more consistent to follow page-flags.h convention.
+
+Sorry for the noise.
+
 -- 
-1.9.1
-
-
+Oscar Salvador
+SUSE L3
