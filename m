@@ -2,184 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE892F8D22
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7862F8D25
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbhAPLoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 06:44:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725979AbhAPLoB (ORCPT
+        id S1727108AbhAPLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 06:44:09 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47932 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbhAPLoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 06:44:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610797354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lYWPEyiRYQkPrhW6cczH/pyf7YFbufnMuIaorWSwGGE=;
-        b=GVCFQOaUTf9PrpPAsIRzGzC1zs2AgmjT4Afv76AEpaUYAysW+GSE6jdECjV2jYkh5LdNwZ
-        Lxs0cgj2tzy76x/ZfxRiizXhuK4FEa3g7bd3sPxEiUywzb55HsJ7VbMhfuKPzcy2+3+Cja
-        U+hSahg7vAkKyOfZUPK+ESwsJFGug4w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-q1sYkXJwPEW5-YQUP0SaQg-1; Sat, 16 Jan 2021 06:42:30 -0500
-X-MC-Unique: q1sYkXJwPEW5-YQUP0SaQg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E55E51005504;
-        Sat, 16 Jan 2021 11:42:26 +0000 (UTC)
-Received: from [10.36.112.59] (ovpn-112-59.ams2.redhat.com [10.36.112.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E35015C1C2;
-        Sat, 16 Jan 2021 11:42:11 +0000 (UTC)
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     John Hubbard <jhubbard@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-References: <20210110004435.26382-1-aarcange@redhat.com>
- <bb071419-bf40-c5ed-4b2d-d5eb03031b0a@redhat.com>
- <20210115183721.GG4605@ziepe.ca>
- <a21e6fdf-5cac-6fda-242e-7909af96027a@redhat.com>
- <cba836c6-4054-c966-8254-a11915351b6b@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <b46a0eb9-f80f-e459-d31d-ed9074e38ede@redhat.com>
-Date:   Sat, 16 Jan 2021 12:42:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Sat, 16 Jan 2021 06:44:08 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 89AE91F44A78
+Received: by earth.universe (Postfix, from userid 1000)
+        id 20B023C0C94; Sat, 16 Jan 2021 12:43:24 +0100 (CET)
+Date:   Sat, 16 Jan 2021 12:43:24 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] power/supply/bq24190_charger: convert comma to
+ semicolon
+Message-ID: <20210116114324.7zcbzvb6j6jyislt@earth.universe>
+References: <20201214134054.4296-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <cba836c6-4054-c966-8254-a11915351b6b@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f3dq6t5hfgftofph"
+Content-Disposition: inline
+In-Reply-To: <20201214134054.4296-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.01.21 04:40, John Hubbard wrote:
-> On 1/15/21 11:46 AM, David Hildenbrand wrote:
->>>> 7) There is no easy way to detect if a page really was pinned: we might
->>>> have false positives. Further, there is no way to distinguish if it was
->>>> pinned with FOLL_WRITE or not (R vs R/W). To perform reliable tracking
->>>> we most probably would need more counters, which we cannot fit into
->>>> struct page. (AFAIU, for huge pages it's easier).
->>>
->>> I think this is the real issue. We can only store so much information,
->>> so we have to decide which things work and which things are broken. So
->>> far someone hasn't presented a way to record everything at least..
->>
->> I do wonder how many (especially long-term) GUP readers/writers we have
->> to expect, and especially, support for a single base page. Do we have a
->> rough estimate?
->>
->> With RDMA, I would assume we only need a single one (e.g., once RDMA
->> device; I'm pretty sure I'm wrong, sounds too easy).
->> With VFIO I guess we need one for each VFIO container (~ in the worst
->> case one for each passthrough device).
->> With direct I/O, vmsplice and other GUP users ?? No idea.
->>
->> If we could somehow put a limit on the #GUP we support, and fail further
->> GUP (e.g., -EAGAIN?) once a limit is reached, we could partition the
->> refcount into something like (assume max #15 GUP READ and #15 GUP R/W,
->> which is most probably a horribly bad choice)
->>
->> [ GUP READ ][ GUP R/W ] [  ordinary ]
->> 31  ...  28 27  ...  24 23   ....   0
->>
->> But due to saturate handling in "ordinary", we would lose further 2 bits
->> (AFAIU), leaving us "only" 22 bits for "ordinary". Now, I have no idea
->> how many bits we actually need in practice.
->>
->> Maybe we need less for GUP READ, because most users want GUP R/W? No idea.
->>
->> Just wild ideas. Most probably that has already been discussed, and most
->> probably people figured that it's impossible :)
->>
-> 
-> I proposed this exact idea a few days ago [1]. It's remarkable that we both
-> picked nearly identical values for the layout! :)
 
-Heh! Somehow I missed that. But well, there were *a lot* of mails :)
+--f3dq6t5hfgftofph
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> But as the responses show, security problems prevent pursuing that approach.
-It still feels kind of wrong to waste valuable space in the memmap.
+Hi,
 
+On Mon, Dec 14, 2020 at 09:40:54PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+>=20
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
 
-In an ideal world (well, one that still only allows for a 64 byte memmap
-:) ), we would:
+Thanks, queued.
 
-1) Partition the refcount into separate fields that cannot overflow into
-each other, similar to my example above, but maybe add even more fields.
+-- Sebastian
 
-2) Reject attempts that would result in an overflow to everything except
-the "ordinary" field (e.g., GUP fields in my example above).
+>  drivers/power/supply/bq24190_charger.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/suppl=
+y/bq24190_charger.c
+> index d14186525e1e..00c4f335481f 100644
+> --- a/drivers/power/supply/bq24190_charger.c
+> +++ b/drivers/power/supply/bq24190_charger.c
+> @@ -1757,7 +1757,7 @@ static int bq24190_probe(struct i2c_client *client,
+>  	charger_cfg.drv_data =3D bdi;
+>  	charger_cfg.of_node =3D dev->of_node;
+>  	charger_cfg.supplied_to =3D bq24190_charger_supplied_to;
+> -	charger_cfg.num_supplicants =3D ARRAY_SIZE(bq24190_charger_supplied_to),
+> +	charger_cfg.num_supplicants =3D ARRAY_SIZE(bq24190_charger_supplied_to);
+>  	bdi->charger =3D power_supply_register(dev, &bq24190_charger_desc,
+>  						&charger_cfg);
+>  	if (IS_ERR(bdi->charger)) {
+> --=20
+> 2.22.0
+>=20
 
-3) Put an upper limit on the "ordinary" field that we ever expect for
-sane workloads (E.g., 10 bits). In addition, reserve some bits (like the
-saturate logic) that we handle as a "red zone".
+--f3dq6t5hfgftofph
+Content-Type: application/pgp-signature; name="signature.asc"
 
-4) For the "ordinary" field, as soon as we enter the red zone, we know
-we have an attack going on. We continue on paths that we cannot fail
-(e.g., get_page()) but eventually try stopping the attacker(s). AFAIU,
-we know the attacker(s) are something (e.g., one ore multiple processes)
-that has direct access to the page in their address space. Of course,
-the more paths we can reject, the better.
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAC0VsACgkQ2O7X88g7
++pofVg//fs+Y9vFVLr2vxRDd4ylheYPQaFlBMJ+VB04j8XkvlKMGa8zMS9KGzDIk
+mRURXLVgQJ0FHXq6+KmZb0QJ0x8zGu4qyVE4ZUDEBCvy+DmtAKTx33NX5f2syewL
+UR+ykgOpZ7tYZ244HhyDg98vhoaNjJEx0/qy51Sn3mav1IKIwYLEPmwLw3GW56bQ
+122zkFo44yyKaWlM8jageQcsxnho3ioyLjNMP0ptaBEMD+yiEHagpHdoEnLAuko6
+U+slbOrWtv7wt+nNvLChvjDLlk+UivVS4PaxE3GGw/AcAQFae3RBFYky2d7hi4a7
+KqeMWhApGR2HshdTv/WNd9t3kOmYNFVKQ77sSXdGbI3YwozwJuzsQRO5c5zTsQoL
+X8Lp+mFzC5kYCxHDt4Qc0z1QnZ98O2CBiLvhfU0DCQmIv31NNwZj0UCc/PRMM/uA
+gr7t0wMZ9CivOOSBs15xlE+Iz7CLzUD6zs1H32ODyPxhkiszaYsN6ng+mHE6rgIJ
+6Y7ch7PYr48IturHHmovKwYHrpeHVztB3urfKTLsTsfA7ehlZM2bbEMe2IinN8TP
+hu9M0OGgXjAcJ64ADbwfI6L5lnp/mpi4XzjAT56TnR9/bpyO2NtT0GOEkRnrLlMg
+D2/vBGNn3VvnIqkfTHuW1gcj5KDwZXMfMn5XK90efSB9ON6Sfjw=
+=E5st
+-----END PGP SIGNATURE-----
 
-Now, we would:
-
-a) Have to know what sane upper limits on the "ordinary" field are. I
-have no idea which values we can expect. Attacker vs. sane workload.
-
-b) Need a way to identify the attacker(s). In the simplest case, this is
-a single process. In the hard case, this involves many processes.
-
-c) Need a way to stop the attacker(s). Doing that out of random context
-is problematic. Last resort is doing this asynchronously from another
-thread, which leaves more time for the attacker to do harm.
-
-
-Of course, problem gets more involved as soon as we might have a
-malicious child process that uses a page from a well-behaving parent
-process for the attack.
-
-Imagine we kill relevant processes, we might end up killing someone
-who's not responsible. And even if we don't kill, but instead reject
-try_get_page(), we might degrade the well-behaving parent process AFAIKS.
-
-Alternatives to killing the process might be unmapping the problematic
-page from the address space.
-
-Reminds me a little about handling memory errors for a page, eventually
-killing all users of that page. mm/memory-failure.c:kill_procs().
-
-
-Complicated problem :)
-
--- 
-Thanks,
-
-David / dhildenb
-
+--f3dq6t5hfgftofph--
