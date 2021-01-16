@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC87F2F8D27
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3464F2F8D30
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbhAPLod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 06:44:33 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47938 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbhAPLoc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 06:44:32 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id D88821F45E81
-Received: by earth.universe (Postfix, from userid 1000)
-        id 04B0B3C0C94; Sat, 16 Jan 2021 12:43:49 +0100 (CET)
-Date:   Sat, 16 Jan 2021 12:43:48 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] power: supply: ab8500_fg: convert comma to
- semicolon
-Message-ID: <20210116114348.x5erkpwwzwfyowy3@earth.universe>
-References: <20201214134000.4243-1-zhengyongjun3@huawei.com>
+        id S1726612AbhAPLwC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 06:52:02 -0500
+Received: from wnbcorp.com ([175.126.38.143]:50776 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726025AbhAPLwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 06:52:02 -0500
+X-Greylist: delayed 1436 seconds by postgrey-1.27 at vger.kernel.org; Sat, 16 Jan 2021 06:52:01 EST
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GBfI6m026124;
+        Sat, 16 Jan 2021 20:47:04 +0900
+Message-Id: <202101161147.10GBfI6m026124@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mlj73v7fip325zvq"
-Content-Disposition: inline
-In-Reply-To: <20201214134000.4243-1-zhengyongjun3@huawei.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 12:47:20 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
---mlj73v7fip325zvq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sir/Madam,
 
-Hi,
+CONGRATULATIONS!!!
 
-On Mon, Dec 14, 2020 at 09:40:00PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
->=20
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-Thanks, queued.
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
--- Sebastian
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
->  drivers/power/supply/ab8500_fg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab85=
-00_fg.c
-> index 592a73d4dde6..6594f09c993c 100644
-> --- a/drivers/power/supply/ab8500_fg.c
-> +++ b/drivers/power/supply/ab8500_fg.c
-> @@ -857,7 +857,7 @@ static int ab8500_fg_volt_to_capacity(struct ab8500_f=
-g *di, int voltage)
->  	const struct abx500_v_to_cap *tbl;
->  	int cap =3D 0;
-> =20
-> -	tbl =3D di->bm->bat_type[di->bm->batt_id].v_to_cap_tbl,
-> +	tbl =3D di->bm->bat_type[di->bm->batt_id].v_to_cap_tbl;
->  	tbl_size =3D di->bm->bat_type[di->bm->batt_id].n_v_cap_tbl_elements;
-> =20
->  	for (i =3D 0; i < tbl_size; ++i) {
-> --=20
-> 2.22.0
->=20
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
---mlj73v7fip325zvq
-Content-Type: application/pgp-signature; name="signature.asc"
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
 
------BEGIN PGP SIGNATURE-----
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAC0XQACgkQ2O7X88g7
-+prf0w/+PKxWaHtDNVQAV/m6l0jduMXpwcWZPEiEGlpwrYa+xckr+dA6hwDLuzPt
-NNYAm98rYVIX4/Yq2AtE3Y3YM4/q1lIXRh4PqcmFy8AB6InyRLH8xyv5LUZUWmyp
-4vDBkovbxnc2IhGpi0wUVY+2GI8h+XYg/ToZwv/KxHtCjpsDB4F5umiArJORzSBx
-wEA/Px5rdi6FihVxH1AuO/FLlEeVPI9Q0FmCs7p5isBQMhBl87I2mHQ5nEmYXoK5
-wPV7D0N47WQ625G4LQ6huXRi9bLICHnkRckRBSiuIImBgWQZQg/5UJbMYMMJ5whE
-qBRYQCXegAHir/Zj7qwqXIdflysxTnp9OXFxHBPsxuduAPv7ax9j7caNl9spI9Bt
-5Ld7jtHmylOcjPTxTh8Yd4W0TO0qzjs1oBkBkcBU5ruXDY8Bv4hBiSjxGk8Keujs
-Ib8aKp634wReEITyVhfV0EjTvp7Xccbx4/f01lX9crWH+1OwPuua/pFEGvh27nJO
-sBRvm3YrV3mdBvAYhaouiK//TLlbwFpwuakQKEgaQ75IuOc8PCbsrwOKbu0GO//i
-Ot6YjkMUbPK4CbV/NO3TzHB+0/iqT8g4Injgs9N9p1pMNy7cSchEcdZj7pFkYYwJ
-XpI463bgtrq+n9DJ8QDWDEygBhbjKyF0UN4HvHczKkt2eVMa45Q=
-=jBrW
------END PGP SIGNATURE-----
+MR. WILSON WARREN JOHNSON
 
---mlj73v7fip325zvq--
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
