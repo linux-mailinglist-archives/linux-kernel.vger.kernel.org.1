@@ -2,176 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA092F8BE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 07:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0422F8BE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 07:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbhAPG2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 01:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbhAPG2C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 01:28:02 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9CEC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:27:21 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id w18so22632327iot.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:27:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aSc9OYqyKr0YMtaTbhwZuTTP+MzL/UVrWs+17zk7w3k=;
-        b=d0XMQTWQ2+57aO5vAzTdRbXHxkq3BZy0CSbwnDEiwQ9BXP1qU2FEq8bNxIWvt9i109
-         4rkaZ3BtsLGGhWBR0KRTYDEPKVY1ZpfnIwpVqKnfo8/fyyX0KatfMrLgwQum50tPzhkz
-         V9yssqoSP63dFM/I6Zj6/d8JbxrBDbJMy4yJkCwJIWYBk61Y5Ppiu169IOq+aIgVUAy0
-         v7f4l8th8ZvRMxH7QoWQy8p+6PJFj8boZ46aRXw1wavSgYbPOWavnTcWsF+lwgcv7j88
-         x2UdyZpsVGkHROfoDXxSxyUlTgCKCBUWkqn+eCGiU3IchpZNaiRiRc0AmyvqZdbEpBBb
-         EWKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aSc9OYqyKr0YMtaTbhwZuTTP+MzL/UVrWs+17zk7w3k=;
-        b=K0CDv33F9eDX4a3Q32m22htecRdcpcWd+5BqgEgsJFT8MD1tHiHUQ6B/bSpGM9xRvO
-         Cqrb41Y21YzqzHlBEZpolzahiRMbf0FnVjsN4hsccqU9HHL92SccTkSQohb6IDmZGXCv
-         DU/n0pTEMMkIhJxPlVJ7QyoCPHRE2am94pdZ7XsP7torGBAKWSB5YlXehTSokEhpOaF9
-         Zb154vhGiv4x5itLAvnGvk3pS58QSJSX/xSLwDdbV4y1tqo6khgubofJK7TeXnaKPoOQ
-         Xpv8H7OSWwPvIljuGgMqeLhHH4ninhaxCk80pP31Jz9nE7+MU+YLq6sjj+8z4L9dbI/H
-         w2bA==
-X-Gm-Message-State: AOAM530ug0JswvTwfWsm8hoWP6oPCH8kuitVzPzqIliXEvYBKZJhhFM+
-        o+9sQmLnZfZzVD+2705t3e1sIjR9xBGUKuZcuHU=
-X-Google-Smtp-Source: ABdhPJwHkiCjs/bmE74SGcwflW/mS9Yi9BjzLVnAVkm6b4s6UyCh4m2YJSslGpHuaM9KarW6QRO2FdpOUpXt1bZwSlo=
-X-Received: by 2002:a6b:441a:: with SMTP id r26mr11013577ioa.105.1610778441019;
- Fri, 15 Jan 2021 22:27:21 -0800 (PST)
+        id S1726512AbhAPGcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 01:32:52 -0500
+Received: from mga11.intel.com ([192.55.52.93]:48505 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbhAPGcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 01:32:51 -0500
+IronPort-SDR: Dpeehl2au9XOfWOOFVQaksSi6yuNtN1r9+yhyBMhhVLa8WOg08aIsQlZRze6HzoWplw4INg18U
+ 7JniVKPLECyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="175141783"
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="175141783"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 22:32:07 -0800
+IronPort-SDR: Hffsh9XBXLqE020ESxV3Ijr4OBY8GFeO8xGfWyBChkStxZlei7Q2GNOJWyd8tkPns741XfXuO+
+ nHEfEWOHym9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="405693757"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Jan 2021 22:32:05 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l0f81-0000lT-8d; Sat, 16 Jan 2021 06:32:05 +0000
+Date:   Sat, 16 Jan 2021 14:31:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/platform] BUILD SUCCESS
+ 604303018221d00b58422e1d117ba29ce84295cb
+Message-ID: <6002884a.0XYGfRPRIk+tQpSr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210112144344.850850975@infradead.org> <20210112144843.849135905@infradead.org>
- <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
- <YABDI6Qkp5PNslUS@hirez.programming.kicks-ass.net> <jhjlfcvhcx5.mognet@arm.com>
- <YABknAqDe4h35+GY@hirez.programming.kicks-ass.net>
-In-Reply-To: <YABknAqDe4h35+GY@hirez.programming.kicks-ass.net>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Sat, 16 Jan 2021 14:27:09 +0800
-Message-ID: <CAJhGHyBazDix9tLTV0HnobeSzneUK8Y9GKf6AgXspf=c9O5dhQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 11:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/platform
+branch HEAD: 604303018221d00b58422e1d117ba29ce84295cb  x86/platform/geode: Convert alix LED to GPIO machine descriptor
 
->
-> -void kthread_set_per_cpu(struct task_struct *k, bool set)
-> +void kthread_set_per_cpu(struct task_struct *k, int cpu)
->  {
->         struct kthread *kthread = to_kthread(k);
->         if (!kthread)
->                 return;
->
-> -       if (set) {
-> -               WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-> -               WARN_ON_ONCE(k->nr_cpus_allowed != 1);
-> -               set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-> -       } else {
-> +       WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-> +
-> +       if (cpu < 0) {
->                 clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-> +               return;
->         }
-> +
-> +       kthread->cpu = cpu;
-> +       set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
->  }
->
+elapsed time: 725m
 
-I don't see the code to set the mask of the cpu to the task
-since set_cpus_allowed_ptr() is removed from rebind_worker().
+configs tested: 128
+configs skipped: 61
 
-Is it somewhere I missed?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> @@ -2371,6 +2371,7 @@ static int worker_thread(void *__worker)
->         /* tell the scheduler that this is a workqueue worker */
->         set_pf_worker(true);
->  woke_up:
-> +       kthread_parkme();
->         raw_spin_lock_irq(&pool->lock);
->
->         /* am I supposed to die? */
-> @@ -2428,7 +2429,7 @@ static int worker_thread(void *__worker)
->                         move_linked_works(work, &worker->scheduled, NULL);
->                         process_scheduled_works(worker);
->                 }
-> -       } while (keep_working(pool));
-> +       } while (keep_working(pool) && !kthread_should_park());
->
->         worker_set_flags(worker, WORKER_PREP);
->  sleep:
-> @@ -2440,9 +2441,12 @@ static int worker_thread(void *__worker)
->          * event.
->          */
->         worker_enter_idle(worker);
-> -       __set_current_state(TASK_IDLE);
-> +       set_current_state(TASK_IDLE);
->         raw_spin_unlock_irq(&pool->lock);
-> -       schedule();
-> +
-> +       if (!kthread_should_park())
-> +               schedule();
-> +
->         goto woke_up;
->  }
->
-> @@ -4923,7 +4927,7 @@ static void unbind_workers(int cpu)
->                 raw_spin_unlock_irq(&pool->lock);
->
->                 for_each_pool_worker(worker, pool) {
-> -                       kthread_set_per_cpu(worker->task, false);
-> +                       kthread_set_per_cpu(worker->task, -1);
->                         WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
->                 }
->
-> @@ -4978,9 +4982,9 @@ static void rebind_workers(struct worker_pool *pool)
->          * from CPU_ONLINE, the following shouldn't fail.
->          */
->         for_each_pool_worker(worker, pool) {
-> -               WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
-> -                                                 pool->attrs->cpumask) < 0);
-> -               kthread_set_per_cpu(worker->task, true);
-> +               WARN_ON_ONCE(kthread_park(worker->task) < 0);
-> +               kthread_set_per_cpu(worker->task, pool->cpu);
-> +               kthread_unpark(worker->task);
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          landisk_defconfig
+powerpc                   currituck_defconfig
+mips                         rt305x_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                           h3600_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                       mainstone_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        magician_defconfig
+arm                         assabet_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8548_defconfig
+nios2                            alldefconfig
+sh                          rsk7264_defconfig
+c6x                                 defconfig
+sh                               j2_defconfig
+mips                          ath25_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                     eseries_pxa_defconfig
+m68k                       m5249evb_defconfig
+sh                           se7712_defconfig
+powerpc                     kilauea_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc               mpc834x_itxgp_defconfig
+um                             i386_defconfig
+powerpc                       maple_defconfig
+sh                ecovec24-romimage_defconfig
+sparc                       sparc64_defconfig
+sh                        dreamcast_defconfig
+openrisc                    or1ksim_defconfig
+mips                         db1xxx_defconfig
+powerpc                       holly_defconfig
+mips                       rbtx49xx_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                       cns3420vb_defconfig
+powerpc                       eiger_defconfig
+sh                           se7206_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                     loongson1c_defconfig
+m68k                             allmodconfig
+c6x                         dsk6455_defconfig
+mips                  cavium_octeon_defconfig
+arm                      tct_hammer_defconfig
+sh                         apsh4a3a_defconfig
+arc                        nsim_700_defconfig
+arm                        mini2440_defconfig
+sh                           se7780_defconfig
+arm                         hackkit_defconfig
+sh                          urquell_defconfig
+powerpc                     redwood_defconfig
+mips                      malta_kvm_defconfig
+m68k                          atari_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210115
+x86_64               randconfig-a006-20210115
+x86_64               randconfig-a001-20210115
+x86_64               randconfig-a003-20210115
+x86_64               randconfig-a005-20210115
+x86_64               randconfig-a002-20210115
+i386                 randconfig-a002-20210115
+i386                 randconfig-a005-20210115
+i386                 randconfig-a006-20210115
+i386                 randconfig-a001-20210115
+i386                 randconfig-a003-20210115
+i386                 randconfig-a004-20210115
+i386                 randconfig-a012-20210115
+i386                 randconfig-a011-20210115
+i386                 randconfig-a016-20210115
+i386                 randconfig-a015-20210115
+i386                 randconfig-a013-20210115
+i386                 randconfig-a014-20210115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-I feel nervous to use kthread_park() here and kthread_parkme() in
-worker thread.  And adding kthread_should_park() to the fast path
-also daunt me.
+clang tested configs:
+x86_64               randconfig-a015-20210115
+x86_64               randconfig-a012-20210115
+x86_64               randconfig-a013-20210115
+x86_64               randconfig-a016-20210115
+x86_64               randconfig-a014-20210115
+x86_64               randconfig-a011-20210115
 
-How about using a new KTHREAD_XXXX instead of KTHREAD_IS_PER_CPU,
-so that we can set and clear KTHREAD_XXXX freely, especially before
-set_cpus_allowed_ptr().
-
-For example, we can add a new KTHREAD_ACTIVE_MASK_ONLY which means
-even when
-  is_per_cpu_kthread() && the_cpu_is_online() &&
-  the_cpu_is_not_active() && KTHREAD_ACTIVE_MASK_ONLY
-we should also break the affinity.
-
-So that we can easily set KTHREAD_ACTIVE_MASK_ONLY in unbind_workers()
-add clear KTHREAD_ACTIVE_MASK_ONLY here and avoid adding new
-synchronization like kthread_park().
-
->         }
->
->         raw_spin_lock_irq(&pool->lock);
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
