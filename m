@@ -2,51 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4952F8FDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 00:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9A62F8FE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 00:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbhAPXY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 18:24:29 -0500
-Received: from retiisi.eu ([95.216.213.190]:51250 "EHLO hillosipuli.retiisi.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726788AbhAPXYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 18:24:24 -0500
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id E053D634C89;
-        Sun, 17 Jan 2021 01:22:40 +0200 (EET)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1l0uu0-0002pH-Qk; Sun, 17 Jan 2021 01:22:40 +0200
-Date:   Sun, 17 Jan 2021 01:22:40 +0200
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        mchehab@kernel.org, hans.verkuil@cisco.com, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, tfiga@chromium.org
-Subject: Re: [PATCH 3/3] media: videobuf2-v4l2: remove redundant error test
-Message-ID: <20210116232240.GV850@valkosipuli.retiisi.org.uk>
-References: <20210114180149.1755892-1-helen.koike@collabora.com>
- <20210114180149.1755892-4-helen.koike@collabora.com>
+        id S1727725AbhAPXhz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 18:37:55 -0500
+Received: from wnbcorp.com ([175.126.38.143]:52474 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727494AbhAPXhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 18:37:52 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GNTMxx025127;
+        Sun, 17 Jan 2021 08:33:35 +0900
+Message-Id: <202101162333.10GNTMxx025127@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114180149.1755892-4-helen.koike@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sun, 17 Jan 2021 00:33:49 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 03:01:49PM -0300, Helen Koike wrote:
-> request_fd is validated under media_request_get_by_fd() just below this
-> check. Thus remove it.
-> 
-> Suggested-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Sir/Madam,
 
--- 
-Sakari Ailus
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
