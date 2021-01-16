@@ -2,216 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D9B2F8A48
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C382F8A4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbhAPBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbhAPBPD (ORCPT
+        id S1726472AbhAPBVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:21:07 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11164 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbhAPBVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:15:03 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B69BC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:14:23 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 67so4866583ybh.22
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:14:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=jOqN4DXdfWmy71s1LEWmIHtq1kTNICaI8+BJSbDDOok=;
-        b=AZOchBAzmS3yyy9AsXrAg0UHe2B7lbGq+ap+geCGupE2gL84ufW+9p8wi1phb2zCit
-         9m/JWVq1nvk0pZyMJkGwoYNXbhGVwkySuNljl3Yr0Rn1iMaGOb4KsUHtrraJwFLUXA7r
-         4BGVurFEjnKC/etdGob5RUyYO2fJaXE+c3d783+qsMHrTuMLRzmD+TwPx+dHmPQAwP0L
-         o19p0nfzaqb0BpObt4lLCw9ddMzONnq+LqqWilP/Etzo71TRFzBOA0a/TYZsHuKyMRak
-         VsNxHchYlVjdc4yXW3YxfVkdssWASPaJmm2CtXC/QGQWM+ZMfGyE+miQw8t7N0lQukwA
-         JqMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=jOqN4DXdfWmy71s1LEWmIHtq1kTNICaI8+BJSbDDOok=;
-        b=JrnYGCfemLii3DzZekscBB9oTKEWCF5WMLOAuVTtzYo+W00s2R0DfHn+C79fQGKjum
-         w+dBNE6dLXVi/3Ssw5jjvWeCtInCTreMS2HzzLvTPI4prxvyPTT5UqbKWjDcl51RdNdn
-         aFMC6HQ/syKIvDPgojG1SbTVUXjNDlQx9CXGNBRKEaeURa69o3xhaQIz0v3JaYIZ3+RB
-         8SESkzLfLSDaBPQ9ifibwCRV7s7Trmj0ktV2YW4nQ4YX7U542gm2letby6+aX88tqNtG
-         b1M9WPANGom7BDQWhZCWyYfzEDFtsNRdHKwTSDsGDGqKun02m+7lEtDNINxJlD9O2YMQ
-         sANQ==
-X-Gm-Message-State: AOAM531UKEjlch7sPGL3tMZ0garDCX62Ct4nbTG0LtAs7GJVrewIc79V
-        /7fz2BVjz3l9p7bD/RjVtl7byQCHwM5VVsg=
-X-Google-Smtp-Source: ABdhPJwGcl5EOQz5S3K3T+IOm+ujxpmyGIrQWlS388znNlj2H4yX+CbP3+bVigOlTK6jRDV1Y1nBpMzZgEKvzd0=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a25:80c4:: with SMTP id
- c4mr23827381ybm.95.1610759662361; Fri, 15 Jan 2021 17:14:22 -0800 (PST)
-Date:   Fri, 15 Jan 2021 17:14:11 -0800
-Message-Id: <20210116011412.3211292-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-From:   Saravana Kannan <saravanak@google.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        kernel-team@android.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 15 Jan 2021 20:21:06 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHgDl6wyVzl5R6;
+        Sat, 16 Jan 2021 09:19:03 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Sat, 16 Jan 2021
+ 09:20:18 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <john.wanghui@huawei.com>, <abudankov@huawei.com>,
+        <yz.yuzhou@huawei.com>
+Subject: [PATCH v3 0/2] perf tools: add 'perf irq' to measure the hardware interrupts
+Date:   Sat, 16 Jan 2021 09:19:18 +0800
+Message-ID: <20210116011920.34487-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple instances of GPIO devictree nodes of the form:
+When the hardware interrupt processing function is executed, the interrupt and 
+preemption of current cpu are disabled. As a result, the task is suspended.
+The execution of the hardware processing function takes a long time
+(for example 5 ms), will affect the task scheduling performance.
 
-foo {
-	compatible = "acme,foo";
-	...
+This patches provides the 'perf irq' command to trace and calculate the time
+consumed of the hardware irq function.
 
-	gpio0: gpio0@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
+[verse]
+'perf irq' [<options>] {record|report}
 
-	gpio1: gpio1@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
+DESCRIPTION
+-----------
+There are several variants of 'perf irq':
 
-	...
-}
+  'perf irq record <command>' to record the irq handler events
+  of an arbitrary workload.
 
-bazz {
-	my-gpios = <&gpio0 ...>;
-}
+  'perf irq report' to calculate the time consumed by each
+   hardware interrupt processing function.
 
-Case 1: The driver for "foo" populates struct device for these gpio*
-nodes and then probes them using a driver that binds with "acme,bar".
-This lines up with how DT nodes with the "compatible" property are
-generally converted to struct devices and then registered with driver
-core to probe them. This also allows the gpio* devices to hook into all
-the driver core capabilities like runtime PM, probe deferral,
-suspend/resume ordering, device links, etc.
+    Example usage:
+        perf irq record -- sleep 1
+        perf irq report
 
-Case 2: The driver for "foo" doesn't populate its child device nodes
-with "compatible" property and instead just loops through its child
-nodes and directly registers the GPIOs with gpiolib without ever
-populating a struct device or binding a driver to it.
+   By default it shows the individual irq events, including the irq name,
+   cpu(execute the hardware interrupt processing function), time consumed,
+   entry time and exit time for the each hardware irq:
 
-Drivers that follow the case 2 cause problems with fw_devlink=on.  This
-is because fw_devlink will prevent bazz from probing until there's a
-struct device that has gpio0 as its fwnode (because bazz lists gpio0 as
-a GPIO supplier). Once the struct device is available, fw_devlink will
-create a device link between with gpio0 as the supplier and bazz as the
-consumer. After this point, the device link will prevent bazz from
-probing until its supplier (the gpio0 device) has bound to a driver.
-Once the supplier is bound to a driver, the probe of bazz is triggered
-automatically.
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     enp2s0f2-tx-0    | [0006] |      0.000001 s |   6631263.313329 s |   6631263.313330 s
+     megasas          | [0013] |      0.000003 s |   6631263.209564 s |   6631263.209567 s
+     acpi             | [0016] |      0.000018 s |   6631263.085787 s |   6631263.085805 s
 
-Finding and refactoring all the instances of drivers that follow case 2
-will cause a lot of code churn and it not something that can be done in
-one shot. Examples of such instances are [1] [2].
+    And:
+	perf irq --cpu 78 record -- sleep 1
+	perf irq --cpu 78 report
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
+   -------------------------------------------------------------------------------------------------------------------------------------------
+    enp134s0f0-TxRx-2 | [0078] |      0.000005 s |    693757.533189 s |    693757.533194 s
 
-This patch works around this problem and avoids all the code churn by
-simply creating a stub driver to bind to the gpio_device. Since the
-gpio_device already points to the GPIO device tree node, this allows all
-the consumers to continue probing when the driver follows case 2.
 
-If/when all the old drivers are refactored, we can revert this patch.
+Changes from v3:
+* Delete 'perf irq script' because its function can be implemented using
+  'perf script';
+* Add --cpu option for 'perf irq';
 
-[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
-[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc: Kever Yang <kever.yang@rock-chips.com>
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-v1 -> v2:
-- Fixed up compilation errors that were introduced accidentally
-- Fixed a missing put_device()
+Changes from v2:
+* Delete "-m", "1024" in __cmd_record();
+* Change 'perf irq timeconsume <options>' to 'perf irq report <options>';
+* Fix a error for tools/perf/Documentation/perf-irq.txt;
 
- drivers/gpio/gpiolib.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Bixuan Cui (2):
+  perf tools: add 'perf irq' to measure the hardware interrupts
+  perf tools: Add documentation for 'perf irq' command
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index b02cc2abd3b6..12c579a953b0 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -574,6 +574,9 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	unsigned	i;
- 	int		base = gc->base;
- 	struct gpio_device *gdev;
-+	struct device_node *of_node;
-+	struct fwnode_handle *fwnode;
-+	struct device *fwnode_dev;
- 
- 	/*
- 	 * First: allocate and populate the internal stat container, and
-@@ -596,6 +599,22 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 		gdev->dev.of_node = gc->of_node;
- 	else
- 		gc->of_node = gdev->dev.of_node;
-+
-+	of_node = gdev->dev.of_node;
-+	fwnode = of_fwnode_handle(of_node);
-+	fwnode_dev = get_dev_from_fwnode(fwnode);
-+	/*
-+	 * If your driver hits this warning, it's because you are directly
-+	 * parsing a device tree node with "compatible" property and
-+	 * initializing it instead of using the standard DT + device driver
-+	 * model of creating a struct device and then initializing it in the
-+	 * probe function. Please refactor your driver.
-+	 */
-+	if (!fwnode_dev && of_find_property(of_node, "compatible", NULL)) {
-+		chip_warn(gc, "Create a real device for %pOF\n", of_node);
-+		gdev->dev.fwnode = fwnode;
-+	}
-+	put_device(fwnode_dev);
- #endif
- 
- 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
-@@ -4202,6 +4221,17 @@ void gpiod_put_array(struct gpio_descs *descs)
- }
- EXPORT_SYMBOL_GPL(gpiod_put_array);
- 
-+static int gpio_drv_probe(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static struct device_driver gpio_drv = {
-+	.name = "gpio_drv",
-+	.bus = &gpio_bus_type,
-+	.probe = gpio_drv_probe,
-+};
-+
- static int __init gpiolib_dev_init(void)
- {
- 	int ret;
-@@ -4213,9 +4243,16 @@ static int __init gpiolib_dev_init(void)
- 		return ret;
- 	}
- 
-+	if (driver_register(&gpio_drv) < 0) {
-+		pr_err("gpiolib: could not register GPIO stub driver\n");
-+		bus_unregister(&gpio_bus_type);
-+		return ret;
-+	}
-+
- 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
- 	if (ret < 0) {
- 		pr_err("gpiolib: failed to allocate char dev region\n");
-+		driver_unregister(&gpio_drv);
- 		bus_unregister(&gpio_bus_type);
- 		return ret;
- 	}
+ tools/perf/Build                      |   1 +
+ tools/perf/Documentation/perf-irq.txt |  47 +++++
+ tools/perf/builtin-irq.c              | 283 ++++++++++++++++++++++++++
+ tools/perf/builtin.h                  |   1 +
+ tools/perf/command-list.txt           |   1 +
+ tools/perf/perf.c                     |   1 +
+ 6 files changed, 334 insertions(+)
+ create mode 100644 tools/perf/Documentation/perf-irq.txt
+ create mode 100644 tools/perf/builtin-irq.c
+
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.17.1
 
