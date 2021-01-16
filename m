@@ -2,152 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAE92F8E7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04D12F8E82
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 19:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbhAPRzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbhAPRzc (ORCPT
+        id S1727839AbhAPSC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 13:02:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30301 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727284AbhAPSC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:55:32 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8709DC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 09:54:52 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id q4so6348629plr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 09:54:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=Y8HqPepn9WlqKtTg6LT12iZGQnoJuCc7icVZrw7iHr8=;
-        b=WSvbX8ccuLP8EsMehmK8NRenisQwSFaYZUBIi1ewXTfcle1BO/5NSVrFbbkhxsnfxL
-         OFaqH2Vnj0eCafQ7wOutosTUKaBiE/YznxLkMJI2IYjVIZtuF5KnDXDwl7PziTKR+xhD
-         t+bgbydGss6TGZ8k05L7nYe+625+uhmTeScWEhJFK4546M+j0oKqGB9GS+gda/Dpf7Yi
-         r2jaO734wIbEy4vOl5gwRq1aJ4zEz1wi++QEF3Z4wqgWZILLLEcy5LW02WrhGdHFzTJP
-         LHfne6bwL4NFjLW0V5TcT8Fp9NGEqFF5c96x4/RmgK325tbNoBzUozJ05H90sRhTL/AO
-         oRSQ==
+        Sat, 16 Jan 2021 13:02:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610820060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VcTYlJfv01axpJK4vnd7O3uwpWJGDHk4puaBt63QC6I=;
+        b=OkX8tEIb0v+5kmOpi2KOX31Rf3jWQeRF8RBeb0BnBOCKI9y2T2ZwbF2CLA+Bw78k6i0hO+
+        D7Hk5DVFyPjT4YDcIAfu+52X4RdEIj/iAkjGtJp32/N1XI17OJ/+1PoLefuE0Bz4uQxbmB
+        8grZFhqUD++V1VrHxvm7k/tJ+4RbUA8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-kgBcD1TqMzaNhTqZt9rFHA-1; Sat, 16 Jan 2021 09:46:45 -0500
+X-MC-Unique: kgBcD1TqMzaNhTqZt9rFHA-1
+Received: by mail-ed1-f72.google.com with SMTP id x13so5421914edi.7
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:46:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=Y8HqPepn9WlqKtTg6LT12iZGQnoJuCc7icVZrw7iHr8=;
-        b=MrrgE11f+8B1LkmeiWfgIcEPFkTD8XhG2aJ9HyS/5p1VtFtW/k+yDgXMCzrEE4vx3N
-         KrvLrR6mzdhZBwaavFCODDcfo82swszhaikwkYalAczjz2QchcZr3fegZBeMrGuJ5wCb
-         Vk0W1pOVNM8irHFslsq99bOJbNzPZm7IdsW/CUVT3McQ0frUvUaTk/KWEH9/RABu1F7G
-         imZnbBrVsqT1HnLfElYTrcwTqWESjCCYQ3ha8h8jFjYIfMzOPS5eHR4YjAs1n3qFQyOD
-         WCa/D2Nmgjq1CmNdJ1+WqQvVVbLH3PIQJRz7OmC5O1jopKTKlOM363wggnoxKv4ecmDZ
-         AC4w==
-X-Gm-Message-State: AOAM531jiJJpSdJlpin72n6HL14NrA8Lvbm853t55KWseuXx5TseibyK
-        HmOL6hAE+/q8eq0yCoRPliuhDgrizHbQ3w==
-X-Google-Smtp-Source: ABdhPJyTTvoEexuZjgEW4hG5HxSuQRlEdnpgW3WAcvUTA5kjDTBX8iycczPrxIekPnRwntn7HLVPMA==
-X-Received: by 2002:a17:902:eb03:b029:db:c0d6:5845 with SMTP id l3-20020a170902eb03b02900dbc0d65845mr18267527plb.76.1610819691941;
-        Sat, 16 Jan 2021 09:54:51 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id j6sm6816080pjd.33.2021.01.16.09.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 09:54:51 -0800 (PST)
-Date:   Sat, 16 Jan 2021 09:54:51 -0800 (PST)
-X-Google-Original-Date: Sat, 16 Jan 2021 09:54:46 PST (-0800)
-Subject: [GIT PULL] RISC-V Fixes for 5.11-rc4
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-6a7bf03f-5e44-4fa0-a205-0fba77454f24@palmerdabbelt-glaptop>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VcTYlJfv01axpJK4vnd7O3uwpWJGDHk4puaBt63QC6I=;
+        b=fdQRXlfPoCMuTRG2S+xrFH/yVbUzgwHFUs7xQjez/CinU2ZnX/VC3shnP5BRLTkKc3
+         aEwgHW9RrAcWzPHaFpTNi2EUHwhCOXCpwzCg01frdalo1+uIdcG9X/XfJakZVbP2FpdS
+         5PzKeUEjTTeTZUQDdgNBYDQzr2+eSwaDT+QTsNVtNK0DKRCNhfxqrA/huKn6W41b6cXw
+         uNcBGIYCsI35T92WkweBxcxZE21ZDCsX1UOPL1F61OZ5rcNu3yRBV+ULFFWMMyfBFNOf
+         NtvC2VRu6iqPuefRepoHKX22a0jY5I3deot24pgmuwmyafsgWJKd53b8K2/oqFo95EVR
+         DXxg==
+X-Gm-Message-State: AOAM530LZ9ycPbOgCdGB0c0hrO7J3/qtIt2AVxfmqnfK712mx5iHQGfw
+        LuFpvTT0s0bn/4du70ip0R8m3bC4n/q4O8MoFhkay09ZlmvloAFUbDCWGUz5kX8/EUdM45Ly3J/
+        DEFdsrQS8vZcEhzrs3UtgwjqT
+X-Received: by 2002:a17:906:804c:: with SMTP id x12mr11998502ejw.42.1610808404324;
+        Sat, 16 Jan 2021 06:46:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwh2dzEePXou8ehRPVsaKmmllVB6qkpljg6ffqyogAis6ElOP2KdZ5P145rlzQU4nWJvJd3WQ==
+X-Received: by 2002:a17:906:804c:: with SMTP id x12mr11998494ejw.42.1610808404115;
+        Sat, 16 Jan 2021 06:46:44 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id p16sm7478518edw.44.2021.01.16.06.46.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Jan 2021 06:46:43 -0800 (PST)
+Subject: Re: [PATCH 03/14] mfd: arizona: Add support for ACPI enumeration of
+ WM5102 connected over SPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Christian Hartmann <cornogle@googlemail.com>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-4-hdegoede@redhat.com>
+ <CAHp75VesAo9-GGCVyGcQuNLG8KOLcB_S+bokcxJTfeDn7sb0Bg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <3946c0c5-6ace-47f9-9a3e-182bf6615d1f@redhat.com>
+Date:   Sat, 16 Jan 2021 15:46:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VesAo9-GGCVyGcQuNLG8KOLcB_S+bokcxJTfeDn7sb0Bg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+Hi,
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+Thank you for the review.
 
-are available in the Git repository at:
+On 12/28/20 3:14 PM, Andy Shevchenko wrote:
+> On Sun, Dec 27, 2020 at 11:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> The Intel Bay Trail (x86/ACPI) based Lenovo Yoga Tablet 2 series use
+>> a WM5102 codec connected over SPI.
+>>
+>> Add support for ACPI enumeration to arizona-spi so that arizona-spi can
+>> bind to the codec on these tablets.
+>>
+>> This is loosely based on an earlier attempt (for Android-x86) at this by
+>> Christian Hartmann, combined with insights in things like the speaker GPIO
+>> from the android-x86 android port for the Lenovo Yoga Tablet 2 1051F/L [1].
+> 
+> Few nitpicks here and there, but the most important bit that hits me
+> is device_get_match_data().
+> 
+>> [1] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
+>>
+>> Cc: Christian Hartmann <cornogle@googlemail.com>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>  drivers/mfd/arizona-spi.c | 120 ++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 120 insertions(+)
+>>
+>> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+>> index 704f214d2614..bcdbd72fefb5 100644
+>> --- a/drivers/mfd/arizona-spi.c
+>> +++ b/drivers/mfd/arizona-spi.c
+>> @@ -7,7 +7,10 @@
+>>   * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>>   */
+>>
+>> +#include <linux/acpi.h>
+>>  #include <linux/err.h>
+>> +#include <linux/gpio/consumer.h>
+>> +#include <linux/gpio/machine.h>
+>>  #include <linux/module.h>
+>>  #include <linux/pm_runtime.h>
+>>  #include <linux/regmap.h>
+>> @@ -15,11 +18,119 @@
+>>  #include <linux/slab.h>
+>>  #include <linux/spi/spi.h>
+>>  #include <linux/of.h>
+>> +#include <uapi/linux/input-event-codes.h>
+>>
+>>  #include <linux/mfd/arizona/core.h>
+>>
+>>  #include "arizona.h"
+>>
+>> +#ifdef CONFIG_ACPI
+>> +const struct acpi_gpio_params reset_gpios = { 1, 0, false };
+>> +const struct acpi_gpio_params ldoena_gpios = { 2, 0, false };
+>> +
+>> +static const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
+>> +       { "reset-gpios", &reset_gpios, 1, },
+>> +       { "wlf,ldoena-gpios", &ldoena_gpios, 1 },
+>> +       { }
+>> +};
+>> +
+>> +/*
+>> + * The ACPI resources for the device only describe external GPIO-s. They do
+>> + * not provide mappings for the GPIO-s coming from the Arizona codec itself.
+>> + */
+>> +static const struct gpiod_lookup arizona_soc_gpios[] = {
+>> +       { "arizona", 2, "wlf,spkvdd-ena", 0, GPIO_ACTIVE_HIGH },
+>> +       { "arizona", 4, "wlf,micd-pol", 0, GPIO_ACTIVE_LOW },
+>> +};
+>> +
+>> +/*
+>> + * The AOSP 3.5 mm Headset: Accessory Specification gives the following values:
+>> + * Function A Play/Pause:           0 ohm
+>> + * Function D Voice assistant:    135 ohm
+>> + * Function B Volume Up           240 ohm
+>> + * Function C Volume Down         470 ohm
+>> + * Minimum Mic DC resistance     1000 ohm
+>> + * Minimum Ear speaker impedance   16 ohm
+>> + * Note the first max value below must be less then the min. speaker impedance,
+>> + * to allow CTIA/OMTP detection to work. The other max values are the closest
+>> + * value from extcon-arizona.c:arizona_micd_levels halfway 2 button resistances.
+>> + */
+>> +static const struct arizona_micd_range arizona_micd_aosp_ranges[] = {
+>> +       { .max =  11, .key = KEY_PLAYPAUSE },
+>> +       { .max = 186, .key = KEY_VOICECOMMAND },
+>> +       { .max = 348, .key = KEY_VOLUMEUP },
+>> +       { .max = 752, .key = KEY_VOLUMEDOWN },
+>> +};
+>> +
+>> +static void arizona_spi_acpi_remove_lookup(void *lookup)
+>> +{
+>> +       gpiod_remove_lookup_table(lookup);
+>> +}
+>> +
+>> +static int arizona_spi_acpi_probe(struct arizona *arizona)
+>> +{
+>> +       struct gpiod_lookup_table *lookup;
+>> +       int i, ret;
+>> +
+>> +       /* Add mappings for the 2 ACPI declared GPIOs used for reset and ldo-ena */
+>> +       devm_acpi_dev_add_driver_gpios(arizona->dev, arizona_acpi_gpios);
+>> +
+>> +       /* Add lookups for the SoCs own GPIOs used for micdet-polarity and spkVDD-enable */
+>> +       lookup = devm_kzalloc(arizona->dev,
+>> +                             struct_size(lookup, table, ARRAY_SIZE(arizona_soc_gpios) + 1),
+>> +                             GFP_KERNEL);
+>> +       if (!lookup)
+>> +               return -ENOMEM;
+>> +
+>> +       lookup->dev_id = dev_name(arizona->dev);
+> 
+>> +       for (i = 0; i < ARRAY_SIZE(arizona_soc_gpios); i++)
+>> +               lookup->table[i] = arizona_soc_gpios[i];
+> 
+> Would memcpy() do the same at one pass?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.11-rc4
+True, fixed for v2.
 
-for you to fetch changes up to e557793799c5a8406afb08aa170509619f7eac36:
+>> +       gpiod_add_lookup_table(lookup);
+>> +       ret = devm_add_action_or_reset(arizona->dev, arizona_spi_acpi_remove_lookup, lookup);
+>> +       if (ret)
+>> +               return ret;
+> 
+>> +       /* Enable 32KHz clock from SoC to codec for jack-detect */
+>> +       acpi_evaluate_object(ACPI_HANDLE(arizona->dev), "CLKE", NULL, NULL);
+> 
+> No error check?
 
-  RISC-V: Fix maximum allowed phsyical memory for RV32 (2021-01-15 21:35:48 -0800)
+The codec will still work without the 32KHz clk, but we will loose jack-detect
+functionality. I expect the ACPI call to already print some error, but to make
+sure something is logged and to clarify what any previous logged ACPI errors are
+about I've added code to log a warning when this fails for v2.
 
-----------------------------------------------------------------
-RISC-V Fixes for 5.11-rc4
+> 
+>> +       /*
+>> +        * Some DSDTs wrongly declare the IRQ trigger-type as IRQF_TRIGGER_FALLING
+>> +        * The IRQ line will stay low when a new IRQ event happens between reading
+>> +        * the IRQ status flags and acknowledging them. When the IRQ line stays
+>> +        * low like this the IRQ will never trigger again when its type is set
+>> +        * to IRQF_TRIGGER_FALLING. Correct the IRQ trigger-type to fix this.
+>> +        */
+>> +       arizona->pdata.irq_flags = IRQF_TRIGGER_LOW;
+>> +
+>> +       /* Wait 200 ms after jack insertion */
+>> +       arizona->pdata.micd_detect_debounce = 200;
+>> +
+>> +       /* Use standard AOSP values for headset-button mappings */
+>> +       arizona->pdata.micd_ranges = arizona_micd_aosp_ranges;
+>> +       arizona->pdata.num_micd_ranges = ARRAY_SIZE(arizona_micd_aosp_ranges);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static const struct acpi_device_id arizona_acpi_match[] = {
+>> +       {
+>> +               .id = "WM510204",
+>> +               .driver_data = WM5102,
+>> +       },
+>> +       {
+>> +               .id = "WM510205",
+>> +               .driver_data = WM5102,
+>> +       },
+> 
+>> +       { },
+> 
+> No need for comma here.
 
-There are a few more fixes than a normal rc4, largely due to the bubble
-introduced by the holiday break:
+Fixed for v2.
 
-* A fix to return -ENOSYS for syscall number -1, which previously
-  returned an uninitialized value.
-* A fix to time_init() to ensure of_clk_init() has been called, without
-  which clock drivers may not be initialized.
-* A fix to the sifive,uart0 driver to properly display the baud rate.  A
-  fix to initialize MPIE that allows interrupts to be processed during
-  system calls.
-* A fix to avoid erronously begin tracing IRQs when interrupts are
-  disabled, which at least triggers suprious lockdep failures.
-* A workaround for a warning related to calling smp_processor_id() while
-  preemptible.  The warning itself is suprious on currently availiable
-  systems.
-* A fix to properly include the generic time VDSO calls.  A fix to our
-  kasan address mapping.  A fix to the HiFive Unleashed device tree,
-  which allows the Ethernet PHY to be properly initialized by Linux (as
-  opposed to relying on the bootloader).
-* A defconfig update to include SiFive's GPIO driver, which is present
-  on the HiFive Unleashed and necessary to initialize the PHY.
-* A fix to avoid allocating memory while initializing reserved memory.
-* A fix to avoid allocating the last 4K of memory, as pointers there
-  alias with syscall errors.
+> 
+>> +};
+>> +MODULE_DEVICE_TABLE(acpi, arizona_acpi_match);
+>> +#else
+> 
+>> +static void arizona_spi_acpi_probe(struct arizona *arizona)
+>> +{
+>> +}
+> 
+> Can be one line?
 
-There are also two cleanups that should have no functional effect but do
-fix build warnings:
+I find it more readable as is.
 
-* A cleanup to drop a duplicated definition of PAGE_KERNEL_EXEC.
-* A cleanup to properly declare the asm register SP shim.
-* A cleanup to the rv32 memory size Kconfig entry, to reflect the actual
-  size of memory availiable.
+> 
+>> +#endif
+>> +
+>>  static int arizona_spi_probe(struct spi_device *spi)
+>>  {
+>>         const struct spi_device_id *id = spi_get_device_id(spi);
+>> @@ -30,6 +141,8 @@ static int arizona_spi_probe(struct spi_device *spi)
+>>
+>>         if (spi->dev.of_node)
+>>                 type = arizona_of_get_type(&spi->dev);
+>> +       else if (ACPI_COMPANION(&spi->dev))
+>> +               type = (unsigned long)acpi_device_get_match_data(&spi->dev);
+> 
+> Can we rather get rid of these and use device_get_match_data() directly?
 
-----------------------------------------------------------------
-Andreas Schwab (1):
-      riscv: return -ENOSYS for syscall -1
+That is a good idea, I'll add a nw preparation patch to v2 replacing the
+custom arizona_of_get_type() helper with device_get_match_data().
 
-Atish Patra (4):
-      riscv: Trace irq on only interrupt is enabled
-      RISC-V: Do not allocate memblock while iterating reserved memblocks
-      RISC-V: Set current memblock limit
-      RISC-V: Fix maximum allowed phsyical memory for RV32
+>>         else
+>>                 type = id->driver_data;
+>>
+>> @@ -75,6 +188,12 @@ static int arizona_spi_probe(struct spi_device *spi)
+>>         arizona->dev = &spi->dev;
+>>         arizona->irq = spi->irq;
+>>
+>> +       if (ACPI_COMPANION(&spi->dev)) {
+> 
+> has_acpi_companion() ?
 
-Damien Le Moal (3):
-      riscv: Fix kernel time_init()
-      riscv: Fix sifive serial driver
-      riscv: Enable interrupts during syscalls with M-Mode
+Fixed for v2.
 
-Guo Ren (1):
-      riscv: Fixup CONFIG_GENERIC_TIME_VSYSCALL
+>> +               ret = arizona_spi_acpi_probe(arizona);
+>> +               if (ret)
+>> +                       return ret;
+>> +       }
+>> +
+>>         return arizona_dev_init(arizona);
+>>  }
+>>
+>> @@ -102,6 +221,7 @@ static struct spi_driver arizona_spi_driver = {
+>>                 .name   = "arizona",
+>>                 .pm     = &arizona_pm_ops,
+>>                 .of_match_table = of_match_ptr(arizona_of_match),
+>> +               .acpi_match_table = ACPI_PTR(arizona_acpi_match),
+>>         },
+>>         .probe          = arizona_spi_probe,
+>>         .remove         = arizona_spi_remove,
+>> --
+>> 2.28.0
+>>
+> 
+> 
 
-Kefeng Wang (3):
-      riscv: Drop a duplicated PAGE_KERNEL_EXEC
-      riscv: cacheinfo: Fix using smp_processor_id() in preemptible
-      riscv: stacktrace: Move register keyword to beginning of declaration
+Regards,
 
-Nick Hu (1):
-      riscv: Fix KASAN memory mapping.
+Hans
 
-Sagar Shrikant Kadam (3):
-      dts: phy: fix missing mdio device and probe failure of vsc8541-01 device
-      dts: phy: add GPIO number and active state used for phy reset
-      riscv: defconfig: enable gpio support for HiFive Unleashed
-
- arch/riscv/Kconfig                                 |  6 ++++--
- .../riscv/boot/dts/sifive/hifive-unleashed-a00.dts |  2 ++
- arch/riscv/configs/defconfig                       |  2 ++
- arch/riscv/include/asm/pgtable.h                   |  1 -
- arch/riscv/include/asm/vdso.h                      |  2 +-
- arch/riscv/kernel/cacheinfo.c                      | 11 +++++++++-
- arch/riscv/kernel/entry.S                          | 24 ++++++++++++----------
- arch/riscv/kernel/setup.c                          | 24 ++++++++++++----------
- arch/riscv/kernel/stacktrace.c                     |  5 ++---
- arch/riscv/kernel/time.c                           |  3 +++
- arch/riscv/kernel/vdso.c                           |  2 +-
- arch/riscv/mm/init.c                               | 16 +++++++++++++--
- arch/riscv/mm/kasan_init.c                         |  4 ++--
- drivers/tty/serial/sifive.c                        |  1 +
- 14 files changed, 68 insertions(+), 35 deletions(-)
