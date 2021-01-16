@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304C92F89AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 00:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FCE2F89B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbhAOX6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 18:58:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727410AbhAOX6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 18:58:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC01239E5;
-        Fri, 15 Jan 2021 23:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610755043;
-        bh=Jugm7yT041wqfvRSYw3MdlF8tLFsAvalmyiaeKw8Jd4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=N0xHbYmttdidoLVINDbT8f4OEoalscoXogfQ9zam8wgk+OGu2ipltKpv8YaAIqtlT
-         pypHYIT2Gsqj+jFVcpEf93gIEG1wXXrII1JwUwMJS6naXP6AQUGrSwdEDEZCsY9G54
-         usmXPtaL8Oqe5bK7KzLbrwwsf7W4I6aYn7mpSCjweCXZfYCt6WrNTYbDWBMamd1dHe
-         7vSVZsgbByxNmW+q5/22fEmooCXS5skphnD0xEAJV9JzRu2040wPMMp3cHnzqs3wvA
-         LMrOGFKVNoEFSeYHS+lsCHe9n4WOTN+sKyeZYgEYoJtcZDlNiROEjeeYY6TRHgktnf
-         xRZNOY2lptl1Q==
-Date:   Fri, 15 Jan 2021 17:57:21 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
-Message-ID: <20210115235721.GA1862880@bjorn-Precision-5520>
+        id S1728535AbhAPAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbhAPAB2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 19:01:28 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869A9C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:00:33 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id x12so5509182plr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:00:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GbcRTwO4Py9PCASiY1YuohO9XCn71Gsdi46hwQnWEl8=;
+        b=u6hXBbQKO2N4x8nIBPEaVhO/0sCJTrI6FL+Ens0rAcn+RjZcf9pFfg3xgjKMB5F4u3
+         C18ArZDs1Rircdgu01RJPaV2Mxub8HMgAdJrtCipPzVIvWwTsIfq1idVIGENwwnuU3VA
+         5OG/JcczDt5zL45Na2Rm9t1Ap5idXZThyG9OCpub4m2iAfXul122zjKDY5cesZWA/jx/
+         LTS5V9lsHOM2SLckp65DzRan3RpdRbVvHzvBc308gdiHoT7pLF2jZvQBbS9C6C1v8Aen
+         NUhnOLuYEnmntPWE2NZ44W8TXKOfJmt7xKi1zmxEFgI9AIrTUBoHEO2fCdxRrqEuBH8k
+         YNyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GbcRTwO4Py9PCASiY1YuohO9XCn71Gsdi46hwQnWEl8=;
+        b=d1gErklMPee16XjIiWcYxTiy6V0ArYVw1s5Y32GVUEGuBiXvM94q9F5sgqe8yAHjMJ
+         cq70506M3OonqFymPOpKXwkZ2kfzTnZFZ3QnCHqGb+lRp1/rQWd1gbpfXnqAiB4zbhfR
+         JPPTKOtL1lAPO2DZZQ6kLXXtxIHIa3Q8kJBezljIrlzXcVffeR1D0QIWAL7a/SYbhmlu
+         9GdkVXVv03u75v7tqISiQZw1+yho1QXQETFon/tIXk5fcAcKyaspHkeehYmbzYrFNOdj
+         hB7HxmZz5Ujt1XdvZj+5+VS2COAfqT4MhKt1tbVMicwk7QcRWmhmebWROQPpEg5ek3Pw
+         gdiQ==
+X-Gm-Message-State: AOAM531E0ogdgQbV1W3xhGfRbXOuSL9ZWL482btv6hyhfOAKEBpxGNnS
+        U7vtKg1kjHaAEIJZv5nm2Dncuw==
+X-Google-Smtp-Source: ABdhPJwW1D63rhPKUfuQucpNll3MeH9K0by+Htu81WVwB0qMY/SS1W07DD42HefctcLFL0htvuDj1g==
+X-Received: by 2002:a17:90b:204:: with SMTP id fy4mr13136166pjb.57.1610755232980;
+        Fri, 15 Jan 2021 16:00:32 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a29sm9016193pfr.73.2021.01.15.16.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 16:00:31 -0800 (PST)
+Date:   Fri, 15 Jan 2021 16:00:24 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>, Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+Subject: Re: [PATCH 2/6] KVM: selftests: Avoid flooding debug log while
+ populating memory
+Message-ID: <YAIsmMrB1hwX804F@google.com>
+References: <20210112214253.463999-1-bgardon@google.com>
+ <20210112214253.463999-3-bgardon@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3b101fff85ec1c490e9a14305a999cbe@walle.cc>
+In-Reply-To: <20210112214253.463999-3-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
-> Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
-> > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
-> > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
+On Tue, Jan 12, 2021, Ben Gardon wrote:
+> Peter Xu pointed out that a log message printed while waiting for the
+> memory population phase of the dirty_log_perf_test will flood the debug
+> logs as there is no delay after printing the message. Since the message
+> does not provide much value anyway, remove it.
 
-> > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
-> > > > that overlaps another BAR, a quirk might be the right fix. But my
-> > > > guess is the device is working correctly per spec and there's
-> > > > something wrong in how firmware/Linux is assigning things.  That would
-> > > > mean we need a more generic fix that's not a quirk and not tied to the
-> > > > Intel i210.
-> > > 
-> > > Agreed, but as you already stated (and I've also found that in
-> > > the PCI spec) the Expansion ROM address decoder can be shared by
-> > > the other BARs and it shouldn't matter as long as the ExpROM BAR
-> > > is disabled, which is the case here.
-> > 
-> > My point is just that if this could theoretically affect devices
-> > other than the i210, the fix should not be an i210-specific quirk.
-> > I'll assume this is a general problem and wait for a generic PCI
-> > core solution unless it's i210-specific.
+Does it provide value if something goes wrong?  E.g. if a vCPU doesn't finish,
+how would one go about debugging?  Would it make sense to make the print
+ratelimited instead of removing it altogether?
+ 
+> Reviewed-by: Jacob Xu <jacobhxu@google.com>
 > 
-> I guess the culprit here is that linux skips the programming of the
-> BAR because of some broken Matrox card. That should have been a
-> quirk instead, right? But I don't know if we want to change that, do
-> we? How many other cards depend on that?
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  tools/testing/selftests/kvm/dirty_log_perf_test.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index 16efe6589b43..15a9c45bdb5f 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -146,8 +146,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  	/* Allow the vCPU to populate memory */
+>  	pr_debug("Starting iteration %lu - Populating\n", iteration);
+>  	while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
+> -		pr_debug("Waiting for vcpu_last_completed_iteration == %lu\n",
+> -			iteration);
+> +		;
+>  
+>  	ts_diff = timespec_elapsed(start);
+>  	pr_info("Populate memory time: %ld.%.9lds\n",
+> @@ -171,9 +170,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  
+>  		pr_debug("Starting iteration %lu\n", iteration);
+>  		for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> -			while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
+> -				pr_debug("Waiting for vCPU %d vcpu_last_completed_iteration == %lu\n",
+> -					 vcpu_id, iteration);
+> +			while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id])
+> +			       != iteration)
 
-Oh, right.  There's definitely some complicated history there that
-makes me a little scared to change things.  But it's also unfortunate
-if we have to pile quirks on top of quirks.
+I like the original better.  Poking out past 80 chars isn't the end of the world.
 
-> And still, how do we find out that the i210 is behaving correctly?
-> In my opinion it is clearly not. You can change the ExpROM BAR value
-> during runtime and it will start working (while keeping it
-> disabled).  Am I missing something here?
-
-I agree; if the ROM BAR is disabled, I don't think it should matter at
-all what it contains, so this does look like an i210 defect.
-
-Would you mind trying the patch below?  It should update the ROM BAR
-value even when it is disabled.  With the current pci_enable_rom()
-code that doesn't rely on the value read from the BAR, I *think* this
-should be safe even on the Matrox and similar devices.
-
-Bjorn
-
-
-commit 0ca2233eb71f ("PCI: Update ROM BAR even if disabled")
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Fri Jan 15 17:17:44 2021 -0600
-
-    PCI: Update ROM BAR even if disabled
-    
-    Test patch for i210 issue reported by Michael Walle:
-    https://lore.kernel.org/r/20201230185317.30915-1-michael@walle.cc
-
-diff --git a/drivers/pci/rom.c b/drivers/pci/rom.c
-index 8fc9a4e911e3..fc638034628c 100644
---- a/drivers/pci/rom.c
-+++ b/drivers/pci/rom.c
-@@ -35,9 +35,8 @@ int pci_enable_rom(struct pci_dev *pdev)
- 		return 0;
- 
- 	/*
--	 * Ideally pci_update_resource() would update the ROM BAR address,
--	 * and we would only set the enable bit here.  But apparently some
--	 * devices have buggy ROM BARs that read as zero when disabled.
-+	 * Some ROM BARs read as zero when disabled, so we can't simply
-+	 * read the BAR, set the enable bit, and write it back.
- 	 */
- 	pcibios_resource_to_bus(pdev->bus, &region, res);
- 	pci_read_config_dword(pdev, pdev->rom_base_reg, &rom_addr);
-diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
-index 7f1acb3918d0..f69b7d179617 100644
---- a/drivers/pci/setup-res.c
-+++ b/drivers/pci/setup-res.c
-@@ -69,18 +69,10 @@ static void pci_std_update_resource(struct pci_dev *dev, int resno)
- 	if (resno < PCI_ROM_RESOURCE) {
- 		reg = PCI_BASE_ADDRESS_0 + 4 * resno;
- 	} else if (resno == PCI_ROM_RESOURCE) {
--
--		/*
--		 * Apparently some Matrox devices have ROM BARs that read
--		 * as zero when disabled, so don't update ROM BARs unless
--		 * they're enabled.  See
--		 * https://lore.kernel.org/r/43147B3D.1030309@vc.cvut.cz/
--		 */
--		if (!(res->flags & IORESOURCE_ROM_ENABLE))
--			return;
-+		if (res->flags & IORESOURCE_ROM_ENABLE)
-+			new |= PCI_ROM_ADDRESS_ENABLE;
- 
- 		reg = dev->rom_base_reg;
--		new |= PCI_ROM_ADDRESS_ENABLE;
- 	} else
- 		return;
- 
-@@ -99,7 +91,8 @@ static void pci_std_update_resource(struct pci_dev *dev, int resno)
- 	pci_write_config_dword(dev, reg, new);
- 	pci_read_config_dword(dev, reg, &check);
- 
--	if ((new ^ check) & mask) {
-+	/* Some ROM BARs read as zero when disabled */
-+	if (resno != PCI_ROM_RESOURCE && (new ^ check) & mask) {
- 		pci_err(dev, "BAR %d: error updating (%#08x != %#08x)\n",
- 			resno, new, check);
- 	}
+> +				;
+>  		}
+>  
+>  		ts_diff = timespec_elapsed(start);
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
