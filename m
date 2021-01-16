@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C013C2F8C92
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25122F8C95
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 10:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbhAPJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 04:10:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11548 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbhAPJKH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 04:10:07 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHsdt1dXvzMGdM;
-        Sat, 16 Jan 2021 17:08:02 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Sat, 16 Jan 2021
- 17:09:12 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] hugetlbfs: make BUG_ON(!inode) takes effect in hugetlbfs_setattr
-Date:   Sat, 16 Jan 2021 04:09:10 -0500
-Message-ID: <20210116090910.5671-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726571AbhAPJNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 04:13:38 -0500
+Received: from thoth.sbs.de ([192.35.17.2]:56821 "EHLO thoth.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbhAPJNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 04:13:37 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 10G9CPm5022645
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 16 Jan 2021 10:12:28 +0100
+Received: from [167.87.253.56] ([167.87.253.56])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 10G9CLSN015701;
+        Sat, 16 Jan 2021 10:12:22 +0100
+Subject: Re: [PATCH net-next 1/1] stmmac: intel: change all EHL/TGL to auto
+ detect phy addr
+To:     Wong Vee Khee <vee.khee.wong@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>
+References: <20201106094341.4241-1-vee.khee.wong@intel.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <bf5170d1-62a9-b2dc-cb5a-d568830c947a@siemens.com>
+Date:   Sat, 16 Jan 2021 10:12:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201106094341.4241-1-vee.khee.wong@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we reach here with inode = NULL, we should have crashed as inode has
-already been dereferenced via hstate_inode. In order to make BUG_ON(!inode)
-takes effect, we should defer initializing hstate until we really need it.
-Also do this for hugetlbfs_inode_info as it's only used when ia_valid is
-verified with ATTR_SIZE.
+On 06.11.20 10:43, Wong Vee Khee wrote:
+> From: Voon Weifeng <weifeng.voon@intel.com>
+> 
+> Set all EHL/TGL phy_addr to -1 so that the driver will automatically
+> detect it at run-time by probing all the possible 32 addresses.
+> 
+> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> index b6e5e3e36b63..7c1353f37247 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> @@ -236,6 +236,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
+>  	int ret;
+>  	int i;
+>  
+> +	plat->phy_addr = -1;
+>  	plat->clk_csr = 5;
+>  	plat->has_gmac = 0;
+>  	plat->has_gmac4 = 1;
+> @@ -345,7 +346,6 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
+>  			  struct plat_stmmacenet_data *plat)
+>  {
+>  	plat->bus_id = 1;
+> -	plat->phy_addr = 0;
+>  	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
+>  
+>  	plat->serdes_powerup = intel_serdes_powerup;
+> @@ -362,7 +362,6 @@ static int ehl_rgmii_data(struct pci_dev *pdev,
+>  			  struct plat_stmmacenet_data *plat)
+>  {
+>  	plat->bus_id = 1;
+> -	plat->phy_addr = 0;
+>  	plat->phy_interface = PHY_INTERFACE_MODE_RGMII;
+>  
+>  	return ehl_common_data(pdev, plat);
+> @@ -376,7 +375,6 @@ static int ehl_pse0_common_data(struct pci_dev *pdev,
+>  				struct plat_stmmacenet_data *plat)
+>  {
+>  	plat->bus_id = 2;
+> -	plat->phy_addr = 1;
+>  	return ehl_common_data(pdev, plat);
+>  }
+>  
+> @@ -408,7 +406,6 @@ static int ehl_pse1_common_data(struct pci_dev *pdev,
+>  				struct plat_stmmacenet_data *plat)
+>  {
+>  	plat->bus_id = 3;
+> -	plat->phy_addr = 1;
+>  	return ehl_common_data(pdev, plat);
+>  }
+>  
+> @@ -450,7 +447,6 @@ static int tgl_sgmii_data(struct pci_dev *pdev,
+>  			  struct plat_stmmacenet_data *plat)
+>  {
+>  	plat->bus_id = 1;
+> -	plat->phy_addr = 0;
+>  	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
+>  	plat->serdes_powerup = intel_serdes_powerup;
+>  	plat->serdes_powerdown = intel_serdes_powerdown;
+> 
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- fs/hugetlbfs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This fixes PHY detection on one of our EHL-based boards. Can this also
+be applied to stable 5.10?
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 740693d7f255..9b221b87fbea 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -755,10 +755,8 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
- static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
- {
- 	struct inode *inode = d_inode(dentry);
--	struct hstate *h = hstate_inode(inode);
- 	int error;
- 	unsigned int ia_valid = attr->ia_valid;
--	struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
- 
- 	BUG_ON(!inode);
- 
-@@ -767,6 +765,8 @@ static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
- 		return error;
- 
- 	if (ia_valid & ATTR_SIZE) {
-+		struct hstate *h = hstate_inode(inode);
-+		struct hugetlbfs_inode_info *info = HUGETLBFS_I(inode);
- 		loff_t oldsize = inode->i_size;
- 		loff_t newsize = attr->ia_size;
- 
+Thanks,
+Jan
+
 -- 
-2.19.1
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
