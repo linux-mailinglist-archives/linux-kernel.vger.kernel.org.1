@@ -2,168 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875362F8F5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EEC2F8F64
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbhAPVCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 16:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        id S1727205AbhAPVOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 16:14:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbhAPVCM (ORCPT
+        with ESMTP id S1726906AbhAPVOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 16:02:12 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13F5C061573;
-        Sat, 16 Jan 2021 13:01:31 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id l9so12582714ejx.3;
-        Sat, 16 Jan 2021 13:01:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b6fot4S0o8FzBACw00nl0yHU0eEOQr6GTvAJmo+zENQ=;
-        b=kEh8eR+7T5R8d2o7uD/lJHuY8dv8i1NNXBpsp2Kz30djqxD7PIinIv/GSxaERAsJpg
-         Qr0hFfmaigLfAsv5JuvxCUBLYzpgQYycqh9F5C0XcuRdgYrvYzeG9jyILTswpMT/YdiH
-         /dHlEryL8aAmxfVSM7wxBoXNF1RJpruY1SYHCUz/REnMjrP2fn84U5XQp2BWwKazYlUC
-         jEOjzxN3MikFrF5Km1Pd99tN7xpYFveHz7rurvd1xnSkWsS0UNssSj9zd0w0x7W3Tz94
-         I4hOFNF12VhfALTvQKJ6uJQfw7aQPFbYs2mTGN/nssOQXUFN9rOj18I2w8BO3gcdbD6q
-         qqJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b6fot4S0o8FzBACw00nl0yHU0eEOQr6GTvAJmo+zENQ=;
-        b=ufkMVxnqegcm3wyPYxKUGiHBYvhm8T8TyEQSSYLbX8aY14juGFTar/9kub8JHtEvfT
-         kBB73R/HD37HQTe7vb918gh988169QJ5PNZt1paLg1s+poejwuaBCvL8OyyrHZmvlHn9
-         mWoI442KxiZHCinSi4/orAV/5BqHT86345jIfNDxdld9/6IkV5Q9xHN9va0EzklLL+46
-         Ikl6nAT7z6FpXvb6OP5X4RJTdGKlfaseSfKCbpl24l/asVD6jSIw+Bfc1NRBFC10+5Li
-         LnaYWPGTumiGgAZ6EPXsAmvSFOoOAuJZqaCgqyabqXM6xJlH5GIpeabF4Fv28ChBuvWp
-         J/+Q==
-X-Gm-Message-State: AOAM532prfrxSEGiDGy2aeWFFKZviCV4hTUEnR1ebJR08PnAYOwNKNCa
-        AYIIuDJi+WjwII99jk40n8wjVPHQI/SdnwlMmyw=
-X-Google-Smtp-Source: ABdhPJwi6ie1Yk7L9E3ktUS9hNm/69jCzQMPLiaiVv9fUfCeBpf1UPMrxU+hF3OIde5B0EuEm426RXWdLPC1C9q7KzM=
-X-Received: by 2002:a17:907:3e27:: with SMTP id hp39mr8452064ejc.187.1610830890430;
- Sat, 16 Jan 2021 13:01:30 -0800 (PST)
+        Sat, 16 Jan 2021 16:14:05 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065E6C061573;
+        Sat, 16 Jan 2021 13:13:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Rmv4Ihp0TdcI92yM4qcVe/aLXHiozbrVgcWboXhwYpM=; b=svAjN2bum/EwuKWAxCW+uGqfQJ
+        YKecJI8PXqtHVrYOEF/vd4rsgwYTmRzvYS+CtZ94DSGqKS9k5ITdU2zLVD5hx2ZF+tOB5fH3bMYkd
+        P49lHS9/uNKDa0XL/B8z8kqmqpl3dQr7hVDAKko9Sa0hXp5h4331hbHhTzwF2vvsNJoMBtmZhQXvd
+        mH48IUgsQiwg4MDU8wY/WhuLgVwN7vJv17OGtqtD6lckIYyOuCfqi0fezY6vwgpz40Q7a51HebAyy
+        kgZscVrYp4UOLOBZ8LIG7reieotSIvSLXCiqSHWANQC5P2uBwl4D2HlpJtu2x1Cn5JX1yjDVPi5bF
+        +PN+fk/Q==;
+Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0sso-0006kP-4q; Sat, 16 Jan 2021 21:13:19 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        nicolassaenzj@gmail.com,
+        Nicolas Saenz Julienne <nicolas.saenz@prodys.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: [PATCH] power: supply: fix sbs-charger build, needs REGMAP_I2C
+Date:   Sat, 16 Jan 2021 13:13:10 -0800
+Message-Id: <20210116211310.19232-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
- <20210102205904.2691120-5-martin.blumenstingl@googlemail.com> <20210112234330.GA192175@xps15>
-In-Reply-To: <20210112234330.GA192175@xps15>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 16 Jan 2021 22:01:19 +0100
-Message-ID: <CAFBinCCfiC9a6u2qAs8-pEUB299C=vHut5=1ZPVPoCs0w-+r-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] remoteproc: meson-mx-ao-arc: Add a driver for the
- AO ARC remote procesor
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, ohad@wizery.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+CHARGER_SBS should select REGMAP_I2C since it uses API(s) that are
+provided by that Kconfig symbol.
 
-thank you for taking the time to go through my patch!
+Fixes these errors:
 
-On Wed, Jan 13, 2021 at 12:43 AM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
-[...]
-> > +       If unusre say N.
->
-> s/unusre/unsure
-godo catch, noted.
+../drivers/power/supply/sbs-charger.c:149:21: error: variable ‘sbs_regmap’ has initializer but incomplete type
+ static const struct regmap_config sbs_regmap = {
+../drivers/power/supply/sbs-charger.c:150:3: error: ‘const struct regmap_config’ has no member named ‘reg_bits’
+  .reg_bits = 8,
+../drivers/power/supply/sbs-charger.c:155:23: error: ‘REGMAP_ENDIAN_LITTLE’ undeclared here (not in a function)
+  .val_format_endian = REGMAP_ENDIAN_LITTLE, /* since based on SMBus */
+../drivers/power/supply/sbs-charger.c: In function ‘sbs_probe’:
+../drivers/power/supply/sbs-charger.c:183:17: error: implicit declaration of function ‘devm_regmap_init_i2c’; did you mean ‘devm_request_irq’? [-Werror=implicit-function-declaration]
+  chip->regmap = devm_regmap_init_i2c(client, &sbs_regmap);
+../drivers/power/supply/sbs-charger.c: At top level:
+../drivers/power/supply/sbs-charger.c:149:35: error: storage size of ‘sbs_regmap’ isn’t known
+ static const struct regmap_config sbs_regmap = {
 
-[...]
-> > +#include <linux/property.h>
->
-> Is it possible for this to go after platform_device.h?
-I think so, not sure why this is not in alphabetical order
+Fixes: feb583e37f8a ("power: supply: add sbs-charger driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: linux-pm@vger.kernel.org
+Cc: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: nicolassaenzj@gmail.com
+Cc: Nicolas Saenz Julienne <nicolas.saenz@prodys.net>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+---
+Martin, do you want Reported-by: on this?
 
-[...]
-> > +#define AO_CPU_CNTL                                  0x0
-> > +     #define AO_CPU_CNTL_MEM_ADDR_UPPER              GENMASK(28, 16)
-> > +     #define AO_CPU_CNTL_HALT                        BIT(9)
-> > +     #define AO_CPU_CNTL_UNKNONWN                    BIT(8)
-> > +     #define AO_CPU_CNTL_RUN                         BIT(0)
->
-> Any reason for the extra tabulation at the beginning of the lines?
-not really, I think I did the same thing as in
-drivers/iio/adc/meson_saradc.c where the register itself starts at the
-beginning of the line and each bit(mask) starts indented
-I'll change this for the next version
+ drivers/power/supply/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-[...]
-> > +#define MESON_AO_RPROC_SRAM_USABLE_BITS                      GENMASK(31, 20)
->
-> As per your comments in the cover letter I assume we don't know more about this?
-unfortunately not, but I'll still try to get some more information
-from someone at Amlogic.
-That said, this is "legacy" hardware for them so I can't make any promises.
-
-> > +#define MESON_AO_RPROC_MEMORY_OFFSET                 0x10000000
-> > +
-> > +struct meson_mx_ao_arc_rproc_priv {
-> > +     void __iomem            *remap_base;
-> > +     void __iomem            *cpu_base;
-> > +     unsigned long           sram_va;
-> > +     phys_addr_t             sram_pa;
-> > +     size_t                  sram_size;
-> > +     struct gen_pool         *sram_pool;
-> > +     struct reset_control    *arc_reset;
-> > +     struct clk              *arc_pclk;
-> > +     struct regmap           *secbus2_regmap;
-> > +};
-> > +
-> > +static int meson_mx_ao_arc_rproc_start(struct rproc *rproc)
-> > +{
-> > +     struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
-> > +     phys_addr_t phys_addr;
-> > +     int ret;
-> > +
-> > +     ret = clk_prepare_enable(priv->arc_pclk);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     writel(0, priv->remap_base + AO_REMAP_REG0);
-> > +     usleep_range(10, 100);
->
-> That's wonderful - here too I assume there is no indication as to why this is
-> needed?
-looking at this again: the vendor driver only has a delay after
-pulsing the reset line
-I will double check and hopefully remove this usleep_range and only
-keep the one below (after pulsing the reset line)
-
-[...]
-> > +static void *meson_mx_ao_arc_rproc_da_to_va(struct rproc *rproc, u64 da,
-> > +                                         size_t len)
-> > +{
-> > +     struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
-> > +
-> > +     if ((da + len) >= priv->sram_size)
-> > +             return NULL;
->
-> This isn't an index so it should be '>' rather than '>='.  You should be able to
-> ask for the whole range and get it, which the above prevents you from doing.
->
-> Moreover are you sure 'da' always starts at 0? This seems to be at odds with
-> your comment in meson_mx_ao_arc_rproc_start() about converting from 0xd9000000
-> to 0xc9000000.
-thanks for both of these comments, I'll address this in the next version
-
-[...]
-> > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
-> > +     if (IS_ERR(priv->arc_reset)) {
->
-> Looking at __devm_reset_control_get(), this should probably be IS_ERR_OR_NULL().
-as far as I know only devm_reset_control_get_optional_exclusive (the
-important bit is "optional" - I am using the "mandatory/not optional"
-variant) can return NULL, all other variants return PTR_ERR or a valid
-reset_control.
-
-
-Best regards,
-Martin
+--- linux-next-20210115.orig/drivers/power/supply/Kconfig
++++ linux-next-20210115/drivers/power/supply/Kconfig
+@@ -229,6 +229,7 @@ config BATTERY_SBS
+ config CHARGER_SBS
+ 	tristate "SBS Compliant charger"
+ 	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  Say Y to include support for SBS compliant battery chargers.
+ 
