@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654D92F8DF5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AD92F8DD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbhAPRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
+        id S1728245AbhAPRKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728421AbhAPRKt (ORCPT
+        with ESMTP id S1728079AbhAPRKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:49 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481ECC0617BB
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:39:15 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id e22so275955iog.6
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:39:15 -0800 (PST)
+        Sat, 16 Jan 2021 12:10:22 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD79EC0617BD
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:45:15 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id y19so23995904iov.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:45:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=otY6ciKN+gysGenPbqEDdYdlSugmyG9nw1sy+M0CT3s=;
-        b=fnCtj0N9L8RJbQQlQj/Y3kHGgp7Qmw9bkK05C71ZXiE3UA+59Vc4LNoUJdb60wW8Je
-         KPK67d20uQlXv/kskQjlSJJ1QExtIHHeFSwkquCrEOG4lbRJJornRQ3f33mcv0uIPolY
-         gUORzUthOzadEXn8cELiJwAQCusC1ULuVs90Pjm3AW6tOG/kC1h+kNNIOKCY9O7uchM+
-         CHZOBDr4itKDRgbddLn12itAfr2iAuQ2hsnyj8VcRrRP8DNG9fSY8GVtlQLMcCBQ5UGL
-         Ga2CLTgPL3Zbwm0Mjxhpb+pzLK9r3o4uD1JbGM+mnifH3J1r1KEUDzoyG1hWrgyJQxCY
-         Tx4A==
+        bh=EHihIcKDoV0+JHPY4VGxSXXMUYFdCoryZeO5QPeUbJc=;
+        b=GnaGfjbkXKtzD9cX08SDfUJtODWmWyYUR89tTrLQgOD1I5QxSiHgjQMO/m8swKC3sN
+         h7LVVYetoA/fYq+IkgN+Mf2t5mARxHNvhMCTFwAxuEvtbrwIlhUfXqDQ0n4pSJqbXJl/
+         cAb0OBHLuLB4qEZ07mNIMgroKOHO7L20gfJ5NN3RBBt10D1hxW2Z5bKa0t7Wp4pAMqgR
+         KbKZPoq4IpZGK2PF7QIx+dVs0GzExH4THCt+WnltChaT73PRi7GXa9RejQI6b08j3qng
+         2BLcL3zFCFWibRL4K4PCe8zJW+Fvk20zx+egLzNccgJQh7eVUYG56EGgIoOqzfwIXmWt
+         aJfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=otY6ciKN+gysGenPbqEDdYdlSugmyG9nw1sy+M0CT3s=;
-        b=DPb9j/lEy0Ar4z+T+f8IC1Rfwb3d2nPoarIlgv5xi1mMdRRlTPF5aQ3Y39TxqD4Atx
-         v0FQPPSAocloRvOm23BqnZMukGfztCepg74W/BygzTyXvXPT+K/CRS/wkt0WHoZrd0e/
-         d24k3IGkFBHfxNF5UiNKGahVbBHaM0whR09RzQuwt8HRcfXujFLnnHRM6fq0sYmrOCN1
-         xhrcoPd3ZVpTXjoswKEmmPUGN5M/wvNt4X9l6uJiVsph+d89g+cqRbmfA7b46ywIiZ3e
-         HPvExQWfrwEKXMTOUgDf9Aj40Dm+lXMpXA4VDPWgHNrgPsLDGJYrbvITJIob0QJ1TrA3
-         wedQ==
-X-Gm-Message-State: AOAM530fPGXJIDe1qjYTYp7LpSLCHtRBeAScgowiTqxWXMsQixV0vPuq
-        n2dJ97xHehLZpokDZ3NBQK4fpIavLcDfuNrlCy8=
-X-Google-Smtp-Source: ABdhPJzSIZKrZxPuA/oHoh7gvYudnZwisnG/DcieQJoXNj50vBVgy7T49h7RknfJ6TZSPYgMYIBG/J1KKXQ9rm2Q1jI=
-X-Received: by 2002:a05:6e02:5c4:: with SMTP id l4mr15157168ils.94.1610807954546;
- Sat, 16 Jan 2021 06:39:14 -0800 (PST)
+        bh=EHihIcKDoV0+JHPY4VGxSXXMUYFdCoryZeO5QPeUbJc=;
+        b=b4cKX2NbnNadvS6tF36M1jnaGYYmUa/yy7dhvinsSntrsULqsH8ICNVk3ohUcLIIBb
+         Rr43Xxb9KndM2glYnO0hZguoQmFBbteA3UvU8a+huKP3rLnIHRGe92RgtWvaL65ytxFo
+         7UBk6QobBfW8cClCFdeb1Fly3iPrDu90fBRN2OR5tTswXxFgT2kmo+aEs8lZl+o6oQxW
+         G7LMZr3uKaNGvE6KdZQWdmbYs43kGZ2oq6qYly8+vDLqo2UioUkyNlZ+erE6xUzDqIDV
+         wbaJZY41e/CILZQFl2SjZGZG8u04waClMyBoDv2O+Vle/bSfSfoo10VHBOoZ9B9BTm7p
+         6NCQ==
+X-Gm-Message-State: AOAM533FKdc6B2W2UZePdNJkQuNPCNlnONAKjoJmUJitfQA35jaQBx7o
+        3kTzBo3NBGutKC4p3JLoxvmUm+cMsb5K303Rtik=
+X-Google-Smtp-Source: ABdhPJw6eRSI1V+vyLoF3FgZnrQIknsQXZyGjEmAtVMeI5M2g92vnTxIkF8bY4HVhiFXlEgph4zZyGmp02wdxjDFvI0=
+X-Received: by 2002:a5d:8c85:: with SMTP id g5mr12002223ion.154.1610808315233;
+ Sat, 16 Jan 2021 06:45:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116113033.608340773@infradead.org> <20210116113920.187137770@infradead.org>
-In-Reply-To: <20210116113920.187137770@infradead.org>
+References: <20210112144344.850850975@infradead.org> <20210112144843.849135905@infradead.org>
+ <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
+ <YABDI6Qkp5PNslUS@hirez.programming.kicks-ass.net> <jhjlfcvhcx5.mognet@arm.com>
+ <YABknAqDe4h35+GY@hirez.programming.kicks-ass.net> <CAJhGHyBazDix9tLTV0HnobeSzneUK8Y9GKf6AgXspf=c9O5dhQ@mail.gmail.com>
+ <YALf4xDwTKCERPbf@hirez.programming.kicks-ass.net>
+In-Reply-To: <YALf4xDwTKCERPbf@hirez.programming.kicks-ass.net>
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Sat, 16 Jan 2021 22:39:03 +0800
-Message-ID: <CAJhGHyB7fNvxyKwnMgWicvZN7oTnGYLBNH8cUjLg2EcKQ4YMMg@mail.gmail.com>
-Subject: Re: [PATCH 8/8] sched: Relax the set_cpus_allowed_ptr() semantics
+Date:   Sat, 16 Jan 2021 22:45:04 +0800
+Message-ID: <CAJhGHyDT2FWsn15-_DQ4b_bkrRi74MzNnWt7YWTO49cSv4yjbg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
         Vincent Donnefort <vincent.donnefort@arm.com>,
         Dexuan Cui <decui@microsoft.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -67,72 +70,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 7:43 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Sat, Jan 16, 2021 at 8:45 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Now that we have KTHREAD_IS_PER_CPU to denote the critical per-cpu
-> tasks to retain during CPU offline, we can relax the warning in
-> set_cpus_allowed_ptr(). Any spurious kthread that wants to get on at
-> the last minute will get pushed off before it can run.
+> On Sat, Jan 16, 2021 at 02:27:09PM +0800, Lai Jiangshan wrote:
+> > On Thu, Jan 14, 2021 at 11:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > >
+> > > -void kthread_set_per_cpu(struct task_struct *k, bool set)
+> > > +void kthread_set_per_cpu(struct task_struct *k, int cpu)
+> > >  {
+> > >         struct kthread *kthread = to_kthread(k);
+> > >         if (!kthread)
+> > >                 return;
+> > >
+> > > -       if (set) {
+> > > -               WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
+> > > -               WARN_ON_ONCE(k->nr_cpus_allowed != 1);
+> > > -               set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+> > > -       } else {
+> > > +       WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
+> > > +
+> > > +       if (cpu < 0) {
+> > >                 clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+> > > +               return;
+> > >         }
+> > > +
+> > > +       kthread->cpu = cpu;
+> > > +       set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+> > >  }
+> > >
+> >
+> > I don't see the code to set the mask of the cpu to the task
+> > since set_cpus_allowed_ptr() is removed from rebind_worker().
+> >
+> > Is it somewhere I missed?
 >
-> While during CPU online there is no harm, and actual benefit, to
-> allowing kthreads back on early, it simplifies hotplug code.
+> kthread_unpark().
 >
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > @@ -4978,9 +4982,9 @@ static void rebind_workers(struct worker_pool *pool)
+> > >          * from CPU_ONLINE, the following shouldn't fail.
+> > >          */
+> > >         for_each_pool_worker(worker, pool) {
+> > > -               WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+> > > -                                                 pool->attrs->cpumask) < 0);
+> > > -               kthread_set_per_cpu(worker->task, true);
+> > > +               WARN_ON_ONCE(kthread_park(worker->task) < 0);
+> > > +               kthread_set_per_cpu(worker->task, pool->cpu);
+> > > +               kthread_unpark(worker->task);
+> >
+> > I feel nervous to use kthread_park() here and kthread_parkme() in
+> > worker thread.  And adding kthread_should_park() to the fast path
+> > also daunt me.
+>
+> Is that really such a hot path that an additional load is problematic?
+>
+> > How about using a new KTHREAD_XXXX instead of KTHREAD_IS_PER_CPU,
+> > so that we can set and clear KTHREAD_XXXX freely, especially before
+> > set_cpus_allowed_ptr().
+>
+> KTHREAD_IS_PER_CPU is exactly what we need, why make another flag?
+>
+> The above sequence is nice in that it restores both the
+> KTHREAD_IS_PER_CPU flag and affinity while the task is frozen, so there
+> are no races where one is observed and not the other.
+>
+> It is also the exact sequence normal per-cpu threads (smpboot) use to
+> preserve affinity.
 
-Thanks!
-
-Relaxing set_cpus_allowed_ptr() was also one of the choices I listed,
-which can really simplify hotplug code in the workqueue and may be
-other hotplug code.
-
-Reviewed-by: Lai jiangshan <jiangshanlai@gmail.com>
-
-> ---
->  kernel/sched/core.c |   20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
->
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2342,7 +2342,9 @@ static int __set_cpus_allowed_ptr(struct
->
->         if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
->                 /*
-> -                * Kernel threads are allowed on online && !active CPUs.
-> +                * Kernel threads are allowed on online && !active CPUs,
-> +                * however, during cpu-hot-unplug, even these might get pushed
-> +                * away if not KTHREAD_IS_PER_CPU.
->                  *
->                  * Specifically, migration_disabled() tasks must not fail the
->                  * cpumask_any_and_distribute() pick below, esp. so on
-> @@ -2386,16 +2388,6 @@ static int __set_cpus_allowed_ptr(struct
->
->         __do_set_cpus_allowed(p, new_mask, flags);
->
-> -       if (p->flags & PF_KTHREAD) {
-> -               /*
-> -                * For kernel threads that do indeed end up on online &&
-> -                * !active we want to ensure they are strict per-CPU threads.
-> -                */
-> -               WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
-> -                       !cpumask_intersects(new_mask, cpu_active_mask) &&
-> -                       p->nr_cpus_allowed != 1);
-> -       }
-> -
->         return affine_move_task(rq, p, &rf, dest_cpu, flags);
->
->  out:
-> @@ -7519,6 +7511,12 @@ int sched_cpu_deactivate(unsigned int cp
->          */
->         synchronize_rcu();
->
-> +       /*
-> +        * From this point forward, this CPU will refuse to run any task that
-> +        * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-> +        * push those tasks away until this gets cleared, see
-> +        * sched_cpu_dying().
-> +        */
->         balance_push_set(cpu, true);
->
->         rq_lock_irqsave(rq, &rf);
->
->
+Other per-cpu threads normally do short-live works. wq's work can be
+lengthy, cpu-intensive, heavy-lock-acquiring or even call
+get_online_cpus() which might result in a deadlock with kthread_park().
