@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D7B2F8F73
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A1C2F8F80
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbhAPVah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 16:30:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbhAPVaM (ORCPT
+        id S1727373AbhAPVyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 16:54:54 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:41314 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726788AbhAPVyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 16:30:12 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C42C061573;
-        Sat, 16 Jan 2021 13:29:31 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id 6so5501213wri.3;
-        Sat, 16 Jan 2021 13:29:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=2Th5lDGpBI/Rhu3/73k5rMrbZQS4Y/S/x1FlM2kyjVU=;
-        b=A0K6e7pgp6V067iGxutfRK0GYQppIu37GjUXW4hN/fNIkicSKz288qebc35p31RaII
-         X6zbjFRfQo+4F9Sr1KV/xhWNxY3aoK4bpnEGfgNgVY2c0yDzubI3yngZM5oHWfzX0quM
-         2FEioGjTO+UdhYiQYnrPFIHyJkSY5UOMRoq3fXjQXelEvm+V4Mo4OMkCG/tk5/hfqE6I
-         8jHtvnlr7O/R3cs+vA//i7ZbBA6XCQ9TMRZp8xJVO7waREOL3oF2swyzsUxYIworNuYP
-         2rZKRcaX+ejEK8yNli3MhJxRJFM/l6gZm4zKxrZizB6LZ0PgbRqSRcHM21xJ1Gnj+7mS
-         X+IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2Th5lDGpBI/Rhu3/73k5rMrbZQS4Y/S/x1FlM2kyjVU=;
-        b=XnWApkg+/CLk+CnfQmR4DP8levSh5OBwFoB6rKl+j2yan4SzTFKT/o/DXSQwwztpE1
-         y02X8edcEF02ZUoy57nuoGNifga/zYdKIAbJ2vB6PIVquAaZ5cqkzeIgaOS1xQYYplgz
-         jU5ZIe1rBmB02f7K2/rj0nVkY+++rK5DqP0TWcm+F3f+4E/Lb7AYfXbX9kTI0GRs5cMj
-         Xk5zK+LxVtrGhIsHtvMaJr8ZHG0MULVik/AvAVcFyPronhdT01OhucNcvkKV3arTAzrF
-         0K81hWNmK8l0Q4V+tt8+NAXI+6OF+0dWfN4gYl/HmiZuO8f3kFA+sP/KoVUVubqPZ93B
-         jVxg==
-X-Gm-Message-State: AOAM530yaaycizgJqsGAa1yEX4lD61Qt5XEfqer0suDskcJl0jaVjQ1i
-        NZVEKmWS5wTcH2RuqxlKYMC+6tGYOQ0=
-X-Google-Smtp-Source: ABdhPJz+i5Ro02n6fk6qh4otSWdV1pNKb/SlP/Oa0qdCaFU9Nxg9lTmkKpR5//+vCGOFFrlcVwjn6w==
-X-Received: by 2002:adf:ee51:: with SMTP id w17mr19730858wro.97.1610832570621;
-        Sat, 16 Jan 2021 13:29:30 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id y14sm15263314wru.96.2021.01.16.13.29.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Jan 2021 13:29:30 -0800 (PST)
-Subject: Re: [PATCH v3 0/4] Remove one more platform_device_add_properties()
- call
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg KH <greg@kroah.com>, Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-References: <20210115094914.88401-1-heikki.krogerus@linux.intel.com>
- <CAHp75Vc3xjaOugX3d8bohz12OEP=n4BAonNyQJQ=UgBfVZorOg@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <c644e72c-bb46-56c2-931e-7cb98b024cc3@gmail.com>
-Date:   Sat, 16 Jan 2021 21:29:29 +0000
+        Sat, 16 Jan 2021 16:54:47 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10GLp10A149789;
+        Sat, 16 Jan 2021 21:53:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NPIaIH+BiKIGU4IcGwHo877WmE0TuIG7/Z86F4Smw9Q=;
+ b=tV5Qhd7RliAo5YHgDKAmw8D1eImMwF8b/ZiUi1oErr1nzg1XiJR3RW0N2YoROGE2Cw5L
+ J2yryF2kWKc8JK9C40O6vm2Ti0OA2jRuc5Qh1OblM87F6pVlThaJ06pH1RoYU/+ihDqE
+ Fwi3dojSNci2+VugLNRFah+BjR36odSzp8uSGH9gI4gbKyc5gez0owc+QqK8VfZta6sD
+ 7unzePDdlYhffYgDCiDu3y5AdUxy3JYga5MyqRj84oKZGtTVDY6N4ENPgggoym3rVkN9
+ x8azapdEp6HvxeQgKCVREbxGEZWTGjXcU5EotIaOtPWdb77fxvYDzSZx2l/Uo/GcLOiR 9w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 363r3kh8r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 16 Jan 2021 21:53:36 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10GLoUOT187635;
+        Sat, 16 Jan 2021 21:53:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 363p6cbvym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 16 Jan 2021 21:53:35 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10GLrPUB004858;
+        Sat, 16 Jan 2021 21:53:26 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 16 Jan 2021 13:53:25 -0800
+Subject: Re: [PATCH 2/5] hugetlb: convert page_huge_active() to HP_Migratable
+ flag
+To:     Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210116003105.182918-1-mike.kravetz@oracle.com>
+ <20210116003105.182918-3-mike.kravetz@oracle.com>
+ <20210116042416.GA2260413@casper.infradead.org>
+ <20210116120628.GA3024@localhost.localdomain>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b6c9d475-c944-ffe0-0da5-31090d684f2c@oracle.com>
+Date:   Sat, 16 Jan 2021 13:53:24 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc3xjaOugX3d8bohz12OEP=n4BAonNyQJQ=UgBfVZorOg@mail.gmail.com>
+In-Reply-To: <20210116120628.GA3024@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9866 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101160138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9866 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101160138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/01/2021 20:23, Andy Shevchenko wrote:
-> On Fri, Jan 15, 2021 at 11:52 AM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
->> Hi,
+On 1/16/21 4:06 AM, Oscar Salvador wrote:
+> On Sat, Jan 16, 2021 at 04:24:16AM +0000, Matthew Wilcox wrote:
+>> and name these HPG_restore_reserve and HPG_migratable
 >>
->> I'm now clearing the dev_fwnode(dev)->secondary pointer in
->> device_remove_software_node() as requested by Daniel and Andy. Thanks
->> guys, it's much better now. I also took the liberty of including one
->> more PCI ID patch where I add PCI ID for the Alder Lake-P variant. I
->> hope that is OK.
+>> and generate the calls to hugetlb_set_page_flag etc from macros, eg:
 >>
->> Andy, I dropped your Tested-by tag because of the change I made to the
->> first patch. If you have time to retest these, I would much appreciate.
-> Since Greg already grabbed a v3 I will test it when it appears in linux-next.
->
-It seems the grabbed one is the v2 one though actually
+>> #define TESTHPAGEFLAG(uname, lname)					\
+>> static __always_inline bool HPage##uname(struct page *page)		\
+>> { return test_bit(HPG_##lname, &page->private); }
+>> ...
+>> #define HPAGEFLAG(uname, lname)						\
+>> 	TESTHPAGEFLAG(uname, lname)					\
+>> 	SETHPAGEFLAG(uname, lname)					\
+>> 	CLEARHPAGEFLAG(uname, lname)
+>>
+>> HPAGEFLAG(RestoreReserve, restore_reserve)
+>> HPAGEFLAG(Migratable, migratable)
+>>
+>> just to mirror page-flags.h more closely.
+> 
+> That is on me.
+> I thought that given the low number of flags, we coud get away with:
+> 
+> hugetlb_{set,test,clear}_page_flag(page, flag)
+> 
+> and call it from the code.
+> But some of the flags need to be set/tested outside hugetlb code, so
+> it indeed looks nicer and more consistent to follow page-flags.h convention.
+> 
+> Sorry for the noise.
+
+Thanks everyone!
+
+I was unsure about the best way to go for this.  Will send out a new version
+in a few days using the page-flag style macros.
+
+-- 
+Mike Kravetz
