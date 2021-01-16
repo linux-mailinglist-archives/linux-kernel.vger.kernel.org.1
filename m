@@ -2,304 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5E82F8A45
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D9B2F8A48
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbhAPBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:13:56 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10718 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725601AbhAPBNz (ORCPT
+        id S1727977AbhAPBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbhAPBPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:13:55 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10G1BFdA006772;
-        Fri, 15 Jan 2021 17:12:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=cQj+7OBkOirDiIdGicf9AkWNp5R6HJ5Gh4QaolFFgBM=;
- b=JjRyTozsfxD5hr03GWAvVKtsqHZCt+8dkrIb/6MdSTClf76GZG631otJFABmsA82wJHU
- hkvxDKrswiuPjiqAd0IYk6FvRAqmCdynxK3kWlvdT/Qgc88MuvmWFn8FS8k2zfHiN8yh
- vTrHt3+mPD0Kx2a0626s/uXmurWGOmxIwqc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 362tcc7j0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 15 Jan 2021 17:12:50 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 15 Jan 2021 17:12:50 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ljWCYGfztf4a0ehV9352JflKdsRPiOM1VinvGyhXGjfj/Fa5qJPkP1bfABR1v0D92pFsAJWkyUQYGv0ETH+X5ONJszSg467fBMU2DDBNn/HU35NGFrEXmiXcO6E0ZdC6vxKiGMY8iHpUv5UjzjAtnR9vrQ4Mz8Dh1nmAD+WK1t9Yo1ofsOTtrpsqe+w97Km9JXIr7jP/ZrWBI9CB/+o+7dR4ELDmNwY7OGvQNuVqD7ZuxZM1H9TFlaDXQz4CYUTLO1dqsczwzNDLE4/7bqOmmew4SLRJ0xXCpsehLYesg0rW2LfeGSi9UagUhp05tjm7jgpU9DtnZB4tX0h+SCRaOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cQj+7OBkOirDiIdGicf9AkWNp5R6HJ5Gh4QaolFFgBM=;
- b=NpMstlyX4sRb+C+YGjFSrMdoOP8qTp0ce27NSb6om23W0r6NhiNBoD8BtU8DbU2TGXokEWkla5Qbbnr0x6PgEDJ4vOsgbVut/Tpc70IGB38CZW/wcVwirQHrc0Z8zxxm616wWdnT8AgXxAsUld+ftq4KBmu783EgZjaJ/CaL0djzLcDxfb4SF+OzsFkHYoCBhabmkWktkLSunOIZBd8O8eeIE1NiweUiX3rdsxbb+tIFgj3iQUrp7wrTTQd8OcGRFFCu698cxWZ41S5o5E3XZoLG7NVBGO6mHmy2lBF4HKcNTnOCuCn887h5aawDSchq1ed3s/H2T72fWPXjIX30Sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cQj+7OBkOirDiIdGicf9AkWNp5R6HJ5Gh4QaolFFgBM=;
- b=NSqZOvHcKTUi/szgBk/6fYVfyTFCTrZ5ABzlsfm4+P5Cy6xt61ghKznPDopW551kBxLcllmx4IUxv8JxukcFHCFxpkCp9Hz9y9hwtYnxDh6ltE7Rw+0ZFaADpM2ky49MTHydgkU9XNGLdbZzKlfB/zMlu7ifuFK1eWGPct6DOwk=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by SJ0PR15MB4201.namprd15.prod.outlook.com (2603:10b6:a03:2ab::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Sat, 16 Jan
- 2021 01:12:48 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0%7]) with mapi id 15.20.3763.010; Sat, 16 Jan 2021
- 01:12:48 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     KP Singh <kpsingh@kernel.org>, Martin Lau <kafai@fb.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "Hao Luo" <haoluo@google.com>, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-Thread-Topic: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-Thread-Index: AQHW5hbxN1bu8adE10+5MJhm5YS4VaoiytsAgAAsZICAAAZZAIAAHdAAgAEZZgCAAAXQAIAFJyaAgAAWvQCAAAS3gA==
-Date:   Sat, 16 Jan 2021 01:12:48 +0000
-Message-ID: <75A2A254-4D51-41F0-9B01-ED2AFA745E03@fb.com>
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-2-songliubraving@fb.com>
- <20210111185650.hsvfpoqmqc2mj7ci@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4mQrx1=owwrgBtu1Nvy9t0W4qP4=dthEutKpWPHxHrBw@mail.gmail.com>
- <20210111215820.t4z4g4cv66j7piio@kafai-mbp.dhcp.thefacebook.com>
- <9FF8CA8D-2D52-4120-99A5-86A68704BF4C@fb.com>
- <e4002f5c-6c2c-0945-9324-a8dc51125018@fb.com>
- <CACYkzJ64h53iZq9EpL01NukB6Rh+rQ0fupdn+shn-dTQ8NWH=A@mail.gmail.com>
- <A0F77AB9-5C1D-4657-96C9-33B5FDF6DF00@fb.com>
- <72a52715-dcfc-dc0b-ac5b-e14b7540fd31@fb.com>
-In-Reply-To: <72a52715-dcfc-dc0b-ac5b-e14b7540fd31@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.40.0.2.32)
-x-originating-ip: [2620:10d:c090:400::5:1591]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 035a95ed-8bd3-4df7-8bad-08d8b9bbd6d3
-x-ms-traffictypediagnostic: SJ0PR15MB4201:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR15MB420150918DFDF781B01DD8A3B3A60@SJ0PR15MB4201.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3msPo/YCTKggtX4Ngn8O4xu1uZEkfkGWMpIWmMHzHSRin7xkDj4+FenWWIKAvI2J9ENwlaFeKQi5jrIIjjMAYsOYxbBwf++Nv94DD+fS1iC2lA8FGylauBsf0JJR7lFlLH5LW69BvKHzSzDomJ0oC6H/V/Z70kdUawOjfLbGgf34wSFVR48UJ7cbVao/MWMyg0DRLKVLIW0tZcVqoqXxISnYpqn670AWJeGFwLbyNe8fWj+Dyg5/Vrv20ZZ/i12LyvEwVxN+li6K3rCIfQO1go4EbrV/g1VIhKi+0y72J2AgYRnQzJhBsX54UXdL7rnKW3lfKLG0Fhr72l7U5qkJVL+qVZ/9KQYn58Do8LNpGyMIZAZFVb5bwKTvpB1DDIpjSli+V6dFl7LJ8e8HJFbqSeYAwmrlcLI11M/G4hSj/OBmauy6+KfuSWDrDdag04F2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(376002)(39860400002)(2616005)(36756003)(37006003)(86362001)(83380400001)(5660300002)(53546011)(54906003)(6486002)(7416002)(478600001)(64756008)(91956017)(76116006)(71200400001)(2906002)(66556008)(66946007)(66446008)(6512007)(66476007)(6862004)(8936002)(6506007)(186003)(4326008)(316002)(6636002)(8676002)(33656002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?aJl6Wns3VoLwbhOWgfeIKf6+8agTzeMuPTi9BY5CrNhJ6WTk2Y6fxcfBwtBL?=
- =?us-ascii?Q?qZtMQa7vhVp2SilIX/pXmg4bDEsyt1F7tNhABB/boja+OeiiHf6hUO6QlsYn?=
- =?us-ascii?Q?JTVn3YK25WVb0oY6iGb4l7PYtBHVOlDIKDLzTf6eIWhXdwc2FqPifPtrwGrD?=
- =?us-ascii?Q?KWVNllna5O1GNyxtu2OQ5x+2xfl/7APRMKW4RlRJIZTIpHExkISeJpQi9Mg9?=
- =?us-ascii?Q?Lyj9qwDRPSolw9CbpHkCpmMKPVkt343cx14Q5SUujOh19UAuIsdVmKH5KZFt?=
- =?us-ascii?Q?rWVqlMjIwrv4rMSQVg9E8T1JmvN5pa7UY0BFdtQ5v55gfe2ByZwzMFzIOpgE?=
- =?us-ascii?Q?pYe7qX7It+fmNsNBta+r6sl/PnGP6AFKvxJa7zKbhvwohd916/UNOiW/jhJ7?=
- =?us-ascii?Q?PS0QRTCaXiHnZ92TjWnayiBEtyMTl8TPHIQPeaxu5/2PaIRk7MAv5PvJNgfb?=
- =?us-ascii?Q?rzHdsTkHTVhI2rgZ9PtIzN0JcSiM2Rl/M8lByyYAfqhoLM+327RHlnlPKEVB?=
- =?us-ascii?Q?WvV4jmTnd72/1o0srIq8ArPCLCloSBkZlLP/pEoRYRgarArsaFTcdX6k0acW?=
- =?us-ascii?Q?VMGWwEXaOsrt+rMQ2EABDE7XharDKZyvI+g0xXbFoI5KjBF42EMuMSU1sfky?=
- =?us-ascii?Q?wmnKOCZhwsl+FlA4VgtuopBDiRso3PtGy8Vb2zniE92pKRL7CHlgycpMHbiZ?=
- =?us-ascii?Q?0MuAHXlzdjmwlktq2c0BblPNIK2o4OMUMmhsgGQqm5xZwhK44nu8bwfnvTOj?=
- =?us-ascii?Q?Ho3NbtZkUCETJv329jvH3xZbNOGhW+BGL9I/aI25zEc8pY4cu+y9R+yFht+D?=
- =?us-ascii?Q?VZKfwY2WyqJsiICBBYX4uMiJ8c/U6szlTg03JMiwb6b7IHiK4qrh5fgq83zE?=
- =?us-ascii?Q?EaPjlUTfUQZiwTL0VKux8v/qN3uxGv1SQnUpe8UXjUCja3TembPoxGRJDTXC?=
- =?us-ascii?Q?01z0cgsoK9hOZsfnQ1Kb/Gcm8+hmEBn00DuJ7c5PDYZUVQAbaGF72Y108Ow8?=
- =?us-ascii?Q?gMDkiw9oCfruXh/qg1o1elPsk1+PS0gSQNJneXQZPltYjdY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6577A71127B8014BB0BB27E577F5BB31@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 035a95ed-8bd3-4df7-8bad-08d8b9bbd6d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2021 01:12:48.5577
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /psgwcpTjnyz1gCGr1O0gxVFsKSTbhfe/5PGYzhk/itPkxD5UlPkmp0/C4WsnD7YlXAVCa3HVodGwk0u9KWAag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4201
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_15:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=999 impostorscore=0
- clxscore=1015 spamscore=0 bulkscore=0 phishscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101160007
-X-FB-Internal: deliver
+        Fri, 15 Jan 2021 20:15:03 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B69BC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:14:23 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 67so4866583ybh.22
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:14:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=jOqN4DXdfWmy71s1LEWmIHtq1kTNICaI8+BJSbDDOok=;
+        b=AZOchBAzmS3yyy9AsXrAg0UHe2B7lbGq+ap+geCGupE2gL84ufW+9p8wi1phb2zCit
+         9m/JWVq1nvk0pZyMJkGwoYNXbhGVwkySuNljl3Yr0Rn1iMaGOb4KsUHtrraJwFLUXA7r
+         4BGVurFEjnKC/etdGob5RUyYO2fJaXE+c3d783+qsMHrTuMLRzmD+TwPx+dHmPQAwP0L
+         o19p0nfzaqb0BpObt4lLCw9ddMzONnq+LqqWilP/Etzo71TRFzBOA0a/TYZsHuKyMRak
+         VsNxHchYlVjdc4yXW3YxfVkdssWASPaJmm2CtXC/QGQWM+ZMfGyE+miQw8t7N0lQukwA
+         JqMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=jOqN4DXdfWmy71s1LEWmIHtq1kTNICaI8+BJSbDDOok=;
+        b=JrnYGCfemLii3DzZekscBB9oTKEWCF5WMLOAuVTtzYo+W00s2R0DfHn+C79fQGKjum
+         w+dBNE6dLXVi/3Ssw5jjvWeCtInCTreMS2HzzLvTPI4prxvyPTT5UqbKWjDcl51RdNdn
+         aFMC6HQ/syKIvDPgojG1SbTVUXjNDlQx9CXGNBRKEaeURa69o3xhaQIz0v3JaYIZ3+RB
+         8SESkzLfLSDaBPQ9ifibwCRV7s7Trmj0ktV2YW4nQ4YX7U542gm2letby6+aX88tqNtG
+         b1M9WPANGom7BDQWhZCWyYfzEDFtsNRdHKwTSDsGDGqKun02m+7lEtDNINxJlD9O2YMQ
+         sANQ==
+X-Gm-Message-State: AOAM531UKEjlch7sPGL3tMZ0garDCX62Ct4nbTG0LtAs7GJVrewIc79V
+        /7fz2BVjz3l9p7bD/RjVtl7byQCHwM5VVsg=
+X-Google-Smtp-Source: ABdhPJwGcl5EOQz5S3K3T+IOm+ujxpmyGIrQWlS388znNlj2H4yX+CbP3+bVigOlTK6jRDV1Y1nBpMzZgEKvzd0=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a25:80c4:: with SMTP id
+ c4mr23827381ybm.95.1610759662361; Fri, 15 Jan 2021 17:14:22 -0800 (PST)
+Date:   Fri, 15 Jan 2021 17:14:11 -0800
+Message-Id: <20210116011412.3211292-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+From:   Saravana Kannan <saravanak@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        kernel-team@android.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There are multiple instances of GPIO devictree nodes of the form:
 
+foo {
+	compatible = "acme,foo";
+	...
 
-> On Jan 15, 2021, at 4:55 PM, Yonghong Song <yhs@fb.com> wrote:
->=20
->=20
->=20
-> On 1/15/21 3:34 PM, Song Liu wrote:
->>> On Jan 12, 2021, at 8:53 AM, KP Singh <kpsingh@kernel.org> wrote:
->>>=20
->>> On Tue, Jan 12, 2021 at 5:32 PM Yonghong Song <yhs@fb.com> wrote:
->>>>=20
->>>>=20
->>>>=20
->>>> On 1/11/21 3:45 PM, Song Liu wrote:
->>>>>=20
->>>>>=20
->>>>>> On Jan 11, 2021, at 1:58 PM, Martin Lau <kafai@fb.com> wrote:
->>>>>>=20
->>>>>> On Mon, Jan 11, 2021 at 10:35:43PM +0100, KP Singh wrote:
->>>>>>> On Mon, Jan 11, 2021 at 7:57 PM Martin KaFai Lau <kafai@fb.com> wro=
-te:
->>>>>>>>=20
->>>>>>>> On Fri, Jan 08, 2021 at 03:19:47PM -0800, Song Liu wrote:
->>>>>>>>=20
->>>>>>>> [ ... ]
->>>>>>>>=20
->>>>>>>>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_loca=
-l_storage.c
->>>>>>>>> index dd5aedee99e73..9bd47ad2b26f1 100644
->>>>>>>>> --- a/kernel/bpf/bpf_local_storage.c
->>>>>>>>> +++ b/kernel/bpf/bpf_local_storage.c
->>>=20
->>> [...]
->>>=20
->>>>>>>>> +#include <linux/bpf.h>
->>>>>>>>>=20
->>>>>>>>> #include <asm/pgalloc.h>
->>>>>>>>> #include <linux/uaccess.h>
->>>>>>>>> @@ -734,6 +735,7 @@ void __put_task_struct(struct task_struct *ts=
-k)
->>>>>>>>>      cgroup_free(tsk);
->>>>>>>>>      task_numa_free(tsk, true);
->>>>>>>>>      security_task_free(tsk);
->>>>>>>>> +     bpf_task_storage_free(tsk);
->>>>>>>>>      exit_creds(tsk);
->>>>>>>> If exit_creds() is traced by a bpf and this bpf is doing
->>>>>>>> bpf_task_storage_get(..., BPF_LOCAL_STORAGE_GET_F_CREATE),
->>>>>>>> new task storage will be created after bpf_task_storage_free().
->>>>>>>>=20
->>>>>>>> I recalled there was an earlier discussion with KP and KP mentione=
-d
->>>>>>>> BPF_LSM will not be called with a task that is going away.
->>>>>>>> It seems enabling bpf task storage in bpf tracing will break
->>>>>>>> this assumption and needs to be addressed?
->>>>>>>=20
->>>>>>> For tracing programs, I think we will need an allow list where
->>>>>>> task local storage can be used.
->>>>>> Instead of whitelist, can refcount_inc_not_zero(&tsk->usage) be used=
-?
->>>>>=20
->>>>> I think we can put refcount_inc_not_zero() in bpf_task_storage_get, l=
-ike:
->>>>>=20
->>>>> diff --git i/kernel/bpf/bpf_task_storage.c w/kernel/bpf/bpf_task_stor=
-age.c
->>>>> index f654b56907b69..93d01b0a010e6 100644
->>>>> --- i/kernel/bpf/bpf_task_storage.c
->>>>> +++ w/kernel/bpf/bpf_task_storage.c
->>>>> @@ -216,6 +216,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *=
-, map, struct task_struct *,
->>>>>          * by an RCU read-side critical section.
->>>>>          */
->>>>>         if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
->>>>> +               if (!refcount_inc_not_zero(&task->usage))
->>>>> +                       return -EBUSY;
->>>>> +
->>>>>                 sdata =3D bpf_local_storage_update(
->>>>>                         task, (struct bpf_local_storage_map *)map, va=
-lue,
->>>>>                         BPF_NOEXIST);
->>>>>=20
->>>>> But where shall we add the refcount_dec()? IIUC, we cannot add it to
->>>>> __put_task_struct().
->>>>=20
->>>> Maybe put_task_struct()?
->>>=20
->>> Yeah, something like, or if you find a more elegant alternative :)
->>>=20
->>> --- a/include/linux/sched/task.h
->>> +++ b/include/linux/sched/task.h
->>> @@ -107,13 +107,20 @@ extern void __put_task_struct(struct task_struct =
-*t);
->>>=20
->>> static inline void put_task_struct(struct task_struct *t)
->>> {
->>> -       if (refcount_dec_and_test(&t->usage))
->>> +
->>> +       if (rcu_access_pointer(t->bpf_storage)) {
->>> +               if (refcount_sub_and_test(2, &t->usage))
->>> +                       __put_task_struct(t);
->>> +       } else if (refcount_dec_and_test(&t->usage))
->>>                __put_task_struct(t);
->>> }
->>>=20
->>> static inline void put_task_struct_many(struct task_struct *t, int nr)
->>> {
->>> -       if (refcount_sub_and_test(nr, &t->usage))
->>> +       if (rcu_access_pointer(t->bpf_storage)) {
->>> +               if (refcount_sub_and_test(nr + 1, &t->usage))
->>> +                       __put_task_struct(t);
->>> +       } else if (refcount_sub_and_test(nr, &t->usage))
->>>                __put_task_struct(t);
->>> }
->> It is not ideal to leak bpf_storage here. How about we only add the
->> following:
->> diff --git i/kernel/bpf/bpf_task_storage.c w/kernel/bpf/bpf_task_storage=
-.c
->> index f654b56907b69..2811b9fc47233 100644
->> --- i/kernel/bpf/bpf_task_storage.c
->> +++ w/kernel/bpf/bpf_task_storage.c
->> @@ -216,6 +216,10 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, =
-map, struct task_struct *,
->>          * by an RCU read-side critical section.
->>          */
->>         if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
->> +               /* the task_struct is being freed, fail over*/
->> +               if (!refcount_read(&task->usage))
->> +                       return -EBUSY;
->=20
-> This may not work? Even we check here and task->usage is not 0, it could =
-still become 0 immediately after the above refcount_read, right?
+	gpio0: gpio0@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
-We call bpf_task_storage_get() with "task" that has valid BTF, so "task"
-should not go away during the BPF program? Whatever mechanism that=20
-triggers the BPF program should either hold a reference to task (usage > 0)
-or be the only one owning it (usage =3D=3D 0, in __put_task_struct). Did I =
-miss
-anything?
+	gpio1: gpio1@xxxxxxxx {
+		compatible = "acme,bar";
+		...
+		gpio-controller;
+	};
 
-Thanks,
-Song
+	...
+}
 
->=20
->> +
->>                 sdata =3D bpf_local_storage_update(
->>                         task, (struct bpf_local_storage_map *)map, value=
-,
->>                         BPF_NOEXIST);
->>>=20
->>>=20
->>> I may be missing something but shouldn't bpf_storage be an __rcu
->>> member like we have for sk_bpf_storage?
->> Good catch! I will fix this in v2.
->> Thanks,
->> Song
+bazz {
+	my-gpios = <&gpio0 ...>;
+}
+
+Case 1: The driver for "foo" populates struct device for these gpio*
+nodes and then probes them using a driver that binds with "acme,bar".
+This lines up with how DT nodes with the "compatible" property are
+generally converted to struct devices and then registered with driver
+core to probe them. This also allows the gpio* devices to hook into all
+the driver core capabilities like runtime PM, probe deferral,
+suspend/resume ordering, device links, etc.
+
+Case 2: The driver for "foo" doesn't populate its child device nodes
+with "compatible" property and instead just loops through its child
+nodes and directly registers the GPIOs with gpiolib without ever
+populating a struct device or binding a driver to it.
+
+Drivers that follow the case 2 cause problems with fw_devlink=on.  This
+is because fw_devlink will prevent bazz from probing until there's a
+struct device that has gpio0 as its fwnode (because bazz lists gpio0 as
+a GPIO supplier). Once the struct device is available, fw_devlink will
+create a device link between with gpio0 as the supplier and bazz as the
+consumer. After this point, the device link will prevent bazz from
+probing until its supplier (the gpio0 device) has bound to a driver.
+Once the supplier is bound to a driver, the probe of bazz is triggered
+automatically.
+
+Finding and refactoring all the instances of drivers that follow case 2
+will cause a lot of code churn and it not something that can be done in
+one shot. Examples of such instances are [1] [2].
+
+This patch works around this problem and avoids all the code churn by
+simply creating a stub driver to bind to the gpio_device. Since the
+gpio_device already points to the GPIO device tree node, this allows all
+the consumers to continue probing when the driver follows case 2.
+
+If/when all the old drivers are refactored, we can revert this patch.
+
+[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
+[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc: Kever Yang <kever.yang@rock-chips.com>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+v1 -> v2:
+- Fixed up compilation errors that were introduced accidentally
+- Fixed a missing put_device()
+
+ drivers/gpio/gpiolib.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index b02cc2abd3b6..12c579a953b0 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -574,6 +574,9 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	unsigned	i;
+ 	int		base = gc->base;
+ 	struct gpio_device *gdev;
++	struct device_node *of_node;
++	struct fwnode_handle *fwnode;
++	struct device *fwnode_dev;
+ 
+ 	/*
+ 	 * First: allocate and populate the internal stat container, and
+@@ -596,6 +599,22 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 		gdev->dev.of_node = gc->of_node;
+ 	else
+ 		gc->of_node = gdev->dev.of_node;
++
++	of_node = gdev->dev.of_node;
++	fwnode = of_fwnode_handle(of_node);
++	fwnode_dev = get_dev_from_fwnode(fwnode);
++	/*
++	 * If your driver hits this warning, it's because you are directly
++	 * parsing a device tree node with "compatible" property and
++	 * initializing it instead of using the standard DT + device driver
++	 * model of creating a struct device and then initializing it in the
++	 * probe function. Please refactor your driver.
++	 */
++	if (!fwnode_dev && of_find_property(of_node, "compatible", NULL)) {
++		chip_warn(gc, "Create a real device for %pOF\n", of_node);
++		gdev->dev.fwnode = fwnode;
++	}
++	put_device(fwnode_dev);
+ #endif
+ 
+ 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+@@ -4202,6 +4221,17 @@ void gpiod_put_array(struct gpio_descs *descs)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_put_array);
+ 
++static int gpio_drv_probe(struct device *dev)
++{
++	return 0;
++}
++
++static struct device_driver gpio_drv = {
++	.name = "gpio_drv",
++	.bus = &gpio_bus_type,
++	.probe = gpio_drv_probe,
++};
++
+ static int __init gpiolib_dev_init(void)
+ {
+ 	int ret;
+@@ -4213,9 +4243,16 @@ static int __init gpiolib_dev_init(void)
+ 		return ret;
+ 	}
+ 
++	if (driver_register(&gpio_drv) < 0) {
++		pr_err("gpiolib: could not register GPIO stub driver\n");
++		bus_unregister(&gpio_bus_type);
++		return ret;
++	}
++
+ 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
+ 	if (ret < 0) {
+ 		pr_err("gpiolib: failed to allocate char dev region\n");
++		driver_unregister(&gpio_drv);
+ 		bus_unregister(&gpio_bus_type);
+ 		return ret;
+ 	}
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
