@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A41D2F8A4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ABA2F8A51
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbhAPBVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:21:12 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11165 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbhAPBVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:21:11 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHgDs0G87zl5RB;
-        Sat, 16 Jan 2021 09:19:09 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Sat, 16 Jan 2021
- 09:20:19 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <john.wanghui@huawei.com>, <abudankov@huawei.com>,
-        <yz.yuzhou@huawei.com>
-Subject: [PATCH v3 2/2] perf tools: Add documentation for 'perf irq' command
-Date:   Sat, 16 Jan 2021 09:19:20 +0800
-Message-ID: <20210116011920.34487-3-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210116011920.34487-1-cuibixuan@huawei.com>
-References: <20210116011920.34487-1-cuibixuan@huawei.com>
+        id S1728511AbhAPBWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:22:17 -0500
+Received: from mga09.intel.com ([134.134.136.24]:55631 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbhAPBWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 20:22:17 -0500
+IronPort-SDR: h43Gi4tTtPS8Qt9K0xdP2ne5XhRI31Vg0ejPlIr6vNion1y8TLLObYRoZj7Ri81+ogRPJ8TQLv
+ TOMESzq7hIag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="178778399"
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="178778399"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 17:20:28 -0800
+IronPort-SDR: DznnGYuwJ/UxxQrmQGJd5b9g6Om3RrfpkvoMPBs122KxptEO3Brz/fbs5840Umw7sUzZLqkujt
+ GGgy0p/jLtsg==
+X-IronPort-AV: E=Sophos;i="5.79,351,1602572400"; 
+   d="scan'208";a="382861945"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.249.175.94]) ([10.249.175.94])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 17:20:18 -0800
+Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
+        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
+        dwmw2@infradead.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, dan.j.williams@intel.com, will@kernel.org,
+        joro@8bytes.org, dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
+To:     Leon Romanovsky <leon@kernel.org>
+References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
+ <20210114013003.297050-2-baolu.lu@linux.intel.com>
+ <20210114132627.GA944463@unreal>
+ <b0c8b260-8e23-a5bd-d2da-ca1d67cdfa8a@linux.intel.com>
+ <20210115063108.GI944463@unreal>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <c58adc13-306a-8df8-19e1-27f834b3a7c9@linux.intel.com>
+Date:   Sat, 16 Jan 2021 09:20:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210115063108.GI944463@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for 'perf irq' command.
+Hi,
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- tools/perf/Documentation/perf-irq.txt | 47 +++++++++++++++++++++++++++
- tools/perf/command-list.txt           |  1 +
- 2 files changed, 48 insertions(+)
- create mode 100644 tools/perf/Documentation/perf-irq.txt
+On 2021/1/15 14:31, Leon Romanovsky wrote:
+> On Fri, Jan 15, 2021 at 07:49:47AM +0800, Lu Baolu wrote:
+>> Hi Leon,
+>>
+>> On 1/14/21 9:26 PM, Leon Romanovsky wrote:
+>>> On Thu, Jan 14, 2021 at 09:30:02AM +0800, Lu Baolu wrote:
+>>>> Some vendor IOMMU drivers are able to declare that it is running in a VM
+>>>> context. This is very valuable for the features that only want to be
+>>>> supported on bare metal. Add a capability bit so that it could be used.
+>>>
+>>> And how is it used? Who and how will set it?
+>>
+>> Use the existing iommu_capable(). I should add more descriptions about
+>> who and how to use it.
+> 
+> I want to see the code that sets this capability.
 
-diff --git a/tools/perf/Documentation/perf-irq.txt b/tools/perf/Documentation/perf-irq.txt
-new file mode 100644
-index 000000000000..8f1c466c3d6b
---- /dev/null
-+++ b/tools/perf/Documentation/perf-irq.txt
-@@ -0,0 +1,47 @@
-+perf-irq(1)
-+=============
-+
-+NAME
-+----
-+perf-irq - Tool to trace/measure hardware interrupts
-+
-+SYNOPSIS
-+--------
-+[verse]
-+'perf irq' [<options>] {record|report}
-+
-+DESCRIPTION
-+-----------
-+There are several variants of 'perf irq':
-+
-+  'perf irq record <command>' to record the irq handler events
-+  of an arbitrary workload.
-+
-+  'perf irq report' to calculate the time consumed by each
-+   hardware interrupt processing function.
-+
-+    Example usage:
-+        perf irq record -- sleep 1
-+        perf irq report
-+
-+   By default it shows the individual irq events, including the irq name,
-+   cpu(execute the hardware interrupt processing function), time consumed,
-+   entry time and exit time for the each hardware irq:
-+
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     enp2s0f2-tx-0    | [0006] |      0.000001 s |   6631263.313329 s |   6631263.313330 s
-+     megasas          | [0013] |      0.000003 s |   6631263.209564 s |   6631263.209567 s
-+     acpi             | [0016] |      0.000018 s |   6631263.085787 s |   6631263.085805 s
-+
-+
-+OPTIONS for 'perf irq'
-+----------------------------
-+
-+--cpus::
-+	Show just entries with activities for the given CPUs.
-+
-+SEE ALSO
-+--------
-+linkperf:perf-record[1]
-diff --git a/tools/perf/command-list.txt b/tools/perf/command-list.txt
-index bc6c585f74fc..c5224ea3ac71 100644
---- a/tools/perf/command-list.txt
-+++ b/tools/perf/command-list.txt
-@@ -26,6 +26,7 @@ perf-report			mainporcelain common
- perf-sched			mainporcelain common
- perf-script			mainporcelain common
- perf-stat			mainporcelain common
-+perf-irq			mainporcelain common
- perf-test			mainporcelain common
- perf-timechart			mainporcelain common
- perf-top			mainporcelain common
--- 
-2.17.1
+Currently we have Intel VT-d and the virt-iommu setting this capability.
 
+  static bool intel_iommu_capable(enum iommu_cap cap)
+  {
+  	if (cap == IOMMU_CAP_CACHE_COHERENCY)
+  		return domain_update_iommu_snooping(NULL) == 1;
+  	if (cap == IOMMU_CAP_INTR_REMAP)
+  		return irq_remapping_enabled == 1;
++	if (cap == IOMMU_CAP_VIOMMU)
++		return caching_mode_enabled();
+
+  	return false;
+  }
+
+And,
+
++static bool viommu_capable(enum iommu_cap cap)
++{
++	if (cap == IOMMU_CAP_VIOMMU)
++		return true;
++
++	return false;
++}
+
+Best regards,
+baolu
