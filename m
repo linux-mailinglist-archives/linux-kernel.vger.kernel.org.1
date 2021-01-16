@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE242F8DD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B802F8DBE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728311AbhAPRK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbhAPRKZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:10:25 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33188C0617A6;
-        Sat, 16 Jan 2021 06:04:34 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 766AA1F45AB1
-Received: by earth.universe (Postfix, from userid 1000)
-        id 106B23C0C94; Sat, 16 Jan 2021 15:03:49 +0100 (CET)
-Date:   Sat, 16 Jan 2021 15:03:48 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     angkery <angkery@163.com>
-Cc:     yangjunlin@yulong.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: charger-manager: fix the wrong status of
- health
-Message-ID: <20210116140348.ym75ldaalfadznvb@earth.universe>
-References: <20210116114120.3531-1-angkery@163.com>
+        id S1727897AbhAPRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:08:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:53414 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbhAPRIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:08:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 058B711D4;
+        Sat, 16 Jan 2021 06:02:52 -0800 (PST)
+Received: from [10.37.8.30] (unknown [10.37.8.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 148063F719;
+        Sat, 16 Jan 2021 06:02:49 -0800 (PST)
+Subject: Re: [PATCH v3 1/4] kasan, arm64: Add KASAN light mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
+ <20210115120043.50023-2-vincenzo.frascino@arm.com>
+ <CAAeHK+xt4MWuxAxx_5nJNvC5_d7tvZDqPaA19bV0GNXsAzYfOA@mail.gmail.com>
+ <4335128b-60bf-a5c4-ddb5-154500cc4a22@arm.com>
+ <CAAeHK+zsY7zdkj90K2zgXOScOj1WbackfBPv6gjJ77SfdzDi4w@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <06986687-3e7d-e2b0-10e0-5c39d9fae431@arm.com>
+Date:   Sat, 16 Jan 2021 14:06:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fngjxqr44dfbbnjc"
-Content-Disposition: inline
-In-Reply-To: <20210116114120.3531-1-angkery@163.com>
+In-Reply-To: <CAAeHK+zsY7zdkj90K2zgXOScOj1WbackfBPv6gjJ77SfdzDi4w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/16/21 1:59 PM, Andrey Konovalov wrote:
+> On Sat, Jan 16, 2021 at 2:37 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>>> [1] https://lkml.org/lkml/2021/1/15/1242
+>>>
+>>
+>> Thanks for this. I will have a look into it today. In the meantime, could you
+>> please elaborate a bit more on kasan.trap?
+> 
+> That's what I call the boot parameter that allows switching between
+> sync and async. We'll need one as we're dropping
+> kasan.mode=off/prod/light/full.
+> 
+> Feel free to name it differently. Perhaps, as kasan.mode is now
+> unused, we can use that for sync/async.
+> 
 
---fngjxqr44dfbbnjc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I see, thanks for the explanation. "mode" or "trap" would work for me.
 
-Hi,
-
-On Sat, Jan 16, 2021 at 07:41:20PM +0800, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
->=20
-> cm->emergency_stop will only be the value in the enumeration,
-> and can not be less than zero, it will get an exception value.
-> So replace it with the corresponding value.
->=20
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/charger-manager.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
-y/charger-manager.c
-> index 6fcebe4..0d28741 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -723,9 +723,9 @@ static int charger_get_property(struct power_supply *=
-psy,
->  		val->intval =3D cm->battery_status;
->  		break;
->  	case POWER_SUPPLY_PROP_HEALTH:
-> -		if (cm->emergency_stop > 0)
-> +		if (cm->emergency_stop =3D=3D CM_BATT_OVERHEAT)
->  			val->intval =3D POWER_SUPPLY_HEALTH_OVERHEAT;
-> -		else if (cm->emergency_stop < 0)
-> +		else if (cm->emergency_stop =3D=3D CM_BATT_COLD)
->  			val->intval =3D POWER_SUPPLY_HEALTH_COLD;
->  		else
->  			val->intval =3D POWER_SUPPLY_HEALTH_GOOD;
-> --=20
-> 1.9.1
->=20
->=20
-
---fngjxqr44dfbbnjc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAC8kQACgkQ2O7X88g7
-+pqEzRAAjFmekAooCxV/8ZfdIrMmp9lCr12iWfBN6JPV0Mx1nxzXzOwRQm8Sa/du
-OwTk5TkiPoW3Rs5nHf2CwPo4kBHSrwY0v7TYh8bOKLQeWt1wiUq7Gmczy/4c5h4a
-AC/3Nzf7C5U+vhVHvB59kubQPRhwr2Rvaqph9BaqFi5Vto14Osc0FoTjPavI0uK0
-+iQfpWEqoCGME49z2IQBJe8i33PdKrXcicQZni6IVrNVm0aUuWcrottF7agJy9Wm
-CGbk6Zo4m+mut7boo7hSecPInWRrdGJDAq5wIfI7wRUICtetBtabZ4A9OTWdtcv4
-ZDxPBTJSKL/2dvb0XykPr8uIzpv51TG1LPmOH+qbsHKcKqwIef4tRcnNvjemCmdz
-hMYHmmP49blGp2HiyDdwsuEVfFIIko6GJwokFc+eQ5z12SDMSp6pLWdSz8q/kYDW
-3lZvscSVbH0IlrIReoxihC8M4O9Wu1mkkAoYMjCwyzNNXErIXbPy+AKfHQcvghpq
-gwZ2LGaMKkvCfBykMlRl0OH4YeBL1UdnKgk5eGkYe/Be5BHTSkhm1tJizoVX4mV3
-Uwq3PaPhvJC/iAQ6+NQPZNFTefwhS1mM6y3CdEFEOowfVqZlGp/m129nJGBq1Jjs
-+TGFl4wWficNfbDgrUenReAYr2keRahjRGYmHh2JRZS/0Se1uso=
-=0AAy
------END PGP SIGNATURE-----
-
---fngjxqr44dfbbnjc--
+-- 
+Regards,
+Vincenzo
