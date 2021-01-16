@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859B72F8E21
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D92F8DF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbhAPRFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        id S1728849AbhAPRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbhAPQa5 (ORCPT
+        with ESMTP id S1728421AbhAPRKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 11:30:57 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43329C0617BA;
-        Sat, 16 Jan 2021 06:35:48 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1l0mg2-0005m6-Ns; Sat, 16 Jan 2021 15:35:42 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Subject: [PATCH] docs: process/howto.rst: make sections on bug reporting match practice
-Date:   Sat, 16 Jan 2021 15:35:42 +0100
-Message-Id: <20210116143542.69199-1-linux@leemhuis.info>
-X-Mailer: git-send-email 2.29.2
+        Sat, 16 Jan 2021 12:10:49 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481ECC0617BB
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:39:15 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id e22so275955iog.6
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:39:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=otY6ciKN+gysGenPbqEDdYdlSugmyG9nw1sy+M0CT3s=;
+        b=fnCtj0N9L8RJbQQlQj/Y3kHGgp7Qmw9bkK05C71ZXiE3UA+59Vc4LNoUJdb60wW8Je
+         KPK67d20uQlXv/kskQjlSJJ1QExtIHHeFSwkquCrEOG4lbRJJornRQ3f33mcv0uIPolY
+         gUORzUthOzadEXn8cELiJwAQCusC1ULuVs90Pjm3AW6tOG/kC1h+kNNIOKCY9O7uchM+
+         CHZOBDr4itKDRgbddLn12itAfr2iAuQ2hsnyj8VcRrRP8DNG9fSY8GVtlQLMcCBQ5UGL
+         Ga2CLTgPL3Zbwm0Mjxhpb+pzLK9r3o4uD1JbGM+mnifH3J1r1KEUDzoyG1hWrgyJQxCY
+         Tx4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=otY6ciKN+gysGenPbqEDdYdlSugmyG9nw1sy+M0CT3s=;
+        b=DPb9j/lEy0Ar4z+T+f8IC1Rfwb3d2nPoarIlgv5xi1mMdRRlTPF5aQ3Y39TxqD4Atx
+         v0FQPPSAocloRvOm23BqnZMukGfztCepg74W/BygzTyXvXPT+K/CRS/wkt0WHoZrd0e/
+         d24k3IGkFBHfxNF5UiNKGahVbBHaM0whR09RzQuwt8HRcfXujFLnnHRM6fq0sYmrOCN1
+         xhrcoPd3ZVpTXjoswKEmmPUGN5M/wvNt4X9l6uJiVsph+d89g+cqRbmfA7b46ywIiZ3e
+         HPvExQWfrwEKXMTOUgDf9Aj40Dm+lXMpXA4VDPWgHNrgPsLDGJYrbvITJIob0QJ1TrA3
+         wedQ==
+X-Gm-Message-State: AOAM530fPGXJIDe1qjYTYp7LpSLCHtRBeAScgowiTqxWXMsQixV0vPuq
+        n2dJ97xHehLZpokDZ3NBQK4fpIavLcDfuNrlCy8=
+X-Google-Smtp-Source: ABdhPJzSIZKrZxPuA/oHoh7gvYudnZwisnG/DcieQJoXNj50vBVgy7T49h7RknfJ6TZSPYgMYIBG/J1KKXQ9rm2Q1jI=
+X-Received: by 2002:a05:6e02:5c4:: with SMTP id l4mr15157168ils.94.1610807954546;
+ Sat, 16 Jan 2021 06:39:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1610807748;01b788a3;
-X-HE-SMSGID: 1l0mg2-0005m6-Ns
+References: <20210116113033.608340773@infradead.org> <20210116113920.187137770@infradead.org>
+In-Reply-To: <20210116113920.187137770@infradead.org>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Sat, 16 Jan 2021 22:39:03 +0800
+Message-ID: <CAJhGHyB7fNvxyKwnMgWicvZN7oTnGYLBNH8cUjLg2EcKQ4YMMg@mail.gmail.com>
+Subject: Re: [PATCH 8/8] sched: Relax the set_cpus_allowed_ptr() semantics
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file Documentation/process/howto.rst points to bugzilla.kernel.org
-as the primary place to report kernel bugs to. For most of the kernel
-that's the wrong place, as the MAINTAINERS file shows. Adjust those
-sections to make them match current practice.
+On Sat, Jan 16, 2021 at 7:43 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Now that we have KTHREAD_IS_PER_CPU to denote the critical per-cpu
+> tasks to retain during CPU offline, we can relax the warning in
+> set_cpus_allowed_ptr(). Any spurious kthread that wants to get on at
+> the last minute will get pushed off before it can run.
+>
+> While during CPU online there is no harm, and actual benefit, to
+> allowing kthreads back on early, it simplifies hotplug code.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-This change also removes a contradiction with the recently added text
-Documentation/admin-guide/reporting-issues.rst, which is a reason for a
-'this needs further discussion' warning note in there. The change is
-thus a prerequisite to remove that warning, nevertheless it is left for
-now to make sure people review the text's approach more carefully.
+Thanks!
 
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
-v1:
-- kind of a follow up to "[PATCH v1 (RFC)] docs: discourage users from using bugzilla.kernel.org"[1] – I decided to break that idea down into smaller pieces, which I guess is easier for everyone
+Relaxing set_cpus_allowed_ptr() was also one of the choices I listed,
+which can really simplify hotplug code in the workqueue and may be
+other hotplug code.
 
-[1] https://lore.kernel.org/lkml/20210110121033.130504-1-linux@leemhuis.info/
----
- Documentation/process/howto.rst | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Reviewed-by: Lai jiangshan <jiangshanlai@gmail.com>
 
-diff --git a/Documentation/process/howto.rst b/Documentation/process/howto.rst
-index 7a5c105e34d4..e4beeca57e5f 100644
---- a/Documentation/process/howto.rst
-+++ b/Documentation/process/howto.rst
-@@ -342,16 +342,10 @@ Adventurous testers are very welcome to runtime-test the linux-next.
- Bug Reporting
- -------------
- 
--https://bugzilla.kernel.org is where the Linux kernel developers track kernel
--bugs.  Users are encouraged to report all bugs that they find in this
--tool.  For details on how to use the kernel bugzilla, please see:
--
--	https://bugzilla.kernel.org/page.cgi?id=faq.html
--
- The file 'Documentation/admin-guide/reporting-issues.rst' in the main kernel
--source directory has a good template for how to report a possible kernel bug,
--and details what kind of information is needed by the kernel developers to help
--track down the problem.
-+source directory describes how to report a possible kernel bug, and details
-+what kind of information is needed by the kernel developers to help track
-+down the problem.
- 
- 
- Managing bug reports
-@@ -364,7 +358,13 @@ improve your skills, and other developers will be aware of your presence.
- Fixing bugs is one of the best ways to get merits among other developers,
- because not many people like wasting time fixing other people's bugs.
- 
--To work in the already reported bug reports, go to https://bugzilla.kernel.org.
-+To work on already reported bug reports, find a subsystem you are interested in.
-+Check the MAINTAINERS file where bugs for that subsystem get reported to; often
-+it will be a mailing list, rarely a bugtracker. Search the archives of said
-+place for recent reports and help where you see fit. You may also want to check
-+https://bugzilla.kernel.org for bug reports; only a handful of kernel subsystems
-+use it actively for reporting or tracking, nevertheless bugs for the whole
-+kernel get filed there.
- 
- 
- Mailing lists
--- 
-2.29.2
-
+> ---
+>  kernel/sched/core.c |   20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2342,7 +2342,9 @@ static int __set_cpus_allowed_ptr(struct
+>
+>         if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
+>                 /*
+> -                * Kernel threads are allowed on online && !active CPUs.
+> +                * Kernel threads are allowed on online && !active CPUs,
+> +                * however, during cpu-hot-unplug, even these might get pushed
+> +                * away if not KTHREAD_IS_PER_CPU.
+>                  *
+>                  * Specifically, migration_disabled() tasks must not fail the
+>                  * cpumask_any_and_distribute() pick below, esp. so on
+> @@ -2386,16 +2388,6 @@ static int __set_cpus_allowed_ptr(struct
+>
+>         __do_set_cpus_allowed(p, new_mask, flags);
+>
+> -       if (p->flags & PF_KTHREAD) {
+> -               /*
+> -                * For kernel threads that do indeed end up on online &&
+> -                * !active we want to ensure they are strict per-CPU threads.
+> -                */
+> -               WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
+> -                       !cpumask_intersects(new_mask, cpu_active_mask) &&
+> -                       p->nr_cpus_allowed != 1);
+> -       }
+> -
+>         return affine_move_task(rq, p, &rf, dest_cpu, flags);
+>
+>  out:
+> @@ -7519,6 +7511,12 @@ int sched_cpu_deactivate(unsigned int cp
+>          */
+>         synchronize_rcu();
+>
+> +       /*
+> +        * From this point forward, this CPU will refuse to run any task that
+> +        * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
+> +        * push those tasks away until this gets cleared, see
+> +        * sched_cpu_dying().
+> +        */
+>         balance_push_set(cpu, true);
+>
+>         rq_lock_irqsave(rq, &rf);
+>
+>
