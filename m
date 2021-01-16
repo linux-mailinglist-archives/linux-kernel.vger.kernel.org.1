@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03342F8A37
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB2C2F8A3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbhAPBEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:04:52 -0500
-Received: from mail-eopbgr1320091.outbound.protection.outlook.com ([40.107.132.91]:20755
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726541AbhAPBEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:04:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lbYMD9hU7DGMQdWQ6me8IiviHRygJBVahH7HeWefeSBThmFTysKM5cBbguQ36+9jFeqdDkFbDm4KdOxG7gVfOx693gEbWCR6JlyK8x4D/9h9ZeGIG/QyNOg3BWKBB4jj3c6bz0yplk8bIbibbwEANWtBnVGaKl619Tf2RF8y26fc1uVLKhOUICMZjKykBzLUUvr7ayLHVq41E5+WwJEwnlDnW7gOAiH9Ws+okzOMY1GkqrLM6jWNVYjWayHcAh+EMVo2FYRm14LypiA9hFGlY18yEbiMGUEvMB12dx8o865yOz+OzOBW7jRSvJ5CtcQGYfr8RncTC/kTZeLPyfX/kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KMMDMJZPNCkQxmOfwYzTTsCUABFlN0efzltGbxzh4+k=;
- b=f3D4MPsJmNhYeZfNyMpq5nYSRKU5evpnALKQ5KV/8AJQF7laRlnVVoMKeQwmp7ZbF2Mi+aWpmxHJTFuEik/jIUDTHIK9xhOnIGXo4+HI3yfnzEWt0F6kSWpAcZ70LPZJsuCVfHnFTspayEVbXOlnsL+oWouxHJWJ4kqTbJAI40thgADqLtmPvNaWmDhaN+XSfaBBY00f9UHilf52MLssS3BIBMmAnPDgU4a5NRcIqBa6ERpENOdjYdNMNiAr3ZArK2eeRKsIFMFloA0oYL3WqA3JERsaRPo+wHKKou8xMbrCK7cY3jyxMwTYKTfNzNH9ZPlo5t2tY+89BIvgFbXI7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK0PR06MB2241.apcprd06.prod.outlook.com (2603:1096:203:43::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Sat, 16 Jan
- 2021 01:03:12 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::116:1437:5d9a:16e9]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::116:1437:5d9a:16e9%6]) with mapi id 15.20.3763.011; Sat, 16 Jan 2021
- 01:03:11 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     John Wang <wangzhiqiang.bj@bytedance.com>,
-        "xuxiaohan@bytedance.com" <xuxiaohan@bytedance.com>,
-        "yulei.sh@bytedance.com" <yulei.sh@bytedance.com>,
-        Robert Lippert <rlippert@google.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vernon Mauery <vernon.mauery@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
-        Patrick Venture <venture@google.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Joel Stanley <joel@linux.ibm.com>,
-        Andrew Jeffery <andrewrj@au1.ibm.com>
-Subject: RE: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
- SNOOP driver
-Thread-Topic: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
- SNOOP driver
-Thread-Index: AQHWzUMNmbahDDZWh0mpYVY7renfO6oaiJvQgA6d2ACAAITIoA==
-Date:   Sat, 16 Jan 2021 01:03:11 +0000
-Message-ID: <HK0PR06MB3380A1F79CDE49FACC1A3E71F2A60@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
- <HK0PR06MB33807C054FCE9E355346E204F2D00@HK0PR06MB3380.apcprd06.prod.outlook.com>
- <CAK8P3a2WPvWokkqJB-yhfQH1ofofGNvibqPjUXPme+F2LCHjxw@mail.gmail.com>
-In-Reply-To: <CAK8P3a2WPvWokkqJB-yhfQH1ofofGNvibqPjUXPme+F2LCHjxw@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [180.217.39.213]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 055c136e-88b9-41df-7a56-08d8b9ba7ec8
-x-ms-traffictypediagnostic: HK0PR06MB2241:
-x-microsoft-antispam-prvs: <HK0PR06MB2241E392791B004655870708F2A60@HK0PR06MB2241.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GKAVqz3BEHcwaDhBJ2ZWBwP3ez3ksxWWZYYws3VPBtXnP3AfxhB0VZd9gZjk8bpTbfJrlLAeang2gYs374ERgHL9tbhwdCPCPp28sd6ClXZAPCF8QqLDUNkZjBNFnFh7i62ZR8ePPqDLVmCylOPir/dSVqIy/SdHOzsNNafOepcII/vBvTcxThOhuaXK0kA3asXj7OUYLFJOREdMZvFtVpwMSL/I1SYNM5jkp+u3XLHRXUXJzavJ+ovugreFznCf4IO5adDnkji1Neuce6D/b9kyeRtMjd1oRnUVBl03GgYiPT8sT/eWS7obKB5sVeObg/3USQYg7+kv//W1fqJKRVwxq+Y0z5SxHdB6VM0l6pGyY2kfRkumhKVa5BdCs6IWgPe+np1iGXrgZhb14n+bE4xz7W6JcKJXkdNMCV8zZnZPSi4xSqGlqVAoT49DtdnsefY9eZqhB2Cc02xSXbxihd5QvnUJuX6BJKJ2BaioA4qoR/NH3ynANAZ9uN38lQC5WCiTGYvuHZf1YLBY6kqQB9wYzDZTQeF2+p6tpefIGP9vupxLl2MJ5U3Kx4U8laC8kFIyBlDlEWLHkC7PpbZi7efVBZvYFFmuaVYuOvr+A1M=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39830400003)(366004)(346002)(396003)(376002)(86362001)(52536014)(64756008)(54906003)(66446008)(66556008)(5660300002)(2906002)(966005)(66476007)(478600001)(8676002)(66946007)(7696005)(76116006)(9686003)(55016002)(8936002)(33656002)(316002)(6916009)(186003)(4326008)(26005)(71200400001)(6506007)(53546011)(7416002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?eWl5ZEx1S2EwVmMxYTF4aHV0MUR3MUtrZFMwSUdaMDhpR0s1b2hsVWtzNEN0?=
- =?utf-8?B?UFdZNnRzTEw4NC9wMUw1L2FhK1paYTZ4R0RWZ2tSZGRuLzhsY083VFg4czZW?=
- =?utf-8?B?SFd5N004bExNeUJKWHlEdkdDRjd3WkFhZ3gwVHFMUW10VEZxOXYwYnhWS1BU?=
- =?utf-8?B?RDBUNDdGTlNZSGZsT3JOeVpHYWREclArekpkOFIxRzR4cnV4U3JRNmhjbWYy?=
- =?utf-8?B?WVFOZm9wMjNFVEVhdHlWWVRwR1pWRkNXemJUb1dxZ3pqekdVc0Uya2Z0VEpT?=
- =?utf-8?B?Q09XTlV1OHhINTFIcXRJRmJ2SU5EUEowZ0N4Ti9WMDJoelJuT1JtVlNZNGs1?=
- =?utf-8?B?dWdnb1JFOUh5bWFCOHJOVVVMMlZrKzR4N2pLZDdYQXl5QkZzS0o5WStHS3RV?=
- =?utf-8?B?OEdMRHlkVjBhT0JSV1FBRTlKdlZ2eG1XQlA0cGt2bDBEemRsbzFCcE1qWXlw?=
- =?utf-8?B?TUFnK1U2VXBnZXhzMG82d2NuS0lGMitzdG8vcWZqU2NyWlRyY1BPcFJxUExp?=
- =?utf-8?B?NFpHYi81UUM0V2dFeDh4L094MjA2a0RKNlk4bXNzaCs2OVFBYkRVVlF1RGpF?=
- =?utf-8?B?c1Z4NmpNZTdiYitmMTlzNndMN1RXbDQyMVA5eU9BUlpyQUVwSUJCOHlTcVZI?=
- =?utf-8?B?cmR1bndva0hyNmtyRWVteFJkRzBmaTNhUmt2N3JrY2F2Y2JiN2FsZ3d0M1pW?=
- =?utf-8?B?RDNHK0VIRGkxZER5RVBqbDhKaUJJdkxNWlZKY3FYamNEeTc1anpYYnhWWFdu?=
- =?utf-8?B?ekhISm1oWWRmMmwxNXIwanBveGdiMWlqKzRHWUFHT3pVUjF1VzgwRUJLZzVX?=
- =?utf-8?B?cWxSWThidHUrdmp3eW9HVE8ydEpLbmhtTzduZFUxS05xbW4xR2ordjRicXJy?=
- =?utf-8?B?QlVzRTdNY3J1eUNzQlRKcVpTN2tMbVpBTEtuVDVmdFVZNnRlTEsveDkwYnFF?=
- =?utf-8?B?UGZGN05SOUNkM09YeWlERlNuMWV6c1pyTTlDNks5bE12OUNaMEJjYmprRjJZ?=
- =?utf-8?B?cElEbHRGNDJzSmliVjNxSWxiRUk5NlhmSnpoRHd2U1YxWXgwQVlnNVpPVDQv?=
- =?utf-8?B?dWhaMVRRWTFFbFBHZHNLOWlRUFNCWkUwQ3U3WmI0UmNyTkNxK3J1SFloQjRG?=
- =?utf-8?B?bGYvaEdubXNVVHlHc05SYnlUdGlsWm1YNnR5eWRhM3BvWmNydEYyS0dqcFNV?=
- =?utf-8?B?L0hUejBXcGErVzNlMEVQNzFaZVdVWDdvMjh5dWh1SnBuUDNNOGgwc3l6aVIx?=
- =?utf-8?B?NnhTNjRqRU9zVE9HQ1AxemVDN1lEREluU2cySFJUYlFQMk16SUxtZVMxNmFC?=
- =?utf-8?Q?6a4Ik3Z8h+P7s=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728781AbhAPBFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727289AbhAPBFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 20:05:45 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AAFC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:05:05 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id 186so3584083vsz.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:05:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1jaH2X7S2VsQNxdRM32ntn9sMg9v7F6IuCY/DoxBE34=;
+        b=e+5OdhvN0c0ih4PhNWYKwJ2k+cIHzWc5jrHXuJvOiu31HGIAUyaCuAMtXO5bq3D31R
+         Jf7v14vECN/jHCOwVRbSxTJWPj9idoVpyqznPzX5kxH17Kt4/CVXq3IdYzadtU4e6RQx
+         TcApMa222+2mnKQBn02Wpl7C7+M5K4lGlmQu4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1jaH2X7S2VsQNxdRM32ntn9sMg9v7F6IuCY/DoxBE34=;
+        b=JSYnXvffipggkRj5XjKRGO8TMvZ/xWlIViFy5ju4HftBCADWCZjrtNovWJ2dby7c2T
+         WRy3CCC5w4QuZuMJukWvp2v3FWoPAxXc/WJrALAGvImv/qNV/gjE3uu4grrPsJ76whLf
+         JmcXT0qhhTZ+ckuniOLT5G7zEuM5MuBTC2YMvcRXTUOQE2gclFHtPLNORglDHyAsz/fh
+         iwqUHboaH56n3TsCpteRqTaSiIFCJlktUGUw78sI64uvGD4Wg2iK8Bvtbi14L3k9WugH
+         DF2Xlg+bZVwwR/6xLiucB53/o1jMF6LILJkATmVZXd3rJyB4xk4D9H8FzFzQSzJRWGYj
+         KX6A==
+X-Gm-Message-State: AOAM531SNqy2DVum7grrshvjvZg6jGqvC/l1GjsburXwT0/sSCQROstF
+        nuXu75Sk/bLJG3xvczDkQECCN6Esj24vUg==
+X-Google-Smtp-Source: ABdhPJxSArz24mIj6+M3Lv/b8MwS4xxHhK2sZTbjegLNhlO+SGmeFYOzWXoqweKzy+wJFWiyy3RuFg==
+X-Received: by 2002:a05:6102:93:: with SMTP id t19mr12717635vsp.57.1610759104357;
+        Fri, 15 Jan 2021 17:05:04 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id i9sm1427408vsq.24.2021.01.15.17.05.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 17:05:02 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id x4so6037325vsp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:05:02 -0800 (PST)
+X-Received: by 2002:a05:6102:2361:: with SMTP id o1mr12707550vsa.34.1610759101867;
+ Fri, 15 Jan 2021 17:05:01 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 055c136e-88b9-41df-7a56-08d8b9ba7ec8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2021 01:03:11.2867
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8qyGvj0adyrqaJonOMtezeeuAFyHD/AfeJmiT8xkBK767oI0pLEFfdqeQq4KjIJhSlbLo7S/knaID+PAchZVWIRdQshwPuW+BlFy6EZq9YM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2241
+References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+ <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid> <CACRpkdZJR142en_=rge5Gp7-MH6SzxjHmkCh_rUx=8j6SVZYSQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZJR142en_=rge5Gp7-MH6SzxjHmkCh_rUx=8j6SVZYSQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 15 Jan 2021 17:04:49 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WG5s81mh+S6Fhyz51nsui=EcsAVJd24uChrszKWHzauQ@mail.gmail.com>
+Message-ID: <CAD=FV=WG5s81mh+S6Fhyz51nsui=EcsAVJd24uChrszKWHzauQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] pinctrl: qcom: Don't clear pending interrupts when enabling
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5k
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFNhdHVyZGF5LCBKYW51YXJ5IDE2LCAyMDIxIDE6MDUgQU0N
-Cj4gVG86IFJ5YW4gQ2hlbiA8cnlhbl9jaGVuQGFzcGVlZHRlY2guY29tPg0KPiBDYzogSm9obiBX
-YW5nIDx3YW5nemhpcWlhbmcuYmpAYnl0ZWRhbmNlLmNvbT47DQo+IHh1eGlhb2hhbkBieXRlZGFu
-Y2UuY29tOyB5dWxlaS5zaEBieXRlZGFuY2UuY29tOyBSb2JlcnQgTGlwcGVydA0KPiA8cmxpcHBl
-cnRAZ29vZ2xlLmNvbT47IG1vZGVyYXRlZCBsaXN0OkFSTS9BU1BFRUQgTUFDSElORSBTVVBQT1JU
-DQo+IDxsaW51eC1hc3BlZWRAbGlzdHMub3psYWJzLm9yZz47IEdyZWcgS3JvYWgtSGFydG1hbg0K
-PiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+OyBWZXJub24gTWF1ZXJ5DQo+IDx2ZXJub24u
-bWF1ZXJ5QGxpbnV4LmludGVsLmNvbT47IG9wZW4gbGlzdCA8bGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZz47DQo+IEphZSBIeXVuIFlvbyA8amFlLmh5dW4ueW9vQGludGVsLmNvbT47IFBhdHJp
-Y2sgVmVudHVyZQ0KPiA8dmVudHVyZUBnb29nbGUuY29tPjsgbW9kZXJhdGVkIGxpc3Q6QVJNL0FT
-UEVFRCBNQUNISU5FIFNVUFBPUlQNCj4gPGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFk
-Lm9yZz4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAxLzJdIG1pc2M6IEFkZCBjbG9jayBjb250
-cm9sIGxvZ2ljIGludG8gQXNwZWVkIExQQw0KPiBTTk9PUCBkcml2ZXINCj4gDQo+IE9uIFdlZCwg
-SmFuIDYsIDIwMjEgYXQgMTA6NTcgQU0gUnlhbiBDaGVuIDxyeWFuX2NoZW5AYXNwZWVkdGVjaC5j
-b20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gSGVsbG8gSm9obiwgSm9lbCwgSmFlLA0KPiA+ICAgICAg
-ICAgRm9yIHRoaXMgc2hvdWxkIGJlIHNldCBMQ0xLIHRvIGJlIENSSVRJQ0FMIGl0IHdpbGwgZml4
-IExQQyByZWxhdGVkDQo+IGRyaXZlci4gKEtDUy9CVC9TTk9PUCkNCj4gPiAgICAgICAgIEkgaGF2
-ZSBzZW5kIHRoZSBwYXRjaCBiZWZvcmUuDQo+ID4NCj4gPiBodHRwczovL3BhdGNod29yay5vemxh
-YnMub3JnL3Byb2plY3QvbGludXgtYXNwZWVkL3BhdGNoLzIwMjAwOTI4MDcwMTA4DQo+ID4gLjE0
-MDQwLTItcnlhbl9jaGVuQGFzcGVlZHRlY2guY29tLw0KPiA+DQo+ID4gSGVsbG8gSm9lbCwNCj4g
-PiAgICAgICAgIFdpbGwgeW91IGNvbnNpZGVyIHRoaXMgcGF0Y2g/DQo+ID4gICAgICAgICBCZXNp
-ZGUgS0NTL0JUL1NOT09QLCBVQVJUMS9VQVJUMiB3aWxsIGJlIG1vc3QgcmVsYXRlZCBpc3N1ZQ0K
-PiBmb3IgaG9zdCBzaWRlLg0KPiANCj4gU29ycnkgaXQgZGlkIG5vdCBtYWtlIGl0IGludG8gdGhl
-IG1lcmdlIHdpbmRvdy4gVGhlIHBhdGNoIGlzIHN0aWxsIGluIHBhdGNod29yay4NCj4gSSBjb3Vs
-ZCBqdXN0IHBpY2sgaXQgdXAgZGlyZWN0bHkgZm9yIHY1LjEyLCBvciB3YWl0IGZvciBhIGNvbWJp
-bmVkIHB1bGwgcmVxdWVzdA0KPiB3aXRoIG90aGVyIHdvcmsuIA0KDQpIZWxsbyBBcm5kLA0KVGhh
-bmtzIHlvdXIgdXBkYXRlLg0KDQo+Sm9lbCwgcGxlYXNlIGxldCBtZSBrbm93IHdoYXQgeW91IHBy
-ZWZlci4NCj4gDQpIZWxsbyBKb2VsLA0KQ291bGQgeW91IGhlbHAgY2hlY2sgb24gdGhpcyBwYXRj
-aD8gDQpodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3Byb2plY3QvbGludXgtYXNwZWVkL3Bh
-dGNoLzIwMjAwOTI4MDcwMTA4LjE0MDQwLTItcnlhbl9jaGVuQGFzcGVlZHRlY2guY29tLw0K
+Hi,
+
+On Fri, Jan 8, 2021 at 4:36 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> Hi Doug,
+>
+> this is an impressive patch.
+>
+> We definitely need to touch base with Bjorn on this, preferably also
+> Sboyd.
+>
+> On Fri, Jan 8, 2021 at 6:35 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> > Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
+> > Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Some mechanics:
+
+I just realized that I addressed everyone's comments but yours.  Doh!
+
+
+> 1. Does this need to go into stable? Or is current (non-urgent) fine? Or fixes
+>    for v5.10? I.e. required destination.
+
+It probably ought to go into stable, but I'll leave it up to you which
+version of Linux it lands in.  I don't personally know if anyone is
+criticall waiting on this to land upstream.  For Chrome OS we're not
+desperate for it because we've already landed a temporary revert of
+Maulik's previous patch and the extra clearing of the masked
+interrupts isn't causing any really visible problems for us.
+
+
+> 2. If it does, should patches 1-3 also go into stable? And are they
+> prerequisites?
+
+Yeah, the last patch requires the previous ones, so they would all
+need to go into stable together.
+
+-Doug
