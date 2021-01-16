@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A005D3031E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942DA303284
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbhAYRLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728789AbhAYRKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:10:54 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD667C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:10:13 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id 63so13461808oty.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:10:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p6x+b/pCRR97Ua9t+6F9O8WSMZLZ1SJ+8PbUwDeO5rM=;
-        b=Htcc25pfJemhXqtLk7cK1EDnNpd9zKO7mOV6+qAMwwzNjUECeRPxPEzn2TyvIZ3sxZ
-         P/N93aGKRv+ZFJ+QWlFencU9Xadd1ru8MzjdOmjAT5+fPMmgBNfcU4/3rK6qNEzPICvv
-         0+Rt93qiDOldZvFAkDwpQcmLvehXcZxxrznP2iz4KTw9Ltl83i0PnmyaZh2DIEH/FRBf
-         8SnOskZ4ceeXjjBsqt93UD2KSeLsbnODzpIHDNIEGS8UlIv/BiCsxoWdMZvcLO0hADIU
-         MuYtwpQ/ogWB8M38SxluJnXOtSRvoC0UjJOMF+cVu63zjvAZKiZqIlew2zAvpryJPm+E
-         ZwLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p6x+b/pCRR97Ua9t+6F9O8WSMZLZ1SJ+8PbUwDeO5rM=;
-        b=Ri09sfF26HYJ8joxezRfNHRsTyn7x66AVj3c2oO82vaYs7TOeLGqrVBdZir/qrnddK
-         S03T7hCTGQodzhiwfvIsJu6oTt3X8f2EbfbbA4Alz6lo1W8WD0QzoZS/lwuk2frZ9XXW
-         B4fcEzSVzvWlZRztMtpgHKM5edPT9gbzxlx+tLpAvyyDW5IieyiWpv5ovxQ/UNfLu3Rb
-         1H4uNtOEMwoxBjXMCNsRutR9JJLvI2WyUrJJUKJ6sfKrHzrViCR7mbOR6xdLc0ASH7Cc
-         uAUxMEdyFsfl5JCuHQoOAoh7rdYa7yAUp7kBDUugJ1w3D7Jw+IVPKPZRkpBOoK3uWBbT
-         r3aw==
-X-Gm-Message-State: AOAM533qP7OEdbICmwGXwzzzW9dqZc6f2vxOm2cuVqr/u6gl/WSXmAe5
-        ynv/TNt6Ofmqiw0WSOXDOw2X7Q==
-X-Google-Smtp-Source: ABdhPJwQS7DUPItFDLC8PHt2Xni4buKOYi4dNg8jXZRiiHe9vrcI8BKKydXZiCse7K3mriq8lo5IeA==
-X-Received: by 2002:a9d:4706:: with SMTP id a6mr1091622otf.301.1611594613299;
-        Mon, 25 Jan 2021 09:10:13 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c18sm2127768oov.20.2021.01.25.09.10.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 09:10:12 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:10:10 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-arm-msm@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] scsi: dt-bindings: ufs: Add sm8250, sm8350
- compatible strings
-Message-ID: <YA77ch3jB1TCgmNz@builder.lan>
-References: <20210125100906.4004908-1-vkoul@kernel.org>
- <20210125100906.4004908-2-vkoul@kernel.org>
+        id S1726851AbhAYJkW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 04:40:22 -0500
+Received: from wnbcorp.com ([175.126.38.143]:35051 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726301AbhAYJ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:27:20 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GGhfkx002617;
+        Sun, 17 Jan 2021 01:45:49 +0900
+Message-Id: <202101161645.10GGhfkx002617@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125100906.4004908-2-vkoul@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 17:46:05 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Jan 04:09 CST 2021, Vinod Koul wrote:
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-> Document "qcom,sm8250-ufshc" and "qcom,sm8350-ufshc" compatible string.
-> Use of "qcom,sm8250-ufshc" is already present upstream, so add misiing
-> documentation. "qcom,sm8350-ufshc" is for UFS HC found in SM8350 SoC.
-> 
+Sir/Madam,
 
-This can/should be picked up independently of the other patches, so
-would have been better sent solo.
+CONGRATULATIONS!!!
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-Regards,
-Bjorn
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> index 415ccdd7442d..d8fd4df81743 100644
-> --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> @@ -14,6 +14,8 @@ Required properties:
->  			    "qcom,msm8998-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
->  			    "qcom,sdm845-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
->  			    "qcom,sm8150-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
-> +			    "qcom,sm8250-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
-> +			    "qcom,sm8350-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
->  - interrupts        : <interrupt mapping for UFS host controller IRQ>
->  - reg               : <registers mapping>
->  
-> -- 
-> 2.26.2
-> 
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
