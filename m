@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF04E2F8B4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AA22F8B4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbhAPEiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 23:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S1726264AbhAPEmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 23:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbhAPEiP (ORCPT
+        with ESMTP id S1725797AbhAPEmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 23:38:15 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A221AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:37:35 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id b3so6808284pft.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:37:35 -0800 (PST)
+        Fri, 15 Jan 2021 23:42:12 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4967FC061757;
+        Fri, 15 Jan 2021 20:41:32 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id d189so11841062oig.11;
+        Fri, 15 Jan 2021 20:41:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/GEsUv4XPzp2MAebK25e+QPQSWvvym5bBrV9gTaI2uU=;
-        b=PTL44zbSHBr+2NKLTgq1CeR+ITIvn+69xRddTN/3yMQBqqTd2J7ngNdloqZ5X5W4Vf
-         dogd6iuy3sQm5uR7tmmrnHy6yipi2qhuAUFiSjBlVqklxz3CbOMROHJkpEQs0EmITT9f
-         0zIbIDqDPrzGz46adV8ehn+C++1vk0dKpdtA8fBEuqiobmMsxqPuXv5b/7EHxga5D42C
-         5itiiaPEs8T4Ed7lgAYHCM9gM0SSp/Qnb5IN+Fak3hEAEKnRoDsDMSrdZzDagVPfP0AD
-         KenkTFc/wkSfwL0KiplKVpH1i0BIDFKVL2gBAhrYARLmxCrbV12syj/38oJTnKbFek+U
-         DTkQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OOtJkxn6jSLOB+e6L+ZSIwut8jpGnnKI/nsHAVbM2uI=;
+        b=J8j2uQGI5vZoLIt0q4STAhg4kLLkG1Apt9vtWWi+rtkCHI3J9FCsv5eMqAQjU9jVki
+         xfkUTvZLzbg44OK96/8e41pEd0UOk16qlnymUc6ZYoTJL4A4/982J+hBlFkMNKmV7c5K
+         /Aq8xpjp/i25Pj90yhiPvgDzpvseL7P7nLLCNIoZ800zEso1U4lUD79GrMfFOjbSX3o1
+         Cag+iL9K5h+zor+M8xpqgSaP8CF83dQe/duS4X4LL6H+2EioObmkanIbVdPLr1Covghw
+         NpmADwf67Jtihow21/AiKZor0dIuzY4BOceQM5MQf/Drlco7Ls75FlAvDHkHiHHzYuDp
+         Ze9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/GEsUv4XPzp2MAebK25e+QPQSWvvym5bBrV9gTaI2uU=;
-        b=NGHqQ3Of8NEJpL2c7zGelUUVmK/nZSg2lIkJDyE7nQyp4CUdUh1oY7RQ4g94wsZFNn
-         nPBzWEqS9iuc/bcPK6l94nveUgwfkRS5g1utjHRMpLdIWGTnVlnsingtBXS80SGxUZUZ
-         AtcNziWDiEMtT6Ieiaew7wH3zQklZz6Pz5uoUg2z3BNdK/MYfwxKVmt/Og7j9rgT95AR
-         G0vxIl0wGSp7fKyPDw/bJfqjyF0j9Yo/Oi5lTMZQOSP1Mg5QpqLp9W123GQnEdPnhZ4O
-         HUNy633mn4Y9f2z5CjOotsNao2Z7gHDWet3uDA6bpP/2Cnzw3Kv+s8tVvr8clHenpydZ
-         CqvA==
-X-Gm-Message-State: AOAM533iHh4moPqVaU4hoZfdjcE7Aleh4A9Dd3FPaXff0S/EPClf+EI4
-        q2G9cCF9FKC6J8UkeF5zVT9dcLonW6ObY4YyADXaTg==
-X-Google-Smtp-Source: ABdhPJw6auAbwUc0+HRs4bF+JukQbPjxez5J6xRY1baJNaOgs4+OwLuDT63KPd5jpF5UHKrsdydTkQPbtaqmosUt+0E=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr15925182pga.341.1610771855128;
- Fri, 15 Jan 2021 20:37:35 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OOtJkxn6jSLOB+e6L+ZSIwut8jpGnnKI/nsHAVbM2uI=;
+        b=YzURgO32Jyg97CxkB8PDIvgv+2IAId1axWUraloXZFdcyfmFRXewjOaG5hklrd5hGo
+         nf5e4GrC0RuTCxdJVxlzjKoYdsqUR1hObk49NGsXhXgXqDd4KaRcu+g0VmRYTsVRqz7O
+         zMYLjJl+wpU9pe0gPvYWRPTPI3Jnb2Vx0t1YLAGr9hHsoV2Onoouy38ucGonBL1ebcUl
+         Lnx+12H0hjBvXFpaqTgDI/NmmB7C4ql8pkDAdAJlhz3S4PrptbW9/pOjfjrxArfxxSAb
+         K6X+Cu/JxOPr6gbX67eOIVZ5HzK2dQis0wQ9wL/j47gSF1tMJ68rdMJqRRdX8l4cwi7J
+         0ynA==
+X-Gm-Message-State: AOAM531SymOZnesnbeG20gx2FljVZOcHwI1PqHdyklDtDAtwzzgC5jJz
+        QRr1QqeBiENrVauoLqe3GU4=
+X-Google-Smtp-Source: ABdhPJyrpjfh8Zg2ajZ0wCrfw3KOHQC0cjp72X8cQ8lFxpgv8STYnmmdiHjEOZVAZYtZLBwkKa+hYQ==
+X-Received: by 2002:aca:c3c3:: with SMTP id t186mr7890985oif.53.1610772091734;
+        Fri, 15 Jan 2021 20:41:31 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.6.112.215])
+        by smtp.googlemail.com with ESMTPSA id y12sm2382709oti.0.2021.01.15.20.41.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 20:41:31 -0800 (PST)
+Subject: Re: [PATCH net 0/2] ipv6: fixes for the multicast routes
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Thomas Graf <tgraf@suug.ch>, David Ahern <dsahern@gmail.com>
+References: <20210115184209.78611-1-mcroce@linux.microsoft.com>
+ <20210115145028.3cb6997f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFnufp2DLgmO_paMoTGPUAGHbp9=hVgWR5UxmYbQQE=n642Ejw@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <989d8413-469d-9d80-1a80-15868af24de6@gmail.com>
+Date:   Fri, 15 Jan 2021 21:41:30 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210116003105.182918-1-mike.kravetz@oracle.com>
- <20210116003105.182918-3-mike.kravetz@oracle.com> <20210116042416.GA2260413@casper.infradead.org>
-In-Reply-To: <20210116042416.GA2260413@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 16 Jan 2021 12:36:55 +0800
-Message-ID: <CAMZfGtWt9g9a3cQUj-E8JS5yVe_V7Gj7eY9+61djeXJ2zdgFKg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 2/5] hugetlb: convert page_huge_active() to
- HP_Migratable flag
-To:     Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFnufp2DLgmO_paMoTGPUAGHbp9=hVgWR5UxmYbQQE=n642Ejw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 12:26 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Jan 15, 2021 at 04:31:02PM -0800, Mike Kravetz wrote:
-> > +++ b/fs/hugetlbfs/inode.c
-> > @@ -735,7 +735,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
-> >
-> >               mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> >
-> > -             set_page_huge_active(page);
-> > +             hugetlb_set_page_flag(page, HP_Migratable);
->
-> I had understood the request to be more like ...
->
->                 SetHPageMigratable(page);
->
-> > +++ b/include/linux/hugetlb.h
-> > @@ -480,9 +480,13 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-> >   * HP_Restore_Reserve - Set when a hugetlb page consumes a reservation at
-> >   *   allocation time.  Cleared when page is fully instantiated.  Free
-> >   *   routine checks flag to restore a reservation on error paths.
-> > + * HP_Migratable - Set after a newly allocated page is added to the page
-> > + *   cache and/or page tables.  Indicates the page is a candidate for
-> > + *   migration.
-> >   */
-> >  enum hugetlb_page_flags {
-> >       HP_Restore_Reserve = 0,
-> > +     HP_Migratable,
-> >  };
->
-> and name these HPG_restore_reserve and HPG_migratable
->
-> and generate the calls to hugetlb_set_page_flag etc from macros, eg:
->
-> #define TESTHPAGEFLAG(uname, lname)                                     \
-> static __always_inline bool HPage##uname(struct page *page)             \
-> { return test_bit(HPG_##lname, &page->private); }
-> ...
-> #define HPAGEFLAG(uname, lname)                                         \
->         TESTHPAGEFLAG(uname, lname)                                     \
->         SETHPAGEFLAG(uname, lname)                                      \
->         CLEARHPAGEFLAG(uname, lname)
->
-> HPAGEFLAG(RestoreReserve, restore_reserve)
-> HPAGEFLAG(Migratable, migratable)
->
-> just to mirror page-flags.h more closely.
+On 1/15/21 4:12 PM, Matteo Croce wrote:
+> On Fri, Jan 15, 2021 at 11:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>>
+>> On Fri, 15 Jan 2021 19:42:07 +0100 Matteo Croce wrote:
+>>> From: Matteo Croce <mcroce@microsoft.com>
+>>>
+>>> Fix two wrong flags in the IPv6 multicast routes created
+>>> by the autoconf code.
+>>
+>> Any chance for Fixes tags here?
+> 
+> Right.
+> For 1/2 I don't know exactly, that code was touched last time in
+> 86872cb57925 ("[IPv6] route: FIB6 configuration using struct
+> fib6_config"), but it was only refactored. Before 86872cb57925, it was
+> pushed in the git import commit by Linus: 1da177e4c3f4
+> ("Linux-2.6.12-rc2").
+> BTW, according the history repo, it entered the tree in the 2.4.0
+> import, so I'd say it's here since the beginning.
+> 
+> While for 2/2 I'd say:
+> 
+> Fixes: e8478e80e5a7 ("net/ipv6: Save route type in rt6_info")
+> 
 
-I prefer this suggestion. I also made the same suggestion in the
-previous RFC version.
+As I recall (memory jogging from commit description) my patch only moved
+the setting from ip6_route_info_create default to here.
+
+The change is correct, just thinking it goes back beyond 4.16. If
+someone has a system running a 4.14 or earlier kernel it should be easy
+to know if this was the default prior.
