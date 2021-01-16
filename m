@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF72F2F8E43
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79D92F8E47
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbhAPRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:23:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:54140 "EHLO foss.arm.com"
+        id S1727054AbhAPR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:28:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:54342 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726629AbhAPRXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:23:16 -0500
+        id S1726125AbhAPR2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 12:28:15 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57E6712FC;
-        Sat, 16 Jan 2021 06:18:23 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D70F11396;
+        Sat, 16 Jan 2021 06:23:52 -0800 (PST)
 Received: from [10.37.8.30] (unknown [10.37.8.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A19953F719;
-        Sat, 16 Jan 2021 06:18:20 -0800 (PST)
-Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD9563F719;
+        Sat, 16 Jan 2021 06:23:49 -0800 (PST)
+Subject: Re: [PATCH] kasan: fix HW_TAGS boot parameters
+To:     Andrey Konovalov <andreyknvl@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
+        Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
         Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-5-vincenzo.frascino@arm.com>
- <20210115154520.GD44111@C02TD0UTHF1T.local>
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <4e9c4a4bdcadc168317deb2419144582a9be6e61.1610736745.git.andreyknvl@google.com>
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
-Date:   Sat, 16 Jan 2021 14:22:08 +0000
+Message-ID: <83972adc-420b-ca38-3672-b39a5618bd32@arm.com>
+Date:   Sat, 16 Jan 2021 14:27:37 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210115154520.GD44111@C02TD0UTHF1T.local>
+In-Reply-To: <4e9c4a4bdcadc168317deb2419144582a9be6e61.1610736745.git.andreyknvl@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,129 +47,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
 
-On 1/15/21 3:45 PM, Mark Rutland wrote:
-> On Fri, Jan 15, 2021 at 12:00:43PM +0000, Vincenzo Frascino wrote:
->> mte_assign_mem_tag_range() is called on production KASAN HW hot
->> paths. It makes sense to optimize it in an attempt to reduce the
->> overhead.
->>
->> Optimize mte_assign_mem_tag_range() based on the indications provided at
->> [1].
+
+On 1/15/21 6:53 PM, Andrey Konovalov wrote:
+> The initially proposed KASAN command line parameters are redundant.
 > 
-> ... what exactly is the optimization?
+> This change drops the complex "kasan.mode=off/prod/full" parameter
+> and adds a simpler kill switch "kasan=off/on" instead. The new parameter
+> together with the already existing ones provides a cleaner way to
+> express the same set of features.
 > 
-> I /think/ you're just trying to have it inlined, but you should mention
-> that explicitly.
+> The full set of parameters with this change:
 > 
-
-Good point, I will change it in the next version. I used "Optimize" as a
-continuation of the topic in the previous thread but you are right it is not
-immediately obvious.
-
->>
->> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
->> ---
->>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
->>  arch/arm64/lib/mte.S         | 15 ---------------
->>  2 files changed, 25 insertions(+), 16 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
->> index 1a715963d909..9730f2b07b79 100644
->> --- a/arch/arm64/include/asm/mte.h
->> +++ b/arch/arm64/include/asm/mte.h
->> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
->>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
->>  			 unsigned long addr, unsigned long data);
->>  
->> -void mte_assign_mem_tag_range(void *addr, size_t size);
->> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
->> +{
->> +	u64 _addr = (u64)addr;
->> +	u64 _end = _addr + size;
->> +
->> +	/*
->> +	 * This function must be invoked from an MTE enabled context.
->> +	 *
->> +	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
->> +	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
->> +	 */
->> +	do {
->> +		/*
->> +		 * 'asm volatile' is required to prevent the compiler to move
->> +		 * the statement outside of the loop.
->> +		 */
->> +		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
->> +			     :
->> +			     : "r" (_addr)
->> +			     : "memory");
->> +
->> +		_addr += MTE_GRANULE_SIZE;
->> +	} while (_addr < _end);
+> kasan=off/on             - whether KASAN is enabled
+> kasan.fault=report/panic - whether to only print a report or also panic
+> kasan.stacktrace=off/on  - whether to collect alloc/free stack traces
 > 
-> Is there any chance that this can be used for the last bytes of the
-> virtual address space? This might need to change to `_addr == _end` if
-> that is possible, otherwise it'll terminate early in that case.
+> Default values:
 > 
-
-Theoretically it is a possibility. I will change the condition and add a note
-for that.
-
->> +}
+> kasan=on
+> kasan.fault=report
+> kasan.stacktrace=on  (if CONFIG_DEBUG_KERNEL=y)
+> kasan.stacktrace=off (otherwise)
 > 
-> What does the code generation look like for this, relative to the
-> assembly version?
+> Link: https://linux-review.googlesource.com/id/Ib3694ed90b1e8ccac6cf77dfd301847af4aba7b8
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
+Since it is a fix could you please add the "Fixes:" tag.
+
+Otherwise:
+
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+> ---
+>  Documentation/dev-tools/kasan.rst | 27 +++--------
+>  mm/kasan/hw_tags.c                | 77 +++++++++++++------------------
+>  2 files changed, 38 insertions(+), 66 deletions(-)
 > 
-
-The assembly looks like this:
-
- 390:   8b000022        add     x2, x1, x0
- 394:   aa0003e1        mov     x1, x0
- 398:   d9200821        stg     x1, [x1]
- 39c:   91004021        add     x1, x1, #0x10
- 3a0:   eb01005f        cmp     x2, x1
- 3a4:   54ffffa8        b.hi    398 <mte_set_mem_tag_range+0x48>
-
-You can see the handcrafted one below.
-
-> Thanks,
-> Mark.
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index 0fc3fb1860c4..1651d961f06a 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -160,29 +160,14 @@ intended for use in production as a security mitigation. Therefore it supports
+>  boot parameters that allow to disable KASAN competely or otherwise control
+>  particular KASAN features.
+>  
+> -The things that can be controlled are:
+> +- ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
+>  
+> -1. Whether KASAN is enabled at all.
+> -2. Whether KASAN collects and saves alloc/free stacks.
+> -3. Whether KASAN panics on a detected bug or not.
+> +- ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
+> +  traces collection (default: ``on`` for ``CONFIG_DEBUG_KERNEL=y``, otherwise
+> +  ``off``).
+>  
+> -The ``kasan.mode`` boot parameter allows to choose one of three main modes:
+> -
+> -- ``kasan.mode=off`` - KASAN is disabled, no tag checks are performed
+> -- ``kasan.mode=prod`` - only essential production features are enabled
+> -- ``kasan.mode=full`` - all KASAN features are enabled
+> -
+> -The chosen mode provides default control values for the features mentioned
+> -above. However it's also possible to override the default values by providing:
+> -
+> -- ``kasan.stacktrace=off`` or ``=on`` - enable alloc/free stack collection
+> -					(default: ``on`` for ``mode=full``,
+> -					 otherwise ``off``)
+> -- ``kasan.fault=report`` or ``=panic`` - only print KASAN report or also panic
+> -					 (default: ``report``)
+> -
+> -If ``kasan.mode`` parameter is not provided, it defaults to ``full`` when
+> -``CONFIG_DEBUG_KERNEL`` is enabled, and to ``prod`` otherwise.
+> +- ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
+> +  report or also panic the kernel (default: ``report``).
+>  
+>  For developers
+>  ~~~~~~~~~~~~~~
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index 55bd6f09c70f..e529428e7a11 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -19,11 +19,10 @@
+>  
+>  #include "kasan.h"
+>  
+> -enum kasan_arg_mode {
+> -	KASAN_ARG_MODE_DEFAULT,
+> -	KASAN_ARG_MODE_OFF,
+> -	KASAN_ARG_MODE_PROD,
+> -	KASAN_ARG_MODE_FULL,
+> +enum kasan_arg {
+> +	KASAN_ARG_DEFAULT,
+> +	KASAN_ARG_OFF,
+> +	KASAN_ARG_ON,
+>  };
+>  
+>  enum kasan_arg_stacktrace {
+> @@ -38,7 +37,7 @@ enum kasan_arg_fault {
+>  	KASAN_ARG_FAULT_PANIC,
+>  };
+>  
+> -static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
+> +static enum kasan_arg kasan_arg __ro_after_init;
+>  static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
+>  static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+>  
+> @@ -52,26 +51,24 @@ DEFINE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
+>  /* Whether panic or disable tag checking on fault. */
+>  bool kasan_flag_panic __ro_after_init;
+>  
+> -/* kasan.mode=off/prod/full */
+> -static int __init early_kasan_mode(char *arg)
+> +/* kasan=off/on */
+> +static int __init early_kasan_flag(char *arg)
+>  {
+>  	if (!arg)
+>  		return -EINVAL;
+>  
+>  	if (!strcmp(arg, "off"))
+> -		kasan_arg_mode = KASAN_ARG_MODE_OFF;
+> -	else if (!strcmp(arg, "prod"))
+> -		kasan_arg_mode = KASAN_ARG_MODE_PROD;
+> -	else if (!strcmp(arg, "full"))
+> -		kasan_arg_mode = KASAN_ARG_MODE_FULL;
+> +		kasan_arg = KASAN_ARG_OFF;
+> +	else if (!strcmp(arg, "on"))
+> +		kasan_arg = KASAN_ARG_ON;
+>  	else
+>  		return -EINVAL;
+>  
+>  	return 0;
+>  }
+> -early_param("kasan.mode", early_kasan_mode);
+> +early_param("kasan", early_kasan_flag);
+>  
+> -/* kasan.stack=off/on */
+> +/* kasan.stacktrace=off/on */
+>  static int __init early_kasan_flag_stacktrace(char *arg)
+>  {
+>  	if (!arg)
+> @@ -113,8 +110,8 @@ void kasan_init_hw_tags_cpu(void)
+>  	 * as this function is only called for MTE-capable hardware.
+>  	 */
+>  
+> -	/* If KASAN is disabled, do nothing. */
+> -	if (kasan_arg_mode == KASAN_ARG_MODE_OFF)
+> +	/* If KASAN is disabled via command line, don't initialize it. */
+> +	if (kasan_arg == KASAN_ARG_OFF)
+>  		return;
+>  
+>  	hw_init_tags(KASAN_TAG_MAX);
+> @@ -124,43 +121,28 @@ void kasan_init_hw_tags_cpu(void)
+>  /* kasan_init_hw_tags() is called once on boot CPU. */
+>  void __init kasan_init_hw_tags(void)
+>  {
+> -	/* If hardware doesn't support MTE, do nothing. */
+> +	/* If hardware doesn't support MTE, don't initialize KASAN. */
+>  	if (!system_supports_mte())
+>  		return;
+>  
+> -	/* Choose KASAN mode if kasan boot parameter is not provided. */
+> -	if (kasan_arg_mode == KASAN_ARG_MODE_DEFAULT) {
+> -		if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
+> -			kasan_arg_mode = KASAN_ARG_MODE_FULL;
+> -		else
+> -			kasan_arg_mode = KASAN_ARG_MODE_PROD;
+> -	}
+> -
+> -	/* Preset parameter values based on the mode. */
+> -	switch (kasan_arg_mode) {
+> -	case KASAN_ARG_MODE_DEFAULT:
+> -		/* Shouldn't happen as per the check above. */
+> -		WARN_ON(1);
+> -		return;
+> -	case KASAN_ARG_MODE_OFF:
+> -		/* If KASAN is disabled, do nothing. */
+> +	/* If KASAN is disabled via command line, don't initialize it. */
+> +	if (kasan_arg == KASAN_ARG_OFF)
+>  		return;
+> -	case KASAN_ARG_MODE_PROD:
+> -		static_branch_enable(&kasan_flag_enabled);
+> -		break;
+> -	case KASAN_ARG_MODE_FULL:
+> -		static_branch_enable(&kasan_flag_enabled);
+> -		static_branch_enable(&kasan_flag_stacktrace);
+> -		break;
+> -	}
+>  
+> -	/* Now, optionally override the presets. */
+> +	/* Enable KASAN. */
+> +	static_branch_enable(&kasan_flag_enabled);
+>  
+>  	switch (kasan_arg_stacktrace) {
+>  	case KASAN_ARG_STACKTRACE_DEFAULT:
+> +		/*
+> +		 * Default to enabling stack trace collection for
+> +		 * debug kernels.
+> +		 */
+> +		if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
+> +			static_branch_enable(&kasan_flag_stacktrace);
+>  		break;
+>  	case KASAN_ARG_STACKTRACE_OFF:
+> -		static_branch_disable(&kasan_flag_stacktrace);
+> +		/* Do nothing, kasan_flag_stacktrace keeps its default value. */
+>  		break;
+>  	case KASAN_ARG_STACKTRACE_ON:
+>  		static_branch_enable(&kasan_flag_stacktrace);
+> @@ -169,11 +151,16 @@ void __init kasan_init_hw_tags(void)
+>  
+>  	switch (kasan_arg_fault) {
+>  	case KASAN_ARG_FAULT_DEFAULT:
+> +		/*
+> +		 * Default to no panic on report.
+> +		 * Do nothing, kasan_flag_panic keeps its default value.
+> +		 */
+>  		break;
+>  	case KASAN_ARG_FAULT_REPORT:
+> -		kasan_flag_panic = false;
+> +		/* Do nothing, kasan_flag_panic keeps its default value. */
+>  		break;
+>  	case KASAN_ARG_FAULT_PANIC:
+> +		/* Enable panic on report. */
+>  		kasan_flag_panic = true;
+>  		break;
+>  	}
 > 
->> +
->>  
->>  #else /* CONFIG_ARM64_MTE */
->>  
->> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
->> index 9e1a12e10053..a0a650451510 100644
->> --- a/arch/arm64/lib/mte.S
->> +++ b/arch/arm64/lib/mte.S
->> @@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
->>  	ret
->>  SYM_FUNC_END(mte_restore_page_tags)
->>  
->> -/*
->> - * Assign allocation tags for a region of memory based on the pointer tag
->> - *   x0 - source pointer
->> - *   x1 - size
->> - *
->> - * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
->> - * size must be non-zero and MTE_GRANULE_SIZE aligned.
->> - */
->> -SYM_FUNC_START(mte_assign_mem_tag_range)
->> -1:	stg	x0, [x0]
->> -	add	x0, x0, #MTE_GRANULE_SIZE
->> -	subs	x1, x1, #MTE_GRANULE_SIZE
->> -	b.gt	1b
->> -	ret
->> -SYM_FUNC_END(mte_assign_mem_tag_range)
->> -- 
->> 2.30.0
->>
 
 -- 
 Regards,
