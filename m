@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C272F89C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E44662F89C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbhAPAIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:08:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        id S1728764AbhAPAIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:08:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbhAPAIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:08:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D20C923A01;
-        Sat, 16 Jan 2021 00:07:24 +0000 (UTC)
+        id S1727410AbhAPAIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 19:08:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5940B23B04
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 00:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610755645;
-        bh=yYr2q7lNAq/q/Obg++NQkrKqBVKTH2282wttNpy5bM8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OiR5cD0oCTw30+tm55FACqWBQc8Tq5JCFpac9JbwqQM/dgPzt34V+hCcsgCs1p9P5
-         BYiKibSThr8u+d5Ac6ViitpJjlqMsewFTcEhEycsGtXxP/Q34wm58tNrzBVlY4Y6Fa
-         oOjDJ+WT85Nn9Fnm4UWhufxz24HiXkTOwjAtc1csTNfyocrHqKY9yoazMuSqk1+xFD
-         VdRlN6h3tJcSHSsdh+auZ3GtzXOv4xwyttgDQt81KKo5vn3GyA1Tiap6NKTSJNXfcz
-         Mi7CnKxrNQUHv8FvsGeFYUpHBygUqgSoK+DKa1ZKNLPL74bgiS7nhnDdgfh0XGbrHL
-         xuxVZAN02rA0A==
-Date:   Fri, 15 Jan 2021 16:07:23 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Robin van der Gracht <robin@protonic.nl>,
-        syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com,
-        kernel@pengutronix.de, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net 1/2] net: introduce CAN specific pointer in the
- struct net_device
-Message-ID: <20210115160723.7abd75ec@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210115143036.31275-1-o.rempel@pengutronix.de>
-References: <20210115143036.31275-1-o.rempel@pengutronix.de>
+        s=k20201202; t=1610755680;
+        bh=+2AMcX5I9sdDNTAf5qRgriFiAplt2ZW+PvqTt0Q1cUw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H30QuLLOfjwdKuGBWtbgERQsAf1AN+Ct/IbxmYsYZJ5roGAYPbGUX1GNWprD1p8fr
+         ISjj49tsECmhYofO7aFOr6R+t9/3Z4z6FRn5sBiy9Y/vgE8xnqQVi9AGidUxjJCsiL
+         WKRLZ0nACF0uIkL+e/VDVPFabM0+EJniPtKrzfllgLjUqnRV2rC6rEpjmmtHKUCTEu
+         uT3rNVKWXYCQT0PiKS7ads1+/7dSNJwnuWZSHaOXV/fFNi0xfnUNocMVQKnIYXPvA8
+         tWLuBOLUsWBs3mPQx4xUPrILf3Rp/+uIZesho5UIUKqCLiwASPIjo8MqklUh5bkMgk
+         b8JtA+oeG3vpQ==
+Received: by mail-ed1-f47.google.com with SMTP id g24so11403346edw.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:08:00 -0800 (PST)
+X-Gm-Message-State: AOAM531ayWxqX6DIt9w3Q0VOZ7GnPd5YzXy2Zrz2s3MPET5Bi/LGOyT5
+        MIwujc9rwg2tj13Nq0fF00WKbVmuUrtKNx1ckag7xQ==
+X-Google-Smtp-Source: ABdhPJwA0R2ivqxfLZj25fjGEkl6YCppBiN4+N4FJIG/Q6L6/jH79qY/NR2oZiGDsSgT9/JyW8mJ9D5qzsk1TFAAdjk=
+X-Received: by 2002:a05:6402:a5b:: with SMTP id bt27mr11884235edb.222.1610755677728;
+ Fri, 15 Jan 2021 16:07:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+ <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com>
+ <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com> <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 15 Jan 2021 16:07:46 -0800
+X-Gmail-Original-Message-ID: <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
+Message-ID: <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
+Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
+To:     Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Ryan Houdek <sonicadvance1@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Amanieu d'Antras" <amanieu@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 15:30:35 +0100 Oleksij Rempel wrote:
-> Since 20dd3850bcf8 ("can: Speed up CAN frame receiption by using
-> ml_priv") the CAN framework uses per device specific data in the AF_CAN
-> protocol. For this purpose the struct net_device->ml_priv is used. Later
-> the ml_priv usage in CAN was extended for other users, one of them being
-> CAN_J1939.
-> 
-> Later in the kernel ml_priv was converted to an union, used by other
-> drivers. E.g. the tun driver started storing it's stats pointer.
-> 
-> Since tun devices can claim to be a CAN device, CAN specific protocols
-> will wrongly interpret this pointer, which will cause system crashes.
-> Mostly this issue is visible in the CAN_J1939 stack.
-> 
-> To fix this issue, we request a dedicated CAN pointer within the
-> net_device struct.
+On Fri, Jan 15, 2021 at 1:03 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Fri, Jan 15, 2021 at 3:06 AM Ryan Houdek <sonicadvance1@gmail.com> wrote:
+> > On Wed, Jan 6, 2021 at 12:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >> On Wed, Jan 6, 2021 at 7:48 AM <sonicadvance1@gmail.com> wrote:
+> >> > From: Ryan Houdek <Sonicadvance1@gmail.com>
+> >> ...
+> >>
+> >> For x86, this has another complication, as some ioctls also need to
+> >> check whether they are in an ia32 task (with packed u64 and 32-bit
+> >> __kernel_old_time_t) or an x32 task (with aligned u64 and 64-bit
+> >> __kernel_old_time_t). If the new syscall gets wired up on x86 as well,
+> >> you'd need to decide which of the two behaviors you want.
+> >
+> >
+> > I can have a follow-up patch that makes this do ni-syscall on x86_64 since
+> > we can go through the int 0x80 handler, or x32 handler path and choose
+> > whichever one there.
+>
+> I'd say for consistency
+>
 
-No strong objection, others already added their pointers, but 
-I wonder if we can't save those couple of bytes by adding a
-ml_priv_type, to check instead of dev->type? And leave it 0
-for drivers using stats?
+We need to make it crystal clear on x86 what this ioctl does.  We have
+a silly selection of options:
 
-That way other device types which are limited by all being 
-ARPHDR_ETHER can start using ml_priv as well?
+ - ioctl32() via SYSCALL, x32 bit clear -- presumably does an i386 ioctl?
+ - ioctl32() via SYSCALL, x32 bit set -- this needs to do something
+clearly documented.
+ - ioctl32() via int80 -- presumably you're not wiring this up
 
-> +#if IS_ENABLED(CONFIG_CAN)
-> +	struct can_ml_priv	*can;
-> +#endif
+In any case, the compat alloc thing should just go away.  It's a hack
+and serves no real purpose.
 
-Perhaps put it next to all the _ptr fields?
+Finally, I'm not convinced that this patch works correctly.  We have
+in_compat_syscall(), and code that uses it may well be reachable from
+ioctl.  I personally would like to see in_compat_syscall() go away,
+but some other people (Hi, Christoph!) disagree, and usage seems to be
+increasing, not decreasing.
