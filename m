@@ -2,87 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACC62F8B34
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901EE2F8B3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 05:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbhAPEbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 23:31:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbhAPEbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 23:31:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5DC523A5E;
-        Sat, 16 Jan 2021 04:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610771424;
-        bh=qMDRWToLQ/4TptwuZSmDQQfMwSt3KS2cw2D//FPEt/Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U+aAm1w9JU3pIsHh2sb7hGSuu9wVQm6okaSscvSxYfKm0mWeHJhWFJRY7HZwM+vVq
-         QplIQ0PKtWiPdU8PsItkoNpy16j2+1tgz9hJXdRrjIgU43XvyjaberM+5TDVhK/ONu
-         Hea+t3YU0cKLvliJegB2vjqSOr5ycVFk8A6HJOv6Q5owov2QLSyb+MUlSYCxmOdyNp
-         9LLJdqyMxMPxBb7gAXFXgizA/uWqe3OkC+y+mds80mjerWMk2roYiy4hj9nUCKofgm
-         2Xl7mn3c4Puve9F70YczTBXl+7+UVLLC5WZgjZo8deUGCpZEu6GxIBL7dKTsaGtz8N
-         4E2dUMRr4FOWQ==
-Date:   Fri, 15 Jan 2021 20:30:22 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2] hv_netvsc: Add (more) validation for untrusted
- Hyper-V values
-Message-ID: <20210115203022.7005e66a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210114202628.119541-1-parri.andrea@gmail.com>
-References: <20210114202628.119541-1-parri.andrea@gmail.com>
+        id S1729775AbhAPEdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 23:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbhAPEdF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 23:33:05 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBEAC061794
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id p18so7297180pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
+        b=AhCJrurJWr5qakhtTFitP0L+ZLAyEUUdfmPca3QpxNzNGFZrZqXzwK7rGFldzEKG/g
+         rJg/IJDxekMuO8bfkHTyYr74RzsMadcBKp3YR9g06tgDFSHtXj+chssKalfaIawkjxih
+         BRVvlJPQYIvd4KdUAxAhR4o75d35icXrZB/EFP+iGbzySEycNsF4pX+FdJ9wg3SoTuE5
+         rFtP8JHAXY+SgOM6dFnjOivvQw+GG6iyCeM1dcpiO6/ytRmGQmhhFtnGXUsk/g7/6di8
+         Vd538ChRdWi0U4cRJs4gB1uu7Phm5CVMgdVGwZ8UBewEAtTIVAqqGMDPKErXtfOpnTpg
+         SEvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
+        b=rbVVthGYKjmDysJooU+siKaRc0jJWdCo2LJnsiA3Lw8oKu681JQN+waGSIjcJXQ15i
+         0QV3shbAX7oUR3EOCVpXsy4oL0ZqQJuHB6nV6XcJt5zjsa7QCIywrWeGxuAMyx4gr33h
+         zNds5ONyXHMSimG3joLRNPC1CFdOP3Z2sPnP9TkEnK4RC1eDvwYW3VSRqcOOzvWLZPdY
+         rYL8Ooim+lyzaXmv3GlBWomhs2nbvJG5iDGzdPExrjBLiNAme5lHt9yn+rA0EQz/xZoX
+         eMQAMkdzX5fZuNQXLK+nYhsO4YGSnNQQOQz9nk2v6c5A9B35W9t3g+aueVhtM4KIdorJ
+         p14w==
+X-Gm-Message-State: AOAM531G3z7MjpN4rrlHpEAynirmeOrWoQgLBBr00EJHRI23LKzZkl8G
+        Um7do0mE34LuHY8o32J6UIi74A==
+X-Google-Smtp-Source: ABdhPJyKP8sU4ECWM/iW0Xk589JXcKQYdttY9E5LYxNTDUNToqzSmjvyhu/nR8SzTobIC2lS6ErK0A==
+X-Received: by 2002:a62:7d90:0:b029:19d:917b:6c65 with SMTP id y138-20020a627d900000b029019d917b6c65mr16224433pfc.28.1610771544088;
+        Fri, 15 Jan 2021 20:32:24 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id a29sm9378348pfr.73.2021.01.15.20.32.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jan 2021 20:32:23 -0800 (PST)
+Date:   Fri, 15 Jan 2021 20:32:19 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAJsUyH2zspZxF2S@google.com>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 21:26:28 +0100 Andrea Parri (Microsoft) wrote:
-> For additional robustness in the face of Hyper-V errors or malicious
-> behavior, validate all values that originate from packets that Hyper-V
-> has sent to the guest.  Ensure that invalid values cannot cause indexing
-> off the end of an array, or subvert an existing validation via integer
-> overflow.  Ensure that outgoing packets do not have any leftover guest
-> memory that has not been zeroed out.
+On Fri, Jan 15, 2021 at 10:43:32PM -0500, Tejun Heo wrote:
+> On Fri, Jan 15, 2021 at 02:18:40PM -0800, Vipin Sharma wrote:
+> > > * Why is .sev a separate namespace? Isn't the controller supposed to cover
+> > >   encryption ids across different implementations? It's not like multiple
+> > >   types of IDs can be in use on the same machine, right?
+> > > 
+> > 
+> > On AMD platform we have two types SEV and SEV-ES which can exists
+> > simultaneously and they have their own quota.
 > 
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> ---
-> Applies to 5.11-rc3 (and hyperv-next).
+> Can you please give a brief explanation of the two and lay out a scenario
+> where the two are being used / allocated disjointly?
+> 
 
-So this is for hyperv-next or should we take it via netdev trees?
+SEV-ES has stronger memory encryption gurantees compared to SEV, apart
+from encrypting the application memory it also encrypts register state
+among other things. In a single host ASIDs can be distributed between
+these two types by BIOS settings.
 
-> Changes since v1 (Juan Vazquez):
->   - Improve validation in rndis_set_link_state() and rndis_get_ppi()
->   - Remove memory/skb leak in netvsc_alloc_recv_skb()
+Currently, Google Cloud has Confidential VM machines offering using SEV.
+ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
+cannot run on SEV-ES and vice versa
+
+There are use cases for both types of VMs getting used in future.
+
+> > > > Other ID types can be easily added in the controller in the same way.
+> > > 
+> > > I'm not sure this is necessarily a good thing.
+> > 
+> > This is to just say that when Intel and PowerPC changes are ready it
+> > won't be difficult for them to add their controller.
+> 
+> I'm not really enthused about having per-hardware-type control knobs. None
+> of other controllers behave that way. Unless it can be abstracted into
+> something common, I'm likely to object.
+
+There was a discussion in Patch v1 and consensus was to have individual
+files because it makes kernel implementation extremely simple.
+
+https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
+
+> 
+> > > > +static int enc_id_cg_stat_show(struct seq_file *sf, void *v)
+> > > > +{
+> > > > +	unsigned long flags;
+> > > > +	enum encryption_id_type type = seq_cft(sf)->private;
+> > > > +
+> > > > +	spin_lock_irqsave(&enc_id_cg_lock, flags);
+> > > > +
+> > > > +	seq_printf(sf, "total %u\n", enc_id_capacity[type]);
+> > > > +	seq_printf(sf, "used %u\n", root_cg.res[type].usage);
+> > > 
+> > > Dup with .current and no need to show total on every cgroup, right?
+> > 
+> > This is for the stat file which will only be seen in the root cgroup
+> > directory.  It is to know overall picture for the resource, what is the
+> > total capacity and what is the current usage. ".current" file is not
+> > shown on the root cgroup.
+> 
+> Ah, missed the flags. It's odd for the usage to be presented in two
+> different ways tho. I think it'd make more sense w/ cgroup.current at root
+> level. Is the total number available somewhere else in the system?
+
+This information is not available anywhere else in the system. Only
+other way to get this value is to use CPUID instruction (0x8000001F) of
+the processor. Which also has disdvantage if sev module in kernel
+doesn't use all of the available ASIDs for its work (right now it uses
+all) then there will be a mismatch between what user get through their
+code and what is actually getting used in the kernel by sev.
+
+In cgroup v2, I didn't see current files for other cgroups in root
+folder that is why I didn't show that file in root folder.
+
+Will you be fine if I show two files in the root, something like:
+
+encids.sev.capacity
+encids.sev.current
+
+In non root folder, it will be:
+encids.sev.max
+encids.sev.current
+
+I still prefer encids.sev.stat, as it won't repeat same information in
+each cgroup but let me know what you think.
+
+Thanks
