@@ -2,180 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95AB2F8BEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 07:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AC72F8BEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 07:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbhAPGjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 01:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S1726623AbhAPGmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 01:42:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAPGjH (ORCPT
+        with ESMTP id S1725781AbhAPGmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 01:39:07 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A8FC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:38:27 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id hs11so14094621ejc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:38:27 -0800 (PST)
+        Sat, 16 Jan 2021 01:42:33 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D3EC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:41:53 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id x13so10869952oto.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 22:41:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=r4KuFhk3mIdWFgKPGA6LMV0gdGSNgz8mUt3ThYzBMfk=;
-        b=FCJcws+D6FObyl29DE9jTxFUoZdY/6EpmXNNOD9VQh4lTUoiCqnPSEG1AEdMDOZFPn
-         k7l7ksgUepHIdYv91rxfswY28sfPmsf+EwwZgasnYFjdRJ43WMXaGtnjNpmN52koqVLB
-         47/knUfQR4LI7IJoQfvMOuM2GAJ76LGHm24PAgTpcShmWFuKWJLFvqQmL9bgET/6TPEO
-         2X9KVX0zBCjrG8HtP+1ve04T8J1D+3ay4TKCmRFZ3Y1qVRjDtGaTd5c8EFMRWQNZrFJG
-         BWJpVD1waiVEDqE704JNup2EAzqzbdQNJHQbzG9UtbcFUEcB7XtXLF1XRMzVrKYDr6Sx
-         VvOA==
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language;
+        bh=p4Nk3AilftG5ExBAGS6bfQpd59rxlKgXfcFq9DUpCjk=;
+        b=pAanG4QYLVdqHA7d+KTehzpGBsRMb6s5xhzHsfq8B71fiian/mBZm5+o6sFXindpzA
+         obvIa6SQAsXJZslpsW+FcDB1J4xC+3vxh49OAqdbRpiJwLlTLsx5TNuJqfRI33kBXAy0
+         NvlUVqccvWJAmnbAyEBY7wi5WvONiihiwHLddVQn6Q2S9/ZI3s3z4/9uDjgJ2LOVmKeg
+         Qo6CgKsFjI63dVfKO7Jx+faEpvvxOslSKTe0XTxheT0fwP0fKRDhAgPHyakgW1/l8TNe
+         lEGwySnVRS3HCMGMvWMf8TLaeEwxDK+cMvNKVV57oVPUjre8xuOLdvn6TapS+F2yG55p
+         5ZWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=r4KuFhk3mIdWFgKPGA6LMV0gdGSNgz8mUt3ThYzBMfk=;
-        b=ieAEGK1LLUPEkvW7VrlA+n2h+ceVb+4qAeGlRfi2hbYI8NLOjV2kxiTJ2T3HIVuXvC
-         3UHlqr/S7GGp5vvU2Kna9tCtRnx8AkBz133gCYl3ReNOQ98no3KwnDZ8I0Mcj1eAqKQW
-         2S5bSfyCKtjETqLTyVCTEsMvTgL1Og5czIVxthwt5r97rdGPDrOqSwAwe5Zgd6NwMXDG
-         lbDSpuolYl4YRdcmPTLcZz34Zvm3EWfqYsvRm9Ce6nxG/Q3deOcFjnaNbvlhI/uuHwD8
-         7LNV5LY51uAaI2CpVEEhmUnzsuh+xRfae0c4Ese7G+VHGNGqhUDFV4jf1rYbte5L3HxX
-         YckQ==
-X-Gm-Message-State: AOAM5319hEZY74p4QlcatlB69Fk3ZYM1DHZl7OcN/yn+UBEcpFkMkxCV
-        fIM//5B5F9rW2SPUkBLXjRFUrt2F+fVhwKK7gkMRqQ==
-X-Google-Smtp-Source: ABdhPJzWSTWOML8CpVge4KsTvDl4Y3g3kgoT6d+ypCQp+H2lhl+L5i3rXcvJBz2qzvBUVnkxIEeVrvswfkKHtQ91lVE=
-X-Received: by 2002:a17:906:2695:: with SMTP id t21mr11830597ejc.287.1610779105858;
- Fri, 15 Jan 2021 22:38:25 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=p4Nk3AilftG5ExBAGS6bfQpd59rxlKgXfcFq9DUpCjk=;
+        b=h1yCytRDHk0wIIgAdI+DmMi3dmC43xBBAAKsECLmrNZ2DVxnUJ40gbLqoE7lyFiyz/
+         jP6H1TZ1BWYW3+qX1zjbtKTwFIUcq9gPDu1ZN6u6/jsqmwfKPDd1bFQbF/oJ1+8nRBcB
+         Q0NQEZtqhXKbTqh1Nioz5vNrmocTrjFmi5FNgxzd/OTPia2La/UkvrsEAmdB5X4qeJ+0
+         DR4quWRLB8vUhtD81aQ0XhqMhQDzQy376uvUkEmy6UxEi7WzlW6MEPxVpKdSh6qNMCqm
+         zlxjIFiFX3JtXJFz+WhU/6+ZUyhP04E/ResC3s2Usm14xDM7cH9YGYfskrwqkzicbT7c
+         gyaA==
+X-Gm-Message-State: AOAM5333EpM33KvUsEWZ53h7q6yYgk9VxS2xXDRMkJ6sK214uY1y5A9l
+        iTzrQzzd85a+K2xnhvNtJc61e9qhG2lwdA==
+X-Google-Smtp-Source: ABdhPJyEsrxB0txbEUm6UqJKCpoLJBj/DEeFhI7BLALCwtVBrucFzbF8T55c4WgnHJrajqbLR2geyQ==
+X-Received: by 2002:a9d:d10:: with SMTP id 16mr11464306oti.101.1610779312992;
+        Fri, 15 Jan 2021 22:41:52 -0800 (PST)
+Received: from ?IPv6:2607:fb90:e6af:5dea:6680:99ff:fe6f:cb54? ([2607:fb90:e6af:5dea:6680:99ff:fe6f:cb54])
+        by smtp.gmail.com with ESMTPSA id c14sm2337402otp.19.2021.01.15.22.41.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jan 2021 22:41:51 -0800 (PST)
+Subject: Re: Old platforms never die, was Re: Old platforms: bring out your
+ dead
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net>
+ <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <alpine.LNX.2.23.453.2101131035500.6@nippy.intranet>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <897dbd50-ce42-8fdb-8777-fab08185e324@landley.net>
+Date:   Sat, 16 Jan 2021 00:54:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20210115121956.731354372@linuxfoundation.org>
-In-Reply-To: <20210115121956.731354372@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 16 Jan 2021 12:08:14 +0530
-Message-ID: <CA+G9fYtr5wOx1Ov2KFLDNxtJ_YAjB=7mi-XG5Y2KL3kSr4icAA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/28] 4.14.216-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <alpine.LNX.2.23.453.2101131035500.6@nippy.intranet>
+Content-Type: multipart/mixed;
+ boundary="------------14B6DC6FBF1B2EFA5CB0B019"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 at 18:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.216 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 17 Jan 2021 12:19:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.216-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+This is a multi-part message in MIME format.
+--------------14B6DC6FBF1B2EFA5CB0B019
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
+On 1/12/21 6:12 PM, Finn Thain wrote:
+> If you're a museum interested in cultural artifacts from decades past, or 
+> if you're a business doing data recovery, you're going to need to operate 
+> those platforms.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Or if you're camping patent expirations and want to be able to point at prior
+art for new hardware development WITHOUT a legal team big enough to have its own
+office building.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Once removed from mainline Linux, a port becomes basically frozen, and may 
+> not be compatible with future emulators, which are a moving target. I say 
+> that because last year I fixed bugs in Linux/m68k that made it incomatible 
+> with recent QEMU releases (it was only compatible with old QEMU releases).
 
-Summary
-------------------------------------------------------------------------
+Speaking of which, my qemu m68k system has failed to boot ever since commit:
 
-kernel: 4.14.216-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 4cfcf012355fcec6a76068a773208220deebc337
-git describe: v4.14.215-29-g4cfcf012355f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.215-29-g4cfcf012355f
+commit f93bfeb55255bddaa16597e187a99ae6131b964a
+Author: Finn Thain <fthain@telegraphics.com.au>
+Date:   Sun Jun 28 14:23:12 2020 +1000
 
-No regressions (compared to build v4.14.215)
+    macintosh/via-macii: Poll the device most likely to respond
 
-No fixes (compared to build v4.14.215)
+    Poll the most recently polled device by default, rather than the lowest
+    device address that happens to be enabled in autopoll_devs. This improves
+    input latency. Re-use macii_queue_poll() rather than duplicate that logic.
+    This eliminates a static struct and function.
 
-Ran 40410 total tests in the following environments and test suites.
+It hangs in a cpu-eating loop after "random: crng init done". Miniconfig
+attached, the qemu invocation is:
 
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
+qemu-system-m68k -M q800 -nographic -no-reboot -m 256 -kernel vmlinux \
+  -initrd cpio.gz -append "panic=1 HOST=m68k console=ttyS0
 
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* kvm-unit-tests
-* rcutorture
-* fwts
+Rob
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+P.S. This is the toybox "make root" m68k target from
+https://github.com/landley/toybox/blob/master/scripts/mkroot.sh#L171 if that's
+useful to know. It doesn't get to the root filesystem and the build just creates
+that miniconfig and runs it as the comments say...
+
+--------------14B6DC6FBF1B2EFA5CB0B019
+Content-Type: text/plain; charset=UTF-8;
+ name="miniconfig-m68k"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="miniconfig-m68k"
+
+IyBtYWtlIEFSQ0g9bTY4ayBhbGxub2NvbmZpZyBLQ09ORklHX0FMTENPTkZJRz1tNjhrLm1p
+bmljb25mCiMgbWFrZSBBUkNIPW02OGsgLWogJChucHJvYykKIyBib290IHZtbGludXgKCgoj
+IENPTkZJR19FTUJFRERFRCBpcyBub3Qgc2V0CiMgYXJjaGl0ZWN0dXJlIGluZGVwZW5kZW50
+CkNPTkZJR19CSU5GTVRfRUxGPXkKQ09ORklHX0JJTkZNVF9TQ1JJUFQ9eQpDT05GSUdfTk9f
+SFo9eQpDT05GSUdfSElHSF9SRVNfVElNRVJTPXkKQ09ORklHX0JMS19ERVY9eQpDT05GSUdf
+QkxLX0RFVl9JTklUUkQ9eQpDT05GSUdfUkRfR1pJUD15CkNPTkZJR19CTEtfREVWX0xPT1A9
+eQpDT05GSUdfRVhUNF9GUz15CkNPTkZJR19FWFQ0X1VTRV9GT1JfRVhUMj15CkNPTkZJR19W
+RkFUX0ZTPXkKQ09ORklHX0ZBVF9ERUZBVUxUX1VURjg9eQpDT05GSUdfTUlTQ19GSUxFU1lT
+VEVNUz15CkNPTkZJR19TUVVBU0hGUz15CkNPTkZJR19TUVVBU0hGU19YQVRUUj15CkNPTkZJ
+R19TUVVBU0hGU19aTElCPXkKQ09ORklHX0RFVlRNUEZTPXkKQ09ORklHX0RFVlRNUEZTX01P
+VU5UPXkKQ09ORklHX1RNUEZTPXkKQ09ORklHX1RNUEZTX1BPU0lYX0FDTD15CkNPTkZJR19O
+RVQ9eQpDT05GSUdfUEFDS0VUPXkKQ09ORklHX1VOSVg9eQpDT05GSUdfSU5FVD15CkNPTkZJ
+R19JUFY2PXkKQ09ORklHX05FVERFVklDRVM9eQpDT05GSUdfTkVUX0NPUkU9eQpDT05GSUdf
+TkVUQ09OU09MRT15CkNPTkZJR19FVEhFUk5FVD15CkNPTkZJR19DT01QQVRfMzJCSVRfVElN
+RT15CkNPTkZJR19FQVJMWV9QUklOVEs9eQpDT05GSUdfSUtDT05GSUc9eQpDT05GSUdfSUtD
+T05GSUdfUFJPQz15CgojIGFyY2hpdGVjdHVyZSBzcGVjaWZpYwpDT05GSUdfTU1VPXkKQ09O
+RklHX002ODA0MD15CkNPTkZJR19NNjhLRlBVX0VNVT15CkNPTkZJR19NQUM9eQpDT05GSUdf
+U0NTSV9NQUNfRVNQPXkKQ09ORklHX01BQ0lOVE9TSF9EUklWRVJTPXkKQ09ORklHX0FEQj15
+CkNPTkZJR19BREJfTUFDSUk9eQpDT05GSUdfTkVUX0NPUkU9eQpDT05GSUdfTUFDU09OSUM9
+eQpDT05GSUdfU0VSSUFMX1BNQUNaSUxPRz15CkNPTkZJR19TRVJJQUxfUE1BQ1pJTE9HX1RU
+WVM9eQpDT05GSUdfU0VSSUFMX1BNQUNaSUxPR19DT05TT0xFPXkKCgo=
+--------------14B6DC6FBF1B2EFA5CB0B019--
