@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94870301D2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC148301D3D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbhAXPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:25:33 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:58073 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726333AbhAXPZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:25:28 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 704C25C009B;
-        Sun, 24 Jan 2021 10:24:23 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 24 Jan 2021 10:24:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=xMMEtd5uO4eABDjtC8AtZRx24Z
-        O7m/3uoHD163uV0DI=; b=Mze9xgXHBtF3RZKTQVI0JrOtv1+hMHfwcPw+bDeXqz
-        l68HMA6na5bpIPKCmtyYTh9YTqQR1rbTlVQ9uGTSCsTuMAApdVJynzE+NyDcNNs1
-        U45j3CPGaw5jaNBAVHDsdUNQMD/v8t6/XjOL4vpqUke6um4L2yoD4Tdu0I+WdU+o
-        8YUIAWt6SQCGdrf9jD7l10l3msXgBuAe+CvS5OKPj+AdV6eqdMfLTymfoedDKghw
-        oRvZqvWp97z91O+XMFzPCsO0zyg8V1Qhp5s1f4lwMZ1MawqCudU9wx1Sfpx6oYpJ
-        6dMbSnjTpHw+EWi/d0RNFWE4SCTi7gYzUXCNzAHTQiEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xMMEtd5uO4eABDjtC
-        8AtZRx24ZO7m/3uoHD163uV0DI=; b=Gosv6Uu0s9jFXNxnVU+zuQkP7w+NLYc/t
-        zD6JvC2XpCdhbqXQPSMdHN0VDQ5Qo/yUrRYC9nHXkFSwA7KlwE3Kvg7TP4+DeD97
-        VruKMKECqijGHgI12+62kdCbU2P2UA/2AczXyXOdPxuxsoEKiuZHiIhuWRBLrS96
-        9VjZpAhKsgC60/qN4J1yhN/16uBxGa1iVyBolHEeXzEOLqNxQzaU5YUTB3gozsEb
-        a7wR6yK9zq37QYOngcZWGgsvPuhFbbzUskubcofpYiX+X9Cd3QNt/P8hQeR4UydT
-        PKuWtS2j4vffCKo+vskls9jIX8DPj/zJquXT/fQ2Jm/KT7agMtgIQ==
-X-ME-Sender: <xms:JpENYLrzrNPv-lBaE5iOHCeVSt2Hlt2urWn1mK9TVNjbozI4ppcYBg>
-    <xme:JpENYFr-CseeeU48y-ucw6SiNcLtkueI5Uao-WGLVoYzveR2oQNXsTQ-6grRutCZ9
-    IXUczxPfqwCtXlWXw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddugdejjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
-    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
-    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
-    rhhg
-X-ME-Proxy: <xmx:JpENYIOAix7yScdVlhlgJeLO386Z6zR1aVAhGQlwKFSmvx0qgYLnnQ>
-    <xmx:JpENYO7Vgq5Z1I1SEjuvRkvgl4ILtTTU4vl04oslySj2Cpypj3i1qg>
-    <xmx:JpENYK6ulLHtowc-EkbgINecqewPJ5gfZNSRUYz6a33fTfQY8uKAMA>
-    <xmx:J5ENYKGjmUqMX2H65sAnt2NnQgOYSQHouFgPGsuOI_fLQf4K-aJPAA>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8F3C624005E;
-        Sun, 24 Jan 2021 10:24:22 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Sebastian Reichel <sre@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] power: supply: axp20x_usb_power: Init work before enabling IRQs
-Date:   Sun, 24 Jan 2021 09:24:21 -0600
-Message-Id: <20210124152421.39693-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726495AbhAXPeq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 Jan 2021 10:34:46 -0500
+Received: from wnbcorp.com ([175.126.38.143]:54269 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726510AbhAXPej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:34:39 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GDqfQ8012369;
+        Sat, 16 Jan 2021 22:54:29 +0900
+Message-Id: <202101161354.10GDqfQ8012369@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 14:54:29 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IRQ handler calls mod_delayed_work() on power->vbus_detect. However,
-that work item is not initialized until after the IRQs are enabled. If
-an IRQ is already pending when the driver is probed, the driver calls
-mod_delayed_work() on an uninitialized work item, which causes an oops.
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Fixes: bcfb7ae3f50b ("power: supply: axp20x_usb_power: Only poll while offline")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/power/supply/axp20x_usb_power.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sir/Madam,
 
-diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-index 20817a49110b..02aba3da271a 100644
---- a/drivers/power/supply/axp20x_usb_power.c
-+++ b/drivers/power/supply/axp20x_usb_power.c
-@@ -711,20 +711,21 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
- 			     struct_size(power, irqs, axp_data->num_irq_names),
- 			     GFP_KERNEL);
- 	if (!power)
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(pdev, power);
- 
- 	power->axp20x_id = axp_data->axp20x_id;
- 	power->regmap = axp20x->regmap;
- 	power->num_irqs = axp_data->num_irq_names;
-+	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
- 
- 	if (power->axp20x_id == AXP202_ID) {
- 		/* Enable vbus valid checking */
- 		ret = regmap_update_bits(power->regmap, AXP20X_VBUS_MON,
- 					 AXP20X_VBUS_MON_VBUS_VALID,
- 					 AXP20X_VBUS_MON_VBUS_VALID);
- 		if (ret)
- 			return ret;
- 
- 		if (IS_ENABLED(CONFIG_AXP20X_ADC))
-@@ -763,21 +764,20 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
- 		ret = devm_request_any_context_irq(&pdev->dev, power->irqs[i],
- 						   axp20x_usb_power_irq, 0,
- 						   DRVNAME, power);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "Error requesting %s IRQ: %d\n",
- 				axp_data->irq_names[i], ret);
- 			return ret;
- 		}
- 	}
- 
--	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
- 	if (axp20x_usb_vbus_needs_polling(power))
- 		queue_delayed_work(system_power_efficient_wq, &power->vbus_detect, 0);
- 
- 	return 0;
- }
- 
- static int axp20x_usb_power_remove(struct platform_device *pdev)
- {
- 	struct axp20x_usb_power *power = platform_get_drvdata(pdev);
- 
--- 
-2.26.2
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
