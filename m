@@ -2,231 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C70A2F8A15
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18402F8A13
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbhAPAy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:54:28 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33178 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbhAPAy1 (ORCPT
+        id S1726765AbhAPAx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:53:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbhAPAxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:54:27 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10G0q3Hp126853;
-        Fri, 15 Jan 2021 18:52:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610758323;
-        bh=DzUbwP7nb2tbbYzvsD7uYmHzOGYXMnQzBTsU5fUEmLc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=YiVhyya3xnv9/xRWTbhQF2BFkr+rVWx3I4B12TtoeZ89ACUycTOtwC3fNAGd6iJlP
-         8Sx71tUG82TVFf4ayS9E+0xwfcCHsH3h1IXEQYLwPyRY5Zuf8Ke8nGhp3sQH/VqXfK
-         I4VEMS0RE9ucn5YWhfOuBs7iZ/hXzPj8B3rujoiw=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10G0q3ar055654
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Jan 2021 18:52:03 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
- Jan 2021 18:52:03 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 15 Jan 2021 18:52:03 -0600
-Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10G0q2ib113879;
-        Fri, 15 Jan 2021 18:52:02 -0600
-Subject: Re: [PATCH 2/2] soc: ti: pruss: add support for AM18XX/OMAP-L138
- PRUSS
-To:     David Lechner <david@lechnology.com>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210104183021.330112-1-david@lechnology.com>
- <20210104183021.330112-3-david@lechnology.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <4b60b60b-7e59-28fb-dc3a-f3f097e4cc8a@ti.com>
-Date:   Fri, 15 Jan 2021 18:52:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 15 Jan 2021 19:53:55 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04CCC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:53:15 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id r9so7392278qtp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:53:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yyi8IWdFsxg6H1AnQ+ng6K1xkf6+CLJWG5374hc1nyQ=;
+        b=U3RXaFtM2o4boR1xgF5nlryYCFTrSV6xwF9d5qlIXf550eYPVXjZ7PXyzZdbRhsltJ
+         58kReuNxDNqeOMquMY1yqFoCtq1C6LjeDDbOQIrnIzYQriine2it/N/f998N8pHv4r5r
+         KOdlTzJG46qAbnuoPtXOKsvFzEupoyJdfIdb+xFlu01hxOK4GuP+N1EZy/y66xiywQaS
+         oojFK8i/9eIh/0QuLDdgf+DenclV/ktV6fVyU4KklfkkRbYYGtnN+bT/72t1JWG2LbGW
+         oRUCoFAHTOgu8p5B0YR2HhvUH52MOfRVcf/uc6zEvfzlP6dZSp5rXAMEYCdeBgsDrucD
+         khwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yyi8IWdFsxg6H1AnQ+ng6K1xkf6+CLJWG5374hc1nyQ=;
+        b=W81TXszY30LlQZPclkWL9dtEGo5nTKaSZjbWeW3KvAZ5qKoaC1AjJ342qBwOcHTuys
+         qJt68m/YSmpN31S7dWQxKHsezrcXLXDhd3kjXMzlbvA7JIPftGaJeBdi5wkXKPYzgkdf
+         +GJ3EVbxaAErbLtJWkyJ9myTXDZC3d+OQpskKPZ7MLPiLV5g/IesrtCWF/GOpCdZq11b
+         Um2H1d2CK9Nv1wpqDVSnYb7TJ16qgTq4VZX0VG5QprJedWoFfJ5HStN0J1L8BDSEeRqH
+         p2s04dG1C28PZFVpKZA5rABdDQdwNTlESxyvqy6A+HnQawToesckxRVoFSWlYapkMTzt
+         663A==
+X-Gm-Message-State: AOAM532aONat18hhydHIrsLbsA7+s9UOOhjLwiY4I3oEbxIB8jszmuUt
+        JOKfVjbB4WBbMSX7jAyvP5e0I5dE45yPpyf6bAU=
+X-Google-Smtp-Source: ABdhPJx/yjTJA55C+8tme0DAtD7wVzKj+C5I9vpyVjfPi1q0P1RjcDvg11AQRky39olOdtLW75EgMI+OwM1fNKbx+/0=
+X-Received: by 2002:ac8:4c99:: with SMTP id j25mr14526264qtv.390.1610758394934;
+ Fri, 15 Jan 2021 16:53:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210104183021.330112-3-david@lechnology.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1610675453-14603-1-git-send-email-yejune.deng@gmail.com>
+ <202101151210.n0rr01he-lkp@intel.com> <CABWKuGV_Ep99iGwMe3P66yNUaHHTR6q_cr7yr=VHfz=dgJDFbA@mail.gmail.com>
+In-Reply-To: <CABWKuGV_Ep99iGwMe3P66yNUaHHTR6q_cr7yr=VHfz=dgJDFbA@mail.gmail.com>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Sat, 16 Jan 2021 08:53:03 +0800
+Message-ID: <CABWKuGVG8tnvvmWSOgzg2XBTxwuTz2X45CJKxN6H7jLE+cf0ew@mail.gmail.com>
+Subject: Re: [PATCH] lib: dynamic_queue_limits: use memset and offsetof init
+To:     kernel test robot <lkp@intel.com>
+Cc:     rdunlap@infradead.org, akpm@linux-foundation.org,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Sorry.It failed in ARCH nds32,I will fix it in the next submit.
 
-On 1/4/21 12:30 PM, David Lechner wrote:
-> This adds support for the PRUSS found in AM18XX/OMAP-L138. This PRUSS
-> doesn't have a CFG register, so that is made optional as selected by
-> the device tree compatible string.
-> 
-> ARCH_DAVINCI is added in the Kconfig so that the driver can be selected
-> on that platform.
-> 
-> Signed-off-by: David Lechner <david@lechnology.com>
-> ---
->  drivers/soc/ti/Kconfig |  2 +-
->  drivers/soc/ti/pruss.c | 76 ++++++++++++++++++++++++------------------
->  2 files changed, 45 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/soc/ti/Kconfig b/drivers/soc/ti/Kconfig
-> index 7e2fb1c16af1..7a692a21480a 100644
-> --- a/drivers/soc/ti/Kconfig
-> +++ b/drivers/soc/ti/Kconfig
-> @@ -85,7 +85,7 @@ config TI_K3_SOCINFO
->  
->  config TI_PRUSS
->  	tristate "TI PRU-ICSS Subsystem Platform drivers"
-> -	depends on SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
-> +	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
->  	select MFD_SYSCON
->  	help
->  	  TI PRU-ICSS Subsystem platform specific support.
-> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
-> index 5d6e7132a5c4..bfaf3ff74b01 100644
-> --- a/drivers/soc/ti/pruss.c
-> +++ b/drivers/soc/ti/pruss.c
-> @@ -24,10 +24,12 @@
->   * struct pruss_private_data - PRUSS driver private data
->   * @has_no_sharedram: flag to indicate the absence of PRUSS Shared Data RAM
->   * @has_core_mux_clock: flag to indicate the presence of PRUSS core clock
-> + * @has_cfg: flag to indicate the presence of PRUSS CFG registers
 
-I recommend to change this to a negative flag as the Davinci platforms are the
-only ones that don't have CFG (being the very first SoCs with a PRUSS IP)
-sub-module.
-
->   */
->  struct pruss_private_data {
->  	bool has_no_sharedram;
->  	bool has_core_mux_clock;
-> +	bool has_cfg;
->  };
->  
->  static void pruss_of_free_clk_provider(void *data)
-> @@ -239,42 +241,44 @@ static int pruss_probe(struct platform_device *pdev)
->  		goto rpm_disable;
->  	}
->  
-
-And use it here to skip all the cfg code parsing. All the below delta is just
-for the additional indentation for the flag. If you don't like goto's in
-non-error paths, then we can refactor the CFG parse code into a separate function.
-
-regards
-Suman
-
-> -	child = of_get_child_by_name(np, "cfg");
-> -	if (!child) {
-> -		dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
-> -		ret = -ENODEV;
-> -		goto rpm_put;
-> -	}
-> +	if (data->has_cfg) {
-> +		child = of_get_child_by_name(np, "cfg");
-> +		if (!child) {
-> +			dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
-> +			ret = -ENODEV;
-> +			goto rpm_put;
-> +		}
->  
-> -	if (of_address_to_resource(child, 0, &res)) {
-> -		ret = -ENOMEM;
-> -		goto node_put;
-> -	}
-> +		if (of_address_to_resource(child, 0, &res)) {
-> +			ret = -ENOMEM;
-> +			goto node_put;
-> +		}
->  
-> -	pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
-> -	if (!pruss->cfg_base) {
-> -		ret = -ENOMEM;
-> -		goto node_put;
-> -	}
-> +		pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
-> +		if (!pruss->cfg_base) {
-> +			ret = -ENOMEM;
-> +			goto node_put;
-> +		}
->  
-> -	regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
-> -				     (u64)res.start);
-> -	regmap_conf.max_register = resource_size(&res) - 4;
-> -
-> -	pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
-> -						  &regmap_conf);
-> -	kfree(regmap_conf.name);
-> -	if (IS_ERR(pruss->cfg_regmap)) {
-> -		dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
-> -			PTR_ERR(pruss->cfg_regmap));
-> -		ret = PTR_ERR(pruss->cfg_regmap);
-> -		goto node_put;
-> -	}
-> +		regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
-> +					     (u64)res.start);
-> +		regmap_conf.max_register = resource_size(&res) - 4;
-> +
-> +		pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
-> +							  &regmap_conf);
-> +		kfree(regmap_conf.name);
-> +		if (IS_ERR(pruss->cfg_regmap)) {
-> +			dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
-> +				PTR_ERR(pruss->cfg_regmap));
-> +			ret = PTR_ERR(pruss->cfg_regmap);
-> +			goto node_put;
-> +		}
->  
-> -	ret = pruss_clk_init(pruss, child);
-> -	if (ret) {
-> -		dev_err(dev, "failed to setup coreclk-mux\n");
-> -		goto node_put;
-> +		ret = pruss_clk_init(pruss, child);
-> +		if (ret) {
-> +			dev_err(dev, "failed to setup coreclk-mux\n");
-> +			goto node_put;
-> +		}
->  	}
->  
->  	ret = devm_of_platform_populate(dev);
-> @@ -309,19 +313,27 @@ static int pruss_remove(struct platform_device *pdev)
->  }
->  
->  /* instance-specific driver private data */
-> +static const struct pruss_private_data am18xx_pruss_data = {
-> +	.has_no_sharedram = true,
-> +};
-> +
->  static const struct pruss_private_data am437x_pruss1_data = {
->  	.has_no_sharedram = false,
-> +	.has_cfg = true,
->  };
->  
->  static const struct pruss_private_data am437x_pruss0_data = {
->  	.has_no_sharedram = true,
-> +	.has_cfg = true,
->  };
->  
->  static const struct pruss_private_data am65x_j721e_pruss_data = {
->  	.has_core_mux_clock = true,
-> +	.has_cfg = true,
->  };
->  
->  static const struct of_device_id pruss_of_match[] = {
-> +	{ .compatible = "ti,am1806-pruss", .data = &am18xx_pruss_data, },
->  	{ .compatible = "ti,am3356-pruss" },
->  	{ .compatible = "ti,am4376-pruss0", .data = &am437x_pruss0_data, },
->  	{ .compatible = "ti,am4376-pruss1", .data = &am437x_pruss1_data, },
-> 
-
+On Fri, Jan 15, 2021 at 2:33 PM Yejune Deng <yejune.deng@gmail.com> wrote:
+>
+> My patch is applied to linux-next/master tree.I also built in arch
+> arm64 and x86_64,is OK.Is something wrong with that?
+>
+> On Fri, Jan 15, 2021 at 12:45 PM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Yejune,
+> >
+> > Thank you for the patch! Yet something to improve:
+> >
+> > [auto build test ERROR on linus/master]
+> > [also build test ERROR on v5.11-rc3 next-20210114]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Yejune-Deng/lib-dynamic_queue_limits-use-memset-and-offsetof-init/20210115-112707
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 146620506274bd24d52fb1c589110a30eed8240b
+> > config: nds32-randconfig-m031-20210115 (attached as .config)
+> > compiler: nds32le-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/9be25b076f67d15d29016cb613b95d2ae190a9b4
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Yejune-Deng/lib-dynamic_queue_limits-use-memset-and-offsetof-init/20210115-112707
+> >         git checkout 9be25b076f67d15d29016cb613b95d2ae190a9b4
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=nds32
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All error/warnings (new ones prefixed by >>):
+> >
+> >    lib/dynamic_queue_limits.c: In function 'dql_reset':
+> > >> lib/dynamic_queue_limits.c:119:2: error: implicit declaration of function 'memset' [-Werror=implicit-function-declaration]
+> >      119 |  memset(dql, 0, offsetof(struct dql, lowest_slack));
+> >          |  ^~~~~~
+> > >> lib/dynamic_queue_limits.c:119:2: warning: incompatible implicit declaration of built-in function 'memset'
+> >    lib/dynamic_queue_limits.c:11:1: note: include '<string.h>' or provide a declaration of 'memset'
+> >       10 | #include <linux/dynamic_queue_limits.h>
+> >      +++ |+#include <string.h>
+> >       11 | #include <linux/compiler.h>
+> >    cc1: some warnings being treated as errors
+> >
+> >
+> > vim +/memset +119 lib/dynamic_queue_limits.c
+> >
+> >    115
+> >    116  void dql_reset(struct dql *dql)
+> >    117  {
+> >    118          /* Reset all dynamic values */
+> >  > 119          memset(dql, 0, offsetof(struct dql, lowest_slack));
+> >    120          dql->lowest_slack = UINT_MAX;
+> >    121          dql->slack_start_time = jiffies;
+> >    122  }
+> >    123  EXPORT_SYMBOL(dql_reset);
+> >    124
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
