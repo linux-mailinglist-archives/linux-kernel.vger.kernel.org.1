@@ -2,198 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BB32F8DCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713822F8E23
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbhAPRJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:09:54 -0500
-Received: from mail-bn8nam11on2082.outbound.protection.outlook.com ([40.107.236.82]:25952
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727944AbhAPRJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:09:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=INDcyaMDbHUhLzP+JpyPBte99weOn+8D0LGGt20TTJmMhwV716kyQgL8syqyckyJOhXklAsU2kZg5t86tt80E5asN+ganMJE3il8eF/ZVB4lmefz3e/876EsyycRLEv2VzmvKKvGdhcn2RQvNHv1z7NlqwrQyrk+SeWQfo4F+eAbFT5PwKo48YgXn0sG1MNNbtcNz23lyLUC7iKOo/4b4VNDg8HnJAIZ5zFeMaFkiMeu38aeUHWwnD67SmmPJuDDjGTtOZb4IWONEQ31fxb+ItQByxGHoPwlvVG6u95PF5bH8OPSRDFvKC9AdZfUJDRXhqwmVUR/I/7stdezAT7FZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBHVnx4hROj2KGKmdV9T9ZifZ3Mv+wbskQQcetX5r+Y=;
- b=clOVEEqSH/d1z2aZQDPCKGK8dIl6TonYq29pj6+RD6KvTkzPX63Gbnl7NoXVqMpJ/rX65ch6XIKVz0t80bmQ8UW3BL6V3FhVXNegSX0HWx34ZhRmJr0UkQojeQ3FO0B9awYQqSJJhcocUDPdC4wDAW5R+zAY8ogDedGi0k01AEUn3AUbYT77mLF0aJ0ol9AWxMdmoDJZfr/2iNukmdSjmkoLfalTM4ygUsCjEYobURTbiAaVWvpIIl9l+l2kaTJp+rPxN3PuLUoOVR1l5RGGM7SHman84BUA41Ot/JqE5lLfbDYBo8HnRFHeCsD/vIRaaPUX7ua7Tm2ZgcADw7BVWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBHVnx4hROj2KGKmdV9T9ZifZ3Mv+wbskQQcetX5r+Y=;
- b=vp6MUprEySR2xo3gO1HC0w+qsEh4675RE1TDQdKS8Lr+uvVeg/bDeyxOLWTHyCgpeQxp7jQO7f0fNLx4HsGVQ2tigSXhDpPSfkRIzSBb9Lmvf9XJSkFGCzS5HW6tyS8usD2wLvR2ECbEfGialyahrY1ot77H4qV4ffBF8WRnXGc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1458.namprd12.prod.outlook.com (2603:10b6:405:d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Sat, 16 Jan
- 2021 14:34:05 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::9df4:880c:f3f2:679d]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::9df4:880c:f3f2:679d%5]) with mapi id 15.20.3742.012; Sat, 16 Jan 2021
- 14:34:05 +0000
-From:   Yazen Ghannam <Yazen.Ghannam@amd.com>
-To:     linux-edac@vger.kernel.org
-Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        linux-kernel@vger.kernel.org, bp@alien8.de,
-        Smita.KoralahalliChannabasappa@amd.com, wgh@torlan.ru
-Subject: [PATCH] EDAC/AMD64: Update scrub register addresses for newer models
-Date:   Sat, 16 Jan 2021 14:33:53 +0000
-Message-Id: <20210116143353.7576-1-Yazen.Ghannam@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SN4PR0401CA0023.namprd04.prod.outlook.com
- (2603:10b6:803:21::33) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-ethanolx.amd.com (165.204.78.2) by SN4PR0401CA0023.namprd04.prod.outlook.com (2603:10b6:803:21::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11 via Frontend Transport; Sat, 16 Jan 2021 14:34:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d4e58f30-2312-47f5-4701-08d8ba2bc653
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1458:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB145828003F21EE707115107FF8A60@BN6PR12MB1458.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nzGmmJ1MfWDj5Bx0luzl3uZvdDAQIayEiGsO5By96zT32IG0hV3MFtQs2WJ3bYPl8v9jeZn1+dLHUP3MDqtRMK6oPq+9l8rR6oDLnyOQQQqvcp3F3B6vd4w2eu43nKZklZuPJvJTiTu9PcseJEJpi2F7yGuhsiALAkF1bGRPW7VCNcFaXK0jp2N+95cHXZWs86o273yBWpPlisadKLe/nr6TyTcnlxr0sgRWQk0kntxB/aSuprC2DCNlpgjmfqEEjR9+v7MA0/WqiUx6N8fvVUbisBuMWsGtFg5HRTo45C99xi8d67/0lw+dpkNbhV5Kq7T6z5FmgqAXcHrrjZCCJwWLRSjmXrjIAdJ1TpC1ET1VZG3tK2JKSw0Usato3VdK2OqkBUxmlSuUh9NCy5pi2rkeF6bB7lk6LUzrnZcMRX66GGMcm4F70nh0WSDDFhzgVb6BWVSGWJONmpDwXUfRK/lMGisBwkCNDccrjj8GpgdYaJQRp5IZbOWfC6jplUj3zdZO7JBacMSJDWdlki0OikM9dfEvYZZGPR2ECls0J+A5JXyRHtuBvC5U1ZrUUo9H0Fsht/6R1J0dQe+qFPEmhQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(52116002)(83380400001)(6916009)(66476007)(36756003)(8676002)(66556008)(26005)(8936002)(4326008)(66946007)(2906002)(186003)(86362001)(5660300002)(956004)(6666004)(7696005)(1076003)(6486002)(478600001)(2616005)(316002)(16526019)(170073001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?KqkztuGeABa4eBxlqAyKLZPlTsjHS8ZpUntdfGbOkHc5VcNMMDB1soF7+0Gh?=
- =?us-ascii?Q?SuBYgMIW/BH8vMukZWD+J7E/boJGgZoxH0WxbPGi5zn12/wZlC3IZwUgVYqa?=
- =?us-ascii?Q?4sMDRboe1GAhjp3GzakukmPoo16RQV87PIQeYN8hVqQTxhZMp4HH2dw0rqpq?=
- =?us-ascii?Q?mxAkSAFeKBQVp4HwxPCjAd2RJZUX7Huk3eH54QqqMQcWCOjb+Ajfci0zs7Jb?=
- =?us-ascii?Q?HwTqS16G2/0wICLsKe790IuR+qpwGZBVcDZlSPCjdqG7V5l5k+CgKyYyofiL?=
- =?us-ascii?Q?ANxfdZjdhHPs2x30P170x+6xsNCUbjYONmgWXTytr2XXwgEXxxv+dWX0Xkty?=
- =?us-ascii?Q?shTMiAgUOvjni9T+SwaIqxVh+GbuvQP/01kCEX4atvzETvTtK29tJ87HM1Ox?=
- =?us-ascii?Q?nSlAlgufvCHKVp63BJRRK4ovwt8ilV0A7BmCyNZJRHEfscHsaYSfRUx3T5c6?=
- =?us-ascii?Q?w9D+LvtB9LwYYs2+Kf6F1TlqMysSblUm33ntmuxDxy70iJxbAVSGS8eFnz1f?=
- =?us-ascii?Q?B0P60GvSQ+dR7XHO/kZbk9qFf4cBjG0BPx2MIrbtXc6otS7sGP8J6u2D/0pF?=
- =?us-ascii?Q?ucPRUfZEall+laVvF3a0lHBjrLiNvA/3kF2DL/9ZYJF20Wchp8v+x3PpFOnE?=
- =?us-ascii?Q?2rc5zojchtyNIMoRznN3+cO7BcOFKxTd+R0UwU9Y3x7hXP9hvIh8Fc5sM5M5?=
- =?us-ascii?Q?F4m7aByJJqWIp5R/pL2I7SCCf5pA02uNRPoZL8UWZx1fv+KFhr/z7b8D53Zp?=
- =?us-ascii?Q?aGjt1CYk1ce8qGiJgew3o1Seahfjy3ZbcIOZYlqdhJ10xKHvxG3ht/Fm/j0b?=
- =?us-ascii?Q?g4lxsHWkK7ogzB1QsxVRuxLblPAZoxjhACVbxBYNFlGf+QexAKS4Hz5VVSSO?=
- =?us-ascii?Q?2S4xB59ir3+qN8b859vsLdHODQpI2nRG89iJzFrDW+fbIeXqVDCSYbUxmU0O?=
- =?us-ascii?Q?uV/Xe6oqi7kCSMQ+mu5zL0rT6sgjL+WQ6XryBz7lECelxvA7wJqdoUUSWpeL?=
- =?us-ascii?Q?XIlQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4e58f30-2312-47f5-4701-08d8ba2bc653
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2021 14:34:04.9989
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nQgIjn+zvKInssuuK5O0wOUZSFsZCXaHvV6bs1wdVIpgjaDxT4LMVIzJRpS8xRMUKEVUagVWsouq3o8k+AlTNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1458
+        id S1727318AbhAPRFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 12:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbhAPQaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 11:30:09 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C665AC0617B9
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:35:47 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id m6so7381061pfm.6
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 06:35:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MIQtIapRIp0F6KGA4i11eksKxFabN3a9TcdiJADnn40=;
+        b=VlHkNU4y3eUV6kU1oNjtkuLD26lqPq/suzFXoj/Gbi+N8/CnB8hTzA02EcnCh+DkZX
+         rcS5zsShPzNhftyks7DhDfLjw5rgs31C/sKQTaW+MpTyoVz5ELq7h5/LhBxufFymj1Hz
+         qnQ+/OX+93OokqH2oU3EdpfHxCa4O8d3mES9fBDCXoc9fBzIKxUxIZiu2c7+4uLWyWGu
+         it0LTqThkpNT03jtA0Fa6TedswWrtc6JEmI2jQp9XgIUMZ2JoFixd8vz7BYWOwvAUNup
+         aiTzfhpnwz03RekAm2pkIUZuW57Uqdf7TVzTgfXB//Yr9TBe2sK48QPzP7cRMv3HzrJz
+         pipw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MIQtIapRIp0F6KGA4i11eksKxFabN3a9TcdiJADnn40=;
+        b=OBeSu4hgR7xIRWnc/7suTtXU+l9FNz7PIfnb1ypMcCeWm5Bie5mjoGw2TGU+50WXPi
+         NAksAZ9yk/E3e3oqNRl/Eu2jcN/1EkK0tokgs62390FxTy3MJzAmjp6G6YjpLieIcX9k
+         6xxekAp8wTPg0am1lSIVIna7xFYuTE/gv8qMey9rgLrjgU4ar0/WERr1HIuNNEhmv5g7
+         lwJmP31MHMfJmh9zRa0l603Af5y5X4BcSwNDuAAaWWSwTZrGMhY/Rk1PS9duwEaj9OBa
+         289rf7XIYyT3AWf9Kw5yxJEUaNe2X+p/OLui6e8w2cuPGS/UUyF8GupjwH6FR4w1lMGg
+         8dzw==
+X-Gm-Message-State: AOAM532IER/tCD0P733pl2cS0DcUJRshLof7dWi2g/melCsDCOLw0hQw
+        OcrY+os0D/zeUZU+q0rDbh4=
+X-Google-Smtp-Source: ABdhPJxB6a7Rn9R97oYiKtDHrYVhFZ2IBNT1naurUUJvawlPxpG4xG/xgCT33woZ69Ra/6ds/vpJRQ==
+X-Received: by 2002:a63:6305:: with SMTP id x5mr17384061pgb.216.1610807747158;
+        Sat, 16 Jan 2021 06:35:47 -0800 (PST)
+Received: from localhost.localdomain ([122.172.57.223])
+        by smtp.gmail.com with ESMTPSA id v2sm10942072pgs.50.2021.01.16.06.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Jan 2021 06:35:46 -0800 (PST)
+From:   Vinay Simha BN <simhavcs@gmail.com>
+Cc:     Vinay Simha BN <simhavcs@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] drm/bridge/tc358775: Fixes bus formats read
+Date:   Sat, 16 Jan 2021 20:05:34 +0530
+Message-Id: <20210116143534.21863-1-simhavcs@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yazen Ghannam <yazen.ghannam@amd.com>
+- state->output_bus_cfg.format, memcpy and
+  unsigned int used
+- atomic_check removed
+- video data input and output formats added
+- bus formats read from drm_bridge_state.output_bus_cfg.format
+  and .atomic_get_input_bus_fmts() instead of connector
 
-The Family 17h scrubber registers moved to different offset starting
-with Model 30h. The new register offsets are used for all currently
-available models since then.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
 
-Use the new register addresses as the defaults.
-
-Set the proper scrub register addresses during module init for older
-models.
-
-Reported-by: WGH <wgh@torlan.ru>
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
 ---
- drivers/edac/amd64_edac.c | 23 ++++++++++++++++++-----
- drivers/edac/amd64_edac.h |  2 ++
- 2 files changed, 20 insertions(+), 5 deletions(-)
+v1:
+ * Laurent Pinchart review comments incorporated
+   drm_bridge_state.output_bus_cfg.format
+   instead of connector
+v2:
+ * Laurent Pinchart review comments incorporated
+   atomic_check removed
+   ivideo data input and output formats added
 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index 9868f95a5622..b324b1589e5a 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -167,6 +167,10 @@ static inline int amd64_read_dct_pci_cfg(struct amd64_pvt *pvt, u8 dct,
-  * other archs, we might not have access to the caches directly.
-  */
+v3:
+ * Laurent Pinchart review comments incorporated
+   output_bus_fmt removed and using state->output_bus_cfg.format
+   unsigned int i used
+   memcpy used for input_fmts
+---
+ drivers/gpu/drm/bridge/tc358775.c | 71 +++++++++++++++++++++++--------
+ 1 file changed, 54 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
+index 2272adcc5b4a..a8998dd447ae 100644
+--- a/drivers/gpu/drm/bridge/tc358775.c
++++ b/drivers/gpu/drm/bridge/tc358775.c
+@@ -273,6 +273,19 @@ struct tc_data {
+ 	u8			bpc;
+ };
  
-+static struct {
-+	u32 base, limit;
-+} f17h_scrub_regs = {F17H_M30H_SCR_BASE_ADDR, F17H_M30H_SCR_LIMIT_ADDR};
++static const u32 tc_lvds_in_bus_fmts[] = {
++	MEDIA_BUS_FMT_RGB565_1X16,
++	MEDIA_BUS_FMT_RGB666_1X18,
++	MEDIA_BUS_FMT_RGB666_1X24_CPADHI,
++	MEDIA_BUS_FMT_RBG888_1X24,
++};
 +
- static inline void __f17h_set_scrubval(struct amd64_pvt *pvt, u32 scrubval)
++static const u32 tc_lvds_out_bus_fmts[] = {
++	MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
++	MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
++	MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
++};
++
+ static inline struct tc_data *bridge_to_tc(struct drm_bridge *b)
  {
+ 	return container_of(b, struct tc_data, bridge);
+@@ -359,19 +372,6 @@ static void d2l_write(struct i2c_client *i2c, u16 addr, u32 val)
+ 			ret, addr);
+ }
+ 
+-/* helper function to access bus_formats */
+-static struct drm_connector *get_connector(struct drm_encoder *encoder)
+-{
+-	struct drm_device *dev = encoder->dev;
+-	struct drm_connector *connector;
+-
+-	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
+-		if (connector->encoder == encoder)
+-			return connector;
+-
+-	return NULL;
+-}
+-
+ static void tc_bridge_enable(struct drm_bridge *bridge)
+ {
+ 	struct tc_data *tc = bridge_to_tc(bridge);
+@@ -380,7 +380,8 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
+ 	u32 val = 0;
+ 	u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
+ 	struct drm_display_mode *mode;
+-	struct drm_connector *connector = get_connector(bridge->encoder);
++	struct drm_bridge_state *state =
++			drm_priv_to_bridge_state(bridge->base.state);
+ 
+ 	mode = &bridge->encoder->crtc->state->adjusted_mode;
+ 
+@@ -451,14 +452,13 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
+ 	d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
+ 
+ 	dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
+-		connector->display_info.bus_formats[0],
++		state->output_bus_cfg.format,
+ 		tc->bpc);
  	/*
-@@ -176,10 +180,10 @@ static inline void __f17h_set_scrubval(struct amd64_pvt *pvt, u32 scrubval)
+ 	 * Default hardware register settings of tc358775 configured
+ 	 * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
  	 */
- 	if (scrubval >= 0x5 && scrubval <= 0x14) {
- 		scrubval -= 0x5;
--		pci_write_bits32(pvt->F6, F17H_SCR_LIMIT_ADDR, scrubval, 0xF);
--		pci_write_bits32(pvt->F6, F17H_SCR_BASE_ADDR, 1, 0x1);
-+		pci_write_bits32(pvt->F6, f17h_scrub_regs.limit, scrubval, 0xF);
-+		pci_write_bits32(pvt->F6, f17h_scrub_regs.base, 1, 0x1);
- 	} else {
--		pci_write_bits32(pvt->F6, F17H_SCR_BASE_ADDR, 0, 0x1);
-+		pci_write_bits32(pvt->F6, f17h_scrub_regs.base, 0, 0x1);
- 	}
- }
- /*
-@@ -257,9 +261,9 @@ static int get_scrub_rate(struct mem_ctl_info *mci)
- 	u32 scrubval = 0;
- 
- 	if (pvt->umc) {
--		amd64_read_pci_cfg(pvt->F6, F17H_SCR_BASE_ADDR, &scrubval);
-+		amd64_read_pci_cfg(pvt->F6, f17h_scrub_regs.base, &scrubval);
- 		if (scrubval & BIT(0)) {
--			amd64_read_pci_cfg(pvt->F6, F17H_SCR_LIMIT_ADDR, &scrubval);
-+			amd64_read_pci_cfg(pvt->F6, f17h_scrub_regs.limit, &scrubval);
- 			scrubval &= 0xF;
- 			scrubval += 0x5;
- 		} else {
-@@ -3568,6 +3572,14 @@ f17h_determine_edac_ctl_cap(struct mem_ctl_info *mci, struct amd64_pvt *pvt)
- 	}
+-	if (connector->display_info.bus_formats[0] ==
+-		MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
++	if (state->output_bus_cfg.format == MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
+ 		/* VESA-24 */
+ 		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
+ 		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_R7, LVI_R5, LVI_G0));
+@@ -590,6 +590,39 @@ static int tc358775_parse_dt(struct device_node *np, struct tc_data *tc)
+ 	return 0;
  }
  
-+static void f17h_set_scrub_regs(struct amd64_pvt *pvt)
++static u32 *
++tc_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
++			     struct drm_bridge_state *bridge_state,
++			     struct drm_crtc_state *crtc_state,
++			     struct drm_connector_state *conn_state,
++			     u32 output_fmt,
++			     unsigned int *num_input_fmts)
 +{
-+	if ((pvt->fam == 0x17 && pvt->model < 0x30) || pvt->fam == 0x18) {
-+		f17h_scrub_regs.base = F17H_SCR_BASE_ADDR;
-+		f17h_scrub_regs.limit = F17H_SCR_LIMIT_ADDR;
++	u32 *input_fmts = NULL;
++	unsigned int i;
++
++	*num_input_fmts = 0;
++
++	for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ; ++i) {
++		if (output_fmt == tc_lvds_out_bus_fmts[i])
++			break;
 +	}
++
++	if (i == ARRAY_SIZE(tc_lvds_out_bus_fmts))
++		return NULL;
++
++	*num_input_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
++
++	input_fmts = kcalloc(*num_input_fmts, ARRAY_SIZE(tc_lvds_in_bus_fmts),
++			     GFP_KERNEL);
++	if (!input_fmts)
++		return NULL;
++
++	memcpy(input_fmts, tc_lvds_in_bus_fmts, sizeof(*input_fmts));
++
++	return input_fmts;
 +}
 +
- static void setup_mci_misc_attrs(struct mem_ctl_info *mci)
+ static int tc_bridge_attach(struct drm_bridge *bridge,
+ 			    enum drm_bridge_attach_flags flags)
  {
- 	struct amd64_pvt *pvt = mci->pvt_info;
-@@ -3577,6 +3589,7 @@ static void setup_mci_misc_attrs(struct mem_ctl_info *mci)
+@@ -639,6 +672,10 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
+ }
  
- 	if (pvt->umc) {
- 		f17h_determine_edac_ctl_cap(mci, pvt);
-+		f17h_set_scrub_regs(pvt);
- 	} else {
- 		if (pvt->nbcap & NBCAP_SECDED)
- 			mci->edac_ctl_cap |= EDAC_FLAG_SECDED;
-diff --git a/drivers/edac/amd64_edac.h b/drivers/edac/amd64_edac.h
-index 85aa820bc165..4606f72f4258 100644
---- a/drivers/edac/amd64_edac.h
-+++ b/drivers/edac/amd64_edac.h
-@@ -213,6 +213,8 @@
- #define F15H_M60H_SCRCTRL		0x1C8
- #define F17H_SCR_BASE_ADDR		0x48
- #define F17H_SCR_LIMIT_ADDR		0x4C
-+#define F17H_M30H_SCR_BASE_ADDR		0x40
-+#define F17H_M30H_SCR_LIMIT_ADDR	0x44
- 
- /*
-  * Function 3 - Misc Control
+ static const struct drm_bridge_funcs tc_bridge_funcs = {
++	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
++	.atomic_reset = drm_atomic_helper_bridge_reset,
++	.atomic_get_input_bus_fmts = tc_bridge_get_input_bus_fmts,
+ 	.attach = tc_bridge_attach,
+ 	.pre_enable = tc_bridge_pre_enable,
+ 	.enable = tc_bridge_enable,
 -- 
-2.25.1
+2.17.1
 
