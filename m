@@ -2,96 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F43B2F8A84
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5D12F8A88
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 02:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbhAPBgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 20:36:13 -0500
-Received: from mout.gmx.net ([212.227.17.21]:37195 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbhAPBgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 20:36:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610760854;
-        bh=DQQZnUMbUtwZPh7yTU29MprFxwRzkiuslGETPcaqJo8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=cog9hvUmq55W6byV1TS48av1bEZ7PXysxyCGgKApmcCYynqhCO2lQn+h+AiGRA94t
-         OgFJF5T/QNSzaxG0TCp9IELKiKgIHidDZDYj4TI+sSO2r45QpCqrFoVM+uCAX92MlI
-         QQK0T1mGyDe8XSmyupOPDj5Zc6wq9neOT53Ctsk0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.209]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0X8u-1lwyQ61BB6-00wRfe; Sat, 16
- Jan 2021 02:34:14 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     devicetree@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        Shane Chien <shane.chien@mediatek.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: mt8192-mt6359: Fix indentation
-Date:   Sat, 16 Jan 2021 02:34:03 +0100
-Message-Id: <20210116013403.3490518-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
+        id S1727906AbhAPBkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 20:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbhAPBkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 20:40:05 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FD8C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:39:24 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id e22so21801574iom.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 17:39:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e/4EufOTObHXM0rTx80uVaCTX7YuAKaU4BEuP78cHf4=;
+        b=ldBKALM8g+X2GX3CRc8eQLfhqViKHTRNSaK0oEodm8JTqoYuBvb4zPfHQHgEYRvuQH
+         Hyj2MUKK+m7EHYgUCzU2MKbdd0ncYmZNfJO+nehV0UJ1bqCIO7cxlDapK6fSAl8PKtD9
+         w8nw5mNdralJ3tmGtPPAOjPROn+hOxMyn32pI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e/4EufOTObHXM0rTx80uVaCTX7YuAKaU4BEuP78cHf4=;
+        b=lg6XjswKIAes8iRg7PlpjjhGEfzWDblEjsf2DWQsoesL+TOeaT31dLYOByjG78VCA1
+         pmS6d4NkqUjksa1Frfv+DSvt+eZB/DwUMy0+uFi33LpunnLwZKLQaN0kFW7Iu30/mysE
+         Jdg1WMvtHP5SahoVFMDLlwtqN4/UrXZ/F6YGEk7P9fJ6sScy/MR0A3lXCVIaKmPSqmrR
+         ES0xLk5D+fEa+eUjdFe0FXNCSwy+8yw1/leptC1mDvdvdaUQ+SkgN9Nj7OT+jInRfRLq
+         uz/o06aN7+ZpA05SsvPUm1kldfs0C48KqYwI+kUHHY0gcleB1B4x5QrIUDaURGDE6dNG
+         pFpA==
+X-Gm-Message-State: AOAM530akr18UPH2dcKEYVU3Of3cu/K0CFReBCMzdBDVZYT969Vob/5e
+        QJ19NN9SAFTwgDzRL/PWujjUKiWHbLwuooUV5KWB
+X-Google-Smtp-Source: ABdhPJzzdFwrDw9SiK/q+DIAIHxFu0mHFdNfa6wLm50s5Y+UbSLKZpMZVgn8CJyspeUuilAT6NvbUI8+SWjfdICgRNQ=
+X-Received: by 2002:a92:6410:: with SMTP id y16mr13460228ilb.126.1610761164117;
+ Fri, 15 Jan 2021 17:39:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pw6fFpTH4JgulBV4NAW8Xpyamk7kKZTHxe+JZ4cc993vURc1kCj
- 7EySxi7Gz78sAu5+8TKulKiDoT2+ooilj9mV/eUYqsZNVDTaK24TueQik0HEwxhLaiYO4bk
- 6n97hGj7Ss3y2IbPuuhsoi+0Y7OHlbRAyMvn1FGGtfqknwAbxeDQFeYqVdcaCOMfFkAxczn
- RCvSujcPzFrr4RsfqbLEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IPBpfBkRmAk=:zl2DPbIfK5owXrw1MFdPo9
- jw90m3gH6cgXufM313n574GMBIwSMGynz3n+S/ZuZrze3DN9v/dcqv2O14pJ8o3VACuorRSKk
- V9u8sgGEE+cLqabZrDM5mkn73R7Vdh6NyuNfCkglJHBsI92A4gifOTCDmqV1AlsaMm0zn/p2e
- rIC+ddHeq4x73wQxbeEkyvjI0YTb+9ffoJbfKaKxSWcRZNdfOlPD+L4ytL/w7bTJR7KTiQJot
- V4wglot2Gu/IHfIREXDDg4+RgrpmhpAX47LOmpHgBH/avkJeVUp8XKHdyFAGCOZ4Tkk/y0W++
- 0ZOyQgtTQnAY43gkhofYd/Uuuy/xnu7zS7aR/7iP7zUguOifpre9pcAEIvaxG6/fVe01XOd0N
- 6bODbQRUBlkpOv3oRYABJ9DVqxD06cuF49mkEPQFCVyY5nd96mGyZxYfGiu2yRR/jDr7RIQFC
- dB67pKUqHKj9VyNkzefS2hCL0X3lYpECvsu9T5J5o0IM9edWdmW2DJD6uPxsv+rjAO0CEdR4R
- Pp6eOGTrZTQgsPAWjWO1EUZ6kXz7FePk4bObyR3e1qPsE1BjqoaDfmJSqNVXd72njM9HoUZK3
- P0M1DirTom+CxISI0hHxtrSwrZwX2LjV3Mb+9FQQRdh1mgr1xqH3AaQB5pD1zzzIDUjzVuT1W
- cTLIJos3piVPQNdVWUQH6MLx95Mz8rtSkHDejh1QsdoaUX+QHrq3tdzQR3BCPq5ozhZaGBgXf
- /lFubO7bQExU69QcPWDKW0CHjMsRPBTCkYCM3k8mxYE6PEXQSJ1SMPI4dixbQTcyJDVRgnq3S
- sL/xCXPGVgb95m9DOp+jPVwLJkwLVFFJl2U3FRCKRUGzce2snZth40I2UG7vZw/18rat8XlI9
- wzNrHJFgtZIJY4hMc7NQ==
+References: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
+ <mhng-4458ef4d-9443-491e-9118-aec3596058ed@penguin> <CAOnJCUJON3B6ugWDY1=rcDOMS2+m=SVBsiAEnwV=QDL7omnsfA@mail.gmail.com>
+ <CAMuHMdXQr-qNQ2aNVmgQFfs_dJ8=A-xzrhxRf9VUmzFXx+2o_w@mail.gmail.com>
+In-Reply-To: <CAMuHMdXQr-qNQ2aNVmgQFfs_dJ8=A-xzrhxRf9VUmzFXx+2o_w@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Fri, 15 Jan 2021 17:39:13 -0800
+Message-ID: <CAOnJCUJys9gacJ7kgTBit9tq0M51c3jdoGjcGxtMFRgOhU9AwQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The items of the 'maintainers' list are indented with three spaces.
-Use the usual two spaces instead, for consistency and to silence
-yamllint.
+On Thu, Jan 14, 2021 at 11:59 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Atish,
+>
+> On Thu, Jan 14, 2021 at 10:11 PM Atish Patra <atishp@atishpatra.org> wrote:
+> > On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > > On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
+> > > > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > > >>
+> > > >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
+> > > >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> > > >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> > > >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
+> > > >> >
+> > > >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > > >> > ---
+> > > >> >  arch/riscv/include/asm/cache.h | 4 ++++
+> > > >> >  1 file changed, 4 insertions(+)
+> > > >> >
+> > > >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> > > >> > index 9b58b104559e..c9c669ea2fe6 100644
+> > > >> > --- a/arch/riscv/include/asm/cache.h
+> > > >> > +++ b/arch/riscv/include/asm/cache.h
+> > > >> > @@ -7,7 +7,11 @@
+> > > >> >  #ifndef _ASM_RISCV_CACHE_H
+> > > >> >  #define _ASM_RISCV_CACHE_H
+> > > >> >
+> > > >> > +#ifdef CONFIG_64BIT
+> > > >> >  #define L1_CACHE_SHIFT               6
+> > > >> > +#else
+> > > >> > +#define L1_CACHE_SHIFT               5
+> > > >> > +#endif
+> > > >> >
+> > > >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
+> > > >>
+> > > >> Should we not instead just
+> > > >>
+> > > >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
+> > > >>
+> > > >> like a handful of architectures do?
+> > > >>
+> > > >
+> > > > The generic code already defines it that way in include/linux/cache.h
+> > > >
+> > > >> The cache size is sort of fake here, as we don't have any non-coherent
+> > > >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
+> > > >> cache lines in RISC-V implementations as software may assume that for
+> > > >> performance reasons.  Not really a strong reason, but I'd prefer to just make
+> > > >> these match.
+> > > >>
+> > > >
+> > > > If it is documented somewhere in the kernel, we should update that. I
+> > > > think SMP_CACHE_BYTES being 64
+> > > > actually degrades the performance as there will be a fragmented memory
+> > > > blocks with 32 bit bytes gap wherever
+> > > > SMP_CACHE_BYTES is used as an alignment requirement.
+> > >
+> > > I don't buy that: if you're trying to align to the cache size then the gaps are
+> > > the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
+> > > there's really no reason for these to be different between the base ISAs.
+> > >
+> >
+> > Got your point. I noticed this when fixing the resource tree issue
+> > where the SMP_CACHE_BYTES
+> > alignment was not intentional but causing the issue. The real issue
+> > was solved via another patch in this series though.
+> >
+> > Just to clarify, if the allocation function intends to allocate
+> > consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
+> > This will lead to a #ifdef macro in the code.
+> >
+> > > > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
+> > > > without this patch.
+> > > > I didn't see anything in Qemu though.
+> > >
+> > > Something like that is probably only going to show up on real hardware, QEMU
+> > > doesn't really do anything with the cache line size.  That said, as there's
+> > > nothing in our kernel now related to non-coherent memory there really should
+> > > only be performance issue (at least until we have non-coherent systems).
+> > >
+> > > I'd bet that the change is just masking some other bug, either in the software
+> > > or the hardware.  I'd prefer to root cause this rather than just working around
+> > > it, as it'll probably come back later and in a more difficult way to find.
+> > >
+> >
+> > Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
+> > you were saying ?
+> > We may need to change an alignment requirement to 32 for RV32 manually
+> > at some place in code.
+>
+> My findings were in
+> https://lore.kernel.org/linux-riscv/CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com/
+>
+> Note that when the memblock.reserved list kept increasing, it kept on
+> adding the same entry to the list.  But that was fixed by "[PATCH 1/4]
+> RISC-V: Do not allocate memblock while iterating reserved memblocks".
+>
+> After that, only the (reproducible) "Unable to handle kernel paging
+> request at virtual address 61636473" was left, always at the same place.
+> No idea where the actual corruption happened.
+>
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- .../bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml           | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes. I was asking about this panic. I don't have the litex fpga to
+reproduce this as well.
+Can you take a look at the epc & ra to figure out where exactly is the fault ?
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-=
-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015=
--rt5682.yaml
-index bf8c8ba25009d..54650823b29a4 100644
-=2D-- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt568=
-2.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.=
-yaml
-@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Mediatek MT8192 with MT6359, RT1015 and RT5682 ASoC sound card dri=
-ver
+That will help to understand the real cause for this panic.
 
- maintainers:
--   - Jiaxin Yu <jiaxin.yu@mediatek.com>
--   - Shane Chien <shane.chien@mediatek.com>
-+  - Jiaxin Yu <jiaxin.yu@mediatek.com>
-+  - Shane Chien <shane.chien@mediatek.com>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
- description:
-   This binding describes the MT8192 sound card.
-=2D-
-2.29.2
 
+
+-- 
+Regards,
+Atish
