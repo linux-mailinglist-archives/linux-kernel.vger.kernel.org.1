@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870AB2F8D0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 11:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E112F8D0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 11:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbhAPKxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 05:53:17 -0500
-Received: from mailoutvs45.siol.net ([185.57.226.236]:43746 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725895AbhAPKxQ (ORCPT
+        id S1726760AbhAPKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 05:54:04 -0500
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:44450 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbhAPKyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 05:53:16 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 116895209BC;
-        Sat, 16 Jan 2021 11:52:34 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id uUWNsPg60bF0; Sat, 16 Jan 2021 11:52:33 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id C8719520C4D;
-        Sat, 16 Jan 2021 11:52:33 +0100 (CET)
-Received: from kista.localdomain (cpe-86-58-58-53.static.triera.net [86.58.58.53])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 473435209BC;
-        Sat, 16 Jan 2021 11:52:33 +0100 (CET)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     robh+dt@kernel.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: [PATCH] ARM: dts: sunxi: bananapi-m2-plus: Increase BT UART speed
-Date:   Sat, 16 Jan 2021 11:52:28 +0100
-Message-Id: <20210116105228.847073-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.30.0
+        Sat, 16 Jan 2021 05:54:03 -0500
+Received: by mail-lf1-f48.google.com with SMTP id m25so16969237lfc.11;
+        Sat, 16 Jan 2021 02:53:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Rl3nB1jw38+x2tTQIabyckKYI6mcf1Lq12uOBpi5+4=;
+        b=tw+UlDVP/Y31we7r5wtVmNgvX7655RdmYi3EyMz2SAw8jWmvyskqFSQr8fKZtEqn6e
+         RFOjfYw8gGzhlIfuEd+Cn4ZXAmGNnFGkYbXBD1aZ79Zd5jS8hpLiRLX5p+rXWZ9YI+Cb
+         fRaZWfj4QNDmsy/n+U3N7fFWSKvWEMP++qTPalR63UuMgbG8vO88wk0m43MJLro3ogZV
+         nVLIOEJEyKK6zZ70IOYSnLjkzCVGqzdBMEvUbPx5c/6/vJHDYLeLNK23XgVUOByPwYdQ
+         jpErRAlwI6XmmZpbxJk71NVAH8Z3bd9Om0J9q9ELoLq+OEfIGvI8oa6D+GGHu8xj5hCh
+         i6EA==
+X-Gm-Message-State: AOAM5328bHzzLBuidIHbmPE51I/x2wvzlQR1ntDOYXYCGkpxaLmRTP0F
+        c/ezYKvxfLeZmhmBs8wKlR1vNA0dOBn97Q==
+X-Google-Smtp-Source: ABdhPJzRsOR+xX4btwseawk5sLo5BV9oh7qOJPtvKoIso9/UM/xnFQgQd9eGypwI1pUCGkWM0N6hXQ==
+X-Received: by 2002:ac2:5338:: with SMTP id f24mr7120769lfh.337.1610794400866;
+        Sat, 16 Jan 2021 02:53:20 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id y26sm1061764ljk.22.2021.01.16.02.53.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Jan 2021 02:53:20 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id f17so13078043ljg.12;
+        Sat, 16 Jan 2021 02:53:20 -0800 (PST)
+X-Received: by 2002:a2e:90d6:: with SMTP id o22mr6920600ljg.56.1610794400273;
+ Sat, 16 Jan 2021 02:53:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20210116105228.847073-1-jernej.skrabec@siol.net>
+In-Reply-To: <20210116105228.847073-1-jernej.skrabec@siol.net>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Sat, 16 Jan 2021 18:53:08 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67r6G0i89LpbGFheEE2i7OzE3TcM91GLW0r_vNOQxJCHQ@mail.gmail.com>
+Message-ID: <CAGb2v67r6G0i89LpbGFheEE2i7OzE3TcM91GLW0r_vNOQxJCHQ@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH] ARM: dts: sunxi: bananapi-m2-plus: Increase
+ BT UART speed
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bluetooth module on BananaPi M2 Plus can also be used for streaming
-audio. However, for that case higher UART speed is required.
+On Sat, Jan 16, 2021 at 6:52 PM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
+>
+> Bluetooth module on BananaPi M2 Plus can also be used for streaming
+> audio. However, for that case higher UART speed is required.
+>
+> Add a max-speed property.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Add a max-speed property.
-
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- arch/arm/boot/dts/sunxi-bananapi-m2-plus.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/boot/dts/sunxi-bananapi-m2-plus.dtsi b/arch/arm/boo=
-t/dts/sunxi-bananapi-m2-plus.dtsi
-index 8e5cb3b3fd68..7a6af54dd342 100644
---- a/arch/arm/boot/dts/sunxi-bananapi-m2-plus.dtsi
-+++ b/arch/arm/boot/dts/sunxi-bananapi-m2-plus.dtsi
-@@ -219,6 +219,7 @@ &uart1 {
-=20
- 	bluetooth {
- 		compatible =3D "brcm,bcm43438-bt";
-+		max-speed =3D <1500000>;
- 		clocks =3D <&rtc 1>;
- 		clock-names =3D "lpo";
- 		vbat-supply =3D <&reg_vcc3v3>;
---=20
-2.30.0
-
+Acked-by: Chen-Yu Tsai <wens@csie.org>
