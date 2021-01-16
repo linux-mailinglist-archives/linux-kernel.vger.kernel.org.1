@@ -2,257 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725B230176E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D380D30177E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 19:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbhAWR4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbhAWR4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:56:07 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A2C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:55:27 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id r12so12178885ejb.9
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:55:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ij8616FxgPL0g+EkHhBWQEtOFDxuaD1ectYgMChxWv8=;
-        b=IYvk8JYfAiIZsz1p5pnAZJvCu20jExS7U36BT8xniNQS+M6g9nH5cvlrrDOFUxwjqQ
-         TI2/Bzh1CoLRp6E2RWngCEkd93s+2uMFMBzm0pK33Yd2CtjTi2eH1dB2Lkw8nAn4t7jQ
-         y9iXU0ajvp/gO8Wz0pPMEACKzmBsRHrutpZ589R2IYiQSb8N3uBA5FDoJq8xUT3fVqMR
-         FBTUiXF4OsiXlleCRgq498rqH/di1Oe3/QhRY3x5p3G7HMqG6rqxDBU70LhbGPdS6NRm
-         tuV8BUXpGlzcgAzGhI/T2fEfQEu7R0+CniZJThOr1ZKqFaef9/R0MuEkm2gRKt1YcUIj
-         315g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ij8616FxgPL0g+EkHhBWQEtOFDxuaD1ectYgMChxWv8=;
-        b=hyQ8AACv5mUP7US6Qu4HnWEwkUdPXwm1ClYqP0WGh3UrH4STGTED2EWq/k/WxBgFHJ
-         e4CjE++4ICfMnL6b3UMonxsjly0BufacRYcKQBsMXgKl5J846I7r4jNlIVfXmlGjeIdS
-         wtVl6lq8dCt9KsOLOpmwAbD/hWaYa9dMXZDP4fzypV+0QvNNtMHdIWfdWFmyOjkRyH4T
-         eWmxyv3VtIBReTErvKoygV3fdRIflylMI0JNmEgS8wCgA7Z0WPLyXYoUuPoQZbsrDK4x
-         wTgTZxtuVjSZE9hh0jZESZ5KJHD63tEPGd3olZ2be1dEHEVod0p5PboF4KnaVBe+EiVG
-         VXiQ==
-X-Gm-Message-State: AOAM533kIRYfw/dC5dNMSxC4tu90nCWiE6T3WkNRaOeuFa+8et14Zb97
-        puUdSAQBLop3UwJMGEpLA/E=
-X-Google-Smtp-Source: ABdhPJyiwn6KLj157j2Gw/tskSBHxP7SjC40GnblLEzrz9M/fouI0xJR6lE9P0c5FvZeaH4K8KUHzQ==
-X-Received: by 2002:a17:906:589:: with SMTP id 9mr2152961ejn.229.1611424525856;
-        Sat, 23 Jan 2021 09:55:25 -0800 (PST)
-Received: from stitch.. ([2a01:4262:1ab:c:de4:866f:76c3:151d])
-        by smtp.gmail.com with ESMTPSA id j23sm7533690edv.45.2021.01.23.09.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 09:55:25 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <esmil@mailme.dk>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/gt: use new tasklet API for execution list
-Date:   Sat, 23 Jan 2021 18:55:02 +0100
-Message-Id: <20210123175502.6154-1-esmil@mailme.dk>
-X-Mailer: git-send-email 2.30.0
+        id S1726177AbhAWSJD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 23 Jan 2021 13:09:03 -0500
+Received: from wnbcorp.com ([175.126.38.143]:59868 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725932AbhAWSI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 13:08:59 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GGAqvF030916;
+        Sun, 17 Jan 2021 01:16:42 +0900
+Message-Id: <202101161616.10GGAqvF030916@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sat, 16 Jan 2021 17:17:00 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emil Renner Berthing <kernel@esmil.dk>
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-This converts the driver to use the new tasklet API introduced in
-commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+Sir/Madam,
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+CONGRATULATIONS!!!
 
----
-Tested on my Dell XPS 13 9300.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
- drivers/gpu/drm/i915/gt/intel_engine_cs.c     |  4 +--
- drivers/gpu/drm/i915/gt/intel_lrc.c           | 27 +++++++++----------
- drivers/gpu/drm/i915/gt/selftest_lrc.c        |  4 +--
- .../gpu/drm/i915/gt/uc/intel_guc_submission.c |  6 ++---
- 4 files changed, 19 insertions(+), 22 deletions(-)
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_engine_cs.c b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
-index 0b31670343f5..a97a80ca0ba7 100644
---- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
-@@ -1193,7 +1193,7 @@ void intel_engine_flush_submission(struct intel_engine_cs *engine)
- {
- 	struct tasklet_struct *t = &engine->execlists.tasklet;
- 
--	if (!t->func)
-+	if (!t->callback)
- 		return;
- 
- 	/* Synchronise and wait for the tasklet on another CPU */
-@@ -1204,7 +1204,7 @@ void intel_engine_flush_submission(struct intel_engine_cs *engine)
- 	if (tasklet_trylock(t)) {
- 		/* Must wait for any GPU reset in progress. */
- 		if (__tasklet_is_enabled(t))
--			t->func(t->data);
-+			t->callback(t);
- 		tasklet_unlock(t);
- 	}
- 	local_bh_enable();
-diff --git a/drivers/gpu/drm/i915/gt/intel_lrc.c b/drivers/gpu/drm/i915/gt/intel_lrc.c
-index 26c7d0a50585..20aa0ec09507 100644
---- a/drivers/gpu/drm/i915/gt/intel_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
-@@ -3194,9 +3194,9 @@ static bool preempt_timeout(const struct intel_engine_cs *const engine)
-  * Check the unread Context Status Buffers and manage the submission of new
-  * contexts to the ELSP accordingly.
-  */
--static void execlists_submission_tasklet(unsigned long data)
-+static void execlists_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
- 	bool timeout = preempt_timeout(engine);
- 
- 	process_csb(engine);
-@@ -4401,9 +4401,9 @@ static void execlists_reset_rewind(struct intel_engine_cs *engine, bool stalled)
- 	spin_unlock_irqrestore(&engine->active.lock, flags);
- }
- 
--static void nop_submission_tasklet(unsigned long data)
-+static void nop_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
- 
- 	/* The driver is wedged; don't process any more events. */
- 	WRITE_ONCE(engine->execlists.queue_priority_hint, INT_MIN);
-@@ -4487,7 +4487,7 @@ static void execlists_reset_cancel(struct intel_engine_cs *engine)
- 	execlists->queue = RB_ROOT_CACHED;
- 
- 	GEM_BUG_ON(__tasklet_is_enabled(&execlists->tasklet));
--	execlists->tasklet.func = nop_submission_tasklet;
-+	execlists->tasklet.callback = nop_submission_tasklet;
- 
- 	spin_unlock_irqrestore(&engine->active.lock, flags);
- }
-@@ -4503,7 +4503,7 @@ static void execlists_reset_finish(struct intel_engine_cs *engine)
- 	 */
- 	GEM_BUG_ON(!reset_in_progress(execlists));
- 	if (!RB_EMPTY_ROOT(&execlists->queue.rb_root))
--		execlists->tasklet.func(execlists->tasklet.data);
-+		execlists->tasklet.callback(&execlists->tasklet);
- 
- 	if (__tasklet_enable(&execlists->tasklet))
- 		/* And kick in case we missed a new request submission. */
-@@ -5093,7 +5093,7 @@ void intel_execlists_set_default_submission(struct intel_engine_cs *engine)
- {
- 	engine->submit_request = execlists_submit_request;
- 	engine->schedule = i915_schedule;
--	engine->execlists.tasklet.func = execlists_submission_tasklet;
-+	engine->execlists.tasklet.callback = execlists_submission_tasklet;
- 
- 	engine->reset.prepare = execlists_reset_prepare;
- 	engine->reset.rewind = execlists_reset_rewind;
-@@ -5220,8 +5220,7 @@ int intel_execlists_submission_setup(struct intel_engine_cs *engine)
- 	struct intel_uncore *uncore = engine->uncore;
- 	u32 base = engine->mmio_base;
- 
--	tasklet_init(&engine->execlists.tasklet,
--		     execlists_submission_tasklet, (unsigned long)engine);
-+	tasklet_setup(&engine->execlists.tasklet, execlists_submission_tasklet);
- 	timer_setup(&engine->execlists.timer, execlists_timeslice, 0);
- 	timer_setup(&engine->execlists.preempt, execlists_preempt, 0);
- 
-@@ -5670,9 +5669,9 @@ static intel_engine_mask_t virtual_submission_mask(struct virtual_engine *ve)
- 	return mask;
- }
- 
--static void virtual_submission_tasklet(unsigned long data)
-+static void virtual_submission_tasklet(struct tasklet_struct *t)
- {
--	struct virtual_engine * const ve = (struct virtual_engine *)data;
-+	struct virtual_engine * const ve = from_tasklet(ve, t, base.execlists.tasklet);
- 	const int prio = READ_ONCE(ve->base.execlists.queue_priority_hint);
- 	intel_engine_mask_t mask;
- 	unsigned int n;
-@@ -5883,9 +5882,7 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
- 
- 	INIT_LIST_HEAD(virtual_queue(ve));
- 	ve->base.execlists.queue_priority_hint = INT_MIN;
--	tasklet_init(&ve->base.execlists.tasklet,
--		     virtual_submission_tasklet,
--		     (unsigned long)ve);
-+	tasklet_setup(&ve->base.execlists.tasklet, virtual_submission_tasklet);
- 
- 	intel_context_init(&ve->context, &ve->base);
- 
-@@ -5913,7 +5910,7 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
- 		 * layering if we handle cloning of the requests and
- 		 * submitting a copy into each backend.
- 		 */
--		if (sibling->execlists.tasklet.func !=
-+		if (sibling->execlists.tasklet.callback !=
- 		    execlists_submission_tasklet) {
- 			err = -ENODEV;
- 			goto err_put;
-diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-index 95d41c01d0e0..8594ff72456e 100644
---- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-@@ -631,7 +631,7 @@ static int live_hold_reset(void *arg)
- 		}
- 		tasklet_disable(&engine->execlists.tasklet);
- 
--		engine->execlists.tasklet.func(engine->execlists.tasklet.data);
-+		engine->execlists.tasklet.callback(&engine->execlists.tasklet);
- 		GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
- 
- 		i915_request_get(rq);
-@@ -4577,7 +4577,7 @@ static int reset_virtual_engine(struct intel_gt *gt,
- 	}
- 	tasklet_disable(&engine->execlists.tasklet);
- 
--	engine->execlists.tasklet.func(engine->execlists.tasklet.data);
-+	engine->execlists.tasklet.callback(&engine->execlists.tasklet);
- 	GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
- 
- 	/* Fake a preemption event; failed of course */
-diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-index fdfeb4b9b0f5..a52ce82f23e2 100644
---- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-@@ -344,9 +344,9 @@ static void __guc_dequeue(struct intel_engine_cs *engine)
- 	execlists->active = execlists->inflight;
- }
- 
--static void guc_submission_tasklet(unsigned long data)
-+static void guc_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
- 	struct intel_engine_execlists * const execlists = &engine->execlists;
- 	struct i915_request **port, *rq;
- 	unsigned long flags;
-@@ -591,7 +591,7 @@ static void guc_set_default_submission(struct intel_engine_cs *engine)
- 	 */
- 	intel_execlists_set_default_submission(engine);
- 
--	engine->execlists.tasklet.func = guc_submission_tasklet;
-+	engine->execlists.tasklet.callback = guc_submission_tasklet;
- 
- 	/* do not use execlists park/unpark */
- 	engine->park = engine->unpark = NULL;
--- 
-2.30.0
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
