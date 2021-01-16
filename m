@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EA42F8DC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4664A2F8DC5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 18:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbhAPRI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 12:08:28 -0500
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:37377 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbhAPRIZ (ORCPT
+        id S1727986AbhAPRIj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 12:08:39 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:35311 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727943AbhAPRIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 12:08:25 -0500
-Received: by mail-pj1-f43.google.com with SMTP id g15so2735764pjd.2;
-        Sat, 16 Jan 2021 09:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I6/1V/j2pZFuVVOV4REVkDfm4tmUoy6tKgu0Y3qV6s=;
-        b=Basl4BJW/0jwOQd6SHCq+AJpjtzYWfYmlrTdm8INaFQtVsYPtMUM70jFguBF8giKNQ
-         eTBbm0MPV3HAf2nviXqnHVW0lIllExXdnOfMHylFphFSkiBu9+CFao39+QAq6a2jahPn
-         ujhoBLeycc7GcBpXC6O6mS9vENkfWB+gItwfBk+Bv/3dAy7pBahxGC48+GWgsU2NPOSD
-         UqFhdvHWtd8WNlJcjGdp1NXTa1ArYuwNU0fMT6DxEZbBferUv1ErsN9j31F9sh0wKfhQ
-         LjBuFmTIj18IhnL45BjolcKkUdjwG2IenUqphBhgpNkLd0QzgO1AanRUK39O+aj5iKVp
-         m2nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I6/1V/j2pZFuVVOV4REVkDfm4tmUoy6tKgu0Y3qV6s=;
-        b=Vsxk3TdWQBsJTqvlkrTMyTFdO/KBxjHYsxay22ORBxhmw7ve3Yl+GgyJhohZIWlLCD
-         pF6z8OnOt6GhgpSu0tGMEc0+tBDn1qOj2Aqk0Ky/Dj8uCwnDu70HkbU+laZuAzzAhFQZ
-         /tDnADr8NYjG6zLD1yoBV0Px0mLCwIivS2lV02QsexjSCoFqohXbUXAKqJDMbsU6v/YY
-         t5M2/q3prDK92rKWBL5irIpVmHGrjBCS2z4AbAra18BjX48RTMfTKQg4sWiDj5KMzFNT
-         0Hdn/J1oiGkSfcr+hYOOF63k8lrX2/HuwGl3C82NDoKnW3s74RjOSWTBOf8aqG0sQQA+
-         zFRA==
-X-Gm-Message-State: AOAM530kORAxWsUkYLr3DNm4ojmuv+D9O/97kNP5wrOVvS1/uxgSPeFI
-        YlUma3YpN3s4SGM8rf31LEk=
-X-Google-Smtp-Source: ABdhPJxOjIduViQHxvOqYtA2ywxH3Gq6Yfse9K31DSEVwd4cDB8kQI9eoejGMYHfMtxpuAGkdE3uKw==
-X-Received: by 2002:a17:90a:474c:: with SMTP id y12mr17448532pjg.175.1610816864856;
-        Sat, 16 Jan 2021 09:07:44 -0800 (PST)
-Received: from s18.smythies.com (test.smythies.com. [173.180.45.3])
-        by smtp.gmail.com with ESMTPSA id f13sm7247566pjj.1.2021.01.16.09.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 09:07:44 -0800 (PST)
-From:   Doug Smythies <doug.smythies@gmail.com>
-X-Google-Original-From: Doug Smythies <dsmythies@telus.net>
-To:     lenb@kernel.org
-Cc:     dsmythies@telus.net, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH] tools/power/x86/turbostat: Fix TCC offset bit mask
-Date:   Sat, 16 Jan 2021 09:07:25 -0800
-Message-Id: <20210116170725.5245-1-dsmythies@telus.net>
-X-Mailer: git-send-email 2.25.1
+        Sat, 16 Jan 2021 12:08:36 -0500
+X-Originating-IP: 93.29.109.196
+Received: from collins (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6BD541BF205;
+        Sat, 16 Jan 2021 17:07:52 +0000 (UTC)
+Date:   Sat, 16 Jan 2021 18:07:51 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH 1/2] of: device: Allow DMA range map to be set before
+ of_dma_configure_id
+Message-ID: <YAMdZ9peWRMRACv2@collins>
+References: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
+ <ddf44e96-187b-91c0-822d-ade4f1e5be2b@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ddf44e96-187b-91c0-822d-ade4f1e5be2b@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TCC offset mask is incorrect, resulting in
-incorrect target temperature calculations, if
-the offset is big enough to exceed the mask size.
+Hi Robin,
 
-Signed-off-by: Doug Smythies <dsmythies@telus.net>
----
- tools/power/x86/turbostat/turbostat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Le Sat 16 Jan 21, 14:57, Robin Murphy a écrit :
+> On 2021-01-15 17:58, Paul Kocialkowski wrote:
+> > A mechanism was recently introduced for the sunxi architecture where
+> > the DMA offset for specific devices (under the MBUS) is set by a common
+> > driver (sunxi_mbus). This driver calls dma_direct_set_offset to set
+> > the device's dma_range_map manually.
+> > 
+> > However this information was overwritten by of_dma_configure_id, which
+> > obtains the map from of_dma_get_range (or keeps it NULL when it fails
+> > and the force_dma argument is true, which is the case for platform
+> > devices).
+> > 
+> > As a result, the dma_range_map was always overwritten and the mechanism
+> > could not correctly take effect.
+> > 
+> > This adds a check to ensure that no previous DMA range map is
+> > overwritten and prints a warning when the map was already set while
+> > also being available from dt. In this case, the map that was already
+> > set is kept.
+> 
+> Hang on, the hard-coded offset is only intended to be installed when there
+> *isn't* anything described in DT, in which case of_dma_get_range() should
+> always bail out early without touching it anyway. This sounds like
+> something's not quite right in the MBUS driver, so I don't think working
+> around it in core code is really the right thing to do.
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 389ea5209a83..d7acdd4d16c4 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -4823,7 +4823,7 @@ int read_tcc_activation_temp()
- 
- 	target_c = (msr >> 16) & 0xFF;
- 
--	offset_c = (msr >> 24) & 0xF;
-+	offset_c = (msr >> 24) & 0x3F;
- 
- 	tcc = target_c - offset_c;
- 
+That's right, there is no practical case where the two are in conflict.
+The problem that I'm solving here is that dev->dma_range_map is *always*
+assigned, even when of_dma_get_range bailed and map still is NULL.
+
+This has the effect of always overwriting what the MBUS driver does
+(and leaking its memory too).
+
+> Do you have a case where one of the relevant devices inherits a "dma-ranges"
+> via the regular hierarchy without indirecting via an "interconnects"
+> reference? Currently you're only checking for the latter, so that would be
+> one way things could go awry (although to be a problem, said "dma-ranges"
+> would also have to encode something *other* than the appropriate MBUS
+> offset, which implies an incorrect or at least inaccurately-structured DT as
+> well).
+
+No, I think things are good in that regard. No messed up dt or anything like
+that :)
+
+Cheers,
+
+Paul
+
+> Robin.
+> 
+> > Fixes: b4bdc4fbf8d0 ("soc: sunxi: Deal with the MBUS DMA offsets in a central place")
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >   drivers/of/device.c | 9 ++++++++-
+> >   1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/of/device.c b/drivers/of/device.c
+> > index aedfaaafd3e7..db1b8634c2c7 100644
+> > --- a/drivers/of/device.c
+> > +++ b/drivers/of/device.c
+> > @@ -181,7 +181,14 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+> >   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+> > -	dev->dma_range_map = map;
+> > +	if (!dev->dma_range_map) {
+> > +		dev->dma_range_map = map;
+> > +	} else if (map) {
+> > +		dev_warn(dev,
+> > +			 "DMA range map was already set, ignoring range map from dt\n");
+> > +		kfree(map);
+> > +	}
+> > +
+> >   	return 0;
+> >   }
+> >   EXPORT_SYMBOL_GPL(of_dma_configure_id);
+> > 
+
 -- 
-2.25.1
-
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
