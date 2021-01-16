@@ -2,130 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18402F8A13
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56C82F8A17
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbhAPAx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbhAPAxz (ORCPT
+        id S1726239AbhAPAzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:55:50 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33264 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbhAPAzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:53:55 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04CCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:53:15 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id r9so7392278qtp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yyi8IWdFsxg6H1AnQ+ng6K1xkf6+CLJWG5374hc1nyQ=;
-        b=U3RXaFtM2o4boR1xgF5nlryYCFTrSV6xwF9d5qlIXf550eYPVXjZ7PXyzZdbRhsltJ
-         58kReuNxDNqeOMquMY1yqFoCtq1C6LjeDDbOQIrnIzYQriine2it/N/f998N8pHv4r5r
-         KOdlTzJG46qAbnuoPtXOKsvFzEupoyJdfIdb+xFlu01hxOK4GuP+N1EZy/y66xiywQaS
-         oojFK8i/9eIh/0QuLDdgf+DenclV/ktV6fVyU4KklfkkRbYYGtnN+bT/72t1JWG2LbGW
-         oRUCoFAHTOgu8p5B0YR2HhvUH52MOfRVcf/uc6zEvfzlP6dZSp5rXAMEYCdeBgsDrucD
-         khwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yyi8IWdFsxg6H1AnQ+ng6K1xkf6+CLJWG5374hc1nyQ=;
-        b=W81TXszY30LlQZPclkWL9dtEGo5nTKaSZjbWeW3KvAZ5qKoaC1AjJ342qBwOcHTuys
-         qJt68m/YSmpN31S7dWQxKHsezrcXLXDhd3kjXMzlbvA7JIPftGaJeBdi5wkXKPYzgkdf
-         +GJ3EVbxaAErbLtJWkyJ9myTXDZC3d+OQpskKPZ7MLPiLV5g/IesrtCWF/GOpCdZq11b
-         Um2H1d2CK9Nv1wpqDVSnYb7TJ16qgTq4VZX0VG5QprJedWoFfJ5HStN0J1L8BDSEeRqH
-         p2s04dG1C28PZFVpKZA5rABdDQdwNTlESxyvqy6A+HnQawToesckxRVoFSWlYapkMTzt
-         663A==
-X-Gm-Message-State: AOAM532aONat18hhydHIrsLbsA7+s9UOOhjLwiY4I3oEbxIB8jszmuUt
-        JOKfVjbB4WBbMSX7jAyvP5e0I5dE45yPpyf6bAU=
-X-Google-Smtp-Source: ABdhPJx/yjTJA55C+8tme0DAtD7wVzKj+C5I9vpyVjfPi1q0P1RjcDvg11AQRky39olOdtLW75EgMI+OwM1fNKbx+/0=
-X-Received: by 2002:ac8:4c99:: with SMTP id j25mr14526264qtv.390.1610758394934;
- Fri, 15 Jan 2021 16:53:14 -0800 (PST)
+        Fri, 15 Jan 2021 19:55:50 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10G0rVXL127232;
+        Fri, 15 Jan 2021 18:53:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610758411;
+        bh=SyYryF1l2gNr4uYRFERqQnjjOjHe3QCik1F2wFcrCjQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kL3pW6lmlXo4lTCzRsYEFYaIvlivswr+3s0mJkq84/hFuoPMAnQlH6+TldjBpK0WP
+         tJHOGuLgeUSUbHYUuwRVc2pv73TCtoswG5CIe/9A498+pNx1qaFzDPkbpsFUxMhMZE
+         NxR26SwFdGiULKjOTppGwjNQ2H9Z+DarwH1i/vnQ=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10G0rVa9004891
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Jan 2021 18:53:31 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ Jan 2021 18:53:30 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 Jan 2021 18:53:30 -0600
+Received: from [10.250.34.42] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10G0rUor073601;
+        Fri, 15 Jan 2021 18:53:30 -0600
+Subject: Re: [PATCH] remoteproc: pru: future-proof PRU ID matching
+To:     David Lechner <david@lechnology.com>,
+        <linux-remoteproc@vger.kernel.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210104211816.420602-1-david@lechnology.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <ccc1ee4b-ed73-f7c8-ca1e-f15eedeeb84b@ti.com>
+Date:   Fri, 15 Jan 2021 18:53:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1610675453-14603-1-git-send-email-yejune.deng@gmail.com>
- <202101151210.n0rr01he-lkp@intel.com> <CABWKuGV_Ep99iGwMe3P66yNUaHHTR6q_cr7yr=VHfz=dgJDFbA@mail.gmail.com>
-In-Reply-To: <CABWKuGV_Ep99iGwMe3P66yNUaHHTR6q_cr7yr=VHfz=dgJDFbA@mail.gmail.com>
-From:   Yejune Deng <yejune.deng@gmail.com>
-Date:   Sat, 16 Jan 2021 08:53:03 +0800
-Message-ID: <CABWKuGVG8tnvvmWSOgzg2XBTxwuTz2X45CJKxN6H7jLE+cf0ew@mail.gmail.com>
-Subject: Re: [PATCH] lib: dynamic_queue_limits: use memset and offsetof init
-To:     kernel test robot <lkp@intel.com>
-Cc:     rdunlap@infradead.org, akpm@linux-foundation.org,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210104211816.420602-1-david@lechnology.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry.It failed in ARCH nds32,I will fix it in the next submit.
+On 1/4/21 3:18 PM, David Lechner wrote:
+> Currently, to determine the ID (0 or 1) of a PRU core, the last 19 bits
+> of the physical address of the cores IRAM are compared to known values.
+> However, the PRUs on TI AM18XX have IRAM at 0x01c38000 and 0x01c3c000
+> respectively. The former conflicts with PRU1_IRAM_ADDR_MASK which could
+> cause PRU0 to be detected as PRU1. (The latter also conflicts with
+> TX_PRU1_IRAM_ADDR_MASK but it would still be correctly detected as
+> PRU1.)
+> 
+> This fixes the problem by moving the address matching offset values to
+> the device-specific data. This way the compatible string does half of
+> the work of narrowing down the addresses to two possibilities instead
+> of checking the address against all possible PRU types. This also lets
+> us narrow down the scope of the match from 19 bits to 16 bits for all
+> PRU types.
+> 
+> After this, the TI AM18XX PRUs will be able to be added without running
+> into the problems stated above.
+> 
+> We can also drop the local ret variable while touching this code.
+> 
+> Signed-off-by: David Lechner <david@lechnology.com>
 
+Will test this patch on Mon/Tue on various platforms.
 
-On Fri, Jan 15, 2021 at 2:33 PM Yejune Deng <yejune.deng@gmail.com> wrote:
->
-> My patch is applied to linux-next/master tree.I also built in arch
-> arm64 and x86_64,is OK.Is something wrong with that?
->
-> On Fri, Jan 15, 2021 at 12:45 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi Yejune,
-> >
-> > Thank you for the patch! Yet something to improve:
-> >
-> > [auto build test ERROR on linus/master]
-> > [also build test ERROR on v5.11-rc3 next-20210114]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Yejune-Deng/lib-dynamic_queue_limits-use-memset-and-offsetof-init/20210115-112707
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 146620506274bd24d52fb1c589110a30eed8240b
-> > config: nds32-randconfig-m031-20210115 (attached as .config)
-> > compiler: nds32le-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/9be25b076f67d15d29016cb613b95d2ae190a9b4
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Yejune-Deng/lib-dynamic_queue_limits-use-memset-and-offsetof-init/20210115-112707
-> >         git checkout 9be25b076f67d15d29016cb613b95d2ae190a9b4
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=nds32
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All error/warnings (new ones prefixed by >>):
-> >
-> >    lib/dynamic_queue_limits.c: In function 'dql_reset':
-> > >> lib/dynamic_queue_limits.c:119:2: error: implicit declaration of function 'memset' [-Werror=implicit-function-declaration]
-> >      119 |  memset(dql, 0, offsetof(struct dql, lowest_slack));
-> >          |  ^~~~~~
-> > >> lib/dynamic_queue_limits.c:119:2: warning: incompatible implicit declaration of built-in function 'memset'
-> >    lib/dynamic_queue_limits.c:11:1: note: include '<string.h>' or provide a declaration of 'memset'
-> >       10 | #include <linux/dynamic_queue_limits.h>
-> >      +++ |+#include <string.h>
-> >       11 | #include <linux/compiler.h>
-> >    cc1: some warnings being treated as errors
-> >
-> >
-> > vim +/memset +119 lib/dynamic_queue_limits.c
-> >
-> >    115
-> >    116  void dql_reset(struct dql *dql)
-> >    117  {
-> >    118          /* Reset all dynamic values */
-> >  > 119          memset(dql, 0, offsetof(struct dql, lowest_slack));
-> >    120          dql->lowest_slack = UINT_MAX;
-> >    121          dql->slack_start_time = jiffies;
-> >    122  }
-> >    123  EXPORT_SYMBOL(dql_reset);
-> >    124
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Bjorn,
+Please wait for my Ack on this before you pick this up.
+
+regards
+Suman
+
+> ---
+>  drivers/remoteproc/pru_rproc.c | 49 ++++++++++++++--------------------
+>  1 file changed, 20 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+> index 2667919d76b3..94ce48df2f48 100644
+> --- a/drivers/remoteproc/pru_rproc.c
+> +++ b/drivers/remoteproc/pru_rproc.c
+> @@ -46,15 +46,6 @@
+>  #define PRU_DEBUG_GPREG(x)	(0x0000 + (x) * 4)
+>  #define PRU_DEBUG_CT_REG(x)	(0x0080 + (x) * 4)
+>  
+> -/* PRU/RTU/Tx_PRU Core IRAM address masks */
+> -#define PRU_IRAM_ADDR_MASK	0x3ffff
+> -#define PRU0_IRAM_ADDR_MASK	0x34000
+> -#define PRU1_IRAM_ADDR_MASK	0x38000
+> -#define RTU0_IRAM_ADDR_MASK	0x4000
+> -#define RTU1_IRAM_ADDR_MASK	0x6000
+> -#define TX_PRU0_IRAM_ADDR_MASK	0xa000
+> -#define TX_PRU1_IRAM_ADDR_MASK	0xc000
+> -
+>  /* PRU device addresses for various type of PRU RAMs */
+>  #define PRU_IRAM_DA	0	/* Instruction RAM */
+>  #define PRU_PDRAM_DA	0	/* Primary Data RAM */
+> @@ -96,10 +87,14 @@ enum pru_type {
+>  /**
+>   * struct pru_private_data - device data for a PRU core
+>   * @type: type of the PRU core (PRU, RTU, Tx_PRU)
+> + * @pru0_iram_offset: used to identify PRU core 0
+> + * @pru1_iram_offset: used to identify PRU core 1
+>   * @is_k3: flag used to identify the need for special load handling
+>   */
+>  struct pru_private_data {
+>  	enum pru_type type;
+> +	u16 pru0_iram_offset;
+> +	u16 pru1_iram_offset;
+>  	unsigned int is_k3 : 1;
+>  };
+>  
+> @@ -693,33 +688,21 @@ static int pru_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+>  }
+>  
+>  /*
+> - * Compute PRU id based on the IRAM addresses. The PRU IRAMs are
+> + * Compute PRU id based on the last 16 bits of IRAM addresses. The PRU IRAMs are
+>   * always at a particular offset within the PRUSS address space.
+>   */
+>  static int pru_rproc_set_id(struct pru_rproc *pru)
+>  {
+> -	int ret = 0;
+> -
+> -	switch (pru->mem_regions[PRU_IOMEM_IRAM].pa & PRU_IRAM_ADDR_MASK) {
+> -	case TX_PRU0_IRAM_ADDR_MASK:
+> -		fallthrough;
+> -	case RTU0_IRAM_ADDR_MASK:
+> -		fallthrough;
+> -	case PRU0_IRAM_ADDR_MASK:
+> +	u16 offset = pru->mem_regions[PRU_IOMEM_IRAM].pa;
+> +
+> +	if (offset == pru->data->pru0_iram_offset)
+>  		pru->id = 0;
+> -		break;
+> -	case TX_PRU1_IRAM_ADDR_MASK:
+> -		fallthrough;
+> -	case RTU1_IRAM_ADDR_MASK:
+> -		fallthrough;
+> -	case PRU1_IRAM_ADDR_MASK:
+> +	else if (offset == pru->data->pru1_iram_offset)
+>  		pru->id = 1;
+> -		break;
+> -	default:
+> -		ret = -EINVAL;
+> -	}
+> +	else
+> +		return -EINVAL;
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static int pru_rproc_probe(struct platform_device *pdev)
+> @@ -825,20 +808,28 @@ static int pru_rproc_remove(struct platform_device *pdev)
+>  
+>  static const struct pru_private_data pru_data = {
+>  	.type = PRU_TYPE_PRU,
+> +	.pru0_iram_offset = 0x4000,
+> +	.pru1_iram_offset = 0x8000,
+>  };
+>  
+>  static const struct pru_private_data k3_pru_data = {
+>  	.type = PRU_TYPE_PRU,
+> +	.pru0_iram_offset = 0x4000,
+> +	.pru1_iram_offset = 0x8000,
+>  	.is_k3 = 1,
+>  };
+>  
+>  static const struct pru_private_data k3_rtu_data = {
+>  	.type = PRU_TYPE_RTU,
+> +	.pru0_iram_offset = 0x4000,
+> +	.pru1_iram_offset = 0x6000,
+>  	.is_k3 = 1,
+>  };
+>  
+>  static const struct pru_private_data k3_tx_pru_data = {
+>  	.type = PRU_TYPE_TX_PRU,
+> +	.pru0_iram_offset = 0xa000,
+> +	.pru1_iram_offset = 0xc000,
+>  	.is_k3 = 1,
+>  };
+>  
+> 
+
