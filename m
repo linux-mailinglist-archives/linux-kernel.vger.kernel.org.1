@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8705B2F89D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CED2F89D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbhAPAOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:14:01 -0500
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:32845 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727410AbhAPAOA (ORCPT
+        id S1728990AbhAPAOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728888AbhAPAOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:14:00 -0500
-Received: by mail-wm1-f51.google.com with SMTP id s24so1831110wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Jan 2021 16:13:44 -0800 (PST)
+        Fri, 15 Jan 2021 19:14:08 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F96C061757;
+        Fri, 15 Jan 2021 16:13:28 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id g15so7033387pgu.9;
+        Fri, 15 Jan 2021 16:13:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Iezn4Ka6AfOTv8ruHoS6A2XTfT3pZMCeDfnXknJdlqg=;
+        b=Bpag9PGWGqfqaSNKFOeZBe8ASwF0IeVuZVSbHQjxC/xfQEYQD7loLsAxIfNvCY/Dc2
+         Mmafxnc5/SO1cEOVTfkOvoFneAiBuJFl+1wdhpk0axCzVkKwi8+eQ4AtJ62vAgc28yut
+         yRSVfEzWddyHgqVctmarcZ9B95diYEQUr4Koo6zlNJ/7JguxZx8PrFZIWqGA4FeK6IDz
+         edDXaXCGiTJFRc2TXgqxqP6g7A8McHt4QToRSp7LckVY9MTV/W9IaV4HGaUs9lxAhyI8
+         0RT7XCRzhz9lFFVOfaBugPMzNVA4c25R2XJHqTFCMjdNvYq+WzzzzCak9w1NfagzjhX+
+         4TLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lEoZ2mLB4jyJp/YEcR/YYhpFBIPctICADecAlH2bFKA=;
-        b=MTabrMyI1waxyL34g3m4eHb42dPz9m/pa79bKp6mYL8XbKqKqVrkaOK6jHlQoV80cM
-         xQqsjsZz0r9CK69igrkrShFucp/2qthI6g+NS6pRK8T2n/E2u1ZTDyBe2B6/j0fLG0jI
-         NZmjP+jRMalqg7N3Bsq30JBsU8IRSJqL3TPRRkd3HThznYoGGy6ioax6H3TY0vTA4I28
-         GbT4eWnSyFNTYXWCL4P2ZpRoTDtl83fYDSPX75WvgwtInjXV6rn1p5zecW6Q6TK9y2nl
-         EM5MkFMihbXqFfXnnY5x6B2RIXTFR2sw9FhrY4K5beHKltTvYj/stlLTCCx7CRo3KGLt
-         Kf6Q==
-X-Gm-Message-State: AOAM532oufxw9TVeaZH2q364czpVQBW6if3JD///HOGunuC31z2POtz1
-        IagmSeeMJEo03Y9cj4ro1ORIGo+gIEM=
-X-Google-Smtp-Source: ABdhPJxUtqDlbgE20zMFy6bhhgFyJACUH0iRegaifx7x5wgt0rjY+xRT/tHbNoNlUETjdcKB1e62zg==
-X-Received: by 2002:a7b:ce91:: with SMTP id q17mr9452665wmj.128.1610755998702;
-        Fri, 15 Jan 2021 16:13:18 -0800 (PST)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s1sm17164126wrv.97.2021.01.15.16.13.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Iezn4Ka6AfOTv8ruHoS6A2XTfT3pZMCeDfnXknJdlqg=;
+        b=tn4dz+Dy/hr+XG45x8HNb/4VGftqiGNfCBf0IYOpgUyAG37Gz/4tR1yHi4SVO3xuu1
+         /H1Qf81O3SIrqmvg5UuUWkGAMJjCP7vqKlMOH7WYI2SvYZ9UKX/iFx81xdN/mSI5KAES
+         4pzO2p8mZEpgQY0yFlEDxD7b5NsF2IUQpAPjb+YVb0R3yNchk7HooIdin45vq0UuMoCY
+         XJ0DrFv7FeggEz7YKdcx/1orvW1X76FMUVwKSGu3Wkn735wHKfpkpgJq/+Fox8dEMfQJ
+         WGmCdo8WZyfZzHT/X56qMGwafHLx1LcWbIQ3bjbZEl38KM+aGEa9r2RQxEGztJt+mWy5
+         80Zw==
+X-Gm-Message-State: AOAM531ETxpMkqqcdNdS7//NSWJF/DcMZzB1pd7IcLmTyvlBGdZQ24Iy
+        9SgHfedcwOQ2O4UzFiuKCmg=
+X-Google-Smtp-Source: ABdhPJxDl0yfSLkQloAU7b/S0XVP9sX3JB5TjsOofn0lJuvcZQMMCaOFgAibmoBl+ibFh4tLREo7+Q==
+X-Received: by 2002:a63:af50:: with SMTP id s16mr15370424pgo.448.1610756007827;
+        Fri, 15 Jan 2021 16:13:27 -0800 (PST)
+Received: from nick-Blade-Stealth.lan ([2600:1700:6d11:6f:4cf3:b4a6:3312:eae])
+        by smtp.googlemail.com with ESMTPSA id u25sm9280338pfn.170.2021.01.15.16.13.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 16:13:18 -0800 (PST)
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux Kernel List <linux-kernel@vger.kernel.org>
-Cc:     tyhicks@linux.microsoft.com, Wei Liu <wei.liu@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christian Gromm <christian.gromm@microchip.com>
-Subject: [PATCH] fTPM: make sure TEE is initialized before fTPM
-Date:   Sat, 16 Jan 2021 00:12:59 +0000
-Message-Id: <20210116001301.16861-1-wei.liu@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        Fri, 15 Jan 2021 16:13:27 -0800 (PST)
+From:   Nick Desaulniers <nick.desaulniers@gmail.com>
+To:     ndesaulniers@google.com
+Cc:     akpm@linux-foundation.org, clang-built-linux@googlegroups.com,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, morbo@google.com, natechancellor@gmail.com,
+        samitolvanen@google.com, torvalds@linux-foundation.org
+Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
+Date:   Fri, 15 Jan 2021 16:13:24 -0800
+Message-Id: <20210116001324.2865-1-nick.desaulniers@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
+References: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For built-in drivers, the order of initialization function invocation is
-determined by their link order.
+> On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
+> > <natechancellor@gmail.com> wrote:
+> > >
+> > > However, I see an issue with actually using the data:
+> > >
+> > > $ sudo -s
+> > > # mount -t debugfs none /sys/kernel/debug
+> > > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > > # chown nathan:nathan vmlinux.profraw
+> > > # exit
+> > > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
+> > > error: No profiles could be merged.
+> > >
+> > > Am I holding it wrong? :) Note, this is virtualized, I do not have any
+> > > "real" x86 hardware that I can afford to test on right now.
+> >
+> > Same.
+> >
+> > I think the magic calculation in this patch may differ from upstream
+> > llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
+> 
+> Err...it looks like it was the padding calculation.  With that fixed
+> up, we can query the profile data to get insights on the most heavily
+> called functions.  Here's what my top 20 are (reset, then watch 10
+> minutes worth of cat videos on youtube while running `find /` and
+> sleeping at my desk).  Anything curious stand out to anyone?
 
-The original code linked TPM drivers before TEE driver when they were
-both built in. That caused fTPM's initialization to be deferred to a
-worker thread instead of running on PID 1.
+Hello world from my personal laptop whose kernel was rebuilt with
+profiling data!  Wow, I can run `find /` and watch cat videos on youtube
+so fast!  Users will love this! /s
 
-That is problematic because IMA's initialization routine, which runs on
-PID 1 as a late initcall, needs to have access to the default TPM
-instance. If fTPM's initialization is deferred, IMA will not be able to
-get hold of a TPM instance in time.
+Checking the sections sizes of .text.hot. and .text.unlikely. looks
+good!
 
-Fix this by modifying Makefile to make sure TEE is initialized before
-fTPM when they are both built in.
-
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
- drivers/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/Makefile b/drivers/Makefile
-index fd11b9ac4cc3..45ea5ec9d0fd 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -180,6 +180,11 @@ obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
- obj-$(CONFIG_FSI)		+= fsi/
- obj-$(CONFIG_TEE)		+= tee/
-+
-+# TPM drivers must come after TEE, otherwise fTPM initialization will be
-+# deferred, which causes IMA to not get a TPM device in time
-+obj-$(CONFIG_TCG_TPM)		+= char/tpm/
-+
- obj-$(CONFIG_MULTIPLEXER)	+= mux/
- obj-$(CONFIG_UNISYS_VISORBUS)	+= visorbus/
- obj-$(CONFIG_SIOX)		+= siox/
--- 
-2.20.1
-
+> 
+> $ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
+> Instrumentation level: IR  entry_first = 0
+> Total functions: 48970
+> Maximum function count: 62070879
+> Maximum internal block count: 83221158
+> Top 20 functions with the largest internal block counts:
+>   drivers/tty/n_tty.c:n_tty_write, max count = 83221158
+>   rcu_read_unlock_strict, max count = 62070879
+>   _cond_resched, max count = 25486882
+>   rcu_all_qs, max count = 25451477
+>   drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
+>   _raw_spin_unlock_irqrestore, max count = 18874121
+>   drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
+>   _raw_spin_lock_irqsave, max count = 18509161
+>   memchr, max count = 15525452
+>   _raw_spin_lock, max count = 15484254
+>   __mod_memcg_state, max count = 14604619
+>   __mod_memcg_lruvec_state, max count = 14602783
+>   fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
+>   __mod_lruvec_state, max count = 12527154
+>   __mod_node_page_state, max count = 12525172
+>   native_sched_clock, max count = 8904692
+>   sched_clock_cpu, max count = 8895832
+>   sched_clock, max count = 8894627
+>   kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
+>   fpregs_assert_state_consistent, max count = 8287198
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
+> 
