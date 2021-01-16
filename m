@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD0D2F8D14
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D702F8D20
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 12:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbhAPLGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 06:06:54 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:13292 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725895AbhAPLGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 06:06:53 -0500
-Received: by ajax-webmail-mail-app4 (Coremail) ; Sat, 16 Jan 2021 19:05:46
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Sat, 16 Jan 2021 19:05:46 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Chaitanya Kulkarni" <Chaitanya.Kulkarni@wdc.com>
-Cc:     "kjlu@umn.edu" <kjlu@umn.edu>, "Jens Axboe" <axboe@kernel.dk>,
-        "Hannes Reinecke" <hare@suse.de>, "Jan Kara" <jack@suse.cz>,
-        "Johannes Thumshirn" <Johannes.Thumshirn@wdc.com>,
-        "Ming Lei" <ming.lei@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH] block: Fix an error handling in add_partition
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <BYAPR04MB4965E41A9C690FA11883469A86A60@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210116072802.21940-1-dinghao.liu@zju.edu.cn>
- <BYAPR04MB4965E41A9C690FA11883469A86A60@BYAPR04MB4965.namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-MIME-Version: 1.0
-Message-ID: <767024ca.436d9.1770adf5c69.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgBXfICKyAJgHFZ_AA--.24129W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgMHBlZdtSAnLAABsU
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW5Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+        id S1726860AbhAPLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 06:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbhAPLoA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 06:44:00 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1592C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 03:43:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=0S7aTLnOpdE5r+G1zemiEs+dI4RjPxgUI8YvRh2QX/E=; b=im/VdLP9hOhy1Sb4h1IlW4UWqR
+        5JpMNHrn+HKZkFhVYxgHdy+E9DbEjioXrLBc6oJdhtBiSkj95CQGtUlY7oh+WP8j4/8Gfn06XZyHF
+        C+sR/qcJSXwTZhjX8UJU8wSPM8jIEX3aMJZ8ka+ubPNjGTBh/ZupczQvFS7DcM96cdFtdMvabuzd/
+        OSzU65/tpZlGD+3lPySFe8xHN4+s34iqYgCA46Y9KK4+okNLaWo/sWUZcgDA3wQnt/khIkF2DmX5H
+        vXGobxQlM/gvD1czfRtYGv+d0AzvxsRqCa2GIvkJB3g0aE1efcavLNEj53W+ktnpMsS7JFXJSyAmC
+        ixlVLzdQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l0jyz-0002Cz-5i; Sat, 16 Jan 2021 11:43:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFAF830768E;
+        Sat, 16 Jan 2021 12:42:30 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 15D9020297EDB; Sat, 16 Jan 2021 12:42:30 +0100 (CET)
+Message-ID: <20210116113033.608340773@infradead.org>
+User-Agent: quilt/0.66
+Date:   Sat, 16 Jan 2021 12:30:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        valentin.schneider@arm.com, cai@redhat.com,
+        vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org,
+        peterz@infradead.org
+Subject: [PATCH 0/8] sched: Fix hot-unplug regressions
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAxLzE1LzIxIDExOjM0IFBNLCBEaW5naGFvIExpdSB3cm90ZToKPiA+IE9uY2Ugd2UgaGF2
-ZSBjYWxsZWQgZGV2aWNlX2luaXRpYWxpemUoKSwgd2Ugc2hvdWxkCj4gPiB1c2UgcHV0X2Rldmlj
-ZSgpIHRvIGdpdmUgdXAgdGhlIHJlZmVyZW5jZSBvbiBlcnJvciwKPiA+IGp1c3QgbGlrZSB3aGF0
-IHdlIGhhdmUgZG9uZSBvbiBmYWlsdXJlIG9mIGRldmljZV9hZGQoKS4KPiA+Cj4gPiBTaWduZWQt
-b2ZmLWJ5OiBEaW5naGFvIExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiBQbGVhc2UgY29u
-c2lkZXIgaGF2aW5nIGZvbGxvd2luZyBjb21taXQgbWVzc2FnZSwgc2luY2UgYWJvdmUKPiBjb21t
-aXQgbWVzc2FnZSBpcyBsb29raW5nIG9kZCBmcm9tIHdoYXQgd2UgaGF2ZSBpbiB0aGUgdHJlZSA6
-LQo+IAo+IAo+IE9uY2Ugd2UgaGF2ZSBjYWxsZWQgZGV2aWNlX2luaXRpYWxpemUoKSwgd2Ugc2hv
-dWxkIHVzZSBwdXRfZGV2aWNlKCkgdG8KPiBnaXZlIHVwIHRoZSByZWZlcmVuY2Ugb24gZXJyb3Is
-IGp1c3QgbGlrZSB3aGF0IHdlIGhhdmUgZG9uZSBvbiBmYWlsdXJlCj4gb2YgZGV2aWNlX2FkZCgp
-Lgo+IAoKVGhhbmtzIGZvciB0aGlzIHN1Z2dlc3Rpb24hCiAKPiAKPiBBbHNvIGhhdmUgeW91IHRl
-c3RlZCB0aGlzIHBhdGNoIHdpdGggdGhlIHdpdGggZ2VuZXJhdGluZyBhcHByb3ByaWF0ZSBlcnJv
-ciA/Cj4gCgpObywgdGhpcyBwcm9ibGVtIGlzIGZvdW5kIHRocm91Z2ggY29tcGFyaW5nIGV4aXN0
-aW5nIHNvdXJjZSBjb2RlLiAKClJlZ2FyZHMsCkRpbmdoYW8=
+Hi,
+
+These patches (no longer 4), seems to fix all the hotplug regressions as per
+nearly a 100 18*SRCU-P runs over-night.
+
+I did clean up the patches, so possibly I wrecked it again. I've started new
+runs and will again leave them running over-night.
+
+Paul, if you could please also throw your monster machine at it.
+
+
