@@ -2,138 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CED2F89D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C012F89D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 01:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbhAPAOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Jan 2021 19:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728888AbhAPAOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Jan 2021 19:14:08 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F96C061757;
-        Fri, 15 Jan 2021 16:13:28 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id g15so7033387pgu.9;
-        Fri, 15 Jan 2021 16:13:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Iezn4Ka6AfOTv8ruHoS6A2XTfT3pZMCeDfnXknJdlqg=;
-        b=Bpag9PGWGqfqaSNKFOeZBe8ASwF0IeVuZVSbHQjxC/xfQEYQD7loLsAxIfNvCY/Dc2
-         Mmafxnc5/SO1cEOVTfkOvoFneAiBuJFl+1wdhpk0axCzVkKwi8+eQ4AtJ62vAgc28yut
-         yRSVfEzWddyHgqVctmarcZ9B95diYEQUr4Koo6zlNJ/7JguxZx8PrFZIWqGA4FeK6IDz
-         edDXaXCGiTJFRc2TXgqxqP6g7A8McHt4QToRSp7LckVY9MTV/W9IaV4HGaUs9lxAhyI8
-         0RT7XCRzhz9lFFVOfaBugPMzNVA4c25R2XJHqTFCMjdNvYq+WzzzzCak9w1NfagzjhX+
-         4TLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Iezn4Ka6AfOTv8ruHoS6A2XTfT3pZMCeDfnXknJdlqg=;
-        b=tn4dz+Dy/hr+XG45x8HNb/4VGftqiGNfCBf0IYOpgUyAG37Gz/4tR1yHi4SVO3xuu1
-         /H1Qf81O3SIrqmvg5UuUWkGAMJjCP7vqKlMOH7WYI2SvYZ9UKX/iFx81xdN/mSI5KAES
-         4pzO2p8mZEpgQY0yFlEDxD7b5NsF2IUQpAPjb+YVb0R3yNchk7HooIdin45vq0UuMoCY
-         XJ0DrFv7FeggEz7YKdcx/1orvW1X76FMUVwKSGu3Wkn735wHKfpkpgJq/+Fox8dEMfQJ
-         WGmCdo8WZyfZzHT/X56qMGwafHLx1LcWbIQ3bjbZEl38KM+aGEa9r2RQxEGztJt+mWy5
-         80Zw==
-X-Gm-Message-State: AOAM531ETxpMkqqcdNdS7//NSWJF/DcMZzB1pd7IcLmTyvlBGdZQ24Iy
-        9SgHfedcwOQ2O4UzFiuKCmg=
-X-Google-Smtp-Source: ABdhPJxDl0yfSLkQloAU7b/S0XVP9sX3JB5TjsOofn0lJuvcZQMMCaOFgAibmoBl+ibFh4tLREo7+Q==
-X-Received: by 2002:a63:af50:: with SMTP id s16mr15370424pgo.448.1610756007827;
-        Fri, 15 Jan 2021 16:13:27 -0800 (PST)
-Received: from nick-Blade-Stealth.lan ([2600:1700:6d11:6f:4cf3:b4a6:3312:eae])
-        by smtp.googlemail.com with ESMTPSA id u25sm9280338pfn.170.2021.01.15.16.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 16:13:27 -0800 (PST)
-From:   Nick Desaulniers <nick.desaulniers@gmail.com>
-To:     ndesaulniers@google.com
-Cc:     akpm@linux-foundation.org, clang-built-linux@googlegroups.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, morbo@google.com, natechancellor@gmail.com,
-        samitolvanen@google.com, torvalds@linux-foundation.org
-Subject: Re: [PATCH v4] pgo: add clang's Profile Guided Optimization infrastructure
-Date:   Fri, 15 Jan 2021 16:13:24 -0800
-Message-Id: <20210116001324.2865-1-nick.desaulniers@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
-References: <CAKwvOd=rEngs-8DR6pagynYc5-=a06brTOOx5TT1TC+v7-3m2Q@mail.gmail.com>
+        id S1729055AbhAPAP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Jan 2021 19:15:27 -0500
+Received: from mga05.intel.com ([192.55.52.43]:8985 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728520AbhAPAP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Jan 2021 19:15:26 -0500
+IronPort-SDR: e+1kz1knSqm7q3/TI2R4rZDRyb3uqfqsZWZQcIKmHgHOIRAiLfnieRS/2GpWOwYKwQ/miazAaS
+ culiNnAD0sBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="263422576"
+X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
+   d="scan'208";a="263422576"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 16:14:44 -0800
+IronPort-SDR: t09QPpFEG1iLf7taOkfKoFA8biUcl4HaAflWlH6kKL3MCzhHQ2IPXbLKc6ONBRU1S+6SNnCMJj
+ Ux4X8DtqKrZA==
+X-IronPort-AV: E=Sophos;i="5.79,350,1602572400"; 
+   d="scan'208";a="425493706"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.254.14.175]) ([10.254.14.175])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2021 16:14:42 -0800
+Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com,
+        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
+        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
+        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
+        ilya.albrekht@intel.com, kyung.min.park@intel.com,
+        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <1608325864-4033-4-git-send-email-megha.dey@intel.com>
+ <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <dfb5f2e0-027d-2b9c-aec7-313ff0275381@intel.com>
+Date:   Fri, 15 Jan 2021 16:14:40 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Jan 13, 2021 at 8:07 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 12:55 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > However, I see an issue with actually using the data:
-> > >
-> > > $ sudo -s
-> > > # mount -t debugfs none /sys/kernel/debug
-> > > # cp -a /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> > > # chown nathan:nathan vmlinux.profraw
-> > > # exit
-> > > $ tc-build/build/llvm/stage1/bin/llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> > > warning: vmlinux.profraw: Invalid instrumentation profile data (bad magic)
-> > > error: No profiles could be merged.
-> > >
-> > > Am I holding it wrong? :) Note, this is virtualized, I do not have any
-> > > "real" x86 hardware that I can afford to test on right now.
-> >
-> > Same.
-> >
-> > I think the magic calculation in this patch may differ from upstream
-> > llvm: https://github.com/llvm/llvm-project/blob/49142991a685bd427d7e877c29c77371dfb7634c/llvm/include/llvm/ProfileData/SampleProf.h#L96-L101
-> 
-> Err...it looks like it was the padding calculation.  With that fixed
-> up, we can query the profile data to get insights on the most heavily
-> called functions.  Here's what my top 20 are (reset, then watch 10
-> minutes worth of cat videos on youtube while running `find /` and
-> sleeping at my desk).  Anything curious stand out to anyone?
+Hi Ard,
 
-Hello world from my personal laptop whose kernel was rebuilt with
-profiling data!  Wow, I can run `find /` and watch cat videos on youtube
-so fast!  Users will love this! /s
+On 12/19/2020 9:03 AM, Ard Biesheuvel wrote:
+> On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
+>> From: Kyung Min Park <kyung.min.park@intel.com>
+>>
+>> Optimize GHASH computations with the 512 bit wide VPCLMULQDQ instructions.
+>> The new instruction allows to work on 4 x 16 byte blocks at the time.
+>> For best parallelism and deeper out of order execution, the main loop of
+>> the code works on 16 x 16 byte blocks at the time and performs reduction
+>> every 48 x 16 byte blocks. Such approach needs 48 precomputed GHASH subkeys
+>> and the precompute operation has been optimized as well to leverage 512 bit
+>> registers, parallel carry less multiply and reduction.
+>>
+>> VPCLMULQDQ instruction is used to accelerate the most time-consuming
+>> part of GHASH, carry-less multiplication. VPCLMULQDQ instruction
+>> with AVX-512F adds EVEX encoded 512 bit version of PCLMULQDQ instruction.
+>>
+>> The glue code in ghash_clmulni_intel module overrides existing PCLMULQDQ
+>> version with the VPCLMULQDQ version when the following criteria are met:
+>> At compile time:
+>> 1. CONFIG_CRYPTO_AVX512 is enabled
+>> 2. toolchain(assembler) supports VPCLMULQDQ instructions
+>> At runtime:
+>> 1. VPCLMULQDQ and AVX512VL features are supported on a platform (currently
+>>     only Icelake)
+>> 2. If compiled as built-in module, ghash_clmulni_intel.use_avx512 is set at
+>>     boot time or /sys/module/ghash_clmulni_intel/parameters/use_avx512 is set
+>>     to 1 after boot.
+>>     If compiled as loadable module, use_avx512 module parameter must be set:
+>>     modprobe ghash_clmulni_intel use_avx512=1
+>>
+>> With new implementation, tcrypt ghash speed test shows about 4x to 10x
+>> speedup improvement for GHASH calculation compared to the original
+>> implementation with PCLMULQDQ when the bytes per update size is 256 Bytes
+>> or above. Detailed results for a variety of block sizes and update
+>> sizes are in the table below. The test was performed on Icelake based
+>> platform with constant frequency set for CPU.
+>>
+>> The average performance improvement of the AVX512 version over the current
+>> implementation is as follows:
+>> For bytes per update >= 1KB, we see the average improvement of 882%(~8.8x).
+>> For bytes per update < 1KB, we see the average improvement of 370%(~3.7x).
+>>
+>> A typical run of tcrypt with GHASH calculation with PCLMULQDQ instruction
+>> and VPCLMULQDQ instruction shows the following results.
+>>
+>> ---------------------------------------------------------------------------
+>> |            |            |         cycles/operation         |            |
+>> |            |            |       (the lower the better)     |            |
+>> |    byte    |   bytes    |----------------------------------| percentage |
+>> |   blocks   | per update |   GHASH test   |   GHASH test    | loss/gain  |
+>> |            |            | with PCLMULQDQ | with VPCLMULQDQ |            |
+>> |------------|------------|----------------|-----------------|------------|
+>> |      16    |     16     |       144      |        233      |   -38.0    |
+>> |      64    |     16     |       535      |        709      |   -24.5    |
+>> |      64    |     64     |       210      |        146      |    43.8    |
+>> |     256    |     16     |      1808      |       1911      |    -5.4    |
+>> |     256    |     64     |       865      |        581      |    48.9    |
+>> |     256    |    256     |       682      |        170      |   301.0    |
+>> |    1024    |     16     |      6746      |       6935      |    -2.7    |
+>> |    1024    |    256     |      2829      |        714      |   296.0    |
+>> |    1024    |   1024     |      2543      |        341      |   645.0    |
+>> |    2048    |     16     |     13219      |      13403      |    -1.3    |
+>> |    2048    |    256     |      5435      |       1408      |   286.0    |
+>> |    2048    |   1024     |      5218      |        685      |   661.0    |
+>> |    2048    |   2048     |      5061      |        565      |   796.0    |
+>> |    4096    |     16     |     40793      |      27615      |    47.8    |
+>> |    4096    |    256     |     10662      |       2689      |   297.0    |
+>> |    4096    |   1024     |     10196      |       1333      |   665.0    |
+>> |    4096    |   4096     |     10049      |       1011      |   894.0    |
+>> |    8192    |     16     |     51672      |      54599      |    -5.3    |
+>> |    8192    |    256     |     21228      |       5284      |   301.0    |
+>> |    8192    |   1024     |     20306      |       2556      |   694.0    |
+>> |    8192    |   4096     |     20076      |       2044      |   882.0    |
+>> |    8192    |   8192     |     20071      |       2017      |   895.0    |
+>> ---------------------------------------------------------------------------
+>>
+>> This work was inspired by the AES GCM mode optimization published
+>> in Intel Optimized IPSEC Cryptographic library.
+>> https://github.com/intel/intel-ipsec-mb/lib/avx512/gcm_vaes_avx512.asm
+>>
+>> Co-developed-by: Greg Tucker <greg.b.tucker@intel.com>
+>> Signed-off-by: Greg Tucker <greg.b.tucker@intel.com>
+>> Co-developed-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
+>> Signed-off-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
+>> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+>> Co-developed-by: Megha Dey <megha.dey@intel.com>
+>> Signed-off-by: Megha Dey <megha.dey@intel.com>
+> Hello Megha,
+>
+> What is the purpose of this separate GHASH module? GHASH is only used
+> in combination with AES-CTR to produce GCM, and this series already
+> contains a GCM driver.
+>
+> Do cores exist that implement PCLMULQDQ but not AES-NI?
+>
+> If not, I think we should be able to drop this patch (and remove the
+> existing PCLMULQDQ GHASH driver as well)
 
-Checking the sections sizes of .text.hot. and .text.unlikely. looks
-good!
+AFAIK, dm-verity (authenticated but not encrypted file system) is one 
+use case for authentication only.
 
-> 
-> $ llvm-profdata show -topn=20 /tmp/vmlinux.profraw
-> Instrumentation level: IR  entry_first = 0
-> Total functions: 48970
-> Maximum function count: 62070879
-> Maximum internal block count: 83221158
-> Top 20 functions with the largest internal block counts:
->   drivers/tty/n_tty.c:n_tty_write, max count = 83221158
->   rcu_read_unlock_strict, max count = 62070879
->   _cond_resched, max count = 25486882
->   rcu_all_qs, max count = 25451477
->   drivers/cpuidle/poll_state.c:poll_idle, max count = 23618576
->   _raw_spin_unlock_irqrestore, max count = 18874121
->   drivers/cpuidle/governors/menu.c:menu_select, max count = 18721624
->   _raw_spin_lock_irqsave, max count = 18509161
->   memchr, max count = 15525452
->   _raw_spin_lock, max count = 15484254
->   __mod_memcg_state, max count = 14604619
->   __mod_memcg_lruvec_state, max count = 14602783
->   fs/ext4/hash.c:str2hashbuf_signed, max count = 14098424
->   __mod_lruvec_state, max count = 12527154
->   __mod_node_page_state, max count = 12525172
->   native_sched_clock, max count = 8904692
->   sched_clock_cpu, max count = 8895832
->   sched_clock, max count = 8894627
->   kernel/entry/common.c:exit_to_user_mode_prepare, max count = 8289031
->   fpregs_assert_state_consistent, max count = 8287198
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
-> 
+Although I am not sure if GHASH is specifically used for this or SHA?
+
+Also, I do not know of any cores that implement PCLMULQDQ and not AES-NI.
+
+Megha
+
