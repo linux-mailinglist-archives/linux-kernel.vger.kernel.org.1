@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC522F8F66
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6682F8F6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Jan 2021 22:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbhAPVRD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 16:17:03 -0500
-Received: from wnbcorp.com ([175.126.38.143]:41964 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726385AbhAPVRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 16:17:00 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GL8oof005811;
-        Sun, 17 Jan 2021 06:14:29 +0900
-Message-Id: <202101162114.10GL8oof005811@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1727203AbhAPVXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 16:23:35 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:53271 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726831AbhAPVXb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 16:23:31 -0500
+Received: from localhost.localdomain ([92.131.99.25])
+        by mwinf5d14 with ME
+        id HZMm2400J0Ys01Y03ZMnqF; Sat, 16 Jan 2021 22:21:47 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 16 Jan 2021 22:21:47 +0100
+X-ME-IP: 92.131.99.25
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        vaibhavgupta40@gmail.com, tglx@linutronix.de
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: cx25821: Fix a bug when reallocating some dma memory
+Date:   Sat, 16 Jan 2021 22:21:46 +0100
+Message-Id: <20210116212146.555745-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sat, 16 Jan 2021 22:14:53 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+This function looks like a realloc.
 
-Sir/Madam,
+However, if 'risc->cpu != NULL', the memory will be freed, but never
+reallocated with the bigger 'size'.
+Explicitly set 'risc->cpu' to NULL, so that the reallocation is
+correctly performed a few lines below.
 
-CONGRATULATIONS!!!
+Fixes: 5ede94c70553 ("[media] cx25821: remove bogus btcx_risc dependency)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Completly speculative and untested.
+---
+ drivers/media/pci/cx25821/cx25821-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+diff --git a/drivers/media/pci/cx25821/cx25821-core.c b/drivers/media/pci/cx25821/cx25821-core.c
+index 6f8ffab8840f..22e47dd74df4 100644
+--- a/drivers/media/pci/cx25821/cx25821-core.c
++++ b/drivers/media/pci/cx25821/cx25821-core.c
+@@ -976,8 +976,10 @@ int cx25821_riscmem_alloc(struct pci_dev *pci,
+ 	__le32 *cpu;
+ 	dma_addr_t dma = 0;
+ 
+-	if (NULL != risc->cpu && risc->size < size)
++	if (NULL != risc->cpu && risc->size < size) {
+ 		pci_free_consistent(pci, risc->size, risc->cpu, risc->dma);
++		risc->cpu = NULL;
++	}
+ 	if (NULL == risc->cpu) {
+ 		cpu = pci_zalloc_consistent(pci, size, &dma);
+ 		if (NULL == cpu)
+-- 
+2.27.0
 
