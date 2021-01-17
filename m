@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BA22F91A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EC72F91A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbhAQKKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 05:10:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        id S1728194AbhAQKMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 05:12:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728463AbhAQKJ6 (ORCPT
+        with ESMTP id S1728499AbhAQKKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 05:09:58 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DD8C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 02:09:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ItbSYqJ0DbCe+J/gZUetRPMemBxEJIEpaxGcVk0SftY=; b=0mn8fckZlbhhwYm/aXkpvFTFQ
-        Q+sWZ4yWv44x8bHqyF14DtXaRL+AIyzCR5a92GsrwEDyr2z3jWULutPT9gVEZrAZOJ8gWAlSCAua/
-        8TE20ZOXND/WTK+mqe4r1P9aprwhblsuHr0gtWFKCAJ2oyxKVFN8NxdLgemTQBFAhUsdg/T24i2Qi
-        rx/Ca8k8VkLqmN3ebW0dbwvr2kO1BQUAypZCOZ51rE66Hbq3kFPCTIY8vGH9HNJgpy4HwcfNABvbG
-        Oqgjs7qMzjrrIwrFgfjq3J4oAZMiOFUw82nTNUD86SRF9+Agh32/q2mqL6HUHsZ83r5tFLgtRyH8j
-        nlZ66ywfA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49082)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l14zb-0005Mu-4k; Sun, 17 Jan 2021 10:09:07 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l14zY-0002tT-4x; Sun, 17 Jan 2021 10:09:04 +0000
-Date:   Sun, 17 Jan 2021 10:09:04 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmerdabbelt@google.com,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, guoren@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: Re: [PATCH v3 0/4] initrd: Use unified initrd reserve function in
- ARM/RISCV
-Message-ID: <20210117100903.GB1551@shell.armlinux.org.uk>
-References: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
- <48c006a8-a352-488c-4981-768faffbe343@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48c006a8-a352-488c-4981-768faffbe343@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        Sun, 17 Jan 2021 05:10:25 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55C6C061573;
+        Sun, 17 Jan 2021 02:09:44 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id g12so19544948ejf.8;
+        Sun, 17 Jan 2021 02:09:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GAlzQhKZYq1VTOxNcXW0n5p+sG1hEvl0LZsZTzmenZw=;
+        b=KcGIj3TOBx4vFM/uI02NNXxBBGDVYypGRfNq/+CHZCbmBR8rl5RM3upoB+pxGCBiFr
+         IQpftZXipOHJp8dW+GsenxTbFFqGzDu43O1376z9UCyuqVrwN279YfIcCgu9I574YFBz
+         ewqdqTP9/l47mTuV/8gOHCdeaVQTKJt1sO7h3se/93F4wcNKZCQJegfTyP6BgULJmrki
+         VlqLgO+OR/5FEJBhdJWlRmTocopGE0fUmYUZ9NsYFG2xoAn6nT1T8S79XSgen+kVQ6Cd
+         QiSQQjmDc2/eZpmhApJfzRqgw9lAg7Zrkh0IrSLtC3/Ms1WtGUUQoRMjs2Y3ni+nugAc
+         f7wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GAlzQhKZYq1VTOxNcXW0n5p+sG1hEvl0LZsZTzmenZw=;
+        b=V+ZaeLDgem/93f2nG6ZqKFearNCYiMMX84BUP3k8RZnN9lI6G0/dZ/22s6DqX4Tt4C
+         oDQPMSgWH2ECxBNnP9T24VVS2oY5GZGMGllqvMvYBLjGYhLe2rDZ2hk1ZFj6kkEOnm6m
+         WbBl1a8ju5aN7eBn2L48bctx9tBJAo5dxQaCWDXc7NF0LolEWnVEnvvW6uan6zhrWa83
+         NUQzk2sVk7s6C+0rTLnQqII0+rXnWzmCKMqYHwnjMxlpLjzQ3E9C/376U4NTI7iI6r1F
+         7XigVvl/5TVyQRxDoeZFSydRMSyjMe/g0rMABUX7+7mENUYQw6z7SkYBoPBE3hPqSgc/
+         TTCw==
+X-Gm-Message-State: AOAM531Mbk6NLL6YilQ+WVDAFKy0qPTWO9Modd1x+SuQUubedNg6xkNO
+        a0zN1ZwxHvjLVjnPuPyKDOQWtmAI+tbGAw==
+X-Google-Smtp-Source: ABdhPJzWLYmx+QpH4rtDbsvUgp0x5cAY1wyUYn9lBeZriTUA5LB74QM3ot9KxO1/pemYRXrnZIZ5uw==
+X-Received: by 2002:a17:907:7295:: with SMTP id dt21mr14718213ejc.518.1610878183481;
+        Sun, 17 Jan 2021 02:09:43 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:10d2:194d:c06a:642a:2af4:1e16])
+        by smtp.gmail.com with ESMTPSA id s19sm9277855edx.7.2021.01.17.02.09.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 02:09:42 -0800 (PST)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     corbet@lwn.net
+Cc:     SeongJae Park <sjpark@amazon.de>, paulmck@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] docs: Update Korean translation
+Date:   Sun, 17 Jan 2021 11:09:28 +0100
+Message-Id: <20210117100931.9347-1-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 12:57:55PM +0800, Kefeng Wang wrote:
-> Correct Russell's mail address (from linux@armlinux.org.uk to
-> rmk+kernel@armlinux.org.uk, should update the MAINTAINERS)
+From: SeongJae Park <sjpark@amazon.de>
 
-No. MAINTAINERS is correct.
+This patchset updates Korean translation of 'howto.rst' and links
+the 'memory-barriers.txt' translation in the index rst file.
 
-> On 2021/1/15 13:46, Kefeng Wang wrote:
-> > Use the same implementation of initrd reserve to avoid duplication.
-> > 
-> > v3:
-> > - split into four patches, suggested-by Palmer Dabbelt
-> > v2:
-> > - fix build error found by kernel test robot
-> > 
-> > Kefeng Wang (4):
-> >    initrd: Add the preprocessor guard in initrd.h
-> >    initramfs: Provide a common initrd reserve function
-> >    ARM: Covert to reserve_initrd_mem()
-> >    riscv: Covert to reserve_initrd_mem()
-> > 
-> >   arch/arm/mm/init.c     | 43 +--------------------------------
-> >   arch/riscv/mm/init.c   | 54 +-----------------------------------------
-> >   include/linux/initrd.h | 11 +++++++++
-> >   init/initramfs.c       | 45 +++++++++++++++++++++++++++++++++++
-> >   4 files changed, 58 insertions(+), 95 deletions(-)
-> > 
-> 
+SeongJae Park (3):
+  Documentation/kokr/howto: Replace HTTP links with HTTPS ones:
+    Documentation/process
+  docs/kokr: make reporting-bugs.rst obsolete
+  docs/kokr: Link memory-barriers.txt to rst
+
+ Documentation/translations/ko_KR/howto.rst |  4 ++--
+ Documentation/translations/ko_KR/index.rst | 15 +++++++++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
