@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C4D2F93C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AA62F93D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbhAQQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 11:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbhAQQEY (ORCPT
+        id S1729038AbhAQQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 11:07:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25392 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726839AbhAQQHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 11:04:24 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761ABC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 08:03:44 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id b64so16598867qkc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 08:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KFlkMVDqoW72VL1ioHetfEb7AzY86ZGvVMCGmXmhUVk=;
-        b=gEUflY9yyOU9V2h9h1oOq9wBHJCek+hHaud1YwLCoF2jx0oFck6dfHUD/+a2mjATj0
-         iolwFvB/VPJQuXzWaTivEKu0c/bTwXQR3a0sC23kSoCHmpVp6UZ7iQuaWdzd0DObp8Kp
-         xnrRRFYxMKXMxBTh26PGbnjf7f5JS7OmeCNJ6bruf0DMoRYiDfYRBNEpeJ9kQEKzqtVp
-         fc0Vw0sIWVts3CTYlqeVwucqjzIgeFG1YNLfGBTdh2ZtbtBgfRlSFAnyDgHlS5YbYMQw
-         uuWEXR1mJ8F1+rzHUZaSQz99+vOpb0Z14VIYOJ6akMg3pNzMbwhqEimzw60Yw03ACx6t
-         a70g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KFlkMVDqoW72VL1ioHetfEb7AzY86ZGvVMCGmXmhUVk=;
-        b=c1aysqeSZKu7X13EoHKz3P3ByIwAKsax8zeirx4Pzp+qFEmffP7y7XGqPcxorZNiA2
-         b0BvKn7M6Gbdxprmg4tDWwhOFDFF9PV/kbhm9NF7eeVf+85BBo4xGNO0zI+IEVKEOkc7
-         aA6TMkrSVlqrqprFWnihOfAvzyyoihsWHphTmtsbil4MEvtn0o5T8ZMZ4DnbFE2jRttA
-         iw5D6LfFdyWImmsns3yxr4bSAGpfsjSZjEJZh/YkLuXVX1VzmGK7YHx+DoV+Xx2zSze6
-         BDSUMM6IQSOhQYO/ZbMdU9NKtcQSbWGMthDC/MrhAV055ztOjQDOVtH0H8t/4yQwBoom
-         VYsg==
-X-Gm-Message-State: AOAM5329HAwjudj7sl/tWo8XufYBkzL1ohdE/SvSztWPAgCl1JZlpV6u
-        JUzn6lx7NXkl7wESa6zDimKkkqwFHKLcCQ==
-X-Google-Smtp-Source: ABdhPJyCcbl8o0ZjS0QRGcOSBksYJvU3lYiZqMwqxsOJeDC6Nt38C+Mcbl5AfYJtF24vvxyZoJ/oVA==
-X-Received: by 2002:a37:b94:: with SMTP id 142mr21125459qkl.318.1610899423272;
-        Sun, 17 Jan 2021 08:03:43 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id g28sm8451351qtm.91.2021.01.17.08.03.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 08:03:42 -0800 (PST)
-Subject: Re: [PATCH net-next 7/7] net: ipa: allow arbitrary number of
- interconnects
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210115125050.20555-1-elder@linaro.org>
- <20210115125050.20555-8-elder@linaro.org>
- <20210116191207.277a391a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <466069e3-2658-5ba7-7704-2cac3293f79a@linaro.org>
-Date:   Sun, 17 Jan 2021 10:03:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Sun, 17 Jan 2021 11:07:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610899565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EacE5bdGI/vbbNWrSb4UQ45b4SwS399pIa9ugtyLzeM=;
+        b=LqQTWSEhnQCE+IrhJ8jgyjot0X9mfKSMz2Uu0aA5LGMd3Ne/CQH+TitCOnj0mj9aCNH0c8
+        V1Nr8mb0pXTQK01pCnX7hd8NThDsxoZSWajGSPGxPPalvt8b8LPC6vQxrSPEv10BWsDSiq
+        D5ePy3tQ56mW4bO1laWw4F0nqe9ueq0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346--1sE0xg1NIOtO_06jpFaFA-1; Sun, 17 Jan 2021 11:06:03 -0500
+X-MC-Unique: -1sE0xg1NIOtO_06jpFaFA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14669806666;
+        Sun, 17 Jan 2021 16:06:01 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 058965C233;
+        Sun, 17 Jan 2021 16:05:55 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v2 00/12] MFD/extcon/ASoC: Rework arizona codec jack-detect support
+Date:   Sun, 17 Jan 2021 17:05:43 +0100
+Message-Id: <20210117160555.78376-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210116191207.277a391a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/16/21 9:12 PM, Jakub Kicinski wrote:
-> On Fri, 15 Jan 2021 06:50:50 -0600 Alex Elder wrote:
->> Currently we assume that the IPA hardware has exactly three
->> interconnects.  But that won't be guaranteed for all platforms,
->> so allow any number of interconnects to be specified in the
->> configuration data.
->>
->> For each platform, define an array of interconnect data entries
->> (still associated with the IPA clock structure), and record the
->> number of entries initialized in that array.
->>
->> Loop over all entries in this array when initializing, enabling,
->> disabling, or tearing down the set of interconnects.
->>
->> With this change we no longer need the ipa_interconnect_id
->> enumerated type, so get rid of it.
-> 
-> Okay, all the platforms supported as of the end of the series
-> still have 3 interconnects, or there is no upstream user of
-> this functionality, if you will. What's the story?
+Hi All,
 
-The short answer is that there is another version of IPA that
-has four interconnects instead of three.  (A DTS file for it is
-in "sdxprairie.dtsi" in the Qualcomm "downstream" code.)  I hope
-to have that version supported this year, but it's not my top
-priority right now.  Generalizing the interconnect definitions
-as done in this series improves the driver, but you're right, it
-is technically not required at this time.
+This series reworks the arizona codec jack-detect support to use
+the snd_soc_jack helpers instead of direct extcon reporting.
 
-And some more background:
-The upstream IPA driver is derived from the Qualcomm downstream
-code published at codeaurora.org.  The downstream driver is huge
-(it's well over 100,000 lines of code) and it supports lots of
-IPA versions and some features that are not present upstream.
+This is done by reworking the extcon driver into an arizona-jackdet
+library and then modifying the codec drivers to use that directly,
+replacing the old separate extcon child-devices and extcon-driver.
 
-In order to have any hope of getting upstream support for the
-IPA hardware, the downstream driver functionality was reduced,
-removing support for filtering, routing, and NAT.  I spent many
-months refactoring and reworking that code to make it more
-"upstreamable," and eventually posted the result for review.
+This brings the arizona-codec jack-detect handling inline with how
+all other ASoC codec driver do this.
 
-Now that there is an upstream driver, a long term goal is to
-add back functionality that got removed, matching the most
-important features and hardware support found in the downstream
-code.  So in cases like this, even though this feature is not
-yet required, adding it now lays groundwork to make later work
-easier.
+This was developed and tested on a Lenovo Yoga Tablet 1051L with
+a WM5102 codec.
 
-Everything I do with the upstream IPA driver is aimed at in-tree
-support for additional IPA features and hardware versions.  So
-even if an improvement isn't required *now*, there is at least
-a general plan to add support "soon" for something that will
-need it.
+The MFD, ASoC and extcon parts can be merged independent from each-other
+although that could lead to a case where both the extcon driver and
+the new arizona-jackdet library will try to do jack-detection. If we
+end up with a git tree in that state then one of the 2 will fail to
+load because the other will already have claimed the IRQs, so this
+is not a problem really.
 
-Beyond even that, there are some things I intend to do that
-will improve the driver, even if they aren't technically
-required near-term.  For example, I'd like to dynamically
-allocate endpoints based on what's needed, rather than
-having the driver support any number of them up to a maximum
-fixed at build time.
+Or the entire series could be merged through the MFD tree if people
+prefer that.
 
-Probably a longer response than you needed, but I thought it
-would help to provide more background.  Besides, you *did* ask
-for "the story..."
+Note that this series also paves the way for some further cleanups,
+removing some jackdetect related variables like hp_ena and hp_clamp
+from the arizona data struct shared between all the MFD child devices.
+I've deliberately not done that cleanup as part of this patch-series,
+since IMHO the series is big enough as is. These cleanups can be done
+in a follow-up series once this series has landed.
 
-					-Alex
+Regards,
+
+Hans
+
