@@ -2,121 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A0B2F905D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 04:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FD82F9062
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 05:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbhAQD6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 22:58:33 -0500
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:38991 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbhAQD6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 22:58:30 -0500
-Received: by mail-pf1-f177.google.com with SMTP id m6so8127282pfm.6;
-        Sat, 16 Jan 2021 19:58:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pyh7gDLlSAQV6EbKAPmjVdfsXREpXfZ7PZWPtjqkTl0=;
-        b=aCPq6OSE4XdcoT9lENZbHC8vXkbpgoNW6T9A+/zuVXN5T2NJ6h17Du8sxZyLWtJStW
-         g8x7mE1OxE9wH76RnZXG59Dn6Qx8lWTdKrNsMDT1D290HcXvK+S1afAw6ksZx9kVydvN
-         Gvxs6qPC8uKpDMZxQQs6ywhYTn2/Ay+aKJVsx/GHYkD+DZaEtIf/TKPSOIEeQPnlIySY
-         4o8s+c+mk9gdPVUGkE6egD0BzPvXh19ZLah5JiHUekBMkAxyZSAOIgMujj8YDLSmni8Y
-         esfnKIwLAJgdT6MA3eMWZ5qlzhGu2Vn9l6dCLl+9jCPt9qVXG7/X5aVo7V0Fj7ZdTVE3
-         g1LA==
-X-Gm-Message-State: AOAM532X81ly2COSk6CCIN+U+l+OurVsuEBIJTf50NnN7IPR+PGMYNYX
-        YEgwAeeldx6WLEyv3nIum5UxBS1PXyY=
-X-Google-Smtp-Source: ABdhPJwvwro6/YR8+IYunHszon9kb3nUTvQ7rCwSopR5d/bai6FRKbjYuuxmjasKM6nbI1aQUqsJfQ==
-X-Received: by 2002:a63:f111:: with SMTP id f17mr20632863pgi.287.1610855869933;
-        Sat, 16 Jan 2021 19:57:49 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id m26sm11760823pfo.123.2021.01.16.19.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 19:57:49 -0800 (PST)
-Date:   Sat, 16 Jan 2021 19:57:48 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v6 2/2] Documentation: fpga: dfl: Add description for DFL
- UIO support
-Message-ID: <YAO1vA6DWxTdjBOz@epycbox.lan>
-References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
- <1610502848-30345-3-git-send-email-yilun.xu@intel.com>
+        id S1727877AbhAQEI4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 23:08:56 -0500
+Received: from wnbcorp.com ([175.126.38.143]:51778 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727407AbhAQEIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 23:08:30 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10H3rj1F030262;
+        Sun, 17 Jan 2021 13:00:19 +0900
+Message-Id: <202101170400.10H3rj1F030262@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610502848-30345-3-git-send-email-yilun.xu@intel.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sun, 17 Jan 2021 04:59:58 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xu,
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-On Wed, Jan 13, 2021 at 09:54:08AM +0800, Xu Yilun wrote:
-> This patch adds description for UIO support for dfl devices on DFL
-> bus.
-> 
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> ---
-> v2: no doc in v1, add it for v2.
-> v3: some documentation fixes.
-> v4: documentation change since the driver matching is changed.
-> v5: no change.
-> v6: improve the title of the userspace driver support section.
->     some word improvement.
-> ---
->  Documentation/fpga/dfl.rst | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index 0404fe6..c33b6d0 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -7,6 +7,7 @@ Authors:
->  - Enno Luebbers <enno.luebbers@intel.com>
->  - Xiao Guangrong <guangrong.xiao@linux.intel.com>
->  - Wu Hao <hao.wu@intel.com>
-> +- Xu Yilun <yilun.xu@intel.com>
->  
->  The Device Feature List (DFL) FPGA framework (and drivers according to
->  this framework) hides the very details of low layer hardwares and provides
-> @@ -502,6 +503,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
->  could be a reference.
->  
->  
-> +Userspace driver support for DFL devices
-> +========================================
-> +The purpose of an FPGA is to be reprogrammed with newly developed hardware
-> +components. New hardware can instantiate a new private feature in the DFL, and
-> +then get a DFL device in their system. In some cases users may need a userspace
-> +driver for the DFL device:
-> +
-> +* Users may need to run some diagnostic test for their hardwares.
-> +* Users may prototype the kernel driver in user space.
-> +* Some hardware is designed for specific purposes and does not fit into one of
-> +  the standard kernel subsystems.
-> +
-> +This requires direct access to MMIO space and interrupt handling from
-> +userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
-> +purpose. It adds the uio_pdrv_genirq platform device with the resources of
-> +the DFL feature, and lets the generic UIO platform device driver provide UIO
-> +support to userspace.
-> +
-> +FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
-> +To support a new DFL feature been directly accessed via UIO, its feature id
-> +should be added to the driver's id_table.
-> +
-> +
->  Open discussion
->  ===============
->  FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
-> -- 
-> 2.7.4
-> 
+Sir/Madam,
 
-Looks fine to me, can you resend with changes for the other patch?
+CONGRATULATIONS!!!
 
-- Moritz
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
