@@ -2,110 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F912F950F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 21:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192122F9519
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 21:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbhAQUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 15:15:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46198 "EHLO mail.kernel.org"
+        id S1729801AbhAQUVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 15:21:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728732AbhAQUPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 15:15:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0262221D7F;
-        Sun, 17 Jan 2021 20:14:28 +0000 (UTC)
+        id S1728732AbhAQUUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 15:20:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 291F4206F6;
+        Sun, 17 Jan 2021 20:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610914468;
-        bh=/275w1gmJINORnvZPOCvbcQvFYNu59iWeBPKZ1AiDLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jbo6wEePj/G4UWwJpJc3Yl6I8K14+p9MFY6rNzEg2khiXV2pIH35IA1oyvlPrXMHZ
-         H9KE+O30jdsfGkpXuzp9XVyGBM9WBymy7cURCikQ2VhCObmDHIMnGWnAwFy4r9Ot1i
-         0siB0NSpehbI+6hEznDoN22w0sEW2aGthCHHp1e8gXbp9z8YaCHV2ptG9mavRadq4M
-         yPdHlKK/8xovZS97HsRLHvyS6VH59ZH0nc6/K/b1VUuWdbD3iy0Iz7ksAZkw3Md/BG
-         LCAy4p/egLE8B9dvauwF1OSwJd58W2kr5AaSPsYRY7TlQ0C5ZfyVF8yGtlpWB6emg9
-         UbhigWiEllWaA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A020540522; Sun, 17 Jan 2021 17:15:00 -0300 (-03)
-Date:   Sun, 17 Jan 2021 17:15:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-Message-ID: <20210117201500.GO457607@kernel.org>
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com>
- <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com>
-X-Url:  http://acmel.wordpress.com
+        s=k20201202; t=1610914806;
+        bh=T5D+im4onKTFpain7lHAmx32O/a8JhqFsNsIAl2PpPw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lVy7hw/Q+6bdjLConOCc4EZXEgosiRyUNvR53MieDh7hpCUoQQZHbZEzOwF7EpxDE
+         4arCUKtJrmRTF8ZLd0rtzJp3m3YCD8013w/bpX3si7I4Ly46sCV+9lkclbTUmb5+8F
+         QJQ+CCacSbH/FwrB6Xqh/yZRGxpP8R6YPuXs99qUv5xDdUDWDjsXpfNzNgJdfW5ii9
+         OCuu9eJNvDdzZxIgT3DClTI5If7QHqZNf2NQHP2sc2tXQP2+LnAzgtBlqmIn8Ab7+b
+         O2pVsvsmPmRAEtl+pBIQDYItMx/JEHNjWbzk/9nYxhotI19WLYQFwkb3GHJZYT0e/F
+         d+fCY1JmXSARg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 1699660077;
+        Sun, 17 Jan 2021 20:20:06 +0000 (UTC)
+Subject: Re: [git pull] vfs.git fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210117032115.GG3579531@ZenIV.linux.org.uk>
+References: <20210117032115.GG3579531@ZenIV.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210117032115.GG3579531@ZenIV.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+X-PR-Tracked-Commit-Id: d36a1dd9f77ae1e72da48f4123ed35627848507d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a527a2b32d20a2bd8070f49e98cb1a89b0c98bb3
+Message-Id: <161091480602.19660.12485024734325890961.pr-tracker-bot@kernel.org>
+Date:   Sun, 17 Jan 2021 20:20:06 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
-> 
-> 
-> On 1/15/21 3:34 PM, Nick Desaulniers wrote:
-> > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
-> > > 
-> > > 
-> > > 
-> > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
-> > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
-> > > > CONFIG_DEBUG_INFO_DWARF4.
-> > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
-> > 
-> > Can you privately send me your configs that repro? Maybe I can isolate
-> > it to a set of configs?
-> > 
-> > > 
-> > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
-> > > It is not there before and adding this may suddenly break some users.
-> > > 
-> > > If certain combination of gcc/llvm does not work for
-> > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
-> > > should fix.
-> > 
-> > Is there a place I should report bugs?
-> 
-> You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
-> dwarves@vger.kernel.org and bpf@vger.kernel.org.
+The pull request you sent on Sun, 17 Jan 2021 03:21:15 +0000:
 
-I'm coming back from vacation, will try to read the messages and see if
-I can fix this.
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
 
-Thanks,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a527a2b32d20a2bd8070f49e98cb1a89b0c98bb3
 
-- Arnaldo
- 
-> > 
-> > > 
-> > > > 
-> > > > I had some other small nits commented in the single patches.
-> > > > 
-> > > > As requested in your previous patch-series, feel free to add my:
-> > > > 
-> > > > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > 
-> > Yeah, I'll keep it if v6 is just commit message changes.
-> > 
+Thank you!
 
 -- 
-
-- Arnaldo
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
