@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52432F91BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60532F91C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbhAQKY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 05:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbhAQKYs (ORCPT
+        id S1728138AbhAQKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 05:36:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbhAQKez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 05:24:48 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E484BC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 02:24:07 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DJWH85FFPz9sVF;
-        Sun, 17 Jan 2021 21:24:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1610879045;
-        bh=0EmwnWPG3h6QdX/Idod84V/+amJZC6KEpzuu75oLgmM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iph2P3y2oJiuZtmNHM3RGAn9nVr19mbBj8N/X94xgKopIWVLLyJWqjQQZ9wSspKwW
-         W5kFcg1hZ3Up+SJxTNi+p7lhXxeO8kGtFOK5X4R7hmab1TTbMCQ+kq32Me+8iwBzo/
-         V6PY03NtS5VoH9fNLh+mpt9vSw9bJ+zdDnDJT9yu6vHeKe+2Y2hfcaQxb+8tiyAyiM
-         0KsQbIL7cgFfol55GQAE50qfEWJb1A8jpuTtuVRFs/nBHsLPLJCXirLkZi4K6zWhlu
-         fPUcNPDU7xgVzSdsfyqgJSdGWnC0hwnwV7tOfPWrou0J+n23Q3nyJgkF+VXwC925Eq
-         0nnMk6KofEkxg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     arielmarcovitch@gmail.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, schwab@linux-m68k.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-4 tag
-Date:   Sun, 17 Jan 2021 21:24:00 +1100
-Message-ID: <87o8hnn9of.fsf@mpe.ellerman.id.au>
+        Sun, 17 Jan 2021 05:34:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610879581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tml6sHp1NjNR0HFEv3Pcp5mMcpBNidTf8muhn4StX7M=;
+        b=EAay2NViUUTMDIOomnts8r3gJI2rzrARwqjlNh2Ab2F+l/9F74wnP11umiCBI7ZHYXBr2b
+        U4PqfAcwg0mPKHnBSqPGeOsVwwT5wY3gnsU/DzbpOWnb+Oda8ll9FOD7HvkiJdKJOqbJSJ
+        vzyYZEm9uNa4aHOnWi67DK9/pyFOjT4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-V_9zE4-0MfO6X1XqUu2_Hg-1; Sun, 17 Jan 2021 05:30:07 -0500
+X-MC-Unique: V_9zE4-0MfO6X1XqUu2_Hg-1
+Received: by mail-wr1-f69.google.com with SMTP id q2so6709955wrp.4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 02:30:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tml6sHp1NjNR0HFEv3Pcp5mMcpBNidTf8muhn4StX7M=;
+        b=fVV0aWtqptGXK8xVWXK05OF/zatpetRsS0onXPW+LTGqjc0aRgZviJIDktCgPlRytv
+         NsVTDTRUniHJSFyA31lR5TPX3tC1C41w39b6tXmgxDp982+9l6ED/5pciElBRuZCquDF
+         KE/ti6hWPmqC4I4jgQrVjhEhQ4iZBC69yw+BU0uAkVDAylcFeVoebNNFj+ZpDEyfQOcR
+         Ou9evJTgoBlvIbpEU3Nx3oeo7KJCQzCEpoUvKwLYOux+bz6GFYjtvBCZxQi+WWp7qihb
+         52XKXOarmJKegF82nBUsWNs43JIT5GGl2mpvB/8it/hRhegSuqomuwmwyYmJ13WJJs+G
+         nAhw==
+X-Gm-Message-State: AOAM531lhtZzhuEI1E/shACzS7X86H2NKA1vxOck6qMEgXTRCRgHp7Y9
+        H5NA3gbTSHTLRkEefNwtSW5lvuegjiblFycfMZOcTL3wAbx8DIzNwIu8rYXYHGrQ0c1ak7fMsdV
+        u/MOsRioEd1TekVootN7wCv+u
+X-Received: by 2002:a5d:4ece:: with SMTP id s14mr20882390wrv.427.1610879405575;
+        Sun, 17 Jan 2021 02:30:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJOkl7BSAtfyHjEVk7fCu1bVnGq2uHZD9z4fBmoWEo/nxSjQ1VfYa4asP46KP2Zq+ue0UrfA==
+X-Received: by 2002:a5d:4ece:: with SMTP id s14mr20882379wrv.427.1610879405440;
+        Sun, 17 Jan 2021 02:30:05 -0800 (PST)
+Received: from redhat.com (bzq-79-176-30-58.red.bezeqint.net. [79.176.30.58])
+        by smtp.gmail.com with ESMTPSA id c20sm18850213wmb.38.2021.01.17.02.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 02:30:04 -0800 (PST)
+Date:   Sun, 17 Jan 2021 05:30:01 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, elic@nvidia.com
+Subject: Re: [PATCH V2] mlx5: vdpa: fix possible uninitialized var
+Message-ID: <20210117052810-mutt-send-email-mst@kernel.org>
+References: <20210114070904.9981-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114070904.9981-1-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Thu, Jan 14, 2021 at 03:09:04PM +0800, Jason Wang wrote:
+> When compiling with -Werror=maybe-uninitialized, gcc may complains the
+> possible uninitialized umem. Since the callers won't pass value other
+> than 1 to 3, making 3 as default to fix the compiler warning.
+> 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
-Hi Linus,
-
-Please pull some more powerpc fixes for 5.11:
-
-The following changes since commit 3ce47d95b7346dcafd9bed3556a8d072cb2b8571:
-
-  powerpc: Handle .text.{hot,unlikely}.* in linker script (2021-01-06 21:59:04 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-4
-
-for you to fetch changes up to 41131a5e54ae7ba5a2bb8d7b30d1818b3f5b13d2:
-
-  powerpc/vdso: Fix clock_gettime_fallback for vdso32 (2021-01-14 15:56:44 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.11 #4
-
-One fix for a lack of alignment in our linker script, that can lead to crashes
-depending on configuration etc.
-
-One fix for the 32-bit VDSO after the C VDSO conversion.
-
-Thanks to:
-  Andreas Schwab, Ariel Marcovitch, Christophe Leroy.
-
-- ------------------------------------------------------------------
-Andreas Schwab (1):
-      powerpc/vdso: Fix clock_gettime_fallback for vdso32
-
-Ariel Marcovitch (1):
-      powerpc: Fix alignment bug within the init sections
+Of course if it's actually something else this is not DTRT ...
+As long as we worry about this warning, let's have defence in depth:
+  	case 3:
+  		umem = &mvq->umem3;
+  		break;
+ +	default:
+ +		umem = NULL;
+ +              BUG();
+ +		break;
 
 
- arch/powerpc/include/asm/vdso/gettimeofday.h | 16 +++++++++++++++-
- arch/powerpc/kernel/vmlinux.lds.S            |  8 ++++++++
- 2 files changed, 23 insertions(+), 1 deletion(-)
------BEGIN PGP SIGNATURE-----
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index f1d54814db97..07ccc61cd6f6 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -703,7 +703,7 @@ static void umem_destroy(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue
+>  	case 2:
+>  		umem = &mvq->umem2;
+>  		break;
+> -	case 3:
+> +	default:
+>  		umem = &mvq->umem3;
+>  		break;
+>  	}
+> -- 
+> 2.25.1
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmAED74ACgkQUevqPMjh
-pYAyFRAAr2/3tLnaJgu8LIkr64AUuNAXsAhTaVb3MEemJtR7FSEK8pJjw/AtQmHh
-aTB9Y4qp2kOSQq6C6j4cMitGUYOiDEayCHPP1SserIRVJXmC453jqKb/iHrpaVWo
-zBdrqrMzgFhlfT6/IDVw/+e5rjycwp9QicQZ0DRX15ZXlqlMSr1b6VH3opku4DyV
-a9OP/LlR6PAgZQn+qTfeB/z7HnwOdy9R5i/UnrALqrzKGOneQXd+jv7THbudMs/D
-aVTapfuoon1SPSLWy7xSVKIjFxwV4KUMi0R5kjWlWkXFqdLA2r8XRE3sKcLW1IN1
-0Yibv1DRddsnluqe5lclQgzWPfRLdjPhgoIwIq3Ze50aSMuLXU5TatPzXVVKFDWT
-emVMyQ/SOzWdI7mwsbN1GK85x7cvWW7wMLtEnvJ82vQJpJtAJEyWEZ9UozfpBrPq
-/H2rrisWMFyZhl3eDdcJCwV7YeOxdCnmqmJnnkTMypRRXyWlfJDHs0CP7fWiKu+j
-XMsPhxM1hyfrueOW7iPBEt/ZkB17Eq1V0Z2OQU+chXqJmmh9gwSBb/F8iJ48Iphi
-4L2ynxJTAHwFY27xE1CQIF0VKycIc7djkDhYoJaL8PaVXQkUo/NWy4zOVNzJpeen
-HbeLjHKGeeGetWxOniBCgD0PxoOQH8ThQauz+NwzeACGgyPzkM0=
-=fJl5
------END PGP SIGNATURE-----
