@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE562F91FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9EA2F9205
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbhAQL2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 06:28:35 -0500
-Received: from www.zeus03.de ([194.117.254.33]:38468 "EHLO mail.zeus03.de"
+        id S1728474AbhAQLbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 06:31:41 -0500
+Received: from aposti.net ([89.234.176.197]:36742 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbhAQL2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 06:28:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=EuAcIGM5UpaqNlEQP9NTkc9HxhbR
-        /sTXIcTuq3b2I7c=; b=Zo78i2u9ZF+Fo5YhbPErZYbfHbEJB+pDHpy/jlEXi521
-        izXDPr/DHHpsslDusiBJgj7kxysBxwxZsEPBPJgufZPdVTiinfNSALGaxgFvbu83
-        pRjx4peZjVLz35xDGFpSfijl/WeaWifE/644Wj2Fbguz1mSoqTASERLhF7gSNfE=
-Received: (qmail 301521 invoked from network); 17 Jan 2021 12:27:35 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2021 12:27:35 +0100
-X-UD-Smtp-Session: l3s3148p1@tK1d5Ba5fJkgAwDPXy7qAHeYPdzlZkhM
-Date:   Sun, 17 Jan 2021 12:27:35 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Robert Richter <rric@kernel.org>,
-        Jan Glauber <jan.glauber@gmail.com>,
-        David Daney <david.daney@cavium.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] i2c: octeon: check correct size of maximum RECV_LEN
- packet
-Message-ID: <20210117112735.GD1983@ninjato>
-References: <20210109124314.27466-1-wsa+renesas@sang-engineering.com>
- <20210109124314.27466-5-wsa+renesas@sang-engineering.com>
+        id S1728668AbhAQLaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 06:30:10 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
+Subject: [PATCH 3/3] drm/ingenic: Fix non-OSD mode
+Date:   Sun, 17 Jan 2021 11:26:46 +0000
+Message-Id: <20210117112646.98353-4-paul@crapouillou.net>
+In-Reply-To: <20210117112646.98353-1-paul@crapouillou.net>
+References: <20210117112646.98353-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Hf61M2y+wYpnELGG"
-Content-Disposition: inline
-In-Reply-To: <20210109124314.27466-5-wsa+renesas@sang-engineering.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Even though the JZ4740 did not have the OSD mode, it had (according to
+the documentation) two DMA channels, but there is absolutely no
+information about how to select the second DMA channel.
 
---Hf61M2y+wYpnELGG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Make the ingenic-drm driver work in non-OSD mode by using the
+foreground0 plane (which is bound to the DMA0 channel) as the primary
+plane, instead of the foreground1 plane, which is the primary plane
+when in OSD mode.
 
-On Sat, Jan 09, 2021 at 01:43:08PM +0100, Wolfram Sang wrote:
-> I2C_SMBUS_BLOCK_MAX defines already the maximum number as defined in the
-> SMBus 2.0 specs. No reason to add one to it.
->=20
-> Fixes: 886f6f8337dd ("i2c: octeon: Support I2C_M_RECV_LEN")
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
+Cc: <stable@vger.kernel.org> # v5.8+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Applied to for-current, thanks!
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index d23a3292a0e0..9d883864e078 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -553,7 +553,7 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+ 		height = state->src_h >> 16;
+ 		cpp = state->fb->format->cpp[0];
+ 
+-		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
++		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
+ 			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
+ 		else
+ 			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
+@@ -814,6 +814,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	const struct jz_soc_info *soc_info;
+ 	struct ingenic_drm *priv;
+ 	struct clk *parent_clk;
++	struct drm_plane *primary;
+ 	struct drm_bridge *bridge;
+ 	struct drm_panel *panel;
+ 	struct drm_encoder *encoder;
+@@ -928,9 +929,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	if (soc_info->has_osd)
+ 		priv->ipu_plane = drm_plane_from_index(drm, 0);
+ 
+-	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
++	primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
+ 
+-	ret = drm_universal_plane_init(drm, &priv->f1, 1,
++	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
++
++	ret = drm_universal_plane_init(drm, primary, 1,
+ 				       &ingenic_drm_primary_plane_funcs,
+ 				       priv->soc_info->formats_f1,
+ 				       priv->soc_info->num_formats_f1,
+@@ -942,7 +945,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 
+ 	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+ 
+-	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
++	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
+ 					NULL, &ingenic_drm_crtc_funcs, NULL);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to init CRTC: %i\n", ret);
+-- 
+2.29.2
 
-
---Hf61M2y+wYpnELGG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAEHycACgkQFA3kzBSg
-KbY2ohAAp/hyssOPhPf3OI/RB21Oy1wD1tgMlneSN2fgkqWW462s//YHlYebmNBq
-vK2VAK+JH3UCHwmVF8IyaCmPtBi7hdtFwR/xyf4Zh4zijH9Rtl4rqpfvdX/zWw0o
-dGmJ5Ffy6U91qvfWjUq6P+SwtApL27PTgV7eVXz3uR70rihPyDL09wPqzD6dEnT1
-pet14ry5r1yA+i674vaQQpPQsJJh86i5DxcH2oCWnGAZP8GSx7lBXqG8YBiN2Ph2
-Dkp4IF2z+xHIxO27+4FB/p8rQGGqZmKZLHooI2scKuVZAu1faxWCkUSUrxfbStZ0
-0DZj6cV0W/ggCS3kQogRyGnTpcJIvdZQsKvTerL8UborlNpcDGqyMUm0edbbsShT
-KshchzdEv1VlxasElZHaTegyijJmX0b6dTA278orxgqxEWm6iXu6VsNJCyLw1kt9
-3AxdJMGG3yqSXwRdXSyK4tznwoLlH+20Hg5L1sDGdu558naDuwoPlfUS2BkZzkq7
-SkFt7wL4jwNy/HKIxD++7TOR246z9k7uRz08vgn3OK1masBX+9wZyjKRn4lQfamE
-mb8r5/8L21jchBfcqgYOFPDA8Q8DCSDHkX2q+0u/Ldox4rqcTXevkkrzHDAKRRZW
-4Nwi0u62slT2pvIr4llGpL3NMZz3NyGpSMevchq5E9p6C30NXyo=
-=wLIN
------END PGP SIGNATURE-----
-
---Hf61M2y+wYpnELGG--
