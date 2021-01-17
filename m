@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC58D2F95AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4552F95BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 23:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbhAQV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728918AbhAQV7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:59:17 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869DEC061573;
-        Sun, 17 Jan 2021 13:58:36 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id m10so16267023lji.1;
-        Sun, 17 Jan 2021 13:58:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z4HhEek/Tw4oVixmxh9pmK2rVtkzaVm9nEVNhWaLiyw=;
-        b=jDmj8Lh2X7IY7EvLIy/ippLSvG+u36PR8Mf4KjMpj6sEGJkVJWqrIV/dJgdtpHChPt
-         x5dfS7+Gf3Clr0jy4FS6yY2j27zVS6+WI0JFwy9B8QXwfS6Kq1R4X7QuGbGfQWwyez2t
-         7k6k7gt0cn2wPjkg5wMKMKZqie8lQL7auL2I5u09vbokUqRB/FOSU3a7lDKC9Z/U3YY6
-         u51JXUm6vBmOOaAdzNbHiBwREMPhDErI1geeDdtyg6LERBhlG/w0vZwDtW4426RcAv4/
-         eJXUKn0oOlOyug7Xg7ir1mYhcr+MxAfJCvf+qBfYXQ7QzfMqIIyIIc5HhAt2k2WOlyE7
-         7RHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z4HhEek/Tw4oVixmxh9pmK2rVtkzaVm9nEVNhWaLiyw=;
-        b=ZVL/jK/CW8p2hHsYw+8cL2iMD40QQ8Jf30+ns0IHbBmZMRrks8hREfqQwQVGvwbUgm
-         6oqm1c4ZZvpESqER7LgDCG+aSv2VqNRHeo4bUbxb7jRp46uCCoQfDoakuF7PwvCqyRhB
-         CNCxAohRkzYJzd+tjWgTuf+Wy0i6WZfOO1MldVBylI3u65sgd83UqHyWAzqqaI1sA7Hq
-         ISZ3mMoncRpPSrbS8zOHm4mR3Si4rEXhiTuLxCh9NYl2gFz6e3DZmNxnHIni5apEBuGg
-         ZnwNgX6j9Q6UBEFaoaRWe2NhftEt9omuHo1c3hX58FeeNM+UKpAaLVVbzdX6PzFPeWiQ
-         zYAQ==
-X-Gm-Message-State: AOAM533OKpSmbvpsS7tqrS0ZfgrMZLRyooyqMYho7YmsI1LAEH2WCFS7
-        EyGIY9eDjsry9fqCIuwYTpiKYeh8L6r3xzhwZOEW3fjDV6zFpw==
-X-Google-Smtp-Source: ABdhPJwokbA6/W6R0raE8C9n2bMjc3KswnhdTLzWgy9AEQ+TqpOAELHUGy8q111zgCEdK7WbqrhT3M/2TzPzNcYcDGk=
-X-Received: by 2002:a2e:9250:: with SMTP id v16mr9459481ljg.256.1610920714945;
- Sun, 17 Jan 2021 13:58:34 -0800 (PST)
-MIME-Version: 1.0
-References: <1610615171-68296-1-git-send-email-abaci-bugfix@linux.alibaba.com> <87czy7lvjy.fsf@suse.com>
-In-Reply-To: <87czy7lvjy.fsf@suse.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 17 Jan 2021 15:58:23 -0600
-Message-ID: <CAH2r5mvjDAgB6-kE=AOAwrETVk+R79z6Gd8gMnOTWqG-6Mnybw@mail.gmail.com>
-Subject: Re: [PATCH] fs/cifs: Replace one-element array with flexible-array member.
-To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
-Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1730193AbhAQWC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 17:02:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729550AbhAQWCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 17:02:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A339920770;
+        Sun, 17 Jan 2021 22:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610920904;
+        bh=syw3C+yi+MfIAsKsarxDn5CIv+WBNQ1M+WvC9IOMFT0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=z9UWtErkwTPaE9iJ/e6FJXucATo+qe58tJGsr8k3lobCCopZfYhtGyFtBlcooJR7H
+         3MNfOmc3VwhSLYyHiIWqsJ8vJTqMAsaQUBlVrAdJazF72qPbFcDQ38Z9sMFPZD+1q2
+         ifjtpfMSbB3+cIjwdZ27dFCJ6CcO9Jqk8nbC1GNU=
+Date:   Sun, 17 Jan 2021 14:01:42 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, stable@vger.kernel.org,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/5] mm: Fix page reference leak in
+ soft_offline_page()
+Message-Id: <20210117140142.ab91797266e0bef6b7dba9f9@linux-foundation.org>
+In-Reply-To: <161058501210.1840162.8108917599181157327.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <161058499000.1840162.702316708443239771.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <161058501210.1840162.8108917599181157327.stgit@dwillia2-desk3.amr.corp.intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiapeng,
-Aurelien is correct, you should respin this patch and correct for
-where it breaks the sizeof calculation.  For example your change:
+On Wed, 13 Jan 2021 16:43:32 -0800 Dan Williams <dan.j.williams@intel.com> wrote:
 
-struct smb2_lock_rsp {
-@@ -1434,7 +1434,7 @@ struct smb2_query_directory_req {
-        __le16 FileNameOffset;
-        __le16 FileNameLength;
-        __le32 OutputBufferLength;
--       __u8   Buffer[1];
-+       __u8   Buffer[];
- } __packed;
+> The conversion to move pfn_to_online_page() internal to
+> soft_offline_page() missed that the get_user_pages() reference taken by
+> the madvise() path needs to be dropped when pfn_to_online_page() fails.
+> Note the direct sysfs-path to soft_offline_page() does not perform a
+> get_user_pages() lookup.
+> 
+> When soft_offline_page() is handed a pfn_valid() &&
+> !pfn_to_online_page() pfn the kernel hangs at dax-device shutdown due to
+> a leaked reference.
+> 
+> Fixes: feec24a6139d ("mm, soft-offline: convert parameter to pfn")
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 
-would have the side effect of making the file name off by one:
+A cc:stable patch in the middle is awkward.  I'll make this a
+standalone patch for merging into mainline soon (for 5.11) and shall
+turn the rest into a 4-patch series, OK?
 
-smb2pdu.c-4654- req->FileNameOffset =3D
-smb2pdu.c:4655:         cpu_to_le16(sizeof(struct
-smb2_query_directory_req) - 1);
-
-On Thu, Jan 14, 2021 at 3:26 AM Aur=C3=A9lien Aptel via samba-technical
-<samba-technical@lists.samba.org> wrote:
->
-> Hi Jiapeng,
->
-> This will change the size returned by sizeof(). Have you checked that
-> this doesn't introduce off-by-one errors in all the sizeof() usage?
->
-> Cheers,
-> --
-> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
-> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
- DE
-> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
-=BCnchen)
->
->
-
-
---=20
-Thanks,
-
-Steve
