@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A902F9488
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A0E2F948C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbhAQSWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:22:08 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59442 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729315AbhAQSWC (ORCPT
+        id S1729496AbhAQS1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:27:49 -0500
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:33818 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726295AbhAQS1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:22:02 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 96E761F44A51
-Received: by earth.universe (Postfix, from userid 1000)
-        id BC9953C0C95; Sun, 17 Jan 2021 19:21:17 +0100 (CET)
-Date:   Sun, 17 Jan 2021 19:21:17 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        nicolassaenzj@gmail.com,
-        Nicolas Saenz Julienne <nicolas.saenz@prodys.net>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH] power: supply: fix sbs-charger build, needs REGMAP_I2C
-Message-ID: <20210117182117.ewq2e6ce2c5p2mdz@earth.universe>
-References: <20210116211310.19232-1-rdunlap@infradead.org>
- <537de36b-6709-3e58-5610-9f54e2bee8a9@fold.natur.cuni.cz>
+        Sun, 17 Jan 2021 13:27:45 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 595F81800CA7D;
+        Sun, 17 Jan 2021 18:27:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:3138:3139:3140:3141:3142:3352:3622:3865:3870:3871:3873:4250:4321:5007:7576:7652:9036:10004:10400:10848:11232:11658:11783:11914:12043:12048:12296:12297:12438:12555:12740:12895:12986:13069:13311:13357:13894:13972:14181:14659:14721:21060:21080:21324:21365:21433:21451:21627:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:15,LUA_SUMMARY:none
+X-HE-Tag: goat17_180d3b827542
+X-Filterd-Recvd-Size: 2401
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 17 Jan 2021 18:27:02 +0000 (UTC)
+Message-ID: <9fd72be8e628dba40fa83aeef65d80877ede86ca.camel@perches.com>
+Subject: Re: [PATCH] arcnet: fix macro name when DEBUG is defined
+From:   Joe Perches <joe@perches.com>
+To:     trix@redhat.com, m.grzeschik@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 17 Jan 2021 10:27:01 -0800
+In-Reply-To: <20210117181519.527625-1-trix@redhat.com>
+References: <20210117181519.527625-1-trix@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zzpialt2nuswu7ld"
-Content-Disposition: inline
-In-Reply-To: <537de36b-6709-3e58-5610-9f54e2bee8a9@fold.natur.cuni.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2021-01-17 at 10:15 -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> When DEBUG is defined this error occurs
+> 
+> drivers/net/arcnet/com20020_cs.c:70:15: error: ‘com20020_REG_W_ADDR_HI’
+>   undeclared (first use in this function);
+>   did you mean ‘COM20020_REG_W_ADDR_HI’?
+>        ioaddr, com20020_REG_W_ADDR_HI);
+>                ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> From reviewing the context, the suggestion is what is meant.
+> 
+> Fixes: 0fec65130b9f ("arcnet: com20020: Use arcnet_<I/O> routines")
 
---zzpialt2nuswu7ld
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nice find thanks, especially seeing as how this hasn't been tested or
+compiled in 5+ years...
 
-Hi,
+	commit 0fec65130b9f11a73d74f47025491f97f82ba070
+	Author: Joe Perches <joe@perches.com>
+	Date:   Tue May 5 10:06:06 2015 -0700
 
-On Sun, Jan 17, 2021 at 10:48:44AM +0100, Martin Mokrejs wrote:
-> Hi Randy,
->   thank you very much. I would not mind dropping my name but I tested the=
- patch
-> now with 5.4.89 so you may actually also add
->=20
-> Tested-by: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
->=20
-> It also happened with 5.10.7, it is probably obvious.
->=20
-> Thank you for quick action.
-> Martin
->=20
-> On 16/01/2021 22:13, Randy Dunlap wrote:
-> > CHARGER_SBS should select REGMAP_I2C since it uses API(s) that are
-> > provided by that Kconfig symbol.
-> >=20
-> > Fixes these errors:
-> >=20
-> > ../drivers/power/supply/sbs-charger.c:149:21: error: variable =E2=80=98=
-sbs_regmap=E2=80=99 has initializer but incomplete type
-> >  static const struct regmap_config sbs_regmap =3D {
-> > ../drivers/power/supply/sbs-charger.c:150:3: error: =E2=80=98const stru=
-ct regmap_config=E2=80=99 has no member named =E2=80=98reg_bits=E2=80=99
-> >   .reg_bits =3D 8,
-> > ../drivers/power/supply/sbs-charger.c:155:23: error: =E2=80=98REGMAP_EN=
-DIAN_LITTLE=E2=80=99 undeclared here (not in a function)
-> >   .val_format_endian =3D REGMAP_ENDIAN_LITTLE, /* since based on SMBus =
-*/
-> > ../drivers/power/supply/sbs-charger.c: In function =E2=80=98sbs_probe=
-=E2=80=99:
-> > ../drivers/power/supply/sbs-charger.c:183:17: error: implicit declarati=
-on of function =E2=80=98devm_regmap_init_i2c=E2=80=99; did you mean =E2=80=
-=98devm_request_irq=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> >   chip->regmap =3D devm_regmap_init_i2c(client, &sbs_regmap);
-> > ../drivers/power/supply/sbs-charger.c: At top level:
-> > ../drivers/power/supply/sbs-charger.c:149:35: error: storage size of =
-=E2=80=98sbs_regmap=E2=80=99 isn=E2=80=99t known
-> >  static const struct regmap_config sbs_regmap =3D {
-> >=20
-> > Fixes: feb583e37f8a ("power: supply: add sbs-charger driver")
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Sebastian Reichel <sre@kernel.org>
-> > Cc: linux-pm@vger.kernel.org
-> > Cc: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: nicolassaenzj@gmail.com
-> > Cc: Nicolas Saenz Julienne <nicolas.saenz@prodys.net>
-> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> > ---
-> > Martin, do you want Reported-by: on this?
+Acked-by: Joe Perches <joe@perches.com>
 
-Thanks, queued. I added Reported-by and Tested-by from Martin.
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/net/arcnet/com20020_cs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/arcnet/com20020_cs.c b/drivers/net/arcnet/com20020_cs.c
+> index cf607ffcf358..81223f6bebcc 100644
+> --- a/drivers/net/arcnet/com20020_cs.c
+> +++ b/drivers/net/arcnet/com20020_cs.c
+> @@ -67,7 +67,7 @@ static void regdump(struct net_device *dev)
+>  	/* set up the address register */
+>  	count = 0;
+>  	arcnet_outb((count >> 8) | RDDATAflag | AUTOINCflag,
+> -		    ioaddr, com20020_REG_W_ADDR_HI);
+> +		    ioaddr, COM20020_REG_W_ADDR_HI);
+>  	arcnet_outb(count & 0xff, ioaddr, COM20020_REG_W_ADDR_LO);
+>  
+> 
+>  	for (count = 0; count < 256 + 32; count++) {
 
--- Sebastian
 
-> >=20
-> >  drivers/power/supply/Kconfig |    1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > --- linux-next-20210115.orig/drivers/power/supply/Kconfig
-> > +++ linux-next-20210115/drivers/power/supply/Kconfig
-> > @@ -229,6 +229,7 @@ config BATTERY_SBS
-> >  config CHARGER_SBS
-> >  	tristate "SBS Compliant charger"
-> >  	depends on I2C
-> > +	select REGMAP_I2C
-> >  	help
-> >  	  Say Y to include support for SBS compliant battery chargers.
-> > =20
-> >=20
->=20
-
---zzpialt2nuswu7ld
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAEgBcACgkQ2O7X88g7
-+prWyBAAoxtPZN6DuY6SHm6D8CnY7c7aVcpUum3Ipc3dLD1HOKOc2t+qo2dtMBbX
-WJALYV/QhsBmOChnNNd9962fOhxlU8mpBftAO6FONjCJnupRdG5cTqacJBcUv8R2
-UZb6ABAmFkjScRUoGXR7OcBirzCbwNh9/e0sIxu4JrCAA9qtXuFCQt4/lAtWVSiT
-m582qGLMDEH9cbrmlITgAmDPgzXZHQJugCAA0zt1kFbd5d7XfZCHXW50lAvNb+Bw
-MvApWZEK0hD1YrGcYOLwz8CMHoiDUYZm+3LC0n4gZoZxVc9ey/84pr0PnI0b9Ttr
-K346KBMnArUpBATUG3OloCdfGc744anNe+FA5DbpYZc0YeZJ9QJ8nHe8H/bzsSFW
-RxzeWwejrfj2jE5f+avln0Cuup+5uzt7XUh/xV4tTU/PjhUfdDBiU+k3ai/9r2ql
-qtAP5vi1BOov7unk6HOZmtCHRTzIhDtyRM7/hXt9ktKXnfU/WJDGzRomSJR0clfT
-yTFROIEBCAiE9czAogHnD8h8IL7lVAoIzmZNCsI4nwiL/9csYm9LtUwHNZwhIg0x
-ZHKuWpFqHF0zT23kofOTiZyfIeXWnx9jlwHP12s3672K+Ks2ZDp95uVZXK0d0uDJ
-ZsmM+MlPwqw4JUhssPZE1rsjZrjxipY9LosE3ziM29byjak4GUc=
-=4asC
------END PGP SIGNATURE-----
-
---zzpialt2nuswu7ld--
