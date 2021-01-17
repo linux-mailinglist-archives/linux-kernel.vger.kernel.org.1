@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EB52F9614
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69FD2F961C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730623AbhAQXKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 18:10:47 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49033 "EHLO
+        id S1730557AbhAQXKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 18:10:36 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34119 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729673AbhAQXKP (ORCPT
+        by vger.kernel.org with ESMTP id S1730135AbhAQXKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 17 Jan 2021 18:10:15 -0500
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 55045580645;
-        Sun, 17 Jan 2021 18:09:22 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 276EA580648;
+        Sun, 17 Jan 2021 18:09:23 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sun, 17 Jan 2021 18:09:22 -0500
+  by compute1.internal (MEProxy); Sun, 17 Jan 2021 18:09:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=vmQuL0mbmT8sLbVsdjB4nNkwb3
-        urGnWXN9OrQ6Do3Ow=; b=BKjca8Bh9ynez6easVNGz3xWXS+yL7xClnOvAQTPku
-        xVslu+3lSdNXAjKikB6qasbAL3g7e55ZAwnGNY0DmwVV0tcHiS6oGRZ/mcXo7ZzQ
-        xfX9x9scv/Tvjp7muLitxqoc5PVaUPpc2xQu8/dETRx00w/IFwQN3SJespatahhU
-        r3s3sB6NKX5w/7rknqQ9JEPu0QGDC4KFxWPFncxcNTbu4Vz2TX5XDorM3SCUKqRh
-        XmypBKihbTk3K0Kd4ydBlo1ACTcFiuzW7m0KNblnc194BIdmrMJtn3JfN1SKgGRG
-        DLjgoCmzITxT6k1eawr6K6MQ+BjKM0YvWZELdeYVWDhA==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=YtkT4G92yNq5q
+        qffxmE42obC85pLO4H7YoT/ivVcDR0=; b=P8nPXlCLYCNgwGEjGtBWjSws/WSO/
+        xfCBqOcBF8P39jCi1dxCdxLHCp+wd4EpWRFLbS7KvYmARv4YjDP8db7wzBxFDbgS
+        uVrXRYix02TLSXk12H1mRV8SM9KQlSGISpEVI9cnEwB+Ic4M3/bLOMUScHYdIHlz
+        Xz5uzEliedZ7WhBxZTINyf/xpjHLahkt04R+PEQaOQO7EAcuQz2utMScQpgsj5BX
+        xMENXlAmK5P1DHkIrIOqh99ClxEi94TdIYS2J+ElKwXTHEH58ctO5t6s8EhnVg1/
+        nBtH7eRRYjoSsmVPk8sSAfmZF9/9Fi05lovaDktYwJZa3jggufyqNdnuQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=vmQuL0mbmT8sLbVsd
-        jB4nNkwb3urGnWXN9OrQ6Do3Ow=; b=pAmlCA/WVnt6kGj85MKjG+IIZ2f59Rn06
-        V2PUPQC84JTXWHCaxX7bc2OYYysRdjNfJ1X6mhTYbd9ysNy8LAMLDGDOi8tfyFV7
-        +y0xHSvnLriUwlLXEBb+Wkw0WEswtN5EEjcbao5H9w19tNv5XcpecM/60ZI7yF5I
-        /e73k+GsXp8RO2Ae9J/EP3rCbhESnglCHSi4d1OG7Ryd5mjo7jd31d29MxwK6oWq
-        hGCH5zxy8t7+2sroTfDoRKZa0PUCeKBCFeECTPlJZvlNBwXprDzNNHM3a8/L1apu
-        6WPrM2RJz1rIWTpgp4hqdgnqVI9PRZVGmBkUUukgjVOCaHevZoXWw==
-X-ME-Sender: <xms:oMMEYHuMzKyEPBVrD716V0oj-N3zhk682wWyME5xsB_Gwsyn8YY9Vg>
-    <xme:oMMEYIduqMwSAsPuKC7EqnD4LRLDPBZo3__q5e4NO9AIul16uGQ6pC12AAyOlll9C
-    9_2VwcTtAK9i1qdQo4>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=YtkT4G92yNq5qqffxmE42obC85pLO4H7YoT/ivVcDR0=; b=EkLJb22Y
+        THs0HuHukZi0hdbZp0TADrrxEVZrymbP5Nf8V8j3DR4JDl8gBVCJ7khOk+f8khqC
+        2o1xspORkF6HTWSekeyD/7NP3Plx9KLPiSF8Vq9sj4XYLGP+9OJ4mCoZj+JOP0rL
+        9RF+0Dq+uBKcqmc5YuVcR6iTl0k7uZ6xMhzwgiz5JAl2ENtKaQLEQnwq61jITQPq
+        KA2/1JOO5uuDjbyKSmQe5gD3zF0e/Uw4v3H99Ej29xj9JWmmJjyj4vnuSOEHEF8a
+        Dqday1Z3KrPX55C5Qzx39FCxywNMUD3AQSGSjSEGsnJiGdJDztcOED1ZYJAoRqeG
+        gf0rv7bXmFlW0A==
+X-ME-Sender: <xms:o8MEYK5Vf8a-tXk3k5cke_RUnPdpDWXgA6B1DGbOhafJq5NMBDk7JQ>
+    <xme:o8MEYD7rjxN6RsYEazWBNAGdLwNQgJ8BPWeMXt54riUKTT3kq-FLM3-mdI2LqfUz5
+    ICyRUt504pp2Nuqu3U>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdejgddtiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
-    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepkeduveffffefffefve
-    fhudejfeefiedugfeltdegueehhfejkedvudeltdeihedtnecuffhomhgrihhnpehrvghm
-    rghrkhgrsghlvgdrtghomhenucfkphepjeefrdelfedrkeegrddvtdeknecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegr
-    lhhishhtrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:oMMEYKyx2GT5WC56UpA8pQ-s1W-K-VW73JgYJHj9Niku8N5XsR-egg>
-    <xmx:oMMEYGOaV9fDuQ3BMeLnfO_Mf6Lt8QEB2yIBKaftQ335hsMZl83fPA>
-    <xmx:oMMEYH9yic5MAaU2d1pK603O0_EVsPNibE1n8v3jAweudM6yIae5qQ>
-    <xmx:osMEYOYZZI4U6793uG8WbHii6ClwNL5_EKOMXRFnUK66zdoMSy_6EQ>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
+    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepgeegtdetjeekge
+    eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecukfhppeejfedrleef
+    rdekgedrvddtkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:o8MEYJc1KToV7Org6bQJWP-4SxVwVeh0o_Rk_x-JY2tX1InsIpjY8w>
+    <xmx:o8MEYHLnyGdelgYzZcRl-n9Dd3XJL1oPDLymrDZCs1bv39CTECYI0w>
+    <xmx:o8MEYOK71iUX9JbMyFIg37jAOL6AN5hmfg9-kI_O6VmtjOtqGHdgyQ>
+    <xmx:o8MEYLXIjqjtUtcTExQZk0MrOQ8Et-G8-2eq1tJehUj-8DrK7Q1vyw>
 Received: from ThinkpadX1Yoga3.localdomain (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 70434108005F;
-        Sun, 17 Jan 2021 18:09:19 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id C513D1080057;
+        Sun, 17 Jan 2021 18:09:21 -0500 (EST)
 From:   Alistair Francis <alistair@alistair23.me>
 To:     arnd@arndb.de, olof@lixom.net, robh+dt@kernel.org,
         shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
@@ -62,427 +62,391 @@ To:     arnd@arndb.de, olof@lixom.net, robh+dt@kernel.org,
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, alistair23@gmail.com,
         Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH 1/2] imx7d-remarkable2.dts: Initial device tree for reMarkable2
-Date:   Sat, 16 Jan 2021 19:51:39 -0800
-Message-Id: <20210117035140.1437-1-alistair@alistair23.me>
+Subject: [PATCH 2/2] remarkable2_defconfig: Add initial support for the reMarkable2
+Date:   Sat, 16 Jan 2021 19:51:40 -0800
+Message-Id: <20210117035140.1437-2-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210117035140.1437-1-alistair@alistair23.me>
+References: <20210117035140.1437-1-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reMarkable2 (https://remarkable.com) is an e-ink tablet based on
-the imx7d SoC.
-
-This commit is based on the DTS provide by reMarkable but ported to the
-latest kernel (instead of 4.14). I have removed references to
-non-upstream devices and have changed the UART so that the console can
-be accessed without having to open up the device via the OTG pogo pins.
-
-Currently the kernel boots, but there is no support for the dispaly,
-WiFi or the power controller chips.
+This defconfig is based on the one released by reMarkable with their
+4.14 kernel. I have updated it to match the latest kernels.
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- arch/arm/boot/dts/Makefile              |   1 +
- arch/arm/boot/dts/imx7d-remarkable2.dts | 375 ++++++++++++++++++++++++
- 2 files changed, 376 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx7d-remarkable2.dts
+ arch/arm/configs/remarkable2_defconfig | 358 +++++++++++++++++++++++++
+ 1 file changed, 358 insertions(+)
+ create mode 100644 arch/arm/configs/remarkable2_defconfig
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 3d1ea0b25168..5fca2612ef58 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -664,6 +664,7 @@ dtb-$(CONFIG_SOC_IMX7D) += \
- 	imx7d-sdb-sht11.dtb \
- 	imx7d-zii-rmu2.dtb \
- 	imx7d-zii-rpu2.dtb \
-+	imx7d-remarkable2.dtb \
- 	imx7s-colibri-aster.dtb \
- 	imx7s-colibri-eval-v3.dtb \
- 	imx7s-mba7.dtb \
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
+diff --git a/arch/arm/configs/remarkable2_defconfig b/arch/arm/configs/remarkable2_defconfig
 new file mode 100644
-index 000000000000..fba55a0e028a
+index 000000000000..8c9785555cda
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -0,0 +1,375 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2015 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-+ *
-+ * This file is dual-licensed: you can use it either under the terms
-+ * of the GPL or the X11 license, at your option. Note that this dual
-+ * licensing only applies to this file, and not this project as a
-+ * whole.
-+ *
-+ *  a) This file is free software; you can redistribute it and/or
-+ *     modify it under the terms of the GNU General Public License as
-+ *     published by the Free Software Foundation; either version 2 of the
-+ *     License, or (at your option) any later version.
-+ *
-+ *     This file is distributed in the hope that it will be useful,
-+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *     GNU General Public License for more details.
-+ *
-+ * Or, alternatively,
-+ *
-+ *  b) Permission is hereby granted, free of charge, to any person
-+ *     obtaining a copy of this software and associated documentation
-+ *     files (the "Software"), to deal in the Software without
-+ *     restriction, including without limitation the rights to use,
-+ *     copy, modify, merge, publish, distribute, sublicense, and/or
-+ *     sell copies of the Software, and to permit persons to whom the
-+ *     Software is furnished to do so, subject to the following
-+ *     conditions:
-+ *
-+ *     The above copyright notice and this permission notice shall be
-+ *     included in all copies or substantial portions of the Software.
-+ *
-+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ *     OTHER DEALINGS IN THE SOFTWARE.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx7d.dtsi"
-+
-+/ {
-+	model = "reMarkable 2.0";
-+	compatible = "fsl,imx7d-sdb", "fsl,imx7d";
-+
-+	chosen {
-+		stdout-path = &uart6;
-+	};
-+
-+	memory {
-+		reg = <0x80000000 0x40000000>;
-+	};
-+
-+	reg_vref_1v8: regulator-vref-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vref-1v8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	reg_brcm: regulator-brcm {
-+		compatible = "regulator-fixed";
-+		regulator-name = "brcm_reg";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_brcm_reg>;
-+		pinctrl-1 = <&pinctrl_brcm_reg>;
-+		gpio = <&gpio6 13 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <150>;
-+	};
-+
-+	reg_digitizer: regulator-digitizer {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_3V3_DIGITIZER";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_digitizer_reg>;
-+		pinctrl-1 = <&pinctrl_digitizer_reg>;
-+		gpio = <&gpio1 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>; /* 100 ms */
-+	};
-+
-+	reg_touch: regulator-touch {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_3V3_TOUCH";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_touch_reg>;
-+		pinctrl-1 = <&pinctrl_touch_reg>;
-+		gpio = <&gpio1 11 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_sdoe: regulator-sdoe {
-+		compatible = "regulator-fixed";
-+		regulator-name = "SDOE";
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_sdoe_reg>;
-+		pinctrl-1 = <&pinctrl_sdoe_reg>;
-+		gpio = <&gpio3 27 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_gdoe: regulator-gdoe {
-+		compatible = "regulator-fixed";
-+		regulator-name = "GDOE";
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_gdoe_reg>;
-+		pinctrl-1 = <&pinctrl_gdoe_reg>;
-+		gpio = <&gpio3 21 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_wifi>;
-+		pinctrl-1 = <&pinctrl_wifi>;
-+		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+		clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
-+		clock-names = "ext_clock";
-+	};
-+};
-+
-+&clks {
-+	assigned-clocks = <&clks IMX7D_CLKO2_ROOT_SRC>,
-+			  <&clks IMX7D_CLKO2_ROOT_DIV>;
-+	assigned-clock-parents = <&clks IMX7D_CKIL>;
-+	assigned-clock-rates = <0>, <32768>;
-+};
-+
-+&crypto {
-+	status = "disabled";
-+};
-+
-+&dma_apbh {
-+	status = "disabled";
-+};
-+
-+&sdma {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	pinctrl-1 = <&pinctrl_uart1>;
-+	assigned-clocks = <&clks IMX7D_UART1_ROOT_SRC>;
-+	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
-+	status = "okay";
-+};
-+
-+&uart6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart6>;
-+	assigned-clocks = <&clks IMX7D_UART6_ROOT_SRC>;
-+	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	srp-disable;
-+	hnp-disable;
-+	asp-disable;
-+	phy-charger-detection;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "state_100mhz", "sleep";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc2>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	vmmc-supply = <&reg_brcm>;
-+	bus-width = <4>;
-+	non-removable;
-+	keep-power-in-suspend;
-+	cap-power-off-card;
-+	status = "okay";
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-+	pinctrl-3 = <&pinctrl_usdhc3>;
-+	assigned-clocks = <&clks IMX7D_USDHC3_ROOT_CLK>;
-+	assigned-clock-rates = <400000000>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&wdog1 {
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_wdog>;
-+	pinctrl-1 = <&pinctrl_wdog>;
-+	fsl,ext-reset-output;
-+};
-+
-+&iomuxc_lpsr {
-+	pinctrl_digitizer_reg: digitizerreggrp {
-+		fsl,pins = <
-+			/* DIGITIZER_PWR_EN */
-+			MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x14
-+		>;
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_bd71815: bd71815grp {
-+		fsl,pins = <
-+			MX7D_PAD_SAI1_RX_SYNC__GPIO6_IO16	0x59
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
-+			MX7D_PAD_UART1_RX_DATA__UART1_DCE_RX	0x79
-+		>;
-+	};
-+
-+	pinctrl_uart6: uart6grp {
-+		fsl,pins = <
-+			MX7D_PAD_EPDC_DATA09__UART6_DCE_TX		0x79
-+			MX7D_PAD_EPDC_DATA08__UART6_DCE_RX		0x79
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX7D_PAD_SD2_CMD__SD2_CMD		0x59
-+			MX7D_PAD_SD2_CLK__SD2_CLK		0x19
-+			MX7D_PAD_SD2_DATA0__SD2_DATA0		0x59
-+			MX7D_PAD_SD2_DATA1__SD2_DATA1		0x59
-+			MX7D_PAD_SD2_DATA2__SD2_DATA2		0x59
-+			MX7D_PAD_SD2_DATA3__SD2_DATA3		0x59
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_100mhz: usdhc2grp_100mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD2_CMD__SD2_CMD		0x5a
-+			MX7D_PAD_SD2_CLK__SD2_CLK		0x1a
-+			MX7D_PAD_SD2_DATA0__SD2_DATA0		0x5a
-+			MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5a
-+			MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5a
-+			MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5a
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_200mhz: usdhc2grp_200mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD2_CMD__SD2_CMD		0x5b
-+			MX7D_PAD_SD2_CLK__SD2_CLK		0x1b
-+			MX7D_PAD_SD2_DATA0__SD2_DATA0		0x5b
-+			MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5b
-+			MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5b
-+			MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5b
-+		>;
-+	};
-+
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x59
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x19
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x59
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x59
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x59
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x59
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x59
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x59
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x59
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x59
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x19
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_100mhz: usdhc3grp_100mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x5a
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x1a
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x5a
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x5a
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x5a
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x5a
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x5a
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x5a
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5a
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5a
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x1a
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_200mhz: usdhc3grp_200mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x5b
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x1b
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x5b
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x5b
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x5b
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x5b
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x5b
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x5b
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5b
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5b
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x1b
-+		>;
-+	};
-+
-+	pinctrl_brcm_reg: brcmreggrp {
-+		fsl,pins = <
-+			/* WIFI_PWR_EN */
-+			MX7D_PAD_SAI1_TX_BCLK__GPIO6_IO13	0x14
-+		>;
-+	};
-+
-+	pinctrl_wifi: wifigrp {
-+		fsl,pins = <
-+			/* WiFi Reg On */
-+			MX7D_PAD_SD2_CD_B__GPIO5_IO9		0x00000014
-+			/* WiFi Sleep 32k */
-+			MX7D_PAD_SD1_WP__CCM_CLKO2		0x00000014
-+		>;
-+	};
-+
-+	pinctrl_wdog: wdoggrp {
-+		fsl,pins = <
-+			MX7D_PAD_ENET1_COL__WDOG1_WDOG_ANY	0x74
-+		>;
-+	};
-+
-+	pinctrl_touch_reg: touchreggrp {
-+		fsl,pins = <
-+			/* TOUCH_PWR_EN */
-+			MX7D_PAD_GPIO1_IO11__GPIO1_IO11		0x14
-+		>;
-+	};
-+
-+	pinctrl_sdoe_reg: sdoereggrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA22__GPIO3_IO27		0x74
-+		>;
-+	};
-+
-+	pinctrl_gdoe_reg: gdoereggrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA16__GPIO3_IO21		0x74
-+		>;
-+	};
-+};
++++ b/arch/arm/configs/remarkable2_defconfig
+@@ -0,0 +1,358 @@
++CONFIG_KERNEL_LZO=y
++CONFIG_SYSVIPC=y
++CONFIG_NO_HZ=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_PREEMPT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_LOG_BUF_SHIFT=18
++CONFIG_CGROUPS=y
++CONFIG_RELAY=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_EXPERT=y
++CONFIG_KALLSYMS_ALL=y
++CONFIG_PERF_EVENTS=y
++# CONFIG_SLUB_DEBUG is not set
++# CONFIG_COMPAT_BRK is not set
++CONFIG_ARCH_MXC=y
++CONFIG_SOC_IMX50=y
++CONFIG_SOC_IMX53=y
++CONFIG_SOC_IMX6Q=y
++CONFIG_SOC_IMX6SL=y
++CONFIG_SOC_IMX6SLL=y
++CONFIG_SOC_IMX6SX=y
++CONFIG_SOC_IMX7D=y
++CONFIG_SOC_IMX7ULP=y
++CONFIG_SOC_VF610=y
++CONFIG_SMP=y
++CONFIG_VMSPLIT_2G=y
++CONFIG_ARM_PSCI=y
++CONFIG_HIGHMEM=y
++CONFIG_CMDLINE="noinitrd console=ttymxc0,115200"
++CONFIG_CPU_FREQ=y
++CONFIG_CPU_FREQ_STAT=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
++CONFIG_CPU_FREQ_GOV_POWERSAVE=y
++CONFIG_CPU_FREQ_GOV_USERSPACE=y
++CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
++CONFIG_CPUFREQ_DT=y
++CONFIG_CPU_IDLE=y
++CONFIG_VFP=y
++CONFIG_NEON=y
++CONFIG_PM_DEBUG=y
++CONFIG_PM_TEST_SUSPEND=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++CONFIG_MODVERSIONS=y
++CONFIG_MODULE_SRCVERSION_ALL=y
++# CONFIG_BLK_DEV_BSG is not set
++CONFIG_BINFMT_MISC=m
++CONFIG_CMA=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++CONFIG_VLAN_8021Q=y
++CONFIG_LLC2=y
++CONFIG_CAN=y
++CONFIG_CAN_FLEXCAN=y
++CONFIG_CAN_M_CAN=y
++CONFIG_BT=y
++CONFIG_BT_RFCOMM=y
++CONFIG_BT_RFCOMM_TTY=y
++CONFIG_BT_BNEP=y
++CONFIG_BT_BNEP_MC_FILTER=y
++CONFIG_BT_BNEP_PROTO_FILTER=y
++CONFIG_BT_HIDP=y
++CONFIG_BT_HCIBTUSB=y
++CONFIG_BT_HCIUART=y
++CONFIG_BT_HCIUART_BCSP=y
++CONFIG_BT_HCIUART_ATH3K=y
++CONFIG_BT_HCIBCM203X=y
++CONFIG_BT_ATH3K=y
++CONFIG_CFG80211=y
++CONFIG_NL80211_TESTMODE=y
++CONFIG_CFG80211_WEXT=y
++CONFIG_MAC80211=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++# CONFIG_STANDALONE is not set
++CONFIG_IMX_WEIM=y
++CONFIG_CONNECTOR=y
++CONFIG_MTD=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_CFI=y
++CONFIG_MTD_JEDECPROBE=y
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_STAA=y
++CONFIG_MTD_DATAFLASH=y
++CONFIG_MTD_SST25L=y
++CONFIG_MTD_SPI_NOR=y
++# CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
++CONFIG_MTD_UBI=y
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_RAM_SIZE=65536
++CONFIG_EEPROM_AT24=y
++CONFIG_EEPROM_AT25=y
++# CONFIG_SCSI_PROC_FS is not set
++CONFIG_BLK_DEV_SD=y
++CONFIG_SCSI_CONSTANTS=y
++CONFIG_SCSI_LOGGING=y
++CONFIG_SCSI_SCAN_ASYNC=y
++# CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_ATA=y
++CONFIG_SATA_AHCI_PLATFORM=y
++CONFIG_AHCI_IMX=y
++CONFIG_PATA_IMX=y
++CONFIG_NETDEVICES=y
++# CONFIG_NET_VENDOR_BROADCOM is not set
++CONFIG_CS89x0=y
++CONFIG_CS89x0_PLATFORM=y
++# CONFIG_NET_VENDOR_FARADAY is not set
++# CONFIG_NET_VENDOR_INTEL is not set
++# CONFIG_NET_VENDOR_MARVELL is not set
++# CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_MICROCHIP is not set
++# CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SEEQ is not set
++CONFIG_SMC91X=y
++CONFIG_SMC911X=y
++CONFIG_SMSC911X=y
++# CONFIG_NET_VENDOR_STMICRO is not set
++CONFIG_MICREL_PHY=y
++CONFIG_USB_KAWETH=y
++CONFIG_USB_PEGASUS=y
++CONFIG_USB_RTL8150=y
++CONFIG_USB_RTL8152=y
++CONFIG_USB_USBNET=y
++CONFIG_USB_NET_CDC_EEM=m
++CONFIG_ATH6KL=m
++CONFIG_ATH6KL_SDIO=m
++CONFIG_BRCMFMAC=m
++CONFIG_HOSTAP=y
++CONFIG_INPUT_EVDEV=y
++CONFIG_INPUT_EVBUG=m
++CONFIG_KEYBOARD_GPIO=y
++CONFIG_KEYBOARD_IMX=y
++CONFIG_MOUSE_PS2=m
++CONFIG_MOUSE_PS2_ELANTECH=y
++CONFIG_INPUT_TOUCHSCREEN=y
++CONFIG_TOUCHSCREEN_ADS7846=y
++CONFIG_TOUCHSCREEN_EGALAX=y
++CONFIG_TOUCHSCREEN_WACOM_I2C=y
++CONFIG_TOUCHSCREEN_MAX11801=y
++CONFIG_TOUCHSCREEN_IMX6UL_TSC=y
++CONFIG_TOUCHSCREEN_MC13783=y
++CONFIG_TOUCHSCREEN_TSC2007=y
++CONFIG_TOUCHSCREEN_STMPE=y
++CONFIG_INPUT_MISC=y
++CONFIG_INPUT_MMA8450=y
++CONFIG_SERIO_SERPORT=m
++# CONFIG_LEGACY_PTYS is not set
++CONFIG_SERIAL_IMX=y
++CONFIG_SERIAL_IMX_CONSOLE=y
++CONFIG_SERIAL_FSL_LPUART=y
++CONFIG_SERIAL_FSL_LPUART_CONSOLE=y
++# CONFIG_I2C_COMPAT is not set
++CONFIG_I2C_CHARDEV=y
++# CONFIG_I2C_HELPER_AUTO is not set
++CONFIG_I2C_ALGOPCF=m
++CONFIG_I2C_ALGOPCA=m
++CONFIG_I2C_IMX=y
++CONFIG_I2C_IMX_LPI2C=y
++CONFIG_SPI=y
++CONFIG_SPI_FSL_LPSPI=y
++CONFIG_SPI_FSL_QUADSPI=y
++CONFIG_SPI_GPIO=y
++CONFIG_SPI_IMX=y
++CONFIG_SPI_SPIDEV=y
++CONFIG_SPI_SLAVE=y
++CONFIG_SPI_SLAVE_TIME=y
++CONFIG_SPI_SLAVE_SYSTEM_CONTROL=y
++CONFIG_GPIO_SYSFS=y
++CONFIG_GPIO_MAX732X=y
++CONFIG_GPIO_PCA953X=y
++CONFIG_GPIO_74X164=y
++CONFIG_POWER_RESET=y
++CONFIG_POWER_RESET_SYSCON_POWEROFF=y
++CONFIG_POWER_SUPPLY=y
++CONFIG_THERMAL=y
++CONFIG_THERMAL_WRITABLE_TRIPS=y
++CONFIG_CPU_THERMAL=y
++CONFIG_IMX_THERMAL=y
++CONFIG_WATCHDOG=y
++CONFIG_IMX2_WDT=y
++CONFIG_IMX7ULP_WDT=y
++CONFIG_MFD_DA9052_I2C=y
++CONFIG_MFD_MC13XXX_SPI=y
++CONFIG_MFD_MC13XXX_I2C=y
++CONFIG_MFD_SI476X_CORE=y
++CONFIG_MFD_STMPE=y
++CONFIG_REGULATOR=y
++CONFIG_REGULATOR_FIXED_VOLTAGE=y
++CONFIG_REGULATOR_ANATOP=y
++CONFIG_REGULATOR_DA9052=y
++CONFIG_REGULATOR_GPIO=y
++CONFIG_REGULATOR_MC13783=y
++CONFIG_REGULATOR_MC13892=y
++CONFIG_REGULATOR_PFUZE100=y
++CONFIG_MEDIA_SUPPORT=y
++CONFIG_MEDIA_USB_SUPPORT=y
++CONFIG_USB_VIDEO_CLASS=m
++CONFIG_RADIO_SI476X=y
++CONFIG_V4L_PLATFORM_DRIVERS=y
++CONFIG_V4L_MEM2MEM_DRIVERS=y
++CONFIG_VIDEO_CODA=y
++CONFIG_DRM=y
++CONFIG_LCD_CLASS_DEVICE=y
++CONFIG_LCD_L4F00242T03=y
++CONFIG_LCD_PLATFORM=y
++CONFIG_BACKLIGHT_PWM=y
++CONFIG_BACKLIGHT_GPIO=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_LOGO=y
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_USB_AUDIO=m
++CONFIG_SND_SOC=y
++CONFIG_SND_IMX_SOC=y
++CONFIG_SND_SOC_EUKREA_TLV320=y
++CONFIG_SND_SOC_IMX_SGTL5000=y
++CONFIG_SND_SOC_IMX_SPDIF=y
++CONFIG_USB=y
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_HCD_TEST_MODE=y
++CONFIG_USB_ACM=m
++CONFIG_USB_STORAGE=y
++CONFIG_USB_CHIPIDEA=y
++CONFIG_USB_CHIPIDEA_UDC=y
++CONFIG_USB_CHIPIDEA_HOST=y
++CONFIG_USB_SERIAL=m
++CONFIG_USB_SERIAL_GENERIC=y
++CONFIG_USB_SERIAL_FTDI_SIO=m
++CONFIG_USB_SERIAL_OPTION=m
++CONFIG_USB_TEST=m
++CONFIG_USB_EHSET_TEST_FIXTURE=y
++CONFIG_NOP_USB_XCEIV=y
++CONFIG_USB_MXS_PHY=y
++CONFIG_USB_GADGET=y
++CONFIG_USB_CONFIGFS=y
++CONFIG_USB_CONFIGFS_SERIAL=y
++CONFIG_USB_CONFIGFS_ACM=y
++CONFIG_USB_CONFIGFS_OBEX=y
++CONFIG_USB_CONFIGFS_NCM=y
++CONFIG_USB_CONFIGFS_ECM=y
++CONFIG_USB_CONFIGFS_ECM_SUBSET=y
++CONFIG_USB_CONFIGFS_RNDIS=y
++CONFIG_USB_CONFIGFS_EEM=y
++CONFIG_USB_CONFIGFS_MASS_STORAGE=y
++CONFIG_USB_CONFIGFS_F_LB_SS=y
++CONFIG_USB_CONFIGFS_F_FS=y
++CONFIG_USB_ZERO=m
++CONFIG_USB_ETH=m
++CONFIG_USB_G_NCM=m
++CONFIG_USB_GADGETFS=m
++CONFIG_USB_MASS_STORAGE=m
++CONFIG_USB_G_SERIAL=m
++CONFIG_MMC=y
++CONFIG_MMC_SDHCI=y
++CONFIG_MMC_SDHCI_PLTFM=y
++CONFIG_MMC_SDHCI_ESDHC_IMX=y
++CONFIG_NEW_LEDS=y
++CONFIG_LEDS_CLASS=y
++CONFIG_LEDS_GPIO=y
++CONFIG_LEDS_TRIGGERS=y
++CONFIG_LEDS_TRIGGER_TIMER=y
++CONFIG_LEDS_TRIGGER_ONESHOT=y
++CONFIG_LEDS_TRIGGER_HEARTBEAT=y
++CONFIG_LEDS_TRIGGER_BACKLIGHT=y
++CONFIG_LEDS_TRIGGER_GPIO=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_INTF_DEV_UIE_EMUL=y
++CONFIG_RTC_DRV_MC13XXX=y
++CONFIG_RTC_DRV_MXC=y
++CONFIG_RTC_DRV_SNVS=y
++CONFIG_DMADEVICES=y
++CONFIG_FSL_EDMA=y
++CONFIG_IMX_SDMA=y
++CONFIG_MXS_DMA=y
++CONFIG_DMATEST=m
++CONFIG_STAGING=y
++CONFIG_STAGING_MEDIA=y
++# CONFIG_IOMMU_SUPPORT is not set
++CONFIG_EXTCON_USB_GPIO=y
++CONFIG_IIO=y
++CONFIG_IMX7D_ADC=y
++CONFIG_VF610_ADC=y
++CONFIG_PWM=y
++CONFIG_TEE=y
++CONFIG_OPTEE=y
++CONFIG_EXT2_FS=y
++CONFIG_EXT2_FS_XATTR=y
++CONFIG_EXT2_FS_POSIX_ACL=y
++CONFIG_EXT2_FS_SECURITY=y
++CONFIG_EXT3_FS=y
++CONFIG_EXT3_FS_POSIX_ACL=y
++CONFIG_EXT3_FS_SECURITY=y
++CONFIG_QUOTA=y
++CONFIG_QUOTA_NETLINK_INTERFACE=y
++# CONFIG_PRINT_QUOTA_WARNING is not set
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=y
++CONFIG_ISO9660_FS=m
++CONFIG_JOLIET=y
++CONFIG_ZISOFS=y
++CONFIG_UDF_FS=m
++CONFIG_MSDOS_FS=m
++CONFIG_VFAT_FS=y
++CONFIG_TMPFS=y
++CONFIG_JFFS2_FS=y
++CONFIG_UBIFS_FS=y
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=y
++CONFIG_ROOT_NFS=y
++CONFIG_NLS_DEFAULT="cp437"
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ASCII=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_NLS_ISO8859_15=m
++CONFIG_NLS_UTF8=y
++CONFIG_SECURITYFS=y
++CONFIG_CRYPTO_USER=y
++CONFIG_CRYPTO_TEST=m
++CONFIG_CRYPTO_CTS=y
++CONFIG_CRYPTO_LRW=y
++CONFIG_CRYPTO_MD4=y
++CONFIG_CRYPTO_MD5=y
++CONFIG_CRYPTO_RMD128=y
++CONFIG_CRYPTO_RMD160=y
++CONFIG_CRYPTO_RMD256=y
++CONFIG_CRYPTO_RMD320=y
++CONFIG_CRYPTO_SHA512=y
++CONFIG_CRYPTO_TGR192=y
++CONFIG_CRYPTO_WP512=y
++CONFIG_CRYPTO_BLOWFISH=y
++CONFIG_CRYPTO_CAMELLIA=y
++CONFIG_CRYPTO_TWOFISH=y
++CONFIG_CRYPTO_DEV_FSL_CAAM=y
++CONFIG_CRYPTO_DEV_MXS_DCP=y
++CONFIG_CRC_CCITT=m
++CONFIG_CRC_T10DIF=y
++CONFIG_CRC7=m
++CONFIG_LIBCRC32C=m
++CONFIG_DMA_CMA=y
++CONFIG_CMA_SIZE_MBYTES=0
++CONFIG_FONTS=y
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++# CONFIG_DEBUG_BUGVERBOSE is not set
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_FS=y
++# CONFIG_SCHED_DEBUG is not set
++# CONFIG_FTRACE is not set
 -- 
 2.29.2
 
