@@ -2,54 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A4B2F912D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 08:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4057B2F9131
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 08:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbhAQG6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 01:58:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38248 "EHLO mail.kernel.org"
+        id S1727883AbhAQHEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 02:04:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbhAQGz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 01:55:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5732922D5B;
-        Sun, 17 Jan 2021 06:55:09 +0000 (UTC)
+        id S1726298AbhAQHD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 02:03:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95A7322D5B;
+        Sun, 17 Jan 2021 07:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610866510;
-        bh=iALNQjS79XwR6V+/HCyVdrnQfK8UZ/Q9N1tW2Yoteb8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VY7TXqYBzASWjQsU4UvJbh8CCSyhyf1hG3NiUjBNIv2cHF8HC7lx5PadNMWYyXY6X
-         8ireItZXvxL95+9HwOh0A5r3o00F0hLSb4s2eBagziRWNW524bBO2rUOEPLj3wInaH
-         EVwfsqM4t/r+XNYfS+t3G2ajBFtO3ROXkHxL2fUQpSkdvlKgjHo+nRbi3HxgiZCKpM
-         3ms/SIpACwr+pVsm+nR4XIvteWAKbc7KF96tBeZ33oBxHPoH7cgsunBjxzDvH9yh4t
-         fv9Gr3e1manyZ2wN4LEjdfS34CUPkvpBJa2m4/OtBKhV5/O6U/pO4YSN+EGWRmdXLq
-         VxZ0rHAag0S8g==
-Date:   Sun, 17 Jan 2021 12:25:05 +0530
+        s=k20201202; t=1610866963;
+        bh=mkNqT9MGlZstPmc/uEs1cKwlHj4CQwTVy+Ce7GwyAws=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rQrT1Fnxjl6KibILMrjX4Y6/yJq1XGgQQigfhBdbjx15VeuVWNFGjfldZ8TON9mBx
+         oY2L8prno2or8oWFGh/yjBmL4ivi4lA/K/gplKw0pdkkqEZ7wUyryX7K1NMlmQzwNe
+         P/OWZ36bzdILO5mJ2GFxo/23N9PB5py0relvQMCOf2wqoJKPnXIhQj5eqsBL6S9LKw
+         W3aKCGd0Z1U7iAoh929FGqhndET/1l+VD5ECgki0gNfyjwq6fk18MydfJLekltBDLZ
+         7/RoMlHF4FRN60pWWN638sHlnN7NLJvFFg6kFUa5uSVZZJ7Ti9tFgMxddzSe4FLfN8
+         d+5rGT1HDb1ZQ==
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     kishon@ti.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Add support for USB3 PHY on SDX55
-Message-ID: <20210117065505.GP2771@vkoul-mobl>
-References: <20210111113010.32056-1-manivannan.sadhasivam@linaro.org>
+To:     dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: ioat: remove dmaengine susbstem files
+Date:   Sun, 17 Jan 2021 12:32:29 +0530
+Message-Id: <20210117070229.2537866-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111113010.32056-1-manivannan.sadhasivam@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 17:00, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> This series adds USB3 PHY support for SDX55 platform. The USB3 PHY is of
-> type QMP and revision 4.0.0. In this revision, "com_aux" clock is not
-> utilized.
-> 
-> This series has been tested on SDX55-MTP along with the relevant DT node.
+[1] mentions the IOAT entry contains dmaengine subsystem file. So update
+the entry and remove the dmaengine files
 
-Applied, thanks
+1: https://lwn.net/Articles/842415/
 
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0d62310a31f8..49647c6a03fd 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2872,9 +2872,7 @@ S:	Odd fixes
+ W:	http://sourceforge.net/projects/xscaleiop
+ F:	Documentation/crypto/async-tx-api.rst
+ F:	crypto/async_tx/
+-F:	drivers/dma/
+ F:	include/linux/async_tx.h
+-F:	include/linux/dmaengine.h
+ 
+ AT24 EEPROM DRIVER
+ M:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
 -- 
-~Vinod
+2.26.2
+
