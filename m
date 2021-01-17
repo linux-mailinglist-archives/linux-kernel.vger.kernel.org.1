@@ -2,206 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AAA2F9289
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9EB2F928F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728600AbhAQN0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 08:26:48 -0500
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:49925 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbhAQN0a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 08:26:30 -0500
-Received: from localhost.localdomain ([92.131.99.25])
-        by mwinf5d43 with ME
-        id HpQk2400C0Ys01Y03pQkUw; Sun, 17 Jan 2021 14:24:46 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 17 Jan 2021 14:24:46 +0100
-X-ME-IP: 92.131.99.25
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jinpu.wang@cloud.ionos.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: pm80xx: switch from 'pci_' to 'dma_' API
-Date:   Sun, 17 Jan 2021 14:24:45 +0100
-Message-Id: <20210117132445.562552-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S1728691AbhAQNc7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 08:32:59 -0500
+Received: from wnbcorp.com ([175.126.38.143]:40262 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728452AbhAQNc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 08:32:56 -0500
+X-Greylist: delayed 2200 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Jan 2021 08:32:55 EST
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10HDAZSA025387;
+        Sun, 17 Jan 2021 22:20:20 +0900
+Message-Id: <202101171320.10HDAZSA025387@blank.cafe24.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: FOR THE LESS PRIVILEDGE
+To:     Recipients <virginiadumitru@aol.com>
+From:   virginiadumitru@aol.com
+Date:   Sun, 17 Jan 2021 14:20:27 +0100
+Reply-To: peterkenin73@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Dear Friend.
+ 
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+My name is Mrs.Virginia Dumitru a merchant in Romania. I have been diagnosed with Esophageal cancer. I have a huge cash deposit of TWELVE MILLION DOLLARS $12,000,000, That I have with a finance/Security Company abroad. 
 
-When memory is allocated in 'pm8001_init_ccb_tag()' GFP_KERNEL can be used
-because this function already uses this flag a few lines above.
+I will want you to help me collect this deposit and dispatched it to charity organizations.
+I have set aside 25% for you and for your time if you want to help me to collect this Funds and also invest this money.
+ 
 
-While at it, remove "pm80xx: " in a debug message. 'pm8001_dbg()' already
-add the driver name in the message.
+PLEASE I WILL ADVICE YOU TO CONTACT MY ATTORNEY IN NETHERLANDS IMMEDIATELY.
+ 
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+Name: Barrister Peter Kenin
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+Reply email address: peterkenin73@gmail.com 
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/scsi/pm8001/pm8001_init.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index d21078ca7fb3..bd626ef876da 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -423,7 +423,7 @@ static int pm8001_alloc(struct pm8001_hba_info *pm8001_ha,
- err_out_nodev:
- 	for (i = 0; i < pm8001_ha->max_memcnt; i++) {
- 		if (pm8001_ha->memoryMap.region[i].virt_ptr != NULL) {
--			pci_free_consistent(pm8001_ha->pdev,
-+			dma_free_coherent(&pm8001_ha->pdev->dev,
- 				(pm8001_ha->memoryMap.region[i].total_len +
- 				pm8001_ha->memoryMap.region[i].alignment),
- 				pm8001_ha->memoryMap.region[i].virt_ptr,
-@@ -1197,12 +1197,13 @@ pm8001_init_ccb_tag(struct pm8001_hba_info *pm8001_ha, struct Scsi_Host *shost,
- 		goto err_out_noccb;
- 	}
- 	for (i = 0; i < ccb_count; i++) {
--		pm8001_ha->ccb_info[i].buf_prd = pci_alloc_consistent(pdev,
-+		pm8001_ha->ccb_info[i].buf_prd = dma_alloc_coherent(&pdev->dev,
- 				sizeof(struct pm8001_prd) * PM8001_MAX_DMA_SG,
--				&pm8001_ha->ccb_info[i].ccb_dma_handle);
-+				&pm8001_ha->ccb_info[i].ccb_dma_handle,
-+				GFP_KERNEL);
- 		if (!pm8001_ha->ccb_info[i].buf_prd) {
- 			pm8001_dbg(pm8001_ha, FAIL,
--				   "pm80xx: ccb prd memory allocation error\n");
-+				   "ccb prd memory allocation error\n");
- 			goto err_out;
- 		}
- 		pm8001_ha->ccb_info[i].task = NULL;
--- 
-2.27.0
-
+Mrs. Virginia Dumitru
