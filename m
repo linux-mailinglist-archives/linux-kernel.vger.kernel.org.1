@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1562F902E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D7D2F9031
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbhAQCUJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 21:20:09 -0500
-Received: from wnbcorp.com ([175.126.38.143]:53877 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727629AbhAQCUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 21:20:04 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10H2E0xc015601;
-        Sun, 17 Jan 2021 11:18:36 +0900
-Message-Id: <202101170218.10H2E0xc015601@blank.cafe24.com>
+        id S1728077AbhAQCU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 21:20:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727629AbhAQCUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 21:20:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1EA7322CB8;
+        Sun, 17 Jan 2021 02:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610850010;
+        bh=ORQl1ZFd11tXszy9IjdFFuITzpen0YjySzTPviRMEh4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LBqHqoWJucjw3HIAcEiRHddbHmZGc/5C4egWd3sUP+8sDHxa0OHsmth8puPy2dWsd
+         vJf/Az2S4ocZDZmHYbQpKNneAnc7At1mKvWjmrEKToq8hnJUu+CC/nInGc6WyDKBnm
+         6flzMGPOoSjiTeJ7IdgNQxCWlVJq89w4IZ1zYBJwfcyYwvI2ZkFbBrdcXpKDv5bc9f
+         u5XeQNfe553p0wxKpQdtZ4GsQ2j9pfNxFoKQ+nkvsfP40Zm5XNxD6Eq9fbmg81j/Cn
+         LVtRvh1kHLuzhYc5Oi6POmY2Wmb/cwHx6OShdHvNAftGN6hzRB/nAnHQi0kD7hOPwu
+         sVtsfh7ba/xzw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 0AEBD60658;
+        Sun, 17 Jan 2021 02:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sun, 17 Jan 2021 03:18:20 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND v2 0/7] Rid W=1 warnings in Ethernet
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161085001003.18239.10975020699076928503.git-patchwork-notify@kernel.org>
+Date:   Sun, 17 Jan 2021 02:20:10 +0000
+References: <20210115200905.3470941-1-lee.jones@linaro.org>
+In-Reply-To: <20210115200905.3470941-1-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, ast@kernel.org,
+        benh@kernel.crashing.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, drt@linux.ibm.com, dnevil@snmc.com,
+        davem@davemloft.net, erik@vt.edu, geoff@infradead.org,
+        grygorii.strashko@ti.com, gustavoars@kernel.org,
+        kou.ishizaki@toshiba.co.jp, ivan.khoronzhuk@linaro.org,
+        kuba@kernel.org, Jens.Osterkamp@de.ibm.com, hawk@kernel.org,
+        jallen@linux.vnet.ibm.com, john.fastabend@gmail.com,
+        kurt@linutronix.de, ljp@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        netdev@vger.kernel.org, nico@fluxnic.net, paul@xen.org,
+        paulus@samba.org, pc@denkart.be, rmk@arm.linux.org.uk,
+        rusty@rustcorp.com.au, santi_leon@yahoo.com, sukadev@linux.ibm.com,
+        tlfalcon@linux.vnet.ibm.com, utz.bacher@de.ibm.com,
+        wei.liu@kernel.org, xen-devel@lists.xenproject.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+Hello:
 
-Sir/Madam,
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-CONGRATULATIONS!!!
+On Fri, 15 Jan 2021 20:08:58 +0000 you wrote:
+> Resending the stragglers again.
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> No changes since v2, just a rebase onto net-next.
+> 
+> [...]
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Here is the summary with links:
+  - [1/7] net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
+    https://git.kernel.org/netdev/net-next/c/7d2a92445e3f
+  - [2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+    https://git.kernel.org/netdev/net-next/c/090c7ae8e0d0
+  - [3/7] net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function header
+    https://git.kernel.org/netdev/net-next/c/935888cda820
+  - [4/7] net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en' parameter
+    https://git.kernel.org/netdev/net-next/c/e49e4647f3e2
+  - [5/7] net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
+    https://git.kernel.org/netdev/net-next/c/807086021bf5
+  - [6/7] net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc misdemeanours
+    https://git.kernel.org/netdev/net-next/c/b51036321461
+  - [7/7] net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
+    https://git.kernel.org/netdev/net-next/c/e242d5989965
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
