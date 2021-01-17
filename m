@@ -2,173 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE4D2F947D
+	by mail.lfdr.de (Postfix) with ESMTP id EB3DC2F947E
 	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730078AbhAQSS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        id S1729715AbhAQSSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729977AbhAQSQ5 (ORCPT
+        with ESMTP id S1729883AbhAQSRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:16:57 -0500
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A392AC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 10:16:01 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id BC9C81F50A;
-        Sun, 17 Jan 2021 19:15:58 +0100 (CET)
-Subject: Re: [PATCH v2 3/7] regulator: qcom-labibb: Implement pull-down,
- softstart, active discharge
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        sumit.semwal@linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org
-References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
- <20210113194214.522238-4-angelogioacchino.delregno@somainline.org>
- <YAEfrIR/HZmQLeQM@builder.lan>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <87a5d2bb-12d2-a4b8-d4fd-a5a39135cb34@somainline.org>
-Date:   Sun, 17 Jan 2021 19:15:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <YAEfrIR/HZmQLeQM@builder.lan>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 17 Jan 2021 13:17:45 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A18C061575;
+        Sun, 17 Jan 2021 10:17:04 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id s11so7801825edd.5;
+        Sun, 17 Jan 2021 10:17:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2JtWKNyDRARawQO+6zhdJOxEt3nWiQDJWt9SIw5zWcQ=;
+        b=mZiNuxsvPbyMDex2+YoSTHol1Bmdo+HuPHVMRE5CDHe5TZz7s/mOgrQrk+bGP/ps92
+         zWhLuSqPMBJzvffJc4XbvhA2mgPlkCIW9aTOLZ/R5E65NlSPvBfnCjodEQFhkm2kCrdy
+         84Ni7K8MNlRtLhq8smnlRChz9HxrjPB0sQrhx80FA0eeN5Fy+BvD1HW3FXwScAtNWxsv
+         oyFdrzZqAFMw9cjURH62N2sFATvBXVHWgfin2nkm7+Rk8RWFZ3pspMW8FOldSHUfeCem
+         o6BE/rFnweRUxdX5RuT54YRgzHRwAi86YE+imCFru/VQQpDVP4hypMOTV6D+Un+8UP28
+         Tqvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2JtWKNyDRARawQO+6zhdJOxEt3nWiQDJWt9SIw5zWcQ=;
+        b=BnoPb8v+HSYHFQmmhONLya3br3xdqDGG5q9Tz6UxqsqJgJiqOfscbLYT1OFj1eCysA
+         hjoB+SzgWVA+MZ+pKMPZuGcN+8URrqOP6xAYK7HdXibnSIwfcjCKiSDutXFjDMyCk+Vp
+         pi8xdgWecN1fWQoGc56Tf+TeT/wooW0TtrUXYQzizEVWida9TG9v9B/vQUmLXYXtg5pL
+         JOTCLy1+dBVwKabRecevFU5Zju8CTCQtYxWpehTJniGsp6uXirV6GfyOnQTAeEA7DP07
+         aw6R/sB5gvU6ervJmKD2Jl7VTSohtOnHRjNKffDCuiQZJT0ABo9oQZQiO4SsmNVanYPX
+         u3xQ==
+X-Gm-Message-State: AOAM532Tah/xJyQygIjsNqd7RF3tfZUQwIHnaRHPrtrZjXLWml0+vlG7
+        qdItj4d28DkW674jczsynAc=
+X-Google-Smtp-Source: ABdhPJwRU8gsjM8P1npn0q7DNNkS2ZHeR/5FzHHPq/SUp3D4Xkz8+WaWK7oymmdAKqDt1b7QoVmzfg==
+X-Received: by 2002:a50:d552:: with SMTP id f18mr16563922edj.168.1610907422276;
+        Sun, 17 Jan 2021 10:17:02 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id zn8sm8745158ejb.39.2021.01.17.10.17.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 10:17:01 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: remove interrupt-names property from rk3399 vdec node
+Date:   Sun, 17 Jan 2021 19:16:53 +0100
+Message-Id: <20210117181653.24886-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/01/21 05:53, Bjorn Andersson ha scritto:
-> On Wed 13 Jan 13:42 CST 2021, AngeloGioacchino Del Regno wrote:
-> 
->> Soft start is required to avoid inrush current during LAB ramp-up and
->> IBB ramp-down, protecting connected hardware to which we supply voltage.
->>
->> Since soft start is configurable on both LAB and IBB regulators, it
->> was necessary to add two DT properties, respectively "qcom,soft-start-us"
->> to control LAB ramp-up and "qcom,discharge-resistor-kohms" to control
->> the discharge resistor for IBB ramp-down, which obviously brought the
->> need of implementing a of_parse callback for both regulators.
->>
->> Finally, also implement pull-down mode in order to avoid unpredictable
->> behavior when the regulators are disabled (random voltage spikes etc).
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> ---
->>   drivers/regulator/qcom-labibb-regulator.c | 94 +++++++++++++++++++++++
->>   1 file changed, 94 insertions(+)
->>
->> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
->> index d364f54ad294..38ab1eba1c59 100644
->> --- a/drivers/regulator/qcom-labibb-regulator.c
->> +++ b/drivers/regulator/qcom-labibb-regulator.c
->> @@ -29,12 +29,23 @@
->>   #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
->>   #define LABIBB_CONTROL_ENABLE		BIT(7)
->>   
->> +#define REG_LABIBB_PD_CTL		0x47
->> + #define LAB_PD_CTL_MASK		GENMASK(1, 0)
->> + #define IBB_PD_CTL_MASK		(BIT(0) | BIT(7))
->> + #define LAB_PD_CTL_STRONG_PULL		BIT(0)
->> + #define IBB_PD_CTL_HALF_STRENGTH	BIT(0)
->> + #define IBB_PD_CTL_EN			BIT(7)
->> +
->>   #define REG_LABIBB_CURRENT_LIMIT	0x4b
->>    #define LAB_CURRENT_LIMIT_MASK		GENMASK(2, 0)
->>    #define IBB_CURRENT_LIMIT_MASK		GENMASK(4, 0)
->>    #define LAB_CURRENT_LIMIT_OVERRIDE_EN	BIT(3)
->>    #define LABIBB_CURRENT_LIMIT_EN	BIT(7)
->>   
->> +#define REG_IBB_PWRUP_PWRDN_CTL_1	0x58
->> + #define IBB_CTL_1_DISCHARGE_EN		BIT(2)
->> +
->> +#define REG_LABIBB_SOFT_START_CTL	0x5f
->>   #define REG_LABIBB_SEC_ACCESS		0xd0
->>    #define LABIBB_SEC_UNLOCK_CODE		0xa5
->>   
->> @@ -60,6 +71,8 @@ struct labibb_regulator {
->>   	struct labibb_current_limits	uA_limits;
->>   	u16				base;
->>   	u8				type;
->> +	u8				dischg_sel;
->> +	u8				soft_start_sel;
->>   };
->>   
->>   struct labibb_regulator_data {
->> @@ -120,6 +133,70 @@ static int qcom_labibb_get_current_limit(struct regulator_dev *rdev)
->>   	return (cur_step * lim->uA_step) + lim->uA_min;
->>   }
->>   
->> +static int qcom_labibb_set_soft_start(struct regulator_dev *rdev)
->> +{
->> +	struct labibb_regulator *vreg = rdev_get_drvdata(rdev);
->> +	u32 val = 0;
->> +
->> +	if (vreg->type == QCOM_IBB_TYPE)
->> +		val = vreg->dischg_sel;
->> +	else
->> +		val = vreg->soft_start_sel;
->> +
->> +	return regmap_write(rdev->regmap, rdev->desc->soft_start_reg, val);
->> +}
->> +
->> +static int qcom_labibb_get_table_sel(const int *table, int sz, u32 value)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < sz; i++)
->> +		if (table[i] == value)
->> +			return i;
->> +	return -EINVAL;
->> +}
->> +
->> +/* IBB discharge resistor values in KOhms */
->> +static const int dischg_resistor_values[] = { 300, 64, 32, 16 };
->> +
->> +/* Soft start time in microseconds */
->> +static const int soft_start_values[] = { 200, 400, 600, 800 };
->> +
->> +static int qcom_labibb_of_parse_cb(struct device_node *np,
->> +				   const struct regulator_desc *desc,
->> +				   struct regulator_config *config)
->> +{
->> +	struct labibb_regulator *vreg = config->driver_data;
->> +	u32 dischg_kohms, soft_start_time;
->> +	int ret;
->> +
->> +	ret = of_property_read_u32(np, "qcom,discharge-resistor-kohms",
->> +				       &dischg_kohms);
->> +	if (ret)
->> +		dischg_kohms = 300;
-> 
-> Nit, if you just initialize dischg_kohms to 300 during definition you
-> can rely on of_property_read_u32() not updating the value on failure...
-> 
+A test with the command below gives this error:
+/arch/arm64/boot/dts/rockchip/rk3399-evb.dt.yaml: video-codec@ff660000:
+'interrupt-names' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-I can change it if that's really necessary, I did it like this in an
-attempt of spoon-feed the logic to the reader, but perhaps just
-initializing it during definition would achieve the same, anyway.
+The rkvdec driver gets it irq with help of the platform_get_irq()
+function, so remove the interrupt-names property from the rk3399
+vdec node.
 
-Should I?
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/
+media/rockchip,vdec.yaml
 
-> That said, I think this patch looks good.
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thank you!
-
-> Regards,
-> Bjorn
-> 
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index b18d6cc26..08f163964 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1275,7 +1275,6 @@
+ 		compatible = "rockchip,rk3399-vdec";
+ 		reg = <0x0 0xff660000 0x0 0x400>;
+ 		interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH 0>;
+-		interrupt-names = "vdpu";
+ 		clocks = <&cru ACLK_VDU>, <&cru HCLK_VDU>,
+ 			 <&cru SCLK_VDU_CA>, <&cru SCLK_VDU_CORE>;
+ 		clock-names = "axi", "ahb", "cabac", "core";
+-- 
+2.11.0
 
