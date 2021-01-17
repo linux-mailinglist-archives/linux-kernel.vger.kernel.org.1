@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037C02F934B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25B32F934F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbhAQPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 10:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729244AbhAQPKp (ORCPT
+        id S1729546AbhAQPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 10:11:49 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:35653 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729494AbhAQPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 10:10:45 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623D3C061757;
-        Sun, 17 Jan 2021 07:10:04 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id w1so20100640ejf.11;
-        Sun, 17 Jan 2021 07:10:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DRG9e23i2SPuZfCW/3STyimbjAw4V/3t5/u6E4VRlYY=;
-        b=tNT+TXNvIhPH284c/OIxPeXrPhLGyt2mMyUofjpzH909fsLJ2RsQGxilTPhkBPQvts
-         /ArzFD6AHVMff4if19fNp7lHRIrjhkwM+KBGKNnJSwwWntNmGytMhfAdtMPO6B4GRcmL
-         eseMz7PLW6Aq+qi5Zcm6zmBLqaGdCZZ3KKCT8LYyh90u8fFMrWD0uWEb6WWr5Fps/J3N
-         YBqbqMdxACSdjQWrqlJdnQ/TqU+YAhxmwRnDcEzsVTLEQoD/A/pxAgYYhbCfmPLrITwI
-         240QwLtZAjTVxRv5NodQkGmuDK4v0gG+uBb3MHzA9+PXqkNx/RuYT8WBJfOWVYKu9yDX
-         CXFA==
+        Sun, 17 Jan 2021 10:11:17 -0500
+Received: by mail-wr1-f54.google.com with SMTP id l12so8824371wry.2;
+        Sun, 17 Jan 2021 07:11:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DRG9e23i2SPuZfCW/3STyimbjAw4V/3t5/u6E4VRlYY=;
-        b=j39C3yek0tjacTY80PgGw2NHAzioK82SeFrKiSkjKlFTAzYdJAUuHj3dKTO6GHtiHJ
-         ea9aEJrtjMuQiHNM3oYfk07N7A0A8VPHVdBmR3QSOYl0itRmGv0Kk2SBt3V1aIyE8vO1
-         A2PEk//5Ka1tVuILPbP1jqnbpN4zLlfcyoOf7uf27nB3ZZYv1XrGwTwV5gN0C0BAd/C/
-         uQ0Og54fCwyRHZesH47V5yXIf0mj9WJgCju2KHReD8dvGwkZCp0YbVf8NqnXIlJXzZSf
-         sSg+aSFVgp/WPRyGriLoFTcw3flrkgcNrZYFPyE6sviSm/bWgiTj/9+8s/wsz6Q6GnzR
-         wUjg==
-X-Gm-Message-State: AOAM533F4+si4yF/XO5ws2zHA0JOerwmDglrL2gsM3RdFvN1tTeulCZi
-        5tb/upWwdkluTh3W1JogO/hz6Q9+IIs=
-X-Google-Smtp-Source: ABdhPJxldbIelUhlRirTNtJCRL44lRqzuE/9xcwVyyjMHc8YTdAEMsJvdubfCMgPB/f9bWPfuxpBTQ==
-X-Received: by 2002:a17:906:80c9:: with SMTP id a9mr8443492ejx.78.1610896203193;
-        Sun, 17 Jan 2021 07:10:03 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id g3sm6295121eds.69.2021.01.17.07.10.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 17 Jan 2021 07:10:02 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: rockchip: rename thermal subnodes for rk3399.dtsi
-Date:   Sun, 17 Jan 2021 16:09:53 +0100
-Message-Id: <20210117150953.16475-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210117150953.16475-1-jbx6244@gmail.com>
-References: <20210117150953.16475-1-jbx6244@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yxPKYVAYGFQ1uVQM2y606vIDhx9zjoEHxHnN55EZo98=;
+        b=TUVVHDczSAED4qTERg6ScXVXG6pdSeHnM7xdHdUaGtMng5gn+2Qn/oJLIbS182hc/w
+         f7H5t9ODzo0lZ0HL4YdT84LopIZDUrICwV6Zpvtig0B6zKC7AooH/LNkbPQ7eJKx2fRy
+         k40jkgJ4L1CVQxYRaM2Jj2/U/K1TNbZ7AGO4xBTk+Xp/bcnZWv7WHpC6GpEnQCxy/9/9
+         fDt291EmWIiHN9GSTd7r9Ht6GP9ekW7Qr2vBla3xI0pjKespB4s8fLJ0bcNCO/pYZu0l
+         E55W+ZSsLlluv1OgfilcQlOg+fPv5PiJnKNvVN9BQWiZfaTTcOe/9peE+CtBfSRtHpQP
+         ALZg==
+X-Gm-Message-State: AOAM530jgMI9U6aLeGz5uL3x9oTjKyxzxpm6k0m89sQbvSqUdCwdy9PT
+        y3zFtfwOqU+wvpJtML5wzHY=
+X-Google-Smtp-Source: ABdhPJyJPGTIXOtEZuKjxF9FdiBJ+duV8o5fKkcqf2RskvssZY/hStY35yl3A3IfKiwk8yag1fbfsA==
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr22353048wrp.101.1610896234710;
+        Sun, 17 Jan 2021 07:10:34 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g1sm24246408wrq.30.2021.01.17.07.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 07:10:34 -0800 (PST)
+Date:   Sun, 17 Jan 2021 15:10:32 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2] hv_netvsc: Add (more) validation for untrusted
+ Hyper-V values
+Message-ID: <20210117151032.sbhjryq2hs3ctnlx@liuwe-devbox-debian-v2>
+References: <20210114202628.119541-1-parri.andrea@gmail.com>
+ <20210115203022.7005e66a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210116130201.GA1579@anparri>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116130201.GA1579@anparri>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives for example this error:
-/arch/arm64/boot/dts/rockchip/rk3399-evb.dt.yaml:
-thermal-zones: 'cpu', 'gpu' do not match any of the regexes:
-'^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$', 'pinctrl-[0-9]+'
+On Sat, Jan 16, 2021 at 02:02:01PM +0100, Andrea Parri wrote:
+> On Fri, Jan 15, 2021 at 08:30:22PM -0800, Jakub Kicinski wrote:
+> > On Thu, 14 Jan 2021 21:26:28 +0100 Andrea Parri (Microsoft) wrote:
+> > > For additional robustness in the face of Hyper-V errors or malicious
+> > > behavior, validate all values that originate from packets that Hyper-V
+> > > has sent to the guest.  Ensure that invalid values cannot cause indexing
+> > > off the end of an array, or subvert an existing validation via integer
+> > > overflow.  Ensure that outgoing packets do not have any leftover guest
+> > > memory that has not been zeroed out.
+> > > 
+> > > Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Martin KaFai Lau <kafai@fb.com>
+> > > Cc: Song Liu <songliubraving@fb.com>
+> > > Cc: Yonghong Song <yhs@fb.com>
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: KP Singh <kpsingh@kernel.org>
+> > > Cc: netdev@vger.kernel.org
+> > > Cc: bpf@vger.kernel.org
+> > > ---
+> > > Applies to 5.11-rc3 (and hyperv-next).
+> > 
+> > So this is for hyperv-next or should we take it via netdev trees?
+> 
+> No preference, either way is good for me.
 
-Rename Rockchip rk3399 thermal subnodes so that it ends
-with "-thermal"
+To be clear: There is no dependency on any patch in hyperv-next, right?
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/
-thermal/thermal-zones.yaml
+That's my understanding, but I would like to confirm it.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399.dtsi        | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Wei.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-index c88295782..b20774081 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-@@ -126,7 +126,7 @@
- };
- 
- &thermal_zones {
--	cpu_thermal: cpu {
-+	cpu_thermal: cpu-thermal {
- 		polling-delay-passive = <100>;
- 		polling-delay = <1000>;
- 		thermal-sensors = <&tsadc 0>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 4e94b7ebd..3de493ad6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -761,7 +761,7 @@
- 	};
- 
- 	thermal_zones: thermal-zones {
--		cpu_thermal: cpu {
-+		cpu_thermal: cpu-thermal {
- 			polling-delay-passive = <100>;
- 			polling-delay = <1000>;
- 
-@@ -805,7 +805,7 @@
- 			};
- 		};
- 
--		gpu_thermal: gpu {
-+		gpu_thermal: gpu-thermal {
- 			polling-delay-passive = <100>;
- 			polling-delay = <1000>;
- 
--- 
-2.11.0
-
+> 
+> Thanks,
+>   Andrea
