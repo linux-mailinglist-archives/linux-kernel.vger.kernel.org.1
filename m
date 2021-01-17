@@ -2,65 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ACB2F9073
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 05:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B5D2F9075
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 05:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727756AbhAQEcT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 23:32:19 -0500
-Received: from wnbcorp.com ([175.126.38.143]:47086 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726457AbhAQEcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 23:32:08 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10H4SOKD002416;
-        Sun, 17 Jan 2021 13:30:34 +0900
-Message-Id: <202101170430.10H4SOKD002416@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1727796AbhAQEm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 23:42:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbhAQEmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 23:42:10 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD2AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 20:41:30 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id e22so26380131iom.5
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 20:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B1u3O83tTrsiNvPrp3hP0q70ExIGdl4r796ZiGkVvug=;
+        b=N1aT2fBkHInlcB+SZ3y3jFU0B3PlXy6oQ9UoC2DV3e03WGOj7kquOGyhUCZfwmUThV
+         xWBXH42AWotId0uCXKh9KXFy5i9GGKv1JznVVFqEiG6mh83/qbPvFlxRIbrWI2qH92E4
+         2R8i+dDmCkDFRQUeC0C7eArExk7aWwcROV1/a4cWml3fwCdLHZr/w+jcLL0ZdXazxJ7j
+         O/MdslR1uPPl2rQcbKtEqnq0GSiujKsPS7nbbJkpR0HLzazeto7sWAWJmqT30oaK2yXA
+         cHJLEmL8juw/8Bf+enLx/6pausdfE3zFhPX/IZ49Xu8ZEphPLfyLAAQr9+xHIikMTWS7
+         RO6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B1u3O83tTrsiNvPrp3hP0q70ExIGdl4r796ZiGkVvug=;
+        b=NXen13oruk3cOTwuDfSsteKmATtv3VAiDxB1fFsHWswd0ffMb+5WPP971k8kETDNNp
+         yiz0mfee6Tr71UtwoT6526By2epgb/5Y/2BYv8MXE8H6T21FvqgrXdysunZocjcdgujg
+         V7lARUoUYtTsZ/PAPbe+J1odPaIimRQKEY+C2CXRJYCvsqgM517Vb80Fqbt+ymqtao3j
+         EyfyCezilyx6rcyOCsMc7R70GGaIp80YPRCG4idm/dSEZARQEb0ar8cIOUHGOWSdOToV
+         RHX+Q/t1Dc8X5vksbfUbba0E0GGTQj7CauNIiFYtCdYD0pdtdMHq0grYA9d9WwhgZLgr
+         3WDw==
+X-Gm-Message-State: AOAM530euN+DwpatDzz/MCjgo1kmnrFYfOQI8RrIPQWCkzjTRJlkPeHb
+        G/zXGG1G7nSNnoDa6NNevbhqNg==
+X-Google-Smtp-Source: ABdhPJy4FEFzTg0+fTXRvhWE6yGrciQw/nHrFSaBGjcKyTDZSaYbHcFMnMulKYfs8iaV+B3jf9pSAg==
+X-Received: by 2002:a92:d4c4:: with SMTP id o4mr17061597ilm.15.1610858489666;
+        Sat, 16 Jan 2021 20:41:29 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7d62:41db:b863:bc92])
+        by smtp.gmail.com with ESMTPSA id g13sm7969402iln.12.2021.01.16.20.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Jan 2021 20:41:28 -0800 (PST)
+Date:   Sat, 16 Jan 2021 21:41:25 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <YAO/9YVceghRYo4T@google.com>
+References: <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+ <20210112214337.GA10434@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sun, 17 Jan 2021 05:30:18 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112214337.GA10434@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Tue, Jan 12, 2021 at 09:43:38PM +0000, Will Deacon wrote:
+> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+> > > On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+> > > On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+> > >> I will send an RFC soon for per-table deferred TLB flushes tracking.
+> > >> The basic idea is to save a generation in the page-struct that tracks
+> > >> when deferred PTE change took place, and track whenever a TLB flush
+> > >> completed. In addition, other users - such as mprotect - would use
+> > >> the tlb_gather interface.
+> > >> 
+> > >> Unfortunately, due to limited space in page-struct this would only
+> > >> be possible for 64-bit (and my implementation is only for x86-64).
+> > > 
+> > > I don't want to discourage you but I don't think this would end up
+> > > well. PPC doesn't necessarily follow one-page-struct-per-table rule,
+> > > and I've run into problems with this before while trying to do
+> > > something similar.
+> > 
+> > Discourage, discourage. Better now than later.
+> > 
+> > It will be relatively easy to extend the scheme to be per-VMA instead of
+> > per-table for architectures that prefer it this way. It does require
+> > TLB-generation tracking though, which Andy only implemented for x86, so I
+> > will focus on x86-64 right now.
+> 
+> Can you remind me of what we're missing on arm64 in this area, please? I'm
+> happy to help get this up and running once you have something I can build
+> on.
 
-Sir/Madam,
-
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+I noticed arm/arm64 don't support ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
+Would it be something worth pursuing? Arm has been using mm_cpumask,
+so it might not be too difficult I guess?
