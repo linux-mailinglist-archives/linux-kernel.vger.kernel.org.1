@@ -2,458 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107E42F913A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 08:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53AE2F9142
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 08:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbhAQHRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 02:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S1727637AbhAQHdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 02:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbhAQHQs (ORCPT
+        with ESMTP id S1726203AbhAQHdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 02:16:48 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498ACC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 23:16:08 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id ce17so5316893pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 23:16:08 -0800 (PST)
+        Sun, 17 Jan 2021 02:33:07 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EFAC061573;
+        Sat, 16 Jan 2021 23:32:27 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m6so8292628pfm.6;
+        Sat, 16 Jan 2021 23:32:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sfq/3Dw+PcoPHvqh+uylAyzBQXvYt5+ZwuFlUoafb/E=;
-        b=fRPZR0vYBMPXlk0ok1lfeziFdWL8+GRhF7jdURYTTBTzuH68fV6MUtE6LdHlBy8tp+
-         nWXm0lRgsb4OeM5ciGfxTGPUToajZF/660JxDiYf3iS+Kt3yPUlEygLsR6GIB3a2sd/b
-         XELYdNE6UZ3t8nQqcTFeYf8m//Kvzmr6HoXYZz1y3SjqEsT2gsM7XUqX1e7ttAwQBvPf
-         TllOGtrwUC42qlFReCqD/Y6itFa3tRWZ7VZ5D6dyiWrqgR8/cAtcYho8Z31mSQFCveTL
-         U75839WkBmUKduQXqUeof8H3kO5lrL2FNG2dmsd5yXjjSCNY9VBsZKZszXyyLOnqXOeh
-         ym1g==
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sBCeRfGu3HpuvJkTgZps1o7i3Djrk1XekJ+FW6NcBqc=;
+        b=dEmqzX6MzUfLYobSu1aZQcbPqdtr+PoobwUvgSutjIUk5jYrWmY96/Ar8lCz7v/N/H
+         XAflD5Fs45bb/eZ8Gfw+A0bNu20iXGdf9QqcAEJwb+joLWMuroZ8znoL+qaTiO9rmm9C
+         J0o+Q7lXt5IDZUvS7tBRpg2tAa2UHXwxfjDrrOlvsK2gS8KXJ5B3tpwZ00dgSc7fsYVn
+         DaZZVk+OvWl6ofIgd7oy1s6QgOPAHiVMFxmSYatvO5PDRtz/PZHdBFuP0SMgxN9Lv6Go
+         wQL80mwYLSU/3XFjudprp5/OFNS6GRHahRd+OYx+j7ju3x9adYm48ZnYJZYStt3cvuk5
+         bBMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sfq/3Dw+PcoPHvqh+uylAyzBQXvYt5+ZwuFlUoafb/E=;
-        b=KeeLTk5A8wN7H73CniopWQ0Kiwc1W3HDAU70PhKXOSe6MX6WCRkvu7Ugd0Q5yjmBqB
-         t0iqOVgU+NSUY6qF68J1u2InW+J1BXVuqFdN23zkhQ16T0rGPLTXr3a2kWSSHn7cSX9D
-         Bg3HzSA4awCZOx1ZbAXfwehI2OVe2Ozg5M9DEL4h1lWweliCINeAEc0XHTgy40KF964S
-         CGmEZsYbG6ia9ApmjT/rz8Bnx+MndXYVEEeZ4NDoEF7fODXXhE4YVhIs7gGC+UZulxpP
-         2ZPzHu5sUGbU8/HFjo3KZY2ZweWahioavmrW9fGv8DWzrlpy69Dtd0W6Te4j8KVDNja2
-         2D4A==
-X-Gm-Message-State: AOAM531YX4YYaaKePMb9rf9DVM5xVK4vIOuw1vsjLKse8nMqPHD+f4XQ
-        nFCd1tQdnnbfT+FR7OhpChvU/6XzKZA3f/+s5v8LtA==
-X-Google-Smtp-Source: ABdhPJxobmTOh9SS3IpMJuXhfOJnOn3osYWBjuLs66WPhV1m9jrAYnjWkm4PBX3SDMfu4FX4zaH7mMapoVMcblIDKZo=
-X-Received: by 2002:a17:90b:3596:: with SMTP id mm22mr19580737pjb.235.1610867767486;
- Sat, 16 Jan 2021 23:16:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106161233.GA44413@e120937-lin> <20210106212353.951807-1-jbhayana@google.com>
- <20210109190133.61051fab@archlinux> <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
- <20210111123338.00007c06@Huawei.com> <CA+=V6c1F1ViZRjdwZOC-YC4TryJ4dCcwpc=wvOZkb2HYMYGcmw@mail.gmail.com>
- <20210116193319.436f2c87@archlinux>
-In-Reply-To: <20210116193319.436f2c87@archlinux>
-From:   Jyoti Bhayana <jbhayana@google.com>
-Date:   Sat, 16 Jan 2021 23:15:56 -0800
-Message-ID: <CA+=V6c0j_CGs6S6oWKE1m_BH3y-z4pNiMVkWUU=Zs2BAcoK7Gg@mail.gmail.com>
-Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sBCeRfGu3HpuvJkTgZps1o7i3Djrk1XekJ+FW6NcBqc=;
+        b=a/+5FipyQ3wlR6Y/DNiBzT+bwdp3HkVMc82tTCLXZfJ7vn6QXX+O5no58xQiec2y50
+         zyeDpjsCpLGmfh+wUpKeBOiB8xzgFyTI07szgo5OfwVJFPAbuWta21Cc8gtWH2dNm2Pi
+         bfYInOLP2/8pyGqhJ2vfTBGJCSmRsV660/RdWVWnpKMKCvTcKQDlZwC17YYkihjPSKGb
+         VsyW20dXprTSfH2OPDj4W8wfh62rx+DHcJcSORn3hYSemIypKklvzfI5yhEJ532HHMV4
+         nggm9HixbY3gkic40lgHGvJ/sixmkZHpHDPFh+RMcsBjDwASdQf7SG7G5xJxk11kOakZ
+         3syw==
+X-Gm-Message-State: AOAM533+CeyELVVwzkWNKh33OlkfwkW2Ltrnt1kwz6kTkDt0Eko+4woN
+        il0BrQSxfeN3uFAcrKDhsVU=
+X-Google-Smtp-Source: ABdhPJz4HmBhYzLyT3UJ9TwbKiLmgP2cMQv0LvOHakHdeqzb/EXgR825ZilvQT0XrXc/3UZ/1K+MBw==
+X-Received: by 2002:a05:6a00:2296:b029:1b6:6972:2f2a with SMTP id f22-20020a056a002296b02901b669722f2amr3457483pfe.69.1610868745983;
+        Sat, 16 Jan 2021 23:32:25 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id u1sm12207007pjr.51.2021.01.16.23.32.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Jan 2021 23:32:25 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YAO/9YVceghRYo4T@google.com>
+Date:   Sat, 16 Jan 2021 23:32:22 -0800
+Cc:     Will Deacon <will@kernel.org>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com,
+        Mel Gorman <mgorman@suse.de>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <85DAADF4-2537-40BD-8580-A57C201FF5F3@gmail.com>
+References: <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+ <20210112214337.GA10434@willie-the-truck> <YAO/9YVceghRYo4T@google.com>
+To:     Yu Zhao <yuzhao@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+> On Jan 16, 2021, at 8:41 PM, Yu Zhao <yuzhao@google.com> wrote:
+>=20
+> On Tue, Jan 12, 2021 at 09:43:38PM +0000, Will Deacon wrote:
+>> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+>>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+>>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+>>>>> I will send an RFC soon for per-table deferred TLB flushes =
+tracking.
+>>>>> The basic idea is to save a generation in the page-struct that =
+tracks
+>>>>> when deferred PTE change took place, and track whenever a TLB =
+flush
+>>>>> completed. In addition, other users - such as mprotect - would use
+>>>>> the tlb_gather interface.
+>>>>>=20
+>>>>> Unfortunately, due to limited space in page-struct this would only
+>>>>> be possible for 64-bit (and my implementation is only for x86-64).
+>>>>=20
+>>>> I don't want to discourage you but I don't think this would end up
+>>>> well. PPC doesn't necessarily follow one-page-struct-per-table =
+rule,
+>>>> and I've run into problems with this before while trying to do
+>>>> something similar.
+>>>=20
+>>> Discourage, discourage. Better now than later.
+>>>=20
+>>> It will be relatively easy to extend the scheme to be per-VMA =
+instead of
+>>> per-table for architectures that prefer it this way. It does require
+>>> TLB-generation tracking though, which Andy only implemented for x86, =
+so I
+>>> will focus on x86-64 right now.
+>>=20
+>> Can you remind me of what we're missing on arm64 in this area, =
+please? I'm
+>> happy to help get this up and running once you have something I can =
+build
+>> on.
+>=20
+> I noticed arm/arm64 don't support ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
+> Would it be something worth pursuing? Arm has been using mm_cpumask,
+> so it might not be too difficult I guess?
 
-Can you clarify one thing ? If we go with option 2 which is using
-IIO_AVAIL_RANGE for min,step,high using IIO_VAL_INT then how will it
-ensure the possible floating value for step as we are using int type?
+[ +Mel Gorman who implemented ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH ]
 
-Thanks,
-Jyoti
+IIUC, there are at least two bugs in x86 implementation.
 
-On Sat, Jan 16, 2021 at 11:33 AM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Mon, 11 Jan 2021 13:17:51 -0800
-> Jyoti Bhayana <jbhayana@google.com> wrote:
->
-> > Hi Jonathan,
-> >
-> > I know it is a bit confusing. Let me try to explain it with some
-> > examples to hopefully clarify some things here.
-> > SCMI Platform talks to the native/actual sensor, gets the raw values
-> > from the native sensor and applies the scale and then sends those
-> > values to the SCMI agent and the SCMI IIO driver.
-> > Since the sensor readings which SCMI IIO driver gets are integer, to
-> > convert them to float , we need to apply scale to these sensor values
-> > which is the unit_exponent(power-of-10 multiplier in two=E2=80=99s-comp=
-lement
-> > format) specified in the SCMI specification
-> >
-> > Native Sensor -> SCMI platform->SCMI Agent->SCMI IIO Driver
-> >
-> > So if Native Sensor gets the sensor value
-> > 32767 and the scale the SCMI Platform is using is 0.002392.
-> > SCMI platform does the calculation of 32767 * 0.002392 =3D 78.378664
-> > and send the sensor value as 78378664 and the scale as .000001 to the
-> > SCMI agent and SCMI IIO driver
-> >
-> > so for SCMI IIO driver the sensor reading =3D 78378664 and scale =3D .0=
-00001
-> > and  the sensor value is sensor_reading * scale =3D 78378664 *  .000001
-> > =3D  78.378664
-> > and the resolution which the SCMI Platform sends to the SCMI agent is 0=
-.002392.
-> > In the SCMI IIO driver, scale which is .000001 is applied to the min
-> > range/max range and the actual sensor values.
-> > sensor resolution which is  0.002392 is just passed to the userspace
-> > layer so that they know the Native sensor resolution/scale
-> > being applied by the SCMI platform.
->
-> That was pretty much where I'd gotten to.
-> Whilst the reasoning might be different it is equivalent to a sensor
-> providing info on expected noise by giving a 'valid resolution'.
-> In that case as well you have a sensor providing a number that looks to h=
-ave
-> more precision than it actually does.
->
-> Anyhow, that similarity doesn't really matter here.
->
-> I'll also add that a design that applies scale in two places is inherentl=
-y
-> less than ideal.   A cleaner design would have maintained the separation
-> between scale and raw value all the way up the stack.  That would result
-> in 0 loss of information and also be a cleaner interface.
-> Ah well, we live with what we have :)
->
-> >
-> > Regarding your comments in the previous email, when you mentioned
-> > "what we actually
-> > need is non standard ABI for resolution"? Does that mean that it is ok
-> > to have sensor resolution
-> > as the IIO attribute shown below?
-> >
-> > static IIO_DEVICE_ATTR(sensor_resolution, 0444, scmi_iio_get_sensor_res=
-olution,
-> >                      NULL, 0);
->
-> We could do something new (see later for why I don't think we need to)
-> Would need to clearly reflect what it applies to and I'm not sure resolut=
-ion
-> is even an unambiguous name given sensor resolution is often described as=
- 8bit
-> 10bit etc.  E.g. this selection table from Maxim for ADCs.
-> https://www.maximintegrated.com/en/products/parametric/search.html?fam=3D=
-prec_adc&tree=3Dmaster&metaTitle=3DPrecision%20ADCs%20(%20%205Msps)&hide=3D=
-270
-> Of course sometimes it's also used for what you want here.
->
-> Hohum.  So we might be still be able to do this with standard ABI but we
-> are going to need to do some maths in the driver.
-> So if we were to express it via
->
-> in_accel_raw_avail for example we could use the [low step high] form.
->
-> low and high are straight forward as those are expressed directly from
-> axis_min_range and axis_max_range which I think are in the same units
-> as the _raw channel itself.
->
-> For resolution, we have it expressed as [res] x 10^res_exponent
-> and if we just put that in as the 'step' above it would have the wrong
-> exponent (as we'd expect to still have to apply your 0.00001 from above
-> example).
->
-> Hence we express it as [res] x 10^(res_exponent - exponent)
->
-> I'm going to slightly modify your example above because the two exponents
-> are the same so it's hard to tell if I have them right way around.
-> Hence let res =3D 0.00293 =3D 293 x 10^(-5)  (I just dropped the trailing=
- 2)
->
-> scale =3D 10^(-6) exponent =3D -6
->
-> So step =3D 2392 x 10^(-5 + 6) =3D 2390
-> giving us
->
-> [min 2390 max] for _raw_available
->
-> Hence when userspace comes along and wants this in relevant base units (h=
-ere
-> m/sec^2) it applies the x10^(-6) mutliplier from _scale we get out expect=
-ed value
-> of 0.00239 m/sec^2
->
-> That should work for any case we see but the maths done in the driver wil=
-l have
-> to cope with potential negative exponents for step.
->
-> One catch will be the 64 bit potential values for min and max :(
->
-> >
-> > static struct attribute *scmi_iio_attributes[] =3D {
-> >        &iio_dev_attr_sensor_resolution.dev_attr.attr,
-> >        NULL,
-> > };
-> >
-> > and for the min/max range, I can use the read_avail callback?
->
-> I would have said yes normally but if we are going to cope with
-> a potential floating point value for step as touched on above we
-> may have to do it by hand in the driver.  Not ideal but may
-> be only option :(
->
-> >
-> > Also, for the min/max range, there were two options discussed in the
-> > email thread:
-> > option 1)  Add new IIO val Type IIO_VAL_INT_H32_L32, and modify the
-> > iio_format_value to format the 64 bit int properly for the userspace
-> > option 2) Ignore the H32 bits and use the existing IIO_VAL_INT as just
-> > L32 bits should be sufficient for current sensor values.
->
-> Ignore is a strong way of putting it.  We would definitely want to
-> shout about it if we do get anything set in H32.
->
-> If we are fairly sure that we aren't going to anything greater than
-> 32 bits than we are fine.
->
-> It should be possible to work through the worst cases given
-> limits of say +-20g for accelerometers for example and the relatively
-> limited exponents (5 bits).  + sensible resolution.
->
-> If it's fairly safe I'd like to go for option 2. as it would ensure we
-> can do floating point for the step (which is then used to compute the
-> resolution value for android)
->
-> Thanks
->
-> Jonathan
->
-> >
-> > Let me know which option you prefer for min/max range. and also please
-> > confirm if it is ok to have an IIO attribute for resolution like
-> > mentioned above.
-> >
-> >
-> > Thanks,
-> > Jyoti
-> >
-> > Thank you so much
-> >
-> > Jyoti
-> >
-> >
-> >
-> > On Mon, Jan 11, 2021 at 4:34 AM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > On Sun, 10 Jan 2021 22:44:44 -0800
-> > > Jyoti Bhayana <jbhayana@google.com> wrote:
-> > >
-> > > > Hi Jonathan,
-> > > >
-> > > > In section 4.7.2.5.1 of the specification, the following exponent i=
-s
-> > > > the scale value
-> > > >
-> > > > uint32 axis_attributes_high
-> > > > Bits[15:11] Exponent: The power-of-10 multiplier in two=E2=80=99s-c=
-omplement
-> > > > format that is applied to the sensor unit
-> > > > specified by the SensorType field.
-> > > >
-> > > > and the resolution is
-> > > >
-> > > > uint32 axis_resolution
-> > > > Bits[31:27] Exponent: The power-of-10 multiplier in two=E2=80=99s-c=
-omplement format
-> > > > that is applied to the Res field. Bits[26:0] Res: The resolution of
-> > > > the sensor axis.
-> > > >
-> > > > From code in scmi_protocol.h
-> > > > /**
-> > > >  * scmi_sensor_axis_info  - describes one sensor axes
-> > > >  * @id: The axes ID.
-> > > >  * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
-> > > >  * @scale: Power-of-10 multiplier applied to the axis unit.
-> > > >  * @name: NULL-terminated string representing axes name as advertis=
-ed by
-> > > >  *  SCMI platform.
-> > > >  * @extended_attrs: Flag to indicate the presence of additional ext=
-ended
-> > > >  *    attributes for this axes.
-> > > >  * @resolution: Extended attribute representing the resolution of t=
-he axes.
-> > > >  * Set to 0 if not reported by this axes.
-> > > >  * @exponent: Extended attribute representing the power-of-10 multi=
-plier that
-> > > >  *      is applied to the resolution field. Set to 0 if not reporte=
-d by
-> > > >  *      this axes.
-> > > >  * @attrs: Extended attributes representing minimum and maximum val=
-ues
-> > > >  *   measurable by this axes. Set to 0 if not reported by this sens=
-or.
-> > > >  */
-> > > >
-> > > > struct scmi_sensor_axis_info {
-> > > > unsigned int id;
-> > > > unsigned int type;
-> > > > int scale; //This is the scale used for min/max range
-> > > > char name[SCMI_MAX_STR_SIZE];
-> > > > bool extended_attrs;
-> > > > unsigned int resolution;
-> > > > int exponent; // This is the scale used in resolution
-> > > > struct scmi_range_attrs attrs;
-> > > > };
-> > > >
-> > > > The scale above  is the Power-of-10 multiplier which is applied to =
-the min range
-> > > > and the max range value
-> > > > but the resolution is equal to resolution and multiplied by
-> > > > Power-of-10 multiplier
-> > > > of exponent in the above struct.
-> > > > So as can be seen above the value of the power of 10 multiplier use=
-d
-> > > > for min/max range
-> > > > can be different than the value of the power of 10 multiplier used =
-for
-> > > > the resolution.
-> > > > Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range an=
-d as well
-> > > > as resolution, then I have to use the float format with the scale a=
-pplied.
-> > > >
-> > > > If there is another way which you know of and prefer, please let me=
- know.
-> > > I'll confess I've gotten a bit lost here.
-> > >
-> > > So I think where we are is how to describe the range of the sensor an=
-d why we can't
-> > > use in_accel_x_raw_available to provide the
-> > >
-> > > Understood that the resolution can have different scaling.  That is p=
-resumably
-> > > to allow for the case where a device is reporting values at a finer s=
-cale than
-> > > it's real resolution.  Resolution might take into account expected no=
-ise for
-> > > example.  So it should be decoupled from the scaling of both the actu=
-al measurements
-> > > and the axis high / low limits.
-> > >
-> > > However, I'd read that as saying the axis high / low limits and the a=
-ctual sensor
-> > > readings should be scaled by the exponent in axis_attributes_high.
-> > > So I think we are fine for the range, but my earlier assumption that =
-resolution
-> > > was equivalent to scale in IIO (real world value for 1LSB) may be com=
-pletely wrong
-> > > as resolution may be unconnected to how you convert to a real world v=
-alue?
-> > >
-> > > If nothing else I'd like to suggest the spec needs to be tightened a =
-bit here
-> > > to say exactly how we convert a value coming in to real world units (=
-maybe
-> > > I'm just missing it).
-> > >
-> > > Anyhow, I suspect we've been looking at this the wrong way and what w=
-e actually
-> > > need is non standard ABI for resolution.
-> > >
-> > > Jonathan
-> > >
-> > >
-> > >
-> > >
-> > > >
-> > > > Thanks,
-> > > > Jyoti
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > Thanks,
-> > > > Jyoti
-> > > >
-> > > > On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org>=
- wrote:
-> > > > >
-> > > > > On Wed,  6 Jan 2021 21:23:53 +0000
-> > > > > Jyoti Bhayana <jbhayana@google.com> wrote:
-> > > > >
-> > > > > > Hi Jonathan,
-> > > > > >
-> > > > > > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding =
-IIO_VAL_FRACTIONAL_LONG
-> > > > > > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max=
- range can be different
-> > > > > > than the one used in resolution according to specification.
-> > > > >
-> > > > > That's somewhat 'odd'.  Given min/max are inherently values the s=
-ensor is supposed to
-> > > > > be able to return why give them different resolutions?  Can you p=
-oint me at a specific
-> > > > > section of the spec?  The axis_min_range_low etc fields don't see=
-m to have units specified
-> > > > > but I assumed they were in sensor units and so same scale factors=
-?
-> > > > >
-> > > > > >
-> > > > > > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED usi=
-ng IIO_AVAIL_RANGE
-> > > > > > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and =
-resolution.
-> > > > > > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACT=
-IONAL_64 will use 4 values
-> > > > > > val_high,val_low,and val2_high and val2_low.
-> > > > >
-> > > > > I'm not keen on the changing that internal kernel interface unles=
-s we absolutely
-> > > > > have to.  read_avail() is called from consumer drivers and they w=
-on't know anything
-> > > > > about this new variant.
-> > > > >
-> > > > > >
-> > > > > > Let me know if that is an acceptable solution.
-> > > > >
-> > > > > Hmm. It isn't a standard use of the ABI given the value in the bu=
-ffer is (I assume)
-> > > > > raw (needs scale applied).  However, it isn't excluded by the ABI=
- docs.  Whether
-> > > > > a standard userspace is going to expect it is not clear to me.
-> > > > >
-> > > > > I don't want to end up in a position where we end up with availab=
-le being generally
-> > > > > added for processed when what most people care about is what the =
-value range they
-> > > > > might get from a polled read is (rather than via a buffer).
-> > > > >
-> > > > > So I'm not that keen on this solution but if we can find a way to=
- avoid it.
-> > > > >
-> > > > > Jonathan
-> > > > >
-> > > > >
-> > > > > >
-> > > > > >
-> > > > > > Thanks,
-> > > > > > Jyoti
-> > > > > >
-> > > > >
-> > >
->
+First, there is a missing memory barrier in tlbbatch_add_mm() between
+inc_mm_tlb_gen() and the read of mm_cpumask().
+
+Second, try_to_unmap_flush() clears flush_required after flushing. =
+Another
+thread can call set_tlb_ubc_flush_pending() after the flush and before
+flush_required is cleared, and the indication that a TLB flush is =
+pending
+can be lost.
+
+I am working on addressing these issues among others, but, as you =
+already
+saw, I am a bit slow.
+
+On a different but related topic: Another thing that I noticed that Arm =
+does
+not do is batching TLB flushes across VMAs. Since Arm does not have its =
+own
+tlb_end_vma(), it uses the default tlb_end_vma(), which flushes each VMA
+separately. Peter Zijlstra=E2=80=99s comment says that there are =
+advantages in
+flushing each VMA separately, but I am not sure it is better or =
+intentional
+(especially since x86 does not do so).
+
+I am trying to remove the arch-specific tlb_end_vma() and have a config
+option to control this behavior.
+
+Again, sorry for being slow. I hope to send an RFC soon.
+
