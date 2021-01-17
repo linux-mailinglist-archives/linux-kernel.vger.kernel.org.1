@@ -2,192 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7EB2F93F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F812F93F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbhAQQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 11:20:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729437AbhAQQTz (ORCPT
+        id S1729756AbhAQQXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 11:23:10 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:42484 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728693AbhAQQXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 11:19:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610900307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pd4vHRZ+JWsMgYXJ+/MXzVJZ5dZGqNEtTkFAu8s+Zps=;
-        b=Z+tYm7j4G4Jm9zkVWWnB+j84GfLRzpYXY5pBumBX4IlfSpqVi31yCye4No8meGPS+70jA+
-        69LwMZ3Xz/6f5HU7ptGe/ThogpCZvWQ65MinbnfmazuW9M4+Q6mpwYrLWJioC1DUKgA7z9
-        26NLUljT9qoe5gectsmP4whsewZpgAc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-Pzv4wB1cPNGKz-d1MdyoBw-1; Sun, 17 Jan 2021 11:18:25 -0500
-X-MC-Unique: Pzv4wB1cPNGKz-d1MdyoBw-1
-Received: by mail-qt1-f198.google.com with SMTP id l7so12883670qth.15
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 08:18:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pd4vHRZ+JWsMgYXJ+/MXzVJZ5dZGqNEtTkFAu8s+Zps=;
-        b=Ky1gfXWEzdXKdZzisK8Omj8GLxialQbbHope4B9vYnRZtb0O3SaXsR3aXD7Q32flEY
-         1LKSwOLpIwiq+SpWuWO6FyHzs+bqOvNFvaYQ34kDBXnIxVdLsiscHGDkW0F7Rexaj5fg
-         E3IrIdiVEFtY+AzORGGMKfPQeLz6Pvc4AmdliM8OQPiZmuO0e0Zxk10OZyf/LJrSdFU8
-         jJsFne25j/me7fIpehx5pXD7lbGU2rkXFn7Jf9Ocl5PA+J1Ja4XrhgyniHkkKwWfYUIL
-         /KzV2ZRkkVnnXDsJ1zjdoF4/uGfw7M6xMxRsBf1NQcLJUKRHgs/SlAqBS1u30VKUyr8D
-         aumw==
-X-Gm-Message-State: AOAM5335DIqgN78FarKcAn8xUtWgt7Om3zXXpwZhuClUbm0F+AcYA+9o
-        WDJ2rN42TsSOeuE6v8QZ06vQ0ohNwlayn4Tgc39ZtmFPuBbhC65QXHzTogB/t9oBv5toWfYFR7N
-        7q3UcVDvDpfJU/JewyaOIm7jj
-X-Received: by 2002:ac8:6b0a:: with SMTP id w10mr19764232qts.224.1610900303864;
-        Sun, 17 Jan 2021 08:18:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+kM1gexsua9DwpZxib3OZs35p/m5WmKtlUfgtMEYDw+N6CMDgeXGQk41qH5EeAy8ZFkJePQ==
-X-Received: by 2002:ac8:6b0a:: with SMTP id w10mr19764160qts.224.1610900302190;
-        Sun, 17 Jan 2021 08:18:22 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id i17sm8617874qtg.77.2021.01.17.08.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 08:18:21 -0800 (PST)
-From:   trix@redhat.com
-To:     shuah@kernel.org, mdf@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-fpga@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v3] selftests: drivers: fpga: A test for interrupt support
-Date:   Sun, 17 Jan 2021 08:18:15 -0800
-Message-Id: <20210117161815.514078-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 17 Jan 2021 11:23:05 -0500
+X-Greylist: delayed 18304 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Jan 2021 11:23:03 EST
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10HGLo8D030649;
+        Mon, 18 Jan 2021 01:21:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10HGLo8D030649
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610900511;
+        bh=A96ILU3TUGfDLP2inrPNigj9gcgMcZK1odLxYlprZk0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HdzKoqWvcD9A63HAU4U/oBjM4rWPhjpaE+lKlxEgdsQKNlch4H50LPNHRHYBBEWG6
+         i+Q61TjrUuFlVjRenV6xR6mZFZEdLsGXtFuLGgr39KMAInFJtG/iatSVU7aicnem2U
+         cysy5/WRNOlGjwk9IPqyJNEGlZ3wvjPIslnF7AWA5XgQfVtFG/c560Zmf2i7XPYx45
+         1iHhzxk/+pkx1tofeXWnPgLu/mm5iIZc4viLzS4/sF+GziByzSXOyAvK3IgA/lESVF
+         g2FB17dPLeqTDKI9dS5HLOofnyda9ih8OBFkw5esdYPTHmmrjavUZjU94JBbu4CNtV
+         /EbSxOi1I70Kg==
+X-Nifty-SrcIP: [209.85.215.177]
+Received: by mail-pg1-f177.google.com with SMTP id n25so9423676pgb.0;
+        Sun, 17 Jan 2021 08:21:50 -0800 (PST)
+X-Gm-Message-State: AOAM533RvpKZ2ajjH8UpMBh/ELuWpY+jGqvdfAhlBFwoEq5a4l+fq3kY
+        uDzEONf8MoCuXB5zZTNcTUFz5kalHBCQuBw6854=
+X-Google-Smtp-Source: ABdhPJzlxeLf7lz9OrKj4XXhP84ohvjAhHnWUF3GKa9pB9ctkl38D9YLrTcAupkETI8wsdDODwfHIwm94LS6e+KTvHI=
+X-Received: by 2002:a62:820d:0:b029:1ad:d810:6805 with SMTP id
+ w13-20020a62820d0000b02901add8106805mr22536477pfd.63.1610900509742; Sun, 17
+ Jan 2021 08:21:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210117111632.2392635-1-masahiroy@kernel.org>
+ <20210117111632.2392635-2-masahiroy@kernel.org> <acc34727-c956-3943-c623-1acd462c2a2d@physik.fu-berlin.de>
+In-Reply-To: <acc34727-c956-3943-c623-1acd462c2a2d@physik.fu-berlin.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 18 Jan 2021 01:21:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQL3RUtnw99smJCRc_rOm3PgMZhjc85WT3WwNGCcgK6nw@mail.gmail.com>
+Message-ID: <CAK7LNAQL3RUtnw99smJCRc_rOm3PgMZhjc85WT3WwNGCcgK6nw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sun, Jan 17, 2021 at 10:35 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+>
+> Hi Masahiro!
+>
+> On 1/17/21 12:16 PM, Masahiro Yamada wrote:
+> > Even if none of source code is updated, the following are every time
+> > rebuilt:
+> >
+> >   CC      arch/sh/boot/compressed/cache.o
+> >   SHIPPED arch/sh/boot/compressed/ashiftrt.S
+> >   AS      arch/sh/boot/compressed/ashiftrt.o
+> >   SHIPPED arch/sh/boot/compressed/ashldi3.c
+> >   CC      arch/sh/boot/compressed/ashldi3.o
+> >   SHIPPED arch/sh/boot/compressed/ashrsi3.S
+> >   AS      arch/sh/boot/compressed/ashrsi3.o
+> >   SHIPPED arch/sh/boot/compressed/ashlsi3.S
+> >   AS      arch/sh/boot/compressed/ashlsi3.o
+> >   SHIPPED arch/sh/boot/compressed/lshrsi3.S
+> >   AS      arch/sh/boot/compressed/lshrsi3.o
+> >   LD      arch/sh/boot/compressed/vmlinux
+> >   OBJCOPY arch/sh/boot/zImage
+> >
+> > Add build artifacts to 'targets' as needed.
+> >
+> > I turned the library files to check-in files. It is simpler than
+> > copying from arch/sh/lib/ at build-time.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/sh/boot/compressed/.gitignore |  5 -----
+> >  arch/sh/boot/compressed/Makefile   | 32 ++++++++++++------------------
+> >  arch/sh/boot/compressed/ashiftrt.S |  2 ++
+> >  arch/sh/boot/compressed/ashldi3.c  |  2 ++
+> >  arch/sh/boot/compressed/ashlsi3.S  |  2 ++
+> >  arch/sh/boot/compressed/ashrsi3.S  |  2 ++
+> >  arch/sh/boot/compressed/lshrsi3.S  |  2 ++
+> >  7 files changed, 23 insertions(+), 24 deletions(-)
+> >  create mode 100644 arch/sh/boot/compressed/ashiftrt.S
+> >  create mode 100644 arch/sh/boot/compressed/ashldi3.c
+> >  create mode 100644 arch/sh/boot/compressed/ashlsi3.S
+> >  create mode 100644 arch/sh/boot/compressed/ashrsi3.S
+> >  create mode 100644 arch/sh/boot/compressed/lshrsi3.S
+> >
+> > diff --git a/arch/sh/boot/compressed/.gitignore b/arch/sh/boot/compressed/.gitignore
+> > index 37aa53057369..cd16663bc7c8 100644
+> > --- a/arch/sh/boot/compressed/.gitignore
+> > +++ b/arch/sh/boot/compressed/.gitignore
+> > @@ -1,7 +1,2 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> > -ashiftrt.S
+> > -ashldi3.c
+> > -ashlsi3.S
+> > -ashrsi3.S
+> > -lshrsi3.S
+> >  vmlinux.bin.*
+> > diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
+> > index 589d2d8a573d..cf3174df7859 100644
+> > --- a/arch/sh/boot/compressed/Makefile
+> > +++ b/arch/sh/boot/compressed/Makefile
+> > @@ -5,12 +5,18 @@
+> >  # create a compressed vmlinux image from the original vmlinux
+> >  #
+> >
+> > -targets              := vmlinux vmlinux.bin vmlinux.bin.gz \
+> > -                vmlinux.bin.bz2 vmlinux.bin.lzma \
+> > -                vmlinux.bin.xz vmlinux.bin.lzo \
+> > -                head_32.o misc.o piggy.o
+> > +OBJECTS := head_32.o misc.o cache.o piggy.o \
+> > +           ashiftrt.o ashldi3.o ashrsi3.o ashlsi3.o lshrsi3.o
+> > +
+> > +# These were previously generated files. When you are building the kernel
+> > +# with O=, make sure to remove the stale files in the output tree. Otherwise,
+> > +# the build system wrongly compiles the stale ones.
+> > +ifdef building_out_of_srctree
+> > +$(shell rm -f $(addprefix $(obj)/, ashiftrt.S ashldi3.c ashrsi3.S ashlsi3.S lshrsi3.S))
+> > +endif
+> >
+> > -OBJECTS = $(obj)/head_32.o $(obj)/misc.o $(obj)/cache.o
+> > +targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 \
+> > +           vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
+> >
+> >  GCOV_PROFILE := n
+> >
+> > @@ -33,21 +39,9 @@ ccflags-remove-$(CONFIG_MCOUNT) += -pg
+> >  LDFLAGS_vmlinux := --oformat $(ld-bfd) -Ttext $(IMAGE_OFFSET) -e startup \
+> >                  -T $(obj)/../../kernel/vmlinux.lds
+> >
+> > -#
+> > -# Pull in the necessary libgcc bits from the in-kernel implementation.
+> > -#
+> > -lib1funcs-y  := ashiftrt.S ashldi3.c ashrsi3.S ashlsi3.S lshrsi3.S
+> > -lib1funcs-obj   := \
+> > -     $(addsuffix .o, $(basename $(addprefix $(obj)/, $(lib1funcs-y))))
+> > -
+> > -lib1funcs-dir                := $(srctree)/arch/$(SRCARCH)/lib
+> > -
+> > -KBUILD_CFLAGS += -I$(lib1funcs-dir) -DDISABLE_BRANCH_PROFILING
+> > -
+> > -$(addprefix $(obj)/,$(lib1funcs-y)): $(obj)/%: $(lib1funcs-dir)/% FORCE
+> > -     $(call cmd,shipped)
+> > +KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
+> >
+> > -$(obj)/vmlinux: $(OBJECTS) $(obj)/piggy.o $(lib1funcs-obj) FORCE
+> > +$(obj)/vmlinux: $(addprefix $(obj)/, $(OBJECTS)) FORCE
+> >       $(call if_changed,ld)
+> >
+> >  $(obj)/vmlinux.bin: vmlinux FORCE
+> > diff --git a/arch/sh/boot/compressed/ashiftrt.S b/arch/sh/boot/compressed/ashiftrt.S
+> > new file mode 100644
+> > index 000000000000..0f3b291a3f4b
+> > --- /dev/null
+> > +++ b/arch/sh/boot/compressed/ashiftrt.S
+> > @@ -0,0 +1,2 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +#include "../../lib/ashiftrt.S"
+> > diff --git a/arch/sh/boot/compressed/ashldi3.c b/arch/sh/boot/compressed/ashldi3.c
+> > new file mode 100644
+> > index 000000000000..7cebd646df83
+> > --- /dev/null
+> > +++ b/arch/sh/boot/compressed/ashldi3.c
+> > @@ -0,0 +1,2 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include "../../lib/ashldi3.c"
+> > diff --git a/arch/sh/boot/compressed/ashlsi3.S b/arch/sh/boot/compressed/ashlsi3.S
+> > new file mode 100644
+> > index 000000000000..e354262b275f
+> > --- /dev/null
+> > +++ b/arch/sh/boot/compressed/ashlsi3.S
+> > @@ -0,0 +1,2 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +#include "../../lib/ashlsi3.S"
+> > diff --git a/arch/sh/boot/compressed/ashrsi3.S b/arch/sh/boot/compressed/ashrsi3.S
+> > new file mode 100644
+> > index 000000000000..e564be9a4dcd
+> > --- /dev/null
+> > +++ b/arch/sh/boot/compressed/ashrsi3.S
+> > @@ -0,0 +1,2 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +#include "../../lib/ashrsi3.S"
+> > diff --git a/arch/sh/boot/compressed/lshrsi3.S b/arch/sh/boot/compressed/lshrsi3.S
+> > new file mode 100644
+> > index 000000000000..5a8281b7e516
+> > --- /dev/null
+> > +++ b/arch/sh/boot/compressed/lshrsi3.S
+> > @@ -0,0 +1,2 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +#include "../../lib/lshrsi3.S"
+>
+> This patch doesn't apply for me while the first one applies without problems:
+>
+> glaubitz@epyc:..glaubitz/linux-git> git am ../sh-patches-2021/\[PATCH\ 1_2\]\ sh\:\ boot\:\ add\ intermediate\ vmlinux.bin\*\ to\ targets\ instead\ of\ extra-y.eml
+> Applying: sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
+> glaubitz@epyc:..glaubitz/linux-git> git am ../sh-patches-2021/\[PATCH\ 2_2\]\ sh\:\ boot\:\ avoid\ unneeded\ rebuilds\ under\ arch_sh_boot_compressed_.eml
+> Applying: sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+> error: arch/sh/boot/compressed/ashiftrt.S: already exists in working directory
+> error: arch/sh/boot/compressed/ashldi3.c: already exists in working directory
+> error: arch/sh/boot/compressed/ashlsi3.S: already exists in working directory
+> error: arch/sh/boot/compressed/ashrsi3.S: already exists in working directory
+> error: arch/sh/boot/compressed/lshrsi3.S: already exists in working directory
 
-Check that the ioctl DFL_FPGA_PORT_ERR_GET_IRQ_NUM returns
-an expected result.
+Adrian, these 5 files are currently generated files.
 
-Tested on vf device 0xbcc1
+That is why git-am failed.
 
-Sample run with
- # make -C tools/testing/selftests TARGETS=drivers/fpga run_tests
- ...
- TAP version 13
- 1..1
- # selftests: drivers/fpga: intr
- # TAP version 13
- # 1..1
- # # Starting 1 tests from 1 test cases.
- # #  RUN           global.afu_intr ...
- # #            OK  global.afu_intr
- # ok 1 global.afu_intr
- # # PASSED: 1 / 1 tests passed.
- # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 1 selftests: drivers/fpga: intr
+They are not cleaned up by 'make ARCH=sh clean'
+(this is a bug too).
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
-v1: Convert to kselftest_harness.h framework
-v2: reverse xmas tree variables
----
- MAINTAINERS                                   |  1 +
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/drivers/fpga/Makefile |  7 ++++
- tools/testing/selftests/drivers/fpga/config   |  1 +
- tools/testing/selftests/drivers/fpga/intr.c   | 36 +++++++++++++++++++
- 5 files changed, 46 insertions(+)
- create mode 100644 tools/testing/selftests/drivers/fpga/Makefile
- create mode 100644 tools/testing/selftests/drivers/fpga/config
- create mode 100644 tools/testing/selftests/drivers/fpga/intr.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index de610a06cb5c..7ed3ce58d95e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6973,6 +6973,7 @@ F:	Documentation/driver-api/fpga/
- F:	Documentation/fpga/
- F:	drivers/fpga/
- F:	include/linux/fpga/
-+F:	tools/testing/selftests/drivers/fpga/
- 
- FPGA SECURITY MANAGER DRIVERS
- M:	Russ Weight <russell.h.weight@intel.com>
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index afbab4aeef3c..aad4763ec348 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -9,6 +9,7 @@ TARGETS += core
- TARGETS += cpufreq
- TARGETS += cpu-hotplug
- TARGETS += drivers/dma-buf
-+TARGETS += drivers/fpga
- TARGETS += efivarfs
- TARGETS += exec
- TARGETS += filesystems
-diff --git a/tools/testing/selftests/drivers/fpga/Makefile b/tools/testing/selftests/drivers/fpga/Makefile
-new file mode 100644
-index 000000000000..eba35c405d5b
---- /dev/null
-+++ b/tools/testing/selftests/drivers/fpga/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+CFLAGS += -I../../../../../usr/include/
-+CFLAGS += -I../../../../../include/uapi/
-+
-+TEST_GEN_PROGS := intr
-+
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/drivers/fpga/config b/tools/testing/selftests/drivers/fpga/config
-new file mode 100644
-index 000000000000..e2111b81d8d7
---- /dev/null
-+++ b/tools/testing/selftests/drivers/fpga/config
-@@ -0,0 +1 @@
-+CONFIG_FPGA_DFL_AFU=m
-diff --git a/tools/testing/selftests/drivers/fpga/intr.c b/tools/testing/selftests/drivers/fpga/intr.c
-new file mode 100644
-index 000000000000..927dcc757f0b
---- /dev/null
-+++ b/tools/testing/selftests/drivers/fpga/intr.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdint.h>
-+#include <string.h>
-+#include <sys/fcntl.h>
-+#include <sys/ioctl.h>
-+#include <linux/fpga-dfl.h>
-+
-+#include "../../kselftest_harness.h"
-+
-+TEST(afu_intr)
-+{
-+	struct dfl_fpga_port_info port_info;
-+	uint32_t irq_num = UINT32_MAX;
-+	int devfd, status;
-+
-+	devfd = open("/dev/dfl-port.0", O_RDONLY);
-+	if (devfd < 0)
-+		SKIP(0, "no fpga afu device 0");
-+	/*
-+	 * From fpga-dl.h :
-+	 * Currently hardware supports up to 1 irq.
-+	 * Return: 0 on success, -errno on failure.
-+	 */
-+	status = ioctl(devfd, DFL_FPGA_PORT_ERR_GET_IRQ_NUM, &irq_num);
-+	ASSERT_EQ(0, status) {
-+		TH_LOG("ioctl() failed to get the number irqs");
-+	}
-+	ASSERT_LT(irq_num, 256) {
-+		TH_LOG("unexpeced number of irqs");
-+	}
-+	close(devfd);
-+}
-+
-+TEST_HARNESS_MAIN
--- 
-2.27.0
+Please remove them manually, then try git am again.
 
+
+
+
+
+
+
+> Patch failed at 0001 sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+> hint: Use 'git am --show-current-patch=diff' to see the failed patch
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+> glaubitz@epyc:..glaubitz/linux-git>
+>
+> Adrian
+>
+> --
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer - glaubitz@debian.org
+> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+>
+
+
+--
+Best Regards
+Masahiro Yamada
