@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568CD2F9204
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4D62F920B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbhAQLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 06:30:38 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:35601 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbhAQL3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 06:29:46 -0500
-Received: by mail-io1-f69.google.com with SMTP id a1so24174761ios.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 03:29:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=P/d1FEPC5iUSKICunGAq3DjPk63uAX3l81ePhtYb8N0=;
-        b=JcMSlyZQfkvpm+DrASFZeWAZsAZvCN+pgB8hUnAZ5k7I+YqauyvVGYQJxZ6Cci/MOA
-         pHEiHAMm4UgeibDDiBwFApSY4d/eupNR7FhCnyjI3F5mQKJ8/m39cyelbywnfff8bu+G
-         9j9jhfGqRjRkyfA1XmfcYwc7W0Q9Tf9p7NjdjseEQmLOxxzTBq8XVeL9xT2SSm6PvCkS
-         fgPWhwqNPLaxhELGFwz4ZzL1gbkwe1zlxUpkNot2HB0LA31m1cyKRk6mTB6CZOcJ/jTk
-         ga0c80JfXJMPaI5UGlxmgRcbzSCKzUqBlj6UJD7XcbbghDFR1xfd2/x5PNAlXhTtpxcY
-         o54w==
-X-Gm-Message-State: AOAM533qFu2JiRa2Lsp8kmQdUcGRsPjjREWrKo0BeoB3pw9+iUhiab7s
-        J9A9NFqticMiEWoh54kUVoABd7mWbniwp+pJBlKGiutLGuIi
-X-Google-Smtp-Source: ABdhPJx5wlmIgilxar3mPnrNpenLIHXRB8QsmmaXtwL5co5ZgqUuD4L6Odq9Is16TpVeRpNjHvh4NXgVuwKnnAtq+1m2JAFvsRlf
+        id S1728521AbhAQLgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 06:36:04 -0500
+Received: from www.zeus03.de ([194.117.254.33]:53648 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728149AbhAQLes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 06:34:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=DRjLBzlugVyRFgHbAl+7WyqU1KT6
+        Cz2wp0ufG+ggSyg=; b=D39/xSPinGbSJMOsIOgHmratE4n5jnqNBity3bHCt1ee
+        OWS0UALHAYjAl7vJHALJtInZovaGSbExKke8Y3Dku/ZjLbP2tvTVStwtuBWWdtmQ
+        TkLY1/PZ9HArvbDh0q2glYdejpYiFy/wY4dkI0bVfQgpUOS+gU881Aml4zuiksU=
+Received: (qmail 303685 invoked from network); 17 Jan 2021 12:34:06 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2021 12:34:06 +0100
+X-UD-Smtp-Session: l3s3148p1@9WWr+xa5pJkgAwDPXy7qAHeYPdzlZkhM
+Date:   Sun, 17 Jan 2021 12:34:06 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: i2c: renesas,i2c: add r8a779a0 (V3U)
+ support
+Message-ID: <20210117113406.GE1983@ninjato>
+References: <20201223172505.34736-1-wsa+renesas@sang-engineering.com>
+ <20201223172505.34736-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:411:: with SMTP id p17mr8267172ilr.33.1610882945873;
- Sun, 17 Jan 2021 03:29:05 -0800 (PST)
-Date:   Sun, 17 Jan 2021 03:29:05 -0800
-In-Reply-To: <00000000000091111005b435456e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c37b3a05b916e95a@google.com>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in fbcon_cursor
-From:   syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, dri-devel@lists.freedesktop.org,
-        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, melissa.srw@gmail.com,
-        natechancellor@gmail.com, sam@ravnborg.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de,
-        yepeilin.cs@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2qXFWqzzG3v1+95a"
+Content-Disposition: inline
+In-Reply-To: <20201223172505.34736-2-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri Oct 9 23:21:56 2020 +0000
+--2qXFWqzzG3v1+95a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    drm/vkms: fbdev emulation support
+On Wed, Dec 23, 2020 at 06:25:00PM +0100, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148e2748d00000
-start commit:   b3a3cbde Add linux-next specific files for 20210115
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=168e2748d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=128e2748d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
-dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cd8fe0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17af5258d00000
+Applied to for-next, thanks!
 
-Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
-Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+--2qXFWqzzG3v1+95a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAEIK4ACgkQFA3kzBSg
+KbbA6g/8CfRr6KrsT5OkwW09YAr3LaBvLPbVM83l29Jz8j3EAuEt1knGXj4vA1mA
+mnVqsjOYl5uvohskOtoHQjlQPQj53xSQcTZFL4ErHC6Td8nZqQABGByNe47tgWFf
+xMn4HPbo+3KQk0jpyIJ55LnIYLPq3OZMD1Yb2J3OdOg4kugNsL/QkrPNc81xzz6I
+jQQMU8rgQpI9Vt1e3OeZekYdfRj1HPSRmIELNhcargFW5VXxcvyp2WYDDfB2E40f
+gRsl7VJiV6GOdOsY2lstiFiinjoBs5S66EXLy7vbtrJ/mBCSAoRMWt+IPif8JslU
+wnGILpPM5GDrIHBz56AC3EYBrg9WnHA9PVqA9gPW6H/nfjdB7aWd906ScssewOn1
+pFdMp9CtlUgb6d+CK+rf8GUGELoSld05xeC3GH7/LVFyw8qSAffymIxS2kFp2nzr
+N2o6oVyNALOJ484wTdF7JhhgF8A02EVo2wiWckiLFkOK5xaSB2Q1prtyfLl5TKEL
+dVo2WfBJmn5pl8ZoDULooFeCXQ9BrFA+KZ7JOGQxZeBExJ2IvDaNzNZ95twPn1W/
+/4/xYVLe3jW5DXSTbwOPM2/1HaAnp8M9/1S0JqL3vXclbCXpv3fDYd6r0e2IW9xk
+xN1APGSgpL0a5R7EkbRWUTBUAxWDKUF3yrwbnsCkBn90A2FLf0o=
+=c1eu
+-----END PGP SIGNATURE-----
+
+--2qXFWqzzG3v1+95a--
