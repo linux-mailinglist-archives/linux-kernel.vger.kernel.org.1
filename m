@@ -2,426 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F452F9479
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE4D2F947D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730021AbhAQSRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:17:12 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15763 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729333AbhAQSRC (ORCPT
+        id S1730078AbhAQSS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729977AbhAQSQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:17:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60047ed90001>; Sun, 17 Jan 2021 10:15:53 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 17 Jan
- 2021 18:15:53 +0000
-Received: from r-nvmx02.mtr.labs.mlnx (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Sun, 17 Jan 2021 18:15:49 +0000
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-To:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jgg@nvidia.com>, <liranl@nvidia.com>, <oren@nvidia.com>,
-        <tzahio@nvidia.com>, <leonro@nvidia.com>, <yarong@nvidia.com>,
-        <aviadye@nvidia.com>, <shahafs@nvidia.com>, <artemp@nvidia.com>,
-        <kwankhede@nvidia.com>, <ACurrid@nvidia.com>, <gmataev@nvidia.com>,
-        <cjia@nvidia.com>, Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: [PATCH 3/3] mlx5-vfio-pci: add new vfio_pci driver for mlx5 devices
-Date:   Sun, 17 Jan 2021 18:15:34 +0000
-Message-ID: <20210117181534.65724-4-mgurtovoy@nvidia.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210117181534.65724-1-mgurtovoy@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
+        Sun, 17 Jan 2021 13:16:57 -0500
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A392AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 10:16:01 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id BC9C81F50A;
+        Sun, 17 Jan 2021 19:15:58 +0100 (CET)
+Subject: Re: [PATCH v2 3/7] regulator: qcom-labibb: Implement pull-down,
+ softstart, active discharge
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        sumit.semwal@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
+ <20210113194214.522238-4-angelogioacchino.delregno@somainline.org>
+ <YAEfrIR/HZmQLeQM@builder.lan>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <87a5d2bb-12d2-a4b8-d4fd-a5a39135cb34@somainline.org>
+Date:   Sun, 17 Jan 2021 19:15:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610907353; bh=pAyJZ7mNeLkDaimi0TkhKHmZsELWPGOGz2JDjV9FDOk=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        b=BtdFW4NDsClEoa3HTbxbwBOaDXfpfmiy6ULgBonofHh5Jvy1kHWmUY+FPkCS0Vp4T
-         NA4WSHnC6iQhWS+8NhpdsloAjLi06SRJ+Qht64SJ4/ovevdFXSL7oBjtLngINhM/kp
-         4cY0shJZcuSnUYEPhNq5BCojuuWZygGZsMawXfzu0WusPFPOB9izec5uv7gKnfbBbZ
-         ay5wZ00/y2YPuiKkhB273bM7xpQe26EHRiwCY+9LnBCXGtgiCQOg3FshogC5ajfhET
-         1D09tiao/uXXCWVKq9u7iuTed38OtDqbGiDgign9cTUJZ78gsXGlO0oZSPuszYPaVx
-         WVInLtrKe4vTQ==
+In-Reply-To: <YAEfrIR/HZmQLeQM@builder.lan>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver will register to PCI bus and Auxiliary bus. In case the
-probe of both devices will succeed, we'll have a vendor specific VFIO
-PCI device. mlx5_vfio_pci use vfio_pci_core to register and create a
-VFIO device and use auxiliary_device to get the needed extension from
-the vendor device driver. If one of the probe() functions will fail, the
-VFIO char device will not be created. For now, only register and bind
-the auxiliary_device to the pci_device in case we have a match between
-the auxiliary_device id to the pci_device BDF. Later, vendor specific
-features such as live migration will be added and will be available to
-the virtualization software.
+Il 15/01/21 05:53, Bjorn Andersson ha scritto:
+> On Wed 13 Jan 13:42 CST 2021, AngeloGioacchino Del Regno wrote:
+> 
+>> Soft start is required to avoid inrush current during LAB ramp-up and
+>> IBB ramp-down, protecting connected hardware to which we supply voltage.
+>>
+>> Since soft start is configurable on both LAB and IBB regulators, it
+>> was necessary to add two DT properties, respectively "qcom,soft-start-us"
+>> to control LAB ramp-up and "qcom,discharge-resistor-kohms" to control
+>> the discharge resistor for IBB ramp-down, which obviously brought the
+>> need of implementing a of_parse callback for both regulators.
+>>
+>> Finally, also implement pull-down mode in order to avoid unpredictable
+>> behavior when the regulators are disabled (random voltage spikes etc).
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/regulator/qcom-labibb-regulator.c | 94 +++++++++++++++++++++++
+>>   1 file changed, 94 insertions(+)
+>>
+>> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+>> index d364f54ad294..38ab1eba1c59 100644
+>> --- a/drivers/regulator/qcom-labibb-regulator.c
+>> +++ b/drivers/regulator/qcom-labibb-regulator.c
+>> @@ -29,12 +29,23 @@
+>>   #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
+>>   #define LABIBB_CONTROL_ENABLE		BIT(7)
+>>   
+>> +#define REG_LABIBB_PD_CTL		0x47
+>> + #define LAB_PD_CTL_MASK		GENMASK(1, 0)
+>> + #define IBB_PD_CTL_MASK		(BIT(0) | BIT(7))
+>> + #define LAB_PD_CTL_STRONG_PULL		BIT(0)
+>> + #define IBB_PD_CTL_HALF_STRENGTH	BIT(0)
+>> + #define IBB_PD_CTL_EN			BIT(7)
+>> +
+>>   #define REG_LABIBB_CURRENT_LIMIT	0x4b
+>>    #define LAB_CURRENT_LIMIT_MASK		GENMASK(2, 0)
+>>    #define IBB_CURRENT_LIMIT_MASK		GENMASK(4, 0)
+>>    #define LAB_CURRENT_LIMIT_OVERRIDE_EN	BIT(3)
+>>    #define LABIBB_CURRENT_LIMIT_EN	BIT(7)
+>>   
+>> +#define REG_IBB_PWRUP_PWRDN_CTL_1	0x58
+>> + #define IBB_CTL_1_DISCHARGE_EN		BIT(2)
+>> +
+>> +#define REG_LABIBB_SOFT_START_CTL	0x5f
+>>   #define REG_LABIBB_SEC_ACCESS		0xd0
+>>    #define LABIBB_SEC_UNLOCK_CODE		0xa5
+>>   
+>> @@ -60,6 +71,8 @@ struct labibb_regulator {
+>>   	struct labibb_current_limits	uA_limits;
+>>   	u16				base;
+>>   	u8				type;
+>> +	u8				dischg_sel;
+>> +	u8				soft_start_sel;
+>>   };
+>>   
+>>   struct labibb_regulator_data {
+>> @@ -120,6 +133,70 @@ static int qcom_labibb_get_current_limit(struct regulator_dev *rdev)
+>>   	return (cur_step * lim->uA_step) + lim->uA_min;
+>>   }
+>>   
+>> +static int qcom_labibb_set_soft_start(struct regulator_dev *rdev)
+>> +{
+>> +	struct labibb_regulator *vreg = rdev_get_drvdata(rdev);
+>> +	u32 val = 0;
+>> +
+>> +	if (vreg->type == QCOM_IBB_TYPE)
+>> +		val = vreg->dischg_sel;
+>> +	else
+>> +		val = vreg->soft_start_sel;
+>> +
+>> +	return regmap_write(rdev->regmap, rdev->desc->soft_start_reg, val);
+>> +}
+>> +
+>> +static int qcom_labibb_get_table_sel(const int *table, int sz, u32 value)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < sz; i++)
+>> +		if (table[i] == value)
+>> +			return i;
+>> +	return -EINVAL;
+>> +}
+>> +
+>> +/* IBB discharge resistor values in KOhms */
+>> +static const int dischg_resistor_values[] = { 300, 64, 32, 16 };
+>> +
+>> +/* Soft start time in microseconds */
+>> +static const int soft_start_values[] = { 200, 400, 600, 800 };
+>> +
+>> +static int qcom_labibb_of_parse_cb(struct device_node *np,
+>> +				   const struct regulator_desc *desc,
+>> +				   struct regulator_config *config)
+>> +{
+>> +	struct labibb_regulator *vreg = config->driver_data;
+>> +	u32 dischg_kohms, soft_start_time;
+>> +	int ret;
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,discharge-resistor-kohms",
+>> +				       &dischg_kohms);
+>> +	if (ret)
+>> +		dischg_kohms = 300;
+> 
+> Nit, if you just initialize dischg_kohms to 300 during definition you
+> can rely on of_property_read_u32() not updating the value on failure...
+> 
 
-Note: Although we've created the mlx5-vfio-pci.ko, the binding to
-vfio-pci.ko will still work as before. It's fully backward compatible.
-Of course, the extended vendor functionality will not exist in case one
-will bind the device to the generic vfio_pci.ko.
+I can change it if that's really necessary, I did it like this in an
+attempt of spoon-feed the logic to the reader, but perhaps just
+initializing it during definition would achieve the same, anyway.
 
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
----
- drivers/vfio/pci/Kconfig         |  10 ++
- drivers/vfio/pci/Makefile        |   3 +
- drivers/vfio/pci/mlx5_vfio_pci.c | 253 +++++++++++++++++++++++++++++++
- include/linux/mlx5/vfio_pci.h    |  36 +++++
- 4 files changed, 302 insertions(+)
- create mode 100644 drivers/vfio/pci/mlx5_vfio_pci.c
- create mode 100644 include/linux/mlx5/vfio_pci.h
+Should I?
 
-diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-index 5f90be27fba0..2133cd2f9c92 100644
---- a/drivers/vfio/pci/Kconfig
-+++ b/drivers/vfio/pci/Kconfig
-@@ -65,3 +65,13 @@ config VFIO_PCI_ZDEV
- 	  for zPCI devices passed through via VFIO on s390.
-=20
- 	  Say Y here.
-+
-+config MLX5_VFIO_PCI
-+	tristate "VFIO support for MLX5 PCI devices"
-+	depends on VFIO_PCI_CORE && MLX5_CORE
-+	select AUXILIARY_BUS
-+	help
-+	  This provides a generic PCI support for MLX5 devices using the VFIO
-+	  framework.
-+
-+	  If you don't know what to do here, say N.
-diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
-index 3f2a27e222cd..9f67edca31c5 100644
---- a/drivers/vfio/pci/Makefile
-+++ b/drivers/vfio/pci/Makefile
-@@ -2,6 +2,7 @@
-=20
- obj-$(CONFIG_VFIO_PCI_CORE) +=3D vfio-pci-core.o
- obj-$(CONFIG_VFIO_PCI) +=3D vfio-pci.o
-+obj-$(CONFIG_MLX5_VFIO_PCI) +=3D mlx5-vfio-pci.o
-=20
- vfio-pci-core-y :=3D vfio_pci_core.o vfio_pci_intrs.o vfio_pci_rdwr.o vfio=
-_pci_config.o
- vfio-pci-core-$(CONFIG_VFIO_PCI_IGD) +=3D vfio_pci_igd.o
-@@ -9,3 +10,5 @@ vfio-pci-core-$(CONFIG_VFIO_PCI_NVLINK2) +=3D vfio_pci_nvl=
-ink2.o
- vfio-pci-core-$(CONFIG_VFIO_PCI_ZDEV) +=3D vfio_pci_zdev.o
-=20
- vfio-pci-y :=3D vfio_pci.o
-+
-+mlx5-vfio-pci-y :=3D mlx5_vfio_pci.o
-diff --git a/drivers/vfio/pci/mlx5_vfio_pci.c b/drivers/vfio/pci/mlx5_vfio_=
-pci.c
-new file mode 100644
-index 000000000000..98cc2d037b0d
---- /dev/null
-+++ b/drivers/vfio/pci/mlx5_vfio_pci.c
-@@ -0,0 +1,253 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
-+ *     Author: Max Gurtovoy <mgurtovoy@nvidia.com>
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/device.h>
-+#include <linux/eventfd.h>
-+#include <linux/file.h>
-+#include <linux/interrupt.h>
-+#include <linux/iommu.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/notifier.h>
-+#include <linux/pci.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
-+#include <linux/vfio.h>
-+#include <linux/sched/mm.h>
-+#include <linux/mlx5/vfio_pci.h>
-+
-+#include "vfio_pci_private.h"
-+
-+#define DRIVER_VERSION  "0.1"
-+#define DRIVER_AUTHOR   "Max Gurtovoy <mgurtovoy@nvidia.com>"
-+#define DRIVER_DESC     "MLX5 VFIO PCI - User Level meta-driver for NVIDIA=
- MLX5 device family"
-+
-+static LIST_HEAD(aux_devs_list);
-+static DEFINE_MUTEX(aux_devs_lock);
-+
-+static struct mlx5_vfio_pci_adev *mlx5_vfio_pci_find_adev(struct pci_dev *=
-pdev)
-+{
-+	struct mlx5_vfio_pci_adev *mvadev, *found =3D NULL;
-+
-+	mutex_lock(&aux_devs_lock);
-+	list_for_each_entry(mvadev, &aux_devs_list, entry) {
-+		if (mvadev->madev.adev.id =3D=3D pci_dev_id(pdev)) {
-+			found =3D mvadev;
-+			break;
-+		}
-+	}
-+	mutex_unlock(&aux_devs_lock);
-+
-+	return found;
-+}
-+
-+static int mlx5_vfio_pci_aux_probe(struct auxiliary_device *adev,
-+		const struct auxiliary_device_id *id)
-+{
-+	struct mlx5_vfio_pci_adev *mvadev;
-+
-+	mvadev =3D adev_to_mvadev(adev);
-+
-+	pr_info("%s aux probing bdf %02x:%02x.%d mdev is %s\n",
-+		adev->name,
-+		PCI_BUS_NUM(adev->id & 0xffff),
-+		PCI_SLOT(adev->id & 0xff),
-+		PCI_FUNC(adev->id & 0xff), dev_name(mvadev->madev.mdev->device));
-+
-+	mutex_lock(&aux_devs_lock);
-+	list_add(&mvadev->entry, &aux_devs_list);
-+	mutex_unlock(&aux_devs_lock);
-+
-+	return 0;
-+}
-+
-+static void mlx5_vfio_pci_aux_remove(struct auxiliary_device *adev)
-+{
-+	struct mlx5_vfio_pci_adev *mvadev =3D adev_to_mvadev(adev);
-+	struct vfio_pci_device *vdev =3D dev_get_drvdata(&adev->dev);
-+
-+	/* TODO: is this the right thing to do ? maybe FLR ? */
-+	if (vdev)
-+		pci_reset_function(vdev->pdev);
-+
-+	mutex_lock(&aux_devs_lock);
-+	list_del(&mvadev->entry);
-+	mutex_unlock(&aux_devs_lock);
-+}
-+
-+static const struct auxiliary_device_id mlx5_vfio_pci_aux_id_table[] =3D {
-+	{ .name =3D MLX5_ADEV_NAME ".vfio_pci", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(auxiliary, mlx5_vfio_pci_aux_id_table);
-+
-+static struct auxiliary_driver mlx5_vfio_pci_aux_driver =3D {
-+	.name =3D "vfio_pci_ex",
-+	.probe =3D mlx5_vfio_pci_aux_probe,
-+	.remove =3D mlx5_vfio_pci_aux_remove,
-+	.id_table =3D mlx5_vfio_pci_aux_id_table,
-+};
-+
-+static struct pci_driver mlx5_vfio_pci_driver;
-+
-+static ssize_t mlx5_vfio_pci_write(void *device_data,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	return vfio_pci_core_write(device_data, buf, count, ppos);
-+}
-+
-+static ssize_t mlx5_vfio_pci_read(void *device_data, char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	return vfio_pci_core_read(device_data, buf, count, ppos);
-+}
-+
-+static long mlx5_vfio_pci_ioctl(void *device_data, unsigned int cmd,
-+		unsigned long arg)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	return vfio_pci_core_ioctl(device_data, cmd, arg);
-+}
-+
-+static void mlx5_vfio_pci_release(void *device_data)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	vfio_pci_core_release(device_data);
-+}
-+
-+static int mlx5_vfio_pci_open(void *device_data)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	return vfio_pci_core_open(device_data);
-+}
-+
-+static const struct vfio_device_ops mlx5_vfio_pci_ops =3D {
-+	.name		=3D "mlx5-vfio-pci",
-+	.open		=3D mlx5_vfio_pci_open,
-+	.release	=3D mlx5_vfio_pci_release,
-+	.ioctl		=3D mlx5_vfio_pci_ioctl,
-+	.read		=3D mlx5_vfio_pci_read,
-+	.write		=3D mlx5_vfio_pci_write,
-+	.mmap		=3D vfio_pci_core_mmap,
-+	.request	=3D vfio_pci_core_request,
-+	.match		=3D vfio_pci_core_match,
-+};
-+
-+static int mlx5_vfio_pci_probe(struct pci_dev *pdev, const struct pci_devi=
-ce_id *id)
-+{
-+	struct vfio_pci_device *vdev;
-+	struct mlx5_vfio_pci_adev *mvadev;
-+
-+	mvadev =3D mlx5_vfio_pci_find_adev(pdev);
-+	if (!mvadev) {
-+		pr_err("failed to find aux device for %s\n",
-+		       dev_name(&pdev->dev));
-+		return -ENODEV;
-+	}
-+
-+	vdev =3D vfio_create_pci_device(pdev, &mlx5_vfio_pci_ops, mvadev);
-+	if (IS_ERR(vdev))
-+		return PTR_ERR(vdev);
-+
-+	dev_set_drvdata(&mvadev->madev.adev.dev, vdev);
-+	return 0;
-+}
-+
-+static void mlx5_vfio_pci_remove(struct pci_dev *pdev)
-+{
-+	struct mlx5_vfio_pci_adev *mvadev;
-+
-+	mvadev =3D mlx5_vfio_pci_find_adev(pdev);
-+	if (mvadev)
-+		dev_set_drvdata(&mvadev->madev.adev.dev, NULL);
-+
-+	vfio_destroy_pci_device(pdev);
-+}
-+
-+static pci_ers_result_t mlx5_vfio_pci_aer_err_detected(struct pci_dev *pde=
-v,
-+		pci_channel_state_t state)
-+{
-+	/* DO vendor specific stuff here ? */
-+
-+	return vfio_pci_core_aer_err_detected(pdev, state);
-+}
-+
-+#ifdef CONFIG_PCI_IOV
-+static int mlx5_vfio_pci_sriov_configure(struct pci_dev *pdev, int nr_virt=
-fn)
-+{
-+	might_sleep();
-+
-+	/* DO vendor specific stuff here */
-+
-+	return vfio_pci_core_sriov_configure(pdev, nr_virtfn);
-+}
-+#endif
-+
-+static const struct pci_error_handlers mlx5_vfio_err_handlers =3D {
-+	.error_detected =3D mlx5_vfio_pci_aer_err_detected,
-+};
-+
-+static const struct pci_device_id mlx5_vfio_pci_table[] =3D {
-+	{ PCI_VDEVICE(MELLANOX, 0x6001) }, /* NVMe SNAP controllers */
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET, 0x1042,
-+			 PCI_VENDOR_ID_MELLANOX, PCI_ANY_ID) }, /* Virtio SNAP controllers */
-+	{ 0, }
-+};
-+
-+static struct pci_driver mlx5_vfio_pci_driver =3D {
-+	.name			=3D "mlx5-vfio-pci",
-+	.id_table		=3D mlx5_vfio_pci_table,
-+	.probe			=3D mlx5_vfio_pci_probe,
-+	.remove			=3D mlx5_vfio_pci_remove,
-+#ifdef CONFIG_PCI_IOV
-+	.sriov_configure	=3D mlx5_vfio_pci_sriov_configure,
-+#endif
-+	.err_handler		=3D &mlx5_vfio_err_handlers,
-+};
-+
-+static void __exit mlx5_vfio_pci_cleanup(void)
-+{
-+	auxiliary_driver_unregister(&mlx5_vfio_pci_aux_driver);
-+	pci_unregister_driver(&mlx5_vfio_pci_driver);
-+}
-+
-+static int __init mlx5_vfio_pci_init(void)
-+{
-+	int ret;
-+
-+	ret =3D pci_register_driver(&mlx5_vfio_pci_driver);
-+	if (ret)
-+		return ret;
-+
-+	ret =3D auxiliary_driver_register(&mlx5_vfio_pci_aux_driver);
-+	if (ret)
-+		goto out_unregister;
-+
-+	return 0;
-+
-+out_unregister:
-+	pci_unregister_driver(&mlx5_vfio_pci_driver);
-+	return ret;
-+}
-+
-+module_init(mlx5_vfio_pci_init);
-+module_exit(mlx5_vfio_pci_cleanup);
-+
-+MODULE_VERSION(DRIVER_VERSION);
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR(DRIVER_AUTHOR);
-+MODULE_DESCRIPTION(DRIVER_DESC);
-diff --git a/include/linux/mlx5/vfio_pci.h b/include/linux/mlx5/vfio_pci.h
-new file mode 100644
-index 000000000000..c1e7b4d6da30
---- /dev/null
-+++ b/include/linux/mlx5/vfio_pci.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/*
-+ * Copyright (c) 2020 NVIDIA Corporation
-+ */
-+
-+#ifndef _VFIO_PCI_H
-+#define _VFIO_PCI_H
-+
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/auxiliary_bus.h>
-+#include <linux/mlx5/device.h>
-+#include <linux/mlx5/driver.h>
-+
-+struct mlx5_vfio_pci_adev {
-+	struct mlx5_adev	madev;
-+
-+	/* These fields should not be used outside mlx5_vfio_pci.ko */
-+	struct list_head		entry;
-+};
-+
-+static inline struct mlx5_vfio_pci_adev*
-+madev_to_mvadev(struct mlx5_adev *madev)
-+{
-+	return container_of(madev, struct mlx5_vfio_pci_adev, madev);
-+}
-+
-+static inline struct mlx5_vfio_pci_adev*
-+adev_to_mvadev(struct auxiliary_device *adev)
-+{
-+	struct mlx5_adev *madev =3D container_of(adev, struct mlx5_adev, adev);
-+
-+	return madev_to_mvadev(madev);
-+}
-+
-+#endif
---=20
-2.25.4
+> That said, I think this patch looks good.
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+
+Thank you!
+
+> Regards,
+> Bjorn
+> 
 
