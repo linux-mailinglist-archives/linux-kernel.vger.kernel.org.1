@@ -2,155 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8659B2F94E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 20:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6182F94E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 20:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730171AbhAQTae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 14:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730132AbhAQTZv (ORCPT
+        id S1730179AbhAQTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 14:31:50 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:38387 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729935AbhAQT2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 14:25:51 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC3DC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 11:25:11 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id x21so10587845iog.10
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 11:25:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pLg47IHtjgIuqkfQL/LkDun8WZ2s5nhfyGlTRDFDfd4=;
-        b=Q7DBI69PMUAiJB4v+FSihZO7JmtKN8sqcOoc6NzgbRUrZMXoheo8KoFdROHc4ZJYhZ
-         OoQjssiULjONT5bchKT+Umq1iwuJX+96iZoytDTapeazQHsVFNEWQ1pPRGUCTeQMS6n/
-         uB0ys4fRu3IX4Cy5rk37N1/BUs6qCkAscUTAt8o3UNn7lFscIkT6Cb87KWzWVoQ/UbcP
-         ctOCAdbISD4t6Y6Ffh+czSaeVPSOXlfdHLWyH9MgW6q/T7SWlGxMwqZlnUJnNTwOUUMI
-         VzNx0CoUkDk0YUFIto7buaeaUazkYctCQVz9lIcyjJXoNWAMGn2Kxbk7/K1fIsl/aS8A
-         fFnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pLg47IHtjgIuqkfQL/LkDun8WZ2s5nhfyGlTRDFDfd4=;
-        b=PAQ9n7basL2XT7OMs0eaDzYxetx2Nqo/Sm+AVyuq7717PJX7otLuwfUk6CKU4KnnD/
-         Q/5GdmJb1IGR0+ie2Z754hwsjoBmk0deLJetTkGrJRaETvpKKrpMuHuUuhgrSHED4EvE
-         A07rfGZjzcb6gQ3Qv8Ok+5QKVvwSZH4nsdQ2vlC8tNcqBQ82xn0CGOtSOY83hv1BTZj4
-         GagqD4Xm50xh0eSLESEjOeNQkMtXvk1xxdONeU36x0ZpabHdef7DsCWZW1caVwKY8W1W
-         HxSr9R9L3DPVE4zTgCFtyIRgBi3j51jOqwzxoaSUluXdjyIN4u61tFD3XHgLxw7khRi2
-         u84Q==
-X-Gm-Message-State: AOAM533AGmt9NglTdO1pwgfY6YX7nwZ5LUZ6GSn9hm38CtKNXr6r8GxO
-        9FOwjeX3DQK/6HDvtEUP0iK03g==
-X-Google-Smtp-Source: ABdhPJwETzWw2jco3rRhjaH5X82Zr385HMTReqfM5dAHan9sqaLU1AS4gX+ZZfW7RDmf/hWLCCbemQ==
-X-Received: by 2002:a92:ce09:: with SMTP id b9mr18068716ilo.69.1610911510268;
-        Sun, 17 Jan 2021 11:25:10 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:4146:6dab:8acb:d876])
-        by smtp.gmail.com with ESMTPSA id h19sm284636ilo.21.2021.01.17.11.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 11:25:09 -0800 (PST)
-Date:   Sun, 17 Jan 2021 12:25:05 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, surenb@google.com,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <YASPEYs0QVI88xfM@google.com>
-References: <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
- <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
- <X/3+6ZnRCNOwhjGT@google.com>
- <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
- <20210112214337.GA10434@willie-the-truck>
- <YAO/9YVceghRYo4T@google.com>
- <85DAADF4-2537-40BD-8580-A57C201FF5F3@gmail.com>
- <YAQAhyOFqEdjTRPJ@google.com>
- <1A664155-462A-451D-A21E-D749A0ADBD09@gmail.com>
+        Sun, 17 Jan 2021 14:28:42 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2C98122EDB;
+        Sun, 17 Jan 2021 20:27:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610911639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ppAbDwhKxlZuYUsQF2J5kO7RBZu8tZwLTZ71tneOJ9M=;
+        b=OGWp97YjBPyasm4J45qJOu6iMUJNkpb+nmss4Ra9MesshDpsW+x0gy31Wtcm/tGWZPLPiQ
+        KKautYprY0o7UNy2UdYFerT1VxokAB1SVeiAgMQVwYZ7S0qZrRXRe3YTU8GwH1nurlgTCy
+        DbdDNUxB4ePbMZ3junDcQQOreWd/+zE=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1A664155-462A-451D-A21E-D749A0ADBD09@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 17 Jan 2021 20:27:18 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
+In-Reply-To: <20210115235721.GA1862880@bjorn-Precision-5520>
+References: <20210115235721.GA1862880@bjorn-Precision-5520>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <2477c66eafbd97207693b83b60fa0a3c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 02:13:43AM -0800, Nadav Amit wrote:
-> > On Jan 17, 2021, at 1:16 AM, Yu Zhao <yuzhao@google.com> wrote:
-> > 
-> > On Sat, Jan 16, 2021 at 11:32:22PM -0800, Nadav Amit wrote:
-> >>> On Jan 16, 2021, at 8:41 PM, Yu Zhao <yuzhao@google.com> wrote:
-> >>> 
-> >>> On Tue, Jan 12, 2021 at 09:43:38PM +0000, Will Deacon wrote:
-> >>>> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
-> >>>>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
-> >>>>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
-> >>>>>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
-> >>>>>>> The basic idea is to save a generation in the page-struct that tracks
-> >>>>>>> when deferred PTE change took place, and track whenever a TLB flush
-> >>>>>>> completed. In addition, other users - such as mprotect - would use
-> >>>>>>> the tlb_gather interface.
-> >>>>>>> 
-> >>>>>>> Unfortunately, due to limited space in page-struct this would only
-> >>>>>>> be possible for 64-bit (and my implementation is only for x86-64).
-> >>>>>> 
-> >>>>>> I don't want to discourage you but I don't think this would end up
-> >>>>>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
-> >>>>>> and I've run into problems with this before while trying to do
-> >>>>>> something similar.
-> >>>>> 
-> >>>>> Discourage, discourage. Better now than later.
-> >>>>> 
-> >>>>> It will be relatively easy to extend the scheme to be per-VMA instead of
-> >>>>> per-table for architectures that prefer it this way. It does require
-> >>>>> TLB-generation tracking though, which Andy only implemented for x86, so I
-> >>>>> will focus on x86-64 right now.
-> >>>> 
-> >>>> Can you remind me of what we're missing on arm64 in this area, please? I'm
-> >>>> happy to help get this up and running once you have something I can build
-> >>>> on.
-> >>> 
-> >>> I noticed arm/arm64 don't support ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
-> >>> Would it be something worth pursuing? Arm has been using mm_cpumask,
-> >>> so it might not be too difficult I guess?
-> >> 
-> >> [ +Mel Gorman who implemented ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH ]
-> >> 
-> >> IIUC, there are at least two bugs in x86 implementation.
-> >> 
-> >> First, there is a missing memory barrier in tlbbatch_add_mm() between
-> >> inc_mm_tlb_gen() and the read of mm_cpumask().
-> > 
-> > In arch_tlbbatch_add_mm()? inc_mm_tlb_gen() has builtin barrier as its
-> > comment says -- atomic update ops that return values are also full
-> > memory barriers.
-> 
-> Yes, you are correct.
-> 
-> > 
-> >> Second, try_to_unmap_flush() clears flush_required after flushing. Another
-> >> thread can call set_tlb_ubc_flush_pending() after the flush and before
-> >> flush_required is cleared, and the indication that a TLB flush is pending
-> >> can be lost.
-> > 
-> > This isn't a problem either because flush_required is per thread.
-> 
-> Sorry, I meant mm->tlb_flush_batched . It is not per-thread.
-> flush_tlb_batched_pending() clears it after flush and indications that
-> set_tlb_ubc_flush_pending() sets in between can be lost.
+Hi Bjorn,
 
-Hmm, the PTL argument above flush_tlb_batched_pending() doesn't seem
-to hold when USE_SPLIT_PTE_PTLOCKS is set. Do you have a reproducer?
-KCSAN might be able to help in this case.
+Am 2021-01-16 00:57, schrieb Bjorn Helgaas:
+> On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
+>> Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
+>> > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
+>> > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
+> 
+>> > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
+>> > > > that overlaps another BAR, a quirk might be the right fix. But my
+>> > > > guess is the device is working correctly per spec and there's
+>> > > > something wrong in how firmware/Linux is assigning things.  That would
+>> > > > mean we need a more generic fix that's not a quirk and not tied to the
+>> > > > Intel i210.
+>> > >
+>> > > Agreed, but as you already stated (and I've also found that in
+>> > > the PCI spec) the Expansion ROM address decoder can be shared by
+>> > > the other BARs and it shouldn't matter as long as the ExpROM BAR
+>> > > is disabled, which is the case here.
+>> >
+>> > My point is just that if this could theoretically affect devices
+>> > other than the i210, the fix should not be an i210-specific quirk.
+>> > I'll assume this is a general problem and wait for a generic PCI
+>> > core solution unless it's i210-specific.
+>> 
+>> I guess the culprit here is that linux skips the programming of the
+>> BAR because of some broken Matrox card. That should have been a
+>> quirk instead, right? But I don't know if we want to change that, do
+>> we? How many other cards depend on that?
+> 
+> Oh, right.  There's definitely some complicated history there that
+> makes me a little scared to change things.  But it's also unfortunate
+> if we have to pile quirks on top of quirks.
+> 
+>> And still, how do we find out that the i210 is behaving correctly?
+>> In my opinion it is clearly not. You can change the ExpROM BAR value
+>> during runtime and it will start working (while keeping it
+>> disabled).  Am I missing something here?
+> 
+> I agree; if the ROM BAR is disabled, I don't think it should matter at
+> all what it contains, so this does look like an i210 defect.
+> 
+> Would you mind trying the patch below?  It should update the ROM BAR
+> value even when it is disabled.  With the current pci_enable_rom()
+> code that doesn't rely on the value read from the BAR, I *think* this
+> should be safe even on the Matrox and similar devices.
+
+Your patch will fix my issue:
+
+Tested-by: Michael Walle <michael@walle.cc>
+
+> 
+> commit 0ca2233eb71f ("PCI: Update ROM BAR even if disabled")
+> Author: Bjorn Helgaas <bhelgaas@google.com>
+> Date:   Fri Jan 15 17:17:44 2021 -0600
+> 
+>     PCI: Update ROM BAR even if disabled
+> 
+>     Test patch for i210 issue reported by Michael Walle:
+>     https://lore.kernel.org/r/20201230185317.30915-1-michael@walle.cc
+> 
+> diff --git a/drivers/pci/rom.c b/drivers/pci/rom.c
+> index 8fc9a4e911e3..fc638034628c 100644
+> --- a/drivers/pci/rom.c
+> +++ b/drivers/pci/rom.c
+> @@ -35,9 +35,8 @@ int pci_enable_rom(struct pci_dev *pdev)
+>  		return 0;
+> 
+>  	/*
+> -	 * Ideally pci_update_resource() would update the ROM BAR address,
+> -	 * and we would only set the enable bit here.  But apparently some
+> -	 * devices have buggy ROM BARs that read as zero when disabled.
+> +	 * Some ROM BARs read as zero when disabled, so we can't simply
+> +	 * read the BAR, set the enable bit, and write it back.
+>  	 */
+>  	pcibios_resource_to_bus(pdev->bus, &region, res);
+>  	pci_read_config_dword(pdev, pdev->rom_base_reg, &rom_addr);
+> diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
+> index 7f1acb3918d0..f69b7d179617 100644
+> --- a/drivers/pci/setup-res.c
+> +++ b/drivers/pci/setup-res.c
+> @@ -69,18 +69,10 @@ static void pci_std_update_resource(struct pci_dev
+> *dev, int resno)
+>  	if (resno < PCI_ROM_RESOURCE) {
+>  		reg = PCI_BASE_ADDRESS_0 + 4 * resno;
+>  	} else if (resno == PCI_ROM_RESOURCE) {
+> -
+> -		/*
+> -		 * Apparently some Matrox devices have ROM BARs that read
+> -		 * as zero when disabled, so don't update ROM BARs unless
+> -		 * they're enabled.  See
+> -		 * https://lore.kernel.org/r/43147B3D.1030309@vc.cvut.cz/
+> -		 */
+> -		if (!(res->flags & IORESOURCE_ROM_ENABLE))
+> -			return;
+> +		if (res->flags & IORESOURCE_ROM_ENABLE)
+> +			new |= PCI_ROM_ADDRESS_ENABLE;
+> 
+>  		reg = dev->rom_base_reg;
+> -		new |= PCI_ROM_ADDRESS_ENABLE;
+>  	} else
+>  		return;
+> 
+> @@ -99,7 +91,8 @@ static void pci_std_update_resource(struct pci_dev
+> *dev, int resno)
+>  	pci_write_config_dword(dev, reg, new);
+>  	pci_read_config_dword(dev, reg, &check);
+> 
+> -	if ((new ^ check) & mask) {
+> +	/* Some ROM BARs read as zero when disabled */
+> +	if (resno != PCI_ROM_RESOURCE && (new ^ check) & mask) {
+>  		pci_err(dev, "BAR %d: error updating (%#08x != %#08x)\n",
+>  			resno, new, check);
+>  	}
+
+-- 
+-michael
