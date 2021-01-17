@@ -2,156 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDE92F9633
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCEF2F9650
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbhAQXTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 18:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729936AbhAQXTP (ORCPT
+        id S1730731AbhAQXnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 18:43:02 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:39179 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729141AbhAQXm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 18:19:15 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04B7C061573;
-        Sun, 17 Jan 2021 15:18:34 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id a12so21454498lfl.6;
-        Sun, 17 Jan 2021 15:18:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sq4yZQdAteM9zcWr1ItP1nFqtCn3ipB5YcMTpKk0NwE=;
-        b=hwPu9DDF1x6++8kqaee1IpHkqnC4ie4htJy/fuew9Jkk1M94f3hwZTcvM6OWhqFRJW
-         n8+QWcnKs8xi3JMMBy+MSDIMRHg/d3xLLRshkzKEdxSmRuhNccSCVx15y7VRoQ9/2CEh
-         yj9OmpzVhDSk4EKuTQpd+JWKaaOsSYqFh4N/YCvc6AYg5YSUcZuN3i5B+iF/3bdBheo+
-         Ojpeb/+cQ9e6XCsCEGWtio+3F7/kyxAScjubXGwQKVLmaLlvonwLwMOSxAX0jR767JH6
-         V42O5KOrHxEUNIv8fjJSKVWT5Zj/Uv8mhTpBOcUprQVuuhPz/3ynilX0SiFpJEKUN0z1
-         TkYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sq4yZQdAteM9zcWr1ItP1nFqtCn3ipB5YcMTpKk0NwE=;
-        b=iP1mfEHzJWS62BAnSZpK9ov+XwjjezK4wWAXYixHfDvWAoZ91TfvEvoQ3U3QVcDB3V
-         EZ0wRjH3jBvycKEjKoEbHEgSQBUkz4Hs59kjXWeIsTNSFtHQBA1mN0QlcXsUOf++Aqpf
-         BOewbjJUqvdUxqGUQ1W2GAq6SmaWCNRGanjfvDMx7oI69TNpneF5xU+WzLiDFNLluaJU
-         keN2twmat1WMwaxD/zyuShFfBjD5UAIIHGThWWIIBsL7p3LCcAutqYxnb6r4n9N+5P2n
-         ooqCyUZLXdxIgdBKxuwnF+LtRmoROMPQfajwCVeE9V3009AvdoRGTYUdHew0Wx6liaTf
-         FDbQ==
-X-Gm-Message-State: AOAM532gy/VwZaXAdgm4eKtqc7FsDkSSpuPdDbLsAMt2HTkXaMsC70Wu
-        PJC10SoxE6u/2kGsrmn/BiQ=
-X-Google-Smtp-Source: ABdhPJz3dpZSgPb/NFdl0tvBy1tbfKxDf6ewKkexLSmU8ZGnKcHdkfWGKJ5FVaQkDgnl6NT9kbOb0Q==
-X-Received: by 2002:a19:ac0c:: with SMTP id g12mr10494423lfc.51.1610925512080;
-        Sun, 17 Jan 2021 15:18:32 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id d6sm1697226lfl.175.2021.01.17.15.18.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 15:18:31 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J . Wysocki " <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] cpufreq: tegra20: Use resource-managed API
-Date:   Mon, 18 Jan 2021 02:18:25 +0300
-Message-Id: <20210117231825.28256-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Sun, 17 Jan 2021 18:42:57 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id C41B95C0118;
+        Sun, 17 Jan 2021 18:42:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 17 Jan 2021 18:42:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=IHDkxQ/wXzXYg5tlkjGvzwAi4s
+        qGXHDpW2TWqnbUQC8=; b=N/2JKFvwfVrR1+zmOudMx71BteEbJm/f1SRyiV6uH4
+        159cPhZHitzS5x9/XmeOTOF4lpgxFpQZU89aGGyg5TBU2izEnaixzcqZDAL6Tl7G
+        6UfH+/f9mfwNP6GCnyO4WXwAVeFEt3GRthPB7DEsMsowKLF0NoKWip8DHiWJ5t4T
+        khET+Iv8g8D0yhD3jLcO4Y8nP2TndNxBKi/Qv9aYDBc2/7ojDxcqrUyfdhYH5nUo
+        cIB6po3qRZ+hjKyerxoXxqIW4EKyQRS3RKwv7Bfg30FvhW/Jm/cBhssYoQqWHatf
+        33qOFlObmWh2tQuPVNG91pcp5avreRlMGnVZLDz+i84A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IHDkxQ/wXzXYg5tlk
+        jGvzwAi4sqGXHDpW2TWqnbUQC8=; b=YyRu1U3SvhlX1c5jTC40AGl2zuJjKZYTH
+        YBb6+ZZXLWXC3n33VQOPK1J3UrVPALHOMyDLYU+vPFQrYNZ+ZRXzIw5SSItk7gTY
+        6hrCz0Vb97QlCpJSlCvewyO0en+h4XPe2IaBV1UqSLlC72jNcue8Ap3nNzh15B4p
+        U5LRvICEjLMu+dqdWU3S7IF1XhRAejzHRNxXBfGxr4+y35hmAUcQ++c6G7KS+psh
+        URfcI7XfdADrZmU7QIs7yAMmvQt5CnDnZulb9iESzw9SXjRrncPQEeBCZguL040U
+        MZs5foTHvryU/+VSS6j5YjlcNu4+ehyWAo76qI8ALyWGt9E+FlPCA==
+X-ME-Sender: <xms:UssEYIuhTBjCkyovuv97jg8FJSFdlDZYR7YQdzZWdubx1ADE1yY_PA>
+    <xme:UssEYFfG3e-SJI2IAdulrCDip2W3jCxYcyXHGHujS0VWYXlTPoulJP5bJYkZo4czx
+    xsdRxpe2j-j0CCyDFs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdejgdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
+    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepveeiueduhfevheetle
+    dvgfeuhfejgfffieejhedttdffudfhheegjeefjeffleehnecuffhomhgrihhnpeguvghv
+    ihgtvghtrhgvvgdrohhrghenucfkphepjeefrdelfedrkeegrddvtdeknecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegr
+    lhhishhtrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:UssEYDz1M6Or3aeuwFL5XtPWnFCzUd0FGnyCRFzHiG_NWQNIWxBtOA>
+    <xmx:UssEYLO-posUJNmJnTwUd3gWobFT775olMEFEyQSdMbwDTkPq8zFSg>
+    <xmx:UssEYI_Im4iCi3UBORkvZf3wIKS9fGixu_5qpZSGS8936gKaav1iQA>
+    <xmx:UssEYHYyBnyc-W7jE8mEs8TDSbpjhad7E4OZglH8jcB1hGPoa1KHSQ>
+Received: from ThinkpadX1Yoga3.localdomain (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8A892240057;
+        Sun, 17 Jan 2021 18:42:09 -0500 (EST)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH 1/3] devicetree/bindings: Initial commit of wacom,wacom-i2c
+Date:   Sat, 16 Jan 2021 20:24:26 -0800
+Message-Id: <20210117042428.1497-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch cpufreq-tegra20 driver to use resource-managed API.
-This removes the need to get opp_table pointer using
-dev_pm_opp_get_opp_table() in order to release OPP table that
-was requested by dev_pm_opp_set_supported_hw(), making the code
-a bit more straightforward.
-
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- drivers/cpufreq/tegra20-cpufreq.c | 45 +++++++++++++++----------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ .../input/touchscreen/wacom,wacom-i2c.yaml    | 55 +++++++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ 2 files changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
 
-diff --git a/drivers/cpufreq/tegra20-cpufreq.c b/drivers/cpufreq/tegra20-cpufreq.c
-index 8c893043953e..e8db3d75be25 100644
---- a/drivers/cpufreq/tegra20-cpufreq.c
-+++ b/drivers/cpufreq/tegra20-cpufreq.c
-@@ -32,6 +32,16 @@ static bool cpu0_node_has_opp_v2_prop(void)
- 	return ret;
- }
- 
-+static void tegra20_cpufreq_put_supported_hw(void *opp_table)
-+{
-+	dev_pm_opp_put_supported_hw(opp_table);
-+}
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+new file mode 100644
+index 000000000000..6b0e0034f836
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,wacom-i2c.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/wacom,wacom-i2c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static void tegra20_cpufreq_dt_unregister(void *cpufreq_dt)
-+{
-+	platform_device_unregister(cpufreq_dt);
-+}
++title: Wacom I2C Controller
 +
- static int tegra20_cpufreq_probe(struct platform_device *pdev)
- {
- 	struct platform_device *cpufreq_dt;
-@@ -68,42 +78,31 @@ static int tegra20_cpufreq_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
-+	err = devm_add_action_or_reset(&pdev->dev,
-+				       tegra20_cpufreq_put_supported_hw,
-+				       opp_table);
-+	if (err)
-+		return err;
++maintainers:
++  - Alistair Francis <alistair@alistair23.me>
 +
- 	cpufreq_dt = platform_device_register_simple("cpufreq-dt", -1, NULL, 0);
- 	err = PTR_ERR_OR_ZERO(cpufreq_dt);
- 	if (err) {
- 		dev_err(&pdev->dev,
- 			"failed to create cpufreq-dt device: %d\n", err);
--		goto err_put_supported_hw;
-+		return err;
- 	}
- 
--	platform_set_drvdata(pdev, cpufreq_dt);
--
--	return 0;
--
--err_put_supported_hw:
--	dev_pm_opp_put_supported_hw(opp_table);
--
--	return err;
--}
--
--static int tegra20_cpufreq_remove(struct platform_device *pdev)
--{
--	struct platform_device *cpufreq_dt;
--	struct opp_table *opp_table;
--
--	cpufreq_dt = platform_get_drvdata(pdev);
--	platform_device_unregister(cpufreq_dt);
--
--	opp_table = dev_pm_opp_get_opp_table(get_cpu_device(0));
--	dev_pm_opp_put_supported_hw(opp_table);
--	dev_pm_opp_put_opp_table(opp_table);
-+	err = devm_add_action_or_reset(&pdev->dev,
-+				       tegra20_cpufreq_dt_unregister,
-+				       cpufreq_dt);
-+	if (err)
-+		return err;
- 
- 	return 0;
- }
- 
- static struct platform_driver tegra20_cpufreq_driver = {
- 	.probe		= tegra20_cpufreq_probe,
--	.remove		= tegra20_cpufreq_remove,
- 	.driver		= {
- 		.name	= "tegra20-cpufreq",
- 	},
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: wacom,wacom-i2c
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  flip-tilt-x:
++  flip-tilt-y:
++  flip-pos-x:
++  flip-pos-y:
++  flip-distance:
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include "dt-bindings/interrupt-controller/irq.h"
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        digitiser@9 {
++                compatible = "wacom,wacom-i2c";
++                reg = <0x9>;
++                interrupt-parent = <&gpio1>;
++                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
++                flip-tilt-x;
++                flip-tilt-y;
++                flip-pos-x;
++                flip-pos-y;
++                flip-distance;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 041ae90b0d8f..5bca22f035a3 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1202,6 +1202,8 @@ patternProperties:
+     description: Vision Optical Technology Co., Ltd.
+   "^vxt,.*":
+     description: VXT Ltd
++  "^wacom,.*":
++    description: Wacom Co., Ltd
+   "^wand,.*":
+     description: Wandbord (Technexion)
+   "^waveshare,.*":
 -- 
 2.29.2
 
