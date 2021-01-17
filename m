@@ -2,223 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149D22F9587
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D132F9591
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbhAQVaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        id S1729970AbhAQVfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730243AbhAQV3g (ORCPT
+        with ESMTP id S1728669AbhAQVel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:29:36 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C55C0613C1;
-        Sun, 17 Jan 2021 13:28:56 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o17so21234542lfg.4;
-        Sun, 17 Jan 2021 13:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h6Tqi57B6RKHeZ0yWkHDNRYTp7U/zAAwGfhZbemk/DI=;
-        b=HS1x5paSr5K+/dQlSjCDkild4v2Sv9ob8aFZ/hjMJqgUNnQJso5WedHR+RseaV44mi
-         QbLOIW7jLei2KjOcAN6C1hYft0GsmrtigDzywXTePeFEjnpjDJk7VEafIpq3ygOlH4lz
-         gLzJy1jxHf0X2AUC8rDzyTpPSfwkclsAOnjKxfdkmJ1o8LP0iPl/JTUOd79P8vBbZfoV
-         95ABuLvtPvKodB9JtRvJCFTg+Dogi+zJPrA+DoJynGYJNABKyy/ZnUC5ZWH2VNaM9iBj
-         2hr+j0gPk0PDpLdF7GtR07xSldK/vdwCplrVLdm02C7+LIurF48Xx36Lki13/sr9fHAQ
-         hA5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h6Tqi57B6RKHeZ0yWkHDNRYTp7U/zAAwGfhZbemk/DI=;
-        b=SmIwGAimxIeFAtZ47EKVz+Yv4qr5Su5/4SNYkORIpwzjbrcPTQwEPm7h5MJrtQ6GAz
-         vs6i/fQO386o99IprNif6ZOazsNFRNK/4pBiBbDfprQVP84att97eufLQHH8TtccM1lj
-         vYmybTIJGaK7xYql6KJF00Exa4ESDXK+njPMzsx2ucg/AKKx8De1kcXzHvmU/4cu2+sI
-         NSonYA7H7M5QBTTTG67fjLCEX7CJARJKS7QJ9uvwDpzuCyf9RZH20oAl1c0mpdGb4RBn
-         APx90pJadjGgFpkcxkSZ8wxq668fM1OlO0i8O+f3Zs/NuzmFDs9xxaoZgoVDEx2JpIFt
-         vq3w==
-X-Gm-Message-State: AOAM530jzkYuAIKgU2DpNTx6+8VEWbO+6PDllVhwN11BtqcbBn2mrDR+
-        XV2U5ShH6EYjRgchn9Z1OuQ=
-X-Google-Smtp-Source: ABdhPJw49HItQhOm8x60XeJ/atvSx2qDxh85kxU2yV8mCQsKvCMxJMq8uFF8X78TVOHEG8t9ODBYxg==
-X-Received: by 2002:a19:4841:: with SMTP id v62mr9236467lfa.607.1610918934685;
-        Sun, 17 Jan 2021 13:28:54 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id s19sm1678858lfc.41.2021.01.17.13.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 13:28:54 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc:     Frank Li <Frank.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 4/4] perf: Constify static struct attribute_group
-Date:   Sun, 17 Jan 2021 22:28:47 +0100
-Message-Id: <20210117212847.21319-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210117212847.21319-1-rikard.falkeborn@gmail.com>
-References: <20210117212847.21319-1-rikard.falkeborn@gmail.com>
+        Sun, 17 Jan 2021 16:34:41 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C62C061573;
+        Sun, 17 Jan 2021 13:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=IWcSJcsATMH6IfB5svVqIvQaMM31cBeYIhlmGrcgqx8=; b=3Tue7wScgM3LJ7rLwbCB8ipFpH
+        bVTrLgGz9SqRUHcqo9ZhjxEO1OUt7R8CR5S54lux+nsRnMqAgciKF34FIXNLgSrWsUVhcRR1fQf5F
+        poTHDe5f2er4TjxisbdTJL3Yn0z9JvPDzuu/DsmsO+GzFSpBkFkXDdDRVt5lCjbNFmiMPZifBln76
+        TqQ5YHFb5jWYgAtpejBQfFSRxfmDrmc2PAPHRoQt3ZQlXsBCpXG87r4rN8iVLT/KYitHh/ozUQu0r
+        sl0tfST10sjnK1VKYDRD+aPi1m0urSklIRF2tj2BZ3TxYJgp74czV4h8UbR0L9WwV0D0CM475IJO/
+        u3cbPr6Q==;
+Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l1FgL-000688-IP; Sun, 17 Jan 2021 21:33:58 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-afs@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] AFS: Documentation: fix a few typos in afs.rst
+Date:   Sun, 17 Jan 2021 13:33:51 -0800
+Message-Id: <20210117213351.1075-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage is to put their addresses in an array of pointers to
-const struct attribute group. Make them const to allow the compiler
-to put them in read-only memory.
+Fix typos (punctuation, grammar, spelling) in afs.rst.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: linux-afs@lists.infradead.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
 ---
- drivers/perf/arm-cci.c        | 2 +-
- drivers/perf/arm-cmn.c        | 2 +-
- drivers/perf/arm_dmc620_pmu.c | 4 ++--
- drivers/perf/arm_pmu.c        | 2 +-
- drivers/perf/arm_smmuv3_pmu.c | 8 ++++----
- drivers/perf/arm_spe_pmu.c    | 6 +++---
- 6 files changed, 12 insertions(+), 12 deletions(-)
+ Documentation/filesystems/afs.rst |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/perf/arm-cci.c b/drivers/perf/arm-cci.c
-index 87c4be9dd412..a75cf77c4de4 100644
---- a/drivers/perf/arm-cci.c
-+++ b/drivers/perf/arm-cci.c
-@@ -1376,7 +1376,7 @@ static struct attribute *pmu_attrs[] = {
- 	NULL,
- };
+--- linux-next-20210115.orig/Documentation/filesystems/afs.rst
++++ linux-next-20210115/Documentation/filesystems/afs.rst
+@@ -109,7 +109,7 @@ Mountpoints
+ AFS has a concept of mountpoints. In AFS terms, these are specially formatted
+ symbolic links (of the same form as the "device name" passed to mount).  kAFS
+ presents these to the user as directories that have a follow-link capability
+-(ie: symbolic link semantics).  If anyone attempts to access them, they will
++(i.e.: symbolic link semantics).  If anyone attempts to access them, they will
+ automatically cause the target volume to be mounted (if possible) on that site.
  
--static struct attribute_group pmu_attr_group = {
-+static const struct attribute_group pmu_attr_group = {
- 	.attrs = pmu_attrs,
- };
+ Automatically mounted filesystems will be automatically unmounted approximately
+@@ -144,7 +144,7 @@ looks up a cell of the same name, for ex
+ Proc Filesystem
+ ===============
  
-diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index a76ff594f3ca..f30fcd330899 100644
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -616,7 +616,7 @@ static struct attribute *arm_cmn_cpumask_attrs[] = {
- 	NULL,
- };
+-The AFS modules creates a "/proc/fs/afs/" directory and populates it:
++The AFS module creates a "/proc/fs/afs/" directory and populates it:
  
--static struct attribute_group arm_cmn_cpumask_attr_group = {
-+static const struct attribute_group arm_cmn_cpumask_attr_group = {
- 	.attrs = arm_cmn_cpumask_attrs,
- };
+   (*) A "cells" file that lists cells currently known to the afs module and
+       their usage counts::
+@@ -201,7 +201,7 @@ And then run as::
+ 	./klog
  
-diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
-index 004930eb4bbb..27f54c0afc3b 100644
---- a/drivers/perf/arm_dmc620_pmu.c
-+++ b/drivers/perf/arm_dmc620_pmu.c
-@@ -159,7 +159,7 @@ static struct attribute *dmc620_pmu_events_attrs[] = {
- 	NULL,
- };
+ Assuming it's successful, this adds a key of type RxRPC, named for the service
+-and cell, eg: "afs@<cellname>".  This can be viewed with the keyctl program or
++and cell, e.g.: "afs@<cellname>".  This can be viewed with the keyctl program or
+ by cat'ing /proc/keys::
  
--static struct attribute_group dmc620_pmu_events_attr_group = {
-+static const struct attribute_group dmc620_pmu_events_attr_group = {
- 	.name = "events",
- 	.attrs = dmc620_pmu_events_attrs,
- };
-@@ -222,7 +222,7 @@ static struct attribute *dmc620_pmu_formats_attrs[] = {
- 	NULL,
- };
+ 	[root@andromeda ~]# keyctl show
+@@ -211,7 +211,7 @@ by cat'ing /proc/keys::
+ 	111416553 --als--v      0     0   \_ rxrpc: afs@CAMBRIDGE.REDHAT.COM
  
--static struct attribute_group dmc620_pmu_format_attr_group = {
-+static const struct attribute_group dmc620_pmu_format_attr_group = {
- 	.name	= "format",
- 	.attrs	= dmc620_pmu_formats_attrs,
- };
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index cb2f55f450e4..2d10d84fb79c 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -577,7 +577,7 @@ static struct attribute *armpmu_common_attrs[] = {
- 	NULL,
- };
+ Currently the username, realm, password and proposed ticket lifetime are
+-compiled in to the program.
++compiled into the program.
  
--static struct attribute_group armpmu_common_attr_group = {
-+static const struct attribute_group armpmu_common_attr_group = {
- 	.attrs = armpmu_common_attrs,
- };
- 
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 74474bb322c3..8ff7a67f691c 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -493,7 +493,7 @@ static struct attribute *smmu_pmu_cpumask_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group smmu_pmu_cpumask_group = {
-+static const struct attribute_group smmu_pmu_cpumask_group = {
- 	.attrs = smmu_pmu_cpumask_attrs,
- };
- 
-@@ -548,7 +548,7 @@ static umode_t smmu_pmu_event_is_visible(struct kobject *kobj,
- 	return 0;
- }
- 
--static struct attribute_group smmu_pmu_events_group = {
-+static const struct attribute_group smmu_pmu_events_group = {
- 	.name = "events",
- 	.attrs = smmu_pmu_events,
- 	.is_visible = smmu_pmu_event_is_visible,
-@@ -583,7 +583,7 @@ static struct attribute *smmu_pmu_identifier_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group smmu_pmu_identifier_group = {
-+static const struct attribute_group smmu_pmu_identifier_group = {
- 	.attrs = smmu_pmu_identifier_attrs,
- 	.is_visible = smmu_pmu_identifier_attr_visible,
- };
-@@ -602,7 +602,7 @@ static struct attribute *smmu_pmu_formats[] = {
- 	NULL
- };
- 
--static struct attribute_group smmu_pmu_format_group = {
-+static const struct attribute_group smmu_pmu_format_group = {
- 	.name = "format",
- 	.attrs = smmu_pmu_formats,
- };
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index cc00915ad6d1..7593caf12555 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -146,7 +146,7 @@ static struct attribute *arm_spe_pmu_cap_attr[] = {
- 	NULL,
- };
- 
--static struct attribute_group arm_spe_pmu_cap_group = {
-+static const struct attribute_group arm_spe_pmu_cap_group = {
- 	.name	= "caps",
- 	.attrs	= arm_spe_pmu_cap_attr,
- };
-@@ -227,7 +227,7 @@ static struct attribute *arm_spe_pmu_formats_attr[] = {
- 	NULL,
- };
- 
--static struct attribute_group arm_spe_pmu_format_group = {
-+static const struct attribute_group arm_spe_pmu_format_group = {
- 	.name	= "format",
- 	.attrs	= arm_spe_pmu_formats_attr,
- };
-@@ -247,7 +247,7 @@ static struct attribute *arm_spe_pmu_attrs[] = {
- 	NULL,
- };
- 
--static struct attribute_group arm_spe_pmu_group = {
-+static const struct attribute_group arm_spe_pmu_group = {
- 	.attrs	= arm_spe_pmu_attrs,
- };
- 
--- 
-2.30.0
-
+ It is not required to acquire a key before using AFS facilities, but if one is
+ not acquired then all operations will be governed by the anonymous user parts
