@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3188D2F9572
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C04D2F9577
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729556AbhAQVWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:22:45 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41289 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728859AbhAQVVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:21:55 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729647AbhAQVYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:24:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726785AbhAQVY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 16:24:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610918580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xji7LGKGDvU0URPlz+sFbNQ00D7ypSDEKKTbZiGgMTA=;
+        b=JxzC9q+OIM8etO3dFKwsJOd9sYnK/VdNOrtpCZRY3f3wk7SzkHvMMRZfqaa3xTJpY/rDjU
+        n/8Xe1UPz5miMNywr6rxW3+vm3wm4tk9CT6jQYiAnM8Rl9ZW1LjAArueMOJ5EaBBo/0cTU
+        wnwcxE+YxVNs5Tdok3Tu/H5D39+fPRE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-bX1NwOqNN_St8pKGKFEyAQ-1; Sun, 17 Jan 2021 16:22:58 -0500
+X-MC-Unique: bX1NwOqNN_St8pKGKFEyAQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DJnsL58TBz9sVR;
-        Mon, 18 Jan 2021 08:21:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610918470;
-        bh=NDLVzVLSlhN3NeNo+Rx/IzyJ9vOfOA7IUc8g4526IP8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dV77STh19elPJt37ochdP4PBTmhQxBYFIKj5laflkX/3CaOXdxWPUz19HMpYr9reu
-         3Kt9NgcULnoEqPbyMFUSx9ok8qQw14I79UcwOHajD9P7afq1COXNYkKR1RGlKP9DBr
-         bXpEcQX8NKI67iIXkpD0SkQmJ3l3ECdgTjt8bXrN1tv9nGY9XMWT2zLvxy0z0JqxZ+
-         My3F5Ax8ubPYjufQQ+SVoMf8NWMiXZJJeswlU8TQOsUHLesczSaw8KwJ4rrUkfGdou
-         TSLUd+5NVdE99IFzVNG/+jhUa82d1Bgi/0mjShei03Umuv4S8p6QAz4U7j8a/Smdi3
-         QFeaHqUNpb+Gg==
-Date:   Mon, 18 Jan 2021 08:21:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the gpio-brgl-fixes tree
-Message-ID: <20210118082109.725aff1a@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62D4E800D53;
+        Sun, 17 Jan 2021 21:22:56 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 748FF100AE2F;
+        Sun, 17 Jan 2021 21:22:53 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v3 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
+Date:   Sun, 17 Jan 2021 22:22:47 +0100
+Message-Id: <20210117212252.206115-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6HOkRAobIJ/iOo0Ip.y+x_W";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6HOkRAobIJ/iOo0Ip.y+x_W
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi All,
 
-Hi all,
+Here is v3 of my series to add support for Intel Bay Trail based devices
+which use a WM5102 codec for audio output/input. New in v3 is that the
+compile error when CONFIG_ACPI is unset should be gone. Everything else
+is the same as in v2, see the cover-letter of v2 below:
 
-In commit
+This was developed and tested on a Lenovo Yoga Tablet 1051L.
 
-  ec6c3364b816 ("tools: gpio: fix %llu warning in gpio-watch.c")
+The biggest difference from v1 is that, based on all the discussions about
+the jack-detect stuff, I've decided to split this into 2 series.
+One series adding the basic support for this setup, which is this series.
 
-Fixes tag
+And a second series which reworks the extcon driver into an arizona-jackdet
+library and then modifies the codec drivers to use that directly, replacing
+the old separate extcon child-device and extcon-driver.
 
-  Fixes: commit 33f0c47b8fb4 ("tools: gpio: implement gpio-watch")
+The are 2 reasons for the split:
 
-has these problem(s):
+1. With the new jack-det rework, the series really address 2 separate
+(but related) enhancements.
 
-  - leading word 'commit' unexpected
+2. I expect this series to be ready for merging, while the jack-det stuff
+likely will need a couple more revisions.
 
-In commit
+Other then the split there are some minor changes addressing various review
+comments, see the individual patch changelogs.
 
-  56835f1c14bc ("tools: gpio: fix %llu warning in gpio-event-mon.c")
+The MFD and ASoC parts can be merged independent from each-other (both must
+be merged to get working sound on these boards, but that is only a runtime
+dependency and a part missing won't have any bad side-effects). Or the
+entire series could be merged through the MFD tree if people prefer that.
 
-Fixes tag
+Regards,
 
-  Fixes: commit 03fd11b03362 ("tools/gpio/gpio-event-mon: fix warning")
+Hans
 
-has these problem(s):
 
-  - leading word 'commit' unexpected
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6HOkRAobIJ/iOo0Ip.y+x_W
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAEqkUACgkQAVBC80lX
-0GwmSgf/d035JDbU439zOXRt+MbOLgen/b4Fu9fM28PCNdJfOhrLzixKrK9xf8Tc
-KnwMG7fqWiGy0OEwIgZlJ4OxqZ4aWP4KsOQMuJbAnov+DaD2AkycVBI26UAL8GAF
-3+ajmYG0SZ6ZOg+v+/x49FTQNpyixy/k4TzJ9TvydKzsKmk/izYhJLGFxcsb3ZXa
-4unmOVgu2l7ImSc/jbXL7Xb8esOMzlonGETqUuuMojTbjh6Cg36Iwukb2YDjuehp
-uffGJOSiYBcjlRfME84yq3aNqfFg828LoW7PdeO3N/hI3C0fbyJ4SDqf30Sj+ngT
-bqkr4wh/0kfiHQqXInguKQ+3YqTKYg==
-=tSb3
------END PGP SIGNATURE-----
-
---Sig_/6HOkRAobIJ/iOo0Ip.y+x_W--
