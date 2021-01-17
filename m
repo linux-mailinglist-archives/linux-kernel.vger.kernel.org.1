@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D602F9223
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1872F9225
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhAQLxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 06:53:22 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:30719 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbhAQLxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 06:53:17 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 10HBpwK5020030;
-        Sun, 17 Jan 2021 20:51:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 10HBpwK5020030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610884320;
-        bh=EFj9oeMgvAYa1rwIlWvX8nLtsqK0q+woofcIbdkFZtE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BExNmYJMACnAIG7HBYf+h6vPyxKSUYGnXAK3ZUVD+pFluNBTsod8bZjlDP1NMFu5f
-         fsSpepbFopByM2nkfA7vcQvGlnBpRLtW48Diq3E/9hke5SSc+tNJaG8IDH75EzNuw8
-         I/uizbLu8snHMogCajSQDsdnhcafIMAcdLNm5NV7XR9OhWVbLu43CwConssAaAmWtI
-         hl4U9VJrJUDpp+o49LB8GO7MMVlSb40dSLw2WAFsSy+JAkpsB7TKIznWwlVy7+W4L+
-         rz6x1nO3BHqSUWnJmJpbxYtXzWlV+cl+mA9E3S7i4M7WqKL9+yZW61OfiVqmxkBkRU
-         VLBEdlUNE2HgA==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: doc: remove "Objects which export symbols" section
-Date:   Sun, 17 Jan 2021 20:51:56 +0900
-Message-Id: <20210117115156.2394975-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728718AbhAQLy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 06:54:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728131AbhAQLyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 06:54:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85F252080D;
+        Sun, 17 Jan 2021 11:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610884421;
+        bh=Eb4daXwLyW90LV1J5VBpoK9AsF8VVzB5wDF2WYuJoBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V2ELbnS/OMr/xQHoNrQSfrtY2erVZAEMeTqQEE3TmBaFA3AZPCbcRpOyxpfS/r/hh
+         836beG9rWfapXuVJRf1kOUclQuNtDs7k7bQzkugz4fyXpPNQm+jZX0dclXmPm30cl4
+         yow8QqrExoqdZsBSGbI+ElW2LXoJF9ES0P0L8/UqaKjDAZd5GB07cCU261vRm1ruxA
+         wq1tFKfUmXZF9+Ai+R8ydXlY8clhV+fp5nIHMzzRW4NBu9/WMZPB5gUEi+DI0fUhYt
+         AzrLAjCyGExzLHJ2FNE9FJ/PC6ec2OX7EAve/rUcrf+vQ3S/+s50Bh3JW9ZgvCKXwo
+         uF60AyQ1xeL2w==
+Date:   Sun, 17 Jan 2021 12:53:38 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Peter Rosin <peda@axentia.se>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v3 1/2] i2c: i2c-mux-gpio: Factor out pdev->dev in
+ _probe_dt()
+Message-ID: <20210117115338.GG1983@ninjato>
+References: <20201118234025.376412-1-evgreen@chromium.org>
+ <20201118153951.RESEND.v3.1.Ia45846771c63de3f2418d2b9c767cd95938a164c@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5L6AZ1aJH5mDrqCQ"
+Content-Disposition: inline
+In-Reply-To: <20201118153951.RESEND.v3.1.Ia45846771c63de3f2418d2b9c767cd95938a164c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EXPORT_SYMBOL is unrelated to makefiles. No need to mention it.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+--5L6AZ1aJH5mDrqCQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- Documentation/kbuild/makefiles.rst | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+On Wed, Nov 18, 2020 at 03:40:24PM -0800, Evan Green wrote:
+> Factor out &pdev->dev into a local variable in preparation for
+> the ACPI enablement of this function, which will utilize the variable
+> more.
+>=20
+> Signed-off-by: Evan Green <evgreen@chromium.org>
 
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index 9f6a11881951..949f09ea3f1a 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -12,7 +12,7 @@ This document describes the Linux kernel Makefiles.
- 	   --- 3.1 Goal definitions
- 	   --- 3.2 Built-in object goals - obj-y
- 	   --- 3.3 Loadable module goals - obj-m
--	   --- 3.4 Objects which export symbols
-+	   --- 3.4 <deleted>
- 	   --- 3.5 Library file goals - lib-y
- 	   --- 3.6 Descending down in directories
- 	   --- 3.7 Non-builtin vmlinux targets - extra-y
-@@ -247,12 +247,6 @@ more details, with real examples.
- 	kbuild will build an ext2.o file for you out of the individual
- 	parts and then link this into built-in.a, as you would expect.
- 
--3.4 Objects which export symbols
----------------------------------
--
--	No special notation is required in the makefiles for
--	modules exporting symbols.
--
- 3.5 Library file goals - lib-y
- ------------------------------
- 
--- 
-2.27.0
+Applied to for-next, thanks!
 
+
+--5L6AZ1aJH5mDrqCQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAEJUIACgkQFA3kzBSg
+KbbveQ//aGFZMCKlGf9QEsDNocPBmJ+aCrO2wUj2a0cHbnFl66fyZiUKK07s3cXt
+IYvzDDzSOKiAHj5m7a/6khAyUfAxUAEGvSVfAfVUK/dE7s2xffzoM5GGDyfpTTew
+oF5o1IAGJPskKOL9S+0WVRUdOT6/TmGz0ZyEm9o7MQMDj2Jyij8/T9ekkELmyDxU
+ZtFqvqz20Tes4H/tzwDCXCy7dN44QYOY2emqjPpOWyLRyUrFJ+nv0acUQ5Lw1gbw
+xonLMOtGS2tKkXYQ6+daqrHEIPCXxzZny7OpfAOLISAB2uCHX0ZWzj6vPWPpedAf
+oBygfU1I4cGkN2jg26YwE2AoHW0bviQ+0G4vCzscUslTZiwJTT3kGLd8XksL07E0
+b2A/OWnrZx/JRRCuejNzEBiQeevNgeCYM4VYKKro5xV34LGj/wSxxjKudFc7GUxa
+AB8FezNnhlPkV/Qo/rUiHrstVHlagB9RMTUnLEQEE/2G1IDDG6Cbefe/hWjcce1j
++lIakLH2rvJsJtMF7ZzTwXn6vw+npQ9IqpFaYBQou7oE3jp4MgqfsrG0sk9pA7SS
+cKdm4FJ9k6FpgHp6H5aDgyGRWdL0T5yhjBC3sQBBw8kisDFMzQq7CSR5t/ibzoUQ
+pNRbzJC9Bk9OcXJB8SnT9cp1yg53a5D92OzEII5M0YqN0ngQcSI=
+=3Eps
+-----END PGP SIGNATURE-----
+
+--5L6AZ1aJH5mDrqCQ--
