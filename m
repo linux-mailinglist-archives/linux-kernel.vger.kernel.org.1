@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259A62F9199
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F12C2F9196
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 10:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbhAQJ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 04:57:05 -0500
-Received: from fold.natur.cuni.cz ([195.113.57.32]:58758 "EHLO
-        fold.natur.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728216AbhAQJ4H (ORCPT
+        id S1728163AbhAQJyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 04:54:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbhAQJxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 04:56:07 -0500
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Jan 2021 04:56:06 EST
-Received: from [192.168.251.4] (unknown [192.168.251.4])
-        by fold.natur.cuni.cz (Postfix) with ESMTP id ABB3610FC077;
-        Sun, 17 Jan 2021 10:48:44 +0100 (MET)
-Subject: Re: [PATCH] power: supply: fix sbs-charger build, needs REGMAP_I2C
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        nicolassaenzj@gmail.com,
-        Nicolas Saenz Julienne <nicolas.saenz@prodys.net>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-References: <20210116211310.19232-1-rdunlap@infradead.org>
-From:   Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-Message-ID: <537de36b-6709-3e58-5610-9f54e2bee8a9@fold.natur.cuni.cz>
-Date:   Sun, 17 Jan 2021 10:48:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 17 Jan 2021 04:53:44 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2B9C061573;
+        Sun, 17 Jan 2021 01:53:04 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id d4so6997576plh.5;
+        Sun, 17 Jan 2021 01:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BQpIDmpmqR2mhiXRTWsYQzQxNoPXxseuWN2BDaNXzQc=;
+        b=QwIGfya5487IxpKUy2awClUDzH18/9jrPFlsm5JrBDHuR/CbYC7M/c3n7gNL6YL8Xn
+         L+oRJOGig7Nr9kWsGNM/JH0+ut/dlCaCM5WIRwAyDEaCGnw8PWMW8M0P3DVqUFVMvbgH
+         zsk037xx1l1NY7zdlAm/SKvVbDYct8RIIMN5dgBSV1ypMEo3V4fMWTeTA5vPfOOXm3b1
+         tlWsYA8SqcW3cGZdIDw9FuimMHzjk8TCK7rnXrEv4izbngvOsmmUVi6Vxzme5BazihpV
+         OwK2zYgnM7U5inF7DEB1A+ehh2CO2mYaz2DceEHDUAG2n6PEZ7Js+D8b12edasZ19jJz
+         0LsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BQpIDmpmqR2mhiXRTWsYQzQxNoPXxseuWN2BDaNXzQc=;
+        b=FN2D4PsBKmkJOus5wHGRWMoDT0E81Zd1xEEjGaqkttkEfvxoZ7MWuMd+chRTJ92Wqk
+         yppAoZupIq3IQ2piwwc99/sH9DXVKZUX3loOZEZEXJjwjmXsHDPQn+i7pBneXHQrY8ui
+         1Mj+avb0Cy7xULmM80/g/qaDgaffo2uhYvoyYy892BJ4pifBFKYnzLIbjalFoXnGSSDs
+         KkMaUQ9AFmnismf2uvG3qa7iQLBYoG5HkMt0xH5aaslOPvoD7RzXdEFkY1hHi8fEW7it
+         hgPyk0tokLcS7GwM1uG95qRlP/bi1C+Q5LoAbHNxY3wNxCRNJPnfBxQJoTlnoYE1Da/t
+         rjbA==
+X-Gm-Message-State: AOAM5302E+rM8VxUWi7L+8mTaBob/vlG6mnaC/wxTGfVu7jmA3pP3rrW
+        gA7DhjNxmT5K7gIzHRhtQJc=
+X-Google-Smtp-Source: ABdhPJwBNZSDztLC0X6MXetQHJKOgoi96UXsmCBifxGvu57gupLxnzyKyVHFO7IAwuO0mrU+BpILYg==
+X-Received: by 2002:a17:902:b28b:b029:de:6639:5cdb with SMTP id u11-20020a170902b28bb02900de66395cdbmr14081771plr.14.1610877182759;
+        Sun, 17 Jan 2021 01:53:02 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id a2sm13194459pgi.8.2021.01.17.01.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 01:53:02 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, viro@zeniv.linux.org.uk, rdna@fb.com,
+        nicolas.dichtel@6wind.com, maheshb@google.com,
+        keescook@chromium.org, dong.menglong@zte.com.cn,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: core: init every ctl_table in netns_core_table
+Date:   Sun, 17 Jan 2021 17:52:28 +0800
+Message-Id: <20210117095228.173512-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210116211310.19232-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-  thank you very much. I would not mind dropping my name but I tested the patch
-now with 5.4.89 so you may actually also add
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Tested-by: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
+For now, there is only one element in netns_core_table, and it is inited
+directly in sysctl_core_net_init. To make it more flexible, we can init
+every element at once, just like what ipv4_sysctl_init_net() did.
 
-It also happened with 5.10.7, it is probably obvious.
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/core/sysctl_net_core.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Thank you for quick action.
-Martin
-
-On 16/01/2021 22:13, Randy Dunlap wrote:
-> CHARGER_SBS should select REGMAP_I2C since it uses API(s) that are
-> provided by that Kconfig symbol.
-> 
-> Fixes these errors:
-> 
-> ../drivers/power/supply/sbs-charger.c:149:21: error: variable ‘sbs_regmap’ has initializer but incomplete type
->  static const struct regmap_config sbs_regmap = {
-> ../drivers/power/supply/sbs-charger.c:150:3: error: ‘const struct regmap_config’ has no member named ‘reg_bits’
->   .reg_bits = 8,
-> ../drivers/power/supply/sbs-charger.c:155:23: error: ‘REGMAP_ENDIAN_LITTLE’ undeclared here (not in a function)
->   .val_format_endian = REGMAP_ENDIAN_LITTLE, /* since based on SMBus */
-> ../drivers/power/supply/sbs-charger.c: In function ‘sbs_probe’:
-> ../drivers/power/supply/sbs-charger.c:183:17: error: implicit declaration of function ‘devm_regmap_init_i2c’; did you mean ‘devm_request_irq’? [-Werror=implicit-function-declaration]
->   chip->regmap = devm_regmap_init_i2c(client, &sbs_regmap);
-> ../drivers/power/supply/sbs-charger.c: At top level:
-> ../drivers/power/supply/sbs-charger.c:149:35: error: storage size of ‘sbs_regmap’ isn’t known
->  static const struct regmap_config sbs_regmap = {
-> 
-> Fixes: feb583e37f8a ("power: supply: add sbs-charger driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: linux-pm@vger.kernel.org
-> Cc: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: nicolassaenzj@gmail.com
-> Cc: Nicolas Saenz Julienne <nicolas.saenz@prodys.net>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> ---
-> Martin, do you want Reported-by: on this?
-> 
->  drivers/power/supply/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- linux-next-20210115.orig/drivers/power/supply/Kconfig
-> +++ linux-next-20210115/drivers/power/supply/Kconfig
-> @@ -229,6 +229,7 @@ config BATTERY_SBS
->  config CHARGER_SBS
->  	tristate "SBS Compliant charger"
->  	depends on I2C
-> +	select REGMAP_I2C
->  	help
->  	  Say Y to include support for SBS compliant battery chargers.
->  
-> 
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index d86d8d11cfe4..966d976dee84 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -606,15 +606,19 @@ static __net_init int sysctl_core_net_init(struct net *net)
+ 
+ 	tbl = netns_core_table;
+ 	if (!net_eq(net, &init_net)) {
++		int i;
++
+ 		tbl = kmemdup(tbl, sizeof(netns_core_table), GFP_KERNEL);
+ 		if (tbl == NULL)
+ 			goto err_dup;
+ 
+-		tbl[0].data = &net->core.sysctl_somaxconn;
++		/* Update the variables to point into the current struct net */
++		for (i = 0; i < ARRAY_SIZE(netns_core_table) - 1; i++) {
++			tbl[i].data += (void *)net - (void *)&init_net;
+ 
+-		/* Don't export any sysctls to unprivileged users */
+-		if (net->user_ns != &init_user_ns) {
+-			tbl[0].procname = NULL;
++			/* Don't export any sysctls to unprivileged users */
++			if (net->user_ns != &init_user_ns)
++				tbl[i].procname = NULL;
+ 		}
+ 	}
+ 
+-- 
+2.30.0
 
