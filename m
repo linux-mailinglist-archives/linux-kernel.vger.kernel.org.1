@@ -2,400 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8D42F91C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8FF2F91C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbhAQKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 05:46:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S1728358AbhAQKuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 05:50:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbhAQKpg (ORCPT
+        with ESMTP id S1727480AbhAQKtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 05:45:36 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBDAC061573;
-        Sun, 17 Jan 2021 02:44:53 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id n2so10080555iom.7;
-        Sun, 17 Jan 2021 02:44:53 -0800 (PST)
+        Sun, 17 Jan 2021 05:49:55 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE792C061573;
+        Sun, 17 Jan 2021 02:49:14 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id r4so7018232pls.11;
+        Sun, 17 Jan 2021 02:49:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=NAbkYCatp6ERnhE34Wic5hTFw64HVM2in9KYN2nY5Mc=;
-        b=XW44f/Qpjlm/nPATNMTExOiI/lW0GXy3tzavWieerC+dxSd0DUeXkN4fQINXy+KZ1l
-         TqwwkA/uyxBjsxFMgtGZ/OJdxj6mCHepa9I54bkdoaL9LnDTsCpowrVmpWcFRHleccfk
-         Ilu6tjoZnzbUJnG7DiJYr+6wPadEDc7/+ts84R4qoIwXErvm4z8xgRUGCjz1NETjbh8E
-         8SvIRMRAnoN+C0Ss4DRBRvmGRO0OGn6nfwVgoySdsgeKuJffPiRYWbKg7GAwhLHzflh5
-         bSdWsJRPPwpPd1buLbLyOGcShMqsANbrDE/lAjjF76dPnil4duO2QgpLvjr+HA/NGW9m
-         9s1Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lFmA9TnP9NE8OaeHmI0MhXoMypeEzomf+Eb9FD+FhuU=;
+        b=JBPUh/HNioXYB+CsuwdxQs6HxhQlsKBzzagiIqwamz9zjKM1Q1O/GdDtkODXamjJUR
+         E1A6XyvNQspXOQc7AyhHinAI3U45FvhunEYuiTxiDiSmqzp2fsOTuFX2p7vrX0a7v1H+
+         MnktAfvxV6xMcu8kh6iZEjPyc/n3MH3LdhDfaE1eqn8Ocb1v71/KmiuNLCMTFTT3intY
+         xxUne0NLi68n6SYoMoxEkWddWxshnYkkCK34IciZHnDkwF/SkXCpeUMDqakO/nC5ClGZ
+         OQflH1spTIjxv1P4Td4oxoizlRC7DxcPwDYoFm8KsQCwU1Vm/VP89ihg1P2KKj6/t97B
+         P9wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=NAbkYCatp6ERnhE34Wic5hTFw64HVM2in9KYN2nY5Mc=;
-        b=KK/3XPoVZCQ18KW+QKjpC9YIkP8w03FrNMUNoUIPT2loQaDh6b8CcOGzhRk4rir/O0
-         OSMM1xN+YdCJBKJyeeFFaNqtNfNtaYwT/9n2cbo8wG2zeZI5ezDPOLiVruqUQLC962lX
-         OS79s/9jYy42lCpO4TsHr4jC5Qs+NaWZYzVRFiHLTgcMc10odrc7LKX95q6PQ45qVrp+
-         HHcS/fqH//x/CjU+H5AmsRKQFQ1b291jHwJpP94mbVB5F2YHpzTqsUFB2Qlk1YPi5Y8W
-         uKK/rpKBlnkJuK+zPJsMtK+5lhkR2G86taqgwkZaXvwJAD85/YRJ0w4YKg1xVgsQ3PuS
-         rLLQ==
-X-Gm-Message-State: AOAM5337LADq37uZcT9cAW5eV5qt5Rn2zDWPLGwR9gx24NDFriGnUVsp
-        LhG/RF34cuG6skcQlRAzo5Sm0ZR7twSUXR7jvJD16tWfhvSmppDj
-X-Google-Smtp-Source: ABdhPJyKDySgei/qK1ZVlhpMZeCx/779RufC8mkQ6r0vBBIxEOZj9qWOGfg8WKqdcG09YkMAE7xn892MFPSAPZdpQvs=
-X-Received: by 2002:a5e:9b06:: with SMTP id j6mr13777267iok.171.1610880291657;
- Sun, 17 Jan 2021 02:44:51 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lFmA9TnP9NE8OaeHmI0MhXoMypeEzomf+Eb9FD+FhuU=;
+        b=iFBTOcvRpCYWqH81xQEmgQGAHpH5EN1it88OmugyQLLHcq1qKfLbvecYONmaLiowo4
+         mtCfJb3Tg9gC4nBsZyOwt5FG7gghT6YihOMqh1qAfSRMlhLfHm9UKf2SaXCJOcJbWsMv
+         qqE+v0YevngYDydATJwYVYQ6VK9jCKgxMJl/ucY182QbZaIlJk49mN8o+DRFRKBRprr5
+         Sr6Xd1dB2qixPAZs9HN4lyO9OB+qjEUw6GqMhqq/IMNq3jxaCr8z+9LlknIw8Cr6HW3o
+         wSe4bQLRGGJzGAGC4JsQDxbGa1WPYN2x78P9UPXq78NR2Rc6suJ/PRYG8gtSYHFCl+TC
+         LtnA==
+X-Gm-Message-State: AOAM533nt3S4JTfEFHDXsw5wp94KfOcsNWjykCXw7oE87lhdlCtrJkPl
+        lA7hyKhYkz6IpPHAj7hAy4FU8r8ztRY=
+X-Google-Smtp-Source: ABdhPJxFEkubh99EOrcZQtyFNKy3kILhFvy3PXh2wxrGGhS5wRCpr94ePASFqT3HGxwcaACu+HtDzw==
+X-Received: by 2002:a17:90a:f998:: with SMTP id cq24mr3565901pjb.6.1610880554101;
+        Sun, 17 Jan 2021 02:49:14 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id g75sm12853926pfb.2.2021.01.17.02.49.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 02:49:13 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, edumazet@google.com,
+        yoshfuji@linux-ipv6.org, horms@verge.net.au, ja@ssi.bg,
+        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        dong.menglong@zte.com.cn, christian.brauner@ubuntu.com,
+        gnault@redhat.com, ap420073@gmail.com, willemb@google.com,
+        jakub@cloudflare.com, bjorn.topel@intel.com, linmiaohe@huawei.com,
+        pabeni@redhat.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
+        rdna@fb.com, maheshb@google.com, nicolas.dichtel@6wind.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: core: Namespace-ify sysctl_rmem_max and sysctl_wmem_max
+Date:   Sun, 17 Jan 2021 18:47:43 +0800
+Message-Id: <20210117104743.217194-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com> <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
-In-Reply-To: <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 17 Jan 2021 11:44:40 +0100
-Message-ID: <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 9:23 PM Bill Wendling <morbo@google.com> wrote:
->
-> On Sat, Jan 16, 2021 at 9:39 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > On Sat, Jan 16, 2021 at 10:44 AM 'Bill Wendling' via Clang Built Linux
-> > <clang-built-linux@googlegroups.com> wrote:
-> > >
-> > > From: Sami Tolvanen <samitolvanen@google.com>
-> > >
-> > > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> > > profile, the kernel is instrumented with PGO counters, a representative
-> > > workload is run, and the raw profile data is collected from
-> > > /sys/kernel/debug/pgo/profraw.
-> > >
-> > > The raw profile data must be processed by clang's "llvm-profdata" tool
-> > > before it can be used during recompilation:
-> > >
-> > >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> > >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> > >
-> > > Multiple raw profiles may be merged during this step.
-> > >
-> > > The data can now be used by the compiler:
-> > >
-> > >   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
-> > >
-> > > This initial submission is restricted to x86, as that's the platform we
-> > > know works. This restriction can be lifted once other platforms have
-> > > been verified to work with PGO.
-> > >
-> > > Note that this method of profiling the kernel is clang-native, unlike
-> > > the clang support in kernel/gcov.
-> > >
-> > > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
-> > >
-> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > > Co-developed-by: Bill Wendling <morbo@google.com>
-> > > Signed-off-by: Bill Wendling <morbo@google.com>
-> > > ---
-> > > v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
-> > >       testing.
-> > >     - Corrected documentation, re PGO flags when using LTO, based on Fangrui
-> > >       Song's comments.
-> > > v3: - Added change log section based on Sedat Dilek's comments.
-> > > v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
-> > >       own popcount implementation, based on Nick Desaulniers's comment.
-> > > v5: - Correct padding calculation, discovered by Nathan Chancellor.
-> > > ---
-> > >  Documentation/dev-tools/index.rst     |   1 +
-> > >  Documentation/dev-tools/pgo.rst       | 127 +++++++++
-> > >  MAINTAINERS                           |   9 +
-> > >  Makefile                              |   3 +
-> > >  arch/Kconfig                          |   1 +
-> > >  arch/x86/Kconfig                      |   1 +
-> > >  arch/x86/boot/Makefile                |   1 +
-> > >  arch/x86/boot/compressed/Makefile     |   1 +
-> > >  arch/x86/crypto/Makefile              |   2 +
-> > >  arch/x86/entry/vdso/Makefile          |   1 +
-> > >  arch/x86/kernel/vmlinux.lds.S         |   2 +
-> > >  arch/x86/platform/efi/Makefile        |   1 +
-> > >  arch/x86/purgatory/Makefile           |   1 +
-> > >  arch/x86/realmode/rm/Makefile         |   1 +
-> > >  arch/x86/um/vdso/Makefile             |   1 +
-> > >  drivers/firmware/efi/libstub/Makefile |   1 +
-> > >  include/asm-generic/vmlinux.lds.h     |  44 +++
-> > >  kernel/Makefile                       |   1 +
-> > >  kernel/pgo/Kconfig                    |  35 +++
-> > >  kernel/pgo/Makefile                   |   5 +
-> > >  kernel/pgo/fs.c                       | 382 ++++++++++++++++++++++++++
-> > >  kernel/pgo/instrument.c               | 185 +++++++++++++
-> > >  kernel/pgo/pgo.h                      | 206 ++++++++++++++
-> > >  scripts/Makefile.lib                  |  10 +
-> > >  24 files changed, 1022 insertions(+)
-> > >  create mode 100644 Documentation/dev-tools/pgo.rst
-> > >  create mode 100644 kernel/pgo/Kconfig
-> > >  create mode 100644 kernel/pgo/Makefile
-> > >  create mode 100644 kernel/pgo/fs.c
-> > >  create mode 100644 kernel/pgo/instrument.c
-> > >  create mode 100644 kernel/pgo/pgo.h
-> > >
-> > > diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
-> > > index f7809c7b1ba9e..8d6418e858062 100644
-> > > --- a/Documentation/dev-tools/index.rst
-> > > +++ b/Documentation/dev-tools/index.rst
-> > > @@ -26,6 +26,7 @@ whole; patches welcome!
-> > >     kgdb
-> > >     kselftest
-> > >     kunit/index
-> > > +   pgo
-> > >
-> > >
-> > >  .. only::  subproject and html
-> > > diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
-> > > new file mode 100644
-> > > index 0000000000000..b7f11d8405b73
-> > > --- /dev/null
-> > > +++ b/Documentation/dev-tools/pgo.rst
-> > > @@ -0,0 +1,127 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +===============================
-> > > +Using PGO with the Linux kernel
-> > > +===============================
-> > > +
-> > > +Clang's profiling kernel support (PGO_) enables profiling of the Linux kernel
-> > > +when building with Clang. The profiling data is exported via the ``pgo``
-> > > +debugfs directory.
-> > > +
-> > > +.. _PGO: https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
-> > > +
-> > > +
-> > > +Preparation
-> > > +===========
-> > > +
-> > > +Configure the kernel with:
-> > > +
-> > > +.. code-block:: make
-> > > +
-> > > +   CONFIG_DEBUG_FS=y
-> > > +   CONFIG_PGO_CLANG=y
-> > > +
-> > > +Note that kernels compiled with profiling flags will be significantly larger
-> > > +and run slower.
-> > > +
-> > > +Profiling data will only become accessible once debugfs has been mounted:
-> > > +
-> > > +.. code-block:: sh
-> > > +
-> > > +   mount -t debugfs none /sys/kernel/debug
-> > > +
-> > > +
-> > > +Customization
-> > > +=============
-> > > +
-> > > +You can enable or disable profiling for individual file and directories by
-> > > +adding a line similar to the following to the respective kernel Makefile:
-> > > +
-> > > +- For a single file (e.g. main.o)
-> > > +
-> > > +  .. code-block:: make
-> > > +
-> > > +     PGO_PROFILE_main.o := y
-> > > +
-> > > +- For all files in one directory
-> > > +
-> > > +  .. code-block:: make
-> > > +
-> > > +     PGO_PROFILE := y
-> > > +
-> > > +To exclude files from being profiled use
-> > > +
-> > > +  .. code-block:: make
-> > > +
-> > > +     PGO_PROFILE_main.o := n
-> > > +
-> > > +and
-> > > +
-> > > +  .. code-block:: make
-> > > +
-> > > +     PGO_PROFILE := n
-> > > +
-> > > +Only files which are linked to the main kernel image or are compiled as kernel
-> > > +modules are supported by this mechanism.
-> > > +
-> > > +
-> > > +Files
-> > > +=====
-> > > +
-> > > +The PGO kernel support creates the following files in debugfs:
-> > > +
-> > > +``/sys/kernel/debug/pgo``
-> > > +       Parent directory for all PGO-related files.
-> > > +
-> > > +``/sys/kernel/debug/pgo/reset``
-> > > +       Global reset file: resets all coverage data to zero when written to.
-> > > +
-> > > +``/sys/kernel/debug/profraw``
-> > > +       The raw PGO data that must be processed with ``llvm_profdata``.
-> > > +
-> > > +
-> > > +Workflow
-> > > +========
-> > > +
-> > > +The PGO kernel can be run on the host or test machines. The data though should
-> > > +be analyzed with Clang's tools from the same Clang version as the kernel was
-> > > +compiled. Clang's tolerant of version skew, but it's easier to use the same
-> > > +Clang version.
-> > > +
-> > > +The profiling data is useful for optimizing the kernel, analyzing coverage,
-> > > +etc. Clang offers tools to perform these tasks.
-> > > +
-> > > +Here is an example workflow for profiling an instrumented kernel with PGO and
-> > > +using the result to optimize the kernel:
-> > > +
-> > > +1) Install the kernel on the TEST machine.
-> > > +
-> > > +2) Reset the data counters right before running the load tests
-> > > +
-> > > +   .. code-block:: sh
-> > > +
-> > > +      $ echo 1 > /sys/kernel/debug/pgo/reset
-> > > +
-> >
-> > I do not get this...
-> >
-> > # mount | grep debugfs
-> > debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
-> >
-> > After the load-test...?
-> >
-> > echo 0 > /sys/kernel/debug/pgo/reset
-> >
-> Writing anything to /sys/kernel/debug/pgo/reset will cause it to reset
-> the profiling counters. I picked 1 (one) semi-randomly, but it could
-> be any number, letter, your favorite short story, etc. You don't want
-> to reset it before collecting the profiling data from your load tests
-> though.
->
-> > > +3) Run the load tests.
-> > > +
-> > > +4) Collect the raw profile data
-> > > +
-> > > +   .. code-block:: sh
-> > > +
-> > > +      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
-> > > +
-> >
-> > This is only 4,9M small and seen from the date 5mins before I run the
-> > echo-1 line.
-> >
-> > # ll /sys/kernel/debug/pgo
-> > insgesamt 0
-> > drwxr-xr-x  2 root root 0 16. Jan 17:29 .
-> > drwx------ 41 root root 0 16. Jan 17:29 ..
-> > -rw-------  1 root root 0 16. Jan 17:29 profraw
-> > --w-------  1 root root 0 16. Jan 18:19 reset
-> >
-> > # cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
-> >
-> > # ll /tmp/vmlinux.profraw
-> > -rw------- 1 root root 4,9M 16. Jan 17:29 /tmp/vmlinux.profraw
-> >
-> > For me there was no prof-data collected from my defconfig kernel-build.
-> >
-> The /sys/kernel/debug/pgo/profraw file is read-only. Nothing writes to
-> it, not even the kernel. All it does is serialize the profiling
-> counters from a memory location in the kernel into a format that
-> LLVM's tools can understand.
->
-> > > +5) (Optional) Download the raw profile data to the HOST machine.
-> > > +
-> > > +6) Process the raw profile data
-> > > +
-> > > +   .. code-block:: sh
-> > > +
-> > > +      $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> > > +
-> >
-> > Is that executed in /path/to/linux/git?
-> >
-> The llvm-profdata tool is not in the linux source tree. You need to
-> grab it from a clang distribution (or built from clang's git repo).
->
-> > > +   Note that multiple raw profile data files can be merged during this step.
-> > > +
-> > > +7) Rebuild the kernel using the profile data (PGO disabled)
-> > > +
-> > > +   .. code-block:: sh
-> > > +
-> > > +      $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
-> >
-> > How big is vmlinux.profdata (make defconfig)?
-> >
-> I don't have numbers for this, but from what you listed here, it's ~5M
-> in size. The size is proportional to the number of counters
-> instrumented in the kernel.
->
-> > Do I need to do a full defconfig build or can I stop the build after
-> > let me say 10mins?
-> >
-> You should do a full rebuild. Make sure that PGO is disabled during the rebuild.
->
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Thanks Bill for all the information.
+For now, sysctl_wmem_max and sysctl_rmem_max are globally unified.
+It's not convenient in some case. For example, when we use docker
+and try to control the default udp socket receive buffer for each
+container.
 
-And sorry if I am so pedantic.
+For that reason, make sysctl_wmem_max and sysctl_rmem_max
+per-namespace.
 
-I have installed my Debian system with Legacy-BIOS enabled.
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ include/net/netns/core.h        |  2 ++
+ include/net/sock.h              |  3 ---
+ net/core/filter.c               |  4 ++--
+ net/core/net_namespace.c        |  2 ++
+ net/core/sock.c                 | 12 ++++--------
+ net/core/sysctl_net_core.c      | 32 ++++++++++++++++----------------
+ net/ipv4/tcp_output.c           |  2 +-
+ net/netfilter/ipvs/ip_vs_sync.c |  4 ++--
+ 8 files changed, 29 insertions(+), 32 deletions(-)
 
-When I rebuild with KCFLAGS=-fprofile-use=vmlinux.profdata (LLVM=1 I
-have as a default) my system hangs on reboot.
+diff --git a/include/net/netns/core.h b/include/net/netns/core.h
+index 317b47df6d08..b4aecac6e8ce 100644
+--- a/include/net/netns/core.h
++++ b/include/net/netns/core.h
+@@ -11,6 +11,8 @@ struct netns_core {
+ 
+ 	int sysctl_wmem_default;
+ 	int sysctl_rmem_default;
++	int sysctl_wmem_max;
++	int sysctl_rmem_max;
+ 	int	sysctl_somaxconn;
+ 
+ #ifdef CONFIG_PROC_FS
+diff --git a/include/net/sock.h b/include/net/sock.h
+index b846a6d24459..f6b0f2c482ad 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2647,9 +2647,6 @@ void sk_get_meminfo(const struct sock *sk, u32 *meminfo);
+ #define SK_WMEM_MAX		(_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
+ #define SK_RMEM_MAX		(_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
+ 
+-extern __u32 sysctl_wmem_max;
+-extern __u32 sysctl_rmem_max;
+-
+ extern int sysctl_tstamp_allow_data;
+ extern int sysctl_optmem_max;
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 255aeee72402..3dca58f6c40c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4717,13 +4717,13 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 		/* Only some socketops are supported */
+ 		switch (optname) {
+ 		case SO_RCVBUF:
+-			val = min_t(u32, val, sysctl_rmem_max);
++			val = min_t(u32, val, sock_net(sk)->core.sysctl_rmem_max);
+ 			sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+ 			WRITE_ONCE(sk->sk_rcvbuf,
+ 				   max_t(int, val * 2, SOCK_MIN_RCVBUF));
+ 			break;
+ 		case SO_SNDBUF:
+-			val = min_t(u32, val, sysctl_wmem_max);
++			val = min_t(u32, val, sock_net(sk)->core.sysctl_wmem_max);
+ 			sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
+ 			WRITE_ONCE(sk->sk_sndbuf,
+ 				   max_t(int, val * 2, SOCK_MIN_SNDBUF));
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index eb4ea99131d6..552e3c5b2a41 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -376,6 +376,8 @@ static int __net_init net_defaults_init_net(struct net *net)
+ {
+ 	net->core.sysctl_rmem_default = SK_RMEM_MAX;
+ 	net->core.sysctl_wmem_default = SK_WMEM_MAX;
++	net->core.sysctl_rmem_max = SK_RMEM_MAX;
++	net->core.sysctl_wmem_max = SK_WMEM_MAX;
+ 	net->core.sysctl_somaxconn = SOMAXCONN;
+ 	return 0;
+ }
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 2421e4ea1915..eb7eaaa840ce 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -265,12 +265,6 @@ static struct lock_class_key af_wlock_keys[AF_MAX];
+ static struct lock_class_key af_elock_keys[AF_MAX];
+ static struct lock_class_key af_kern_callback_keys[AF_MAX];
+ 
+-/* Run time adjustable parameters. */
+-__u32 sysctl_wmem_max __read_mostly = SK_WMEM_MAX;
+-EXPORT_SYMBOL(sysctl_wmem_max);
+-__u32 sysctl_rmem_max __read_mostly = SK_RMEM_MAX;
+-EXPORT_SYMBOL(sysctl_rmem_max);
+-
+ /* Maximal space eaten by iovec or ancillary data plus some space */
+ int sysctl_optmem_max __read_mostly = sizeof(unsigned long)*(2*UIO_MAXIOV+512);
+ EXPORT_SYMBOL(sysctl_optmem_max);
+@@ -877,7 +871,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		 * play 'guess the biggest size' games. RCVBUF/SNDBUF
+ 		 * are treated in BSD as hints
+ 		 */
+-		val = min_t(u32, val, sysctl_wmem_max);
++		val = min_t(u32, val, sock_net(sk)->core.sysctl_wmem_max);
+ set_sndbuf:
+ 		/* Ensure val * 2 fits into an int, to prevent max_t()
+ 		 * from treating it as a negative value.
+@@ -909,7 +903,9 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		 * play 'guess the biggest size' games. RCVBUF/SNDBUF
+ 		 * are treated in BSD as hints
+ 		 */
+-		__sock_set_rcvbuf(sk, min_t(u32, val, sysctl_rmem_max));
++		__sock_set_rcvbuf(sk,
++				  min_t(u32, val,
++					sock_net(sk)->core.sysctl_rmem_max));
+ 		break;
+ 
+ 	case SO_RCVBUFFORCE:
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index 5c1c75e42a09..30a8e3a324ec 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -310,22 +310,6 @@ proc_dolongvec_minmax_bpf_restricted(struct ctl_table *table, int write,
+ 
+ static struct ctl_table net_core_table[] = {
+ #ifdef CONFIG_NET
+-	{
+-		.procname	= "wmem_max",
+-		.data		= &sysctl_wmem_max,
+-		.maxlen		= sizeof(int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= &min_sndbuf,
+-	},
+-	{
+-		.procname	= "rmem_max",
+-		.data		= &sysctl_rmem_max,
+-		.maxlen		= sizeof(int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= &min_rcvbuf,
+-	},
+ 	{
+ 		.procname	= "dev_weight",
+ 		.data		= &weight_p,
+@@ -584,6 +568,22 @@ static struct ctl_table netns_core_table[] = {
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= &min_rcvbuf,
+ 	},
++	{
++		.procname	= "wmem_max",
++		.data		= &init_net.core.sysctl_wmem_max,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= &min_sndbuf,
++	},
++	{
++		.procname	= "rmem_max",
++		.data		= &init_net.core.sysctl_rmem_max,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= &min_rcvbuf,
++	},
+ 	{ }
+ };
+ 
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index f322e798a351..8c1b2b0e6211 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -241,7 +241,7 @@ void tcp_select_initial_window(const struct sock *sk, int __space, __u32 mss,
+ 	if (wscale_ok) {
+ 		/* Set window scaling on max possible window */
+ 		space = max_t(u32, space, sock_net(sk)->ipv4.sysctl_tcp_rmem[2]);
+-		space = max_t(u32, space, sysctl_rmem_max);
++		space = max_t(u32, space, sock_net(sk)->core.sysctl_rmem_max);
+ 		space = min_t(u32, space, *window_clamp);
+ 		*rcv_wscale = clamp_t(int, ilog2(space) - 15,
+ 				      0, TCP_MAX_WSCALE);
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index 9d43277b8b4f..2e7e10b76c36 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -1280,12 +1280,12 @@ static void set_sock_size(struct sock *sk, int mode, int val)
+ 	lock_sock(sk);
+ 	if (mode) {
+ 		val = clamp_t(int, val, (SOCK_MIN_SNDBUF + 1) / 2,
+-			      sysctl_wmem_max);
++			      sock_net(sk)->core.sysctl_wmem_max);
+ 		sk->sk_sndbuf = val * 2;
+ 		sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
+ 	} else {
+ 		val = clamp_t(int, val, (SOCK_MIN_RCVBUF + 1) / 2,
+-			      sysctl_rmem_max);
++			      sock_net(sk)->core.sysctl_rmem_max);
+ 		sk->sk_rcvbuf = val * 2;
+ 		sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+ 	}
+-- 
+2.30.0
 
-[ diffconfig ]
-$ scripts/diffconfig /boot/config-5.11.0-rc3-8-amd64-clang12-pgo
-/boot/config-5.11.0-rc3-9-amd64-clang12-pgo
-BUILD_SALT "5.11.0-rc3-8-amd64-clang12-pgo" -> "5.11.0-rc3-9-amd64-clang12-pgo"
-PGO_CLANG y -> n
-
-[ my make line ]
-$ cat ../start-build_5.11.0-rc3-9-amd64-clang12-pgo.txt
-dileks     63120   63095  0 06:47 pts/2    00:00:00 /usr/bin/perf_5.10
-stat make V=1 -j4 HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
-LD=ld.lld LLVM=1 LLVM_IAS=1 PAHOLE=/opt/pahole/bin/pahole
-LOCALVERSION=-9-amd64-clang12-pgo KBUILD_VERBOSE=1
-KBUILD_BUILD_HOST=iniza KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-01-17 bindeb-pkg
-KDEB_PKGVERSION=5.11.0~rc3-9~bullseye+dileks1
-KCFLAGS=-fprofile-use=vmlinux.profdata
-
-( Yes, 06:47 a.m. in the morning :-). )
-
-When I boot with the rebuild Linux-kernel I see:
-
-Wrong EFI loader signature
-...
-Decompressing
-Parsing EFI
-Performing Relocations done.
-Booting the Kernel.
-
-*** SYSTEM HANGS ***
-( I waited for approx 1 min )
-
-I tried to turn UEFI support ON and OFF.
-No success.
-
-Does Clang-PGO support Legacy-BIOS or is something different wrong?
-
-Thanks.
-
-- Sedat -
