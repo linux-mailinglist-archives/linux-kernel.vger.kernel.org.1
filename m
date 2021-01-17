@@ -2,53 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905032F93F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7EB2F93F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 17:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbhAQQS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 11:18:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729124AbhAQQSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 11:18:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 562D0206FA;
-        Sun, 17 Jan 2021 16:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610900289;
-        bh=HWLfGg/zx+DD4bzEZzYQcpwCpiLlq6T25unpshVIU48=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rrO6Gbmn0NYwcbrbLs6fNTYF/5ol158d5p9GSSUybo4GFLm/JPEzc+7dCydr/b9xp
-         oZWR7L2SOzsObhTUeT6zkLlf3ZJOM/b0vtLIwVhlpST0J3t1ZOPd2KLOnENdZr8Lth
-         phsKPgR5Fomk1MEZQdH0NEmr0p0WAYQduwodurf+HKsCrcEjbhrqTh153rNwNw6z3C
-         ENVExnubYLHPuuJS/bMzfB8E3iM5kMGW2KG/KJXF5kSirJOG1bRxLxGwn4nLndNStD
-         So9H6Hsd40yrETUUDJjNVs2MwjDlechEMKY6G7YFBTFtSCO13n2ORFmQr07dvJnYyS
-         BNbYWlJZlJdNQ==
-Date:   Sun, 17 Jan 2021 11:18:08 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 45/51] gcc-plugins: fix gcc 11 indigestion
- with plugins...
-Message-ID: <20210117161808.GX4035784@sasha-vm>
-References: <20210112125534.70280-1-sashal@kernel.org>
- <20210112125534.70280-45-sashal@kernel.org>
- <202101120931.61C1F0B@keescook>
+        id S1729790AbhAQQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 11:20:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27312 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729437AbhAQQTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 11:19:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610900307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pd4vHRZ+JWsMgYXJ+/MXzVJZ5dZGqNEtTkFAu8s+Zps=;
+        b=Z+tYm7j4G4Jm9zkVWWnB+j84GfLRzpYXY5pBumBX4IlfSpqVi31yCye4No8meGPS+70jA+
+        69LwMZ3Xz/6f5HU7ptGe/ThogpCZvWQ65MinbnfmazuW9M4+Q6mpwYrLWJioC1DUKgA7z9
+        26NLUljT9qoe5gectsmP4whsewZpgAc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-Pzv4wB1cPNGKz-d1MdyoBw-1; Sun, 17 Jan 2021 11:18:25 -0500
+X-MC-Unique: Pzv4wB1cPNGKz-d1MdyoBw-1
+Received: by mail-qt1-f198.google.com with SMTP id l7so12883670qth.15
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 08:18:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pd4vHRZ+JWsMgYXJ+/MXzVJZ5dZGqNEtTkFAu8s+Zps=;
+        b=Ky1gfXWEzdXKdZzisK8Omj8GLxialQbbHope4B9vYnRZtb0O3SaXsR3aXD7Q32flEY
+         1LKSwOLpIwiq+SpWuWO6FyHzs+bqOvNFvaYQ34kDBXnIxVdLsiscHGDkW0F7Rexaj5fg
+         E3IrIdiVEFtY+AzORGGMKfPQeLz6Pvc4AmdliM8OQPiZmuO0e0Zxk10OZyf/LJrSdFU8
+         jJsFne25j/me7fIpehx5pXD7lbGU2rkXFn7Jf9Ocl5PA+J1Ja4XrhgyniHkkKwWfYUIL
+         /KzV2ZRkkVnnXDsJ1zjdoF4/uGfw7M6xMxRsBf1NQcLJUKRHgs/SlAqBS1u30VKUyr8D
+         aumw==
+X-Gm-Message-State: AOAM5335DIqgN78FarKcAn8xUtWgt7Om3zXXpwZhuClUbm0F+AcYA+9o
+        WDJ2rN42TsSOeuE6v8QZ06vQ0ohNwlayn4Tgc39ZtmFPuBbhC65QXHzTogB/t9oBv5toWfYFR7N
+        7q3UcVDvDpfJU/JewyaOIm7jj
+X-Received: by 2002:ac8:6b0a:: with SMTP id w10mr19764232qts.224.1610900303864;
+        Sun, 17 Jan 2021 08:18:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz+kM1gexsua9DwpZxib3OZs35p/m5WmKtlUfgtMEYDw+N6CMDgeXGQk41qH5EeAy8ZFkJePQ==
+X-Received: by 2002:ac8:6b0a:: with SMTP id w10mr19764160qts.224.1610900302190;
+        Sun, 17 Jan 2021 08:18:22 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i17sm8617874qtg.77.2021.01.17.08.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 08:18:21 -0800 (PST)
+From:   trix@redhat.com
+To:     shuah@kernel.org, mdf@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-fpga@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH v3] selftests: drivers: fpga: A test for interrupt support
+Date:   Sun, 17 Jan 2021 08:18:15 -0800
+Message-Id: <20210117161815.514078-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <202101120931.61C1F0B@keescook>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 09:31:38AM -0800, Kees Cook wrote:
->This will need an additional fix, so please don't backport it yet.
+From: Tom Rix <trix@redhat.com>
 
-I'll drop it for now, thanks.
+Check that the ioctl DFL_FPGA_PORT_ERR_GET_IRQ_NUM returns
+an expected result.
 
+Tested on vf device 0xbcc1
+
+Sample run with
+ # make -C tools/testing/selftests TARGETS=drivers/fpga run_tests
+ ...
+ TAP version 13
+ 1..1
+ # selftests: drivers/fpga: intr
+ # TAP version 13
+ # 1..1
+ # # Starting 1 tests from 1 test cases.
+ # #  RUN           global.afu_intr ...
+ # #            OK  global.afu_intr
+ # ok 1 global.afu_intr
+ # # PASSED: 1 / 1 tests passed.
+ # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 1 selftests: drivers/fpga: intr
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+v1: Convert to kselftest_harness.h framework
+v2: reverse xmas tree variables
+---
+ MAINTAINERS                                   |  1 +
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/drivers/fpga/Makefile |  7 ++++
+ tools/testing/selftests/drivers/fpga/config   |  1 +
+ tools/testing/selftests/drivers/fpga/intr.c   | 36 +++++++++++++++++++
+ 5 files changed, 46 insertions(+)
+ create mode 100644 tools/testing/selftests/drivers/fpga/Makefile
+ create mode 100644 tools/testing/selftests/drivers/fpga/config
+ create mode 100644 tools/testing/selftests/drivers/fpga/intr.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index de610a06cb5c..7ed3ce58d95e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6973,6 +6973,7 @@ F:	Documentation/driver-api/fpga/
+ F:	Documentation/fpga/
+ F:	drivers/fpga/
+ F:	include/linux/fpga/
++F:	tools/testing/selftests/drivers/fpga/
+ 
+ FPGA SECURITY MANAGER DRIVERS
+ M:	Russ Weight <russell.h.weight@intel.com>
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index afbab4aeef3c..aad4763ec348 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -9,6 +9,7 @@ TARGETS += core
+ TARGETS += cpufreq
+ TARGETS += cpu-hotplug
+ TARGETS += drivers/dma-buf
++TARGETS += drivers/fpga
+ TARGETS += efivarfs
+ TARGETS += exec
+ TARGETS += filesystems
+diff --git a/tools/testing/selftests/drivers/fpga/Makefile b/tools/testing/selftests/drivers/fpga/Makefile
+new file mode 100644
+index 000000000000..eba35c405d5b
+--- /dev/null
++++ b/tools/testing/selftests/drivers/fpga/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-only
++CFLAGS += -I../../../../../usr/include/
++CFLAGS += -I../../../../../include/uapi/
++
++TEST_GEN_PROGS := intr
++
++include ../../lib.mk
+diff --git a/tools/testing/selftests/drivers/fpga/config b/tools/testing/selftests/drivers/fpga/config
+new file mode 100644
+index 000000000000..e2111b81d8d7
+--- /dev/null
++++ b/tools/testing/selftests/drivers/fpga/config
+@@ -0,0 +1 @@
++CONFIG_FPGA_DFL_AFU=m
+diff --git a/tools/testing/selftests/drivers/fpga/intr.c b/tools/testing/selftests/drivers/fpga/intr.c
+new file mode 100644
+index 000000000000..927dcc757f0b
+--- /dev/null
++++ b/tools/testing/selftests/drivers/fpga/intr.c
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <string.h>
++#include <sys/fcntl.h>
++#include <sys/ioctl.h>
++#include <linux/fpga-dfl.h>
++
++#include "../../kselftest_harness.h"
++
++TEST(afu_intr)
++{
++	struct dfl_fpga_port_info port_info;
++	uint32_t irq_num = UINT32_MAX;
++	int devfd, status;
++
++	devfd = open("/dev/dfl-port.0", O_RDONLY);
++	if (devfd < 0)
++		SKIP(0, "no fpga afu device 0");
++	/*
++	 * From fpga-dl.h :
++	 * Currently hardware supports up to 1 irq.
++	 * Return: 0 on success, -errno on failure.
++	 */
++	status = ioctl(devfd, DFL_FPGA_PORT_ERR_GET_IRQ_NUM, &irq_num);
++	ASSERT_EQ(0, status) {
++		TH_LOG("ioctl() failed to get the number irqs");
++	}
++	ASSERT_LT(irq_num, 256) {
++		TH_LOG("unexpeced number of irqs");
++	}
++	close(devfd);
++}
++
++TEST_HARNESS_MAIN
 -- 
-Thanks,
-Sasha
+2.27.0
+
