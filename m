@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903E12F93A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857392F93AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbhAQPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 10:45:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728700AbhAQPpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 10:45:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A768A2251F;
-        Sun, 17 Jan 2021 15:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610898307;
-        bh=t3zZcca4zIt6z+nrt4nmiIyB8hCcHff/IjNUqqEK1Ps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1vpgxM/fA2X7wQwKNpj3U12JWlBiCNTFJBfI1KKGzNa5akhAqL+NDAZfzx8VOjKzY
-         Pnm6Ej5+gzBmdX8XkjZa4j8nGfwku5yfRNjqGcXY9BwMU9CEKM0Q+rz/r6ruvsxEn6
-         PVRVHefdo8eg6wmZU9QVEJoFtRdGxI6SNGITVaEY=
-Date:   Sun, 17 Jan 2021 16:45:04 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com
-Subject: Re: [PATCH v6 1/2] fpga: dfl: add the userspace I/O device support
- for DFL devices
-Message-ID: <YARbgGU6lr3zZaKP@kroah.com>
-References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
- <1610502848-30345-2-git-send-email-yilun.xu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610502848-30345-2-git-send-email-yilun.xu@intel.com>
+        id S1729633AbhAQPqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 10:46:53 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:34640 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728700AbhAQPql (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 10:46:41 -0500
+Received: by mail-ot1-f41.google.com with SMTP id a109so13875794otc.1;
+        Sun, 17 Jan 2021 07:46:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=PTotAZhSSm438Bu/WUQLR5qH93sUEgjylw55X3hmUXw=;
+        b=pD8XFF43aFzUA/rFTNCpDjMPsywTBplsROPVqVBnvkuX5m7tzyQ1ZDKHDdZUQLNUNc
+         sAn87Z/XDOyhLcBYEg4mlYcVOFVdBJP+gaFfIRETu8kHlnZ4MPfI+F6rQG6AoguAFYv1
+         8yOfsfEbktwJNLaEt8GTmKS9suq3B/w3Pc7rNm+U4/mmrDjj/+vSOnAvh6Yt/6zSpGT9
+         hSqUSsgWO7WhKlBCftPYyaaIoErlNOxpop2yC9U4lZFBN36DCpd1RkKEXp3cfSdsTHzi
+         /hLFKm2aZ6D106dtaG3cDkOk+PTqtZ7bJwJffnTUItAbokyBlN78noOPV38dY9P4/xmO
+         4ukw==
+X-Gm-Message-State: AOAM530hucImbwh6mRmN6WjMY5i7fXZpB2rHMVyEJy46RbBDzIo2mCIb
+        eIc92E9bAj014LeC87Ktow==
+X-Google-Smtp-Source: ABdhPJxii5/HuMzsbG4NX1Ab/sbfdB1KqtQW/Jhxrz3bTzKk40K1916fc9lOvEWz7PEcUYxqCrUjZQ==
+X-Received: by 2002:a9d:8e7:: with SMTP id 94mr15156818otf.93.1610898359938;
+        Sun, 17 Jan 2021 07:45:59 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w129sm2762307oig.23.2021.01.17.07.45.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 07:45:58 -0800 (PST)
+Received: (nullmailer pid 1730307 invoked by uid 1000);
+        Sun, 17 Jan 2021 15:45:57 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux@roeck-us.net,
+        gregkh@linuxfoundation.org, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, robh+dt@kernel.org, gene_chen@richtek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, heikki.krogerus@linux.intel.com,
+        linux-usb@vger.kernel.org
+In-Reply-To: <1610720001-15300-2-git-send-email-u0084500@gmail.com>
+References: <1610720001-15300-1-git-send-email-u0084500@gmail.com> <1610720001-15300-2-git-send-email-u0084500@gmail.com>
+Subject: Re: [PATCH 2/2] usb typec: tcpci: mt6360: Add vbus supply into dt-binding description
+Date:   Sun, 17 Jan 2021 09:45:57 -0600
+Message-Id: <1610898357.197444.1730305.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:54:07AM +0800, Xu Yilun wrote:
-> This patch supports the DFL drivers be written in userspace. This is
-> realized by exposing the userspace I/O device interfaces.
+On Fri, 15 Jan 2021 22:13:21 +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
-> platform device with the DFL device's resources, and let the generic UIO
-> platform device driver provide support to userspace access to kernel
-> interrupts and memory locations.
-
-Why doesn't the existing uio driver work for this, why do you need a new
-one?
-
+> Add external vbus source into dt-binding description.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 > ---
->  drivers/fpga/Kconfig        | 10 +++++
->  drivers/fpga/Makefile       |  1 +
->  drivers/fpga/dfl-uio-pdev.c | 93 +++++++++++++++++++++++++++++++++++++++++++++
+>  Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-uio drivers traditionally go in drivers/uio/ and start with "uio", so
-shouldn't this be drivers/uio/uio_dfl_pdev.c to match the same naming
-scheme?
+My bot found errors running 'make dt_binding_check' on your patch:
 
-But again, you need to explain in detail, why the existing uio driver
-doesn't work properly, or why you can't just add a few lines to an
-existing one.
+yamllint warnings/errors:
 
-thanks,
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml: properties:vbus-supply: 'maxItems' is not one of ['description', 'deprecated']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml: ignoring, error in schema: properties: vbus-supply
+warning: no schema found in file: ./Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
 
-greg k-h
+See https://patchwork.ozlabs.org/patch/1427073
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
