@@ -2,267 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A2F2F92D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 15:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFC62F92D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 15:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbhAQOUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 09:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728217AbhAQOU2 (ORCPT
+        id S1729167AbhAQOWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 09:22:16 -0500
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:36105 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729105AbhAQOWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 09:20:28 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AC3C061573;
-        Sun, 17 Jan 2021 06:19:48 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id w124so15017771oia.6;
-        Sun, 17 Jan 2021 06:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Brwn/7+ZmOI0Syh1i/4d/aeihHuPyP4rZQrZ8fYf/FA=;
-        b=nIInBjkgxsHYEMSFkMycHzEXMWQGclKjYqX1PTbXSsKrBOroyJ6ALCYdbsCoN8By0l
-         ++cIamjhq3AD2pWRyrt4CEhrc11h1rihn7RZ4V7jnayx3ZMgS6DnS9SNDk2V4NEeAZe5
-         LlewmjFn8+a00WWP4QLAD1bU+oUm3ZoHdBKSCmgE7OGTJCKPDHvnr0wLGVCO+X9uGci5
-         x1o4p3OW62oybZKxWIEzheAvBJPeWrFLv7/EWC71kd76CtYUKswuPFiXIj/3vfu3MY0D
-         WSO520XehT260MQ5LXUC6XKgoEfoQDGaYSjdgr6AJCMIqznRe/J8pR0ishYORnFxWT3r
-         YypA==
+        Sun, 17 Jan 2021 09:22:12 -0500
+Received: by mail-wm1-f41.google.com with SMTP id v184so7415922wma.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 06:21:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Brwn/7+ZmOI0Syh1i/4d/aeihHuPyP4rZQrZ8fYf/FA=;
-        b=Gr+XpuamUz7FAwgPpnw+QdlcZASq95vB1HzR8BQL04Pyk4UbnUn6WO8TZZdjIdWH6e
-         VMm4qFMg8rt8W4qWIyGexX9bVGu0C0eOpd0iv54ZNMseH2jtEmRvi2cbln6OflHD9cad
-         UUJfmovtaUoRwY4twnklbxMIeSmVbut7ylTH5Snj6gxugV3t80o60NHAzxhgxnpvRr98
-         wWeS0rzWIhrRra9ZSgOHot1ICR1cOEUp+XAT+TKq+LOrUPaYbT1XpMC3oTr5UfgFk9ql
-         Z/qApCpP4751CGjTrPfbKcFichK2yKlUk8mzxkeKu2nEuWV9KGrY3fuDpK20GbPUYaKo
-         XEXA==
-X-Gm-Message-State: AOAM532npl6PAmqhb7MW8LpaNPk7ACWJg+z2YZ5I5gVcJqGNoaV72s8A
-        sML0GPUqg+iqu+zPmmgrgRIuoSmEm0jboS0jsQA=
-X-Google-Smtp-Source: ABdhPJymVFK4+IY43zE3dBqMHm5sgwwFVFkkkd7ZJ2ChTrYNG9U48WgIfcGKdmfPdyLKbbhGiVfU66aKI8m2/VvJsE0=
-X-Received: by 2002:a54:4817:: with SMTP id j23mr11055958oij.158.1610893187531;
- Sun, 17 Jan 2021 06:19:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=68Zzsdx3C1shhGX6tKJGGbEDXSfSanY/RII8t8vPawY=;
+        b=I7pPJqItghHpi/LBpJy0CYnHh+xwW5CiE3U2rS7QomQw7k10LHuxvxhDgMtFzAtF1A
+         2Odi4IGGdEkn3210bU+uzOSy+6NBv3ldx2S5r7ZSGo8KmmVDTF2ZfrtnwTEHcUPJ6hcI
+         DV3POuZD36naro1m/ejTcRMPNTFt7aDS+IBneg3s5UdTv1qqyw7Uhuar1H7R351kAuVl
+         lX4fNXD8/ATGqR5gAytvZsrVmZzAR7lXX5BJaUuG+UN+TFAGsQCADrDhNUNfsY4UE6rR
+         pccES+DFQUFMJiB++gHxfF0bNL/HXnyddq7O57D7bhSMdDyqjbJVyN7O2v4QWIBino+x
+         Wjtg==
+X-Gm-Message-State: AOAM530rvQlmqnvSDcC71ChQ8S2VNdgah5PrATO5M7nTsEx7gmSAV8df
+        Bk1EuCWrD3aBREUOFecm380=
+X-Google-Smtp-Source: ABdhPJwEbHobJ76DfVXcAPc1oDeruPcLUUL8mZEdUnQnCV5Zv55g4Fu7Qje8pliSdsnE/dgWhlOCVQ==
+X-Received: by 2002:a7b:cf34:: with SMTP id m20mr3928910wmg.84.1610893289953;
+        Sun, 17 Jan 2021 06:21:29 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id h9sm19781067wme.11.2021.01.17.06.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 06:21:29 -0800 (PST)
+Date:   Sun, 17 Jan 2021 14:21:27 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        tyhicks@linux.microsoft.com, "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Gromm <christian.gromm@microchip.com>
+Subject: Re: [PATCH] fTPM: make sure TEE is initialized before fTPM
+Message-ID: <20210117142127.vqgrfzld42sfsylb@liuwe-devbox-debian-v2>
+References: <20210116001301.16861-1-wei.liu@kernel.org>
+ <b9d69278-9f69-041f-9cef-58584eac435c@infradead.org>
+ <20210116115529.oq2k2qpgyawngcqn@liuwe-devbox-debian-v2>
+ <20210116121109.xenpxbobni4glecg@liuwe-devbox-debian-v2>
+ <YAP1dvf7ZinwXdV9@kroah.com>
 MIME-Version: 1.0
-References: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 17 Jan 2021 15:19:36 +0100
-Message-ID: <CAMhs-H92MHRO9RqkBW-c_+dVEtVUF-eHH4-zVXO2wCpdX0A55g@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] MIPS: ralink: add CPU clock detection and clock
- driver for MT7621
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Weijie Gao <hackpascal@gmail.com>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        NeilBrown <neil@brown.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAP1dvf7ZinwXdV9@kroah.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Sun, Jan 17, 2021 at 09:29:42AM +0100, Greg Kroah-Hartman wrote:
+> On Sat, Jan 16, 2021 at 12:11:09PM +0000, Wei Liu wrote:
+> > On Sat, Jan 16, 2021 at 11:55:29AM +0000, Wei Liu wrote:
+> > > On Fri, Jan 15, 2021 at 04:49:57PM -0800, Randy Dunlap wrote:
+> > > > Hi,
+> > > > 
+> > > > On 1/15/21 4:12 PM, Wei Liu wrote:
+> > > > > For built-in drivers, the order of initialization function invocation is
+> > > > > determined by their link order.
+> > > > > 
+> > > > > The original code linked TPM drivers before TEE driver when they were
+> > > > > both built in. That caused fTPM's initialization to be deferred to a
+> > > > > worker thread instead of running on PID 1.
+> > > > > 
+> > > > > That is problematic because IMA's initialization routine, which runs on
+> > > > > PID 1 as a late initcall, needs to have access to the default TPM
+> > > > > instance. If fTPM's initialization is deferred, IMA will not be able to
+> > > > > get hold of a TPM instance in time.
+> > > > > 
+> > > > > Fix this by modifying Makefile to make sure TEE is initialized before
+> > > > > fTPM when they are both built in.
+> > > > > 
+> > > > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > > > > ---
+> > > > >  drivers/Makefile | 5 +++++
+> > > > >  1 file changed, 5 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/Makefile b/drivers/Makefile
+> > > > > index fd11b9ac4cc3..45ea5ec9d0fd 100644
+> > > > > --- a/drivers/Makefile
+> > > > > +++ b/drivers/Makefile
+> > > > > @@ -180,6 +180,11 @@ obj-$(CONFIG_NVMEM)		+= nvmem/
+> > > > >  obj-$(CONFIG_FPGA)		+= fpga/
+> > > > >  obj-$(CONFIG_FSI)		+= fsi/
+> > > > >  obj-$(CONFIG_TEE)		+= tee/
+> > > > > +
+> > > > > +# TPM drivers must come after TEE, otherwise fTPM initialization will be
+> > > > > +# deferred, which causes IMA to not get a TPM device in time
+> > > > > +obj-$(CONFIG_TCG_TPM)		+= char/tpm/
+> > > > > +
+> > > > >  obj-$(CONFIG_MULTIPLEXER)	+= mux/
+> > > > >  obj-$(CONFIG_UNISYS_VISORBUS)	+= visorbus/
+> > > > >  obj-$(CONFIG_SIOX)		+= siox/
+> > > > > 
+> > > > 
+> > > > As I suspected and then tested, since you did not remove the other build
+> > > > of char/tpm/, this ends up with multiple definition linker errors (below).
+> > > 
+> > > Oops, I didn't commit the hunk that removed the line in char/Makefile.
+> > > 
+> > > But I will hold off sending out v2 until the following discussion is
+> > > settled.
+> > > 
+> > > > 
+> > > > I would think that instead of depending on Makefile order you should use different
+> > > > initcall levels as needed. Depending on Makefile order is what we did 15 years ago.
+> > > > 
+> > > 
+> > > No, not really. The same trick was used in 2014 (1bacc894c227).
+> > > 
+> > > Both TEE and TPM are just drivers. I think they belong to the same level
+> > > (at the moment device_initcall).  Looking at the list of levels, I'm not
+> > > sure how I can move TEE to a different level.
+> > > 
+> > > Out of the seven levels, which one would you suggest I use for which
+> > > driver?
+> > 
+> > A bit more random thought.
+> > 
+> > Moving one driver to a different level is not the solution either. What
+> > if there is a dependency chain in the future in which more than 2
+> > drivers are involved? Do we invent more levels or abuse levels that
+> > aren't supposed to be used by device drivers?
+> > 
+> > The proper solution to me is to somehow sort the initcalls with their
+> > dependencies in mind. The requires quite a bit of engineering
+> > (integrating depmod into kernel build?). Given that there are only a few
+> > cases, I don't think effort would be worth it.
+> 
+> Make it an explicit dependancy in the driver, and then things will be
+> loaded properly.
 
-On Sun, Dec 20, 2020 at 10:37 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> This patchset ports CPU clock detection for MT7621 from OpenWrt
-> and adds a complete clock plan for the mt7621 SOC.
->
-> The documentation for this SOC only talks about two registers
-> regarding to the clocks:
-> * SYSC_REG_CPLL_CLKCFG0 - provides some information about boostrapped
-> refclock. PLL and dividers used for CPU and some sort of BUS (AHB?).
-> * SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable clocks for
-> all or some ip cores.
->
-> No documentation about a probably existent set of dividers for each ip
-> core is included in the datasheets. So we cannot make anything better,
-> AFAICT.
->
-> Looking into driver code, and some openWRT patched there are
-> another frequences which are used in some drivers (uart, sd...).
-> According to all of this information the clock plan for this
-> SoC is set as follows:
->  - Main top clock "xtal" from where all the rest of the world is
->    derived.
->  - CPU clock "cpu" derived from "xtal" frequencies and a bunch of
->    register reads and predividers.
->  - BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
->  - Fixed clocks from "xtal":
->     * "50m": 50 MHz.
->     * "125m": 125 MHz.
->     * "150m": 150 MHz.
->     * "250m": 250 MHz.
->     * "270m": 270 MHz.
->
-> We also have a buch of gate clocks with their parents:
->  - "hsdma": "150m"
->  - "fe": "250m"
->  - "sp_divtx": "270m"
->  - "timer": "50m"
->  - "pcm": "270m"
->  - "pio": "50m"
->  - "gdma": "bus"
->  - "nand": "125m"
->  - "i2c": "50m"
->  - "i2s": "270m"
->  - "spi": "bus"
->  - "uart1": "50m"
->  - "uart2": "50m"
->  - "uart3": "50m"
->  - "eth": "50m"
->  - "pcie0": "125m"
->  - "pcie1": "125m"
->  - "pcie2": "125m"
->  - "crypto": "250m"
->  - "shxc": "50m"
->
-> There was a previous attempt of doing this here[0] but the author
-> (Chuanhong Guo) did not wanted to make assumptions of a clock plan
-> for the platform that time. It seems that now he has a better idea of
-> how the clocks are dispossed for this SoC so he share code[1] where
-> some frequencies and clock parents for the gates are coded from a
-> real mediatek private clock plan.
->
-> I do really want this to be upstreamed so according to the comments
-> in previous attempt[0] from Oleksij Rempel and the frequencies in
-> code[1] I have tried to do this by myself.
->
-> All of this patches have been tested in a GNUBee PC1 resulting in a
-> working platform.
->
-> Changes in v5:
->  - Avoid the use of syscon. All drivers of this platform are just using
->    platform operations defined in 'asm/mach-ralink/ralink_regs.h'. We also
->    need them for some PLL registers that are not in the sys control area.
->    Hence, since we must use this dependency avoid to define clock driver
->    as a child of the sysc node in the device tree and follow current
->    platform code style.
->  - Update bindings documentation to don't refer the syscon and make
->    remove 'clock-output-names' property from required ones.
->  - Use 'asm/mach-ralink/ralink_regs.h' platform read and write operations
->    instead of regmap from the syscon node.
->  - Remove 'mt7621_clk_provider' and directly declare 'clk_hw_onecell_data'
->    pointer in 'mt7621_clk_init' and pass from there into different register
->    functions. Remove pointers to 'mt7621_clk_provider' in the rest fo structs
->    used in this driver.
->  - Remove MHZ macro and just pass values directly in hertzs.
->  - Avoid 'CLK_IGNORE_UNUSED' flag for gates and add a new function called
->    'mt7621_prepare_enable_clocks' to prepare all of them to make clocks
->    referenced and don't affect current driver code.
->  - Remove COMPILE_TEST from Kconfig because of the use of especific arch
->    stuff.
->  - Fix commit message where a typo for "frequencies" word was present.
->  - Make use of parent_clk_data in 'CLK_BASE' macro.
->  - Remove MODULE_* macros from code since this is not a module.
->  - Remove not needed includes.
->  - Hardcode "xtal" as parent in FIXED macro.
->  - Change 'else if' clause into 'if' clause since a return statement was
->    being used in 'mt7621_xtal_recalc_rate'.
->
->  NOTES:
->    - Driver is still being declared using 'CLK_OF_DECLARE' for all the
->      clocks. I have explored the possibility to make some of them available
->      afterwards using 'CLK_OF_DECLARE_DRIVER' for top clocks and the rest
->      using a platform driver. The resulting code was uglier since we only want
->      to use the same device tree node and the top clocks must be copied again
->      for the new platform register stuff to properly have a good hierarchy.
->      New globals needs to be introduced and in this particular case I don't
->      really see the benefits of doing in this way. I am totally ok to have all
->      the clocks registered at early stage since from other drivers perspective
->      we only really need to enable gates. So, I prefer to have them in that
->      way if it is not a real problem, of course.
+I take it you mean using MODULE_SOFTDEP to do that?
 
-Any comments on this? Is ok to maintain this as it is done in this
-version or should I change this to any other approach taking into
-account my comments in device tree related PATCH? Nothing has been
-suggested there yet.
+> You can always defer your probe if you do not have all
+> of the proper resources, which is how these types of things are handled,
+> instead of worrying about creating new init levels.
 
-Thanks in advance for your time.
 
-Best regards,
-    Sergio Paracuellos
->
-> Changes in v4:
->  - Add Acked-by from Rob Herring for binding headers (PATCH 1/6).
->  - Convert bindings to not use syscon phandle and declare clock as
->    a child of the syscon node. Update device tree and binding doc
->    accordly.
->  - Make use of 'syscon_node_to_regmap' in driver code instead of
->    get this using the phandle function.
->  - Properly unregister clocks for the error path of the function
->    'mt7621_clk_init'.
->  - Include ARRAY_SIZE of fixed clocks in the 'count' to kzalloc
->    of 'clk_data'.
->  - Add new patch changing invalid vendor 'mtk' in favour of 'mediatek'
->    which is the one listed in 'vendor-prefixes.yaml'. Update mt7621 code
->    accordly. I have added this patch inside this series because clk
->    binding is referring syscon node and the string for that node was
->    with not listed vendor. Hence update and have all of this correct
->    in the same series.
->
-> Changes in v3:
->  - Fix compilation warnings reported by kernel test robot because of
->    ignoring return values of 'of_clk_hw_register' in functions
->    'mt7621_register_top_clocks' and 'mt7621_gate_ops_init'.
->  - Fix dts file and binding documentation 'clock-output-names'.
->
-> Changes in v2:
->  - Remove the following patches:
->    * dt: bindings: add mt7621-pll device tree binding documentation.
->    * MIPS: ralink: add clock device providing cpu/ahb/apb clock for mt7621.
->  - Move all relevant clock code to 'drivers/clk/ralink/clk-mt7621.c' and
->    unify there previous 'mt7621-pll' and 'mt7621-clk' into a unique driver
->    and binding 'mt7621-clk'.
->  - Driver is not a platform driver anymore and now make use of 'CLK_OF_DECLARE'
->    because we need clocks available in 'plat_time_init' before setting up
->    the timer for the GIC.
->  - Use new fixed clocks as parents for different gates and deriving from 'xtal'
->    using frequencies in[1].
->  - Adapt dts file and bindings header and documentation for new changes.
->  - Change MAINTAINERS file to only contains clk-mt7621.c code and
->    mediatek,mt7621-clk.yaml file.
->
-> [0]: https://www.lkml.org/lkml/2019/7/23/1044
-> [1]: https://github.com/981213/linux/commit/2eca1f045e4c3db18c941135464c0d7422ad8133
->
-> Sergio Paracuellos (6):
->   dt-bindings: clock: add dt binding header for mt7621 clocks
->   dt: bindings: add mt7621-clk device tree binding documentation
->   clk: ralink: add clock driver for mt7621 SoC
->   staging: mt7621-dts: make use of new 'mt7621-clk'
->   staging: mt7621-dts: use valid vendor 'mediatek' instead of invalid
->     'mtk'
->   MAINTAINERS: add MT7621 CLOCK maintainer
->
->  .../bindings/clock/mediatek,mt7621-clk.yaml   |  52 +++
->  MAINTAINERS                                   |   6 +
->  arch/mips/ralink/mt7621.c                     |   6 +-
->  drivers/clk/Kconfig                           |   1 +
->  drivers/clk/Makefile                          |   1 +
->  drivers/clk/ralink/Kconfig                    |  14 +
->  drivers/clk/ralink/Makefile                   |   2 +
->  drivers/clk/ralink/clk-mt7621.c               | 411 ++++++++++++++++++
->  drivers/staging/mt7621-dts/gbpc1.dts          |  11 -
->  drivers/staging/mt7621-dts/mt7621.dtsi        |  85 ++--
->  include/dt-bindings/clock/mt7621-clk.h        |  41 ++
->  11 files changed, 571 insertions(+), 59 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
->  create mode 100644 drivers/clk/ralink/Kconfig
->  create mode 100644 drivers/clk/ralink/Makefile
->  create mode 100644 drivers/clk/ralink/clk-mt7621.c
->  create mode 100644 include/dt-bindings/clock/mt7621-clk.h
->
-> --
-> 2.25.1
->
+fTPM's probe is already deferred in current Linux without this patch. It
+will eventually show up in Linux but at that point it is too late for
+Linux's Integrity Measurement Architecture to use it.
+
+The probe getting deferred is exactly what I tried to avoid here.  :-)
+
+Wei.
+
+> 
+> thanks,
+> 
+> greg k-h
