@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FF92F9043
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520842F9047
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 04:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbhAQC72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 21:59:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727090AbhAQC7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 21:59:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9AE206E9;
-        Sun, 17 Jan 2021 02:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610852323;
-        bh=WBZuQqQ/v6iVzAKq0bC/zQNfVZJOT1K3Ttri70N663E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=THd3Gsy3iGk0b3GBgYX2Kwk61gBvhrAwmMue9nov2gRJp1MxsqjJ1iJDvL7qLDTIU
-         reREgmqH8ccskIPDrV01qcDcY6Cwk0xstgKXJAz47xEZ26oCxk3VNzg2MYWmRyU3Rr
-         cccuq8dMglUmj+xDFOnncLtiCnVgCpfhJKQgZGjrRkv0pJaKlPSyuRk5ry14PZJM3B
-         69dPxiiuCNB6bbfQgZ8DqbufDrm/LF97wkaYb/N1KYQ70yW/7w7/xbYU38/m86PLFu
-         0ww4xhqaCT15S08YBUIcihcKQsFiVWxsJH8OfSCye437IvmKVJ0/5jIlRcHGX5xQSQ
-         PfQEJJlV8MjMA==
-Date:   Sat, 16 Jan 2021 18:58:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH v3 net-next] net: bridge: check vlan with
- eth_type_vlan() method
-Message-ID: <20210116185842.322bf3b9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210115044131.6039-1-dong.menglong@zte.com.cn>
-References: <20210115044131.6039-1-dong.menglong@zte.com.cn>
+        id S1728125AbhAQDAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 22:00:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11030 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727868AbhAQDAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 22:00:32 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DJKPK4T4hzj77H;
+        Sun, 17 Jan 2021 10:58:45 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 17 Jan 2021 10:59:43 +0800
+Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        <rdunlap@infradead.org>, <hkallweit1@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
+        <andy.shevchenko@gmail.com>, <wangle6@huawei.com>
+References: <20210112033155.91502-1-nixiaoming@huawei.com>
+ <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
+ <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
+ <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
+ <20210112072406.GF22493@dhcp22.suse.cz>
+ <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <c88e7bd2-54e2-ab4a-f548-96fb0cc2e4d2@huawei.com>
+Date:   Sun, 17 Jan 2021 10:59:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 20:41:31 -0800 menglong8.dong@gmail.com wrote:
-> -	if (data[IFLA_BR_VLAN_PROTOCOL]) {
-> -		switch (nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL])) {
-> -		case htons(ETH_P_8021Q):
-> -		case htons(ETH_P_8021AD):
-> -			break;
-> -		default:
-> -			return -EPROTONOSUPPORT;
-> -		}
-> +	if (data[IFLA_BR_VLAN_PROTOCOL] &&
-> +	    !eth_type_vlan(nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL]))) {
-> +		return -EPROTONOSUPPORT;
->  	}
+On 2021/1/12 19:42, Vlastimil Babka wrote:
+> On 1/12/21 8:24 AM, Michal Hocko wrote:
+>>>>>
+>>>>> If we're going to do a separate "patch: make process_sysctl_arg()
+>>>>> return an errno instead of 0" then fine, we can discuss that.  But it's
+>>>>> conceptually a different work from fixing this situation.
+>>>>> .
+>>>>>
+>>>> However, are the logs generated by process_sysctl_arg() clearer and more
+>>>> accurate than parse_args()? Should the logs generated by
+>>>> process_sysctl_arg() be deleted?
+>>>
+>>> I think the individual logs are very useful and should be retained.
+>>
+>> Yes, other sysfs specific error messages are likely useful. I just fail
+>> to see why a missing value should be handled here when there is an
+>> existing handling in the caller. Not sure whether a complete shadow
+>> reporting in process_sysctl_arg is a deliberate decision or not.
+>> Vlastimil?
+> 
+> Yes, it's a way to have more useful sysctl-specific reports than the generic
+> ones. And I think I was inspired by some other existing code, but don't remember
+> exactly. The options are:
+> 
+> 1) the current sysctl-specific reports, return 0 as the values are only consumed
+> 2) be silent and return error, invent new error codes to have generic report be
+> more useful for sysctl, but inevitably lose some nuances anyway
+> 3) a mix where 2) is used for situations where generic report is sufficient
+> enough, 1) where not
+> 
+> Patch v2 went with option 1), v3 with option 3). I think it's down to
+> preferences. I would personally go with v2 and message similar to the existing
+> ones, i.e.:
+> 
+> "Failed to set sysctl parameter '%s': no value given\n"
+> 
+> Also we seem to be silently doing nothing when strlen(val) == 0, i.e.
+> "hung_task_panic=" was passed. Worth reporting the same error.
+> 
+> But v3 is fine with me as well. The generic error message works. We could just
+> add "if (!len) return -EINVAL" below the strlen() call.
+> 
+> Also please Cc: stable.
+> 
+>> Anyway one way or the other, all I care about is to have a reporting in
+>> place because this shouldn't be a silent failure.
+>>
 
-The curly brackets are no longer necessary here, since it's a single
-line expression.
+
+The current v2 is already in the linux-next branch and throws a new 
+error: 
+https://lore.kernel.org/lkml/cb54e349-7147-0a1f-a349-1e16ba603fce@infradead.org/
+
+This bug has been mentioned in the previous discussion and has been 
+fixed in the current v3 patch. 
+https://lore.kernel.org/linux-fsdevel/202101111149.20A58E1@keescook/
+
+What am I supposed to do now?
+     - Resend V3?
+     - Rewrite a new fix patch based on the current code of linux-next.
+     - Develop a new V4 patch: Use V2 to discuss how to use the Patch4 
+solution. 
+https://lore.kernel.org/linux-fsdevel/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/#t
+
+Thanks
+Xiaoming Ni
+
+
+
+
