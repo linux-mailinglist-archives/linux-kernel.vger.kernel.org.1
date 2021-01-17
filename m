@@ -2,131 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2B02F9164
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 09:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8102F917D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 09:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbhAQIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 03:34:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728267AbhAQIaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 03:30:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B3923107;
-        Sun, 17 Jan 2021 08:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610872186;
-        bh=pj/h2k6d0lxTn7A+05AgOl/ZsBfLX0qiMy1ktJLXD8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J1v2SEZYJwtZjVFU5vtkdwHbnmnRFKItgC/EW2LHj6rvVzsr8L8kAjCsekuK4Q3nc
-         V104xw46G5HzToaM2ztVUX9R6rfEdj4BU8AgE4+DZqJ+xyBeZEcbdnL7VDxr6otkkd
-         iHBxr2KE8Q5cCWCuH4m8Akv8LmZ85MMLIxqE2Fcg=
-Date:   Sun, 17 Jan 2021 09:29:42 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        tyhicks@linux.microsoft.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Gromm <christian.gromm@microchip.com>
-Subject: Re: [PATCH] fTPM: make sure TEE is initialized before fTPM
-Message-ID: <YAP1dvf7ZinwXdV9@kroah.com>
-References: <20210116001301.16861-1-wei.liu@kernel.org>
- <b9d69278-9f69-041f-9cef-58584eac435c@infradead.org>
- <20210116115529.oq2k2qpgyawngcqn@liuwe-devbox-debian-v2>
- <20210116121109.xenpxbobni4glecg@liuwe-devbox-debian-v2>
+        id S1728294AbhAQI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 03:57:34 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36163 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728291AbhAQIyD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 03:54:03 -0500
+Received: by mail-io1-f70.google.com with SMTP id x4so22569283ioh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 00:53:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=jB63CMEcmJtOeJXwbrg+QK8JaBfOQwDdZLHuAL7bLeE=;
+        b=H8eOEqCcsiWFp+WkuPj0TnI718dJKCZ91RvJznjT9dPBOOO+Bn1LSbqzVFhVyD43eg
+         r8L8jMHdv4XBkHgApECblbd65ik6d1FSc5CGCi6ibBnhTquYkUyazGQJ8DRM2u+fLibP
+         3DE6R1quiMGjhe1DJ+jx2CDVXP5bl+ZFc2Mhvh3ixVDlUL+jv8MPvkotoKD3qZFyF0z4
+         FBQ2NKEIqGbWNKVJMnLLFarGZXNWFs84xd9ZRxGpTr96sEb28+aEY9MM6v8dCkMs20A8
+         y+gYL/h0o1bC06f3Q82aESZ/smFPYWNQ3dPHZi9WMV67bSLL+3m376/f478RHxe7UE2h
+         CmdA==
+X-Gm-Message-State: AOAM533OQiVs+FA2NkxjP4JKiKRUs4MfXvvjbXEQlS6qmGKTGFil7oYh
+        WTI8yDHd8/5QI4Qr9woSq6rBYg6knH+cw4hgw9LqmoUTKFaV
+X-Google-Smtp-Source: ABdhPJweouGIrw+slqM0687JcLjn/DUUC8TDxeOWr6ipObID1P0LywDif7Eo8t3OqmS7tfS+oZoePePlipgPh3nau4OvNFRajgIy
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116121109.xenpxbobni4glecg@liuwe-devbox-debian-v2>
+X-Received: by 2002:a92:8e0f:: with SMTP id c15mr16383751ild.224.1610873603038;
+ Sun, 17 Jan 2021 00:53:23 -0800 (PST)
+Date:   Sun, 17 Jan 2021 00:53:23 -0800
+In-Reply-To: <00000000000091111005b435456e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e325f205b914bc4c@google.com>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in fbcon_cursor
+From:   syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        natechancellor@gmail.com, sam@ravnborg.org,
+        syzkaller-bugs@googlegroups.com, yepeilin.cs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 12:11:09PM +0000, Wei Liu wrote:
-> On Sat, Jan 16, 2021 at 11:55:29AM +0000, Wei Liu wrote:
-> > On Fri, Jan 15, 2021 at 04:49:57PM -0800, Randy Dunlap wrote:
-> > > Hi,
-> > > 
-> > > On 1/15/21 4:12 PM, Wei Liu wrote:
-> > > > For built-in drivers, the order of initialization function invocation is
-> > > > determined by their link order.
-> > > > 
-> > > > The original code linked TPM drivers before TEE driver when they were
-> > > > both built in. That caused fTPM's initialization to be deferred to a
-> > > > worker thread instead of running on PID 1.
-> > > > 
-> > > > That is problematic because IMA's initialization routine, which runs on
-> > > > PID 1 as a late initcall, needs to have access to the default TPM
-> > > > instance. If fTPM's initialization is deferred, IMA will not be able to
-> > > > get hold of a TPM instance in time.
-> > > > 
-> > > > Fix this by modifying Makefile to make sure TEE is initialized before
-> > > > fTPM when they are both built in.
-> > > > 
-> > > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > > > ---
-> > > >  drivers/Makefile | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/Makefile b/drivers/Makefile
-> > > > index fd11b9ac4cc3..45ea5ec9d0fd 100644
-> > > > --- a/drivers/Makefile
-> > > > +++ b/drivers/Makefile
-> > > > @@ -180,6 +180,11 @@ obj-$(CONFIG_NVMEM)		+= nvmem/
-> > > >  obj-$(CONFIG_FPGA)		+= fpga/
-> > > >  obj-$(CONFIG_FSI)		+= fsi/
-> > > >  obj-$(CONFIG_TEE)		+= tee/
-> > > > +
-> > > > +# TPM drivers must come after TEE, otherwise fTPM initialization will be
-> > > > +# deferred, which causes IMA to not get a TPM device in time
-> > > > +obj-$(CONFIG_TCG_TPM)		+= char/tpm/
-> > > > +
-> > > >  obj-$(CONFIG_MULTIPLEXER)	+= mux/
-> > > >  obj-$(CONFIG_UNISYS_VISORBUS)	+= visorbus/
-> > > >  obj-$(CONFIG_SIOX)		+= siox/
-> > > > 
-> > > 
-> > > As I suspected and then tested, since you did not remove the other build
-> > > of char/tpm/, this ends up with multiple definition linker errors (below).
-> > 
-> > Oops, I didn't commit the hunk that removed the line in char/Makefile.
-> > 
-> > But I will hold off sending out v2 until the following discussion is
-> > settled.
-> > 
-> > > 
-> > > I would think that instead of depending on Makefile order you should use different
-> > > initcall levels as needed. Depending on Makefile order is what we did 15 years ago.
-> > > 
-> > 
-> > No, not really. The same trick was used in 2014 (1bacc894c227).
-> > 
-> > Both TEE and TPM are just drivers. I think they belong to the same level
-> > (at the moment device_initcall).  Looking at the list of levels, I'm not
-> > sure how I can move TEE to a different level.
-> > 
-> > Out of the seven levels, which one would you suggest I use for which
-> > driver?
-> 
-> A bit more random thought.
-> 
-> Moving one driver to a different level is not the solution either. What
-> if there is a dependency chain in the future in which more than 2
-> drivers are involved? Do we invent more levels or abuse levels that
-> aren't supposed to be used by device drivers?
-> 
-> The proper solution to me is to somehow sort the initcalls with their
-> dependencies in mind. The requires quite a bit of engineering
-> (integrating depmod into kernel build?). Given that there are only a few
-> cases, I don't think effort would be worth it.
+syzbot has found a reproducer for the following issue on:
 
-Make it an explicit dependancy in the driver, and then things will be
-loaded properly.  You can always defer your probe if you do not have all
-of the proper resources, which is how these types of things are handled,
-instead of worrying about creating new init levels.
+HEAD commit:    b3a3cbde Add linux-next specific files for 20210115
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=164096d7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
+dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cd8fe0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17af5258d00000
 
-thanks,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
 
-greg k-h
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 12267067 P4D 12267067 PUD 11841067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8463 Comm: syz-executor088 Not tainted 5.11.0-rc3-next-20210115-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000132f850 EFLAGS: 00010292
+RAX: 0000000000000007 RBX: 0000000000000000 RCX: 0000000000000007
+RDX: 0000000000000002 RSI: ffff88814394b000 RDI: ffff888010071000
+RBP: ffff888010071000 R08: 0000000000000000 R09: ffffffff83ed87ea
+R10: 0000000000000003 R11: 0000000000000018 R12: ffff88814394b000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+FS:  0000000000db8880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000020cd8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ fbcon_cursor+0x50e/0x620 drivers/video/fbdev/core/fbcon.c:1336
+ hide_cursor+0x85/0x280 drivers/tty/vt/vt.c:907
+ redraw_screen+0x5b4/0x740 drivers/tty/vt/vt.c:1012
+ vc_do_resize+0xed8/0x1150 drivers/tty/vt/vt.c:1325
+ fbcon_set_disp+0x7a8/0xe10 drivers/video/fbdev/core/fbcon.c:1402
+ con2fb_init_display drivers/video/fbdev/core/fbcon.c:808 [inline]
+ set_con2fb_map+0x7a6/0xf80 drivers/video/fbdev/core/fbcon.c:879
+ fbcon_set_con2fb_map_ioctl+0x165/0x220 drivers/video/fbdev/core/fbcon.c:3010
+ do_fb_ioctl+0x5b6/0x690 drivers/video/fbdev/core/fbmem.c:1156
+ fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4402b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffffae24f88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402b9
+RDX: 0000000020000080 RSI: 0000000000004610 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401ac0
+R13: 0000000000401b50 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 5adb9f198fe5efa6 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000132f850 EFLAGS: 00010292
+RAX: 0000000000000007 RBX: 0000000000000000 RCX: 0000000000000007
+RDX: 0000000000000002 RSI: ffff88814394b000 RDI: ffff888010071000
+RBP: ffff888010071000 R08: 0000000000000000 R09: ffffffff83ed87ea
+R10: 0000000000000003 R11: 0000000000000018 R12: ffff88814394b000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+FS:  0000000000db8880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000020cd8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
