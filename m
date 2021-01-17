@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08EE2F9557
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165A02F9565
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbhAQVGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S1730143AbhAQVJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729755AbhAQVGg (ORCPT
+        with ESMTP id S1729248AbhAQVJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:06:36 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328E8C061573;
-        Sun, 17 Jan 2021 13:05:56 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id n10so9664899pgl.10;
-        Sun, 17 Jan 2021 13:05:56 -0800 (PST)
+        Sun, 17 Jan 2021 16:09:42 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65F1C061573;
+        Sun, 17 Jan 2021 13:09:00 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id w1so20899876ejf.11;
+        Sun, 17 Jan 2021 13:09:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xiGgpCOMLVvvF9WOTNFX2PUnJFl3Im7GCb/838FY8K0=;
-        b=h5MpDdNNlaywbMeHtLCOkKGg0rqIU+7qo0RnhFCcKeYI6cfK0L1XFUpchPVK7dzlL3
-         ptCthdEin3/btB83rIq849MmVd6Etci0R0/Et02MUr+0DWHM2dcT0JnpCow1ux0zXPcB
-         N2QdzP8QSJKeD6ZTwldL61676CYcmiD08jAAKMzC1SSoK7P5V/oLp5lh0YLKaJ0TBPXj
-         nQ7e+4J5zNonniPcdWOd9oZ4pPA8PIrnmnk53A3afiGX79cSsOkuTwxStiDZC0udgg+o
-         Th5HUZnuZ2CD/jjgXLAFcxc14BfN/BlEV+6N4EOLVx2eqj3ZkzEeOTZsXKN8yEMYywjI
-         62/g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=42BoXCicoex6TQQF6Ij53CzsLLz+oD2qad6RLNHaXRc=;
+        b=jV1rnTkggvSuTP4wPeAGTs2dYEvyRBI95SlW2HSPELN46fd8FbvyZznpYG/Xbjoez2
+         F0ZptvtCXuHYSsW3dh/FNwlxqBTNxvNXCFSnls8CQcl1I+3mNyr4jg8GA2JYpv/Lbew3
+         DnzVElkU4VxbVZovbox0XDzKEUx2MV/39PNH9RFAjrFcW8CvTn4/Ymi9x9f8hPn3QjYN
+         Ze7QUvkoGCVXhMYRGl/Yj3rVCHvo8xL8wLZYfStwzhHnM5mSjZzoYob7EKB3HXyLGdVf
+         UC2Th9ZPOZN3A2FkFV7rOK9BYsvyaGYCUuO9fKpAQnWYZ4brA+IaqDycbm/K0XYkkIxZ
+         gBzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xiGgpCOMLVvvF9WOTNFX2PUnJFl3Im7GCb/838FY8K0=;
-        b=ufgAkclTrJQCijzSJrDzl6yfOMfT0vn63YkONtCBrnOXosIu1ZHm5eQllo5v5hipCx
-         +6ibGXSQPdScgarHQ57sYkIWAdusOrcWDWyjHH+MEaFDW3z2Mtsh+uzY5xoBLJ0F8Sxz
-         O3UjolqL27U04MGUdsLL39ADSvgbzQAH0ra7pK9Qry3fvb9Hud/0v7g3IwzmuNrwv8Rl
-         zEix49Q/v0Vnp0PIihepGdk7WSz5V3j0fdBSBY1pQ4KkaxhFZrB97FZRrRN/oaB1eXY+
-         lNzpdhAtsk/VUfXPjGUO7Iyd6WsYZa3TRdHUcD2VDuv+ejoSU+NJKO4zNkYOSyMaeprx
-         H2dQ==
-X-Gm-Message-State: AOAM532PQ2zjLNMU5iwSrSPDDDNFyDbWaMOUGWYYXkL6zKA2OBRFBU5j
-        dmchCuDttWGALUNBLPDw++j7eE1xDwjv1dAbkEk=
-X-Google-Smtp-Source: ABdhPJwjg5Yk5pppvzZNoyX+G14S7BE0gcMIIaGeDa21EYhslEqdMfrwUvtYV854GA05PDl4Fau5aZtrx0r53yTkgP8=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr2467555pfk.73.1610917555805; Sun, 17
- Jan 2021 13:05:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=42BoXCicoex6TQQF6Ij53CzsLLz+oD2qad6RLNHaXRc=;
+        b=kVYZ4tfFIzC7Nube2+dCK4+so/8AfvDepdCDC/DiPh7EfLvRaacTfgtOcr2yJoJvSs
+         0OvcAvIO1EKv7f2ECbhwh7y8FXre0jhK81nHCYki37Zb+37ExLY3/PEnzcMHcMTPftmo
+         wgOMy0xWwWiGARgd2jdVUV/1ArXOCmYf1/amKnYzjAnhjlv8dTjnGLLL8a6DExz1HCqv
+         7GdttlGnYDcS13+eCudkEoyu9aOqmyrJ+N76gsjw2GZiNwV2rHGk5uC4ru72oPNy6prY
+         4TmDB7qj5XkedrtZLZvW+kifrxF7AlzklGdwvuCMK1ZHEwjrzygYhehaAQEVPIRpuL09
+         1uUQ==
+X-Gm-Message-State: AOAM530pkboxSjvZLZRbHBFti8yuD3H/BrRXjB19m71Ycz68gzfZD+bb
+        TaITdc/wgQm2/myLBVYuzv4=
+X-Google-Smtp-Source: ABdhPJxaF+v+fqDX/V50ECIncMO+Fb7aGgPiCTs3QtpJQiSVuE3csyE5D4/t5kgzf8wXYrYFBPnqNw==
+X-Received: by 2002:a17:906:1288:: with SMTP id k8mr15019921ejb.206.1610917739614;
+        Sun, 17 Jan 2021 13:08:59 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id u2sm6554766edp.12.2021.01.17.13.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 13:08:59 -0800 (PST)
+Date:   Sun, 17 Jan 2021 23:08:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [PATCH 0/2] net: dsa: mv88e6xxx: fix vlan filtering for 6250
+Message-ID: <20210117210858.276rk6svvqbfbfol@skbuf>
+References: <20210116023937.6225-1-rasmus.villemoes@prevas.dk>
 MIME-Version: 1.0
-References: <20210115094914.88401-1-heikki.krogerus@linux.intel.com>
- <CAHp75Vc3xjaOugX3d8bohz12OEP=n4BAonNyQJQ=UgBfVZorOg@mail.gmail.com> <c644e72c-bb46-56c2-931e-7cb98b024cc3@gmail.com>
-In-Reply-To: <c644e72c-bb46-56c2-931e-7cb98b024cc3@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 17 Jan 2021 23:05:39 +0200
-Message-ID: <CAHp75VfMOcPyXELoD4S+oQjAaVg6H0Hn2hs2UAbYEKhnFZp36A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Remove one more platform_device_add_properties() call
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg KH <greg@kroah.com>, Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116023937.6225-1-rasmus.villemoes@prevas.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 11:29 PM Daniel Scally <djrscally@gmail.com> wrote:
-> On 16/01/2021 20:23, Andy Shevchenko wrote:
-> > On Fri, Jan 15, 2021 at 11:52 AM Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> >> Hi,
-> >>
-> >> I'm now clearing the dev_fwnode(dev)->secondary pointer in
-> >> device_remove_software_node() as requested by Daniel and Andy. Thanks
-> >> guys, it's much better now. I also took the liberty of including one
-> >> more PCI ID patch where I add PCI ID for the Alder Lake-P variant. I
-> >> hope that is OK.
-> >>
-> >> Andy, I dropped your Tested-by tag because of the change I made to the
-> >> first patch. If you have time to retest these, I would much appreciate.
-> > Since Greg already grabbed a v3 I will test it when it appears in linux-next.
-> >
-> It seems the grabbed one is the v2 one though actually
+Hi Rasmus,
 
-In his last message he wrote that he noticed the v3 *as I understand that*.
-Greg, is it right? I mean you took v3 eventually?
+On Sat, Jan 16, 2021 at 03:39:34AM +0100, Rasmus Villemoes wrote:
+> I finally managed to figure out why enabling VLAN filtering on the
+> 6250 broke all (ingressing) traffic,
+> cf. https://lore.kernel.org/netdev/6424c14e-bd25-2a06-cf0b-f1a07f9a3604@prevas.dk/
+> .
+> 
+> The first patch is the minimal fix and for net, while the second one
+> is a little cleanup for net-next.
+> 
+> Rasmus Villemoes (2):
+>   net: dsa: mv88e6xxx: also read STU state in mv88e6250_g1_vtu_getnext
+>   net: dsa: mv88e6xxx: use mv88e6185_g1_vtu_getnext() for the 6250
 
--- 
-With Best Regards,
-Andy Shevchenko
+It's strange to put a patch for net and one for net-next in the same
+series. Nobody will keep a note for you to apply the second patch after
+net has been merged back into net-next. So if you want to keep the
+two-patch approach, you'd have to send just the "net" patch now, and the
+"net-next" patch later.
+But is there any reason why you don't just apply the second patch to
+"net"?
