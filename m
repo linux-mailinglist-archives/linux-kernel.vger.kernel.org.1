@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EBB2F93AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D62C2F93BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 16:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729706AbhAQPrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 10:47:11 -0500
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:41086 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729552AbhAQPqn (ORCPT
+        id S1729071AbhAQPt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 10:49:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728394AbhAQPsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 10:46:43 -0500
-Received: by mail-oo1-f51.google.com with SMTP id q6so3516233ooo.8;
-        Sun, 17 Jan 2021 07:46:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=YYZdReruX4QPpNn9itV0r843NXru2A244Vndhzd0IdI=;
-        b=Mo5hoMopcczSObbsjbIE1fNqSGIEaTo2q8lGTQ4gCCNwk9XqnxWitBTdFS+qTAd4K0
-         QHGfx9LnRLQK+Lxhwd98jXjuoUm7VCzr8CcOYpiRUgqJLvX4Ydmhw7WoG6wD9SepUcCD
-         snKtGjnTilVu8OmxbAeKG7oyxgzkAaoMLgeOG6AQ9LcbZ6DDGfO8YeDogyeHxanuE6mr
-         SaWN981n3E9xkqiDrJsg2kdKrGiH4jfC95HQXWyxrPCHpe2EgThVqMV3RNHT14CePPlh
-         5OlZqDMOUG7z+ErN+1F9GIGX6nx8U+Gw+2xHGySCJHgynNcF/T0e4e0ifP02XXEDUuqT
-         g7Wg==
-X-Gm-Message-State: AOAM5326oiG/Uuv2aUeqoDTr4QzwZNzP8SpqSeqLuolOXDNriSFVur9I
-        LhAPpwDm1sYWrRqoIp5FQw==
-X-Google-Smtp-Source: ABdhPJwVtq7EztM2ZiB62TEnbKGxQL6nj+sao0EbrChJ1paylGZ7W62l8XhMZKKH3hDWLm9ubS1rkQ==
-X-Received: by 2002:a4a:2cc9:: with SMTP id o192mr14787473ooo.66.1610898361904;
-        Sun, 17 Jan 2021 07:46:01 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m15sm3197353otl.11.2021.01.17.07.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 07:46:01 -0800 (PST)
-Received: (nullmailer pid 1730316 invoked by uid 1000);
-        Sun, 17 Jan 2021 15:45:57 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com
-In-Reply-To: <20210115211543.33563-2-alcooperx@gmail.com>
-References: <20210115211543.33563-1-alcooperx@gmail.com> <20210115211543.33563-2-alcooperx@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: Add support for the Broadcom UART driver
-Date:   Sun, 17 Jan 2021 09:45:57 -0600
-Message-Id: <1610898357.217119.1730315.nullmailer@robh.at.kernel.org>
+        Sun, 17 Jan 2021 10:48:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610898445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QiBlg/LRTf+7zZ0Dh7vt02GWJNSjL1FrHu3EJ+bfA0o=;
+        b=OFT6nbtwShU9Xsz1KvdC3eCpFVuKts2v+wvsQWZWc8K3maMQeTlDbfYwEMUUX36iwGyUPG
+        91nz9I50iO+0S1kzFIPAuRrKjwGcuGfaW10thviSKeq9CX38vwonenC9iIFVg75hJdrKSv
+        W9VhTN00vz9v0bNH1b/eJ3r14+xwnY0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-7auhgNBcPMSsYKnq8EkRJw-1; Sun, 17 Jan 2021 10:47:23 -0500
+X-MC-Unique: 7auhgNBcPMSsYKnq8EkRJw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E8651005D60;
+        Sun, 17 Jan 2021 15:47:21 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F1FA19C44;
+        Sun, 17 Jan 2021 15:47:18 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v2 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
+Date:   Sun, 17 Jan 2021 16:47:12 +0100
+Message-Id: <20210117154717.77969-1-hdegoede@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 16:15:42 -0500, Al Cooper wrote:
-> Add DT bindings for the Broadcom 8250 based UART driver. This
-> UART is based on an 8250 but adds additional functionality. The
-> additional features include the ability to use DMA for transfers and
-> a baud rate clock system that is more accurate at high baud rates.
-> This UART is backward compatible with the standard 8250 UART.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  .../bindings/serial/brcm,bcm7271-uart.yaml    | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> 
+Hi All,
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Here is v2 of my series to add support for Intel Bay Trail based devices
+which use a WM5102 codec for audio output/input. This was developed and
+tested on a Lenovo Yoga Tablet 1051L.
 
-yamllint warnings/errors:
+The biggest difference from v1 is that, based on all the discussions about
+the jack-detect stuff, I've decided to split this into 2 series.
+One series adding the basic support for this setup, which is this series.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+And a second series which reworks the extcon driver into an arizona-jackdet
+library and then modifies the codec drivers to use that directly, replacing
+the old separate extcon child-device and extcon-driver.
 
-See https://patchwork.ozlabs.org/patch/1427364
+The are 2 reasons for the split:
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+1. With the new jack-det rework, the series really address 2 separate
+(but related) enhancements.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+2. I expect this series to be ready for merging, while the jack-det stuff
+likely will need a couple more revisions.
 
-pip3 install dtschema --upgrade
+Other then the split there are some minor changes addressing various review
+comments, see the individual patch changelogs.
 
-Please check and re-submit.
+The MFD and ASoC parts can be merged independent from each-other (both must
+be merged to get working sound on these boards, but that is only a runtime
+dependency and a part missing won't have any bad side-effects). Or the
+entire series could be merged through the MFD tree if people prefer that.
+
+Regards,
+
+Hans
 
