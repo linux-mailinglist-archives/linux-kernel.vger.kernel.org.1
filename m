@@ -2,52 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9EB2F928F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A802F9293
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbhAQNc7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 08:32:59 -0500
-Received: from wnbcorp.com ([175.126.38.143]:40262 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728452AbhAQNc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 08:32:56 -0500
-X-Greylist: delayed 2200 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Jan 2021 08:32:55 EST
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10HDAZSA025387;
-        Sun, 17 Jan 2021 22:20:20 +0900
-Message-Id: <202101171320.10HDAZSA025387@blank.cafe24.com>
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: FOR THE LESS PRIVILEDGE
-To:     Recipients <virginiadumitru@aol.com>
-From:   virginiadumitru@aol.com
-Date:   Sun, 17 Jan 2021 14:20:27 +0100
-Reply-To: peterkenin73@gmail.com
+        id S1728582AbhAQNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 08:37:49 -0500
+Received: from m15111.mail.126.com ([220.181.15.111]:37183 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726209AbhAQNhc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 08:37:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=eWwIs7/QmCK2QierLP
+        nFAEWKUmsS+o3HHAvwtkjkxe0=; b=b2IA/FtKcOsXnrjQJh9XlHxmIvhTRq36bG
+        VktxpjPjhOI2EFj0unj59EKCy2yByV8jNA6bqvzGBmaSQRW5jjVQPr1tT7Bmw3wh
+        jiN7n7BIgjvkN2hI1Tmcoy8m3VNH+Vkkn7lxMC6JOUwIQVARClnJlfb3NgdQg7kz
+        aokqUx6xU=
+Received: from localhost.localdomain (unknown [106.18.67.121])
+        by smtp1 (Coremail) with SMTP id C8mowAB3fVHiPARgP38_Nw--.64554S2;
+        Sun, 17 Jan 2021 21:34:29 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangyingjie55@126.com
+Subject: [PATCH v1] ipv4: add iPv4_is_multicast() check in ip_mc_leave_group().
+Date:   Sun, 17 Jan 2021 05:34:16 -0800
+Message-Id: <1610890456-42846-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: C8mowAB3fVHiPARgP38_Nw--.64554S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZr1rtr43AF1rJF4xJw4ruFg_yoWDurg_t3
+        WkAr18JrWfAr1Ikw47Z3Z3Ja98X398Crn3WrsF9Fy3Ja40ywnruas7XrySvr1xGa9rGFWU
+        Zasrtry5Ga10yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnaNt3UUUUU==
+X-Originating-IP: [106.18.67.121]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbi7gUdp1tC5n0SnQAAsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend.
+From: Yingjie Wang <wangyingjie55@126.com>
+
+There is no iPv4_is_multicast() check added to ip_mc_leave_group()
+to check if imr->imr_multiaddr.s_addr is a multicast address.
+If not a multicast address, it may result in an error.
+In some cases, the callers of ip_mc_leave_group() don't check
+whether it is multicast address or not before calling
+such as do_ip_setsockopt(). So I suggest adding the ipv4_is_multicast()
+check to the ip_mc_leave_group() to prevent this from happening.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+---
+ net/ipv4/igmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+index 7b272bbed2b4..1b6f91271cfd 100644
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -2248,6 +2248,9 @@ int ip_mc_leave_group(struct sock *sk, struct ip_mreqn *imr)
+ 	u32 ifindex;
+ 	int ret = -EADDRNOTAVAIL;
  
-
-My name is Mrs.Virginia Dumitru a merchant in Romania. I have been diagnosed with Esophageal cancer. I have a huge cash deposit of TWELVE MILLION DOLLARS $12,000,000, That I have with a finance/Security Company abroad. 
-
-I will want you to help me collect this deposit and dispatched it to charity organizations.
-I have set aside 25% for you and for your time if you want to help me to collect this Funds and also invest this money.
++	if (!ipv4_is_multicast(group))
++		return -EINVAL;
++
+ 	ASSERT_RTNL();
  
+ 	in_dev = ip_mc_find_dev(net, imr);
+-- 
+2.7.4
 
-PLEASE I WILL ADVICE YOU TO CONTACT MY ATTORNEY IN NETHERLANDS IMMEDIATELY.
- 
-
-
-Name: Barrister Peter Kenin
-
-
-
-Reply email address: peterkenin73@gmail.com 
-
-
-Mrs. Virginia Dumitru
