@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C592E2F92F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 15:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E46E2F9300
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 15:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbhAQOfC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 09:35:02 -0500
-Received: from mga07.intel.com ([134.134.136.100]:56538 "EHLO mga07.intel.com"
+        id S1728659AbhAQOo5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 09:44:57 -0500
+Received: from mga06.intel.com ([134.134.136.31]:15609 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729017AbhAQOed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 09:34:33 -0500
-IronPort-SDR: TmS50h5wLTjw7oqOp9gTeIyQPgJvry0KqUDttWfGTdyjhvf3H0ud4+2SRR8+uJyH6k2x+4liQI
- a9e8pvpOjBrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9866"; a="242790362"
+        id S1726209AbhAQOot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 09:44:49 -0500
+IronPort-SDR: QfBnCkIn1dny/XqLK8kqiRZg4A+oooH7jZ5GPz11ZqbWJ+TVnZTkZOqgHcZgBuwDJiAviuwy8K
+ CncovBQOqWYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="240263202"
 X-IronPort-AV: E=Sophos;i="5.79,354,1602572400"; 
-   d="scan'208";a="242790362"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 06:33:50 -0800
-IronPort-SDR: RPqjWVHwsC5ft9BNkhoG1R29mVjo8zKXyw6/KP64N2FGi3yMfpJFt4oBp1Ez0KxBYk6bHbwptb
- IM/4ADIT/DUw==
+   d="scan'208";a="240263202"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 06:44:07 -0800
+IronPort-SDR: PHLTqQLErwFSKoss1laPyL9cYqZ37JqPDaftn7REW/aEF+gQ1mzYDu+OFfgwCY9MBDVpPF1Pbv
+ UxP1qSX26T3Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,354,1602572400"; 
-   d="scan'208";a="401801483"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Jan 2021 06:33:49 -0800
-Received: from shsmsx606.ccr.corp.intel.com (10.109.6.216) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+   d="scan'208";a="570470386"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jan 2021 06:44:07 -0800
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 17 Jan 2021 06:33:48 -0800
+ 15.1.1713.5; Sun, 17 Jan 2021 06:44:06 -0800
 Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
- SHSMSX606.ccr.corp.intel.com (10.109.6.216) with Microsoft SMTP Server
+ SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 17 Jan 2021 22:33:46 +0800
+ 15.1.1713.5; Sun, 17 Jan 2021 22:44:04 +0800
 Received: from shsmsx603.ccr.corp.intel.com ([10.109.6.143]) by
  SHSMSX603.ccr.corp.intel.com ([10.109.6.143]) with mapi id 15.01.1713.004;
- Sun, 17 Jan 2021 22:33:46 +0800
+ Sun, 17 Jan 2021 22:44:04 +0800
 From:   "Zhang, Rui" <rui.zhang@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 CC:     "mingo@redhat.com" <mingo@redhat.com>,
@@ -49,17 +49,17 @@ CC:     "mingo@redhat.com" <mingo@redhat.com>,
         "x86@kernel.org" <x86@kernel.org>,
         "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
         "ak@linux.intel.com" <ak@linux.intel.com>
-Subject: RE: [PATCH 3/3] perf/x86/rapl: Fix psys-energy event on Intel SPR
- platform
-Thread-Topic: [PATCH 3/3] perf/x86/rapl: Fix psys-energy event on Intel SPR
- platform
-Thread-Index: AQHW7AYrkGH2U5eXgkirITO4BW5mdaorx78A
-Date:   Sun, 17 Jan 2021 14:33:46 +0000
-Message-ID: <70b71922e7f84234be70c7104969331f@intel.com>
+Subject: RE: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
+Thread-Topic: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
+Thread-Index: AQHW63mj1W3psy/8iU6QoBa8JyfUwKop5ljg///IXYCAAjXjwA==
+Date:   Sun, 17 Jan 2021 14:44:04 +0000
+Message-ID: <b27f97d12329452bb95c1345a0bbdd3f@intel.com>
 References: <20210115092208.20866-1-rui.zhang@intel.com>
- <20210115092208.20866-3-rui.zhang@intel.com>
- <YALhAmTgMHxEgeG4@hirez.programming.kicks-ass.net>
-In-Reply-To: <YALhAmTgMHxEgeG4@hirez.programming.kicks-ass.net>
+ <20210115092208.20866-2-rui.zhang@intel.com>
+ <YAH1DPNLltqN4zFR@hirez.programming.kicks-ass.net>
+ <dfc2fc320c96408e86c2f23b21979a5b@intel.com>
+ <YALgm2b0YNkO7Qtd@hirez.programming.kicks-ass.net>
+In-Reply-To: <YALgm2b0YNkO7Qtd@hirez.programming.kicks-ass.net>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -75,68 +75,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
+
 
 > -----Original Message-----
 > From: Peter Zijlstra <peterz@infradead.org>
-> Sent: Saturday, January 16, 2021 8:50 PM
+> Sent: Saturday, January 16, 2021 8:48 PM
 > To: Zhang, Rui <rui.zhang@intel.com>
 > Cc: mingo@redhat.com; acme@kernel.org; mark.rutland@arm.com;
 > alexander.shishkin@linux.intel.com; jolsa@redhat.com;
 > namhyung@kernel.org; linux-kernel@vger.kernel.org; x86@kernel.org;
 > kan.liang@linux.intel.com; ak@linux.intel.com
-> Subject: Re: [PATCH 3/3] perf/x86/rapl: Fix psys-energy event on Intel SPR
-> platform
+> Subject: Re: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
 > Importance: High
 > 
-> On Fri, Jan 15, 2021 at 05:22:08PM +0800, Zhang Rui wrote:
-> > There are several things special for the RAPL Psys energy counter, on
-> > Intel Sapphire Rapids platform.
-> > 1. it contains one Psys master package, and only CPUs on the master
-> >    package can read valid value of the Psys energy counter, reading the
-> >    MSR on CPUs in the slave package returns 0.
-> > 2. The master package does not have to be Physical package 0. And when
-> >    all the CPUs on the Psys master package are offlined, we lose the Psys
-> >    energy counter, at runtime.
-> > 3. The Psys energy counter can be disabled by BIOS, while all the other
-> >    energy counters are not affected.
+> On Sat, Jan 16, 2021 at 08:19:35AM +0000, Zhang, Rui wrote:
 > >
-> > It is not easy to handle all of these in the current RAPL PMU design
-> > because
-> > a) perf_msr_probe() validates the MSR on some random CPU, which may
-> either
-> >    be in the Psys master package or in the Psys slave package.
-> > b) all the RAPL events share the same PMU, and there is not API to remove
-> >    the psys-energy event cleanly, without affecting the other events in
-> >    the same PMU.
 > >
-> > This patch addresses the problems in a simple way.
+> > > -----Original Message-----
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > Sent: Saturday, January 16, 2021 4:03 AM
+> > > To: Zhang, Rui <rui.zhang@intel.com>
+> > > Cc: mingo@redhat.com; acme@kernel.org; mark.rutland@arm.com;
+> > > alexander.shishkin@linux.intel.com; jolsa@redhat.com;
+> > > namhyung@kernel.org; linux-kernel@vger.kernel.org; x86@kernel.org;
+> > > kan.liang@linux.intel.com; ak@linux.intel.com
+> > > Subject: Re: [PATCH 2/3] perf/x86/rapl: Fix energy counter detection
+> > > Importance: High
+> > >
+> > > On Fri, Jan 15, 2021 at 05:22:07PM +0800, Zhang Rui wrote:
+> > > > In the RAPL ENERGY_COUNTER MSR, only the lower 32bits represent
+> > > > the energy counter, and the higher 32bits are reserved.
+> > > >
+> > > > Add the MSR mask for these MSRs to fix a problem that the RAPL PMU
+> > > > events are added erroneously when higher 32bits contain non-zero
+> value.
+> > >
+> > > Why would these high bits be non-zero?
 > >
-> > First, by setting .no_check bit for RAPL Psys MSR, the psys-energy
-> > event is always added, so we don't have to check the Psys
-> > ENERGY_STATUS MSR on master package.
+> > On SPR platform, the high bits of Psys energy counter are reused for other
+> purpose.
+> > High bits for other RAPL domains energy counters still return 0.
 > >
-> > Then, rapl_not_visible() is removed because 1. it is useless for RAPL
-> > MSRs with .no_check cleared, because the
-> >    .is_visible() callbacks is always overridden in perf_msr_probe().
-> > 2. it is useless for RAPL MSRs with .no_check set, because we actually
-> >    want the sysfs attributes always be visible for those MSRs.
-> >
-> > With the above changes, we always probe the psys-energy event on Intel
-> > SPR platform. Difference is that the event counter returns 0 when the
-> > Psys RAPL Domain is disabled by BIOS, or the Psys master package is
-> offlined.
+> > I didn't mention this because I thought this patch should be okay as a
+> generic fix.
 > 
-> Maybe I'm too tired, but I cannot follow. How does this cure the fact that the
-> rapl_cpu_mask might not include that master thing. And how can software
-> detect what the master thing is to begin with?
+> But it doesn't fix anything.. there's not anything broken, except on that daft
+> SPR thing.
 
-To make things simple, I ignore the master thing, and probe the psys-energy counter blindly on SPR.
-So rapl_cpu_mask still includes all the online CPUs.
-This means that psys-energy is "valid" on all packages, and it just returns different values on different packages.
-AKA, whole system power consumption on Psys master package, and Zero on Psys slave packages.
-
-Not sure if I answered your question or not.
+Well, yes.
+Before SPR, this is just a potential issue. But things on SPR suggests that this potential issue may become a real one.
+So are you suggesting me to also include the SPR information as the justification of this patch?
 
 Thanks,
 rui
