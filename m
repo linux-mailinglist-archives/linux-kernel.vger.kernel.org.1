@@ -2,47 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BD42F9461
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3732F9465
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbhAQSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:03:48 -0500
-Received: from mail.cock.li ([37.120.193.124]:60304 "EHLO mail.cock.li"
+        id S1729752AbhAQSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:09:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728217AbhAQSDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:03:44 -0500
+        id S1728217AbhAQSJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 13:09:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEE56207DE;
+        Sun, 17 Jan 2021 18:08:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610906905;
+        bh=As+JB9THonuWKdBjY+Axcqii9AVA5+fbThIZjXjBzkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nc1boJvqYIITidkEzqtimmAAnFbxeHqJYyT2cun0WSeGiECJ7tB7nsGbadKLmcN0k
+         zNe2l4I6cxC4co2Yj3LgZUnMX9sbNgiWemuZQnmAhfXIFbdhTMFHWnQg77qzNyUJ3L
+         yhx7BaYEqbrVZTXSWOmQCjNq2kvbHvfXPIcetnCCPIusJuFC6TOaBl6RLXTd1HbI9c
+         +ExZ/S4cCBrhA/PdO58lo+ZL/Rs2GV1iqH+Phi47Ahx7UYMwKVoUjJu4lmNLcBNA+D
+         Q5rYiE4niwMyzpseK/Mm4Q4lS1CvnO0MzU+IfhTRZPy/IQ+rklYqrs/lN17Lhn0O/s
+         dRvI662utpgPw==
+Date:   Sun, 17 Jan 2021 20:08:20 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Subject: Re: [PATCH 1/4] tpm: in case of error properly cleanup in
+ tpmm_chip_alloc
+Message-ID: <YAR9FGbjAArQ0nw3@kernel.org>
+References: <1610760161-21982-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1610760161-21982-2-git-send-email-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
-        t=1610906571; bh=G6eFQ0sfKBLthYAhDizI9QkoSLbPq0J5mAEDO47NeoQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g9jZMyDdHs/pXBGFB1tvArj4SLbbbaipNrlZSl07TPVWxceWIgDb2gpVEQuz/ZPTB
-         5n1HnJXdEc7e+uhDhU8uJGYy+Hq+FLwj6tuyFdnC/O8ZRlkg4j2WzBmck+wR0xXvSx
-         27dUH5CF3rQbbGXA86imT+F3wLin0pBG4/97yd1yZ204b5DkyLLvJEIQneZ98OLtJ4
-         GgdlrqY+KTcrmaECKEH/Gwv4zonx/reTRtSpQV29g5st6XPHogD2yMWOxa74z5Huig
-         3cjn6u87MgpIrVU5QAHwsOa9G9vHKaXkLYSd7xhs5DSJfvIEfMhza3GoZKdiDkkV0i
-         FO6yy3LgYQ4tw==
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 17 Jan 2021 18:02:52 +0000
-From:   nipponmail@firemail.cc
-To:     linux-kernel@vger.kernel.org
-Cc:     rms@gnu.org, bruce@perens.com, esr@thyrsus.com,
-        moglen@columbia.edu, blukashev@sempervictus.com,
-        tcallawa@redhat.com, editor@lwn.net, skraw.ml@ithnet.com,
-        torvalds@osdl.org
-Subject: Re: Linksys WRT54G and the GPL - What about GRSECURITY?
-Message-ID: <018895af6127043324ce34c8faceac42@firemail.cc>
-X-Sender: nipponmail@firemail.cc
-User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610760161-21982-2-git-send-email-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus etc do not give a FUCK that Grsecurity is BLATANTLY violating the 
-GPL. So why do you fucking retards complain about this?
-> DURR BECUAUSE WE DON'T HAVE 2 DO ANYTHING, CAN JUST COMMISERATE
+On Sat, Jan 16, 2021 at 02:22:38AM +0100, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> 
+> In tpmm_chip_alloc() a resource management action handler is installed to
+> release the chip->dev in case of error. This will result in the chip being
+> freed if it was the last reference. If the installation of the handler was
+> not successful an error is returned to the caller.
+> However in this case the chip->dev reference is not put and thus the chip
+> is never freed. Fix this by releasing the reference "by hand" in case that
+> the action handler installation failed.
+> 
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> ---
+>  drivers/char/tpm/tpm-chip.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb..e242d2e 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -423,11 +423,15 @@ struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
+>  				      (void (*)(void *)) put_device,
+>  				      &chip->dev);
+>  	if (rc)
+> -		return ERR_PTR(rc);
+> +		goto put_dev;
+>  
+>  	dev_set_drvdata(pdev, chip);
+>  
+>  	return chip;
+> +
+> +put_dev:
+> +	put_device(&chip->dev);
+> +	return ERR_PTR(rc);
+>  }
+>  EXPORT_SYMBOL_GPL(tpmm_chip_alloc);
+>  
+> -- 
+> 2.7.4
+> 
 
-  ( 
-https://perens.com/2017/06/28/warning-grsecurity-potential-contributory-infringement-risk-for-customers/ 
-)
+NAK
+
+[*] https://elixir.bootlin.com/linux/v5.11-rc3/source/include/linux/device.h#L257
+
+/Jarkko
