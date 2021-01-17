@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520842F9047
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 04:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EE22F904A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 04:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbhAQDAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 22:00:36 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11030 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727868AbhAQDAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 22:00:32 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DJKPK4T4hzj77H;
-        Sun, 17 Jan 2021 10:58:45 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 17 Jan 2021 10:59:43 +0800
-Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
- parameters.
-To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        <rdunlap@infradead.org>, <hkallweit1@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
-        <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
-        <andy.shevchenko@gmail.com>, <wangle6@huawei.com>
-References: <20210112033155.91502-1-nixiaoming@huawei.com>
- <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
- <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
- <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
- <20210112072406.GF22493@dhcp22.suse.cz>
- <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <c88e7bd2-54e2-ab4a-f548-96fb0cc2e4d2@huawei.com>
-Date:   Sun, 17 Jan 2021 10:59:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        id S1727867AbhAQDKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 22:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726831AbhAQDKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 22:10:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id EA22C22CAD;
+        Sun, 17 Jan 2021 03:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610853008;
+        bh=A10bUHNwPQbFfEF6e7sKvgF8uTKUzGPK6H6pqguOLXs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gmJrVA8MhNdebI4PBlg9FG7k3s5sx49iIRhbeI+azu9ciZZFvKdTj115ppo6Cz17P
+         tNJWyrun2gnhHE0lXgnTIcr6cQAEuK1hKoBxBDoTVqoSNq9aij4rSzt/l8fZSzfJsl
+         MtOmfc79WkFlihNaHqFc0vKko/7yHKdBg4jqQt8oCKsr8xl9ZaZPM8KZ5L/MiOwyH5
+         5vdZxyrsI1k/3p9p+NfM/9CCMziMvpILUKu0QsKszKy4t2pBeDFTyZ07uaKv1Lf1vg
+         CNmWpVloBBmwRFBzwP/ZeWsDmKu0W0rxT+224NAzOtY/45zuYUxD/WLxqG594Ma2Iy
+         gvhZUguPtclew==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id DCDB760658;
+        Sun, 17 Jan 2021 03:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net] skbuff: back tiny skbs with kmalloc() in
+ __netdev_alloc_skb() too
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161085300789.5035.6945893821776961084.git-patchwork-notify@kernel.org>
+Date:   Sun, 17 Jan 2021 03:10:07 +0000
+References: <20210115150354.85967-1-alobakin@pm.me>
+In-Reply-To: <20210115150354.85967-1-alobakin@pm.me>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     davem@davemloft.net, kuba@kernel.org, willemb@google.com,
+        linmiaohe@huawei.com, edumazet@google.com, fw@strlen.de,
+        linyunsheng@huawei.com, steffen.klassert@secunet.com,
+        gnault@redhat.com, dseok.yi@samsung.com, kyk.segfault@gmail.com,
+        viro@zeniv.linux.org.uk, elver@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/12 19:42, Vlastimil Babka wrote:
-> On 1/12/21 8:24 AM, Michal Hocko wrote:
->>>>>
->>>>> If we're going to do a separate "patch: make process_sysctl_arg()
->>>>> return an errno instead of 0" then fine, we can discuss that.  But it's
->>>>> conceptually a different work from fixing this situation.
->>>>> .
->>>>>
->>>> However, are the logs generated by process_sysctl_arg() clearer and more
->>>> accurate than parse_args()? Should the logs generated by
->>>> process_sysctl_arg() be deleted?
->>>
->>> I think the individual logs are very useful and should be retained.
->>
->> Yes, other sysfs specific error messages are likely useful. I just fail
->> to see why a missing value should be handled here when there is an
->> existing handling in the caller. Not sure whether a complete shadow
->> reporting in process_sysctl_arg is a deliberate decision or not.
->> Vlastimil?
-> 
-> Yes, it's a way to have more useful sysctl-specific reports than the generic
-> ones. And I think I was inspired by some other existing code, but don't remember
-> exactly. The options are:
-> 
-> 1) the current sysctl-specific reports, return 0 as the values are only consumed
-> 2) be silent and return error, invent new error codes to have generic report be
-> more useful for sysctl, but inevitably lose some nuances anyway
-> 3) a mix where 2) is used for situations where generic report is sufficient
-> enough, 1) where not
-> 
-> Patch v2 went with option 1), v3 with option 3). I think it's down to
-> preferences. I would personally go with v2 and message similar to the existing
-> ones, i.e.:
-> 
-> "Failed to set sysctl parameter '%s': no value given\n"
-> 
-> Also we seem to be silently doing nothing when strlen(val) == 0, i.e.
-> "hung_task_panic=" was passed. Worth reporting the same error.
-> 
-> But v3 is fine with me as well. The generic error message works. We could just
-> add "if (!len) return -EINVAL" below the strlen() call.
-> 
-> Also please Cc: stable.
-> 
->> Anyway one way or the other, all I care about is to have a reporting in
->> place because this shouldn't be a silent failure.
->>
+Hello:
 
+This patch was applied to netdev/net.git (refs/heads/master):
 
-The current v2 is already in the linux-next branch and throws a new 
-error: 
-https://lore.kernel.org/lkml/cb54e349-7147-0a1f-a349-1e16ba603fce@infradead.org/
+On Fri, 15 Jan 2021 15:04:40 +0000 you wrote:
+> Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
+> tiny skbs") ensured that skbs with data size lower than 1025 bytes
+> will be kmalloc'ed to avoid excessive page cache fragmentation and
+> memory consumption.
+> However, the fix adressed only __napi_alloc_skb() (primarily for
+> virtio_net and napi_get_frags()), but the issue can still be achieved
+> through __netdev_alloc_skb(), which is still used by several drivers.
+> Drivers often allocate a tiny skb for headers and place the rest of
+> the frame to frags (so-called copybreak).
+> Mirror the condition to __netdev_alloc_skb() to handle this case too.
+> 
+> [...]
 
-This bug has been mentioned in the previous discussion and has been 
-fixed in the current v3 patch. 
-https://lore.kernel.org/linux-fsdevel/202101111149.20A58E1@keescook/
+Here is the summary with links:
+  - [v2,net] skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
+    https://git.kernel.org/netdev/net/c/66c556025d68
 
-What am I supposed to do now?
-     - Resend V3?
-     - Rewrite a new fix patch based on the current code of linux-next.
-     - Develop a new V4 patch: Use V2 to discuss how to use the Patch4 
-solution. 
-https://lore.kernel.org/linux-fsdevel/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/#t
-
-Thanks
-Xiaoming Ni
-
-
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
