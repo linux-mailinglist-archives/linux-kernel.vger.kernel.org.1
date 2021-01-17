@@ -2,145 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447392F902B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1562F902E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbhAQCPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 21:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727796AbhAQCPS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 21:15:18 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83D5C061573;
-        Sat, 16 Jan 2021 18:14:37 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id a12so19022784lfl.6;
-        Sat, 16 Jan 2021 18:14:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X3duVnfLGgUOXJdxBxM+P5Q3DSUFcQJjQy6qXGSudtk=;
-        b=g6X1N+ANfKFA+DYkoEifl/XuChSmfoe0s4puLmjgXZoGy92nuXY6kLiwlg2Z9X5ueo
-         KG0z5BEL5XnolRI2iUpJy8vS3RRZ7ZHr/R3hlSVvD8BtSk9jINyK/wOWMZb73u3xSXgA
-         osPx7ayib1vWIRlNEJPPgoDP9CVQapZtELgUq1fym7o8wT0j7ssMVyobhUxFbtF4RL//
-         saVGpaY6sBzAHhabcCCYYAjz1/MPq/pberiLiU3oiO5OGrbF2bleIN/tGobA4NPBdHf1
-         0bmpKG8xCfM0GXBNg3WMY065Ekmej1X5OrN4LFW1YzO1vt+ErtCNrZqIIIc5OIHgM7O9
-         c0vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X3duVnfLGgUOXJdxBxM+P5Q3DSUFcQJjQy6qXGSudtk=;
-        b=bZqXuCFunKc7kT6NQP06F6DlrXapCR3A74bcX0j+iqMmFH5yxegtbyc3NZLfL/NS09
-         pLuaPBhuzHpJRFI8yQSysQJMyLKqcqIAuD5IPU0RoXGdmrD78PebIiJ2U6DmYRyhz1Fe
-         NikuaXWUvsURy4FqRXO5qknEjaKK0vV7+hGN6XK2rF2CvDrZitzzhG4gvdq8BM9p0sqk
-         8cVZUAWBX+UrHiiGqSUo2MNKkxFrFiwWNQJfsAR2r9a0D0Mi95jg9wXyKvZM706KbM0U
-         p2TYjp8ehG/sQ3xaIByXGHeoln8gJkKoS4b61ZUrFkV0S9ccAKqLxDSj9fIUwcTwE5Uk
-         Ew8Q==
-X-Gm-Message-State: AOAM532DB0qA0fxFP+jwrD7RMdnyxYTyObzJiKAHx48iDkAOFqZxTO+1
-        mp62+oTMS354ESYCcqVfvEifjLPrqR9cEj026PP+74t0gtce6A==
-X-Google-Smtp-Source: ABdhPJy1yt5kHcmIghDGQ/Lq4hSJHskh6NUw9fR3otEqMGc1tt74+sj/6wfdHt635mzsWtDvaO7E7++3+Xtijlkes/c=
-X-Received: by 2002:a19:f11e:: with SMTP id p30mr8233868lfh.395.1610849676276;
- Sat, 16 Jan 2021 18:14:36 -0800 (PST)
+        id S1727890AbhAQCUJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 Jan 2021 21:20:09 -0500
+Received: from wnbcorp.com ([175.126.38.143]:53877 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727629AbhAQCUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 21:20:04 -0500
+Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10H2E0xc015601;
+        Sun, 17 Jan 2021 11:18:36 +0900
+Message-Id: <202101170218.10H2E0xc015601@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1610618543-110743-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610618543-110743-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 16 Jan 2021 20:14:25 -0600
-Message-ID: <CAH2r5ms2ZfPN+yYJ8MqgJqJ0zkBuOqBrAvYUKjXJwn5Tp6=5fA@mail.gmail.com>
-Subject: Re: [PATCH v2] fs/cifs: Simplify bool comparison.
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Sun, 17 Jan 2021 03:18:20 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch wouldn't merge (probably fixed with an earlier patch) so I
-removed the second part of it (ie the change around line 3740) - see
-below and merged the smaller change below into cifs-2.6.git for-next
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-commit d1639d92fc762bf80273aaf52d87eb780711714c (HEAD -> for-next,
-origin/for-next)
-Author: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Date:   Thu Jan 14 18:02:23 2021 +0800
+Sir/Madam,
 
-    fs/cifs: Simplify bool comparison.
+CONGRATULATIONS!!!
 
-    Fix the follow warnings:
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-    ./fs/cifs/connect.c: WARNING: Comparison of 0/1 to bool variable
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-    Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-    Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-    Signed-off-by: Steve French <stfrench@microsoft.com>
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 7c3325c0fadc..c8ef24bac94f 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -2628,7 +2628,7 @@ void reset_cifs_unix_caps(unsigned int xid,
-struct cifs_tcon *tcon,
-        } else if (ctx)
-                tcon->unix_ext = 1; /* Unix Extensions supported */
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
--       if (tcon->unix_ext == 0) {
-+       if (!tcon->unix_ext) {
-                cifs_dbg(FYI, "Unix extensions disabled so not set on
-reconnect\n");
-                return;
-        }
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
 
 
-On Thu, Jan 14, 2021 at 4:07 AM Jiapeng Zhong
-<abaci-bugfix@linux.alibaba.com> wrote:
->
-> Fix the follow warnings:
->
-> ./fs/cifs/connect.c: WARNING: Comparison of 0/1 to bool variable
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
->
-> ---
-> Changes in v2:
->   -Modified subject.
->
->  fs/cifs/connect.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-> index b9df855..b7869a2 100644
-> --- a/fs/cifs/connect.c
-> +++ b/fs/cifs/connect.c
-> @@ -2628,7 +2628,7 @@ void reset_cifs_unix_caps(unsigned int xid, struct cifs_tcon *tcon,
->         } else if (ctx)
->                 tcon->unix_ext = 1; /* Unix Extensions supported */
->
-> -       if (tcon->unix_ext == 0) {
-> +       if (!tcon->unix_ext) {
->                 cifs_dbg(FYI, "Unix extensions disabled so not set on reconnect\n");
->                 return;
->         }
-> @@ -3740,7 +3740,7 @@ static void delayed_free(struct rcu_head *p)
->
->         if (!ses->binding) {
->                 ses->capabilities = server->capabilities;
-> -               if (linuxExtEnabled == 0)
-> +               if (!linuxExtEnabled)
->                         ses->capabilities &= (~server->vals->cap_unix);
->
->                 if (ses->auth_key.response) {
-> --
-> 1.8.3.1
->
 
-
--- 
-Thanks,
-
-Steve
