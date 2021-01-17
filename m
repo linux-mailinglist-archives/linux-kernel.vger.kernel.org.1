@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8102F917D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 09:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569CC2F917F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 10:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbhAQI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 03:57:34 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36163 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbhAQIyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 03:54:03 -0500
-Received: by mail-io1-f70.google.com with SMTP id x4so22569283ioh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 00:53:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=jB63CMEcmJtOeJXwbrg+QK8JaBfOQwDdZLHuAL7bLeE=;
-        b=H8eOEqCcsiWFp+WkuPj0TnI718dJKCZ91RvJznjT9dPBOOO+Bn1LSbqzVFhVyD43eg
-         r8L8jMHdv4XBkHgApECblbd65ik6d1FSc5CGCi6ibBnhTquYkUyazGQJ8DRM2u+fLibP
-         3DE6R1quiMGjhe1DJ+jx2CDVXP5bl+ZFc2Mhvh3ixVDlUL+jv8MPvkotoKD3qZFyF0z4
-         FBQ2NKEIqGbWNKVJMnLLFarGZXNWFs84xd9ZRxGpTr96sEb28+aEY9MM6v8dCkMs20A8
-         y+gYL/h0o1bC06f3Q82aESZ/smFPYWNQ3dPHZi9WMV67bSLL+3m376/f478RHxe7UE2h
-         CmdA==
-X-Gm-Message-State: AOAM533OQiVs+FA2NkxjP4JKiKRUs4MfXvvjbXEQlS6qmGKTGFil7oYh
-        WTI8yDHd8/5QI4Qr9woSq6rBYg6knH+cw4hgw9LqmoUTKFaV
-X-Google-Smtp-Source: ABdhPJweouGIrw+slqM0687JcLjn/DUUC8TDxeOWr6ipObID1P0LywDif7Eo8t3OqmS7tfS+oZoePePlipgPh3nau4OvNFRajgIy
-MIME-Version: 1.0
-X-Received: by 2002:a92:8e0f:: with SMTP id c15mr16383751ild.224.1610873603038;
- Sun, 17 Jan 2021 00:53:23 -0800 (PST)
-Date:   Sun, 17 Jan 2021 00:53:23 -0800
-In-Reply-To: <00000000000091111005b435456e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e325f205b914bc4c@google.com>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in fbcon_cursor
-From:   syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        natechancellor@gmail.com, sam@ravnborg.org,
-        syzkaller-bugs@googlegroups.com, yepeilin.cs@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1728351AbhAQJAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 04:00:34 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:13740 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728146AbhAQIwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 03:52:02 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXDVlR+gNgIiGUAA--.45691S4;
+        Sun, 17 Jan 2021 16:50:32 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] block: Fix an error handling in add_partition
+Date:   Sun, 17 Jan 2021 16:50:17 +0800
+Message-Id: <20210117085023.24352-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXDVlR+gNgIiGUAA--.45691S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFy7AFyfGr13Zr17Jr1DKFg_yoW3CFX_Gw
+        1v9r1j9r18AryS9rn09F4ftr1rKw1rXF4jkF4xtFsrXayavayDur92gryIkr9xWayj9ry3
+        ZF45Xw45AFs7CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgYIBlZdtSBAVwAAsD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Once we have called device_initialize(), we should use put_device() to
+give up the reference on error, just like what we have done on failure
+of device_add().
 
-HEAD commit:    b3a3cbde Add linux-next specific files for 20210115
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=164096d7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
-dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cd8fe0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17af5258d00000
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
+Changelog:
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 12267067 P4D 12267067 PUD 11841067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8463 Comm: syz-executor088 Not tainted 5.11.0-rc3-next-20210115-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc9000132f850 EFLAGS: 00010292
-RAX: 0000000000000007 RBX: 0000000000000000 RCX: 0000000000000007
-RDX: 0000000000000002 RSI: ffff88814394b000 RDI: ffff888010071000
-RBP: ffff888010071000 R08: 0000000000000000 R09: ffffffff83ed87ea
-R10: 0000000000000003 R11: 0000000000000018 R12: ffff88814394b000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
-FS:  0000000000db8880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000020cd8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- fbcon_cursor+0x50e/0x620 drivers/video/fbdev/core/fbcon.c:1336
- hide_cursor+0x85/0x280 drivers/tty/vt/vt.c:907
- redraw_screen+0x5b4/0x740 drivers/tty/vt/vt.c:1012
- vc_do_resize+0xed8/0x1150 drivers/tty/vt/vt.c:1325
- fbcon_set_disp+0x7a8/0xe10 drivers/video/fbdev/core/fbcon.c:1402
- con2fb_init_display drivers/video/fbdev/core/fbcon.c:808 [inline]
- set_con2fb_map+0x7a6/0xf80 drivers/video/fbdev/core/fbcon.c:879
- fbcon_set_con2fb_map_ioctl+0x165/0x220 drivers/video/fbdev/core/fbcon.c:3010
- do_fb_ioctl+0x5b6/0x690 drivers/video/fbdev/core/fbmem.c:1156
- fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4402b9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffffae24f88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402b9
-RDX: 0000000020000080 RSI: 0000000000004610 RDI: 0000000000000004
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401ac0
-R13: 0000000000401b50 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 5adb9f198fe5efa6 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc9000132f850 EFLAGS: 00010292
-RAX: 0000000000000007 RBX: 0000000000000000 RCX: 0000000000000007
-RDX: 0000000000000002 RSI: ffff88814394b000 RDI: ffff888010071000
-RBP: ffff888010071000 R08: 0000000000000000 R09: ffffffff83ed87ea
-R10: 0000000000000003 R11: 0000000000000018 R12: ffff88814394b000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
-FS:  0000000000db8880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000020cd8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+v2: - Refine commit message.
+---
+ block/partitions/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index e7d776db803b..23460cee9de5 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -384,7 +384,7 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+ 
+ 	err = blk_alloc_devt(bdev, &devt);
+ 	if (err)
+-		goto out_bdput;
++		goto out_put;
+ 	pdev->devt = devt;
+ 
+ 	/* delay uevent until 'holders' subdir is created */
+-- 
+2.17.1
 
