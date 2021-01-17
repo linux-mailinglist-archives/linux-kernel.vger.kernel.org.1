@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A0E2F948C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6A92F94A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbhAQS1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:27:49 -0500
-Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:33818 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726295AbhAQS1p (ORCPT
+        id S1730015AbhAQSdl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 13:33:41 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:55539 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729935AbhAQSdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:27:45 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 595F81800CA7D;
-        Sun, 17 Jan 2021 18:27:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:3138:3139:3140:3141:3142:3352:3622:3865:3870:3871:3873:4250:4321:5007:7576:7652:9036:10004:10400:10848:11232:11658:11783:11914:12043:12048:12296:12297:12438:12555:12740:12895:12986:13069:13311:13357:13894:13972:14181:14659:14721:21060:21080:21324:21365:21433:21451:21627:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:15,LUA_SUMMARY:none
-X-HE-Tag: goat17_180d3b827542
-X-Filterd-Recvd-Size: 2401
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 17 Jan 2021 18:27:02 +0000 (UTC)
-Message-ID: <9fd72be8e628dba40fa83aeef65d80877ede86ca.camel@perches.com>
-Subject: Re: [PATCH] arcnet: fix macro name when DEBUG is defined
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, m.grzeschik@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 17 Jan 2021 10:27:01 -0800
-In-Reply-To: <20210117181519.527625-1-trix@redhat.com>
-References: <20210117181519.527625-1-trix@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 17 Jan 2021 13:33:18 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-165-qzM2FzfaOG6j69VeZBrcNw-1; Sun, 17 Jan 2021 18:31:37 +0000
+X-MC-Unique: qzM2FzfaOG6j69VeZBrcNw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 17 Jan 2021 18:31:36 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 17 Jan 2021 18:31:36 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>, Andy Lutomirski <luto@kernel.org>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Ryan Houdek <sonicadvance1@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Amanieu d'Antras <amanieu@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: RE: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Topic: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Index: AQHW6+b/d1V6Thk8U0iiUgMFo8hTJqosJEIw
+Date:   Sun, 17 Jan 2021 18:31:36 +0000
+Message-ID: <cc3ce5e484f041948cb008f7508c968b@AcuMS.aculab.com>
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+ <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com>
+ <CABnRqDfQ5Qfa2ybut0qXcKuYnsMcG7+9gqjL-e7nZF1bkvhPRw@mail.gmail.com>
+ <CAK8P3a2vfVfEWTk1ig349LGqt8bkK8YQWjE6PRyx+xvgYx7-gA@mail.gmail.com>
+ <CALCETrUtyVaGSE9fcFAkhrGCpkyYcYnZb6tj8227o2EH5hgOfg@mail.gmail.com>
+ <20210116090721.GA30277@lst.de>
+In-Reply-To: <20210116090721.GA30277@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-01-17 at 10:15 -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+From: Christoph Hellwig
+> Sent: 16 January 2021 09:07
+...
+> > I personally would like to see in_compat_syscall() go away,
+> > but some other people (Hi, Christoph!) disagree, and usage seems to be
+> > increasing, not decreasing.
 > 
-> When DEBUG is defined this error occurs
-> 
-> drivers/net/arcnet/com20020_cs.c:70:15: error: ‘com20020_REG_W_ADDR_HI’
->   undeclared (first use in this function);
->   did you mean ‘COM20020_REG_W_ADDR_HI’?
->        ioaddr, com20020_REG_W_ADDR_HI);
->                ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> From reviewing the context, the suggestion is what is meant.
-> 
-> Fixes: 0fec65130b9f ("arcnet: com20020: Use arcnet_<I/O> routines")
+> I'm absolutely against it going away.  in_compat_syscall helped to
+> remove so much crap compared to the explicit compat syscalls.
 
-Nice find thanks, especially seeing as how this hasn't been tested or
-compiled in 5+ years...
+The only other real option is to pass the 'syscall type' explicitly
+through all the layers into every piece of code that might need it.
 
-	commit 0fec65130b9f11a73d74f47025491f97f82ba070
-	Author: Joe Perches <joe@perches.com>
-	Date:   Tue May 5 10:06:06 2015 -0700
+So passing it as a 'parameter' that is (probably) current->syscall_type
+does make sense.
 
-Acked-by: Joe Perches <joe@perches.com>
+It might even make sense have separate bits for the required emulations.
+So you'd have separate bits for '32bit pointers' and '64bit items 32bit
+aligned' (etc).
 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/net/arcnet/com20020_cs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/arcnet/com20020_cs.c b/drivers/net/arcnet/com20020_cs.c
-> index cf607ffcf358..81223f6bebcc 100644
-> --- a/drivers/net/arcnet/com20020_cs.c
-> +++ b/drivers/net/arcnet/com20020_cs.c
-> @@ -67,7 +67,7 @@ static void regdump(struct net_device *dev)
->  	/* set up the address register */
->  	count = 0;
->  	arcnet_outb((count >> 8) | RDDATAflag | AUTOINCflag,
-> -		    ioaddr, com20020_REG_W_ADDR_HI);
-> +		    ioaddr, COM20020_REG_W_ADDR_HI);
->  	arcnet_outb(count & 0xff, ioaddr, COM20020_REG_W_ADDR_LO);
->  
-> 
->  	for (count = 0; count < 256 + 32; count++) {
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
