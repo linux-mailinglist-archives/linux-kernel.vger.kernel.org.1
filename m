@@ -2,134 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17892F90C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 06:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34E12F90C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 06:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbhAQFba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 00:31:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbhAQFbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 00:31:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1E323107;
-        Sun, 17 Jan 2021 05:30:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610861443;
-        bh=DpapfS8CloHhWIyfLsKQuj+NWk694+ddY9JT8yb4Z6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oXNqSd+dokYfehm1UYjzF5ow+mxEZgK6nonOZmGu3AgNjswSp1q0eAeRyJFfxbmVO
-         n/n5xjUpZT1CtG/Z7KQkTqJr6VXJnUW7X5pfyyLtTT9tooiul5djn86uuY0vDSGlQT
-         j7Ta3UEIceNucHDMt4alQf5oHlK6kAwYg/966t2LgB5dHSf9aixzKYdtcCGSPpIxNO
-         NlXBWLtKnd2IbDinD6b3c/kX7CtXBw/5LxSwj3QGZG4RGRbzXkhJ5vn8J8dzi6D+vl
-         JkbPPvcsrtJAse0SrFXbC2afUrfdaLRaHmWMMGZuAsH15Sn1v7ILYeGew9ByfE7iwJ
-         cE3KQ/YK8hbAQ==
-Date:   Sun, 17 Jan 2021 07:30:39 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
-        dave.jiang@intel.com, megha.dey@intel.com, dwmw2@infradead.org,
-        alex.williamson@redhat.com, bhelgaas@google.com,
-        dan.j.williams@intel.com, will@kernel.org, joro@8bytes.org,
-        dmaengine@vger.kernel.org, eric.auger@redhat.com,
-        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
-        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
-        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
-        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
-        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
-        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH v3 1/2] iommu: Add capability IOMMU_CAP_VIOMMU
-Message-ID: <20210117053039.GO944463@unreal>
-References: <20210114013003.297050-1-baolu.lu@linux.intel.com>
- <20210114013003.297050-2-baolu.lu@linux.intel.com>
- <20210114132627.GA944463@unreal>
- <b0c8b260-8e23-a5bd-d2da-ca1d67cdfa8a@linux.intel.com>
- <20210115063108.GI944463@unreal>
- <c58adc13-306a-8df8-19e1-27f834b3a7c9@linux.intel.com>
- <20210116083904.GN944463@unreal>
- <eda6ae9f-76eb-3254-ce58-ea355418a4b1@linux.intel.com>
+        id S1726597AbhAQFoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 00:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbhAQFne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 00:43:34 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE2EC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 21:42:52 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id u27so947006uaa.13
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Jan 2021 21:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Olt2YOxfNlY0a+PB/Ct3vvAUbttTgv/DLZUtCACcw8A=;
+        b=EQI2syrqKXMoRfyWu1KSfQ7T474G8zDMmq/hd9N2q/GIm5i59uLyxltnLhA4QudIcD
+         QnuQn+XWFa+E/LL5fsm9LIPowQjdwgtihyIm6O17SPOQIbOaJOLNhY/aWn1AYZf557Ow
+         JEFQGLCjLgLFQUQvIikIs7LkZJX7lKNAqDI3E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Olt2YOxfNlY0a+PB/Ct3vvAUbttTgv/DLZUtCACcw8A=;
+        b=Eku7Z/JEMpR3lDt7p9RLaXpwZPyRYtbtCSC6EXDvsYTERius42sGmCbu8PSqKaIjZY
+         21Y0G3DUXow0lbMvlcOd1MM+CmcOUvWqHumGP1KRqJQYKfdJCupO27rheVPpTW0rq6M1
+         ugNbRfN/NfIQQIia4Fgy1T753WjE8N/mxh6JUq46JBjenRyx4lZlgSOSV4ZDDsLDMRsL
+         9d6dOyCIAmUi5Z8klIqpjFKaZ9+0YhOc+CGwt5BVPqK644HKzLboA0VcCA5/ZMwZnooU
+         ehFTkmQWR1LPRlkx4XnOvq1KK9gvt3iNiT4TCtSSfX0pAwsXpe7b5Iz6wWKd8PIkYxXF
+         +aUQ==
+X-Gm-Message-State: AOAM533J3IazsaGWBquG0RdZKiKv5OgHCY0SX/HR1XNYPXPpIFhgqWrB
+        j7kaMB1gVObPlLr2STqqFhPI/2iJ0HGDDrBuM+MHbw==
+X-Google-Smtp-Source: ABdhPJwXwI0RYPLjRggAllyTjh/EEvwkgVxdYKDanZi5mBCStwwyCakvkuOuYkJ0GyG4FSWpv7KhZ7m0RG1NXRl+P+w=
+X-Received: by 2002:ab0:3894:: with SMTP id z20mr13880263uav.82.1610862171854;
+ Sat, 16 Jan 2021 21:42:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eda6ae9f-76eb-3254-ce58-ea355418a4b1@linux.intel.com>
+References: <20210116090656.11752-1-chunfeng.yun@mediatek.com>
+ <20210116090656.11752-12-chunfeng.yun@mediatek.com> <CANMq1KA63Lcifv0G80AyF9-JAdojtsnR18QtfytTMuKw7pTkPA@mail.gmail.com>
+In-Reply-To: <CANMq1KA63Lcifv0G80AyF9-JAdojtsnR18QtfytTMuKw7pTkPA@mail.gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Sun, 17 Jan 2021 13:42:40 +0800
+Message-ID: <CANMq1KDkEL1Uh3yCG_-D=Kcm2Nob+mLNiA87syoaiuBFrrsnvg@mail.gmail.com>
+Subject: Re: [PATCH next 12/15] arm64: dts: mediatek: mt8183: fix dtbs_check warning
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-usb@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Min Guo <min.guo@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 04:47:40PM +0800, Lu Baolu wrote:
-> Hi Leon,
+On Sun, Jan 17, 2021 at 9:58 AM Nicolas Boichat <drinkcat@chromium.org> wrote:
 >
-> On 2021/1/16 16:39, Leon Romanovsky wrote:
-> > On Sat, Jan 16, 2021 at 09:20:16AM +0800, Lu Baolu wrote:
-> > > Hi,
-> > >
-> > > On 2021/1/15 14:31, Leon Romanovsky wrote:
-> > > > On Fri, Jan 15, 2021 at 07:49:47AM +0800, Lu Baolu wrote:
-> > > > > Hi Leon,
-> > > > >
-> > > > > On 1/14/21 9:26 PM, Leon Romanovsky wrote:
-> > > > > > On Thu, Jan 14, 2021 at 09:30:02AM +0800, Lu Baolu wrote:
-> > > > > > > Some vendor IOMMU drivers are able to declare that it is running in a VM
-> > > > > > > context. This is very valuable for the features that only want to be
-> > > > > > > supported on bare metal. Add a capability bit so that it could be used.
-> > > > > >
-> > > > > > And how is it used? Who and how will set it?
-> > > > >
-> > > > > Use the existing iommu_capable(). I should add more descriptions about
-> > > > > who and how to use it.
-> > > >
-> > > > I want to see the code that sets this capability.
-> > >
-> > > Currently we have Intel VT-d and the virt-iommu setting this capability.
-> > >
-> > >   static bool intel_iommu_capable(enum iommu_cap cap)
-> > >   {
-> > >   	if (cap == IOMMU_CAP_CACHE_COHERENCY)
-> > >   		return domain_update_iommu_snooping(NULL) == 1;
-> > >   	if (cap == IOMMU_CAP_INTR_REMAP)
-> > >   		return irq_remapping_enabled == 1;
-> > > +	if (cap == IOMMU_CAP_VIOMMU)
-> > > +		return caching_mode_enabled();
-> > >
-> > >   	return false;
-> > >   }
-> > >
-> > > And,
-> > >
-> > > +static bool viommu_capable(enum iommu_cap cap)
-> > > +{
-> > > +	if (cap == IOMMU_CAP_VIOMMU)
-> > > +		return true;
-> > > +
-> > > +	return false;
-> > > +}
+> On Sat, Jan 16, 2021 at 5:07 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
 > >
-> > These two functions are reading this cap and not setting.
-> > Where can I see code that does "cap = IOMMU_CAP_VIOMMU" and not "=="?
+> > Harmonize node names, compatibles and properties.
+> >
+> > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> > ---
+> >  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > index 5b782a4769e7..a69a033a68ac 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > @@ -865,7 +865,7 @@
+> >                         ranges;
+> >                         status = "disabled";
+> >
+> > -                       usb_host: xhci@11200000 {
+> > +                       usb_host: usb@11200000 {
+> >                                 compatible = "mediatek,mt8183-xhci",
+> >                                              "mediatek,mtk-xhci";
+> >                                 reg = <0 0x11200000 0 0x1000>;
+> > @@ -908,11 +908,11 @@
+> >                         status = "disabled";
+> >                 };
+> >
+> > -               mipi_tx0: mipi-dphy@11e50000 {
+> > +               mipi_tx0: dsi-phy@11e50000 {
+> >                         compatible = "mediatek,mt8183-mipi-tx";
+> >                         reg = <0 0x11e50000 0 0x1000>;
+> >                         clocks = <&apmixedsys CLK_APMIXED_MIPID0_26M>;
+> > -                       clock-names = "ref_clk";
+> > +                       clock-names = "ref";
+> >                         #clock-cells = <0>;
+> >                         #phy-cells = <0>;
+> >                         clock-output-names = "mipi_tx0_pll";
 >
-> The iommu_capable() is a generic IOMMU interface to query IOMMU
-> capabilities. It takes @bus and @cap as input, and calls the callback
-> of vendor iommu. If the vendor iommu driver supports the specific
-> capability, it returns true. Otherwise, it returns false.
->
-> bool iommu_capable(struct bus_type *bus, enum iommu_cap cap)
-> {
->         if (!bus->iommu_ops || !bus->iommu_ops->capable)
->                 return false;
->
->         return bus->iommu_ops->capable(cap);
-> }
-> EXPORT_SYMBOL_GPL(iommu_capable);
->
-> In the vendor iommu's callback, it checks the capability and returns a
-> value according to its capability, just as showed above.
+> This is unrelated to USB, so this should probably be a separate patch.
 
-Ohh, sorry.
-I missed "iommu_capable(dev->bus, IOMMU_CAP_VIOMMU)" from second patch.
-
-Thanks
+Actually, after looking again at the complete stack of patches, I
+think this might be ok as part of this overall cleanup (I'll let the
+maintainer speak up).
 
 >
-> Best regards,
-> baolu
+> > @@ -931,11 +931,10 @@
+> >                         };
+> >                 };
+> >
+> > -               u3phy: usb-phy@11f40000 {
+> > +               u3phy: t-phy@11f40000 {
+> >                         compatible = "mediatek,mt8183-tphy",
+> >                                      "mediatek,generic-tphy-v2";
+> >                         #address-cells = <1>;
+> > -                       #phy-cells = <1>;
+> >                         #size-cells = <1>;
+> >                         ranges = <0 0 0x11f40000 0x1000>;
+> >                         status = "okay";
+> > --
+> > 2.18.0
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
