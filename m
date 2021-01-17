@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDF52F9421
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 18:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA5F2F9424
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 18:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbhAQRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 12:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729848AbhAQRQ1 (ORCPT
+        id S1729902AbhAQR0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 12:26:35 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:39950 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729877AbhAQR0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 12:16:27 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC4FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 09:15:46 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id b10so15800738ljp.6
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 09:15:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xRrXXlB0SlhsMGxZpyUDf3iYlu9jA32sbaiCZc/Xe2k=;
-        b=VvSU+ft+YquGegQ3KmUxVPGnYCjDQoGgpcQ3zjjVcUBi1+Z9emAIVks+mqbNME1Rwz
-         7teHdkeKNxWLCkO4+ilGbZntDAVqHDAMqX/hR6695fXUautQKJa4cPOjjD79gDKFQEpj
-         ft2laAKIQVj3gm4u/o4sET4wywLAsR6Uqkbuk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xRrXXlB0SlhsMGxZpyUDf3iYlu9jA32sbaiCZc/Xe2k=;
-        b=Uq0CigivPWBjISDFqmqKO51g4vlLSg4sGZdGnBzgZPybDuoix8HeVOAD7Nxq0UZHqN
-         n+hAUNLeAkh7sYav4lS73YIksS0VRxX/hcjNCliMkTDiOT7uDTmh8BvZh31jPdFwcbIT
-         NvdVQbTmqbo2E/8KF3oaHLuw91FBck75oL3ZG2FJ9EGaNnU6PtTQ5gRq30px8ZhnDgO9
-         Ht1ArWC0qQblGyHaidm4PvvH808YMR9lKp8MhpeTYp9m1wRuEk8F/ep74X+SKNrO3Hfu
-         5VmHrVI+2Rq6WkqVMHpmUFLPNbvvxbSHTplDSYw7RBNBiiwPsEQXc5ZuEzMboO6bEOKF
-         +4vw==
-X-Gm-Message-State: AOAM533EVS1VjwYD3YB94KcMs3O1Q3yZqXaf92vC8pElNwQnMgYD9rKH
-        f2E1wyXJcGGeHId6j+rfjpaME9Dzq09V/g==
-X-Google-Smtp-Source: ABdhPJwszn7UGBoIJtZuJbCH2vgWo3OFBaI8RuP6wHzxu7vdDJ+lm3P0jPgw9vx8QN09q6/Gs3fANg==
-X-Received: by 2002:a2e:501e:: with SMTP id e30mr8736879ljb.387.1610903745050;
-        Sun, 17 Jan 2021 09:15:45 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id f7sm1442066ljk.4.2021.01.17.09.15.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 09:15:43 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id p13so15851550ljg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 09:15:43 -0800 (PST)
-X-Received: by 2002:a2e:a40b:: with SMTP id p11mr8809120ljn.315.1610903742948;
- Sun, 17 Jan 2021 09:15:42 -0800 (PST)
+        Sun, 17 Jan 2021 12:26:24 -0500
+Received: from [192.168.254.32] (unknown [47.187.219.45])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A8F0120B7192;
+        Sun, 17 Jan 2021 09:25:42 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A8F0120B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1610904343;
+        bh=dSxgyZILd6ePeQFGFSfItK/jBXk7vqxGoh5JR1/STnU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NaeBDi7O+56Gh0KonoBTBOjzfe3hfWYRl6mCpb1uojoZiibtZgwkuczXfumqIW1Xm
+         qLblMkxvZUO1VO/QuGbp2KyGbuFyRon9vp3BruaNST8Hd5OpKIg1DLmuMYc+LN2Pre
+         JQ1/PqvGORj1UhGIMXUax1j8+WP3nJY/6SRq7ObU=
+Subject: Re: Live patching on ARM64
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>, jpoimboe@redhat.com,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <f3fe6a60-9ac2-591d-1b83-9113c50dc492@linux.microsoft.com>
+ <20210115123347.GB39776@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <a5f22237-a18d-3905-0521-f0d0f9c253ea@linux.microsoft.com>
+Date:   Sun, 17 Jan 2021 11:25:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201118234025.376412-1-evgreen@chromium.org> <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
- <20210117115426.GH1983@ninjato>
-In-Reply-To: <20210117115426.GH1983@ninjato>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Sun, 17 Jan 2021 09:15:06 -0800
-X-Gmail-Original-Message-ID: <CAE=gft6qb9aBJTrTL_QE=LATh+1+J1gaWjtXs_OXhEbCdgm0jw@mail.gmail.com>
-Message-ID: <CAE=gft6qb9aBJTrTL_QE=LATh+1+J1gaWjtXs_OXhEbCdgm0jw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in
- ACPI land
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Peter Rosin <peda@axentia.se>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210115123347.GB39776@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 3:54 AM Wolfram Sang <wsa@kernel.org> wrote:
->
-> On Wed, Nov 18, 2020 at 03:40:25PM -0800, Evan Green wrote:
-> > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
-> > property translates directly to a fwnode_property_*() call. The child
-> > reg property translates naturally into _ADR in ACPI.
-> >
-> > The i2c-parent binding is a relic from the days when the bindings
-> > dictated that all direct children of an I2C controller had to be I2C
-> > devices. These days that's no longer required. The i2c-mux can sit as a
-> > direct child of its parent controller, which is where it makes the most
-> > sense from a hardware description perspective. For the ACPI
-> > implementation we'll assume that's always how the i2c-mux-gpio is
-> > instantiated.
-> >
-> > Signed-off-by: Evan Green <evgreen@chromium.org>
->
-> Applied to for-next, thanks! The code Andy mentioned can still be
-> refactored later if new ACPI helpers appear in the future.
 
-Thanks Wolfram and Peter!
+
+On 1/15/21 6:33 AM, Mark Rutland wrote:
+
+>> It looks like the most recent work in this area has been from the
+>> following folks:
+>>
+>> Mark Brown and Mark Rutland:
+>> 	Kernel changes to providing reliable stack traces.
+>>
+>> Julien Thierry:
+>> 	Providing ARM64 support in objtool.
+>>
+>> Torsten Duwe:
+>> 	Ftrace with regs.
+> 
+> IIRC that's about right. I'm also trying to make arm64 patch-safe (more
+> on that below), and there's a long tail of work there for anyone
+> interested.
+> 
+
+OK.
+
+>> I apologize if I have missed anyone else who is working on Live Patching
+>> for ARM64. Do let me know.
+>>
+>> Is there any work I can help with? Any areas that need investigation, any code
+>> that needs to be written, any work that needs to be reviewed, any testing that
+>> needs to done? You folks are probably super busy and would not mind an extra
+>> hand.
+> 
+> One general thing that I believe we'll need to do is to rework code to
+> be patch-safe (which implies being noinstr-safe too). For example, we'll
+> need to rework the instruction patching code such that this cannot end
+> up patching itself (or anything that has instrumented it) in an unsafe
+> way.
+> 
+
+OK.
+
+> Once we have objtool it should be possible to identify those cases
+> automatically. Currently I'm aware that we'll need to do something in at
+> least the following places:
+> 
+> * The entry code -- I'm currently chipping away at this.
+> 
+
+OK.
+
+> * The insn framework (which is used by some patching code), since the
+>   bulk of it lives in arch/arm64/kernel/insn.c and isn't marked noinstr.
+>   
+>   We can probably shift the bulk of the aarch64_insn_gen_*() and
+>   aarch64_get_*() helpers into a header as __always_inline functions,
+>   which would allow them to be used in noinstr code. As those are
+>   typically invoked with a number of constant arguments that the
+>   compiler can fold, this /might/ work out as an optimization if the
+>   compiler can elide the error paths.
+> 
+> * The alternatives code, since we call instrumentable and patchable
+>   functions between updating instructions and performing all the
+>   necessary maintenance. There are a number of cases within
+>   __apply_alternatives(), e.g.
+> 
+>   - test_bit()
+>   - cpus_have_cap()
+>   - pr_info_once()
+>   - lm_alias()
+>   - alt_cb, if the callback is not marked as noinstr, or if it calls
+>     instrumentable code (e.g. from the insn framework).
+>   - clean_dcache_range_nopatch(), as read_sanitised_ftr_reg() and
+>     related code can be instrumented.
+> 
+>   This might need some underlying rework elsewhere (e.g. in the
+>   cpufeature code, or atomics framework).
+> 
+
+OK.
+
+> So on the kernel side, maybe a first step would be to try to headerize
+> the insn generation code as __always_inline, and see whether that looks
+> ok? With that out of the way it'd be a bit easier to rework patching
+> code depending on the insn framework.
+> 
+
+OK.
+
+I have an understanding of some of the above already. I will come up to
+speed on the others. I will email you any questions I might have.
+
+> I'm not sure about the objtool side, so I'll leave that to Julien and co
+> to answer.
+> 
+
+Thanks for the information.
+
+Madhavan
