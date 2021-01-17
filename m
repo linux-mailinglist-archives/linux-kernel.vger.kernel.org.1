@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165A02F9565
+	by mail.lfdr.de (Postfix) with ESMTP id 8390D2F9566
 	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730143AbhAQVJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729248AbhAQVJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:09:42 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65F1C061573;
-        Sun, 17 Jan 2021 13:09:00 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id w1so20899876ejf.11;
-        Sun, 17 Jan 2021 13:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=42BoXCicoex6TQQF6Ij53CzsLLz+oD2qad6RLNHaXRc=;
-        b=jV1rnTkggvSuTP4wPeAGTs2dYEvyRBI95SlW2HSPELN46fd8FbvyZznpYG/Xbjoez2
-         F0ZptvtCXuHYSsW3dh/FNwlxqBTNxvNXCFSnls8CQcl1I+3mNyr4jg8GA2JYpv/Lbew3
-         DnzVElkU4VxbVZovbox0XDzKEUx2MV/39PNH9RFAjrFcW8CvTn4/Ymi9x9f8hPn3QjYN
-         Ze7QUvkoGCVXhMYRGl/Yj3rVCHvo8xL8wLZYfStwzhHnM5mSjZzoYob7EKB3HXyLGdVf
-         UC2Th9ZPOZN3A2FkFV7rOK9BYsvyaGYCUuO9fKpAQnWYZ4brA+IaqDycbm/K0XYkkIxZ
-         gBzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=42BoXCicoex6TQQF6Ij53CzsLLz+oD2qad6RLNHaXRc=;
-        b=kVYZ4tfFIzC7Nube2+dCK4+so/8AfvDepdCDC/DiPh7EfLvRaacTfgtOcr2yJoJvSs
-         0OvcAvIO1EKv7f2ECbhwh7y8FXre0jhK81nHCYki37Zb+37ExLY3/PEnzcMHcMTPftmo
-         wgOMy0xWwWiGARgd2jdVUV/1ArXOCmYf1/amKnYzjAnhjlv8dTjnGLLL8a6DExz1HCqv
-         7GdttlGnYDcS13+eCudkEoyu9aOqmyrJ+N76gsjw2GZiNwV2rHGk5uC4ru72oPNy6prY
-         4TmDB7qj5XkedrtZLZvW+kifrxF7AlzklGdwvuCMK1ZHEwjrzygYhehaAQEVPIRpuL09
-         1uUQ==
-X-Gm-Message-State: AOAM530pkboxSjvZLZRbHBFti8yuD3H/BrRXjB19m71Ycz68gzfZD+bb
-        TaITdc/wgQm2/myLBVYuzv4=
-X-Google-Smtp-Source: ABdhPJxaF+v+fqDX/V50ECIncMO+Fb7aGgPiCTs3QtpJQiSVuE3csyE5D4/t5kgzf8wXYrYFBPnqNw==
-X-Received: by 2002:a17:906:1288:: with SMTP id k8mr15019921ejb.206.1610917739614;
-        Sun, 17 Jan 2021 13:08:59 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id u2sm6554766edp.12.2021.01.17.13.08.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 13:08:59 -0800 (PST)
-Date:   Sun, 17 Jan 2021 23:08:58 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>
-Subject: Re: [PATCH 0/2] net: dsa: mv88e6xxx: fix vlan filtering for 6250
-Message-ID: <20210117210858.276rk6svvqbfbfol@skbuf>
-References: <20210116023937.6225-1-rasmus.villemoes@prevas.dk>
+        id S1730156AbhAQVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:10:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728455AbhAQVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 16:10:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D089C2247F;
+        Sun, 17 Jan 2021 21:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610917769;
+        bh=kIjdvp+ADgQ6Kr/fbUx7Jyl4hLbCnO317WqMdyCKTL8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uhypB+G66uE2ciBdF97/opsrzwyfWmfL+3/uJiFHfGOn/9It9MafV+LIRqpHallR+
+         6t69CaxxFYhZUW93ROb6EBk5knF+kNI5xcx9/Fmz+tIERJjLCIL1NkJwfRp/prPDbN
+         z21ej5i4GmZ/jpE3UuxJCKnjgqIkqPggoYZ/oQKL2gkIbpDRGJ/pvlNN/8JRqrH38r
+         ivpd26Tq8CZyOMS632n7ka9ugSpiUibAKlx2NMoI738iWPZgRDkPB0I605VZYJMPNT
+         EL4bVBQFHUDcAH+888FjxAYYJpd2jDTPAlJKKxWUEyfRIN4Jt6b6YZH065bz0yr8en
+         J501du8THxDdA==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Al Grant <al.grant@foss.arm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Ian Rogers <irogers@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL] perf tools fixes for v5.11
+Date:   Sun, 17 Jan 2021 18:09:08 -0300
+Message-Id: <20210117210908.13730-1-acme@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116023937.6225-1-rasmus.villemoes@prevas.dk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rasmus,
+Hi Linus,
 
-On Sat, Jan 16, 2021 at 03:39:34AM +0100, Rasmus Villemoes wrote:
-> I finally managed to figure out why enabling VLAN filtering on the
-> 6250 broke all (ingressing) traffic,
-> cf. https://lore.kernel.org/netdev/6424c14e-bd25-2a06-cf0b-f1a07f9a3604@prevas.dk/
-> .
-> 
-> The first patch is the minimal fix and for net, while the second one
-> is a little cleanup for net-next.
-> 
-> Rasmus Villemoes (2):
->   net: dsa: mv88e6xxx: also read STU state in mv88e6250_g1_vtu_getnext
->   net: dsa: mv88e6xxx: use mv88e6185_g1_vtu_getnext() for the 6250
+	Please consider pulling,
 
-It's strange to put a patch for net and one for net-next in the same
-series. Nobody will keep a note for you to apply the second patch after
-net has been merged back into net-next. So if you want to keep the
-two-patch approach, you'd have to send just the "net" patch now, and the
-"net-next" patch later.
-But is there any reason why you don't just apply the second patch to
-"net"?
+Best regards,
+
+- Arnaldo
+
+The following changes since commit f4e087c666f54559cb4e530af1fbfc9967e14a15:
+
+  Merge tag 'acpi-5.11-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2021-01-15 10:55:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-2021-01-17
+
+for you to fetch changes up to 648b054a4647cd62e13ba79f398b8b97a7c82b19:
+
+  perf inject: Correct event attribute sizes (2021-01-15 17:28:28 -0300)
+
+----------------------------------------------------------------
+perf tools fixes for 5.11:
+
+- Fix 'CPU too large' error in Intel PT.
+
+- Correct event attribute sizes in 'perf inject'.
+
+- Sync build_bug.h and kvm.h kernel copies.
+
+- Fix bpf.h header include directive in 5sec.c 'perf trace' bpf example.
+
+- libbpf tests fixes.
+
+- Fix shadow stat 'perf test' for non-bash shells.
+
+- Take cgroups into account for shadow stats in 'perf stat'.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+Test results in the signed tag at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-fixes-2021-01-17
+
+----------------------------------------------------------------
+Adrian Hunter (1):
+      perf intel-pt: Fix 'CPU too large' error
+
+Al Grant (1):
+      perf inject: Correct event attribute sizes
+
+Arnaldo Carvalho de Melo (3):
+      perf bpf examples: Fix bpf.h header include directive in 5sec.c example
+      tools headers UAPI: Sync kvm.h headers with the kernel sources
+      tools headers: Syncronize linux/build_bug.h with the kernel sources
+
+Ian Rogers (3):
+      libperf tests: Avoid uninitialized variable warning
+      libperf tests: If a test fails return non-zero
+      libperf tests: Fail when failing to get a tracepoint id
+
+Namhyung Kim (3):
+      perf test: Fix shadow stat test for non-bash shells
+      perf stat: Introduce struct runtime_stat_data
+      perf stat: Take cgroups into account for shadow stats
+
+ tools/include/linux/build_bug.h            |   5 -
+ tools/include/uapi/linux/kvm.h             |   2 +
+ tools/lib/perf/tests/test-cpumap.c         |   2 +-
+ tools/lib/perf/tests/test-evlist.c         |   7 +-
+ tools/lib/perf/tests/test-evsel.c          |   2 +-
+ tools/lib/perf/tests/test-threadmap.c      |   2 +-
+ tools/perf/examples/bpf/5sec.c             |   2 +-
+ tools/perf/tests/shell/stat+shadow_stat.sh |  30 ++-
+ tools/perf/util/header.c                   |   8 +
+ tools/perf/util/machine.c                  |   4 +-
+ tools/perf/util/session.c                  |   2 +-
+ tools/perf/util/stat-shadow.c              | 366 +++++++++++++++--------------
+ 12 files changed, 224 insertions(+), 208 deletions(-)
