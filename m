@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D7D2F9031
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B931D2F9038
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 03:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbhAQCU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Jan 2021 21:20:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727629AbhAQCUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Jan 2021 21:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1EA7322CB8;
-        Sun, 17 Jan 2021 02:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610850010;
-        bh=ORQl1ZFd11tXszy9IjdFFuITzpen0YjySzTPviRMEh4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LBqHqoWJucjw3HIAcEiRHddbHmZGc/5C4egWd3sUP+8sDHxa0OHsmth8puPy2dWsd
-         vJf/Az2S4ocZDZmHYbQpKNneAnc7At1mKvWjmrEKToq8hnJUu+CC/nInGc6WyDKBnm
-         6flzMGPOoSjiTeJ7IdgNQxCWlVJq89w4IZ1zYBJwfcyYwvI2ZkFbBrdcXpKDv5bc9f
-         u5XeQNfe553p0wxKpQdtZ4GsQ2j9pfNxFoKQ+nkvsfP40Zm5XNxD6Eq9fbmg81j/Cn
-         LVtRvh1kHLuzhYc5Oi6POmY2Wmb/cwHx6OShdHvNAftGN6hzRB/nAnHQi0kD7hOPwu
-         sVtsfh7ba/xzw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 0AEBD60658;
-        Sun, 17 Jan 2021 02:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1728079AbhAQC3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Jan 2021 21:29:32 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:46806 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727925AbhAQC32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Jan 2021 21:29:28 -0500
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B668520B7192;
+        Sat, 16 Jan 2021 18:28:47 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B668520B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1610850527;
+        bh=6RIemJ4l8/3wJ6SX05saF7CMsgpEJ0TYYmSMtM9G4zw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gzZAlA7mLXfV2QZddQIaFc1MN+yXu11kyUfxqSYpJPmsL+YisZbaYr/VqaSmYUKkb
+         L9LEErYKpKMjZ5mDUAUA4XsDK39WjdQwpLvpJ1L2VoSRTMxE7G9mPzB6MiCHq+VObj
+         olqwOVKHvLYPia/TsTTMAGIZYHcL23kRmkvEqgIc=
+Received: by mail-pj1-f47.google.com with SMTP id l23so7483985pjg.1;
+        Sat, 16 Jan 2021 18:28:47 -0800 (PST)
+X-Gm-Message-State: AOAM530wzKZzeHXZWInnqc2dqF1KAp7UzB5fQwbKvexPG+jLMX/+Flg3
+        EnrU2L4pfaHqBaQ6w5HQqofnvayr/Ur7hwoVax4=
+X-Google-Smtp-Source: ABdhPJyLqnk4RHPHBp8nrp9Tux1U0yVwK67ccs2a3IrcrK0VHqN1VJEzAblaBCcdwnykpfhP0DD05ov3KUyzodU/tSk=
+X-Received: by 2002:a17:90a:5d8d:: with SMTP id t13mr18692894pji.39.1610850527239;
+ Sat, 16 Jan 2021 18:28:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [RESEND v2 0/7] Rid W=1 warnings in Ethernet
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161085001003.18239.10975020699076928503.git-patchwork-notify@kernel.org>
-Date:   Sun, 17 Jan 2021 02:20:10 +0000
-References: <20210115200905.3470941-1-lee.jones@linaro.org>
-In-Reply-To: <20210115200905.3470941-1-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, ast@kernel.org,
-        benh@kernel.crashing.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, drt@linux.ibm.com, dnevil@snmc.com,
-        davem@davemloft.net, erik@vt.edu, geoff@infradead.org,
-        grygorii.strashko@ti.com, gustavoars@kernel.org,
-        kou.ishizaki@toshiba.co.jp, ivan.khoronzhuk@linaro.org,
-        kuba@kernel.org, Jens.Osterkamp@de.ibm.com, hawk@kernel.org,
-        jallen@linux.vnet.ibm.com, john.fastabend@gmail.com,
-        kurt@linutronix.de, ljp@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        netdev@vger.kernel.org, nico@fluxnic.net, paul@xen.org,
-        paulus@samba.org, pc@denkart.be, rmk@arm.linux.org.uk,
-        rusty@rustcorp.com.au, santi_leon@yahoo.com, sukadev@linux.ibm.com,
-        tlfalcon@linux.vnet.ibm.com, utz.bacher@de.ibm.com,
-        wei.liu@kernel.org, xen-devel@lists.xenproject.org
+References: <20210115184209.78611-1-mcroce@linux.microsoft.com>
+ <20210115145028.3cb6997f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFnufp2DLgmO_paMoTGPUAGHbp9=hVgWR5UxmYbQQE=n642Ejw@mail.gmail.com> <989d8413-469d-9d80-1a80-15868af24de6@gmail.com>
+In-Reply-To: <989d8413-469d-9d80-1a80-15868af24de6@gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sun, 17 Jan 2021 03:28:11 +0100
+X-Gmail-Original-Message-ID: <CAFnufp01QNMq5WQ_K_OMFNuQJTv7YPzn2wCC7L65zErWnj+a9A@mail.gmail.com>
+Message-ID: <CAFnufp01QNMq5WQ_K_OMFNuQJTv7YPzn2wCC7L65zErWnj+a9A@mail.gmail.com>
+Subject: Re: [PATCH net 0/2] ipv6: fixes for the multicast routes
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Thomas Graf <tgraf@suug.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sat, Jan 16, 2021 at 5:41 AM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 1/15/21 4:12 PM, Matteo Croce wrote:
+> > On Fri, Jan 15, 2021 at 11:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >>
+> >> On Fri, 15 Jan 2021 19:42:07 +0100 Matteo Croce wrote:
+> >>> From: Matteo Croce <mcroce@microsoft.com>
+> >>>
+> >>> Fix two wrong flags in the IPv6 multicast routes created
+> >>> by the autoconf code.
+> >>
+> >> Any chance for Fixes tags here?
+> >
+> > Right.
+> > For 1/2 I don't know exactly, that code was touched last time in
+> > 86872cb57925 ("[IPv6] route: FIB6 configuration using struct
+> > fib6_config"), but it was only refactored. Before 86872cb57925, it was
+> > pushed in the git import commit by Linus: 1da177e4c3f4
+> > ("Linux-2.6.12-rc2").
+> > BTW, according the history repo, it entered the tree in the 2.4.0
+> > import, so I'd say it's here since the beginning.
+> >
+> > While for 2/2 I'd say:
+> >
+> > Fixes: e8478e80e5a7 ("net/ipv6: Save route type in rt6_info")
+> >
+>
+> As I recall (memory jogging from commit description) my patch only moved
+> the setting from ip6_route_info_create default to here.
+>
+> The change is correct, just thinking it goes back beyond 4.16. If
+> someone has a system running a 4.14 or earlier kernel it should be easy
+> to know if this was the default prior.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Indeed, it was the same long before 4.14:
 
-On Fri, 15 Jan 2021 20:08:58 +0000 you wrote:
-> Resending the stragglers again.
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
-> 
-> No changes since v2, just a rebase onto net-next.
-> 
-> [...]
+# uname -a
+Linux ubuntu 4.4.0-142-generic #168~14.04.1-Ubuntu SMP Sat Jan 19
+11:26:28 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+# ip -6 -d route show table local dev eth0
+unicast ff00::/8 proto boot scope global metric 256 pref medium
 
-Here is the summary with links:
-  - [1/7] net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-    https://git.kernel.org/netdev/net-next/c/7d2a92445e3f
-  - [2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/090c7ae8e0d0
-  - [3/7] net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function header
-    https://git.kernel.org/netdev/net-next/c/935888cda820
-  - [4/7] net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en' parameter
-    https://git.kernel.org/netdev/net-next/c/e49e4647f3e2
-  - [5/7] net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
-    https://git.kernel.org/netdev/net-next/c/807086021bf5
-  - [6/7] net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc misdemeanours
-    https://git.kernel.org/netdev/net-next/c/b51036321461
-  - [7/7] net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
-    https://git.kernel.org/netdev/net-next/c/e242d5989965
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Regards,
+-- 
+per aspera ad upstream
