@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D692F9489
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A902F9488
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbhAQSYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:24:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43861 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728498AbhAQSYa (ORCPT
+        id S1729812AbhAQSWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:22:08 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59442 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729315AbhAQSWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:24:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610907784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJIoOhvCGZIzme7GO6g9mBo0n7uG93HV8b3Dtunyfrg=;
-        b=SGWlaBJvuxbiVeUhLZBqJCK3xQ4Qh0VGnTj+cSN/b9xxqL+P1cYiX2HvX2ayakE3KNjqG2
-        MjmiDXC2RFx754j1dGOF2S5O0lhHkAfIdQZQlx5g4zCNpr7xSNotJkA6ane9wjUB7p263+
-        FWF0wLhVjZwp0TA9pf30vwsb/13dcGQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-BMWZBLvZOSWpQNHebyic1A-1; Sun, 17 Jan 2021 13:20:33 -0500
-X-MC-Unique: BMWZBLvZOSWpQNHebyic1A-1
-Received: by mail-ed1-f70.google.com with SMTP id f4so891940eds.5
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 10:20:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uJIoOhvCGZIzme7GO6g9mBo0n7uG93HV8b3Dtunyfrg=;
-        b=mcaTRt8lm/Ea0ZQLuLDGpbu0svaqSV4OKs0ARim39k/y4uQjIMMNVP2j6uULoYizdI
-         r2B8EQEiB2YolpU4RklXYumYrnBJD/AwFTDY8HQALkCG62tTARZBUKvIc7IHpph/mSEt
-         K+LDXho/JfoCemLaN3ZTYD95uKrOSWjQBobLyPUaqm49rCba72l4ybrT7xyCZTaqGD5l
-         z0XmAUxRBfFQv2H/oG6+YcqA7Y72g7bqs7YMjGZAfewlgSWjD10FYMvPXuyL33G/mB2q
-         ZmeHZaltljtO6rZZmAXmKVNPCInJ1z9JOrpkTo2JQUtHBwwu2qqBw7U3KCN47yVsAcTO
-         pyHA==
-X-Gm-Message-State: AOAM531ibQcBeYY17ILynf40noCHxnMl9JH/CKutDNRpa6PjvfyoOdEJ
-        Ht3/hKW6V9zanqvsV4Fug/nuNbuWVTKmVV0DpqhAntJAMn3vRm46Ugq2zxarfZzsgDeArh3r75Q
-        9lKfx2dQeVpSUP6xke0q4Xstv
-X-Received: by 2002:a17:906:44a:: with SMTP id e10mr10232558eja.265.1610907632174;
-        Sun, 17 Jan 2021 10:20:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxFsUFM3peO0LryV+GLQp/07YHvRk9lCVbQSK1TBRwPv7+UzJlbfaFJ8w6pkDzpCproASUr3w==
-X-Received: by 2002:a17:906:44a:: with SMTP id e10mr10232541eja.265.1610907632001;
-        Sun, 17 Jan 2021 10:20:32 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d18sm9608042edz.14.2021.01.17.10.20.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 10:20:31 -0800 (PST)
-To:     Wei Huang <whuang2@amd.com>, Wei Huang <wei.huang2@amd.com>,
-        kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, mlevitsk@redhat.com
-References: <20210112063703.539893-1-wei.huang2@amd.com>
- <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
- <ed93c796-1750-7cb8-ed4d-dc9c4b68b5a3@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-Message-ID: <7ea9f2d8-6688-612c-21a8-f3f3517da122@redhat.com>
-Date:   Sun, 17 Jan 2021 19:20:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 17 Jan 2021 13:22:02 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 96E761F44A51
+Received: by earth.universe (Postfix, from userid 1000)
+        id BC9953C0C95; Sun, 17 Jan 2021 19:21:17 +0100 (CET)
+Date:   Sun, 17 Jan 2021 19:21:17 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        nicolassaenzj@gmail.com,
+        Nicolas Saenz Julienne <nicolas.saenz@prodys.net>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH] power: supply: fix sbs-charger build, needs REGMAP_I2C
+Message-ID: <20210117182117.ewq2e6ce2c5p2mdz@earth.universe>
+References: <20210116211310.19232-1-rdunlap@infradead.org>
+ <537de36b-6709-3e58-5610-9f54e2bee8a9@fold.natur.cuni.cz>
 MIME-Version: 1.0
-In-Reply-To: <ed93c796-1750-7cb8-ed4d-dc9c4b68b5a3@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zzpialt2nuswu7ld"
+Content-Disposition: inline
+In-Reply-To: <537de36b-6709-3e58-5610-9f54e2bee8a9@fold.natur.cuni.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/01/21 08:00, Wei Huang wrote:
-> If the whole body inside if-statement is moved out, do you expect the
-> interface of x86_emulate_decoded_instruction to be something like:
-> 
-> int x86_emulate_decoded_instruction(struct kvm_vcpu *vcpu,
->                                      gpa_t cr2_or_gpa,
->                                      int emulation_type, void *insn,
->                                      int insn_len,
->                                      bool write_fault_to_spt)
 
-An idea is to making the body of the new function just
+--zzpialt2nuswu7ld
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-         init_emulate_ctxt(vcpu);
+Hi,
 
-         /*
-          * We will reenter on the same instruction since
-          * we do not set complete_userspace_io.  This does not
-          * handle watchpoints yet, those would be handled in
-          * the emulate_ops.
-          */
-         if (!(emulation_type & EMULTYPE_SKIP) &&
-             kvm_vcpu_check_breakpoint(vcpu, &r))
-                 return r;
+On Sun, Jan 17, 2021 at 10:48:44AM +0100, Martin Mokrejs wrote:
+> Hi Randy,
+>   thank you very much. I would not mind dropping my name but I tested the=
+ patch
+> now with 5.4.89 so you may actually also add
+>=20
+> Tested-by: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
+>=20
+> It also happened with 5.10.7, it is probably obvious.
+>=20
+> Thank you for quick action.
+> Martin
+>=20
+> On 16/01/2021 22:13, Randy Dunlap wrote:
+> > CHARGER_SBS should select REGMAP_I2C since it uses API(s) that are
+> > provided by that Kconfig symbol.
+> >=20
+> > Fixes these errors:
+> >=20
+> > ../drivers/power/supply/sbs-charger.c:149:21: error: variable =E2=80=98=
+sbs_regmap=E2=80=99 has initializer but incomplete type
+> >  static const struct regmap_config sbs_regmap =3D {
+> > ../drivers/power/supply/sbs-charger.c:150:3: error: =E2=80=98const stru=
+ct regmap_config=E2=80=99 has no member named =E2=80=98reg_bits=E2=80=99
+> >   .reg_bits =3D 8,
+> > ../drivers/power/supply/sbs-charger.c:155:23: error: =E2=80=98REGMAP_EN=
+DIAN_LITTLE=E2=80=99 undeclared here (not in a function)
+> >   .val_format_endian =3D REGMAP_ENDIAN_LITTLE, /* since based on SMBus =
+*/
+> > ../drivers/power/supply/sbs-charger.c: In function =E2=80=98sbs_probe=
+=E2=80=99:
+> > ../drivers/power/supply/sbs-charger.c:183:17: error: implicit declarati=
+on of function =E2=80=98devm_regmap_init_i2c=E2=80=99; did you mean =E2=80=
+=98devm_request_irq=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+> >   chip->regmap =3D devm_regmap_init_i2c(client, &sbs_regmap);
+> > ../drivers/power/supply/sbs-charger.c: At top level:
+> > ../drivers/power/supply/sbs-charger.c:149:35: error: storage size of =
+=E2=80=98sbs_regmap=E2=80=99 isn=E2=80=99t known
+> >  static const struct regmap_config sbs_regmap =3D {
+> >=20
+> > Fixes: feb583e37f8a ("power: supply: add sbs-charger driver")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Sebastian Reichel <sre@kernel.org>
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: nicolassaenzj@gmail.com
+> > Cc: Nicolas Saenz Julienne <nicolas.saenz@prodys.net>
+> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > ---
+> > Martin, do you want Reported-by: on this?
 
-         ctxt->interruptibility = 0;
-         ctxt->have_exception = false;
-         ctxt->exception.vector = -1;
-         ctxt->exception.error_code_valid = false;
+Thanks, queued. I added Reported-by and Tested-by from Martin.
 
-         ctxt->perm_ok = false;
+-- Sebastian
 
-         ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> >=20
+> >  drivers/power/supply/Kconfig |    1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > --- linux-next-20210115.orig/drivers/power/supply/Kconfig
+> > +++ linux-next-20210115/drivers/power/supply/Kconfig
+> > @@ -229,6 +229,7 @@ config BATTERY_SBS
+> >  config CHARGER_SBS
+> >  	tristate "SBS Compliant charger"
+> >  	depends on I2C
+> > +	select REGMAP_I2C
+> >  	help
+> >  	  Say Y to include support for SBS compliant battery chargers.
+> > =20
+> >=20
+>=20
 
-         r = x86_decode_insn(ctxt, insn, insn_len);
+--zzpialt2nuswu7ld
+Content-Type: application/pgp-signature; name="signature.asc"
 
-         trace_kvm_emulate_insn_start(vcpu);
-         ++vcpu->stat.insn_emulation;
-         return r;
+-----BEGIN PGP SIGNATURE-----
 
-because for the new caller, on EMULATION_FAILED you can just re-enter 
-the guest.
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAEgBcACgkQ2O7X88g7
++prWyBAAoxtPZN6DuY6SHm6D8CnY7c7aVcpUum3Ipc3dLD1HOKOc2t+qo2dtMBbX
+WJALYV/QhsBmOChnNNd9962fOhxlU8mpBftAO6FONjCJnupRdG5cTqacJBcUv8R2
+UZb6ABAmFkjScRUoGXR7OcBirzCbwNh9/e0sIxu4JrCAA9qtXuFCQt4/lAtWVSiT
+m582qGLMDEH9cbrmlITgAmDPgzXZHQJugCAA0zt1kFbd5d7XfZCHXW50lAvNb+Bw
+MvApWZEK0hD1YrGcYOLwz8CMHoiDUYZm+3LC0n4gZoZxVc9ey/84pr0PnI0b9Ttr
+K346KBMnArUpBATUG3OloCdfGc744anNe+FA5DbpYZc0YeZJ9QJ8nHe8H/bzsSFW
+RxzeWwejrfj2jE5f+avln0Cuup+5uzt7XUh/xV4tTU/PjhUfdDBiU+k3ai/9r2ql
+qtAP5vi1BOov7unk6HOZmtCHRTzIhDtyRM7/hXt9ktKXnfU/WJDGzRomSJR0clfT
+yTFROIEBCAiE9czAogHnD8h8IL7lVAoIzmZNCsI4nwiL/9csYm9LtUwHNZwhIg0x
+ZHKuWpFqHF0zT23kofOTiZyfIeXWnx9jlwHP12s3672K+Ks2ZDp95uVZXK0d0uDJ
+ZsmM+MlPwqw4JUhssPZE1rsjZrjxipY9LosE3ziM29byjak4GUc=
+=4asC
+-----END PGP SIGNATURE-----
 
-> And if so, what is the emulation type to use when calling this function
-> from svm.c? EMULTYPE_VMWARE_GP?
-
-Just 0 I think.
-
-Paolo
-
+--zzpialt2nuswu7ld--
