@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9388E2F95D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 23:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF022F95DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 23:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbhAQWKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 17:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730386AbhAQWKD (ORCPT
+        id S1730294AbhAQWVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 17:21:39 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:59238 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728172AbhAQWV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 17:10:03 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC2BC0613D6
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 14:08:38 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 89BFE1F55A;
-        Sun, 17 Jan 2021 23:08:36 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v3 7/7] arm64: dts: pmi8998: Add the right interrupts for LAB/IBB SCP and OCP
-Date:   Sun, 17 Jan 2021 23:08:30 +0100
-Message-Id: <20210117220830.150948-8-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
-References: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 17 Jan 2021 17:21:29 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10HMKTLX188305;
+        Sun, 17 Jan 2021 22:20:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=aQXP7VaR4helTx5fp3TxcstYosj8Dr8qshg/Npy+5HE=;
+ b=dgT6IyMfYYDsofTr4x8Elmp4QLP2p/ghavxHC8fpP/3C3mzG3w5XGinkD+ZKyC1mvd1s
+ Vr1IRRx40pV44i3h7mjIapEDDellBRW7n4nZR6qIoAdnbpm0zx2jvPcOFZ8e4NAh1EiY
+ nuOXBW0Qs0lENhTyE5+42LUAq4RBSF/xHXEFEoSdYtJzVAHSVrRtgPHVcdN8NNT0MFgg
+ P1Br9xPcc7bU4EtZpGpYwylsaAsqBt9aasMNLlu2Ard4t8ZTmtC3NkNk322hffYuBcdb
+ 7KgbM+NCYqmpKe0krp8MmXTYMu5yfSjhMiptmJGXr8IEEgn6QGwNhb7UR9YL2x2inPj4 xA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 363xyhj8ey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 17 Jan 2021 22:20:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10HMK2VJ160336;
+        Sun, 17 Jan 2021 22:20:28 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 364a1vp91x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 17 Jan 2021 22:20:28 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10HMKR1U028171;
+        Sun, 17 Jan 2021 22:20:27 GMT
+Received: from localhost.localdomain (/95.45.14.174)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 17 Jan 2021 14:20:27 -0800
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, morbo@google.com,
+        shuah@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v2 bpf-next 0/4] libbpf: BTF dumper support for typed data
+Date:   Sun, 17 Jan 2021 22:16:00 +0000
+Message-Id: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101170140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 spamscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101170140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 208921bae696 ("arm64: dts: qcom: pmi8998: Add nodes for
-LAB and IBB regulators") bindings for the lab/ibb regulators were
-added to the pmi8998 dt, but the original committer has never
-specified what the interrupts were for.
-LAB and IBB regulators provide two interrupts, SC-ERR (short
-circuit error) and VREG-OK but, in that commit, the regulators
-were provided with two different types of interrupts;
-specifically, IBB had the SC-ERR interrupt, while LAB had the
-VREG-OK one, none of which were (luckily) used, since the driver
-didn't actually use these at all.
-Assuming that the original intention was to have the SC IRQ in
-both LAB and IBB, as per the names appearing in documentation,
-fix the SCP interrupt.
+Add a libbpf dumper function that supports dumping a representation
+of data passed in using the BTF id associated with the data in a
+manner similar to the bpf_snprintf_btf helper.
 
-While at it, also add the OCP interrupt in order to be able to
-enable the Over-Current Protection feature, if requested.
+Default output format is identical to that dumped by bpf_snprintf_btf(),
+for example a "struct sk_buff" representation would look like this:
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/pmi8998.dtsi | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+struct sk_buff){
+ (union){
+  (struct){
+   .next = (struct sk_buff *)0xffffffffffffffff,
+   .prev = (struct sk_buff *)0xffffffffffffffff,
+   (union){
+    .dev = (struct net_device *)0xffffffffffffffff,
+    .dev_scratch = (long unsigned int)18446744073709551615,
+   },
+  },
+...
 
-diff --git a/arch/arm64/boot/dts/qcom/pmi8998.dtsi b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
-index d016b12967eb..d230c510d4b7 100644
---- a/arch/arm64/boot/dts/qcom/pmi8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
-@@ -30,11 +30,15 @@ labibb {
- 			compatible = "qcom,pmi8998-lab-ibb";
- 
- 			ibb: ibb {
--				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>;
-+				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>,
-+					     <0x3 0xdc 0x0 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "sc-err", "ocp";
- 			};
- 
- 			lab: lab {
--				interrupts = <0x3 0xde 0x0 IRQ_TYPE_EDGE_RISING>;
-+				interrupts = <0x3 0xde 0x1 IRQ_TYPE_EDGE_RISING>,
-+					     <0x3 0xde 0x0 IRQ_TYPE_LEVEL_LOW>;
-+				interrupt-names = "sc-err", "ocp";
- 			};
- 		};
- 	};
+Patches 1 and 2 make functions available that are needed during
+dump operations.
+
+Patch 3 implements the dump functionality in a manner similar
+to that in kernel/bpf/btf.c, but with a view to fitting into
+libbpf more naturally.  For example, rather than using flags,
+boolean dump options are used to control output.
+
+Patch 4 is a selftest that utilizes a dump printf function
+to snprintf the dump output to a string for comparison with
+expected output.  Tests deliberately mirror those in
+snprintf_btf helper test to keep output consistent.
+
+Changes since RFC [1]
+
+- The initial approach explored was to share the kernel code
+  with libbpf using #defines to paper over the different needs;
+  however it makes more sense to try and fit in with libbpf
+  code style for maintenance.  A comment in the code points at
+  the implementation in kernel/bpf/btf.c and notes that any
+  issues found in it should be fixed there or vice versa;
+  mirroring the tests should help with this also
+  (Andrii)
+
+[1] https://lore.kernel.org/bpf/1610386373-24162-1-git-send-email-alan.maguire@oracle.com/T/#t
+
+Alan Maguire (4):
+  libbpf: add btf_has_size() and btf_int() inlines
+  libbpf: make skip_mods_and_typedefs available internally in libbpf
+  libbpf: BTF dumper support for typed data
+  selftests/bpf: add dump type data tests to btf dump tests
+
+ tools/lib/bpf/btf.h                               |  36 +
+ tools/lib/bpf/btf_dump.c                          | 974 ++++++++++++++++++++++
+ tools/lib/bpf/libbpf.c                            |   4 +-
+ tools/lib/bpf/libbpf.map                          |   5 +
+ tools/lib/bpf/libbpf_internal.h                   |   2 +
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c | 233 ++++++
+ 6 files changed, 1251 insertions(+), 3 deletions(-)
+
 -- 
-2.29.2
+1.8.3.1
 
