@@ -2,215 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4732F943D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 18:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BA32F9449
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 18:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbhAQRoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 12:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729972AbhAQRod (ORCPT
+        id S1729380AbhAQRwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 12:52:17 -0500
+Received: from relay02.th.seeweb.it ([5.144.164.163]:50367 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbhAQRwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 12:44:33 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD907C061573;
-        Sun, 17 Jan 2021 09:43:52 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id c18so8252054oto.3;
-        Sun, 17 Jan 2021 09:43:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tMDYAz1pcj84nMeQHFK12E26S9/O9jmFFjULa1oURTA=;
-        b=pLjOXjUntYAE/ggZnSXScD/DaoICvnle5d0XGm/a32S7PAxfN6QuhxNKsIF3FpSZMh
-         nb5WMrfb9NayshRIO7QN4P70Vpf2if/ILkN0n7zr9xoQvpDQSdjhtV4jELZlY3BUZuEM
-         trW6mJpGt6t4qhE50N0LoWjcy8X4mqYtqAo9QD1nucRNympCqZ2N/yHtD0exhfumM4Er
-         c2qfsS+9Add6z2tU3dDWObKxTfnZnenetyNLv/Mz1cf3lK1XTvt0u+1qDl4sv99KCe+S
-         TTGAofvOkJcaGgUvwhfWTCwWtbIklPeDTCP9LFishRNtFqdVo8kISVp1V8HKN/sMJ+lF
-         wK+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tMDYAz1pcj84nMeQHFK12E26S9/O9jmFFjULa1oURTA=;
-        b=gUoFvzH6DTxNXVPY9ILJGsxVU5bfgpSGW7k/XglbQRmceQrvS/x4QWzqulqSLnfeBP
-         HcOiU9YmjEE1FZMdKtNNlfOci2bWMtD/b7q6Vy2CDTA+bSrdU+AX/9jhQ8dzuK3PoUQj
-         RlbDdZgqF5fTVxCXHCwNQAlAMBSywiNpXQtCgtcI+RhqJSA5COqEuulsB/RsY4k2H/Wn
-         FNVoi66kHdQqloup85/Uq+x5KrqqMhFiDkBJzfQ5jsoVLYnlmF34CQlSVmXGbtTWF3Mc
-         B5IyVm5l+zDojTiaZqS/v+/N/DSRsvZU3i8OUsNenzdG1Z7ObtGBQuU4M+9mgYDxdB3K
-         H0mA==
-X-Gm-Message-State: AOAM531RL/6GxPvkFuH/deJt6ZRGKk1izgJAXvl00KcROcnhwMoMVcY8
-        mr0/ClOCQcHQqmyE50uqxb00LxXE7QQ=
-X-Google-Smtp-Source: ABdhPJw1xzKjrlHsz0gVmd2NFTcsxhLrktpAuJiCemlq78SyrLFQkTyV8dbuErOUO1x8yxfC8/LqwA==
-X-Received: by 2002:a9d:ea6:: with SMTP id 35mr15093975otj.188.1610905431845;
-        Sun, 17 Jan 2021 09:43:51 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l12sm3142862ooq.22.2021.01.17.09.43.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 09:43:51 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and
- external vbus supply control
-To:     cy_huang <u0084500@gmail.com>, heikki.krogerus@linux.intel.com,
-        matthias.bgg@gmail.com, robh+dt@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, gene_chen@richtek.com,
-        devicetree@vger.kernel.org
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net>
-Date:   Sun, 17 Jan 2021 09:43:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 17 Jan 2021 12:52:02 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 3DE8A1F498;
+        Sun, 17 Jan 2021 18:51:05 +0100 (CET)
+Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: i2c: Add IMX300 CMOS
+ sensor binding
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210113182934.444727-1-angelogioacchino.delregno@somainline.org>
+ <20210113182934.444727-3-angelogioacchino.delregno@somainline.org>
+ <20210116234404.GX850@valkosipuli.retiisi.org.uk>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <b681819b-1fc9-a6ea-bb20-f234dcdb3cb7@somainline.org>
+Date:   Sun, 17 Jan 2021 18:51:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210116234404.GX850@valkosipuli.retiisi.org.uk>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 6:13 AM, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+Il 17/01/21 00:44, Sakari Ailus ha scritto:
+> Hi AngeloGioacchino,
 > 
-> MT6360 not support for TCPC command to control source and sink.
-
-does not
-
-> Uses external 5V vbus regulator as the vbus source control.
+> On Wed, Jan 13, 2021 at 07:29:34PM +0100, AngeloGioacchino Del Regno wrote:
+>> Add YAML device tree binding for IMX300 CMOS image sensor, and
+>> the relevant MAINTAINERS entries.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   .../bindings/media/i2c/sony,imx300.yaml       | 112 ++++++++++++++++++
+>>   MAINTAINERS                                   |   7 ++
+>>   2 files changed, 119 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+>> new file mode 100644
+>> index 000000000000..4fa767feea80
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+>> @@ -0,0 +1,112 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/i2c/sony,imx300.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Sony 1/2.3-Inch 25Mpixel Stacked CMOS Digital Image Sensor
+>> +
+>> +maintainers:
+>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> +
+>> +description: |-
+>> +  The Sony IMX300 is a 1/2.3-inch Stacked CMOS (Exmor-RS) digital image
+>> +  sensor with a pixel size of 1.08um and an active array size of
+>> +  5948H x 4140V. It is programmable through I2C interface at address 0x10.
+>> +  Image data is sent through MIPI CSI-2, which is configured as either 2 or
+>> +  4 data lanes.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: sony,imx300
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
 > 
-Use
-
-> Also adds the capability to report vsafe0v.
+> Please add assigned clock related properties; see
+> Documentation/driver-api/media/camera-sensor.rst .
 > 
-add
+Will do!
 
-So far this driver works without regulator. Unless I am missing something,
-this patch makes regulator support mandatory, meaning existing code will fail.
-I am not sure if that is appropriate/acceptable. Can we be sure that this will
-work for existing users of this driver ?
-
-Thanks,
-Guenter
-
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
->  drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
+>> +
+>> +  vdig-supply:
+>> +    description:
+>> +      Digital I/O voltage supply, 1.15-1.20 volts
+>> +
+>> +  vana-supply:
+>> +    description:
+>> +      Analog voltage supply, 2.2 volts
+>> +
+>> +  vddl-supply:
+>> +    description:
+>> +      Digital core voltage supply, 1.8 volts
+>> +
+>> +  reset-gpios:
+>> +    description: |-
+>> +      Reference to the GPIO connected to the xclr pin, if any.
+>> +      Must be released (set high) after all supplies are applied.
+>> +
+>> +  # See ../video-interfaces.txt for more details
+>> +  port:
+>> +    type: object
+>> +    properties:
+>> +      endpoint:
+>> +        type: object
+>> +
+>> +        properties:
+>> +          data-lanes:
+>> +            description: |-
+>> +              The driver only supports four-lane operation.
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> index f1bd9e0..0edf4b6 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> @@ -11,6 +11,7 @@
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/usb/tcpm.h>
->  
->  #include "tcpci.h"
-> @@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
->  	struct tcpci_data tdata;
->  	struct tcpci *tcpci;
->  	struct device *dev;
-> +	struct regulator *vbus;
->  	int irq;
->  };
->  
-> @@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct regmap *regmap,
->  	return regmap_raw_write(regmap, reg, &val, sizeof(u16));
->  }
->  
-> +static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_data *data, bool src, bool snk)
-> +{
-> +	struct mt6360_tcpc_info *mti = container_of(data, struct mt6360_tcpc_info, tdata);
-> +	int ret;
-> +
-> +	/* To correctly handle the already enabled vbus and disable its supply first */
-> +	if (regulator_is_enabled(mti->vbus)) {
-> +		ret = regulator_disable(mti->vbus);
-> +		if (ret)
-> +			return ret;
-> +	}
+> This can be removed as bindings describe hardware, not driver operation.
+> 
+Ack.
 
-Is it really a good idea to disable vbus if it happens to be already enabled
-and there is (another ?) request to enable it ?
-
-> +
-> +	if (src) {
-> +		ret = regulator_enable(mti->vbus);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *tdata)
->  {
->  	struct regmap *regmap = tdata->regmap;
-> @@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_device *pdev)
->  	if (mti->irq < 0)
->  		return mti->irq;
->  
-> +	mti->vbus = devm_regulator_get(&pdev->dev, "vbus");
-> +	if (IS_ERR(mti->vbus))
-> +		return PTR_ERR(mti->vbus);
-> +
->  	mti->tdata.init = mt6360_tcpc_init;
-> +	mti->tdata.set_vbus = mt6360_tcpc_set_vbus;
-> +	mti->tdata.vbus_vsafe0v = 1;
->  	mti->tcpci = tcpci_register_port(&pdev->dev, &mti->tdata);
->  	if (IS_ERR(mti->tcpci)) {
->  		dev_err(&pdev->dev, "Failed to register tcpci port\n");
+>> +            items:
+>> +              - const: 0
+>> +              - const: 1
+>> +              - const: 2
+>> +              - const: 3
+> 
+> Two lanes here, too?
 > 
 
+The driver only supports four-lane operation.
+I am 100% sure that this sensor can also work with two lanes, but it 
+needs special configuration which I'm not able to produce, nor test.
+
+As you may imagine (and as you can read in the driver itself), all of 
+this was reverse-engineering work, as Sony has never released any 
+datasheet for this sensor - and I have a hunch - they never will (but 
+that's another story).
+
+>> +
+>> +          clock-noncontinuous: true
+>> +
+>> +          link-frequencies:
+>> +            $ref: /schemas/types.yaml#/definitions/uint64-array
+>> +            description:
+>> +              Allowed data bus frequencies. The driver currently needs
+>> +              to switch between 780000000 and 480000000 Hz in order to
+>> +              guarantee functionality of all modes.
+> 
+> You can omit this description, too.
+> 
+
+The intention here was to be clear and provide as much information as I 
+could gather during the very time-consuming reverse engineering process 
+that took place in the making of this driver.
+
+But okay, I will remove this.
+
+>> +
+>> +        required:
+>> +          - data-lanes
+>> +          - link-frequencies
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - vana-supply
+>> +  - vdig-supply
+>> +  - vddl-supply
+> 
+> Are the regulators really required? I'm not quite sure about the
+> established practices; still the common case is that one or two of these
+> are hard-wired.
+> 
+
+On all the Sony phones that I have (....many), with MSM8956, MSM8996, 
+SDM630, equipped with the IMX300 camera assy, none of these three are 
+hard-wired: sometimes they're wired to the LDOs of the PMIC, sometimes 
+they're wired to fixed LDOs, enabled through GPIOs (fixed-regulator 
+binding in this case).
+
+So.. yeah, they're really required.
+
+>> +  - port
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2c0 {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +
+>> +        imx300: sensor@10 {
+>> +            compatible = "sony,imx300";
+>> +            reg = <0x10>;
+>> +            clocks = <&imx300_xclk>;
+>> +            vana-supply = <&imx300_vana>;   /* 2.2v */
+>> +            vdig-supply = <&imx300_vdig>;   /* 1.2v */
+>> +            vddl-supply = <&imx300_vddl>;   /* 1.8v */
+>> +
+>> +            port {
+>> +                imx300_0: endpoint {
+>> +                    remote-endpoint = <&csi1_ep>;
+>> +                    data-lanes = <0 1 2 3>;
+>> +                    clock-noncontinuous;
+>> +                    link-frequencies = /bits/ 64 <780000000 480000000>;
+>> +                };
+>> +            };
+>> +        };
+>> +    };
+>> +
+>> +...
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index ad9abb42f852..5e0f08f48d48 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -16633,6 +16633,13 @@ T:	git git://linuxtv.org/media_tree.git
+>>   F:	Documentation/devicetree/bindings/media/i2c/imx290.txt
+>>   F:	drivers/media/i2c/imx290.c
+>>   
+>> +SONY IMX300 SENSOR DRIVER
+>> +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> +L:	linux-media@vger.kernel.org
+> 
+> Please also add the git tree.
+> 
+> Ideally also the MAINTAINERS change comes with the first patch adding the
+> files, which should be the DT bindings. I.e. just reverse the order of the
+> patches.
+> 
+
+I haven't added it because last time I did that I got reviews saying 
+that if I'm not the owner of the git tree I shall not put it in.
+Though, if that's a requirement for media, then I didn't know that...
+
+>> +S:	Maintained
+>> +F:	Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+>> +F:	drivers/media/i2c/imx300.c
+>> +
+>>   SONY IMX319 SENSOR DRIVER
+>>   M:	Bingbu Cao <bingbu.cao@intel.com>
+>>   L:	linux-media@vger.kernel.org
+> 
+
+Thank you for your review!
+
+Yours,
+- Angelo
