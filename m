@@ -2,142 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383DB2F9158
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 09:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D2F9178
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 09:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbhAQIUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 03:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S1728267AbhAQIxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 03:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbhAQIN4 (ORCPT
+        with ESMTP id S1728030AbhAQIJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 03:13:56 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D5DC061573;
-        Sun, 17 Jan 2021 00:12:25 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id y205so2499829pfc.5;
-        Sun, 17 Jan 2021 00:12:25 -0800 (PST)
+        Sun, 17 Jan 2021 03:09:10 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91F0C061573;
+        Sun, 17 Jan 2021 00:08:24 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id m6so8330129pfk.1;
+        Sun, 17 Jan 2021 00:08:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rSY/jrqLE+xOv61lVEk8pIJIbYebtwDyEErxSngDBhg=;
-        b=ocYqFyxFVb5XjD7dZxd1w0rFvPHUXzYyn3XZUO1XQWXe9+z1ED0cUz0zNfOqNfIM04
-         S+qSoHGs16IrD2KvoIsMdW7Iw4qZWEk753xhhHUsirZCnCcVNmkAORt+o+jqS7Wqa812
-         eerlXnZRZnmrsIVwnEUt2W5JwwIHUOcKPlvtQuZQLgsulAk4mH03I2MlgqdNMbvphJMl
-         zR7J502XkNLbPhPoI3PW2fXE8UJDvfMOIa8i8HN2LfisET7joAVR9jnCAjNM5YwE8ur6
-         1x3ZHzZ0g9P5toOQRDE7yx7nsRbMKfqVg6aC2A/KtCnRc2+uyAOEYI31dpun4/7FliLy
-         u5lg==
+        bh=obnZR0NyV+B7lkaH0Nw+SIxRwBgzDZBrRGSyQNYyqF4=;
+        b=ejYLM1ndmWurwe076eG8EGGkdxWecZCUr2RbOqzLqnTM01YKGT1RYofleCAtF2+3ms
+         JVNerc58NRVu9W5SqOvRzi3sAxUqdqUqzpyfIze9ENNclGlKpZBA9sUilkmMxeNCkq8L
+         nHxJGp4lKbFDsbHpaI9HQq7xGjKHwxtZxO+DP8M3DItGOMfeB2VQ7mv/D58ClRADnwC2
+         Jy4TAZ8o0ClZSj42shXRF+wzNJJY34Rjznbu4lkz20bfnaT/K8f+0ECyGGXmt60XIMfd
+         3uEQORS+WDwTCrOlwmUjR/s9goxc6zTxeIXGEyHuEEyjPzwoTikUie5sxiZOext78nXC
+         2D8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rSY/jrqLE+xOv61lVEk8pIJIbYebtwDyEErxSngDBhg=;
-        b=kwV/RempH4giVCII8sVN6tI7yQpuLmwMTaP573ayuAspEwkY3sOpOPn9ZT5R++fV0Q
-         OeKMz7Gm/5btxDcRrd6cc1eGzV0wtXrnZAiT39yjye3DpwH0I0n9R+JkyMHVQmmmru2o
-         tXGetFqkwmWwIOCdGxBmawLV9YlKbHKLQsPcWNRk7RvNDQDJTbdZBGvZnCYmFbYIyOhn
-         3EC/nmlSjdjlQSdtpkYPUGq+zOHbcCh8E/hJnTMQKnTUhfrYmpx0k/+SQHapFyY7abUH
-         RxG+tMvkLKRoDI1PXGRqmUMDu6agiJJ05m01U13qYhJW5sQIP8sMHflmbvts1n/xkkZI
-         QuFQ==
-X-Gm-Message-State: AOAM533dk/TnedCU/qf9997x0hlVsMiFPxlmQL562EKcG0T/OevWXoyU
-        bjjVu7WpJHWokM/aT3XLOyufllM/4/8=
-X-Google-Smtp-Source: ABdhPJzQjsbnPwQLrrx/8rMxLvvZ/XoCOYp/lUIKuo7V6rTsxJ4Wrwu8pd6EqiSrlW6BY35QlZfOrA==
-X-Received: by 2002:a63:504e:: with SMTP id q14mr20922360pgl.21.1610871145026;
-        Sun, 17 Jan 2021 00:12:25 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id h24sm13168401pfq.13.2021.01.17.00.12.23
+        bh=obnZR0NyV+B7lkaH0Nw+SIxRwBgzDZBrRGSyQNYyqF4=;
+        b=OvFJhOKuUEGxAyZxDEPaL5srlHVa5PFHwNxKD2ja/ZWKk2gHN+1joxsFv6snISBC+j
+         43Dc9CDZpVFOa8mUbjPCSy/VbVsPfQFIchy5VzmBzCyRtgUFNA/yLmZv06LTXw0W41rm
+         fsMX9wyrPRz/KR9xxV3ebpDF4Yi3A/XhgVD4cC1rzMIOegncYX9HZxmjqhISrNOuLBdK
+         81sDWcuhVphjasI2v4FEjWjDTQNU/hLLxMO3B1g+fJN5pj+Ps9CPLgYvj4rVVQON3OdQ
+         iNK7EocQwj8hk56j3Ym/f2YHdHRzW/3HSSnVctfGTgUdDpZhHe0uB4xEtQS6I9iKFx0h
+         lUhw==
+X-Gm-Message-State: AOAM531ocjbozgy/wfvgZ0qsd/PHJFasseTbajUbmUvW1DK5eThegkfK
+        KKIhThik8kcU38/PeqTLv6X/dWzDogw=
+X-Google-Smtp-Source: ABdhPJxGv/KkGSl3zhNdF/S54a/Bxrdpg9qBPCsCcVnEbVy9rJvtCrKwuhhp/O+Ya/m1SlqW4Amf5Q==
+X-Received: by 2002:a62:e213:0:b029:19e:59d3:a76a with SMTP id a19-20020a62e2130000b029019e59d3a76amr20967860pfi.53.1610870904227;
+        Sun, 17 Jan 2021 00:08:24 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:b827:9276:e0ac:7060])
+        by smtp.gmail.com with ESMTPSA id j17sm12145855pfh.183.2021.01.17.00.08.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 00:12:24 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v4 net-next] net: bridge: check vlan with eth_type_vlan() method
-Date:   Sun, 17 Jan 2021 16:09:50 +0800
-Message-Id: <20210117080950.122761-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.30.0
+        Sun, 17 Jan 2021 00:08:23 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net] net: lapb: Add locking to the lapb module
+Date:   Sun, 17 Jan 2021 00:08:16 -0800
+Message-Id: <20210117080816.22475-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+In the lapb module, the timers may run concurrently with other code in
+this module, and there is currently no locking to prevent the code from
+racing on "struct lapb_cb". This patch adds locking to prevent racing.
 
-Replace some checks for ETH_P_8021Q and ETH_P_8021AD with
-eth_type_vlan().
+1. Add "spinlock_t lock" to "struct lapb_cb"; Add "spin_lock_bh" and
+"spin_unlock_bh" to APIs, timer functions and notifier functions.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+2. Add "bool t1timer_stop, t2timer_stop" to "struct lapb_cb" to make us
+able to ask running timers to abort; Modify "lapb_stop_t1timer" and
+"lapb_stop_t2timer" to make them able to abort running timers;
+Modify "lapb_t2timer_expiry" and "lapb_t1timer_expiry" to make them
+abort after they are stopped by "lapb_stop_t1timer", "lapb_stop_t2timer",
+and "lapb_start_t1timer", "lapb_start_t2timer".
+
+3. In lapb_unregister, change "lapb_stop_t1timer" and "lapb_stop_t2timer"
+to "del_timer_sync" to make sure all running timers have exited.
+
+4. In lapb_device_event, replace the "lapb_disconnect_request" call with
+the content of "lapb_disconnect_request", to avoid trying to hold the
+lock twice. When doing this, "lapb_start_t1timer" is removed because
+I don't think it's necessary to start the timer when "NETDEV_GOING_DOWN".
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
 ---
-v4:
-- remove unnecessary brackets.
+ include/net/lapb.h    |  2 ++
+ net/lapb/lapb_iface.c | 54 +++++++++++++++++++++++++++++++++++++++----
+ net/lapb/lapb_timer.c | 30 ++++++++++++++++++++----
+ 3 files changed, 78 insertions(+), 8 deletions(-)
 
-v3:
-- fix compile warning in br_vlan_set_proto() by casting 'val' to
-  be16.
-
-v2:
-- use eth_type_vlan() in br_validate() and __br_vlan_set_proto()
-  too.
----
- net/bridge/br_forward.c |  3 +--
- net/bridge/br_netlink.c | 12 +++---------
- net/bridge/br_vlan.c    |  2 +-
- 3 files changed, 5 insertions(+), 12 deletions(-)
-
-diff --git a/net/bridge/br_forward.c b/net/bridge/br_forward.c
-index e28ffadd1371..6e9b049ae521 100644
---- a/net/bridge/br_forward.c
-+++ b/net/bridge/br_forward.c
-@@ -39,8 +39,7 @@ int br_dev_queue_push_xmit(struct net *net, struct sock *sk, struct sk_buff *skb
- 	br_drop_fake_rtable(skb);
+diff --git a/include/net/lapb.h b/include/net/lapb.h
+index ccc3d1f020b0..eee73442a1ba 100644
+--- a/include/net/lapb.h
++++ b/include/net/lapb.h
+@@ -92,6 +92,7 @@ struct lapb_cb {
+ 	unsigned short		n2, n2count;
+ 	unsigned short		t1, t2;
+ 	struct timer_list	t1timer, t2timer;
++	bool			t1timer_stop, t2timer_stop;
  
- 	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (skb->protocol == htons(ETH_P_8021Q) ||
--	     skb->protocol == htons(ETH_P_8021AD))) {
-+	    eth_type_vlan(skb->protocol)) {
- 		int depth;
+ 	/* Internal control information */
+ 	struct sk_buff_head	write_queue;
+@@ -103,6 +104,7 @@ struct lapb_cb {
+ 	struct lapb_frame	frmr_data;
+ 	unsigned char		frmr_type;
  
- 		if (!__vlan_get_protocol(skb, skb->protocol, &depth))
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 49700ce0e919..762f273802cd 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1096,15 +1096,9 @@ static int br_validate(struct nlattr *tb[], struct nlattr *data[],
- 		return 0;
++	spinlock_t		lock;
+ 	refcount_t		refcnt;
+ };
  
- #ifdef CONFIG_BRIDGE_VLAN_FILTERING
--	if (data[IFLA_BR_VLAN_PROTOCOL]) {
--		switch (nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL])) {
--		case htons(ETH_P_8021Q):
--		case htons(ETH_P_8021AD):
--			break;
--		default:
--			return -EPROTONOSUPPORT;
--		}
--	}
-+	if (data[IFLA_BR_VLAN_PROTOCOL] &&
-+	    !eth_type_vlan(nla_get_be16(data[IFLA_BR_VLAN_PROTOCOL])))
-+		return -EPROTONOSUPPORT;
+diff --git a/net/lapb/lapb_iface.c b/net/lapb/lapb_iface.c
+index 40961889e9c0..ad6197381d05 100644
+--- a/net/lapb/lapb_iface.c
++++ b/net/lapb/lapb_iface.c
+@@ -122,6 +122,8 @@ static struct lapb_cb *lapb_create_cb(void)
  
- 	if (data[IFLA_BR_VLAN_DEFAULT_PVID]) {
- 		__u16 defpvid = nla_get_u16(data[IFLA_BR_VLAN_DEFAULT_PVID]);
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index 701cad646b20..bb2909738518 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -917,7 +917,7 @@ int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
+ 	timer_setup(&lapb->t1timer, NULL, 0);
+ 	timer_setup(&lapb->t2timer, NULL, 0);
++	lapb->t1timer_stop = true;
++	lapb->t2timer_stop = true;
  
- int br_vlan_set_proto(struct net_bridge *br, unsigned long val)
+ 	lapb->t1      = LAPB_DEFAULT_T1;
+ 	lapb->t2      = LAPB_DEFAULT_T2;
+@@ -129,6 +131,8 @@ static struct lapb_cb *lapb_create_cb(void)
+ 	lapb->mode    = LAPB_DEFAULT_MODE;
+ 	lapb->window  = LAPB_DEFAULT_WINDOW;
+ 	lapb->state   = LAPB_STATE_0;
++
++	spin_lock_init(&lapb->lock);
+ 	refcount_set(&lapb->refcnt, 1);
+ out:
+ 	return lapb;
+@@ -178,8 +182,8 @@ int lapb_unregister(struct net_device *dev)
+ 		goto out;
+ 	lapb_put(lapb);
+ 
+-	lapb_stop_t1timer(lapb);
+-	lapb_stop_t2timer(lapb);
++	del_timer_sync(&lapb->t1timer);
++	del_timer_sync(&lapb->t2timer);
+ 
+ 	lapb_clear_queues(lapb);
+ 
+@@ -201,6 +205,8 @@ int lapb_getparms(struct net_device *dev, struct lapb_parms_struct *parms)
+ 	if (!lapb)
+ 		goto out;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	parms->t1      = lapb->t1 / HZ;
+ 	parms->t2      = lapb->t2 / HZ;
+ 	parms->n2      = lapb->n2;
+@@ -219,6 +225,7 @@ int lapb_getparms(struct net_device *dev, struct lapb_parms_struct *parms)
+ 	else
+ 		parms->t2timer = (lapb->t2timer.expires - jiffies) / HZ;
+ 
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ 	rc = LAPB_OK;
+ out:
+@@ -234,6 +241,8 @@ int lapb_setparms(struct net_device *dev, struct lapb_parms_struct *parms)
+ 	if (!lapb)
+ 		goto out;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	rc = LAPB_INVALUE;
+ 	if (parms->t1 < 1 || parms->t2 < 1 || parms->n2 < 1)
+ 		goto out_put;
+@@ -256,6 +265,7 @@ int lapb_setparms(struct net_device *dev, struct lapb_parms_struct *parms)
+ 
+ 	rc = LAPB_OK;
+ out_put:
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ out:
+ 	return rc;
+@@ -270,6 +280,8 @@ int lapb_connect_request(struct net_device *dev)
+ 	if (!lapb)
+ 		goto out;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	rc = LAPB_OK;
+ 	if (lapb->state == LAPB_STATE_1)
+ 		goto out_put;
+@@ -285,6 +297,7 @@ int lapb_connect_request(struct net_device *dev)
+ 
+ 	rc = LAPB_OK;
+ out_put:
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ out:
+ 	return rc;
+@@ -299,6 +312,8 @@ int lapb_disconnect_request(struct net_device *dev)
+ 	if (!lapb)
+ 		goto out;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	switch (lapb->state) {
+ 	case LAPB_STATE_0:
+ 		rc = LAPB_NOTCONNECTED;
+@@ -330,6 +345,7 @@ int lapb_disconnect_request(struct net_device *dev)
+ 
+ 	rc = LAPB_OK;
+ out_put:
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ out:
+ 	return rc;
+@@ -344,6 +360,8 @@ int lapb_data_request(struct net_device *dev, struct sk_buff *skb)
+ 	if (!lapb)
+ 		goto out;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	rc = LAPB_NOTCONNECTED;
+ 	if (lapb->state != LAPB_STATE_3 && lapb->state != LAPB_STATE_4)
+ 		goto out_put;
+@@ -352,6 +370,7 @@ int lapb_data_request(struct net_device *dev, struct sk_buff *skb)
+ 	lapb_kick(lapb);
+ 	rc = LAPB_OK;
+ out_put:
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ out:
+ 	return rc;
+@@ -364,7 +383,9 @@ int lapb_data_received(struct net_device *dev, struct sk_buff *skb)
+ 	int rc = LAPB_BADTOKEN;
+ 
+ 	if (lapb) {
++		spin_lock_bh(&lapb->lock);
+ 		lapb_data_input(lapb, skb);
++		spin_unlock_bh(&lapb->lock);
+ 		lapb_put(lapb);
+ 		rc = LAPB_OK;
+ 	}
+@@ -435,6 +456,8 @@ static int lapb_device_event(struct notifier_block *this, unsigned long event,
+ 	if (!lapb)
+ 		return NOTIFY_DONE;
+ 
++	spin_lock_bh(&lapb->lock);
++
+ 	switch (event) {
+ 	case NETDEV_UP:
+ 		lapb_dbg(0, "(%p) Interface up: %s\n", dev, dev->name);
+@@ -453,8 +476,30 @@ static int lapb_device_event(struct notifier_block *this, unsigned long event,
+ 		}
+ 		break;
+ 	case NETDEV_GOING_DOWN:
+-		if (netif_carrier_ok(dev))
+-			lapb_disconnect_request(dev);
++		switch (lapb->state) {
++		case LAPB_STATE_0:
++			break;
++
++		case LAPB_STATE_1:
++			lapb_dbg(1, "(%p) S1 TX DISC(1)\n", lapb->dev);
++			lapb_dbg(0, "(%p) S1 -> S0\n", lapb->dev);
++			lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
++			lapb->state = LAPB_STATE_0;
++			break;
++
++		case LAPB_STATE_2:
++			break;
++
++		default:
++			lapb_clear_queues(lapb);
++			lapb->n2count = 0;
++			lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
++			lapb_stop_t2timer(lapb);
++			lapb->state = LAPB_STATE_2;
++			lapb_dbg(1, "(%p) S3 DISC(1)\n", lapb->dev);
++			lapb_dbg(0, "(%p) S3 -> S2\n", lapb->dev);
++		}
++
+ 		break;
+ 	case NETDEV_DOWN:
+ 		lapb_dbg(0, "(%p) Interface down: %s\n", dev, dev->name);
+@@ -489,6 +534,7 @@ static int lapb_device_event(struct notifier_block *this, unsigned long event,
+ 		break;
+ 	}
+ 
++	spin_unlock_bh(&lapb->lock);
+ 	lapb_put(lapb);
+ 	return NOTIFY_DONE;
+ }
+diff --git a/net/lapb/lapb_timer.c b/net/lapb/lapb_timer.c
+index baa247fe4ed0..0230b272b7d1 100644
+--- a/net/lapb/lapb_timer.c
++++ b/net/lapb/lapb_timer.c
+@@ -40,6 +40,7 @@ void lapb_start_t1timer(struct lapb_cb *lapb)
+ 	lapb->t1timer.function = lapb_t1timer_expiry;
+ 	lapb->t1timer.expires  = jiffies + lapb->t1;
+ 
++	lapb->t1timer_stop = false;
+ 	add_timer(&lapb->t1timer);
+ }
+ 
+@@ -50,16 +51,19 @@ void lapb_start_t2timer(struct lapb_cb *lapb)
+ 	lapb->t2timer.function = lapb_t2timer_expiry;
+ 	lapb->t2timer.expires  = jiffies + lapb->t2;
+ 
++	lapb->t2timer_stop = false;
+ 	add_timer(&lapb->t2timer);
+ }
+ 
+ void lapb_stop_t1timer(struct lapb_cb *lapb)
  {
--	if (val != ETH_P_8021Q && val != ETH_P_8021AD)
-+	if (!eth_type_vlan(htons(val)))
- 		return -EPROTONOSUPPORT;
++	lapb->t1timer_stop = true;
+ 	del_timer(&lapb->t1timer);
+ }
  
- 	return __br_vlan_set_proto(br, htons(val));
+ void lapb_stop_t2timer(struct lapb_cb *lapb)
+ {
++	lapb->t2timer_stop = true;
+ 	del_timer(&lapb->t2timer);
+ }
+ 
+@@ -72,16 +76,31 @@ static void lapb_t2timer_expiry(struct timer_list *t)
+ {
+ 	struct lapb_cb *lapb = from_timer(lapb, t, t2timer);
+ 
++	spin_lock_bh(&lapb->lock);
++	if (timer_pending(&lapb->t2timer)) /* A new timer has been set up */
++		goto out;
++	if (lapb->t2timer_stop) /* The timer has been stopped */
++		goto out;
++
+ 	if (lapb->condition & LAPB_ACK_PENDING_CONDITION) {
+ 		lapb->condition &= ~LAPB_ACK_PENDING_CONDITION;
+ 		lapb_timeout_response(lapb);
+ 	}
++
++out:
++	spin_unlock_bh(&lapb->lock);
+ }
+ 
+ static void lapb_t1timer_expiry(struct timer_list *t)
+ {
+ 	struct lapb_cb *lapb = from_timer(lapb, t, t1timer);
+ 
++	spin_lock_bh(&lapb->lock);
++	if (timer_pending(&lapb->t1timer)) /* A new timer has been set up */
++		goto out;
++	if (lapb->t1timer_stop) /* The timer has been stopped */
++		goto out;
++
+ 	switch (lapb->state) {
+ 
+ 		/*
+@@ -108,7 +127,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
+ 				lapb->state = LAPB_STATE_0;
+ 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
+ 				lapb_dbg(0, "(%p) S1 -> S0\n", lapb->dev);
+-				return;
++				goto out;
+ 			} else {
+ 				lapb->n2count++;
+ 				if (lapb->mode & LAPB_EXTENDED) {
+@@ -132,7 +151,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
+ 				lapb->state = LAPB_STATE_0;
+ 				lapb_disconnect_confirmation(lapb, LAPB_TIMEDOUT);
+ 				lapb_dbg(0, "(%p) S2 -> S0\n", lapb->dev);
+-				return;
++				goto out;
+ 			} else {
+ 				lapb->n2count++;
+ 				lapb_dbg(1, "(%p) S2 TX DISC(1)\n", lapb->dev);
+@@ -150,7 +169,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
+ 				lapb_stop_t2timer(lapb);
+ 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
+ 				lapb_dbg(0, "(%p) S3 -> S0\n", lapb->dev);
+-				return;
++				goto out;
+ 			} else {
+ 				lapb->n2count++;
+ 				lapb_requeue_frames(lapb);
+@@ -167,7 +186,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
+ 				lapb->state = LAPB_STATE_0;
+ 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
+ 				lapb_dbg(0, "(%p) S4 -> S0\n", lapb->dev);
+-				return;
++				goto out;
+ 			} else {
+ 				lapb->n2count++;
+ 				lapb_transmit_frmr(lapb);
+@@ -176,4 +195,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
+ 	}
+ 
+ 	lapb_start_t1timer(lapb);
++
++out:
++	spin_unlock_bh(&lapb->lock);
+ }
 -- 
-2.30.0
+2.27.0
 
