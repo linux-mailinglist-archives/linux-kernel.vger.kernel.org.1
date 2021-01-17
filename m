@@ -2,200 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5D02F9240
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 13:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126532F9243
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 13:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728823AbhAQMLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 07:11:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:43208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728499AbhAQMKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 07:10:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 203701FB;
-        Sun, 17 Jan 2021 04:10:09 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56F123F719;
-        Sun, 17 Jan 2021 04:10:06 -0800 (PST)
-Subject: Re: [PATCH V2 10/11] coresight: sink: Add TRBE driver
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-11-git-send-email-anshuman.khandual@arm.com>
- <fbcf3c8f-f4c1-bf7f-35ae-e06d3d372cae@arm.com>
- <43bc1738-040c-1e48-b8f1-d337dcfcff2e@arm.com>
- <f6262d21-c72e-3b7e-59a1-8f14441d809d@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2fb48d88-f195-ca48-5d87-f402ac4e4381@arm.com>
-Date:   Sun, 17 Jan 2021 17:40:23 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728834AbhAQMOf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Jan 2021 07:14:35 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23230 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728271AbhAQMO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 07:14:29 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-235-t1_aKn7QNNi0mUNHc-a20Q-1; Sun, 17 Jan 2021 12:12:48 +0000
+X-MC-Unique: t1_aKn7QNNi0mUNHc-a20Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 17 Jan 2021 12:12:47 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 17 Jan 2021 12:12:47 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] iov_iter: optimise iter type checking
+Thread-Topic: [PATCH] iov_iter: optimise iter type checking
+Thread-Index: AQHW5qm9/hT6YRd33Eq5lMaMuw9mB6of0+hQgAnsyIGAAgC4EA==
+Date:   Sun, 17 Jan 2021 12:12:47 +0000
+Message-ID: <6d5bd939aeaf425bbecf36a95c307f94@AcuMS.aculab.com>
+References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
+ <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
+ <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
+ <20210109170359.GT3579531@ZenIV.linux.org.uk>
+ <b04df39d77114547811d7bfc2c0d4c8c@AcuMS.aculab.com>
+ <1783c58f-1016-0c6b-be7f-a93bc2f8f2a4@gmail.com>
+ <20210116051818.GF3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20210116051818.GF3579531@ZenIV.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <f6262d21-c72e-3b7e-59a1-8f14441d809d@arm.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/15/21 6:13 PM, Suzuki K Poulose wrote:
-> On 1/15/21 5:29 AM, Anshuman Khandual wrote:
->>
->>
->> On 1/13/21 8:58 PM, Suzuki K Poulose wrote:
->>> Hi Anshuman,
->>>
->>> The driver looks overall good to me. Please find some minor comments below
-
-Sure.
-
->>>
->>> On 1/13/21 4:18 AM, Anshuman Khandual wrote:
->>>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
->>>> accessible via the system registers. The TRBE supports different addressing
->>>> modes including CPU virtual address and buffer modes including the circular
->>>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
->>>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
->>>> access to the trace buffer could be prohibited by a higher exception level
->>>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
->>>> private interrupt (PPI) on address translation errors and when the buffer
->>>> is full. Overall implementation here is inspired from the Arm SPE driver.
->>>>
->>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Al Viro
+> Sent: 16 January 2021 05:18
 > 
-> ...
+> On Sat, Jan 09, 2021 at 10:11:09PM +0000, Pavel Begunkov wrote:
 > 
->>>> +
->>>> +/*
->>>> + * TRBE Buffer Management
->>>> + *
->>>> + * The TRBE buffer spans from the base pointer till the limit pointer. When enabled,
->>>> + * it starts writing trace data from the write pointer onward till the limit pointer.
->>>
->>>
->>>> + * When the write pointer reaches the address just before the limit pointer, it gets
->>>> + * wrapped around again to the base pointer. This is called a TRBE wrap event, which
->>>> + * generates a maintenance interrupt when operated in WRAP or STOP mode.
->>>
->>> According to the TRM, it is FILL mode, instead of STOP. So please change the above to:
->>>
->>> "operated in WRAP or FILL mode".
+> > > Does any code actually look at the fields as a pair?
+> > > Would it even be better to use separate bytes?
+> > > Even growing the on-stack structure by a word won't really matter.
+> >
+> > u8 type, rw;
+> >
+> > That won't bloat the struct. I like the idea. If used together compilers
+> > can treat it as u16.
+> 
+> Reasonable, and from what I remember from looking through the users,
+> no readers will bother with looking at both at the same time.
 
-Changed.
+I couldn't find any.
+...
+> So... something like (completely untested) variant below, perhaps?
+> 
+> diff --git a/include/linux/uio.h b/include/linux/uio.h
+> index 72d88566694e..ed8ad2c5d384 100644
+> --- a/include/linux/uio.h
+> +++ b/include/linux/uio.h
+> @@ -19,20 +19,16 @@ struct kvec {
+> 
+>  enum iter_type {
+>  	/* iter types */
+> -	ITER_IOVEC = 4,
+> -	ITER_KVEC = 8,
+> -	ITER_BVEC = 16,
+> -	ITER_PIPE = 32,
+> -	ITER_DISCARD = 64,
+> +	ITER_IOVEC,
+> +	ITER_KVEC,
+> +	ITER_BVEC,
+> +	ITER_PIPE,
+> +	ITER_DISCARD
+>  };
+> 
+>  struct iov_iter {
+> -	/*
+> -	 * Bit 0 is the read/write bit, set if we're writing.
+> -	 * Bit 1 is the BVEC_FLAG_NO_REF bit, set if type is a bvec and
+> -	 * the caller isn't expecting to drop a page reference when done.
+> -	 */
+> -	unsigned int type;
+> +	u8 iter_type;
+> +	bool data_source;
 
->>
->> Updated.
->>
->>>
->>>
->>>>      The write
->>>> + * pointer again starts writing trace data from the base pointer until just before
->>>> + * the limit pointer before getting wrapped again with an IRQ and this process just
->>>> + * goes on as long as the TRBE is enabled.
->>>
->>> This could be dropped as it applies to WRAP/CIRCULAR buffer mode, which we don't use.
->>
->> Probably this could be changed a bit to match the FILL mode. Because it is essential
->> to describe the continuous nature of the buffer operation, even in the FILL mode.
->>
->>   * After TRBE
->>   * IRQ gets handled and enabled again, write pointer again starts writing trace data
->>   * from the base pointer until just before the limit pointer before getting wrapped
->>   * again with an IRQ and this process just goes on as long as the TRBE is enabled.
->>
-> 
-> The above doesn't parse well and kind of repeats the operation of TRBE which is
-> already explained above. How about :
-> 
->>>> + * When the write pointer reaches the address just before the limit pointer, it gets
->>>> + * wrapped around again to the base pointer. This is called a TRBE wrap event, which
->>>> + * generates a maintenance interrupt when operated in WRAP or STOP mode.
-> 
-> This driver uses FILL mode, where the TRBE stops the trace collection at wrap event.
-> The IRQ handler updates the AUX buffer and re-enables the TRBE with updated WRITE and
-> LIMIT pointers.
+I'd leave it as 'u8 direction' and assign READ (0) or WRITE (1) to it.
+It will always be confusing whether WRITE means a 'write' system call
+or a transfer that will write into the buffer (eg a read system call).
 
-Updated.
+I'm pretty sure I can detect the performance change from forcing
+the compiler to convert values to 'bool'.
 
-> 
-> 
->>>> +
->>>> +static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
->>>> +                   struct perf_event *event, void **pages,
->>>> +                   int nr_pages, bool snapshot)
->>>> +{
->>>> +    struct trbe_buf *buf;
->>>> +    struct page **pglist;
->>>> +    int i;
->>>> +
->>>> +    if ((nr_pages < 2) || (snapshot && (nr_pages & 1)))
->>>
->>> This restriction on snapshot could be removed now, since we use the
->>> full buffer.
->>
->> Dropped only the second condition here i.e (snapshot && (nr_pages & 1).
->> Just wondering if the aux buffer could work with a single page so that
->> the first condition can also be dropped.
-> 
-> I think it is good to keep the restriction of 2 pages, as the WRITE_PTR
-> and the LIMIT_PTR must be page aligned. With a single page, you can't do
-> much, with writing into a partially filled buffer. This may be added
-> as a comment to explain the restriction.
+...
 
-Added the above comment.
+Since you've still got tests like:
 
-> 
->>>> +
->>>> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle)
->>>> +{
->>>> +    int ec = get_trbe_ec();
->>>> +    int bsc = get_trbe_bsc();
->>>> +
->>>> +    WARN_ON(is_trbe_running());
->>>> +    if (is_trbe_trg() || is_trbe_abort())
->>>
->>> We seem to be reading the TRBSR every single in these helpers. Could we optimise them
->>> by passing the register value in ?
->>
->> The same goes for get_trbe_ec() and get_trbe_bsc() as well. Probably all
->> TRBSR field probing helpers should be modified to accept a TRBSR register
->> value instead.
->>
->>>
->>> i.e
->>>      u64 trbsr = get_trbe_status();
->>>
->>>      WARN_ON(is_trbe_runnign(trbsr))
->>>      if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
->>>
->>> For is_trbe_wrap() too
->>
->> Yes.
->>
->>>
-> 
-> 
->>>
->>> We should skip the driver init, if the kernel is unmapped at EL0,
->>> as the TRBE can't safely write to the kernel virtual addressed
->>> buffer when the CPU is running at EL0. This is unlikely, but we
->>> should cover that case.
->>
->> This should be sufficient or it needs a pr_err() as well ?
->>
-> 
-> Please add a pr_err() message to indicate why this failed. Otherwise
-> the user could be left with no clue.
+> +	if (i->iter_type == ITER_BVEC || i->iter_type == ITER_KVEC) {
 
-Sure, will add the following before exiting the TRBE init.
+It is probably still worth using bit values.
+After all, the only thing that benefits from small dense integers
+is a case statement lookup table - and we don't do those any more.
 
-pr_err("TRBE wouldn't work if kernel gets unmapped at EL0\n")
+Otherwise you might as well use 'i', 'k', 'b', 'p' and 'd' so that
+anyone hexdumping the structure (or reading the asm decode) knows
+the type without having to go and look it up.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
