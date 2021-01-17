@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8390D2F9566
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9B02F9569
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbhAQVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:10:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728455AbhAQVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D089C2247F;
-        Sun, 17 Jan 2021 21:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610917769;
-        bh=kIjdvp+ADgQ6Kr/fbUx7Jyl4hLbCnO317WqMdyCKTL8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uhypB+G66uE2ciBdF97/opsrzwyfWmfL+3/uJiFHfGOn/9It9MafV+LIRqpHallR+
-         6t69CaxxFYhZUW93ROb6EBk5knF+kNI5xcx9/Fmz+tIERJjLCIL1NkJwfRp/prPDbN
-         z21ej5i4GmZ/jpE3UuxJCKnjgqIkqPggoYZ/oQKL2gkIbpDRGJ/pvlNN/8JRqrH38r
-         ivpd26Tq8CZyOMS632n7ka9ugSpiUibAKlx2NMoI738iWPZgRDkPB0I605VZYJMPNT
-         EL4bVBQFHUDcAH+888FjxAYYJpd2jDTPAlJKKxWUEyfRIN4Jt6b6YZH065bz0yr8en
-         J501du8THxDdA==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Al Grant <al.grant@foss.arm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v5.11
-Date:   Sun, 17 Jan 2021 18:09:08 -0300
-Message-Id: <20210117210908.13730-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1729283AbhAQVQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726785AbhAQVPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 16:15:55 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26E7C061573;
+        Sun, 17 Jan 2021 13:15:14 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id 6so7321165wri.3;
+        Sun, 17 Jan 2021 13:15:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=jU5xZt4ZGGg5V25qXIr6WdPMU0NBUDnBFNWZBAT6X+0=;
+        b=Tz9UVGWXaGHqzyAQCbw3J/kzNbeG0QwiRtDaiv3Tfx+tT+9OZ8P/xv0D6SBiPGSkAD
+         7JufDrDEyqlzV5eXk4pIJB7LuX40V6tVTlYC4H6SYOq+h6Aioucms3ODro/SSW7twhYg
+         51uuk2qi0ttMbQOOIvCi+lvAgOJJfqroDqXSpmTTrOfA623PZ6h/e0K1q6H9BwShTe41
+         snbenmG+SYePulp56f8DVe8QJ7dn788mMPlZkg4mD6Ey8uunixsHQZ+YlYhVn57Scuq4
+         DCU//k8R1zAAGhK1ONpTIJm9uaTruZRRFZ92qoGrfKrNON2tcXRxyVDdZkn+0A62QrhJ
+         T9vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=jU5xZt4ZGGg5V25qXIr6WdPMU0NBUDnBFNWZBAT6X+0=;
+        b=RvvfU2ZyyDGKeFEC/kxu6FIsClBuSVGHG9imY9YnCCSXPk6hNhLab8smPnWlrJ4n3a
+         pBQlNKlqI1bryv8L8A54m0U30hIPhxZbt3ArEMcX0LqlPNPZzXqhh3qocYRnlSDlsaB5
+         VfTuiyb0GAP9YLyItyFzXIf36XT7KUsV2evVVV8jpuIRhniqFuOnkrpWZzf+lInY0UMv
+         Qg5h4JKPL6bGRFe3cZoMLyLy9JZytUw2i8xGM6u5XVsIhOdgFTgS8j7ulpjiwaqf0j6X
+         qeFI7ZwpmqfpsKIg9knIdEFG9Z2EtNr6GGmtCb7oV8rZbPDDgg87kI6/infSrjK68OD0
+         sxyw==
+X-Gm-Message-State: AOAM531dV1abRyq6CLh5x8Tsi2ga0ttURk8F0MRzigbGZpkQU0I4q6J6
+        O2ur6RcYCq+9M6VWxRJZTA/tHylfBIA=
+X-Google-Smtp-Source: ABdhPJzeZMKzgf7s2G+Fjc7CxiN7nf8qJ818bKfHiQ3vOEyJ4dwhfkGs/dDeLV9G68Z1GHr9f4My8Q==
+X-Received: by 2002:adf:f6c9:: with SMTP id y9mr23315026wrp.121.1610918113281;
+        Sun, 17 Jan 2021 13:15:13 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id o18sm4270956wmh.20.2021.01.17.13.15.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Jan 2021 13:15:12 -0800 (PST)
+Subject: Re: [PATCH v3 0/4] Remove one more platform_device_add_properties()
+ call
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg KH <greg@kroah.com>, Felipe Balbi <balbi@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+References: <20210115094914.88401-1-heikki.krogerus@linux.intel.com>
+ <CAHp75Vc3xjaOugX3d8bohz12OEP=n4BAonNyQJQ=UgBfVZorOg@mail.gmail.com>
+ <c644e72c-bb46-56c2-931e-7cb98b024cc3@gmail.com>
+ <CAHp75VfMOcPyXELoD4S+oQjAaVg6H0Hn2hs2UAbYEKhnFZp36A@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <073ee5a2-65e1-f5b3-c1be-6a1b37475563@gmail.com>
+Date:   Sun, 17 Jan 2021 21:15:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfMOcPyXELoD4S+oQjAaVg6H0Hn2hs2UAbYEKhnFZp36A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-	Please consider pulling,
+On 17/01/2021 21:05, Andy Shevchenko wrote:
+> On Sat, Jan 16, 2021 at 11:29 PM Daniel Scally <djrscally@gmail.com> wrote:
+>> On 16/01/2021 20:23, Andy Shevchenko wrote:
+>>> On Fri, Jan 15, 2021 at 11:52 AM Heikki Krogerus
+>>> <heikki.krogerus@linux.intel.com> wrote:
+>>>> Hi,
+>>>>
+>>>> I'm now clearing the dev_fwnode(dev)->secondary pointer in
+>>>> device_remove_software_node() as requested by Daniel and Andy. Thanks
+>>>> guys, it's much better now. I also took the liberty of including one
+>>>> more PCI ID patch where I add PCI ID for the Alder Lake-P variant. I
+>>>> hope that is OK.
+>>>>
+>>>> Andy, I dropped your Tested-by tag because of the change I made to the
+>>>> first patch. If you have time to retest these, I would much appreciate.
+>>> Since Greg already grabbed a v3 I will test it when it appears in linux-next.
+>>>
+>> It seems the grabbed one is the v2 one though actually
+> In his last message he wrote that he noticed the v3 *as I understand that*.
+> Greg, is it right? I mean you took v3 eventually?
+>
+You're right:
 
-Best regards,
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-testing&id=e68d0119e3284334de5650a1ac42ef4e179f895e
 
-- Arnaldo
+My bad; I went off the automated message but didn't check the tree.
 
-The following changes since commit f4e087c666f54559cb4e530af1fbfc9967e14a15:
 
-  Merge tag 'acpi-5.11-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2021-01-15 10:55:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-2021-01-17
-
-for you to fetch changes up to 648b054a4647cd62e13ba79f398b8b97a7c82b19:
-
-  perf inject: Correct event attribute sizes (2021-01-15 17:28:28 -0300)
-
-----------------------------------------------------------------
-perf tools fixes for 5.11:
-
-- Fix 'CPU too large' error in Intel PT.
-
-- Correct event attribute sizes in 'perf inject'.
-
-- Sync build_bug.h and kvm.h kernel copies.
-
-- Fix bpf.h header include directive in 5sec.c 'perf trace' bpf example.
-
-- libbpf tests fixes.
-
-- Fix shadow stat 'perf test' for non-bash shells.
-
-- Take cgroups into account for shadow stats in 'perf stat'.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Test results in the signed tag at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-fixes-2021-01-17
-
-----------------------------------------------------------------
-Adrian Hunter (1):
-      perf intel-pt: Fix 'CPU too large' error
-
-Al Grant (1):
-      perf inject: Correct event attribute sizes
-
-Arnaldo Carvalho de Melo (3):
-      perf bpf examples: Fix bpf.h header include directive in 5sec.c example
-      tools headers UAPI: Sync kvm.h headers with the kernel sources
-      tools headers: Syncronize linux/build_bug.h with the kernel sources
-
-Ian Rogers (3):
-      libperf tests: Avoid uninitialized variable warning
-      libperf tests: If a test fails return non-zero
-      libperf tests: Fail when failing to get a tracepoint id
-
-Namhyung Kim (3):
-      perf test: Fix shadow stat test for non-bash shells
-      perf stat: Introduce struct runtime_stat_data
-      perf stat: Take cgroups into account for shadow stats
-
- tools/include/linux/build_bug.h            |   5 -
- tools/include/uapi/linux/kvm.h             |   2 +
- tools/lib/perf/tests/test-cpumap.c         |   2 +-
- tools/lib/perf/tests/test-evlist.c         |   7 +-
- tools/lib/perf/tests/test-evsel.c          |   2 +-
- tools/lib/perf/tests/test-threadmap.c      |   2 +-
- tools/perf/examples/bpf/5sec.c             |   2 +-
- tools/perf/tests/shell/stat+shadow_stat.sh |  30 ++-
- tools/perf/util/header.c                   |   8 +
- tools/perf/util/machine.c                  |   4 +-
- tools/perf/util/session.c                  |   2 +-
- tools/perf/util/stat-shadow.c              | 366 +++++++++++++++--------------
- 12 files changed, 224 insertions(+), 208 deletions(-)
