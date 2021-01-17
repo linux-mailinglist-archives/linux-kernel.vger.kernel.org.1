@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1EF2F9649
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AD32F966E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 00:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730701AbhAQXkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 18:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        id S1730137AbhAQXta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 18:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729141AbhAQXkU (ORCPT
+        with ESMTP id S1730464AbhAQXsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 18:40:20 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F326BC061573;
-        Sun, 17 Jan 2021 15:39:39 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id x23so16365836lji.7;
-        Sun, 17 Jan 2021 15:39:39 -0800 (PST)
+        Sun, 17 Jan 2021 18:48:52 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D044C061575;
+        Sun, 17 Jan 2021 15:48:12 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id md11so8331250pjb.0;
+        Sun, 17 Jan 2021 15:48:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NngRK7zKNQEF+k0hgglhDJvcUtXRLFvpYKiRlc5M6rc=;
-        b=pr4QwEDqGnedesfeXXPipZLlwCKrn6jQpn8s0M9nhIOoANbd0LkoDrZ1TENqBjv7DQ
-         BqzJNy99yIusnGtFVQ83ovXwG4RaUOgfuyXTJfFqquIrdsms0VBOg25p7Ut4fqD1M+Nj
-         NUcnOClla9QqliHtwsVnnekGNiPl19vJTBDiCeEh+okvdKD70lQY38mvcNYgbz+4MPso
-         7Ny5vci36OYriOUiqDnbVS+zFOzZGnaV1CJcUTD4QNOH3bEfLSmNnVUzPYgjdMc4rXT7
-         OtkBsZhzKah+jSo8C0/si4Vsf2dBUcQ1fRLOAdgj977IU7mfwS1K8rfsvp5a8V6HKoTd
-         R+Mw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EmCHmedBg9aRizqqRS6XhjxGld3VF0s5zIWola8U/lA=;
+        b=OeD10PE2Mtfp075FZt/mPkAa9M73J7nW2oESa7M87ZvxLwc1hPCGn3Jh3j3nBm3zMP
+         K6qZp4O2mvgagpyadKsgz8o+eieDtNk+fbG7/HxYfMhEI8fcPGFfPtz/lEKJPsCQR1om
+         Gqi8BAUWQM3Nq/cw0eiic96keMoSQJY4VVkF3Y7p0HFyOBQnZgsuqchX4IU6mQ3lw6Ho
+         +IMPgq4Pe1/tDvsq5q7+02rZwssc7GW+fbKuElwKycKxAKSOuC6qTAx2i0poZph4lFNn
+         M6BkggOIoiSpHnRA1hPN+F3kTKh382F1AFlWBLfEC6Et+jGPwxzb7mW5x32lk3pF7P3C
+         pttQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NngRK7zKNQEF+k0hgglhDJvcUtXRLFvpYKiRlc5M6rc=;
-        b=CMoWM2qdnoELWXXknk7t88lGa+atGrGTztDVdneTawIgl4zjt1rTJC0VnpDWcr6ODn
-         rl/f/qviz7Blv51iZq8Mq6nWZ1XPKvgICdTB9wREE4U564r/SChhTlC4TCsfhJ2xSxGh
-         m+yeXdnBT/mc/g5v2c26LSlCNdVhbuVZy0vI9uXBjmBTbAVF7Tb/RJL2s48HBwzo5Grh
-         F4P8aZi5ihcJRXIqiie2l/9qiTOkCI6F/9fQK0iOONr4Le+upuARPuX5ExcALrzHR2Mv
-         szMs9r5OTBEoPx6A/bw9oWCXrshpKS5JJYyFwuaa8fbCgVXJRGSz6fpWfYBVyAhG/Tha
-         AQtA==
-X-Gm-Message-State: AOAM532GG4N7YQuNunO0p+IizbWamY5hlUToX/rpztMPdeP0GGaSY9E4
-        YzP2sOypmhwRhLY8kO3uqMG7pVEgK44=
-X-Google-Smtp-Source: ABdhPJxGEV31xC98dlLp7kilDrh+7rKsEeO12+SULku6Sq8uVrJGDj4ACHuNWm0Cel+Su8Atu+R8lA==
-X-Received: by 2002:a2e:b6d0:: with SMTP id m16mr9116160ljo.133.1610926778317;
-        Sun, 17 Jan 2021 15:39:38 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id y24sm1522328ljm.125.2021.01.17.15.39.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 15:39:37 -0800 (PST)
-Subject: Re: [PATCH v1 2/5] ALSA: hda/tegra: Reset hardware
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-3-digetx@gmail.com> <YAG2K4CjtCdSs6P2@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e26bac65-7cde-439f-a353-3b960691096f@gmail.com>
-Date:   Mon, 18 Jan 2021 02:39:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EmCHmedBg9aRizqqRS6XhjxGld3VF0s5zIWola8U/lA=;
+        b=XayUWzj88RnQQP16mKUQAEHYVDsTlfhb3qyTSXVRC2I/5KenPD6FwCh8rpJ7ez6Iku
+         fxKEmg1DW22WH3reTbY0Ls+NfHZ4U6zj+U3mWfUs6fDx3LAtmjMBqMPyIwAmHSxappsO
+         s7tdsEzuAUmje705SUGqdI6mLZyU0aBCF9d0RBzCUvsmaAyvhon5t7WmnWB284yphFns
+         WlUTmdpSaJRlm4nG0K2krUKm5RQbCHkm4TcLCFvOWEIj4BoJLOxqdajWPPwl2hV1iZrD
+         ltPCY4qUBz04gM7xyDHH6Ap5xlupdDzBSA6TGd++2oeB1Kg8BIGXJUD/XFYzbes1gDTM
+         BBgg==
+X-Gm-Message-State: AOAM533IXbqyjrqN4BReEbivzjFHtQMm0TG5S6ZXB1YZm8NpWvnCBW27
+        wiIFPFY2EIZ3P7wG0cj3Cz/XGhVEuu0=
+X-Google-Smtp-Source: ABdhPJwownJ25eQ4nDOqZMN5rJcNq6v11z0e0Q3pTP1NZPlhVz4cbSChG+9U+gcljpxZpJr2W4E8ew==
+X-Received: by 2002:a17:90a:9ac:: with SMTP id 41mr23334109pjo.46.1610927291611;
+        Sun, 17 Jan 2021 15:48:11 -0800 (PST)
+Received: from sol (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
+        by smtp.gmail.com with ESMTPSA id c5sm14507363pgt.73.2021.01.17.15.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 15:48:10 -0800 (PST)
+Date:   Mon, 18 Jan 2021 07:48:06 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tags need some work in the gpio-brgl-fixes tree
+Message-ID: <20210117234806.GA6731@sol>
+References: <20210118082109.725aff1a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YAG2K4CjtCdSs6P2@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118082109.725aff1a@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.01.2021 18:35, Thierry Reding пишет:
-> On Tue, Jan 12, 2021 at 03:58:31PM +0300, Dmitry Osipenko wrote:
->> Reset hardware in order to bring it into a predictable state.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  sound/pci/hda/hda_tegra.c | 18 ++++++++++++++++++
->>  1 file changed, 18 insertions(+)
->>
->> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
->> index 4c799661c2f6..e406b7980f31 100644
->> --- a/sound/pci/hda/hda_tegra.c
->> +++ b/sound/pci/hda/hda_tegra.c
->> @@ -17,6 +17,7 @@
->>  #include <linux/moduleparam.h>
->>  #include <linux/mutex.h>
->>  #include <linux/of_device.h>
->> +#include <linux/reset.h>
->>  #include <linux/slab.h>
->>  #include <linux/time.h>
->>  #include <linux/string.h>
->> @@ -70,6 +71,7 @@
->>  struct hda_tegra {
->>  	struct azx chip;
->>  	struct device *dev;
->> +	struct reset_control *reset;
->>  	struct clk_bulk_data clocks[3];
->>  	unsigned int nclocks;
->>  	void __iomem *regs;
->> @@ -167,6 +169,12 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
->>  	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
->>  	int rc;
->>  
->> +	if (!(chip && chip->running)) {
+On Mon, Jan 18, 2021 at 08:21:09AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Isn't that check for !chip a bit redundant? If that pointer isn't valid,
-> we're just going to go crash when dereferencing hda later on, so I think
-> this can simply be:
+> In commit
 > 
-> 	if (!chip->running)
+>   ec6c3364b816 ("tools: gpio: fix %llu warning in gpio-watch.c")
 > 
-> I guess you took this from the inverse check below, but I think we can
-> also drop it from there, perhaps in a separate patch.
+> Fixes tag
 > 
->> +		rc = reset_control_assert(hda->reset);
->> +		if (rc)
->> +			return rc;
->> +	}
->> +
->>  	rc = clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
->>  	if (rc != 0)
->>  		return rc;
->> @@ -176,6 +184,10 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
->>  		/* disable controller wake up event*/
->>  		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
->>  			   ~STATESTS_INT_MASK);
->> +	} else {
->> +		rc = reset_control_reset(hda->reset);
+>   Fixes: commit 33f0c47b8fb4 ("tools: gpio: implement gpio-watch")
 > 
-> The "if (chip)" part definitely doesn't make sense after this anymore
-> because now if chip == NULL, then we end up in here and dereference an
-> invalid "hda" pointer.
+> has these problem(s):
+> 
+>   - leading word 'commit' unexpected
+> 
+> In commit
+> 
+>   56835f1c14bc ("tools: gpio: fix %llu warning in gpio-event-mon.c")
+> 
+> Fixes tag
+> 
+>   Fixes: commit 03fd11b03362 ("tools/gpio/gpio-event-mon: fix warning")
+> 
+> has these problem(s):
+> 
+>   - leading word 'commit' unexpected
+> 
 
-Okay, I took a note for the v3.
+Damn - not sure why I started doing that - it is in one of my selftest
+patches as well, and checkpatches.pl doesn't pick it up :-(.
 
-> Also, why reset_control_reset() here? We'll reach this if we ran
-> reset_control_assert() above, so this should just be
-> reset_control_deassert() to undo that, right? I suppose it wouldn't hurt
-> to put throw that standard usleep_range() in there as well that we use
-> to wait between reset assert and deassert to make sure the clocks have
-> stabilized and the reset has indeed propagated through the whole IP.
+Cheers,
+Kent.
 
-The reset_control_reset() does the delaying before the deassert, i.e. it
-does assert -> udelay(1) -> deassert.
 
-https://elixir.free-electrons.com/linux/v5.11-rc3/source/drivers/clk/tegra/clk.c#L133
-
-The reset_control_reset() usage appears to be a bit more code-tidy
-variant in comparison to delaying directly. But I don't mind to use
-delay + reset_control_deassert() directly since it may not be obvious to
-everyone what reset_control_reset() does.
-I'll change it in v3.
