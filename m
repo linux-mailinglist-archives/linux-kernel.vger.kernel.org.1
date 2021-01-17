@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F082F924F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 13:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3632F9254
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 13:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbhAQMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 07:24:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:43802 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbhAQMYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 07:24:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DABEC1FB;
-        Sun, 17 Jan 2021 04:23:22 -0800 (PST)
-Received: from [10.37.8.4] (unknown [10.37.8.4])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C10153F719;
-        Sun, 17 Jan 2021 04:23:20 -0800 (PST)
-Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-5-vincenzo.frascino@arm.com>
- <20210115154520.GD44111@C02TD0UTHF1T.local>
- <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
-Message-ID: <0c1b9a6b-0326-a24f-6418-23a0723adecf@arm.com>
-Date:   Sun, 17 Jan 2021 12:27:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728880AbhAQMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 07:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728271AbhAQMcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 07:32:10 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541B2C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 04:31:29 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id y8so7106985plp.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 04:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1eNK2LT1boji43zRY4FBu8R9cl0kHSUT5374E1w7aVU=;
+        b=g8iHOUwDCOQ+25NugARDen2rDiiyuXafdPhjdwOtFuwT9nLDxZoiQaHsvkkNUZhKMO
+         SPbZyE79LfcuFQzNu2etkSyFvkmHy2XJMKGuMWNsnOgvxDJWvImct8W70wjIbg/tK9s+
+         Wzdp3Xv9k9eDuiKIxnURkx803UFvuHnpy9pYPvxjYMV5RjJIXXi3miWMqWOtvAXX9Fs8
+         MqfurOaWf38TweXtC1dfNZ0I1GQ1j5wmR74JrEmt/cPZLATjVeOKKzfvmDNz6+BGgD10
+         x81QWr8e/rvqIUp6h6SvAqWHPgPkZLB64ijwKzgF685HAUU0dXKZR99qvUxYDaWCO6wo
+         ApoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1eNK2LT1boji43zRY4FBu8R9cl0kHSUT5374E1w7aVU=;
+        b=X1ZF2lD0uBCQ0l54tu8i2WaKFJQRdduS1kz2wSRYm8VQnj/rszyAeP7EP3mNsWso2u
+         DLpBymt0exTEj3Qsl9TUMd9n/5VwE+VhhdcT9HRAnRbWRfXGFiaPDJClBt5c2T5AuQdn
+         P3NrBJfQQZES7yQ9YNZONL0DW87/US2NDQbB2lcUE1YrMugklY36W9EFCunXGl5WQNnb
+         AjiFUvNpAst7SdgjaOA6hproCOLFtc00t8O2NktnLD7bTtXioBbiO+behRB+i+OMLLGu
+         4v+2BzonFnnnga/EnRsayW6DiWO+QXtAmNgntmRDVucTPvTkwh4/dZCMDkcVKwEomcTj
+         hnMw==
+X-Gm-Message-State: AOAM533m/grUBSX1mct0q4gX4kbkpibLpSmlbuxDjzxjCLGufsuzQlvA
+        7+huJ3CRi6+hcvCR/Se6Zr8=
+X-Google-Smtp-Source: ABdhPJzJD7M0FXEi328T5jF/hUKYVlsHqFk+bfidz1VRg6gEmTUZ/jsB1QP677/Dym1Kd0q1sc+WXQ==
+X-Received: by 2002:a17:902:7596:b029:da:b7a3:cdd0 with SMTP id j22-20020a1709027596b02900dab7a3cdd0mr21347449pll.14.1610886688713;
+        Sun, 17 Jan 2021 04:31:28 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.65])
+        by smtp.gmail.com with ESMTPSA id q79sm1333403pfc.63.2021.01.17.04.31.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 04:31:28 -0800 (PST)
+From:   Jiang Biao <benbjiang@gmail.com>
+X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Jiang Biao <benbjiang@tencent.com>
+Subject: [PATCH] sched/fair: add protection for delta of wait time
+Date:   Sun, 17 Jan 2021 20:31:04 +0800
+Message-Id: <20210117123104.27589-1-benbjiang@tencent.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+From: Jiang Biao <benbjiang@tencent.com>
 
-On 1/16/21 2:22 PM, Vincenzo Frascino wrote:
->> Is there any chance that this can be used for the last bytes of the
->> virtual address space? This might need to change to `_addr == _end` if
->> that is possible, otherwise it'll terminate early in that case.
->>
-> Theoretically it is a possibility. I will change the condition and add a note
-> for that.
-> 
+delta in update_stats_wait_end() might be negative, which would
+make following statistics go wrong.
 
-I was thinking to the end of the virtual address space scenario and I forgot
-that if I use a condition like `_addr == _end` the tagging operation overflows
-to the first granule of the next allocation. This disrupts tagging accesses for
-that memory area hence I think that `_addr < _end` is the way to go.
+Add protection for delta of wait time, like what have been done in
+update_stats_enqueue_sleeper() for deltas of sleep/block time.
 
+Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+---
+ kernel/sched/fair.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c0374c1152e0..ac950ac950bc 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -917,6 +917,9 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 
+ 	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
+ 
++	if ((s64)delta < 0)
++		delta = 0;
++
+ 	if (entity_is_task(se)) {
+ 		p = task_of(se);
+ 		if (task_on_rq_migrating(p)) {
 -- 
-Regards,
-Vincenzo
+2.21.0
+
