@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4522F95A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC58D2F95AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 22:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbhAQVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 16:50:13 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55181 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728042AbhAQVuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 16:50:02 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DJpTq4RLfz9sVn;
-        Mon, 18 Jan 2021 08:49:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610920159;
-        bh=5z6wkdBTCB/75/iPjTRc2GPKy8SLN9/ijjIZK51xKM8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GF2/cK5crvlIXSoIFlOOaQaBbPPTSEDc44NBn/+l28ZN4DoT4KI/NpbJHxyXiX+pg
-         X7lTXRGtRu9fCJiE5TQwsymd5El+1RVXZGv9xEC5QhPhz/6oEspA35PBRL4e7l/IiG
-         luP5AalFrVtKc6bcXvGDUgBxwwB4cjw1Xtu84suRMypV/k9pNUy78LpFKsmSBn0x9f
-         DSzY4APCKSuVNXnKSl/aEaK0QV2+JrDAn7A6TMs25tizNfIuKJfjvEtmcgzGifhapY
-         F6pLgQjIl+rnk5at1gdJ5ruQXxGw9LCUt6onZeXy5nu0CRuElb+G/k4T04GU8krMX2
-         ABkdGABWeHnYw==
-Date:   Mon, 18 Jan 2021 08:49:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guo Ren <ren_guo@c-sky.com>
-Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the csky tree
-Message-ID: <20210118084918.356050f3@canb.auug.org.au>
+        id S1730180AbhAQV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 16:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728918AbhAQV7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 16:59:17 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869DEC061573;
+        Sun, 17 Jan 2021 13:58:36 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id m10so16267023lji.1;
+        Sun, 17 Jan 2021 13:58:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z4HhEek/Tw4oVixmxh9pmK2rVtkzaVm9nEVNhWaLiyw=;
+        b=jDmj8Lh2X7IY7EvLIy/ippLSvG+u36PR8Mf4KjMpj6sEGJkVJWqrIV/dJgdtpHChPt
+         x5dfS7+Gf3Clr0jy4FS6yY2j27zVS6+WI0JFwy9B8QXwfS6Kq1R4X7QuGbGfQWwyez2t
+         7k6k7gt0cn2wPjkg5wMKMKZqie8lQL7auL2I5u09vbokUqRB/FOSU3a7lDKC9Z/U3YY6
+         u51JXUm6vBmOOaAdzNbHiBwREMPhDErI1geeDdtyg6LERBhlG/w0vZwDtW4426RcAv4/
+         eJXUKn0oOlOyug7Xg7ir1mYhcr+MxAfJCvf+qBfYXQ7QzfMqIIyIIc5HhAt2k2WOlyE7
+         7RHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z4HhEek/Tw4oVixmxh9pmK2rVtkzaVm9nEVNhWaLiyw=;
+        b=ZVL/jK/CW8p2hHsYw+8cL2iMD40QQ8Jf30+ns0IHbBmZMRrks8hREfqQwQVGvwbUgm
+         6oqm1c4ZZvpESqER7LgDCG+aSv2VqNRHeo4bUbxb7jRp46uCCoQfDoakuF7PwvCqyRhB
+         CNCxAohRkzYJzd+tjWgTuf+Wy0i6WZfOO1MldVBylI3u65sgd83UqHyWAzqqaI1sA7Hq
+         ISZ3mMoncRpPSrbS8zOHm4mR3Si4rEXhiTuLxCh9NYl2gFz6e3DZmNxnHIni5apEBuGg
+         ZnwNgX6j9Q6UBEFaoaRWe2NhftEt9omuHo1c3hX58FeeNM+UKpAaLVVbzdX6PzFPeWiQ
+         zYAQ==
+X-Gm-Message-State: AOAM533OKpSmbvpsS7tqrS0ZfgrMZLRyooyqMYho7YmsI1LAEH2WCFS7
+        EyGIY9eDjsry9fqCIuwYTpiKYeh8L6r3xzhwZOEW3fjDV6zFpw==
+X-Google-Smtp-Source: ABdhPJwokbA6/W6R0raE8C9n2bMjc3KswnhdTLzWgy9AEQ+TqpOAELHUGy8q111zgCEdK7WbqrhT3M/2TzPzNcYcDGk=
+X-Received: by 2002:a2e:9250:: with SMTP id v16mr9459481ljg.256.1610920714945;
+ Sun, 17 Jan 2021 13:58:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=F8TlDbitBZsH4gKP+lZDrI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1610615171-68296-1-git-send-email-abaci-bugfix@linux.alibaba.com> <87czy7lvjy.fsf@suse.com>
+In-Reply-To: <87czy7lvjy.fsf@suse.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 17 Jan 2021 15:58:23 -0600
+Message-ID: <CAH2r5mvjDAgB6-kE=AOAwrETVk+R79z6Gd8gMnOTWqG-6Mnybw@mail.gmail.com>
+Subject: Re: [PATCH] fs/cifs: Replace one-element array with flexible-array member.
+To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
+Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=F8TlDbitBZsH4gKP+lZDrI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Jiapeng,
+Aurelien is correct, you should respin this patch and correct for
+where it breaks the sizeof calculation.  For example your change:
 
-Hi all,
+struct smb2_lock_rsp {
+@@ -1434,7 +1434,7 @@ struct smb2_query_directory_req {
+        __le16 FileNameOffset;
+        __le16 FileNameLength;
+        __le32 OutputBufferLength;
+-       __u8   Buffer[1];
++       __u8   Buffer[];
+ } __packed;
 
-In commit
+would have the side effect of making the file name off by one:
 
-  8bfb676492da ("csky: Fix a size determination in gpr_get()")
+smb2pdu.c-4654- req->FileNameOffset =3D
+smb2pdu.c:4655:         cpu_to_le16(sizeof(struct
+smb2_query_directory_req) - 1);
 
-Fixes tag
+On Thu, Jan 14, 2021 at 3:26 AM Aur=C3=A9lien Aptel via samba-technical
+<samba-technical@lists.samba.org> wrote:
+>
+> Hi Jiapeng,
+>
+> This will change the size returned by sizeof(). Have you checked that
+> this doesn't introduce off-by-one errors in all the sizeof() usage?
+>
+> Cheers,
+> --
+> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
+ DE
+> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
+=BCnchen)
+>
+>
 
-  Fixes: dcad7854fcce ("sky: switch to ->regset_get()")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
 
 --=20
-Cheers,
-Stephen Rothwell
+Thanks,
 
---Sig_/=F8TlDbitBZsH4gKP+lZDrI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAEsN4ACgkQAVBC80lX
-0GyjpAf/d09FYbinZ8MzHMKpDogEZ3pa6SUPQhyqimcDjBP1aqsZ5wbzLp/lR4Sz
-0k7KAeKBWFkFchLIf25YDqtdwURdKv7ANkgTCtZVrNmsZsENnGCbOH2JJ1LUH1og
-zl7RuaouWSQRt32z4ujyAlCgEg9+t1wpqW8gOoN4ihLiBxfm2BUd7sILUsAywfoD
-UX02pQJ9tQ3tCqfTLG4myNUGUNQ8BBwXAWRHYTuEvy+Ue89DL/Qt/znrm1ULxO68
-N0uAYa1bTsTYj10qszWmxep1pRA96V5bBrSfeL417etCSVsN5XojznEK2AF0ZHGt
-igNC7pzhpnDv5s+fBusqUCyE2qYabg==
-=i48N
------END PGP SIGNATURE-----
-
---Sig_/=F8TlDbitBZsH4gKP+lZDrI--
+Steve
