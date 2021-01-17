@@ -2,170 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6572F928B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AAA2F9289
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 14:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbhAQN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 08:26:07 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17386 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727480AbhAQN0C (ORCPT
+        id S1728600AbhAQN0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 08:26:48 -0500
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:49925 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727480AbhAQN0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 08:26:02 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10HD4MVu086084;
-        Sun, 17 Jan 2021 08:24:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=woqyHjUD+Wk6Ib5O7OUBZ1HHzA3VJ6QiDNMM6trQ8E0=;
- b=tgEQN74HAtITOc3FbpINU+z+YxVXlSnqUggB0OwiPIKC9wCM6Mwp8cjbeNRwU2YHin0i
- 4yOXlNUvogquWbyZn2U6sxLPttaeVp6rIZPvwRlTEZdPX5hSm+e3IEruuLJOZf8a4mwC
- XJeuMZRVm0jBM5QDd7NjtdyO7TFbeZeiAC7a68GDMZ/qYljPz/GZoMAKtZnrH8B54erX
- 8Ri5qdkVUJs/Q8XSucKsT1eq6GEOClJSZJCFwk+edGKwc20Zo32ekfBKhIbQ9sQYF0Nu
- Zyq0xPV23CVtscYAvB9zJ1qtrv2Ao4dO4aMOX7TWRIjGeyIXbSjv34hF1+qeCP8nwgp9 UQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 364k16b0d9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 17 Jan 2021 08:24:07 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10HDKrL2160007;
-        Sun, 17 Jan 2021 08:24:06 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 364k16b0cu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 17 Jan 2021 08:24:06 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10HDJ04G021917;
-        Sun, 17 Jan 2021 13:24:04 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 363qs88kdn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 17 Jan 2021 13:24:04 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10HDO1hV26804688
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 17 Jan 2021 13:24:01 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0B7B42041;
-        Sun, 17 Jan 2021 13:24:01 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C64FF4203F;
-        Sun, 17 Jan 2021 13:23:54 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.41.68])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 17 Jan 2021 13:23:54 +0000 (GMT)
-Message-ID: <3c920af2da0d2650bc80bf8099bed7c6c549ca5b.camel@linux.ibm.com>
-Subject: Re: [PATCH v15 09/10] arm64: Call kmalloc() to allocate DTB buffer
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Sun, 17 Jan 2021 08:23:53 -0500
-In-Reply-To: <20210115173017.30617-10-nramas@linux.microsoft.com>
-References: <20210115173017.30617-1-nramas@linux.microsoft.com>
-         <20210115173017.30617-10-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-17_06:2021-01-15,2021-01-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 clxscore=1011 mlxscore=0 adultscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101170082
+        Sun, 17 Jan 2021 08:26:30 -0500
+Received: from localhost.localdomain ([92.131.99.25])
+        by mwinf5d43 with ME
+        id HpQk2400C0Ys01Y03pQkUw; Sun, 17 Jan 2021 14:24:46 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 17 Jan 2021 14:24:46 +0100
+X-ME-IP: 92.131.99.25
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jinpu.wang@cloud.ionos.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] scsi: pm80xx: switch from 'pci_' to 'dma_' API
+Date:   Sun, 17 Jan 2021 14:24:45 +0100
+Message-Id: <20210117132445.562552-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-On Fri, 2021-01-15 at 09:30 -0800, Lakshmi Ramasubramanian wrote:
-> create_dtb() function allocates kernel virtual memory for
-> the device tree blob (DTB).  This is not consistent with other
-> architectures, such as powerpc, which calls kmalloc() for allocating
-> memory for the DTB.
-> 
-> Call kmalloc() to allocate memory for the DTB, and kfree() to free
-> the allocated memory.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-The vmalloc() function description says, "vmalloc - allocate virtually
-contiguous memory".  I'd appreciate your reviewing this patch, in
-particular, which replaces vmalloc() with kmalloc().
+When memory is allocated in 'pm8001_init_ccb_tag()' GFP_KERNEL can be used
+because this function already uses this flag a few lines above.
 
-thanks,
+While at it, remove "pm80xx: " in a debug message. 'pm8001_dbg()' already
+add the driver name in the message.
 
-Mimi
 
-> 
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/arm64/kernel/machine_kexec_file.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-> index 7de9c47dee7c..51c40143d6fa 100644
-> --- a/arch/arm64/kernel/machine_kexec_file.c
-> +++ b/arch/arm64/kernel/machine_kexec_file.c
-> @@ -29,7 +29,7 @@ const struct kexec_file_ops * const kexec_file_loaders[] = {
->  
->  int arch_kimage_file_post_load_cleanup(struct kimage *image)
->  {
-> -	vfree(image->arch.dtb);
-> +	kfree(image->arch.dtb);
->  	image->arch.dtb = NULL;
->  
->  	vfree(image->arch.elf_headers);
-> @@ -59,19 +59,21 @@ static int create_dtb(struct kimage *image,
->  			+ cmdline_len + DTB_EXTRA_SPACE;
->  
->  	for (;;) {
-> -		buf = vmalloc(buf_size);
-> +		buf = kmalloc(buf_size, GFP_KERNEL);
->  		if (!buf)
->  			return -ENOMEM;
->  
->  		/* duplicate a device tree blob */
->  		ret = fdt_open_into(initial_boot_params, buf, buf_size);
-> -		if (ret)
-> +		if (ret) {
-> +			kfree(buf);
->  			return -EINVAL;
-> +		}
->  
->  		ret = of_kexec_setup_new_fdt(image, buf, initrd_load_addr,
->  					     initrd_len, cmdline);
->  		if (ret) {
-> -			vfree(buf);
-> +			kfree(buf);
->  			if (ret == -ENOMEM) {
->  				/* unlikely, but just in case */
->  				buf_size += DTB_EXTRA_SPACE;
-> @@ -217,6 +219,6 @@ int load_other_segments(struct kimage *image,
->  	return 0;
->  
->  out_err:
-> -	vfree(dtb);
-> +	kfree(dtb);
->  	return ret;
->  }
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/scsi/pm8001/pm8001_init.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+index d21078ca7fb3..bd626ef876da 100644
+--- a/drivers/scsi/pm8001/pm8001_init.c
++++ b/drivers/scsi/pm8001/pm8001_init.c
+@@ -423,7 +423,7 @@ static int pm8001_alloc(struct pm8001_hba_info *pm8001_ha,
+ err_out_nodev:
+ 	for (i = 0; i < pm8001_ha->max_memcnt; i++) {
+ 		if (pm8001_ha->memoryMap.region[i].virt_ptr != NULL) {
+-			pci_free_consistent(pm8001_ha->pdev,
++			dma_free_coherent(&pm8001_ha->pdev->dev,
+ 				(pm8001_ha->memoryMap.region[i].total_len +
+ 				pm8001_ha->memoryMap.region[i].alignment),
+ 				pm8001_ha->memoryMap.region[i].virt_ptr,
+@@ -1197,12 +1197,13 @@ pm8001_init_ccb_tag(struct pm8001_hba_info *pm8001_ha, struct Scsi_Host *shost,
+ 		goto err_out_noccb;
+ 	}
+ 	for (i = 0; i < ccb_count; i++) {
+-		pm8001_ha->ccb_info[i].buf_prd = pci_alloc_consistent(pdev,
++		pm8001_ha->ccb_info[i].buf_prd = dma_alloc_coherent(&pdev->dev,
+ 				sizeof(struct pm8001_prd) * PM8001_MAX_DMA_SG,
+-				&pm8001_ha->ccb_info[i].ccb_dma_handle);
++				&pm8001_ha->ccb_info[i].ccb_dma_handle,
++				GFP_KERNEL);
+ 		if (!pm8001_ha->ccb_info[i].buf_prd) {
+ 			pm8001_dbg(pm8001_ha, FAIL,
+-				   "pm80xx: ccb prd memory allocation error\n");
++				   "ccb prd memory allocation error\n");
+ 			goto err_out;
+ 		}
+ 		pm8001_ha->ccb_info[i].task = NULL;
+-- 
+2.27.0
 
