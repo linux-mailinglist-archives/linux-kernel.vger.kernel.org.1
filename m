@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC712F946B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D922F947B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbhAQSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:14:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728858AbhAQSOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:14:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 694BB224D3;
-        Sun, 17 Jan 2021 18:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610907212;
-        bh=BZ2fA3WLWPi7CwYp1cpAsf6pUYTEtDrTQTl4od6A+RU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bM4L7k6dLUI2zFJo9UVYWCM+/NLRoUXoGXwoHv2uYcvMRJw8TnTehOPaUNNOzN7hi
-         57YmtkSs8e7PJUxgVjyk3yA/5MoRZ2kY/9iihDwMuE8tvw8MpQaJqxq7SLPz+nQcK2
-         aSZSSU2CJ5840g9NDpGSMbW1sNyne00boqfs1HXAUp47f//mfjO4QL+tuYDDdGPCJd
-         v6eeONWTByzNbQJkOGNZFLwF3Dodpqn/La4zTadbaLaOJYCZ0XKxEyx/FlLOwe/yzO
-         9kn5tj9O9KJArwxzwNdNkNcZJ9Z9LtBPSW8OidW7Bvuuuv1TzdlMZwgOBvKRsreETe
-         h9PHc84pUIJlg==
-Date:   Sun, 17 Jan 2021 20:13:27 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.rosenberger@kunbus.com, Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: Re: [PATCH 3/4] tpm: in tpm2_del_space check if ops pointer is still
- valid
-Message-ID: <YAR+R0c8HYsVUhZQ@kernel.org>
-References: <1610760161-21982-1-git-send-email-LinoSanfilippo@gmx.de>
- <1610760161-21982-4-git-send-email-LinoSanfilippo@gmx.de>
+        id S1730045AbhAQSR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:17:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729972AbhAQSQ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 13:16:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610907329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kLX4rjXMuZVOcW60dYfHUGcg3ri1M4DH6zvIU3aqXdA=;
+        b=EHrRWcTl5z79p+e9rGdsp21TE2djxaasZyGFygwTRhKa0HogF/Sn5He3Rslx/IDX0Q1Bq/
+        txm/ctCmdCIe+S/ImxdWzLP636y+niD0aMzARS+iz9mAtNKUk9xEI4G9AUd28C0Jr89XwF
+        UYZI8MqgBbmNlWdsTty3UE3FdVcAkQk=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-jdMByf4qPBussY1cjgcxRQ-1; Sun, 17 Jan 2021 13:15:25 -0500
+X-MC-Unique: jdMByf4qPBussY1cjgcxRQ-1
+Received: by mail-qv1-f69.google.com with SMTP id c2so14105241qvs.12
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 10:15:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kLX4rjXMuZVOcW60dYfHUGcg3ri1M4DH6zvIU3aqXdA=;
+        b=FIYCSdwe9tdBz6El3X3PSLblgDJzSqwLarM1NjEpHprpabqeV2Hnj7faZHaTnWjCbs
+         /3+XhqLMMgtwmt0NIKS0h9D2Bh9qq9lUp3G2DdfCxawejhVW8du8TIJFBnPqSCdyadHG
+         qYvgb4ce1pzHiAsIrqEyeOVZ5IHvnpSOIA6FgabfsfNchcqhlDfUtgZragnlSWws2klQ
+         Q4nc2MzcWJBcMgRcU8OM3ORp1smF6PvqcU1GrgvidFhBXplZh4G5H/rTLBMYuRrf0Ubk
+         rzrZeutX4nZ1s2i8yNQKVHv7DGVmLCAq8Nv96uvNQfQ2VIgYAFTZfE6HOUNkWh3H9+55
+         2R0Q==
+X-Gm-Message-State: AOAM533QDJOW2XSi2P1zRINVww45jdrVcgSdxqfefHQ4dyAzmbEBZOI5
+        NHvRPoabIz/JmhZIYgMYFHZzvr+JgWJnbf8nalvrmmeXMKBrEeZH6hWBQ9quk5O0AlkeEnyKGI2
+        YMhx1nGk6HKzn4yEUZ1V+Dp3m
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr19657117qta.309.1610907325208;
+        Sun, 17 Jan 2021 10:15:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxHA5Uu0gpa8XxDScZXYLEIxNiq80IwCQ7L2RmuyrJGlG8Qx5Pax5Bfhqa3+05laLR+7+KNtA==
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr19657095qta.309.1610907325012;
+        Sun, 17 Jan 2021 10:15:25 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l191sm9315956qke.7.2021.01.17.10.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 10:15:24 -0800 (PST)
+From:   trix@redhat.com
+To:     m.grzeschik@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
+        joe@perches.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] arcnet: fix macro name when DEBUG is defined
+Date:   Sun, 17 Jan 2021 10:15:19 -0800
+Message-Id: <20210117181519.527625-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610760161-21982-4-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 02:22:40AM +0100, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> 
-> In tpm2_del_space() the sessions are flushed by means of the tpm_chip
-> operations. However the concerning operations pointer my already be NULL at
-> this time in case that the chip has been unregistered (see
-> tpm_chip_unregister() which calls tpm_del_char_device() which sets
-> chip->ops to NULL).
-> Avoid the NULL pointer access by first calling tpm_try_get_ops() to check
-> if the operations pointer is still valid and skipping the session flushing
-> in case of an unregistered chip.
-> 
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->  drivers/char/tpm/tpm2-space.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-space.c
-> index 784b8b3..ea6eee9 100644
-> --- a/drivers/char/tpm/tpm2-space.c
-> +++ b/drivers/char/tpm/tpm2-space.c
-> @@ -59,7 +59,7 @@ int tpm2_init_space(struct tpm_space *space, unsigned int buf_size)
->  void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space)
->  {
->  	mutex_lock(&chip->tpm_mutex);
-> -	if (!tpm_chip_start(chip)) {
-> +	if (!tpm_try_get_ops(chip) && !tpm_chip_start(chip)) {
->  		tpm2_flush_sessions(chip, space);
->  		tpm_chip_stop(chip);
->  	}
-> -- 
-> 2.7.4
-> 
+From: Tom Rix <trix@redhat.com>
 
-I have hard time to believe that any of these patches are based on
-actual regressions.
+When DEBUG is defined this error occurs
 
-/Jarko
+drivers/net/arcnet/com20020_cs.c:70:15: error: ‘com20020_REG_W_ADDR_HI’
+  undeclared (first use in this function);
+  did you mean ‘COM20020_REG_W_ADDR_HI’?
+       ioaddr, com20020_REG_W_ADDR_HI);
+               ^~~~~~~~~~~~~~~~~~~~~~
+
+From reviewing the context, the suggestion is what is meant.
+
+Fixes: 0fec65130b9f ("arcnet: com20020: Use arcnet_<I/O> routines")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/net/arcnet/com20020_cs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/arcnet/com20020_cs.c b/drivers/net/arcnet/com20020_cs.c
+index cf607ffcf358..81223f6bebcc 100644
+--- a/drivers/net/arcnet/com20020_cs.c
++++ b/drivers/net/arcnet/com20020_cs.c
+@@ -67,7 +67,7 @@ static void regdump(struct net_device *dev)
+ 	/* set up the address register */
+ 	count = 0;
+ 	arcnet_outb((count >> 8) | RDDATAflag | AUTOINCflag,
+-		    ioaddr, com20020_REG_W_ADDR_HI);
++		    ioaddr, COM20020_REG_W_ADDR_HI);
+ 	arcnet_outb(count & 0xff, ioaddr, COM20020_REG_W_ADDR_LO);
+ 
+ 	for (count = 0; count < 256 + 32; count++) {
+-- 
+2.27.0
+
