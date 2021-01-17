@@ -2,202 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E6C2F91AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EF72F91B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 11:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbhAQKP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 05:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbhAQKO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 05:14:27 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6CFC061574;
-        Sun, 17 Jan 2021 02:13:47 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id my11so7165669pjb.1;
-        Sun, 17 Jan 2021 02:13:47 -0800 (PST)
+        id S1728353AbhAQKSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 05:18:08 -0500
+Received: from mail-eopbgr750047.outbound.protection.outlook.com ([40.107.75.47]:36163
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728198AbhAQKRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 05:17:32 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zn+QiVKKJ7OpWvhMoOyVttgFDS2FTNRs3i1vs3zR9lZTWzhI9g8Vpl53oPw0PmBqW46eGCvHHBbnIUl/kYXdaKe35ilmAqfJMNSJPsdNj8ugtOJ3Jo/yfqSWj0kWVovmFEKt8SYuYiittLmCrDDxiHzs+etXvKXCS2cLaWrIpkMqzyq6YGHasErbvWu7QPjcLeavraCZbZI+L1mnWUBOx/20Fup+YvganXLkCQfW0GV3pZVSyLQ1UrJMk4ypSyufuhWrmIS6hUBrrFeY16HscCQ6kfAQxGMLRlwxpjs1t+M+Iv/7Dj6kWelRhTs6kgr9UX8qQ+dgClWCitfAh8ED+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kiBdqmCXWlhg9fLOX+vAq+YjTQ2f6KZ7CD/iTbzaxek=;
+ b=Mq0lqiY81dYIb6WZ1CkIEAKadgPcMLRe/ShrcDphnxCQl4xNwSbn3qyvCLQ8HVbQ2vDQdQKb2YuoSNztvokvFKOI2iOx2ihIUZmkN0Jg5GUizy/A9eSZUmERD7ImtyeoAcz5W5R/GHxUmNIMpAQR07juzF7Vel2VwzptjFTz9/k+b/RFU4Phs06aoUv7wu+dqTKqTVKKmbTvlrVT37xxfI3iTq4JD0av6K+8YEmrw3hc0Rq/Fo+uoID53Z5/6ECzo/B9BH/ByNXzuZIBotovMfB8MoYCZH+ACxw8B4SYn4/JoxWJjtceZP/OUr8IdtJqCYhqha5NHMT5fSI0o8pntA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=kM4/ftF+Rvmt4g0dAJ4kjwNYOlnjlcoIsKfNkTddmQk=;
-        b=bMqkTFfYgBUu23b/obK/hcsIdemE0N/RHZsH6r9PgitEWqtyeNXC6ztJ8doxYPX5qg
-         8DYvrEz5p/i0QGvWe9c/PFj2BWqhmkw4h7KuGSYVuk5B/8NYDbV2yYLIZr4HZ1wweimC
-         srDGicAKLbVLw5gjMTFS8YojadJnz28haN4oI4mJNhAorumjRlcbrZmS3pIv+m4CkS0Q
-         t7mEjEkrpwYbGwwNRaKoR9QTOonDsf+K5yJlVSpG6t/hvCcP+t4M9O4kzgTuU7Qxq4Z8
-         jPQ82m8JKBUC4/F/2ygenzMwe+EuiG426Pw7D2XNy84g/qSr0clRBpuDbmJ/+WCe1/kj
-         lJ8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=kM4/ftF+Rvmt4g0dAJ4kjwNYOlnjlcoIsKfNkTddmQk=;
-        b=hiQwor7BwpfWxwzolPFI0Z5Zb0ShIUIZ+xQ2mXCjeLUNDcyGGkW87zPl66d6qopOkH
-         G5Z618hSjfNkTvrW577lwsMlWMrF7eSXZucmxVuNxMyNz/9/4OUzAI8kCqWwwK3o4Ly5
-         iRof/uvyvb+TnPBCpX9s331S8B2sanv5uAn1xO0Fq1mvWfvIrBHkUp4+Jclpt8cQKPRU
-         8n0+9TiqIAoZbjvsOmk/qZ2DBZE+ICq9eyRMqU2l+30HgRG9HeCMiVlcoFscEQIRsVhA
-         BH2x+rKyegrGayWrbBOlrii1VmcxK4NUEZxnI/ztd2yGU3ywtEqnTId58nBRGuqSwtGQ
-         k8zw==
-X-Gm-Message-State: AOAM530SKP0mmFYU5fa49nXZUD6x5HCDq4/zi3wh4hx6OKjgkwZmjPYh
-        4/2Rr1TSaO6Lqb7iV2CxTzg=
-X-Google-Smtp-Source: ABdhPJwl9rbDMIoHEUAdQfZEZdwm6jOJv80g2EQCS92pb7H79MA8Rba032kdcMOagIAocy9TAa/zxA==
-X-Received: by 2002:a17:90b:4b86:: with SMTP id lr6mr20046721pjb.107.1610878426380;
-        Sun, 17 Jan 2021 02:13:46 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id h11sm12434640pjg.46.2021.01.17.02.13.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 17 Jan 2021 02:13:45 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <YAQAhyOFqEdjTRPJ@google.com>
-Date:   Sun, 17 Jan 2021 02:13:43 -0800
-Cc:     Will Deacon <will@kernel.org>,
-        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, surenb@google.com,
-        Mel Gorman <mgorman@suse.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1A664155-462A-451D-A21E-D749A0ADBD09@gmail.com>
-References: <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
- <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
- <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
- <X/3+6ZnRCNOwhjGT@google.com>
- <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
- <20210112214337.GA10434@willie-the-truck> <YAO/9YVceghRYo4T@google.com>
- <85DAADF4-2537-40BD-8580-A57C201FF5F3@gmail.com>
- <YAQAhyOFqEdjTRPJ@google.com>
-To:     Yu Zhao <yuzhao@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kiBdqmCXWlhg9fLOX+vAq+YjTQ2f6KZ7CD/iTbzaxek=;
+ b=Fel/misfxPCy+15BS1xAzTYAWUT0OSfFETdcNq6zQ+AoLcjhKrYpddIDgORUFlTFY56qEkG13XkdqF5hasHm9wYnR/7+3U3Y4GsPb9nyT1+GI+NnHNc0qAlEtEPiUwj6HZkFQFL7dQ9p1Tpo51h6e0EKnupSkngfvC83e7j76Rk=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB2918.namprd11.prod.outlook.com (2603:10b6:a03:92::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Sun, 17 Jan
+ 2021 10:16:23 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3763.014; Sun, 17 Jan 2021
+ 10:16:23 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "laijs@linux.alibaba.com" <laijs@linux.alibaba.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogUXVlc3Rpb24gb24gICB3b3JrcXVldWU6IE1hbnVhbGx5IGJyZWFr?=
+ =?gb2312?Q?_affinity_on_hotplug?=
+Thread-Topic: Question on   workqueue: Manually break affinity on hotplug
+Thread-Index: AQHW6kaGanHzOLWWlkGf08xC7Dod66om1gUAgAS7tyM=
+Date:   Sun, 17 Jan 2021 10:16:23 +0000
+Message-ID: <BYAPR11MB263266CF64A8EE2A91B979E5FFA50@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <BYAPR11MB2632FC41FF64133708F4537FFFA80@BYAPR11MB2632.namprd11.prod.outlook.com>,<YAAK1MOPAPjrbSIt@hirez.programming.kicks-ass.net>
+In-Reply-To: <YAAK1MOPAPjrbSIt@hirez.programming.kicks-ass.net>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=windriver.com;
+x-originating-ip: [106.39.151.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3e9a5191-875e-4fb9-1b38-08d8bad0f118
+x-ms-traffictypediagnostic: BYAPR11MB2918:
+x-microsoft-antispam-prvs: <BYAPR11MB29181FE2901D8FA12270A01EFFA50@BYAPR11MB2918.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gB3CyFMISx5ZbH8LoER/mCdnvs3a54iWoiBCz/ueDY3k/00aluRpfI/pU1mq6EJoSrQVRFh3Za+fu42HvWq1j/MIJ3Ub2gocUZs0GWoZ2AXMg27vRPufExpLcjm8BkL32d0f0tBwah+G8saGklvH7ljYI3WE2XD2pR9QhsZzPg2flhGWOPJOkeCWDjT8BfPD3X3yUcIC5VPLnwKocUZ1erwb8Gnp+BywxGSd9zJUi1gol6gvrebIZWh5z4SL1YI7N9WF+SYv++1YR4QUTmCMmLDFNEj+8ijmpfoMlj8yAkub1/aIZ6rXAkHitimBB76FPNTUzFLCoTq35GklaRa44fYzGctOsarPBlFJ41iziSIEq7sAEb31Pw/aObe8tuBertnXdjQGr8IdnNQhWZT2Y9iovLmaatpV4GQqLSFVeRI+oToljlvL36RGnfmEL9+MkgY+xJeUEKCbmEErg/+h+Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39840400004)(316002)(33656002)(6506007)(110136005)(8936002)(4326008)(91956017)(76116006)(186003)(966005)(478600001)(26005)(71200400001)(52536014)(86362001)(5660300002)(64756008)(66446008)(66556008)(66476007)(66946007)(224303003)(7696005)(83380400001)(2906002)(9686003)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?RDJuTEo2UTQ5OERyaDdQK2JIbHZ1SENvQjNpVkluMmhLK0UxWGs3OU1wcXpr?=
+ =?gb2312?B?RysyeU5Hd1BZaEhpSXRHc0lvWEpoSFRsUVhOVHFUTG8ySWxkRXhCZnRFeDdC?=
+ =?gb2312?B?NUhjN3I3ZTBBUktPdll0bDZWOWt0eWw5RE9NWmt1ODd5QU5ickxPZjViU2px?=
+ =?gb2312?B?UUFQNzFIWGdwcU9mRmM2TVIxWWdFdVRWSW1jZk9XbWwxcm5MRGZVYXVZK3VU?=
+ =?gb2312?B?U0k2YVF4Ync2cWFPdWZFTTVrTFh2QTV6VWpxZy9ZK2Rpa2U2eXUrbDNjQTFa?=
+ =?gb2312?B?L0xBcUluOXMwMzB2MzVibXhtMXorZ0xmYVZHWWIwaFR3dGhVVmV2RlBSa0g2?=
+ =?gb2312?B?V3ZVOU9MWlRRTDdZL3o1ZktZMmhDOFZWOHVaNFRsMy9Ndi9TRGQvbWRUY3Nz?=
+ =?gb2312?B?TjdJZVhsNkRyaTRUU2ViRkRzNjJpRFFGekNTb3l1VE50U3pMVWZsek9IcUxV?=
+ =?gb2312?B?VHVoZVVFdjN4QUhvaWZJcXh2dmRHOWxBOTdneGsrTDd1cUFtblJYSUoxazgy?=
+ =?gb2312?B?WXBwWWpJTVN1elBVV0t0Y2c3Q1RYb3VEN1ZKRXlJVytxMzVmMG1BZXlEblZl?=
+ =?gb2312?B?QVBtNkI0L1V3YzlWUndHU0wrQkxTczBwZ1I3aXhGTU5GbkRUOThEdDJDSFhD?=
+ =?gb2312?B?eVdHZ3RYV0NYWE1MeGp2ckRtejFJMXdVbHdmRmlCNnV1bG5EeTNsaG1WWC92?=
+ =?gb2312?B?bk1hdWNsTUx0NDRTbGZmeU1Zd04wWmxpdE9sam1ibjhHNys2R2pLcHBrM2Fw?=
+ =?gb2312?B?RWxpL0N2bXMzK1VwOUp3d0NlZ0wxVUZ1dHFrUUVmbHdLWERDUjlURUU2SStr?=
+ =?gb2312?B?dk5ON2x0ckppb2EwWjY0bTRpTDBGVDExTlBYdUlISjEyR05FcklVUWZkYVo3?=
+ =?gb2312?B?UHZzRnVjNWNHZS8xQkxCZitjaVk5TURpMWdOQi9Yb0YyTHdyWCtYYUFnM1ow?=
+ =?gb2312?B?SXdUNTZaMEp0VjQwSTNtakNNSXZNTjdNTGNza2NwMXhXd01FcWFyTllacjls?=
+ =?gb2312?B?Vno3Y3hEOTRTRkhLRU5XcHhaSVBnYVhhYldRTHlEeFRiZkxCY1dQcjZJNlBx?=
+ =?gb2312?B?Z3lwSjdzTktEcXFLOG5ZK1pDV3JibXNXOTF4ZW1XbnJkVlFVZ2NodTVWeVda?=
+ =?gb2312?B?NWhsbGtSWHF2M29XaGczc1hKMExjQXFDN1JERjVEeHE2Y1ppSzcySG1Ec2Rx?=
+ =?gb2312?B?bXFQTEtSbzlCaGZRbkJWK2gzZktFMUNkZnhVZGoxSXdldWUzcDFMYm1WcmNi?=
+ =?gb2312?B?L3I0cUZiRDkyY3dRZGkvMEJ2NXk1dGhhL0VycGNHWTlxbUVjY0drUW1OVGZK?=
+ =?gb2312?Q?tyjroofZyur6U=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e9a5191-875e-4fb9-1b38-08d8bad0f118
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2021 10:16:23.0819
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pp+RvYAR+O0wQWqWweQP6i0h3gRVp+83Lb7b+e0fGPaurvNoZeAUvAWVWeQaUB7E6vroM8ZANj9XXxVhnrre+3IUWIEADP8k2G6aRTHdDMI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2918
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jan 17, 2021, at 1:16 AM, Yu Zhao <yuzhao@google.com> wrote:
->=20
-> On Sat, Jan 16, 2021 at 11:32:22PM -0800, Nadav Amit wrote:
->>> On Jan 16, 2021, at 8:41 PM, Yu Zhao <yuzhao@google.com> wrote:
->>>=20
->>> On Tue, Jan 12, 2021 at 09:43:38PM +0000, Will Deacon wrote:
->>>> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
->>>>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
->>>>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
->>>>>>> I will send an RFC soon for per-table deferred TLB flushes =
-tracking.
->>>>>>> The basic idea is to save a generation in the page-struct that =
-tracks
->>>>>>> when deferred PTE change took place, and track whenever a TLB =
-flush
->>>>>>> completed. In addition, other users - such as mprotect - would =
-use
->>>>>>> the tlb_gather interface.
->>>>>>>=20
->>>>>>> Unfortunately, due to limited space in page-struct this would =
-only
->>>>>>> be possible for 64-bit (and my implementation is only for =
-x86-64).
->>>>>>=20
->>>>>> I don't want to discourage you but I don't think this would end =
-up
->>>>>> well. PPC doesn't necessarily follow one-page-struct-per-table =
-rule,
->>>>>> and I've run into problems with this before while trying to do
->>>>>> something similar.
->>>>>=20
->>>>> Discourage, discourage. Better now than later.
->>>>>=20
->>>>> It will be relatively easy to extend the scheme to be per-VMA =
-instead of
->>>>> per-table for architectures that prefer it this way. It does =
-require
->>>>> TLB-generation tracking though, which Andy only implemented for =
-x86, so I
->>>>> will focus on x86-64 right now.
->>>>=20
->>>> Can you remind me of what we're missing on arm64 in this area, =
-please? I'm
->>>> happy to help get this up and running once you have something I can =
-build
->>>> on.
->>>=20
->>> I noticed arm/arm64 don't support ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
->>> Would it be something worth pursuing? Arm has been using mm_cpumask,
->>> so it might not be too difficult I guess?
->>=20
->> [ +Mel Gorman who implemented ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH ]
->>=20
->> IIUC, there are at least two bugs in x86 implementation.
->>=20
->> First, there is a missing memory barrier in tlbbatch_add_mm() between
->> inc_mm_tlb_gen() and the read of mm_cpumask().
->=20
-> In arch_tlbbatch_add_mm()? inc_mm_tlb_gen() has builtin barrier as its
-> comment says -- atomic update ops that return values are also full
-> memory barriers.
-
-Yes, you are correct.
-
->=20
->> Second, try_to_unmap_flush() clears flush_required after flushing. =
-Another
->> thread can call set_tlb_ubc_flush_pending() after the flush and =
-before
->> flush_required is cleared, and the indication that a TLB flush is =
-pending
->> can be lost.
->=20
-> This isn't a problem either because flush_required is per thread.
-
-Sorry, I meant mm->tlb_flush_batched . It is not per-thread.
-flush_tlb_batched_pending() clears it after flush and indications that
-set_tlb_ubc_flush_pending() sets in between can be lost.
-
->> I am working on addressing these issues among others, but, as you =
-already
->> saw, I am a bit slow.
->>=20
->> On a different but related topic: Another thing that I noticed that =
-Arm does
->> not do is batching TLB flushes across VMAs. Since Arm does not have =
-its own
->> tlb_end_vma(), it uses the default tlb_end_vma(), which flushes each =
-VMA
->> separately. Peter Zijlstra=E2=80=99s comment says that there are =
-advantages in
->> flushing each VMA separately, but I am not sure it is better or =
-intentional
->> (especially since x86 does not do so).
->>=20
->> I am trying to remove the arch-specific tlb_end_vma() and have a =
-config
->> option to control this behavior.
->=20
-> One thing worth noting is not all arm/arm64 hw versions support =
-ranges.
-> (system_supports_tlb_range()). But IIUC what you are trying to do, =
-this
-> isn't a problem.
-
-I just wanted to get rid of arch-specific tlb_start_vma() it in order to
-cleanup the code (I am doing first the VMA-deferred tracking, as you =
-asked).
-While I was doing that, I noticed that Arm does per-VMA TLB flushes. I =
-do
-not know whether it is intentional, but it seems rather easy to get this
-behavior unintentionally.=
+SGVsbG8gUGV0ZXIsIExhaQ0KDQpTb3JyeSB0byBkaXN0dXJiIGFnYWluLCBJJ20gc3RpbGwgY29u
+ZnVzZWQsIHdoZW4gdGhlIENQVSBpcyBvZmZsaW5lLCB3ZSBhY3RpdmUgIGNhbGwgc2V0X2NwdXNf
+YWxsb3dlZF9wdHIgZnVuY3Rpb24gIHRvIHJlc2V0IHBlci1jcHUga3RocmVhZCBjcHVtYXNrLA0K
+aW4gc2NoZWRfY3B1X2R5aW5nIGZ1bmN0aW9uICwgbWlncmF0ZV90YXNrcyBmdW5jdGlvbiB3aWxs
+IHJlc2V0IHBlci1jcHUga3RocmVhZCdzIGNwdW1hc2sgb24gcnVucSwgZXZlbiBpZiBub3Qgb24g
+cnVucSwgd2hlbiB3YWtlIHVwLCAgb3RoZXIgb25saW5lIENQVXMgd2lsbCBhbHNvIGJlIHNlbGVj
+dGVkIHRvIHJ1bi4NCg0Kd2hhdCBJIHdhbnQgdG8gYXNrIGlzIHdoeSB3ZSB0YWtlIHRoZSBpbml0
+aWF0aXZlIHRvIHNldCBpdCB1cD8NCg0KVGhhbmtzDQpRaWFuZw0KDQoNCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18NCreivP7IyzogUGV0ZXIgWmlqbHN0cmEgPHBldGVy
+ekBpbmZyYWRlYWQub3JnPg0Kt6LLzcqxvOQ6IDIwMjHE6jHUwjE0yNUgMTc6MTENCsrVvP7Iyzog
+WmhhbmcsIFFpYW5nDQqzrcvNOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQrW98ziOiBS
+ZTogUXVlc3Rpb24gb24gICB3b3JrcXVldWU6IE1hbnVhbGx5IGJyZWFrIGFmZmluaXR5IG9uIGhv
+dHBsdWcNCg0KW1BsZWFzZSBub3RlIHRoaXMgZS1tYWlsIGlzIGZyb20gYW4gRVhURVJOQUwgZS1t
+YWlsIGFkZHJlc3NdDQoNCk9uIFRodSwgSmFuIDE0LCAyMDIxIGF0IDA4OjAzOjIzQU0gKzAwMDAs
+IFpoYW5nLCBRaWFuZyB3cm90ZToNCj4gSGVsbG8gUGV0ZXINCj4NCj4gRXhjdXNlIG1lLCBJIGhh
+dmUgc29tZSBxdWVzdGlvbnMgZm9yIHlvdSwgYWJvdXQgYSBkZXNjcmlwdGlvbiBvZiB0aGlzIGNo
+YW5nZToNCj4NCj4gJydEb24ndCByZWx5IG9uIHRoZSBzY2hlZHVsZXIgdG8gZm9yY2UgYnJlYWsg
+YWZmaW5pdHkgZm9yIHVzIC0tIGl0IHdpbGwNCj4gc3RvcCBkb2luZyB0aGF0IGZvciBwZXItY3B1
+LWt0aHJlYWRzLiINCj4NCj4gdGhpcyBtZWFuIHdoZW4gY3B1aG90cGx1Zywgc2NoZWR1bGVyIGRv
+IG5vdCAgY2hhbmdlICBhZmZpbml0eSBmb3IgcGVyLWNwdS1rdGhyZWFkJ3MgdGFzaywgaWYgd2Ug
+bm90IGFjdGl2ZSBzZXR0aW5nIGFmZmluaXR5Pw0KPiBidXQgaWYgcGVyLWNwdS1rdGhyZWFkJ3Mg
+dGFzayBpcyBub3QgcnVuIHN0YXRlLCB3aGVuIHdha2UgdXAsICB3aWxsIHJlc2V0IGl0J3MgYWZm
+aW5pdHksIHRoaXMgIGlzIGRvbmUgYXV0b21hdGljYWxseS4NCj4NCj4gb3IgaXMgaXQsICB0aGlz
+IHBsYWNlIG1vZGlmaWVkIHRvIGZpdCB0aGUgbmV3IG9uZSBob3RwbHVnIG1lY2hhbmlzbSB3aGlj
+aA0KPiAoInNjaGVkL2hvdHBsdWc6IENvbnNvbGlkYXRlIHRhc2sgbWlncmF0aW9uIG9uIENQVSB1
+bnBsdWciKT8NCg0KaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDIwMTIxNDE1NTQ1Ny4zNDMw
+LTEtamlhbmdzaGFubGFpQGdtYWlsLmNvbQ0KaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDIw
+MTIxODE3MDkxOS4yOTUwLTEtamlhbmdzaGFubGFpQGdtYWlsLmNvbQ0KaHR0cHM6Ly9sa21sLmtl
+cm5lbC5vcmcvci8yMDIwMTIyNjAyNTExNy4yNzcwLTEtamlhbmdzaGFubGFpQGdtYWlsLmNvbQ0K
+aHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDIxMDExMTE1MjYzOC4yNDE3LTEtamlhbmdzaGFu
+bGFpQGdtYWlsLmNvbQ0KaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDIxMDExMjE0NDM0NC44
+NTA4NTA5NzVAaW5mcmFkZWFkLm9yZw0K
