@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9EA2F9205
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568CD2F9204
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 12:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbhAQLbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 06:31:41 -0500
-Received: from aposti.net ([89.234.176.197]:36742 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728668AbhAQLaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 06:30:10 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH 3/3] drm/ingenic: Fix non-OSD mode
-Date:   Sun, 17 Jan 2021 11:26:46 +0000
-Message-Id: <20210117112646.98353-4-paul@crapouillou.net>
-In-Reply-To: <20210117112646.98353-1-paul@crapouillou.net>
-References: <20210117112646.98353-1-paul@crapouillou.net>
+        id S1728426AbhAQLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 06:30:38 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:35601 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbhAQL3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 06:29:46 -0500
+Received: by mail-io1-f69.google.com with SMTP id a1so24174761ios.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 03:29:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=P/d1FEPC5iUSKICunGAq3DjPk63uAX3l81ePhtYb8N0=;
+        b=JcMSlyZQfkvpm+DrASFZeWAZsAZvCN+pgB8hUnAZ5k7I+YqauyvVGYQJxZ6Cci/MOA
+         pHEiHAMm4UgeibDDiBwFApSY4d/eupNR7FhCnyjI3F5mQKJ8/m39cyelbywnfff8bu+G
+         9j9jhfGqRjRkyfA1XmfcYwc7W0Q9Tf9p7NjdjseEQmLOxxzTBq8XVeL9xT2SSm6PvCkS
+         fgPWhwqNPLaxhELGFwz4ZzL1gbkwe1zlxUpkNot2HB0LA31m1cyKRk6mTB6CZOcJ/jTk
+         ga0c80JfXJMPaI5UGlxmgRcbzSCKzUqBlj6UJD7XcbbghDFR1xfd2/x5PNAlXhTtpxcY
+         o54w==
+X-Gm-Message-State: AOAM533qFu2JiRa2Lsp8kmQdUcGRsPjjREWrKo0BeoB3pw9+iUhiab7s
+        J9A9NFqticMiEWoh54kUVoABd7mWbniwp+pJBlKGiutLGuIi
+X-Google-Smtp-Source: ABdhPJx5wlmIgilxar3mPnrNpenLIHXRB8QsmmaXtwL5co5ZgqUuD4L6Odq9Is16TpVeRpNjHvh4NXgVuwKnnAtq+1m2JAFvsRlf
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:411:: with SMTP id p17mr8267172ilr.33.1610882945873;
+ Sun, 17 Jan 2021 03:29:05 -0800 (PST)
+Date:   Sun, 17 Jan 2021 03:29:05 -0800
+In-Reply-To: <00000000000091111005b435456e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c37b3a05b916e95a@google.com>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in fbcon_cursor
+From:   syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, dri-devel@lists.freedesktop.org,
+        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, melissa.srw@gmail.com,
+        natechancellor@gmail.com, sam@ravnborg.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de,
+        yepeilin.cs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though the JZ4740 did not have the OSD mode, it had (according to
-the documentation) two DMA channels, but there is absolutely no
-information about how to select the second DMA channel.
+syzbot has bisected this issue to:
 
-Make the ingenic-drm driver work in non-OSD mode by using the
-foreground0 plane (which is bound to the DMA0 channel) as the primary
-plane, instead of the foreground1 plane, which is the primary plane
-when in OSD mode.
+commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri Oct 9 23:21:56 2020 +0000
 
-Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
-Cc: <stable@vger.kernel.org> # v5.8+
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+    drm/vkms: fbdev emulation support
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index d23a3292a0e0..9d883864e078 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -553,7 +553,7 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
- 		height = state->src_h >> 16;
- 		cpp = state->fb->format->cpp[0];
- 
--		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
-+		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
- 			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
- 		else
- 			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
-@@ -814,6 +814,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	const struct jz_soc_info *soc_info;
- 	struct ingenic_drm *priv;
- 	struct clk *parent_clk;
-+	struct drm_plane *primary;
- 	struct drm_bridge *bridge;
- 	struct drm_panel *panel;
- 	struct drm_encoder *encoder;
-@@ -928,9 +929,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	if (soc_info->has_osd)
- 		priv->ipu_plane = drm_plane_from_index(drm, 0);
- 
--	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
-+	primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
- 
--	ret = drm_universal_plane_init(drm, &priv->f1, 1,
-+	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
-+
-+	ret = drm_universal_plane_init(drm, primary, 1,
- 				       &ingenic_drm_primary_plane_funcs,
- 				       priv->soc_info->formats_f1,
- 				       priv->soc_info->num_formats_f1,
-@@ -942,7 +945,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 
- 	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
- 
--	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
-+	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
- 					NULL, &ingenic_drm_crtc_funcs, NULL);
- 	if (ret) {
- 		dev_err(dev, "Failed to init CRTC: %i\n", ret);
--- 
-2.29.2
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148e2748d00000
+start commit:   b3a3cbde Add linux-next specific files for 20210115
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=168e2748d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=128e2748d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
+dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cd8fe0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17af5258d00000
 
+Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
+Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
