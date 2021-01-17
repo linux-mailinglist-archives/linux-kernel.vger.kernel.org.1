@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B9D2F95D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 23:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DA52F95EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 23:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbhAQWRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 17:17:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729944AbhAQWRI (ORCPT
+        id S1730571AbhAQWY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 17:24:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730496AbhAQWXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 17:17:08 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E5C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 14:16:28 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id v67so21315991lfa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 14:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kEQwHSt5wB+FY+WFucfVyvvqOmezqvFu6e0JdF0f7rc=;
-        b=QhTPvho9EhN/5rHBWXQzenGdub9EnpcDaE6RWo4t0LK41xIzVZhRFpwJPcUt9X2fqq
-         r5RpK07cl2eXDH6XdsmiuSvPI9b1B/vnCZew3lDSGEfgygbhBHBFwa3LJj9fzgnbQUU0
-         Oga24U13FJOHncLCNfQB34RoscPVWOS8LEGcj8ibWQMTdxUMMVbVIj0Z14qgDXjolEcI
-         Kv1LomVjVTtd9C9W1nlLL7Y0PZFIAx0nZ37yp+jlSiiOGsSHESBt9gFCkk7Emdf0lrdq
-         JTEV90dO6ow3ocYT15rsxK+Y6SXiWldFEjRnMpPyhsiLKBblU+rONNz9zsPwP204cXl3
-         2I8g==
+        Sun, 17 Jan 2021 17:23:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610922112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1Q/nirjyd353laCSIcUJdblTkIhaVs8AOQO2AamTKH0=;
+        b=YT2htPgRh3IjSkrigGvxEeBTkLV+rJ8Mmx+1YJXQw7kNz78OUrwTK44vUzqH92aqunqF2m
+        i+1BoDAwmwb0OpgcOwrqzW9jM8fWojC1XQGToM9YeCotec/JVn3hp3sWdmhNaAcP4rWXOI
+        JovaZnIVj7ki5I6XzZKBrNUJVBiJbpI=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-k0KiTRT4MfOzQqVQgeqIvw-1; Sun, 17 Jan 2021 17:21:50 -0500
+X-MC-Unique: k0KiTRT4MfOzQqVQgeqIvw-1
+Received: by mail-qk1-f198.google.com with SMTP id g5so15151624qke.22
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 14:21:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kEQwHSt5wB+FY+WFucfVyvvqOmezqvFu6e0JdF0f7rc=;
-        b=Pf+pi7v4PqpWuIZ459QCJJP+0W9rkmi6ddpHWtXP/wc/2molFdFZNgbsuskGspULPA
-         hlt8w9jledAXACT8IqshE8s6TgmiHsFu/uPBV62clE8XxaipC3NM6NFlV/9q2gM+U8HO
-         xPvx+OYOCU7TFJxZzgNW3C0GJJY5I5JTkUAw5IIWsK5pDQ6hCzjdH31k3x7V3o1ljxlv
-         yVqYbCMMKyxA7RG7mT5Y0jkkviqCabsvz+uop31OxlZ0KtqlaetpiM4ArhEfoHtL85yN
-         tlPlZLiHUV4rrtMWhxz9kjOmXu6cFwZhE23GvLEQ2vmwy+kxcYcFfMG5gnzvHwk7EyEe
-         fFFg==
-X-Gm-Message-State: AOAM531bZiPte0Pv/J3WjMj0a6SFKRwjBrWIcr1pk65g6SaRfulKN+ap
-        sXueYs6Ok8R/oxonXdl1TJ8=
-X-Google-Smtp-Source: ABdhPJyvz9B2O1hXQosSgiboAyYNtVk1MFwHdbeuvC85sZ1pEGYSwwRJ5W3s0MbOlSySvMjuew+mpQ==
-X-Received: by 2002:a19:890b:: with SMTP id l11mr10194400lfd.66.1610921785919;
-        Sun, 17 Jan 2021 14:16:25 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id j20sm1510262ljc.47.2021.01.17.14.16.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Q/nirjyd353laCSIcUJdblTkIhaVs8AOQO2AamTKH0=;
+        b=Du2kb4HsXo9hqlZx9JGJVLAIAC9yoMRunCaoGlyvnJHpcdWeS98KFoV8FbR7l6VHif
+         uOb4hfKbaFdg5gHpDoJ9s+91x3V9FFiuf5ZX6UJgWntbn2SqOrKj7d1c2eABS83WC/jg
+         jZ/is3cUfryIAwuJ4t8DVeBj98BIf8qye8Px4iCwM1olDrtUT3t5PIQwoYVXh1eAvzWH
+         VafDhOaV/EU2NMZQjyLy8pDNPs4zw7ilVfr4bKNEYLBT0i4OmmDaac7Y1C1Hz/GxAWuV
+         z1kq0Z98ojmlZeXu0t3AJP24UA5PyfzsrWDBILYgPdtRrDKcVDHzNnTxF3qQRMGoy9HJ
+         5Xew==
+X-Gm-Message-State: AOAM533dWNEHNLPLT9ryoqy+4m/JDveWV9QSSz6UE6G7yGTCIcMQtU/r
+        TmUTLDTvseADfce6Qv6FWxULiAkHPFppGGZ0W8n81xbVYBCxiQGtGKY4+oxgpJ4pYup5jRNPZze
+        q0PqkkWNIcWiw935odcT9EkH4
+X-Received: by 2002:a0c:9e50:: with SMTP id z16mr21356529qve.13.1610922110404;
+        Sun, 17 Jan 2021 14:21:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxLfAViRBC01RcVQ97+1PHfTVCqF3ZzkhqNaMPivdg097DavcqB1qB4Ni4JYwm+u1ckPY0Qnw==
+X-Received: by 2002:a0c:9e50:: with SMTP id z16mr21356516qve.13.1610922110196;
+        Sun, 17 Jan 2021 14:21:50 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d25sm9674480qkl.97.2021.01.17.14.21.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 14:16:25 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH V2] soundwire: sysfs: Constify static struct attribute_group
-Date:   Sun, 17 Jan 2021 23:16:22 +0100
-Message-Id: <20210117221622.34315-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210117220611.30921-1-rikard.falkeborn@gmail.com>
-References: <20210117220611.30921-1-rikard.falkeborn@gmail.com>
+        Sun, 17 Jan 2021 14:21:49 -0800 (PST)
+From:   trix@redhat.com
+To:     tiffany.lin@mediatek.com, andrew-ct.chen@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com,
+        hverkuil-cisco@xs4all.nl, yunfei.dong@mediatek.com,
+        acourbot@chromium.org
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] media: mtk-vcodec: fix argument used when DEBUG is defined
+Date:   Sun, 17 Jan 2021 14:21:38 -0800
+Message-Id: <20210117222138.551147-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only place sdw_slave_dev_attr_group is used is when its address is
-passed to devm_device_add_group() which takes a pointer to const struct
-attribute_group. Make it const to allow the compiler to put it in
-read-only memory. This makes all attribute_group structs in the file
-const. Done with the help of Coccinelle.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+When DEBUG is defined this error occurs
+
+drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c:306:41:
+  error: ‘i’ undeclared (first use in this function)
+  mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_SYS]);
+
+Reviewing the old line
+
+	mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[i]);
+
+All the i's need to be changed to VENC_SYS.
+Fix a similar error for VENC_LT_SYS.
+
+Fixes: 0dc4b3286125 ("media: mtk-vcodec: venc: support SCP firmware")
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
-Changes since v 1: Fix spelling in commit message title (sorry for the noise...)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/soundwire/sysfs_slave.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
-index b48b6617a396..3210359cd944 100644
---- a/drivers/soundwire/sysfs_slave.c
-+++ b/drivers/soundwire/sysfs_slave.c
-@@ -130,7 +130,7 @@ static struct attribute *slave_dev_attrs[] = {
-  * we don't use ATTRIBUTES_GROUP here since we want to add a subdirectory
-  * for device-level properties
-  */
--static struct attribute_group sdw_slave_dev_attr_group = {
-+static const struct attribute_group sdw_slave_dev_attr_group = {
- 	.attrs	= slave_dev_attrs,
- 	.name = "dev-properties",
- };
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+index dfb42e19bf81..be3842e6ca47 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+@@ -303,7 +303,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR((__force void *)dev->reg_base[VENC_SYS]);
+ 		goto err_res;
+ 	}
+-	mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_SYS]);
++	mtk_v4l2_debug(2, "reg[%d] base=0x%p", VENC_SYS, dev->reg_base[VENC_SYS]);
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (res == NULL) {
+@@ -332,7 +332,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 			ret = PTR_ERR((__force void *)dev->reg_base[VENC_LT_SYS]);
+ 			goto err_res;
+ 		}
+-		mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_LT_SYS]);
++		mtk_v4l2_debug(2, "reg[%d] base=0x%p", VENC_LT_SYS, dev->reg_base[VENC_LT_SYS]);
+ 
+ 		dev->enc_lt_irq = platform_get_irq(pdev, 1);
+ 		irq_set_status_flags(dev->enc_lt_irq, IRQ_NOAUTOEN);
 -- 
-2.30.0
+2.27.0
 
