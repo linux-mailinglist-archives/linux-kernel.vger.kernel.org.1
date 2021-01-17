@@ -2,152 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C869B2F9468
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D664E2F946E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Jan 2021 19:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729830AbhAQSMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 13:12:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728217AbhAQSMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 13:12:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC69224D3;
-        Sun, 17 Jan 2021 18:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610907121;
-        bh=2vQvvvlsVb/nlFglh4UWS373hinBP3WdkcI9jdcWnZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b39hf5qcHwi1ASllSoshQBiatEYJFKjXsMPYBgjHdAVwc2PP9kX9o5IGp7ZTDW4lM
-         jCVdOD0DNCvz4030/bsRO5k5y1CCAA3oEz5CiIEA1h4P5ylUB/1fQZQwNbD6lsY8qz
-         q9Iwv5e0DculOPZeb9SF3/gkKAfVkXf7Rs4610dVsPctLR+CEZlV6jpDYhf459Uc6K
-         IT1hKi/ZYZJtVNoW5LzgjnPmlx4cnbyQiCsPxK3P8ZF1ODZ0Qw+LLQqZ9iP++ooPNE
-         KaEcaIu58G0y5EwMcV4CCyqJETqmSyEU2mCFfYAXSm75jBRF0DiBuAKIKA7K1U8vYF
-         e1ZesAMrXZ8Cg==
-Date:   Sun, 17 Jan 2021 20:11:56 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.rosenberger@kunbus.com, Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: Re: [PATCH 2/4] tpm: fix reference counting for struct tpm_chip
-Message-ID: <YAR97EMb47QM2ZkO@kernel.org>
-References: <1610760161-21982-1-git-send-email-LinoSanfilippo@gmx.de>
- <1610760161-21982-3-git-send-email-LinoSanfilippo@gmx.de>
+        id S1729881AbhAQSOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 13:14:34 -0500
+Received: from relay04.th.seeweb.it ([5.144.164.165]:48517 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729812AbhAQSOW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 13:14:22 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0DAF01F50A;
+        Sun, 17 Jan 2021 19:13:20 +0100 (CET)
+Subject: Re: [PATCH v2 2/7] regulator: qcom-labibb: Implement current limiting
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        sumit.semwal@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+References: <20210113194214.522238-1-angelogioacchino.delregno@somainline.org>
+ <20210113194214.522238-3-angelogioacchino.delregno@somainline.org>
+ <YAEcFhFFsYIumI2e@builder.lan>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <dcc2b3ae-445d-1fcc-a654-2c0384247e72@somainline.org>
+Date:   Sun, 17 Jan 2021 19:13:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610760161-21982-3-git-send-email-LinoSanfilippo@gmx.de>
+In-Reply-To: <YAEcFhFFsYIumI2e@builder.lan>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 02:22:39AM +0100, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Il 15/01/21 05:37, Bjorn Andersson ha scritto:
+> On Wed 13 Jan 13:42 CST 2021, AngeloGioacchino Del Regno wrote:
 > 
-> Commit 8979b02aaf1d ("tpm: Fix reference count to main device") tried to
-> fix a reference count issue which prevented the tpm_chip structure from
-> being freed in case that no TPM2 was used. The fix was to only get an extra
-> reference for chip->dev in case of TPM2 which is indicated by the
-> TPM_CHIP_FLAG_TPM2 flag.
-> Unfortunately this flag is never set, and thus the extra reference is not
-> taken even in the TPM2 case. This results in a refcount underflow in case
-> that the device file /dev/tpmrm* is used to write data after the tpm_chip
-> has been unregistered (e.g if the /dev/tpmrm* file has been opened before
-> and not yet closed at the time the chip was unregistered.)
+>> LAB and IBB regulators can be current-limited by setting the
+>> appropriate registers, but this operation is granted only after
+>> sending an unlock code for secure access.
+>>
+>> Besides the secure access, it would be possible to use the
+>> regmap helper for get_current_limit, as there is no security
+>> blocking reads, but I chose not to as to avoid having a very
+>> big array containing current limits, especially for IBB.
+>>
+>> That said, these regulators support current limiting for:
+>> - LAB (pos): 200-1600mA, with 200mA per step (8 steps),
+>> - IBB (neg):   0-1550mA, with  50mA per step (32 steps).
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/regulator/qcom-labibb-regulator.c | 92 +++++++++++++++++++++++
+>>   1 file changed, 92 insertions(+)
+>>
+>> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+>> index 9f51c96f16fb..d364f54ad294 100644
+>> --- a/drivers/regulator/qcom-labibb-regulator.c
+>> +++ b/drivers/regulator/qcom-labibb-regulator.c
+>> @@ -29,6 +29,15 @@
+>>   #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
+>>   #define LABIBB_CONTROL_ENABLE		BIT(7)
+>>   
+>> +#define REG_LABIBB_CURRENT_LIMIT	0x4b
+>> + #define LAB_CURRENT_LIMIT_MASK		GENMASK(2, 0)
+>> + #define IBB_CURRENT_LIMIT_MASK		GENMASK(4, 0)
+>> + #define LAB_CURRENT_LIMIT_OVERRIDE_EN	BIT(3)
+>> + #define LABIBB_CURRENT_LIMIT_EN	BIT(7)
+>> +
+>> +#define REG_LABIBB_SEC_ACCESS		0xd0
+>> + #define LABIBB_SEC_UNLOCK_CODE		0xa5
+>> +
+>>   #define LAB_ENABLE_CTL_MASK		BIT(7)
+>>   #define IBB_ENABLE_CTL_MASK		(BIT(7) | BIT(6))
+>>   
+>> @@ -37,11 +46,18 @@
+>>   #define IBB_ENABLE_TIME			(LABIBB_OFF_ON_DELAY * 10)
+>>   #define LABIBB_POLL_ENABLED_TIME	1000
+>>   
+>> +struct labibb_current_limits {
+>> +	u32				uA_min;
+>> +	u32				uA_step;
+>> +	u8				ovr_val;
+>> +};
+>> +
+>>   struct labibb_regulator {
+>>   	struct regulator_desc		desc;
+>>   	struct device			*dev;
+>>   	struct regmap			*regmap;
+>>   	struct regulator_dev		*rdev;
+>> +	struct labibb_current_limits	uA_limits;
+>>   	u16				base;
+>>   	u8				type;
+>>   };
+>> @@ -53,6 +69,57 @@ struct labibb_regulator_data {
+>>   	const struct regulator_desc	*desc;
+>>   };
+>>   
+>> +static int qcom_labibb_set_current_limit(struct regulator_dev *rdev,
+>> +					 int min_uA, int max_uA)
 > 
-> Also the error path (label "out") in tpm_chip_alloc() results in such an
-> underflow, since the dev reference is put twice (one time directly and the
-> second time by the call of tpm_devs_release() due to the put of
-> chip->devs).
-> 
-> Fix the described issues by taking the extra reference unconditionally and
-> installing an additional resource management action handler which puts
-> chip->devs. Releasing chip->devs eventually results in the call of
-> tpm_devs_release() which then releases the extra reference to chip->dev.
-> 
-> Since we now actually take that extra reference, adjust users of
-> tpm_chip_alloc() like VTPM proxy and FTPM tee to release it indirectly by
-> putting the reference of chip->devs.
-> 
-> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->  drivers/char/tpm/tpm-chip.c       | 11 +++++++++--
->  drivers/char/tpm/tpm_ftpm_tee.c   |  2 ++
->  drivers/char/tpm/tpm_vtpm_proxy.c |  1 +
->  3 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index e242d2e..596824c 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -360,8 +360,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
->  	 * while cdevs is in use.  The corresponding put
->  	 * is in the tpm_devs_release (TPM2 only)
->  	 */
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> -		get_device(&chip->dev);
-> +	get_device(&chip->dev);
->  
->  	if (chip->dev_num == 0)
->  		chip->dev.devt = MKDEV(MISC_MAJOR, TPM_MINOR);
-> @@ -425,12 +424,20 @@ struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
->  	if (rc)
->  		goto put_dev;
->  
-> +	rc = devm_add_action_or_reset(pdev,
-> +				      (void (*)(void *)) put_device,
-> +				      &chip->devs);
-> +	if (rc)
-> +		goto put_devs;
-> +
->  	dev_set_drvdata(pdev, chip);
->  
->  	return chip;
->  
->  put_dev:
->  	put_device(&chip->dev);
-> +put_devs:
-> +	put_device(&chip->devs);
->  	return ERR_PTR(rc);
->  }
->  EXPORT_SYMBOL_GPL(tpmm_chip_alloc);
-> diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
-> index 2ccdf8a..82858c2 100644
-> --- a/drivers/char/tpm/tpm_ftpm_tee.c
-> +++ b/drivers/char/tpm/tpm_ftpm_tee.c
-> @@ -286,6 +286,7 @@ static int ftpm_tee_probe(struct device *dev)
->  
->  out_chip:
->  	put_device(&pvt_data->chip->dev);
-> +	put_device(&pvt_data->chip->devs);
->  out_chip_alloc:
->  	tee_shm_free(pvt_data->shm);
->  out_shm_alloc:
-> @@ -318,6 +319,7 @@ static int ftpm_tee_remove(struct device *dev)
->  	tpm_chip_unregister(pvt_data->chip);
->  
->  	/* frees chip */
-> +	put_device(&pvt_data->chip->devs);
->  	put_device(&pvt_data->chip->dev);
->  
->  	/* Free the shared memory pool */
-> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-> index 91c772e3..97b60f8 100644
-> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
-> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-> @@ -520,6 +520,7 @@ static struct proxy_dev *vtpm_proxy_create_proxy_dev(void)
->   */
->  static inline void vtpm_proxy_delete_proxy_dev(struct proxy_dev *proxy_dev)
->  {
-> +	put_device(&proxy_dev->chip->devs);
->  	put_device(&proxy_dev->chip->dev); /* frees chip */
->  	kfree(proxy_dev);
->  }
-> -- 
-> 2.7.4
+> I was under the impression that a regulator driver should either
+> implement set_voltage_* or set_current_limit, depending on which type of
+> regulator it is - i.e. this API isn't supposed to be setting the current
+> limit. Perhaps I'm wrong though?
 > 
 
-NAK
+As far as I've understood, these are two entirely different things - set 
+voltage and set current limits - that's how I'm using them, exactly, and 
+I'm really sure that I'm right on this.
 
-/Jarkko
+Besides what I think, though, obviously Mark has the last word on this.
+
+>> +{
+>> +	struct labibb_regulator *vreg = rdev_get_drvdata(rdev);
+>> +	struct regulator_desc *desc = &vreg->desc;
+>> +	struct labibb_current_limits *lim = &vreg->uA_limits;
+>> +	u32 mask, val;
+>> +	int i, ret, sel = -1;
+>> +
+>> +	if (min_uA < lim->uA_min || max_uA < lim->uA_min)
+>> +		return -EINVAL;
+>> +
+>> +	for (i = 0; i < desc->n_current_limits; i++) {
+>> +		int uA_limit = (lim->uA_step * i) + lim->uA_min;
+>> +
+>> +		if (max_uA >= uA_limit && min_uA <= uA_limit)
+> 
+> I presume here you rely on the client passing something like min_uA = 0
+> and max_uA 500? Because if the client where to
+> regulator_set_current_limit(475, 475) you will pass through this loop
+> without finding a match, but 450 would probably be a really good
+> pick...
+
+This regulator does not support setting a minimum limit, but only a 
+ceiling limit, and that's used to raise an interrupt for over-current 
+protection.
+As far as I've understood, the Portable Batch System does its job only 
+in the specific case of *short circuit* detection, but the OCP is 
+totally left to the driver.
+
+The reason why I am restricting the match in a sort of paranoid way is 
+that this regulator can set the current limit in steps, but what I 
+wanted to avoid was a scenario like:
+
+- My display hardware draws a maximum of 475mA
+- I set the current limit on LAB/IBB to 475mA
+- The driver picks 450mA because it likes that value more
+- I get Over Current Protection interrupts and I think that my hardware
+   will get fried if I keep going on
+- This points me to fix the display driver
+   - Wrong! It was the regulator driver doing something different from
+     what I asked it to.
+
+So that's what I am avoiding here. I don't want developers to go crazy 
+over their eventually new driver design for their new HW for "no reason".
+
+> 
+> But what does it even mean to pass min/max uA for a current limit?
+> 
+
+As I explained above, in this specific case, it means setting a limit to 
+trigger the over current interrupt in order to protect the hardware that 
+is attached to this regulator.
+
+In other cases, meanings may be *slightly* different (at least, from my 
+understanding of it).
+
+> That said, I think this loop would be better expressed as a single
+> subtract uA_min and then divide by uA_step.
+> 
+> 
+Yes I can write it shorter... and even more... but I wanted to improve 
+human readability of this function (and this entire driver) because 
+regulators may be dangerous, if badly understood and/or badly set.
+
+I just wanted two things:
+1. Whoever reviewed my patches couldn't misunderstand what I wrote
+    as much as possible;
+2. Any other developer reading this driver (which may not be really
+    familiar with this HW) gets the meaning of what I'm doing in less
+    time, without doing too much time-expensive research.
+
+After all, sometimes, writing shorter code decreases human readability
+without improving performance in any way, and I think that this would
+be one of these times... so... :))
+
+> Apart from that, this patch looks good to me.
+> 
+
+Thank you!
+
+> Regards,
+> Bjorn
+> 
+>> +			sel = i;
+>> +	}
+>> +	if (sel < 0)
+>> +		return -EINVAL;
+>> +
+>> +	/* Current limit setting needs secure access */
+>> +	ret = regmap_write(vreg->regmap, vreg->base + REG_LABIBB_SEC_ACCESS,
+>> +			   LABIBB_SEC_UNLOCK_CODE);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	mask = desc->csel_mask | lim->ovr_val;
+>> +	mask |= LABIBB_CURRENT_LIMIT_EN;
+>> +	val = (u32)sel | lim->ovr_val;
+>> +	val |= LABIBB_CURRENT_LIMIT_EN;
+>> +
+>> +	return regmap_update_bits(vreg->regmap, desc->csel_reg, mask, val);
+>> +}
+>> +
+>> +static int qcom_labibb_get_current_limit(struct regulator_dev *rdev)
+>> +{
+>> +	struct labibb_regulator *vreg = rdev_get_drvdata(rdev);
+>> +	struct regulator_desc *desc = &vreg->desc;
+>> +	struct labibb_current_limits *lim = &vreg->uA_limits;
+>> +	unsigned int cur_step;
+>> +	int ret;
+>> +
+>> +	ret = regmap_read(vreg->regmap, desc->csel_reg, &cur_step);
+>> +	if (ret)
+>> +		return ret;
+>> +	cur_step &= desc->csel_mask;
+>> +
+>> +	return (cur_step * lim->uA_step) + lim->uA_min;
+>> +}
+>> +
+>>   static const struct regulator_ops qcom_labibb_ops = {
+>>   	.enable			= regulator_enable_regmap,
+>>   	.disable		= regulator_disable_regmap,
+>> @@ -61,6 +128,8 @@ static const struct regulator_ops qcom_labibb_ops = {
+>>   	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
+>>   	.list_voltage		= regulator_list_voltage_linear_range,
+>>   	.map_voltage		= regulator_map_voltage_linear_range,
+>> +	.set_current_limit	= qcom_labibb_set_current_limit,
+>> +	.get_current_limit	= qcom_labibb_get_current_limit,
+>>   };
+>>   
+>>   static const struct regulator_desc pmi8998_lab_desc = {
+>> @@ -73,6 +142,9 @@ static const struct regulator_desc pmi8998_lab_desc = {
+>>   	.vsel_mask		= LAB_VOLTAGE_SET_MASK,
+>>   	.apply_reg		= (PMI8998_LAB_REG_BASE + REG_LABIBB_VOLTAGE),
+>>   	.apply_bit		= LABIBB_VOLTAGE_OVERRIDE_EN,
+>> +	.csel_reg		= (PMI8998_LAB_REG_BASE + REG_LABIBB_CURRENT_LIMIT),
+>> +	.csel_mask		= LAB_CURRENT_LIMIT_MASK,
+>> +	.n_current_limits	= 8,
+>>   	.off_on_delay		= LABIBB_OFF_ON_DELAY,
+>>   	.owner			= THIS_MODULE,
+>>   	.type			= REGULATOR_VOLTAGE,
+>> @@ -94,6 +166,9 @@ static const struct regulator_desc pmi8998_ibb_desc = {
+>>   	.vsel_mask		= IBB_VOLTAGE_SET_MASK,
+>>   	.apply_reg		= (PMI8998_IBB_REG_BASE + REG_LABIBB_VOLTAGE),
+>>   	.apply_bit		= LABIBB_VOLTAGE_OVERRIDE_EN,
+>> +	.csel_reg		= (PMI8998_IBB_REG_BASE + REG_LABIBB_CURRENT_LIMIT),
+>> +	.csel_mask		= IBB_CURRENT_LIMIT_MASK,
+>> +	.n_current_limits	= 32,
+>>   	.off_on_delay		= LABIBB_OFF_ON_DELAY,
+>>   	.owner			= THIS_MODULE,
+>>   	.type			= REGULATOR_VOLTAGE,
+>> @@ -167,6 +242,23 @@ static int qcom_labibb_regulator_probe(struct platform_device *pdev)
+>>   		vreg->base = reg_data->base;
+>>   		vreg->type = reg_data->type;
+>>   
+>> +		switch (vreg->type) {
+>> +		case QCOM_LAB_TYPE:
+>> +			/* LAB Limits: 200-1600mA */
+>> +			vreg->uA_limits.uA_min  = 200000;
+>> +			vreg->uA_limits.uA_step = 200000;
+>> +			vreg->uA_limits.ovr_val = LAB_CURRENT_LIMIT_OVERRIDE_EN;
+>> +			break;
+>> +		case QCOM_IBB_TYPE:
+>> +			/* IBB Limits: 0-1550mA */
+>> +			vreg->uA_limits.uA_min  = 0;
+>> +			vreg->uA_limits.uA_step = 50000;
+>> +			vreg->uA_limits.ovr_val = 0; /* No override bit */
+>> +			break;
+>> +		default:
+>> +			return -EINVAL;
+>> +		}
+>> +
+>>   		memcpy(&vreg->desc, reg_data->desc, sizeof(vreg->desc));
+>>   		vreg->desc.of_match = reg_data->name;
+>>   		vreg->desc.name = reg_data->name;
+>> -- 
+>> 2.29.2
+>>
+
