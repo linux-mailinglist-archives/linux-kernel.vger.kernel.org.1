@@ -2,65 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A7B2F9C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEBB2F9C87
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389147AbhARJoZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 04:44:25 -0500
-Received: from wnbcorp.com ([175.126.38.143]:53357 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388892AbhARJdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:33:02 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10I9RCsp002057;
-        Mon, 18 Jan 2021 18:30:42 +0900
-Message-Id: <202101180930.10I9RCsp002057@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2389116AbhARJoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388875AbhARJc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:32:27 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D83C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:31:47 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m6so9870104pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=weNjZrEErNFXHPTaQIIiTw8hbCn51QM6hPaZLo2TDko=;
+        b=d5iBcuanzwfbdvR36IQ+qsOR6a8QsF1WATdXJqKyaRnjqYi0Esw85UmGyK7zAL2x+7
+         1Auk0l2eCTBoGwSLjN1EvOMk6lBipyCw9ocuN8pUiO61PFXJJYN2UKIzGX6+YYaDV5Da
+         cYiioEKebmXl+QkkRpOZMRtmkvJEOKZteVF73gDDJKMtwXds4a34CmWzUzEEw8P2jkOu
+         SMhRPfUftfVc/9QEiflRheTKINE2Z3Py8Dc1AhrDglJO4ehV9wYgyfJHhu4VwzZaiyGD
+         5FirodtnY+RSGmmgw0y0yQ5jgj+pBO1TLQZ60GDldG3/7DJ+pt4WlSuIIrecD+emI4v5
+         ICBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=weNjZrEErNFXHPTaQIIiTw8hbCn51QM6hPaZLo2TDko=;
+        b=UagxRRhBfV6f7FGc4uUqv8Eg2b5DNnn0g7G4L9ndQDii4/YttzBNBVrHpbDYMQihtu
+         Fq8n0LlXlVtPvXsrF0kSuV0tYZgntdYZ4FVssV1E9bQmAelfE7DwO5xNcl0I8q6k1Y/r
+         JdpYqyyZc5BliX/iDFTpkm1hdbCmaQGSrg+487Q+jKcHv23nwTWCOBEFP7Zq6dwkBddr
+         +l6mSm21eI9zitUZBunHhdFBdyvcGlR2MRL/UlRn8PbGVevfNp2qWR7nFp6RwVS7YjjP
+         eJJkxxpvC27GVtNrC/Le+pmT0Pta/uTRjWu0NzHUHqm3ohUFcxp66f3eOcO+83XiJHC5
+         rf6A==
+X-Gm-Message-State: AOAM531TiQPAlxGHgwXrCibpnYVwzcoJZzNijyJyCrwgQJkRC6nZqOUq
+        C82360pOSHxGVp4+eLt4VYA=
+X-Google-Smtp-Source: ABdhPJwWa+OnJ54swVw4LtN6TdwayZCIBZs0XWey0PmTyVWlKeAVuKwG5U+nZNRpYqEfkhTFCZyXLQ==
+X-Received: by 2002:a65:63c7:: with SMTP id n7mr25633698pgv.285.1610962307166;
+        Mon, 18 Jan 2021 01:31:47 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id z13sm2828607pgf.89.2021.01.18.01.31.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:31:46 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     maz@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
+Subject: [PATCH] KVM: arm64: Fix the return value of smp_call_function_single()
+Date:   Mon, 18 Jan 2021 17:31:37 +0800
+Message-Id: <20210118093137.3383-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 10:31:23 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+In smp_call_function_single(), the 3rd parameter isn't the return value
+and it's always positive. But it may return a negative value. So the
+'ret' is should be the return value of the smp_call_function_single().
 
-Sir/Madam,
+In check_kvm_target_cpu(), 'phys_target' is more readable than 'ret'.
 
-CONGRATULATIONS!!!
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ arch/arm64/kvm/arm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 04c44853b103..5fa5c04106de 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1815,9 +1815,9 @@ static int init_hyp_mode(void)
+ 	return err;
+ }
+ 
+-static void check_kvm_target_cpu(void *ret)
++static void check_kvm_target_cpu(void *phys_target)
+ {
+-	*(int *)ret = kvm_target_cpu();
++	*(int *)phys_target = kvm_target_cpu();
+ }
+ 
+ struct kvm_vcpu *kvm_mpidr_to_vcpu(struct kvm *kvm, unsigned long mpidr)
+@@ -1879,7 +1879,7 @@ void kvm_arch_irq_bypass_start(struct irq_bypass_consumer *cons)
+ int kvm_arch_init(void *opaque)
+ {
+ 	int err;
+-	int ret, cpu;
++	int ret, cpu, phys_target;
+ 	bool in_hyp_mode;
+ 
+ 	if (!is_hyp_mode_available()) {
+@@ -1900,7 +1900,7 @@ int kvm_arch_init(void *opaque)
+ 			 "Only trusted guests should be used on this system.\n");
+ 
+ 	for_each_online_cpu(cpu) {
+-		smp_call_function_single(cpu, check_kvm_target_cpu, &ret, 1);
++		ret = smp_call_function_single(cpu, check_kvm_target_cpu, &phys_target, 1);
+ 		if (ret < 0) {
+ 			kvm_err("Error, CPU %d not supported!\n", cpu);
+ 			return -ENODEV;
+-- 
+2.29.0
 
