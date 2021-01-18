@@ -2,172 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D682F9FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F422F9FF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391674AbhARMhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:37:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
+        id S2404069AbhARMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:38:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38094 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391598AbhARMdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:33:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12DF822B40;
-        Mon, 18 Jan 2021 12:32:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610973156;
-        bh=NOzKU5hLhxWt9+Tdt0zw013lkk75mG+c9I2CZ6dYVcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oAnPAPV4f7cXji1Hnb6t23mg6r3uPfwqKVqwRu1EzwuD95okjqfkQFthGnp98ie6g
-         +r6cvzQGOsSUJn+AACkK4RV/NmAgu9T1scviiJMzvkJ+iQe1PBQMcYreTSjpVx7IzM
-         spnUCwpcW5Ko60zxeOUcEpspu49uGS3hkmJAAe+fjjtBpNPUEDSAV0oD3+QixKQSjJ
-         L2R+Yd8M2onLKV9+B1qVygZ7A/VqAinvdGeF0/IWg18huB6JwKroAr/NY9nZ0ZFmKL
-         2b23FxKC9Uq6hqw0+I49IE+DuaFl4OuOPn2IMe8bgD9um04noQkPBWcwMMSNth+hvN
-         kf7Kxz5z3dhyg==
-Date:   Mon, 18 Jan 2021 12:31:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH 4/6] regulator: Initial commit of sy7636a
-Message-ID: <20210118123158.GE4455@sirena.org.uk>
-References: <20210117042539.1609-1-alistair@alistair23.me>
- <20210117042539.1609-4-alistair@alistair23.me>
+        id S2391450AbhARMdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:33:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 545C3ACBA;
+        Mon, 18 Jan 2021 12:32:55 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     u.kleine-koenig@pengutronix.de
+Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH v7 00/11] Raspberry Pi PoE HAT fan support
+Date:   Mon, 18 Jan 2021 13:32:33 +0100
+Message-Id: <20210118123244.13669-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SWTRyWv/ijrBap1m"
-Content-Disposition: inline
-In-Reply-To: <20210117042539.1609-4-alistair@alistair23.me>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The aim of this series is to add support to the fan found on RPi's PoE
+HAT. Some commentary on the design can be found below. But the important
+part to the people CC'd here not involved with PWM is that, in order to
+achieve this properly, we also have to fix the firmware interface the
+driver uses to communicate with the PWM bus (and many other low level
+functions). Specifically, we have to make sure the firmware interface
+isn't unbound while consumers are still up. So, patch #1 & #2 introduce
+reference counting in the firmware interface driver and patches #3 to #8
+update all firmware users. Patches #9 to #11 introduce the new PWM
+driver.
 
---SWTRyWv/ijrBap1m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I sent everything as a single series as the final version of the PWM
+drivers depends on the firmware fixes, but I'll be happy to split this
+into two separate series if you think it's better.
 
-On Sat, Jan 16, 2021 at 08:25:37PM -0800, Alistair Francis wrote:
+--- Original cover letter below ---
 
-> --- /dev/null
-> +++ b/drivers/regulator/sy7636a-regulator.c
-> @@ -0,0 +1,233 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Functions to access SY3686A power management chip voltages
-> + *
+This series aims at adding support to RPi's official PoE HAT fan[1].
 
-Please make the entire comment a C++ one so things look more
-intentional.
+The HW setup is the following:
 
-> + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-> + *
-> + * Author: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+| Raspberry Pi                               | PoE HAT                    |
+ arm core -> Mailbox -> RPi co-processor -> I2C -> Atmel MCU -> PWM -> FAN
 
-This probably needs an update.
+The arm cores have only access to the mailbox interface, as i2c0, even if
+physically accessible, is to be used solely by the co-processor
+(VideoCore 4/6).
 
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation version 2.
-> + *
-> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> + * kind, whether express or implied; without even the implied warranty
-> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
+This series implements a PWM bus, and has pwm-fan sitting on top of it as per
+this discussion: https://lkml.org/lkml/2018/9/2/486. Although this design has a
+series of shortcomings:
 
-This boilerplate is redundant and should be removed.
+- It depends on a DT binding: it's not flexible if a new hat shows up with new
+  functionality, we're not 100% sure we'll be able to expand it without
+  breaking backwards compatibility. But without it we can't make use of DT
+  thermal-zones, which IMO is overkill.
 
-> +static int get_vcom_voltage_op(struct regulator_dev *rdev)
-> +{
-> +	int ret = get_vcom_voltage_mv(rdev->regmap);
-> +
+- We're using pwm-fan, writing a hwmon driver would, again, give us more
+  flexibility, but it's not really needed at the moment.
 
-Why is this get_vcom_voltage_mv() function not in the regulator driver,
-and why is it not just inline here?  It also needs namespacing.
+I personally think that it's not worth the effort, it's unlikely we'll get
+things right in advance. And ultimately, if the RPi people come up with
+something new, we can always write a new driver/bindings from scratch (as in
+not reusing previous code).
 
-> +static int disable_regulator(struct regulator_dev *rdev)
-> +{
-> +	struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
-> +	int ret = 0;
-> +
-> +	mutex_lock(&sy7636a->reglock);
-> +	ret = regulator_disable_regmap(rdev);
-> +	usleep_range(30000, 35000);
-> +	mutex_unlock(&sy7636a->reglock);
+That said, I'm more than happy to change things if there is a consensus that
+another design will do the trick.
 
-Why do you need this delay here, and what purpose is this lock intended
-to serve?  I can't understand what it's intended to protect.
+[1] https://www.raspberrypi.org/blog/introducing-power-over-ethernet-poe-hat/
 
-> +	mutex_lock(&sy7636a->reglock);
-> +	ret = regulator_is_enabled_regmap(rdev);
-> +	mutex_unlock(&sy7636a->reglock);
+---
 
-This lock usage in particular looks confused.
+Changes since v6:
+ - Address PWM driver comments
 
-> +	ret = regulator_enable_regmap(rdev);
-> +	if (ret)
-> +		goto finish;
+Changes since v5:
+ - Small cleanups
+ - Add extra code comments
 
-> +	if (!pwr_good) {
-> +		dev_err(&rdev->dev, "Power good signal timeout after %u ms\n",
-> +				jiffies_to_msecs(t1 - t0));
-> +		ret = -ETIME;
-> +		goto finish;
-> +	}
+Changes since v4:
+ - Cleanup devm calls
+ - Rename compatible string so it's unique to the PoE HAT
 
-This doesn't undo the underlying enable, leaving the regulator in a
-partially enabled state.
+Changes since v3:
+ - Split first patch, #1 introduces refcount, then #2 the devm function
+ - Fix touchscreen function
+ - Use kref
 
-> +static const struct regulator_ops sy7636a_vcom_volt_ops = {
-> +	.get_voltage = get_vcom_voltage_op,
-> +	.enable = enable_regulator_pgood,
-> +	.disable = disable_regulator,
-> +	.is_enabled = sy7636a_regulator_is_enabled,
-> +};
+Changes since v2:
+ - Introduce devm_rpi_firmware_get()
+ - Small cleanups in PWM driver
 
-The namespacing for functions is very random and prone to clashes.
-Given the power good signal I'd also expect a get_status() operation.
+Changes since v1:
+ - Address PWM driver changes
+ - Fix binding, now with 2 cells
 
-> +static int sy7636a_regulator_suspend(struct device *dev)
-> +{
-> +	int ret;
-> +	struct sy7636a *sy7636a = dev_get_drvdata(dev->parent);
-> +
-> +	ret = get_vcom_voltage_mv(sy7636a->regmap);
-> +
-> +	if (ret > 0)
-> +		sy7636a->vcom = (unsigned int)ret;
-> +
-> +	return 0;
-> +}
+Nicolas Saenz Julienne (11):
+  firmware: raspberrypi: Keep count of all consumers
+  firmware: raspberrypi: Introduce devm_rpi_firmware_get()
+  clk: bcm: rpi: Release firmware handle on unbind
+  gpio: raspberrypi-exp: Release firmware handle on unbind
+  reset: raspberrypi: Release firmware handle on unbind
+  soc: bcm: raspberrypi-power: Release firmware handle on unbind
+  staging: vchiq: Release firmware handle on unbind
+  input: raspberrypi-ts: Release firmware handle when not needed
+  dt-bindings: pwm: Add binding for RPi firmware PWM bus
+  DO NOT MERGE: ARM: dts: Add RPi's official PoE hat support
+  pwm: Add Raspberry Pi Firmware based PWM bus
 
-What's going on here, and if you are going to store this value over
-suspend why not store it in a variable of the correct type?  In general
-it's surprising to need a suspend operation for a regulator.
+ .../arm/bcm/raspberrypi,bcm2835-firmware.yaml |  20 ++
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  54 +++++
+ drivers/clk/bcm/clk-raspberrypi.c             |   2 +-
+ drivers/firmware/raspberrypi.c                |  69 +++++-
+ drivers/gpio/gpio-raspberrypi-exp.c           |   2 +-
+ drivers/input/touchscreen/raspberrypi-ts.c    |   2 +-
+ drivers/pwm/Kconfig                           |   9 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-raspberrypi-poe.c             | 220 ++++++++++++++++++
+ drivers/reset/reset-raspberrypi.c             |   2 +-
+ drivers/soc/bcm/raspberrypi-power.c           |   2 +-
+ .../interface/vchiq_arm/vchiq_arm.c           |   2 +-
+ .../pwm/raspberrypi,firmware-poe-pwm.h        |  13 ++
+ include/soc/bcm2835/raspberrypi-firmware.h    |  10 +
+ 14 files changed, 399 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/pwm/pwm-raspberrypi-poe.c
+ create mode 100644 include/dt-bindings/pwm/raspberrypi,firmware-poe-pwm.h
 
-> +	sy7636a->pgood_gpio = gdp;
-> +	dev_info(sy7636a->dev,
-> +		"Power good GPIO registered (gpio# %d)\n",
-> +		desc_to_gpio(sy7636a->pgood_gpio));
+-- 
+2.29.2
 
-This print is just adding noise to the boot process.
-
---SWTRyWv/ijrBap1m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFf70ACgkQJNaLcl1U
-h9DVcAf/X6NYcyt4N0xL4hg5lqm/UFmFafUgWal2fks4I/U4186CC0iiRUbkq8Fi
-HTp0il0ioR1Ge784/jvWyfyF9/l3vp/71hOkElEcc2G1i1iPEqFsiL0PE0wYqrqS
-1s3naymf9tvNT1pFHWwv4JKmNf7LY/oG10BjtX9dz7Xtd7Mm/BJnIf95j1QcmRnT
-3APl4k7F6tXVWNbzAWl3CB9CHJW9+BR/YcUECAKW9P/7YuHs7EXvo0y7SEsPn48W
-nqHj5EJqB+NKJTn3plkRUKLbgff7QGeTxUo/QshqnVARwshQ6axJ12Pns0TTg0Rp
-i64ZAuwI5XPz/3a4d+rI/rpWZ6cLwQ==
-=ii0P
------END PGP SIGNATURE-----
-
---SWTRyWv/ijrBap1m--
