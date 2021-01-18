@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3E52FA045
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE8B2FA048
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391861AbhARMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:45:49 -0500
-Received: from mga12.intel.com ([192.55.52.136]:25171 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404134AbhARMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:40:29 -0500
-IronPort-SDR: MRx95v8s+VqhFX3Pd4CWSsBOzZFfoMRD7HhvjYzcbU1EV8kcS74IRS9f7KpzoC8NTlbFrHtfib
- viJT3+CymR/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="157977409"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="157977409"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 04:38:43 -0800
-IronPort-SDR: WMRsZG1MOufHvxOoZIIgcqAuj1XaPWgqLN7+7YCCwfZF8XPmtUTbFJb5X8yV9VJQ6s/PPMdjJc
- Vq/KEtLrm6Tw==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="466359027"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 04:38:38 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1Toq-00285s-4i; Mon, 18 Jan 2021 14:39:40 +0200
-Date:   Mon, 18 Jan 2021 14:39:40 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 3/7] i2c: i2c-core-base: Use format macro in
- i2c_dev_set_name()
-Message-ID: <20210118123940.GG4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-4-djrscally@gmail.com>
+        id S2404188AbhARMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404225AbhARMlc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:41:32 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB10EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:40:49 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id a9so12864027wrt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pUBLkn8FySf4zUY7MqtXXjbLm3L09Eo0TSDMqMBMKfM=;
+        b=s+BO5FOhDlp/nvtnTNCkYC6pw9spNOEnIrmM8K3dL6rIqWMqrHTs4ctKLMPxUWh9bn
+         V/XtJhkA7/T7NtgDrwnotnjn6IDm7cM3jHVSatn8EtA2s2bXb+SloN4taNrAVY/gCHKq
+         53Imgctex7mIxH2wd4piVk7A9h1ryVXK/B385VKK7GeUPFCaPscNRS0aKmudUQpjzjKu
+         QuPWa9k+leDRdYbTtL53a/O74tP8BaOZuCz8s1LKKjCIinLJ9CDexduuXltbfdf8a+Tc
+         O3Vys75aAG+nHFnw52+45/6WJqkIiXlTLiyczkt7RSz4QAZ4xuRs5gf0fvtwKJ6pbuMG
+         e/cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pUBLkn8FySf4zUY7MqtXXjbLm3L09Eo0TSDMqMBMKfM=;
+        b=fwV2ALpWjnbsJ6ijUAJdDvmXCqawOkMrrcOedM0+jwhFgzM1KvF/BufMXZOFWqQ3Wi
+         vhEP15+TvJkXbg8TBJIsoKFrTaxpPu8cUILHul7VqqMv39BGSmAUh5kJbc/xKdrW5g0i
+         uIcIkvJvKk0RIiBlCU/orMKa6StA0CsorqT0lQMS8mpM1U5UCeIEJZI8YtpiWTq0XMaM
+         Emq0tcAlDPMm10jV+3KK+Pv9xXWijR1qm5r0x3Ok5re1m4r1g5rMtHjFrcqdWhFcTeE9
+         PILgNU4xUZs2yecqIROiK5yQxbwPT8pSaAIG5TLEsLK+9nN42uDb8bpo7/AMr/Wp/FEP
+         3M2A==
+X-Gm-Message-State: AOAM531MgIupTsgXKpbeCNtwI4qYkwE+2F30vFa82+BiONvIYn0H8b/V
+        hGKs9NPsJXW/CkLU6cfSPe4GHQ==
+X-Google-Smtp-Source: ABdhPJyTQTZCstJ7L8ysfkZ8fDJGZ+Lqupod6BQqyMC/JgHxJ1RmnMf/6HdQOfp86UHm3doCUXOy3Q==
+X-Received: by 2002:adf:f7d2:: with SMTP id a18mr25320885wrq.47.1610973648680;
+        Mon, 18 Jan 2021 04:40:48 -0800 (PST)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id u5sm9394625wmg.9.2021.01.18.04.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 04:40:48 -0800 (PST)
+Date:   Mon, 18 Jan 2021 13:40:29 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, iommu@lists.linux-foundation.org,
+        robin.murphy@arm.com
+Subject: Re: [PATCH v4 2/3] iommu/iova: Avoid double-negatives in magazine
+ helpers
+Message-ID: <YAWBvVPESMsRvacj@myrica>
+References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
+ <1607538189-237944-3-git-send-email-john.garry@huawei.com>
+ <YAHRKCkcHAEUdRNT@larix.localdomain>
+ <69c30e85-4a72-a0e1-1e56-4ffbd0df5aba@huawei.com>
+ <YAVeDOiKBEKZ2Tdq@myrica>
+ <cdc77ccd-823d-464b-fe3c-2a9da17bcb61@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210118003428.568892-4-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <cdc77ccd-823d-464b-fe3c-2a9da17bcb61@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:34:24AM +0000, Daniel Scally wrote:
-> Some places in the kernel allow users to map resources to a device
-> using device name (for example, gpiod_lookup_table). Currently
-
-"...in the struct gpiod_lookup_table)." ?
-
-> this involves waiting for the i2c_client to have been registered so we
-
-I²C client ?
-
-> can use dev_name(&client->dev). We want to add a function to allow users
-> to refer to an i2c device by name before it has been instantiated, so
-
-I²C device ?
-
-> create a macro for the format that's accessible outside the i2c layer
-
-I²C layer ?
-
-> and use it in i2c_dev_set_name()
-
-Period at the end.
-
-For the record, I do not like wrapping below to 80 limit and agree with
-Wolfram.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> 	- Used format macro in i2c_dev_set_name() instead of sub func
+On Mon, Jan 18, 2021 at 10:55:52AM +0000, John Garry wrote:
+> On 18/01/2021 10:08, Jean-Philippe Brucker wrote:
+> > > > Any idea why that's happening?  This fix seems ok but if we're expecting
+> > > > allocation failures for the loaded magazine then we could easily get it
+> > > > for cpu_rcaches too, and get a similar abort at runtime.
+> > > It's not specifically that we expect them (allocation failures for the
+> > > loaded magazine), rather we should make safe against it.
+> > > 
+> > > So could you be more specific in your concern for the cpu_rcache failure?
+> > > cpu_rcache magazine assignment comes from this logic.
+> > If this fails:
+> > 
+> > drivers/iommu/iova.c:847: rcache->cpu_rcaches = __alloc_percpu(sizeof(*cpu_rcache), cache_line_size());
+> > 
+> > then we'll get an Oops in __iova_rcache_get(). So if we're making the
+> > module safer against magazine allocation failure, shouldn't we also
+> > protect against cpu_rcaches allocation failure?
 > 
->  drivers/i2c/i2c-core-base.c | 4 ++--
->  include/linux/i2c.h         | 3 +++
->  2 files changed, 5 insertions(+), 2 deletions(-)
+> Ah, gotcha. So we have the WARN there, but that's not much use as this would
+> still crash, as you say.
 > 
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 63ebf722a424..547b8926cac8 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -811,12 +811,12 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
->  	struct acpi_device *adev = ACPI_COMPANION(&client->dev);
->  
->  	if (info && info->dev_name) {
-> -		dev_set_name(&client->dev, "i2c-%s", info->dev_name);
-> +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, info->dev_name);
->  		return;
->  	}
->  
->  	if (adev) {
-> -		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
-> +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
->  		return;
->  	}
->  
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 56622658b215..4d40a4b46810 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -39,6 +39,9 @@ enum i2c_slave_event;
->  typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
->  			      enum i2c_slave_event event, u8 *val);
->  
-> +/* I2C Device Name Format - to maintain consistency outside the i2c layer */
-> +#define I2C_DEV_NAME_FORMAT		"i2c-%s"
-> +
->  /* I2C Frequency Modes */
->  #define I2C_MAX_STANDARD_MODE_FREQ	100000
->  #define I2C_MAX_FAST_MODE_FREQ		400000
-> -- 
-> 2.25.1
+> So maybe we can embed the cpu rcaches in iova_domain struct, to avoid the
+> separate (failable) cpu rcache allocation.
 > 
+> Alternatively, we could add NULL checks __iova_rcache_get() et al for this
+> allocation failure but that's not preferable as it's fastpath.
+> 
+> Finally so we could pass back an error code from init_iova_rcache() to its
+> only caller, init_iova_domain(); but that has multiple callers and would
+> need to be fixed up.
+> 
+> Not sure which is best or on other options.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I would have initially gone with option 2 which seems the simplest, but I
+don't have a setup to measure that overhead
 
-
+Thanks,
+Jean
