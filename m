@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F242FA2A9
+	by mail.lfdr.de (Postfix) with ESMTP id 16AE12FA2A8
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392766AbhAROOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:14:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42280 "EHLO mail.kernel.org"
+        id S2392717AbhARONo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:13:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392623AbhARONO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:13:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D70D22BEA;
-        Mon, 18 Jan 2021 14:12:29 +0000 (UTC)
+        id S2391744AbhARONP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:13:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A0722BF3;
+        Mon, 18 Jan 2021 14:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610979151;
-        bh=Dgo3S/364tWt6hL9FEnMrK6pXcTQe2CN8b+e2uVZWeo=;
+        s=k20201202; t=1610979154;
+        bh=1+HfaV0EjZcRW6SrSxh4RjyC9M2Z5uRcOlAOV1nlcOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OxICOjBINHzFR4q96wJmwdXsxCJvSOO1cbX2yo9Ckc/GJTOByGLyumP6MmVJJlPOS
-         rB52w7tzPtKbEVDQ5uqZTyFyXqTLYtws0iv9oD066i/PqrX6gYL8+ONxgEfT5vlb7n
-         ePxs1ZgnBnqwuKM8OJQqdcACLGcQiQM4G7aYy2S0s9s0nhRLKvB9ls7DSZKxNS8IsS
-         kzJQiLwxz4xqKFsLPiQ1YbSVOjdlVY9L5m3/KC1ujFZKxmoHlZmyjRjG9XhmhpCUfX
-         8oOU/UOaBuMQvNG1+bfRSyhHgHfAPLa+nmgR4BkKwiJoBrg3CrNGg0w69Wgd8H1Psp
-         EHj3vyhteKlHg==
+        b=Q61LY/goYwDL8ASCq98RA+ZkKAyvmyymx3s0DCG41Aa/htDGyBSgERlfv1oH7bAut
+         baAJhG3kBDdq66PR5fiCzJrIWab8+ibnJy+0m1C/oQIt+n3kUX9pCWRDf9sPd0ms+Q
+         3wg2+fLtGRWcIfi6WuRA0fwyd272UhriYvyXPLy121Vx0NCCdhoJpiOVjJIvRxM/UD
+         9bxWkY5yvFg0aOcrkKtyNIkwR2hd5wnBazRiWNzaQiF5m+CXqycVvPPlhHl1PrGGXw
+         bLZ/cJcAlS2AYHO3obLxeuSAD4uHauAGqbNZCpflpmeN1l4Zts/0LNG1ALcI+B14cU
+         nSQJH8dFo/YqA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: [RFC PATCH 1/8] static_call/x86: Add __static_call_return0()
-Date:   Mon, 18 Jan 2021 15:12:16 +0100
-Message-Id: <20210118141223.123667-2-frederic@kernel.org>
+Subject: [RFC PATCH 2/8] static_call: Provide DEFINE_STATIC_CALL_RET0()
+Date:   Mon, 18 Jan 2021 15:12:17 +0100
+Message-Id: <20210118141223.123667-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118141223.123667-1-frederic@kernel.org>
 References: <20210118141223.123667-1-frederic@kernel.org>
@@ -43,110 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+DECLARE_STATIC_CALL() must pass the original function targeted for a
+given static call. But DEFINE_STATIC_CALL() may want to initialize it as
+off. In this case we can't pass NULL (for functions without return value)
+or __static_call_return0 (for functions returning a value) directly
+to DEFINE_STATIC_CALL() as that may trigger a static call redeclaration
+with a different function prototype. Type casts neither can work around
+that as they don't get along with typeof().
 
-Provide a stub function that return 0 and wire up the static call site
-patching to replace the CALL with a single 5 byte instruction that
-clears %RAX, the return value register.
+The proper way to do that for functions that don't return a value is
+to use DEFINE_STATIC_CALL_NULL(). But functions returning a actual value
+don't have an equivalent yet.
 
-The function can be cast to any function pointer type that has a
-single %RAX return (including pointers). Also provide a version that
-returns an int for convenience. We are clearing the entire %RAX register
-in any case, whether the return value is 32 or 64 bits, since %RAX is
-always a scratch register anyway.
+Provide DEFINE_STATIC_CALL_RET0() to solve this situation.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/static_call.c | 17 +++++++++++++++--
- include/linux/static_call.h   |  2 ++
- kernel/static_call.c          |  5 +++++
- 3 files changed, 22 insertions(+), 2 deletions(-)
+ include/linux/static_call.h | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index ca9a380d9c0b..9442c4136c38 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -11,14 +11,26 @@ enum insn_type {
- 	RET = 3,  /* tramp / site cond-tail-call */
- };
- 
-+/*
-+ * data16 data16 xorq %rax, %rax - a single 5 byte instruction that clears %rax
-+ * The REX.W cancels the effect of any data16.
-+ */
-+static const u8 xor5rax[] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
-+
- static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
- {
-+	const void *emulate = NULL;
- 	int size = CALL_INSN_SIZE;
- 	const void *code;
- 
- 	switch (type) {
- 	case CALL:
- 		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
-+		if (func == &__static_call_return0) {
-+			emulate = code;
-+			code = &xor5rax;
-+		}
-+
- 		break;
- 
- 	case NOP:
-@@ -41,7 +53,7 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void
- 	if (unlikely(system_state == SYSTEM_BOOTING))
- 		return text_poke_early(insn, code, size);
- 
--	text_poke_bp(insn, code, size, NULL);
-+	text_poke_bp(insn, code, size, emulate);
- }
- 
- static void __static_call_validate(void *insn, bool tail)
-@@ -54,7 +66,8 @@ static void __static_call_validate(void *insn, bool tail)
- 			return;
- 	} else {
- 		if (opcode == CALL_INSN_OPCODE ||
--		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5))
-+		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5) ||
-+		    !memcmp(insn, xor5rax, 5))
- 			return;
- 	}
- 
 diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 695da4c9b338..9f05d60aca70 100644
+index 9f05d60aca70..076f124c957a 100644
 --- a/include/linux/static_call.h
 +++ b/include/linux/static_call.h
-@@ -134,6 +134,8 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 			     STATIC_CALL_TRAMP_ADDR(name), func);	\
- })
+@@ -160,13 +160,13 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void
+ extern int static_call_mod_init(struct module *mod);
+ extern int static_call_text_reserved(void *start, void *end);
  
-+extern long __static_call_return0(void);
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+ 	struct static_call_key STATIC_CALL_KEY(name) = {		\
+-		.func = _func,						\
++		.func = _func_init,					\
+ 		.type = 1,						\
+ 	};								\
+-	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
++	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func_init)
+ 
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+@@ -195,12 +195,12 @@ struct static_call_key {
+ 	void *func;
+ };
+ 
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func _func_init)			\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+ 	struct static_call_key STATIC_CALL_KEY(name) = {		\
+-		.func = _func,						\
++		.func = _func_init,					\
+ 	};								\
+-	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
++	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func_init)
+ 
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+@@ -242,10 +242,10 @@ struct static_call_key {
+ 	void *func;
+ };
+ 
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+ 	struct static_call_key STATIC_CALL_KEY(name) = {		\
+-		.func = _func,						\
++		.func = _func_init,					\
+ 	}
+ 
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+@@ -297,4 +297,10 @@ static inline int static_call_text_reserved(void *start, void *end)
+ 
+ #endif /* CONFIG_HAVE_STATIC_CALL */
+ 
++#define DEFINE_STATIC_CALL(name, _func)					\
++	__DEFINE_STATIC_CALL(name, _func, _func)
 +
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
- extern int __init static_call_init(void);
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 84565c2a41b8..0bc11b5ce681 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -438,6 +438,11 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
-+long __static_call_return0(void)
-+{
-+	return 0;
-+}
++#define DEFINE_STATIC_CALL_RET0(name, _func)				\
++	__DEFINE_STATIC_CALL(name, _func, __static_call_return0)
 +
- #ifdef CONFIG_STATIC_CALL_SELFTEST
- 
- static int func_a(int x)
+ #endif /* _LINUX_STATIC_CALL_H */
 -- 
 2.25.1
 
