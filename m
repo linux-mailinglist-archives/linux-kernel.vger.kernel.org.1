@@ -2,101 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7860B2FAC8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B2C2FAC97
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394629AbhARVXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:23:01 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:46854 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394613AbhARVWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:22:03 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l1bxS-001Lp3-Tt; Mon, 18 Jan 2021 22:21:06 +0100
-Date:   Mon, 18 Jan 2021 22:21:06 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 2/2] sh_eth: Make PHY access aware of Runtime PM
- to fix reboot crash
-Message-ID: <YAX7wt+100RGmUvg@lunn.ch>
-References: <20210118150656.796584-1-geert+renesas@glider.be>
- <20210118150656.796584-3-geert+renesas@glider.be>
+        id S2394636AbhARVZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:25:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438052AbhARVXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 16:23:46 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D54C061573;
+        Mon, 18 Jan 2021 13:22:59 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ox12so1321569ejb.2;
+        Mon, 18 Jan 2021 13:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Giv0GJHiR0U7EHzqjMGjtNcbBY4s91RtnAoeLxvrwL4=;
+        b=fqJW2k5L9DSKd2FkqB1VRaQcaE9/yIOY+GHwrsIGzeGPSqi6pAez/9o8N24ga5378M
+         tX8s/np4npMdreeXn0+jUSPr3/nyhMHX7JcQYCx9EgKStEU6extVGTmhBtvDv1/OpGCy
+         z3tZkkDB7HMXR8lIR9gjUPxO3LN9AdxP/gdl4d0Oy/MUmCkLYLBNq7ueX/uSLA95ryxG
+         G+7HTEEJfHJ1QfLjThUwYefr5GYQDkw/cY95YElyTa/rDUJbxVkEsRSrEgr+b3PBfB2n
+         VeQwm/n3XYoUzszQr2hD3S42MjfoXkULKPWOt5PC0tc1zdlBCjoGYrZ4BOcQ7jAUyQT2
+         KeSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Giv0GJHiR0U7EHzqjMGjtNcbBY4s91RtnAoeLxvrwL4=;
+        b=Z3qy+aNpC9kjdEbRLoPQCrHaBQaFCe4Gp8VYU4xeFm0H34afuDRFMTQvdY5vzWvpXu
+         txIftvA2kY7ANTZJwpu0s6GR6LwCIaNsbTg4vrD+94BX7mO9HlPIcVTdjrd4IQxwUqeM
+         jiS5ZycMNAuFTY4g4fl8UvhOyc3rLoH1RN6B6nVk4L0zsMMrNYkFVR7xUBR8cL3jybJZ
+         as6d/dL7b1zNjzBML23MgYGny67IamE65l+W38I4Ojy+oEn0tGiQbICxiEgSfRToucT0
+         zVmKbD97VfGIceMHMYkz8r2P+2fHw5gVI71Q2Gppup6Iof3g8RrFnfKZmHS3SULc2hne
+         27aw==
+X-Gm-Message-State: AOAM530t2J8h6065YBtU7aWEzJNksI8aOUBPZLXntz4nw+gD6nomTFKX
+        67NDSrJuU3Jm/y7P3FHpaWs=
+X-Google-Smtp-Source: ABdhPJzUtiGI8cqGbVVsOEIghLaawZpYS1WoHneVMPFuQMBKqIao3ek/l4qpxvvLjkU1v34FnSi3fg==
+X-Received: by 2002:a17:906:7798:: with SMTP id s24mr1012838ejm.19.1611004977974;
+        Mon, 18 Jan 2021 13:22:57 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
+        by smtp.gmail.com with ESMTPSA id h16sm11583847edw.34.2021.01.18.13.22.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 13:22:57 -0800 (PST)
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Douglas Gilbert <dgilbert@interlog.com>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+Date:   Mon, 18 Jan 2021 22:22:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118150656.796584-3-geert+renesas@glider.be>
+In-Reply-To: <20210118202431.GO4605@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:06:56PM +0100, Geert Uytterhoeven wrote:
-> Wolfram reports that his R-Car H2-based Lager board can no longer be
-> rebooted in v5.11-rc1, as it crashes with an imprecise external abort.
-> The issue can be reproduced on other boards (e.g. Koelsch with R-Car
-> M2-W) too, if CONFIG_IP_PNP is disabled, and the Ethernet interface is
-> down at reboot time:
+On 18.01.21 21:24, Jason Gunthorpe wrote:
+> On Mon, Jan 18, 2021 at 03:08:51PM -0500, Douglas Gilbert wrote:
+>> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
+>>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
+>>>
+>>>> After several flawed attempts to detect overflow, take the fastest
+>>>> route by stating as a pre-condition that the 'order' function argument
+>>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
+>>>
+>>> That doesn't help, the point of the overflow check is similar to
+>>> overflow checks in kcalloc: to prevent the routine from allocating
+>>> less memory than the caller might assume.
+>>>
+>>> For instance ipr_store_update_fw() uses request_firmware() (which is
+>>> controlled by userspace) to drive the length argument to
+>>> sgl_alloc_order(). If userpace gives too large a value this will
+>>> corrupt kernel memory.
+>>>
+>>> So this math:
+>>>
+>>>     	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+>>
+>> But that check itself overflows if order is too large (e.g. 65).
 > 
->     Unhandled fault: imprecise external abort (0x1406) at 0x00000000
->     pgd = (ptrval)
->     [00000000] *pgd=422b6835, *pte=00000000, *ppte=00000000
->     Internal error: : 1406 [#1] ARM
->     Modules linked in:
->     CPU: 0 PID: 1105 Comm: init Tainted: G        W         5.10.0-rc1-00402-ge2f016cf7751 #1048
->     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
->     PC is at sh_mdio_ctrl+0x44/0x60
->     LR is at sh_mmd_ctrl+0x20/0x24
->     ...
->     Backtrace:
->     [<c0451f30>] (sh_mdio_ctrl) from [<c0451fd4>] (sh_mmd_ctrl+0x20/0x24)
->      r7:0000001f r6:00000020 r5:00000002 r4:c22a1dc4
->     [<c0451fb4>] (sh_mmd_ctrl) from [<c044fc18>] (mdiobb_cmd+0x38/0xa8)
->     [<c044fbe0>] (mdiobb_cmd) from [<c044feb8>] (mdiobb_read+0x58/0xdc)
->      r9:c229f844 r8:c0c329dc r7:c221e000 r6:00000001 r5:c22a1dc4 r4:00000001
->     [<c044fe60>] (mdiobb_read) from [<c044c854>] (__mdiobus_read+0x74/0xe0)
->      r7:0000001f r6:00000001 r5:c221e000 r4:c221e000
->     [<c044c7e0>] (__mdiobus_read) from [<c044c9d8>] (mdiobus_read+0x40/0x54)
->      r7:0000001f r6:00000001 r5:c221e000 r4:c221e458
->     [<c044c998>] (mdiobus_read) from [<c044d678>] (phy_read+0x1c/0x20)
->      r7:ffffe000 r6:c221e470 r5:00000200 r4:c229f800
->     [<c044d65c>] (phy_read) from [<c044d94c>] (kszphy_config_intr+0x44/0x80)
->     [<c044d908>] (kszphy_config_intr) from [<c044694c>] (phy_disable_interrupts+0x44/0x50)
->      r5:c229f800 r4:c229f800
->     [<c0446908>] (phy_disable_interrupts) from [<c0449370>] (phy_shutdown+0x18/0x1c)
->      r5:c229f800 r4:c229f804
->     [<c0449358>] (phy_shutdown) from [<c040066c>] (device_shutdown+0x168/0x1f8)
->     [<c0400504>] (device_shutdown) from [<c013de44>] (kernel_restart_prepare+0x3c/0x48)
->      r9:c22d2000 r8:c0100264 r7:c0b0d034 r6:00000000 r5:4321fedc r4:00000000
->     [<c013de08>] (kernel_restart_prepare) from [<c013dee0>] (kernel_restart+0x1c/0x60)
->     [<c013dec4>] (kernel_restart) from [<c013e1d8>] (__do_sys_reboot+0x168/0x208)
->      r5:4321fedc r4:01234567
->     [<c013e070>] (__do_sys_reboot) from [<c013e2e8>] (sys_reboot+0x18/0x1c)
->      r7:00000058 r6:00000000 r5:00000000 r4:00000000
->     [<c013e2d0>] (sys_reboot) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+> I don't reall care about order. It is always controlled by the kernel
+> and it is fine to just require it be low enough to not
+> overflow. length is the data under userspace control so math on it
+> must be checked for overflow.
 > 
-> As of commit e2f016cf775129c0 ("net: phy: add a shutdown procedure"),
-> system reboot calls phy_disable_interrupts() during shutdown.  As this
-> happens unconditionally, the PHY registers may be accessed while the
-> device is suspended, causing undefined behavior, which may crash the
-> system.
+>> Also note there is another pre-condition statement in that function's
+>> definition, namely that length cannot be 0.
 > 
-> Fix this by wrapping the PHY bitbang accessors in the sh_eth driver by
-> wrappers that take care of Runtime PM, to resume the device when needed.
+> I don't see callers checking for that either, if it is true length 0
+> can't be allowed it should be blocked in the function
 > 
-> Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Jason
+> 
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+A already said, I also think there should be a check for length or
+rather nent overflow.
 
-    Andrew
+I like the easy to understand check in your proposed code:
+
+	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
+		return NULL;
+
+
+But I don't understand, why you open-coded the nent calculation:
+
+	nent = length >> (PAGE_SHIFT + order);
+	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
+		nent++;
+
+Wouldn't it be better to keep the original line instead:
+
+	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+
+Or maybe even better:
+
+	nent = DIV_ROUND_UP(length, PAGE_SIZE << order);
+
+
+I think, combining the above lines results in short and easily readable code:
+
+
+	u32 elem_len;
+
+	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
+		return NULL;
+	nent = DIV_ROUND_UP(length, PAGE_SIZE << order);
+
+	if (chainable) {
+		if (check_add_overflow(nent, 1, &nalloc))
+			return NULL;
+	}
+	else
+		nalloc = nent;
+
+
+Thank you,
+Bodo
+
+
+	
