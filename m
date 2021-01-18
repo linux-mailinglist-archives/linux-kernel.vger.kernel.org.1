@@ -2,279 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD5E2F9896
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6B22F9899
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732228AbhAREOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732172AbhAREOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:14:04 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E357C0617A0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:12:47 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id y205so3611526pfc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:12:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RmLbr7qUzl1MTnqQWZhlIJBHXutyuDgrinxDo9CCubY=;
-        b=Lt0obleqpybMZAIrPC2n9Vajsw7PqlBVg+XhnXMAFYHLYcPjZTN5OFNb9SC8DCwvA5
-         goM5s8urSo83hZYu058rAFKWybuHpHX9plMpPUANQ+G+Fnyn7srjF5dsnQCgyIhRsS/R
-         7evN9ZWKzvWWfwyUTFj/Xlu+LRCU2bqEF4Q8TEdlkvAy83VdRmvrj5VLVToxDIIgAuEF
-         52NEbaHspwxTSGzTh6qdJ5Sugp2EVXPHCvFoIcsMzslHTfYuPGnO8vdylTZdvpSCF7tu
-         Rz64RuS0gXM9F+tXH8Nqhz3/4heS2me4spyzEt4D+HKYJirIqloh3T8vg9nfnNaB4H9u
-         I4MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RmLbr7qUzl1MTnqQWZhlIJBHXutyuDgrinxDo9CCubY=;
-        b=s+8czdMA13u2XFzxtTpXOqhGqlRjSIfCuqd+FrBKVUw0G3CaToNMiQRhFF1N21eL4e
-         rqvuuoztizWv00v65QZqZLw8vbI64TWMbS3ZwfarpbLTOIZ8YMEbbqMLbDoyvFfIuvuz
-         Wz8pah/q7uwMrG91W+FOquH/nNYA4xvLcdDamt3zI787fDp/4/rGV/EgAoLt7tHNtwGI
-         lvOGCL0DocYN4I68LZGHts13WoZskgiNPcPkSxxWpUu02HAnu0Siwn5F41MjtOfwPQmB
-         j+Trv2B2xT39SdfAPqcoTuJwBUhe/Nz05PKgrj+4Grdgzh+FNSIorsoJfx7VOIifzir7
-         MiVA==
-X-Gm-Message-State: AOAM531P487vhBAVHUTIRbJsRjqNMdyNUqWka5LNHWcKdN/vQUYGqjBq
-        a81jXUtA4eMWujyGnPImsHe+
-X-Google-Smtp-Source: ABdhPJyzMz/9WCKbybYtoh/9zmy6Zh47DU0GQKf5yyd/8y2O7AHeo+HZ5GNW/YE0emM3XyD+McFBqw==
-X-Received: by 2002:a63:e246:: with SMTP id y6mr24036307pgj.412.1610943167148;
-        Sun, 17 Jan 2021 20:12:47 -0800 (PST)
-Received: from localhost.localdomain ([103.77.37.182])
-        by smtp.gmail.com with ESMTPSA id h15sm6727319pja.4.2021.01.17.20.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 20:12:46 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     viresh.kumar@linaro.org, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 5/5] clk: qcom: Add SDX55 APCS clock controller support
-Date:   Mon, 18 Jan 2021 09:41:56 +0530
-Message-Id: <20210118041156.50016-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118041156.50016-1-manivannan.sadhasivam@linaro.org>
-References: <20210118041156.50016-1-manivannan.sadhasivam@linaro.org>
+        id S1730561AbhARES3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 23:18:29 -0500
+Received: from mga01.intel.com ([192.55.52.88]:11830 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726592AbhARESY (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 23:18:24 -0500
+IronPort-SDR: r3asPwcg81QSBRdf42CWVlOW/NmkT9KSjpQ2842w3xNJdbSa4b78flVPsPz8nuem/ivh76YHyd
+ 3jEYGBBRmHYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="197449035"
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="197449035"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:16:39 -0800
+IronPort-SDR: ycejwHF6gSbH3++8jekt+s4GyT0SVblVdpq21lWYO+RoDjfi9hVm3/WOKtjkM7Dl3gSy9Xjca/
+ VaKlczcztQBA==
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="383421365"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:16:36 -0800
+Subject: Re: [PATCH v6] perf stat: Fix wrong skipping for per-die aggregation
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        ying.huang@intel.com
+References: <20210114012755.1106-1-yao.jin@linux.intel.com>
+ <20210114190032.GC1416940@krava> <20210115202814.GM457607@kernel.org>
+ <20210115203119.GN457607@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <007d5b53-360c-1540-a7b1-b846cab1decd@linux.intel.com>
+Date:   Mon, 18 Jan 2021 12:16:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115203119.GN457607@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the SDX55 APCS clock controller. It is part of the APCS
-hardware block, which among other things implements also a combined mux
-and half integer divider functionality. The APCS clock controller has 3
-parent clocks:
+Hi Arnaldo, Jiri,
 
-1. Board XO
-2. Fixed rate GPLL0
-3. A7 PLL
+On 1/16/2021 4:31 AM, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Jan 15, 2021 at 05:28:14PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Thu, Jan 14, 2021 at 08:00:32PM +0100, Jiri Olsa escreveu:
+>>> On Thu, Jan 14, 2021 at 09:27:55AM +0800, Jin Yao wrote:
+>>>
+>>> SNIP
+>>>
+>>>>       2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+>>>>       2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+>>>>       3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+>>>>       3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+>>>>       3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+>>>>       3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+>>>>       4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+>>>>       4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+>>>>       4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+>>>>       4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+>>>>       5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+>>>>       5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+>>>>       5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+>>>>       5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+>>>>
+>>>> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+>>>> is not changed.
+>>>>
+>>>> Reported-by: Huang Ying <ying.huang@intel.com>
+>>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>>>> ---
+>>>> v6:
+>>>>   Fix the perf test python failure by adding hashmap.c to python-ext-sources.
+>>>>
+>>>>   root@kbl-ppc:~# ./perf test python
+>>>>   19: 'import perf' in python                                         : Ok
+>>>
+>>> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>>
+>> Jin, this is breaking the build in some 32-bit system, can you please
+>> take a look to validate these warnings?
+> 
+> One such system:
+> 
+>    28    13.75 debian:experimental-x-mipsel  : FAIL mipsel-linux-gnu-gcc (Debian 10.2.1-3) 10.2.1 20201224
+> 
+>   
+>>    CC       /tmp/build/perf/util/srcline.o
+>> util/stat.c: In function 'pkg_id_hash':
+>> util/stat.c:285:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>>    return (int64_t)key & 0xffffffff;
+>>           ^
+>> util/stat.c: In function 'pkg_id_equal':
+>> util/stat.c:291:9: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>>    return (int64_t)key1 == (int64_t)key2;
+>>           ^
+>> util/stat.c:291:26: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>>    return (int64_t)key1 == (int64_t)key2;
+>>                            ^
+>> util/stat.c: In function 'check_per_pkg':
+>> util/stat.c:342:26: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>>    if (hashmap__find(mask, (void *)key, NULL))
+>>                            ^
+>> util/stat.c:345:28: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>>     ret = hashmap__add(mask, (void *)key, (void *)1);
+>>                              ^
+>>    CC       /tmp/build/perf/tests/expand-cgroup.o
+> 
 
-This is required for enabling CPU frequency scaling on SDX55-based
-platforms.
+Thanks for reporting this build issue on 32 bit system.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/clk/qcom/Kconfig      |   9 ++
- drivers/clk/qcom/Makefile     |   1 +
- drivers/clk/qcom/apcs-sdx55.c | 149 ++++++++++++++++++++++++++++++++++
- 3 files changed, 159 insertions(+)
- create mode 100644 drivers/clk/qcom/apcs-sdx55.c
+In v7, I use size_t to replace uint64_t and change the hash key to 'die_id << 16 | socket_id'. I 
+assume that 16 bits is enough for socket id, is it true? But if it's not true, we have to use a more 
+complicated way such as allocate a structure which has die_id and socket_id and add it to hashmap.
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index d6f4aee4427a..ac43b715bff6 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -54,6 +54,15 @@ config QCOM_CLK_APCC_MSM8996
- 	  Say Y if you want to support CPU clock scaling using CPUfreq
- 	  drivers for dynamic power management.
- 
-+config QCOM_CLK_APCS_SDX55
-+	tristate "SDX55 APCS Clock Controller"
-+	depends on QCOM_APCS_IPC || COMPILE_TEST
-+	help
-+	  Support for the APCS Clock Controller on SDX55 platform. The
-+	  APCS is managing the mux and divider which feeds the CPUs.
-+	  Say Y if you want to support CPU frequency scaling on devices
-+	  such as SDX55.
-+
- config QCOM_CLK_RPM
- 	tristate "RPM based Clock Controller"
- 	depends on MFD_QCOM_RPM
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index e7e0ac382176..4de926da4b15 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_QCOM_A53PLL) += a53-pll.o
- obj-$(CONFIG_QCOM_A7PLL) += a7-pll.o
- obj-$(CONFIG_QCOM_CLK_APCS_MSM8916) += apcs-msm8916.o
- obj-$(CONFIG_QCOM_CLK_APCC_MSM8996) += clk-cpu-8996.o
-+obj-$(CONFIG_QCOM_CLK_APCS_SDX55) += apcs-sdx55.o
- obj-$(CONFIG_QCOM_CLK_RPM) += clk-rpm.o
- obj-$(CONFIG_QCOM_CLK_RPMH) += clk-rpmh.o
- obj-$(CONFIG_QCOM_CLK_SMD_RPM) += clk-smd-rpm.o
-diff --git a/drivers/clk/qcom/apcs-sdx55.c b/drivers/clk/qcom/apcs-sdx55.c
-new file mode 100644
-index 000000000000..e111e124cb7a
---- /dev/null
-+++ b/drivers/clk/qcom/apcs-sdx55.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Qualcomm SDX55 APCS clock controller driver
-+ *
-+ * Copyright (c) 2020, Linaro Limited
-+ * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/cpu.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_domain.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+#include "clk-regmap.h"
-+#include "clk-regmap-mux-div.h"
-+
-+static const u32 apcs_mux_clk_parent_map[] = { 0, 1, 5 };
-+
-+static const struct clk_parent_data pdata[] = {
-+	{ .fw_name = "ref" },
-+	{ .fw_name = "aux" },
-+	{ .fw_name = "pll" },
-+};
-+
-+/*
-+ * We use the notifier function for switching to a temporary safe configuration
-+ * (mux and divider), while the A7 PLL is reconfigured.
-+ */
-+static int a7cc_notifier_cb(struct notifier_block *nb, unsigned long event,
-+			    void *data)
-+{
-+	int ret = 0;
-+	struct clk_regmap_mux_div *md = container_of(nb,
-+						     struct clk_regmap_mux_div,
-+						     clk_nb);
-+	if (event == PRE_RATE_CHANGE)
-+		/* set the mux and divider to safe frequency (400mhz) */
-+		ret = mux_div_set_src_div(md, 1, 2);
-+
-+	return notifier_from_errno(ret);
-+}
-+
-+static int qcom_apcs_sdx55_clk_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device *parent = dev->parent;
-+	struct device *cpu_dev;
-+	struct clk_regmap_mux_div *a7cc;
-+	struct regmap *regmap;
-+	struct clk_init_data init = { };
-+	int ret;
-+
-+	regmap = dev_get_regmap(parent, NULL);
-+	if (!regmap) {
-+		dev_err_probe(dev, ret, "Failed to get parent regmap\n");
-+		return -ENODEV;
-+	}
-+
-+	a7cc = devm_kzalloc(dev, sizeof(*a7cc), GFP_KERNEL);
-+	if (!a7cc)
-+		return -ENOMEM;
-+
-+	init.name = "a7mux";
-+	init.parent_data = pdata;
-+	init.num_parents = ARRAY_SIZE(pdata);
-+	init.ops = &clk_regmap_mux_div_ops;
-+
-+	a7cc->clkr.hw.init = &init;
-+	a7cc->clkr.regmap = regmap;
-+	a7cc->reg_offset = 0x8;
-+	a7cc->hid_width = 5;
-+	a7cc->hid_shift = 0;
-+	a7cc->src_width = 3;
-+	a7cc->src_shift = 8;
-+	a7cc->parent_map = apcs_mux_clk_parent_map;
-+
-+	a7cc->pclk = devm_clk_get(parent, "pll");
-+	if (IS_ERR(a7cc->pclk)) {
-+		ret = PTR_ERR(a7cc->pclk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err_probe(dev, ret, "Failed to get PLL clk\n");
-+		return ret;
-+	}
-+
-+	a7cc->clk_nb.notifier_call = a7cc_notifier_cb;
-+	ret = clk_notifier_register(a7cc->pclk, &a7cc->clk_nb);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "Failed to register clock notifier\n");
-+		return ret;
-+	}
-+
-+	ret = devm_clk_register_regmap(dev, &a7cc->clkr);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "Failed to register regmap clock\n");
-+		goto err;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
-+					  &a7cc->clkr.hw);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "Failed to add clock provider\n");
-+		goto err;
-+	}
-+
-+	platform_set_drvdata(pdev, a7cc);
-+
-+	/*
-+	 * Attach the power domain to cpudev. Since there is no dedicated driver
-+	 * for CPUs and the SDX55 platform lacks hardware specific CPUFreq
-+	 * driver, there seems to be no better place to do this. So do it here!
-+	 */
-+	cpu_dev = get_cpu_device(0);
-+	dev_pm_domain_attach(cpu_dev, true);
-+
-+	return 0;
-+
-+err:
-+	clk_notifier_unregister(a7cc->pclk, &a7cc->clk_nb);
-+	return ret;
-+}
-+
-+static int qcom_apcs_sdx55_clk_remove(struct platform_device *pdev)
-+{
-+	struct device *cpu_dev = get_cpu_device(0);
-+	struct clk_regmap_mux_div *a7cc = platform_get_drvdata(pdev);
-+
-+	clk_notifier_unregister(a7cc->pclk, &a7cc->clk_nb);
-+	dev_pm_domain_detach(cpu_dev, true);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver qcom_apcs_sdx55_clk_driver = {
-+	.probe = qcom_apcs_sdx55_clk_probe,
-+	.remove = qcom_apcs_sdx55_clk_remove,
-+	.driver = {
-+		.name = "qcom-sdx55-acps-clk",
-+	},
-+};
-+module_platform_driver(qcom_apcs_sdx55_clk_driver);
-+
-+MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Qualcomm SDX55 APCS clock driver");
--- 
-2.25.1
+But I'm not sure if that's necessary because I can't imagine a system which has socket id > 65535.
+
+Thanks
+Jin Yao
 
