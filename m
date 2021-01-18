@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945882F9D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF51E2F9D34
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388505AbhARKtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
+        id S2389401AbhARKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:51:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390071AbhARKXe (ORCPT
+        with ESMTP id S2389816AbhARK3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:23:34 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3EFC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:22:54 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id h16so16930127edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:22:54 -0800 (PST)
+        Mon, 18 Jan 2021 05:29:10 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA03C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:27:23 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id l9so17214510ejx.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NVnd2dTqFgKPXCVm7NYzbiiSu1FiTEUGZr/l5h+PSFI=;
-        b=NoGOY1SHqahPLz59ZT4Bd4qXVIlhKgntp3DttcdLUMKUyriKpC/Yw+WvtpDU6H44Ww
-         Cr8S89pNeBDl8hWqLccduJYvOyZiCCIgE1Ds7xdAJA09s4U9HEdfOWzmi2BaLr/qK4eG
-         fFPk4zDaCnl6AhtIz2gW/OuKJddLZt6D0pNWnBLs442ZlgbCfBLcgkJFdbKJiJ33hROZ
-         gs1Wag1owjG4dwud8tLPas7tW+RGJJehhB6XLTvekldZCed0NefLhCed8u1v2NTH7bhx
-         T8uCC42ACxhr03C3PZugyNu4VecRnBcTMEXaJXGQPCOHXOHtkGUdWIgvwZDy4TFM6PeY
-         0e5w==
+        bh=akZC24iTVedITYBoZLV4oWZFXZ2XXXOW1qrgcfseXC8=;
+        b=Wj3v0u6QXcpFsE1drh5JH2MsxV7LwPDLG7jJCPvQtf36QNC5kyUVnbEwQjSv3LZHRg
+         l7bOfJHFqf5iZqRP0l9jdxL0w8wytFlqhSHvVVDVerz8IJUOF+Bwz9ODP6mw2CO8ryqj
+         NTcx2tcZ6+qItulC0avAxhMj4nA+PAiGWON9W10dGmQoqTvKA56J7yNRi+dVaYS7nYBc
+         8jkxddLhujG6Od1ANDS3lvLUYOcGIMzrAP9Ls1IBCUQcGA9cGGNn71KOrVWyjcrPif9B
+         9qcSMzR6Cm3KlEDV8uUcLHP0GPtPvp2o1kQPGizbDMeRvF18fQV42ON/t36kGqhdtopT
+         XxPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NVnd2dTqFgKPXCVm7NYzbiiSu1FiTEUGZr/l5h+PSFI=;
-        b=QJIPkkcxyCZKLVEyo+XHv6oyIDmSDcc+CVqTyWymtdaQKMwastGD10AUYb+rbAKx4o
-         +6V6WiR7xrOZ2wLwdP2ECLJ+BrmuCmbBgcMLlgXAEreUtdF9KRaDZt5qm5cSpKIKKTBn
-         Cu6/gplmB7VdIgGeqIj6zYx2nn0dhtVRVKObxmvKYqVXvoay8iTeM9Yo1Xp3j6k0LZaU
-         B5izL+QQlM1wS2EOIyW3vjsEriuZsHhm5UVzg+AIyByQDivI8+aPkOAxoCfKxAB++S0c
-         P811VP+rRZKjGpQ/wld/i/8EtpB3MCRPF1dRekLO6IenlfiVzk9SbrD/d2LdTmvurIAj
-         DnOQ==
-X-Gm-Message-State: AOAM532jLPDz89bkKM79azKY6x7Nzh+X/ZzioKHRllqTutdCxNli9GGG
-        WsR8jJTGEaXaL2ZRgym551EelOYO+ZctOZMwjran4g==
-X-Google-Smtp-Source: ABdhPJxfwh3z0HRakrXQH67XgrGvut1ROZGmo6cd3/HfucTAMZCwkdY6vKLAQjzzmSj/SPW7MCRgpgKUutXGQEbTLZY=
-X-Received: by 2002:a05:6402:1c0b:: with SMTP id ck11mr9185032edb.35.1610965372974;
- Mon, 18 Jan 2021 02:22:52 -0800 (PST)
+        bh=akZC24iTVedITYBoZLV4oWZFXZ2XXXOW1qrgcfseXC8=;
+        b=ksBraJWd0JCRuu0HBpePsr6oh2Zernqle61ufueFcYHm3QJcUhdGtO1nfjoGqpnlWY
+         DbrOYiV/Zin6ODkR5cEzTVGD4cM58ahao2IFAfrFhHiXKYclCBzoBsUM4kYtFSw1Dkhc
+         oAYk6fCRlJ7z0Yo5KaLudWRuABiNmyT4uC9Hk/A1UqTSORY1zGBLmUOCmQwvAFCNdk7C
+         uPf6Q8SpA/Uk4dQveraYmTMOttnTn6jN6kqk9hPe+pMBnI07ru2fEHKlpDbsw3FfS6dg
+         iQYqPCJDbtXOSIlCex5VVGlkP2IvIhVB0/pA8FLKqRRqf4NKxf3pZHwKJ4LW4Lis9kfB
+         Dw+g==
+X-Gm-Message-State: AOAM530BMFmLPRjHPbxnMCW/2/hZxenRtjqr5m7cb92+eXX3FKvIlA1M
+        gc9PoyEm+Lg+a7K9oLcboUo2hNHr5Ug3vRAhKi+q5Q==
+X-Google-Smtp-Source: ABdhPJzZCTh1UEeakIr2vL+u81TVtmn1IzTBCvcHZfgspRlGfGpVz+E0NdNjCCAIqRmATQix0kwGVdj1oFMcV+Ld0zM=
+X-Received: by 2002:a17:907:160d:: with SMTP id hb13mr16820915ejc.521.1610965642012;
+ Mon, 18 Jan 2021 02:27:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118100955.1761652-1-a.darwish@linutronix.de> <20210118100955.1761652-2-a.darwish@linutronix.de>
-In-Reply-To: <20210118100955.1761652-2-a.darwish@linutronix.de>
+References: <20210118100955.1761652-1-a.darwish@linutronix.de> <20210118100955.1761652-16-a.darwish@linutronix.de>
+In-Reply-To: <20210118100955.1761652-16-a.darwish@linutronix.de>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 18 Jan 2021 11:22:42 +0100
-Message-ID: <CAMGffEk92QqBMCjnzm-uB_EHWU4NwarzbTa7URKYkjjrjOToPQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/19] Documentation: scsi: libsas: Remove notify_ha_event()
+Date:   Mon, 18 Jan 2021 11:27:11 +0100
+Message-ID: <CAMGffEnXtLriWPULds8+606v51Ph0ton-wd4hoaYGJXX3QQ_zA@mail.gmail.com>
+Subject: Re: [PATCH v3 15/19] scsi: pm80xx: Switch back to original libsas
+ event notifiers
 To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
 Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -68,35 +69,356 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:10 AM Ahmed S. Darwish
+On Mon, Jan 18, 2021 at 11:11 AM Ahmed S. Darwish
 <a.darwish@linutronix.de> wrote:
 >
-> The ->notify_ha_event() hook has long been removed from the libsas event
-> interface.
+> libsas event notifiers required an extension where gfp_t flags must be
+> explicitly passed. For bisectability, a temporary _gfp() variant of such
+> functions were added. All call sites then got converted use the _gfp()
+> variants and explicitly pass GFP context. Having no callers left, the
+> original libsas notifiers were then modified to accept gfp_t flags by
+> default.
 >
-> Remove it from documentation.
+> Switch back to the original libas API, while still passing GFP context.
+> The libsas _gfp() variants will be removed afterwards.
 >
-> Fixes: 042ebd293b86 ("scsi: libsas: kill useless ha_event and do some cleanup")
 > Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 > Reviewed-by: John Garry <john.garry@huawei.com>
-> Cc: stable@vger.kernel.org
+> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
 Reviewed-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+
 > ---
->  Documentation/scsi/libsas.rst | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/scsi/pm8001/pm8001_hwi.c | 40 +++++++++++++++-----------------
+>  drivers/scsi/pm8001/pm8001_sas.c |  5 ++--
+>  drivers/scsi/pm8001/pm80xx_hwi.c | 32 ++++++++++++-------------
+>  3 files changed, 36 insertions(+), 41 deletions(-)
 >
-> diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
-> index 7216b5d25800..f9b77c7879db 100644
-> --- a/Documentation/scsi/libsas.rst
-> +++ b/Documentation/scsi/libsas.rst
-> @@ -189,7 +189,6 @@ num_phys
->  The event interface::
+> diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+> index c8bfa8e6f211..b3f136998025 100644
+> --- a/drivers/scsi/pm8001/pm8001_hwi.c
+> +++ b/drivers/scsi/pm8001/pm8001_hwi.c
+> @@ -3179,7 +3179,7 @@ void pm8001_bytes_dmaed(struct pm8001_hba_info *pm8001_ha, int i)
+>         pm8001_dbg(pm8001_ha, MSG, "phy %d byte dmaded.\n", i);
 >
->         /* LLDD calls these to notify the class of an event. */
-> -       void (*notify_ha_event)(struct sas_ha_struct *, enum ha_event);
->         void (*notify_port_event)(struct sas_phy *, enum port_event);
->         void (*notify_phy_event)(struct sas_phy *, enum phy_event);
+>         sas_phy->frame_rcvd_size = phy->frame_rcvd_size;
+> -       sas_notify_port_event_gfp(sas_phy, PORTE_BYTES_DMAED, GFP_ATOMIC);
+> +       sas_notify_port_event(sas_phy, PORTE_BYTES_DMAED, GFP_ATOMIC);
+>  }
 >
+>  /* Get the link rate speed  */
+> @@ -3336,7 +3336,7 @@ hw_event_sas_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>         else if (phy->identify.device_type != SAS_PHY_UNUSED)
+>                 phy->identify.target_port_protocols = SAS_PROTOCOL_SMP;
+>         phy->sas_phy.oob_mode = SAS_OOB_MODE;
+> -       sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+> +       sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+>         spin_lock_irqsave(&phy->sas_phy.frame_rcvd_lock, flags);
+>         memcpy(phy->frame_rcvd, &pPayload->sas_identify,
+>                 sizeof(struct sas_identify_frame)-4);
+> @@ -3379,7 +3379,7 @@ hw_event_sata_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>         phy->phy_type |= PORT_TYPE_SATA;
+>         phy->phy_attached = 1;
+>         phy->sas_phy.oob_mode = SATA_OOB_MODE;
+> -       sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+> +       sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+>         spin_lock_irqsave(&phy->sas_phy.frame_rcvd_lock, flags);
+>         memcpy(phy->frame_rcvd, ((u8 *)&pPayload->sata_fis - 4),
+>                 sizeof(struct dev_to_host_fis));
+> @@ -3726,12 +3726,12 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                 break;
+>         case HW_EVENT_SATA_SPINUP_HOLD:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_SATA_SPINUP_HOLD\n");
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_SPINUP_HOLD,
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_SPINUP_HOLD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PHY_DOWN:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_DOWN\n");
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_LOSS_OF_SIGNAL,
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_LOSS_OF_SIGNAL,
+>                         GFP_ATOMIC);
+>                 phy->phy_attached = 0;
+>                 phy->phy_state = 0;
+> @@ -3741,7 +3741,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PORT_INVALID\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         /* the broadcast change primitive received, tell the LIBSAS this event
+> @@ -3753,22 +3753,21 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_CHANGE;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PHY_ERROR:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_ERROR\n");
+>                 sas_phy_disconnected(&phy->sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_ERROR,
+> -                       GFP_ATOMIC);
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_ERROR, GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_BROADCAST_EXP:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_BROADCAST_EXP\n");
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_EXP;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_INVALID_DWORD:
+> @@ -3778,7 +3777,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                         HW_EVENT_LINK_ERR_INVALID_DWORD, port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_DISPARITY_ERROR:
+> @@ -3789,7 +3788,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_CODE_VIOLATION:
+> @@ -3800,7 +3799,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_LOSS_OF_DWORD_SYNCH:
+> @@ -3811,7 +3810,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_MALFUNCTION:
+> @@ -3822,7 +3821,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_SES;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_INBOUND_CRC_ERROR:
+> @@ -3833,14 +3832,13 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                 break;
+>         case HW_EVENT_HARD_RESET_RECEIVED:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_HARD_RESET_RECEIVED\n");
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_HARD_RESET,
+> -                       GFP_ATOMIC);
+> +               sas_notify_port_event(sas_phy, PORTE_HARD_RESET, GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_ID_FRAME_TIMEOUT:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_ID_FRAME_TIMEOUT\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_PHY_RESET_FAILED:
+> @@ -3851,14 +3849,14 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PORT_RESET_TIMER_TMO:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PORT_RESET_TIMER_TMO\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PORT_RECOVERY_TIMER_TMO:
+> @@ -3866,7 +3864,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+>                            "HW_EVENT_PORT_RECOVERY_TIMER_TMO\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PORT_RECOVER:
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+> index da444facd52e..c4f111e73f9c 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.c
+> +++ b/drivers/scsi/pm8001/pm8001_sas.c
+> @@ -207,7 +207,7 @@ int pm8001_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
+>                         if (pm8001_ha->phy[phy_id].phy_state ==
+>                                 PHY_STATE_LINK_UP_SPCV) {
+>                                 sas_phy_disconnected(&phy->sas_phy);
+> -                               sas_notify_phy_event_gfp(&phy->sas_phy,
+> +                               sas_notify_phy_event(&phy->sas_phy,
+>                                         PHYE_LOSS_OF_SIGNAL, GFP_KERNEL);
+>                                 phy->phy_attached = 0;
+>                         }
+> @@ -215,7 +215,7 @@ int pm8001_phy_control(struct asd_sas_phy *sas_phy, enum phy_func func,
+>                         if (pm8001_ha->phy[phy_id].phy_state ==
+>                                 PHY_STATE_LINK_UP_SPC) {
+>                                 sas_phy_disconnected(&phy->sas_phy);
+> -                               sas_notify_phy_event_gfp(&phy->sas_phy,
+> +                               sas_notify_phy_event(&phy->sas_phy,
+>                                         PHYE_LOSS_OF_SIGNAL, GFP_KERNEL);
+>                                 phy->phy_attached = 0;
+>                         }
+> @@ -1341,4 +1341,3 @@ int pm8001_clear_task_set(struct domain_device *dev, u8 *lun)
+>         tmf_task.tmf = TMF_CLEAR_TASK_SET;
+>         return pm8001_issue_ssp_tmf(dev, lun, &tmf_task);
+>  }
+> -
+> diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+> index a43a4e5db043..b96633dc052c 100644
+> --- a/drivers/scsi/pm8001/pm80xx_hwi.c
+> +++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+> @@ -3287,7 +3287,7 @@ hw_event_sas_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>         else if (phy->identify.device_type != SAS_PHY_UNUSED)
+>                 phy->identify.target_port_protocols = SAS_PROTOCOL_SMP;
+>         phy->sas_phy.oob_mode = SAS_OOB_MODE;
+> -       sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+> +       sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+>         spin_lock_irqsave(&phy->sas_phy.frame_rcvd_lock, flags);
+>         memcpy(phy->frame_rcvd, &pPayload->sas_identify,
+>                 sizeof(struct sas_identify_frame)-4);
+> @@ -3334,7 +3334,7 @@ hw_event_sata_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>         phy->phy_type |= PORT_TYPE_SATA;
+>         phy->phy_attached = 1;
+>         phy->sas_phy.oob_mode = SATA_OOB_MODE;
+> -       sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+> +       sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_DONE, GFP_ATOMIC);
+>         spin_lock_irqsave(&phy->sas_phy.frame_rcvd_lock, flags);
+>         memcpy(phy->frame_rcvd, ((u8 *)&pPayload->sata_fis - 4),
+>                 sizeof(struct dev_to_host_fis));
+> @@ -3417,8 +3417,8 @@ hw_event_phy_down(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>
+>         }
+>         if (port_sata && (portstate != PORT_IN_RESET))
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_LOSS_OF_SIGNAL,
+> -                                       GFP_ATOMIC);
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_LOSS_OF_SIGNAL,
+> +                               GFP_ATOMIC);
+>  }
+>
+>  static int mpi_phy_start_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+> @@ -3516,7 +3516,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 break;
+>         case HW_EVENT_SATA_SPINUP_HOLD:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_SATA_SPINUP_HOLD\n");
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_SPINUP_HOLD,
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_SPINUP_HOLD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PHY_DOWN:
+> @@ -3533,7 +3533,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PORT_INVALID\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         /* the broadcast change primitive received, tell the LIBSAS this event
+> @@ -3545,22 +3545,21 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_CHANGE;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PHY_ERROR:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_ERROR\n");
+>                 sas_phy_disconnected(&phy->sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_phy_event_gfp(&phy->sas_phy, PHYE_OOB_ERROR,
+> -                       GFP_ATOMIC);
+> +               sas_notify_phy_event(&phy->sas_phy, PHYE_OOB_ERROR, GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_BROADCAST_EXP:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_BROADCAST_EXP\n");
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_EXP;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_INVALID_DWORD:
+> @@ -3598,7 +3597,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 spin_lock_irqsave(&sas_phy->sas_prim_lock, flags);
+>                 sas_phy->sas_prim = HW_EVENT_BROADCAST_SES;
+>                 spin_unlock_irqrestore(&sas_phy->sas_prim_lock, flags);
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+> +               sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_INBOUND_CRC_ERROR:
+> @@ -3609,14 +3608,13 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 break;
+>         case HW_EVENT_HARD_RESET_RECEIVED:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_HARD_RESET_RECEIVED\n");
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_HARD_RESET,
+> -                       GFP_ATOMIC);
+> +               sas_notify_port_event(sas_phy, PORTE_HARD_RESET, GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_ID_FRAME_TIMEOUT:
+>                 pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_ID_FRAME_TIMEOUT\n");
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_LINK_ERR_PHY_RESET_FAILED:
+> @@ -3627,7 +3625,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 break;
+>         case HW_EVENT_PORT_RESET_TIMER_TMO:
+> @@ -3636,7 +3634,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                         port_id, phy_id, 0, 0);
+>                 sas_phy_disconnected(sas_phy);
+>                 phy->phy_attached = 0;
+> -               sas_notify_port_event_gfp(sas_phy, PORTE_LINK_RESET_ERR,
+> +               sas_notify_port_event(sas_phy, PORTE_LINK_RESET_ERR,
+>                         GFP_ATOMIC);
+>                 if (pm8001_ha->phy[phy_id].reset_completion) {
+>                         pm8001_ha->phy[phy_id].port_reset_status =
+> @@ -3654,7 +3652,7 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 for (i = 0; i < pm8001_ha->chip->n_phy; i++) {
+>                         if (port->wide_port_phymap & (1 << i)) {
+>                                 phy = &pm8001_ha->phy[i];
+> -                               sas_notify_phy_event_gfp(&phy->sas_phy,
+> +                               sas_notify_phy_event(&phy->sas_phy,
+>                                         PHYE_LOSS_OF_SIGNAL, GFP_ATOMIC);
+>                                 port->wide_port_phymap &= ~(1 << i);
+>                         }
 > --
 > 2.30.0
 >
