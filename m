@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FFC2F9752
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B7A2F9757
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbhARBX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:23:56 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:52182 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730248AbhARBXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 20:23:44 -0500
-Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxJb3o4gRggnQGAA--.7725S2;
-        Mon, 18 Jan 2021 09:22:48 +0800 (CST)
-From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
-To:     daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhangzhijie@loongson.cn
-Subject: [PATCH v3] drm: Improve the output_poll_changed description
-Date:   Mon, 18 Jan 2021 09:22:46 +0800
-Message-Id: <20210118012246.1858892-1-zhangzhijie@loongson.cn>
-X-Mailer: git-send-email 2.29.2
+        id S1730610AbhARB2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:28:51 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11414 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729469AbhARB2r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 20:28:47 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DJvKD1jcrzj7jN;
+        Mon, 18 Jan 2021 09:27:12 +0800 (CST)
+Received: from [10.174.184.155] (10.174.184.155) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 18 Jan 2021 09:27:54 +0800
+Subject: Re: [PATCH] lib/logic_pio: Fix overlap check for pio registery
+To:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
+CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <xieyingtai@huawei.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <20201218062335.5320-1-cenjiahui@huawei.com>
+ <2cde14cd-91da-aae4-70aa-656d629259e6@huawei.com>
+ <006ad6ce-d6b2-59cb-8209-aca3f6e53fec@huawei.com>
+ <5df9663b-7c6a-6652-2561-9d3889ff94bc@huawei.com>
+ <e3fdeba7-9058-8618-9ca8-486f58d4f383@huawei.com>
+ <643b5c84-3e94-4029-721b-34b79c1b3589@huawei.com>
+From:   Jiahui Cen <cenjiahui@huawei.com>
+Message-ID: <eaedbff6-fd4f-e01e-b14c-482e8dd6d382@huawei.com>
+Date:   Mon, 18 Jan 2021 09:27:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <643b5c84-3e94-4029-721b-34b79c1b3589@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxJb3o4gRggnQGAA--.7725S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr43Jw4kKr18uFWruw4Uurg_yoW8Ar18pF
-        sIkryFkrs7tFZ3ZF4UJryxW3WkJan3Gr40gFZ7tw4avwnIyr9IvFyvgr15uryrWrZxXr4Y
-        q3sa9rn5uFn8CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQAFAF3QvM28sAAAs0
+X-Originating-IP: [10.174.184.155]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangzhijie <zhangzhijie@loongson.cn>
+Hi John,
 
-this callback was used by drm_kms_helper_hotplug_event()
+On 2021/1/15 18:10, John Garry wrote:
+> On 21/12/2020 13:04, Jiahui Cen wrote:
+>>> On 21/12/2020 03:24, Jiahui Cen wrote:
+>>>> Hi John,
+>>>>
+>>>> On 2020/12/18 18:40, John Garry wrote:
+>>>>> On 18/12/2020 06:23, Jiahui Cen wrote:
+>>>>>> Since the [start, end) is a half-open interval, a range with the end equal
+>>>>>> to the start of another range should not be considered as overlapped.
+>>>>>>
+>>>>>> Signed-off-by: Jiahui Cen<cenjiahui@huawei.com>
+>>>>>> ---
+>>>>>>     lib/logic_pio.c | 2 +-
+>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
+>>>>>> index f32fe481b492..445d611f1dc1 100644
+>>>>>> --- a/lib/logic_pio.c
+>>>>>> +++ b/lib/logic_pio.c
+>>>>>> @@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
+>>>>>>                 new_range->flags == LOGIC_PIO_CPU_MMIO) {
+>>>>>>                 /* for MMIO ranges we need to check for overlap */
+>>>>>>                 if (start >= range->hw_start + range->size ||
+>>>>>> -                end < range->hw_start) {
+>>>>>> +                end <= range->hw_start) {
+>>>>> It looks like your change is correct, but should not really have an impact in practice since:
+>>>>> a: BIOSes generally list ascending IO port CPU addresses
+>>>>> b. there is space between IO port CPU address regions
+>>>>>
+>>>>> Have you seen a problem here?
+>>>>>
+>>>> No serious problem. I found it just when I was working on adding support of
+>>>> pci expander bridge for Arm in QEMU. I found the IO window of some extended
+>>>> root bus could not be registered when I inserted the extended buses' _CRS
+>>>> info into DSDT table in the x86 way, which does not sort the buses.
+>>>>
+>>>> Though root buses should be sorted in QEMU, would it be better to accept
+>>>> those non-ascending IO windows?
+>>>>
+>>> ok, so it seems that you have seen a real problem, and this issue is not just detected by code analysis.
+>>>
+>>>> BTW, for b, it seems to be no space between IO windows of different root buses
+>>>> generated by EDK2. Or maybe I missed something obvious.
+>>> I don't know about that. Anyway, your change looks ok.
+>>>
+>>> Reviewed-by: John Garry<john.garry@huawei.com>
+>>>
+>>> BTW, for your virt env, will there be requirement to unregister PCI MMIO ranges? Currently we don't see that in non-virt world.
+>>>
+>> Thanks for your review.
+>>
+>> And currently there is no such a requirement in my virt env.
+>>
+> 
+> I am not sure what happened to this patch, but I plan on sending some patches in this area soon - do you want me to include this one?
+> 
 
-V2: (Thanks for Daniel's suggestions)
-- remove the FIXME below.since with the drm_client
-- infrastructure and the generic fbdev emulation we've
-- resolved this all very neatly now.
+Sorry for replying late. It's appreciated if you can include this patch.
 
-V3: Add comments that This hook is deprecated
-- new implementation methods instead of this hook
+Thanks!
+Jiahui
 
-Signed-off-by: zhangzhijie <zhangzhijie@loongson.cn>
-Signed-off-by: ZhiJie.Zhang <zhangzhijie@loongson.cn>
----
- include/drm/drm_mode_config.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index ab424ddd7665..a084482d579a 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -103,14 +103,14 @@ struct drm_mode_config_funcs {
- 	 * Callback used by helpers to inform the driver of output configuration
- 	 * changes.
- 	 *
--	 * Drivers implementing fbdev emulation with the helpers can call
--	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
-+	 * Drivers implementing fbdev emulation with the helpers. Drivers use
-+	 * drm_kms_helper_hotplug_event() to call this hook to inform the fbdev
- 	 * helper of output changes.
- 	 *
--	 * FIXME:
--	 *
--	 * Except that there's no vtable for device-level helper callbacks
--	 * there's no reason this is a core function.
-+	 * This hook is deprecated, drivers should instead use
-+	 * drm_fbdev_generic_setup() which takes care of any necessary
-+	 * hotplug event forwarding already without further involvement by
-+	 * the driver.
- 	 */
- 	void (*output_poll_changed)(struct drm_device *dev);
- 
--- 
-2.29.2
-
+> Thanks,
+> John
+> 
+> .
