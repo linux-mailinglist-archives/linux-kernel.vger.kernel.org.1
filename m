@@ -2,116 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B7A2F9757
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EB42F9751
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbhARB2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:28:51 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11414 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729469AbhARB2r (ORCPT
+        id S1730715AbhARBXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:23:32 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11103 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729570AbhARBX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 20:28:47 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DJvKD1jcrzj7jN;
-        Mon, 18 Jan 2021 09:27:12 +0800 (CST)
-Received: from [10.174.184.155] (10.174.184.155) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 18 Jan 2021 09:27:54 +0800
-Subject: Re: [PATCH] lib/logic_pio: Fix overlap check for pio registery
-To:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
-CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <xieyingtai@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <20201218062335.5320-1-cenjiahui@huawei.com>
- <2cde14cd-91da-aae4-70aa-656d629259e6@huawei.com>
- <006ad6ce-d6b2-59cb-8209-aca3f6e53fec@huawei.com>
- <5df9663b-7c6a-6652-2561-9d3889ff94bc@huawei.com>
- <e3fdeba7-9058-8618-9ca8-486f58d4f383@huawei.com>
- <643b5c84-3e94-4029-721b-34b79c1b3589@huawei.com>
-From:   Jiahui Cen <cenjiahui@huawei.com>
-Message-ID: <eaedbff6-fd4f-e01e-b14c-482e8dd6d382@huawei.com>
-Date:   Mon, 18 Jan 2021 09:27:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sun, 17 Jan 2021 20:23:27 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DJvBr2X9Nz15v7p
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:21:40 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 18 Jan 2021
+ 09:22:37 +0800
+From:   Chengyang Fan <cy.fan@huawei.com>
+To:     <rafael.j.wysocki@intel.com>
+CC:     <guohanjun@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] resource: Remove unneeded semicolon
+Date:   Mon, 18 Jan 2021 09:50:00 +0800
+Message-ID: <20210118015000.2599677-1-cy.fan@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <643b5c84-3e94-4029-721b-34b79c1b3589@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.155]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Remove a superfluous semicolon after function definition.
 
-On 2021/1/15 18:10, John Garry wrote:
-> On 21/12/2020 13:04, Jiahui Cen wrote:
->>> On 21/12/2020 03:24, Jiahui Cen wrote:
->>>> Hi John,
->>>>
->>>> On 2020/12/18 18:40, John Garry wrote:
->>>>> On 18/12/2020 06:23, Jiahui Cen wrote:
->>>>>> Since the [start, end) is a half-open interval, a range with the end equal
->>>>>> to the start of another range should not be considered as overlapped.
->>>>>>
->>>>>> Signed-off-by: Jiahui Cen<cenjiahui@huawei.com>
->>>>>> ---
->>>>>>     lib/logic_pio.c | 2 +-
->>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
->>>>>> index f32fe481b492..445d611f1dc1 100644
->>>>>> --- a/lib/logic_pio.c
->>>>>> +++ b/lib/logic_pio.c
->>>>>> @@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
->>>>>>                 new_range->flags == LOGIC_PIO_CPU_MMIO) {
->>>>>>                 /* for MMIO ranges we need to check for overlap */
->>>>>>                 if (start >= range->hw_start + range->size ||
->>>>>> -                end < range->hw_start) {
->>>>>> +                end <= range->hw_start) {
->>>>> It looks like your change is correct, but should not really have an impact in practice since:
->>>>> a: BIOSes generally list ascending IO port CPU addresses
->>>>> b. there is space between IO port CPU address regions
->>>>>
->>>>> Have you seen a problem here?
->>>>>
->>>> No serious problem. I found it just when I was working on adding support of
->>>> pci expander bridge for Arm in QEMU. I found the IO window of some extended
->>>> root bus could not be registered when I inserted the extended buses' _CRS
->>>> info into DSDT table in the x86 way, which does not sort the buses.
->>>>
->>>> Though root buses should be sorted in QEMU, would it be better to accept
->>>> those non-ascending IO windows?
->>>>
->>> ok, so it seems that you have seen a real problem, and this issue is not just detected by code analysis.
->>>
->>>> BTW, for b, it seems to be no space between IO windows of different root buses
->>>> generated by EDK2. Or maybe I missed something obvious.
->>> I don't know about that. Anyway, your change looks ok.
->>>
->>> Reviewed-by: John Garry<john.garry@huawei.com>
->>>
->>> BTW, for your virt env, will there be requirement to unregister PCI MMIO ranges? Currently we don't see that in non-virt world.
->>>
->> Thanks for your review.
->>
->> And currently there is no such a requirement in my virt env.
->>
-> 
-> I am not sure what happened to this patch, but I plan on sending some patches in this area soon - do you want me to include this one?
-> 
+Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
+---
+ include/linux/ioport.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for replying late. It's appreciated if you can include this patch.
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index fe48b7840665..803c10f6a6df 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -337,7 +337,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
+ #ifdef CONFIG_IO_STRICT_DEVMEM
+ void revoke_devmem(struct resource *res);
+ #else
+-static inline void revoke_devmem(struct resource *res) { };
++static inline void revoke_devmem(struct resource *res) { }
+ #endif
+ 
+ #endif /* __ASSEMBLY__ */
+-- 
+2.25.1
 
-Thanks!
-Jiahui
-
-> Thanks,
-> John
-> 
-> .
