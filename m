@@ -2,82 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A242FAAF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6892FAB6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437852AbhARUG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:06:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390173AbhARLgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:36:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C4F42222A;
-        Mon, 18 Jan 2021 11:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969751;
-        bh=r/ynbjV+cyXjqDJgNprvgGkYYyxfkFGkN12TYu8+ji4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bnl9IfWQmfIKssKFG0jIwBPiI03PE3w2ZyFgcnVRj1Oj3npz36pzme+GK7x9UFMzN
-         DucO/j6uxDrs2hQKoKpb+vUfrZzae8Sq9UIcPnJKuY2zJ6aVpnAy6QzZWocvrtRxUZ
-         FeqrmRL/N0zB6kLWrxKXBlzccrO4SNwNi20W3fLY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 10/43] dm integrity: fix the maximum number of arguments
-Date:   Mon, 18 Jan 2021 12:34:33 +0100
-Message-Id: <20210118113335.447925133@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2437994AbhARU1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437983AbhARU0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:26:48 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752DEC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:26:08 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1aIj-0035kQ-Ag; Mon, 18 Jan 2021 19:34:57 +0000
+Date:   Mon, 18 Jan 2021 19:34:57 +0000
+From:   Al Viro <viro@zeniv-ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Splicing to/from a tty
+Message-ID: <20210118193457.GA736435@zeniv-ca>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118085311.GA2735@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+On Mon, Jan 18, 2021 at 09:53:11AM +0100, Christoph Hellwig wrote:
+> On Sat, Jan 16, 2021 at 05:46:33PM +0100, Johannes Berg wrote:
+> > > For my case, I attempted to instead implement splice_write and
+> > > splice_read in tty_fops; I managed to get splice_write working calling
+> > > ld->ops->write, but splice_read is not so simple because the
+> > > tty_ldisc_ops read method expects a userspace buffer. So I cannot see
+> > > how to implement this without either (a) using set_fs, or (b)
+> > > implementing iter ops on all line disciplines.
+> > > 
+> > > Is splice()ing between a tty and a pipe worth supporting at all? Not a
+> > > big deal for my use case at least, but it used to work.
+> > 
+> > Is it even strictly related to the tty?
+> > 
+> > I was just now looking into why my cgit/fcgi/nginx setup no longer
+> > works, and the reason is getting -EINVAL from sendfile() when the input
+> > is a file and the output is a pipe().
+> 
+> Yes, pipes do not support ->splice_write currenly.   I think just wiring
+> up iter_file_splice_write would work.  Al?
 
-commit 17ffc193cdc6dc7a613d00d8ad47fc1f801b9bf0 upstream.
-
-Advance the maximum number of arguments from 9 to 15 to account for
-all potential feature flags that may be supplied.
-
-Linux 4.19 added "meta_device"
-(356d9d52e1221ba0c9f10b8b38652f78a5298329) and "recalculate"
-(a3fcf7253139609bf9ff901fbf955fba047e75dd) flags.
-
-Commit 468dfca38b1a6fbdccd195d875599cb7c8875cd9 added
-"sectors_per_bit" and "bitmap_flush_interval".
-
-Commit 84597a44a9d86ac949900441cea7da0af0f2f473 added
-"allow_discards".
-
-And the commit d537858ac8aaf4311b51240893add2fc62003b97 added
-"fix_padding".
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/md/dm-integrity.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -3078,7 +3078,7 @@ static int dm_integrity_ctr(struct dm_ta
- 	unsigned extra_args;
- 	struct dm_arg_set as;
- 	static const struct dm_arg _args[] = {
--		{0, 9, "Invalid number of feature args"},
-+		{0, 15, "Invalid number of feature args"},
- 	};
- 	unsigned journal_sectors, interleave_sectors, buffer_sectors, journal_watermark, sync_msec;
- 	bool recalculate;
-
-
+I'd rather have sendfile(2) do what splice(2) does and handle pipes
+directly.  Let me take a look,,,
