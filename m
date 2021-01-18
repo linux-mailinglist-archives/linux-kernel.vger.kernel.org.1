@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471162F9740
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAC02F974E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730922AbhARBSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:18:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730615AbhARBOi (ORCPT
+        id S1730955AbhARBTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:19:54 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11032 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729570AbhARBTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 20:14:38 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9199AC061757;
-        Sun, 17 Jan 2021 17:13:57 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id a12so21699645lfl.6;
-        Sun, 17 Jan 2021 17:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2Nk5JfeL0rfEw3jluwURnbi6QdI3Mt6nAwBx118nXYk=;
-        b=kh/7kFyyjCOO3CyXpnJKndO1EaSea7v8nazjI/DQMt8ty3ZzclxSaJS4K5QkktICF1
-         /3pINNugABrlpKbA1b4sSJx6087y7sdA5Q2VZDUmF9+UztAvGSxUIhF7br/55Cdr9PEt
-         VB76T3AJY6Qz0HYEFMrhvxvHlVN1WUQthFqU82T+RWv+0o9BlupJOB0u2LVWacMqpwCL
-         8tHsz4DmNtQrje83NfD7o8NnhNT3mQVc3KMfpfag3U8dNgI6odJRohMqH5hlewnk1tFz
-         EqNDsdf7cGFLPEOgW/+bBx4QwGntFQUF1u8rW7/zWw+cgYJqhWl09RVwjgq8uKaJjFk+
-         mqOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2Nk5JfeL0rfEw3jluwURnbi6QdI3Mt6nAwBx118nXYk=;
-        b=J5uoTyImV39Gaoa2sBSBXzW+DMiBIgO6S0PcJrqPr0B2CtoNMZznkOlXK1z9ovTRMZ
-         SGmv0/MnbEattnjUyEszsOnIGCUJRiSAbNzMn5n/Nizt99n+iUk5PRR1e4R/NZWXhY0n
-         NJJYxfYWVounHfjAixiTYIIL0aiQVa+kNHgW80zvOv4NZJ0u7RTjM79xE9qQuV5FRCHb
-         WefTsI/CpLWzUx1LqzKhLG8hGT6N17p/WU6chhyQKkPTCGKXHtHd67zjkDuIC/RcY3mt
-         f5YyhxVaFvIfRi8CgGAxeVf5CQA5KOu6aKwq9RFqCmz25nrqVKmT3nA46Npw42ulNSwM
-         4aZw==
-X-Gm-Message-State: AOAM532Kq0oCjcygyxPac9PZd6ZezKOMXFzoLYIfMu9y8Z7AMGKFPnGO
-        og1uSRIZTFFFTEzen7SQMfg=
-X-Google-Smtp-Source: ABdhPJzuceZQJcKqnQLyEyMgtZDjrZ9FO0+4pCiiperzyirbIXjXxlB+VKPzmAST9gNLBlQTpyuFBA==
-X-Received: by 2002:a05:6512:208c:: with SMTP id t12mr10277449lfr.165.1610932436156;
-        Sun, 17 Jan 2021 17:13:56 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id l84sm1710836lfd.75.2021.01.17.17.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 17:13:55 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v3 3/3] PM: domains: Make of_genpd_add_subdomain() to return -EPROBE_DEFER
-Date:   Mon, 18 Jan 2021 04:13:30 +0300
-Message-Id: <20210118011330.4145-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210118011330.4145-1-digetx@gmail.com>
-References: <20210118011330.4145-1-digetx@gmail.com>
+        Sun, 17 Jan 2021 20:19:44 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DJv6X6JWVzj3w7;
+        Mon, 18 Jan 2021 09:17:56 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 18 Jan 2021 09:18:52 +0800
+Subject: Re: [PATCH] kvm: arm64: Properly align the end address of table walk
+To:     Will Deacon <will@kernel.org>
+References: <20210115095307.12912-1-zhukeqian1@huawei.com>
+ <20210115102334.GA14167@willie-the-truck>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <a184c21f-2b1f-bd00-5ca9-be7649b33ccd@huawei.com>
+Date:   Mon, 18 Jan 2021 09:18:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115102334.GA14167@willie-the-truck>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver of a power domain provider may not be ready at the time of
-of_genpd_add_subdomain() invocation. Make this function to return
--EPROBE_DEFER instead of -ENOENT in order to remove a need from
-power domain drivers to handle the error code specially.
 
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/base/power/domain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 2ab77aa516eb..7ef6764ee30f 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2462,7 +2462,7 @@ int of_genpd_add_subdomain(struct of_phandle_args *parent_spec,
- out:
- 	mutex_unlock(&gpd_list_lock);
- 
--	return ret;
-+	return ret == -ENOENT ? -EPROBE_DEFER : ret;
- }
- EXPORT_SYMBOL_GPL(of_genpd_add_subdomain);
- 
--- 
-2.29.2
+On 2021/1/15 18:23, Will Deacon wrote:
+> On Fri, Jan 15, 2021 at 05:53:07PM +0800, Keqian Zhu wrote:
+>> When align the end address, ought to use its original value.
+>>
+>> Fixes: b1e57de62cfb ("KVM: arm64: Add stand-alone page-table walker infrastructure")
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  arch/arm64/kvm/hyp/pgtable.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>> index bdf8e55ed308..670b0ef12440 100644
+>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>> @@ -296,7 +296,7 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+>>  	struct kvm_pgtable_walk_data walk_data = {
+>>  		.pgt	= pgt,
+>>  		.addr	= ALIGN_DOWN(addr, PAGE_SIZE),
+>> -		.end	= PAGE_ALIGN(walk_data.addr + size),
+>> +		.end	= PAGE_ALIGN(addr + size),
+>>  		.walker	= walker,
+> 
+> Hmm, this is a change in behaviour, no (consider the case where both 'addr'
+> and 'size' are misaligned)? The current code is consistent with the
+> kerneldoc in asm/kvm_pgtable.h, so I don't see the motivation to change it.
+> 
+> Did you hit a bug somewhere?
+> 
+> Will
+> .
+>
+Not hit a bug, I just read the code to implement a new idea of stage2 DBM
+support [1]. Yes, according to doc, this is not an issue ("The offset of
+@addr within a page is ignored."). Sorry to disturb ;-).
+
+[1] https://lore.kernel.org/kvmarm/fd26654b-8258-061c-2a69-90b961c1c71b@huawei.com/
+
+Thanks,
+Keqian
+
+
+
+
 
