@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7372F9E4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB62F9E2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390310AbhARL3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:29:51 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42614 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390270AbhARL3G (ORCPT
+        id S2390351AbhARLa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:30:56 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:43746 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390278AbhARL3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:29:06 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id A53081F44CE7
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Collabora kernel ML <kernel@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 RESEND 1/2] arm: lib: xor-neon: remove unnecessary
- GCC < 4.6 warning
-In-Reply-To: <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
-References: <20210118105557.186614-1-adrian.ratiu@collabora.com>
- <20210118105557.186614-2-adrian.ratiu@collabora.com>
- <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
-Date:   Mon, 18 Jan 2021 13:28:18 +0200
-Message-ID: <87wnwafprh.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+        Mon, 18 Jan 2021 06:29:30 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10IBSXxhC013639, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10IBSXxhC013639
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 18 Jan 2021 19:28:33 +0800
+Received: from localhost.localdomain (172.21.132.186) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 18 Jan 2021 19:28:32 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
+        <kidman@realtek.com>, <max.chou@realtek.com>,
+        <abhishekpandit@chromium.org>, <josephsih@chromium.org>
+Subject: [PATCH] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
+Date:   Mon, 18 Jan 2021 19:28:27 +0800
+Message-ID: <20210118112827.6192-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.186]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> On Mon, Jan 18, 2021 at 11:56 AM Adrian Ratiu 
-> <adrian.ratiu@collabora.com> wrote: 
->> 
->> From: Nathan Chancellor <natechancellor@gmail.com> 
->> 
->> Drop warning because kernel now requires GCC >= v4.9 after 
->> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9") 
->> and clarify that -ftree-vectorize now always needs enabling for 
->> GCC by directly testing the presence of CONFIG_CC_IS_GCC. 
->> 
->> Another reason to remove the warning is that Clang exposes 
->> itself as GCC < 4.6 so it triggers the warning about GCC which 
->> doesn't make much sense and risks misleading users. 
->> 
->> As a side-note remark, -fttree-vectorize is on by default in 
->> Clang, but it currently does not work (see linked issues). 
->> 
->> Link: https://github.com/ClangBuiltLinux/linux/issues/496 Link: 
->> https://github.com/ClangBuiltLinux/linux/issues/503 
->> Reported-by: Nick Desaulniers <ndesaulniers@google.com> 
->> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com> 
->> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com> 
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com> 
-> 
-> Shouldn't there be a check for whatever minimum version of clang 
-> produces optimized code now? As I understand it, the warning was 
-> originally meant to complain about both old gcc and any version 
-> of clang, while waiting for a new version of clang to produce 
-> vectorized code. 
-> 
-> Has that happened now? 
+From: Max Chou <max.chou@realtek.com>
 
-No, clang does not produce vectorized code by default, not even 
-with the -ftree-vectorize flag explicitely added like in the next 
-patch in this series (that flag is enabled by default in clang 
-anyway, so no effect).
+By this change, it will enable WBS supported on the specific Realtek BT
+devices, such as RTL8822C and RTL8852A.
+In the future, it's able to maintain what the Realtek devices support WBS
+here.
 
-Clang needs more investigation and testing because with additional 
-code changes it can be "forced" to output vectorized code, but 
-that is outside the scope of this series.
+Tested-by: Hilda Wu <hildawu@realtek.com>
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+ drivers/bluetooth/btrtl.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-If you think it's a good idea I can add a warning only for Clang 
-which makes more sense than telling clang users to upgrade their 
-GCC, since now Clang is officially supported. What do you think?
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 24f03a1f8d57..835819c47ae6 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -38,6 +38,19 @@
+ 	.hci_ver = (hciv), \
+ 	.hci_bus = (bus)
+ 
++enum  btrtl_chip_id {
++	CHIP_ID_8723A,		/* index  0 for RTL8723A*/
++	CHIP_ID_8723B,		/* index  1 for RTL8723B*/
++	CHIP_ID_8821A,		/* index  2 for RTL8821A*/
++	CHIP_ID_8761A,		/* index  3 for RTL8761A*/
++	CHIP_ID_8822B = 8,	/* index  8 for RTL8822B */
++	CHIP_ID_8723D,		/* index  9 for RTL8723D */
++	CHIP_ID_8821C,		/* index 10 for RTL8821C */
++	CHIP_ID_8822C = 13,	/* index 13 for RTL8822C */
++	CHIP_ID_8761B,		/* index 14 for RTL8761B */
++	CHIP_ID_8852A = 18,	/* index 18 for RTL8852A */
++};
++
+ struct id_table {
+ 	__u16 match_flags;
+ 	__u16 lmp_subver;
+@@ -58,6 +71,7 @@ struct btrtl_device_info {
+ 	u8 *cfg_data;
+ 	int cfg_len;
+ 	bool drop_fw;
++	int project_id;
+ };
+ 
+ static const struct id_table ic_id_table[] = {
+@@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
+ 
+ 	/* Find project_id in table */
+ 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
+-		if (project_id == project_id_to_lmp_subver[i].id)
++		if (project_id == project_id_to_lmp_subver[i].id) {
++			btrtl_dev->project_id = project_id;
+ 			break;
++		}
+ 	}
+ 
+ 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
+@@ -725,12 +741,16 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+ 	/* Enable central-peripheral role (able to create new connections with
+ 	 * an existing connection in slave role).
+ 	 */
+-	switch (btrtl_dev->ic_info->lmp_subver) {
+-	case RTL_ROM_LMP_8822B:
++	/* Enable WBS supported for the specific Realtek devices. */
++	switch (btrtl_dev->project_id) {
++	case CHIP_ID_8822C:
++	case CHIP_ID_8852A:
+ 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
++		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+ 		break;
+ 	default:
+ 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
++		rtl_dev_dbg(hdev, "WBS supported not enabled.");
+ 		break;
+ 	}
+ 
+-- 
+2.17.1
 
-
->
->        Arnd
