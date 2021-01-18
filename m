@@ -2,132 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15262FA392
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97662FA389
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405260AbhAROuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:50:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405179AbhAROsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:48:17 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88122C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:47:36 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id v23so1307004uam.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYITA3Yxe+LNUEBbIjMhLMDLo8Pr6qOWRiVR9QOc69o=;
-        b=WBp4BQ4iS/nMuJHj2dRCYS1FOe1q70UMadKm9plqyvTpqfBAye6UbGn+Szu9OK2C9t
-         /sL8U2B/SyzKpzYyfD/PA0RseoBzXrBcf12M4EFyJMxQXw3jeGXo1UhmVOCddHRiGoax
-         Xyfns6tQ10yiERfST33vIWqybEqEXPJWFcPbE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYITA3Yxe+LNUEBbIjMhLMDLo8Pr6qOWRiVR9QOc69o=;
-        b=d6aL5oPAgp4ND6SMzEPqcX49+UdWK6q/AMpaZ5yKUx4mGSVKpcTDKsP/9mgG7P21QS
-         Nrd49pz9IFLHuQQEbOIMmJrVqDTLgtfaEGz2GT8kBz/7TLCL/lsDOF3UjM9MsrPLwfKw
-         5KDJ53nJzY7dxu6fMeoDFYZWkD1HLgMTvGyH088ywTBReKR4a3ZinSRaiO2FnrABxq5m
-         G8GzE6lP7H1oKB53SAr9TzcxykiBEQoBTuyqlwLOkYF/lUibVtcLgsostETDTwoBF7b0
-         EjnmjSN7ivcfMvIv8T9e5EjBqz2FgAKYftR6bueF8yuUDrsl0Mpke4QJVprBqagUAY71
-         MLRA==
-X-Gm-Message-State: AOAM533YQWRpsb8PfOTMP77YxbMkk5EVB3HcpYrcPItI6I7DyAMySTVC
-        MZgzSttyQpDUhEPuCWFAViFUdiOg61Qm7uB5m2wtSw==
-X-Google-Smtp-Source: ABdhPJwMOdZBQVMFI+wOY4prWcda+5x/AEFNDfgLueyLCfRiRaIBomu6uUxWpvmwEP1qgrXX6LiK2JHjkjI2sbTLjFs=
-X-Received: by 2002:ab0:7193:: with SMTP id l19mr2785323uao.84.1610981255465;
- Mon, 18 Jan 2021 06:47:35 -0800 (PST)
+        id S2405236AbhAROsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:48:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59514 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405197AbhAROsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:48:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3A1A6AC4F;
+        Mon, 18 Jan 2021 14:48:02 +0000 (UTC)
+Subject: Re: Change eats memory on my server
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Eli Cohen <elic@nvidia.com>
+Cc:     daniel.vetter@ffwll.ch, sam@ravnborg.org,
+        linux-kernel@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+ <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+ <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
+ <20210118131608.GA50817@mtl-vdi-166.wap.labs.mlnx>
+ <c9078ed1-a3c6-32b9-b76f-cc511cb54c83@suse.de>
+ <20210118132225.GA51141@mtl-vdi-166.wap.labs.mlnx>
+ <b36485a3-2fc6-bf3f-fea2-6a7d040f4df1@amd.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <38ddb62c-0b4c-dcc3-e6c2-e025b38d8acd@suse.de>
+Date:   Mon, 18 Jan 2021 15:48:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15> <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
-In-Reply-To: <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
-From:   Mattias Nissler <mnissler@chromium.org>
-Date:   Mon, 18 Jan 2021 15:47:23 +0100
-Message-ID: <CAKUbbx+ZC9cLvcaJnrDYYsrUhfO3dOXJGoLswL30nRzChjwn-w@mail.gmail.com>
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode tracing
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
-        leo.yan@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b36485a3-2fc6-bf3f-fea2-6a7d040f4df1@amd.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="RFpo06B9jGZEhhL16cYJ7esrE31blbXkf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 6:46 AM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> Hello Mathieu, Suzuki
->
-> On 2020-10-15 21:32, Mathieu Poirier wrote:
-> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
-> >> On production systems with ETMs enabled, it is preferred to
-> >> exclude kernel mode(NS EL1) tracing for security concerns and
-> >> support only userspace(NS EL0) tracing. So provide an option
-> >> via kconfig to exclude kernel mode tracing if it is required.
-> >> This config is disabled by default and would not affect the
-> >> current configuration which has both kernel and userspace
-> >> tracing enabled by default.
-> >>
-> >
-> > One requires root access (or be part of a special trace group) to be
-> > able to use
-> > the cs_etm PMU.  With this kind of elevated access restricting tracing
-> > at EL1
-> > provides little in terms of security.
-> >
->
-> Apart from the VM usecase discussed, I am told there are other
-> security concerns here regarding need to exclude kernel mode tracing
-> even for the privileged users/root. One such case being the ability
-> to analyze cryptographic code execution since ETMs can record all
-> branch instructions including timestamps in the kernel and there may
-> be other cases as well which I may not be aware of and hence have
-> added Denis and Mattias. Please let us know if you have any questions
-> further regarding this not being a security concern.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RFpo06B9jGZEhhL16cYJ7esrE31blbXkf
+Content-Type: multipart/mixed; boundary="DybqpbsvVNQqMROSujaTMxRj4hCA3VW1b";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+ Eli Cohen <elic@nvidia.com>
+Cc: daniel.vetter@ffwll.ch, sam@ravnborg.org, linux-kernel@vger.kernel.org,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ virtualization@lists.linux-foundation.org
+Message-ID: <38ddb62c-0b4c-dcc3-e6c2-e025b38d8acd@suse.de>
+Subject: Re: Change eats memory on my server
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+ <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+ <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
+ <20210118131608.GA50817@mtl-vdi-166.wap.labs.mlnx>
+ <c9078ed1-a3c6-32b9-b76f-cc511cb54c83@suse.de>
+ <20210118132225.GA51141@mtl-vdi-166.wap.labs.mlnx>
+ <b36485a3-2fc6-bf3f-fea2-6a7d040f4df1@amd.com>
+In-Reply-To: <b36485a3-2fc6-bf3f-fea2-6a7d040f4df1@amd.com>
 
-Well, the idea that root privileges != full control over the kernel
-isn't new and at the very least since lockdown became part of mainline
-[1] no longer an esoteric edge case. Regarding the use case Sai hints
-at (namely protection of secrets in the kernel), Matthew Garret
-actually has some more thoughts about confidentiality mode for
-lockdown for secret protection [2]. And thus, unless someone can make
-a compelling case that instruction-level tracing will not leak secrets
-held by the kernel, I think an option for the kernel to prevent itself
-from being traced (even by root) is valuable.
+--DybqpbsvVNQqMROSujaTMxRj4hCA3VW1b
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Finally, to sketch a practical use case scenario: Consider a system
-where disk contents are encrypted and the encryption key is set up by
-the user when mounting the file system. From that point on the
-encryption key resides in the kernel. It seems reasonable to expect
-that the disk encryption key be protected from exfiltration even if
-the system later suffers a root compromise (or even against insiders
-that have root access), at least as long as the attacker doesn't
-manage to compromise the kernel.
+Hi
 
-[1] https://lwn.net/Articles/796866/
-[2] https://mjg59.dreamwidth.org/55105.html
+Am 18.01.21 um 14:23 schrieb Christian K=C3=B6nig:
+> Am 18.01.21 um 14:22 schrieb Eli Cohen:
+>> On Mon, Jan 18, 2021 at 02:20:49PM +0100, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 18.01.21 um 14:16 schrieb Eli Cohen:
+>>>> On Mon, Jan 18, 2021 at 10:30:56AM +0100, Thomas Zimmermann wrote:
+>>>>> Here's the patch against the latest DRM tree. v5.11-rc3 should work=
+=20
+>>>>> as well.
+>>>>>
+>>>>> I was able to reproduce the memory leak locally and found that the =
 
->
-> After this discussion, I would like to post a v2 based on Suzuki's
-> feedback earlier. @Suzuki, I have a common config for ETM3 and ETM4
-> but couldn't get much idea on how to implement it for Intel PTs, if
-> you have any suggestions there, please do share or we can have this
-> only for Coresight ETMs.
->
-> Thanks,
-> Sai
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member
-> of Code Aurora Forum, hosted by The Linux Foundation
+>>>>> patch
+>>>>> fixes it. Please give it a try.
+>>>>>
+>>>> As far as I am concerned, this issue is fixed by the patch you sent.=
+
+>>>>
+>>>> Thanks for looking into it.
+>>> OK, great. I'll prepare the real patch soon. Can I add your=20
+>>> Reported-by and
+>>> Tested-by tags?
+>> Yes, sure.
+>=20
+> Feel free to add an Acked-by from my side as well.
+
+Done, thanks. I sent out the patch. If no one complains, I'll merge it=20
+on Wednesday or so.
+
+Best regards
+Thomas
+
+>=20
+> Christian.
+>=20
+>>
+>>> Best regards
+>>> Thomas
+>>>
+>>>> Eli
+>>>>
+>>> --=20
+>>> Thomas Zimmermann
+>>> Graphics Driver Developer
+>>> SUSE Software Solutions Germany GmbH
+>>> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+>>> (HRB 36809, AG N=C3=BCrnberg)
+>>> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>>>
+>>
+>>
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--DybqpbsvVNQqMROSujaTMxRj4hCA3VW1b--
+
+--RFpo06B9jGZEhhL16cYJ7esrE31blbXkf
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAFn6EFAwAAAAAACgkQlh/E3EQov+CH
+yg//Xhj5Fv/eYkVaZPeOWgWWPRkdPgwstEiH02JjVlD8H2tXsK4h0yE86PxnsdHeBBhekNnfXMu+
+jwPLMJzpksiQUp7fqKrn2eKD6B/TJGBKrb964HmotgjHhaI/JdIXqT/zm9N/Xtv5V7p2Y9xEGoW9
+iFr3neQbQOkZCSbCCvkuxevuiDpGnfGS35zAo8JxKtGY1vOspEZZjqqa51ugW57cT1PMXW93C+6E
+F1mYSl5TSb+R2BuwuHsRi2Dcqz92cpw1wCZZX7F4bxFw9k9baZhCc8O4yUrcGAeBdpokptfgiZdc
+njXDImoX0XjTSIwExGnQWLvhNq54ptwyg/Vc+Ht9jTQ7vFO7R4u5GIEcVCJ5gDrKFXD2h6SgAEdv
+PJGcuSF/GyVHRsXwRRDCi4ckFCU+BpQAoKAjFA5lpRTHecbhoBMIKiq9Khfv96/P8b1fzFSeZfM7
+GIrMF7Pbf7yIcRuUQGtPphwcMIoVvqG1oa+i8lRnlCT5TXisjnVu34XfSyujDwM/+S42u6k/Hooh
+5QcOmb2lQ9KWyadyu09xIi+jU6ew68CXlYbpKiBnmmkScGQh0p+SlC6nz77nATUXf1pr1oUjBbAr
+hWKSLPh4KPK5UmkarZ9CSjPWRW3q0adw/zEMc2ZtHVhHOkJUdPzu3SFMX81SjCocG7EbMWHhToJp
+NXE=
+=VHCv
+-----END PGP SIGNATURE-----
+
+--RFpo06B9jGZEhhL16cYJ7esrE31blbXkf--
