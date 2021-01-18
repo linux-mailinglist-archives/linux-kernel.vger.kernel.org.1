@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02222F9C62
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A5E2F9C64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388467AbhARJPz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 04:15:55 -0500
-Received: from wnbcorp.com ([175.126.38.143]:49998 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388314AbhARJHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:07:23 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10I8t6am030179;
-        Mon, 18 Jan 2021 18:03:07 +0900
-Message-Id: <202101180903.10I8t6am030179@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2388506AbhARJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:16:35 -0500
+Received: from forward103p.mail.yandex.net ([77.88.28.106]:40335 "EHLO
+        forward103p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388277AbhARJH1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:07:27 -0500
+Received: from myt6-5578c6b2b9c3.qloud-c.yandex.net (myt6-5578c6b2b9c3.qloud-c.yandex.net [IPv6:2a02:6b8:c12:37a8:0:640:5578:c6b2])
+        by forward103p.mail.yandex.net (Yandex) with ESMTP id 8A37F18C17B1;
+        Mon, 18 Jan 2021 12:05:22 +0300 (MSK)
+Received: from myt6-9bdf92ffd111.qloud-c.yandex.net (myt6-9bdf92ffd111.qloud-c.yandex.net [2a02:6b8:c12:468a:0:640:9bdf:92ff])
+        by myt6-5578c6b2b9c3.qloud-c.yandex.net (mxback/Yandex) with ESMTP id dLSFXTknEI-5MDO4bZ5;
+        Mon, 18 Jan 2021 12:05:22 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1610960722;
+        bh=eae+71nwdCl87dQPfVh8jK749vbX5rWsf1eR+dT00F0=;
+        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
+        b=p2LDhD9WmMAGk9IAIwWMUC73UpO78OT1UkOm6yWt+eFHRUNBmyIj/wHhmqtRxKoW1
+         Zd9ll/JSQEsieEzp+/FgZq69gZ41+AA9fB5PrPKQZxEjkBy/C8kwAXwgCbTPVXWMeP
+         4HK9TLwpufKDgQLlB0+cMBJSSzo6eNM5Yv/So8UI=
+Authentication-Results: myt6-5578c6b2b9c3.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt6-9bdf92ffd111.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id mPweMU6MOS-5LIeMc8N;
+        Mon, 18 Jan 2021 12:05:21 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] gpiolib: warning on gpiochip->to_irq defined
+Date:   Mon, 18 Jan 2021 12:05:08 +0300
+Message-Id: <20210118090508.21686-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 10:02:58 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+gpiochip->to_irq method is redefined in gpiochip_add_irqchip.
 
-Sir/Madam,
+A lot of gpiod driver's still define ->to_irq method, let's give
+a gentle warning that they can no longer rely on it, so they can remove
+it on ocassion.
 
-CONGRATULATIONS!!!
+Fixes: e0d8972898139 ("gpio: Implement tighter IRQ chip integration")
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+v1->v2:
+- Change chip_err to chip_warn
+---
+ drivers/gpio/gpiolib.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 5ce0c14c637b..5a9410c2537d 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1489,6 +1489,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+ 		type = IRQ_TYPE_NONE;
+ 	}
+ 
++	if (gc->to_irq)
++		chip_warn(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
++
+ 	gc->to_irq = gpiochip_to_irq;
+ 	gc->irq.default_type = type;
+ 	gc->irq.lock_key = lock_key;
+-- 
+2.29.2
 
