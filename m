@@ -2,166 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08632F9C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C152F9C8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388226AbhARJ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:26:32 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11217 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388577AbhARJUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:20:33 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600551270001>; Mon, 18 Jan 2021 01:13:11 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Mon, 18 Jan 2021 09:13:05 +0000
-Date:   Mon, 18 Jan 2021 11:13:02 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-CC:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        <daniel.vetter@ffwll.ch>, <sam@ravnborg.org>,
-        <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: Change eats memory on my server
-Message-ID: <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
-References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
- <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
- <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
- <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
- <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+        id S2389197AbhARJpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:45:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59962 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388917AbhARJeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:34:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610961195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIs9165iCorzmEcQWytRwIHXViQ6pxNq4y3V5axegtY=;
+        b=Fy0FIfVZdFog/+GWXunGYBE6uVXNtg7HLeKc+uqZEHnCnh1lanDoJ24o6pE7z73y4PeyMx
+        8h+QmtIgAx1muHQeJAV8wUOAcS5kAuphvccAQ/L61YilIAEwYhQRJFbLNslqa+175fGHyr
+        YESWYE6WAZ1bG8FkfRmG6gOLRFv6d3U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 787F8ACF4;
+        Mon, 18 Jan 2021 09:13:15 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 10:13:14 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v6 3/5] mm: hugetlb: fix a race between freeing and
+ dissolving the page
+Message-ID: <20210118091314.GB14336@dhcp22.suse.cz>
+References: <20210115124942.46403-1-songmuchun@bytedance.com>
+ <20210115124942.46403-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610961191; bh=Ur2WqqNyQiU3Rvke8jG05EHK8Z0gPrqFQ88JrB8FehE=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=ZZGpEAMCfV7AZEd8nSEJmDs8YoR9vTXrIbQTmRSbQzuiQnWDoSf0iql9+2D83fR56
-         VfzjU82UUaowTkfFzLdIK/DhYDNqz6tZBMBSh8zX54JR6WFAFUIoQrV8Rzbya/iH0V
-         sSAQnpJ2JkhjwNbu26iLrbDCTmQo+fM6CCimaVA2eoixEhb/5cvCiCYylJDbx60Xih
-         +x1tgbvzEjDeHmVKl/LIxWm1tatKIhpNEBKd25baarXZz74Yyx0Is82tIlbyvABO24
-         cCOM5Ghlsgs7mxBieB3bW6QK4AMtygWyBjZM2XD9IswP1cFLwEhpuAg6Gm1wltcB+8
-         bbYW8GHNNL5ag==
+In-Reply-To: <20210115124942.46403-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 08:54:07AM +0100, Thomas Zimmermann wrote:
-> Hi
->=20
-> Am 18.01.21 um 08:43 schrieb Christian K=F6nig:
-> > Hi Eli,
-> >=20
-> > have you already tried using kmemleak?
-> >=20
-> > This sounds like a leak of memory allocated using kmalloc(), so kmemlea=
-k
-> > should be able to catch it.
->=20
-> I have an idea what happens here. When the refcount is 0 in kmap, a new p=
-age
-> mapping for the BO is being established. But VRAM helpers unmap the previ=
-ous
-> pages only on BO moves or frees; not in kunmap. So the old mapping might
-> still be around. I'll send out a test patch later today.
->=20
+On Fri 15-01-21 20:49:40, Muchun Song wrote:
+> There is a race condition between __free_huge_page()
+> and dissolve_free_huge_page().
+> 
+> CPU0:                         CPU1:
+> 
+> // page_count(page) == 1
+> put_page(page)
+>   __free_huge_page(page)
+>                               dissolve_free_huge_page(page)
+>                                 spin_lock(&hugetlb_lock)
+>                                 // PageHuge(page) && !page_count(page)
+>                                 update_and_free_page(page)
+>                                 // page is freed to the buddy
+>                                 spin_unlock(&hugetlb_lock)
+>     spin_lock(&hugetlb_lock)
+>     clear_page_huge_active(page)
+>     enqueue_huge_page(page)
+>     // It is wrong, the page is already freed
+>     spin_unlock(&hugetlb_lock)
+> 
+> The race windows is between put_page() and dissolve_free_huge_page().
+> 
+> We should make sure that the page is already on the free list
+> when it is dissolved.
+> 
+> As a result __free_huge_page would corrupt page(s) already in the buddy
+> allocator.
+> 
+> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: stable@vger.kernel.org
 
-Great! Looking forward to test it.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-> Best regards
-> Thomas
->=20
-> >=20
-> > Regards,
-> > Christian.
-> >=20
-> > Am 17.01.21 um 06:08 schrieb Eli Cohen:
-> > > On Fri, Jan 15, 2021 at 10:03:50AM +0100, Thomas Zimmermann wrote:
-> > > > Could you please double-check that 3fb91f56aea4 ("drm/udl: Retrieve=
- USB
-> > > > device from struct drm_device.dev") works correctly
-> > > Checked again, it does not seem to leak.
-> > >=20
-> > > > and that 823efa922102
-> > > > ("drm/cma-helper: Remove empty drm_gem_cma_prime_vunmap()") is brok=
-en?
-> > > >=20
-> > > Yes, this one leaks, as does the one preceding it:
-> > >=20
-> > > 1086db71a1db ("drm/vram-helper: Remove invariant parameters from
-> > > internal kmap function")
-> > > > For one of the broken commits, could you please send us the output =
-of
-> > > >=20
-> > > > =A0=A0 dmesg | grep -i drm
-> > > >=20
-> > > > after most of the memory got leaked?
-> > > >=20
-> > > I ran the following script in the shell:
-> > >=20
-> > > while true; do cat /proc/meminfo | grep MemFree:; sleep 5; done
-> > >=20
-> > > and this is what I saw before I got disconnected from the shell:
-> > >=20
-> > > MemFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 148208 kB
-> > > MemFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 148304 kB
-> > > MemFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 146660 kB
-> > > Connection to nps-server-24 closed by remote host.
-> > > Connection to nps-server-24 closed.
-> > >=20
-> > >=20
-> > > I also mointored the output of dmesg | grep -i drm
-> > > The last output I was able to save on disk is this:
-> > >=20
-> > > [=A0=A0 46.140720] ast 0000:03:00.0: [drm] Using P2A bridge for confi=
-guration
-> > > [=A0=A0 46.140737] ast 0000:03:00.0: [drm] AST 2500 detected
-> > > [=A0=A0 46.140754] ast 0000:03:00.0: [drm] Analog VGA only
-> > > [=A0=A0 46.140772] ast 0000:03:00.0: [drm] dram MCLK=3D800 Mhz type=
-=3D7
-> > > bus_width=3D16
-> > > [=A0=A0 46.153553] [drm] Initialized ast 0.1.0 20120228 for 0000:03:0=
-0.0
-> > > on minor 0
-> > > [=A0=A0 46.165097] fbcon: astdrmfb (fb0) is primary device
-> > > [=A0=A0 46.391381] ast 0000:03:00.0: [drm] fb0: astdrmfb frame buffer=
- device
-> > > [=A0=A0 56.097697] systemd[1]: Starting Load Kernel Module drm...
-> > > [=A0=A0 56.343556] systemd[1]: modprobe@drm.service: Succeeded.
-> > > [=A0=A0 56.350382] systemd[1]: Finished Load Kernel Module drm.
-> > > [13319.469462] [=A0=A0 2683] 70889=A0 2683=A0=A0=A0 55586=A0=A0=A0=A0=
-=A0=A0=A0 0=A0=A0=A0 73728
-> > > 138=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 tdrm
-> > > [13320.658386] [=A0=A0 2683] 70889=A0 2683=A0=A0=A0 55586=A0=A0=A0=A0=
-=A0=A0=A0 0=A0=A0=A0 73728
-> > > 138=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 tdrm
-> > > [13321.800970] [=A0=A0 2683] 70889=A0 2683=A0=A0=A0 55586=A0=A0=A0=A0=
-=A0=A0=A0 0=A0=A0=A0 73728
-> > > 138=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 tdrm
-> >=20
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-> --=20
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-> (HRB 36809, AG N=FCrnberg)
-> Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
->=20
+Thanks!
 
+> ---
+>  mm/hugetlb.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 4741d60f8955..b99fe4a2b435 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -79,6 +79,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
+>  static int num_fault_mutexes;
+>  struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
+>  
+> +static inline bool PageHugeFreed(struct page *head)
+> +{
+> +	return page_private(head + 4) == -1UL;
+> +}
+> +
+> +static inline void SetPageHugeFreed(struct page *head)
+> +{
+> +	set_page_private(head + 4, -1UL);
+> +}
+> +
+> +static inline void ClearPageHugeFreed(struct page *head)
+> +{
+> +	set_page_private(head + 4, 0);
+> +}
+> +
+>  /* Forward declaration */
+>  static int hugetlb_acct_memory(struct hstate *h, long delta);
+>  
+> @@ -1028,6 +1043,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
+>  	list_move(&page->lru, &h->hugepage_freelists[nid]);
+>  	h->free_huge_pages++;
+>  	h->free_huge_pages_node[nid]++;
+> +	SetPageHugeFreed(page);
+>  }
+>  
+>  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+> @@ -1044,6 +1060,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+>  
+>  		list_move(&page->lru, &h->hugepage_activelist);
+>  		set_page_refcounted(page);
+> +		ClearPageHugeFreed(page);
+>  		h->free_huge_pages--;
+>  		h->free_huge_pages_node[nid]--;
+>  		return page;
+> @@ -1504,6 +1521,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+>  	spin_lock(&hugetlb_lock);
+>  	h->nr_huge_pages++;
+>  	h->nr_huge_pages_node[nid]++;
+> +	ClearPageHugeFreed(page);
+>  	spin_unlock(&hugetlb_lock);
+>  }
+>  
+> @@ -1754,6 +1772,7 @@ int dissolve_free_huge_page(struct page *page)
+>  {
+>  	int rc = -EBUSY;
+>  
+> +retry:
+>  	/* Not to disrupt normal path by vainly holding hugetlb_lock */
+>  	if (!PageHuge(page))
+>  		return 0;
+> @@ -1770,6 +1789,26 @@ int dissolve_free_huge_page(struct page *page)
+>  		int nid = page_to_nid(head);
+>  		if (h->free_huge_pages - h->resv_huge_pages == 0)
+>  			goto out;
+> +
+> +		/*
+> +		 * We should make sure that the page is already on the free list
+> +		 * when it is dissolved.
+> +		 */
+> +		if (unlikely(!PageHugeFreed(head))) {
+> +			spin_unlock(&hugetlb_lock);
+> +			cond_resched();
+> +
+> +			/*
+> +			 * Theoretically, we should return -EBUSY when we
+> +			 * encounter this race. In fact, we have a chance
+> +			 * to successfully dissolve the page if we do a
+> +			 * retry. Because the race window is quite small.
+> +			 * If we seize this opportunity, it is an optimization
+> +			 * for increasing the success rate of dissolving page.
+> +			 */
+> +			goto retry;
+> +		}
+> +
+>  		/*
+>  		 * Move PageHWPoison flag from head page to the raw error page,
+>  		 * which makes any subpages rather than the error page reusable.
+> -- 
+> 2.11.0
 
-
+-- 
+Michal Hocko
+SUSE Labs
