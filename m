@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BB22F9BA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 10:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6ED2F9BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 10:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388130AbhARJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S2388073AbhARI7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:59:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387914AbhARI77 (ORCPT
+        with ESMTP id S2387918AbhARI7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:59:59 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E0C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:19 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 11so9803135pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=PB6HJRYih/9/P6sORTVGIgjwqf3/DVJJnmXcLRRh/VI=;
-        b=HYHj41I/g9gpS3b1IgN6kVxfbxxse10z0jE4GHcwjpdIvLUjqD5GCr+AEXg8e7Tm9S
-         wcEem69QbeBvoQbWAiCEd6H7Ro5U5vCDFlGUSUqLZLWU2Y6TIMoreAT3q3FW+slN/oJJ
-         eTHb1QM60qmrGrPPDk9Ap1Z7V77jbQbct+wP96gUSozenlkjkBCqoI3GLrQSGvXzlFZJ
-         pTY+Vk6ui7mGCmyitflBMoxLqmwY76++RW47ZgwYzF88zkvyULzaWhcg2kMeHqUy1EQF
-         FZoMk/skIcNNGLd5FXClvx7LnORyiZ3zHC3GmRPBrjmtUlrEkeciPpFryi6is8rwMrcV
-         hcmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PB6HJRYih/9/P6sORTVGIgjwqf3/DVJJnmXcLRRh/VI=;
-        b=q/UFew3BpiVCa9DV9MJ1QMVIfDyBbqnIGAoFe/B7OB4aI1Hc8YZ2FyZqk0OZq6rsJQ
-         NKOTFOyWJGOiKJt8lPqxal6b0XC+H5urbVc3y7EY6lc/g32QxYby8ayE3+gi8HVTnbEt
-         Fs+uzLm9wgdCXSpXNcYd3bIQQyWnzfa5tqKudcyEtLfPHFR46TB3nkGodjvdzQNIJAUZ
-         dSAjhSBsDTA2/pJpoag+oPKtmnLb+H5AApM1cXQ+SEGaEpxuRfrXpKstpt0avcScLWY3
-         Sae50YB/8ZM4QbfCSV9KFqpxG1sgVFIoAnY6iCHmIits1ztOxy2tFHSps/NVHThWi+9J
-         TYsw==
-X-Gm-Message-State: AOAM532d+8C5/hdODtLohItbr76h46lu2OJuI5lB2f38DuKRFkiBC7Hd
-        Q5s6Xw+EKBx58vzjAA67hiZqIA==
-X-Google-Smtp-Source: ABdhPJyMZZk7uPV7TAQvJCQ4ZZfl8zlPjJ1/kkOJCtzuLPQNpUtS7bo6IYfwyUwY2AYrrd16ph+Bgg==
-X-Received: by 2002:a63:720c:: with SMTP id n12mr25340017pgc.97.1610960359143;
-        Mon, 18 Jan 2021 00:59:19 -0800 (PST)
-Received: from localhost.localdomain ([240e:362:42c:4800:8459:4fa0:20cc:1141])
-        by smtp.gmail.com with ESMTPSA id c23sm16087162pgc.72.2021.01.18.00.58.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 00:59:18 -0800 (PST)
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mon, 18 Jan 2021 03:59:36 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B78BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:58:56 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1l1QN8-008Aiv-Fy; Mon, 18 Jan 2021 09:58:50 +0100
+Message-ID: <ece3af8e4512517da220bdd2f43119ca889f6c61.camel@sipsolutions.net>
+Subject: Re: Splicing to/from a tty
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Oliver Giles <ohw.giles@gmail.com>, linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhangfei Gao <zhangfei.gao@linaro.org>
-Subject: [PATCH v2 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
-Date:   Mon, 18 Jan 2021 16:58:33 +0800
-Message-Id: <1610960316-28935-1-git-send-email-zhangfei.gao@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Date:   Mon, 18 Jan 2021 09:58:49 +0100
+In-Reply-To: <20210118085311.GA2735@lst.de>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+         <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+         <20210118085311.GA2735@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-actually on the AMBA bus. These fake PCI devices have PASID capability
-though not supporting TLP.
+On Mon, 2021-01-18 at 09:53 +0100, Christoph Hellwig wrote:
+> On Sat, Jan 16, 2021 at 05:46:33PM +0100, Johannes Berg wrote:
+> > > For my case, I attempted to instead implement splice_write and
+> > > splice_read in tty_fops; I managed to get splice_write working calling
+> > > ld->ops->write, but splice_read is not so simple because the
+> > > tty_ldisc_ops read method expects a userspace buffer. So I cannot see
+> > > how to implement this without either (a) using set_fs, or (b)
+> > > implementing iter ops on all line disciplines.
+> > > 
+> > > Is splice()ing between a tty and a pipe worth supporting at all? Not a
+> > > big deal for my use case at least, but it used to work.
+> > 
+> > Is it even strictly related to the tty?
+> > 
+> > I was just now looking into why my cgit/fcgi/nginx setup no longer
+> > works, and the reason is getting -EINVAL from sendfile() when the input
+> > is a file and the output is a pipe().
+> 
+> Yes, pipes do not support ->splice_write currenly.
 
-Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
+Well, it clearly used to work :-)
 
-v2:
-Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn 
-"Apparently these devices have a PASID capability.  I think you should
-add a new pci_dev bit that is specific to this idea of "PASID works
-without TLP prefixes" and then change pci_enable_pasid() to look at
-that bit as well as eetlp_prefix_path."
-https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
+>    I think just wiring
+> up iter_file_splice_write would work.  Al?
 
-Zhangfei Gao (3):
-  PCI: PASID can be enabled without TLP prefix
-  PCI: Add a quirk to set pasid_no_tlp for HiSilicon chip
-  PCI: set dma-can-stall for HiSilicon chip
+Seems to work for the simple test case that I had, at least:
 
- drivers/pci/ats.c    |  2 +-
- drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
- include/linux/pci.h  |  1 +
- 3 files changed, 29 insertions(+), 1 deletion(-)
+diff --git a/fs/pipe.c b/fs/pipe.c
+index c5989cfd564d..39c96845a72f 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -1206,6 +1206,7 @@ const struct file_operations pipefifo_fops = {
+ 	.unlocked_ioctl	= pipe_ioctl,
+ 	.release	= pipe_release,
+ 	.fasync		= pipe_fasync,
++	.splice_write	= iter_file_splice_write,
+ };
+ 
+ /*
 
--- 
-2.7.4
+johannes
 
