@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8C52FA86E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6A62FA862
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407280AbhARSNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436516AbhARRdB (ORCPT
+        id S2436762AbhARSJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:09:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53891 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407429AbhARSBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:33:01 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE61C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:32:20 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id f1so4365194edr.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:32:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:date:message-id:subject:from:to;
-        bh=6vAyG8pXFCuEbUKT8BIvGb7R3aJ4T0NPUnVXzESIxHc=;
-        b=QXRuZpBXpqrFxO/chyv2+dB+c47XTIclxtXw6kmf12/WHOKF5AryNZj2STzybhbNtx
-         uKwtjtTNYFKizRpKbOTD7YbvWTM3CEAZAkbQJvp0+CMs9Mzj8iao8gztEXMjDFwZvk5P
-         x0xMMg//XE+c0QEkfpm9T8YeX3ygtHTeLOy5KWiayFK5FJNzlZcvAN1Pfsz4K4bymOFH
-         zhYJDlfwuSQgihF+lIZhueUe9Y7wF72DWAECJ1dYsGMoWgqNLSu1Hio4aJUYY3jr7XxL
-         r7MJSk8VRnPmfn+GqXkY7IKQG5r/aMQGcQK92DansG9BnGrIL6EjxTUaQwwb28JTZSE1
-         OQJA==
+        Mon, 18 Jan 2021 13:01:20 -0500
+X-Greylist: delayed 85154 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Jan 2021 13:01:19 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610992789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T2HNFh4tGmunTdtcHPmXNaPVbvrJW2x+rSByPsYMLmg=;
+        b=ietSSJ+fcEHBt0sG2hixiLjlM0XY87lFomWIMynGGq9fsB7aRF9jm5NdaJxQNfQVyjdvPJ
+        xs5mZPDOXf3dvmUe6k1W7LFL2hE9187FRNPjrFVZpaV5Nyd39qG3knZVEm+hVxXVvYHxuq
+        iH0nkQjoyiqlSCXwDM0uwTpUW13d+Q0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-QxxzPROtPLKYNzGI9P4tag-1; Mon, 18 Jan 2021 12:59:47 -0500
+X-MC-Unique: QxxzPROtPLKYNzGI9P4tag-1
+Received: by mail-ed1-f71.google.com with SMTP id n18so8154722eds.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:59:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6vAyG8pXFCuEbUKT8BIvGb7R3aJ4T0NPUnVXzESIxHc=;
-        b=jJdFr8OT5BfQf7nqO+oxsjGtNQxb0KGXo72YZFR942ZRAcKDz1lR0dw2b65CKwVSXf
-         X7GkaynaGLa81ezN0/bDT9KM6HA2GJGWhsbhKOSAaQhjZa+tqirWkqzBfnmgFY5PrJOI
-         hcplPtA5TdrSvm1FMOAdRODb3IpfTvIY33oQDc35NpYMwTq3wv+jXi1g+arzF45MVWD5
-         lpPBrCLJPXgXwyBCugDCEqfy4pnuAKm4q8IJVqXoy8I0D1Gc+lg1AXazetjiDJNeQWfr
-         XkoB5vtgk8EFxFP9E6KZ+9CyZqWnh/w98R35Vw70QvsjaKUo7CDpVIiErcPAetK/Ld2B
-         lXlA==
-X-Gm-Message-State: AOAM530jcua8BjJcf0hjC/Vj7vN9ymITtolyurhCydQ4k3NPhOBtllj4
-        8ksW0JHEIKJPrmbMOIUJTIkCqi5v4tWYPO0L8p/izdjuLkn77MlqcmZ0Aw==
-X-Google-Smtp-Source: ABdhPJyPV5lw6G4g8/CufBd67PJI6FKTz0fFpDss80tcba48zm/yi6qvQVj8TGxvJQI7j+E3J/cDPtq+oIdI7GQyke4vWXzffw7+sg==
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T2HNFh4tGmunTdtcHPmXNaPVbvrJW2x+rSByPsYMLmg=;
+        b=i03xT8hyx14ZLP+zi2PmQqx4y1vOgk8ST0c9y84dX4vTANFdwj9V8InSnQ1IsfHGEX
+         vZhsAXTeMJPuqkEy6pbkMpT5iM6wHsY7TehvmZMfl8DjI/OuJTUHUnNF6eQrCMIj3WLW
+         NBQ9aLfg6xOzgRwqteFuK+URPql8CiIA93V5jRudj+lgJyBeH6YT3mGYsartxlYcDe4x
+         +wpkvztRBXuZx3Hdo7ShSADJl242jK7mUZfHQ58Us0DfE/CbV/TK9vSLLXFLG6iw+L6d
+         RUQWuLn8B+xeozwG2cbsLWbU3SfECweLLzAkLQCdRzm/PrqanzNDlZD0NUHLYAKAV3fb
+         AcKQ==
+X-Gm-Message-State: AOAM532SCXgyf5Ej7NpCb6r1xyzb1G6OJU8uMxXVNanCIcitMfnUZm/Z
+        yf6Msx12NqLn7xuR7EWXr9UbIag80mlv2Ldj8lszNfjNwXh15Sojslv1tHkL+Kir/40km7AbYWa
+        LGz2Whizb8Z15o3MLa7KTARU1
+X-Received: by 2002:a05:6402:3510:: with SMTP id b16mr486886edd.242.1610992786136;
+        Mon, 18 Jan 2021 09:59:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyA7xCdJb5UE0ciBeFtJ9lz3e0ooEmAyU4lBg8uFTIMUoWQdwOCLaoyinlppLP4Jo7SmRAPhA==
+X-Received: by 2002:a05:6402:3510:: with SMTP id b16mr486870edd.242.1610992785978;
+        Mon, 18 Jan 2021 09:59:45 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id he38sm9395037ejc.96.2021.01.18.09.59.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 09:59:45 -0800 (PST)
+Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
+ SEV-ES support
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210116002517.548769-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d4deb3ba-5c72-f61c-5040-0571822297c6@redhat.com>
+Date:   Mon, 18 Jan 2021 18:59:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Received: by 2002:aa7:c9cf:: with SMTP id i15mr421901edt.296.1610991139711;
- Mon, 18 Jan 2021 09:32:19 -0800 (PST)
-X-Google-Address-Confirmation: XLvhqVpmXrBffS56SV0hmuG76O0
-Date:   Mon, 18 Jan 2021 17:32:19 +0000
-Message-ID: <CAAbjFO5oB=p0CpY8uTdZNPg3PdBgAEejckMiXhyw83b1WWaTTw@mail.gmail.com>
-Subject: (#99427480) Gmail Forwarding Confirmation - Receive Mail from bjs3141@gmail.com
-From:   Gmail Team <forwarding-noreply@google.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210116002517.548769-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bjs3141@gmail.com has requested to automatically forward mail to your email
-address linux-kernel@vger.kernel.org.
-Confirmation code: 99427480
+On 16/01/21 01:25, Sean Christopherson wrote:
+> 
+> @@ -1527,12 +1527,14 @@ config AMD_MEM_ENCRYPT
+>  	select DYNAMIC_PHYSICAL_MASK
+>  	select ARCH_USE_MEMREMAP_PROT
+>  	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+> -	select INSTRUCTION_DECODER
+>  	help
+>  	  Say yes to enable support for the encryption of system memory.
+>  	  This requires an AMD processor that supports Secure Memory
+>  	  Encryption (SME).
+>  
+> +	  This also enables support for running as a Secure Encrypted
+> +	  Virtualization (SEV) guest.
+> +
+>  config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+>  	bool "Activate AMD Secure Memory Encryption (SME) by default"
+>  	default y
+> @@ -1547,6 +1549,15 @@ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+>  	  If set to N, then the encryption of system memory can be
+>  	  activated with the mem_encrypt=on command line option.
+>  
+> +config AMD_SEV_ES_GUEST
+> +	bool "AMD Secure Encrypted Virtualization - Encrypted State (SEV-ES) Guest support"
+> +	depends on AMD_MEM_ENCRYPT
+> +	select INSTRUCTION_DECODER
+> +	help
+> +	  Enable support for running as a Secure Encrypted Virtualization -
+> +	  Encrypted State (SEV-ES) Guest.  This enables SEV-ES boot protocol
+> +	  changes, #VC handling, SEV-ES specific hypercalls, etc...
+> +
 
-To allow bjs3141@gmail.com to automatically forward mail to your address,
-please click the link below to confirm the request:
+Queued, thanks.
 
-https://mail-settings.google.com/mail/vf-%5BANGjdJ9hkvVgkNjxohK3G_smiGacACYcwk1mNYesZgMNvYW4BzAjq2dMIquordeb4zBjMpesxyn8hzstTPmJ-tFlIvYJQmvthZrjyyD0XQ%5D-Zra73ESu8vcr1vUZT9u1ya-8wUA
+Paolo
 
-If you click the link and it appears to be broken, please copy and paste it
-into a new browser window. If you aren't able to access the link, you
-can send the confirmation code
-99427480 to bjs3141@gmail.com.
-
-Thanks for using Gmail!
-
-Sincerely,
-
-The Gmail Team
-
-If you do not approve of this request, no further action is required.
-bjs3141@gmail.com cannot automatically forward messages to your email address
-unless you confirm the request by clicking the link above. If you accidentally
-clicked the link, but you do not want to allow bjs3141@gmail.com to
-automatically forward messages to your address, click this link to cancel this
-verification:
-https://mail-settings.google.com/mail/uf-%5BANGjdJ-5d9aZBg-1gmgZZhr6kOPH_6fP491j8UNFfGKqAlgULEukePGe0svsjArkaLH75AgucvoiWvUPhfe-gjgpfBSdtc5PPluFixypzQ%5D-Zra73ESu8vcr1vUZT9u1ya-8wUA
-
-To learn more about why you might have received this message, please
-visit: http://support.google.com/mail/bin/answer.py?answer=184973.
-
-Please do not respond to this message. If you'd like to contact the
-Google.com Team, please log in to your account and click 'Help' at
-the top of any page. Then, click 'Contact Us' along the bottom of the
-Help Center.
