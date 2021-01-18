@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E832F9F65
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E23B2F9F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403934AbhARMU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:20:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
+        id S2390626AbhARLvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:51:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390883AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B7B22472;
-        Mon, 18 Jan 2021 11:45:46 +0000 (UTC)
+        id S2390595AbhARLkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:40:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB17222BB;
+        Mon, 18 Jan 2021 11:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970347;
-        bh=fDn8DrtBn9EkkZoA37lCDkfEkHZFb3tA/i1mkGM4hx8=;
+        s=korg; t=1610969996;
+        bh=MjrKb1h4tMErpsH8+EzAbPNEt6Oz+fy/TlWsRz575As=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YgmvCnsOqhBEXPu8Q5Km1l21O3BHCUmSL2CH0FvqaaiOe7QFwsZA4Lyvz6RB062FM
-         8hTWiTfYxrmOldSYuQd1O7ZHP/T/eESHRYB5Q8XB9d0wAwU8u8qseTTBDnA8LO2wsX
-         SlW1WDOaifNps3VTEdUab6kc6ZIJ1xRKTm/u0MpM=
+        b=DO0jeqqP5975fy3bkVWvz0MjuKE+CQ8vmLd5Bj+0ILFZVPYm9lO9dOckIIlm/s9rF
+         Taz72Dp5F9TzJr85IiTsZX3xjftC60Z8QmMHFwuxSKs4Kmqh+qDSUrK2rIf3/R/dvd
+         nXEchNxnRzEtqlFU+H4hSEr3RbqjL5RBJtyKlmog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 134/152] RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
-Date:   Mon, 18 Jan 2021 12:35:09 +0100
-Message-Id: <20210118113359.147171607@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.4 70/76] net: sunrpc: interpret the return value of kstrtou32 correctly
+Date:   Mon, 18 Jan 2021 12:35:10 +0100
+Message-Id: <20210118113344.316368952@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
-References: <20210118113352.764293297@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: j.nixdorf@avm.de <j.nixdorf@avm.de>
 
-commit a306aba9c8d869b1fdfc8ad9237f1ed718ea55e6 upstream.
+commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
 
-If usnic_ib_qp_grp_create() fails at the first call, dev_list
-will not be freed on error, which leads to memleak.
+A return value of 0 means success. This is documented in lib/kstrtox.c.
 
-Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
-Link: https://lore.kernel.org/r/20201226074248.2893-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+This was found by trying to mount an NFS share from a link-local IPv6
+address with the interface specified by its index:
+
+  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
+
+Before this commit this failed with EINVAL and also caused the following
+message in dmesg:
+
+  [...] NFS: bad IP address specified: addr=fe80::1%1
+
+The syscall using the same address based on the interface name instead
+of its index succeeds.
+
+Credits for this patch go to my colleague Christian Speich, who traced
+the origin of this bug to this line of code.
+
+Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
+Fixes: 00cfaa943ec3 ("replace strict_strto calls")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/sunrpc/addr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-@@ -214,6 +214,7 @@ find_free_vf_and_create_qp_grp(struct us
- 
- 		}
- 		usnic_uiom_free_dev_list(dev_list);
-+		dev_list = NULL;
- 	}
- 
- 	/* Try to find resources on an unused vf */
-@@ -239,6 +240,8 @@ find_free_vf_and_create_qp_grp(struct us
- qp_grp_check:
- 	if (IS_ERR_OR_NULL(qp_grp)) {
- 		usnic_err("Failed to allocate qp_grp\n");
-+		if (usnic_ib_share_vf)
-+			usnic_uiom_free_dev_list(dev_list);
- 		return ERR_PTR(qp_grp ? PTR_ERR(qp_grp) : -ENOMEM);
- 	}
- 	return qp_grp;
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -185,7 +185,7 @@ static int rpc_parse_scope_id(struct net
+ 			scope_id = dev->ifindex;
+ 			dev_put(dev);
+ 		} else {
+-			if (kstrtou32(p, 10, &scope_id) == 0) {
++			if (kstrtou32(p, 10, &scope_id) != 0) {
+ 				kfree(p);
+ 				return 0;
+ 			}
 
 
