@@ -2,160 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F772F9D8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FC62F9D9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389216AbhARLGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389424AbhARKv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:51:28 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3708C0613ED
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:50:16 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id c132so10705465pga.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/R3UCFnO6UqmoJANzPoDRlRakiNGCKfWPdfz/PEj6G0=;
-        b=JgIT275MouwzJRI/IlJros32BFBpp/uk6O7jXlgjoZdf6afSkxXYI/VEZ3g/9LKgeO
-         TAPfaMpRl2EyOW6sCdSNNDar8odE4NwLSQS0HZ4t0kj3NwzxWauJuqsYUW7tgFoibNue
-         VYJTENAAxRe6O7YBYHSkHGXrYrHoViznGpSPU0/OfMyQYlWbFQFX1ctE7Pg9txrZAtW+
-         jGxhip9cMCnYTZG2rF3qZC0P2Yq+uCVhyKF7t0dwAabht79kiIhxD368XFeUXT8xcHlK
-         OuLDXgTuET2lSUWm5p4ybvI2c2y1ZWAEL+K56v7obPBK2OggzcSmu/K8GfkMl2r6IfaN
-         QIMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/R3UCFnO6UqmoJANzPoDRlRakiNGCKfWPdfz/PEj6G0=;
-        b=CD0W/sur5rCm5p2h3u93c8cM/qdBbCK6eP4HZlks05X3RPmwV2KWTAXiE4+y8l0fc1
-         XzcDmdOvA6rNeWgZXgm3cXedL6Ytv0hIHBTVRIlBYGqVDOuGlcYJMeOBkIapeADR5eUA
-         ehw2JA/686wWYwco7qgJng6RsDE2LCx0NPRj070w8y6uN7hEz3xwhxKbuS8Ycx/2FiiT
-         MQ/lYJxRlA2J143y3FA8jnKrBbKIaGF176KrvDXIYftst6OBIIOzAb0g8jl5M81AyEaO
-         2KDMmMMJd6k1iy9enknyRrYRdn3U4zmXZ7US/fo4q4pg0s9good6e4KWv3Nut1ORRmgf
-         SqAA==
-X-Gm-Message-State: AOAM533C3+sR1qSzsRyg+oVEg5OR1ZSrrQIsr6ZaPDxy05vWyfVg6ZgB
-        0fjoe264NKn2WL8r5UXWgp7bfQ==
-X-Google-Smtp-Source: ABdhPJx/jeIGcSJLY/ARAydthMDOg2XQJOnRGnR84+atUL4sjdxZXtdurD1hIIsNAIhbU+3GF7/Abw==
-X-Received: by 2002:a63:504e:: with SMTP id q14mr25486348pgl.21.1610967016260;
-        Mon, 18 Jan 2021 02:50:16 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id e3sm9140099pgs.60.2021.01.18.02.50.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 02:50:15 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:20:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 07/12] opp: Add dev_pm_opp_get_required_pstate()
-Message-ID: <20210118105013.ah2gvizv3rjdt4vr@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-8-digetx@gmail.com>
+        id S2389262AbhARLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:07:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48000 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389381AbhARKvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:51:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 92837AB7F;
+        Mon, 18 Jan 2021 10:50:25 +0000 (UTC)
+To:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        rdunlap@infradead.org, hkallweit1@gmail.com
+Cc:     linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, andy.shevchenko@gmail.com,
+        wangle6@huawei.com
+References: <20210112033155.91502-1-nixiaoming@huawei.com>
+ <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
+ <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
+ <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
+ <20210112072406.GF22493@dhcp22.suse.cz>
+ <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
+ <c88e7bd2-54e2-ab4a-f548-96fb0cc2e4d2@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <278b5b2e-c256-730a-8bfc-1e19b20785a8@suse.cz>
+Date:   Mon, 18 Jan 2021 11:50:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-8-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <c88e7bd2-54e2-ab4a-f548-96fb0cc2e4d2@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> Add dev_pm_opp_get_required_pstate() which allows OPP users to retrieve
-> required performance state of a given OPP.
+On 1/17/21 3:59 AM, Xiaoming Ni wrote:
+> On 2021/1/12 19:42, Vlastimil Babka wrote:
+>> On 1/12/21 8:24 AM, Michal Hocko wrote:
+>>>>>>
+>>>>>> If we're going to do a separate "patch: make process_sysctl_arg()
+>>>>>> return an errno instead of 0" then fine, we can discuss that.  But it's
+>>>>>> conceptually a different work from fixing this situation.
+>>>>>> .
+>>>>>>
+>>>>> However, are the logs generated by process_sysctl_arg() clearer and more
+>>>>> accurate than parse_args()? Should the logs generated by
+>>>>> process_sysctl_arg() be deleted?
+>>>>
+>>>> I think the individual logs are very useful and should be retained.
+>>>
+>>> Yes, other sysfs specific error messages are likely useful. I just fail
+>>> to see why a missing value should be handled here when there is an
+>>> existing handling in the caller. Not sure whether a complete shadow
+>>> reporting in process_sysctl_arg is a deliberate decision or not.
+>>> Vlastimil?
+>>
+>> Yes, it's a way to have more useful sysctl-specific reports than the generic
+>> ones. And I think I was inspired by some other existing code, but don't remember
+>> exactly. The options are:
+>>
+>> 1) the current sysctl-specific reports, return 0 as the values are only consumed
+>> 2) be silent and return error, invent new error codes to have generic report be
+>> more useful for sysctl, but inevitably lose some nuances anyway
+>> 3) a mix where 2) is used for situations where generic report is sufficient
+>> enough, 1) where not
+>>
+>> Patch v2 went with option 1), v3 with option 3). I think it's down to
+>> preferences. I would personally go with v2 and message similar to the existing
+>> ones, i.e.:
+>>
+>> "Failed to set sysctl parameter '%s': no value given\n"
+>>
+>> Also we seem to be silently doing nothing when strlen(val) == 0, i.e.
+>> "hung_task_panic=" was passed. Worth reporting the same error.
+>>
+>> But v3 is fine with me as well. The generic error message works. We could just
+>> add "if (!len) return -EINVAL" below the strlen() call.
+>>
+>> Also please Cc: stable.
+>>
+>>> Anyway one way or the other, all I care about is to have a reporting in
+>>> place because this shouldn't be a silent failure.
+>>>
 > 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 22 ++++++++++++++++++++++
->  include/linux/pm_opp.h | 10 ++++++++++
->  2 files changed, 32 insertions(+)
 > 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index df0969002555..fde2ec00ab0e 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -145,6 +145,28 @@ unsigned int dev_pm_opp_get_level(struct dev_pm_opp *opp)
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_get_level);
->  
-> +/**
-> + * dev_pm_opp_get_required_pstate() - Gets the required performance state
-> + *                                    corresponding to an available opp
-> + * @opp:	opp for which performance state has to be returned for
-> + * @index:	index of the required opp
-> + *
-> + * Return: performance state read from device tree corresponding to the
-> + * required opp, else return 0.
-> + */
-> +unsigned int dev_pm_opp_get_required_pstate(struct dev_pm_opp *opp,
-> +					    unsigned int index)
-> +{
-> +	if (IS_ERR_OR_NULL(opp) || !opp->available ||
-> +	    index >= opp->opp_table->required_opp_count) {
-> +		pr_err("%s: Invalid parameters\n", __func__);
-> +		return 0;
-> +	}
-> +
-> +	return opp->required_opps[index]->pstate;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_pm_opp_get_required_pstate);
-> +
->  /**
->   * dev_pm_opp_is_turbo() - Returns if opp is turbo OPP or not
->   * @opp: opp for which turbo mode is being verified
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index b7dc993487c7..e072148ae0e1 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -98,6 +98,9 @@ unsigned long dev_pm_opp_get_freq(struct dev_pm_opp *opp);
->  
->  unsigned int dev_pm_opp_get_level(struct dev_pm_opp *opp);
->  
-> +unsigned int dev_pm_opp_get_required_pstate(struct dev_pm_opp *opp,
-> +					    unsigned int index);
-> +
->  bool dev_pm_opp_is_turbo(struct dev_pm_opp *opp);
->  
->  int dev_pm_opp_get_opp_count(struct device *dev);
-> @@ -194,6 +197,13 @@ static inline unsigned int dev_pm_opp_get_level(struct dev_pm_opp *opp)
->  	return 0;
->  }
->  
-> +static inline
-> +unsigned int dev_pm_opp_get_required_pstate(struct dev_pm_opp *opp,
-> +					    unsigned int index)
-> +{
-> +	return 0;
-> +}
-> +
->  static inline bool dev_pm_opp_is_turbo(struct dev_pm_opp *opp)
->  {
->  	return false;
+> The current v2 is already in the linux-next branch and throws a new error:
+> https://lore.kernel.org/lkml/cb54e349-7147-0a1f-a349-1e16ba603fce@infradead.org/
+> 
+> This bug has been mentioned in the previous discussion and has been fixed in the
+> current v3 patch.
+> https://lore.kernel.org/linux-fsdevel/202101111149.20A58E1@keescook/
+> 
+> What am I supposed to do now?
+>     - Resend V3?
 
-Applied. Thanks.
+IMHO this. But also please handle also len == 0 like below. And add
+Cc: <stable@vger.kernel.org>
 
--- 
-viresh
+>     - Rewrite a new fix patch based on the current code of linux-next.
+
+AFAICS Andrew dropped the v2 already.
+
+Thanks.
+
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 317899222d7f..f424010d1a60 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1770,6 +1770,12 @@ static int process_sysctl_arg(char *param, char *val,
+ 			return 0;
+ 	}
+ 
++	if (!val)
++		return -EINVAL;
++	len = strlen(val);
++	if (!len)
++		return -EINVAL;
++
+ 	/*
+ 	 * To set sysctl options, we use a temporary mount of proc, look up the
+ 	 * respective sys/ file and write to it. To avoid mounting it when no
+@@ -1811,7 +1817,6 @@ static int process_sysctl_arg(char *param, char *val,
+ 				file, param, val);
+ 		goto out;
+ 	}
+-	len = strlen(val);
+ 	wret = kernel_write(file, val, len, &pos);
+ 	if (wret < 0) {
+ 		err = wret;
