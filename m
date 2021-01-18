@@ -2,94 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F232F9A94
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5112F9A99
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732686AbhARHed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:34:33 -0500
-Received: from muru.com ([72.249.23.125]:55290 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732371AbhARHe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:34:29 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 96E8180AE;
-        Mon, 18 Jan 2021 07:33:44 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with simple-bus for auxdata
-Date:   Mon, 18 Jan 2021 09:33:40 +0200
-Message-Id: <20210118073340.62141-1-tony@atomide.com>
-X-Mailer: git-send-email 2.30.0
+        id S1732793AbhARHfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:35:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731544AbhARHfE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 02:35:04 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A38C061573;
+        Sun, 17 Jan 2021 23:34:24 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 981712BB;
+        Mon, 18 Jan 2021 08:34:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610955260;
+        bh=3ZDbWSNMk25Oq6QHRjrIbAXJOZHgOoobzPTgr2XKPX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pjKmGMVUeqB7fHtO3ZvOZtPasArkDSapiHMXmCN+OmXSAXkrf712MWG4gTUqhjZAs
+         kE5Wtylg5w5ZxvEGSChRKgkmJd9I+veyH6tsoRv+YqOERQH4ipBbH1QokGFFZSO69p
+         YH0cWGnsS6Pj5Rj+Rh+ghS4P13OwPcJV3T/BO1Cc=
+Date:   Mon, 18 Jan 2021 09:34:04 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+Message-ID: <YAU57AEmtBHuz6T8@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210118003428.568892-3-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After converting am335x to probe devices with simple-pm-bus I noticed
-that we are not passing auxdata for of_platform_populate() like we do
-with simple-bus.
+Hi Daniel,
 
-While device tree using SoCs should no longer need platform data, there
-are still quite a few drivers that still need it as can be seen with
-git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
-replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
-needed.
+Thank you for the patch.
 
-Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
-That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
-And let's pass the auxdata for omaps to fix the issue for am335x.
+On Mon, Jan 18, 2021 at 12:34:23AM +0000, Daniel Scally wrote:
+> In some ACPI tables we encounter, devices use the _DEP method to assert
+> a dependence on other ACPI devices as opposed to the OpRegions that the
+> specification intends. We need to be able to find those devices "from"
+> the dependee, so add a function to parse all ACPI Devices and check if
+> the include the handle of the dependee device in their _DEP buffer.
+> 
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+> 	- Used acpi_lpss_dep() as Andy suggested.
+> 
+>  drivers/acpi/utils.c    | 34 ++++++++++++++++++++++++++++++++++
+>  include/acpi/acpi_bus.h |  2 ++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 78b38775f18b..ec6a2406a886 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -831,6 +831,18 @@ bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
+>  	return false;
+>  }
+>  
+> +static int acpi_dev_match_by_dep(struct device *dev, const void *data)
+> +{
+> +	struct acpi_device *adev = to_acpi_device(dev);
+> +	const struct acpi_device *dependee = data;
+> +	acpi_handle handle = dependee->handle;
+> +
+> +	if (acpi_lpss_dep(adev, handle))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
 
-As an alternative solution, adding simple-pm-bus handling directly to
-drivers/of/platform.c was considered, but we would still need simple-pm-bus
-device driver. So passing auxdata as platform data seems like the simplest
-solution.
+I think I'd move this just before acpi_dev_get_next_dep_dev() to keep
+the two together.
 
-Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
-Changes since v1: Updated description, added devicetree list to Cc
----
- arch/arm/mach-omap2/pdata-quirks.c | 1 +
- drivers/bus/simple-pm-bus.c        | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+>  /**
+>   * acpi_dev_present - Detect that a given ACPI device is present
+>   * @hid: Hardware ID of the device.
+> @@ -866,6 +878,28 @@ bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+>  }
+>  EXPORT_SYMBOL(acpi_dev_present);
+>  
+> +/**
+> + * acpi_dev_get_next_dep_dev - Return next ACPI device dependent on input dev
 
-diff --git a/arch/arm/mach-omap2/pdata-quirks.c b/arch/arm/mach-omap2/pdata-quirks.c
---- a/arch/arm/mach-omap2/pdata-quirks.c
-+++ b/arch/arm/mach-omap2/pdata-quirks.c
-@@ -522,6 +522,7 @@ static struct of_dev_auxdata omap_auxdata_lookup[] = {
- 		       &dra7_ipu1_dsp_iommu_pdata),
- #endif
- 	/* Common auxdata */
-+	OF_DEV_AUXDATA("simple-pm-bus", 0, NULL, omap_auxdata_lookup),
- 	OF_DEV_AUXDATA("ti,sysc", 0, NULL, &ti_sysc_pdata),
- 	OF_DEV_AUXDATA("pinctrl-single", 0, NULL, &pcs_pdata),
- 	OF_DEV_AUXDATA("ti,omap-prm-inst", 0, NULL, &ti_prm_pdata),
-diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
---- a/drivers/bus/simple-pm-bus.c
-+++ b/drivers/bus/simple-pm-bus.c
-@@ -16,6 +16,7 @@
- 
- static int simple_pm_bus_probe(struct platform_device *pdev)
- {
-+	const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
- 	struct device_node *np = pdev->dev.of_node;
- 
- 	dev_dbg(&pdev->dev, "%s\n", __func__);
-@@ -23,7 +24,7 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 
- 	if (np)
--		of_platform_populate(np, NULL, NULL, &pdev->dev);
-+		of_platform_populate(np, NULL, lookup, &pdev->dev);
- 
- 	return 0;
- }
+Maybe acpi_dev_get_next_dependent_dev() ? "dep" could mean either
+dependent or dependency.
+
+> + * @adev: Pointer to the dependee device
+> + * @prev: Pointer to the previous dependent device (or NULL for first match)
+> + *
+> + * Return the next ACPI device which declares itself dependent on @adev in
+> + * the _DEP buffer.
+> + *
+> + * The caller is responsible to call put_device() on the returned device.
+> + */
+> +struct acpi_device *acpi_dev_get_next_dep_dev(struct acpi_device *adev,
+> +					      struct acpi_device *prev)
+> +{
+> +	struct device *start = prev ? &prev->dev : NULL;
+> +	struct device *dev;
+> +
+> +	dev = bus_find_device(&acpi_bus_type, start, adev, acpi_dev_match_by_dep);
+
+Having to loop over all ACPI devices is quite inefficient, but if we
+need a reverse lookup, we don't really have a choice. We could create a
+reverse map, but I don't think it's worth it.
+
+> +
+> +	return dev ? to_acpi_device(dev) : NULL;
+> +}
+> +EXPORT_SYMBOL(acpi_dev_get_next_dep_dev);
+
+I would have used EXPORT_SYMBOL_GPL. I'm not sure what the policy is in
+the ACPI subsystem, and it's also a personal choice.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +
+>  /**
+>   * acpi_dev_get_next_match_dev - Return the next match of ACPI device
+>   * @adev: Pointer to the previous acpi_device matching this @hid, @uid and @hrv
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 02a716a0af5d..33deb22294f2 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -683,6 +683,8 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>  
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+>  
+> +struct acpi_device *
+> +acpi_dev_get_next_dep_dev(struct acpi_device *adev, struct acpi_device *prev);
+>  struct acpi_device *
+>  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
+>  struct acpi_device *
+
 -- 
-2.30.0
+Regards,
+
+Laurent Pinchart
