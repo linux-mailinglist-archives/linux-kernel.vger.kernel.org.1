@@ -2,106 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D3F2FA864
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80332FA8B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407085AbhARReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:34:00 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:28763 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436527AbhARRbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:31:22 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DKJhX0S9Yz9txQD;
-        Mon, 18 Jan 2021 18:30:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id ZaCSH8ZfAc0y; Mon, 18 Jan 2021 18:30:19 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DKJhW47ZQz9txPj;
-        Mon, 18 Jan 2021 18:30:19 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3A80C8B7B6;
-        Mon, 18 Jan 2021 18:30:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id FsaQn5CKJ16a; Mon, 18 Jan 2021 18:30:25 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 39BD98B7AE;
-        Mon, 18 Jan 2021 18:30:24 +0100 (CET)
-Subject: Re: {standard input}:577: Error: unsupported relocation against base
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202101051834.FGH835Vs-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
-Date:   Mon, 18 Jan 2021 15:24:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2405538AbhARPGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405393AbhARPFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:05:45 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0567C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:05:04 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id u25so24537571lfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ri3ViwJIemCRo5Li//ENyLUFjkwkOFqO5AGiqHf+oUY=;
+        b=J331cjUcPG1tS5LoQgX2hRDa6mKfwajLBC1eFES7fOibDhYewVXHQyKQEWG2xYPZIf
+         Bh+BOz3otEDNfsKc5ab4MvmeQ5urrdGPC5Khca7RebCWDRObMz+WQM+B5hee9jRrYHzB
+         6SyV9UYRrG2o7wiLW0uqJQMJUxNJPFG11mtx9R++Ri3SWLwKh9awxAaekulbtLy218dH
+         oiCz8L9F35auVvyeiUAkqLfKC7Puj6g73fe/AipJyBAXU1Q0MaE+UuhKcJTE41H91vAX
+         hruB5gULNTqa/mvuYs+ehJznauVpD3Qkx4niQcw72qNYBGTzRkFulCzFq5R8Qljqom9r
+         H/rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ri3ViwJIemCRo5Li//ENyLUFjkwkOFqO5AGiqHf+oUY=;
+        b=n77nLZi1AXSsJP2T9uHYfyEZjKp8Kw4Px0VmA6ruKLOx+TXICzpkSs0f1KNsyTXdfY
+         Y392Xj+aAayXd+CPgbJGPIB4Dl2yG5AljshjywloGuCVEK8+/MNFQIyi4VtlIFB5Pggx
+         YAcMadsaqWF1VjXSwRDVlYPICejIKQWEgn/SIc3KJ1wr53iEOAaELREpgpGVneQlMoc4
+         xjx9G/BT/MyQGClhu9O6QRfxLM6AlD6u9Dm/AkQ1NSaLVkP6P48eBTm/9UediWGo8Zxe
+         fzOtiOr9u5BiCJPBmT4efZGRTZlo0rVoJZ4snMy9Q13Ngfr1h+Y/791O0P4Nja6tvX9k
+         HBHQ==
+X-Gm-Message-State: AOAM530WylQBt6kvbLXleWraJnZCMtwwpqr6MCtr9GoqX5hgOW3RZg2/
+        EZXJs48Zato6vIEY0fVG+yk9k7fwEzrEr2YrLW6XZw==
+X-Google-Smtp-Source: ABdhPJxFI1/1/BERIAvssx71vAzMx/DieoiLXAg12yNY2zsJZ74uR0QW2dajc0J1Br5Sw3ihpextmWaR6Wp3bLSIuho=
+X-Received: by 2002:a19:8bc6:: with SMTP id n189mr11053598lfd.291.1610982303209;
+ Mon, 18 Jan 2021 07:05:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202101051834.FGH835Vs-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210107025731.226017-1-warthog618@gmail.com>
+In-Reply-To: <20210107025731.226017-1-warthog618@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 16:04:51 +0100
+Message-ID: <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
 
+>   selftests: gpio: rework and simplify test implementation
+>   selftests: gpio: remove obsolete gpio-mockup-chardev.c
+>   selftests: remove obsolete build restriction for gpio
+>   selftests: remove obsolete gpio references from kselftest_deps.sh
+>   tools: gpio: remove uAPI v1 code no longer used by selftests
+>   selftests: gpio: port to GPIO uAPI v2
+>   selftests: gpio: add CONFIG_GPIO_CDEV to config
 
-Le 05/01/2021 à 11:58, kernel test robot a écrit :
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> commit: 8b8319b181fd9d6821703fef1228b4dcde613a16 powerpc/44x: Don't support 440 when CONFIG_PPC_47x is set
+Bartosz I think you can just merge these patches into the GPIO tree, at least
+I think that is what I have done in the past.
 
-I see no link with that commit. Looks like the problem has been existing for some time.
-It exists on the commit before that one, it exists on v5.9 and it exists on v5.10 with that commit 
-reverted.
-
-> date:   5 weeks ago
-> config: powerpc-randconfig-p002-20210105 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8b8319b181fd9d6821703fef1228b4dcde613a16
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 8b8319b181fd9d6821703fef1228b4dcde613a16
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     {standard input}: Assembler messages:
->>> {standard input}:577: Error: unsupported relocation against base
->     {standard input}:580: Error: unsupported relocation against base
->     {standard input}:583: Error: unsupported relocation against base
->     {standard input}:586: Error: unsupported relocation against base
->     {standard input}:589: Error: unsupported relocation against base
->     {standard input}:592: Error: unsupported relocation against base
->     {standard input}:595: Error: unsupported relocation against base
->     {standard input}:598: Error: unsupported relocation against base
->     {standard input}:601: Error: unsupported relocation against base
->     {standard input}:604: Error: unsupported relocation against base
->     {standard input}:607: Error: unsupported relocation against base
->     {standard input}:610: Error: unsupported relocation against base
->     {standard input}:613: Error: unsupported relocation against base
->     {standard input}:616: Error: unsupported relocation against base
->     {standard input}:619: Error: unsupported relocation against base
->     {standard input}:622: Error: unsupported relocation against base
->     {standard input}:625: Error: unsupported relocation against base
->     {standard input}:628: Error: unsupported relocation against base
->     {standard input}:631: Error: unsupported relocation against base
->     {standard input}:634: Error: unsupported relocation against base
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Yours,
+Linus Walleij
