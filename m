@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A9E2FA4ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 565492FA51B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393115AbhARPiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:38:14 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44187 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405848AbhARPdh (ORCPT
+        id S2405807AbhARPrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405983AbhARPd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:33:37 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3DD6A5806D8;
-        Mon, 18 Jan 2021 10:32:29 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 18 Jan 2021 10:32:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Xzr7TivAzMC37jEbdiY5yCBTlnd
-        X/w6i4c7bmvz68ew=; b=N8JL4nEVZlGYfJc8Ut+oe8MAM0Ws2eCWVuqJ1N2uRlz
-        W4UrF9nOFhPI2eghR7pU4VXaNExy9mFfbs+GP44QnmMvOzPJNT0Tm1XF2F1q26sg
-        hh1g2qnEBmY5t95iW5d5ZZkwvGl/I73v/zBqtngCj0H9cS04VXErvCRBX6WFm0iM
-        DfVT+71OBAtS5YtzftoN53pqs9THXwIKXu0ga9vV7Qza4fdWIuG4YR8OOLHCKOFO
-        5e4HKpkkhCLabbSxv8+TrMbgkrc3YaIU2tRFXNZYRfTVXcYtP8IxgymT/UZSr6cn
-        cvOrjsuKJP/nJYmV5EiJG7gukEswc55dq1BS5fjYrPQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Xzr7Ti
-        vAzMC37jEbdiY5yCBTlndX/w6i4c7bmvz68ew=; b=BbXgA9KJ08hHHNvUq1bdHD
-        l+5htAg9ZdNM/CmG14HdBRgCROauL43aYSvzekaiFr9A2XKxN4fYiferqBSlMHYM
-        VJYAw8MK6F85ta4fxJ0YSfRYjSthDDm1van9BuMtf2qLccdFrd1qlXLujEWC4arJ
-        KNVBj//L9YEQUvvMhHZdFa1JOhSF+gwrkRgg7uqa6O2xJfTt06nb2Y6Zfc2lcZzJ
-        lfx/VrtESf/TR5AspcrhcpCliDTlR3mh7GcqkhK8P7SMl3ptebLnTc3l4UYxrY4T
-        Co95LjJkJwYHLIvZtdHzhIMHxxC2kwBFsXeaIYcGR8lwNrFs0c6dyPlh2lIkLQyQ
-        ==
-X-ME-Sender: <xms:C6oFYNrHqvAmXbBoMhVk1EuVACG1FWpjpizQvnMWINBhIsu7C035ig>
-    <xme:C6oFYE79O0CBWAI9L-DVnBFFG3-t2IUM_J9I7PR0ajzXp4sG2uFStQvOuHUMPBmFU
-    Eaoduh0blTvhkqcO6c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:C6oFYL6Nmj_feR6Cg09qCuOiOVFe2vqlhenZRkdXsD-2Oiyl10lXNQ>
-    <xmx:C6oFYBEEmJOyqyaVAvBGmh5y9eBXm7Rg6XfLD-DNviUpMETII-cHFQ>
-    <xmx:C6oFYERK5xAo9vmElfeKo1H013UKf6F8sy7tU4lcHtbQ3paPs7cWoQ>
-    <xmx:DaoFYNvItQ3-rJKtIqft0eMUB-CYOLuqIYhsHageeBknDmPtsLB9vw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8707B240064;
-        Mon, 18 Jan 2021 10:32:27 -0500 (EST)
-Date:   Mon, 18 Jan 2021 16:32:26 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v3 13/21] phy: sun4i-usb: Rework HCI PHY (aka.
- "pmu_unk1") handling
-Message-ID: <20210118153226.3qthltiknhjggdlq@gilmour>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-14-andre.przywara@arm.com>
+        Mon, 18 Jan 2021 10:33:28 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E0FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:46 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id f17so18592617ljg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bBQOG7vxoM6QNk6U3xhAhy3xS9YtkVdNjMmBgzCoLbA=;
+        b=Cuhm6Se308oUzIL+drXDZ+cwNnuIbBlps5d6xsRssecTHpjtgiuTXzQNDMhO0JY8bt
+         YszIfLR3A3eKvExUZO7VBnhwcWQLm4D59sAQxyW/hIP/kQgjZCk8tQ5PDNc13t6+Pjq2
+         Vh2K46SLjz1jIHAb14v74cfZz5YTawi+sTQT0gvsUXqFXvPCWOb8sojcejX4G7GTL5js
+         Bd/uigPucj6wczJhxvWhiZVIXVP0bGt43r5NBfHeB5VzWWXtgTsFR5ONsoTUhbOBSSTR
+         Yqyr/24gdZ0l4L5em2Zv2771xtQG3Twi+luFDeUk6OY04kZGRj5BKfmldGwrSqYUNl98
+         X2lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bBQOG7vxoM6QNk6U3xhAhy3xS9YtkVdNjMmBgzCoLbA=;
+        b=thgdDK2X8yPCR+jVhlIrfc8LtwvoNlV3lRjkkatHqS+L2+FPgzEEq79l6KBE9fZLfL
+         zlK9ByhlyKni6PX8FepKpTepGcYwDtduS9FsB4f4guB82RCrJOYIWgAZvLtnenT9vTqI
+         +vsf4nZtEyxhbxG05aosv83hKkdGBcb8N+n99VIj7wKjIjv+bcUFeLEbjuBxVXQw0fBs
+         1MUKTqWFOjX4O97hpy6NTlo+QSrdp8Q6tPd36ywZW9dVcPl4EdPjtK+iRuTJltKAVIpp
+         uLmWqFj1PlVQGEh67u23/XomiiC8g8Bv3yrL14sphRcQqzW+ELwU1O1VjPwCvnvr0wxS
+         8OWA==
+X-Gm-Message-State: AOAM533WD048sVGmoEO8WAj0ZXUpnEtx6F+VqXmaJEBTpbvDviiTLOSG
+        WQFbX6pAzELLmhXp8p46umDxMdMQcI0cih//TWS8rg==
+X-Google-Smtp-Source: ABdhPJx4ZdzRD10FhfCcqPFhhRv+irScAwpmWxe4JltyATFb4F/WmkBfnmVNpRmz04RW1/5GvimIWM/NJ/EbS4tq3uM=
+X-Received: by 2002:a2e:586:: with SMTP id 128mr85874ljf.273.1610983965379;
+ Mon, 18 Jan 2021 07:32:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pqgdlaxdbu6tssef"
-Content-Disposition: inline
-In-Reply-To: <20210118020848.11721-14-andre.przywara@arm.com>
+References: <20210115210159.3090203-1-saravanak@google.com>
+In-Reply-To: <20210115210159.3090203-1-saravanak@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 16:32:34 +0100
+Message-ID: <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
+Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
+ "gpios" binding
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>, kernel-team@android.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 15, 2021 at 10:02 PM Saravana Kannan <saravanak@google.com> wrote:
 
---pqgdlaxdbu6tssef
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> To provide backward compatibility for boards that use deprecated DT
+> bindings, we need to add fw_devlink support for "gpio" and "gpios".
+>
+> Cc: linux-tegra <linux-tegra@vger.kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-On Mon, Jan 18, 2021 at 02:08:40AM +0000, Andre Przywara wrote:
-> As Icenowy pointed out, newer manuals (starting with H6) actually
-> document the register block at offset 0x800 as "HCI controller and PHY
-> interface", also describe the bits in our "PMU_UNK1" register.
-> Let's put proper names to those "unknown" variables and symbols.
->=20
-> While we are at it, generalise the existing code by allowing a bitmap
-> of bits to clear, to cover newer SoCs: The A100 and H616 use a different
-> bit for the SIDDQ control.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+"gpios" is a valid non legacy property I think.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Anyways:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-maxime
-
---pqgdlaxdbu6tssef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAWqCgAKCRDj7w1vZxhR
-xcbsAP9TwrjweNf+Pb49jnnhspbSAKEDPVbjl51uEuE/KYOpuAEAgi9QIlVrNs71
-7VP8kIixtlUEeJFvDXJ74Aq643qmiAM=
-=hfin
------END PGP SIGNATURE-----
-
---pqgdlaxdbu6tssef--
+Yours,
+Linus Walleij
