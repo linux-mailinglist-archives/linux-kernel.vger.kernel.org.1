@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291932FA7A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ECE2FA7AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407148AbhARRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:37:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51375 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436578AbhARRfu (ORCPT
+        id S2407174AbhARRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:39:25 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11214 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2436605AbhARRhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:35:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610991264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tvg2z+rJE7oAboiLpvnNtZpTYMBCy/tGBkqn7W8lY0M=;
-        b=E9CyQvEiaRNX79lu3BS9smfbWUs48VzfoWiXZRXXWQFsOO5KslBSFairKmprhiAPKEZrN2
-        1DjGrrNWRcFzRHxYBH/l+CJW2mEI0GvsrDXHioR/Pti4WIGytveVn4wBZi9C8vbOc8Xtek
-        e9pH+Z2Wp3JRbJmvVU+c9lJq572NRxs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-Vcr9oqreM9CgW1oYjSNU0Q-1; Mon, 18 Jan 2021 12:34:22 -0500
-X-MC-Unique: Vcr9oqreM9CgW1oYjSNU0Q-1
-Received: by mail-wr1-f72.google.com with SMTP id r11so8645505wrs.23
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:34:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tvg2z+rJE7oAboiLpvnNtZpTYMBCy/tGBkqn7W8lY0M=;
-        b=KK6Eexu7cUZPkObyofmfl5iftcys4fvrvDuF0zBj0W5h8+M9185f41RMK+7MDjNRVU
-         3ZkdOsdqAj1syQfEeTOuHfIA6AfDZ/9evmpvxfl1Bh5gmGqKWoNymGWsucKHUPPU29nJ
-         BAW5k0yGMGo0W9DuJ7oLZ6wgufge3Eaxm6GLIVzeMEACWHaJAOGNPUDBTfHBM+jISPLn
-         qV8Tja/v5lji9xsYmZNbxaLcO4Ux3l0k50YqSBHECw3LETlddgjX1G8hx1sCxOOp0NFN
-         /YSnhhMf/6JMy6saRIyYhnqTAwN8gHOsSZK/2uYbIFNV2kR9NhyrZ+HU3yQ4YDeWd4+b
-         uWtA==
-X-Gm-Message-State: AOAM531ls/RfEygYBbAMNtrIEWdlvX9WTpD+xVAhab7LuPLuHyEo+919
-        YXtLW9GNEDBe+hW9MUKfKpLDzcmQ9ZchHlxPUZfEC/8d3k6O96KtZtbcnkyzrgjDXjpBv0I4+Lt
-        fJ+TofKzkF2sxTGY+WX/smBkPK5M8k6/v9obiTRMj8HM2ZBdiPDGmzC8xpU0R5d9pr+bKUHpHar
-        Hf
-X-Received: by 2002:adf:ed49:: with SMTP id u9mr580679wro.292.1610991261266;
-        Mon, 18 Jan 2021 09:34:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHdsDozji1Mbty0aRn53xFuOFArekZ/aSrjVwZRRRr7i/mb+3I5yS0zbfo3MHFnvOyhnhvZQ==
-X-Received: by 2002:adf:ed49:: with SMTP id u9mr580660wro.292.1610991261001;
-        Mon, 18 Jan 2021 09:34:21 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v4sm31428402wrw.42.2021.01.18.09.34.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 09:34:20 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: Add more protection against undefined behavior
- in rsvd_bits()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210113204515.3473079-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <947f0e1a-c8db-5c68-1e0c-abadd10d92fc@redhat.com>
-Date:   Mon, 18 Jan 2021 18:34:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210113204515.3473079-1-seanjc@google.com>
+        Mon, 18 Jan 2021 12:37:23 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10IHYup4005887;
+        Mon, 18 Jan 2021 09:36:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
+ b=WLi5x1bRh6tGA/O+89Cz1LwKABLU02H8QmZzWH7ltOHzQ9m+gdBA+mIoArkeD5huyZaD
+ xQASW1OXA90I5ta/WhLtzzwoTSQ6/gnWSzR54juUwKHsz5g8oF0ZdgkwgRGQs+5Fyf8K
+ dtLqT17EiZgVlU4dDE6/MwbwWSGkbVd9Muo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 363vh583r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 18 Jan 2021 09:36:22 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 18 Jan 2021 09:36:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bYdnRcNR5JczfTpQBX6gieHAGGKlvr0eX6Qx5OlYDtv1tdAi8V8lBVn/a6KBSnopC6gpvf34VdEZRnjV8XUIVRMGETXY02GWDxl2Eu03jZX/YEZ+ADkSxvcjgDvJCw5sdrWblViXTtQXW0HxsWRmGECYqtr16v/uGKbuQEwGK1UTxoCJYrwsoZhMBCzAnsUh8yutz6t+9+L8hZjacj+CP69tBx1xKZzoJte8CKn0J6IcDOgGNk4NLNXgCwfE5IQTRePVPw+7XC9qXzq7Kip5mSNkpdK5+eACdJgQmyZqAYAdATQi+ZSUNCDc/hnAcBp+pa7zEd4ymqJFREQCphq7MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
+ b=IuDMyj5aqGVVB2t/Nybjsk1hYVXQ396gupE1v/UfvibtO2EkOjVjo8V/ZTTy6Wpk9FxjZr9nv3GTOT1AbtdqJ8NE8HX5C/1oKMICrD3c8E1f45GFeGM5pjM2Agz5Y/V482CO2SF1T0JND/NdkePlhrhYqWeWjND+CcCB0GRbsKxwnDnW0niwepPYAhl/wGlePPMkyFgYaI4GaIV1qVAXnyDIpLhLnfU56ecT60Wnj4MnFzpxHc30D7JlIPV524qUbPT0WDmuH1uZPkfpWbRsfXl4ttlhUp4VF+k6Ni3qI1ZJT841dVxW7F77QJBRs0T8tI0umyGoPTOIf2qU7R/CjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
+ b=eXEYWsDQtfSZgTc1xmq0D+PB1rcsKbSUHCdXD+kMVMt/zUSaxzHwCqVaL3vxCxQ4QePqm6kZ1WvaWF+ZWoyfRLaSQmWgprwPmvaf1WjIjeUCLXGyiVvNSBxRuFRd3kSaW5y3rUnFJr76mU15xUgWEHl7EfzSuxeixjRufTjWW2E=
+Authentication-Results: lwn.net; dkim=none (message not signed)
+ header.d=none;lwn.net; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4236.namprd15.prod.outlook.com (2603:10b6:a03:2cb::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
+ 2021 17:36:20 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 17:36:20 +0000
+Subject: Re: [PATCH bpf-next v2 2/2] docs: bpf: Clarify -mcpu=v3 requirement
+ for atomic ops
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20210118155735.532663-1-jackmanb@google.com>
+ <20210118155735.532663-3-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <4cbd024b-b57e-e7ae-276a-a285c898bb30@fb.com>
+Date:   Mon, 18 Jan 2021 09:36:17 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <20210118155735.532663-3-jackmanb@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:4199]
+X-ClientProxiedBy: MW4PR03CA0340.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::15) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::10cf] (2620:10d:c090:400::5:4199) by MW4PR03CA0340.namprd03.prod.outlook.com (2603:10b6:303:dc::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Mon, 18 Jan 2021 17:36:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f210539c-bdce-43e6-24be-08d8bbd79134
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4236:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4236B99D40E3C39EABAA29E0D3A40@SJ0PR15MB4236.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H/jIm0B6x2i/HUBgiXb5JvLewRjjD/2Ei5QRIvn3BnzjJcIwkYGESyLuz2ZUaajpEIHVtSP6D+A+DW+lk0Jl0TI8VbVN3Z8SL0i18ulOJjfC3tW9f1qd6OWk3OFqzeBJB3b3ehC8Z6jp8QOlv4G9/gFZvrSrOus2TPL58eXX2RQ2pnvHucLoUearQkQGSL6RQ0Gz8EUFEyadUS4evnTsPPHuz/JcK0RCffQFJV6veD7pDJe6F22aNXIl53dnU9zVDKGsG6VkRvJE75cH1VPY6DKqxZREHxXIgo56t9MYHpWBXaW7sud06h4ej35hTgGciAljZiIRX4SAfUugIWWM4LjjtJLCpF9iLc7aXxxWhMdQP6iLlncGFetngaZZysthytU4QcoXVh8bbfiebJJ0Bh/yIJQLuIIp+PjqOOs6VUb1RA34abCfk9mV7lFgsxS/fdRBq6aIUhHvceNuuV+PBpXPL7n48fjRwv2UTdSNdLI9oyhW1J4XQg7e1m/GMLA9x+0On5Td5WMmaMEtM+aXTxUFkygDLvutIA3hFFB8Y0oA2aU+21LHp2oIS8g6NgYw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(136003)(366004)(376002)(4326008)(2616005)(478600001)(66476007)(66556008)(2906002)(66946007)(4744005)(186003)(31696002)(16526019)(5660300002)(36756003)(7416002)(6486002)(316002)(53546011)(54906003)(86362001)(8676002)(52116002)(966005)(31686004)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ODdWRW9rRXFtZ3VOOG9HdG5PT1RMMXA3Z3BJaUR5RUN1VVA4NjhFemZxMzNG?=
+ =?utf-8?B?cytPK1dKdFliNlVOcDEwV3pEVXExWWYvemxZOGNFZmJMVVN1UFdaZFBNQ2dq?=
+ =?utf-8?B?Z0pZZnZrOU5DUnB0aXhXR0VWdkwxN3pEOGxNTFhoZXJKQmEyV0Jia2NjajNl?=
+ =?utf-8?B?RFFNekJVY1JoT3RReHpmcFZpM3ZoSFB1ck5vekY2UlE0ZlRXbnBSNmNDNU41?=
+ =?utf-8?B?bDBpdVgyenZ4cGNwS1ZBc2xuY1NrcUZ2T2wzQXlUcStTVE9LQzVuaktGZXU2?=
+ =?utf-8?B?VmtFa3R5ZFE5YzlDYXZTUW9Memw4eHdUZGdlSVRsVzIvQm1ENXY5VjlvYVIx?=
+ =?utf-8?B?bjBXN2ttV3pMNXBtbm0zaG9nM2Q1OGRjOVdUSlFZYVUydk5YVGsvVmUxTFRm?=
+ =?utf-8?B?dWJwU3FYZ1V6UFNRaHF5Rlc1ZUdQQnRrUWpqV2lBZGo5eTdMR2k3aEFudmZw?=
+ =?utf-8?B?b1B6Wk5RR3BSYldib2FKaklPK0prNWw0di9uQUhWcks2MDY3TGVjUW9aVUFL?=
+ =?utf-8?B?bHBaL0ZhYk1KM24xVnZ4THpMRkpkYkFSMnYzUGMwNFNLbmZXL1Z1RG5qRmV2?=
+ =?utf-8?B?cklqMG00ZkROTHJucUIxME9FVFRwOTd2Z3RGSnpHK2JGVzJLZHQ0T0N1NSta?=
+ =?utf-8?B?dEY0bFNUcnZBcmlGT0ZXYUZOMDhyZW8yeFl4MExtVy9DSmRLcVAvRTd0QXZx?=
+ =?utf-8?B?VHJsMlIwTDJ0dVo3T3dSeTdwNDBqS1daNWgrWVdYdy9YaTlnd3NPWURTWkN5?=
+ =?utf-8?B?cDFpL1MxYjFNdVBNTXNVTHpERG81a1hldFhrYzJmRGlvVHQ2bWR2NTZjZ1pm?=
+ =?utf-8?B?M2pWNTZObHJ4dlRrN1gwTUlBU25GS0VnbTM4L0NzR0ZiUXk5eWdOck1TUmZ3?=
+ =?utf-8?B?aXpCZVFzTEhIRE8zVHNUcEhNam1Cb1VHQXBuRmxrMVRaZ0I0Vy9RTTVjZmdS?=
+ =?utf-8?B?MlFpMTlCVng1Mjh3U3ZQdk9YV2NjN3ovMkFTZkVFNmVpV294QkM1V3psRkt0?=
+ =?utf-8?B?RW8rajhpQmlIMjIzTkViaGE1dFVJSzZrQ0lzNGZUTTh0eTYvM29RTkVJZWxh?=
+ =?utf-8?B?b2QrUGtReTdyN3lBY2lKNVMrSWJ3TUNsa3dFZjVCYXdvREFxMmthbERUNC9y?=
+ =?utf-8?B?T0xwdEFWUHdzczI5cFlZK0Nscnp6M0kzU2J4KzBubktkWnhiT3pYYmJ2eFJ1?=
+ =?utf-8?B?WXBmVmdFeC84T1E5UDNkdnJNcmFrUmFleTh2MXRzMzcyaDJud3A4ZWMrcVhV?=
+ =?utf-8?B?UVU5OFdETlY3b3FBOGJwaFhPN2hOc2ZaaFFPMFhVdUV6a1dsMlJSbGY5YTZE?=
+ =?utf-8?B?R1FpU1YxMzhQeFU5OHRMaUE4V1BvdHFiUFFqbXMrcWI4NlU0TUJ4V2pRZ2k2?=
+ =?utf-8?B?UUJJRWNtbldtRGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f210539c-bdce-43e6-24be-08d8bbd79134
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 17:36:20.7308
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sl7LLcASS2eAnt0qE3eAAciVBZsouExexUK66S86M6cJcduWnlyj7cz7alYJIelr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4236
+X-OriginatorOrg: fb.com
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-18_13:2021-01-18,2021-01-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=927
+ lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0 clxscore=1011
+ adultscore=0 bulkscore=0 mlxscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101180106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/01/21 21:45, Sean Christopherson wrote:
-> Add compile-time asserts in rsvd_bits() to guard against KVM passing in
-> garbage hardcoded values, and cap the upper bound at '63' for dynamic
-> values to prevent generating a mask that would overflow a u64.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/mmu.h | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 581925e476d6..261be1d2032b 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -44,8 +44,15 @@
->   #define PT32_ROOT_LEVEL 2
->   #define PT32E_ROOT_LEVEL 3
->   
-> -static inline u64 rsvd_bits(int s, int e)
-> +static __always_inline u64 rsvd_bits(int s, int e)
->   {
-> +	BUILD_BUG_ON(__builtin_constant_p(e) && __builtin_constant_p(s) && e < s);
-> +
-> +	if (__builtin_constant_p(e))
-> +		BUILD_BUG_ON(e > 63);
-> +	else
-> +		e &= 63;
-> +
->   	if (e < s)
->   		return 0;
->   
-> 
 
-Queued for 5.11, thanks.
 
-Paolo
+On 1/18/21 7:57 AM, Brendan Jackman wrote:
+> Alexei pointed out [1] that this wording is pretty confusing. Here's
+> an attempt to be more explicit and clear.
+> 
+> [1] https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/T/#m07264fc18fdc43af02fc1320968afefcc73d96f4
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
+Thanks for better description!
+
+Acked-by: Yonghong Song <yhs@fb.com>
