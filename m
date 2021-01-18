@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF0C2FAD0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EA12FAD11
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbhARWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
+        id S2388134AbhARWDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387557AbhARWCz (ORCPT
+        with ESMTP id S2387894AbhARWD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:02:55 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8601C0613ED
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:14 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id o186so2233904vso.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:14 -0800 (PST)
+        Mon, 18 Jan 2021 17:03:26 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3225C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:45 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id u27so2549244uaa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cgYXXKDGBW6a/Ay3lvFyQRjl1IFnWA6SVXMh0iaCM6U=;
-        b=eyMgvEKMYxzdZvh8xGdzUCAR5CvGMETl+M8cnoeriJLzg1OfILsdm/eOp6Oaln9s6b
-         LqD8nFm7Hyk93ADZ6I0mplNmUXPSB1rzRSsY6lN2MnOBnviqDkrwT7cyQqoxHkWKKM+F
-         To7ReuUilxRCUbWz4ER8OvSGYi0offyr/Audg=
+        bh=9BjWeKnLhtX9WXPmjSXlj5EkkOdetRobr1udf+4AmzQ=;
+        b=a+9n5eZgCWi/s4vOPejRYrhDUcnrW08Zt0Nbg4Vzc+dhj8SIke/Z96SUBtUSWulSz0
+         MUYd3MF5e44z88vDRzUNpWZOO6I4kZHXLwldldcl1xmRhrsd5lodyqaJtcLzk8P/6GoS
+         o4N+ejsO0uBBQ1QpQCXmiLNjYZGOd6qC954c0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cgYXXKDGBW6a/Ay3lvFyQRjl1IFnWA6SVXMh0iaCM6U=;
-        b=WerIQo+dTihzBhU7Kigg44L1jeWUp7+Zvpftyygwu/sj6kOb4djNtZ8JlnXEcHuKdw
-         uZfgdg1ajlo0ewWq2kcx7Gb7kg1/uRRIgV+hs13ct08Y7ROl0mfRYm7EORfTfY0ayHEk
-         iHAY2OC/tfnsZYUmAseUY+7InHarSZSmnO0Yb+yVDjtaJazYRBygT6Xy2ofr1imTfm6J
-         LD1UvaKWX4GGq9Qg2G2E6g1JL1zbWi3tfL17L/4HTlNXgoZjeQmYMuRNV5TGMbDrL/7s
-         txKZwA8vkh1GzcLANjA2WGBLMvshd4S9oUdpsYim6XD1Q93z7pWf3WqKMc3o8SMOsE2k
-         PU/g==
-X-Gm-Message-State: AOAM530gdcDC6MPTcOSm9xiY6sjlgnWcb1novQONaXnqaQZWpy7EWqu1
-        kgJRXyla7Is4XMldWA+Co1nk5rE6Hsac/GfCZmFGnw==
-X-Google-Smtp-Source: ABdhPJw+WCZE+eqHFzYlyDXhJA7chMXL2acKBGbLe9K3xWLbgbv5eSfb0jaPF08HUSLDtSOy898Z4m5uM/9x+cJn3io=
-X-Received: by 2002:a67:2a46:: with SMTP id q67mr1070098vsq.40.1611007333852;
- Mon, 18 Jan 2021 14:02:13 -0800 (PST)
+        bh=9BjWeKnLhtX9WXPmjSXlj5EkkOdetRobr1udf+4AmzQ=;
+        b=BQ0pEVsZm84bffSKAh0mm+eij3YSZWzhIV+qzfUdD5GjVrDSBDI25S7cAPz7OB6jY7
+         ChA85BHPpdS4IkbGrSiO9hGDU9+XWfA7prsMi4GwR/f3PPaMCYvLU3qF0eqlB3VLd6fH
+         qiloeG24DUwhIH+wOnExZo7B6wW3dyKKl4JCPgL590yzGkeEK54Vk7CxVBVGqpcXl9qo
+         ldxomQjtq29JVugU9zM9mV+7rjxUd3mT1oCGlopgC7dUlbh5vlf+iavMgGxUPrItf8RX
+         p5kHa/A3wIuZpW6+aC2SQiyk6B3Z1MLtOTzxcJm/LaT4oRcBxxZ0Cnj0l+A/KSvD4who
+         CEkg==
+X-Gm-Message-State: AOAM530DUwD9cU2eMGdh2UTyc5u9feppb+ApiMZc1f0V1ZhGNcLZlgtS
+        sPO0c6fJ5sYw2RKgcxl6GbvdTRZTySjm6ToFChmFEA==
+X-Google-Smtp-Source: ABdhPJwuKHEEKlq5+7w41SyHuZ4THOU/eaMaoFBLcg0lHoFbaTX6gWLt3qWUpjxuMdkGEK3o+Xzp/yffgED7H2sZRvU=
+X-Received: by 2002:ab0:cb:: with SMTP id 69mr821626uaj.10.1611007364845; Mon,
+ 18 Jan 2021 14:02:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116052623.3196274-1-grundler@chromium.org> <20210116052623.3196274-2-grundler@chromium.org>
-In-Reply-To: <20210116052623.3196274-2-grundler@chromium.org>
+References: <20210116052623.3196274-1-grundler@chromium.org> <20210116052623.3196274-3-grundler@chromium.org>
+In-Reply-To: <20210116052623.3196274-3-grundler@chromium.org>
 From:   Grant Grundler <grundler@chromium.org>
-Date:   Mon, 18 Jan 2021 22:02:02 +0000
-Message-ID: <CANEJEGsAfz1QSDOQK3vvSGStnXm4XS6Ah_fV4iv7Hgh2MWSjGQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] net: usb: log errors to dmesg/syslog
+Date:   Mon, 18 Jan 2021 22:02:33 +0000
+Message-ID: <CANEJEGuDnZ6ujsRnn7xmO-y+SxxqxyaQCJXmHeV3XgfLsA8cDg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] net: usb: cdc_ncm: don't spew notifications
 To:     Grant Grundler <grundler@chromium.org>,
         nic_swsd <nic_swsd@realtek.com>
 Cc:     Oliver Neukum <oliver@neukum.org>,
@@ -65,28 +65,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Jan 16, 2021 at 5:27 AM Grant Grundler <grundler@chromium.org> wrote:
 >
-> Errors in protocol should be logged when the driver aborts operations.
-> If the driver can carry on and "humor" the device, then emitting
-> the message as debug output level is fine.
+> RTL8156 sends notifications about every 32ms.
+> Only display/log notifications when something changes.
+>
+> This issue has been reported by others:
+>         https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
+>         https://lkml.org/lkml/2020/8/27/1083
+>
+> ...
+> [785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
+> [785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
+> [785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
+> [785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
+> [785962.929954] usb 1-1: Manufacturer: Realtek
+> [785962.929956] usb 1-1: SerialNumber: 000000001
+> [785962.991755] usbcore: registered new interface driver cdc_ether
+> [785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
+> [785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
+> [785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
+> [785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
+> [785963.019211] usbcore: registered new interface driver cdc_ncm
+> [785963.023856] usbcore: registered new interface driver cdc_wdm
+> [785963.025461] usbcore: registered new interface driver cdc_mbim
+> [785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
+> [785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+> [785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+> [785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
+> ...
+>
+> This is about 2KB per second and will overwrite all contents of a 1MB
+> dmesg buffer in under 10 minutes rendering them useless for debugging
+> many kernel problems.
+>
+> This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
+> the majority of those logs useless too.
+>
+> When the link is up (expected state), spew amount is >2x higher:
+> ...
+> [786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+> [786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+> [786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+> [786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+> [786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
+> [786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
+> ...
+>
+> Chrome OS cannot support RTL8156 until this is fixed.
 >
 > Signed-off-by: Grant Grundler <grundler@chromium.org>
 > ---
->  drivers/net/usb/usbnet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
+>  include/linux/usb/usbnet.h |  2 ++
+>  2 files changed, 13 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-> index 1447da1d5729..bc7b93399bd5 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -887,7 +887,7 @@ int usbnet_open (struct net_device *net)
+> diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+> index 25498c311551..5de096545b86 100644
+> --- a/drivers/net/usb/cdc_ncm.c
+> +++ b/drivers/net/usb/cdc_ncm.c
+> @@ -1827,6 +1827,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
+>         uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
+>         uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
 >
->         // insist peer be connected
->         if (info->check_connect && (retval = info->check_connect (dev)) < 0) {
-> -               netif_dbg(dev, ifup, dev->net, "can't open; %d\n", retval);
-> +               netif_err(dev, ifup, dev->net, "can't open; %d\n", retval);
->                 goto done;
->         }
+> +       /* if the speed hasn't changed, don't report it.
+> +        * RTL8156 shipped before 2021 sends notification about every 32ms.
+> +        */
+> +       if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
+> +               return;
+> +
+> +       dev->rx_speed = rx_speed;
+> +       dev->tx_speed = tx_speed;
+> +
+>         /*
+>          * Currently the USB-NET API does not support reporting the actual
+>          * device speed. Do print it instead.
+> @@ -1867,7 +1876,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
+>                  * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+>                  * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+>                  */
+> -               usbnet_link_change(dev, !!event->wValue, 0);
+> +               if (netif_carrier_ok(dev->net) != !!event->wValue)
+> +                       usbnet_link_change(dev, !!event->wValue, 0);
+>                 break;
 >
+>         case USB_CDC_NOTIFY_SPEED_CHANGE:
+> diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
+> index 88a7673894d5..cfbfd6fe01df 100644
+> --- a/include/linux/usb/usbnet.h
+> +++ b/include/linux/usb/usbnet.h
+> @@ -81,6 +81,8 @@ struct usbnet {
+>  #              define EVENT_LINK_CHANGE        11
+>  #              define EVENT_SET_RX_MODE        12
+>  #              define EVENT_NO_IP_ALIGN        13
+> +       u32                     rx_speed;       /* in bps - NOT Mbps */
+> +       u32                     tx_speed;       /* in bps - NOT Mbps */
+>  };
+>
+>  static inline struct usb_driver *driver_of(struct usb_interface *intf)
 > --
 > 2.29.2
 >
