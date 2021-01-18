@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03A22FA537
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138772FA564
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406038AbhARPxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:53:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32822 "EHLO mail.kernel.org"
+        id S2406101AbhARP5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:57:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:38426 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406021AbhARPwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:52:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD83F22AAA;
-        Mon, 18 Jan 2021 15:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610985116;
-        bh=AB8E4rNT4/olxwU47FHDvrZY5FoQsL+/jFIyw1bY5kE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uCbPJZ9PMqQ+OkD6vMBRT9gJxBC+/ttZdYP0DsVRDVfLWr9fS7NnblCAlMiYwblFM
-         7713QXen8hz42WcGwsLQ4tSicRXRc4injmdMh+ZFvv1ESPza6aX7Inxv45rHsOR0la
-         f/EAIbaRS6eSnrRSrlg+Evfq6BKzQzcKzkmX4yyPqYxFc+/EeBzrYeOkZGG+pC7WHB
-         qDSv73qPL5arEj6cELeCtskGDqLpYjZUThQX9qbDugmKEIoiW3Ed3y7EgFqmTHVmmL
-         N3sAufA7wIF/YevT3X295KBj7sURCYBLvOH5fzL9qaSBmYaMS4h2EydvN709mapVkx
-         sUjwk0AzGvNqQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id ACEC140CE2; Mon, 18 Jan 2021 12:51:53 -0300 (-03)
-Date:   Mon, 18 Jan 2021 12:51:53 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 01/22] perf tools: Make perf_config_from_file static
-Message-ID: <20210118155153.GA12699@kernel.org>
-References: <20210102220441.794923-1-jolsa@kernel.org>
- <20210102220441.794923-2-jolsa@kernel.org>
+        id S2405992AbhARPyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:54:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC96E31B;
+        Mon, 18 Jan 2021 07:53:28 -0800 (PST)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 061FA3F68F;
+        Mon, 18 Jan 2021 07:53:26 -0800 (PST)
+Date:   Mon, 18 Jan 2021 15:52:28 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 02/21] mmc: sunxi: add support for A100 mmc
+ controller
+Message-ID: <20210118155228.3bd0e909@slackpad.fritz.box>
+In-Reply-To: <20210118132854.yiwn7rnvcyexgqim@gilmour>
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+        <20210118020848.11721-3-andre.przywara@arm.com>
+        <20210118132854.yiwn7rnvcyexgqim@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210102220441.794923-2-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Jan 02, 2021 at 11:04:20PM +0100, Jiri Olsa escreveu:
-> It's not used outside config.c object.
+On Mon, 18 Jan 2021 14:28:54 +0100
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-Thanks, applied.
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/config.c | 2 +-
->  tools/perf/util/config.h | 1 -
->  2 files changed, 1 insertion(+), 2 deletions(-)
+Hi Maxime,
+
+> On Mon, Jan 18, 2021 at 02:08:29AM +0000, Andre Przywara wrote:
+> > From: Yangtao Li <frank@allwinnertech.com>
+> > 
+> > This patch adds support for A100 MMC controller, which use word
+> > address for internal dma.
+> > 
+> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
 > 
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 6969f82843ee..20be0504fb95 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -489,7 +489,7 @@ int perf_default_config(const char *var, const char *value,
->  	return 0;
->  }
->  
-> -int perf_config_from_file(config_fn_t fn, const char *filename, void *data)
-> +static int perf_config_from_file(config_fn_t fn, const char *filename, void *data)
->  {
->  	int ret;
->  	FILE *f = fopen(filename, "r");
-> diff --git a/tools/perf/util/config.h b/tools/perf/util/config.h
-> index 8c881e3a3ec3..2f753b2a034b 100644
-> --- a/tools/perf/util/config.h
-> +++ b/tools/perf/util/config.h
-> @@ -27,7 +27,6 @@ extern const char *config_exclusive_filename;
->  
->  typedef int (*config_fn_t)(const char *, const char *, void *);
->  
-> -int perf_config_from_file(config_fn_t fn, const char *filename, void *data);
->  int perf_default_config(const char *, const char *, void *);
->  int perf_config(config_fn_t fn, void *);
->  int perf_config_int(int *dest, const char *, const char *);
-> -- 
-> 2.26.2
-> 
+> We should also disable the timings setup in probe to derive them from
+> the DT. This is causing issues on some SoCs already, so it would be
+> best to not make the situation worse
 
--- 
+But only for those new SoCs, where we have the speed modes in the DT
+in every case (so only new ones)? And this disabling would be
+SoC/compatible string dependent? Happy to send a patch later if that is
+what you were thinking about.
 
-- Arnaldo
+Also I was wondering about the voltage dependent speed modes: At the
+moment the driver declares both MMC_CAP_1_8V_DDR and MMC_CAP_3_3V_DDR,
+so I mimic this in the .dtsi. However in the eventual DTB this looks
+somewhat dodgy, since most boards only support one of those voltages. Do
+we ignore this, and rely on the vqmmc-supply to limit this choice?
+
+Cheers,
+Andre
+
+Btw: This patch is already in Ulf's -next tree, I just included it here
+for the sake of completeness. Is that a problem? I don't think it
+affects the build, so we don't care too much? 
