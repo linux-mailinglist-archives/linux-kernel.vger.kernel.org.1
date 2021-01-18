@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5242F9CB2
+	by mail.lfdr.de (Postfix) with ESMTP id 141C22F9CB0
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389806AbhARKPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:15:32 -0500
-Received: from mga11.intel.com ([192.55.52.93]:37363 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389166AbhARJol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:44:41 -0500
-IronPort-SDR: xTvm9obDFb7MjVvx1Vw1Pa/o6VDM3jCGJ2E0X70NPBDCmtGip+2CQijf2v7FpGhAufl55RBPwy
- nr/c4GQvk4tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="175277848"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="175277848"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 01:42:44 -0800
-IronPort-SDR: jVDVyL+1vvMd8SeoDIk51ZW3B/D398sltO/FBsgtKmWHqEkAoylU+dzZXhi5dStzYMWxc82stw
- KjMgNYFEFsag==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="355127834"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 01:42:40 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 7A48A208D7; Mon, 18 Jan 2021 11:42:38 +0200 (EET)
-Date:   Mon, 18 Jan 2021 11:42:38 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        andriy.shevchenko@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 3/7] i2c: i2c-core-base: Use format macro in
- i2c_dev_set_name()
-Message-ID: <20210118094238.GW11878@paasikivi.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-4-djrscally@gmail.com>
- <20210118094158.GV11878@paasikivi.fi.intel.com>
+        id S2389742AbhARKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389177AbhARJop (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:44:45 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F8FC061573;
+        Mon, 18 Jan 2021 01:44:05 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6DB092BB;
+        Mon, 18 Jan 2021 10:44:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610963043;
+        bh=xxk+lHswU9GlVNAzi20vlKRav8h21hAOnc3sgblTiI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GfDVi4uOmKDP4tvYUwfaXmm9qFwbo13a2g19YNpayVOme+gSnX1h+XsReQbiQkAIZ
+         /ybBeCnZDJMG2EIL4aM8+v7jxOkw9cTc3nqeS+0tRvYNLF9fWqUK3bAdnwx5Q8US7E
+         hCRN4K0l/UvsWd8MdYfweJqCJLUttELffGps90J8=
+Date:   Mon, 18 Jan 2021 11:43:47 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH 2/3] drm/ingenic: Register devm action to cleanup encoders
+Message-ID: <YAVYUzR9+ic5lEjE@pendragon.ideasonboard.com>
+References: <20210117112646.98353-1-paul@crapouillou.net>
+ <20210117112646.98353-3-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210118094158.GV11878@paasikivi.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210117112646.98353-3-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:41:58AM +0200, Sakari Ailus wrote:
-> Hi Daniel,
-> 
-> On Mon, Jan 18, 2021 at 12:34:24AM +0000, Daniel Scally wrote:
-> > Some places in the kernel allow users to map resources to a device
-> > using device name (for example, gpiod_lookup_table). Currently
-> > this involves waiting for the i2c_client to have been registered so we
-> > can use dev_name(&client->dev). We want to add a function to allow users
-> > to refer to an i2c device by name before it has been instantiated, so
-> > create a macro for the format that's accessible outside the i2c layer
-> > and use it in i2c_dev_set_name()
-> > 
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> > ---
-> > 	- Used format macro in i2c_dev_set_name() instead of sub func
-> > 
-> >  drivers/i2c/i2c-core-base.c | 4 ++--
-> >  include/linux/i2c.h         | 3 +++
-> >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> > index 63ebf722a424..547b8926cac8 100644
-> > --- a/drivers/i2c/i2c-core-base.c
-> > +++ b/drivers/i2c/i2c-core-base.c
-> > @@ -811,12 +811,12 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
-> >  	struct acpi_device *adev = ACPI_COMPANION(&client->dev);
-> >  
-> >  	if (info && info->dev_name) {
-> > -		dev_set_name(&client->dev, "i2c-%s", info->dev_name);
-> > +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, info->dev_name);
-> >  		return;
-> >  	}
-> >  
-> >  	if (adev) {
-> > -		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
-> > +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
-> 
-> Over 80, please wrap.
-> 
-> With that,
-> 
-> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Hi Paul,
 
-Or rather:
+Thank you for the patch.
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+On Sun, Jan 17, 2021 at 11:26:45AM +0000, Paul Cercueil wrote:
+> Since the encoders have been devm-allocated, they will be freed way
+> before drm_mode_config_cleanup() is called. To avoid use-after-free
+> conditions, we then must ensure that drm_encoder_cleanup() is called
+> before the encoders are freed.
 
+How about allocating the encoder with drmm_encoder_alloc() instead ?
+
+> Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
+> Cc: <stable@vger.kernel.org> # 5.8+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> >  		return;
-> >  	}
-> >  
-> > diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> > index 56622658b215..4d40a4b46810 100644
-> > --- a/include/linux/i2c.h
-> > +++ b/include/linux/i2c.h
-> > @@ -39,6 +39,9 @@ enum i2c_slave_event;
-> >  typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
-> >  			      enum i2c_slave_event event, u8 *val);
-> >  
-> > +/* I2C Device Name Format - to maintain consistency outside the i2c layer */
-> > +#define I2C_DEV_NAME_FORMAT		"i2c-%s"
-> > +
-> >  /* I2C Frequency Modes */
-> >  #define I2C_MAX_STANDARD_MODE_FREQ	100000
-> >  #define I2C_MAX_FAST_MODE_FREQ		400000
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> Sakari Ailus
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 368bfef8b340..d23a3292a0e0 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -803,6 +803,11 @@ static void __maybe_unused ingenic_drm_release_rmem(void *d)
+>  	of_reserved_mem_device_release(d);
+>  }
+>  
+> +static void ingenic_drm_encoder_cleanup(void *encoder)
+> +{
+> +	drm_encoder_cleanup(encoder);
+> +}
+> +
+>  static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  {
+>  	struct platform_device *pdev = to_platform_device(dev);
+> @@ -1011,6 +1016,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  			return ret;
+>  		}
+>  
+> +		ret = devm_add_action_or_reset(dev, ingenic_drm_encoder_cleanup,
+> +					       encoder);
+> +		if (ret)
+> +			return ret;
+> +
+>  		ret = drm_bridge_attach(encoder, bridge, NULL, 0);
+>  		if (ret) {
+>  			dev_err(dev, "Unable to attach bridge\n");
 
 -- 
-Sakari Ailus
+Regards,
+
+Laurent Pinchart
