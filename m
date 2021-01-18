@@ -2,93 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC7E2FA7A1
+	by mail.lfdr.de (Postfix) with ESMTP id 989E72FA7A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436560AbhARRew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S2436574AbhARRfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393038AbhARR04 (ORCPT
+        with ESMTP id S2393711AbhARR1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:26:56 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11014C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:26:15 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id h17so14100690wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:26:14 -0800 (PST)
+        Mon, 18 Jan 2021 12:27:12 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90921C061757;
+        Mon, 18 Jan 2021 09:26:31 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id e22so10526767iog.6;
+        Mon, 18 Jan 2021 09:26:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yhk/oISJ+nYku/7IYAoUh1vkRwRoCLFL91AqrKzzDys=;
-        b=SSB2dTcPHh87ewV/4f8tJVLeZ9h86IB/CeTreE2CiKHIMQ9KuYOaSNlditt5y34sVi
-         KpyE+2ULO0qH4k/+Ptrckwn7pw+kMFgATAE/eJpcr0YsdYsi8HRFJTfiYs4FrkbMRdK7
-         ksJIV+BqR9KUGctQdYbXk1YBRfvpuR7EQRoZFXiBAFFW7oIkJTrW3HZhcse9XEk3fJmg
-         A0JSpcVdpZ6La9OhvXf7JWQ02UFFb0snjumBQCnUicPdhtjpkatZ7BZ3dgfMAHNkuz40
-         NnVUPMBtkWOe2RwTEagGPpxV7wpS5LpRhpV1HwqvZNjqBbYFp9jkQlEO3VBVjEejOkqj
-         yZag==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=/PCeIqOYxF8DBChe/FqeIpuGpAycN06Z+LtSWgqflkc=;
+        b=j9j46G0XZfqSofwk4Dsv+ueKyn3hfButfT4eS5RoqR9b8au7bOzQV/fIvkp+6ghhRW
+         9csqyLm9Wo4MEsUVV751MX+8ijKvaQ5Y0L2dxSC8DdUQNYAfScH7ZXYbTMFOC26Ws747
+         /e/gOQeVXrDREYchVzBB8Ol2FbWZ6HMHZruoHa1bgY8f3tO+XBKzm95aRLFE8/x14TGb
+         WG5xYfNbflssucQEaSQZmctBfC3dIEcS5q/+70XuxE//n2OqfYkg2QQM8xAO1I2lQq/t
+         nEgxhxXaPZ5JhFZJvex4c3W4FpgBgy8+hAbY6x80Qmmc1QT0bvQAor6rQMzufRMct+9M
+         vQ5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yhk/oISJ+nYku/7IYAoUh1vkRwRoCLFL91AqrKzzDys=;
-        b=epxqByjwlwNTChcgtkCr7+NHhviXbrfpOvsOTRvpOWl4nGt1O6hsm8R+1vVy2EaOEZ
-         LMvNSV7u/FiKrv3Q6pjqDUXtFoKNUUQ2JSVfecFh15MMwnhpOoxbQXqGGSU+RPhtOoXa
-         rTRrHWAK/QLm5Nq3kCO4cKItNtyFO5Z7uKg1MsZx6EdzDojIrNnqleO6Evct+oCaehnO
-         qNSXv/1LA21RKEGhXfcz3dX0YRoOFg2xKZ16oBsEHCNDkIpulKUWFcmecYPHwGIypIFG
-         ZQjor/8L+rcIjocvrVih9Z9xxzFoqKP0VgTN6eFmBEH1mimkacuEN4g/3orXr8MtNkvY
-         z2tw==
-X-Gm-Message-State: AOAM5319sVwwIIFPyvhJEU1g+/zp+P3RodSyCB6lj3LyaPmJ2oqI9rxZ
-        3/LGCu6CXGQ9iJJ6pu7ATqnQHKr3bhBMR24pm4s=
-X-Google-Smtp-Source: ABdhPJxIl3PJ6SBycyJbk8Ms0zaRl5EPmrmaN8NWOyCXq3AT6Ou8nRT+AF5qzoNRW3PrsQiBUy/bng==
-X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr396938wml.27.1610990773859;
-        Mon, 18 Jan 2021 09:26:13 -0800 (PST)
-Received: from localhost.localdomain ([2a01:4f8:222:220b::2])
-        by smtp.gmail.com with ESMTPSA id c16sm30710766wrx.51.2021.01.18.09.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 09:26:13 -0800 (PST)
-From:   Isaac Chen <tingyi364@gmail.com>
-To:     TonyWWang-oc@zhaoxin.com
-Cc:     linux-kernel@vger.kernel.org, Isaac Chen <tingyi364@gmail.com>
-Subject: [PATCH] x86/cpu/zhaoxin: Fix wrong lowercase naming and indent
-Date:   Tue, 19 Jan 2021 01:25:58 +0800
-Message-Id: <20210118172558.19426-1-tingyi364@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=/PCeIqOYxF8DBChe/FqeIpuGpAycN06Z+LtSWgqflkc=;
+        b=swK7JBWJU9qO9UYIiQvZkXAaYwjN7/ERebzjY/ih53oRz82uFmj4E4qMiogxysGEFN
+         ppe5pptBiZ1s6dcBrToqvgTVYYA62Rhatw7ASixVulhd5VBJMXQS4kNAkGufkZb4m3Cg
+         82huZq+yltBduM/hDvph7zXuU/xk5JWX9pDdbOY2ygwukgQnj7a77JCrrZm7XaTCDf4D
+         8vuzssRnIgIiY2W58TpjxPIZlmrunY9a7b4Y5pS0nBQq7HOySmrDfRH3SxieJdwyWilJ
+         a9KLfUb8lwGs71OOwFZuW+MiDj6RP3OtRPkk3hLSzH9PyGl3P19JhuwhsKaZjWgkrLIM
+         VGDg==
+X-Gm-Message-State: AOAM532WspZLY5MlvVtyinx/U4vurOMX2a+3hWG3yVQ2VgOMUIUnR+gu
+        KDMtXUel6YnQwlPJ7tb0GJQVKoghQpNS0GIXAOM=
+X-Google-Smtp-Source: ABdhPJzNK3OvXGnwUMifX5fOt7Y8Kkq0tBzsOGNOWpg36vArYV7bZaW7nP8Zit8FiWvO5BxtAJQIh5Arj6jUqpSSPHc=
+X-Received: by 2002:a92:d990:: with SMTP id r16mr290889iln.10.1610990790846;
+ Mon, 18 Jan 2021 09:26:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
+ <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
+ <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
+ <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
+ <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
+ <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
+ <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
+ <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
+ <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
+ <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
+ <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
+ <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
+ <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
+ <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com> <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
+In-Reply-To: <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 18 Jan 2021 18:26:19 +0100
+Message-ID: <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
+Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is printed during kernel boot, match it with other supported x86 cpus.
-    [    0.000000] KERNEL supported cpus:
-    [    0.000000]   Intel GenuineIntel
-    [    0.000000]   AMD AuthenticAMD
-    [    0.000000]   Hygon HygonGenuine
-    [    0.000000]   Centaur CentaurHauls
-    [    0.000000]   zhaoxin   Shanghai
+On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
+> >
+> > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > [ big snip ]
+> >
+> > [More snippage.]
+> >
+> > > [ CC Fangrui ]
+> > >
+> > > With the attached...
+> > >
+> > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+> > > undefined symbols
+> > >
+> > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
+> > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
+> > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
+> > >
+> > Thanks for confirming that this works with the above patch.
+> >
+> > > @ Bill Nick Sami Nathan
+> > >
+> > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
+> >
+> > The integrated assembler and this option are more-or-less orthogonal
+> > to each other. One can still use the GNU assembler with PGO. If you're
+> > having an issue, it may be related to ClangBuiltLinux issue #1250.
+> >
+> > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
+> > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
+> > >
+> > I know Nick did several tests with PGO. He may have looked into it
+> > already, but we can check.
+> >
+>
+> Reproducible.
+>
+> LLVM_IAS=1 + DWARF5 = Not bootable
+>
+> I will try:
+>
+> LLVM_IAS=1 + DWARF4
+>
 
-Signed-off-by: Isaac Chen <tingyi364@gmail.com>
----
- arch/x86/kernel/cpu/zhaoxin.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I was not able to boot into such a built Linux-kernel.
 
-diff --git a/arch/x86/kernel/cpu/zhaoxin.c b/arch/x86/kernel/cpu/zhaoxin.c
-index 05fa4ef63490..f155bbd2aa97 100644
---- a/arch/x86/kernel/cpu/zhaoxin.c
-+++ b/arch/x86/kernel/cpu/zhaoxin.c
-@@ -120,8 +120,8 @@ zhaoxin_size_cache(struct cpuinfo_x86 *c, unsigned int size)
- #endif
- 
- static const struct cpu_dev zhaoxin_cpu_dev = {
--	.c_vendor	= "zhaoxin",
--	.c_ident	= { "  Shanghai  " },
-+	.c_vendor	= "Zhaoxin",
-+	.c_ident	= { "Shanghai" },
- 	.c_early_init	= early_init_zhaoxin,
- 	.c_init		= init_zhaoxin,
- #ifdef CONFIG_X86_32
--- 
-2.27.0
+For me worked: DWARF2 and LLVM_IAS=1 *not* set.
 
+Of course, this could be an issue with my system's LLVM/Clang.
+
+Debian clang version
+12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
+
+Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
+and especially CONFIG_DEBUG_INFO_DWARF5=y?
+Success means I was able to boot in QEMU and/or bare metal.
+
+Thanks.
+
+Regards,
+- Sedat -
+
+>
+> > > I would like to know what the impact of the Clang's Integrated
+> > > Assembler and DWARF v5 are.
+> > >
+> > > I dropped both means...
+> > >
+> > > 1. Do not pass "LLVM_IAS=1" to make.
+> > > 2. Use default DWARF v2 (with Nick's patchset: CONFIG_DEBUG_INFO_DWARF2=y).
+> > >
+> > > ...for a successfull build and boot on bare metal.
+> > >
+> >
+> > [Next message]
+> >
+> > > On each rebuild I need to pass to make ...?
+> > >
+> > >   LLVM=1 -fprofile-use=vmlinux.profdata
+> > >
+> > Yes.
+> >
+> > > Did you try together with passing LLVM_IAS=1 to make?
+> >
+> > One of my tests was with the integrated assembler enabled. Are you
+> > finding issues with it?
+> >
+> > The problem with using top-of-tree clang is that it's not necessarily
+> > stable. You could try using the clang 11.x release (changing the
+> > "CLANG_VERSION >= 120000" in kernel/pgo/Kconfig/ to "CLANG_VERSION >=
+> > 110000").
+> >
+> > -bw
