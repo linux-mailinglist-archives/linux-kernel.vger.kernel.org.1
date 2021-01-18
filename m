@@ -2,157 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947AF2FA11B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBA52FA11C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392113AbhARNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:17:24 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11555 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392072AbhARNRP (ORCPT
+        id S2404354AbhARNRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:17:31 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13953 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391494AbhARNRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:17:15 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DKC1r5CHCzMLqq;
-        Mon, 18 Jan 2021 21:14:56 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 18 Jan 2021 21:16:09 +0800
-Subject: Re: [PATCH v2 2/2] vfio/iommu_type1: Sanity check pfn_list when
- remove vfio_dma
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20210115092643.728-1-zhukeqian1@huawei.com>
- <20210115092643.728-3-zhukeqian1@huawei.com>
- <20210115121447.54c96857@omen.home.shazbot.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <32f8b347-587a-1a9a-bee8-569f09a03a15@huawei.com>
-Date:   Mon, 18 Jan 2021 21:16:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 18 Jan 2021 08:17:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60058a220000>; Mon, 18 Jan 2021 05:16:18 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 18 Jan 2021 13:16:11 +0000
+Date:   Mon, 18 Jan 2021 15:16:08 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+CC:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        <daniel.vetter@ffwll.ch>, <sam@ravnborg.org>,
+        <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: Change eats memory on my server
+Message-ID: <20210118131608.GA50817@mtl-vdi-166.wap.labs.mlnx>
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+ <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+ <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210115121447.54c96857@omen.home.shazbot.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610975778; bh=l3l11JUxFpok5jfXeALrLtW4EEP/3cDQ3PHNG0KaDhY=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=jRrqMxhJ7q0y5UDTfh7isRbwgK1CaJpORosmdB/dQkPQaFgD/oUEY8jPFgDEeOVtT
+         wdtvCaCdzFpjaKCfn+Gt+klO/xSrRBnSTiLYHQCJzJBh3K/SbVIl1etE9NSSt5grcJ
+         iTDOGy0vmqj3aWfXVch/KFSnIK+l2b2amsODD/rHGTWrn8WciTIkmRUHps/eSZlT8I
+         mj2L3J698a1juj4nwXSBg0+OUyhtQgXD0F0KU7lHfa/iRpMjYF/31gGQE45UUWMXFX
+         kII/By6CXb5GkleFF4+sI+8p3CV26v39Uo7jp5UlHKgbTPR2Is7Fe4Or6givSx1Ax/
+         T2wMkU8G23cog==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 18, 2021 at 10:30:56AM +0100, Thomas Zimmermann wrote:
+> 
+> Here's the patch against the latest DRM tree. v5.11-rc3 should work as well.
+> 
+> I was able to reproduce the memory leak locally and found that the patch
+> fixes it. Please give it a try.
+> 
 
+As far as I am concerned, this issue is fixed by the patch you sent.
 
-On 2021/1/16 3:14, Alex Williamson wrote:
-> On Fri, 15 Jan 2021 17:26:43 +0800
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> 
->> vfio_sanity_check_pfn_list() is used to check whether pfn_list of
->> vfio_dma is empty when remove the external domain, so it makes a
->> wrong assumption that only external domain will add pfn to dma pfn_list.
->>
->> Now we apply this check when remove a specific vfio_dma and extract
->> the notifier check just for external domain.
-> 
-> The page pinning interface is gated by having a notifier registered for
-> unmaps, therefore non-external domains would also need to register a
-> notifier.  There's currently no other way to add entries to the
-> pfn_list.  So if we allow pinning for such domains, then it's wrong to
-> WARN_ON() when the notifier list is not-empty when removing an external
-> domain.  Long term we should probably extend page {un}pinning for the
-> caller to pass their notifier to be validated against the notifier list
-> rather than just allowing page pinning if *any* notifier is registered.
-> Thanks,
-I was misled by the code comments. So when the commit a54eb55045ae is added, the only
-user of pin interface is mdev vendor driver, but now we also allow iommu backed group
-to use this interface to constraint dirty scope. Is vfio_iommu_unmap_unpin_all() a
-proper place to put this WARN()?
+Thanks for looking into it.
 
-Thanks,
-Keqian
-
-> 
-> Alex
->  
->> Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  drivers/vfio/vfio_iommu_type1.c | 24 +++++-------------------
->>  1 file changed, 5 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 4e82b9a3440f..a9bc15e84a4e 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -958,6 +958,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
->>  
->>  static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
->>  {
->> +	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list);
->>  	vfio_unmap_unpin(iommu, dma, true);
->>  	vfio_unlink_dma(iommu, dma);
->>  	put_task_struct(dma->task);
->> @@ -2251,23 +2252,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
->>  	}
->>  }
->>  
->> -static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
->> -{
->> -	struct rb_node *n;
->> -
->> -	n = rb_first(&iommu->dma_list);
->> -	for (; n; n = rb_next(n)) {
->> -		struct vfio_dma *dma;
->> -
->> -		dma = rb_entry(n, struct vfio_dma, node);
->> -
->> -		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
->> -			break;
->> -	}
->> -	/* mdev vendor driver must unregister notifier */
->> -	WARN_ON(iommu->notifier.head);
->> -}
->> -
->>  /*
->>   * Called when a domain is removed in detach. It is possible that
->>   * the removed domain decided the iova aperture window. Modify the
->> @@ -2367,7 +2351,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>  			kfree(group);
->>  
->>  			if (list_empty(&iommu->external_domain->group_list)) {
->> -				vfio_sanity_check_pfn_list(iommu);
->> +				/* mdev vendor driver must unregister notifier */
->> +				WARN_ON(iommu->notifier.head);
->>  
->>  				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
->>  					vfio_iommu_unmap_unpin_all(iommu);
->> @@ -2491,7 +2476,8 @@ static void vfio_iommu_type1_release(void *iommu_data)
->>  
->>  	if (iommu->external_domain) {
->>  		vfio_release_domain(iommu->external_domain, true);
->> -		vfio_sanity_check_pfn_list(iommu);
->> +		/* mdev vendor driver must unregister notifier */
->> +		WARN_ON(iommu->notifier.head);
->>  		kfree(iommu->external_domain);
->>  	}
->>  
-> 
-> .
-> 
+Eli
