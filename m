@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D406A2F9EF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89202F9F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403820AbhARL7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:59:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
+        id S2391324AbhARMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:03:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390907AbhARLqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A351122D6F;
-        Mon, 18 Jan 2021 11:46:17 +0000 (UTC)
+        id S2390754AbhARLql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B90122D49;
+        Mon, 18 Jan 2021 11:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970378;
-        bh=4RkIzTO63mVOllbmZosH6X5tOFnqqnOdptqyXrq7G/c=;
+        s=korg; t=1610970382;
+        bh=jqKKOIQu7nkASQX8/yU0m63PngIdCOEBu10esmCG7wg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qG62kmbXLXFciStGuIwjjDK1b/AJEwZvLB0iZgAd4VVFR2qHfyt0DofMSAo2YPBgZ
-         UhMZhnPqP4ZyOVqSsx1yISVX7Ii3lesY0BMWvV/RtSMaqLo7hdmzhLernYE6RCOakv
-         g7Wlvi0A9epjeSokoOt3DTYgS9+5+IYfp3ZdnRHU=
+        b=mTfOIxA6Y2GV8qp9r0Rhq1F9LqtJUN0TvtbXRuGmSOpJXCXEb/WgorouhSFlS63Bz
+         4jKEiNl9zdTjNa1riDv4XVE19k5pemWwASzj32w53iJxJ6gL2eqnpa/Vf/hHv/cVdS
+         uH2tJO7Udc/nUEmU7E1qc2n9MuOSq4pVtJRsQdyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 137/152] IB/mlx5: Fix error unwinding when set_has_smi_cap fails
-Date:   Mon, 18 Jan 2021 12:35:12 +0100
-Message-Id: <20210118113359.289754282@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 139/152] dm zoned: select CONFIG_CRC32
+Date:   Mon, 18 Jan 2021 12:35:14 +0100
+Message-Id: <20210118113359.384198731@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -40,34 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 2cb091f6293df898b47f4e0f2e54324e2bbaf816 upstream.
+commit b690bd546b227c32b860dae985a18bed8aa946fe upstream.
 
-When set_has_smi_cap() fails, multiport master cleanup is missed. Fix it
-by doing the correct error unwinding goto.
+Without crc32 support, this driver fails to link:
 
-Fixes: a989ea01cb10 ("RDMA/mlx5: Move SMI caps logic")
-Link: https://lore.kernel.org/r/20210113121703.559778-3-leon@kernel.org
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_write_sb':
+dm-zoned-metadata.c:(.text+0xe98): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_check_sb':
+dm-zoned-metadata.c:(.text+0x7978): undefined reference to `crc32_le'
+
+Fixes: 3b1a94c88b79 ("dm zoned: drive-managed zoned block device target")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/hw/mlx5/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3950,7 +3950,7 @@ static int mlx5_ib_stage_init_init(struc
- 
- 	err = set_has_smi_cap(dev);
- 	if (err)
--		return err;
-+		goto err_mp;
- 
- 	if (!mlx5_core_mp_enabled(mdev)) {
- 		for (i = 1; i <= dev->num_ports; i++) {
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -602,6 +602,7 @@ config DM_ZONED
+ 	tristate "Drive-managed zoned block device target support"
+ 	depends on BLK_DEV_DM
+ 	depends on BLK_DEV_ZONED
++	select CRC32
+ 	help
+ 	  This device-mapper target takes a host-managed or host-aware zoned
+ 	  block device and exposes most of its capacity as a regular block
 
 
