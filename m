@@ -2,162 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03962FADB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88292FADB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404278AbhARXL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 18:11:29 -0500
-Received: from mx.socionext.com ([202.248.49.38]:16450 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730151AbhARXLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 18:11:24 -0500
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 19 Jan 2021 08:10:41 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id CA473205902B;
-        Tue, 19 Jan 2021 08:10:41 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 19 Jan 2021 08:10:41 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 7D774B1D40;
-        Tue, 19 Jan 2021 08:10:41 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Rob Herring <robh@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v2] PCI: designware-ep: Fix the reference to pci->num_{ib,ob}_windows before setting
-Date:   Tue, 19 Jan 2021 08:10:39 +0900
-Message-Id: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
+        id S1732854AbhARXYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 18:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730272AbhARXX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 18:23:59 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26BAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:23:18 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id h4so20309006qkk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:23:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DBvkANnsASxNzW1l4kG04pLbjkG68+3VpEAecnZNaSA=;
+        b=XDm097mldCjKNGSrByLQ0T7F7N9MUkOW49lOtt+kzwDNZ2vn4ZgGt98sJsHoiJ3PpD
+         2CXsO7iCz4GOUKGp9omKhzptoX41tdKD6/5rs2JGStmHiEToMK7YhljMwGSseW/5AE90
+         XstktZpNsBNFrtASn1vL3HMq0VTMQuDCvjA+XdLcoFpGFFxQzwng/2E6vWxw6e9RBR8G
+         zClNzhSTKcv1ZfWBnxNK+4jZZpVfVlw35nDG5JWBKP0t1DwKyitaS2E+w0Ax/k0aKbMp
+         Jm8ZsVWhgvy89C3mx6/elomre4rUs6JhYdw6+ANB0C6h/HJ35BGQ6XZ+vamtnavlOSt2
+         fUNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DBvkANnsASxNzW1l4kG04pLbjkG68+3VpEAecnZNaSA=;
+        b=XShhzznSl8MpsT0pZKocbwXtVvQ70Yao+nKccpI/WVDsZMpRswHHfSvDRdknjgbKZG
+         seqUcMJqXXS2rRCvPN1X0zjEu8HvD8S8TNIEVMnsTqiishd9d3iTZRQc71Y7QpSRHBuM
+         GTTrOjMMI+eC4/a6SbO9EzVdFuJRZ7y4nUnvjQsrMlCKEXMZdLedSL5HMzTBjJ0nVzMI
+         dm/z5+lMO2fvqhFhlFovbdwTrQ1qsYE/xUiXX1BegfXubjp2Z9KHQW/QsYAy2pIQ18bF
+         eGTMWFu9sgSBlxbzeHPFxzEIuILY7yQQtbDXlTve4zOOGaAmCQpvnZSaXL57Fz6fizOE
+         +fXw==
+X-Gm-Message-State: AOAM5336MJgZoeDpRAoEFy2v5jnEbVABQjpFEE34ze028OXAU6EKesPD
+        /myXA4o22NmBR6UWnm/k5dRmIrfZT1ClvUGFnx9d8w==
+X-Google-Smtp-Source: ABdhPJxUVtLZ5wlXdNBM3SyiUYqA8bQPWf2PF9ARLTVL4xSRF3Uvs7Olys7HhET4W8YekMTWVyI4yCY7mD9ViPLhu0A=
+X-Received: by 2002:a37:68e:: with SMTP id 136mr1897310qkg.121.1611012197723;
+ Mon, 18 Jan 2021 15:23:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20210118224659.263928-1-zzyiwei@android.com>
+In-Reply-To: <20210118224659.263928-1-zzyiwei@android.com>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Mon, 18 Jan 2021 15:23:07 -0800
+Message-ID: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
+Subject: Re: [PATCH] Track total GPU memory for virtio driver
+To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") gets
-the values of pci->num_ib_windows and pci->num_ob_windows from iATU
-registers instead of DT properties in dw_pcie_iatu_detect_regions*() or its
-unroll version.
+On Mon, Jan 18, 2021 at 2:47 PM Yiwei Zhang <zzyiwei@android.com> wrote:
+>
+> On the success of virtio_gpu_object_create, add size of newly allocated
+> bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
+> bo lost its last refcount, subtract the bo size from the tracked
+> total_mem if the original underlying memory allocation is successful.
+>
+> Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> ---
+>  drivers/gpu/drm/virtio/Kconfig          |  1 +
+>  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
+>  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
+>  3 files changed, 24 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+> index b925b8b1da16..e103b7e883b1 100644
+> --- a/drivers/gpu/drm/virtio/Kconfig
+> +++ b/drivers/gpu/drm/virtio/Kconfig
+> @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+>         select DRM_KMS_HELPER
+>         select DRM_GEM_SHMEM_HELPER
+>         select VIRTIO_DMA_SHARED_BUFFER
+> +       select TRACE_GPU_MEM
+>         help
+>            This is the virtual GPU driver for virtio.  It can be used with
+>            QEMU based VMMs (like KVM or Xen).
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> index 6a232553c99b..7c60e7486bc4 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> @@ -249,6 +249,10 @@ struct virtio_gpu_device {
+>         spinlock_t resource_export_lock;
+>         /* protects map state and host_visible_mm */
+>         spinlock_t host_visible_lock;
+> +
+> +#ifdef CONFIG_TRACE_GPU_MEM
+> +       atomic64_t total_mem;
+> +#endif
+>  };
+>
+>  struct virtio_gpu_fpriv {
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+> index d69a5b6da553..1e16226cebbe 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> @@ -25,12 +25,29 @@
+>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/moduleparam.h>
+> +#ifdef CONFIG_TRACE_GPU_MEM
+> +#include <trace/events/gpu_mem.h>
+> +#endif
+>
+>  #include "virtgpu_drv.h"
+>
+>  static int virtio_gpu_virglrenderer_workaround = 1;
+>  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+>
+> +#ifdef CONFIG_TRACE_GPU_MEM
+> +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
+> +                                             s64 delta)
+> +{
+> +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
+> +
+> +       trace_gpu_mem_total(0, 0, total_mem);
+> +}
+> +#else
+> +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
+> +{
+> +}
+> +#endif
+> +
+>  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+>  {
+>         if (virtio_gpu_virglrenderer_workaround) {
+> @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+>         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+>
+>         if (bo->created) {
+> +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+>                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+>                 virtio_gpu_notify(vgdev);
+>                 /* completion handler calls virtio_gpu_cleanup_object() */
+> @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+>                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+>         }
+>
+> +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+>         *bo_ptr = bo;
+>         return 0;
+>
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
 
-However, before the values are set, the allocations in dw_pcie_ep_init()
-refer them to determine the sizes of window_map. As a result, null pointer
-dereference exception will occur when linking the EP function and the
-controller.
-
-  # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
-  Unable to handle kernel NULL pointer dereference at virtual address
-  0000000000000010
-
-The call trace is as follows:
-
-  Call trace:
-   _find_next_bit.constprop.1+0xc/0x88
-   dw_pcie_ep_set_bar+0x78/0x1f8
-   pci_epc_set_bar+0x9c/0xe8
-   pci_epf_test_core_init+0xe8/0x220
-   pci_epf_test_bind+0x1e0/0x378
-   pci_epf_bind+0x54/0xb0
-   pci_epc_epf_link+0x58/0x80
-   configfs_symlink+0x1c0/0x570
-   vfs_symlink+0xdc/0x198
-   do_symlinkat+0xa0/0x110
-   __arm64_sys_symlinkat+0x28/0x38
-   el0_svc_common+0x84/0x1a0
-   do_el0_svc+0x38/0x88
-   el0_svc+0x1c/0x28
-   el0_sync_handler+0x88/0xb0
-   el0_sync+0x140/0x180
-
-The pci->num_{ib,ob}_windows should be referenced after they are set by
-dw_pcie_iatu_detect_regions*() called from dw_pcie_setup().
-
-Cc: Rob Herring <robh@kernel.org>
-Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- drivers/pci/controller/dwc/pcie-designware-ep.c | 41 ++++++++++++-------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
-
-Changed since v1:
-- Add description of exception to commit message
-- Change the subject
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index bcd1cd9..adc7ca5 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -638,6 +638,7 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
- int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-+	struct device *dev = pci->dev;
- 	unsigned int offset;
- 	unsigned int nbars;
- 	u8 hdr_type;
-@@ -669,6 +670,25 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- 	dw_pcie_setup(pci);
- 	dw_pcie_dbi_ro_wr_dis(pci);
- 
-+	ep->ib_window_map = devm_kcalloc(dev,
-+					 BITS_TO_LONGS(pci->num_ib_windows),
-+					 sizeof(long),
-+					 GFP_KERNEL);
-+	if (!ep->ib_window_map)
-+		return -ENOMEM;
-+
-+	ep->ob_window_map = devm_kcalloc(dev,
-+					 BITS_TO_LONGS(pci->num_ob_windows),
-+					 sizeof(long),
-+					 GFP_KERNEL);
-+	if (!ep->ob_window_map)
-+		return -ENOMEM;
-+
-+	ep->outbound_addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
-+			    GFP_KERNEL);
-+	if (!ep->outbound_addr)
-+		return -ENOMEM;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
-@@ -676,7 +696,6 @@ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
- int dw_pcie_ep_init(struct dw_pcie_ep *ep)
- {
- 	int ret;
--	void *addr;
- 	u8 func_no;
- 	struct resource *res;
- 	struct pci_epc *epc;
-@@ -714,26 +733,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
- 	ep->phys_base = res->start;
- 	ep->addr_size = resource_size(res);
- 
--	ep->ib_window_map = devm_kcalloc(dev,
--					 BITS_TO_LONGS(pci->num_ib_windows),
--					 sizeof(long),
--					 GFP_KERNEL);
--	if (!ep->ib_window_map)
--		return -ENOMEM;
--
--	ep->ob_window_map = devm_kcalloc(dev,
--					 BITS_TO_LONGS(pci->num_ob_windows),
--					 sizeof(long),
--					 GFP_KERNEL);
--	if (!ep->ob_window_map)
--		return -ENOMEM;
--
--	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
--			    GFP_KERNEL);
--	if (!addr)
--		return -ENOMEM;
--	ep->outbound_addr = addr;
--
- 	if (pci->link_gen < 1)
- 		pci->link_gen = of_pci_get_max_link_speed(np);
- 
--- 
-2.7.4
-
+-CC android-kernel-team@google.com
++CC kernel-team@android.com
