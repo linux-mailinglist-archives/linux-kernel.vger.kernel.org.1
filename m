@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8462F9B5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAF52F9B5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387858AbhARIe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        id S2387900AbhARIhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbhARIeo (ORCPT
+        with ESMTP id S2387720AbhARIhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:34:44 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD621C061573;
-        Mon, 18 Jan 2021 00:34:03 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id x23so17278875lji.7;
-        Mon, 18 Jan 2021 00:34:03 -0800 (PST)
+        Mon, 18 Jan 2021 03:37:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58779C061573;
+        Mon, 18 Jan 2021 00:36:22 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id e9so4089518plh.3;
+        Mon, 18 Jan 2021 00:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NxbXFKF94p6kEsRAtmd8BKyy9JENwa9sivc+ZAodEKA=;
-        b=A2RSX4y2LmMv6mR7pwlrf3u6T3rGFBse1drQ3xjZKsSLH2Wb5CBopN0Tdz9y8eXBQP
-         kAFWmHreQYGoFj+NYj3SHu6ce3tYIQMekoexo1meFdbwptfhfM44+l3RDgA7JQVVFEbd
-         8bm9FjCb8rzH8w6Ew8sijtTEYsfyzOoNBPxcVvAu7mrpZWtqwzqevN5S6qSYBg1m8vSL
-         piLsmxcfauKP/oTrw8wu7xtJD0MddqhyzJ7iqkN/jZNRUm4Y6LM8YY3jEduWM49lnYIg
-         /bsJ++4LJSwhCDav/DwNlIbCiYP3FuEBFqfOiYvEHZqXoJGeItOcb1YzywOHWuhz1nuI
-         d4KA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QCCyHU2zDMLrImBBL+/S28Nlgaq/M9LMxN1voLK5Ag8=;
+        b=Ii48X1Br+3Xd3OjdEn1IO2Ko2V6sKOYzCTUMxqYjIb7CS0M5vfjx8rsGlA1PbnHOiB
+         I102wbgyMfVIub9wLwcn8L9sXhBwNIkn5daeDlRTr2IljmwNHv6UeB2mj0Km4wnoK3Ba
+         k205DXWeuNj5kNfwl5pi185Y+FxYjRXNCf59nmFgRSsLqVZiDgIzpEmlsPPKIWutX1e3
+         TDZKGMll11ZrqxjZWlh4ftn6coP3LlfxzJtD8NVFzoPPMdkdGWr48tUbCVOHDD0l9+8/
+         dPKiesz3wr6/wY9NLVgAfvbXm31xS6e8V9r8lGmwXHT6HyZhLzTFT7FuHdBePh+R7c6Z
+         rlMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NxbXFKF94p6kEsRAtmd8BKyy9JENwa9sivc+ZAodEKA=;
-        b=ema9lq1Tvx5TAG8zNbtYzZ3D2gq3NkXKEV96SoFrUYf8ZJ/FtkZAYKUTjDyW92Tpjf
-         380cN2IsRAj7fhnrrmGtSeF28nMmOXmVErvDtSPg+71lwj7gviKW3aY23QIwjjWy9Zie
-         apbNjc9nUez39/66+NXAo4MUPW/OGVyeSbrLzvVp3ZjGH1U/mjz5CO6+ef+FN1SiB8r/
-         EprgP8q/Y76jm64rF5n/WSlXd7PQA8C7Y9Jyxz0m/TSbkwGt65+aA7e7X2dGDzs33CmS
-         bBdFmqxGm33CMY4zpuvt1vBy9pD+7dpLFXJ+kBhXKeS3tgfsiBmfWNK1lHIKVmhQs6oP
-         Dzog==
-X-Gm-Message-State: AOAM531ZcjDh76hE22t2fZAMh6dQanG/0y+v3QUAXnzV3AoLNgxchQMv
-        kbeR1vVvbTXYtcasPR35vJITwwsRDB7ORprticg=
-X-Google-Smtp-Source: ABdhPJynqi6oTwFjkTNFUl1fP0igBITsisexmUdUKnImyJVj0NHltLH5ZKbkHMkITjIr3opjkpv5LEywTjJJTrhJ9R4=
-X-Received: by 2002:a2e:8e64:: with SMTP id t4mr10154052ljk.141.1610958842168;
- Mon, 18 Jan 2021 00:34:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QCCyHU2zDMLrImBBL+/S28Nlgaq/M9LMxN1voLK5Ag8=;
+        b=drmOwCVY3Vh08ivb+Fg5xKFSUJJ/MJrAPJ9+mb3GtbqtRQjmAjxGtU4y7GzmowCLyw
+         ZWeoDzd7qaD1BRwyZGgpuHp0utNPlMf5RrxohEDi+3tZKbDkrdXRsOqj8mQFA6G1tqCo
+         ATbFi39CIzEGUG7FQmN1VECmHK1yIwsRJQNDBLRtVVvHifZbhLok0NTWjutRCsRMgCMb
+         E7jGSxOrV7OppRe8MPlRKMwBc67kRfr5QRqr76Q8bHaM8fLPsJScq2jbzn2kpe8sEhcd
+         JSt/vZFOo5qOc8pHq9de5b0gsypoMjVHemkoO9mp8zaGVMLke8DtO3ry9rtIIRnkBEK7
+         4I2A==
+X-Gm-Message-State: AOAM5302ikBccFs9GqatBwTmdfaRVViBknOgGFmNUNiQasmG9FxkXfGq
+        j8z48kaB8sf/kx/lIJjNlvs=
+X-Google-Smtp-Source: ABdhPJzhnyfKfDpYekqRJ/gBZVac6GjK0/7PaBkqfjwCQmdhSagVa6namIAasOUBHZ/l2YryzriWtg==
+X-Received: by 2002:a17:90a:2947:: with SMTP id x7mr543656pjf.157.1610958982037;
+        Mon, 18 Jan 2021 00:36:22 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id e21sm15170528pgv.74.2021.01.18.00.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 00:36:21 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pali@kernel.org, huyue2@yulong.com, zhangwen@yulong.com,
+        zbestahu@163.com
+Subject: [PATCH] mmc: core: remove unused host parameter of mmc_sd_get_csd()
+Date:   Mon, 18 Jan 2021 16:35:39 +0800
+Message-Id: <20210118083539.183-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
- <1610720001-15300-2-git-send-email-u0084500@gmail.com> <1610898357.197444.1730305.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1610898357.197444.1730305.nullmailer@robh.at.kernel.org>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Mon, 18 Jan 2021 16:33:50 +0800
-Message-ID: <CADiBU3_pH3_=Dpi8auWTekBaev-ZF2WNPUZRzJEu8+pA0Lk18w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb typec: tcpci: mt6360: Add vbus supply into
- dt-binding description
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        Rob Herring <robh+dt@kernel.org>, gene_chen@richtek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Linux USB List <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8817=E6=97=A5 =
-=E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=8811:46=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, 15 Jan 2021 22:13:21 +0800, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > Add external vbus source into dt-binding description.
-> >
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml | 7 ++=
-+++++
-> >  1 file changed, 7 insertions(+)
-> >
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/=
-mediatek,mt6360-tcpc.yaml: properties:vbus-supply: 'maxItems' is not one of=
- ['description', 'deprecated']
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/=
-mediatek,mt6360-tcpc.yaml: ignoring, error in schema: properties: vbus-supp=
-ly
-> warning: no schema found in file: ./Documentation/devicetree/bindings/usb=
-/mediatek,mt6360-tcpc.yaml
->
-> See https://patchwork.ozlabs.org/patch/1427073
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
-Thanks, after I re-installed the yamlint, the error can be seen.
-Refer to https://www.kernel.org/doc/Documentation/devicetree/bindings/examp=
-le-schema.yaml
-*-supply is only a phandle
+From: Yue Hu <huyue2@yulong.com>
 
-In next series patch, I'll remove the maxItems in vbus-supply.
-I already checked the below change. make dt_binding_check can be passed
+The host parameter host is not used in the body of mmc_sd_get_csd(),
+so let's remove it. Also update related code.
 
-   vbus-supply:
-     description:
-       Vbus source supply regulator.
--    maxItems: 1
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/core/sd.c   | 4 ++--
+ drivers/mmc/core/sd.h   | 2 +-
+ drivers/mmc/core/sdio.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-   connector:
-     type: object
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 6f054c4..6fa51a6 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -860,7 +860,7 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
+ 	return err;
+ }
+ 
+-int mmc_sd_get_csd(struct mmc_host *host, struct mmc_card *card)
++int mmc_sd_get_csd(struct mmc_card *card)
+ {
+ 	int err;
+ 
+@@ -1046,7 +1046,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 	}
+ 
+ 	if (!oldcard) {
+-		err = mmc_sd_get_csd(host, card);
++		err = mmc_sd_get_csd(card);
+ 		if (err)
+ 			goto free_card;
+ 
+diff --git a/drivers/mmc/core/sd.h b/drivers/mmc/core/sd.h
+index 497c026..1af5a03 100644
+--- a/drivers/mmc/core/sd.h
++++ b/drivers/mmc/core/sd.h
+@@ -10,7 +10,7 @@
+ struct mmc_card;
+ 
+ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr);
+-int mmc_sd_get_csd(struct mmc_host *host, struct mmc_card *card);
++int mmc_sd_get_csd(struct mmc_card *card);
+ void mmc_decode_cid(struct mmc_card *card);
+ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
+ 	bool reinit);
+diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+index 694a212..0fda778 100644
+--- a/drivers/mmc/core/sdio.c
++++ b/drivers/mmc/core/sdio.c
+@@ -751,7 +751,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
+ 	 * Read CSD, before selecting the card
+ 	 */
+ 	if (!oldcard && card->type == MMC_TYPE_SD_COMBO) {
+-		err = mmc_sd_get_csd(host, card);
++		err = mmc_sd_get_csd(card);
+ 		if (err)
+ 			goto remove;
+ 
+-- 
+1.9.1
+
