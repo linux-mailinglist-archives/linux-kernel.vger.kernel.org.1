@@ -2,158 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AD22FA047
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3E52FA045
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391942AbhARMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404070AbhARMjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:39:55 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA48BC061573;
-        Mon, 18 Jan 2021 04:39:13 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id e22so32431953iom.5;
-        Mon, 18 Jan 2021 04:39:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=/0ekt6oq+WlNqCRvHUlDFjjWLqrVQZ0WTiXLJub6TII=;
-        b=EuJrgbYOcyXpDYrS4gzh38ZbG5H31XHAgl/f+bwdQYi02raaP0x2yOu6thClppbaGe
-         176k2GtIJQRIuIclnFzmJSRQdqDlHVKvhReRhVrbV1zX7HH2N2wESKsI5hqjhK+XJojE
-         9/yxOMvHX3lSwzATnj5aThd5cuieVDGQp1+eDFc63NldL0Zkxig1aGSNpnt4CvODWPxs
-         R5Dtcl1cXF9rLBYFlUKGUcuqSuZbMHPCFCMNSNnRkfWZ95LuPgUXyFoAHZMxTBPsupdU
-         N3Fual2nqFL6cSPLndFT5VlETMfoO8fussQJymQ0ZdKP6TEEwLlzHVdmc2WDFuE5VsFV
-         DtZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=/0ekt6oq+WlNqCRvHUlDFjjWLqrVQZ0WTiXLJub6TII=;
-        b=nnR7oelH22vb1zr+Z1xyG4xeUp9M2Ux9H7nQPiKJSqhBLn1phMPVsoDBw3mr5cTJmT
-         N95YDFHop30F+gWWrEGYiDDVPlYS/me/IOYhEzFZ7yHsV+6ptcgnDqpkMfl9NHlBsZL9
-         qwy6rCs03Z/FH91qTTz1t1Jj+SGiYYWgDVoQ58UUUcvgPhzoa3cQwnJW3lgozhkwmZeT
-         GeW2bylM92P+riuY698KY1+kL3OizjvHFlM5yY8kUyLSeaWc4E7dnfSLGV/gu+XFeDA+
-         Rp1U20KSOGua7K0VsX4jTKN0BXReBvT7CCwd7WSdpl9DE8mbqq6crapLNvLyWbFq+B3L
-         ExoA==
-X-Gm-Message-State: AOAM530OB5XFTyiaBMzo01Lf3aiGxVDwPWUyhSknn12xkSNFzbDlUg04
-        mGJTqPfZdkKg1Y11oAMVTUN8GVq7FvMLc++kTxxXtnqiA1GFHw==
-X-Google-Smtp-Source: ABdhPJyKFkgMRRtDcUlteA7Z7Cb43j3RGyiiF4/1dj6xu/OkHFbEaMvPpMtTWNcJqIXXEtubJXeZ02fXeaYlgg9oMmE=
-X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr6888410ilq.112.1610973553097;
- Mon, 18 Jan 2021 04:39:13 -0800 (PST)
+        id S2391861AbhARMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:45:49 -0500
+Received: from mga12.intel.com ([192.55.52.136]:25171 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404134AbhARMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:40:29 -0500
+IronPort-SDR: MRx95v8s+VqhFX3Pd4CWSsBOzZFfoMRD7HhvjYzcbU1EV8kcS74IRS9f7KpzoC8NTlbFrHtfib
+ viJT3+CymR/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="157977409"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="157977409"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 04:38:43 -0800
+IronPort-SDR: WMRsZG1MOufHvxOoZIIgcqAuj1XaPWgqLN7+7YCCwfZF8XPmtUTbFJb5X8yV9VJQ6s/PPMdjJc
+ Vq/KEtLrm6Tw==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="466359027"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 04:38:38 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1Toq-00285s-4i; Mon, 18 Jan 2021 14:39:40 +0200
+Date:   Mon, 18 Jan 2021 14:39:40 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 3/7] i2c: i2c-core-base: Use format macro in
+ i2c_dev_set_name()
+Message-ID: <20210118123940.GG4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-4-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
- <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
- <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
- <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
- <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
- <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
- <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
- <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
- <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
- <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
- <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
- <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com> <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
-In-Reply-To: <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 18 Jan 2021 13:39:01 +0100
-Message-ID: <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210118003428.568892-4-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
->
-> On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > [ big snip ]
->
-> [More snippage.]
->
-> > [ CC Fangrui ]
-> >
-> > With the attached...
-> >
-> >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
-> > undefined symbols
-> >
-> > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
-> > For details see ClangBuiltLinux issue #1250 "Unknown symbol
-> > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
-> >
-> Thanks for confirming that this works with the above patch.
->
-> > @ Bill Nick Sami Nathan
-> >
-> > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
->
-> The integrated assembler and this option are more-or-less orthogonal
-> to each other. One can still use the GNU assembler with PGO. If you're
-> having an issue, it may be related to ClangBuiltLinux issue #1250.
->
-> > 2. Can you please try Nick's DWARF v5 support patchset v5 and
-> > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
-> >
-> I know Nick did several tests with PGO. He may have looked into it
-> already, but we can check.
->
+On Mon, Jan 18, 2021 at 12:34:24AM +0000, Daniel Scally wrote:
+> Some places in the kernel allow users to map resources to a device
+> using device name (for example, gpiod_lookup_table). Currently
 
-Reproducible.
+"...in the struct gpiod_lookup_table)." ?
 
-LLVM_IAS=1 + DWARF5 = Not bootable
+> this involves waiting for the i2c_client to have been registered so we
 
-I will try:
+I²C client ?
 
-LLVM_IAS=1 + DWARF4
+> can use dev_name(&client->dev). We want to add a function to allow users
+> to refer to an i2c device by name before it has been instantiated, so
 
-- Sedat -
+I²C device ?
 
-> > I would like to know what the impact of the Clang's Integrated
-> > Assembler and DWARF v5 are.
-> >
-> > I dropped both means...
-> >
-> > 1. Do not pass "LLVM_IAS=1" to make.
-> > 2. Use default DWARF v2 (with Nick's patchset: CONFIG_DEBUG_INFO_DWARF2=y).
-> >
-> > ...for a successfull build and boot on bare metal.
-> >
->
-> [Next message]
->
-> > On each rebuild I need to pass to make ...?
-> >
-> >   LLVM=1 -fprofile-use=vmlinux.profdata
-> >
-> Yes.
->
-> > Did you try together with passing LLVM_IAS=1 to make?
->
-> One of my tests was with the integrated assembler enabled. Are you
-> finding issues with it?
->
-> The problem with using top-of-tree clang is that it's not necessarily
-> stable. You could try using the clang 11.x release (changing the
-> "CLANG_VERSION >= 120000" in kernel/pgo/Kconfig/ to "CLANG_VERSION >=
-> 110000").
->
-> -bw
+> create a macro for the format that's accessible outside the i2c layer
+
+I²C layer ?
+
+> and use it in i2c_dev_set_name()
+
+Period at the end.
+
+For the record, I do not like wrapping below to 80 limit and agree with
+Wolfram.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> 	- Used format macro in i2c_dev_set_name() instead of sub func
+> 
+>  drivers/i2c/i2c-core-base.c | 4 ++--
+>  include/linux/i2c.h         | 3 +++
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 63ebf722a424..547b8926cac8 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -811,12 +811,12 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
+>  	struct acpi_device *adev = ACPI_COMPANION(&client->dev);
+>  
+>  	if (info && info->dev_name) {
+> -		dev_set_name(&client->dev, "i2c-%s", info->dev_name);
+> +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, info->dev_name);
+>  		return;
+>  	}
+>  
+>  	if (adev) {
+> -		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
+> +		dev_set_name(&client->dev, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
+>  		return;
+>  	}
+>  
+> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+> index 56622658b215..4d40a4b46810 100644
+> --- a/include/linux/i2c.h
+> +++ b/include/linux/i2c.h
+> @@ -39,6 +39,9 @@ enum i2c_slave_event;
+>  typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
+>  			      enum i2c_slave_event event, u8 *val);
+>  
+> +/* I2C Device Name Format - to maintain consistency outside the i2c layer */
+> +#define I2C_DEV_NAME_FORMAT		"i2c-%s"
+> +
+>  /* I2C Frequency Modes */
+>  #define I2C_MAX_STANDARD_MODE_FREQ	100000
+>  #define I2C_MAX_FAST_MODE_FREQ		400000
+> -- 
+> 2.25.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
