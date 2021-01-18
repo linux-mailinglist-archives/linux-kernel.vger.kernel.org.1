@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118CD2FA1C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531702FA22F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404554AbhARNhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:37:46 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:53275 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390795AbhARNeQ (ORCPT
+        id S2404016AbhARNwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:52:34 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50848 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392307AbhARNee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:34:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UM8ExIN_1610976801;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UM8ExIN_1610976801)
+        Mon, 18 Jan 2021 08:34:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UM8ExKs_1610976815;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UM8ExKs_1610976815)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Jan 2021 21:33:21 +0800
+          Mon, 18 Jan 2021 21:33:35 +0800
 From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 To:     Jarkko Sakkinen <jarkko@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -28,9 +28,9 @@ To:     Jarkko Sakkinen <jarkko@kernel.org>,
         linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
         Jia Zhang <zhang.jia@linux.alibaba.com>
 Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] selftests/x86: Simplify the code of getting vdso base address in sgx
-Date:   Mon, 18 Jan 2021 21:33:21 +0800
-Message-Id: <20210118133321.98655-1-tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] x86/sgx: Allows ioctl PROVISION to execute before CREATE
+Date:   Mon, 18 Jan 2021 21:33:35 +0800
+Message-Id: <20210118133335.98907-1-tianjia.zhang@linux.alibaba.com>
 X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,72 +38,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The base address of vDSO can be obtained through the library function
-`getauxval()`, so use `getauxval(AT_SYSINFO_EHDR)` instead of a custom
-implementation to simplify the code.
+In function sgx_encl_create(), the logic of directly assigning
+value to attributes_mask determines that the call to
+SGX_IOC_ENCLAVE_PROVISION must be after the command of
+SGX_IOC_ENCLAVE_CREATE. If change this assignment statement to
+or operation, the PROVISION command can be executed earlier and
+more flexibly.
 
 Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
 Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- tools/testing/selftests/sgx/main.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index 724cec700926..365d01dea67b 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -15,6 +15,7 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <sys/types.h>
-+#include <sys/auxv.h>
- #include "defines.h"
- #include "main.h"
- #include "../kselftest.h"
-@@ -28,24 +29,6 @@ struct vdso_symtab {
- 	Elf64_Word *elf_hashtab;
- };
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index f45957c05f69..0ca3fc238bc2 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -108,7 +108,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+ 	encl->base = secs->base;
+ 	encl->size = secs->size;
+ 	encl->attributes = secs->attributes;
+-	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
++	encl->attributes_mask |= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
  
--static void *vdso_get_base_addr(char *envp[])
--{
--	Elf64_auxv_t *auxv;
--	int i;
--
--	for (i = 0; envp[i]; i++)
--		;
--
--	auxv = (Elf64_auxv_t *)&envp[i + 1];
--
--	for (i = 0; auxv[i].a_type != AT_NULL; i++) {
--		if (auxv[i].a_type == AT_SYSINFO_EHDR)
--			return (void *)auxv[i].a_un.a_val;
--	}
--
--	return NULL;
--}
--
- static Elf64_Dyn *vdso_get_dyntab(void *addr)
- {
- 	Elf64_Ehdr *ehdr = addr;
-@@ -162,7 +145,7 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
- 	return 0;
- }
- 
--int main(int argc, char *argv[], char *envp[])
-+int main(int argc, char *argv[])
- {
- 	struct sgx_enclave_run run;
- 	struct vdso_symtab symtab;
-@@ -203,7 +186,8 @@ int main(int argc, char *argv[], char *envp[])
- 	memset(&run, 0, sizeof(run));
- 	run.tcs = encl.encl_base;
- 
--	addr = vdso_get_base_addr(envp);
-+	/* Get vDSO base address */
-+	addr = (void *)(uintptr_t)getauxval(AT_SYSINFO_EHDR);
- 	if (!addr)
- 		goto err;
- 
+ 	/* Set only after completion, as encl->lock has not been taken. */
+ 	set_bit(SGX_ENCL_CREATED, &encl->flags);
 -- 
 2.19.1.3.ge56e4f7
 
