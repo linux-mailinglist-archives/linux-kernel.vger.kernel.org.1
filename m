@@ -2,206 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8072FA871
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632152FA874
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436540AbhARSOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407322AbhARSNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:13:52 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23288C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:13:12 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id n6so3529850edt.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:13:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5/GffFuFlw745aos0mMDInR5/+1OnFdmMtYO+uUhg2M=;
-        b=hTBOE8IXg/WJQ66zFYSGvoGHUPozmXKncCOT8pMSlyRWR3asl6sIr+i04xA0dnIUHW
-         lDtKJ2YZk3ilWZuI6W0u4ENLb1IS7/WkylllRqeUq6PrSeVL4u+mvorhY/qpZwDKsV0p
-         Y3FfbzSgYt2xOjgFtn/Iamfk9kIT+eamju/PqffYfXK0VMnYP8x0/mQd/dCz+YZ3n5iI
-         i1ppUWdKHJowTuNTxR8zIfFI6FpK7y8a3DOkhVzS/ky9vFerw6Kd8zQ3hEYyunRPhf8R
-         /2UqS2KFtSF1IH6pvdEaqmpBaZ0Nz8mYhxSqFkHgq+3r70hU10wNtoiq0PPs9TyqjmcI
-         srAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5/GffFuFlw745aos0mMDInR5/+1OnFdmMtYO+uUhg2M=;
-        b=K58Avcci98mFwntY8sPbi7tCDy32ZYWjA0mQi7qhw1USRZuFlxNRbvafv7ay3Ucdt/
-         OdQ0PxmCMwC/MqJwOH8Yzr3Jnmik8IwaJyQQckFwVBdHbfvtnU0IuxsgGagJbV/bujEI
-         CICO3kNsOvEHRqOSheO/T0+v5lP/GItj0bbBn28eCq7KDokL5BuZJNBN39Ilxrntel/F
-         o6liLLaITv3iVgWcUNnbjYK6jnklEADXvroV4oggmPHiiT7I4bqzYI/ggd5FTdI5TynM
-         af5OYDp4qpWrZL2+w4AVw6bZaiofz6yRJBywksTPJsFugs5UJNSJnMT/O4fLqnRwaO8d
-         WGUA==
-X-Gm-Message-State: AOAM5337x4/16rUZrobXBiyY923cAqJtsV5g8ZcPHAsCL8fhVX+gbQJ6
-        uh5hikJNbh5h8+ryLEe5ebmmWNPMRVkM6KiYX+yccg==
-X-Google-Smtp-Source: ABdhPJzdNQQBYyQ0gl4tv1fQABCn+G+BKTLfUUbSb6c4hkGpkDFcC3Nue3bavrH7lklU+DAABx0KIFLa01lixsftE2g=
-X-Received: by 2002:a05:6402:60a:: with SMTP id n10mr539898edv.230.1610993590685;
- Mon, 18 Jan 2021 10:13:10 -0800 (PST)
+        id S2407299AbhARSOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:14:43 -0500
+Received: from mail-eopbgr40107.outbound.protection.outlook.com ([40.107.4.107]:8652
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2407462AbhARSOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:14:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XJ/UBNLHUqNk0MZ00hk6yrayZrkoAPhrKIu73/ZCFRlUjRDVVzOpDgKbZjYoJSka9LkI3bGwnYrzUSl0f6rHA8Xx/e5xlaYptFI99W649tazEm6SX77UUrBuIlTTA0rc4KuAhY4OpR/zt3vDt+ZCaVJdqsSDab1bgtAIauUcA5By2UxBIeYyfriyZEoRjPgpr/VeYiZoVAmqbFRby6FybmaSEIvnoIqwfDa8EwBQkvTRpTkgf9ynyJ10qcexVVSpo0FE2a3KIvi9kjTD6k+Xwm5nfG86HphehXwpuAir03ZKqMALpE5cFkF/dwrQoCync7xvl3cAJaEgNCWTVFygog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zpkkFwXLIHzY8BlZXKg3oBEANHhM8BBvDNZNHRVaxXY=;
+ b=JEzR20RthaGVeZL2QfjRT+dBLF68JZ/+H8dMzfFF8gqKSsX8soVEsU1EOzAlSLHKG0f3+SSJL8mLS+2l2rnpThiAI8sY5ogpZpPQOxcBnkX6WGdOd+U+hKs7PeIjl0JaoRIu7IS9ldtgWEDM4OZ0thXCeTD9gFtuNFDMIU2tWP3MuAf3c7ae7/RRG6N/FQe8G+osJYZ1vnnu9HCnq1PbmCtgLF6UPuA0C2zRLYiMBUnmIcoXVRihU+OCQp0Pd7wEgHrYoz9GSqCIMWbFIuigCs/Visd0VRegizwOa1Gxf4lM1k8MRenxKYPPQNERvnGajqTxJM9BfLC/4kfFv3bxbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zpkkFwXLIHzY8BlZXKg3oBEANHhM8BBvDNZNHRVaxXY=;
+ b=jQZqn3Pc242n/taN0tkL7gv9y/rmMRAa+phNukEx8mJfK58Gwm0I/DZPWZsPf/c+wERmjZNELSYu4M9l3NdGq33LI7c6M1AsKTJ0tGeNSWXfq7v62VUdWtZPubRw6OFmRS7avmTgIIrfLx/CDLBJApMfsLQAHGYOBSQMlP7szg0=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM8PR10MB4771.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:360::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
+ 2021 18:13:33 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 18:13:33 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: mrp: use stp state as substitute for unimplemented mrp state
+Date:   Mon, 18 Jan 2021 19:13:19 +0100
+Message-Id: <20210118181319.25419-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: BEXP281CA0010.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::20)
+ To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-References: <20210118113352.764293297@linuxfoundation.org>
-In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 18 Jan 2021 23:42:59 +0530
-Message-ID: <CA+G9fYuvDpuK7Nt=eGeyBtOgwLZJOSBniONfc3YqqknC3FFp1A@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/152] 5.10.9-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by BEXP281CA0010.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 18:13:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d7b2a03e-5a13-4d11-bdde-08d8bbdcc464
+X-MS-TrafficTypeDiagnostic: AM8PR10MB4771:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR10MB477168758ADC68C35101744693A40@AM8PR10MB4771.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g/aRrHUKjrLsUaM2UOwoZsUc1f6Vvxrsf01aH+NGsEmeSpgsu/4PNW0HjC3loeZ9uW8khwk29xwibrD0lChL3Ly2Y3nDtVMAm/9c2cLyTA+022PbIbx396mXlDl8WP2nHnphPNlRxDEoyOM+bjdzcwl/FgbXkhgxB40Oc9Ej5waHRAbEaCdIcUtGYrGvR1z4FCQv5n3M5Cf04l+McepzBEcOZ9xj7n6mRhzPCIbvZvD6cmmN9303XfpK+tfwRUXGb8yckZbbxABNTFAueP+QTKyStJ6IQ3jx7qsiqUEQH7mbWFMfpUyCj0Cs2EKOQsBVSEGFwBlxSly4T2jjwLlhO73wRTNR+y16Ib4YAhzhp4xolNUDtgto7uD1wRvhqat9sIQGffC3BD2UL07bz67+cQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(39840400004)(366004)(346002)(6506007)(2906002)(86362001)(4326008)(66946007)(52116002)(478600001)(66476007)(8676002)(5660300002)(36756003)(6512007)(54906003)(316002)(66556008)(956004)(1076003)(83380400001)(6666004)(26005)(8976002)(8936002)(16526019)(186003)(7416002)(6486002)(2616005)(44832011)(110136005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VF1utG8N2cvubkVvNSunpl2plwdRqzSd5EqEysT7O0ruCmBRZ9llAcIr/ar8?=
+ =?us-ascii?Q?dPi69NEC3/SJlgPfcOhlkhU7MPU1TgoPdxBSfYvXRoYYAMj9pl0xvqdxo5At?=
+ =?us-ascii?Q?XpEaO4lkWr37UIe37i7ytWUim9xiK/HBvgXbr+RZ834F1bjs4Oe1ztOdz76a?=
+ =?us-ascii?Q?8qiwoDXDKyMFt82ElJFyMLTJFiG32Fag0RkKHtzENMNPdSvSxs6tvO3i2v2a?=
+ =?us-ascii?Q?wxW3w5AaMA5LmwlP7tX7qx5dJ/LHFKgliFuJDxVyGOZFgJDn5q8aGWJXPCBQ?=
+ =?us-ascii?Q?ZDdRKiFd6p+tVd0VimVH1JdyOrarmEGrpxC8kYE2SOptN9yMkuTqyP4fe51t?=
+ =?us-ascii?Q?TyoSE0YrIfqVGOBP7/2HQOnczAihB6P5RYAt/jEfwNXUJLcaLGuDYQNME5KX?=
+ =?us-ascii?Q?4CLsN92Daj/sRWHBzF/aBKb+c25/xMM/ZshhkM4AZXmipOV3TP24dxJF+doE?=
+ =?us-ascii?Q?ohZHEfIn1IyBCQ+3wI3htQQ9vGkzicJqzwJsI7UddpVOUCJ0Inl9VCaEWy8v?=
+ =?us-ascii?Q?X55vEO/60Iy2ToZ51I56x4NnLT4blKYhlpVInOskYAuEeYoJMHTNMwXgBBUC?=
+ =?us-ascii?Q?0xYqAIT533DGzwKLf5lmv+ToUhsn/JG+FfHP4GmqpfumwXwBpkRhu8MvYLmJ?=
+ =?us-ascii?Q?NivdIodoqxHgtLzy9+G52M/6oe/xDIKVNiE58kcCvroIz5Q/EpD6mklJ6TuJ?=
+ =?us-ascii?Q?a4KhX1BEqp6sPoZLEcblTLiHVSjxeuFockxzSWGXdpvyfbf78vIFhhiKrtv7?=
+ =?us-ascii?Q?4D1/mwimwMRgp4b/o6zIg7n9azmIGNH8d4AwnUgAz0B9f4jPwkUhpHptKku7?=
+ =?us-ascii?Q?PEzPRlqTC42nwA8uW4Mpx6CEsvX/WcRN3H3bshUUhePA+RDUEJs6uUm6j7lp?=
+ =?us-ascii?Q?0GcqSC2d4fdy9dbBOifyo5D82IQk7es8SV/kneUBvScvOEiL/a5QtvvaIk2w?=
+ =?us-ascii?Q?5fHuMr8l6C/K0d020QpmD8CQfq0B9Am5eTDWiu79dk9nyUM5AsAjadZB2pH8?=
+ =?us-ascii?Q?pfqW?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7b2a03e-5a13-4d11-bdde-08d8bbdcc464
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 18:13:33.6550
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Mnb4nWRo58Ey5lhZA+f82/mmQeEkomFWShx47CHcgWzt8sQQDVfmduTg2d80znUJg0u99nJ6uzL59D0G0SyWJzX2IPkQsG2alJZprfQFgks=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4771
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 at 17:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.9 release.
-> There are 152 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 20 Jan 2021 11:33:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.9-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+When using MRP with hardware that does understand the concept of
+blocked or forwarding ports, but not the full MRP offload, we
+currently fail to tell the hardware what state it should put the port
+in when the ring is closed - resulting in a ring of forwarding ports
+and all the trouble that comes with that.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+---
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I don't really understand why SWITCHDEV_ATTR_ID_MRP_PORT_STATE even
+has to exist seperately from SWITCHDEV_ATTR_ID_PORT_STP_STATE, and
+it's hard to tell what the difference might be since no kernel code
+implements the former.
 
-Summary
-------------------------------------------------------------------------
+ net/bridge/br_mrp_switchdev.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-kernel: 5.10.9-rc1
-git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-5.10.y
-git commit: 293595df2bc42c77b0150d51073b49e09bb0d213
-git describe: v5.10.8-153-g293595df2bc4
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.8-153-g293595df2bc4
+diff --git a/net/bridge/br_mrp_switchdev.c b/net/bridge/br_mrp_switchdev.c
+index ed547e03ace1..8a1c7953e57a 100644
+--- a/net/bridge/br_mrp_switchdev.c
++++ b/net/bridge/br_mrp_switchdev.c
+@@ -180,6 +180,24 @@ int br_mrp_port_switchdev_set_state(struct net_bridge_port *p,
+ 	int err;
+ 
+ 	err = switchdev_port_attr_set(p->dev, &attr);
++	if (err == -EOPNOTSUPP) {
++		attr.id = SWITCHDEV_ATTR_ID_PORT_STP_STATE;
++		switch (state) {
++		case BR_MRP_PORT_STATE_DISABLED:
++		case BR_MRP_PORT_STATE_NOT_CONNECTED:
++			attr.u.stp_state = BR_STATE_DISABLED;
++			break;
++		case BR_MRP_PORT_STATE_BLOCKED:
++			attr.u.stp_state = BR_STATE_BLOCKING;
++			break;
++		case BR_MRP_PORT_STATE_FORWARDING:
++			attr.u.stp_state = BR_STATE_FORWARDING;
++			break;
++		default:
++			return err;
++		};
++		err = switchdev_port_attr_set(p->dev, &attr);
++	}
+ 	if (err && err != -EOPNOTSUPP)
+ 		br_warn(p->br, "error setting offload MRP state on port %u(%s)\n",
+ 			(unsigned int)p->port_no, p->dev->name);
+-- 
+2.23.0
 
-No regressions (compared to build v5.10.7-104-gc6e710bf849b)
-
-
-fixes (compared to build v5.10.7-104-gc6e710bf849b)
-------------------------------------------------------------------------
-
-mips:
-  build:
-    * clang-10-allnoconfig
-    * clang-10-tinyconfig
-    * clang-11-allnoconfig
-    * clang-11-tinyconfig
-
-
-Ran 57479 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* fwts
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* network-basic-tests
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* perf
-* kvm-unit-tests
-* kunit
-* rcutorture
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
