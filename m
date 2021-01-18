@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4CB2FA716
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4873A2FA71C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393494AbhARRJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406887AbhARRHo (ORCPT
+        id S2406972AbhARRK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:10:58 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34185 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405850AbhARRKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:07:44 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B685C06179E;
-        Mon, 18 Jan 2021 09:06:03 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B63A2BB;
-        Mon, 18 Jan 2021 18:06:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610989561;
-        bh=hV0WHCjFGw1rTzD++XaJeAj6GzXlQajHsTgjgpBryXs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hNOuPj1h1pmgWY6bY3ZJf0d6zcHBaf2KDadN25ZLRYS3uYrRXRtW4ifFoF3bhFHYL
-         GCffXA6cQ4bSUs2nnaCbMH89pxaj2C4s33AF8CV1DbCZq84qvdBHar6S/0GRSdHKLN
-         DCD4v5FAjSgMZh9n6G8RDF7w7jSlsArXuLo5u5N8=
-Date:   Mon, 18 Jan 2021 19:05:44 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "robert.moore@intel.com" <robert.moore@intel.com>,
-        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAW/6Ek/j733xzLW@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
- <20210118135121.GM4077@smile.fi.intel.com>
- <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
- <20210118152323.GV4077@smile.fi.intel.com>
- <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+        Mon, 18 Jan 2021 12:10:16 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l1Y20-0011Om-6P; Mon, 18 Jan 2021 18:09:31 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l1Y1z-001IsJ-Hg; Mon, 18 Jan 2021 18:09:31 +0100
+Subject: Re: [PATCH 2/2] sh: boot: avoid unneeded rebuilds under
+ arch/sh/boot/compressed/
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210117111632.2392635-1-masahiroy@kernel.org>
+ <20210117111632.2392635-2-masahiroy@kernel.org>
+ <acc34727-c956-3943-c623-1acd462c2a2d@physik.fu-berlin.de>
+ <CAK7LNAQL3RUtnw99smJCRc_rOm3PgMZhjc85WT3WwNGCcgK6nw@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <2d51d847-816a-d645-2296-79728656a196@physik.fu-berlin.de>
+Date:   Mon, 18 Jan 2021 18:09:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAK7LNAQL3RUtnw99smJCRc_rOm3PgMZhjc85WT3WwNGCcgK6nw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Hi Masahiro!
 
-On Mon, Jan 18, 2021 at 04:32:54PM +0100, Hans de Goede wrote:
-> On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
-> > On Mon, Jan 18, 2021 at 02:51:30PM +0000, Barnabás Pőcze wrote:
-> >> 2021. január 18., hétfő 14:51 keltezéssel, Andy Shevchenko írta:
-> >>
-> >>> On Mon, Jan 18, 2021 at 11:12:34AM +0000, Barnabás Pőcze wrote:
-> >>>> 2021. január 18., hétfő 1:34 keltezéssel, Daniel Scally írta:
-> >>>
-> >>>> Have you considered putting the source (and header) files into a dedicated
-> >>>> folder? I think it'd help manageability in the long run, and it'd be immediately
-> >>>> obvious that these source files form a single "unit".
-> >>>
-> >>> What would be the folder name? Because, for example, intel_cht_int33fe* have no
-> >>> folder (yet?) and here it's kinda similar case when HID describes something
-> >>> else than just one IP.
-> >>
-> >> I think "intel_skl_int3472" would not be a bad name for the folder. And I believe
-> >> "intel_cht_int33fe" could be given its own folder as well.
-> > 
-> > I;m not objecting (at some point in the past I had proposed moving Intel stuff
-> > to a separate folder, but at that time PDx86 has no folders at all and Darren
-> > was kinda not in favour of creating ones, but things changed), just let's hear
-> > Hans on this.
+On 1/17/21 5:21 PM, Masahiro Yamada wrote:
+>> This patch doesn't apply for me while the first one applies without problems:
+>>
+>> glaubitz@epyc:..glaubitz/linux-git> git am ../sh-patches-2021/\[PATCH\ 1_2\]\ sh\:\ boot\:\ add\ intermediate\ vmlinux.bin\*\ to\ targets\ instead\ of\ extra-y.eml
+>> Applying: sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
+>> glaubitz@epyc:..glaubitz/linux-git> git am ../sh-patches-2021/\[PATCH\ 2_2\]\ sh\:\ boot\:\ avoid\ unneeded\ rebuilds\ under\ arch_sh_boot_compressed_.eml
+>> Applying: sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+>> error: arch/sh/boot/compressed/ashiftrt.S: already exists in working directory
+>> error: arch/sh/boot/compressed/ashldi3.c: already exists in working directory
+>> error: arch/sh/boot/compressed/ashlsi3.S: already exists in working directory
+>> error: arch/sh/boot/compressed/ashrsi3.S: already exists in working directory
+>> error: arch/sh/boot/compressed/lshrsi3.S: already exists in working directory
 > 
-> I'm in favor of using a folder for this and "intel_skl_int3472" is fine with me.
+> Adrian, these 5 files are currently generated files.
 > 
-> With that said I'm not entirely sure if I'm in favor of the _skl_ part of
-> the folder and driver name or not.
-> 
-> The INT3472 ACPI device is used with other CPUs, e.g. Apollo Lake too and
-> I think the driver should work fine with those.
+> That is why git-am failed.
 
-It should work on Kabylake as well, although there are some differences
-in the way the INT3472 device is modelled in the DSDT between those two
-platforms. Hopefully nothing that couldn't be supported in a single
-driver without adding too many hacks.
+I already guessed that. I removed them now and the patch applies cleanly.
 
-> The intel_cht_int33fe case is special because the driver only applies
-> to some models with an INT33FE ACPI device (the whole INT33FE ACPI device
-> is a horrible thing which seems to stem from Intel rushing Bay Trail to
-> market to try and compete on the tablet market).
+Will test-boot on my SH-7785LCR in a minute.
 
-The INT3472 ACPI device is also horrible. It reminds me of Intercal, the
-programming language that was created by gathering features of several
-well known languages and then making sure that none of them would be
-used: the ACPI model of the device was probably created by someone who
-has studied ACPI extensively and decided to break every single best
-practice rule. I lack English words strong enough to express my dismay
-on this topic (but I still have hope to find solace in Finnish).
+> They are not cleaned up by 'make ARCH=sh clean'
+> (this is a bug too).
 
-> With that all said SKL probably is the first SoC to feature this and I
-> guess future IPUs may still use INT3472 given Intel's BAD habit of
-> re-using ACPI HIDs for multiple incompatible generations. So I guess
-> that keeping it is fine; and if we then need an incompatible INT3472
-> driver for newer IPUs we can use a different prefix for those.
-> 
-> TL;DR:
-> 
-> 1. Using a folder is fine, desirable even
-> 2. I've some concerns about the name, but I'm not really objecting,
-> just giving my 2 cents.
+That should be easy to fix I guess :-).
+
+Adrian
 
 -- 
-Regards,
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-Laurent Pinchart
