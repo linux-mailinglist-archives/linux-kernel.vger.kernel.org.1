@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951AB2FA50E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7382FA51E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393500AbhARPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393504AbhARPo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:44:27 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:43:42 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id x21so15348495iog.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:43:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9u33B5kpdx78LRxtPzxqjXDA4O8vMwb9b3mNJEnT53c=;
-        b=K463mC5DkZYkZN1sdYteF8BEn4+WZfjSGyZ5gih+OpCjTeiv7CfmbB92JnSmLU9FFs
-         WvsumAb4sJiygLufQG4CyDBYL1MqkSNOXFBRfJdPw15GypkdbOLgeOBazewURA4xZbgc
-         OlJwCaHx/0dVf6DsYMA07M590tjagAx/wCi6EvhSvYpGCxglYXVTsLpx5erGjXpuTVuP
-         tTzD9CHdzHAL97EYo+9r/C08m99Jknp15513YhRK3BjPfZ5baUlqbOO9xHjUPdJhrkx3
-         wTxc4o0U0caSFtlx4gvKViteDNPHMVexybJXsQrw4574nERjcdFr8nahuQaSBk7vSzXa
-         JJHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9u33B5kpdx78LRxtPzxqjXDA4O8vMwb9b3mNJEnT53c=;
-        b=m5KCpHrdMzST/QCc2UJmuePkjtLFd24uhxMojACqA6tOE2F4gbA0Kg/sN6K2/hPicP
-         xkn3aHYEGGoDys69ZCELoFHbvxPi2Y3ZPNF9hWtoJYunG0P/XpVefcG1rVZ/UDQsBMhB
-         nJDvgt8vjOVNA+uFOVTaoZDZTonR4j2//sDTwcQ2o0gZFB6Zpsm3HHYmPVP5W0qVZ8/l
-         +gtUVrygH8FQ00108DDWLL2+YL2lgxY/8Dr5xnzJxD6i72kCDzjfQMQ8r9+Nk0oqsXKp
-         oC1V49y2V4wA4XVMiuPTWUPooOvDoFeW50+k1bMNRba4MzdF1kRwfc57P924T9cq0XAH
-         YjfA==
-X-Gm-Message-State: AOAM532KxL3xMJ3SimTVTNPBkX+GQxjL+TDhMMMD1iiCbRIGHaNQNLi/
-        NB4Y2D9/ZLFIPXhalX6mRs+MkovSGLcTPqGRHt2DCA==
-X-Google-Smtp-Source: ABdhPJxDyXaADFQRXUGcJ2y43BFgKdVm500B4s+VL7OQwM+f1n0E1PgN7J+UoNfmHAQ0FMFrJjr1R4ZLZ2P8kE6YdBQ=
-X-Received: by 2002:a02:1dca:: with SMTP id 193mr119411jaj.39.1610984621544;
- Mon, 18 Jan 2021 07:43:41 -0800 (PST)
+        id S2405908AbhARPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:48:43 -0500
+Received: from gentwo.org ([3.19.106.255]:52088 "EHLO gentwo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405834AbhARPra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:47:30 -0500
+Received: by gentwo.org (Postfix, from userid 1002)
+        id DAB243F806; Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id D7E153EB3B;
+        Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
+From:   Christoph Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Michal Hocko <mhocko@suse.com>
+cc:     Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: SLUB: percpu partial object count is highly inaccurate, causing
+ some memory wastage and maybe also worse tail latencies?
+In-Reply-To: <20210118110319.GC14336@dhcp22.suse.cz>
+Message-ID: <alpine.DEB.2.22.394.2101181537150.69690@www.lameter.com>
+References: <CAG48ez2Qx5K1Cab-m8BdSibp6wLTip6ro4=-umR7BLsEgjEYzA@mail.gmail.com> <alpine.DEB.2.22.394.2101121627490.20570@www.lameter.com> <e4d89d4f-62d4-43e3-9dd7-2496e955b437@suse.cz> <20210118110319.GC14336@dhcp22.suse.cz>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20210118113643.232579-1-jackmanb@google.com> <20210118083306.4c16153d@lwn.net>
-In-Reply-To: <20210118083306.4c16153d@lwn.net>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 18 Jan 2021 16:43:30 +0100
-Message-ID: <CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] docs: bpf: Fixup atomics documentation
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review :)
+On Mon, 18 Jan 2021, Michal Hocko wrote:
 
-On Mon, 18 Jan 2021 at 16:33, Jonathan Corbet <corbet@lwn.net> wrote:
+> > Hm this would be similar to recommending a periodical echo > drop_caches
+> > operation. We actually discourage from that (and yeah, some tools do that, and
+> > we now report those in dmesg). I believe the kernel should respond to memory
+> > pressure and not OOM prematurely by itself, including SLUB.
 >
-> On Mon, 18 Jan 2021 11:36:43 +0000
-> Brendan Jackman <jackmanb@google.com> wrote:
->
-> > This fixues up the markup to fix a warning, be more consistent with
-> > use of monospace, and use the correct .rst syntax for <em> (* instead
-> > of _). It also clarifies the explanation of Clang's -mcpu
-> > requirements for this feature, Alexei pointed out that use of the
-> > word "version" was confusing here.
->
-> This starts to sound like material for more than one patch...?
+> Absolutely agreed! Partial caches are a very deep internal
+> implementation detail of the allocator and admin has no bussiness into
+> fiddling with that. This would only lead to more harm than good.
+> Comparision to drop_caches is really exact!
 
-Good point, I'll split the markup fixups and actual content change
-into separate patches.
+Really? The maximum allocation here has a upper boundary that depends on
+the number of possible partial per cpu slabs. There is a worst case
+scenario that is not nice and wastes some memory but it is not an OOM
+situation and the system easily recovers from it.
 
-> > NB this conflicts with Lukas' patch at [1], here where I've added
-> > `::` to fix the warning, I also kept the original ':' which appears
-> > in the output text.
->
-> And why did you do that?
+The slab shrinking is not needed but if you are concerned about reclaiming
+more memory right now then I guess you may want to run the slab shrink
+operation.
 
-Hmm, indeed looks like that isn't necessary as long as there are no
-spaces between the previous character and the '::'.
+Dropping the page cache is bad? Well sometimes you want more free memory
+due to a certain operation that needs to be started and where you do not
+want the overhead of page cache processing.
 
-v2 incoming...
+You can go crazy and expect magical things from either operation. True.
 
-> > [1] https://lore.kernel.org/bpf/CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com/T/#t
-> >
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >  Documentation/networking/filter.rst | 30 +++++++++++++++--------------
-> >  1 file changed, 16 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-> > index f6d8f90e9a56..ba03e90a9163 100644
-> > --- a/Documentation/networking/filter.rst
-> > +++ b/Documentation/networking/filter.rst
-> > @@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
-> >  Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
-> >
-> >  It also includes atomic operations, which use the immediate field for extra
-> > -encoding.
-> > +encoding: ::
->
-> Things like this read really strangely.  Just say "encoding::" and be done
-> with it, please.
->
-> Thanks,
->
-> jon
+
+
+
+
