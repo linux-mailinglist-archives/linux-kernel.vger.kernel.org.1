@@ -2,349 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856842FABD8
+	by mail.lfdr.de (Postfix) with ESMTP id 180892FABD7
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394373AbhARUtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S2394453AbhARUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394441AbhARUrY (ORCPT
+        with ESMTP id S2390629AbhARUrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:47:24 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165B4C061757;
-        Mon, 18 Jan 2021 12:46:37 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id c124so14715504wma.5;
-        Mon, 18 Jan 2021 12:46:37 -0800 (PST)
+        Mon, 18 Jan 2021 15:47:25 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7FC0613C1;
+        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ox12so1207764ejb.2;
+        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=9pd6NP8MKjOIZLtlaBPlwpeyWjI68tp87PnWyTG6FQo=;
-        b=P7MDBVp2loUeGaeaCPb9ydJEPSginKWp9PFeqivuX7x+oNuy4YmjoWQtCR+1FZK3lp
-         maXNw5mdKbPvYczcDHWlM1VN5o/qJXC8Uhfc0KXMZMW+XlhRpQOTnVDeD6cGQaY/ae00
-         6R968ILzIQlI9sYkvsO2YETiAmTtnlF+uKYDKJOTM5j2dx52jtb1QbE6NSD31vscEL3J
-         /fUGV1mjvjo3airWsTnBIuO+n2TcZaivt9BEOv+FhcIQtDZqu2wY+maAB2DBNumNRHK2
-         hkpiD7BY8Rwsz9rcQjFA4OkY9ZLZj/ryjbQS/C0SnPYdc/Av9l4eccXlKZO0yrLEL0rf
-         l+aQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
+        b=GfNJd8Bome7/jm5mGMRJq/2PGTWvhg5ZCKz66AxPNV2hoSI9nhWQm5G+Q13ESwlBTb
+         Q+fotg9Nu3aoV/y5K56QiFVnmB/x97U6700/bpPqaMsj4xWMFLii82VaQNIx4qUn6uv6
+         lmrgiPS3YEUb+oXg39q5lAS3mAO8lD5BTK4Yy99Y6ZLFMaaPsT90RgSNXBn8fQiLemUK
+         Na+YIBF1+phvg6ZRgTSRjWrgnmQuFyhKzVI+t9WqmjWubB3VyN+itPnVH8U8LzHHoLJy
+         DwTuRN1vk9jmT78vGCk/aCzFq0cIPzE3JXUcyc1pCR1U2PZ9zY71ubAfM40Ec057UXH9
+         fPJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9pd6NP8MKjOIZLtlaBPlwpeyWjI68tp87PnWyTG6FQo=;
-        b=MzrVzoUR+J7m52AMvdiZl+mi0MAOrJiEd/CqWAE033asHnntega4kGD5sGfv5co0OP
-         hQmg2EJj64C4F0OX6CAoYdTlYPdSYaale/snjDt27RDpgVbOHfBUu/DwUVFVNxC/8r8P
-         pTHTxLLdR4ekm6AgdMf7w4RYHZ9DRIO9HO78it/Yn4Z4fzE4EbQfhuZZVs4rxSpIPGU/
-         RGKVPkmOL7Dpy2VPBS27m7OmndMlTbaTvrm9YN1L1VU7izifzpb+bTzpJ94BFGugj4ln
-         iMTFO/sjgVNm0ju129BRUA6CPG9Z+NvnfLE/Q1i2Hr53MQI58se9rX1kW2sjZPlfrsT6
-         FlWQ==
-X-Gm-Message-State: AOAM531+7Ymfi7rz67AJI/O8moeo33UUlNKLmDWu2iUxDclUmuWg+/Dm
-        jFjXHzPEdyNPCH5a92a5hj0=
-X-Google-Smtp-Source: ABdhPJyi0RSCbLsr1taKlUHRyiXCxtKBjT2oiXy25DuCHFmuTZZFyrIWKN1HWGLpUoWz11fxYUhB3Q==
-X-Received: by 2002:a05:600c:2044:: with SMTP id p4mr5632wmg.11.1611002795765;
-        Mon, 18 Jan 2021 12:46:35 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id 33sm35554183wrn.35.2021.01.18.12.46.34
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
+        b=lFzAXeUmnq1qMYWoQVvSDpYB6SoCO2izUZKgRpf3iBB5N6XVIhhFM0zt+5jltNs1qD
+         eZUNKLQ7Zlb16uNdE6yifRMMDXZVPqklWSqMdHWwYuHq9zxvuDVwT3sy/2NHdEe9Szh+
+         43tfWqzJNb2E2UNZAmiTySUt+nX7xxNymbGxOYyXfKEKf0nW5+2AuH4FnfYzqxs53+g+
+         Jqp/ESoxksyVCMzNpjoQF2fEShbSVRRXJyhEV8ZpuTXGA/qBdv1JX2HFDEYmdg0A9pHx
+         3kYYDUr6KAJmDc7tGuV0ZTht0jHuLjE66vU2Pikv4PZXLl+E7wZTJgmTvNtY5XHipt3C
+         Zp3Q==
+X-Gm-Message-State: AOAM5324PBWy7JlmHlD/CYJ61Sekr8KmVlGYOAWE5vwv3ZA+txBuJeCf
+        U3iDgXGG56zWIRSpuwvIanLL5TSg6Yc=
+X-Google-Smtp-Source: ABdhPJxtZe6bht9xG+8tf8UzqMKs8TtIiE9m2K+EFRJ/KFv/dySA1PlH1NY1AaBwGzX8kw6hUWSDxg==
+X-Received: by 2002:a17:906:2785:: with SMTP id j5mr883728ejc.527.1611002804082;
+        Mon, 18 Jan 2021 12:46:44 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
+        by smtp.gmail.com with ESMTPSA id v9sm1066417ejd.92.2021.01.18.12.46.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 12:46:35 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
-Message-ID: <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
-Date:   Mon, 18 Jan 2021 20:46:34 +0000
+        Mon, 18 Jan 2021 12:46:43 -0800 (PST)
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     dgilbert@interlog.com, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <abee94bf-a6ec-7659-21d2-4253582a1730@gmail.com>
+Date:   Mon, 18 Jan 2021 21:46:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent, thanks for the comments - really appreciate the detail.
+On 18.01.21 21:08, Douglas Gilbert wrote:
+> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
+>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
+>>
+>>> After several flawed attempts to detect overflow, take the fastest
+>>> route by stating as a pre-condition that the 'order' function argument
+>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
+>>
+>> That doesn't help, the point of the overflow check is similar to
+>> overflow checks in kcalloc: to prevent the routine from allocating
+>> less memory than the caller might assume.
+>>
+>> For instance ipr_store_update_fw() uses request_firmware() (which is
+>> controlled by userspace) to drive the length argument to
+>> sgl_alloc_order(). If userpace gives too large a value this will
+>> corrupt kernel memory.
+>>
+>> So this math:
+>>
+>>        nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + 
+>> order);
+> 
+> But that check itself overflows if order is too large (e.g. 65).
+> A pre-condition says that the caller must know or check a value
+> is sane, and if the user space can have a hand in the value passed
+> the caller _must_ check pre-conditions IMO. A pre-condition also
+> implies that the function's implementation will not have code to
+> check the pre-condition.
+> 
+> My "log of both sides" proposal at least got around the overflowing
+> left shift problem. And one reviewer, Bodo Stroesser, liked it.
 
+I added my Reviewed-by after you added a working check of nent overflow.
+I did not oppose to the usage of ilog() there. But now I think Jason is
+right that indeed ilog usage is a bit 'indirect'.
 
-Some specific responses below but assume a general "will do" to
-everything you mentioned otherwise...
+Anyway I still think, there should be a check for nent overflow.
 
-On 18/01/2021 09:15, Laurent Pinchart wrote:
->> +	  PMIC) and one designed for Chrome OS.
-> How about expanding this a bit to explain what the INT3472 stands for ?
->
-> 	  The INT3472 is an Intel camera power controller, a logical device
-> 	  found on some Skylake-based systems that can map to different
-> 	  hardware devices depending on the platform. On machines
-> 	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
-> 	  machines designed for Windows, it maps to either a TP68470
-> 	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
-> 	  and power gates.
-
-Yeah sure ok
-
-
->> This driver handles all three
->> +	  situations by discovering information it needs to discern them at
->> +	  runtime.
->> +
->> +	  If your device was designed for Chrome OS, this driver will provide
->> +	  an ACPI operation region, which must be available before any of the
->> +	  devices using this are probed. For this reason, you should select Y
->> +	  if your device was designed for ChromeOS. This option also configures
->> +	  the designware-i2c driver to be built-in, for the same reason.
-> Is the last sentence a leftover ?
-
-Oops - it is, but it was supposed to remind me to double check that that
-was still necessary. I'll take a look, thanks.
-
-
->> +
->> +#include "intel_skl_int3472_common.h"
->> +
->> +int skl_int3472_get_cldb_buffer(struct acpi_device *adev,
->> +				struct int3472_cldb *cldb)
->> +{
->> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->> +	acpi_handle handle = adev->handle;
->> +	union acpi_object *obj;
->> +	acpi_status status;
->> +	int ret = 0;
->> +
->> +	status = acpi_evaluate_object(handle, "CLDB", NULL, &buffer);
->> +	if (ACPI_FAILURE(status))
->> +		return -ENODEV;
->> +
->> +	obj = buffer.pointer;
->> +	if (!obj) {
->> +		dev_err(&adev->dev, "ACPI device has no CLDB object\n");
-> Is this the code path that is taken on Chrome OS ? If so an error
-> message isn't appropriate. I'd drop this message, and instead add an
-> error message in the discrete PMIC code.
-
-Ah yes of course, thanks, I'll move the error message.
-
-
->> +
->> +	unsigned int n_gpios; /* how many GPIOs have we seen */
->> +
->> +	struct int3472_gpio_regulator regulator;
->> +	struct int3472_gpio_clock clock;
-> You don't necessarily need to define separate structures for this, you
-> could also write
->
-> 	struct {
-> 		char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
-> 		char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
-> 		struct gpio_desc *gpio;
-> 		struct regulator_dev *rdev;
-> 		struct regulator_desc rdesc;
-> 	} regulator;
->
-> 	struct {
-> 		struct clk *clk;
-> 		struct clk_hw clk_hw;
-> 		struct clk_lookup *cl;
-> 		struct gpio_desc *gpio;
-> 	} clock;
->
-> It's entirely up to you.
-
-
-Ooh yeah I like that more, thanks very much.
-
-
->> +/* 79234640-9e10-4fea-a5c1-b5aa8b19756f */
->> +static const guid_t int3472_gpio_guid =
->> +	GUID_INIT(0x79234640, 0x9e10, 0x4fea,
->> +		  0xa5, 0xc1, 0xb5, 0xaa, 0x8b, 0x19, 0x75, 0x6f);
->> +
->> +/* 822ace8f-2814-4174-a56b-5f029fe079ee */
->> +static const guid_t cio2_sensor_module_guid =
->> +	GUID_INIT(0x822ace8f, 0x2814, 0x4174,
->> +		  0xa5, 0x6b, 0x5f, 0x02, 0x9f, 0xe0, 0x79, 0xee);
-> A comment that explains what those DSM functions do would be useful for
-> reference. It has taken lots of time to figure it out, let's spare the
-> pain to the next person who tries to understand this :-)
-
-
-Hah - good point, well made. I'll explain what they're for then.
-
-
->> +static int skl_int3472_clk_enable(struct clk_hw *hw)
->> +{
->> +	struct int3472_gpio_clock *clk = to_int3472_clk(hw);
->> +
->> +	gpiod_set_value(clk->gpio, 1);
-> The clock enable() and disable() methods are not supposed to sleep,
-> while setting a GPIO value may sleep in the general case. Should this be
-> moved to skl_int3472_clk_prepare() ? Same for skl_int3472_clk_disable()
-> and skl_int3472_clk_unprepare().
-
-
-I was under the assumption the difference between gpiod_set_value() and
-gpiod_set_value_cansleep() was that gpiod_set_value() _can't_ sleep, but
-actually reading the function's comments it seems it will just complain
-if it turns out it can sleep:
-
-
-* This function can be called from contexts where we cannot sleep, and will
-* complain if the GPIO chip functions potentially sleep. It doesn't
-complain, on either of my devices, but I guess that can't be guaranteed
-for _every_ device, so these calls probably are safer in (un)prepare() yes.
-
->> +			}
->> +
->> +			i++;
->> +		}
->> +	}
->> +
->> +	if (!func)
->> +		return 0;
-> I initially thought this wasn't right, as if no entry was found in the
-> mapping table, func would still have its non-NULL value as passed to
-> this function. I then realized that you're checking if the match that
-> was found is NULL. A comment to explain this would be useful.
-
-
-Yep ok - I actually had one and decided it was superfluous and removed
-it - my bad.
-
->> +
->> +	status = acpi_get_handle(NULL, path, &handle);
->> +	if (ACPI_FAILURE(status))
->> +		return -EINVAL;
->> +
->> +	ret = acpi_bus_get_device(handle, &adev);
->> +	if (ret)
->> +		return -ENODEV;
->> +
->> +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
->> +							   ares->data.gpio.pin_table[0],
->> +							   func, 0, polarity);
-> I wonder if
->
-> 	table_entry.key = acpi_dev_name(adev);
-> 	table_entry.chip_hwnum = ares->data.gpio.pin_table[0];
-> 	table_entry.con_id = func;
-> 	table_entry.idx = 0;
-> 	table_entry.flags = polarity;
->
-> (with struct gpiod_lookup table_entry = { }; above) would be more
-> readable. Up to you.
->
->> +
->> +	memcpy(&int3472->gpios.table[int3472->n_sensor_gpios], &table_entry,
->> +	       sizeof(table_entry));
-> Ah, or maybe
->
-> 	struct gpio_lookup *table_entry;
->
-> 	table_entry = &int3472->gpios.table[int3472->n_sensor_gpios];
-> 	table_entry->key = acpi_dev_name(adev);
-> 	table_entry->chip_hwnum = ares->data.gpio.pin_table[0];
-> 	table_entry->con_id = func;
-> 	table_entry->idx = 0;
-> 	table_entry->flags = polarity;
->
-> (no need to memset() to 0 first as the whole structure has been
-> allocated with kzalloc()).
-
-
-Yeah you're right, this looks much nicer - thanks.
-
-
->> +	int ret = 0;
->> +
->> +	init.name = kasprintf(GFP_KERNEL, "%s-clk",
->> +			      acpi_dev_name(int3472->adev));
-> You need to check for NULL and return -ENOMEM.
-
-
-Oops, of course, thanks
-
-
->> +		goto err_unregister_clk;
-> If this fails, you will end up calling clk_unregister() and
-> clkdev_drop() in skl_int3472_discrete_remove(). You should replace the
-> check in the remove function with
->
-> 	if (!int3472->clock.cl) {
-
-You're right, good spot, thank you.
-
-
->> +		dev_err(&int3472->pdev->dev, "No sensor module config\n");
->> +		return PTR_ERR(sensor_config);
->> +	}
-> Would it make sense to call this in skl_int3472_discrete_probe() or
-> skl_int3472_parse_crs() and cache the config pointer ?
-
-
-Yes, probably actually, and then the GPIO mapping function can just
-check for its presence.
-
-
->> +	init_data.constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
->> +	init_data.num_consumer_supplies = 1;
->> +	init_data.consumer_supplies = &sensor_config->supply_map;
->> +
->> +	snprintf(int3472->regulator.regulator_name,
->> +		 GPIO_REGULATOR_NAME_LENGTH, "int3472-discrete-regulator");
-> s/GPIO_REGULATOR_NAME_LENGTH/sizeof(int3472->regulator.regulator_name)/
->
-> Do regulator names need to be unique ? If so you may have a problem if a
-> platform has two discrete INT3472.
-
-
-Unlike clocks, the regulator framework doesn't shout at you when you do
-this, but I agree it's suboptimal at the very least, I'll set it to
-..."%s-regulator", acpi_dev_name(int3472->adev)... as with the clock.
-
-
->> +	case INT3472_GPIO_TYPE_PRIVACY_LED:
->> +		ret = skl_int3472_map_gpio_to_sensor(int3472, ares,
->> +						     "indicator-led",
->> +						     GPIO_ACTIVE_HIGH);
-> Mapping the indicator LED to the sensor isn't great, as all sensor
-> drivers would then need to handle it. Could it be handled in the
-> regulator instead, so that it would be turned on automatically when the
-> sensor is powered up ? Another option, more complicated, would be to
-> handle it in the CIO2 driver (but I'm not sure how we would map it).
-
-
-Not with the regulator, because it turns out only the 0x0b pin is one of
-those and those appear on very few devices in scope, so it wouldn't be
-called on a Surface Book 2 for example. Perhaps as part of clock
-prepare/enable? I don't much like the idea of it running in the CIO2
-driver to be honest, feels a bit out of place.
-
-
->> +
->> +	if (int3472->gpios_mapped)
->> +		gpiod_remove_lookup_table(&int3472->gpios);
-> You could avoid the need for the gpios_mapped field by checking for
->
-> 	if (int3472->gpios.list.next)
->
-> Up to you.
-
-
-Thank you! I was scratching my head trying to figure out a better way of
-doing that.
-
+> 
+>> Needs to be checked, add a precondition to order does not help. I
+>> already proposed a straightforward algorithm you can use.
+> 
+> It does help, it stops your proposed check from being flawed :-)
+> 
+> Giving a false sense of security seems more dangerous than a
+> pre-condition statement IMO. Bart's original overflow check (in
+> the mainline) limits length to 4GB (due to wrapping inside a 32
+> bit unsigned).
+> 
+> Also note there is another pre-condition statement in that function's
+> definition, namely that length cannot be 0.
+> 
+> So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
+> notes and come up with a solution that you are _all_ happy with.
+> The pre-condition works for me and is the fastest. The 'length'
+> argument might be large, say > 1 GB [I use 1 GB in testing but
+> did try 4GB and found the bug I'm trying to fix] but having
+> individual elements greater than say 32 MB each does not
+> seem very practical (and fails on the systems that I test with).
+> In my testing the largest element size is 4 MB.
+> 
+> 
+> Doug Gilbert
+> 
