@@ -2,147 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E932F9C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492292F9C85
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389057AbhARJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:42:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388852AbhARJbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:31:23 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B1EC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6bZ+tjVem9NiiCz8+tie0IkJT1+H8oQhEMfEUdICqAE=; b=HNiuzpCLRr3uBFJSeD25QxwNLQ
-        Q4usXQ69KZcrf7I4Ebz1eeJLKRmcPdmunGrQuUlPQCXi2s9K2qVElCJeKYEBAPiC1Iu8iMaWDSmtA
-        4jyF6sS/S6dsun2VPAS/qswGgYeDJyuK4oYRbTlBe+U7FAypSvIAJK+2fb0yTvD7NScWYMYOw3LSU
-        L8UgZRL9xy3GOpoRb/hcC0x8Y2y18eLtvCXK4CMZs2FtL2bKxzFJSeQuNW7S55NZjbTOyqzgpi+Vl
-        ccKFhmBCq819aSHox134YRoX3GbOs954TYG8v4ZYezEJ0l0iAoz5eB/lUoAcAswyJZfkV/RS9Hkm5
-        rM8XAsCQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1Qrj-0005oW-8Z; Mon, 18 Jan 2021 09:30:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A70830015A;
-        Mon, 18 Jan 2021 10:30:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4FB5F20291083; Mon, 18 Jan 2021 10:30:21 +0100 (CET)
-Date:   Mon, 18 Jan 2021 10:30:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        jiangshanlai@gmail.com, cai@redhat.com, vincent.donnefort@arm.com,
-        decui@microsoft.com, paulmck@kernel.org,
-        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
-Subject: Re: [PATCH 7/8] sched: Fix CPU hotplug / tighten is_per_cpu_kthread()
-Message-ID: <YAVVLRWCLbnQoXz2@hirez.programming.kicks-ass.net>
-References: <20210116113033.608340773@infradead.org>
- <20210116113920.103635633@infradead.org>
- <jhjsg6z4i2w.mognet@arm.com>
+        id S2389087AbhARJn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:43:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58710 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388857AbhARJbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:31:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12FC0B742;
+        Mon, 18 Jan 2021 09:30:58 +0000 (UTC)
+Subject: Re: Change eats memory on my server
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        daniel.vetter@ffwll.ch, sam@ravnborg.org,
+        linux-kernel@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+ <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
+Date:   Mon, 18 Jan 2021 10:30:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjsg6z4i2w.mognet@arm.com>
+In-Reply-To: <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="9UpJC8ZdoigN9CO2MkMVSol5rGhzyvYL4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 04:57:27PM +0000, Valentin Schneider wrote:
-> On 16/01/21 12:30, Peter Zijlstra wrote:
-> > @@ -1796,13 +1796,28 @@ static inline bool rq_has_pinned_tasks(s
-> >   */
-> >  static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
-> >  {
-> > +	/* When not in the task's cpumask, no point in looking further. */
-> >       if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-> >               return false;
-> >
-> > +	/* migrate_disabled() must be allowed to finish. */
-> > +	if (is_migration_disabled(p))
-> >               return cpu_online(cpu);
-> >
-> > +	/* Non kernel threads are not allowed during either online or offline. */
-> > +	if (!(p->flags & PF_KTHREAD))
-> > +		return cpu_active(cpu);
-> > +
-> > +	/* KTHREAD_IS_PER_CPU is always allowed. */
-> > +	if (kthread_is_per_cpu(p))
-> > +		return cpu_online(cpu);
-> > +
-> > +	/* Regular kernel threads don't get to stay during offline. */
-> > +	if (cpu_rq(cpu)->balance_callback == &balance_push_callback)
-> > +		return cpu_active(cpu);
-> 
-> is_cpu_allowed(, cpu) isn't guaranteed to have cpu_rq(cpu)'s rq_lock
-> held, so this can race with balance_push_set(, true). This shouldn't
-> matter under normal circumstances as we'll have sched_cpu_wait_empty()
-> further down the line.
-> 
-> This might get ugly with the rollback faff - this is jumping the gun a
-> bit, but that's something we'll have to address, and I think what I'm
-> concerned about is close to what you mentioned in
-> 
->   http://lore.kernel.org/r/YAM1t2Qzr7Rib3bN@hirez.programming.kicks-ass.net
-> 
-> Here's what I'm thinking of:
-> 
-> _cpu_up()                            ttwu()
->                                        select_task_rq()
->                                          is_cpu_allowed()
->                                            rq->balance_callback != balance_push_callback
->   smpboot_unpark_threads() // FAIL
->   (now going down, set push here)
->   sched_cpu_wait_empty()
->   ...                                  ttwu_queue()
->   sched_cpu_dying()
->   *ARGH*
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9UpJC8ZdoigN9CO2MkMVSol5rGhzyvYL4
+Content-Type: multipart/mixed; boundary="sej5FWBvejTI7A9zd1duKNlOupZxNZRwY";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Eli Cohen <elic@nvidia.com>
+Cc: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+ daniel.vetter@ffwll.ch, sam@ravnborg.org, linux-kernel@vger.kernel.org,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ virtualization@lists.linux-foundation.org
+Message-ID: <052812fd-10ce-abf4-d12a-91d4fd66ed54@suse.de>
+Subject: Re: Change eats memory on my server
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <2ea2630b-8782-c662-91fe-683d8b5d6c99@suse.de>
+ <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <20210118091302.GB40909@mtl-vdi-166.wap.labs.mlnx>
 
-Let me try this then...
+--sej5FWBvejTI7A9zd1duKNlOupZxNZRwY
+Content-Type: multipart/mixed;
+ boundary="------------AC837D0F559BA27412AF7141"
+Content-Language: en-US
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5057054b1cff..9b045296d646 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7495,6 +7495,8 @@ int sched_cpu_activate(unsigned int cpu)
- 	return 0;
- }
- 
-+unsigned long sched_cpu_rcu_state;
-+
- int sched_cpu_deactivate(unsigned int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
-@@ -7519,6 +7521,11 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	 */
- 	balance_push_set(cpu, true);
- 
+This is a multi-part message in MIME format.
+--------------AC837D0F559BA27412AF7141
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 18.01.21 um 10:13 schrieb Eli Cohen:
+> On Mon, Jan 18, 2021 at 08:54:07AM +0100, Thomas Zimmermann wrote:
+>> Hi
+>>
+>> Am 18.01.21 um 08:43 schrieb Christian K=C3=B6nig:
+>>> Hi Eli,
+>>>
+>>> have you already tried using kmemleak?
+>>>
+>>> This sounds like a leak of memory allocated using kmalloc(), so kmeml=
+eak
+>>> should be able to catch it.
+>>
+>> I have an idea what happens here. When the refcount is 0 in kmap, a ne=
+w page
+>> mapping for the BO is being established. But VRAM helpers unmap the pr=
+evious
+>> pages only on BO moves or frees; not in kunmap. So the old mapping mig=
+ht
+>> still be around. I'll send out a test patch later today.
+>>
+>=20
+> Great! Looking forward to test it.
+
+Here's the patch against the latest DRM tree. v5.11-rc3 should work as we=
+ll.
+
+I was able to reproduce the memory leak locally and found that the patch =
+
+fixes it. Please give it a try.
+
+Best regards
+Thomas
+
+>=20
+>> Best regards
+>> Thomas
+>>
+>>>
+>>> Regards,
+>>> Christian.
+>>>
+>>> Am 17.01.21 um 06:08 schrieb Eli Cohen:
+>>>> On Fri, Jan 15, 2021 at 10:03:50AM +0100, Thomas Zimmermann wrote:
+>>>>> Could you please double-check that 3fb91f56aea4 ("drm/udl: Retrieve=
+ USB
+>>>>> device from struct drm_device.dev") works correctly
+>>>> Checked again, it does not seem to leak.
+>>>>
+>>>>> and that 823efa922102
+>>>>> ("drm/cma-helper: Remove empty drm_gem_cma_prime_vunmap()") is brok=
+en?
+>>>>>
+>>>> Yes, this one leaks, as does the one preceding it:
+>>>>
+>>>> 1086db71a1db ("drm/vram-helper: Remove invariant parameters from
+>>>> internal kmap function")
+>>>>> For one of the broken commits, could you please send us the output =
+of
+>>>>>
+>>>>>  =C2=A0=C2=A0 dmesg | grep -i drm
+>>>>>
+>>>>> after most of the memory got leaked?
+>>>>>
+>>>> I ran the following script in the shell:
+>>>>
+>>>> while true; do cat /proc/meminfo | grep MemFree:; sleep 5; done
+>>>>
+>>>> and this is what I saw before I got disconnected from the shell:
+>>>>
+>>>> MemFree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 14820=
+8 kB
+>>>> MemFree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 14830=
+4 kB
+>>>> MemFree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 14666=
+0 kB
+>>>> Connection to nps-server-24 closed by remote host.
+>>>> Connection to nps-server-24 closed.
+>>>>
+>>>>
+>>>> I also mointored the output of dmesg | grep -i drm
+>>>> The last output I was able to save on disk is this:
+>>>>
+>>>> [=C2=A0=C2=A0 46.140720] ast 0000:03:00.0: [drm] Using P2A bridge fo=
+r configuration
+>>>> [=C2=A0=C2=A0 46.140737] ast 0000:03:00.0: [drm] AST 2500 detected
+>>>> [=C2=A0=C2=A0 46.140754] ast 0000:03:00.0: [drm] Analog VGA only
+>>>> [=C2=A0=C2=A0 46.140772] ast 0000:03:00.0: [drm] dram MCLK=3D800 Mhz=
+ type=3D7
+>>>> bus_width=3D16
+>>>> [=C2=A0=C2=A0 46.153553] [drm] Initialized ast 0.1.0 20120228 for 00=
+00:03:00.0
+>>>> on minor 0
+>>>> [=C2=A0=C2=A0 46.165097] fbcon: astdrmfb (fb0) is primary device
+>>>> [=C2=A0=C2=A0 46.391381] ast 0000:03:00.0: [drm] fb0: astdrmfb frame=
+ buffer device
+>>>> [=C2=A0=C2=A0 56.097697] systemd[1]: Starting Load Kernel Module drm=
+=2E..
+>>>> [=C2=A0=C2=A0 56.343556] systemd[1]: modprobe@drm.service: Succeeded=
+=2E
+>>>> [=C2=A0=C2=A0 56.350382] systemd[1]: Finished Load Kernel Module drm=
+=2E
+>>>> [13319.469462] [=C2=A0=C2=A0 2683] 70889=C2=A0 2683=C2=A0=C2=A0=C2=A0=
+ 55586=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 7372=
+8
+>>>> 138=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0 tdrm
+>>>> [13320.658386] [=C2=A0=C2=A0 2683] 70889=C2=A0 2683=C2=A0=C2=A0=C2=A0=
+ 55586=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 7372=
+8
+>>>> 138=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0 tdrm
+>>>> [13321.800970] [=C2=A0=C2=A0 2683] 70889=C2=A0 2683=C2=A0=C2=A0=C2=A0=
+ 55586=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 7372=
+8
+>>>> 138=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0 tdrm
+>>>
+>>> _______________________________________________
+>>> dri-devel mailing list
+>>> dri-devel@lists.freedesktop.org
+>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>
+>> --=20
+>> Thomas Zimmermann
+>> Graphics Driver Developer
+>> SUSE Software Solutions Germany GmbH
+>> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+>> (HRB 36809, AG N=C3=BCrnberg)
+>> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>>
+>=20
+>=20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+--------------AC837D0F559BA27412AF7141
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-drm-vram-helper-Reuse-existing-page-mappings-in-vmap.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename*0="0001-drm-vram-helper-Reuse-existing-page-mappings-in-vmap.pa";
+ filename*1="tch"
+
+=46rom e8462600662621db47bccf8174bf683513aa7102 Mon Sep 17 00:00:00 2001
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Date: Mon, 18 Jan 2021 09:58:07 +0100
+Subject: [PATCH] drm/vram-helper: Reuse existing page mappings in vmap
+
+For performance, BO page mappings can stay in place even if the
+map counter has returned to 0. In these cases, the existing page
+mapping has to be reused by the next vmap operation. Otherwise
+a new mapping would be installed and the old mapping's pages leak.
+
+Fix the issue by reusing existing page mappings for vmap operations.
+
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Reported-by: Eli Cohen <elic@nvidia.com>
+---
+ drivers/gpu/drm/drm_gem_vram_helper.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_gem_vram_helper.c b/drivers/gpu/drm/drm_=
+gem_vram_helper.c
+index 02ca22e90290..a57790b0d985 100644
+--- a/drivers/gpu/drm/drm_gem_vram_helper.c
++++ b/drivers/gpu/drm/drm_gem_vram_helper.c
+@@ -387,9 +387,16 @@ static int drm_gem_vram_kmap_locked(struct drm_gem_v=
+ram_object *gbo,
+ 	if (gbo->vmap_use_count > 0)
+ 		goto out;
+=20
+-	ret =3D ttm_bo_vmap(&gbo->bo, &gbo->map);
+-	if (ret)
+-		return ret;
 +	/*
-+	 * See sched_cpu_wait_empty().
++	 * VRAM helpers unmap the BO only on demand. So the previous
++	 * page mapping might still be arround. Only vmap if the there's
++	 * no mapping present.
 +	 */
-+	sched_cpu_rcu_state = get_state_synchronize_rcu();
-+
- 	rq_lock_irqsave(rq, &rf);
- 	if (rq->rd) {
- 		update_rq_clock(rq);
-@@ -7578,6 +7585,12 @@ int sched_cpu_starting(unsigned int cpu)
-  */
- int sched_cpu_wait_empty(unsigned int cpu)
- {
-+	/*
-+	 * Guarantee that TTWU will observe balance_push_set(true),
-+	 * such that all wakeups will refuse this CPU.
-+	 */
-+	cond_synchronize_rcu(sched_cpu_rcu_state);
-+
- 	balance_hotplug_wait();
- 	return 0;
++	if (dma_buf_map_is_null(&gbo->map)) {
++		ret =3D ttm_bo_vmap(&gbo->bo, &gbo->map);
++		if (ret)
++			return ret;
++	}
+=20
+ out:
+ 	++gbo->vmap_use_count;
+@@ -577,6 +584,7 @@ static void drm_gem_vram_bo_driver_move_notify(struct=
+ drm_gem_vram_object *gbo,
+ 		return;
+=20
+ 	ttm_bo_vunmap(bo, &gbo->map);
++	dma_buf_map_clear(&gbo->map); /* explicitly clear mapping for next vmap=
+ call */
  }
+=20
+ static int drm_gem_vram_bo_driver_move(struct drm_gem_vram_object *gbo,
+--=20
+2.29.2
+
+
+--------------AC837D0F559BA27412AF7141--
+
+--sej5FWBvejTI7A9zd1duKNlOupZxNZRwY--
+
+--9UpJC8ZdoigN9CO2MkMVSol5rGhzyvYL4
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAFVVAFAwAAAAAACgkQlh/E3EQov+A0
+uQ//Zj4RwM6ddlRdnDxGBYOc3A/f6yvayznmYkWLmj56cYa/vHTiPgSxpCjzuNc0Md//4tO6h3SG
+cgIsL8MNXTH73THYqxj61QL8SAuxsKw2l3G73eDWOUMJ+1c3jN96SUidQ7SQzwY+F9/Alx8fCnXy
+h1ZfFXYPXSuCxmsXzVLWYe2ad7RRqYX/wBFnC6l6FRP4G2c+CMgVbITTe0iEch8YeOoYSOxSdI51
+xwapwzH9kstIp5Yr+8W6JQKtFRmAVLYwKX4/fFd0K9cIWnNGx9ocpzQBZsjgct0CUl/taRQsiOZM
+o/mgfK+d3MlBWa6Dew12/N0INJ4Rz7cGutqwkmnyR51nnnHzfuIsJLIPfb8xdaVK/MCeUqp6ryfE
+8+fjG3TDBeOSnJyqfTokYklgx3LKebhYsw12yretTKMMg+yvMcMoWETDq/WzK/XvcT68cUmGc4V5
+5pqg/m7GQRneNkSzpKpj/cnfquXbVbd6QEPgiK0+sPiYmjyrtE4S01ydUGERqumqWPMXOZ76Qx6y
+7NTLCjjL4s1igSdyZzLuMux3S7WRI8o9Y+G0wn1CwXsuioDXB+x3WBhN8oko+rvzOURKOrhtUOke
+j5Due3rw4meXfdyOamBJMOGDW1orWIRa52bREAxPpZZMD5k+Ozub8+bPHsQqWhNi/VZzt2BQRykI
+gjY=
+=k6do
+-----END PGP SIGNATURE-----
+
+--9UpJC8ZdoigN9CO2MkMVSol5rGhzyvYL4--
