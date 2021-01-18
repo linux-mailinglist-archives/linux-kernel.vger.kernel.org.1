@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35192FA39F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C83B2FA304
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392885AbhAROvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390805AbhARLm6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:42:58 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258DCC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:42:18 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1l1SvI-0002pS-Fy; Mon, 18 Jan 2021 12:42:16 +0100
-Subject: Re: [PATCH] iio: adc: stm32-adc: fix erroneous handling of spurious
- IRQs
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        kernel@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Holger Assmann <has@pengutronix.de>, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210112152441.20665-1-a.fatoum@pengutronix.de>
- <20210116175333.4d8684c5@archlinux>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <47b0905a-4496-2f21-3b17-91988aa88e91@pengutronix.de>
-Date:   Mon, 18 Jan 2021 12:42:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2392936AbhARO32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:29:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404955AbhARO1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:27:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DD3422472;
+        Mon, 18 Jan 2021 14:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610979991;
+        bh=g4sklMQGQ6n9oGSF+cYtLVY3Cua9Kjntg0r6NouA9a8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wdO4kwz5ZQSlUIHymulFCThfNCQ+T3TG9ZqT+88tlGWoydTqSqQKHPqxMMA2/WTNW
+         Y8avzGkg+6M1NKQwT7B3VB7jn3NGV7s9niGEdnWlmcKS73TmqT3BvYJEp8iSe1Lw++
+         OPyzLKQL6lDKR1Sealaf/Yu6rY8HFKqGrnqwGaUk=
+Date:   Mon, 18 Jan 2021 15:26:28 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        lennart@poettering.net,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
+Message-ID: <YAWalPeMPt44lBgI@kroah.com>
+References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
+ <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
+ <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
+ <20210118141238.GQ968855@lahna.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210116175333.4d8684c5@archlinux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118141238.GQ968855@lahna.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jonathan,
-
-On 16.01.21 18:53, Jonathan Cameron wrote:
-> On Tue, 12 Jan 2021 16:24:42 +0100
-> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+On Mon, Jan 18, 2021 at 04:12:38PM +0200, Mika Westerberg wrote:
+> Hi,
 > 
->> 1c6c69525b40 ("genirq: Reject bogus threaded irq requests") makes sure
->> that threaded IRQs either
->>   - have IRQF_ONESHOT set
->>   - don't have the default just return IRQ_WAKE_THREAD primary handler
->>
->> This is necessary because level-triggered interrupts need to be masked,
->> either at device or irqchip, to avoid an interrupt storm.
->>
->> For spurious interrupts, the STM32 ADC driver still does this bogus
->> request though:
->>   - It doesn't set IRQF_ONESHOT
->>   - Its primary handler just returns IRQ_WAKE_THREAD if the interrupt
->>     is unexpected, i.e. !(status & enabled_mask)
+> On Mon, Jan 18, 2021 at 02:50:33PM +0100, Rafael J. Wysocki wrote:
+> > CC Mika and Andy.
+> > 
+> > On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
+> > <kai.heng.feng@canonical.com> wrote:
+> > >
+> > > On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
+> > > <kai.heng.feng@canonical.com> wrote:
+> > > >
+> > > > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
+> > > > "compatible" is present") creates two modaliases for certain ACPI
+> > > > devices. However userspace (systemd-udevd in this case) assumes uevent
+> > > > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
+> > > > assumption.
+> > > >
+> > > > Based on the assumption, systemd-udevd internally uses hashmap to
+> > > > store each line of uevent file, so the second modalias always replaces
+> > > > the first modalias.
+> > > >
+> > > > My attempt [1] is to add a new key, "MODALIAS1" for the second
+> > > > modalias. This brings up the question of whether each key in uevent
+> > > > file is unique. If it's no unique, this may break may userspace.
+> > >
+> > > Does anyone know if there's any user of the second modalias?
+> > > If there's no user of the second one, can we change it to OF_MODALIAS
+> > > or COMPAT_MODALIAS?
 > 
-> This seems 'unusual'.  If this is a spurious interrupt we should be
-> returning IRQ_NONE and letting the spurious interrupt protection
-> stuff kick in.
-> 
-> The only reason I can see that it does this is print an error message.
-> I'm not sure why we need to go into the thread to do that given
-> it's not supposed to happen. If we need that message at all, I'd
-> suggest doing it in the interrupt handler then return IRQ_NONE;
+> The only users I'm aware are udev and the busybox equivalent (udev,
+> mdev) but I'm not sure if they use the second second modalias at all so
+> OF_MODALIAS for the DT compatible string sounds like a good way to solve
+> this.
 
-As described, I run into the spurious IRQ case, so I think the message is
-still useful (until that's properly fixed), but yes, it should've returned
-IRQ_NONE in that case.
+As udev seems to "break" with this (which is where we got the original
+report from), I don't think you need to worry about that user :)
 
-With these changes, IRQF_ONESHOT shouldn't be necessary, but in practice
-the driver doesn't function correctly with the primary IRQ handler threaded.
+Does anyone use mdev anymore, and in any ACPI-supported systems?
 
-Olivier, Fabrice: Are you aware of this problem?
+thanks,
 
-Cheers,
-Ahmad
-
-> 
->>   - stm32mp151.dtsi describes the ADC interrupt as level-triggered
->>
->> Fix this by setting IRQF_ONESHOT to have the irqchip mask the IRQ
->> until the IRQ thread has finished.
->>
->> IRQF_ONESHOT also has the effect that the primary handler is no longer
->> forced into a thread. This makes the issue with spurious interrupts
->> interrupts disappear when reading the ADC on a threadirqs=1 kernel.
->> This used to result in following kernel error message:
->>
->> 	iio iio:device1: Unexpected IRQ: IER=0x00000000, ISR=0x0000100e
->> or
->> 	iio iio:device1: Unexpected IRQ: IER=0x00000004, ISR=0x0000100a
->>
->> But with this patch applied (or threaded IRQs disabled), this no longer
->> occurs.
->>
->> Cc: Lucas Stach <l.stach@pengutronix.de>
->> Reported-by: Holger Assmann <has@pengutronix.de>
->> Fixes: 695e2f5c289b ("iio: adc: stm32-adc: fix a regression when using dma and irq")
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->>  drivers/iio/adc/stm32-adc.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
->> index c067c994dae2..7e0e21c79ac8 100644
->> --- a/drivers/iio/adc/stm32-adc.c
->> +++ b/drivers/iio/adc/stm32-adc.c
->> @@ -1910,7 +1910,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
->>  
->>  	ret = devm_request_threaded_irq(&pdev->dev, adc->irq, stm32_adc_isr,
->>  					stm32_adc_threaded_isr,
->> -					0, pdev->name, indio_dev);
->> +					IRQF_ONESHOT, pdev->name, indio_dev);
->>  	if (ret) {
->>  		dev_err(&pdev->dev, "failed to request IRQ\n");
->>  		return ret;
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+greg k-h
