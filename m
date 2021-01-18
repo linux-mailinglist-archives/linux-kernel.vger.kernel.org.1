@@ -2,143 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608F32F97DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A1F2F97EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbhARCdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730897AbhARCdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:33:18 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B2C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 18:32:38 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id u19so15893303edx.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 18:32:37 -0800 (PST)
+        id S1731160AbhARCu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:50:29 -0500
+Received: from mail-dm6nam10on2044.outbound.protection.outlook.com ([40.107.93.44]:4704
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731128AbhARCuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:50:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=azxYsee1OCtFQbUriN1zwZAZ6KvqBoI8LamWWSOEelub5UgAMF27IVa+Hv2ua7T1iaCln0HCaCQDoonmslmKc1AVuCQy1ynkOW1XgSo2nA59viAy2vh0Gstt0xJ7yAeNNdwYY2pmcsM/C3ogotz484hsrZVKKbv0MidBZn9fZNduIHDuqR/zcDrT/Be+dkAhEvXHrmicWmJEocTkP1QM/2GmBnhppJ6obuSUqcw4W6tw1jV0w54zRLmQyML4Bkan+kbpmrDVaoRJjfiBIMZcBWH8hmxgm4WpfT8Ne7s18mo1iNeaC5Q0PkLDlPc5R4SjI3Aw1RPcyfrj23PfMlWR9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sewfEWt9Le9uh8w54oN736BzCE/Tb3R3X65VlU/nCLk=;
+ b=hiQm0xA5XBqlAV8WSR1BCv7HVtVRwnyYqe7rvdwW+JvczYQ+hUv0UkxGKpDTEHzN+xevKNXSeROie8NEgktZHBl4FhcTLqY6PpxRwtwYNeDl/9+m+OOq8exoGA8q2gCiag+sGSBPLCkHKoud7QkRVgAPSGu6hc6EyBCt0lQ5+qKXqRv83iapfZGm81tt/Bl35PeOKHTqItw5AoOTQk0asQutYfnJrWS3fZ9QkqlZ5X1sF7vivKWLEg5EUtxLhMNAbu3lpET4I+jy2r2LjSkP3APFfAfyZRyDyBn/Ic32bDBbyg9h0MN7tQPmX6ZrlQ4oatW53wlTxKejQIiCwfhidg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iw3qguMN2HQw0dg4Ex4c2c9WaYKPlQtajPSFcrfomWk=;
-        b=fu01MN1RBBEK4GjqxdZtdRWsxoe0l9gdxKc7VAXhfUw+tqXVYw6Oq+GVUbZqZioYee
-         N9PAsxghkj2YFg/oY2Kfd/aPAMevD0MMkPFwZVCRANgHNcOdnY9IYshUJI2yRtFJ64hW
-         Gkza/6nurwrZt6HTmS4djj7qoivCSpusIfO5NOPpDqePuVN+rSCRwwJ9ohen352cj+bR
-         LTuMgBLYNGITa5YwWJarpdUlAoXhDOrb8/ZjE5lwtaUmUPsdgglKrX+aendAxoUyz1L5
-         uBmgzrjKmHlNFy/MSMTacEjHvNPV+Ajgz13VDTg1/a5kATrlpS3NpWIivAhwrRC9XCY5
-         e4ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iw3qguMN2HQw0dg4Ex4c2c9WaYKPlQtajPSFcrfomWk=;
-        b=ZpRRAdIGf+vhbRd7YJL2IqS7uH51731vLD18JwN+gbMgaye7kFetrZo1Jyj53HMF7C
-         9INgqXt/EYV/0BIlGf1cK8Ta/A/wu96qFHOex+1bs4DhZndQlN7A5MRgToDohpwbDqVs
-         XGdJBQZhXKSDl6eqvqj8Dj4Npik3anM70qXcwwF6mXTIuwXHsvFqmkJCb2P7v1zlJ6u/
-         OcoR9saERxlebR7LOPv7tD/CMkj5ebMK+K8f5QPRYtKO0d1AICKGTMK0INjz/HmH/EQe
-         0smbIaOQ+6Jqvex/Tw0J1bOOMEZDVci6B46ojT9tC9GY7uj/uU9bi5+5RD+pJbjFX3yM
-         A/hA==
-X-Gm-Message-State: AOAM5317j5k6f0K/DVR4RiXq+fgf1sjkd3HVa+mrg8MPaLrg2tcMe1MB
-        4fFgRGN29fUQusdKwEqj/Niytm5Bz4lkXi2V1DkH
-X-Google-Smtp-Source: ABdhPJxghPKKFZfXRuqyf/ln2g2Vde9pBNxDQQMA4R+VxhCfUyDEYpwL6BrmysI20US1jRAcr454zHk78k+JbFhQuRg=
-X-Received: by 2002:aa7:c719:: with SMTP id i25mr13208470edq.197.1610937156426;
- Sun, 17 Jan 2021 18:32:36 -0800 (PST)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sewfEWt9Le9uh8w54oN736BzCE/Tb3R3X65VlU/nCLk=;
+ b=PV3386yO0JR4yDhn3X35Qi+sFvzpJI8+ZrQgNgx+A1rq+NVP2Qgt1L1s52xy6KmarOoumz+5eJA6citUFoRtb17PG5rc/otRRLVaQ2XMQ9c5e9qgdqfC/ojDqKIbwK+aPcC65jNiKI6Sf1Upx8zacjlMiYE6JoxPLnOJvqwAN5c=
+Received: from SN4PR0501CA0153.namprd05.prod.outlook.com
+ (2603:10b6:803:2c::31) by CH2PR02MB6614.namprd02.prod.outlook.com
+ (2603:10b6:610:a6::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Mon, 18 Jan
+ 2021 02:49:24 +0000
+Received: from SN1NAM02FT029.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2c:cafe::29) by SN4PR0501CA0153.outlook.office365.com
+ (2603:10b6:803:2c::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend
+ Transport; Mon, 18 Jan 2021 02:49:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT029.mail.protection.outlook.com (10.152.72.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3763.12 via Frontend Transport; Mon, 18 Jan 2021 02:49:24 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sun, 17 Jan 2021 18:49:18 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sun, 17 Jan 2021 18:49:18 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ mdf@kernel.org,
+ trix@redhat.com,
+ robh+dt@kernel.org,
+ linux-fpga@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=39926 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1l1KbV-0001PD-1j; Sun, 17 Jan 2021 18:49:17 -0800
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
+        <michal.simek@xilinx.com>, <linux-fpga@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <git@xilinx.com>, <chinnikishore369@gmail.com>,
+        Nava kishore Manne <nava.manne@xilinx.com>
+Subject: [PATCH 1/3] drivers: firmware: Add Pdi load API support
+Date:   Mon, 18 Jan 2021 08:13:16 +0530
+Message-ID: <20210118024318.9530-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
- <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
- <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
- <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
- <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
- <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
- <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
- <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
- <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
- <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
- <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com> <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
-In-Reply-To: <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Sun, 17 Jan 2021 18:32:25 -0800
-Message-ID: <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5a7bb548-df3e-4bc5-4637-08d8bb5baa34
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6614:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB66147C8BE60ACD5A86B97FC3C2A40@CH2PR02MB6614.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ai99X6/R8AW40anabKzCtwoI8dPDrYsE0O2ASvao1uXS02uZ4eUMTs3LN0hefDVx40h3YOw57Mqa2pY61kgnmL6nMzundTs08a1opI5RtcJh0Kop5tbKKix0LbaGtq1/yWlwVfMDHcT3D+ZS1N76I8ga6u2Vsk3dnGnWGrjzkEubUYC1Wfnp1/WNU/7PVm03I6TJQp8g4CZvklEQk2e4nf67eVI7DbUn0mDT2gvrwYIQPCdlyBLojVVzc5WpM2C5mgzM6683IquV4+Z0R+2obX9sBh962hpWFNGZ/OuJlfBbjw50VMbtkolM3unexdsgiAzsrXWPDZKc6pK4FEjNxmhO5noPg4Hi625fW6ZCXy395YImhBoC4hzJXI1mbfazTn6EQK5Z8CAVeGJtN0Vv95HqWml1CrNEAHv3u/3PCndCrSeQJRl3TRITnQ6JAsCHL6s2P9Ho8QDd37TIjOnWwDeAMohewE/BiGtVvGjohCadZLJXj5CUsMtyjivyGdeRTummEoLvCK9407xlfAD6Ww==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39850400004)(46966006)(70586007)(2906002)(70206006)(426003)(9786002)(336012)(36906005)(83380400001)(47076005)(5660300002)(8676002)(316002)(186003)(54906003)(110136005)(356005)(82310400003)(26005)(7636003)(2616005)(8936002)(82740400003)(107886003)(7696005)(1076003)(478600001)(4326008)(36756003)(102446001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 02:49:24.4106
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a7bb548-df3e-4bc5-4637-08d8bb5baa34
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT029.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6614
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> [ big snip ]
+This patch adds load pdi api support to enable pdi/partial loading from
+linux. Programmable Device Image (PDI) is combination of headers, images
+and bitstream files to be loaded. Partial PDI is partial set of image/
+images to be loaded.
 
-[More snippage.]
+Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+---
+ drivers/firmware/xilinx/zynqmp.c     | 17 +++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h |  9 +++++++++
+ 2 files changed, 26 insertions(+)
 
-> [ CC Fangrui ]
->
-> With the attached...
->
->    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
-> undefined symbols
->
-> ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
-> For details see ClangBuiltLinux issue #1250 "Unknown symbol
-> _GLOBAL_OFFSET_TABLE_ loading kernel modules".
->
-Thanks for confirming that this works with the above patch.
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 7eb9958662dd..a466225b9f9e 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -897,6 +897,23 @@ int zynqmp_pm_set_requirement(const u32 node, const u32 capabilities,
+ }
+ EXPORT_SYMBOL_GPL(zynqmp_pm_set_requirement);
+ 
++/**
++ * zynqmp_pm_load_pdi - Load and process pdi
++ * @src:       Source device where PDI is located
++ * @address:   Pdi src address
++ *
++ * This function provides support to load pdi from linux
++ *
++ * Return: Returns status, either success or error+reason
++ */
++int zynqmp_pm_load_pdi(const u32 src, const u64 address)
++{
++	return zynqmp_pm_invoke_fn(PM_LOAD_PDI, src,
++				   lower_32_bits(address),
++				   upper_32_bits(address), 0, NULL);
++}
++EXPORT_SYMBOL_GPL(zynqmp_pm_load_pdi);
++
+ /**
+  * zynqmp_pm_aes - Access AES hardware to encrypt/decrypt the data using
+  * AES-GCM core.
+diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+index 2a0da841c942..87114ee645b1 100644
+--- a/include/linux/firmware/xlnx-zynqmp.h
++++ b/include/linux/firmware/xlnx-zynqmp.h
+@@ -52,6 +52,9 @@
+ #define	ZYNQMP_PM_CAPABILITY_WAKEUP	0x4U
+ #define	ZYNQMP_PM_CAPABILITY_UNUSABLE	0x8U
+ 
++/* Loader commands */
++#define PM_LOAD_PDI	0x701
++
+ /*
+  * Firmware FPGA Manager flags
+  * XILINX_ZYNQMP_PM_FPGA_FULL:	FPGA full reconfiguration
+@@ -354,6 +357,7 @@ int zynqmp_pm_write_pggs(u32 index, u32 value);
+ int zynqmp_pm_read_pggs(u32 index, u32 *value);
+ int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
+ int zynqmp_pm_set_boot_health_status(u32 value);
++int zynqmp_pm_load_pdi(const u32 src, const u64 address);
+ #else
+ static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
+ {
+@@ -538,6 +542,11 @@ static inline int zynqmp_pm_set_boot_health_status(u32 value)
+ {
+ 	return -ENODEV;
+ }
++
++static inline int zynqmp_pm_load_pdi(const u32 src, const u64 address)
++{
++	return -ENODEV;
++}
+ #endif
+ 
+ #endif /* __FIRMWARE_ZYNQMP_H__ */
+-- 
+2.18.0
 
-> @ Bill Nick Sami Nathan
->
-> 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
-
-The integrated assembler and this option are more-or-less orthogonal
-to each other. One can still use the GNU assembler with PGO. If you're
-having an issue, it may be related to ClangBuiltLinux issue #1250.
-
-> 2. Can you please try Nick's DWARF v5 support patchset v5 and
-> CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
->
-I know Nick did several tests with PGO. He may have looked into it
-already, but we can check.
-
-> I would like to know what the impact of the Clang's Integrated
-> Assembler and DWARF v5 are.
->
-> I dropped both means...
->
-> 1. Do not pass "LLVM_IAS=1" to make.
-> 2. Use default DWARF v2 (with Nick's patchset: CONFIG_DEBUG_INFO_DWARF2=y).
->
-> ...for a successfull build and boot on bare metal.
->
-
-[Next message]
-
-> On each rebuild I need to pass to make ...?
->
->   LLVM=1 -fprofile-use=vmlinux.profdata
->
-Yes.
-
-> Did you try together with passing LLVM_IAS=1 to make?
-
-One of my tests was with the integrated assembler enabled. Are you
-finding issues with it?
-
-The problem with using top-of-tree clang is that it's not necessarily
-stable. You could try using the clang 11.x release (changing the
-"CLANG_VERSION >= 120000" in kernel/pgo/Kconfig/ to "CLANG_VERSION >=
-110000").
-
--bw
