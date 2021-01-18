@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997BD2FAD85
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0DF2FAD8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388851AbhARWkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S2389889AbhARWtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731525AbhARWkQ (ORCPT
+        with ESMTP id S2388912AbhARWk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:40:16 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCB1C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:35 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id d26so17900232wrb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:35 -0800 (PST)
+        Mon, 18 Jan 2021 17:40:56 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E51C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:36 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id s24so659770wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HBTSSoCXxREsZFAmmX/GpB9ZPMIR59wSvx0flaJq2Y0=;
-        b=G1CA1CTcg2soi6z2VIAwSsq7evwrTn1uKE9nB9LLxkvgp0uIKZJAnTOhq41B9ugXi8
-         AdFDXf1sNPgUQpVDQ/uYUr7s8D+RLcBD09K0wML8VW/rTY1JB+B2ekkNxLrQIUJzAWDk
-         hlc2UVK+7HgL21ZQMnNeAu6rLz3QkZAoZ8PM/meM0PRxRg3j1Q9N2LwBdsyq6LtSsxx6
-         nOE8PtIla0tmNJi9YTn8uz1zID5z5UiPNWrLS6wzjsCLuXNcfSSg6cXLMnOz6epmBgSS
-         wbPHKWOCOoRnAy0rVyZq8xgzZWvKG/KCWqK5t5id6nVWVLV6ZGkFqP2Xo3R1lJMKbqoW
-         S9Bg==
+        bh=Lb2XS7ZcCtCLtyoYlVUinWRuYfofz6JXw77zijmyJYg=;
+        b=Ldiw4Gf0MTjFaVnLoy3BL0N2vcjdNOhGNDXm7HKgYWZRvPPxnQstMp2LQDiAGHnwgX
+         Jaj9bPk6owNN9mKasD6NHZSDfeWyaYRx4gMG4PTd8Dyxy5r8OSEqODiisiHXlhdafqL9
+         DVKIPa4txhh9XEBj5AMRtH+X4xk2RjjGiMsLAl03tRb/dWQ1z54l0iQnNUWi5S7O6wFx
+         MCPcEqlRAyOCJaXek9qWZGK50J5nEzQYpAbY6qkcWby8h+Gs/15bfzHPt6kwRR9Spr5/
+         tTCJT2bOKwVR453Ieax62/Xi868qYEXWf0s4F1akX2jTxtEseA+nX8nw/0IRAmyor8IM
+         dnDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HBTSSoCXxREsZFAmmX/GpB9ZPMIR59wSvx0flaJq2Y0=;
-        b=eXhaJtSXJwEBw1azOFbbj+67RyqXYrIjhrUyDI0sCFR1f1Lo6B0cmvuuw/3r+5k1Ss
-         QqoMRfo1avwrBMpgaeO9zrandUa20LT3tOg3ivSzS+ykNiyscCB3av2xUVgB9+wuBORy
-         jWIa8rZOeRb2HcMoEIGFCPqwKTAWnmsGR6tgvg9FWWQ6KMm2mC5JRGuj1czzx/+OiClH
-         MkqwtbtgN5yHdc/BAiTVYKUT/bpfRzkuBeDb+PEhh/ZfRFEBDwkh16FR90rwDwS1yD96
-         ysP8NLK+TKk8B72trhfTqAPl5zntEbUJAWbl6tOS+UYFl23SaZhUnP8V83b1SVRKPRih
-         c0zQ==
-X-Gm-Message-State: AOAM5319aoz+9H/UXAwV9tPhxp3M8o6bryS4ILRqqnyWQVhocpuMSlXQ
-        nx7/+jL7x5ujDQinUJTSYWo4vg==
-X-Google-Smtp-Source: ABdhPJzkj5gadzjX5ycNXDkOys2Dmknt2x/f5AlQ4lXy45zYV9LoqY3r4MNb3Raw15rGy7jCI+KaZA==
-X-Received: by 2002:adf:b1db:: with SMTP id r27mr1462192wra.125.1611009574195;
-        Mon, 18 Jan 2021 14:39:34 -0800 (PST)
+        bh=Lb2XS7ZcCtCLtyoYlVUinWRuYfofz6JXw77zijmyJYg=;
+        b=g44rVvV12jyo+EbrPgvyGczEwCgLpdAkSd+v52a2gMqWdg7GT8CSEB6detaBtLFOS0
+         8Wetdmmcp9ZRStn/tCzFazIxmFmoZBl/nXObIEGzb5nufIe9eY5rhtiV9Wk7GW2HXh6h
+         NsW+Tz7TJex/gsud6dee8MfoYrKFgS59Vm7OCQPr/b/bayuV1ILmPVu9K5suK/3XK6YS
+         tC/gEV/Cg9icuC8y8OwIHyF5aW+5bvQ8Vk8jdmmO/nvjnsR3eili+vEYla5dyUJqJNEE
+         YpXpnMU0eVaBTIV05mGJFZ/3+Mpt9rpEvW1MuIAOFVJlsWQ0r7M/HOwxLdNpnoVrM8Gn
+         mwvg==
+X-Gm-Message-State: AOAM530gnqiW4UzAT9ynQil/mqxakLh/qQhm5EMuUC62zCXHoNqc57ws
+        C6eELm6F0yHYA7xVfPE6ko3YjAhISFYKrHrw
+X-Google-Smtp-Source: ABdhPJzb2OOIk7V4VE8x9T/jFz45lKgw4h05aD3bvL6OmlPKNIuUnLRRIpHwQBtKJzWQ/FxLNp0Zvw==
+X-Received: by 2002:a7b:cbd7:: with SMTP id n23mr1314240wmi.116.1611009575415;
+        Mon, 18 Jan 2021 14:39:35 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.32
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:33 -0800 (PST)
+        Mon, 18 Jan 2021 14:39:34 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 01/20] RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
-Date:   Mon, 18 Jan 2021 22:39:10 +0000
-Message-Id: <20210118223929.512175-2-lee.jones@linaro.org>
+Subject: [PATCH 02/20] RDMA/core: device: Fix formatting in worthy kernel-doc header and demote another
+Date:   Mon, 18 Jan 2021 22:39:11 +0000
+Message-Id: <20210118223929.512175-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
 References: <20210118223929.512175-1-lee.jones@linaro.org>
@@ -69,43 +66,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/i40iw/i40iw_hmc.c:64: warning: Function parameter or member 'idx' not described in 'i40iw_find_sd_index_limit'
- drivers/infiniband/hw/i40iw/i40iw_hmc.c:64: warning: Excess function parameter 'index' description in 'i40iw_find_sd_index_limit'
- drivers/infiniband/hw/i40iw/i40iw_hmc.c:94: warning: Function parameter or member 'pd_idx' not described in 'i40iw_find_pd_index_limit'
- drivers/infiniband/hw/i40iw/i40iw_hmc.c:94: warning: Excess function parameter 'pd_index' description in 'i40iw_find_pd_index_limit'
+ drivers/infiniband/core/device.c:1896: warning: Function parameter or member 'ibdev' not described in 'ib_get_client_nl_info'
+ drivers/infiniband/core/device.c:1896: warning: Function parameter or member 'client_name' not described in 'ib_get_client_nl_info'
+ drivers/infiniband/core/device.c:1896: warning: Function parameter or member 'res' not described in 'ib_get_client_nl_info'
+ drivers/infiniband/core/device.c:2328: warning: Function parameter or member 'nldev_cb' not described in 'ib_enum_all_devs'
+ drivers/infiniband/core/device.c:2328: warning: Function parameter or member 'skb' not described in 'ib_enum_all_devs'
 
-Cc: Faisal Latif <faisal.latif@intel.com>
-Cc: Shiraz Saleem <shiraz.saleem@intel.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_hmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_hmc.c b/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-index 5484cbf55f0fa..8bd72af9e0990 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-@@ -46,7 +46,7 @@
-  * i40iw_find_sd_index_limit - finds segment descriptor index limit
-  * @hmc_info: pointer to the HMC configuration information structure
-  * @type: type of HMC resources we're searching
-- * @index: starting index for the object
-+ * @idx: starting index for the object
-  * @cnt: number of objects we're trying to create
-  * @sd_idx: pointer to return index of the segment descriptor in question
-  * @sd_limit: pointer to return the maximum number of segment descriptors
-@@ -78,7 +78,7 @@ static inline void i40iw_find_sd_index_limit(struct i40iw_hmc_info *hmc_info,
-  * @type: HMC resource type we're examining
-  * @idx: starting index for the object
-  * @cnt: number of objects we're trying to create
-- * @pd_index: pointer to return page descriptor index
-+ * @pd_idx: pointer to return page descriptor index
-  * @pd_limit: pointer to return page descriptor index limit
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index e96f979e6d52d..3d08373c77979 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1887,9 +1887,9 @@ static int __ib_get_client_nl_info(struct ib_device *ibdev,
+ 
+ /**
+  * ib_get_client_nl_info - Fetch the nl_info from a client
+- * @device - IB device
+- * @client_name - Name of the client
+- * @res - Result of the query
++ * @ibdev: IB device
++ * @client_name: Name of the client
++ * @res: Result of the query
+  */
+ int ib_get_client_nl_info(struct ib_device *ibdev, const char *client_name,
+ 			  struct ib_client_nl_info *res)
+@@ -2317,7 +2317,7 @@ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
+ 	up_read(&devices_rwsem);
+ }
+ 
+-/**
++/*
+  * ib_enum_all_devs - enumerate all ib_devices
+  * @cb: Callback to call for each found ib_device
   *
-  * Calculates the page descriptor index and index limit for the resource
 -- 
 2.25.1
 
