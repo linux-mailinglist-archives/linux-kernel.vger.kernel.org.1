@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98CD2F9E50
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FDF2F9EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389384AbhARLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:36:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
+        id S2390893AbhARLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:53:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390379AbhARLfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:35:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 976A9221EC;
-        Mon, 18 Jan 2021 11:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610969703;
-        bh=oXcjoXT+gCij5gox1DhkN8rids03zLaBhtgQQQ5MTJY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RmJgLCL2ZISwMPkYjh/iygth35csm9is7KQYqg8XxoOr+CtER9Oqbfio/iHQBvhT/
-         UXkmXe7XYJK9LRCS3U6qVGGcEMEYuKaVG8/8c+owLWKFGgSJQIxgWtkoRFA4HU8J73
-         BqGaR9aAY20JeyXGtLUXw9rpOX4JRz531bNOkSxvZ8yy3OFc1+Y9wqP2TeLHyeXXQd
-         Nj7on3j/Gj20v1yCaVVmTS+krhw0SX0p2WWj9l6/aT2gWrrdfFn9LpSphZzfNs8lrd
-         XwDPsipwxZd1D4ucGkkPNPeNmBJyaDJ4CItvONoBOtMQeGl9LmEi78tKy8TCsEJ7R3
-         OGckGngigMmig==
-Date:   Mon, 18 Jan 2021 12:34:59 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, talho@nvidia.com, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: bpmp-tegra: Ignore unknown I2C_M flags
-Message-ID: <20210118113459.GF1018@ninjato>
-References: <20210112102225.3737326-1-mperttunen@nvidia.com>
- <20210117112003.GB1983@ninjato>
- <99326ffc-7590-84ce-dfa7-7c09bc17ca31@kapsi.fi>
+        id S2390678AbhARLlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:41:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEDDF224B0;
+        Mon, 18 Jan 2021 11:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610970026;
+        bh=f96gWCLr5D/LAGhmXh0ZQJcg1Ss+6GC7drgFM0GWmWA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=z6yFonH6srdgWtDVgu2tyHVQmzJzhg0WgAWgAI5o+GP8auVXeW3IRZaLwMqT3DUlU
+         k3i+cY5k8ZMwoV4UZ1Uv+eeeDrUZYNCkWC6kvLLKrADNdVn3BR9yw4ZsxhLf/itaYW
+         zhyLWrVoCBdDp+H59PhWRlCeZkf8DDpr4Z1p9Yno=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Yongping Zhang <yongping.zhang@broadcom.com>,
+        Pavan Chebbi <pavan.chebbi@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 64/76] bnxt_en: Improve stats context resource accounting with RDMA driver loaded.
+Date:   Mon, 18 Jan 2021 12:35:04 +0100
+Message-Id: <20210118113344.026749359@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GLp9dJVi+aaipsRk"
-Content-Disposition: inline
-In-Reply-To: <99326ffc-7590-84ce-dfa7-7c09bc17ca31@kapsi.fi>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Michael Chan <michael.chan@broadcom.com>
 
---GLp9dJVi+aaipsRk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 869c4d5eb1e6fbda66aa790c48bdb946d71494a0 upstream.
+
+The function bnxt_get_ulp_stat_ctxs() does not count the stats contexts
+used by the RDMA driver correctly when the RDMA driver is freeing the
+MSIX vectors.  It assumes that if the RDMA driver is registered, the
+additional stats contexts will be needed.  This is not true when the
+RDMA driver is about to unregister and frees the MSIX vectors.
+
+This slight error leads to over accouting of the stats contexts needed
+after the RDMA driver has unloaded.  This will cause some firmware
+warning and error messages in dmesg during subsequent config. changes
+or ifdown/ifup.
+
+Fix it by properly accouting for extra stats contexts only if the
+RDMA driver is registered and MSIX vectors have been successfully
+requested.
+
+Fixes: c027c6b4e91f ("bnxt_en: get rid of num_stat_ctxs variable")
+Reviewed-by: Yongping Zhang <yongping.zhang@broadcom.com>
+Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -216,8 +216,12 @@ int bnxt_get_ulp_msix_base(struct bnxt *
+ 
+ int bnxt_get_ulp_stat_ctxs(struct bnxt *bp)
+ {
+-	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP))
+-		return BNXT_MIN_ROCE_STAT_CTXS;
++	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP)) {
++		struct bnxt_en_dev *edev = bp->edev;
++
++		if (edev->ulp_tbl[BNXT_ROCE_ULP].msix_requested)
++			return BNXT_MIN_ROCE_STAT_CTXS;
++	}
+ 
+ 	return 0;
+ }
 
 
-> > Also, this driver has no dedicated maintainer. Is there someone up for
-> > this task? There is probably little to do and it will speed up patch
-> > acceptance because I pick patches once the driver maintainer is happy.
-> >=20
->=20
-> I think it falls under the 'TEGRA ARCHITECTURE SUPPORT' wildcard (Thierry
-> and Jon). Do we need a more specific maintainer entry?
->=20
-> If it's helpful to Thierry and Jon, I guess I could pick it up.
-
-I am fine with both. I'd just like a line
-
-	"F:	drivers/i2c/busses/i2c-tegra-bpmp.c"
-
-somewhere in MAINTAINERS. If that's in Tegra architecture, also good.
-However, i2c-tegra.c already has a dedicated entry and spreading the
-work avoids bottlenecks, so I think it might be the better option. But
-I'll leave it to you guys. In any case, thanks for volunteering!
-
-
---GLp9dJVi+aaipsRk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAFcl8ACgkQFA3kzBSg
-KbZc/A//beRLpHVewEVuZZJb2FkgIZhzbfyfpZ1Dgxsi7Igpk+8UFvvJjOemPWiR
-wOml0upHDuiGvAiHRw2W3Qg7d1oRp+TCXH/kEqPSXMh8SoFeXzI/lBxZrMBJFisa
-pdvO+OXbTPqCWcXEvhzCB5hS4PGuniB1mMawCs97WZrBWVfSTDjqSZpx5miPAvRR
-a8Uj8HZnO4BlwOKJlBc2jwVNBArziEVKvVoxtsrhnUpxJTWV89pOVctHLMAV694R
-vAYPH4bdyyGHgPulvRHGE6q4C/tumFKr56oRGEjJHyIN5hgeqMaoQN7hIuVU+bAx
-yFGy3xt112LtxJ/H/v8hchliW/8sd5cC9PkYjuIum+P7fCu3eVzmzhIWI85BO6SP
-4Cn9Tga/Bho0IUVEwMi84xydG82cKtViRr1/yC4NSynPXnd4E0q+obnZZslU0fPC
-N3Q7EDg02vA5wpoDvflGe64V9naLWhpWjsIaz+Ef0X5wbfdD75Fruvb9iEUTnTLW
-tkrRx+c5EutkAVBHlfXaHN8TFzZltf8nvdzaLUM5g9Wd2C8ytc/6/EkpTEO+nFa8
-w+8Hv5qebGoqYjjN5h5qQNVIf2LwgMN8D0bTCsdJyC6IddOpPlE2DHmTqpE7BpvY
-q9uFIrLkLX+/lhGregbh/JqRaYZMMsBY0Se7ZEleu04OygLj+yU=
-=MeL+
------END PGP SIGNATURE-----
-
---GLp9dJVi+aaipsRk--
