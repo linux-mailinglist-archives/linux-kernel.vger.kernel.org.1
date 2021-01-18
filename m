@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D578E2FA57F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC18C2FA579
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405880AbhARQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:02:23 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:37546 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405872AbhARPrq (ORCPT
+        id S2406261AbhARQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:01:26 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:37780 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405901AbhARPrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:47:46 -0500
-Received: by mail-oi1-f175.google.com with SMTP id r189so8448633oih.4;
-        Mon, 18 Jan 2021 07:47:30 -0800 (PST)
+        Mon, 18 Jan 2021 10:47:55 -0500
+Received: by mail-ot1-f50.google.com with SMTP id o11so16656713ote.4;
+        Mon, 18 Jan 2021 07:47:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=i2fXl5nr8dRcreMh5NWEXvw6/KX/mVOXwAbBHxbOFbU=;
-        b=PWN+FZnl5ZIrwWVwDc2R8PU43tkiTrUai7Rk4XoMB7DMkLYr7kV7Zdti40/yKYYBC4
-         kJHpmNzaevYuk3g8SHw57/kw9esZSs0HJZOtz99Fwno3pZloic4FXVVvH+xNRyuSYWrD
-         SX/pRRt014X/W6PYFonA4CGF6vhSErBH9wYnYXXpEbneaNgL0OfdfVG7LKwpCEyt491t
-         kfg3dlEYBhnmp4uvVqJGJt+UrNCHB+ChJ7BPkLHlngGhNv0HlNF/6+z88k3zCNn/eURB
-         6rNYbWqPthCmsBMrRrNzl4SnsnamxViB2IHYXKDWhESH1K5dut3A6fYnDpI3PSoii2A+
-         k5nA==
-X-Gm-Message-State: AOAM530EJzNij5D8mR59qUSECFLmO01oKV70NfPuGb8AHU255McENxzM
-        DjNdopg+pno7LwjEzwSNyg==
-X-Google-Smtp-Source: ABdhPJxazd83doE5xsvnsVKmOvEkkXqEk74obX4VH4gMN2jv/AJP7Nx800PQsBoqL5EsLGWP+lcPKA==
-X-Received: by 2002:a54:4401:: with SMTP id k1mr8648825oiw.145.1610984825265;
-        Mon, 18 Jan 2021 07:47:05 -0800 (PST)
+        bh=WHAijgRPzgM6AOFxyA1t0PneGLCP7qF9iSM709PN7no=;
+        b=gSiTDR/yvkXHwlbpvd1f0RUm8x1TJDtM3cnPi9GufhQIKSrfrjzm5ICmHFJd4Bq0bw
+         w7JpYOYMXlh0uTxhlabov4J261Q7WVOcjsyEnnJV0ZNtq/CcvLVWzZcHBUem10xr8q3n
+         UFiwMdvvHrMMNUR9M2l5r4WMyq/A+7ysECfMEt3luw6uy3Af+56XXmtUK48r7dYMKaKT
+         R34b2YDs83H39zOlQ1/Z1EO84cS0bteIONKSKjC2nfSKwMjXpbWRTWYEW9S3FF1UHkgN
+         YwMhJffmjR2y/NKGTK4jYMqj+qz7ERhM8Il5mSth6T2J3hZDGEFHP8qx3H3a/4NKmohY
+         jyNQ==
+X-Gm-Message-State: AOAM531r2C5TD9a84TX36+Pfkln5HiVlQVHWw5cmL79hbK+hk3dgJVy3
+        lfI3Rt6aqYv4t5HZL4ORAA==
+X-Google-Smtp-Source: ABdhPJwMs7UNxARBHzKpWRi3Gfe2AEbExUF2dRMnHv6f7YY4I9jyFTC64qaSblOnLQPi2S5WTivgVg==
+X-Received: by 2002:a9d:6255:: with SMTP id i21mr66114otk.346.1610984832609;
+        Mon, 18 Jan 2021 07:47:12 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t19sm4005018otp.36.2021.01.18.07.47.03
+        by smtp.gmail.com with ESMTPSA id x31sm3819079otb.4.2021.01.18.07.47.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 07:47:04 -0800 (PST)
-Received: (nullmailer pid 3984434 invoked by uid 1000);
+        Mon, 18 Jan 2021 07:47:10 -0800 (PST)
+Received: (nullmailer pid 3984439 invoked by uid 1000);
         Mon, 18 Jan 2021 15:47:02 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     devicetree@vger.kernel.org, kernel@pengutronix.de,
-        broonie@kernel.org, linux-kernel@vger.kernel.org,
-        lee.jones@linaro.org, alistair23@gmail.com, lgirdwood@gmail.com,
-        linux-imx@nxp.com, robh+dt@kernel.org
-In-Reply-To: <20210117042539.1609-1-alistair@alistair23.me>
-References: <20210117042539.1609-1-alistair@alistair23.me>
-Subject: Re: [PATCH 1/6] devicetree/bindings: Initial commit of silergy,sy7636a.yaml
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        linux-kernel@vger.kernel.org, mdf@kernel.org, robh+dt@kernel.org,
+        trix@redhat.com, devicetree@vger.kernel.org, git@xilinx.com,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        chinnikishore369@gmail.com, michal.simek@xilinx.com
+In-Reply-To: <20210118024318.9530-2-nava.manne@xilinx.com>
+References: <20210118024318.9530-1-nava.manne@xilinx.com> <20210118024318.9530-2-nava.manne@xilinx.com>
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: Add binding doc for versal fpga manager
 Date:   Mon, 18 Jan 2021 09:47:02 -0600
-Message-Id: <1610984822.698513.3984433.nullmailer@robh.at.kernel.org>
+Message-Id: <1610984822.721524.3984438.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Jan 2021 20:25:34 -0800, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> driver.
+On Mon, 18 Jan 2021 08:13:17 +0530, Nava kishore Manne wrote:
+> From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> This patch adds binding doc for versal fpga manager driver.
+> 
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 > ---
->  .../bindings/mfd/silergy,sy7636a.yaml         | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+>  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:15:1: [error] syntax error: could not find expected ':' (syntax)
 
 dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a simple key
+  in "<unicode string>", line 14, column 1
+could not find expected ':'
+  in "<unicode string>", line 15, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:  while scanning a simple key
+  in "<unicode string>", line 14, column 1
+could not find expected ':'
+  in "<unicode string>", line 15, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1427906
+See https://patchwork.ozlabs.org/patch/1427979
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
