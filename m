@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113112FA930
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454532FA948
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbhARSql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:46:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
+        id S2390630AbhARLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:40:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390651AbhARLk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:40:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF161222BB;
-        Mon, 18 Jan 2021 11:40:18 +0000 (UTC)
+        id S2390269AbhARLht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 419D822BF3;
+        Mon, 18 Jan 2021 11:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970019;
-        bh=DT61ktrx0hlfK+C1W36fZkooVs01lN9QmXYVtqtlHKc=;
+        s=korg; t=1610969819;
+        bh=05DX630A9PR7Oe8hMyY9ck96ad9ymBtgx3IIv8RXasY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+9Kk0zpNfmS+kB7d5yfa9stlNbdTrfe112SyVMQY2KdppwNhO85Li/8nkqPpngbE
-         MKHMi5WwVn+P3DwBYRHv5WybVtn+/Sq7IPos4JeYDwtwuK1qHgdekzuD8THsXme5hv
-         tlzXNMZYdYnsJ51pLYPRJzqeFrJzs8XA1ohTGr/w=
+        b=F768+eqL4yKHu6w9kZE2ZcfNE6FuzZ9Qikr0IrG5tJuW8X2zdS9IGH+RnonTXp8AC
+         A9G2StNgHE87p5dcPUAyM/h818x09+4OiwwjOTcyysawqpmH3+FXlS9kHUXgH+batl
+         mn3+YCyc2szcB94jEmjzfifWkG2TsoZuiS729COw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Halcrow <mhalcrow@google.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 61/76] ext4: fix superblock checksum failure when setting password salt
+        stable@vger.kernel.org, Nir Soffer <nsoffer@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 38/43] dm: eliminate potential source of excessive kernel log noise
 Date:   Mon, 18 Jan 2021 12:35:01 +0100
-Message-Id: <20210118113343.885380923@linuxfoundation.org>
+Message-Id: <20210118113336.790087745@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Mike Snitzer <snitzer@redhat.com>
 
-commit dfd56c2c0c0dbb11be939b804ddc8d5395ab3432 upstream.
+commit 0378c625afe80eb3f212adae42cc33c9f6f31abf upstream.
 
-When setting password salt in the superblock, we forget to recompute the
-superblock checksum so it will not match until the next superblock
-modification which recomputes the checksum. Fix it.
+There wasn't ever a real need to log an error in the kernel log for
+ioctls issued with insufficient permissions. Simply return an error
+and if an admin/user is sufficiently motivated they can enable DM's
+dynamic debugging to see an explanation for why the ioctls were
+disallowed.
 
-CC: Michael Halcrow <mhalcrow@google.com>
-Reported-by: Andreas Dilger <adilger@dilger.ca>
-Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201216101844.22917-8-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reported-by: Nir Soffer <nsoffer@redhat.com>
+Fixes: e980f62353c6 ("dm: don't allow ioctls to targets that don't map to whole devices")
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/ioctl.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/md/dm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1160,7 +1160,10 @@ resizefs_out:
- 			err = ext4_journal_get_write_access(handle, sbi->s_sbh);
- 			if (err)
- 				goto pwsalt_err_journal;
-+			lock_buffer(sbi->s_sbh);
- 			generate_random_uuid(sbi->s_es->s_encrypt_pw_salt);
-+			ext4_superblock_csum_set(sb);
-+			unlock_buffer(sbi->s_sbh);
- 			err = ext4_handle_dirty_metadata(handle, NULL,
- 							 sbi->s_sbh);
- 		pwsalt_err_journal:
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -515,7 +515,7 @@ static int dm_blk_ioctl(struct block_dev
+ 		 * subset of the parent bdev; require extra privileges.
+ 		 */
+ 		if (!capable(CAP_SYS_RAWIO)) {
+-			DMWARN_LIMIT(
++			DMDEBUG_LIMIT(
+ 	"%s: sending ioctl %x to DM device without required privilege.",
+ 				current->comm, cmd);
+ 			r = -ENOIOCTLCMD;
 
 
