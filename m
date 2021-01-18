@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D61C2F9F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF6F2F9F5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391523AbhARM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39194 "EHLO mail.kernel.org"
+        id S2391178AbhARMTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:19:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390878AbhARLqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89AF82223E;
-        Mon, 18 Jan 2021 11:45:37 +0000 (UTC)
+        id S2390880AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53432222BB;
+        Mon, 18 Jan 2021 11:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970338;
-        bh=WLUBkwutdD4Jmnv+nSkNYZFBjie6rEJunQHsQPBrnDQ=;
+        s=korg; t=1610970342;
+        bh=SzQGuHebs9xocX/e/O6/CMMo8MrCd8y4OTB0WjxdZzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1A1v62YUMqVRMC+IklFDtNIkuZFC9Vidn2RrVFaVbRYGSbTszBfOFJdB9dziAAEaz
-         3BObuBV1g9XWGK+xKrV/XqRYMNqNovvZuLkRghxzPAYfHXqv5HMCJvju/AAIjRt91L
-         UHNRZ2tKntKKcln5dpSFMwPBJ5QaD5iC86vMxIv4=
+        b=bPBR5gv9Zf224eTVkL68EDrYw9pCkzXQsouThFY+WQqA0EtrLfb48aH6q8EBtiY9c
+         7aC5NR2gXRp8WB6dSi0+Wh/VdMC55zFnjInMpcphuRtxunvW4gLTVCDOANuB8gBjB7
+         Y3NYnx9Pon+Wo3SrO6VYYEZT4fSrmboOXyHsQfWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alaa Hleihel <alaa@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 107/152] net/mlx5: E-Switch, fix changing vf VLANID
-Date:   Mon, 18 Jan 2021 12:34:42 +0100
-Message-Id: <20210118113357.865053250@linuxfoundation.org>
+Subject: [PATCH 5.10 109/152] mm: fix clear_refs_write locking
+Date:   Mon, 18 Jan 2021 12:34:44 +0100
+Message-Id: <20210118113357.954800440@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -40,66 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Hleihel <alaa@nvidia.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 25c904b59aaf4816337acd415514b0c47715f604 ]
+[ Upstream commit 29a951dfb3c3263c3a0f3bd9f7f2c2cfde4baedb ]
 
-Adding vf VLANID for the first time, or after having cleared previously
-defined VLANID works fine, however, attempting to change an existing vf
-VLANID clears the rules on the firmware, but does not add new rules for
-the new vf VLANID.
+Turning page table entries read-only requires the mmap_sem held for
+writing.
 
-Fix this by changing the logic in function esw_acl_egress_lgcy_setup()
-so that it will always configure egress rules.
+So stop doing the odd games with turning things from read locks to write
+locks and back.  Just get the write lock.
 
-Fixes: ea651a86d468 ("net/mlx5: E-Switch, Refactor eswitch egress acl codes")
-Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mellanox/mlx5/core/esw/acl/egress_lgcy.c  | 27 +++++++++----------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ fs/proc/task_mmu.c | 32 +++++++++-----------------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-index 2b85d4777303a..3e19b1721303f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-@@ -95,22 +95,21 @@ int esw_acl_egress_lgcy_setup(struct mlx5_eswitch *esw,
- 		return 0;
- 	}
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ee5a235b30562..ab7d700b2caa4 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1215,41 +1215,26 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
+ 			.type = type,
+ 		};
  
--	if (!IS_ERR_OR_NULL(vport->egress.acl))
--		return 0;
--
--	vport->egress.acl = esw_acl_table_create(esw, vport->vport,
--						 MLX5_FLOW_NAMESPACE_ESW_EGRESS,
--						 table_size);
--	if (IS_ERR(vport->egress.acl)) {
--		err = PTR_ERR(vport->egress.acl);
--		vport->egress.acl = NULL;
--		goto out;
-+	if (!vport->egress.acl) {
-+		vport->egress.acl = esw_acl_table_create(esw, vport->vport,
-+							 MLX5_FLOW_NAMESPACE_ESW_EGRESS,
-+							 table_size);
-+		if (IS_ERR(vport->egress.acl)) {
-+			err = PTR_ERR(vport->egress.acl);
-+			vport->egress.acl = NULL;
-+			goto out;
++		if (mmap_write_lock_killable(mm)) {
++			count = -EINTR;
++			goto out_mm;
 +		}
-+
-+		err = esw_acl_egress_lgcy_groups_create(esw, vport);
-+		if (err)
-+			goto out;
- 	}
- 
--	err = esw_acl_egress_lgcy_groups_create(esw, vport);
--	if (err)
--		goto out;
+ 		if (type == CLEAR_REFS_MM_HIWATER_RSS) {
+-			if (mmap_write_lock_killable(mm)) {
+-				count = -EINTR;
+-				goto out_mm;
+-			}
 -
- 	esw_debug(esw->dev,
- 		  "vport[%d] configure egress rules, vlan(%d) qos(%d)\n",
- 		  vport->vport, vport->info.vlan, vport->info.qos);
+ 			/*
+ 			 * Writing 5 to /proc/pid/clear_refs resets the peak
+ 			 * resident set size to this mm's current rss value.
+ 			 */
+ 			reset_mm_hiwater_rss(mm);
+-			mmap_write_unlock(mm);
+-			goto out_mm;
++			goto out_unlock;
+ 		}
+ 
+-		if (mmap_read_lock_killable(mm)) {
+-			count = -EINTR;
+-			goto out_mm;
+-		}
+ 		tlb_gather_mmu(&tlb, mm, 0, -1);
+ 		if (type == CLEAR_REFS_SOFT_DIRTY) {
+ 			for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 				if (!(vma->vm_flags & VM_SOFTDIRTY))
+ 					continue;
+-				mmap_read_unlock(mm);
+-				if (mmap_write_lock_killable(mm)) {
+-					count = -EINTR;
+-					goto out_mm;
+-				}
+-				for (vma = mm->mmap; vma; vma = vma->vm_next) {
+-					vma->vm_flags &= ~VM_SOFTDIRTY;
+-					vma_set_page_prot(vma);
+-				}
+-				mmap_write_downgrade(mm);
+-				break;
++				vma->vm_flags &= ~VM_SOFTDIRTY;
++				vma_set_page_prot(vma);
+ 			}
+ 
+ 			mmu_notifier_range_init(&range, MMU_NOTIFY_SOFT_DIRTY,
+@@ -1261,7 +1246,8 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
+ 		if (type == CLEAR_REFS_SOFT_DIRTY)
+ 			mmu_notifier_invalidate_range_end(&range);
+ 		tlb_finish_mmu(&tlb, 0, -1);
+-		mmap_read_unlock(mm);
++out_unlock:
++		mmap_write_unlock(mm);
+ out_mm:
+ 		mmput(mm);
+ 	}
 -- 
 2.27.0
 
