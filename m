@@ -2,118 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F7B2FA6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45852FA6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393534AbhARQun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:50:43 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40689 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392799AbhARQs7 (ORCPT
+        id S2393243AbhARQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393423AbhARQtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:48:59 -0500
-Received: by mail-io1-f71.google.com with SMTP id l18so30394138iok.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:48:43 -0800 (PST)
+        Mon, 18 Jan 2021 11:49:19 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BF3C061573;
+        Mon, 18 Jan 2021 08:48:37 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id s11so11030192edd.5;
+        Mon, 18 Jan 2021 08:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MdavDPScT8OMhzBsegf4N4uuSFdYSkhFpD+67Vj7XX4=;
+        b=rjR+0plW0jpyDPgI6e9OUdyRjou3VeQ4qpxqBG4i+DV6JbdbOvKLk63j4OWwBKmW8R
+         M9Cx5VPfOMI1eTNEhutT7gh4rcGKXVvX+bvhAm4f/LBHg0T59erwISKG2qvBSfPqnji4
+         gyqbBXlutXpdB8Hw2x2L+XimtM5305BezpSXAcq5Gqxr2W/PoSpTbhwjDx49u24F2cUi
+         Enh3cXAf2WxwL5a3RW0BtK1Ho3cdTruGR6IXrNpgkEkvaszjs3COnsX0NhZPhNePFut9
+         +TJK4lsKmLMFdR/T5Sb/QgiwwIGrpL8K8XH5PLoATmTEM7tgOljPnWLFlKvTnzNE9Ltj
+         DFag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=JUuVdTOisvuEkvRCf1xzi+cw44dGW+Nv6pXH3+R3PYk=;
-        b=sTemghrd5MwqYR2jQIlSRT83elbuD6rJ1RA/Mp0Z6G1ypxvOllmJuunGqh/tKzMR9t
-         1IIKRba5GzilR0Ost7fs2DYqzKjjCWhCvKUVdzZOfKD7bLOS+GRC2v7vZg4lQ0uDMhns
-         nTsx7Ak5T8H3mQfKdUludn4OJfP6R92bo6bqyrioTJz5p7jxyDQTt8KzVXlKczmrFEgg
-         nukpexRsXpi95/GkjUnXqhaVbX0PjjtRGpt6Ab9dY8z/VLaB+sM5kuIJYZzd2FbycT3p
-         HsOaSlWtZCOZGWwXz+KJqrlJezPSLXxMwpQzC45B+I6m2gOS2Es5TtxlKWPwBaVJPG1O
-         LHwA==
-X-Gm-Message-State: AOAM5337eVfmNBNkyaYWvIzaty6064X+XWh3B5jAONolpCXG6gMj8ox+
-        zOAmClBYNKJqMpT0/K8wPytNWIlYXZa71fzELr6VxembhhCc
-X-Google-Smtp-Source: ABdhPJwTcy4CmoIaSdh7toEt5Efupkuv+RbQyY4cRj3hFH9SvpvjQBIN40esaffLiA3YCG9vu+FL/o6QMF7fxQm5wWWe9jER4hJy
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MdavDPScT8OMhzBsegf4N4uuSFdYSkhFpD+67Vj7XX4=;
+        b=LPaZpPwE5S5sLdCn0tfTEOqFM7hq7TnzAKqJTEn8XO4kPr+9kQ7qUK80TuO1O/Xff8
+         bkSBvHPazbn97AHJFA+Z7azJcl0+3OXghwKFU6+ox3Zg87o6W9tBjEoJ3jRneM53r4eJ
+         VJAUjViYZnYgYvarAYmthrvJ1qohh029EXF/WRrAjUYtnuv6XP23wDM2y84IeF5LvjN7
+         nUokZFYAZzKjx0xNN/lLTg0KyJLlIipD+/+esuVTrPzpWVd5UcFErTVcBGOWIARAFay6
+         mdaGQLTbIxWhPOK4xJRyqEZ4ZrCPH1kanf/PFcuuKE8MbJDcF2ydlYFf2Co50dNom7kH
+         TuXA==
+X-Gm-Message-State: AOAM531V05WSr6W0MjmH2mB12ikFsKADmxK7P5bwbMbLjpSAZnrnAcKX
+        8PzeG3HHiozA3Y5S8rBQarXjZPZhaio=
+X-Google-Smtp-Source: ABdhPJzpYtzVUi2XrlE1b/f2Q7A5d5j6NrtBFUvOylh6ry9hP/bQDkPOSi1NNGAvQoaDbG4A2SJGFw==
+X-Received: by 2002:aa7:ce87:: with SMTP id y7mr262073edv.211.1610988516027;
+        Mon, 18 Jan 2021 08:48:36 -0800 (PST)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id m24sm9618925ejo.52.2021.01.18.08.48.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 08:48:35 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: rockchip: cleanup cpu_thermal node of
+ rk3399-rock960.dts
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210118163306.8693-1-jbx6244@gmail.com>
+Message-ID: <c6dfa1a7-4a61-2e80-fe43-add1af611395@gmail.com>
+Date:   Mon, 18 Jan 2021 17:48:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b47:: with SMTP id f7mr144838ilu.96.1610988497466;
- Mon, 18 Jan 2021 08:48:17 -0800 (PST)
-Date:   Mon, 18 Jan 2021 08:48:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020fc9605b92f7de9@google.com>
-Subject: WARNING in smk_set_cipso
-From:   syzbot <syzbot+438aafc66532f0dba169@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210118163306.8693-1-jbx6244@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+Sorry.
+This can go in the bin...
+It needs more cleanup...
+See question below.
 
-HEAD commit:    65f0d241 Merge tag 'sound-5.11-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=136656f7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=438aafc66532f0dba169
-compiler:       clang version 11.0.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17499268d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132a5207500000
+On 1/18/21 5:33 PM, Johan Jonker wrote:
+> The cpu_thermal node in the rk3399-rock960.dts file does not
+> reference &cpu_thermal directly to add the board-specific parts,
+> but also repeats all the SoC default properties.
+> Clean the whole thing up and fix alignment.
+> Place node in the correct alphabetical order.
+> 
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 75 ++++++++++++-------------
+>  1 file changed, 36 insertions(+), 39 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+> index b20774081..bff8a73d9 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+> @@ -63,6 +63,42 @@
+>  
+>  };
+>  
+> +&cpu_thermal {
+> +	polling-delay-passive = <100>;
+> +	polling-delay = <1000>;
+> +	thermal-sensors = <&tsadc 0>;
+> +	sustainable-power = <1550>;
+> +
+> +	trips {
+> +		cpu_alert0: cpu_alert0 {
+> +			temperature = <65000>;
+> +			hysteresis = <2000>;
+> +			type = "passive";
+> +		};
+> +
+> +		cpu_alert1: cpu_alert1 {
+> +			temperature = <75000>;
+> +			hysteresis = <2000>;
+> +			type = "passive";
+> +		};
+> +
+> +		cpu_crit: cpu_crit {
+> +			temperature = <95000>;
+> +			hysteresis = <2000>;
+> +			type = "critical";
+> +		};
+> +	};
+> +
+> +	cooling-maps {
+> +		map0 {
+> +			trip = <&cpu_alert1>;
+> +			cooling-device =
+> +				<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +				<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +		};
+> +	};
+> +};
+> +
+>  &pcie0 {
+>  	ep-gpios = <&gpio2 RK_PA2 GPIO_ACTIVE_HIGH>;
+>  };
+> @@ -125,45 +161,6 @@
+>  	status = "okay";
+>  };
+>  
+> -&thermal_zones {
+> -	cpu_thermal: cpu-thermal {
+> -		polling-delay-passive = <100>;
+> -		polling-delay = <1000>;
+> -		thermal-sensors = <&tsadc 0>;
+> -		sustainable-power = <1550>;
+> -
+> -		trips {
+> -			cpu_alert0: cpu_alert0 {
+> -				    temperature = <65000>;
+> -				    hysteresis = <2000>;
+> -				    type = "passive";
+> -			};
+> -
+> -			cpu_alert1: cpu_alert1 {
+> -				    temperature = <75000>;
+> -				    hysteresis = <2000>;
+> -				    type = "passive";
+> -			};
+> -
+> -			cpu_crit: cpu_crit {
+> -				  temperature = <95000>;
+> -				  hysteresis = <2000>;
+> -				  type = "critical";
+> -			};
+> -		};
+> -
+> -		cooling-maps {
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+> -			     map0 {
+> -
+> -			     trip = <&cpu_alert1>;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=155dda20d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=175dda20d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=135dda20d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+438aafc66532f0dba169@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8454 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Modules linked in:
-CPU: 1 PID: 8454 Comm: syz-executor584 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc90000e9f900 EFLAGS: 00010246
-RAX: ffffc90000e9f980 RBX: ffffc90000e9f980 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90000e9f9a8
-RBP: ffffc90000e9fa40 R08: dffffc0000000000 R09: ffffc90000e9f980
-R10: fffff520001d3f35 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000012 R14: 1ffff920001d3f2c R15: 0000000000040cc0
-FS:  0000000002629880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f751f4c71a8 CR3: 000000001264e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
- memdup_user_nul+0x26/0xf0 mm/util.c:260
- smk_set_cipso+0x18b/0x7e0 security/smack/smackfs.c:859
- vfs_write+0x289/0xc90 fs/read_write.c:603
- ksys_write+0x171/0x2a0 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440359
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc65526ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440359
-RDX: 0000000020014b6f RSI: 0000000020014b00 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000014 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b60
-R13: 0000000000401bf0 R14: 0000000000000000 R15: 0000000000000000
+The trip property points to "cpu_alert1", while in rk3399.dtsi that is
+"&cpu_alert0"
+What is correct here?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> -			     cooling-device =
+> -					<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> -					<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> -			};
+> -		};
+> -	};
+> -};
+> -
+>  &usbdrd_dwc3_0 {
+>  	dr_mode = "otg";
+>  };
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+				map0 {
+					trip = <&cpu_alert0>;
+					cooling-device =
+						<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+						<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
