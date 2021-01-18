@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFD82FA209
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20AB2FA20C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404803AbhARNsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:48:10 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50896 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404527AbhARNqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:46:13 -0500
-Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l1UqW-00011C-AN; Mon, 18 Jan 2021 13:45:29 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-input@vger.kernel.org (open list:HID CORE LAYER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] HID: multitouch: Apply MT_QUIRK_CONFIDENCE quirk for multi-input devices
-Date:   Mon, 18 Jan 2021 21:45:23 +0800
-Message-Id: <20210118134523.178605-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S2404817AbhARNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:48:22 -0500
+Received: from mga18.intel.com ([134.134.136.126]:65233 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404795AbhARNr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:47:29 -0500
+IronPort-SDR: PHbFSyYwdZKF2dJwYf5oO1yoczyN55npoH3GI2HjEtf+akQ+WsJwzJD2dnfr+5XLjHCwQ0BHxk
+ y4Ykk5KJTKgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="166470431"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="166470431"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:45:38 -0800
+IronPort-SDR: PR+hv6hLqfNAtcPkVR04+0gnc9Nps5QoJuhmEnVa+uj3n6TC6qC5b0f0KRAHLvkbZ6i4z61E+3
+ vByLHB6fpw9A==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="406222305"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:45:33 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1Urb-002Bz6-Fo; Mon, 18 Jan 2021 15:46:35 +0200
+Date:   Mon, 18 Jan 2021 15:46:35 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 5/7] gpio: gpiolib-acpi: Export acpi_get_gpiod()
+Message-ID: <20210118134635.GL4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-6-djrscally@gmail.com>
+ <20210118134502.GK4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118134502.GK4077@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Palm ejection stops working on some Elan and Synaptics touchpad after
-commit 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for
-some devices").
+On Mon, Jan 18, 2021 at 03:45:02PM +0200, Andy Shevchenko wrote:
+> On Mon, Jan 18, 2021 at 12:34:26AM +0000, Daniel Scally wrote:
 
-The commit changes the mt_class from MT_CLS_WIN_8 to
-MT_CLS_WIN_8_FORCE_MULTI_INPUT, so MT_QUIRK_CONFIDENCE isn't applied
-anymore.
+And prefix: "gpiolib: acpi: ".
 
-So also apply the quirk since MT_CLS_WIN_8_FORCE_MULTI_INPUT is
-essentially MT_CLS_WIN_8.
-
-Fixes: 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for some devices")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/hid/hid-multitouch.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index 0743ef51d3b2..8429ebe7097e 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -758,7 +758,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 			MT_STORE_FIELD(inrange_state);
- 			return 1;
- 		case HID_DG_CONFIDENCE:
--			if (cls->name == MT_CLS_WIN_8 &&
-+			if ((cls->name == MT_CLS_WIN_8 ||
-+			     cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT) &&
- 				(field->application == HID_DG_TOUCHPAD ||
- 				 field->application == HID_DG_TOUCHSCREEN))
- 				app->quirks |= MT_QUIRK_CONFIDENCE;
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
