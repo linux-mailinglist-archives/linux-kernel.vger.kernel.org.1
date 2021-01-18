@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFED2F9765
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA842F9767
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730631AbhARBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:42:12 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43765 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbhARBlx (ORCPT
+        id S1730783AbhARBoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728797AbhARBnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 20:41:53 -0500
-Received: by mail-io1-f69.google.com with SMTP id n18so6707145ioo.10
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 17:41:37 -0800 (PST)
+        Sun, 17 Jan 2021 20:43:43 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE47C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 17:43:03 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id v1so8459268pjr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 17:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z0CCc/Q0ksa1TWlIDKNldNTNgYekIptHEj3JiZuvXRM=;
+        b=intyiid3dU/Q3TO11c8luW2cUrMy1xoCdlDwSzOdDQf9ETy4WDCWMls6nE2rflUL4w
+         JKQQcHLsKJ+5iM/9yx/umo3Ci9GKw0Q8v7+We56PaKHytEgIHwgL5HS/ODhZrBY6r2Zf
+         hqbTy2Ko0EbzlkiODLE4akAP4C8tx/TcL4yNDMLBpvtRGYfuhAqMzpoxj3oL4QACYVkS
+         sYglssWvyaU3HmHpX6hzZaTINHj5vOKwvzOBzbiKJym2MQLJUKdSxHYjC8u2WSPN7KvW
+         ontWl0LxDUmt/pUDWhVqUr104Jf9co/TiZ/a3NmGLI35zjA1Mn67LMzqt1Mk5eaVv4co
+         7Swg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zXt1APc63d5cqI4C3FVQzfai/THABxZpNpQe8JJ5MKo=;
-        b=Mog352l+AKoDfGMziXiGd9d44zfCWZRZs6yV9HiVFFgAr/hA6EpED0qdHs50QItpXd
-         28pAAXvMVZ1N9MUXWid3fPxZGlF32jFRVKY4fqhqGg3rygDRgBuLjS6RpnMDIudMzQZh
-         o6okTJnuS4vBB6vp2YCTCeM3SzguktElD+n+ZQA/KVWrG3JY5t60Jl2MP8RUd6z/n+Lk
-         FXnZIpFw0c3P5sxeW8GxzMQdawZaAwW1cXuV+j4m5CqvvfYh0pueHORkgc98WJ0FIaIK
-         2EK5ZoQ0NM6o0UxW1FY761LcwynRuJvGT/Ei2k3L4wevbZnwCTIgTIb0TQpLQjn2wlo8
-         thLA==
-X-Gm-Message-State: AOAM533osE2gA976GEezo4mt5c1Y8eyr1+HrzhHgL/lE+9ZLndY8DRcn
-        w2snbPnfTGjQPzwI5gBKYY7RQF2jQ7lxwHMY6uVst/G2sWSr
-X-Google-Smtp-Source: ABdhPJxhyH2KZ1i2QjJL1genE0aYzGwyDF4fwoVfzFRdAdSet85f0cfW/AbR0mGFCPXl517bIx2GQX6qojJGb9aNthgLSSBy1lKp
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z0CCc/Q0ksa1TWlIDKNldNTNgYekIptHEj3JiZuvXRM=;
+        b=bA4w0JdOC+cfr6g7Muh7/iLWxVECpu7J+g+1INiAUwibkQ77XETqm3oJhQPYYJ497M
+         cFg+K92ViuluocDTTauZKuzOA34iqswEZGgHEt2tXJ2Nolni/K7Wqkq4R2Jb8UQWYRQL
+         +LOemYR1FHysKoIcjuKsS0ScfGRPkz5phs5vhuUVcs/+N8FQHnuatpMC5AzigN5tC6yX
+         wTtY6wq1cD3+ED0LpWwS18vkwOxBEh06w5cuf60xGrw0FJwSCVZ9dyoKxPB8/wmDvdfk
+         u7GRlhgs6AnMXzwcujbgJsrIS8N4VDJ3gvZl7PHrnc7zs6ztFo1bp2DE2V75oBkuPdHE
+         dkMw==
+X-Gm-Message-State: AOAM533NTJAhyBhIy8VVGie6Ys8FfOEkolXwpHizXuxVcu9aWL/z5eO3
+        hAfRvEAintNW6uw/nkuKVBsB8lV1MrzKf9E8yMA=
+X-Google-Smtp-Source: ABdhPJzuvOJY+AZ+TZheP1ZbLItDsxrcHX0qkVGHdNJVK0bzAtxk2zoQZVY6ClihlgYDHsEZTMZtnQ==
+X-Received: by 2002:a17:90b:107:: with SMTP id p7mr14503911pjz.110.1610934182794;
+        Sun, 17 Jan 2021 17:43:02 -0800 (PST)
+Received: from [10.2.218.189] ([61.120.150.75])
+        by smtp.gmail.com with ESMTPSA id e29sm14685309pfj.174.2021.01.17.17.43.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 17:43:02 -0800 (PST)
+Subject: PING: [PATCH v5 0/2] misc: pvpanic: introduce capability & event
+ attribute
+To:     gregkh@linuxfoundation.org
+Cc:     arnd@arndb.de, pbonzini@redhat.com, linux-kernel@vger.kernel.org
+References: <20210110115358.79100-1-pizhenwei@bytedance.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <cee80030-dab1-fe79-f14c-24e45532d814@bytedance.com>
+Date:   Mon, 18 Jan 2021 09:42:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:6d10:: with SMTP id m16mr17070188jac.86.1610934072416;
- Sun, 17 Jan 2021 17:41:12 -0800 (PST)
-Date:   Sun, 17 Jan 2021 17:41:12 -0800
-In-Reply-To: <000000000000872b5405b36f8e31@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000024a0ec05b922d186@google.com>
-Subject: Re: WARNING in input_register_device
-From:   syzbot <syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, ebiggers@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, rafael@kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210110115358.79100-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi, Greg
 
-commit c318840fb2a42ce25febc95c4c19357acf1ae5ca
-Author: Alan Stern <stern@rowland.harvard.edu>
-Date:   Wed Dec 30 16:20:44 2020 +0000
+What's the next step I should take?
 
-    USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
+On 1/10/21 7:53 PM, zhenwei pi wrote:
+> v4 -> v5:
+> Use sysfs_emit to export attribute value.
+> Only allow subset of capability to set on events.
+> Add more detailed infomation in document.
+> 
+> v3 -> v4:
+> Use event sysfs attribute instead of module parameter.
+> Use driver dev_groups instead of creating files by sysfs_* API.
+> 
+> v2 -> v3:
+> Seperate the function to 2 parts:
+>      1, use sysfs to expose device capability.
+>      2, add a module parameter to set limitation by user.
+> 
+> v1 -> v2:
+> Remove device info log, use module parameter to expose capability.
+> 
+> v1:
+> The guest sides determines pvpanic capability by RDPT, before kicking
+> host side, check the event is supported or not.
+> 
+> zhenwei pi (2):
+>    misc: pvpanic: introduce device capability
+>    misc: pvpanic: introduce module parameter 'events'
+> 
+>   .../ABI/testing/sysfs-bus-pci-devices-pvpanic | 14 +++++
+>   drivers/misc/pvpanic.c                        | 58 +++++++++++++++++--
+>   2 files changed, 67 insertions(+), 5 deletions(-)
+>   create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> 
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10be15d7500000
-start commit:   2c85ebc5 Linux 5.10
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8aff533d6c635e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=92340f7b2b4789907fdb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1763d433500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ef12cb500000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+zhenwei pi
