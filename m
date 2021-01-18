@@ -2,63 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1372FA3DD
+	by mail.lfdr.de (Postfix) with ESMTP id 8817F2FA3DE
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393111AbhARO7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:59:15 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33803 "EHLO elvis.franken.de"
+        id S2393118AbhARO7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:59:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393055AbhARO6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:58:53 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l1Vyq-0008VQ-01; Mon, 18 Jan 2021 15:58:08 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A961EC06E7; Mon, 18 Jan 2021 15:57:58 +0100 (CET)
-Date:   Mon, 18 Jan 2021 15:57:58 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mips-next 0/2] MIPS: optimize relocations processing
-Message-ID: <20210118145758.GB11749@alpha.franken.de>
-References: <20210116150126.20693-1-alobakin@pm.me>
+        id S2393088AbhARO7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:59:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCFAF22C7E;
+        Mon, 18 Jan 2021 14:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610981901;
+        bh=nh5KakTK6nTSgE6PtzTNzNznKC5ibgWCISjQhk0kTsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LzyfKaPVnpa7W9U9p8yK5Gg7abCBOku3OUsP8ZijR04c9zrMXFLkPHFqZLGxHWP5E
+         X+ZFlhny43fdMOkjqHkDBRQR9i9OpakW9pPLEZNJidMO+OB46d6WJvYhCYJqkxQti4
+         cZlQfHEKanVkrtkO2zRv66ft+IeLGDQxMXwT/U7k=
+Date:   Mon, 18 Jan 2021 15:58:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        lennart@poettering.net,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
+Message-ID: <YAWiCkJwiOS8i50c@kroah.com>
+References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
+ <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
+ <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
+ <20210118141238.GQ968855@lahna.fi.intel.com>
+ <YAWalPeMPt44lBgI@kroah.com>
+ <20210118144853.GP4077@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210116150126.20693-1-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210118144853.GP4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 03:01:57PM +0000, Alexander Lobakin wrote:
-> This series converts the logics of two main relocation functions,
-> one for relocatable kernel and one for modules, from the arrays of
-> handlers (callbacks) to plain switch-case functions, which allows
-> the compiler to greatly optimize the code, so the relocations will
-> be applied faster with lesser code size.
+On Mon, Jan 18, 2021 at 04:48:53PM +0200, Andy Shevchenko wrote:
+> On Mon, Jan 18, 2021 at 03:26:28PM +0100, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 18, 2021 at 04:12:38PM +0200, Mika Westerberg wrote:
+> > > On Mon, Jan 18, 2021 at 02:50:33PM +0100, Rafael J. Wysocki wrote:
+> > > > On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
+> > > > <kai.heng.feng@canonical.com> wrote:
+> > > > > On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
+> > > > > <kai.heng.feng@canonical.com> wrote:
+> > > > > >
+> > > > > > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
+> > > > > > "compatible" is present") creates two modaliases for certain ACPI
+> > > > > > devices. However userspace (systemd-udevd in this case) assumes uevent
+> > > > > > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
+> > > > > > assumption.
+> > > > > >
+> > > > > > Based on the assumption, systemd-udevd internally uses hashmap to
+> > > > > > store each line of uevent file, so the second modalias always replaces
+> > > > > > the first modalias.
+> > > > > >
+> > > > > > My attempt [1] is to add a new key, "MODALIAS1" for the second
+> > > > > > modalias. This brings up the question of whether each key in uevent
+> > > > > > file is unique. If it's no unique, this may break may userspace.
+> > > > >
+> > > > > Does anyone know if there's any user of the second modalias?
+> > > > > If there's no user of the second one, can we change it to OF_MODALIAS
+> > > > > or COMPAT_MODALIAS?
+> > > 
+> > > The only users I'm aware are udev and the busybox equivalent (udev,
+> > > mdev) but I'm not sure if they use the second second modalias at all so
+> > > OF_MODALIAS for the DT compatible string sounds like a good way to solve
+> > > this.
+> > 
+> > As udev seems to "break" with this (which is where we got the original
+> > report from), I don't think you need to worry about that user :)
 > 
-> Tested on MIPS32 R2 with GCC 10.2 and LLVM 11.0 with -O2.
+> > Does anyone use mdev anymore, and in any ACPI-supported systems?
 > 
-> Alexander Lobakin (2):
->   MIPS: module: optimize module relocations processing
->   MIPS: relocatable: optimize the relocation process
-> 
->  arch/mips/kernel/module.c   | 109 +++++++++++++++++-------------------
->  arch/mips/kernel/relocate.c |  54 ++++++++++--------
->  2 files changed, 82 insertions(+), 81 deletions(-)
+> Yes, regularly.
 
-series applied to mips-next.
+Ok, and how badly does it break when MODALIAS is multiple lines like
+this?  Or can it handle it?
 
-Thomas.
+thanks,
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+greg k-h
