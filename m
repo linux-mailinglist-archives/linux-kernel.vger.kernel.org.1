@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63D02FA56A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E302FA4E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405776AbhARP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:58:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57152 "EHLO mail.kernel.org"
+        id S2406034AbhARPgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:36:06 -0500
+Received: from mga02.intel.com ([134.134.136.20]:63972 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405809AbhARPcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:32:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E32CC22285;
-        Mon, 18 Jan 2021 15:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610983897;
-        bh=EeJ+3Jco+lNKpr9hXwjA6rDdhWpj9jUW25+zaQVf7+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kKV0t6kteF/opVxelGpcl1v/ZaY3GHnF2PzmRP0LQ9Y7K0LIy14BHgvhg9pLfTbNx
-         beqYvvrBU7yci2IpSpddUzGAeU9qrZfn5EfyqEHK0b08NXA3K6BB95YsJ0OHn9uehw
-         A1eX0rejxG/yPfldnPjSRQ8S4GeBmWzQy7zNgL+a5UoVQ4eYdy/Sb+C6p2KyrzZthp
-         dIB8AVTvlXKriKQPw+/Bh/eKKYuLtdwvgNCpWq2zb7UlAC8jCUnKWtm8Sg/SHFq2Fo
-         U4Rez8JYJuBfbeMy2C2/WdZw/WOT4+d73Gr5LC8rm52rq+xmKsB0KGofwea+YvjO34
-         Gw2xZVh2F6llQ==
-Date:   Mon, 18 Jan 2021 10:31:35 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <20210118153135.GA4035784@sasha-vm>
-References: <20210118014951.250815-1-sashal@kernel.org>
- <YAVTDETPaJuaRPfc@kroah.com>
- <YAVT0XV7uX2NpIRe@kroah.com>
- <20210118133959.GZ4035784@sasha-vm>
- <YAWSgjWHCcJt6m0j@kroah.com>
+        id S2405947AbhARPdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:33:06 -0500
+IronPort-SDR: qKLvXPzNERWBf1sJYJFKIoxPpHwWWhK2KqeG+GDfS5ma8jrjOK8jHdWbxyPHLu7Iui0cKRJW03
+ /v+0mxgX4/zQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="165906259"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="165906259"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:31:20 -0800
+IronPort-SDR: KN74coCIjSJQJohpAoATfBJRz1D5s39ayV45mr7VDhXTMgjcNrAmW2NhN0GSFFsKeMr8Pp3dRd
+ kvs8VKtCwqwQ==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="466400206"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:31:15 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1WVu-002I8S-2f; Mon, 18 Jan 2021 17:32:18 +0200
+Date:   Mon, 18 Jan 2021 17:32:18 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] ACPI: scan: Rearrange memory allocation in
+ acpi_device_add()
+Message-ID: <20210118153218.GX4077@smile.fi.intel.com>
+References: <3494203.VBaj39JGmp@kreacher>
+ <2999734.9HhbEeWEHR@kreacher>
+ <8218eff4-6629-ac20-ec3f-a66aad445bb6@redhat.com>
+ <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAWSgjWHCcJt6m0j@kroah.com>
+In-Reply-To: <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 02:52:02PM +0100, Greg KH wrote:
->On Mon, Jan 18, 2021 at 08:39:59AM -0500, Sasha Levin wrote:
->> I think it would also affect code that doesn't do things based on
->> SBULEVEL. Consider something like:
->>
->> 	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
->>
->> Which will cause 4.4.256 to now change the result of that comparison.
->
->Sure, but there are no in-kernel users like this, so my sympathy is
->quite low :)
+On Mon, Jan 18, 2021 at 04:16:16PM +0100, Rafael J. Wysocki wrote:
+> On Sat, Jan 16, 2021 at 1:37 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> > On 1/14/21 7:46 PM, Rafael J. Wysocki wrote:
 
-Wouldn't it be an issue for the hacky in-kernel users too? For example,
-right now the USB code does:
+...
 
-	#define KERNEL_REL      bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
-	#define KERNEL_VER      bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
+> > When I have cases like this, where 2 mallocs are necessary I typically do it like this:
+> >
+> >         const char *bus_id;
+> >
+> >         ...
+> >
+> >         } else {
+> >                 acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+> >                                              GFP_KERNEL);
+> >                 bus_id = kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+> >                 if (!acpi_device_bus_id || !bus_id) {
+> >                         kfree(acpi_device_bus_id);
 
-After 4.4.256, KERNEL_VER will be (5) rather than (4), indicating a
-version of 4.5.
+
+> >                         kfree(bus_id);
+
+Just to be sure, shouldn't it be kfree_const() ?
+
+> >                         result = -ENOMEM;
+> >                         goto err_unlock;
+> >                 }
+> >                 acpi_device_bus_id->bus_id = bus_id;
+> >                 list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+> >         }
+> >
+> >         ...
+> >
+> > So that there is only one if / 1 error-handling path for both mallocs.
+> > I personally find this a bit cleaner.
 
 -- 
-Thanks,
-Sasha
+With Best Regards,
+Andy Shevchenko
+
+
