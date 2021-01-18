@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56122F980B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 04:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6C32F9812
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 04:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731451AbhARDGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 22:06:00 -0500
-Received: from mga05.intel.com ([192.55.52.43]:45162 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731147AbhARDFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 22:05:54 -0500
-IronPort-SDR: KzMC1EBT+Shiac1PsXCwcfeCHSmSNUPa7gTWeajuBk2I9yL836enUMYSKbuIUS3uj4JYblPN/h
- P9gfNBwO5F+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="263556039"
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="263556039"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 19:04:08 -0800
-IronPort-SDR: 2QFC9SFjxHtjPSyFEPzw1mF522hlQsr3r54tSaeChFAQ8611TZpql+9smSqfvxmLgircbAbIFL
- 0NhhCrHfcKiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="466222499"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Jan 2021 19:04:06 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
-Date:   Mon, 18 Jan 2021 10:58:00 +0800
-Message-Id: <20210118025800.34620-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S1731002AbhARDKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 22:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729621AbhARDKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 22:10:16 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400E1C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 19:09:36 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id w1so8388640pjc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 19:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y7fVUHJpnbiVdDH0WkhU1b1wymkei/DPXiWGa0ITBTE=;
+        b=r6JyUrIQNeHV5o/KTBM5N19gF1uNyoUaCfIspIYK2RDXngjTk+vi7iUtpEWUFyfPmo
+         vZeB4j6NxZsS36VTFjwM1teAazyaEfL60a22OHxZ9BSrzizOJWk8nxQN10qJ8DyZjpz/
+         kkfeCzlu+zv8yCnNdVf9Z5ADMUTtd70+Jh3+mjeefqcJXZUdb5KItrp47Ym8/UpWxEdi
+         +Pon+K6K5XRgi3qixt9RDUzzVD40BJeep9mtzKa+owlCD0bRm8YUAskEe2GVdXKCk8fJ
+         +owi7Q4203+OaOcGTcqMwR0Jve2csxv90KXIRIuF595nQLoJSAi6OURWw3Kdcz8Glsho
+         G2uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y7fVUHJpnbiVdDH0WkhU1b1wymkei/DPXiWGa0ITBTE=;
+        b=EFvPmy3jljP7qFnSn53H1zhtAgfkBmx9X7x2Fbd2g4+C9Gqoqn7T8y50688SCXtlKF
+         dFIkpm2Tu0kKHd33VBRHi9rIog+XfpU/PMVqUwbyTm1nJ+X6qpAtNPgQh3V26bxlPIWr
+         CDRu8dqYGyq1YHFyWvY+SQ94o1Xgw6fTyYuZD0V+/hOMOHrlTv8di2XrPhnLrVAQaBll
+         IDHHlvnZ9/REGbZ2z/YjjpWdt1dTziPYMi9+0dNidH7sPkhXrQFWdfUlAdWNGesEnsNB
+         /MsYEmLksiSBRACpjKjiNbjAJTJJMfTSkhfU+8FVJHF3Q/ZfCiU04TY1dzrKdpZ6tOdM
+         OmFQ==
+X-Gm-Message-State: AOAM533oi3jOMNvyMkQ45ZVcTQV7NeAJF07emXpIInEnk3gteW+ErQvO
+        9jjTo1yMuYEm5J2nE6IFZEQ=
+X-Google-Smtp-Source: ABdhPJyn+h+lOgNKwYk+RTChRWeEBeEGyyiRCdutVdXDyaX6GRNyFRLwab0gU7p6KyCTnSY7nUNDUg==
+X-Received: by 2002:a17:902:e551:b029:de:8dba:84a3 with SMTP id n17-20020a170902e551b02900de8dba84a3mr8430343plf.8.1610939375725;
+        Sun, 17 Jan 2021 19:09:35 -0800 (PST)
+Received: from [10.230.29.29] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id e24sm14594805pjt.16.2021.01.17.19.09.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Jan 2021 19:09:34 -0800 (PST)
+Subject: Re: [PATCH] initramfs: Panic with memory information
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, opendmb@gmail.com,
+        Barret Rhoden <brho@google.com>, Arnd Bergmann <arnd@arndb.de>
+References: <20210114231517.1854379-1-f.fainelli@gmail.com>
+ <20210117133355.10fe86c628279161bb3435d4@linux-foundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <36c6065f-0680-4ac0-c480-1382aa13fcb0@gmail.com>
+Date:   Sun, 17 Jan 2021 19:09:32 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210117133355.10fe86c628279161bb3435d4@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we know vPMU will not work properly when (1) the guest bit_width(s)
-of the [gp|fixed] counters are greater than the host ones, or (2) guest
-requested architectural events exceeds the range supported by the host, so
-we can setup a smaller left shift value and refresh the guest cpuid entry,
-thus fixing the following UBSAN shift-out-of-bounds warning:
 
-shift exponent 197 is too large for 64-bit type 'long long unsigned int'
 
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- intel_pmu_refresh.cold+0x75/0x99 arch/x86/kvm/vmx/pmu_intel.c:348
- kvm_vcpu_after_set_cpuid+0x65a/0xf80 arch/x86/kvm/cpuid.c:177
- kvm_vcpu_ioctl_set_cpuid2+0x160/0x440 arch/x86/kvm/cpuid.c:308
- kvm_arch_vcpu_ioctl+0x11b6/0x2d70 arch/x86/kvm/x86.c:4709
- kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On 1/17/2021 1:33 PM, Andrew Morton wrote:
+> On Thu, 14 Jan 2021 15:15:16 -0800 Florian Fainelli <f.fainelli@gmail.com> wrote:
+> 
+>> On systems with large amounts of reserved memory we may fail to
+>> successfully complete unpack_to_rootfs() and be left with:
+>>
+>>  Kernel panic - not syncing: write error
+>>
+>> this is not too helpful to understand what happened, so let's wrap the
+>> panic() calls with a surrounding show_mem() such that we have a chance
+>> of understanding the memory conditions leading to these allocation
+>> failures.
+> 
+> Seems sensible.
+> 
+>> @@ -45,6 +46,11 @@ static void __init error(char *x)
+>>  		message = x;
+>>  }
+>>  
+>> +#define panic_show_mem(...) {	\
+>> +	show_mem(0, NULL);	\
+>> +	panic(__VA_ARGS__);	\
+>> +}
+>> +
+> 
+> But can we replace nasty macro with pleasing C code?
 
-Reported-by: syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
-v1->v2 Changelog:
-- Add similar treatment for eax.split.mask_length (Sean)
-
- arch/x86/kvm/vmx/pmu_intel.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index a886a47daebd..d1584ae6625a 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -345,7 +345,9 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 
- 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
- 					 x86_pmu.num_counters_gp);
-+	eax.split.bit_width = min_t(int, eax.split.bit_width, x86_pmu.bit_width_gp);
- 	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << eax.split.bit_width) - 1;
-+	eax.split.mask_length = min_t(int, eax.split.mask_length, x86_pmu.events_mask_len);
- 	pmu->available_event_types = ~entry->ebx &
- 					((1ull << eax.split.mask_length) - 1);
- 
-@@ -355,6 +357,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 		pmu->nr_arch_fixed_counters =
- 			min_t(int, edx.split.num_counters_fixed,
- 			      x86_pmu.num_counters_fixed);
-+		edx.split.bit_width_fixed = min_t(int,
-+			edx.split.bit_width_fixed, x86_pmu.bit_width_fixed);
- 		pmu->counter_bitmask[KVM_PMC_FIXED] =
- 			((u64)1 << edx.split.bit_width_fixed) - 1;
- 	}
+That works for me, would you like to squash this into my patch before
+sending this to Linus?
 -- 
-2.29.2
-
+Florian
