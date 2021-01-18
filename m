@@ -2,162 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E102FABE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A87E2FABE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394411AbhARUxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:53:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394500AbhARUvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:51:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 514F922472;
-        Mon, 18 Jan 2021 20:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611003035;
-        bh=H6UA6H2/Zi55Qt8ytYHm/E7q9Vp1onaV0E/AF6oYJYQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CkmLWexmoNM7iPlrtWvRf55xgaUNPBhx7/k2XhbW86TVkljF2qhTHgM3VDUndPL8r
-         LdkZ++eR/I/JL9F9EcfLTTyBuW3i+La/Wvru/ZbrT69zddCz9sHZKnvm3RSUFLJf9C
-         SC2lF4H/ouOBMX1DaaiWYEsenI7YulPX7ZWig6XQ+26CsNr6olDtXRyRHo4Qe1101U
-         7TN95vCrEI+2e4HUD62ZzDmkIiM1RRIPsDq0v5AEx4Q1WoIAxDkgsLrsaOdBmSQChV
-         ypDJHmdWeN/9Hs8bS9Hvcz5MIlcyjSR/zXpBAkxswhBpHqYDGTMO6hUKrccRdPBFjH
-         CevvUYW+zIzVw==
-Date:   Mon, 18 Jan 2021 20:49:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     David Collins <collinsd@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
-Subject: Re: [PATCH] regulator: core: avoid regulator_resolve_supply() race
- condition
-Message-ID: <20210118204958.GS4455@sirena.org.uk>
-References: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
- <CGME20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d@eucas1p2.samsung.com>
- <e512ee85-7fa6-e5fe-eb30-f088bb83cf23@samsung.com>
+        id S2390632AbhARUwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394483AbhARUux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:50:53 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F55C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:50:12 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id o10so25922851lfl.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:50:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PBJOvjAiOhmMWsZCYIdfqOTw6TCWRMDqPYu2m3TOPyA=;
+        b=ean573HMotYRkhpmfuWcuDU9xxWJXixSAnZTqXu+lzblvz5PPhlHX2pG1XMiWf9gj3
+         mBUGsa4kUt2npW6Z4XPzvnHSMZYHpQgb5wcgp4Yg5JjOAGZxHpTEvLJvpDeIOS8NqdeR
+         eFpMC0k5M26afcDq8GRIAe8bupmbEu4A6QEPJqqkwiOLCODzkh/kqjujK9wX6RWhiZX2
+         01i+p7pl5juQwhpyh6JHgz79hTRQnB3AjfprNPJWjMUKpp/1tU1GwPHpVKlzdFZ7Xvau
+         pRCXkkkz8c43spsSvOmaiTJ3IWDb6rZJFbJgDX9JihQviOn/TSY31zD9X+vS2gY53h6x
+         dC6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PBJOvjAiOhmMWsZCYIdfqOTw6TCWRMDqPYu2m3TOPyA=;
+        b=R/Cu+86kK5aQRaLQpCMwbEGBfzqh+AGiZupP82uI6sMjiHWf78diXDUJ3a8InwkJ00
+         5r+X0iRm1wzuw5PSElAkHTBUaZZg7I9vx0H/cVMsVIzHFI5JWdbM/EM4YIhL1K/6yjq+
+         gQeHHwC4+DpnfO85aiS8zeNAQ2HCfK3GuIC6iuGpuZpJF5f0tlC1x0Xk7Ci4ukTpOCnn
+         5X05Dz5S36LRf7zspL5EI6guKxtLLAg0NmhiF68iMjsf/4H3+GeqHfa0E52SxU1QGSWk
+         nBITY5krL92NGtUuEPlW+GsKyGr+d9MMTUKPQ4ZMQBRhz9/aR8zh+ANE2fDFoa5XNSu9
+         RgFQ==
+X-Gm-Message-State: AOAM530Em080gPZBOqGwqTsrWohX5aK6tP+KQF5oNvclWAmpRy2ubx2M
+        nMaeFXEhhX/blwcGaA8jeyqUHw==
+X-Google-Smtp-Source: ABdhPJyRdBzbTcJLLjUIbNdqXAdPYYwTNEavwmm4K5yZC4JkSGTHPIGL1GSU4vGZxVQVmLM95ztrBQ==
+X-Received: by 2002:a05:6512:3493:: with SMTP id v19mr374356lfr.569.1611003011132;
+        Mon, 18 Jan 2021 12:50:11 -0800 (PST)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id k18sm1788227ljb.80.2021.01.18.12.50.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 12:50:10 -0800 (PST)
+Date:   Mon, 18 Jan 2021 21:50:09 +0100
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sh_eth: Fix power down vs. is_opened flag ordering
+Message-ID: <YAX0gRahdHyZ8GwA@oden.dyn.berto.se>
+References: <20210118150812.796791-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GIP5y49pbaVPin6k"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <e512ee85-7fa6-e5fe-eb30-f088bb83cf23@samsung.com>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210118150812.796791-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert,
 
---GIP5y49pbaVPin6k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your work.
 
-On Tue, Jan 12, 2021 at 10:34:19PM +0100, Marek Szyprowski wrote:
+On 2021-01-18 16:08:12 +0100, Geert Uytterhoeven wrote:
+> sh_eth_close() does a synchronous power down of the device before
+> marking it closed.  Revert the order, to make sure the device is never
+> marked opened while suspended.
+> 
+> While at it, use pm_runtime_put() instead of pm_runtime_put_sync(), as
+> there is no reason to do a synchronous power down.
+> 
+> Fixes: 7fa2955ff70ce453 ("sh_eth: Fix sleeping function called from invalid context")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> WARNING: possible circular locking dependency detected
-> 5.11.0-rc1-00008-geaa7995c529b #10095 Not tainted
-> ------------------------------------------------------
-> swapper/0/1 is trying to acquire lock:
-> c12e1b80 (regulator_list_mutex){+.+.}-{3:3}, at:=20
-> regulator_lock_dependent+0x4c/0x2b0
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-If you're sending backtraces or other enormous reports like this please
-run them through addr2line first so that things are a bit more leigible.
+> ---
+>  drivers/net/ethernet/renesas/sh_eth.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
+> index 9b52d350e21a9f2b..590b088bc4c7f3e2 100644
+> --- a/drivers/net/ethernet/renesas/sh_eth.c
+> +++ b/drivers/net/ethernet/renesas/sh_eth.c
+> @@ -2606,10 +2606,10 @@ static int sh_eth_close(struct net_device *ndev)
+>  	/* Free all the skbuffs in the Rx queue and the DMA buffer. */
+>  	sh_eth_ring_free(ndev);
+>  
+> -	pm_runtime_put_sync(&mdp->pdev->dev);
+> -
+>  	mdp->is_opened = 0;
+>  
+> +	pm_runtime_put(&mdp->pdev->dev);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
-> but task is already holding lock:
-> df7190c0 (regulator_ww_class_mutex){+.+.}-{3:3}, at:=20
-> regulator_resolve_supply+0x44/0x318
->=20
-> which lock already depends on the new lock.
-
-Does this help (completely untested):
-
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 3ae5ccd9277d..7d1422b00974 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1823,17 +1823,6 @@ static int regulator_resolve_supply(struct regulator=
-_dev *rdev)
- 	if (rdev->supply)
- 		return 0;
-=20
--	/*
--	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
--	 * between rdev->supply null check and setting rdev->supply in
--	 * set_supply() from concurrent tasks.
--	 */
--	regulator_lock(rdev);
--
--	/* Supply just resolved by a concurrent task? */
--	if (rdev->supply)
--		goto out;
--
- 	r =3D regulator_dev_lookup(dev, rdev->supply_name);
- 	if (IS_ERR(r)) {
- 		ret =3D PTR_ERR(r);
-@@ -1885,10 +1874,23 @@ static int regulator_resolve_supply(struct regulato=
-r_dev *rdev)
- 		goto out;
- 	}
-=20
-+	/*
-+	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
-+	 * between rdev->supply null check and setting rdev->supply in
-+	 * set_supply() from concurrent tasks.
-+	 */
-+	regulator_lock(rdev);
-+
-+	/* Supply just resolved by a concurrent task? */
-+	if (rdev->supply) {
-+		put_device(&r->dev);
-+		goto out_rdev_lock;
-+	}
-+
- 	ret =3D set_supply(rdev, r);
- 	if (ret < 0) {
- 		put_device(&r->dev);
--		goto out;
-+		goto out_rdev_lock;
- 	}
-=20
- 	/*
-@@ -1901,12 +1903,13 @@ static int regulator_resolve_supply(struct regulato=
-r_dev *rdev)
- 		if (ret < 0) {
- 			_regulator_put(rdev->supply);
- 			rdev->supply =3D NULL;
--			goto out;
-+			goto out_rdev_lock;
- 		}
- 	}
-=20
--out:
-+out_rdev_lock:
- 	regulator_unlock(rdev);
-+out:
- 	return ret;
- }
-=20
-
---GIP5y49pbaVPin6k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAF9HUACgkQJNaLcl1U
-h9CSgQf/WxGUC0HwPneU+4CSzLkNnmCkeRj+XD5gX0Z/KEo/1EnY6cg10Cq3ZqBY
-/OSiMjeamYYf8cALIMT8h5CGcOGiBtQL7AtDP8jtH7+F1hj382DT3wCQQDfjXFgq
-Wl/NY99d44dNioksuJtz0nGrSOysUmk6UZPLUHSNE4yTZpa6H2m46JMYJ5iBeW44
-pF1xsyxsrnPPuuYIY0yZw4CsNmxDAGo/83DWLV+UV9dmjWoL06l9yPWhynCdzcgL
-LPVM45ZU4+De5CcRlFIH9oAaqzsKHV/Si57rxfdX57GoI/9VYmA2NQXmy0PnNI2h
-zhUqUHMq71tzxt8AXknhhSk54oVjYw==
-=1Wmm
------END PGP SIGNATURE-----
-
---GIP5y49pbaVPin6k--
+-- 
+Regards,
+Niklas Söderlund
