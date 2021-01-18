@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640E32F9EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E832F9F65
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391236AbhARMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:01:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
+        id S2403934AbhARMU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:20:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390788AbhARLqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC13522472;
-        Mon, 18 Jan 2021 11:46:31 +0000 (UTC)
+        id S2390883AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B7B22472;
+        Mon, 18 Jan 2021 11:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970392;
-        bh=HD219p2bjaksFPf8izzghIpIbKQvW3YpDH4Gm8+FzAM=;
+        s=korg; t=1610970347;
+        bh=fDn8DrtBn9EkkZoA37lCDkfEkHZFb3tA/i1mkGM4hx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BBvpxxaYh7LLdLnKacjZm4C5MUihN3s306G0ox7LiCM0Kcj09isC/LUKt9Aoes7jX
-         YW5GgdgVOBz0QXhGTngfZlziceZbTXyrMCQwjoffwcie0SgYTHV5O1Y8YUJcd2EYeE
-         QojGC37NaWdBq5rkd+0yFGU3DqopJNMeZmelyhI4=
+        b=YgmvCnsOqhBEXPu8Q5Km1l21O3BHCUmSL2CH0FvqaaiOe7QFwsZA4Lyvz6RB062FM
+         8hTWiTfYxrmOldSYuQd1O7ZHP/T/eESHRYB5Q8XB9d0wAwU8u8qseTTBDnA8LO2wsX
+         SlW1WDOaifNps3VTEdUab6kc6ZIJ1xRKTm/u0MpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 133/152] RDMA/restrack: Dont treat as an error allocation ID wrapping
-Date:   Mon, 18 Jan 2021 12:35:08 +0100
-Message-Id: <20210118113359.099475996@linuxfoundation.org>
+Subject: [PATCH 5.10 134/152] RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
+Date:   Mon, 18 Jan 2021 12:35:09 +0100
+Message-Id: <20210118113359.147171607@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -40,37 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 3c638cdb8ecc0442552156e0fed8708dd2c7f35b upstream.
+commit a306aba9c8d869b1fdfc8ad9237f1ed718ea55e6 upstream.
 
-xa_alloc_cyclic() call returns positive number if ID allocation
-succeeded but wrapped. It is not an error, so normalize the "ret"
-variable to zero as marker of not-an-error.
+If usnic_ib_qp_grp_create() fails at the first call, dev_list
+will not be freed on error, which leads to memleak.
 
-   drivers/infiniband/core/restrack.c:261 rdma_restrack_add()
-   warn: 'ret' can be either negative or positive
-
-Fixes: fd47c2f99f04 ("RDMA/restrack: Convert internal DB from hash to XArray")
-Link: https://lore.kernel.org/r/20201216100753.1127638-1-leon@kernel.org
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
+Link: https://lore.kernel.org/r/20201226074248.2893-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/core/restrack.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -244,6 +244,7 @@ void rdma_restrack_add(struct rdma_restr
- 	} else {
- 		ret = xa_alloc_cyclic(&rt->xa, &res->id, res, xa_limit_32b,
- 				      &rt->next_id, GFP_KERNEL);
-+		ret = (ret < 0) ? ret : 0;
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -214,6 +214,7 @@ find_free_vf_and_create_qp_grp(struct us
+ 
+ 		}
+ 		usnic_uiom_free_dev_list(dev_list);
++		dev_list = NULL;
  	}
  
- 	if (!ret)
+ 	/* Try to find resources on an unused vf */
+@@ -239,6 +240,8 @@ find_free_vf_and_create_qp_grp(struct us
+ qp_grp_check:
+ 	if (IS_ERR_OR_NULL(qp_grp)) {
+ 		usnic_err("Failed to allocate qp_grp\n");
++		if (usnic_ib_share_vf)
++			usnic_uiom_free_dev_list(dev_list);
+ 		return ERR_PTR(qp_grp ? PTR_ERR(qp_grp) : -ENOMEM);
+ 	}
+ 	return qp_grp;
 
 
