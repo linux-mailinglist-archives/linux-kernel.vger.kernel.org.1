@@ -2,95 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7DA2F989D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D542F98AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbhARE2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:28:02 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52064 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbhARE16 (ORCPT
+        id S1731106AbhAREaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 23:30:24 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:51227 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728690AbhARE35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:27:58 -0500
-Received: by mail-io1-f72.google.com with SMTP id y20so24435539ioy.18
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:27:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=qC8G0IPXg9beaQej+tLqh5V/dMR/FwgnyQdMvOOVq98=;
-        b=hJdCp5CnGlpBIhMPmtro+Nvc8EUhbLAZpTVzPYbqr4x5DEGKsGzOEGkJkZJW2oTt2g
-         3k+qMnMFELnblz9I7TaKT7/Oxt6VD8DZPOpwmlvtxmOBaK3b+KDy30alRVG6XWXrbPcn
-         iNiVgyuhgXOhq9ZIBVTGLARGWqsTmjqMkQAhCspRKyNCNcEmVjio4zZBbHk3KUUqELYy
-         wU9KJn+DRD69Kn7uSEviXcKsLRjWHpxo5E0LU73EtEjNWqaL2YZMEJ9KnsyCaarNausJ
-         Dv/f+uMfrJrypPp2fberNmnd3Juq2exe6Zdi85m6uUxiGi2NhTOLxaeZed++8k8zFKDc
-         3KEA==
-X-Gm-Message-State: AOAM5327MVBoIKNyTbWbTmuOXw9T/KNzaEt5Jt0CIEkt3L9q+eQLFO0m
-        aDdEex3+1BM4+T2fbnWwYiZJgVgcp4xKUGnU+fV0yrPpFgQq
-X-Google-Smtp-Source: ABdhPJxcjLG96jCODEMWVyf7lnLaM1Jx6ebp8DYdB5L4tSPIAZywJDtkn0sLJ8ywd+/kXYFXE0aYokKBeNSDkSIQtgcdfKIXwUoS
+        Sun, 17 Jan 2021 23:29:57 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 936285805F2;
+        Sun, 17 Jan 2021 23:28:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 17 Jan 2021 23:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=s
+        ICxixPxct6sLtmHxkqJI743Hy8F/P1ZryCsE09D94Q=; b=ifZUkXk+q51ej7SmX
+        2PaJs3RJQHylWkQ79NZB01+E581m62vwJx28PdkVACenTTpsWDK4BVclI0m3cY3l
+        EbF+UYV7DLxIpaQsPs/FYT9dFrUUrz/R5V409UOLlPmbK5TbuIPPo2qvGdCDNkeD
+        4yHPTzYNRxO3h4c6+dZiALjPrfWNibow+jQAC9JsurWE3Po0lUgt7Ch9kFuQaJkb
+        oGNcp7zz6GmStXLtymZgznnAADhCntBlRM5JswHeJt6V6IsDzgiAru6uFdBgPL4Q
+        Uun4t8wp78p9Mymk49/f2XL2mvxqP09QBlk6HwYL7OeHa0KS77dwJ6BUw5sVv8AZ
+        ilMlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=sICxixPxct6sLtmHxkqJI743Hy8F/P1ZryCsE09D9
+        4Q=; b=EC6xx3WGKXuJ+a52Myt/R1gvlro3ZnbwpkeLcKGFwxz1Wcsc+J9oVP3VF
+        iqoe/4i+8CKQiXfRB8oyi+7b1ibl2nZnUARSGVmuKSvYMlJF1TaWwzqrvpA7NZoo
+        iPk8tfVyZ1kIRjiEKrDA9D7dc2Kf1Sg2dOIHPMmEgfd3N4WZtgsW6utNPY0zLYaI
+        FCF+l3fnl86Z5tCSlK8ksO6V7VHmxbosXRsUoogSCvbyupjSYmQrAF4f3uhqU34G
+        YoD1f1GMGlK4+TBdycUeW8oBT/Y7vxZhtwokLcPxVYNUfj7AQJd8D5QkdahxMLs4
+        EA2nNGsZIWnQWDH0iqDEMiS7sjk0Q==
+X-ME-Sender: <xms:gA4FYEpEaczjmpzMcqddwTrVyRZNYcwj13JaP9cpqeBBrKoOGJ-4eg>
+    <xme:gA4FYKqrWgSZ1-YX5KTxIXula5JAmnVn3sS7SBPyW-GWFnG4r_2PiZWA5Z1DIt1H9
+    1Y9Juqiu5sruKD1gg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdejgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
+    gfettdeggeenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+    ugdrohhrgh
+X-ME-Proxy: <xmx:gQ4FYJMr7vTk_aUfBh_Cy3LnTZwzD66_cbgDGxn1ewDlpamW5ErqWw>
+    <xmx:gQ4FYL4L9i7Vgjh2mvgEiOur5LtzkqbND31DH_1Gq8sf2GEx8IxK3Q>
+    <xmx:gQ4FYD54u-AIq-0EXE2pYxu_TSrlpOvUAW5fRKPAHCplNtph5QwQvg>
+    <xmx:gg4FYB7M_N6QRj_OvrC_HhViGEGCS6NozhshuWm31TTEukMR1RktsA>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 35D7B1080057;
+        Sun, 17 Jan 2021 23:28:48 -0500 (EST)
+Subject: Re: [PATCH v3 18/21] dt-bindings: allwinner: Add H616 compatible
+ strings
+To:     Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-spi@vger.kernel.org
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+ <20210118020848.11721-19-andre.przywara@arm.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <c21019af-a6e4-4a06-5307-23b227d25934@sholland.org>
+Date:   Sun, 17 Jan 2021 22:28:47 -0600
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:9346:: with SMTP id v67mr15981999iod.108.1610944037885;
- Sun, 17 Jan 2021 20:27:17 -0800 (PST)
-Date:   Sun, 17 Jan 2021 20:27:17 -0800
-In-Reply-To: <000000000000f054d005b8f87274@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000219cec05b9252334@google.com>
-Subject: Re: WARNING in io_disable_sqo_submit
-From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210118020848.11721-19-andre.przywara@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 1/17/21 8:08 PM, Andre Przywara wrote:
+> Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
+> bindings, and pair them with an existing fallback compatible string,
+> as the devices are compatible.
+> This covers I2C, infrared, RTC and SPI.
+> 
+> Use enums to group all compatible devices together.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
+> ---
+>  .../bindings/i2c/marvell,mv64xxx-i2c.yaml     | 21 +++++++------------
+>  .../media/allwinner,sun4i-a10-ir.yaml         | 16 ++++++--------
+>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml |  3 +++
+>  .../bindings/spi/allwinner,sun6i-a31-spi.yaml |  1 +
+>  4 files changed, 17 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
+> index 5b5ae402f97a..eb72dd571def 100644
+> --- a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
+> @@ -18,21 +18,14 @@ properties:
+>            - const: allwinner,sun4i-a10-i2c
+>        - const: allwinner,sun6i-a31-i2c
+>        - items:
+> -          - const: allwinner,sun8i-a23-i2c
+> +          - enum:
+> +              - allwinner,sun8i-a23-i2c
+> +              - allwinner,sun8i-a83t-i2c
+> +              - allwinner,sun50i-a64-i2c
+> +              - allwinner,sun50i-a100-i2c
+> +              - allwinner,sun50i-h6-i2c
+> +              - allwinner,sun50i-h616-i2c
+>            - const: allwinner,sun6i-a31-i2c
+> -      - items:
+> -          - const: allwinner,sun8i-a83t-i2c
+> -          - const: allwinner,sun6i-a31-i2c
+> -      - items:
+> -          - const: allwinner,sun50i-a64-i2c
+> -          - const: allwinner,sun6i-a31-i2c
+> -      - items:
+> -          - const: allwinner,sun50i-a100-i2c
+> -          - const: allwinner,sun6i-a31-i2c
+> -      - items:
+> -          - const: allwinner,sun50i-h6-i2c
+> -          - const: allwinner,sun6i-a31-i2c
+> -
+>        - const: marvell,mv64xxx-i2c
+>        - const: marvell,mv78230-i2c
+>        - const: marvell,mv78230-a0-i2c
+> diff --git a/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml b/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
+> index 5fa19d4aeaf3..6d8395d6bca0 100644
+> --- a/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
+> +++ b/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
+> @@ -20,16 +20,12 @@ properties:
+>        - const: allwinner,sun5i-a13-ir
+>        - const: allwinner,sun6i-a31-ir
+>        - items:
+> -          - const: allwinner,sun8i-a83t-ir
+> -          - const: allwinner,sun6i-a31-ir
+> -      - items:
+> -          - const: allwinner,sun8i-r40-ir
+> -          - const: allwinner,sun6i-a31-ir
+> -      - items:
+> -          - const: allwinner,sun50i-a64-ir
+> -          - const: allwinner,sun6i-a31-ir
+> -      - items:
+> -          - const: allwinner,sun50i-h6-ir
+> +          - enum:
+> +              - allwinner,sun8i-a83t-ir
+> +              - allwinner,sun8i-r40-ir
+> +              - allwinner,sun50i-a64-ir
+> +              - allwinner,sun50i-h6-ir
+> +              - allwinner,sun50i-h616-ir
+>            - const: allwinner,sun6i-a31-ir
+>  
+>    reg:
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index 37c2a601c3fa..97928efd2bc9 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -26,6 +26,9 @@ properties:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+>        - const: allwinner,sun50i-h6-rtc
+> +      - items:
+> +          - const: allwinner,sun50i-h616-rtc
+> +          - const: allwinner,sun50i-h6-rtc
 
-HEAD commit:    a1339d63 Merge tag 'powerpc-5.11-4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17532a58d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f207c7500000
+Since H6, the RTC manages the 24 MHz DCXO, so it provides a fourth clock
+output. If this is easy to change later, then it is fine for now, but
+maybe it is better to get the H616 binding correct from the beginning?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
+Cheers,
+Samuel
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 9113 at fs/io_uring.c:8917 io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
-Modules linked in:
-CPU: 1 PID: 9113 Comm: syz-executor.0 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
-Code: e0 07 83 c0 03 38 d0 7c 04 84 d2 75 2e 83 8b 14 01 00 00 01 4c 89 e7 e8 31 0a 24 07 5b 5d 41 5c e9 98 e1 9a ff e8 93 e1 9a ff <0f> 0b e9 00 ff ff ff e8 a7 a1 dd ff e9 37 ff ff ff e8 6d a1 dd ff
-RSP: 0018:ffffc9000311fe98 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888024b43000 RCX: 0000000000000000
-RDX: ffff888147071bc0 RSI: ffffffff81d7e82d RDI: ffff888024b430d0
-RBP: ffff8880115d1900 R08: 0000000000000000 R09: 0000000014555c01
-R10: ffffffff81d7eae5 R11: 0000000000000001 R12: ffff888024b43000
-R13: ffff888014555c01 R14: ffff888024b43040 R15: ffff888024b430d0
-FS:  00007f85abf55700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd3adeb5000 CR3: 00000000115d2000 CR4: 0000000000350ef0
-Call Trace:
- io_uring_flush+0x28b/0x3a0 fs/io_uring.c:9134
- filp_close+0xb4/0x170 fs/open.c:1280
- close_fd+0x5c/0x80 fs/file.c:626
- __do_sys_close fs/open.c:1299 [inline]
- __se_sys_close fs/open.c:1297 [inline]
- __x64_sys_close+0x2f/0xa0 fs/open.c:1297
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f85abf54c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 000000000045e219
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 000000000119bfb0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffe5217973f R14: 00007f85abf559c0 R15: 000000000119bf8c
+>    reg:
+>      maxItems: 1
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> index 7866a655d81c..908248260afa 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> @@ -25,6 +25,7 @@ properties:
+>            - enum:
+>                - allwinner,sun8i-r40-spi
+>                - allwinner,sun50i-h6-spi
+> +              - allwinner,sun50i-h616-spi
+>            - const: allwinner,sun8i-h3-spi
+>  
+>    reg:
+> 
 
