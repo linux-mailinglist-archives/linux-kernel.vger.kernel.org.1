@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5917B2FA0AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE1B2FA0AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392083AbhARNCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:02:48 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:60732 "EHLO a.mx.secunet.com"
+        id S2391974AbhARNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:03:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:35252 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391719AbhARM7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:59:36 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 23CC3201E4;
-        Mon, 18 Jan 2021 13:58:16 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YVpkQoYFr9KA; Mon, 18 Jan 2021 13:58:15 +0100 (CET)
-Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 9D0C4200BC;
-        Mon, 18 Jan 2021 13:58:15 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Mon, 18 Jan 2021 13:58:15 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 18 Jan
- 2021 13:58:14 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id EF5813182E9B;
- Mon, 18 Jan 2021 13:58:14 +0100 (CET)
-Date:   Mon, 18 Jan 2021 13:58:14 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-CC:     Dongseok Yi <dseok.yi@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <namkyu78.kim@samsung.com>, Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "Willem de Bruijn" <willemb@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
- GRO fraglist
-Message-ID: <20210118125814.GL3576117@gauss3.secunet.de>
-References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
- <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
- <20210115171203.175115-1-alobakin@pm.me>
- <20210118063759.GK3576117@gauss3.secunet.de>
- <20210118121707.2130-1-alobakin@pm.me>
+        id S2390332AbhARNAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:00:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52AC731B;
+        Mon, 18 Jan 2021 04:59:31 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E36F3F719;
+        Mon, 18 Jan 2021 04:59:30 -0800 (PST)
+Subject: Re: [PATCH v4 2/3] iommu/iova: Avoid double-negatives in magazine
+ helpers
+To:     John Garry <john.garry@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, iommu@lists.linux-foundation.org
+References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
+ <1607538189-237944-3-git-send-email-john.garry@huawei.com>
+ <YAHRKCkcHAEUdRNT@larix.localdomain>
+ <69c30e85-4a72-a0e1-1e56-4ffbd0df5aba@huawei.com> <YAVeDOiKBEKZ2Tdq@myrica>
+ <cdc77ccd-823d-464b-fe3c-2a9da17bcb61@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <69614e38-fcc0-4220-e1cd-15de91dd61ef@arm.com>
+Date:   Mon, 18 Jan 2021 12:59:26 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210118121707.2130-1-alobakin@pm.me>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <cdc77ccd-823d-464b-fe3c-2a9da17bcb61@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:17:34PM +0000, Alexander Lobakin wrote:
-> > From: Steffen Klassert <steffen.klassert@secunet.com>
-> > Date: Mon, 18 Jan 2021 07:37:59 +0100
-> > On Fri, Jan 15, 2021 at 05:12:33PM +0000, Alexander Lobakin wrote:
-> >>
-> >> I used another approach, tried to make fraglist GRO closer to plain
-> >> in terms of checksummming, as it is confusing to me why GSO packet
-> >> should have CHECKSUM_UNNECESSARY.
-> >
-> > This is intentional. With fraglist GRO, we don't mangle packets
-> > in the standard (non NAT) case. So the checksum is still correct
-> > after segmentation. That is one reason why it has good forwarding
-> > performance when software segmentation is needed. Checksuming
-> > touches the whole packet and has a lot of overhead, so it is
-> > heplfull to avoid it whenever possible.
-> >
-> > We should find a way to do the checksum only when we really
-> > need it. I.e. only if the headers of the head skb changed.
+On 2021-01-18 10:55, John Garry wrote:
+> On 18/01/2021 10:08, Jean-Philippe Brucker wrote:
+>>>> Any idea why that's happening?  This fix seems ok but if we're 
+>>>> expecting
+>>>> allocation failures for the loaded magazine then we could easily get it
+>>>> for cpu_rcaches too, and get a similar abort at runtime.
+>>> It's not specifically that we expect them (allocation failures for the
+>>> loaded magazine), rather we should make safe against it.
+>>>
+>>> So could you be more specific in your concern for the cpu_rcache 
+>>> failure?
+>>> cpu_rcache magazine assignment comes from this logic.
+>> If this fails:
+>>
+>> drivers/iommu/iova.c:847: rcache->cpu_rcaches = 
+>> __alloc_percpu(sizeof(*cpu_rcache), cache_line_size());
+>>
+>> then we'll get an Oops in __iova_rcache_get(). So if we're making the
+>> module safer against magazine allocation failure, shouldn't we also
+>> protect against cpu_rcaches allocation failure?
 > 
-> I suggest to do memcmp() between skb_network_header(skb) and
-> skb_network_header(skb->frag_list) with the len of
-> skb->data - skb_network_header(skb). This way we will detect changes
-> in IPv4/IPv6 and UDP headers.
+> Ah, gotcha. So we have the WARN there, but that's not much use as this 
+> would still crash, as you say.
+> 
+> So maybe we can embed the cpu rcaches in iova_domain struct, to avoid 
+> the separate (failable) cpu rcache allocation.
 
-I thought about that too. Bbut with fraglist GRO, the length of
-the packets can vary. Unlike standard GRO, there is no requirement
-that the packets in the fraglist must be equal in length here. So
-we can't compare the full headers. I think we need to test for
-addresses and ports.
+Is that even possible? The size of percpu data isn't known at compile 
+time, so at best it would add ugly runtime complexity to any allocation 
+of a struct iova_domain by itself, but worse than that it means that 
+embedding iova_domain in any other structure becomes completely broken, no?
 
-> If so, copy the full headers and fall back to the standard checksum,
-> recalculation, else use the current path.
+Robin.
 
-I agree that we should fallback to standard checksum recalculation
-if the addresses or ports changed.
+> Alternatively, we could add NULL checks __iova_rcache_get() et al for 
+> this allocation failure but that's not preferable as it's fastpath.
+> 
+> Finally so we could pass back an error code from init_iova_rcache() to 
+> its only caller, init_iova_domain(); but that has multiple callers and 
+> would need to be fixed up.
+> 
+> Not sure which is best or on other options.
+> 
+> Thanks,
+> John
