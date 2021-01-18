@@ -2,171 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088262F9CC5
+	by mail.lfdr.de (Postfix) with ESMTP id E24B92F9CC7
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389098AbhARKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:22:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55226 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389755AbhARKNb (ORCPT
+        id S2390078AbhARKXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389763AbhARKOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:13:31 -0500
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+        Mon, 18 Jan 2021 05:14:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A68C0613ED;
+        Mon, 18 Jan 2021 02:13:34 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:13:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610964700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W6/Fxq6SJj3l0bOA5qvsrvqpyxVzx43C+xNlo/yLFZw=;
-        b=T51AGJvCCyB37OPwZBIVl77FYUq4EN1NIy90CCgnRpC8idRs/C+eI6ukTwl+6LfDKqu9Ac
-        xE5Hun1RLNa1ChFGAcJ0mAmMbqtjQ4CEZM4K2Cobw5tty5aHSmpaZP25gfM0ZEH2otaxGL
-        ujeZT+kaUsMdh3UV7PghgAHvxuafTmYkrxuB23qjHWsn0PsXks6Z62fV372uPigXrOIhmT
-        1x6ImdI7iko+UoSvrB8bSeQMY/FWEWRMAsrrnxnNYqFGVhD7ZnGO2sm64nkpGPG5U8R0+A
-        GQCN5Wk3zQH6rXeyDsttm8JDaFblATdlez7aeQDap5QdKScrpEI7Y6VIG4+AUQ==
+        s=2020; t=1610964812;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=IvmVZPP0VndjtYa6L8VFCBF6N0RsHzRUtXE/hWwsACc=;
+        b=4Uf2gEwafbqMpPzu+KOMsou5+iKxjSkRMnjx1SrS17iCwuvRwbaZk+WN5RfBEaDCq8dS94
+        4ZnOU2TmffFMxLgNdASnzi6mPwROQdJrfIdvREl++DT360hFE33Ytpvm53zb9JQ/pWjfXK
+        vDl07PnJW1b+jw2TgROLfxh+RyMMT11YfJSzxvGn4mSqX+Ry8Z7evmAGVASV2HXJjWom6/
+        FUKbrhLLMMzugO6zWiq8STLoWX+qvPIfiUfpF1/BqzEX4wabLkfqECMSRow9Xku3Z/tLDX
+        CifsNE6Sy8YRWIEu3gnZZXq0oRTusRoG9yBQsJ2YW30ZCeUie6UHRx2kBwN91w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610964700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W6/Fxq6SJj3l0bOA5qvsrvqpyxVzx43C+xNlo/yLFZw=;
-        b=YosGUwS1s0wB0AUqsP5y5u17hHJtvhsyRWYKWbubU1zuixAPNwIkEwXVfHT6uXd5glLUCB
-        BJ7WK0Kb6/BOoODQ==
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v3 19/19] scsi: libsas: Remove temporarily-added _gfp() API variants
-Date:   Mon, 18 Jan 2021 11:09:55 +0100
-Message-Id: <20210118100955.1761652-20-a.darwish@linutronix.de>
-In-Reply-To: <20210118100955.1761652-1-a.darwish@linutronix.de>
-References: <20210118100955.1761652-1-a.darwish@linutronix.de>
+        s=2020e; t=1610964812;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=IvmVZPP0VndjtYa6L8VFCBF6N0RsHzRUtXE/hWwsACc=;
+        b=7o6ScEduPFMcQTZ0/fa0gEd0Iy6dWxNXGRA6V3tqZqNarI2weEfMUOg1rZVSIf3nrM94oi
+        YBc0yNuIVOicMJBg==
+From:   "tip-bot2 for Martin Schwidefsky" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Fix reloc generation on big endian
+ cross-compiles
+Cc:     Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161096481208.414.14523335310723551001.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These variants were added for bisectability. Remove them, as all call
-sites have now been convertd to use the original API.
+The following commit has been merged into the objtool/core branch of tip:
 
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Cc: Jason Yan <yanaijie@huawei.com>
+Commit-ID:     a1a664ece586457e9f7652b0bc5b08386259e358
+Gitweb:        https://git.kernel.org/tip/a1a664ece586457e9f7652b0bc5b08386259e358
+Author:        Martin Schwidefsky <schwidefsky@de.ibm.com>
+AuthorDate:    Fri, 13 Nov 2020 00:03:26 +01:00
+Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+CommitterDate: Wed, 13 Jan 2021 18:13:12 -06:00
+
+objtool: Fix reloc generation on big endian cross-compiles
+
+Relocations generated in elf_rebuild_rel[a]_reloc_section() are broken
+if objtool is built and run on a big endian system.
+
+The following errors pop up during x86 cross-compilation:
+
+  x86_64-9.1.0-ld: fs/efivarfs/inode.o: bad reloc symbol index (0x2000000 >= 0x22) for offset 0 in section `.orc_unwind_ip'
+  x86_64-9.1.0-ld: final link failed: bad value
+
+Convert those functions to use gelf_update_rel[a](), similar to what
+elf_write_reloc() does.
+
+Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- Documentation/scsi/libsas.rst      |  2 --
- drivers/scsi/libsas/sas_event.c    | 14 --------------
- drivers/scsi/libsas/sas_init.c     |  7 -------
- drivers/scsi/libsas/sas_internal.h |  4 ----
- include/scsi/libsas.h              |  4 ----
- 5 files changed, 31 deletions(-)
+ tools/objtool/elf.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
-index c65086470a15..6589dfefbc02 100644
---- a/Documentation/scsi/libsas.rst
-+++ b/Documentation/scsi/libsas.rst
-@@ -191,8 +191,6 @@ The event interface::
- 	/* LLDD calls these to notify the class of an event. */
- 	void sas_notify_port_event(struct sas_phy *, enum port_event, gfp_t);
- 	void sas_notify_phy_event(struct sas_phy *, enum phy_event, gfp_t);
--	void sas_notify_port_event_gfp(struct sas_phy *, enum port_event, gfp_t);
--	void sas_notify_phy_event_gfp(struct sas_phy *, enum phy_event, gfp_t);
- 
- The port notification::
- 
-diff --git a/drivers/scsi/libsas/sas_event.c b/drivers/scsi/libsas/sas_event.c
-index 542831887769..f703115e7a25 100644
---- a/drivers/scsi/libsas/sas_event.c
-+++ b/drivers/scsi/libsas/sas_event.c
-@@ -155,13 +155,6 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
- }
- EXPORT_SYMBOL_GPL(sas_notify_port_event);
- 
--int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
--			      gfp_t gfp_flags)
--{
--	return sas_notify_port_event(phy, event, gfp_flags);
--}
--EXPORT_SYMBOL_GPL(sas_notify_port_event_gfp);
--
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 			 gfp_t gfp_flags)
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index be89c74..c784122 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -855,25 +855,27 @@ static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
  {
-@@ -184,10 +177,3 @@ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(sas_notify_phy_event);
--
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
--			     gfp_t gfp_flags)
--{
--	return sas_notify_phy_event(phy, event, gfp_flags);
--}
--EXPORT_SYMBOL_GPL(sas_notify_phy_event_gfp);
-diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
-index 62260e84ca2d..2b0f98ca6ec3 100644
---- a/drivers/scsi/libsas/sas_init.c
-+++ b/drivers/scsi/libsas/sas_init.c
-@@ -619,13 +619,6 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy,
- 	return event;
- }
+ 	struct reloc *reloc;
+ 	int idx = 0, size;
+-	GElf_Rel *relocs;
++	void *buf;
  
--struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
--					  gfp_t gfp_flags)
--{
--
--	return sas_alloc_event(phy, gfp_flags);
--}
--
- void sas_free_event(struct asd_sas_event *event)
+ 	/* Allocate a buffer for relocations */
+-	size = nr * sizeof(*relocs);
+-	relocs = malloc(size);
+-	if (!relocs) {
++	size = nr * sizeof(GElf_Rel);
++	buf = malloc(size);
++	if (!buf) {
+ 		perror("malloc");
+ 		return -1;
+ 	}
+ 
+-	sec->data->d_buf = relocs;
++	sec->data->d_buf = buf;
+ 	sec->data->d_size = size;
++	sec->data->d_type = ELF_T_REL;
+ 
+ 	sec->sh.sh_size = size;
+ 
+ 	idx = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list) {
+-		relocs[idx].r_offset = reloc->offset;
+-		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
++		reloc->rel.r_offset = reloc->offset;
++		reloc->rel.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
++		gelf_update_rel(sec->data, idx, &reloc->rel);
+ 		idx++;
+ 	}
+ 
+@@ -884,26 +886,28 @@ static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
  {
- 	struct asd_sas_phy *phy = event->phy;
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 294cdcb4ce42..d7a1fb5c10c6 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -49,8 +49,6 @@ int  sas_register_phys(struct sas_ha_struct *sas_ha);
- void sas_unregister_phys(struct sas_ha_struct *sas_ha);
+ 	struct reloc *reloc;
+ 	int idx = 0, size;
+-	GElf_Rela *relocs;
++	void *buf;
  
- struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy, gfp_t gfp_flags);
--struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
--					  gfp_t gfp_flags);
- void sas_free_event(struct asd_sas_event *event);
+ 	/* Allocate a buffer for relocations with addends */
+-	size = nr * sizeof(*relocs);
+-	relocs = malloc(size);
+-	if (!relocs) {
++	size = nr * sizeof(GElf_Rela);
++	buf = malloc(size);
++	if (!buf) {
+ 		perror("malloc");
+ 		return -1;
+ 	}
  
- int  sas_register_ports(struct sas_ha_struct *sas_ha);
-@@ -80,8 +78,6 @@ int sas_smp_get_phy_events(struct sas_phy *phy);
+-	sec->data->d_buf = relocs;
++	sec->data->d_buf = buf;
+ 	sec->data->d_size = size;
++	sec->data->d_type = ELF_T_RELA;
  
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 			 gfp_t flags);
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
--			     gfp_t flags);
- void sas_device_set_phy(struct domain_device *dev, struct sas_port *port);
- struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
- struct domain_device *sas_ex_to_ata(struct domain_device *ex_dev, int phy_id);
-diff --git a/include/scsi/libsas.h b/include/scsi/libsas.h
-index fda56e151695..9271d7a49b90 100644
---- a/include/scsi/libsas.h
-+++ b/include/scsi/libsas.h
-@@ -706,9 +706,5 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
- 			  gfp_t gfp_flags);
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 			 gfp_t gfp_flags);
--int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
--			      gfp_t gfp_flags);
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
--			     gfp_t gfp_flags);
+ 	sec->sh.sh_size = size;
  
- #endif /* _SASLIB_H_ */
--- 
-2.30.0
-
+ 	idx = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list) {
+-		relocs[idx].r_offset = reloc->offset;
+-		relocs[idx].r_addend = reloc->addend;
+-		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
++		reloc->rela.r_offset = reloc->offset;
++		reloc->rela.r_addend = reloc->addend;
++		reloc->rela.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
++		gelf_update_rela(sec->data, idx, &reloc->rela);
+ 		idx++;
+ 	}
+ 
