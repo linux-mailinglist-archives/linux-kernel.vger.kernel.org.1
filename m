@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D7B2FA938
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0FD2FA93A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393744AbhARStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2407780AbhARStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:49:23 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59337 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393782AbhARStJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 13:49:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:42302 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436896AbhARSrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:47:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 857F331B;
-        Mon, 18 Jan 2021 10:46:47 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C90F3F719;
-        Mon, 18 Jan 2021 10:46:42 -0800 (PST)
-Subject: Re: [PATCH v4 7/7] iommu/mediatek: Remove the tlb-ops for v7s
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>
-Cc:     youlin.pei@mediatek.com, anan.sun@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Tomasz Figa <tfiga@google.com>,
-        iommu@lists.linux-foundation.org,
-        David Laight <David.Laight@ACULAB.COM>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org
-References: <20210107122909.16317-1-yong.wu@mediatek.com>
- <20210107122909.16317-8-yong.wu@mediatek.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <520e2eab-7ee8-6bfd-4b98-f89ec2f9aaea@arm.com>
-Date:   Mon, 18 Jan 2021 18:46:42 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l1ZYX-001WqZ-Nn; Mon, 18 Jan 2021 19:47:13 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l1ZYX-001ViE-05; Mon, 18 Jan 2021 19:47:13 +0100
+Subject: Re: [PATCH] maple: fix wrong return value of maple_bus_init().
+To:     Lu Wei <luwei32@huawei.com>, dalias@libc.org, lethal@linux-sh.org,
+        adrian@mcmen.demon.co.uk, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201126024311.292908-1-luwei32@huawei.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <2fd68783-c1c3-7218-c83e-2f15a207ede0@physik.fu-berlin.de>
+Date:   Mon, 18 Jan 2021 19:47:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210107122909.16317-8-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20201126024311.292908-1-luwei32@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 12:29, Yong Wu wrote:
-> Until now, we have already used the tlb operations from iommu framework,
-> then the tlb operations for v7s can be removed.
+On 11/26/20 3:43 AM, Lu Wei wrote:
+> If KMEM_CACHE or maple_alloc_dev failed, the maple_bus_init() will return 0
+> rather than error, because the retval is not changed after KMEM_CACHE or
+> maple_alloc_dev failed.
 > 
-> Correspondingly, Switch the paramenter "cookie" to the internal structure.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Fixes: 17be2d2b1c33 ("sh: Add maple bus support for the SEGA Dreamcast.")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Lu Wei <luwei32@huawei.com>
 > ---
->   drivers/iommu/mtk_iommu.c | 27 ++++-----------------------
->   1 file changed, 4 insertions(+), 23 deletions(-)
+>  drivers/sh/maple/maple.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index d3b8a1649093..86ab577c9520 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -182,10 +182,8 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
->   	return container_of(dom, struct mtk_iommu_domain, domain);
->   }
->   
-> -static void mtk_iommu_tlb_flush_all(void *cookie)
-> +static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
->   {
-> -	struct mtk_iommu_data *data = cookie;
-> -
->   	for_each_m4u(data) {
->   		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
->   			       data->base + data->plat_data->inv_sel_reg);
-> @@ -195,9 +193,9 @@ static void mtk_iommu_tlb_flush_all(void *cookie)
->   }
->   
->   static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
-> -					   size_t granule, void *cookie)
-> +					   size_t granule,
-> +					   struct mtk_iommu_data *data)
->   {
-> -	struct mtk_iommu_data *data = cookie;
->   	unsigned long flags;
->   	int ret;
->   	u32 tmp;
-> @@ -219,7 +217,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   		if (ret) {
->   			dev_warn(data->dev,
->   				 "Partial TLB flush timed out, falling back to full flush\n");
-> -			mtk_iommu_tlb_flush_all(cookie);
-> +			mtk_iommu_tlb_flush_all(data);
->   		}
->   		/* Clear the CPE status */
->   		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
-> @@ -227,22 +225,6 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   	}
->   }
->   
-> -static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
-> -					    unsigned long iova, size_t granule,
-> -					    void *cookie)
-> -{
-> -	struct mtk_iommu_data *data = cookie;
-> -	struct iommu_domain *domain = &data->m4u_dom->domain;
-> -
-> -	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
-> -}
-> -
-> -static const struct iommu_flush_ops mtk_iommu_flush_ops = {
-> -	.tlb_flush_all = mtk_iommu_tlb_flush_all,
-> -	.tlb_flush_walk = mtk_iommu_tlb_flush_range_sync,
-> -	.tlb_add_page = mtk_iommu_tlb_flush_page_nosync,
-> -};
-> -
->   static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
->   {
->   	struct mtk_iommu_data *data = dev_id;
-> @@ -326,7 +308,6 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
->   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
->   		.ias = 32,
->   		.oas = 34,
-> -		.tlb = &mtk_iommu_flush_ops,
->   		.iommu_dev = data->dev,
->   	};
->   
+> diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
+> index e5d7fb81ad66..44a931d41a13 100644
+> --- a/drivers/sh/maple/maple.c
+> +++ b/drivers/sh/maple/maple.c
+> @@ -835,8 +835,10 @@ static int __init maple_bus_init(void)
+>  
+>  	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
+>  
+> -	if (!maple_queue_cache)
+> +	if (!maple_queue_cache) {
+> +		retval = -ENOMEM;
+>  		goto cleanup_bothirqs;
+> +	}
+>  
+>  	INIT_LIST_HEAD(&maple_waitq);
+>  	INIT_LIST_HEAD(&maple_sentq);
+> @@ -849,6 +851,7 @@ static int __init maple_bus_init(void)
+>  		if (!mdev[i]) {
+>  			while (i-- > 0)
+>  				maple_free_dev(mdev[i]);
+> +			retval = -ENOMEM;
+>  			goto cleanup_cache;
+>  		}
+>  		baseunits[i] = mdev[i];
 > 
+
+Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
