@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9109A2FA469
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFA02FA46D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405691AbhARPTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:19:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405455AbhARPKa (ORCPT
+        id S2393258AbhARPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:19:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2367 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405477AbhARPLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:10:30 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D789C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:09:50 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id c5so16785822wrp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:09:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=o0LrDk575sZO8QF6eRJPnKaqFriKwMIEzttJtoJHwP0=;
-        b=DrzJ/q9KyuRRal0Ze0KBbIW7oKNk6JkGd6CVff4gctqjSVajqnVv9fc7l4zSQUtIRt
-         cq+ipbNdcyGi8vKWvy03L6K1Nt4n4vl5tCE7kIZonzCkLKU0T9t4LWz4fXubhR6WZ6b8
-         Rn9Nj+iFhp8F+gjof50KQotABsBOASwT1tIRsCQWUqxHTd6/Wmm4Viynn/1gq0U6iIPU
-         uz7J7AWfvI+lkmOqPc4gG7QFOOQ0z8nJn//TX/yN5S6R1lEi0+z31VyXBmFKhPZdn3nq
-         NsSgEvnUf0l6dMbCFJk1UihF29ReJOisAzC3Rlr7aD7qosJ4Hd8jf18Huw9xBsNG5Gr6
-         VVOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=o0LrDk575sZO8QF6eRJPnKaqFriKwMIEzttJtoJHwP0=;
-        b=akgeYNZ+OhaYNgYChCFQ3PW0ZupClJ0+V4uOU1gVEWokFBuIh/rVjVLpb+37rlQSAC
-         6isAAhPLRfRnGPbUeMCEqtryvtgoYcKEuuHI249respidSgffft6j7EPdQ1+iYztr2AP
-         uk6gtRaW4Fbao/AQDfttSv5fgEgWSBLNy4gA+KH2INcf45buAkRDhttYHpWUVAWadovk
-         FQvR+xmmXr4vD3LNI1lCqlkgqAghgBAeI+rFUDJZHDiBFgtF7nA4AxjqF/Px0Emfw0GO
-         vGnuNs9kVm68bkP+PeFQsTZRTVL6vh+YlflrkJofn+dzy6+XCDMjxD9joSp0PPlvoGw/
-         sGCQ==
-X-Gm-Message-State: AOAM530T3MdwYHBTWJkDfktCSvCjgezK3nHmsDTawEVD6hefMUZCjZtC
-        LOSuEve+vGXkU75VCYWQlhKkbQ==
-X-Google-Smtp-Source: ABdhPJyDZ5Oz5+gFChXkRG81oA1CFNwWNCMpwIu5woxmSaXUr+y+QkHfALigdBsXlGhC6+k4fDIdvA==
-X-Received: by 2002:a05:6000:368:: with SMTP id f8mr26201890wrf.150.1610982588871;
-        Mon, 18 Jan 2021 07:09:48 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id n10sm29595126wrx.21.2021.01.18.07.09.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 07:09:47 -0800 (PST)
-Date:   Mon, 18 Jan 2021 15:09:45 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zack Rusin <zackr@vmware.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eddie Dong <eddie.dong@intel.com>,
-        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>,
-        Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhiyuan Lv <zhiyuan.lv@intel.com>
-Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
-Message-ID: <20210118150945.GE4903@dell>
-References: <20210115181601.3432599-1-lee.jones@linaro.org>
- <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
- <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
+        Mon, 18 Jan 2021 10:11:50 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DKFW45rLFz67bgN;
+        Mon, 18 Jan 2021 23:06:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 18 Jan 2021 16:11:01 +0100
+Received: from [10.47.8.82] (10.47.8.82) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
+ 2021 15:11:00 +0000
+Subject: Re: [PATCH v4 2/3] iommu/iova: Avoid double-negatives in magazine
+ helpers
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+CC:     <joro@8bytes.org>, <will@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <iommu@lists.linux-foundation.org>
+References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
+ <1607538189-237944-3-git-send-email-john.garry@huawei.com>
+ <YAHRKCkcHAEUdRNT@larix.localdomain>
+ <69c30e85-4a72-a0e1-1e56-4ffbd0df5aba@huawei.com> <YAVeDOiKBEKZ2Tdq@myrica>
+ <cdc77ccd-823d-464b-fe3c-2a9da17bcb61@huawei.com>
+ <69614e38-fcc0-4220-e1cd-15de91dd61ef@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <5fdeed73-190f-3272-03e5-8adc60148521@huawei.com>
+Date:   Mon, 18 Jan 2021 15:09:47 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
+In-Reply-To: <69614e38-fcc0-4220-e1cd-15de91dd61ef@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.82]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Daniel Vetter wrote:
-
-> On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
-> > 
-> > > On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
-> > > 
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > > 
-> > > Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
-> > 
-> > Thanks! For all the vmwgfx bits:
-> > Reviewed-by: Zack Rusin <zackr@vmware.com>
+On 18/01/2021 12:59, Robin Murphy wrote:
+>>>>> for cpu_rcaches too, and get a similar abort at runtime.
+>>>> It's not specifically that we expect them (allocation failures for the
+>>>> loaded magazine), rather we should make safe against it.
+>>>>
+>>>> So could you be more specific in your concern for the cpu_rcache 
+>>>> failure?
+>>>> cpu_rcache magazine assignment comes from this logic.
+>>> If this fails:
+>>>
+>>> drivers/iommu/iova.c:847: rcache->cpu_rcaches = 
+>>> __alloc_percpu(sizeof(*cpu_rcache), cache_line_size());
+>>>
+>>> then we'll get an Oops in __iova_rcache_get(). So if we're making the
+>>> module safer against magazine allocation failure, shouldn't we also
+>>> protect against cpu_rcaches allocation failure?
+>>
+>> Ah, gotcha. So we have the WARN there, but that's not much use as this 
+>> would still crash, as you say.
+>>
+>> So maybe we can embed the cpu rcaches in iova_domain struct, to avoid 
+>> the separate (failable) cpu rcache allocation.
 > 
-> Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
-> (those generally go through other trees, pls holler if they're stuck).
+> Is that even possible? The size of percpu data isn't known at compile 
+> time, so at best it would add ugly runtime complexity to any allocation 
+> of a struct iova_domain by itself, but worse than that it means that 
+> embedding iova_domain in any other structure becomes completely broken, no?
 
-Thanks Daniel, you're a superstar!
+Ah, now I see that it's not possible. I was thinking of using 
+DEFINE_PER_CPU(), but it's not permitted.
 
-So Zack will take the vmwgfx parts?  Despite providing a R-b?
+So even though this patch saves us from cpu_rcache->loaded / ->prev == 
+NULL, I still prefer not to add explicit checks for cpu_rcache == NULL 
+in the IOVA alloc/free paths, and would rather pass an error back in 
+init_iova_rcaches(), but adding code for tidy-up looks messy.
 
-> Note that we have some build issue on some of the configs sfr uses, so drm
-> trees are still stuck on old versions in linux-next. Hopefully should get
-> resolved soon, the bugfix is in some subtree I've heard.
-
-No worries.  Thanks for letting me know.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+John
