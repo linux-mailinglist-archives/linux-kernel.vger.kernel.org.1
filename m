@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D809C2FA9FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5872FAA00
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393896AbhARTUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:20:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33392 "EHLO mail.kernel.org"
+        id S2393903AbhARTVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:21:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390492AbhARLip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 599D322C9D;
-        Mon, 18 Jan 2021 11:38:18 +0000 (UTC)
+        id S2390454AbhARLiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:38:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8435C224B0;
+        Mon, 18 Jan 2021 11:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969898;
-        bh=2d8XLJyeVqtVYPdC/bPae7b3PqNyeOChjaTrNNDogZk=;
+        s=korg; t=1610969857;
+        bh=velFEvr9vGZQoXrs7U56Ggklq13fpI3OW3qX4bLkrGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYFTqv3sjMtq6kdQ4iNizyNF2QjOdYQu8EdC3lPt0eOTHyH0cgx3RQjzIIxlDhxAZ
-         wrE5y8q6yeemCjnxjgAx493dj7EROq/r6Ak5LuJRjVmUtGSVZ+De3TyHDRbE0gW8IM
-         rBXh1Q/s1fUHeeLpne2AA2UQfwpHTLAa3u4lZVDw=
+        b=uoQCaJhR0aMIhHnesV/JawZEGxIPauSry74PYVttCougenbsTnvtrLUriiSTf4NBE
+         CGx43Ts8jrR+ZZFHyCOotsUnF4lOlVp5SfkGf/fIW0TZ1p4HBALUaIjB9JGrr2tCkE
+         C8atYKm/9L+E5eW26X0cmnRsmLMhsK0mStjz1890=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        stable@kernel.org
-Subject: [PATCH 5.4 09/76] MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-Date:   Mon, 18 Jan 2021 12:34:09 +0100
-Message-Id: <20210118113341.433027287@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 11/76] RDMA/ocrdma: Fix use after free in ocrdma_dealloc_ucontext_pd()
+Date:   Mon, 18 Jan 2021 12:34:11 +0100
+Message-Id: <20210118113341.529435390@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
 References: <20210118113340.984217512@linuxfoundation.org>
@@ -40,61 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Tom Rix <trix@redhat.com>
 
-commit 698222457465ce343443be81c5512edda86e5914 upstream.
+commit f2bc3af6353cb2a33dfa9d270d999d839eef54cb upstream.
 
-Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
-had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
-coredumps; unfortunately, compat on mips (which does not go through the
-usual compat_binfmt_elf.c) had not been noticed.
+In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to the variable
+pd and then after uctx->cntxt_pd is freed, the variable pd is passed to
+function _ocrdma_dealloc_pd() which dereferences pd directly or through
+its call to ocrdma_mbx_dealloc_pd().
 
-As the result, both N32 and O32 coredumps on 64bit mips kernels
-have those sections malformed enough to confuse the living hell out of
-all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
+Reorder the free using the variable pd.
 
-Longer term solution is to make both O32 and N32 compat use the
-regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
-solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
-those patches have done in fs/compat_binfmt_elf.c
-
-Cc: stable@kernel.org # v3.7+
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: stable@vger.kernel.org
+Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
+Link: https://lore.kernel.org/r/20201230024653.1516495-1-trix@redhat.com
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/binfmt_elfn32.c |    7 +++++++
- arch/mips/kernel/binfmt_elfo32.c |    7 +++++++
- 2 files changed, 14 insertions(+)
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/kernel/binfmt_elfn32.c
-+++ b/arch/mips/kernel/binfmt_elfn32.c
-@@ -103,4 +103,11 @@ jiffies_to_old_timeval32(unsigned long j
- #undef ns_to_timeval
- #define ns_to_timeval ns_to_old_timeval32
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -442,9 +442,9 @@ static void ocrdma_dealloc_ucontext_pd(s
+ 		pr_err("%s(%d) Freeing in use pdid=0x%x.\n",
+ 		       __func__, dev->id, pd->id);
+ 	}
+-	kfree(uctx->cntxt_pd);
+ 	uctx->cntxt_pd = NULL;
+ 	_ocrdma_dealloc_pd(dev, pd);
++	kfree(pd);
+ }
  
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
-+
- #include "../../../fs/binfmt_elf.c"
---- a/arch/mips/kernel/binfmt_elfo32.c
-+++ b/arch/mips/kernel/binfmt_elfo32.c
-@@ -106,4 +106,11 @@ jiffies_to_old_timeval32(unsigned long j
- #undef ns_to_timeval
- #define ns_to_timeval ns_to_old_timeval32
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
-+
- #include "../../../fs/binfmt_elf.c"
+ static struct ocrdma_pd *ocrdma_get_ucontext_pd(struct ocrdma_ucontext *uctx)
 
 
