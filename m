@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03E62FA278
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD702FA27B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392609AbhAROEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:04:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56934 "EHLO mx2.suse.de"
+        id S2392626AbhAROE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:04:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57304 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392403AbhARODW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:03:22 -0500
+        id S2392593AbhARODk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:03:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610978552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GJxA8ykhu2gJcqk6GIjIQ72lO2tZ7uSgCwBGZqoXgTY=;
-        b=bYTaeWSbgdDHExIvEQ8+GQF6by4jSVSrmqICY7FJrND8ciggg6rTz6zK9BPMZvoqMwBAkB
-        R9IojjnyCK0Lp26njKSe7gufb7odC0Wx3rjAWfjWUX/DWTtTgtxHfm/Nsga8CKYI1+jD7l
-        uz00RpOLxwA0X2u/TV2UI8p69DhGT8w=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7FD35ACBA;
-        Mon, 18 Jan 2021 14:02:32 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 15:02:31 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v4] Documentation: livepatch: document reliable stacktrace
-Message-ID: <YAWU0D50KH4mVTgn@alley>
-References: <20210115171617.47273-1-broonie@kernel.org>
+        by mx2.suse.de (Postfix) with ESMTP id 88569AD24;
+        Mon, 18 Jan 2021 14:02:55 +0000 (UTC)
+Subject: Re: [PATCH v4] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+To:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        adobriyan@gmail.com, akpm@linux-foundation.org, mhocko@suse.com,
+        mhiramat@kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@kernel.org, hkallweit1@gmail.com, rdunlap@infradead.org
+Cc:     wangle6@huawei.com
+References: <20210118133029.28580-1-nixiaoming@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <00048ea4-6646-7297-aa77-fe9b8299f3a5@suse.cz>
+Date:   Mon, 18 Jan 2021 15:02:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115171617.47273-1-broonie@kernel.org>
+In-Reply-To: <20210118133029.28580-1-nixiaoming@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-first, thanks a lot for writing this.
-
-On Fri 2021-01-15 17:16:17, Mark Brown wrote:
-> From: Mark Rutland <mark.rutland@arm.com>
+On 1/18/21 2:30 PM, Xiaoming Ni wrote:
+> The process_sysctl_arg() does not check whether val is empty before
+>  invoking strlen(val). If the command line parameter () is incorrectly
+>  configured and val is empty, oops is triggered.
 > 
-> Add documentation for reliable stacktrace. This is intended to describe
-> the semantics and to be an aid for implementing architecture support for
-> HAVE_RELIABLE_STACKTRACE.
+> For example:
+>   "hung_task_panic=1" is incorrectly written as "hung_task_panic", oops is
+>   triggered. The call stack is as follows:
+>     Kernel command line: .... hung_task_panic
+>     ......
+>     Call trace:
+>     __pi_strlen+0x10/0x98
+>     parse_args+0x278/0x344
+>     do_sysctl_args+0x8c/0xfc
+>     kernel_init+0x5c/0xf4
+>     ret_from_fork+0x10/0x30
 > 
-> Unwinding is a subtle area, and architectures vary greatly in both
-> implementation and the set of concerns that affect them, so I've tried
-> to avoid making this too specific to any given architecture. I've used
-> examples from both x86_64 and arm64 to explain corner cases in more
-> detail, but I've tried to keep the descriptions sufficient for those who
-> are unfamiliar with the particular architecture.
->
-> I've tried to give rationale for all the recommendations/requirements,
-> since that makes it easier to spot nearby issues, or when a check
-> happens to catch a few things at once.
-
-The above looks enough for the commit message. Well, Josh, typically
-asks for a directive style, example:
-
-Instead of "I've tried to give rationale...", please use something like
-"The documentation gives rationale...".
-
-> I believe what I have written is
-> sound, but as some of this was reverse-engineered I may have missed
-> things worth noting.
+> To fix it, check whether "val" is empty when "phram" is a sysctl field.
+> Error codes are returned in the failure branch, and error logs are
+> generated by parse_args().
 > 
-> I've made a few assumptions about preferred behaviour, notably:
+> Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+>  from kernel command line")
+> Cc: stable@kernel.org # v5.8-rc1+
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Thanks!
+
 > 
-> * If you can reliably unwind through exceptions, you should (as x86_64
->   does).
+> ---------
+> v4: According to Vlastimil Babka's recommendations
+>   add check len == 0, and cc stable
+> v3: https://lore.kernel.org/lkml/20210112033155.91502-1-nixiaoming@huawei.com/
+>   Return -EINVAL, When phram is the sysctl field and val is empty.
 > 
-> * It's fine to omit ftrace_return_to_handler and other return
->   trampolines so long as these are not subject to patching and the
->   original return address is reported. Most architectures do this for
->   ftrace_return_handler, but not other return trampolines.
+> v2: https://lore.kernel.org/lkml/20210108023339.55917-1-nixiaoming@huawei.com/
+>   Added log output of the failure branch based on the review comments of Kees Cook.
 > 
-> * For cases where link register unreliability could result in duplicate
->   entries in the trace or an inverted trace, I've assumed this should be
->   treated as unreliable. This specific case shouldn't matter to
->   livepatching, but I assume that that we want a reliable trace to have
->   the correct order.
+> v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+> 
+> ---------
+> ---
+>  fs/proc/proc_sysctl.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index 317899222d7f..d2018f70d1fa 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -1770,6 +1770,12 @@ static int process_sysctl_arg(char *param, char *val,
+>  			return 0;
+>  	}
+>  
+> +	if (!val)
+> +		return -EINVAL;
+> +	len = strlen(val);
+> +	if (len == 0)
+> +		return -EINVAL;
+> +
+>  	/*
+>  	 * To set sysctl options, we use a temporary mount of proc, look up the
+>  	 * respective sys/ file and write to it. To avoid mounting it when no
+> @@ -1811,7 +1817,6 @@ static int process_sysctl_arg(char *param, char *val,
+>  				file, param, val);
+>  		goto out;
+>  	}
+> -	len = strlen(val);
+>  	wret = kernel_write(file, val, len, &pos);
+>  	if (wret < 0) {
+>  		err = wret;
+> 
 
-This looks like a background that is typically part of the cover
-leter. It mentions some Mark's doubts.
-
-Could anyone please answer whether the above assumptions are correct
-or not? We should remove them from the commit message. If any
-assumption is wrong, we should fix the documentation.
-
-Honestly, I am curious about the anwer. I am not familiar with
-these details of the reliable stacktrace ;-)
-
-
-Otherwise, it looks good to me on the first look. But I am not
-expert in this are, so I could not check the details effectively.
-
-Best Regards,
-Petr
