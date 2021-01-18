@@ -2,65 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20AB2FA20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A531B2FA210
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404817AbhARNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:48:22 -0500
-Received: from mga18.intel.com ([134.134.136.126]:65233 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404795AbhARNr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:47:29 -0500
-IronPort-SDR: PHbFSyYwdZKF2dJwYf5oO1yoczyN55npoH3GI2HjEtf+akQ+WsJwzJD2dnfr+5XLjHCwQ0BHxk
- y4Ykk5KJTKgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="166470431"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="166470431"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:45:38 -0800
-IronPort-SDR: PR+hv6hLqfNAtcPkVR04+0gnc9Nps5QoJuhmEnVa+uj3n6TC6qC5b0f0KRAHLvkbZ6i4z61E+3
- vByLHB6fpw9A==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="406222305"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:45:33 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1Urb-002Bz6-Fo; Mon, 18 Jan 2021 15:46:35 +0200
-Date:   Mon, 18 Jan 2021 15:46:35 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 5/7] gpio: gpiolib-acpi: Export acpi_get_gpiod()
-Message-ID: <20210118134635.GL4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-6-djrscally@gmail.com>
- <20210118134502.GK4077@smile.fi.intel.com>
+        id S2391961AbhARNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:49:31 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11557 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392151AbhARNsw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:48:52 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DKCkZ544QzMLhC;
+        Mon, 18 Jan 2021 21:46:46 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 18 Jan 2021 21:48:03 +0800
+Subject: Re: [PATCH 6/6] vfio/iommu_type1: Drop parameter "pgsize" of
+ update_user_bitmap
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210107044401.19828-1-zhukeqian1@huawei.com>
+ <20210107044401.19828-7-zhukeqian1@huawei.com>
+ <20210115164409.3e7ddb28@omen.home.shazbot.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <279c11d9-e79b-2057-3e0c-ac12ab6d917e@huawei.com>
+Date:   Mon, 18 Jan 2021 21:48:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118134502.GK4077@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210115164409.3e7ddb28@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:45:02PM +0200, Andy Shevchenko wrote:
-> On Mon, Jan 18, 2021 at 12:34:26AM +0000, Daniel Scally wrote:
-
-And prefix: "gpiolib: acpi: ".
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
+On 2021/1/16 7:44, Alex Williamson wrote:
+> On Thu, 7 Jan 2021 12:44:01 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+>> We always use the smallest supported page size of vfio_iommu as
+>> pgsize. Drop parameter "pgsize" of update_user_bitmap.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 9 ++++-----
+>>  1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 82649a040148..bceda5e8baaa 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -978,10 +978,9 @@ static void vfio_update_pgsize_bitmap(struct vfio_iommu *iommu)
+>>  }
+>>  
+>>  static int update_user_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
+>> -			      struct vfio_dma *dma, dma_addr_t base_iova,
+>> -			      size_t pgsize)
+>> +			      struct vfio_dma *dma, dma_addr_t base_iova)
+>>  {
+>> -	unsigned long pgshift = __ffs(pgsize);
+>> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
+>>  	unsigned long nbits = dma->size >> pgshift;
+>>  	unsigned long bit_offset = (dma->iova - base_iova) >> pgshift;
+>>  	unsigned long copy_offset = bit_offset / BITS_PER_LONG;
+>> @@ -1046,7 +1045,7 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
+>>  		if (dma->iova > iova + size - 1)
+>>  			break;
+>>  
+>> -		ret = update_user_bitmap(bitmap, iommu, dma, iova, pgsize);
+>> +		ret = update_user_bitmap(bitmap, iommu, dma, iova);
+>>  		if (ret)
+>>  			return ret;
+>>  
+>> @@ -1192,7 +1191,7 @@ static int vfio_dma_do_unmap(struct vfio_iommu *iommu,
+>>  
+>>  		if (unmap->flags & VFIO_DMA_UNMAP_FLAG_GET_DIRTY_BITMAP) {
+>>  			ret = update_user_bitmap(bitmap->data, iommu, dma,
+>> -						 unmap->iova, pgsize);
+>> +						 unmap->iova);
+>>  			if (ret)
+>>  				break;
+>>  		}
+> 
+> Same as the previous, both call sites already have both pgsize and
+> pgshift, pass both rather than recalculate.  Thanks,
+> 
+My idea is that the "pgsize" parameter goes here and there, disturbs our sight when read code.
+To be frankly, the recalculate is negligible. Or we can add new fields in vfio_iommu, which are
+updated in vfio_update_pgsize_bitmap().
+
+Thanks,
+Keqian
+
+
+
+> Alex
+> 
+> .
+> 
