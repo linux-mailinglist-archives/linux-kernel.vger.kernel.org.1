@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3262FA4C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726042FA4DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405933AbhARPbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390480AbhARPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405932AbhARPbM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 10:31:12 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35352 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405840AbhARP2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:28:31 -0500
-IronPort-SDR: 5ND2IDaC5cUpdcV04pMctxwHgx9mMBZ2eVREj0NQJdx+IfHzsq3verUr8ofxFXO2yAs9aWaRMW
- f7W37PFKSgKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="157995682"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="157995682"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:26:43 -0800
-IronPort-SDR: iiMNZY9nl6O/3/N+sb0ba/p89E2Dh2yQDGedJpwTKSnkKSsnaH72c/PDrkb/0FYyPmw/cyRttR
- ryygXDL+gtLg==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="466395269"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:26:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1WRU-002Hre-3f; Mon, 18 Jan 2021 17:27:44 +0200
-Date:   Mon, 18 Jan 2021 17:27:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        lennart@poettering.net,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
-Message-ID: <20210118152744.GW4077@smile.fi.intel.com>
-References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
- <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
- <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
- <20210118141238.GQ968855@lahna.fi.intel.com>
- <YAWalPeMPt44lBgI@kroah.com>
- <20210118144853.GP4077@smile.fi.intel.com>
- <YAWiCkJwiOS8i50c@kroah.com>
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C5BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:30:31 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id u21so18664145lja.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:30:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v+3sNVgL0LuoHaM861FhWix9OIOn7Lo3T734hNOEQJg=;
+        b=wlddnKF8bWJWBfgTbY2Ua0DCsBqNmSBc0R/Qx3WhFGMZ1MqmWxBn3esDX+jVoxn8KU
+         VztvLwGOqR0WDrbZLgOwHJanUVP9/LEqsuQbVjBUIR0KDLnY0BI4o4bjNTomvGIVlxDK
+         ZuOzbLdeAPpddSwJk+Avwv+9bEZcrrGqq8j9g55UflVz7rwYNqFd5OGwiOPZ/hqC9yPz
+         QV++oTwZpT7tBZTsKzFWHWH28okD9G8uTFeAiNLkMdO3IkalcpeJggjNMjaPTMNjxjyL
+         HuWNnX1Mn5IkilOKzwvPIyWluUBEWvWD6zqQKPEmBUbgti7rCyqvi4s0mQf4eQ65quko
+         uG6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v+3sNVgL0LuoHaM861FhWix9OIOn7Lo3T734hNOEQJg=;
+        b=lnTzh4tyqR+5YmpXhTss68VgWB0UPIS5YqKp/A86URU35W1m9y6/iXGKDbYA/MrD+b
+         CXTXs0TjLcCCc0Jw3UtzpAoN63uKf4kszeBpwWaUa1Mn+m9DJC8IWl7SFfFd3i/yJ5rI
+         bVcA+gtsDD6Wv5uYgZfwjmnUzYzbpcPs+L3Q+azcSCRLaC1QcS725JF9nq3AL0pF0oj2
+         gdPkRbdTyRYLLUDsIcV0XTLdCbchtN5+8eXurj2gPoG1RUbiyd6ygvxFfrCNA+Fe5rU8
+         rCz3vc4N8+xqscO3vuu2/4w1eb4zAcpahwl+P2mOvKyq+x9Zki+XSxAJeieeXwcvB/OP
+         uAAQ==
+X-Gm-Message-State: AOAM532F26S7alTdnoq5xh/2t4hgt0WVt0fujv+sOS0uSyOnqDMFCTF3
+        KKFqV90wWViGY3HuaCH8vJw3NeMON49doCiZ1ZU4dw==
+X-Google-Smtp-Source: ABdhPJwXqF9W55z6hD/9ScyJKIW1P3VLZucjIU/Ka22BoeugA3T00Kh5YfHsTXUqFIpasWNRwjSk+yErvM8knUtydb8=
+X-Received: by 2002:a2e:85d1:: with SMTP id h17mr91088ljj.438.1610983830488;
+ Mon, 18 Jan 2021 07:30:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAWiCkJwiOS8i50c@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1610705349-24310-1-git-send-email-abaci-bugfix@linux.alibaba.com> <64a316c8-bc53-69af-8325-2746f6f1827c@broadcom.com>
+In-Reply-To: <64a316c8-bc53-69af-8325-2746f6f1827c@broadcom.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 16:29:19 +0100
+Message-ID: <CACRpkda9KrKU2PV3qghAqYNPoBtW+pb0K-+8E5BhOcgo9QOuWA@mail.gmail.com>
+Subject: Re: [PATCH] drivers/pinctrl/bcm: Simplify bool comparison
+To:     Ray Jui <ray.jui@broadcom.com>
+Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:58:18PM +0100, Greg Kroah-Hartman wrote:
-> On Mon, Jan 18, 2021 at 04:48:53PM +0200, Andy Shevchenko wrote:
-> > On Mon, Jan 18, 2021 at 03:26:28PM +0100, Greg Kroah-Hartman wrote:
-> > > On Mon, Jan 18, 2021 at 04:12:38PM +0200, Mika Westerberg wrote:
-> > > > On Mon, Jan 18, 2021 at 02:50:33PM +0100, Rafael J. Wysocki wrote:
-> > > > > On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
-> > > > > <kai.heng.feng@canonical.com> wrote:
-> > > > > > On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
-> > > > > > <kai.heng.feng@canonical.com> wrote:
-> > > > > > >
-> > > > > > > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
-> > > > > > > "compatible" is present") creates two modaliases for certain ACPI
-> > > > > > > devices. However userspace (systemd-udevd in this case) assumes uevent
-> > > > > > > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
-> > > > > > > assumption.
-> > > > > > >
-> > > > > > > Based on the assumption, systemd-udevd internally uses hashmap to
-> > > > > > > store each line of uevent file, so the second modalias always replaces
-> > > > > > > the first modalias.
-> > > > > > >
-> > > > > > > My attempt [1] is to add a new key, "MODALIAS1" for the second
-> > > > > > > modalias. This brings up the question of whether each key in uevent
-> > > > > > > file is unique. If it's no unique, this may break may userspace.
-> > > > > >
-> > > > > > Does anyone know if there's any user of the second modalias?
-> > > > > > If there's no user of the second one, can we change it to OF_MODALIAS
-> > > > > > or COMPAT_MODALIAS?
-> > > > 
-> > > > The only users I'm aware are udev and the busybox equivalent (udev,
-> > > > mdev) but I'm not sure if they use the second second modalias at all so
-> > > > OF_MODALIAS for the DT compatible string sounds like a good way to solve
-> > > > this.
-> > > 
-> > > As udev seems to "break" with this (which is where we got the original
-> > > report from), I don't think you need to worry about that user :)
-> > 
-> > > Does anyone use mdev anymore, and in any ACPI-supported systems?
-> > 
-> > Yes, regularly.
-> 
-> Ok, and how badly does it break when MODALIAS is multiple lines like
-> this?  Or can it handle it?
+On Fri, Jan 15, 2021 at 7:24 PM Ray Jui <ray.jui@broadcom.com> wrote:
 
-Since the mentioned change landed into v4.1 I never had a problem with my
-setup. From my point of view it doesn't affect anyhow mdev setup.
+> > -             if ((pull_up == false) && (pull_down == false))
+> > +             if (!pull_up && !pull_down)
+>
+> Looks fine as improvement, but I'm curious why there's a warning to
+> start with.
 
--- 
-With Best Regards,
-Andy Shevchenko
+There is no semantic difference. This is a purely syntactic warning.
 
-
+Yours,
+Linus Walleij
