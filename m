@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127222F9E32
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C244C2F9E3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388870AbhARLcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:32:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389854AbhARLbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:31:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BB88222B3;
-        Mon, 18 Jan 2021 11:30:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610969443;
-        bh=2yx1PP+7HxG9WpaJkcp3+1HSxgjL2NX9Ks3Bb0BI1+4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NzAy9GUmq4aReGw1IZH+mx+7wLolRtIrFWWhn6v6R1Kxi52Y6oPfgtO+sIarphpUC
-         JkekuNnaovRdon0OJghyYDoEFaHB0ardXxnRUgZWks2JyTyBrukdsVYFR6r6FCU6To
-         fd4oN3bodQpfEvVwbZ6W2hlnzFCEqcep3EQ0yPS25ih8aMec8VtEVuT6ysg53OAbzN
-         ZzPx3EXez+/1oN2CGQM3l8fFHpKjqS6B1QJq9SdaaPOTBS9t/qiEEtaxNPk0U8wCs5
-         hjJAXrNefMoTC1XTsfqnn9Ok3jttfein3/TAfA1257BFXGfHQ/R/3RNj0tJq8Is0bg
-         Mu4vFmE2XE7Aw==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Subject: Re: [PATCH] usb: bdc: Remove the BDC PCI driver
-In-Reply-To: <20210115213142.35003-1-alcooperx@gmail.com>
-References: <20210115213142.35003-1-alcooperx@gmail.com>
-Date:   Mon, 18 Jan 2021 13:30:36 +0200
-Message-ID: <878s8qwkgz.fsf@kernel.org>
+        id S2390363AbhARLdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:33:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389864AbhARLbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:31:44 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21350C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:30:58 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l1SkK-0001G2-ID; Mon, 18 Jan 2021 12:30:56 +0100
+Subject: Re: [PATCH] clk: imx6q: demote warning about pre-boot ldb_di_clk
+ reparenting
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Fabio Estevam <fabio.estevam@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201113145310.8274-1-a.fatoum@pengutronix.de>
+ <160627062508.2717324.2756565276373452151@swboyd.mtv.corp.google.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <cb519f7c-772f-0da3-da72-6af9a0f2ddfb@pengutronix.de>
+Date:   Mon, 18 Jan 2021 12:30:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <160627062508.2717324.2756565276373452151@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hello Stephen,
 
+On 25.11.20 03:17, Stephen Boyd wrote:
+> Quoting Ahmad Fatoum (2020-11-13 06:53:09)
+>> diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
+>> index ba33c79158de..b2e4b6234ac0 100644
+>> --- a/drivers/clk/imx/clk-imx6q.c
+>> +++ b/drivers/clk/imx/clk-imx6q.c
+>> @@ -337,10 +337,10 @@ static void init_ldb_clks(struct device_node *np, void __iomem *ccm_base)
+>>         of_assigned_ldb_sels(np, &sel[0][3], &sel[1][3]);
+>>  
+>>         for (i = 0; i < 2; i++) {
+>> -               /* Warn if a glitch might have been introduced already */
+>> +               /* Print a notice if a glitch might have been introduced already */
+>>                 if (sel[i][0] != 3) {
+>> -                       pr_warn("ccm: ldb_di%d_sel already changed from reset value: %d\n",
+>> -                               i, sel[i][0]);
+>> +                       pr_notice("ccm: ldb_di%d_sel already changed from reset value: %d\n",
+> 
+> Maybe the print should also say "Possible glitch"?
 
-Hi,
+Somehow missed this reply completely.
+Yes, adding "possible glitch" improves the usefulness of the message,
+I just sent out a v2.
 
-Al Cooper <alcooperx@gmail.com> writes:
-> The BDC PCI driver was only used for design verification with
-> an PCI/FPGA board. The board no longer exists and is not in use
-> anywhere. All instances of this core now exist as a memory mapped
-> device on the platform bus.
->
-> NOTE: This only removes the PCI driver and does not remove the
-> platform driver.
->
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Thanks,
+Ahmad
+ 
 
-It sounds like it could be used for pre-silicon verification of newer
-Core Releases, much like Synopsys still uses the HAPS (with mainline
-linux, mind you) for silicon validation.
-
-Why would we delete this small shim if it *could* still be useful?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmAFcVwRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYV+xAAiQ5QnMQbi729VmLzXO75TZc0gYNdyt42
-QfFnmmIYvILx8pXmGLx3CvMqwUmr+MziroTgD4/EI29ouh7XS0+xQTLomqEWCqZm
-UJ8gKIFFlDbcsFeRdHl4ezTM4AeDLlnaCvl4Uhiv7/KOl8cNzxx8JN+v+YSQ1A3V
-ClTPFDbf2hlZ5WcV4/V3EM9/UQInJYKCDcq4mUbtJo6+1Dy2Av70Vol6mAcOY6jH
-LptSn+fCK4e5wyY1l15GGun7KjFcw3tdEqBKtgpMY2xzLuabzbVzufzRaBubm0qA
-UtJ/tz8bFbx6ptu8cw0pqv56+62j06uK+57tlsZ33kcvikxKIzsnnm0qMIkpC462
-Yx5OBJBhi4GsD1G6Pe48SVKx16PsE+pNtKOTI5x3D3E0NARzWvsHroQ7Xh6BHcqd
-nFZQYXsEEPaCZXbWB/m+P6h145kUEgqNEGc7Vd1N//PoI6U863XQi+u+J8H8hdsy
-oTrIiclXGkGg+FsshNVcjSAQ7bGA3E9vPvPyKX7iJXkI9jr2Z1kJjmfP28YI7xMU
-SPXyJpUxakAQqT0SMxxzEe3sva1jSiVvY6zzaGLN9mxJHjb2gSe5vNBZTkNGJ7zJ
-Kg6UL06lhaw9JGTRBPRgKpWzGSC0lq+YX5KMf1jALon9XTY5Eq0iPPVIys7Ltp0q
-iRxKwlKUNws=
-=TWmC
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
