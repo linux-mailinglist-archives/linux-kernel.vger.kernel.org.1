@@ -2,159 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11AA2F9998
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 06:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6792F9992
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 06:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730365AbhARF5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 00:57:30 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:48999 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731481AbhARFwm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 00:52:42 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id A00251657;
-        Mon, 18 Jan 2021 00:50:46 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 18 Jan 2021 00:50:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=rwPrbQh27EHg9
-        RIWa6l1v6acfPj+oE8RuCzMCieTED0=; b=A36vCui3c5MirT+9s/LJfs72mhju2
-        UMCZYgCuNG455MgVITTAOKyjMsISV0LKcxkYn3nkPZ47VaFA6zA1t/VtFSeHtXCM
-        xMbO3KxzLPzQWlVzmUFWLffliaX4tNJPljA3iLKh2glD+jGr7G0rdV8rB4gif39S
-        I1jsAi9B2wxCz9T1Kh8BmZzCoXp15cm6QFx4f5CANCYlabXs1kawlz9hVrmeBwPp
-        B5+9yZAUzJ+S0lo36YsdIXDq1gHJXmE2u8kRP/JPgcW4NLWXEEQEKl9gVT+JHXeM
-        xk86rYKbCfa3i4RZ+srXyV4gJBB4wfbGJKuo05HVviC/t3KkkDXQX0IKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=rwPrbQh27EHg9RIWa6l1v6acfPj+oE8RuCzMCieTED0=; b=TNBErMeE
-        QDQOw9oL/FLHGsowkARtEora+4R0m7UvaMEQzjGt61lzcRrNmzqTyjS8NDWMS+B1
-        YuJaRHydPF61GCE+4/173FWRWuy/I+02+RjK3ZeXtmMxS7g8S9xY0SZ4DSfUxVKT
-        HBn13lUBFsV30kkxrTbULafE3ceZDkI3ZRnPtJt7OsQn+awNDxhce0MuzmZnPvzt
-        4S8pazLVgZgUaz45MfHlAS1hJT3LpC1Ev/aYUQvq1dddE38hUiWIzHHvFpOI90qn
-        r4fz5lXQwRm2UYEqAj3I1Sub4gcl/iSIspOGOCpFPKDfwu/7eJiJi2dMmThs06ZP
-        z2Pk0sAhJH8rFQ==
-X-ME-Sender: <xms:tiEFYMwCAm80ASR9fUZmEJuXa4t5dQMzc97M8IxySa87xzpYlfRaFw>
-    <xme:tiEFYHtwQEDqMluBZHhXLlHLWZKsgx4uRpzrUBJ5tnqO6icqQT1Nwn5V92HrQ6JA1
-    EwQPot5dv5oQuCW2Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdejgdekjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
-    gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
-    rdhorhhg
-X-ME-Proxy: <xmx:tiEFYLtuYND6JlX_xA-uryJ0bGy0b2fznMWQOSb8uwf_4gUNDkVMjw>
-    <xmx:tiEFYEOruYNDaM77Ff9PXp3KzCMB-F6jDEAQOyDNqdXIOK3ZOzKo5A>
-    <xmx:tiEFYB2ZEUxwg60nU1jyHrkpzfA9-HmlUIDTZFP9nu1bIpgtokklyg>
-    <xmx:tiEFYIF9lzllx39NGiRmq855P7sTP7C8E5EItRWR_25F5c21VGExsMp-_no>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BC1F324005D;
-        Mon, 18 Jan 2021 00:50:45 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v5 10/10] arm64: dts: allwinner: Move wakeup-capable IRQs to r_intc
-Date:   Sun, 17 Jan 2021 23:50:40 -0600
-Message-Id: <20210118055040.21910-11-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210118055040.21910-1-samuel@sholland.org>
-References: <20210118055040.21910-1-samuel@sholland.org>
+        id S1731561AbhARFyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 00:54:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731676AbhARFvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 00:51:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610949056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8kzEmb8yeWNqj2dreJvrpV1XtLitrHFt8EK3g7gov8M=;
+        b=tjDUytINNSriwoZ9T3hsTTLmurowqjSkIOg8PZNEPi+31Es5VsG3fcNwBFYs1L6jgQqMJw
+        6VlTX2A/WYdLN2bWdVWjEBOeDFusjV51tJVlUwTAngGJ5uHc7Aom1PkyJHgjB5o55IHtrk
+        rw/VEVT1yqTyGmW38gU0ytnHXbI4XkM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7D2FEABD6;
+        Mon, 18 Jan 2021 05:50:56 +0000 (UTC)
+Subject: Re: [PATCH -next] x86/xen: fix 'nopvspin' build error
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     David Woodhouse <dwmw@amazon.co.uk>
+References: <20210115191123.27572-1-rdunlap@infradead.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <1c7241c5-d1b8-b49c-3214-610f951fb780@suse.com>
+Date:   Mon, 18 Jan 2021 06:50:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115191123.27572-1-rdunlap@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="iRoVKZ3KvoJcsv5XLvqusGYe3aIC2SKED"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All IRQs that can be used to wake up the system must be routed through
-r_intc, so they are visible to firmware while the system is suspended.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iRoVKZ3KvoJcsv5XLvqusGYe3aIC2SKED
+Content-Type: multipart/mixed; boundary="mjYSEDSUttkspvg4KmqLEgfovVBgHiuep";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Message-ID: <1c7241c5-d1b8-b49c-3214-610f951fb780@suse.com>
+Subject: Re: [PATCH -next] x86/xen: fix 'nopvspin' build error
+References: <20210115191123.27572-1-rdunlap@infradead.org>
+In-Reply-To: <20210115191123.27572-1-rdunlap@infradead.org>
 
-In addition to the external NMI input, which is already routed through
-r_intc, these include PIO and R_PIO (gpio-keys), the LRADC, and the RTC.
+--mjYSEDSUttkspvg4KmqLEgfovVBgHiuep
+Content-Type: multipart/mixed;
+ boundary="------------71DBAC4DA91616FD53604F3C"
+Content-Language: en-US
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 4 ++++
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 3 +++
- 2 files changed, 7 insertions(+)
+This is a multi-part message in MIME format.
+--------------71DBAC4DA91616FD53604F3C
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 5bf9d61fab12..5b30e6c1fa05 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -648,6 +648,7 @@ ccu: clock@1c20000 {
- 		pio: pinctrl@1c20800 {
- 			compatible = "allwinner,sun50i-a64-pinctrl";
- 			reg = <0x01c20800 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-@@ -818,6 +819,7 @@ lradc: lradc@1c21800 {
- 			compatible = "allwinner,sun50i-a64-lradc",
- 				     "allwinner,sun8i-a83t-r-lradc";
- 			reg = <0x01c21800 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
- 			status = "disabled";
- 		};
-@@ -1208,6 +1210,7 @@ rtc: rtc@1f00000 {
- 			compatible = "allwinner,sun50i-a64-rtc",
- 				     "allwinner,sun8i-h3-rtc";
- 			reg = <0x01f00000 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-output-names = "osc32k", "osc32k-out", "iosc";
-@@ -1279,6 +1282,7 @@ r_pwm: pwm@1f03800 {
- 		r_pio: pinctrl@1f02c00 {
- 			compatible = "allwinner,sun50i-a64-r-pinctrl";
- 			reg = <0x01f02c00 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&r_ccu CLK_APB0_PIO>, <&osc24M>, <&osc32k>;
- 			clock-names = "apb", "hosc", "losc";
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-index 15babb635cf7..4af06f49daa7 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -294,6 +294,7 @@ pwm: pwm@300a000 {
- 		pio: pinctrl@300b000 {
- 			compatible = "allwinner,sun50i-h6-pinctrl";
- 			reg = <0x0300b000 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
-@@ -902,6 +903,7 @@ tcon_tv_out_tcon_top: endpoint@1 {
- 		rtc: rtc@7000000 {
- 			compatible = "allwinner,sun50i-h6-rtc";
- 			reg = <0x07000000 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-output-names = "osc32k", "osc32k-out", "iosc";
-@@ -937,6 +939,7 @@ r_intc: interrupt-controller@7021000 {
- 		r_pio: pinctrl@7022000 {
- 			compatible = "allwinner,sun50i-h6-r-pinctrl";
- 			reg = <0x07022000 0x400>;
-+			interrupt-parent = <&r_intc>;
- 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&r_ccu CLK_R_APB1>, <&osc24M>, <&rtc 0>;
--- 
-2.26.2
+On 15.01.21 20:11, Randy Dunlap wrote:
+> Fix build error in x86/xen/ when PARAVIRT_SPINLOCKS is not enabled.
+>=20
+> Fixes this build error:
+>=20
+> ../arch/x86/xen/smp_hvm.c: In function =E2=80=98xen_hvm_smp_init=E2=80=99=
+:
+> ../arch/x86/xen/smp_hvm.c:77:3: error: =E2=80=98nopvspin=E2=80=99 undec=
+lared (first use in this function)
+>     nopvspin =3D true;
+>=20
+> Fixes: 3d7746bea925 ("x86/xen: Fix xen_hvm_smp_init() when vector callb=
+ack not available")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Juergen Gross <jgross@suse.com>
 
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+
+--------------71DBAC4DA91616FD53604F3C
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------71DBAC4DA91616FD53604F3C--
+
+--mjYSEDSUttkspvg4KmqLEgfovVBgHiuep--
+
+--iRoVKZ3KvoJcsv5XLvqusGYe3aIC2SKED
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAFIb8FAwAAAAAACgkQsN6d1ii/Ey+C
+Mgf/QM+RDmImpS4W4TjDna7xxQSqRTT9ToRcZFZRhRIKuSqBH3ihfHJBts86dfHlOct1oYlIJh+V
+TR186xBz7uHZZXZEbhZpBgJgYZhkFBDC0j+AOlItt6qRbeF/0J6dGYpFs/4eONHzHK8H1G2tWQKK
+5nz5zAyk7Yp9mjlZ3wJDta7t+rheit662evrP/wFPajvF+p/6VJqxv3J5Nly4yJFFG2mBsYRVEH2
+1/0YJOULdytyVdWo6TbY9AKSwzvb5jKiK/AAZ2IxbUykWqw7TGsT9iczzeGozqzm+1MHtwLoK0Hr
+OGEOy7m27czWEpxNMhjoGhdOAjfDT4IAytgKQnadOw==
+=PWrs
+-----END PGP SIGNATURE-----
+
+--iRoVKZ3KvoJcsv5XLvqusGYe3aIC2SKED--
