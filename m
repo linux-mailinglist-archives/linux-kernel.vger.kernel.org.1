@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DB22FADD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8F62FADDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733186AbhARXq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 18:46:27 -0500
-Received: from ozlabs.org ([203.11.71.1]:57053 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733092AbhARXqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 18:46:23 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DKT1Z3mLkz9sVS;
-        Tue, 19 Jan 2021 10:45:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611013539;
-        bh=6ec4/79b0jlPaNx1rlz8S2B+hZT4CZxrgTBzsmJNbgg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=h0xpHFr59kXUTdq5aoyNANyFi4JDn0ZtLROpiRYg4lU7gpm/M6erwW3TmVZpThVS6
-         77YY/EDmJfg8EIluwWChmebZ9z75pMaAYkXZqH9PMRYjg3SebfJmYOC0iVN5wqjkEd
-         sKmeDDynAic+SVvRlqsF4Fs7MeGSkDl3kNKH3ZUg/7DEvdF8P9CymO+XCMleIACoz0
-         K8XxQi/WqmzsQkvSmikEEbn49KFR8vsniXerxLF3ML3lRNVYXL7lZfgCNHJHe/+Mma
-         e/LmS7+ZuW9kyMW9Uhv/DU1OoBgCgpO3rFEsfgv6AFT7pckCf5vRXY+nJMXFsOGb9g
-         OgPC26pS2IAjA==
-Date:   Tue, 19 Jan 2021 10:45:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the hid tree with the qcom tree
-Message-ID: <20210119104536.50e08bac@canb.auug.org.au>
+        id S1733212AbhARXtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 18:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbhARXtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 18:49:02 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45484C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:48:20 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id v5so12543934qtv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ed3MeSa+vYjkP75JUhCh5CWMiaLqH4Gt6vdQGvVz5Zo=;
+        b=ABDcFgQEdbegUPy03ChL7qFBRZLE4d5RYB+BvpnNp/pVx70pEavdhXOASQkXNf9bQN
+         h0manBPX6V294ymabO4qrgBYp3em+96lwlU6IePwaAXLM+cGvU+mq3yZi0U+QOkYBEKh
+         GIZqnHRjUw3J4Oxh0Wohqs2W5jyVYzok9Xcp/P5luY0VO19KChzM5IUR1OzhOLwTnul6
+         lv5qcdCaKVcNYncXHvXGfKlesNbUSeHMjkX1g12IAXyuaZcKDnYdk9sWIaMIx9qPq/pc
+         jDLIyHwfLFRxUtdkfBM3XowK6nVv/q9p9/UfIwRg4HX6hzpZUgNIM4Vrx0+P8z6v1PVv
+         igrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ed3MeSa+vYjkP75JUhCh5CWMiaLqH4Gt6vdQGvVz5Zo=;
+        b=svvddnEGem/olnbyojr4BPpbFYXPSl9KUoxdWnbBo21uhRhKJZpzLyehvRjM9630Uk
+         L+WbpLlcrMgVnOpSKCFNCNEwAgk7MIlCWVhYSXIShHDCJITFOXZNbPFgVZi43ycqymPm
+         cCd8p5yzVGXrPERiMpqEs7wZdhxpcm7h+tUK7PzVKeKOzZ63j2kWUNrp3jGY2fWmMcqQ
+         Clp7b6jbI1T7is1MfHPosL+9j/aeWEVC2WEAC64UnO78hplPOaY82QCTgxp7F2HKWtOq
+         TufRDk/vsk9Elco9OdDyL3q+v8Nsgw0mV6WQfnVz9CdIu8UMRxiPj26a3nrGJaVCpiCz
+         a7Aw==
+X-Gm-Message-State: AOAM532gJ36nRirBTXn/7GnK68SprwO1Fe1QjdWQh20yjnIwOVKtI3Vn
+        aDSxA1gPYkuHTr1zPuuQp/Y4/w==
+X-Google-Smtp-Source: ABdhPJw5OqLaNno2QQkR/cEBquLRW/acdyvWZgzF/G8JhHWsokTQ2HltmhSKqwd7KuQY9PUDGG88qw==
+X-Received: by 2002:ac8:4d4d:: with SMTP id x13mr1910197qtv.385.1611013699444;
+        Mon, 18 Jan 2021 15:48:19 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id p13sm11792293qkg.80.2021.01.18.15.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 15:48:18 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1eFu-003P0N-B4; Mon, 18 Jan 2021 19:48:18 -0400
+Date:   Mon, 18 Jan 2021 19:48:18 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+Message-ID: <20210118234818.GP4605@ziepe.ca>
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oYa.72d_FLo8xHDiK1KSkY4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oYa.72d_FLo8xHDiK1KSkY4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 18, 2021 at 10:22:56PM +0100, Bodo Stroesser wrote:
+> On 18.01.21 21:24, Jason Gunthorpe wrote:
+> > On Mon, Jan 18, 2021 at 03:08:51PM -0500, Douglas Gilbert wrote:
+> >> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
+> >>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
+> >>>
+> >>>> After several flawed attempts to detect overflow, take the fastest
+> >>>> route by stating as a pre-condition that the 'order' function argument
+> >>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
+> >>>
+> >>> That doesn't help, the point of the overflow check is similar to
+> >>> overflow checks in kcalloc: to prevent the routine from allocating
+> >>> less memory than the caller might assume.
+> >>>
+> >>> For instance ipr_store_update_fw() uses request_firmware() (which is
+> >>> controlled by userspace) to drive the length argument to
+> >>> sgl_alloc_order(). If userpace gives too large a value this will
+> >>> corrupt kernel memory.
+> >>>
+> >>> So this math:
+> >>>
+> >>>     	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+> >>
+> >> But that check itself overflows if order is too large (e.g. 65).
+> > 
+> > I don't reall care about order. It is always controlled by the kernel
+> > and it is fine to just require it be low enough to not
+> > overflow. length is the data under userspace control so math on it
+> > must be checked for overflow.
+> > 
+> >> Also note there is another pre-condition statement in that function's
+> >> definition, namely that length cannot be 0.
+> > 
+> > I don't see callers checking for that either, if it is true length 0
+> > can't be allowed it should be blocked in the function
+> > 
+> > Jason
+> > 
+> 
+> A already said, I also think there should be a check for length or
+> rather nent overflow.
+> 
+> I like the easy to understand check in your proposed code:
+> 
+> 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
+> 		return NULL;
+> 
+> 
+> But I don't understand, why you open-coded the nent calculation:
+> 
+> 	nent = length >> (PAGE_SHIFT + order);
+> 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
+> 		nent++;
 
-Hi all,
+It is necessary to properly check for overflow, because the easy to
+understand check doesn't prove that round_up will work, only that >>
+results in something that fits in an int and that +1 won't overflow
+the int.
 
-Today's linux-next merge of the hid tree got a conflict in:
+> Wouldn't it be better to keep the original line instead:
+> 
+> 	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
 
-  arch/arm64/configs/defconfig
+This can overflow inside the round_up
 
-between commit:
-
-  74b87103b3d0 ("arm64: defconfig: Enable HID multitouch")
-
-from the qcom tree and commit:
-
-  1fe16cfd311b ("arm64: defconfig: Update config names for i2c-hid rejigger=
-")
-
-from the hid tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/configs/defconfig
-index f2107444df08,326198305beb..000000000000
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@@ -756,14 -746,11 +756,15 @@@ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=3D
-  CONFIG_SND_SOC_TAS571X=3Dm
-  CONFIG_SND_SOC_WCD934X=3Dm
-  CONFIG_SND_SOC_WM8904=3Dm
- +CONFIG_SND_SOC_WM8962=3Dm
-  CONFIG_SND_SOC_WSA881X=3Dm
- +CONFIG_SND_SOC_LPASS_WSA_MACRO=3Dm
- +CONFIG_SND_SOC_LPASS_VA_MACRO=3Dm
-  CONFIG_SND_SIMPLE_CARD=3Dm
-  CONFIG_SND_AUDIO_GRAPH_CARD=3Dm
- +CONFIG_HID_MULTITOUCH=3Dm
-- CONFIG_I2C_HID=3Dm
-+ CONFIG_I2C_HID_ACPI=3Dm
-+ CONFIG_I2C_HID_OF=3Dm
-  CONFIG_USB_CONN_GPIO=3Dm
-  CONFIG_USB=3Dy
-  CONFIG_USB_OTG=3Dy
-
---Sig_/oYa.72d_FLo8xHDiK1KSkY4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAGHaAACgkQAVBC80lX
-0GyHhggAh/QZi6QD6ziGLnC8sennkav1Y8hJe/DlyCncp85eQBN7pDE5CGUKuv+J
-bGm5SIYfJwQJdkJXMvub5DMgYL+oxncAeuUpA4MD/6SDNiL7ySDcNpnsojSq8/M+
-eUU69N+HyoIwCmrc1ryIm/3wSUK1qsIWx2LBvKI20NXKtZ7p5v9AKTRyrPO/3+Dk
-zqhS9xrk29YWHzb0gFLs4t0aJ4ePIcMC9tbf6bM4aO8dMdQxD8W5/Hb+D6XVsMXa
-eS30lk+GtrKcaWjFF6SziM2pyrFaDz+xjbe8tw6SWU+0LL21x2nvQEyH+3HTMFf5
-i/fh7EBokW0eQ/gFUYKOY/MD9r1Y/Q==
-=QaY7
------END PGP SIGNATURE-----
-
---Sig_/oYa.72d_FLo8xHDiK1KSkY4--
+Jason
