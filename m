@@ -2,163 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A342FAD77
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BBA2FAD94
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731591AbhARWnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:43:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S2388902AbhARWxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389326AbhARWlj (ORCPT
+        with ESMTP id S1731342AbhARWxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:41:39 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25839C061381
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:56 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id c124so14892048wma.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o2Ps4NdwSah0TpS5Hl9/iU2xXHhQ0Nh1Ujaqty12+uY=;
-        b=m6chYw8W2yxmf8PKgJIUyE44dr27PL7aC2GJfBIhFlTCld/tHDlW5wwsWshXjL+loP
-         B0SVc5DRjHfBTXD3JNF7vT4jfE9FHtRTkTRwB+ff+kyCAYHTF6wWPyWcL8+KW8QH54SS
-         LTvEyAappDHL0SoIdO3eKlRwn1nkuMVbGDq4mTlZv9+oS9/Lhjzh1xvMyPS8++dOgVmA
-         Svi4NV3gzkerjb25v//Pt6AkJysS4CgI0ER2Vi3ReMM0egLOKzHCMAXX9E0+hGpWHIcK
-         61CzEByScPqu5eZQRRjflCRJaqfDNFJY/nZ4H/X+NLr5TtviDxVgvaLMSkXVCQRitX9T
-         GUdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o2Ps4NdwSah0TpS5Hl9/iU2xXHhQ0Nh1Ujaqty12+uY=;
-        b=lpXTMz3mUrT+zT65ApqPRr0OfcVi5Zzy1u7+WLhgD3/57/Mpj12WNX6cfpFsVNtY0h
-         Y2fBII1lEO61P27++C4QCsl16YgCoG7465UzJHEt56jSZ2TJWzGQ2c8vhrm/mip9wmll
-         lPogY7kLxIKlbfPpTRtZFzmwf08gIVcXYRrLYZ6zuBvDHM13U4kIsjrZRcXFZiQf6Ceu
-         YxWhmgBpgODFeiB0wpdI8tPeGtJgFO90rEygi2+Eo45G3BJMwu7CvXexYLhphOFd7TuP
-         Soz9lFfUYGJ9pjU20TNNbjQjMQJJSS6IAVMwlHxxb05C+LPLN1vP3jB1VlfEBaG4BsYl
-         YHOQ==
-X-Gm-Message-State: AOAM5301FP0r3ykgf7TsBexT3hy5PD+ubJsryGOfKNYqvxwjD1v2uiOg
-        /u/0koRFly4VSQSfVCnJI+hIlg==
-X-Google-Smtp-Source: ABdhPJxW5uRN4NeDNBwkU6uVLJdshMT+VBEfC7iD9uFNzSF3xvGEs6kqcKqlrRzUWfdGXVx2TJrhqg==
-X-Received: by 2002:a1c:20cb:: with SMTP id g194mr1281480wmg.51.1611009594926;
-        Mon, 18 Jan 2021 14:39:54 -0800 (PST)
-Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:54 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 20/20] RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
-Date:   Mon, 18 Jan 2021 22:39:29 +0000
-Message-Id: <20210118223929.512175-21-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
-References: <20210118223929.512175-1-lee.jones@linaro.org>
+        Mon, 18 Jan 2021 17:53:08 -0500
+X-Greylist: delayed 643 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Jan 2021 14:52:27 PST
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A913C061573;
+        Mon, 18 Jan 2021 14:52:27 -0800 (PST)
+Received: from hillosipuli.retiisi.eu (dbd4xkyj7wcfw2k22jcct-3.rev.dnainternet.fi [IPv6:2001:14ba:8f1:3400:fb90:892b:22d6:3885])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 2288E1B00257;
+        Tue, 19 Jan 2021 00:41:41 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1611009701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRCka0377VlEadOtTVjlwLcx8FKWy9F/jF3cR941l3g=;
+        b=hsxrsBz/iBluWcTLJdXvbBKobPYNr3ZDMPcspkl4r1W/9hkyAnIcO6CuFVgxOINSa1cTwD
+        9hLH4F01RMsm0n3ESoZ9NHXs16tzQOCaoIymF/oWlaXXgQ/tDfUOQSz8x5Etgv2daYoSxm
+        gBNQ3+yE0nerLAu0udljNrSNtWSartPakb3LcudaA/8WMTGAFGYszKZFqhvYT93ouAAVJN
+        1KQFTEnjPdJYtjW+a8RrxDqfjNo8djSCY8Ck67i8dHMOKflr1TWVEWmvEIi498Qd6fko0G
+        gQSwa/bO+0YN4ZGRuvZ25YuWa8DPmTqhIxxou5eBzrMch9RM6TVQauKtTL3rwg==
+Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id AFF57634C89;
+        Tue, 19 Jan 2021 00:40:28 +0200 (EET)
+Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.org.uk)
+        by valkosipuli.localdomain with esmtp (Exim 4.92)
+        (envelope-from <sakari.ailus@iki.fi>)
+        id 1l1dCG-000457-HM; Tue, 19 Jan 2021 00:40:28 +0200
+Date:   Tue, 19 Jan 2021 00:40:28 +0200
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: i2c: Add IMX300 CMOS
+ sensor binding
+Message-ID: <20210118223636.GA3@valkosipuli.retiisi.org.uk>
+References: <20210113182934.444727-1-angelogioacchino.delregno@somainline.org>
+ <20210113182934.444727-3-angelogioacchino.delregno@somainline.org>
+ <20210116234404.GX850@valkosipuli.retiisi.org.uk>
+ <b681819b-1fc9-a6ea-bb20-f234dcdb3cb7@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b681819b-1fc9-a6ea-bb20-f234dcdb3cb7@somainline.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1611009701; a=rsa-sha256;
+        cv=none;
+        b=pGSA4VMAZLteT3gHGeAJjZeKGOp2N8XSo7qb0O4zsOQbPrcJLqMQfIF4Ub665mgnA5f9RI
+        XlzSOgnU+1Vgk3FTX+KC6bRTjssIn/FN5PJn3NBJYHi4xknWryt3MbQa9qXEi/qNoXBuuw
+        mv+u8GGVPcWFHPneBXCwT/GC3dZWpDjNh6pCkstlRdtasvP5devha+A1q2Cs3quoB8fCJG
+        /gw26AP2eY3zzSV8AjSAJ3AF9AKS5dV4k4pOl2H+9jscJRao59aP+TFeqXlHGVSbvitBP4
+        73vDr83UYiN19A15vfGAXjnAX6aYALwruneWYSJKpTLmlvGKm+aHPBlcFwZumg==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1611009701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRCka0377VlEadOtTVjlwLcx8FKWy9F/jF3cR941l3g=;
+        b=onZEfUvFCHdJs0wFKSKN6YG1kjxv0hN+Ui+JiVq+k9s+dbTvAQq33P6HsjhfGBMsPicRol
+        yb1H5Oz6CdUKWf75pQSkAHMNcD16wPNGcJ2H1tbI2povICjn0G24sLNqhKw5FrkGhjnVUq
+        QQUwtPudxThnnHmuatZDNrAMFpD6y3caUALDvtYXjncbpfCBt//qTdN/XE/DZQU26qWPxr
+        j2W0bIhPOmo+L1o3w2biTsBGuOLCuYxXWSoBhusIJYbH5LUg/QXaEKjxs7wOxB1dbL04wR
+        srQEtsALxe0sTxTPexJGVO2kPkQC43DCYkxwUdwWbx8+uMIppA0mdEvPqoZwYA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Sun, Jan 17, 2021 at 06:51:04PM +0100, AngeloGioacchino Del Regno wrote:
+> Il 17/01/21 00:44, Sakari Ailus ha scritto:
+> > Hi AngeloGioacchino,
+> > 
+> > On Wed, Jan 13, 2021 at 07:29:34PM +0100, AngeloGioacchino Del Regno wrote:
+> > > Add YAML device tree binding for IMX300 CMOS image sensor, and
+> > > the relevant MAINTAINERS entries.
+> > > 
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > ---
+> > >   .../bindings/media/i2c/sony,imx300.yaml       | 112 ++++++++++++++++++
+> > >   MAINTAINERS                                   |   7 ++
+> > >   2 files changed, 119 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > > new file mode 100644
+> > > index 000000000000..4fa767feea80
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > > @@ -0,0 +1,112 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/i2c/sony,imx300.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Sony 1/2.3-Inch 25Mpixel Stacked CMOS Digital Image Sensor
+> > > +
+> > > +maintainers:
+> > > +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > +
+> > > +description: |-
+> > > +  The Sony IMX300 is a 1/2.3-inch Stacked CMOS (Exmor-RS) digital image
+> > > +  sensor with a pixel size of 1.08um and an active array size of
+> > > +  5948H x 4140V. It is programmable through I2C interface at address 0x10.
+> > > +  Image data is sent through MIPI CSI-2, which is configured as either 2 or
+> > > +  4 data lanes.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: sony,imx300
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  clocks:
+> > > +    maxItems: 1
+> > 
+> > Please add assigned clock related properties; see
+> > Documentation/driver-api/media/camera-sensor.rst .
+> > 
+> Will do!
+> 
+> > > +
+> > > +  vdig-supply:
+> > > +    description:
+> > > +      Digital I/O voltage supply, 1.15-1.20 volts
+> > > +
+> > > +  vana-supply:
+> > > +    description:
+> > > +      Analog voltage supply, 2.2 volts
+> > > +
+> > > +  vddl-supply:
+> > > +    description:
+> > > +      Digital core voltage supply, 1.8 volts
+> > > +
+> > > +  reset-gpios:
+> > > +    description: |-
+> > > +      Reference to the GPIO connected to the xclr pin, if any.
+> > > +      Must be released (set high) after all supplies are applied.
+> > > +
+> > > +  # See ../video-interfaces.txt for more details
+> > > +  port:
+> > > +    type: object
+> > > +    properties:
+> > > +      endpoint:
+> > > +        type: object
+> > > +
+> > > +        properties:
+> > > +          data-lanes:
+> > > +            description: |-
+> > > +              The driver only supports four-lane operation.
+> > 
+> > This can be removed as bindings describe hardware, not driver operation.
+> > 
+> Ack.
+> 
+> > > +            items:
+> > > +              - const: 0
+> > > +              - const: 1
+> > > +              - const: 2
+> > > +              - const: 3
+> > 
+> > Two lanes here, too?
+> > 
+> 
+> The driver only supports four-lane operation.
+> I am 100% sure that this sensor can also work with two lanes, but it needs
+> special configuration which I'm not able to produce, nor test.
+> 
+> As you may imagine (and as you can read in the driver itself), all of this
+> was reverse-engineering work, as Sony has never released any datasheet for
+> this sensor - and I have a hunch - they never will (but that's another
+> story).
 
- drivers/infiniband/core/iwpm_msg.c:402: warning: Function parameter or member 'skb' not described in 'iwpm_register_pid_cb'
- drivers/infiniband/core/iwpm_msg.c:475: warning: Function parameter or member 'skb' not described in 'iwpm_add_mapping_cb'
- drivers/infiniband/core/iwpm_msg.c:553: warning: Function parameter or member 'skb' not described in 'iwpm_add_and_query_mapping_cb'
- drivers/infiniband/core/iwpm_msg.c:636: warning: Function parameter or member 'skb' not described in 'iwpm_remote_info_cb'
- drivers/infiniband/core/iwpm_msg.c:716: warning: Function parameter or member 'skb' not described in 'iwpm_mapping_info_cb'
- drivers/infiniband/core/iwpm_msg.c:773: warning: Function parameter or member 'skb' not described in 'iwpm_ack_mapping_info_cb'
- drivers/infiniband/core/iwpm_msg.c:803: warning: Function parameter or member 'skb' not described in 'iwpm_mapping_error_cb'
- drivers/infiniband/core/iwpm_msg.c:851: warning: Function parameter or member 'skb' not described in 'iwpm_hello_cb'
+That's all fine. The bindings describe the hardware, not the driver's
+capabilities.
 
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/core/iwpm_msg.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> > > +
+> > > +          clock-noncontinuous: true
+> > > +
+> > > +          link-frequencies:
+> > > +            $ref: /schemas/types.yaml#/definitions/uint64-array
+> > > +            description:
+> > > +              Allowed data bus frequencies. The driver currently needs
+> > > +              to switch between 780000000 and 480000000 Hz in order to
+> > > +              guarantee functionality of all modes.
+> > 
+> > You can omit this description, too.
+> > 
+> 
+> The intention here was to be clear and provide as much information as I
+> could gather during the very time-consuming reverse engineering process that
+> took place in the making of this driver.
+> 
+> But okay, I will remove this.
 
-diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
-index 46686990a8271..30a0ff76b3327 100644
---- a/drivers/infiniband/core/iwpm_msg.c
-+++ b/drivers/infiniband/core/iwpm_msg.c
-@@ -392,7 +392,7 @@ static const struct nla_policy resp_reg_policy[IWPM_NLA_RREG_PID_MAX] = {
- /**
-  * iwpm_register_pid_cb - Process the port mapper response to
-  *                        iwpm_register_pid query
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  *
-  * If successful, the function receives the userspace port mapper pid
-@@ -468,7 +468,7 @@ static const struct nla_policy resp_add_policy[IWPM_NLA_RMANAGE_MAPPING_MAX] = {
- /**
-  * iwpm_add_mapping_cb - Process the port mapper response to
-  *                       iwpm_add_mapping request
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  */
- int iwpm_add_mapping_cb(struct sk_buff *skb, struct netlink_callback *cb)
-@@ -545,7 +545,7 @@ static const struct nla_policy resp_query_policy[IWPM_NLA_RQUERY_MAPPING_MAX] =
- /**
-  * iwpm_add_and_query_mapping_cb - Process the port mapper response to
-  *                                 iwpm_add_and_query_mapping request
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  */
- int iwpm_add_and_query_mapping_cb(struct sk_buff *skb,
-@@ -627,7 +627,7 @@ int iwpm_add_and_query_mapping_cb(struct sk_buff *skb,
- /**
-  * iwpm_remote_info_cb - Process remote connecting peer address info, which
-  *                       the port mapper has received from the connecting peer
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  *
-  * Stores the IPv4/IPv6 address info in a hash table
-@@ -706,7 +706,7 @@ static const struct nla_policy resp_mapinfo_policy[IWPM_NLA_MAPINFO_REQ_MAX] = {
- /**
-  * iwpm_mapping_info_cb - Process a notification that the userspace
-  *                        port mapper daemon is started
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  *
-  * Using the received port mapper pid, send all the local mapping
-@@ -766,7 +766,7 @@ static const struct nla_policy ack_mapinfo_policy[IWPM_NLA_MAPINFO_NUM_MAX] = {
- /**
-  * iwpm_ack_mapping_info_cb - Process the port mapper ack for
-  *                            the provided local mapping info records
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  */
- int iwpm_ack_mapping_info_cb(struct sk_buff *skb, struct netlink_callback *cb)
-@@ -796,7 +796,7 @@ static const struct nla_policy map_error_policy[IWPM_NLA_ERR_MAX] = {
- /**
-  * iwpm_mapping_error_cb - Process port mapper notification for error
-  *
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  */
- int iwpm_mapping_error_cb(struct sk_buff *skb, struct netlink_callback *cb)
-@@ -841,7 +841,7 @@ static const struct nla_policy hello_policy[IWPM_NLA_HELLO_MAX] = {
- /**
-  * iwpm_hello_cb - Process a hello message from iwpmd
-  *
-- * @skb:
-+ * @skb: The socket buffer
-  * @cb: Contains the received message (payload and netlink header)
-  *
-  * Using the received port mapper pid, send the kernel's abi_version
+Again, this is about the hardware, not the driver. That information is also
+part of the driver.
+
+> 
+> > > +
+> > > +        required:
+> > > +          - data-lanes
+> > > +          - link-frequencies
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - clocks
+> > > +  - vana-supply
+> > > +  - vdig-supply
+> > > +  - vddl-supply
+> > 
+> > Are the regulators really required? I'm not quite sure about the
+> > established practices; still the common case is that one or two of these
+> > are hard-wired.
+> > 
+> 
+> On all the Sony phones that I have (....many), with MSM8956, MSM8996,
+> SDM630, equipped with the IMX300 camera assy, none of these three are
+> hard-wired: sometimes they're wired to the LDOs of the PMIC, sometimes
+> they're wired to fixed LDOs, enabled through GPIOs (fixed-regulator binding
+> in this case).
+> 
+> So.. yeah, they're really required.
+
+As noted, that depends on the board. You just happen to have some where
+they are not hard-wired.
+
+> 
+> > > +  - port
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    i2c0 {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        imx300: sensor@10 {
+> > > +            compatible = "sony,imx300";
+> > > +            reg = <0x10>;
+> > > +            clocks = <&imx300_xclk>;
+> > > +            vana-supply = <&imx300_vana>;   /* 2.2v */
+> > > +            vdig-supply = <&imx300_vdig>;   /* 1.2v */
+> > > +            vddl-supply = <&imx300_vddl>;   /* 1.8v */
+> > > +
+> > > +            port {
+> > > +                imx300_0: endpoint {
+> > > +                    remote-endpoint = <&csi1_ep>;
+> > > +                    data-lanes = <0 1 2 3>;
+> > > +                    clock-noncontinuous;
+> > > +                    link-frequencies = /bits/ 64 <780000000 480000000>;
+> > > +                };
+> > > +            };
+> > > +        };
+> > > +    };
+> > > +
+> > > +...
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index ad9abb42f852..5e0f08f48d48 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -16633,6 +16633,13 @@ T:	git git://linuxtv.org/media_tree.git
+> > >   F:	Documentation/devicetree/bindings/media/i2c/imx290.txt
+> > >   F:	drivers/media/i2c/imx290.c
+> > > +SONY IMX300 SENSOR DRIVER
+> > > +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > +L:	linux-media@vger.kernel.org
+> > 
+> > Please also add the git tree.
+> > 
+> > Ideally also the MAINTAINERS change comes with the first patch adding the
+> > files, which should be the DT bindings. I.e. just reverse the order of the
+> > patches.
+> > 
+> 
+> I haven't added it because last time I did that I got reviews saying that if
+> I'm not the owner of the git tree I shall not put it in.
+> Though, if that's a requirement for media, then I didn't know that...
+
+The documentation in MAINTAINERS doesn't say that at least.
+
+I think it'd be useful to have it.
+
+> 
+> > > +S:	Maintained
+> > > +F:	Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > > +F:	drivers/media/i2c/imx300.c
+> > > +
+> > >   SONY IMX319 SENSOR DRIVER
+> > >   M:	Bingbu Cao <bingbu.cao@intel.com>
+> > >   L:	linux-media@vger.kernel.org
+> > 
+> 
+> Thank you for your review!
+
+You're welcome!
+
 -- 
-2.25.1
-
+Sakari Ailus
