@@ -2,68 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531702FA22F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646122FA1CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404016AbhARNwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:52:34 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50848 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392307AbhARNee (ORCPT
+        id S2390314AbhARNiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:38:25 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11556 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392300AbhARNef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:34:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UM8ExKs_1610976815;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UM8ExKs_1610976815)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Jan 2021 21:33:35 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Mon, 18 Jan 2021 08:34:35 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DKCQ215LFzMLJL;
+        Mon, 18 Jan 2021 21:32:26 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 18 Jan 2021 21:33:40 +0800
+Subject: Re: [PATCH 1/6] vfio/iommu_type1: Make an explicit "promote" semantic
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210107044401.19828-1-zhukeqian1@huawei.com>
+ <20210107044401.19828-2-zhukeqian1@huawei.com>
+ <20210115154240.0d3ee455@omen.home.shazbot.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] x86/sgx: Allows ioctl PROVISION to execute before CREATE
-Date:   Mon, 18 Jan 2021 21:33:35 +0800
-Message-Id: <20210118133335.98907-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <0cf47d65-cb91-199e-af7d-048134634298@huawei.com>
+Date:   Mon, 18 Jan 2021 21:33:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115154240.0d3ee455@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function sgx_encl_create(), the logic of directly assigning
-value to attributes_mask determines that the call to
-SGX_IOC_ENCLAVE_PROVISION must be after the command of
-SGX_IOC_ENCLAVE_CREATE. If change this assignment statement to
-or operation, the PROVISION command can be executed earlier and
-more flexibly.
 
-Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index f45957c05f69..0ca3fc238bc2 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -108,7 +108,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	encl->base = secs->base;
- 	encl->size = secs->size;
- 	encl->attributes = secs->attributes;
--	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
-+	encl->attributes_mask |= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
- 
- 	/* Set only after completion, as encl->lock has not been taken. */
- 	set_bit(SGX_ENCL_CREATED, &encl->flags);
--- 
-2.19.1.3.ge56e4f7
+On 2021/1/16 6:42, Alex Williamson wrote:
+> On Thu, 7 Jan 2021 12:43:56 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+>> When we want to promote the pinned_page_dirty_scope of vfio_iommu,
+>> we call the "update" function to visit all vfio_group, but when we
+>> want to downgrade this, we can set the flag as false directly.
+> 
+> I agree that the transition can only go in one direction, but it's
+> still conditional on the scope of all groups involved.  We are
+> "updating" the iommu state based on the change of a group.  Renaming
+> this to "promote" seems like a matter of personal preference.
+> 
+>> So we'd better make an explicit "promote" semantic to the "update"
+>> function. BTW, if vfio_iommu already has been promoted, then return
+>> early.
+> 
+> Currently it's the caller that avoids using this function when the
+> iommu scope is already correct.  In fact the changes induces a
+> redundant test in the pin_pages code path, we're changing a group from
+> non-pinned-page-scope to pinned-page-scope, therefore the iommu scope
+> cannot initially be scope limited.  In the attach_group call path,
+> we're moving that test from the caller, so at best we've introduced an
+> additional function call.
+> 
+> The function as it exists today is also more versatile whereas the
+> "promote" version here forces it to a single task with no appreciable
+> difference in complexity or code.  This seems like a frivolous change.
+> Thanks,
+OK, I will adapt your idea that maintenance a counter of non-pinned groups.
+Then we keep the "update" semantic, and the target is the counter ;-).
 
+Thanks,
+Keqian
+
+> 
+> Alex
+> 
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 30 ++++++++++++++----------------
+>>  1 file changed, 14 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 0b4dedaa9128..334a8240e1da 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -148,7 +148,7 @@ static int put_pfn(unsigned long pfn, int prot);
+>>  static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
+>>  					       struct iommu_group *iommu_group);
+>>  
+>> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu);
+>> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu);
+>>  /*
+>>   * This code handles mapping and unmapping of user data buffers
+>>   * into DMA'ble space using the IOMMU
+>> @@ -714,7 +714,7 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
+>>  	group = vfio_iommu_find_iommu_group(iommu, iommu_group);
+>>  	if (!group->pinned_page_dirty_scope) {
+>>  		group->pinned_page_dirty_scope = true;
+>> -		update_pinned_page_dirty_scope(iommu);
+>> +		promote_pinned_page_dirty_scope(iommu);
+>>  	}
+>>  
+>>  	goto pin_done;
+>> @@ -1622,27 +1622,26 @@ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
+>>  	return group;
+>>  }
+>>  
+>> -static void update_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+>> +static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
+>>  {
+>>  	struct vfio_domain *domain;
+>>  	struct vfio_group *group;
+>>  
+>> +	if (iommu->pinned_page_dirty_scope)
+>> +		return;
+>> +
+>>  	list_for_each_entry(domain, &iommu->domain_list, next) {
+>>  		list_for_each_entry(group, &domain->group_list, next) {
+>> -			if (!group->pinned_page_dirty_scope) {
+>> -				iommu->pinned_page_dirty_scope = false;
+>> +			if (!group->pinned_page_dirty_scope)
+>>  				return;
+>> -			}
+>>  		}
+>>  	}
+>>  
+>>  	if (iommu->external_domain) {
+>>  		domain = iommu->external_domain;
+>>  		list_for_each_entry(group, &domain->group_list, next) {
+>> -			if (!group->pinned_page_dirty_scope) {
+>> -				iommu->pinned_page_dirty_scope = false;
+>> +			if (!group->pinned_page_dirty_scope)
+>>  				return;
+>> -			}
+>>  		}
+>>  	}
+>>  
+>> @@ -2057,8 +2056,7 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
+>>  			 * addition of a dirty tracking group.
+>>  			 */
+>>  			group->pinned_page_dirty_scope = true;
+>> -			if (!iommu->pinned_page_dirty_scope)
+>> -				update_pinned_page_dirty_scope(iommu);
+>> +			promote_pinned_page_dirty_scope(iommu);
+>>  			mutex_unlock(&iommu->lock);
+>>  
+>>  			return 0;
+>> @@ -2341,7 +2339,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  	struct vfio_iommu *iommu = iommu_data;
+>>  	struct vfio_domain *domain;
+>>  	struct vfio_group *group;
+>> -	bool update_dirty_scope = false;
+>> +	bool promote_dirty_scope = false;
+>>  	LIST_HEAD(iova_copy);
+>>  
+>>  	mutex_lock(&iommu->lock);
+>> @@ -2349,7 +2347,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  	if (iommu->external_domain) {
+>>  		group = find_iommu_group(iommu->external_domain, iommu_group);
+>>  		if (group) {
+>> -			update_dirty_scope = !group->pinned_page_dirty_scope;
+>> +			promote_dirty_scope = !group->pinned_page_dirty_scope;
+>>  			list_del(&group->next);
+>>  			kfree(group);
+>>  
+>> @@ -2379,7 +2377,7 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  			continue;
+>>  
+>>  		vfio_iommu_detach_group(domain, group);
+>> -		update_dirty_scope = !group->pinned_page_dirty_scope;
+>> +		promote_dirty_scope = !group->pinned_page_dirty_scope;
+>>  		list_del(&group->next);
+>>  		kfree(group);
+>>  		/*
+>> @@ -2415,8 +2413,8 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  	 * Removal of a group without dirty tracking may allow the iommu scope
+>>  	 * to be promoted.
+>>  	 */
+>> -	if (update_dirty_scope)
+>> -		update_pinned_page_dirty_scope(iommu);
+>> +	if (promote_dirty_scope)
+>> +		promote_pinned_page_dirty_scope(iommu);
+>>  	mutex_unlock(&iommu->lock);
+>>  }
+>>  
+> 
+> .
+> 
