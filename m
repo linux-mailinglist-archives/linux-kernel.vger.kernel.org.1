@@ -2,157 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BD82FAD01
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E282FAD0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733132AbhARV5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S2387466AbhARWCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730054AbhARV5d (ORCPT
+        with ESMTP id S1726673AbhARWCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:57:33 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD85DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:56:52 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ox12so1417039ejb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:56:52 -0800 (PST)
+        Mon, 18 Jan 2021 17:02:09 -0500
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D185C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:01:28 -0800 (PST)
+Received: by mail-vk1-xa2e.google.com with SMTP id l187so4331265vki.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:01:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oatfa8Uxac5y+QfNKWVhpzcqRMF9g7xn6+1Ypo2kSWs=;
-        b=G9OuzfiKkq0Itr91GvGyb6IuOc32itpL5+ewRZfC6Nb2iA8ft7wxwZztrsWj0HGIjk
-         9r44dpP8GQLoJIjc8ckScnATpIyG7Wwo0NyNO5dIowX0yhfAYwZ5aBRAmJzFxL/q6ffT
-         gyhbSu21s3NRgcIaIrnY/Zbojeb4tttsPVADFPyGqmjCnm2Zlzk/9OhMaaYlmlh55+vj
-         uQXshD/S9jx+efobBEnmEAg0k8+Vc9MQ5P39JR1EY9ERQ4joWJJwgSVlKgWCtiHkVRKX
-         LOyD71QPCsUTDBwIBHdndIrPlZ7pNEmOHt+W/DqMxvehJHCvOw6HQnoTzIhXmUa/Uxa2
-         QRlQ==
+        bh=dSv0EYxQaJbjHMisjeOKJuNZjlVFGnjCJWJZiTxNS0k=;
+        b=US65w8NqxwUBUWVNBX+9I5xdNtl4Mt6lNYsxAG1SFkvE47ao/Ib3p4Qy8QqqTOsHXE
+         6IZ0M9zy41gGAd8FkuJM+/2JDBLgKOQxrXwvSgKRxKd4bk6HxwZMSs1qrwAu+JQ8xOf8
+         kzsr5f3EtZ+hig6ImPseGjcvbRXkavQNKP9CM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oatfa8Uxac5y+QfNKWVhpzcqRMF9g7xn6+1Ypo2kSWs=;
-        b=L4UJq76NzNcugRGM8pJGw43rDQNqP9tUTOMhh6oPuB+8gdUmRXCrE//70ylfQjKUq4
-         0UpfTOUjcKVTQhsZxaTzV0FVCztIjQoDzSCyiWFQ+pVqIOxcKMsAPhBvhO/ncygCsCZM
-         4/xxNbnppPJ0NEPwDeARC6UCvPYc2HmfEqNBNmgtwEYRIlXNS7K7xnscXSsiPlzerder
-         MirAcQIJY0nznMIxAp5fpnjgXFt0m9x6bMHGdu5xBF5xhaLcIRdfmXuW70rUEYLt5XO9
-         ZZiDb18pN1jflIf702dJ8Je33vdSZZtzbtbtmGvxXmkSAleRTTbk6OI8Pgt8fmlZi3md
-         EVwA==
-X-Gm-Message-State: AOAM532zmOzcWRhL86W8byYGUsHvMwJOMdHi7MfUpxz2IGR7rowSFuVA
-        OjDgLoGc4FPHxkIBXTx+Y5JurmugF7aRdiJcPyo8
-X-Google-Smtp-Source: ABdhPJwiTaEsKdexNKIoHB/eUfZQnzukIdscZm/if80Y4LpzPxBkFga14LG96UqrRR257lycf5KwAWK9fvWQ62ucVAY=
-X-Received: by 2002:a17:907:e9e:: with SMTP id ho30mr1073618ejc.529.1611007011377;
- Mon, 18 Jan 2021 13:56:51 -0800 (PST)
+        bh=dSv0EYxQaJbjHMisjeOKJuNZjlVFGnjCJWJZiTxNS0k=;
+        b=iKkW+6SFjiSk60XfUyqwOq5gvR2U9t8xsjaVb4e5GpjoeZe2dypa8nWozmUN7WuSD0
+         CeqorXg0AggDpwUhsgawAi/2r1SXJduNrz3xsRujTdlaVA/GwOigAjkxCgc0Fn3ad7Bc
+         Pm5riliY4doI3eG64aGgRLmvfm0I95UpAAlpTCRB+w7iOYD3wQdvbOixiqNMXfmoXQN7
+         zYyGUqBv5ObE2ITK7lAW6Cwlvd2hpGxFT3NbGcn7u2ALp9k8rllhqNpRi5I4fKAOO2WV
+         B85xFY3bcTt1qf5ppZz5vHbSreuqXjAQj2Cgw+x8zB5e7cj/9ugU9fo8bGtwfbGul1SV
+         xtHA==
+X-Gm-Message-State: AOAM531SQhD43uC5LWSbuYHg3j+m3c1Aw/QkUOQXoDloNXlBhhufChfj
+        74GL9Ib1A1PUYAegB7rNyNVb2WRnPyfb75ky/kuS7Q==
+X-Google-Smtp-Source: ABdhPJyOEcIB4h7aL8Vc+TQvMFVeE3G9IC3ALZGHLqfMxG07hVjx8f7yvYPgp7dY9wstKAjKi4zNe5YRgWbb7GNpcJs=
+X-Received: by 2002:a1f:c305:: with SMTP id t5mr928711vkf.7.1611007287521;
+ Mon, 18 Jan 2021 14:01:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
- <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
- <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
- <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
- <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
- <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
- <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
- <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
- <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
- <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
- <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
- <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
- <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
- <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com> <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
-In-Reply-To: <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 18 Jan 2021 13:56:39 -0800
-Message-ID: <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
+References: <20210116052623.3196274-1-grundler@chromium.org>
+In-Reply-To: <20210116052623.3196274-1-grundler@chromium.org>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Mon, 18 Jan 2021 22:01:15 +0000
+Message-ID: <CANEJEGusskCzMzP-VEbTyk2zfH+tQjHO8JpncVtufnw__2mx6A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] net: usb: cdc_ncm: emit dev_err on error paths
+To:     Grant Grundler <grundler@chromium.org>,
+        nic_swsd <nic_swsd@realtek.com>
+Cc:     Oliver Neukum <oliver@neukum.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 9:26 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
-> > >
-> > > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > [ big snip ]
-> > >
-> > > [More snippage.]
-> > >
-> > > > [ CC Fangrui ]
-> > > >
-> > > > With the attached...
-> > > >
-> > > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
-> > > > undefined symbols
-> > > >
-> > > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
-> > > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
-> > > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
-> > > >
-> > > Thanks for confirming that this works with the above patch.
-> > >
-> > > > @ Bill Nick Sami Nathan
-> > > >
-> > > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
-> > >
-> > > The integrated assembler and this option are more-or-less orthogonal
-> > > to each other. One can still use the GNU assembler with PGO. If you're
-> > > having an issue, it may be related to ClangBuiltLinux issue #1250.
-> > >
-> > > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
-> > > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
-> > > >
-> > > I know Nick did several tests with PGO. He may have looked into it
-> > > already, but we can check.
-> > >
-> >
-> > Reproducible.
-> >
-> > LLVM_IAS=1 + DWARF5 = Not bootable
-> >
-> > I will try:
-> >
-> > LLVM_IAS=1 + DWARF4
-> >
->
-> I was not able to boot into such a built Linux-kernel.
->
-PGO will have no effect on debugging data. If this is an issue with
-DWARF, then it's likely orthogonal to the PGO patch.
++nic_swsd [adding per Realtek developer team request]
 
-> For me worked: DWARF2 and LLVM_IAS=1 *not* set.
+On Sat, Jan 16, 2021 at 5:26 AM Grant Grundler <grundler@chromium.org> wrote:
 >
-> Of course, this could be an issue with my system's LLVM/Clang.
+> Several error paths in bind/probe code will only emit
+> output using dev_dbg. But if we are going to fail the
+> bind/probe, emit related output with "err" priority.
 >
-> Debian clang version
-> 12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
+> Signed-off-by: Grant Grundler <grundler@chromium.org>
+> ---
+>  drivers/net/usb/cdc_ncm.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-Please use the official clang 11.0.1 release
-(https://releases.llvm.org/download.html), modifying the
-kernel/pgo/Kconfig as I suggested above. The reason we specify clang
-12 for the minimal version is because of an issue that was recently
-fixed.
-
-> Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
-> and especially CONFIG_DEBUG_INFO_DWARF5=y?
-> Success means I was able to boot in QEMU and/or bare metal.
+> diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+> index 5a78848db93f..25498c311551 100644
+> --- a/drivers/net/usb/cdc_ncm.c
+> +++ b/drivers/net/usb/cdc_ncm.c
+> @@ -849,17 +849,17 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
 >
-The DWARF5 patch isn't in yet, so I don't want to rely upon it too much.
-
--bw
+>         /* check if we got everything */
+>         if (!ctx->data) {
+> -               dev_dbg(&intf->dev, "CDC Union missing and no IAD found\n");
+> +               dev_err(&intf->dev, "CDC Union missing and no IAD found\n");
+>                 goto error;
+>         }
+>         if (cdc_ncm_comm_intf_is_mbim(intf->cur_altsetting)) {
+>                 if (!ctx->mbim_desc) {
+> -                       dev_dbg(&intf->dev, "MBIM functional descriptor missing\n");
+> +                       dev_err(&intf->dev, "MBIM functional descriptor missing\n");
+>                         goto error;
+>                 }
+>         } else {
+>                 if (!ctx->ether_desc || !ctx->func_desc) {
+> -                       dev_dbg(&intf->dev, "NCM or ECM functional descriptors missing\n");
+> +                       dev_err(&intf->dev, "NCM or ECM functional descriptors missing\n");
+>                         goto error;
+>                 }
+>         }
+> @@ -868,7 +868,7 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
+>         if (ctx->data != ctx->control) {
+>                 temp = usb_driver_claim_interface(driver, ctx->data, dev);
+>                 if (temp) {
+> -                       dev_dbg(&intf->dev, "failed to claim data intf\n");
+> +                       dev_err(&intf->dev, "failed to claim data intf\n");
+>                         goto error;
+>                 }
+>         }
+> @@ -924,7 +924,7 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
+>         if (ctx->ether_desc) {
+>                 temp = usbnet_get_ethernet_addr(dev, ctx->ether_desc->iMACAddress);
+>                 if (temp) {
+> -                       dev_dbg(&intf->dev, "failed to get mac address\n");
+> +                       dev_err(&intf->dev, "failed to get mac address\n");
+>                         goto error2;
+>                 }
+>                 dev_info(&intf->dev, "MAC-Address: %pM\n", dev->net->dev_addr);
+> --
+> 2.29.2
+>
