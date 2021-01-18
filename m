@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180892FABD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C974C2FABCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394453AbhARUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
+        id S1727412AbhARUsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390629AbhARUrZ (ORCPT
+        with ESMTP id S2388413AbhARUrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:47:25 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7FC0613C1;
-        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id ox12so1207764ejb.2;
-        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
-        b=GfNJd8Bome7/jm5mGMRJq/2PGTWvhg5ZCKz66AxPNV2hoSI9nhWQm5G+Q13ESwlBTb
-         Q+fotg9Nu3aoV/y5K56QiFVnmB/x97U6700/bpPqaMsj4xWMFLii82VaQNIx4qUn6uv6
-         lmrgiPS3YEUb+oXg39q5lAS3mAO8lD5BTK4Yy99Y6ZLFMaaPsT90RgSNXBn8fQiLemUK
-         Na+YIBF1+phvg6ZRgTSRjWrgnmQuFyhKzVI+t9WqmjWubB3VyN+itPnVH8U8LzHHoLJy
-         DwTuRN1vk9jmT78vGCk/aCzFq0cIPzE3JXUcyc1pCR1U2PZ9zY71ubAfM40Ec057UXH9
-         fPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
-        b=lFzAXeUmnq1qMYWoQVvSDpYB6SoCO2izUZKgRpf3iBB5N6XVIhhFM0zt+5jltNs1qD
-         eZUNKLQ7Zlb16uNdE6yifRMMDXZVPqklWSqMdHWwYuHq9zxvuDVwT3sy/2NHdEe9Szh+
-         43tfWqzJNb2E2UNZAmiTySUt+nX7xxNymbGxOYyXfKEKf0nW5+2AuH4FnfYzqxs53+g+
-         Jqp/ESoxksyVCMzNpjoQF2fEShbSVRRXJyhEV8ZpuTXGA/qBdv1JX2HFDEYmdg0A9pHx
-         3kYYDUr6KAJmDc7tGuV0ZTht0jHuLjE66vU2Pikv4PZXLl+E7wZTJgmTvNtY5XHipt3C
-         Zp3Q==
-X-Gm-Message-State: AOAM5324PBWy7JlmHlD/CYJ61Sekr8KmVlGYOAWE5vwv3ZA+txBuJeCf
-        U3iDgXGG56zWIRSpuwvIanLL5TSg6Yc=
-X-Google-Smtp-Source: ABdhPJxtZe6bht9xG+8tf8UzqMKs8TtIiE9m2K+EFRJ/KFv/dySA1PlH1NY1AaBwGzX8kw6hUWSDxg==
-X-Received: by 2002:a17:906:2785:: with SMTP id j5mr883728ejc.527.1611002804082;
-        Mon, 18 Jan 2021 12:46:44 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id v9sm1066417ejd.92.2021.01.18.12.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 12:46:43 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     dgilbert@interlog.com, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <abee94bf-a6ec-7659-21d2-4253582a1730@gmail.com>
-Date:   Mon, 18 Jan 2021 21:46:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 18 Jan 2021 15:47:49 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2720AC061574;
+        Mon, 18 Jan 2021 12:47:09 -0800 (PST)
+Received: from zn.tnic (p200300ec2f069f0062c4736095b963a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9f00:62c4:7360:95b9:63a8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9D02A1EC0373;
+        Mon, 18 Jan 2021 21:47:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611002827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zSfxBvZu+voIRyjSVXiWpFkBZRJAFAAXPfJCciOg19M=;
+        b=hiY2qU/APzcIBZApRkche1UxRBS28TJrmBEdDf2NVp6/NqWiU3dVbofvPq0OTZZppL9zi2
+        d9ZgJ72LP50CKWb8bA/r6QVoi8hbX30WE9JQY1D6mv1BVLZR1ndfXwgmZgZ0YMkv3OQciQ
+        TmdigeKKk2aGck97mNi9okeE/lfAoUY=
+Date:   Mon, 18 Jan 2021 21:47:01 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
+ SEV-ES support
+Message-ID: <20210118204701.GJ30090@zn.tnic>
+References: <20210116002517.548769-1-seanjc@google.com>
+ <20210118202931.GI30090@zn.tnic>
+ <5f7bbd70-35c3-24ca-7ec5-047c71b16b1f@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5f7bbd70-35c3-24ca-7ec5-047c71b16b1f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.01.21 21:08, Douglas Gilbert wrote:
-> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
->> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
->>
->>> After several flawed attempts to detect overflow, take the fastest
->>> route by stating as a pre-condition that the 'order' function argument
->>> cannot exceed 16 (2^16 * 4k = 256 MiB).
->>
->> That doesn't help, the point of the overflow check is similar to
->> overflow checks in kcalloc: to prevent the routine from allocating
->> less memory than the caller might assume.
->>
->> For instance ipr_store_update_fw() uses request_firmware() (which is
->> controlled by userspace) to drive the length argument to
->> sgl_alloc_order(). If userpace gives too large a value this will
->> corrupt kernel memory.
->>
->> So this math:
->>
->>        nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + 
->> order);
-> 
-> But that check itself overflows if order is too large (e.g. 65).
-> A pre-condition says that the caller must know or check a value
-> is sane, and if the user space can have a hand in the value passed
-> the caller _must_ check pre-conditions IMO. A pre-condition also
-> implies that the function's implementation will not have code to
-> check the pre-condition.
-> 
-> My "log of both sides" proposal at least got around the overflowing
-> left shift problem. And one reviewer, Bodo Stroesser, liked it.
+On Mon, Jan 18, 2021 at 09:32:07PM +0100, Paolo Bonzini wrote:
+> I think it makes sense because AMD_SEV_ES_GUEST's #VC handling is quite a
+> bit of code that you may not want or need.
 
-I added my Reviewed-by after you added a working check of nent overflow.
-I did not oppose to the usage of ilog() there. But now I think Jason is
-right that indeed ilog usage is a bit 'indirect'.
+Quite a bit of code which ends up practically enabled on the majority of
+distros.
 
-Anyway I still think, there should be a check for nent overflow.
+And it ain't about savings of whopping KiBs. And yet another Kconfig symbol
+in our gazillion Kconfig symbols space means ugly ifdeffery and paying
+attention to randconfig builds.
 
-> 
->> Needs to be checked, add a precondition to order does not help. I
->> already proposed a straightforward algorithm you can use.
-> 
-> It does help, it stops your proposed check from being flawed :-)
-> 
-> Giving a false sense of security seems more dangerous than a
-> pre-condition statement IMO. Bart's original overflow check (in
-> the mainline) limits length to 4GB (due to wrapping inside a 32
-> bit unsigned).
-> 
-> Also note there is another pre-condition statement in that function's
-> definition, namely that length cannot be 0.
-> 
-> So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
-> notes and come up with a solution that you are _all_ happy with.
-> The pre-condition works for me and is the fastest. The 'length'
-> argument might be large, say > 1 GB [I use 1 GB in testing but
-> did try 4GB and found the bug I'm trying to fix] but having
-> individual elements greater than say 32 MB each does not
-> seem very practical (and fails on the systems that I test with).
-> In my testing the largest element size is 4 MB.
-> 
-> 
-> Doug Gilbert
-> 
+For tailored configs you simply disable AMD_MEM_ENCRYPT on !AMD hw and
+all done.
+
+So I don't see the point for this.
+
+Thx. 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
