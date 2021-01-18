@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA21B2FA329
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086582FA324
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405003AbhAROfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:35:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
+        id S2404971AbhAROe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:34:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390669AbhARLoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388615AbhARLoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 06:44:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70606222BB;
-        Mon, 18 Jan 2021 11:43:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 036412223E;
+        Mon, 18 Jan 2021 11:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970198;
-        bh=hdMJqoDZQd5QDoT/YwvtKWiyw5TRIuDm+CSaUGFbkQo=;
+        s=korg; t=1610970203;
+        bh=ZfRNyTieOsoVNKe8Y2oI4EMd7ks971g+wnjHRo7dt18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWPfxtBCWmzLUfmlgc8Lnz7/kFSOFJTuOf7n+g787n9v+GBhxwjer9yFAH3qXYiBP
-         hfbTgD0rg2kWogumBp2Kvfr6j3kx1Ct/ITfS9ABXbaxJ03FGgxW1s7ANW4V0+b3BPg
-         MGCL4joILZ07I0+uYtMN7NclN0nYn4l0xu5OBjXg=
+        b=LFz1164frJv8sVQS81iD6X+cJ2/nCG9T7f2pfGCe7nTgvcehmiRPaLOXpqWnmKI/E
+         3ViuIsTAXNvBOrWQINEfl5DcyCt1VWGElV5d3fiAOXe7Cc9blb78mHmQpdaoqruN2m
+         /GdSOHNHAJlwbj6QSSL1W9vJr5zqtS6+8T5VJQE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/152] io_uring: drop file refs after task cancel
-Date:   Mon, 18 Jan 2021 12:34:14 +0100
-Message-Id: <20210118113356.560421508@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 081/152] arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
+Date:   Mon, 18 Jan 2021 12:34:16 +0100
+Message-Id: <20210118113356.647896767@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -39,72 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit de7f1d9e99d8b99e4e494ad8fcd91f0c4c5c9357 ]
+[ Upstream commit 8a48c0a3360bf2bf4f40c980d0ec216e770e58ee ]
 
-io_uring fds marked O_CLOEXEC and we explicitly cancel all requests
-before going through exec, so we don't want to leave task's file
-references to not our anymore io_uring instances.
+fs/dax.c uses copy_user_page() but ARC does not provide that interface,
+resulting in a build error.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Provide copy_user_page() in <asm/page.h>.
+
+../fs/dax.c: In function 'copy_cow_page_dax':
+../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+#Acked-by: Vineet Gupta <vgupta@synopsys.com> # v1
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-nvdimm@lists.01.org
+#Reviewed-by: Ira Weiny <ira.weiny@intel.com> # v2
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ arch/arc/include/asm/page.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index cab640c10bc0f..265aea2cd7bc8 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8821,6 +8821,15 @@ static void io_uring_attempt_task_drop(struct file *file)
- 		io_uring_del_task_file(file);
- }
+diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+index b0dfed0f12be0..d9c264dc25fcb 100644
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -10,6 +10,7 @@
+ #ifndef __ASSEMBLY__
  
-+static void io_uring_remove_task_files(struct io_uring_task *tctx)
-+{
-+	struct file *file;
-+	unsigned long index;
-+
-+	xa_for_each(&tctx->xa, index, file)
-+		io_uring_del_task_file(file);
-+}
-+
- void __io_uring_files_cancel(struct files_struct *files)
- {
- 	struct io_uring_task *tctx = current->io_uring;
-@@ -8829,16 +8838,12 @@ void __io_uring_files_cancel(struct files_struct *files)
+ #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
  
- 	/* make sure overflow events are dropped */
- 	atomic_inc(&tctx->in_idle);
--
--	xa_for_each(&tctx->xa, index, file) {
--		struct io_ring_ctx *ctx = file->private_data;
--
--		io_uring_cancel_task_requests(ctx, files);
--		if (files)
--			io_uring_del_task_file(file);
--	}
--
-+	xa_for_each(&tctx->xa, index, file)
-+		io_uring_cancel_task_requests(file->private_data, files);
- 	atomic_dec(&tctx->in_idle);
-+
-+	if (files)
-+		io_uring_remove_task_files(tctx);
- }
- 
- static s64 tctx_inflight(struct io_uring_task *tctx)
-@@ -8901,6 +8906,8 @@ void __io_uring_task_cancel(void)
- 
- 	finish_wait(&tctx->wait, &wait);
- 	atomic_dec(&tctx->in_idle);
-+
-+	io_uring_remove_task_files(tctx);
- }
- 
- static int io_uring_flush(struct file *file, void *data)
+ struct vm_area_struct;
 -- 
 2.27.0
 
