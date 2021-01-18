@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673C82F9CB3
+	by mail.lfdr.de (Postfix) with ESMTP id D431C2F9CB4
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389826AbhARKQE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 05:16:04 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:36959 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389350AbhARJwm (ORCPT
+        id S2389847AbhARKQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389359AbhARJxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:52:42 -0500
-Received: by mail-lf1-f50.google.com with SMTP id o17so23178731lfg.4;
-        Mon, 18 Jan 2021 01:52:17 -0800 (PST)
+        Mon, 18 Jan 2021 04:53:40 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6817C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:53:00 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id v19so10579339pgj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CWOcyAd+BnAljd4w5vN8wSaVPuWlQlW/u40lZ+Q7vBU=;
+        b=ZbiVTp1iLgLFYHgQbYW+SvB6DjVh2Ujr25KRKYZMk/IzDGqcGfRe7sjmMcqN8NajiB
+         LyFBfPoh2Gu5y30iQn+kpc2PnIZbSsCvxuTEKtBqCNXJ8SJSIA2UmZn0YCFZJsPOjCOg
+         ZmLIy95flChXuXujGaJQ9jHxFTF5fx0bZbBhxo0Rrmg8Mhh6yNXhqKmEZvNlVxjStwiO
+         zsGUvLEs0/MD3dv42KYYcSniuge0VBkkQXVnEiRHOnyCneAeUdeKubM1OQvkXAX8Jjyx
+         h8whRC0F1EKjXu7Xs+I9bhnimBeZhlxiGqM/jk7wdz87xJdSsZlRxzRO/J+ZMTkoGK5M
+         cHvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f6/A9O7eNdKAIZiobaJeehhCHfZRWG7ySyY4et57HyA=;
-        b=rvASG1sleFE6IWPcqdVgBCSj6h80l7q7KNJCVTj5AYrNNckmnU5t0xUgNZ2Vqa2F2q
-         nboP1vVDtYLluQWci/GQOCnzR49qnPCcmzLX4KYXwiDNZmX1rIPfutToMwUrNdqC91ne
-         ggOK0e5un7Hn4vDrZWD5VzTSAzfEMIvQzS3yVhwZ/TRDXuXgPNyIJRfvuAIMVD1lo0u7
-         Fj0m1kTuEYImcIiqblF719HVkKwe78TbCQlL08rvgdfAbc9obSPl55DLJ4t2lp10Ljq7
-         m5B8wQGDhdbrzyqbuSb9vEBdUemJzXij7Lvu6LXnl3h2VclHtbTaEetZTaSAzJ0DO7A1
-         Q85Q==
-X-Gm-Message-State: AOAM531dgxImMXY50iN1fyHWr8sMRfHZmNsSPmDgLovsdIr3yzMgaDJT
-        DOz2yOr2m3m8++XadwNB3ESZJnwhRpfDHA==
-X-Google-Smtp-Source: ABdhPJxiy1BvWVxBFtbE+Ncgm9Y36VPfh1+9CPLxrCt5ZIsofyLkh6nMVX7xLjWQJLH8Fyya/8jkng==
-X-Received: by 2002:a19:ac06:: with SMTP id g6mr11017729lfc.611.1610963511458;
-        Mon, 18 Jan 2021 01:51:51 -0800 (PST)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id u5sm1845138lfr.154.2021.01.18.01.51.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 01:51:50 -0800 (PST)
-Received: by mail-lj1-f180.google.com with SMTP id u11so17493929ljo.13;
-        Mon, 18 Jan 2021 01:51:50 -0800 (PST)
-X-Received: by 2002:a2e:a407:: with SMTP id p7mr10355197ljn.78.1610963510141;
- Mon, 18 Jan 2021 01:51:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CWOcyAd+BnAljd4w5vN8wSaVPuWlQlW/u40lZ+Q7vBU=;
+        b=XHmRqdb8dfPIeWyMRMjGHpLEMACEOZVrqkJ3N0rHLTn1Ye4fDo3rL+jod07GdD2ywE
+         cSlPcN/vHhbdGIz5/pAmHUIUnKmTNhzsi1czUBtV7crve5NaxUV8/MAyhtYZIuGeiQQX
+         p5XE7KsFdYOxxLGN06yD713haQQwP1upgB2aMwvXl7030UkElEjoLVJkWnVDrPUgvOpo
+         BVaOEYpLXystSAZkj6J6H/XnNJiInV+92M6kiZdv3CWm7tcxCzLBL+ZZahwJPQ5Ua4Ge
+         ocvRGz+fBKcmjzVKWDan0OzFZSXdXwyYHT1rglsSJ5VyaBRvb6w4nmHzWfPQG8FitCcB
+         J3lg==
+X-Gm-Message-State: AOAM531W2zNm2i1c8sFx03+n6NC1wLwyGIiTD3tJywEeOctzGW+pft40
+        mTjoQ4qjGqFN1alWjfly2wgXLg==
+X-Google-Smtp-Source: ABdhPJzEAyxmVvD6lV19ZCH+dSQU73H+CVsi2eHjsrFo4Xoflvj3xKLckEqcptAVGVi+SvQxJGw8gA==
+X-Received: by 2002:a65:49cf:: with SMTP id t15mr25304385pgs.77.1610963580220;
+        Mon, 18 Jan 2021 01:53:00 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id f29sm15149252pgm.76.2021.01.18.01.52.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:52:59 -0800 (PST)
+Date:   Mon, 18 Jan 2021 15:22:56 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 05/12] opp: Add dev_pm_opp_set_voltage()
+Message-ID: <20210118095256.tr2qgnrmokkc6ngf@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-6-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-5-samuel@sholland.org>
- <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com> <20210106110643.agq3mjyhgvg3w4i6@gilmour>
- <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com>
- <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org> <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
-In-Reply-To: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 18 Jan 2021 17:51:38 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64WmrbJ_Dtecg2AmWo1Hok0zGt2GCST_KcSAOn-o97U4g@mail.gmail.com>
-Message-ID: <CAGb2v64WmrbJ_Dtecg2AmWo1Hok0zGt2GCST_KcSAOn-o97U4g@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use
- RSB for AXP805 PMIC connection
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118005524.27787-6-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 5:16 PM Chen-Yu Tsai <wens@csie.org> wrote:
->
-> On Thu, Jan 7, 2021 at 6:27 PM Samuel Holland <samuel@sholland.org> wrote:
-> >
-> > On 1/6/21 5:38 AM, Chen-Yu Tsai wrote:
-> > > On Wed, Jan 6, 2021 at 7:06 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> > >>
-> > >> On Mon, Jan 04, 2021 at 10:54:19AM +0000, André Przywara wrote:
-> > >>> On 03/01/2021 10:00, Samuel Holland wrote:
-> > >>>> On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-> > >>>> PMIC, configure the connection to use the RSB bus rather than the I2C
-> > >>>> bus. Compared to the I2C controller that shares the pins, the RSB
-> > >>>> controller allows a higher bus frequency, and it is more CPU-efficient.
-> > >>>
-> > >>> But is it really necessary to change the DTs for those boards in this
-> > >>> way? It means those newer DTs now become incompatible with older
-> > >>> kernels, and I don't know if those reasons above really justify this.
-> > >>>
-> > >>> I understand that we officially don't care about "newer DTs on older
-> > >>> kernels", but do we really need to break this deliberately, for no
-> > >>> pressing reasons?
-> > >>>
-> > >>> P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
-> > >>> just want to avoid breaking existing ones.
-> > >>
-> > >> Doing so would also introduce some inconsistencies, one more thing to
-> > >> consider during reviews, and would require more testing effort.
-> > >>
-> > >> I'm not sure that stretching our - already fairly sparse - resources
-> > >> thin would be very wise here, especially for something that we don't
-> > >> have to do and for a setup that isn't really used that much.
-> > >
-> > > As soon as some software component starts running RSB, (which I assume
-> > > is what Samuel is planning to do in Crust?), there's a chance that it
-> > > doesn't switch the chip back to I2C. And then Linux won't be able to
-> > > access it.
-> >
-> > Crust can handle either way via a config option, which currently
-> > defaults to I2C for H6. It must use the same selection as Linux, not
-> > only because of the PMIC mode, but also because of the pinctrl.
->
-> Could Crust be made to also handle pinctrl?
->
-> > TF-A is already converted to use RSB[1], and it does switch the PMIC
-> > back to I2C before handing off to U-Boot[2]. So new TF-A + old Linux is
-> > fine. However, Linux currently does not switch the PMIC back. So the
-> > most likely problem from this patch is that, with new Linux + old TF-A,
-> > TF-A will be unable to power down the board or access regulators after
-> > an SoC reset.
-> >
-> > I expect there will be a TF-A release between now and when 5.12 hits
-> > stable, but people tend not upgrade their U-Boot/TF-A very often.
-> >
-> > We could solve this by having the Linux RSB driver switch all child
-> > devices back to I2C in .shutdown, or by dropping this patch and only
-> > using RSB for new boards (which would also address Andre's concern).
->
-> This will work for most cases, except in a kernel panic or IIRC direct
-> reboot using sysrq. So it's not robust as we'd like it to be.
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 99d18befc209..341484d58e6c 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -2731,3 +2731,58 @@ int dev_pm_opp_sync_regulators(struct device *dev)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
+> +
+> +/**
+> + * dev_pm_opp_set_voltage() - Change voltage of regulators
+> + * @dev:	device for which we do this operation
+> + * @opp:	opp based on which the voltages are to be configured
+> + *
+> + * Change voltage of the OPP table regulators.
+> + *
+> + * Return: 0 on success or a negative error value.
+> + */
+> +int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp)
 
-I also wonder what would happen when there are multiple RSB devices, and
-we switch them back to I2C one by one. It's not like there's an option
-to switch all of them back at the same time, unlike switching from I2C
-to RSB. The A80 and A83T are the platforms that would be affected.
+I think we should do better than this, will require some work from
+your part though (or I can do it if you want).
 
-So I merged the previous patch, i.e. changes to the .dtsi, but I think
-we should delay this one by a release. That would give us more time to
-think about it, and let users upgrade U-Boot/TF-A.
+Basically what you wanted to do here is set the OPP for a device and
+this means do whatever is required for setting the OPP. It is normally
+frequency, which is not your case, but it is other things as well.
+Like setting multiple regulators, bandwidth, required-opps, etc.
 
-ChenYu
+I feel the right way of doing this would be to do this:
 
-> ChenYu
->
-> > Cheers,
-> > Samuel
-> >
-> > [1]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7576
-> > [2]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7575
-> >
-> > > So I'm for keeping things consistent and converting all users to RSB.
-> > >
-> > >
-> > > ChenYu
-> > >
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> > To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/bc95a8d2-ebec-489c-10af-fd5a80ea1276%40sholland.org.
+Factor out dev_pm_opp_set_opp() from dev_pm_opp_set_rate() and make
+the later call the former. And then we can just call
+dev_pm_opp_set_opp() from your usecase. This will make sure we have a
+single code path for all the set-opp stuff. What do you think ?
+
+-- 
+viresh
