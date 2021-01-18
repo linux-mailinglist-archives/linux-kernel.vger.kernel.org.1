@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C5B2F9F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F314F2F9F6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391261AbhARMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391119AbhARMOd (ORCPT
+        id S2391425AbhARMVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:21:47 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:44291 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391247AbhARMSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:14:33 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B808C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:13:52 -0800 (PST)
-Received: from zn.tnic (p200300ec2f069f00ce44ca2515680e14.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9f00:ce44:ca25:1568:e14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A6F6C1EC0323;
-        Mon, 18 Jan 2021 13:13:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610972028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nmMs60CXg56bKcV+GG3WyH3X0YvRDV08g9jfvgGBRrY=;
-        b=dZYArGl7SPgmbAjVaIaBNagYjXmYwyeuU0EJQjzf9Wt0WhmLSkvO8U444KtXlR34lFMPZa
-        TrBR7FIOE6aowvA0pYuQ+jt1Y8QZLWcWufy6GToueCDDvxYiqai7KUAWVc1VzP9HHPCq+5
-        JqRo5V5yZs87A4K4I3YL5cEl8jIYddk=
-Date:   Mon, 18 Jan 2021 13:13:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Mazur <krzysiek@podlesie.net>,
-        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 3/4] x86/fpu: Make the EFI FPU calling convention explicit
-Message-ID: <20210118121327.GB30090@zn.tnic>
-References: <cover.1610950681.git.luto@kernel.org>
- <49aeb632f155569c75ea3cd78e9028cf7ba776fe.1610950681.git.luto@kernel.org>
+        Mon, 18 Jan 2021 07:18:35 -0500
+Date:   Mon, 18 Jan 2021 12:17:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610972263; bh=7UZIzTfB4fZUh0LfKdB0wEPFEMIHF3bWhX9FdPzdAaE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=pcbve/zhJHHnPC6G87DsIHZRVvmDTB8sQVPS5IYdVMFRiFrdHcucxG5d1vC33OiFj
+         A1ROQje7/utT1Wfvbtyo8Gz0h8L7MZRkaKL5rrXrC4eqhEB/AXYeUjaHRgHyOIU1Dm
+         kmh/Gcg791KRxhy024EoqB1ObMAJEzWnhMczxBgYldR7r8XjCJqkz5LHok9EjL++FL
+         KtinPlnkc4UpXSvRfCChIQku105/c5BuaBre29OXI65rQsSLfpgvawoeC0TBeIdNvc
+         EQoCAj/EyrvocL6Gz6uMR5k9FNAywEOMVKN5cqYiKfcvW5CL4Lg1IM5lcu7BTQ6n7H
+         KJ9D9mI3reEWw==
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>, namkyu78.kim@samsung.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
+Message-ID: <20210118121707.2130-1-alobakin@pm.me>
+In-Reply-To: <20210118063759.GK3576117@gauss3.secunet.de>
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com> <1610716836-140533-1-git-send-email-dseok.yi@samsung.com> <20210115171203.175115-1-alobakin@pm.me> <20210118063759.GK3576117@gauss3.secunet.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <49aeb632f155569c75ea3cd78e9028cf7ba776fe.1610950681.git.luto@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 10:20:40PM -0800, Andy Lutomirski wrote:
-> EFI uses kernel_fpu_begin() to conform to the UEFI calling convention.
-> This specifically requires initializing FCW, whereas no sane 64-bit kernel
-> code should use legacy 387 operations that reference FCW.
-> 
-> Add KFPU_EFI to make this self-documenting, and use it in the EFI code.
+> From: Steffen Klassert <steffen.klassert@secunet.com>
+> Date: Mon, 18 Jan 2021 07:37:59 +0100
+>
+> On Fri, Jan 15, 2021 at 05:12:33PM +0000, Alexander Lobakin wrote:
+>> From: Dongseok Yi <dseok.yi@samsung.com>
+>> Date: Fri, 15 Jan 2021 22:20:35 +0900
+>>
+>>> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+>>> forwarding. Only the header of head_skb from ip_finish_output_gso ->
+>>> skb_gso_segment is updated but following frag_skbs are not updated.
+>>>
+>>> A call path skb_mac_gso_segment -> inet_gso_segment ->
+>>> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+>>> does not try to update UDP/IP header of the segment list but copy
+>>> only the MAC header.
+>>>
+>>> Update dport, daddr and checksums of each skb of the segment list
+>>> in __udp_gso_segment_list. It covers both SNAT and DNAT.
+>>>
+>>> Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+>>> ---
+>>> v1:
+>>> Steffen Klassert said, there could be 2 options.
+>>> https://lore.kernel.org/patchwork/patch/1362257/
+>>> I was trying to write a quick fix, but it was not easy to forward
+>>> segmented list. Currently, assuming DNAT only.
+>>>
+>>> v2:
+>>> Per Steffen Klassert request, move the procedure from
+>>> udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+>>>
+>>> To Alexander Lobakin, I've checked your email late. Just use this
+>>> patch as a reference. It support SNAT too, but does not support IPv6
+>>> yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
+>>> to the file is in IPv4 directory.
+>>
+>> I used another approach, tried to make fraglist GRO closer to plain
+>> in terms of checksummming, as it is confusing to me why GSO packet
+>> should have CHECKSUM_UNNECESSARY.
+>
+> This is intentional. With fraglist GRO, we don't mangle packets
+> in the standard (non NAT) case. So the checksum is still correct
+> after segmentation. That is one reason why it has good forwarding
+> performance when software segmentation is needed. Checksuming
+> touches the whole packet and has a lot of overhead, so it is
+> heplfull to avoid it whenever possible.
+>
+> We should find a way to do the checksum only when we really
+> need it. I.e. only if the headers of the head skb changed.
 
-I'd prefer if you slap a comment over the kernel_fpu_begin() calls in
-efi instead of adding a separate define etc.
+I suggest to do memcmp() between skb_network_header(skb) and
+skb_network_header(skb->frag_list) with the len of
+skb->data - skb_network_header(skb). This way we will detect changes
+in IPv4/IPv6 and UDP headers.
+If so, copy the full headers and fall back to the standard checksum,
+recalculation, else use the current path.
 
-Thx.
+Al
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
