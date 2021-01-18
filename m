@@ -2,68 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B722FA222
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A60E2FA22E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392377AbhARNi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:38:58 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49185 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392314AbhARNfU (ORCPT
+        id S2392464AbhARNw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:52:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11403 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392338AbhARNf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:35:20 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UM8549h_1610976838;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UM8549h_1610976838)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Jan 2021 21:33:58 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Mon, 18 Jan 2021 08:35:29 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DKCRT3Mnqz7Wql;
+        Mon, 18 Jan 2021 21:33:41 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 18 Jan 2021 21:34:38 +0800
+Subject: Re: [PATCH 3/6] vfio/iommu_type1: Initially set the
+ pinned_page_dirty_scope
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210107044401.19828-1-zhukeqian1@huawei.com>
+ <20210107044401.19828-4-zhukeqian1@huawei.com>
+ <20210115163041.704a4e9d@omen.home.shazbot.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] x86/sgx: Remove redundant if conditions in sgx_encl_create
-Date:   Mon, 18 Jan 2021 21:33:58 +0800
-Message-Id: <20210118133358.99311-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <bc343f12-e9be-7d67-f220-5da1d02038fa@huawei.com>
+Date:   Mon, 18 Jan 2021 21:34:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115163041.704a4e9d@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this scenario, there is no case where va_page is NULL, and
-the error has been checked. The if condition statement here is
-redundant, so remove the condition detection.
 
-Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 90a5caf76939..f45957c05f69 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -66,9 +66,8 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	va_page = sgx_encl_grow(encl);
- 	if (IS_ERR(va_page))
- 		return PTR_ERR(va_page);
--	else if (va_page)
--		list_add(&va_page->list, &encl->va_pages);
--	/* else the tail page of the VA page list had free slots. */
-+
-+	list_add(&va_page->list, &encl->va_pages);
- 
- 	/* The extra page goes to SECS. */
- 	encl_size = secs->size + PAGE_SIZE;
--- 
-2.19.1.3.ge56e4f7
+On 2021/1/16 7:30, Alex Williamson wrote:
+> On Thu, 7 Jan 2021 12:43:58 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+>> For now there are 3 ways to promote the pinned_page_dirty_scope
+>> status of vfio_iommu:
+>>
+>> 1. Through vfio pin interface.
+>> 2. Detach a group without pinned_dirty_scope.
+>> 3. Attach a group with pinned_dirty_scope.
+>>
+>> For point 3, the only chance to promote the pinned_page_dirty_scope
+>> status is when vfio_iommu is newly created. As we can safely set
+>> empty vfio_iommu to be at pinned status, then the point 3 can be
+>> removed to reduce operations.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 4 +---
+>>  1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 110ada24ee91..b596c482487b 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -2045,11 +2045,8 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
+>>  			 * Non-iommu backed group cannot dirty memory directly,
+>>  			 * it can only use interfaces that provide dirty
+>>  			 * tracking.
+>> -			 * The iommu scope can only be promoted with the
+>> -			 * addition of a dirty tracking group.
+>>  			 */
+>>  			group->pinned_page_dirty_scope = true;
+>> -			promote_pinned_page_dirty_scope(iommu);
+>>  			mutex_unlock(&iommu->lock);
+>>  
+>>  			return 0;
+>> @@ -2436,6 +2433,7 @@ static void *vfio_iommu_type1_open(unsigned long arg)
+>>  	INIT_LIST_HEAD(&iommu->iova_list);
+>>  	iommu->dma_list = RB_ROOT;
+>>  	iommu->dma_avail = dma_entry_limit;
+>> +	iommu->pinned_page_dirty_scope = true;
+>>  	mutex_init(&iommu->lock);
+>>  	BLOCKING_INIT_NOTIFIER_HEAD(&iommu->notifier);
+>>  
+> 
+> This would be resolved automatically if we used the counter approach I
+> mentioned on the previous patch, adding a pinned-page scope group simply
+> wouldn't increment the iommu counter, which would initially be zero
+> indicating no "all-dma" groups.  Thanks,
+> 
+Sure, I will do that, thanks.
 
+Keqian.
+
+> Alex
+> 
+> .
+> 
