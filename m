@@ -2,257 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419142F9F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681752F9F15
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403954AbhARMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:06:11 -0500
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:47018 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391295AbhARMBw (ORCPT
+        id S2403923AbhARMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403933AbhARMBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:01:52 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 20887241;
-        Mon, 18 Jan 2021 15:01:05 +0300 (MSK)
+        Mon, 18 Jan 2021 07:01:08 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCACCC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:00:27 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s15so8532050plr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:00:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1610971265;
-        bh=vHceS8rgoIK1PXhk2Onpa85/3bo7y8S6c44QIUn8Dvc=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=jS4AH8DQGIGzee+RTZzQr1+93TWOpdYVffshauAgsvCmw+ZGAdun0SXEzxVWoJCht
-         y+E+f93NL5IEg7UOfLmxKyXwhqg+Ugj1UFks8SWhBrEcjtjJZHznKGUkfrjM6gaC4s
-         rpSu9oN5BZRcU/rFozo9JxmTng45o8uOaUxJ+TJU=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 18 Jan 2021 15:01:04 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Mon, 18 Jan 2021 15:01:04 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Kari Argillander <kari.argillander@gmail.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "anton@tuxera.com" <anton@tuxera.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "andy.lavr@gmail.com" <andy.lavr@gmail.com>
-Subject: RE: [PATCH v17 05/10] fs/ntfs3: Add attrib operations
-Thread-Topic: [PATCH v17 05/10] fs/ntfs3: Add attrib operations
-Thread-Index: AQHW34lESlOgt0gdi0CCf1q7eejdPqoWbvYAgBbwkNA=
-Date:   Mon, 18 Jan 2021 12:01:04 +0000
-Message-ID: <4f25e89e96e644cfb0d200332a02efaf@paragon-software.com>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-6-almaz.alexandrovich@paragon-software.com>
- <20210104002554.gdxoyu2q2aaae5ph@kari-VirtualBox>
-In-Reply-To: <20210104002554.gdxoyu2q2aaae5ph@kari-VirtualBox>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.0.64]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C9t16M0rhAwwUEc/H1PLusmgr6OGhsXk+XRbU0LxKps=;
+        b=pgB12yDy8aBb8+gbgBTicOvn5YaVLxjHWQ6bfBM3l7B+kbl9PvXhpec/b+BRrcpmg+
+         kg/zctCk/ywvi+M6NHojc3bseKjbCKRBKjgpU/P1E4YoPZzc4cXIWKrG+g8ZTTS2fQWD
+         2nBdt8v03RNwt4ar97bM6Tfc/HsL7DuAAHjVUbaqVFho70akbWeJSlD7JsOCu5EHY04f
+         I1WlBeg5WZD4uHsQP6YxFuZLxY3aAv6i5yOwTe6owlklrA5HH/liyu1Mdjd1KhX21yje
+         T3yXmPd05BvqCCDYFBmXIVNPEOZIryPRU1hFnZ3k/BJtW0LrBNJTMFd2CK3L/20Slf/Y
+         PJXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C9t16M0rhAwwUEc/H1PLusmgr6OGhsXk+XRbU0LxKps=;
+        b=ifLu54gcz1jNSKRW5Bbu5dcMRUBGDKCdxYkYG1t775Dx5dwXVNroqPlE2LdHtun8yD
+         83jhiIjZPNdLPg5+itAjYQUHv/S6iWKuQ0BRPGPXfGStKbM8yxE8eYm9jBa/vmfiwAW/
+         DWIRx3uiN2Vq7XiEHzeJzOAnJ1ZHKQOMMLOlsw7pY+e3CbxHNc68v9vLV0H/wB+isqJo
+         zO/xN8VDcmLm61KN6vUgg4dtqI6cKpcqCJyjrZmwi58MSIT3iuhQI4U2VyuTqn5BY212
+         lv+H2oVjnOMS6pAWBHUZZBTi6ErvhnsqROXmk47xfUc+n6LJ4JY8/t9yGM6Gu4ubmYmc
+         ScYA==
+X-Gm-Message-State: AOAM533NNc+O4AONyc+p2ZZIvPirBGrApyCZ5U1Dly7egHhmyBgMYJ1s
+        ac3xeoHcvA514YjJZUIRdWmoK3uDymisYub3vRA=
+X-Google-Smtp-Source: ABdhPJxnmoCYkRfPwQwFux3QOBPJ7RyAOx2LT0Y/U1zOLGNR2+2sDUkif9CrCw17/VksA4pWQb+BcN0rrSfVHhFBAAc=
+X-Received: by 2002:a17:90a:4d83:: with SMTP id m3mr26360559pjh.228.1610971227187;
+ Mon, 18 Jan 2021 04:00:27 -0800 (PST)
 MIME-Version: 1.0
+References: <20210117160555.78376-1-hdegoede@redhat.com> <20210117160555.78376-7-hdegoede@redhat.com>
+In-Reply-To: <20210117160555.78376-7-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Jan 2021 14:01:16 +0200
+Message-ID: <CAHp75VfZ5-2+sRwXyhfQcPhv_Eqm_sot8AXt-M0QfW+15YhqRA@mail.gmail.com>
+Subject: Re: [PATCH v2 06/12] ASoC: arizona-jack: Move jack-detect variables
+ to struct arizona_priv
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kari Argillander <kari.argillander@gmail.com>
-Sent: Monday, January 4, 2021 3:26 AM
-> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
-vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
-> aaptel@suse.com; willy@infradead.org; rdunlap@infradead.org; joe@perches.=
-com; mark@harmstone.com; nborisov@suse.com;
-> linux-ntfs-dev@lists.sourceforge.net; anton@tuxera.com; dan.carpenter@ora=
-cle.com; hch@lst.de; ebiggers@kernel.org;
-> andy.lavr@gmail.com
-> Subject: Re: [PATCH v17 05/10] fs/ntfs3: Add attrib operations
->=20
-> On Thu, Dec 31, 2020 at 06:23:56PM +0300, Konstantin Komarov wrote:
-> > This adds attrib operations
-> >
-> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software=
-.com>
-> > ---
-> >  fs/ntfs3/attrib.c   | 2081 +++++++++++++++++++++++++++++++++++++++++++
-> >  fs/ntfs3/attrlist.c |  463 ++++++++++
-> >  fs/ntfs3/xattr.c    | 1072 ++++++++++++++++++++++
-> >  3 files changed, 3616 insertions(+)
-> >  create mode 100644 fs/ntfs3/attrib.c
-> >  create mode 100644 fs/ntfs3/attrlist.c
-> >  create mode 100644 fs/ntfs3/xattr.c
-> >
-> > diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
->=20
-> > +/*
-> > + * al_find_ex
-> > + *
-> > + * finds the first le in the list which matches type, name and vcn
-> > + * Returns NULL if not found
-> > + */
-> > +struct ATTR_LIST_ENTRY *al_find_ex(struct ntfs_inode *ni,
-> > +				   struct ATTR_LIST_ENTRY *le,
-> > +				   enum ATTR_TYPE type, const __le16 *name,
-> > +				   u8 name_len, const CLST *vcn)
-> > +{
-> > +	struct ATTR_LIST_ENTRY *ret =3D NULL;
-> > +	u32 type_in =3D le32_to_cpu(type);
-> > +
-> > +	while ((le =3D al_enumerate(ni, le))) {
-> > +		u64 le_vcn;
-> > +		int diff;
-> > +
-> > +		/* List entries are sorted by type, name and vcn */
->=20
-> Isn't name sorted with upcase sort.
->=20
+On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Move all the jack-detect variables from struct arizona_extcon_info to
+> struct arizona_priv.
+>
+> This is part of a patch series converting the arizona extcon driver into
+> a helper library for letting the arizona codec-drivers directly report jack
+> state through the standard sound/soc/soc-jack.c functions.
 
-Hi! You are correct. Will be fixed in v18.
+Seems straight forward.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> > +		diff =3D le32_to_cpu(le->type) - type_in;
-> > +		if (diff < 0)
-> > +			continue;
-> > +
-> > +		if (diff > 0)
-> > +			return ret;
-> > +
-> > +		if (le->name_len !=3D name_len)
-> > +			continue;
-> > +
-> > +		if (name_len &&
-> > +		    memcmp(le_name(le), name, name_len * sizeof(short)))
-> > +			continue;
->=20
-> So does this compare name correctly? So it is caller responsible that
-> name is up_cased? Or does it even mater.
->=20
-> And this will check every name in right type. Why not use name_cmp and
-> then we know if we over. It might be because performance. But maybe
-> we can check that like every 10 iteration or something.
->=20
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  sound/soc/codecs/arizona-jack.c | 97 ++++++++++-----------------------
+>  sound/soc/codecs/arizona.h      | 36 ++++++++++++
+>  2 files changed, 65 insertions(+), 68 deletions(-)
+>
+> diff --git a/sound/soc/codecs/arizona-jack.c b/sound/soc/codecs/arizona-jack.c
+> index 72d23b15108c..c81c3b20f94e 100644
+> --- a/sound/soc/codecs/arizona-jack.c
+> +++ b/sound/soc/codecs/arizona-jack.c
+> @@ -27,6 +27,8 @@
+>  #include <linux/mfd/arizona/registers.h>
+>  #include <dt-bindings/mfd/arizona.h>
+>
+> +#include "arizona.h"
+> +
+>  #define ARIZONA_MAX_MICD_RANGE 8
+>
+>  #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
+> @@ -61,47 +63,6 @@
+>
+>  #define MICD_LVL_0_TO_8 (MICD_LVL_0_TO_7 | ARIZONA_MICD_LVL_8)
+>
+> -struct arizona_extcon_info {
+> -       struct device *dev;
+> -       struct arizona *arizona;
+> -       struct mutex lock;
+> -       struct regulator *micvdd;
+> -       struct input_dev *input;
+> -
+> -       u16 last_jackdet;
+> -
+> -       int micd_mode;
+> -       const struct arizona_micd_config *micd_modes;
+> -       int micd_num_modes;
+> -
+> -       const struct arizona_micd_range *micd_ranges;
+> -       int num_micd_ranges;
+> -
+> -       bool micd_reva;
+> -       bool micd_clamp;
+> -
+> -       struct delayed_work hpdet_work;
+> -       struct delayed_work micd_detect_work;
+> -       struct delayed_work micd_timeout_work;
+> -
+> -       bool hpdet_active;
+> -       bool hpdet_done;
+> -       bool hpdet_retried;
+> -
+> -       int num_hpdet_res;
+> -       unsigned int hpdet_res[3];
+> -
+> -       bool mic;
+> -       bool detecting;
+> -       int jack_flips;
+> -
+> -       int hpdet_ip_version;
+> -
+> -       struct extcon_dev *edev;
+> -
+> -       struct gpio_desc *micd_pol_gpio;
+> -};
+> -
+>  static const struct arizona_micd_config micd_default_modes[] = {
+>         { ARIZONA_ACCDET_SRC, 1, 0 },
+>         { 0,                  2, 1 },
+> @@ -135,9 +96,9 @@ static const unsigned int arizona_cable[] = {
+>         EXTCON_NONE,
+>  };
+>
+> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info);
+> +static void arizona_start_hpdet_acc_id(struct arizona_priv *info);
+>
+> -static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
+> +static void arizona_extcon_hp_clamp(struct arizona_priv *info,
+>                                     bool clamp)
+>  {
+>         struct arizona *arizona = info->arizona;
+> @@ -222,7 +183,7 @@ static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
+>         snd_soc_dapm_mutex_unlock(arizona->dapm);
+>  }
+>
+> -static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
+> +static void arizona_extcon_set_mode(struct arizona_priv *info, int mode)
+>  {
+>         struct arizona *arizona = info->arizona;
+>
+> @@ -243,7 +204,7 @@ static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
+>         dev_dbg(arizona->dev, "Set jack polarity to %d\n", mode);
+>  }
+>
+> -static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
+> +static const char *arizona_extcon_get_micbias(struct arizona_priv *info)
+>  {
+>         switch (info->micd_modes[0].bias) {
+>         case 1:
+> @@ -257,7 +218,7 @@ static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
+>         }
+>  }
+>
+> -static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+> +static void arizona_extcon_pulse_micbias(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         const char *widget = arizona_extcon_get_micbias(info);
+> @@ -282,7 +243,7 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+>         }
+>  }
+>
+> -static void arizona_start_mic(struct arizona_extcon_info *info)
+> +static void arizona_start_mic(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         bool change;
+> @@ -339,7 +300,7 @@ static void arizona_start_mic(struct arizona_extcon_info *info)
+>         }
+>  }
+>
+> -static void arizona_stop_mic(struct arizona_extcon_info *info)
+> +static void arizona_stop_mic(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         const char *widget = arizona_extcon_get_micbias(info);
+> @@ -407,7 +368,7 @@ static struct {
+>         { 1000, 10000 },
+>  };
+>
+> -static int arizona_hpdet_read(struct arizona_extcon_info *info)
+> +static int arizona_hpdet_read(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         unsigned int val, range;
+> @@ -527,7 +488,7 @@ static int arizona_hpdet_read(struct arizona_extcon_info *info)
+>         return val;
+>  }
+>
+> -static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
+> +static int arizona_hpdet_do_id(struct arizona_priv *info, int *reading,
+>                                bool *mic)
+>  {
+>         struct arizona *arizona = info->arizona;
+> @@ -597,7 +558,7 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
+>
+>  static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+>  {
+> -       struct arizona_extcon_info *info = data;
+> +       struct arizona_priv *info = data;
+>         struct arizona *arizona = info->arizona;
+>         int id_gpio = arizona->pdata.hpdet_id_gpio;
+>         unsigned int report = EXTCON_JACK_HEADPHONE;
+> @@ -684,7 +645,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+>         return IRQ_HANDLED;
+>  }
+>
+> -static void arizona_identify_headphone(struct arizona_extcon_info *info)
+> +static void arizona_identify_headphone(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         int ret;
+> @@ -737,7 +698,7 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
+>         info->hpdet_active = false;
+>  }
+>
+> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
+> +static void arizona_start_hpdet_acc_id(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         int hp_reading = 32;
+> @@ -790,8 +751,8 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
+>
+>  static void arizona_micd_timeout_work(struct work_struct *work)
+>  {
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> +       struct arizona_priv *info = container_of(work,
+> +                                               struct arizona_priv,
+>                                                 micd_timeout_work.work);
+>
+>         mutex_lock(&info->lock);
+> @@ -805,7 +766,7 @@ static void arizona_micd_timeout_work(struct work_struct *work)
+>         mutex_unlock(&info->lock);
+>  }
+>
+> -static int arizona_micd_adc_read(struct arizona_extcon_info *info)
+> +static int arizona_micd_adc_read(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         unsigned int val;
+> @@ -842,7 +803,7 @@ static int arizona_micd_adc_read(struct arizona_extcon_info *info)
+>         return val;
+>  }
+>
+> -static int arizona_micd_read(struct arizona_extcon_info *info)
+> +static int arizona_micd_read(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         unsigned int val = 0;
+> @@ -875,7 +836,7 @@ static int arizona_micd_read(struct arizona_extcon_info *info)
+>
+>  static int arizona_micdet_reading(void *priv)
+>  {
+> -       struct arizona_extcon_info *info = priv;
+> +       struct arizona_priv *info = priv;
+>         struct arizona *arizona = info->arizona;
+>         int ret, val;
+>
+> @@ -969,7 +930,7 @@ static int arizona_micdet_reading(void *priv)
+>
+>  static int arizona_button_reading(void *priv)
+>  {
+> -       struct arizona_extcon_info *info = priv;
+> +       struct arizona_priv *info = priv;
+>         struct arizona *arizona = info->arizona;
+>         int val, key, lvl, i;
+>
+> @@ -1017,8 +978,8 @@ static int arizona_button_reading(void *priv)
+>
+>  static void arizona_micd_detect(struct work_struct *work)
+>  {
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> +       struct arizona_priv *info = container_of(work,
+> +                                               struct arizona_priv,
+>                                                 micd_detect_work.work);
+>         struct arizona *arizona = info->arizona;
+>         int ret;
+> @@ -1051,7 +1012,7 @@ static void arizona_micd_detect(struct work_struct *work)
+>
+>  static irqreturn_t arizona_micdet(int irq, void *data)
+>  {
+> -       struct arizona_extcon_info *info = data;
+> +       struct arizona_priv *info = data;
+>         struct arizona *arizona = info->arizona;
+>         int debounce = arizona->pdata.micd_detect_debounce;
+>
+> @@ -1075,8 +1036,8 @@ static irqreturn_t arizona_micdet(int irq, void *data)
+>
+>  static void arizona_hpdet_work(struct work_struct *work)
+>  {
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> +       struct arizona_priv *info = container_of(work,
+> +                                               struct arizona_priv,
+>                                                 hpdet_work.work);
+>
+>         mutex_lock(&info->lock);
+> @@ -1084,7 +1045,7 @@ static void arizona_hpdet_work(struct work_struct *work)
+>         mutex_unlock(&info->lock);
+>  }
+>
+> -static int arizona_hpdet_wait(struct arizona_extcon_info *info)
+> +static int arizona_hpdet_wait(struct arizona_priv *info)
+>  {
+>         struct arizona *arizona = info->arizona;
+>         unsigned int val;
+> @@ -1120,7 +1081,7 @@ static int arizona_hpdet_wait(struct arizona_extcon_info *info)
+>
+>  static irqreturn_t arizona_jackdet(int irq, void *data)
+>  {
+> -       struct arizona_extcon_info *info = data;
+> +       struct arizona_priv *info = data;
+>         struct arizona *arizona = info->arizona;
+>         unsigned int val, present, mask;
+>         bool cancelled_hp, cancelled_mic;
+> @@ -1380,7 +1341,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+>  {
+>         struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+>         struct arizona_pdata *pdata = &arizona->pdata;
+> -       struct arizona_extcon_info *info;
+> +       struct arizona_priv *info;
+>         unsigned int val;
+>         unsigned int clamp_mode;
+>         int jack_irq_fall, jack_irq_rise;
+> @@ -1754,7 +1715,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+>
+>  static int arizona_extcon_remove(struct platform_device *pdev)
+>  {
+> -       struct arizona_extcon_info *info = platform_get_drvdata(pdev);
+> +       struct arizona_priv *info = platform_get_drvdata(pdev);
+>         struct arizona *arizona = info->arizona;
+>         int jack_irq_rise, jack_irq_fall;
+>         bool change;
+> diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+> index b893d3e4c97c..d1a263a67bba 100644
+> --- a/sound/soc/codecs/arizona.h
+> +++ b/sound/soc/codecs/arizona.h
+> @@ -91,6 +91,42 @@ struct arizona_priv {
+>         unsigned int dvfs_reqs;
+>         struct mutex dvfs_lock;
+>         bool dvfs_cached;
+> +
+> +       /* Variables used by arizona-jack.c code */
+> +       struct device *dev;
+> +       struct mutex lock;
+> +       struct delayed_work hpdet_work;
+> +       struct delayed_work micd_detect_work;
+> +       struct delayed_work micd_timeout_work;
+> +       struct regulator *micvdd;
+> +       struct input_dev *input;
+> +       struct extcon_dev *edev;
+> +       struct gpio_desc *micd_pol_gpio;
+> +
+> +       u16 last_jackdet;
+> +
+> +       int micd_mode;
+> +       const struct arizona_micd_config *micd_modes;
+> +       int micd_num_modes;
+> +
+> +       const struct arizona_micd_range *micd_ranges;
+> +       int num_micd_ranges;
+> +
+> +       bool micd_reva;
+> +       bool micd_clamp;
+> +
+> +       bool hpdet_active;
+> +       bool hpdet_done;
+> +       bool hpdet_retried;
+> +
+> +       bool mic;
+> +       bool detecting;
+> +
+> +       int num_hpdet_res;
+> +       unsigned int hpdet_res[3];
+> +
+> +       int jack_flips;
+> +       int hpdet_ip_version;
+>  };
+>
+>  struct arizona_voice_trigger_info {
+> --
+> 2.28.0
+>
 
-Now name check will be only for list_entry with vcn=3D=3D0.
 
-> > +		if (!vcn)
-> > +			return le;
-> > +
-> > +		le_vcn =3D le64_to_cpu(le->vcn);
-> > +		if (*vcn =3D=3D le_vcn)
-> > +			return le;
-> > +
-> > +		if (*vcn < le_vcn)
-> > +			return ret;
-> > +
-> > +		ret =3D le;
->=20
-> So we still have wrong vcn at this point. And we save that so we can
-> return it. What happens if we will not found right one. Atlest function
-> comment say that we should return NULL if we do not found matching entry.
->=20
-
-Can't agree here.
-E.g. given list_entry: 0, 67, 89, 110, 137.
-The function will return 89 as the similar thread stores the info about vcn=
-=3D=3D100.
-
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * al_find_le_to_insert
-> > + *
-> > + * finds the first list entry which matches type, name and vcn
->=20
-> This comment seems wrong? This seems to find insert point for new
-> le.
->=20
-
-Thanks for this. Fixed.
-
-> > + * Returns NULL if not found
-> > + */
-> > +static struct ATTR_LIST_ENTRY *
-> > +al_find_le_to_insert(struct ntfs_inode *ni, enum ATTR_TYPE type,
-> > +		     const __le16 *name, u8 name_len, const CLST *vcn)
-> > +{
-> > +	struct ATTR_LIST_ENTRY *le =3D NULL, *prev;
-> > +	u32 type_in =3D le32_to_cpu(type);
-> > +	int diff;
-> > +
-> > +	/* List entries are sorted by type, name, vcn */
-> > +next:
-> > +	le =3D al_enumerate(ni, prev =3D le);
-> > +	if (!le)
-> > +		goto out;
-> > +	diff =3D le32_to_cpu(le->type) - type_in;
-> > +	if (diff < 0)
-> > +		goto next;
-> > +	if (diff > 0)
-> > +		goto out;
-> > +
-> > +	if (ntfs_cmp_names(name, name_len, le_name(le), le->name_len, NULL) >=
- 0)
-> > +		goto next;
->=20
-> Why not go out if compare is < 0. In my mind this will totally ignore
-> name and next just find right vcn (or we come next ID) and call it a day.
->=20
-
-Will be fixed in v18 as well.
-
-> NAME	VCN
-> [AAB]	[2] <- Looks insert point for this.
->=20
-> [AAA]	[1]
-> [AAB]	[1]
-> 	    <- This is right point.
-> [AAC]	[1]
-> 	    <- But we tell that insert point is here.
-> [AAD]	[2]
->=20
-> I might be totally wrong but please tell me what I'm missing.
->=20
-> > +	if (!vcn || *vcn > le64_to_cpu(le->vcn))
-> > +		goto next;
-> > +
-> > +out:
-> > +	if (!le)
-> > +		le =3D prev ? Add2Ptr(prev, le16_to_cpu(prev->size)) :
-> > +			    ni->attr_list.le;
-> > +
-> > +	return le;
-> > +}
->=20
-> There seems to be lot of linear list search. Do you think it will be
-> benefital to code binary or jump search for them? Just asking for
-> intrest. Might be that it will not benefit at all but just thinking
-> here.
->=20
-> I might try to do that in some point if someone see point of that.
-
-It's nice idea, we will appreciate such patch. But please keep in mind that
-binary search will outperform linear dramatically only for heavily fragment=
-ed files.
-By the way, the same idea of replacing linear with binary search is impleme=
-nted in
-index.c (please refer to NTFS3_INDEX_BINARY_SEARCH).
-
-Also, your notes on attrlist.c led us to refactor this file. Thanks once ag=
-ain!
-
+-- 
+With Best Regards,
+Andy Shevchenko
