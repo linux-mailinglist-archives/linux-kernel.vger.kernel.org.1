@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD8D2FABF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5012FABFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389303AbhARU5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:57:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40489 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388811AbhARU5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:57:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611003334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3QKbyvj73XCe/MDKPB/Jw/LXd8vcFI9HePDMlmpidHc=;
-        b=eE3rm/Xu4oGxRGSuk0BX0xg5v7ophhAH3S2/Ixt6zek2gvXFVRfVhOdYYRUPnDa8wTK+Q7
-        kSTTEE0xVOxpgi2yJwtbRv3OJgORYedttJbYUYr/UUIAPUVyx8UN5DOKSg6eSI1oSj6FX0
-        ueMnuXNbfv2gRpgoegfnwrTogCBVm6Q=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-v2y4ZBBNOeeFtM6OWRevZw-1; Mon, 18 Jan 2021 15:55:32 -0500
-X-MC-Unique: v2y4ZBBNOeeFtM6OWRevZw-1
-Received: by mail-ej1-f69.google.com with SMTP id m4so5523354ejc.14
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:55:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3QKbyvj73XCe/MDKPB/Jw/LXd8vcFI9HePDMlmpidHc=;
-        b=M9O/qRieiMrm1kBbkd/bn4C6Ss5NYyFalIwAIWLeozTvCHX+9mhDD0MAW6KEYJs/kz
-         9mIqSqQHw61XRe1pbVZYW+QMJfB/8J+FZ4wM2NcF7R0Ompac1B8zjdq6J0J8y6O16Hep
-         qOkxhuabt/grlBpemhKaweTfUJ7hMeTs07YIQCjucoCYgo6tqD43MmK5iIxM6p8RehL6
-         uqZAJzD2FXG1ZIn/GyDzkgT+tCi5Bta89yXqTfu7ruAPBk55Ouyi1wUxi1jdMoKLrQ+G
-         0Zyybfo8Y6WMiKcokRWo+YWtqYs/buq3F37IWvd0er7Wu+zeU94MRKiAffFRCHTCkHG+
-         TkRQ==
-X-Gm-Message-State: AOAM530BjuLlX4Hz6mvKukoKTEOgmsMo1oxwqJ11wEO6vYoWCtpSccQt
-        6GpjGJtZeKO+T3m5yPJ0MrGHnRgWxJQvPLZN6vFHNDZhwEb+7loveJBExTGedqx8ri9DaDB8mZK
-        PdZjifKZu1mqmdiKT5X4b79WH
-X-Received: by 2002:a17:907:20d5:: with SMTP id qq21mr989508ejb.340.1611003331262;
-        Mon, 18 Jan 2021 12:55:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw5+D2EB8eE0wOHWnl3vEYmX/7VnbaEKYyrxBiaWPrjt8oKmWU1YMJI+OGWrm2dwvryDZHIkw==
-X-Received: by 2002:a17:907:20d5:: with SMTP id qq21mr989502ejb.340.1611003331140;
-        Mon, 18 Jan 2021 12:55:31 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id c14sm10145610edr.46.2021.01.18.12.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 12:55:30 -0800 (PST)
-Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86-fixes
- tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210119062758.75f9f8bf@canb.auug.org.au>
- <20210119063909.3dd6f6a5@canb.auug.org.au>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <86f9149d-d824-99f4-2d73-620aef2fa699@redhat.com>
-Date:   Mon, 18 Jan 2021 21:55:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2389951AbhARU6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:58:08 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:40720 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388520AbhARU5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:57:40 -0500
+Received: from example.org (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id AA00720479;
+        Mon, 18 Jan 2021 20:56:34 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 21:56:29 +0100
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [RFC PATCH v3 1/8] Use refcount_t for ucounts reference counting
+Message-ID: <20210118205629.zro2qkd3ut42bpyq@example.org>
+References: <cover.1610722473.git.gladkov.alexey@gmail.com>
+ <116c7669744404364651e3b380db2d82bb23f983.1610722473.git.gladkov.alexey@gmail.com>
+ <CAHk-=wjsg0Lgf1Mh2UiJE4sqBDDo0VhFVBUbhed47ot2CQQwfQ@mail.gmail.com>
+ <20210118194551.h2hrwof7b3q5vgoi@example.org>
+ <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119063909.3dd6f6a5@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 18 Jan 2021 20:56:57 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/18/21 8:39 PM, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Jan 18, 2021 at 12:34:29PM -0800, Linus Torvalds wrote:
+> On Mon, Jan 18, 2021 at 11:46 AM Alexey Gladkov
+> <gladkov.alexey@gmail.com> wrote:
+> >
+> > Sorry about that. I thought that this code is not needed when switching
+> > from int to refcount_t. I was wrong.
 > 
-> On Tue, 19 Jan 2021 06:27:58 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> In commit
->>
->>   99d53ba0d0d9 ("platform/x86: hp-wmi: Don't log a warning on HPWMI_RET_UNKNOWN_COMMAND errors")
->>
->> Fixes tag
->>
->>   Fixes: 81c93798ef3e ("platform/x86: hp-wmi: add support for thermal policy
->>
->> has these problem(s):
->>
->>   - Subject has leading but no trailing parentheses
->>   - Subject has leading but no trailing quotes
+> Well, you _may_ be right. I personally didn't check how the return
+> value is used.
 > 
-> This is also commit
-> 
->   b96705325421 ("platform/x86: hp-wmi: Don't log a warning on HPWMI_RET_UNKNOWN_COMMAND errors")
-> 
-> in the drivers-x86 tree.
+> I only reacted to "it certainly _may_ be used, and there is absolutely
+> no comment anywhere about why it wouldn't matter".
 
-Sorry about that, I've fixed it in both the drivers-x86-fixes and the regular
-drivers-x86 trees.
+I have not found examples where checked the overflow after calling
+refcount_inc/refcount_add.
 
-Strange enough checkpatch does not catch this, while it does catch misformatted
-commit references in the non tags part of the commit message. I will mail the
-checkpatch maintainer about this.
+For example in kernel/fork.c:2298 :
 
-Regards,
+   current->signal->nr_threads++;                           
+   atomic_inc(&current->signal->live);                      
+   refcount_inc(&current->signal->sigcnt);  
 
-Hans
+$ semind search signal_struct.sigcnt
+def include/linux/sched/signal.h:83  		refcount_t		sigcnt;
+m-- kernel/fork.c:723 put_signal_struct 		if (refcount_dec_and_test(&sig->sigcnt))
+m-- kernel/fork.c:1571 copy_signal 		refcount_set(&sig->sigcnt, 1);
+m-- kernel/fork.c:2298 copy_process 				refcount_inc(&current->signal->sigcnt);
+
+It seems to me that the only way is to use __refcount_inc and then compare
+the old value with REFCOUNT_MAX
+
+Since I have not seen examples of such checks, I thought that this is
+acceptable. Sorry once again. I have not tried to hide these changes.
+
+-- 
+Rgrds, legion
 
