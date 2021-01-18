@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6533B2FA76B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4CB2FA716
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406867AbhARRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:23:17 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37543 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406846AbhARRDS (ORCPT
+        id S2393494AbhARRJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406887AbhARRHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:03:18 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 583BD17D7;
-        Mon, 18 Jan 2021 12:02:10 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 18 Jan 2021 12:02:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=aCtNSj2HSao+inp7HktheCsuocF
-        99GwXfTqjyswziGA=; b=YmLl6ohx+f/H98h3T06lnAm/WOzNKJTW+w+ivVzrw0k
-        ZwO4cQuBMzTlcR48KM7Jk6cNtx0VeQD0CZYzuyxQixumZsTn3SJYd6HpFwmTIKse
-        Y3eRtFc4FraGZZr2Tgd2hcCc0LDQVVztg9JQxJN/uV16206MZ+QmBxlDzExyZMdW
-        J8nDYTrWi0paEK2WzXxoAThbRk4WAU5eXaW9otGzW0GW/1shH93zLaVWBETrXB4o
-        vK25ouBsphmeTlA82a7GtkmyW7xK9mbbLoDHDD8oISrya62zhZeF8osfBFDi6DZq
-        Bn/BIEI43Wz1t7vpNoCzWfD9EtQbHP0gzIK5ENceiaw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=aCtNSj
-        2HSao+inp7HktheCsuocF99GwXfTqjyswziGA=; b=goAJu6a2PkWzLVoI5TzHDV
-        3qNGVTJSoT549oRMRnGLiKp7LSHx6VSJJ4NcJUqCdwgEPxbMBdMd7NPBOzjQzoao
-        D9y+Q4505Uy6SyS3Vqg5QZ2ME5s2AonZ3C7h0Nk41QOX1CwP8tDlgTAvHuUjkpZN
-        GinevSF1KKKWYpy9X90aj9eRuuYqYvtUKO3J2JVzQo7bQO4lAW2AWBIm4Tw0G8+G
-        e9HcT1ClJae1FUG+mTwu1gbhDe8ykavWibA94csvt29X79hGx1LHvSblPXBvcEpg
-        uLJJDW9ZdDjFZ4eYMKC5bTXBW6Hk3ygFEYHB3GGgAfcryA0A7a81C6+6oacMYecA
-        ==
-X-ME-Sender: <xms:D78FYBKSxS2xI0HBDiWz9-uPs0txxHM6xdC9AGEnbgyONe7yKHVWbg>
-    <xme:D78FYPLIFb-HJEfHuYvDuUVQUtIfbL3UizoiBw1HzAHNLRBRLc9C0Dzjrrc2GuVtM
-    YO-Z4eN9xHWTB5wWTo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:D78FYDF8XXIdRsJIWFDRLvCro73wcz5mka3Wb2MT2HsOogcSsEz5yQ>
-    <xmx:D78FYEncskvoEJh4tittN-79TgzpDNqdOPE4PO-qfzsR2yKXikN-4Q>
-    <xmx:D78FYAJOCBD9If8Jsh_f4ax6Uh1XH1PRFtd4hnpUR3TS49lNOjCnJA>
-    <xmx:Eb8FYB1S_eRrJiDxVxAXKcXmJXHwlTiIHT8M8_ucBaodfnZDid_uiHFWwI8>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 42FEF108005C;
-        Mon, 18 Jan 2021 12:02:07 -0500 (EST)
-Date:   Mon, 18 Jan 2021 18:02:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/10] drm/atmel-hlcdc: Rename custom plane state variable
-Message-ID: <20210118170205.bflnpka2eutrryyp@gilmour>
-References: <20210115125703.1315064-1-maxime@cerno.tech>
- <20210115125703.1315064-3-maxime@cerno.tech>
- <20210115204324.GA529973@ravnborg.org>
+        Mon, 18 Jan 2021 12:07:44 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B685C06179E;
+        Mon, 18 Jan 2021 09:06:03 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B63A2BB;
+        Mon, 18 Jan 2021 18:06:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610989561;
+        bh=hV0WHCjFGw1rTzD++XaJeAj6GzXlQajHsTgjgpBryXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hNOuPj1h1pmgWY6bY3ZJf0d6zcHBaf2KDadN25ZLRYS3uYrRXRtW4ifFoF3bhFHYL
+         GCffXA6cQ4bSUs2nnaCbMH89pxaj2C4s33AF8CV1DbCZq84qvdBHar6S/0GRSdHKLN
+         DCD4v5FAjSgMZh9n6G8RDF7w7jSlsArXuLo5u5N8=
+Date:   Mon, 18 Jan 2021 19:05:44 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "robert.moore@intel.com" <robert.moore@intel.com>,
+        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <YAW/6Ek/j733xzLW@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
+ <20210118135121.GM4077@smile.fi.intel.com>
+ <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
+ <20210118152323.GV4077@smile.fi.intel.com>
+ <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qdgoqrhxkbmwjqu6"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210115204324.GA529973@ravnborg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans,
 
---qdgoqrhxkbmwjqu6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 18, 2021 at 04:32:54PM +0100, Hans de Goede wrote:
+> On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
+> > On Mon, Jan 18, 2021 at 02:51:30PM +0000, Barnabás Pőcze wrote:
+> >> 2021. január 18., hétfő 14:51 keltezéssel, Andy Shevchenko írta:
+> >>
+> >>> On Mon, Jan 18, 2021 at 11:12:34AM +0000, Barnabás Pőcze wrote:
+> >>>> 2021. január 18., hétfő 1:34 keltezéssel, Daniel Scally írta:
+> >>>
+> >>>> Have you considered putting the source (and header) files into a dedicated
+> >>>> folder? I think it'd help manageability in the long run, and it'd be immediately
+> >>>> obvious that these source files form a single "unit".
+> >>>
+> >>> What would be the folder name? Because, for example, intel_cht_int33fe* have no
+> >>> folder (yet?) and here it's kinda similar case when HID describes something
+> >>> else than just one IP.
+> >>
+> >> I think "intel_skl_int3472" would not be a bad name for the folder. And I believe
+> >> "intel_cht_int33fe" could be given its own folder as well.
+> > 
+> > I;m not objecting (at some point in the past I had proposed moving Intel stuff
+> > to a separate folder, but at that time PDx86 has no folders at all and Darren
+> > was kinda not in favour of creating ones, but things changed), just let's hear
+> > Hans on this.
+> 
+> I'm in favor of using a folder for this and "intel_skl_int3472" is fine with me.
+> 
+> With that said I'm not entirely sure if I'm in favor of the _skl_ part of
+> the folder and driver name or not.
+> 
+> The INT3472 ACPI device is used with other CPUs, e.g. Apollo Lake too and
+> I think the driver should work fine with those.
 
-Hi Sam
+It should work on Kabylake as well, although there are some differences
+in the way the INT3472 device is modelled in the DSDT between those two
+platforms. Hopefully nothing that couldn't be supported in a single
+driver without adding too many hacks.
 
-On Fri, Jan 15, 2021 at 09:43:24PM +0100, Sam Ravnborg wrote:
-> On Fri, Jan 15, 2021 at 01:56:55PM +0100, Maxime Ripard wrote:
-> > Subsequent reworks will pass the global atomic state in the function
-> > prototype, and atomic_check and atomic_update already have such a
-> > variable already. Let's change them to ease the rework.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->=20
-> I assume you will push this patch as part of the series.
+> The intel_cht_int33fe case is special because the driver only applies
+> to some models with an INT33FE ACPI device (the whole INT33FE ACPI device
+> is a horrible thing which seems to stem from Intel rushing Bay Trail to
+> market to try and compete on the tablet market).
 
-Yep, that's the plan
+The INT3472 ACPI device is also horrible. It reminds me of Intercal, the
+programming language that was created by gathering features of several
+well known languages and then making sure that none of them would be
+used: the ACPI model of the device was probably created by someone who
+has studied ACPI extensively and decided to break every single best
+practice rule. I lack English words strong enough to express my dismay
+on this topic (but I still have hope to find solace in Finnish).
 
-Thanks for the review,
-Maxime
+> With that all said SKL probably is the first SoC to feature this and I
+> guess future IPUs may still use INT3472 given Intel's BAD habit of
+> re-using ACPI HIDs for multiple incompatible generations. So I guess
+> that keeping it is fine; and if we then need an incompatible INT3472
+> driver for newer IPUs we can use a different prefix for those.
+> 
+> TL;DR:
+> 
+> 1. Using a folder is fine, desirable even
+> 2. I've some concerns about the name, but I'm not really objecting,
+> just giving my 2 cents.
 
---qdgoqrhxkbmwjqu6
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Regards,
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAW/DQAKCRDj7w1vZxhR
-xS4KAQC4Q57cifiOtnbWri+uKleeQ4EjvTJxRqYQUuWj921DowEAkcxlz2fzgD6C
-196JQiStZArABUiHXItNhtJlsgvCoAA=
-=WccY
------END PGP SIGNATURE-----
-
---qdgoqrhxkbmwjqu6--
+Laurent Pinchart
