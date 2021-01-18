@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A172FA986
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B628D2FA9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393848AbhARTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35916 "EHLO mail.kernel.org"
+        id S1727334AbhARLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:39:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390562AbhARLkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:40:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7BE3223E4;
-        Mon, 18 Jan 2021 11:39:26 +0000 (UTC)
+        id S2390149AbhARLh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C3E22571;
+        Mon, 18 Jan 2021 11:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969967;
-        bh=tT2JVAOyu67caF+7hVecNlQnhoOZBnX1WTz/U0A/ivw=;
+        s=korg; t=1610969777;
+        bh=0thjbtQYsA7aykU+mLkTYnE/zohDwhWqFMB8iiAU/co=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ScpQH3ErVLnOfFlBbWq2ahbqBwYOnaDOC4gYe8aBTzleh9U/k4Atu55GpKUhUdcuU
-         qKdgxcIQF6CQhe/zvmKWe4pmX+kn8E4lDDUM4H5fdAu1bgSYEZmsogntdvpJ5NB2DI
-         ru3BAZKjcP6dQbt6NTnwElgrf4igilDggBbtdlUM=
+        b=wsv8psmXoYavfJfxTHlxJSLMQRWWrcgUcrWGEUuePsyZuvwAzcHXtpZ3ilJ9W/v3h
+         knHjbNefB2SymhhsO/OfHJs05iADewdlqSVY6TYaJ6CUI2qRG+lvbtuvaNLaLHKZTL
+         owMV/U1zNJitiSH/U9dH+aZjqwSJezVQlgIYTWY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/76] ARC: build: add uImage.lzma to the top-level target
-Date:   Mon, 18 Jan 2021 12:34:26 +0100
-Message-Id: <20210118113342.241816060@linuxfoundation.org>
+        stable@vger.kernel.org, Akilesh Kailash <akailash@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 09/43] dm snapshot: flush merged data before committing metadata
+Date:   Mon, 18 Jan 2021 12:34:32 +0100
+Message-Id: <20210118113335.395586843@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Akilesh Kailash <akailash@google.com>
 
-[ Upstream commit f2712ec76a5433e5ec9def2bd52a95df1f96d050 ]
+commit fcc42338375a1e67b8568dbb558f8b784d0f3b01 upstream.
 
-arch/arc/boot/Makefile supports uImage.lzma, but you cannot do
-'make uImage.lzma' because the corresponding target is missing
-in arch/arc/Makefile. Add it.
+If the origin device has a volatile write-back cache and the following
+events occur:
 
-I also changed the assignment operator '+=' to ':=' since this is the
-only place where we expect this variable to be set.
+1: After finishing merge operation of one set of exceptions,
+   merge_callback() is invoked.
+2: Update the metadata in COW device tracking the merge completion.
+   This update to COW device is flushed cleanly.
+3: System crashes and the origin device's cache where the recent
+   merge was completed has not been flushed.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+During the next cycle when we read the metadata from the COW device,
+we will skip reading those metadata whose merge was completed in
+step (1). This will lead to data loss/corruption.
+
+To address this, flush the origin device post merge IO before
+updating the metadata.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Akilesh Kailash <akailash@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arc/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-snap.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index 5e5699acefef4..b0b119ebd9e9f 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -90,7 +90,7 @@ libs-y		+= arch/arc/lib/ $(LIBGCC)
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -137,6 +137,11 @@ struct dm_snapshot {
+ 	 * for them to be committed.
+ 	 */
+ 	struct bio_list bios_queued_during_merge;
++
++	/*
++	 * Flush data after merge.
++	 */
++	struct bio flush_bio;
+ };
  
- boot		:= arch/arc/boot
+ /*
+@@ -1061,6 +1066,17 @@ shut:
  
--boot_targets += uImage uImage.bin uImage.gz
-+boot_targets := uImage uImage.bin uImage.gz uImage.lzma
+ static void error_bios(struct bio *bio);
  
- $(boot_targets): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
--- 
-2.27.0
-
++static int flush_data(struct dm_snapshot *s)
++{
++	struct bio *flush_bio = &s->flush_bio;
++
++	bio_reset(flush_bio);
++	bio_set_dev(flush_bio, s->origin->bdev);
++	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
++
++	return submit_bio_wait(flush_bio);
++}
++
+ static void merge_callback(int read_err, unsigned long write_err, void *context)
+ {
+ 	struct dm_snapshot *s = context;
+@@ -1074,6 +1090,11 @@ static void merge_callback(int read_err,
+ 		goto shut;
+ 	}
+ 
++	if (flush_data(s) < 0) {
++		DMERR("Flush after merge failed: shutting down merge");
++		goto shut;
++	}
++
+ 	if (s->store->type->commit_merge(s->store,
+ 					 s->num_merging_chunks) < 0) {
+ 		DMERR("Write error in exception store: shutting down merge");
+@@ -1198,6 +1219,7 @@ static int snapshot_ctr(struct dm_target
+ 	s->first_merging_chunk = 0;
+ 	s->num_merging_chunks = 0;
+ 	bio_list_init(&s->bios_queued_during_merge);
++	bio_init(&s->flush_bio, NULL, 0);
+ 
+ 	/* Allocate hash table for COW data */
+ 	if (init_hash_tables(s)) {
+@@ -1391,6 +1413,8 @@ static void snapshot_dtr(struct dm_targe
+ 
+ 	mutex_destroy(&s->lock);
+ 
++	bio_uninit(&s->flush_bio);
++
+ 	dm_put_device(ti, s->cow);
+ 
+ 	dm_put_device(ti, s->origin);
 
 
