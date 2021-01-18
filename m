@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DDB2F976A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3723E2F976E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbhARBus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:50:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728797AbhARBul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 20:50:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 296D7221EC;
-        Mon, 18 Jan 2021 01:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610934601;
-        bh=2xY1SDcXwe8h3cNIziDRYHUY8j+9/GBjVqS1Yo971f0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tsAxnnon9LaPjxr6X0RLTMXigX/7XztIQ0kS+Hx/icvhUSq5o42FkQE482E+f2iPf
-         6Vyab2N841fn8L5aORr/bC7m/Jeiv54gmDLOFERKsJ5T7YbepE08fmOnFu7Mb2iYFR
-         y/Lgn4q/9GRSiq4XIMM0SouHigkGgNZOXuzn+z/TLY+j/oWSTk8hiWaVWOyi1stl9h
-         tz1Et8rskOJDqC6jG3gZpUlTCYVk784flJpQP5gsCIuPGerI2pb6F/4k7CID+D0fDf
-         kogTkzu2hoq46586DeXg6K/YeqQKg5N2qaa1kRe2rJH8cQGUA/PSR2VHba0UNNuIN0
-         qZpw+yOEZ0bMQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Sasha Levin <sashal@kernel.org>,
-        stable@kernel.org
-Subject: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Date:   Sun, 17 Jan 2021 20:49:51 -0500
-Message-Id: <20210118014951.250815-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1730891AbhARBw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:52:57 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:39083 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730458AbhARBww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 20:52:52 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 508371250;
+        Sun, 17 Jan 2021 20:52:06 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sun, 17 Jan 2021 20:52:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=J
+        9jvrqQqukLeoHwiclTg0SNJ/Z7xF4sIX+lxzXqaRP0=; b=mg2hULcdtRHigRZyY
+        9a5btLXnT3AYoTVCw469gWb7YpFYI7zQaEAwpqnLOtUt5ZxpViXskjW9vBlQRlnN
+        Qe120hFf5I6ADRuOaLWk636mEUUkpZXdtrZLPof4jXDankuDnpYRyHcbc9ylX0Td
+        zPuN/S1lX0sx78WB3gtN7SBpKMbzWZg3C8gRshY1VnDF63ZVMtdjo2nMn2QJ/qoW
+        lGFGpyRb1a34OMKsDqfktwWIihKUoFeKFYqQktbOZnF9/vIBpwFl4GnpZsxopMFd
+        H1uqL7tP8iXkw0pmdHBCuboFP7lABmm3EcUkigIN2XWw3Ohlidg/zf6pypfauft6
+        2QDcQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=J9jvrqQqukLeoHwiclTg0SNJ/Z7xF4sIX+lxzXqaR
+        P0=; b=okxa47wMNMWq7WkUxtkwP+QrQp/3+D6hRToZwd+4DNwbFmYtaMCHY7/fY
+        g1wMtAmDYbutvPEVmWgSp16Xwii6ieTyY1PYIMg61sf4zqLoSD+OMfsDD8h/gFIU
+        ukofert7oF/VAdiv8AW6nPv1EX1vHewPEj6n6zyi7+KAA16V6ee8xDvl13V+IFAE
+        R6FxwS5+a2ZqxAHWrK4dK+UDRnZPcFG25vQqQn1NNUdTZa+FKwJFN45nQgGWTNo3
+        ts0m87My5EyWDF876aEmsi/oyXf9+p3AMb/5+7BNvLiYlGuW5sB71C7aCA8rSUIc
+        ZR6EYG6kZHE20yboTPZm192yjYpeA==
+X-ME-Sender: <xms:xOkEYOZmVFcJNiZt9gx0Dg0H_qOvepGw8pykU5pvVIiFSMsZccEOiA>
+    <xme:xOkEYBaQYJvfQDdGKvAJtZ1zitCHJWdWMzCgpuC-EitS0gFf37fs9uGJfqNYrb6tM
+    sNHBTkbLEArbKqz6lA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdejgdeflecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeftnecuhfhrohhmpeflihgrgihu
+    nhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecugg
+    ftrfgrthhtvghrnhepfeeludeitddvkeffgefgueekjeegfeefteelgffhkeffueetieej
+    geehhfeuffdvnecukfhppeeghedrfeefrdehtddrvdehgeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:xOkEYI91OcmnbWujb4UXiKgBHoLm_B2IAT093CUXI2eTsmI8rsDxtw>
+    <xmx:xOkEYAr0zPOSMEV1rQCtnjwJU3FBNTFiE-OtpwLmOeUghif2xAGRTw>
+    <xmx:xOkEYJqoANPsjrOuKzxMNCNLcJ84v5fTFVStm8e4PH_6KnVCWXoELQ>
+    <xmx:xekEYAUAwn38QTvim-_TcoP0VXV5j7kH9qaw8y0xpm967FcGSIm4lAWIJUo>
+Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7E740108005B;
+        Sun, 17 Jan 2021 20:52:00 -0500 (EST)
+Subject: Re: [PATCH 0/4] MIPS: process: Some fixes and improvements about
+ get_frame_info()
+To:     Jinyang He <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <ab6e4efb-98b5-3ad6-5bad-2338c57d9392@flygoat.com>
+Date:   Mon, 18 Jan 2021 09:51:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SUBLEVEL only has 8 bits of space, which means that we'll overflow it
-once it reaches 256.
+ÔÚ 2021/1/12 ÏÂÎç8:29, Jinyang He Ð´µÀ:
+> Not familiar with microMIPS. Not test on microMIPS.
 
-Few of the stable branches will imminently overflow SUBLEVEL while
-there's no risk of overflowing VERSION.
+Hi Jinyang,
 
-Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
-should create a better balance between the different version numbers we
-use.
+I was messing around QEMU microMIPS and found kernel stuck
+at loading init process after applied your patches :-(
 
-The downside here is that Linus will have 8 bits less to play with, but
-given our current release cadence (~10 weeks), the number of Linus's
-fingers & toes (20), and the current VERSION (5) we can calculate that
-VERSION will overflow in just over 1,000 years, so I'm kicking this can
-down the road.
+Thanks.
 
-Cc: stable@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+- Jiaxun
 
-diff --git a/Makefile b/Makefile
-index 9e73f82e0d863..dc2bad7a440d8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1252,8 +1252,8 @@ endef
- 
- define filechk_version.h
- 	echo \#define LINUX_VERSION_CODE $(shell                         \
--	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
--	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-+	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
-+	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
- endef
- 
- $(version_h): FORCE
--- 
-2.27.0
+>
+> Jinyang He (4):
+>    MIPS: process: Reorder header files
+>    MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
+>    MIPS: Fix get_frame_info() handing of function size
+>    MIPS: Add is_jr_ra_ins() to end the loop early
+>
+>   arch/mips/kernel/process.c | 92 +++++++++++++++++++++++++++++++---------------
+>   1 file changed, 62 insertions(+), 30 deletions(-)
+>
 
