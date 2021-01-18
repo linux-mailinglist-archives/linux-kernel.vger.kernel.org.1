@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED42F9EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CA92F9EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403776AbhARL5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        id S2403790AbhARL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389306AbhARLo3 (ORCPT
+        with ESMTP id S2390936AbhARLq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:44:29 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7993CC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:43:35 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q20so10047510pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:43:35 -0800 (PST)
+        Mon, 18 Jan 2021 06:46:57 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EE9C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:46:17 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id 11so10044661pfu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:46:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ipwUR8PxhfU+Q1ZYePZ+2uiR+ifyi9sSeLsGzpWteYI=;
-        b=OHKSFORq3aPYGXkNol6QFJwUarkQu0y4jqiN55AZhYAk4QEd6YLrfzcLgHPB5tPKXC
-         yeysszVwrjRPmRmSSCZ5M9PisvELHCllPwNsS5H4MQ9RedwFcXzyZHBN6jRVTdpyAVo0
-         83yyJR2bTfTtyrW++Vk+fst4cxW1vBzu48YzELoTTRLnCaID56mrpGpaltyUdma8GvVI
-         ndSrDGFCBdsv3Jr/PxGkEEyFfTidTBfWlX7/yT2woQMykTe0WCMGjlwj7HJqpATO3ijE
-         erOZzHEWp2LJbskJMRMuRzgn5lhZ3oaJplrPwlAy2u36PHG9qWMRIxnlIeRnvHBwuXYx
-         h1/w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=gzlwaPkTlP/ZmJOY5fxJliyLPQaZ8STG1NZSoSJX0e8=;
+        b=AMrcT41venp9oOMLrdEMRufFZ13OH9ME5n2x86QPk+pJHIuS38ApYkNDA66+piA1ZE
+         gyJglzZ56sTOHHhoCMqkQhuFBbRj6o5Z6R330X1ZBwvlVrg12Vj1VCXbRG5WUz+en+Sm
+         ZcNZFE4TcnZi6PkMNFaL/poXIVQd2O7oNVTXDBFeOXYXlbFqUjZyP0HIvwjc/197jQE4
+         At3I4s1SBtF19Z8xVdvYn9Znk1CvC0GRfWQaNyCdFp4hTL4MJG+NZrkFBXSP5m8G8IS2
+         EsCFtpsuTheyhw5l4K88KP27axqL1IWUaBB2UPxwWc9YAHUpk9ececnBa1yKbszkcVHv
+         MiZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ipwUR8PxhfU+Q1ZYePZ+2uiR+ifyi9sSeLsGzpWteYI=;
-        b=Lnuk6sOvXq3GaTHRjoZIGmSvUc71qs/+vZlHJGnMgQbZGUHcFIE1Bm1NI//1pxsbsS
-         a2N9qs0DY0V+iX4CotddGy+mWIkHBeanRUJfc7PS7UgTRYmoLRQOYjLwnPmcj8Lqb6R3
-         YRGLgyW36Ewan5N+qT9lX6K2oPFtNpU2G7flAPevNuGqNdQSMuTIkE6bJrHqPA+EiU/m
-         iM7k0iO4C3u1l2HbDytE0GUBsA5iU3rofT3FNkrPgWDiMsmqAOEr6OnQCtcH2sppxs/L
-         V1QNvu1YyfPgQUfh2Zo7eIGK0kqSdS3LQ2HO7/DjmH/6JhxiydMLsWEvcr0bUG8KME/a
-         R/sw==
-X-Gm-Message-State: AOAM530LuBRommuWnzw97wuytw99uWoDZhjUcHlsQKGwPtmBX6C1/31D
-        7CKkF8B3c07KEXO6EqpXtxE=
-X-Google-Smtp-Source: ABdhPJyRWp0u0IfEBMogxiAcjrN+/YzGe+K9aa50ZJwZvou9FRGAuFZUe70rTLST1fnFWgA9yxTTgw==
-X-Received: by 2002:a63:c205:: with SMTP id b5mr25375887pgd.281.1610970215062;
-        Mon, 18 Jan 2021 03:43:35 -0800 (PST)
-Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
-        by smtp.gmail.com with ESMTPSA id s21sm15439461pga.12.2021.01.18.03.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 03:43:34 -0800 (PST)
-Date:   Mon, 18 Jan 2021 20:43:31 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v2] drivers/soc/litex: Add restart handler
-Message-ID: <20210118114331.GF2002709@lianli.shorne-pla.net>
-References: <20210104164500.1311091-1-geert@linux-m68k.org>
- <CAMuHMdXG_B-3y1MWh64T6LU3Gmo6UQGGWU8EbLApjDeXVLL3GQ@mail.gmail.com>
- <20210114020311.GE2002709@lianli.shorne-pla.net>
- <CAMuHMdWnrPBAh_U43C7jA8wDvyAegqCM3OP++NkkiT1Co5yjkQ@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gzlwaPkTlP/ZmJOY5fxJliyLPQaZ8STG1NZSoSJX0e8=;
+        b=BjZyn2O2X6/5AJJqI0zgSNKzdfGB6GlYElMK97CB2rn/UTd6HEACQBH+4YhXWdrVhT
+         GoyFv5BzpuXROEo3uN1SnSCYc0AfPJYBetRMMCH6ooHubr6tQjpg0IeJd0pZa2mHafZ0
+         ffR5QV7XJ6Hz0419nTOdifHPFtnE2o9iUDCU+1XbypYFsxl8dk/ZEpKMSaYHqstE27pd
+         +t0wKBByM+WY1lH3Ev5L2Bvyh8xPH7UwSp5/FbWqKG1qQkPuaKGjHe5siLQamUSPD2nY
+         0P6Rkm0mo1tNggR7+3fefnLSuNJbzpzJx/mxKUISGvY50yJp8t2ohYh1+CiyfI746CxE
+         U99w==
+X-Gm-Message-State: AOAM532MSnyp+WE51hPssCDapNN/uyvqTuzBEMUufiMYLPvsxGg/Pldq
+        ZdCsStxr1KFUbe0QD+9+abnkXQ==
+X-Google-Smtp-Source: ABdhPJziOaaMILfmkjkhAuMyBMxzmMtTG6xMcp/+fEGOYCNqSgENDW5xJ+AakPLst9AI0D1btKh8ZA==
+X-Received: by 2002:a62:4e12:0:b029:1b6:7eac:c740 with SMTP id c18-20020a624e120000b02901b67eacc740mr8044883pfb.65.1610970376621;
+        Mon, 18 Jan 2021 03:46:16 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id d8sm11839722pjm.30.2021.01.18.03.46.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 03:46:15 -0800 (PST)
+Date:   Mon, 18 Jan 2021 17:16:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 00/12] OPP API fixes and improvements
+Message-ID: <20210118114613.fzq7nkrdfm53upkr@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWnrPBAh_U43C7jA8wDvyAegqCM3OP++NkkiT1Co5yjkQ@mail.gmail.com>
+In-Reply-To: <20210118005524.27787-1-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 02:48:49PM +0100, Geert Uytterhoeven wrote:
-> Hi Stafford,
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> Hi,
 > 
-> On Thu, Jan 14, 2021 at 3:03 AM Stafford Horne <shorne@gmail.com> wrote:
-> > On Mon, Jan 04, 2021 at 05:49:03PM +0100, Geert Uytterhoeven wrote:
-> > > On Mon, Jan 4, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > Let the LiteX SoC Controller a register a restart handler, which resets
-> > > > the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
-> > > >
-> > > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > > ---
-> > > > Tested with linux-on-litex-vexriscv.
-> > > >
-> > > > This patch is based on upstream, i.e. not on top of Gabriel Somlo's
-> > > > "[PATCH v5 0/4] drivers/soc/litex: support 32-bit subregisters, 64-bit
-> > > > CPUs"
-> > > > (https://lore.kernel.org/lkml/20201227161320.2194830-1-gsomlo@gmail.com/)
-> > >
-> > > Bummer, and that's why the RESET_REG_* definitions are no longer
-> > > next to the SCRATCH_REG_* definitions :-(
-> >
-> > If it helps I have accepted Gabriel's patches and put them onto for-next.
-> >
-> >   https://github.com/openrisc/linux/commits/for-next
-> >
-> > I am happy to take and test a patch based on that.  Or I can do the adjustments
-> > to base the patch on that myself.  Let me know.
+> This series fixes problems and adds features to OPP API that are required
+> for implementation of a power domain driver for NVIDIA Tegra SoCs.
 > 
-> Thanks for letting me know! V3 sent.
+> It is a continuation of [1], where Viresh Kumar asked to factor OPP
+> patches into a separate series. I factored out the patches into this
+> series, addressed the previous review comments and re-based patches
+> on top of [2], which replaced some of my patches that added resource-managed
+> helpers.
+> 
+> [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+> [2] https://lore.kernel.org/linux-pm/20210101165507.19486-1-tiny.windzz@gmail.com/
 
-Hi Geert,
+Hi Dmitry,
 
-I don't seem to see v3 anywhere.  Where did you send it and what is the subject?
+I have applied 9 out of 12 patches already. Thanks.
 
--Stafford
+-- 
+viresh
