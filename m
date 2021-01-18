@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B13B2F9E3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4AF2F9ECC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390002AbhARLe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:34:26 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40653 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390223AbhARLdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:33:15 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l1Sli-0003Nq-Pt; Mon, 18 Jan 2021 11:32:22 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] s390/tape: Fix spelling mistake in function name tape_3590_erp_succeded
-Date:   Mon, 18 Jan 2021 11:32:22 +0000
-Message-Id: <20210118113222.71708-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S2391156AbhARLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:54:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390748AbhARLlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:41:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF802222A;
+        Mon, 18 Jan 2021 11:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610970058;
+        bh=izPC90Dg7dKZ3fc+q2d2ebenBhx/Bq8QgBpjGLKIPNI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=B+5sTYtFMHHPj4FhnwAW1NOu0x23bHynOozjc7V1Xn1VZOesenTBfe7UHHVOt4QE6
+         Nshnynxhwd4u/QrPosAii8FwZVKtWm5DSnAvVehW8LIWs2v7VJIpH7xvn9Enf+xuor
+         v8JhDvDWJUUdYckipfiXUik3bhTx3+iYM7K8G1+o=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
+        Su Yue <l@damenly.su>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 002/152] btrfs: prevent NULL pointer dereference in extent_io_tree_panic
+Date:   Mon, 18 Jan 2021 12:32:57 +0100
+Message-Id: <20210118113352.883153076@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Su Yue <l@damenly.su>
 
-Rename tape_3590_erp_succeded to tape_3590_erp_succeeded to fix a
-spelling mistake in the function name.
+commit 29b665cc51e8b602bf2a275734349494776e3dbc upstream.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Some extent io trees are initialized with NULL private member (e.g.
+btrfs_device::alloc_state and btrfs_fs_info::excluded_extents).
+Dereference of a NULL tree->private as inode pointer will cause panic.
+
+Pass tree->fs_info as it's known to be valid in all cases.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208929
+Fixes: 05912a3c04eb ("btrfs: drop extent_io_ops::tree_fs_info callback")
+CC: stable@vger.kernel.org # 4.19+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Su Yue <l@damenly.su>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/s390/char/tape_3590.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/s390/char/tape_3590.c b/drivers/s390/char/tape_3590.c
-index ecf8c5006a0e..0d484fe43d7e 100644
---- a/drivers/s390/char/tape_3590.c
-+++ b/drivers/s390/char/tape_3590.c
-@@ -761,7 +761,7 @@ tape_3590_done(struct tape_device *device, struct tape_request *request)
-  * This function is called, when error recovery was successful
-  */
- static inline int
--tape_3590_erp_succeded(struct tape_device *device, struct tape_request *request)
-+tape_3590_erp_succeeded(struct tape_device *device, struct tape_request *request)
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -676,9 +676,7 @@ alloc_extent_state_atomic(struct extent_
+ 
+ static void extent_io_tree_panic(struct extent_io_tree *tree, int err)
  {
- 	DBF_EVENT(3, "Error Recovery successful for %s\n",
- 		  tape_op_verbose[request->op]);
-@@ -831,7 +831,7 @@ tape_3590_erp_basic(struct tape_device *device, struct tape_request *request,
- 	case SENSE_BRA_PER:
- 		return tape_3590_erp_failed(device, request, irb, rc);
- 	case SENSE_BRA_CONT:
--		return tape_3590_erp_succeded(device, request);
-+		return tape_3590_erp_succeeded(device, request);
- 	case SENSE_BRA_RE:
- 		return tape_3590_erp_retry(device, request, irb);
- 	case SENSE_BRA_DRE:
--- 
-2.29.2
+-	struct inode *inode = tree->private_data;
+-
+-	btrfs_panic(btrfs_sb(inode->i_sb), err,
++	btrfs_panic(tree->fs_info, err,
+ 	"locking error: extent tree was modified by another thread while locked");
+ }
+ 
+
 
