@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD132F9C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43AD2F9C79
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388884AbhARJch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:32:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388619AbhARJWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:22:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91C6420829;
-        Mon, 18 Jan 2021 09:21:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610961679;
-        bh=AxtaIOUwBp1fZah3fw/1D/bRwjy4Z75UqBrLW6p6+jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lUhQKJpuAihyaw+dsZ8nY8IuZKHyajh3Ytr7xKz4+BS0AIo30T9RnsFFp8m4jwpy2
-         NIedQU5z9cEkRIhYo/5bMeziWqCmV66FbWGxAidMUpkpmcsrKC3UXZ2ihQmXNMvzwp
-         UgXh0tNhpg+HabzEnCHoVAsi8pLtMN6c69GFy6TM=
-Date:   Mon, 18 Jan 2021 10:21:16 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <YAVTDETPaJuaRPfc@kroah.com>
-References: <20210118014951.250815-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118014951.250815-1-sashal@kernel.org>
+        id S2388868AbhARJcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388667AbhARJWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:22:46 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350EAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:05 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id l7so16002441qvp.15
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=QzGOv73ZFTudUcHTOtMvLbaz7ljjqIpJFfG6qI+sI6U=;
+        b=X6NZCPTBA0MLtyfOsSc4T6WCOKT6Vu8X96m8uttmeTIoEZk1WlYwaTI1G7HnwWPaGM
+         C9JwaP4knEZ+K1/cWKzAKbPKPFS0TaYSQMZaOYd99HTe3knZ2Z2MDj8TTj/z01Ed+QDj
+         d9gCObF/0soZyQPQojVTlDJeZ0xWxUvLjKAtqqrGAvqBREkPPNToRqIO73NwQMFB7pae
+         K4SBwcR4LuLbgqnVwpy7wF8YMo2BNEQu5UglRw7wMmUyEFtYEXf7Mk6mD4PvSOQe8lDX
+         xPBPEfp4yrCGbzJ5uYDCsgg8sJj92cHsbmQS6Ds6/MbIovLHovhXwUxLlVQrpbMlC2p+
+         mqHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=QzGOv73ZFTudUcHTOtMvLbaz7ljjqIpJFfG6qI+sI6U=;
+        b=l3eHiIrnO+kihu/zYVh64Fy8VDYRFuhHmmdK3vHL1m99cH+hP4ldh0BX4wXGtNGhqN
+         jrmL5kE5TfyRhGs3CcELLZelzYNWv/yEF4JebevSoC/CtISuttjK6wyywWnwBLpxnuuJ
+         iBzIJGgOBDVtEseSdK2QZMxMPQyLyPEnujQMM2zs/zhTwcDNnvO9lUuoQq4HleNu3VUp
+         lch3QbVHXb1rYME0SYlrrlVFC5PrMU6eBtV3tnO63LamRjulQEPkdtH10ifT+p+8aXTW
+         RSt39L3QCzgnZH0hXbTlMjPEIZtbohLqkQOwy7coXDdzIb+Pzn5P2xVnAqVygEQnJF5Z
+         F0YA==
+X-Gm-Message-State: AOAM530fRpwe6/5ue0uZ1Vxxgj8zJ1SElMougBwcYsNi/SMHLpNNZbYC
+        NHFCxjh7n9eWZppzl8yOnmxMWHHdzg==
+X-Google-Smtp-Source: ABdhPJx+3xkjI1jXn9mZj3Qy2H/cCLEH37rxUjjfAZC8c3/tlUM9r+fDtU5g01+zeu+zN8zscX35Ykd70A==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:ad4:43ea:: with SMTP id f10mr23237470qvu.52.1610961724181;
+ Mon, 18 Jan 2021 01:22:04 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:21:56 +0100
+Message-Id: <20210118092159.145934-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH mm 1/4] kfence: add missing copyright and description headers
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     glider@google.com, dvyukov@google.com, andreyknvl@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
-> SUBLEVEL only has 8 bits of space, which means that we'll overflow it
-> once it reaches 256.
-> 
-> Few of the stable branches will imminently overflow SUBLEVEL while
-> there's no risk of overflowing VERSION.
-> 
-> Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
-> should create a better balance between the different version numbers we
-> use.
-> 
-> The downside here is that Linus will have 8 bits less to play with, but
-> given our current release cadence (~10 weeks), the number of Linus's
-> fingers & toes (20), and the current VERSION (5) we can calculate that
-> VERSION will overflow in just over 1,000 years, so I'm kicking this can
-> down the road.
-> 
-> Cc: stable@kernel.org
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 9e73f82e0d863..dc2bad7a440d8 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1252,8 +1252,8 @@ endef
->  
->  define filechk_version.h
->  	echo \#define LINUX_VERSION_CODE $(shell                         \
-> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-> +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
-> +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
+Add missing copyright and description headers to KFENCE source files.
 
-As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
-that try to suck out the version/patchlevel number of the kernel release
-into their own fields.  Things like USB host controller strings, v4l
-ioctl reports, scsi driver ioctls, and other places do fun bit-movements
-to try to unreverse this bit packing.
+Signed-off-by: Marco Elver <elver@google.com>
+---
+If appropriate, to be squashed into:
 
-So how about we just provide a "real" version/subversion/revision
-#define as well, and clean up all in-kernel users, so we can get this to
-work, and we can change it in the future more easily.
+	mm: add Kernel Electric-Fence infrastructure
+---
+ include/linux/kfence.h | 6 ++++++
+ mm/kfence/core.c       | 5 +++++
+ mm/kfence/kfence.h     | 6 ++++++
+ mm/kfence/report.c     | 5 +++++
+ 4 files changed, 22 insertions(+)
 
-thanks,
+diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+index c2c1dd100cba..a70d1ea03532 100644
+--- a/include/linux/kfence.h
++++ b/include/linux/kfence.h
+@@ -1,4 +1,10 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Kernel Electric-Fence (KFENCE). Public interface for allocator and fault
++ * handler integration. For more info see Documentation/dev-tools/kfence.rst.
++ *
++ * Copyright (C) 2020, Google LLC.
++ */
+ 
+ #ifndef _LINUX_KFENCE_H
+ #define _LINUX_KFENCE_H
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index a5f8aa410a30..cfe3d32ac5b7 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KFENCE guarded object allocator and fault handling.
++ *
++ * Copyright (C) 2020, Google LLC.
++ */
+ 
+ #define pr_fmt(fmt) "kfence: " fmt
+ 
+diff --git a/mm/kfence/kfence.h b/mm/kfence/kfence.h
+index 97282fa77840..1accc840dbbe 100644
+--- a/mm/kfence/kfence.h
++++ b/mm/kfence/kfence.h
+@@ -1,4 +1,10 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Kernel Electric-Fence (KFENCE). For more info please see
++ * Documentation/dev-tools/kfence.rst.
++ *
++ * Copyright (C) 2020, Google LLC.
++ */
+ 
+ #ifndef MM_KFENCE_KFENCE_H
+ #define MM_KFENCE_KFENCE_H
+diff --git a/mm/kfence/report.c b/mm/kfence/report.c
+index 1996295ae71d..901bd7ee83d8 100644
+--- a/mm/kfence/report.c
++++ b/mm/kfence/report.c
+@@ -1,4 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * KFENCE reporting.
++ *
++ * Copyright (C) 2020, Google LLC.
++ */
+ 
+ #include <stdarg.h>
+ 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-greg k-h
