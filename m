@@ -2,22 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78ECE2FA61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6432FA61F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406747AbhARQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406690AbhARQZw (ORCPT
+        id S2406767AbhARQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:27:33 -0500
+Received: from relay01.th.seeweb.it ([5.144.164.162]:46995 "EHLO
+        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406700AbhARQZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:25:52 -0500
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAADC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:24:57 -0800 (PST)
+        Mon, 18 Jan 2021 11:25:57 -0500
 Received: from localhost.localdomain (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 7104C1FC8F;
-        Mon, 18 Jan 2021 17:24:55 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id EF5CF1FC54;
+        Mon, 18 Jan 2021 17:24:57 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
@@ -27,9 +24,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/11] arm64: dts: qcom: msm8992-bullhead: Update regulator config
-Date:   Mon, 18 Jan 2021 17:24:22 +0100
-Message-Id: <20210118162432.107275-2-konrad.dybcio@somainline.org>
+Subject: [PATCH 03/11] arm64: dts: qcom: msm8992-libra: Update regulator config
+Date:   Mon, 18 Jan 2021 17:24:23 +0100
+Message-Id: <20210118162432.107275-3-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210118162432.107275-1-konrad.dybcio@somainline.org>
 References: <20210118162432.107275-1-konrad.dybcio@somainline.org>
@@ -39,38 +36,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Include pm(i)8994 dtsi
 * Add PMI8994 RPM regulators
+* Add missing PM8994 LVSes
 * Add comments concerning "missing" regulators
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- .../dts/qcom/msm8992-bullhead-rev-101.dts     | 39 +++++++++++++------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ .../boot/dts/qcom/msm8992-xiaomi-libra.dts    | 53 +++++++++++--------
+ 1 file changed, 31 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8992-bullhead-rev-101.dts b/arch/arm64/boot/dts/qcom/msm8992-bullhead-rev-101.dts
-index 5969b5cfdc85..cacbfdbd69e3 100644
---- a/arch/arm64/boot/dts/qcom/msm8992-bullhead-rev-101.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8992-bullhead-rev-101.dts
-@@ -6,6 +6,8 @@
- /dts-v1/;
- 
- #include "msm8992.dtsi"
-+#include "pm8994.dtsi"
-+#include "pmi8994.dtsi"
- 
- / {
- 	model = "LG Nexus 5X";
-@@ -44,7 +46,7 @@ &blsp1_uart2 {
- };
- 
- &rpm_requests {
--	pm8994-regulators {
-+	pm8994_regulators: pm8994-regulators {
- 		compatible = "qcom,rpm-pm8994-regulators";
- 
- 		vdd_l1-supply = <&pm8994_s1>;
-@@ -53,15 +55,17 @@ pm8994-regulators {
+diff --git a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+index 4f64ca3ea1ef..5dab8ee0c7d3 100644
+--- a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
++++ b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+@@ -144,24 +144,16 @@ pm8994-regulators {
  		vdd_l4_27_31-supply = <&pm8994_s3>;
  		vdd_l5_7-supply = <&pm8994_s3>;
  		vdd_l6_12_32-supply = <&pm8994_s5>;
@@ -88,12 +67,20 @@ index 5969b5cfdc85..cacbfdbd69e3 100644
  		vdd_l25-supply = <&pm8994_s5>;
  		vdd_lvs1_2 = <&pm8994_s4>;
  
+-		pm8994_s1: s1 {
+-			/* unused */
+-			status = "disabled";
+-		};
+-
+-		pm8994_s2: s2 {
+-			/* unused */
+-			status = "disabled";
+-		};
 +		/* S1, S2, S6 and S12 are managed by RPMPD */
-+
- 		pm8994_s1: s1 {
- 			regulator-min-microvolt = <800000>;
- 			regulator-max-microvolt = <800000>;
-@@ -93,6 +97,8 @@ pm8994_s7: s7 {
+ 
+ 		pm8994_s3: s3 {
+ 			regulator-min-microvolt = <1300000>;
+@@ -186,6 +178,8 @@ pm8994_s7: s7 {
  			regulator-max-microvolt = <1000000>;
  		};
  
@@ -102,12 +89,13 @@ index 5969b5cfdc85..cacbfdbd69e3 100644
  		pm8994_l1: l1 {
  			regulator-min-microvolt = <1000000>;
  			regulator-max-microvolt = <1000000>;
-@@ -113,18 +119,14 @@ pm8994_l4: l4 {
+@@ -206,20 +200,14 @@ pm8994_l4: l4 {
  			regulator-max-microvolt = <1225000>;
  		};
  
 -		pm8994_l5: l5 {
--			/* TODO */
+-			/* unused */
+-			status = "disabled";
 -		};
 +		/* L5 is inaccessible from RPM */
  
@@ -117,32 +105,41 @@ index 5969b5cfdc85..cacbfdbd69e3 100644
  		};
  
 -		pm8994_l7: l7 {
--			/* TODO */
+-			/* unused */
+-			status = "disabled";
 -		};
 +		/* L7 is inaccessible from RPM */
  
  		pm8994_l8: l8 {
  			regulator-min-microvolt = <1800000>;
-@@ -266,6 +268,19 @@ pm8994_l32: l32 {
- 			*/
+@@ -352,6 +340,27 @@ pm8994_l32: l32 {
+ 			regulator-min-microvolt = <1800000>;
+ 			regulator-max-microvolt = <1800000>;
  		};
- 	};
++
++		pm8994_lvs1: lvs1 {};
++		pm8994_lvs2: lvs2 {};
++	};
 +
 +	pmi8994_regulators: pmi8994-regulators {
 +		compatible = "qcom,rpm-pmi8994-regulators";
-+
 +		vdd_s1-supply = <&vph_pwr>;
 +		vdd_bst_byp-supply = <&vph_pwr>;
 +
-+		pmi8994_s1: s1 {};
++		pmi8994_s1: s1 {
++			regulator-min-microvolt = <1025000>;
++			regulator-max-microvolt = <1025000>;
++		};
 +
 +		/* S2 & S3 - VDD_GFX */
 +
-+		pmi8994_bby: boost-bypass {};
-+	};
++		pmi8994_bby: boost-bypass {
++			regulator-min-microvolt = <3150000>;
++			regulator-max-microvolt = <3600000>;
++		};
+ 	};
  };
  
- &sdhc_1 {
 -- 
 2.29.2
 
