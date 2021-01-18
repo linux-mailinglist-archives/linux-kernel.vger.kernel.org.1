@@ -2,164 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938A02FAAF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E852FAAEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394197AbhARUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389716AbhARLPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:15:17 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C17C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:14:36 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id x12so8461667plr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f3ptHcRddHo09JrwqOLmYiudCQiAUluKch7z8eba8is=;
-        b=wkPXHPlId40HzO8PZUMzx9aTccRVG2EL/1dSDB7zwRCHCpq9qqVzzeRzhtgjNpNqo5
-         DZcuN7C8k/tMeYfV6jqWNbqc9mU2Jk+S2kdMxxyKuOeKLHKM6EoSs4YFFAxcytPYgbg7
-         u8m8XcB6WHO1MXjC9wtuVpfuMQD3DFQdXGVnH/8CgVkeFgLxCLZG2CCwKzAuHsWF6A1A
-         Xg60cL7VbyXm4RkiE+jqb/c4UYpAkwzPGRYUEgkIOXmA6G+G1bwGqLBqKm8zGAbk2Z6H
-         Pq9wZM/Nng4J1etd9aiUPsPhkRNkTjx72PeDBDcBc/hHAOypMNLJiuxofrqc2Dl635el
-         lC7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f3ptHcRddHo09JrwqOLmYiudCQiAUluKch7z8eba8is=;
-        b=La5ji13tCQW60I5awUWM5vT5Q1MGJ/anDyPS6HiqcCPfUaOfyjS6rjcSL/QXx+MSql
-         BOdRJ2uQ/nUNLzAIo9SL2PCdT2nBuM4agoi/pHXhqK7iUjf5K6M4ujI7dNqoGEWJT+a/
-         z1tn/FcgtHbv4E1MS9X7pAntRmCXHMg5Jqr/me0M+nZ+2IamdZ8CRVkFcmA2rqqzkLtv
-         IuhsCMrv2mEwXQu1zrhRQb65Q7aYkmIa7ZVmtrqUFH593Raj4nLkGBX58rSRseXjEwzh
-         GXREqPGuR/J4K6h+DHFri5TjkKqf+vR5lNaZJ7UDCuHs7et5uGGJZuxvZOUVLhpqFVuX
-         vX9Q==
-X-Gm-Message-State: AOAM532rczhxX+qNeaFH5HzDfx0irRiCrOh4JGNyw+qmTLspRF5Wpa4i
-        A4IUZ+zEZNhcQss0X/EJbRoRhg==
-X-Google-Smtp-Source: ABdhPJy9rOVxWu9qXQj/5gpR2cxezh7bnttUrCNX41iIej7vmVNd5QEsZpouZRMc8eHDr1/m6VIvpw==
-X-Received: by 2002:a17:90a:4403:: with SMTP id s3mr17503732pjg.216.1610968476162;
-        Mon, 18 Jan 2021 03:14:36 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id k25sm15357509pfi.10.2021.01.18.03.14.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 03:14:36 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:44:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 09/12] opp: Add devm_pm_opp_attach_genpd
-Message-ID: <20210118111426.3nahqv3pjklhxa2t@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-10-digetx@gmail.com>
+        id S2437753AbhARUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:06:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727409AbhARLga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:36:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F30CE221EC;
+        Mon, 18 Jan 2021 11:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610969749;
+        bh=Y2lOZCzCkFiXC+4yo/RuCVPNwvlRqJuPfi3Z5aCIx4s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Xfy/FYA5vFBvDRkWFurIMftTuGGmsHUWMdK7scfzbvIJ609kZXEUpuwlPu0Jp6n9Z
+         79CAw3ThfvZoWb5nWRabfxwXPDzs8Q8SFdgUys0Umpo0r0cvDR0c4xtRN0RsXBgzXk
+         eRq/3HXQsiraSEIcPl/LC6AJFis7cmYot7mTt53w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 01/43] ASoC: dapm: remove widget from dirty list on free
+Date:   Mon, 18 Jan 2021 12:34:24 +0100
+Message-Id: <20210118113335.033561862@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-10-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> Add resource-managed version of dev_pm_opp_attach_genpd().
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 35 +++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  8 ++++++++
->  2 files changed, 43 insertions(+)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 8e0d2193fd5f..49419ab9fbb4 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -2891,3 +2891,38 @@ devm_pm_opp_register_set_opp_helper(struct device *dev,
->  	return opp_table;
->  }
->  EXPORT_SYMBOL_GPL(devm_pm_opp_register_set_opp_helper);
-> +
-> +static void devm_pm_opp_detach_genpd(void *data)
-> +{
-> +	dev_pm_opp_detach_genpd(data);
-> +}
-> +
-> +/**
-> + * devm_pm_opp_attach_genpd - Attach genpd(s) for the device and save virtual device pointer
-> + * @dev: Consumer device for which the genpd is getting attached.
-> + * @names: Null terminated array of pointers containing names of genpd to attach.
-> + * @virt_devs: Pointer to return the array of virtual devices.
-> + *
-> + * This is a resource-managed version of dev_pm_opp_attach_genpd().
-> + *
-> + * Return: pointer to 'struct opp_table' on success and errorno otherwise.
-> + */
-> +struct opp_table *
-> +devm_pm_opp_attach_genpd(struct device *dev, const char **names,
-> +			 struct device ***virt_devs)
-> +{
-> +	struct opp_table *opp_table;
-> +	int err;
-> +
-> +	opp_table = dev_pm_opp_attach_genpd(dev, names, virt_devs);
-> +	if (IS_ERR(opp_table))
-> +		return opp_table;
-> +
-> +	err = devm_add_action_or_reset(dev, devm_pm_opp_detach_genpd,
-> +				       opp_table);
-> +	if (err)
-> +		return ERR_PTR(err);
-> +
-> +	return opp_table;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_pm_opp_attach_genpd);
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index 6de5853aaada..eefd0b15890c 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -170,6 +170,7 @@ void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
->  int dev_pm_opp_sync_regulators(struct device *dev);
->  int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp);
->  struct opp_table *devm_pm_opp_register_set_opp_helper(struct device *dev, int (*set_opp)(struct dev_pm_set_opp_data *data));
-> +struct opp_table *devm_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
->  #else
->  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
->  {
-> @@ -436,6 +437,13 @@ devm_pm_opp_register_set_opp_helper(struct device *dev,
->  	return ERR_PTR(-ENOTSUPP);
->  }
->  
-> +static inline struct opp_table *
-> +devm_pm_opp_attach_genpd(struct device *dev, const char **names,
-> +			 struct device ***virt_devs)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
->  #endif		/* CONFIG_PM_OPP */
->  
->  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-Manually applied. Thanks.
+commit 5c6679b5cb120f07652418524ab186ac47680b49 upstream.
 
--- 
-viresh
+A widget's "dirty" list_head, much like its "list" list_head, eventually
+chains back to a list_head on the snd_soc_card itself. This means that
+the list can stick around even after the widget (or all widgets) have
+been freed. Currently, however, widgets that are in the dirty list when
+freed remain there, corrupting the entire list and leading to memory
+errors and undefined behavior when the list is next accessed or
+modified.
+
+I encountered this issue when a component failed to probe relatively
+late in snd_soc_bind_card(), causing it to bail out and call
+soc_cleanup_card_resources(), which eventually called
+snd_soc_dapm_free() with widgets that were still dirty from when they'd
+been added.
+
+Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ sound/soc/soc-dapm.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2454,6 +2454,7 @@ void snd_soc_dapm_free_widget(struct snd
+ 	enum snd_soc_dapm_direction dir;
+ 
+ 	list_del(&w->list);
++	list_del(&w->dirty);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
+
+
