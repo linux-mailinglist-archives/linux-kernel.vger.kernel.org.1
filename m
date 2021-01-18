@@ -2,120 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159B82FA574
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6EC2FA578
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406189AbhARQAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:00:18 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:44019 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406153AbhARP4Z (ORCPT
+        id S2406201AbhARQA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406002AbhARP5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:56:25 -0500
-Received: by mail-lf1-f50.google.com with SMTP id 23so24726357lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:56:07 -0800 (PST)
+        Mon, 18 Jan 2021 10:57:05 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04446C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:56:21 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id m187so7783503wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:56:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3nXd2B+BvEd5ZelthzBLZ87Q+qfAaARMwq3lZCQ/JUE=;
+        b=GZTGeLrZCsmFXwiFIpZu3FYnRxWLwHEDDLXdbIycv3DI6NKWE+loqmC9G6WOoLHrJs
+         FC9otZkHqWCwz8/xsMCqSAQ3ueadAZTvXvfUZ7qe65nKzq4OZ41LQy+QCOdhOy1q0r0n
+         ZCC+dlS9gRsNIG1336M+91ndp2aIns3S219cn/6ViSxE39VvfFGgtd96IuS0JXopRGkf
+         By4aWp3tfMLsoLWor3pXJ9WeflPnjG1M+k5JipApiXuhNgZtRWlBPQWzsorFIyov15JM
+         4vGxaLZmSiFxQbRi8khXFUhakP4HcytRjltWUXkdxD028ZYmQWYjkHCgqZiMZWGJrm+a
+         nVrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3eG9WjyYerA7IMe+nqJfGvwMRUcLVhIdRjzA7l646S4=;
-        b=gEebQfc77IYFzAn+yjOUV4cwGMvzz5WwkZzxhPzpP7PB0ezIUYZQMGFwgukkAXOr2K
-         FXb3fLxQv61Y8+jYalI3H3YTaBIIcQxNrdYg1iw+npYFqKe/57kBMgFHE2oP7N90sA7v
-         pPdm64lk/Yv6+iX03U6T9cPM4F030hZmc67q8vDat0cFfSYTCnfBRzFuciR9rAD76Ak3
-         fdPSojEbKowzwsd8wAuAKGvcHiJHmJ5Yo2PSBLxSwIlUOgtlbcqfv31adj9Jrzb1Ruat
-         JpvqcmcnZ9aWKvu+exK98jdDHoML3nmI8V8Gjqwrry9xtXqXvNuhYXOosTkL8ObK7rfL
-         CT/g==
-X-Gm-Message-State: AOAM533lrbJkC8BpmW0Udz5aI/EvE9D/4qw7wZ4UWsZMpVdOY1tTjkjV
-        fSyOWlrpNL9lK/EvE9OK9pLZIuapba9Ckw==
-X-Google-Smtp-Source: ABdhPJzZyaeRNj8YaKcr7UKTODBoworH6UaDS3QljD3RnSIEcI7S4JRgMacjDcXezXFVCUMKrvAm5A==
-X-Received: by 2002:ac2:544d:: with SMTP id d13mr11158947lfn.397.1610985342052;
-        Mon, 18 Jan 2021 07:55:42 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id j26sm1935828lfh.251.2021.01.18.07.55.41
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3nXd2B+BvEd5ZelthzBLZ87Q+qfAaARMwq3lZCQ/JUE=;
+        b=QiUUTisdhSyXaKyc9l9fYDSKRe15GL5iLBx1TMDUfc5A3JWvgUjYpbtDbwwcAFnz1n
+         cb5kiqd6VRzEf4rvmP4cGx6K98MkI4RHhjw97NcacxL46bCNjQLHvyTiLhFbcWCTa/h+
+         IjqomLMaMEOgiAmAWcmIFj4f3Js+3uy49Mjzo5ytCrxndVRPWxK7PW38s9qO7CahSrea
+         HljrPyCMKOTuBH8mu7dg+2dtgP+Z07znuQ3WKBzTcGFb7XLId3Jb2Q8P00TuKUuHEkWs
+         8Rh+74FFnp8MCNPUhi95HISDTNGdObsHdAlY6bSmGT+V7orrtATe9dHgEsG7zfhmMee5
+         HXOQ==
+X-Gm-Message-State: AOAM5309veXPfGCuyM2xcav3AcHsmGQKdlkreLojiZLuTrUG1MbChUPB
+        ruDSF5S5T4ImfXO6f8/vIvw1jw==
+X-Google-Smtp-Source: ABdhPJxXcJVSc+zwtrkphIBYmySOt3aeNncyR8V3Tn688SQNTFLW7+OKqQPyZjChLdxf4oPhETEskQ==
+X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr54571wmh.88.1610985379679;
+        Mon, 18 Jan 2021 07:56:19 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:2095:8614:d69:136f? ([2a01:e34:ed2f:f020:2095:8614:d69:136f])
+        by smtp.googlemail.com with ESMTPSA id z130sm28257450wmb.33.2021.01.18.07.56.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 07:55:41 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id o13so24783789lfr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:55:41 -0800 (PST)
-X-Received: by 2002:a19:810:: with SMTP id 16mr11942847lfi.233.1610985341262;
- Mon, 18 Jan 2021 07:55:41 -0800 (PST)
+        Mon, 18 Jan 2021 07:56:18 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] clocksource: Add Intel Keem Bay Timer Support
+To:     vijayakannan.ayyathurai@intel.com, tglx@linutronix.de,
+        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, mgross@linux.intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com, chen.yong.seow@intel.com
+References: <cover.1609306622.git.vijayakannan.ayyathurai@intel.com>
+ <2a7038bc170e31a668995c367bbae018bf805dbe.1609306622.git.vijayakannan.ayyathurai@intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <73330c8b-4633-4a13-b4b5-7405ff1661fe@linaro.org>
+Date:   Mon, 18 Jan 2021 16:56:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-3-andre.przywara@arm.com> <20210118132854.yiwn7rnvcyexgqim@gilmour>
- <20210118155228.3bd0e909@slackpad.fritz.box>
-In-Reply-To: <20210118155228.3bd0e909@slackpad.fritz.box>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 18 Jan 2021 23:55:29 +0800
-X-Gmail-Original-Message-ID: <CAGb2v662hFdGe2H-m67whUURju=M=Pe8FM2PYfOndF0daT+6Sg@mail.gmail.com>
-Message-ID: <CAGb2v662hFdGe2H-m67whUURju=M=Pe8FM2PYfOndF0daT+6Sg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v3 02/21] mmc: sunxi: add support for
- A100 mmc controller
-To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2a7038bc170e31a668995c367bbae018bf805dbe.1609306622.git.vijayakannan.ayyathurai@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:53 PM Andre Przywara <andre.przywara@arm.com> wrote:
->
-> On Mon, 18 Jan 2021 14:28:54 +0100
-> Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi Maxime,
->
-> > On Mon, Jan 18, 2021 at 02:08:29AM +0000, Andre Przywara wrote:
-> > > From: Yangtao Li <frank@allwinnertech.com>
-> > >
-> > > This patch adds support for A100 MMC controller, which use word
-> > > address for internal dma.
-> > >
-> > > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> >
-> > We should also disable the timings setup in probe to derive them from
-> > the DT. This is causing issues on some SoCs already, so it would be
-> > best to not make the situation worse
->
-> But only for those new SoCs, where we have the speed modes in the DT
-> in every case (so only new ones)? And this disabling would be
-> SoC/compatible string dependent? Happy to send a patch later if that is
-> what you were thinking about.
->
-> Also I was wondering about the voltage dependent speed modes: At the
-> moment the driver declares both MMC_CAP_1_8V_DDR and MMC_CAP_3_3V_DDR,
-> so I mimic this in the .dtsi. However in the eventual DTB this looks
-> somewhat dodgy, since most boards only support one of those voltages. Do
-> we ignore this, and rely on the vqmmc-supply to limit this choice?
+On 30/12/2020 07:25, vijayakannan.ayyathurai@intel.com wrote:
+> From: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
 
-IIRC the DDR flags for separate voltages was added after we (I) added
-MMC DDR support to our driver.
+[ ... ]
 
-And yes, the core also checks vqmmc-supply before actually selecting
-the mode.
+> +static struct timer_of keembay_ce_to = {
+> +	.flags	= TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK,
+> +	.clkevt = {
+> +		.name			= "keembay_sys_clkevt",
+> +		.features		= CLOCK_EVT_FEAT_PERIODIC |
+> +					  CLOCK_EVT_FEAT_ONESHOT  |
+> +					  CLOCK_EVT_FEAT_DYNIRQ,
+> +		.rating			= TIM_RATING,
+> +		.set_next_event		= keembay_timer_set_next_event,
+> +		.set_state_periodic	= keembay_timer_periodic,
+> +		.set_state_shutdown	= keembay_timer_shutdown,
+> +	},
+> +	.of_base = {
+> +		.index = 0,
+> +	},
+> +	.of_irq = {
+> +		.handler = keembay_timer_isr,
+> +		.flags = IRQF_TIMER | IRQF_IRQPOLL,
 
-ChenYu
+Is the IRQPOLL flag really needed here ?
 
-> Cheers,
-> Andre
->
-> Btw: This patch is already in Ulf's -next tree, I just included it here
-> for the sake of completeness. Is that a problem? I don't think it
-> affects the build, so we don't care too much?
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210118155228.3bd0e909%40slackpad.fritz.box.
+> +	},
+> +};
+> +
+> +static int __init keembay_clockevent_init(struct device_node *np,
+> +					  struct keembay_init_data *data)
+> +{
+> +	u32 val;
+> +	int ret;
+> +
+> +	data->mask = TIM_CONFIG_PRESCALER_ENABLE;
+> +	data->cfg = &keembay_ce_to;
+> +	ret = keembay_timer_setup(np, data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	val = readl(data->base + TIM_RELOAD_VAL_OFFSET);
+> +
+> +	keembay_ce_to.clkevt.cpumask = cpumask_of(0);
+> +	keembay_ce_to.of_clk.rate = keembay_ce_to.of_clk.rate / (val + 1);
+> +
+> +	keembay_timer_disable(timer_of_base(&keembay_ce_to));
+> +
+> +	clockevents_config_and_register(&keembay_ce_to.clkevt,
+> +					timer_of_rate(&keembay_ce_to), 1, U32_MAX);
+> +	return 0;
+> +}
+> +
+> +static struct timer_of keembay_cs_to = {
+> +	.flags	= TIMER_OF_BASE | TIMER_OF_CLOCK,
+> +	.of_base = {
+> +		.index = 1,
+> +	},
+> +};
+> +
+> +static u64 notrace keembay_clocksource_read(struct clocksource *cs)
+> +{
+> +	return lo_hi_readq(timer_of_base(&keembay_cs_to));
+> +}
+> +
+> +static struct clocksource keembay_counter = {
+> +	.name			= "keembay_sys_counter",
+> +	.rating			= TIM_RATING,
+> +	.read			= keembay_clocksource_read,
+> +	.mask			= CLOCKSOURCE_MASK(TIM_CLKSRC_BITS),
+> +	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+> +				  CLOCK_SOURCE_SUSPEND_NONSTOP,
+> +};
+> +
+> +static int __init keembay_clocksource_init(struct device_node *np,
+> +					   struct keembay_init_data *data)
+> +{
+> +	int ret;
+> +
+> +	data->mask = TIM_CONFIG_ENABLE;
+> +	data->cfg = &keembay_cs_to;
+> +	ret = keembay_timer_setup(np, data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return clocksource_register_hz(&keembay_counter, timer_of_rate(&keembay_cs_to));
+> +}
+> +
+> +static int __init keembay_timer_init(struct device_node *np)
+> +{
+> +	struct keembay_init_data data;
+> +	int ret;
+> +
+> +	data.base = of_iomap(np, 2);
+> +	if (!data.base)
+> +		return -ENXIO;
+> +
+> +	ret = keembay_clocksource_init(np, &data);
+> +	if (ret)
+> +		goto exit;
+> +
+> +	ret = keembay_clockevent_init(np, &data);
+
+Is this missing ?
+
+	if (ret)
+		goto exit;
+
+	return 0;
+
+> +
+> +exit:
+> +	keembay_timer_cleanup(np, &data);
+> +
+> +	return ret;
+> +}
+> +
+> +TIMER_OF_DECLARE(keembay_timer, "intel,keembay-timer", keembay_timer_init);
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
