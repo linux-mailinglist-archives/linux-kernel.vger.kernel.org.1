@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9EE2FAC70
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B6F2FAC60
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438007AbhARVSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:18:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S2437823AbhARVQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438031AbhARVQp (ORCPT
+        with ESMTP id S2394539AbhARVOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:16:45 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EE2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:15:57 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id be12so9304129plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:15:57 -0800 (PST)
+        Mon, 18 Jan 2021 16:14:23 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C17BC061573;
+        Mon, 18 Jan 2021 13:13:40 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id m4so17750467wrx.9;
+        Mon, 18 Jan 2021 13:13:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n6ccMeFbQ5o+gz4ZLG3v85J3POpNhHyS8cqYFbBY9Nw=;
-        b=Okf4zD4ZvjiKYhpxXhqvo/q91mDIgDpEHaknqMjRYq1Tj9eADuXtzDZk5pnS5f3Zho
-         Uz68jsEh3R4KogqWJLEyahcGkTlCvOV48aUER2+r3FYHhsVqRMQIJQV5PtE5OQsFaNEO
-         7WYGMCe+NER8LcHV3UGe+Mx0sGkfGq0sA8ct+ITT2MfSk6QT27Uuu49rxlUWTomZC7V4
-         1bpIzqUBl72XiW+F7lUO9+0Wx8pSjOdbZ2YWIQN+EsPROjqscc5+9nfZ1aAoI/gvQjgM
-         j5FZA7vJXIxDMKVeTk99MIpNJyI5fLHi3MHpnOlz76BHZF6PbjuFxJQxNnMhL5NZcz5x
-         FMaw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DfnA+OcAFtcFxr40jr50iORRAFqvfHPsv5cZyKe+q38=;
+        b=kf4hcAQVI7z5D5nCKKuzsC9xlBGTr6pcXf2bXzpyb9Vg1yxZryQb5rVAczfXwwMB/O
+         w0ytaMNItFQpH5QEcHdBCppcQke40xV9cTnVyaHzfHjcHarRkwFiEP5Tg0hCZN3V5m1m
+         hbtVC7T0YMhs5T9rBfF2JUVrVYnmCHr0rjxgHghCN7O6NS/5TrsBOkizPTEi1+37Cbrh
+         XUuHWX31En/fpzPOC0+UuoE2twEcws7bG8pylBQMEz5ix+tDoxoHFCdXD3QTCEokX9Xi
+         1MjI3jMzZ3VLADyM9sMKKPpt46Xl7bnNgjwTwI3GBEQDnNfNX2YYNfeoa6YS3ii/CkPU
+         2adQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n6ccMeFbQ5o+gz4ZLG3v85J3POpNhHyS8cqYFbBY9Nw=;
-        b=fJhROgBsXMZMLevtLxn0bt+rG/eNe1Pu5SUAiyienzZ72r+ZQpqUhP7lSA0fXWVApc
-         47nGzvv9nod5esfs9Zx0LXi6SgW4A9TWn0QiiPE/CvdXOg46UU3PYqHPsQDBYPpXqS5m
-         fW2T1lV3KXpWRPNu5rXq84wboot+If9KOFbcyGqateHZd3/MV1BGvweN3kq2Qc0aYyAa
-         pCpEHKOJTFZ9dPXm8p0DmCC9APO+jUjPOMYfL1bwOUHjeKzxJnK+ZyXRa+bOr5itscGI
-         KqKziGfjLX1Z+j0Y49OyLzGaFzMkLPPhjpNTEER3ANC+L9DK5F33stvjGAhyAj0fWfQb
-         vHPw==
-X-Gm-Message-State: AOAM530Dvf00dDNeyCM+YGN/BedqptCj8rsLpeMcgm0MYU3/bixsWk5x
-        Qf6wF/6zPZTqb5SDf0pC2Ng=
-X-Google-Smtp-Source: ABdhPJwr7otRnwzmlhyKKc7fxrw9vPkypltSjfr/FJoMTsNeIkowL9MfQnTdO/GY8z8Orr5F5OxWAg==
-X-Received: by 2002:a17:902:7149:b029:db:a6de:4965 with SMTP id u9-20020a1709027149b02900dba6de4965mr1324421plm.3.1611004557389;
-        Mon, 18 Jan 2021 13:15:57 -0800 (PST)
-Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
-        by smtp.gmail.com with ESMTPSA id i62sm10487833pfc.150.2021.01.18.13.15.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 13:15:56 -0800 (PST)
-Date:   Tue, 19 Jan 2021 06:15:54 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v2] drivers/soc/litex: Add restart handler
-Message-ID: <20210118211554.GH2002709@lianli.shorne-pla.net>
-References: <20210104164500.1311091-1-geert@linux-m68k.org>
- <CAMuHMdXG_B-3y1MWh64T6LU3Gmo6UQGGWU8EbLApjDeXVLL3GQ@mail.gmail.com>
- <20210114020311.GE2002709@lianli.shorne-pla.net>
- <CAMuHMdWnrPBAh_U43C7jA8wDvyAegqCM3OP++NkkiT1Co5yjkQ@mail.gmail.com>
- <20210118114331.GF2002709@lianli.shorne-pla.net>
- <CAMuHMdUxAEE2A=dyhdH5Tscin_=m_b61WfRpLvj6pJfdPjd1nA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DfnA+OcAFtcFxr40jr50iORRAFqvfHPsv5cZyKe+q38=;
+        b=QNu+OCMBRzx4Q2mGaJfX+XyFkPahmRui8YWEFErsKahWqxPZ+uw28vs2Q4SUr0tfPv
+         dXey2hdiS3/34tTKcxjx1Jw5yXpT5c7aipYx4M0DHYOtusIOFfP1tMZymS6G2BX47FKW
+         iW2bOqRSi9xeecTmoSAGEBWw9VogcRwveIPi28jdacDSea8dQG7p9N6JMYyDdl/GYHLw
+         kuRlWRqLwnsAs2yv///1LeFaDuIPoJGOiReW/lMrcjziMciIdLS4LGCkGMJoh66dipoB
+         MOLv4n0BNBs3umkpIPyj+P1gjIeMB6mJ07MR4D0nLUw5AT6LEzbzRrOySARRaoYZKroa
+         pOGQ==
+X-Gm-Message-State: AOAM532tY7gbzDw0QgNnaPTOQVvzDgvZFOthBIBe0D9qOm7Dm79Aad0a
+        W7TS3tSn5yF6NIBhySgRRkVcrNSFVWZBDyl4R5A=
+X-Google-Smtp-Source: ABdhPJwNOfYdNWJWdIYge61E+UF9gSVsMDMzVfyui5Xghpvq/H1vicFDjuRCKS1ARBjA6DEcTHQinCCBWD3lyiMeF/o=
+X-Received: by 2002:a5d:6909:: with SMTP id t9mr1174197wru.327.1611004419225;
+ Mon, 18 Jan 2021 13:13:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUxAEE2A=dyhdH5Tscin_=m_b61WfRpLvj6pJfdPjd1nA@mail.gmail.com>
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org> <1608597876-32367-6-git-send-email-isaacm@codeaurora.org>
+In-Reply-To: <1608597876-32367-6-git-send-email-isaacm@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 18 Jan 2021 13:16:03 -0800
+Message-ID: <CAF6AEGunsv5r_DmNsMbYwa4KQxRmK9J+5Bd12LYG4pQ=hrCe4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] drm/msm: Add dependency on io-pgtable-arm format module
+To:     "Isaac J. Manjarres" <isaacm@codeaurora.org>
+Cc:     "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, pdaly@codeaurora.org,
+        Android Kernel Team <kernel-team@android.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Pratik Patel <pratikp@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 01:27:32PM +0100, Geert Uytterhoeven wrote:
-> Hi Stafford,
-> 
-> On Mon, Jan 18, 2021 at 12:43 PM Stafford Horne <shorne@gmail.com> wrote:
-> > On Thu, Jan 14, 2021 at 02:48:49PM +0100, Geert Uytterhoeven wrote:
-> > > On Thu, Jan 14, 2021 at 3:03 AM Stafford Horne <shorne@gmail.com> wrote:
-> > > > On Mon, Jan 04, 2021 at 05:49:03PM +0100, Geert Uytterhoeven wrote:
-> > > > > On Mon, Jan 4, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > Let the LiteX SoC Controller a register a restart handler, which resets
+On Mon, Dec 21, 2020 at 4:44 PM Isaac J. Manjarres
+<isaacm@codeaurora.org> wrote:
+>
+> The MSM DRM driver depends on the availability of the ARM LPAE io-pgtable
+> format code to work properly. In preparation for having the io-pgtable
+> formats as modules, add a "pre" dependency with MODULE_SOFTDEP() to
+> ensure that the io-pgtable-arm format module is loaded before loading
+> the MSM DRM driver module.
+>
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
 
-I think there is a typo here:
+Thanks, I've queued this up locally
 
-  Let the LiteX SoC Controller a register a restart ...
+BR,
+-R
 
-should remove the first 'a' and say
-
- Let the LiteX SoC Controller register a restart ...
-
-> > > > > > the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
-> > > > > >
-> > > > > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > > > > ---
-> > > > > > Tested with linux-on-litex-vexriscv.
-> > > > > >
-> > > > > > This patch is based on upstream, i.e. not on top of Gabriel Somlo's
-> > > > > > "[PATCH v5 0/4] drivers/soc/litex: support 32-bit subregisters, 64-bit
-> > > > > > CPUs"
-> > > > > > (https://lore.kernel.org/lkml/20201227161320.2194830-1-gsomlo@gmail.com/)
-> > > > >
-> > > > > Bummer, and that's why the RESET_REG_* definitions are no longer
-> > > > > next to the SCRATCH_REG_* definitions :-(
-> > > >
-> > > > If it helps I have accepted Gabriel's patches and put them onto for-next.
-> > > >
-> > > >   https://github.com/openrisc/linux/commits/for-next
-> > > >
-> > > > I am happy to take and test a patch based on that.  Or I can do the adjustments
-> > > > to base the patch on that myself.  Let me know.
-> > >
-> > > Thanks for letting me know! V3 sent.
-> >
-> > Hi Geert,
-> >
-> > I don't seem to see v3 anywhere.  Where did you send it and what is the subject?
-> 
-> https://lore.kernel.org/linux-riscv/20210114134813.2238587-1-geert@linux-m68k.org/
-> 
-> So "b4 am 20210114134813.2238587-1-geert@linux-m68k.org" should give you
-> a copy.
-
-Thanks I got it, I am not sure why it does not show up in my inbox anywhere,
-sometimes gmail drops mails.  Hence, I am replying here.
-
-As per the typo above I can fix during applying or you could send during a v4.
-
-One more small nit is that you move soc_ctrl_dev out to a static instance it
-might help to mention.  But it's easy to see why.
-
--Stafford
+> ---
+>  drivers/gpu/drm/msm/msm_drv.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 535a026..8be3506 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -1369,3 +1369,4 @@ module_exit(msm_drm_unregister);
+>  MODULE_AUTHOR("Rob Clark <robdclark@gmail.com");
+>  MODULE_DESCRIPTION("MSM DRM Driver");
+>  MODULE_LICENSE("GPL");
+> +MODULE_SOFTDEP("pre: io-pgtable-arm");
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
