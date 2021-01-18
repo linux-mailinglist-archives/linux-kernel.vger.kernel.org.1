@@ -2,191 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950942F9ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166E92F9AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733273AbhARH7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:59:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733246AbhARH7g (ORCPT
+        id S1733295AbhARH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:59:48 -0500
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:46492 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733243AbhARH7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:59:36 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57A4C061573;
-        Sun, 17 Jan 2021 23:58:55 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 36so3904470otp.2;
-        Sun, 17 Jan 2021 23:58:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+pua5Gz7X03MCfazw2FMpdYgyIB67LM2COVuZ3gUxWQ=;
-        b=lSnC3hR4eOjaRFlWfYoewkPPii7bue9M83B4abPBVFrXjO3lZvABE2N/QB11a7uV34
-         kfHMcPKtUrNClOKYTPrPqN0e5h2GCUIrAPhIEKtFyTtYXlGTv4eregazSL9i7PbDU/g2
-         TqYgt4jUGav/RCzJr7+oSzCuQZfJoRAEh0cw2L9nCijYsUXwOb2nYkU1dcxzXOGSGc0Z
-         YAKno1alTvHsbZjbiOLnBzQ83e03uYIxKxsJmAA+v+T7aRwfKMjpTxYCbsdLMrGiJ+o1
-         VP1cG9M3QixvKplVx6yvPP84z+3Eb+XEMP8G4EfX6fPXjs0aLkrWwJASMRo7R89O0Q11
-         YcBg==
+        Mon, 18 Jan 2021 02:59:44 -0500
+Received: by mail-lj1-f169.google.com with SMTP id u11so17176499ljo.13
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:59:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+pua5Gz7X03MCfazw2FMpdYgyIB67LM2COVuZ3gUxWQ=;
-        b=pyjjRvrrF/I1HyfPL8Q5HVUVEqxTGQIqk3AwA3Fj0GpMS7sn+xaW4kC8N+eeEYLxPf
-         KW2pL0akA99KnGB2Jd8YpkU/RTUF07KGwy+wD3T82DSHZsqfmywKlwQ+Kz5EQFPysLZz
-         oTj19axcHTh1LnDCwz0aZao5v3p2skgOH3k38NbROnHqy1J6QyWb73xjHk1A0UJdQmSQ
-         fW+qYMDss+BDWbB2FIQ5sCzbvmN2QI5EVQMNIHaPgU14sTFt/D3H6sosRaOdQ8xzgCs6
-         w7V9r3A4PkJY8lMzn/CGJI5MHM83L3H6KuC6fzEGPlmUrB+E8nHyuJUl4W+P5X3qBWrd
-         2kUw==
-X-Gm-Message-State: AOAM533NMIyBgNepC6g7YeYltFMtGyrSSYFr3trwoAikm0mhfTwsTlyo
-        iMwvxvfDOBByQsqi1lwEoVVxue1yhX1eB9+ArFw=
-X-Google-Smtp-Source: ABdhPJw374BOPOpd/HDhDTOJyhxewF5r8SqojbvvQxmCnOBYrtv7NQiYnhP1+TOW/VKrUdbqNGmJbKL+eJLlUanW/Wk=
-X-Received: by 2002:a05:6830:160f:: with SMTP id g15mr16889598otr.129.1610956735299;
- Sun, 17 Jan 2021 23:58:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=MKOHJ0aLXDSerE5Z+jLbJV+4tHZob15EnyShW6J4TTs=;
+        b=K22vdCD8+XrkBUaRrrtXAjj+bPiqjH4O2rtihh2t0pLyft41WQ3ZmpOVHTRjoL4YJ5
+         sifzf4UQ0nTaHG/WWOx1WfEHEywwb2LQDkSIan5Xqrx+Reujs0KSWaUGTCyLJb8OpcHE
+         2omyLgTslKv+5VfuusR7DwNGo+evchyLMlSxC7AxBKrnybzwlMxQD09j3yufsvgaVWF5
+         Ft2LF+d3XgdRxIuqEMo6332DrA/JiphXyUzCQliytN7sd+To0ji/P7Fqv2sutoPFPY39
+         FmXsCwm+EHO0bZQ+KeTQbAe9m7Y17wII1pPZFQHv4aATOgdSleWhwMr7JPWjB9W+a3Ww
+         6E9Q==
+X-Gm-Message-State: AOAM5300DgDrtgqJnDYgio9A+eOQNUThSkBVN/RSHlW2jK8puutAX/iJ
+        DfOtCF1AlH6YCe1CTVT4m0I=
+X-Google-Smtp-Source: ABdhPJwF6echMsZk8YPjE1xc74Iqgx59a/UB3HpsTUH/F60vNGgu0Y5/O0vGvgr39df+vHI3ymbTYw==
+X-Received: by 2002:a2e:7a07:: with SMTP id v7mr9713744ljc.119.1610956740791;
+        Sun, 17 Jan 2021 23:59:00 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id 29sm1815411lfr.304.2021.01.17.23.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 23:59:00 -0800 (PST)
+Date:   Mon, 18 Jan 2021 09:58:51 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] regulator: bd718x7, bd71828, Fix dvs voltage levels
+Message-ID: <20210118075851.GA1016281@localhost.localdomain>
 MIME-Version: 1.0
-References: <1608796084-29418-1-git-send-email-gene.chen.richtek@gmail.com>
- <1608796084-29418-3-git-send-email-gene.chen.richtek@gmail.com>
- <20210106201654.lkmqorlgcecgqqkf@earth.universe> <CAE+NS37t-Gf7fjK0crZ+9qxWxfxm3k8hoEvwystdNP4CjM=KXQ@mail.gmail.com>
- <20210116101237.vktppv2ec7kvtz3v@earth.universe>
-In-Reply-To: <20210116101237.vktppv2ec7kvtz3v@earth.universe>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 18 Jan 2021 15:58:44 +0800
-Message-ID: <CAE+NS34dKX+Zrzp3zzL2-NFvh7FrCUEminVT8jMBDOvS1ZQH9w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] power: supply: mt6360_charger: add MT6360 charger support
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Reichel <sebastian.reichel@collabora.com> =E6=96=BC 2021=E5=B9=B4=
-1=E6=9C=8816=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=886:12=E5=AF=AB=E9=
-=81=93=EF=BC=9A
->
-> Hi,
->
-> On Mon, Jan 11, 2021 at 08:15:33PM +0800, Gene Chen wrote:
-> > Sebastian Reichel <sebastian.reichel@collabora.com> =E6=96=BC 2021=E5=
-=B9=B41=E6=9C=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=884:16=E5=AF=
-=AB=E9=81=93=EF=BC=9A
-> > > > +     last_usb_type =3D mci->psy_usb_type;
-> > > > +     /* Plug in */
-> > > > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_USB_STATUS1, &usb=
-_status);
-> > > > +     if (ret < 0)
-> > > > +             goto out;
-> > > > +     usb_status &=3D MT6360_USB_STATUS_MASK;
-> > > > +     usb_status >>=3D MT6360_USB_STATUS_SHFT;
-> > > > +     switch (usb_status) {
-> > > > +     case MT6360_CHG_TYPE_UNDER_GOING:
-> > > > +             dev_info(mci->dev, "%s: under going...\n", __func__);
-> > > > +             goto out;
-> > >
-> > > IDK what this is supposed to tell me. Do you mean "detection in
-> > > progress"? Also why is this info level? I would expect either
-> > > debug (assuming it happens regularly and is normal) or warning
-> > > (assuming it should not happen).
-> > >
-> >
-> > When handling attach interrupt and cable plug out at the same
-> > time, HW change register status. So we don' need to handle this
-> > attach interrupt at this case.
->
-> So this is basically for debouncing? I suggest adding a comment:
->
-> /* Received attach IRQ followed by detach event, so nothing to do */
-> dev_dbg(mci->dev, "under going...\n");
-> goto out;
->
+The ROHM BD718x7 and BD71828 drivers support setting HW state
+specific voltages from device-tree. This is used also by various
+in-tree DTS files.
 
-Sorry I have a little misunderstand.
-under going is "detect in progress".
-Attachi irq will trigger when power ready(vbus=3D5V) and bc12
-chargedetection done.
-Another irq, Detachi, is indicated power not ready(vbus=3D0V) and which
-is be masked.
-So, if the usb status is not SDP/NONSTD/CDP/DCP, the result can be
-ignored. (e.q. NO VBUS/Under going/BC12 disabled/Reserved address)
+These drivers do incorrectly try to compose bit-map using enum
+values. By a chance this works for first two valid levels having
+values 1 and 2 - but setting values for the rest of the levels
+do indicate capbility of setting values for first levels as
+well. Luckily the regulators which support settin values for
+SUSPEND/LPSR do usually also support setting values for RUN
+and IDLE too - thus this has not been such a fatal issue.
 
-> [...]
->
-> > > > +     config.dev =3D &pdev->dev;
-> > > > +     config.regmap =3D mci->regmap;
-> > > > +     mci->otg_rdev =3D devm_regulator_register(&pdev->dev, &mt6360=
-_otg_rdesc,
-> > > > +                                             &config);
-> > > > +     if (IS_ERR(mci->otg_rdev))
-> > > > +             return PTR_ERR(mci->otg_rdev);
-> > > > +
-> > > > +     ret =3D mt6360_sysfs_create_group(mci);
-> > > > +     if (ret) {
-> > > > +             dev_err(&pdev->dev,
-> > > > +                     "%s: Failed to create sysfs attrs\n", __func_=
-_);
-> > > > +             return ret;
-> > > > +     }
-> > >
-> > > Use charger_cfg.attr_grp to register custom sysfs group for
-> > > power-supply devices. Otherwise your code is racy (udev may not pick
-> > > up the sysfs attributes). Also custom sysfs attributes need to be
-> > > documented in Documentation/ABI/testing/sysfs-class-power-<driver>.
-> > >
-> > > Looking at the attributes you are planning to expose, I don't think t=
-hey
-> > > are suitable for sysfs anyways. Looks more like a debug interface, wh=
-ich
-> > > should go into debugfs instead. But it's hard to tell without any doc=
-umentation
-> > > being provided :)
-> >
-> > ACK, I will change to charger_cfg.attr_grp.
-> > I assumed the charger algorithm thread is in user space, and take
-> > control by sysfs node from charger device, like bq24190.c.
-> > Should I change to debugfs?
->
-> It's hard to tell without knowing more about the attributes
-> your are trying to expose. In debugfs we have relaxed ABI rules,
-> so it's easier to adopt naming e.t.c. later.
->
+Fix this by defining the old enum values as bits and using
+new enum in parsing code. This allows keeping existing IC
+specific drivers intact and only adding the defines and
+slightly changing the rohm-regulator.c
 
-I briefly classify the whole attributes. There are either unused, or
-can be replaced by POWER_SUPPLY PROPERTY,
-so I will remove unuse part.
+Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
 
-HIZ =3D VBUS_IN high impedance mode.
-VMIVR =3D Maximum input voltage regulation. Let input power can provide
-at the predetermined voltage level.
-(like POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT)
-SYSREG =3D Config system minimum regulation voltage.
-OTG_OC =3D maximum current of battery boost OTG 5V.
-ICHG =3D maximum Charging current. (like
-POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT)
-IEOC =3D Like POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT
-VOREG =3D Input voltage regulation. (like
-POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE)
-LBP =3D Low battery protection for battery boost OTG 5V.
-VPREC =3D Pre-charge volatge level. (maybe can add new prop
-POWER_SUPPLY_PROP_PRECHARGE_VOLTAGE)
-TE =3D Charge termination enable/disable.
-CHG_WDT_EN =3D Charger Watch dog timer enable/disable.
-CHG_WDT =3D Charger Watch dog timer, 8/40/80/160s.
-WT_FC =3D Fast charge Timer, 4~20hr.
-BAT_COMP =3D Battery IR compensation resistor setting.
-VCLAMP =3D Battery IR compensation maximum voltage clamp.
-USBCHGEN =3D USB charger detection flow enable/disable.
-CHG_EN =3D Battery charging enable/disable.
-CHRDET_EXT =3D VBUS_IN is between VBUS_UV_TH(3.7V) and VBUS_OV_TH(10.5V)
+Resending after testing the logic with additional prints on
+BD71815 (driver under development) and BD71847.
 
-> -- Sebastian
+ drivers/regulator/rohm-regulator.c |  9 ++++++---
+ include/linux/mfd/rohm-generic.h   | 14 ++++++--------
+ 2 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
+index 399002383b28..5c558b153d55 100644
+--- a/drivers/regulator/rohm-regulator.c
++++ b/drivers/regulator/rohm-regulator.c
+@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
+ 	char *prop;
+ 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
+ 
+-	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
+-		if (dvs->level_map & (1 << i)) {
+-			switch (i + 1) {
++	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
++		int bit;
++
++		bit = BIT(i);
++		if (dvs->level_map & bit) {
++			switch (bit) {
+ 			case ROHM_DVS_LEVEL_RUN:
+ 				prop = "rohm,dvs-run-voltage";
+ 				reg = dvs->run_reg;
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
+index 4283b5b33e04..2b85b9deb03a 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
+ 	struct regmap *regmap;
+ };
+ 
+-enum {
+-	ROHM_DVS_LEVEL_UNKNOWN,
+-	ROHM_DVS_LEVEL_RUN,
+-	ROHM_DVS_LEVEL_IDLE,
+-	ROHM_DVS_LEVEL_SUSPEND,
+-	ROHM_DVS_LEVEL_LPSR,
+-	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
+-};
++#define ROHM_DVS_LEVEL_RUN		BIT(0)
++#define ROHM_DVS_LEVEL_IDLE		BIT(1)
++#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
++#define ROHM_DVS_LEVEL_LPSR		BIT(3)
++#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
++#define ROHM_DVS_LEVEL_UNKNOWN		0
+ 
+ /**
+  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
+
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
