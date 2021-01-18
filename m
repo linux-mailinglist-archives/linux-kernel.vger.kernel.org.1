@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86472FA9C4
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5262FA9C3
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437061AbhARTLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:11:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
+        id S2437034AbhARTLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:11:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390341AbhARLjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:39:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44C9B222B3;
-        Mon, 18 Jan 2021 11:38:51 +0000 (UTC)
+        id S2390521AbhARLjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:39:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A897229C7;
+        Mon, 18 Jan 2021 11:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969931;
-        bh=a045boHEnaS0K8/hRvOKz6pzgjbFjoxJBC37/auV5OQ=;
+        s=korg; t=1610969934;
+        bh=PNvCOCoAo5+jSAER09jlgMZlmQEfKisVJhvtTf9R3O0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yy730S9St8rc8pH+Y3hLspuUKapPTmmErjXy2ff5VMStly9MsYapHk4dk6HXa9xc1
-         6h8gX30huHjwtdk66aVSr9q9kKmlRzXkPrefqhW0V0OsJT1mjtqrMRMyRlAHe9eb+J
-         tC+nIpLKC3mpUV77pCje62arP23RV+M95ji5ntv8=
+        b=uyofNAlV+1KMuobKIZ1Ytg7IucrsO5k6jneUFuuuJrMgBsJGGn0BVp+229IplTKwS
+         v0RFFnKLFmt4tC3GHWucHIyiMnSdk+KGezcagt2bNctAsBP8iNqs2WQE/BJmYuDxhN
+         CCbxeMUL8inQsM6dtvDXuLHlYH7SsgTW0A6VcsQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gopal Tiwari <gtiwari@redhat.com>,
+        stable@vger.kernel.org, Israel Rukshin <israelr@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
         Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 42/76] nvme-pci: mark Samsung PM1725a as IGNORE_DEV_SUBNQN
-Date:   Mon, 18 Jan 2021 12:34:42 +0100
-Message-Id: <20210118113343.003834526@linuxfoundation.org>
+Subject: [PATCH 5.4 43/76] nvmet-rdma: Fix list_del corruption on queue establishment failure
+Date:   Mon, 18 Jan 2021 12:34:43 +0100
+Message-Id: <20210118113343.051562876@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
 References: <20210118113340.984217512@linuxfoundation.org>
@@ -39,39 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gopal Tiwari <gtiwari@redhat.com>
+From: Israel Rukshin <israelr@nvidia.com>
 
-[ Upstream commit 7ee5c78ca3895d44e918c38332921983ed678be0 ]
+[ Upstream commit 9ceb7863537748c67fa43ac4f2f565819bbd36e4 ]
 
-A system with more than one of these SSDs will only have one usable.
-Hence the kernel fails to detect nvme devices due to duplicate cntlids.
+When a queue is in NVMET_RDMA_Q_CONNECTING state, it may has some
+requests at rsp_wait_list. In case a disconnect occurs at this
+state, no one will empty this list and will return the requests to
+free_rsps list. Normally nvmet_rdma_queue_established() free those
+requests after moving the queue to NVMET_RDMA_Q_LIVE state, but in
+this case __nvmet_rdma_queue_disconnect() is called before. The
+crash happens at nvmet_rdma_free_rsps() when calling
+list_del(&rsp->free_list), because the request exists only at
+the wait list. To fix the issue, simply clear rsp_wait_list when
+destroying the queue.
 
-[    6.274554] nvme nvme1: Duplicate cntlid 33 with nvme0, rejecting
-[    6.274566] nvme nvme1: Removing after probe failure status: -22
-
-Adding the NVME_QUIRK_IGNORE_DEV_SUBNQN quirk to resolves the issue.
-
-Signed-off-by: Gopal Tiwari <gtiwari@redhat.com>
+Signed-off-by: Israel Rukshin <israelr@nvidia.com>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/target/rdma.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 9b1fc8633cfe1..ef93bd3ed339c 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3145,7 +3145,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 	{ PCI_DEVICE(0x144d, 0xa821),   /* Samsung PM1725 */
- 		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
- 	{ PCI_DEVICE(0x144d, 0xa822),   /* Samsung PM1725a */
--		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
-+		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY |
-+				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
- 	{ PCI_DEVICE(0x1d1d, 0x1f1f),	/* LighNVM qemu device */
- 		.driver_data = NVME_QUIRK_LIGHTNVM, },
- 	{ PCI_DEVICE(0x1d1d, 0x2807),	/* CNEX WL */
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index b5314164479e9..50e2007092bc0 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -1351,6 +1351,16 @@ static void __nvmet_rdma_queue_disconnect(struct nvmet_rdma_queue *queue)
+ 	spin_lock_irqsave(&queue->state_lock, flags);
+ 	switch (queue->state) {
+ 	case NVMET_RDMA_Q_CONNECTING:
++		while (!list_empty(&queue->rsp_wait_list)) {
++			struct nvmet_rdma_rsp *rsp;
++
++			rsp = list_first_entry(&queue->rsp_wait_list,
++					       struct nvmet_rdma_rsp,
++					       wait_list);
++			list_del(&rsp->wait_list);
++			nvmet_rdma_put_rsp(rsp);
++		}
++		fallthrough;
+ 	case NVMET_RDMA_Q_LIVE:
+ 		queue->state = NVMET_RDMA_Q_DISCONNECTING;
+ 		disconnect = true;
 -- 
 2.27.0
 
