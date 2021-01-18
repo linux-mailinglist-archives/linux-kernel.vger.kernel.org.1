@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAAA2F9E1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5D02F9DFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390208AbhARL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
+        id S2390210AbhARLWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390095AbhARLRL (ORCPT
+        with ESMTP id S2390133AbhARLSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:17:11 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7CAC061786;
-        Mon, 18 Jan 2021 03:15:57 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id j12so662876pjy.5;
-        Mon, 18 Jan 2021 03:15:57 -0800 (PST)
+        Mon, 18 Jan 2021 06:18:51 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061B4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:18:08 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id n10so10713307pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:18:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MEcP/jXGbBiYAGjKbm8TZg9WyvuGSXiAJBLZ0ICy+xU=;
-        b=V70qUeYBNTQokBJye3dL3FuBAVfXkSgWh/fMzFEbJ4Om7rCtcsLelbvJPsulTyLdAm
-         2WnY0h9ffnh6LaxREqaACV7oWOmsI19Am+NKEDsloMQ/KV3vd6mpy+xSCGtVHc+/Qg1E
-         nXfcVyHmTAtrSIfpD5Q9KslTfScWx4Mot+DI6FMrNrgqI7JPsVsvdBB7ehEvZUUZajs7
-         7kV7YycSpaxLAZ9K1o3X5Y4B8ni+1EykAmIRl6/5TqXmSHfjJyr/HER+4Sk9yE2X7zEX
-         hKgNq3m/zwknGQQpvdL8UMT6WV/maGHLj9BNpYXYUtRxOkY8c/EgFBR5FI9cXk3VVIvo
-         bQHQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vCOkqFp410/php68wIRNQR6nVYYVNeZ2EZUFKVUPxHE=;
+        b=ezT0GZsmJBLOfurM03WOn2TH3aLnuBejXUqCkZ+NK5SRGAz2JKR3x1O6idpx8Lcj1y
+         0DLHQbq74VYLZHUDI9nLk3/HEtEDabFAT9XCZqQZCnLGcktr5ymGPSkqescO+8q0zxz6
+         4t09QgDxM2HTQpk1L0jpwMc2iy8lqttqsoH8Lb2Rv0jVDXX7GtOeKpbHmgvhHGqaRlZu
+         t45b4ndPwrUdB0XBDGk9eQl0K22WmC7Pd1KzoZXyUrQ04URjcKde2N/Hz6kgLB61T82T
+         FQDHpgyT3kty8uiNwyuKBJZREsN/LtS86t+ZwNiEh0mPOGk+8zEXwq656s41toAB97Ce
+         kG9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MEcP/jXGbBiYAGjKbm8TZg9WyvuGSXiAJBLZ0ICy+xU=;
-        b=H9HxcMT8yH8//7L3bNxZtJRTS2Vi7m/DExwwhQF3oXaPsI+lgH3ghFF/HKy4eQRQs+
-         GhpMzMZWq4qfR2DfH6CJM1eSMvqawxZc0bTmQJJTSOMKmeGIIAUfTuInJvBasd4hf4GH
-         RoazHyjLQ5NQep3FatEEl8PoXKYWYFMveUhCM8oRUSf6IfYJohPpJAQT7v4grgff0oje
-         OH58NzavYE9r+0VzmSFJmVQ2YoH0p/Q5QjsVC+2RW4n0XuZ0GR1sgPsCvlGEe5cC2x/S
-         QJMA8yPB1ZIfix8Lnbuv1yW186EB+/m4htZc4OliibwkVzGBMuzgUthFqQp3ekm4tcCo
-         4uuQ==
-X-Gm-Message-State: AOAM532qEWaTmL+xH1Seelj4IixzqtfRppTr4TdIdo459VsjdD+/TsTH
-        PlgLzRrho0uYQ7i99fpYuxg=
-X-Google-Smtp-Source: ABdhPJzIA7f6QITJZVgUDFUwqyAqFe8mQ4Y6gMz9weJZceNtPamkoh7FYxO04+is9qPJPNBoSj7/ng==
-X-Received: by 2002:a17:902:7149:b029:db:a6de:4965 with SMTP id u9-20020a1709027149b02900dba6de4965mr25938179plm.3.1610968556564;
-        Mon, 18 Jan 2021 03:15:56 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id p9sm15708032pfq.136.2021.01.18.03.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 03:15:55 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH net-next] net: tun: fix misspellings using codespell tool
-Date:   Mon, 18 Jan 2021 03:15:39 -0800
-Message-Id: <20210118111539.35886-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vCOkqFp410/php68wIRNQR6nVYYVNeZ2EZUFKVUPxHE=;
+        b=kli3XFBvjg51tVr8nxL0Z4/Y4VBIr3c7e8kP55Te4WBy8lGCoF/fK6bR2y0pyA+efp
+         Jic9Nme+cWybT+iCvj3keyXIGU1y+jFMtjjkSnD789Om737xXxvt1aPD6WlUueIiXZ1T
+         skK+OJiHM7/hePAakNlTe22hSu8fS0NqRRFZkq77SRxVcBhZl5PF/3y71vfpFgODt/CO
+         rp8mKW8WdF78GigLEV4Y3mJP+M9gVn2j+gs+h/CY2DzQchZHiUAVrfh/rAUQ2poekdr7
+         /4iaLodAGJfTeGaD1Zna679m9FBETbsQ55N0uBAbukjtJEOOvYKv6Zdu3AZLeaynHCA6
+         0F+A==
+X-Gm-Message-State: AOAM531yUmniVtfsyltNacaaNHMAYz220OIfcgimZBfiFst4Xgyk2/GU
+        TGIhpCJhzqXVs72ZpnsJ9jX2sw==
+X-Google-Smtp-Source: ABdhPJyhitKtN+Jw9TBHJr0LGjKjQtmfdaFk9RpKz7yIieZEnFiC+GNt+YuNqD4+blf9WjeEIS9HtQ==
+X-Received: by 2002:a62:2e47:0:b029:1b7:840e:edc7 with SMTP id u68-20020a622e470000b02901b7840eedc7mr4547464pfu.52.1610968688492;
+        Mon, 18 Jan 2021 03:18:08 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id bv21sm16763805pjb.1.2021.01.18.03.18.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 03:18:07 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:48:05 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 11/12] opp: Handle missing OPP table in
+ dev_pm_opp_xlate_performance_state()
+Message-ID: <20210118111805.ex5sou3ya2kpue4w@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-12-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118005524.27787-12-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> NVIDIA Tegra SoCs have a power domains topology such that child domains
+> only clamp a power rail, while parent domain controls shared performance
+> state of the multiple child domains. In this case child's domain doesn't
+> need to have OPP table. Hence we want to allow children power domains to
+> pass performance state to the parent domain if child's domain doesn't have
+> OPP table.
+> 
+> The dev_pm_opp_xlate_performance_state() gets src_table=NULL if a child
+> power domain doesn't have OPP table and in this case we should pass the
+> performance state to the parent domain.
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/opp/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 7726c4c40b53..ca8c6acc29f4 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -2419,7 +2419,7 @@ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table,
+>  	 * and so none of them have the "required-opps" property set. Return the
+>  	 * pstate of the src_table as it is in such cases.
+>  	 */
+> -	if (!src_table->required_opp_count)
+> +	if (!src_table || !src_table->required_opp_count)
+>  		return pstate;
+>  
+>  	for (i = 0; i < src_table->required_opp_count; i++) {
 
-Some typos are found out by codespell tool:
+Applied. Thanks.
 
-$ codespell -w -i 3 ./drivers/net/tun.c
-aovid  ==> avoid
-
-Fix typos found by codespell.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- drivers/net/tun.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 702215596889..62690baa19bc 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -2735,7 +2735,7 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
- 		err = register_netdevice(tun->dev);
- 		if (err < 0)
- 			goto err_detach;
--		/* free_netdev() won't check refcnt, to aovid race
-+		/* free_netdev() won't check refcnt, to avoid race
- 		 * with dev_put() we need publish tun after registration.
- 		 */
- 		rcu_assign_pointer(tfile->tun, tun);
 -- 
-2.25.1
-
+viresh
