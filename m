@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C9B2FA711
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6533B2FA76B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406927AbhARRIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406810AbhARRET (ORCPT
+        id S2406867AbhARRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:23:17 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37543 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406846AbhARRDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:04:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A3FC0613ED;
-        Mon, 18 Jan 2021 09:03:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=cTOpJKpaWG1T2olInxdo/JtYe/CGbbNz/gPOn4Fxrq8=; b=p6E17oGJgO7ca7drhZoZJR4lZT
-        xxu34oeTRCxsNIquO7WC0+nBCAGmKRFwXddlh+q2zv01RvxrrW4CC/f6uUbmhF3HATUxP0cYfzKRS
-        taOO2mli0NWSv6g+pOCkIPEoiQMflnX7AuC228Q7kdtsRFcVJwg5VpVPO3U4z+CQ2k4c0Q185AJZH
-        rQhcdJskwqxUD5W39N55foJV651CllKXZ3au9IOPYeDsKyLC12Ns5GjJ6TfTELRVIW6r2gyY+7IY2
-        iJr+frT09M94ofbwC0ljOja5UBnwEVJlj2WAEBGuUsgpB/g9b/9A5voGXBaGtjvC44PKO4pPNyNa8
-        Sd6y0lZw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1XwF-00D7XQ-3l; Mon, 18 Jan 2021 17:03:35 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 27/27] cachefiles: Switch to wait_page_key
-Date:   Mon, 18 Jan 2021 17:01:48 +0000
-Message-Id: <20210118170148.3126186-28-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210118170148.3126186-1-willy@infradead.org>
-References: <20210118170148.3126186-1-willy@infradead.org>
+        Mon, 18 Jan 2021 12:03:18 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 583BD17D7;
+        Mon, 18 Jan 2021 12:02:10 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 18 Jan 2021 12:02:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=aCtNSj2HSao+inp7HktheCsuocF
+        99GwXfTqjyswziGA=; b=YmLl6ohx+f/H98h3T06lnAm/WOzNKJTW+w+ivVzrw0k
+        ZwO4cQuBMzTlcR48KM7Jk6cNtx0VeQD0CZYzuyxQixumZsTn3SJYd6HpFwmTIKse
+        Y3eRtFc4FraGZZr2Tgd2hcCc0LDQVVztg9JQxJN/uV16206MZ+QmBxlDzExyZMdW
+        J8nDYTrWi0paEK2WzXxoAThbRk4WAU5eXaW9otGzW0GW/1shH93zLaVWBETrXB4o
+        vK25ouBsphmeTlA82a7GtkmyW7xK9mbbLoDHDD8oISrya62zhZeF8osfBFDi6DZq
+        Bn/BIEI43Wz1t7vpNoCzWfD9EtQbHP0gzIK5ENceiaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=aCtNSj
+        2HSao+inp7HktheCsuocF99GwXfTqjyswziGA=; b=goAJu6a2PkWzLVoI5TzHDV
+        3qNGVTJSoT549oRMRnGLiKp7LSHx6VSJJ4NcJUqCdwgEPxbMBdMd7NPBOzjQzoao
+        D9y+Q4505Uy6SyS3Vqg5QZ2ME5s2AonZ3C7h0Nk41QOX1CwP8tDlgTAvHuUjkpZN
+        GinevSF1KKKWYpy9X90aj9eRuuYqYvtUKO3J2JVzQo7bQO4lAW2AWBIm4Tw0G8+G
+        e9HcT1ClJae1FUG+mTwu1gbhDe8ykavWibA94csvt29X79hGx1LHvSblPXBvcEpg
+        uLJJDW9ZdDjFZ4eYMKC5bTXBW6Hk3ygFEYHB3GGgAfcryA0A7a81C6+6oacMYecA
+        ==
+X-ME-Sender: <xms:D78FYBKSxS2xI0HBDiWz9-uPs0txxHM6xdC9AGEnbgyONe7yKHVWbg>
+    <xme:D78FYPLIFb-HJEfHuYvDuUVQUtIfbL3UizoiBw1HzAHNLRBRLc9C0Dzjrrc2GuVtM
+    YO-Z4eN9xHWTB5wWTo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdeljecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:D78FYDF8XXIdRsJIWFDRLvCro73wcz5mka3Wb2MT2HsOogcSsEz5yQ>
+    <xmx:D78FYEncskvoEJh4tittN-79TgzpDNqdOPE4PO-qfzsR2yKXikN-4Q>
+    <xmx:D78FYAJOCBD9If8Jsh_f4ax6Uh1XH1PRFtd4hnpUR3TS49lNOjCnJA>
+    <xmx:Eb8FYB1S_eRrJiDxVxAXKcXmJXHwlTiIHT8M8_ucBaodfnZDid_uiHFWwI8>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 42FEF108005C;
+        Mon, 18 Jan 2021 12:02:07 -0500 (EST)
+Date:   Mon, 18 Jan 2021 18:02:05 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/10] drm/atmel-hlcdc: Rename custom plane state variable
+Message-ID: <20210118170205.bflnpka2eutrryyp@gilmour>
+References: <20210115125703.1315064-1-maxime@cerno.tech>
+ <20210115125703.1315064-3-maxime@cerno.tech>
+ <20210115204324.GA529973@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qdgoqrhxkbmwjqu6"
+Content-Disposition: inline
+In-Reply-To: <20210115204324.GA529973@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cachefiles was relying on wait_page_key and wait_bit_key being the
-same layout, which is fragile.  Now that wait_page_key is exposed in
-the pagemap.h header, we can remove that fragility.  Also switch it
-to use the folio directly instead of the page.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/cachefiles/rdwr.c    | 13 ++++++-------
- include/linux/pagemap.h |  1 -
- 2 files changed, 6 insertions(+), 8 deletions(-)
+--qdgoqrhxkbmwjqu6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
-index 8bda092e60c5..f64b2d01578b 100644
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -24,22 +24,21 @@ static int cachefiles_read_waiter(wait_queue_entry_t *wait, unsigned mode,
- 		container_of(wait, struct cachefiles_one_read, monitor);
- 	struct cachefiles_object *object;
- 	struct fscache_retrieval *op = monitor->op;
--	struct wait_bit_key *key = _key;
--	struct page *page = wait->private;
-+	struct wait_page_key *key = _key;
-+	struct folio *folio = wait->private;
- 
- 	ASSERT(key);
- 
- 	_enter("{%lu},%u,%d,{%p,%u}",
- 	       monitor->netfs_page->index, mode, sync,
--	       key->flags, key->bit_nr);
-+	       key->folio, key->bit_nr);
- 
--	if (key->flags != &page->flags ||
--	    key->bit_nr != PG_locked)
-+	if (key->folio != folio || key->bit_nr != PG_locked)
- 		return 0;
- 
--	_debug("--- monitor %p %lx ---", page, page->flags);
-+	_debug("--- monitor %p %lx ---", folio, folio->page.flags);
- 
--	if (!PageUptodate(page) && !PageError(page)) {
-+	if (!FolioUptodate(folio) && !FolioError(folio)) {
- 		/* unlocked, not uptodate and not erronous? */
- 		_debug("page probably truncated");
- 	}
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index cf235fd60478..a0c5345041be 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -592,7 +592,6 @@ static inline pgoff_t linear_page_index(struct vm_area_struct *vma,
- 	return pgoff;
- }
- 
--/* This has the same layout as wait_bit_key - see fs/cachefiles/rdwr.c */
- struct wait_page_key {
- 	struct folio *folio;
- 	int bit_nr;
--- 
-2.29.2
+Hi Sam
 
+On Fri, Jan 15, 2021 at 09:43:24PM +0100, Sam Ravnborg wrote:
+> On Fri, Jan 15, 2021 at 01:56:55PM +0100, Maxime Ripard wrote:
+> > Subsequent reworks will pass the global atomic state in the function
+> > prototype, and atomic_check and atomic_update already have such a
+> > variable already. Let's change them to ease the rework.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+>=20
+> I assume you will push this patch as part of the series.
+
+Yep, that's the plan
+
+Thanks for the review,
+Maxime
+
+--qdgoqrhxkbmwjqu6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAW/DQAKCRDj7w1vZxhR
+xS4KAQC4Q57cifiOtnbWri+uKleeQ4EjvTJxRqYQUuWj921DowEAkcxlz2fzgD6C
+196JQiStZArABUiHXItNhtJlsgvCoAA=
+=WccY
+-----END PGP SIGNATURE-----
+
+--qdgoqrhxkbmwjqu6--
