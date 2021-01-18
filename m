@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8607F2F9C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3532F9C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389215AbhARJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:46:01 -0500
-Received: from www.zeus03.de ([194.117.254.33]:43790 "EHLO mail.zeus03.de"
+        id S2388601AbhARJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:50:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388925AbhARJeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:34:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=rWzjCq1apcJX7BOPIY4Wuk8smjit
-        0Oa42YCJAC4QtcI=; b=oQQ+7mQ+0/QkwRJPoLG7P5eRAZorZ2l7voXnXIUvmgvm
-        trY/7pl7nsGXADvnzo9JLirfv6dEg1fxhR05KHL470Yn/Eb3nfP2Hti935nyfM61
-        tYheijrYcl/iq1W+BCODWuYaPJ/PXurBm9U3YwwWnFXr/d6vRoMhmjJnlRkMaeE=
-Received: (qmail 643757 invoked from network); 18 Jan 2021 10:33:54 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Jan 2021 10:33:54 +0100
-X-UD-Smtp-Session: l3s3148p1@dqahaym5vIYgAwDPXwacAOByz8F9Mgm1
-Date:   Mon, 18 Jan 2021 10:33:54 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-i2c@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] media: i2c: adv7842: remove open coded version
- of SMBus block read
-Message-ID: <20210118093354.GD1018@ninjato>
-References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
- <20210112164130.47895-3-wsa+renesas@sang-engineering.com>
- <62c10525-69c6-e681-feaa-5ec3a865c06c@xs4all.nl>
+        id S2388945AbhARJfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:35:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B29222B3;
+        Mon, 18 Jan 2021 09:34:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610962477;
+        bh=6RFfUjPneWSE6yVh1hIrKXWzhESjY+xKu9hm6R9pzMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RzEbLpeZGSL/Mv3eWzWfkEihXoDN8z8/0AjulVjQ7q6YbejLJUOYOQRxfjLWFlSTu
+         4xzHaFkz7P2XwLaRJCIQJDgGHudWlxdQMFzxBmmDNzywK1hodJZ6xgyqJXo/yRqyBC
+         an9DIf+leBh8m0jtKcEt/93AS8wcz35+6CkNymga0eOz/7aHthx/S2EVWHIQ87FGir
+         J0+EmrzP7CFIFYLlc6bKHJn1+vzBcWu8eDWWC968mCpmX39DU8Ra/Hljq/4D/czcPT
+         rhOiG0Ts5WifAAgPI1SjtYwTp2arMVLgYhC8nX1/vvzoulAEzojPdhhzd0ZUFGi7bW
+         DI/Fg8oMFFjrA==
+Received: by pali.im (Postfix)
+        id 6A52E889; Mon, 18 Jan 2021 10:34:35 +0100 (CET)
+Date:   Mon, 18 Jan 2021 10:34:35 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] net: sfp: add support for GPON RTL8672/RTL9601C
+ and Ubiquiti U-Fiber
+Message-ID: <20210118093435.coy3rnchbmlkinpe@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210111113909.31702-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UoPmpPX/dBe4BELn"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <62c10525-69c6-e681-feaa-5ec3a865c06c@xs4all.nl>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111113909.31702-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 11 January 2021 12:39:07 Pali Rohár wrote:
+> This is a third version of patches which add workarounds for
+> RTL8672/RTL9601C EEPROMs and Ubiquiti U-Fiber Instant SFP.
+> 
+> Russel's PATCH v2 2/3 was dropped from this patch series as
+> it is being handled separately.
 
---UoPmpPX/dBe4BELn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Andrew and Russel, are you fine with this third iteration of patches?
+Or are there still some issues which needs to be fixed?
 
-Hello Hans,
-
-I hope you are well!
-
-> > The open coded version differs from the one in the core in one way: the
-> > buffer will be always copied back, even when the transfer failed. It
-> > looks like it is expected that the sanity check for a correct CRC and
-> > header will bail out later.
->=20
-> Nah, it's just a bug. It should have returned and checked the error code,
-> so your patch does the right thing.
-
-I see. So, I will only update the commit message.
-
-Thanks for the reviews!
-
-All the best,
-
-   Wolfram
-
---UoPmpPX/dBe4BELn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAFVgEACgkQFA3kzBSg
-KbZ3Cw/9FeXBB9yAE8JaLW1qfx818VZsFHqynPt8ZQfpHw5NjG0LWG0PDLV7zexc
-ICRQU3Q/OeL+6Gvabu2whzaKNsi6Ms5fdOcrEHpiG1kAjjHSFTdEpHmbXbNy/b8r
-lZRPMs1Ch9qDQut4Jwmn1DsZ6jJCcdwokust+jQj32IsbJEsIabT/ixy9bn/uDf3
-SBLWPt4mNJMjMzTcq375BcBdXaMt0SmPzsZ7rHbTTDuao7q8CFjbLdQbrmxW8vEE
-NMdF/YgSX1I5hp467gissGJahs108kKZhAU7SArH8j0aUbfesb6vRMEF0aTpEiwG
-jwT0etOmlFyubjNnS31ONAQBPEf8psZg8k/WUHKdj87Re2yZBueeiZ06t6k8/Sr6
-XXK5gLUAkF8DHF61dJZlVqe7Fhdmwy/+RkfkM1RSaqlC66teSXZror3y1w3bavtr
-qT71YfT221Vxx/gFaoEdWPTW6M8mQyS9umSmCf8BJXwsKo/QCVdkBdpXOfHLOsPT
-bfHAuS7UidzJwgbCwuO9GlrsH/Mvn0GkKQcivzjD4NnfFq6Ll5cYbHKH5u2J3iiy
-VTdl6zcMrend4NTTvXkWyFmM7hwT5ClxKfmTMR0ahvmvU8wg7KWuv95bFhDXU2w8
-jrVDuXDj+NvDKlQ2NgvG14DiHri2/FBvoIqEpgX/w3DdAHizOxc=
-=sKTP
------END PGP SIGNATURE-----
-
---UoPmpPX/dBe4BELn--
+> Pali Rohár (2):
+>   net: sfp: add workaround for Realtek RTL8672 and RTL9601C chips
+>   net: sfp: add mode quirk for GPON module Ubiquiti U-Fiber Instant
+> 
+>  drivers/net/phy/sfp-bus.c |  15 +++++
+>  drivers/net/phy/sfp.c     | 117 ++++++++++++++++++++++++++------------
+>  2 files changed, 97 insertions(+), 35 deletions(-)
+> 
+> -- 
+> 2.20.1
+> 
