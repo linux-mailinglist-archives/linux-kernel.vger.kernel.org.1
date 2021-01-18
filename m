@@ -2,114 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A242FA518
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4462FA4BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405981AbhARPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:33:24 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:41273 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405747AbhARP0v (ORCPT
+        id S2405906AbhARPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:30:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44698 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405810AbhARP1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:26:51 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2BA0F580759;
-        Mon, 18 Jan 2021 10:26:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 18 Jan 2021 10:26:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=LK5udVspjHQLZOBPj3AOvghu8IB
-        7IXzpfmX+3iA0yyM=; b=JUXw6fSJLyuqzUlgdPryxxbBmVR97uUZeEu/DqXnYuQ
-        AzPbEFMtfObcCGSi9mha9wJ7c0G0tSRLn+kBA3WFlxO9OAI0+fnCQLY8jQkHXIn8
-        8RDrZb1L/JEX5hgv49rJtJU0Rn7xGHhF+i5+5J6lwr2YCs9EqX78NPc0EEHDrE6+
-        lCs4+01gYKwpd5hYCd7QuD1TeMOk7HL1wFqnBeBajmijcv55Wm/HLJNaIlNRTthz
-        TnzUD9pIRC9kvh/tc2QxODdQYKqpXM6QXymcee2BngqBPp4mPiIb/IGlqFae/kjt
-        eRU8JSw5lz0tWobbrs1A52b3qHxarFxFjcPDzlTuWLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LK5udV
-        spjHQLZOBPj3AOvghu8IB7IXzpfmX+3iA0yyM=; b=OrDv6EJMxZ8zZSQnaEkBw1
-        z/+g0CPgCISMzkLD4SDEwCPa//yimGgSWOyCrVA8uKiNKd4TI4qOIq/1zRSrRLTU
-        HkIHRLSZuFFo7yQA1JbxEj+Hg3my0g8KUyDAWGw0xV4bCgl3sOmGMcwglD0KPonu
-        ykHpSrPU5Y/gk6UZzS+7HWkX/EnanKkKOcc73PeLkeBKDdbB8QRkhSGnIwC+XUk8
-        dk0Ju7zXeMHQtfG7enar56SncOfdk7lcv8Q05l31QmTtUOnoTB7biSzMtma3mH65
-        EzPEUHr3mnz9oeCzEgkp7X3KlTklDCAgtyDCqGUKR5SSSPuWkZ2mRr2fV90kKgFQ
-        ==
-X-ME-Sender: <xms:i6gFYE2EtQxPEONHcpCoOcYQhoaT5ytVahUSen5Eh5Z_0WC7BjORMg>
-    <xme:i6gFYPGeGIOHIebhtRJRtuYtaisjsa6bKjSMsSGQPxWGEjrPZNcgV1rSXcRY8UFC_
-    lzQ1NWN2Zk3akGp81w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdejiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:jKgFYM6K1GvqDmNIz05stVJ0mzkLYuZyGBZc87nT3OvDHq9_xXhF-g>
-    <xmx:jKgFYN2Z_7yNjXrzgHaldcjZCCOChIsF86VQaP3Pz78_B9fioTMEag>
-    <xmx:jKgFYHHVENeUFZCQRz3Hw6a9bUq7yuh3hyV1FmwVNLBZ6u93tu7ckQ>
-    <xmx:jagFYO_PKqT9sXh6FheJh6mTE8Zqg2VYuRPlB06nCN93EuITw79jUQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B093524005A;
-        Mon, 18 Jan 2021 10:26:03 -0500 (EST)
-Date:   Mon, 18 Jan 2021 16:26:01 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v3 04/21] pinctrl: sunxi: Add support for the Allwinner
- H616 pin controller
-Message-ID: <20210118152601.j4dn27zzhuzds2ya@gilmour>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-5-andre.przywara@arm.com>
+        Mon, 18 Jan 2021 10:27:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610983570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMzXjiQjEPYFOo6AtaVtJ1kcDh5p275fQW5WvHPO2L0=;
+        b=SnrxnCgCSUIdamrXadinwQjn51SzUNoo6+KkvU0WnYjyXsFSvZnRDYqdY2lbLHyB6MBppd
+        xn+AwgOAxyXN+940pYKPUEyr7tZrFjYYgKPGCHC7VwGlZfnB/wsfA1BnvSkbxYp/MWU68J
+        OKHwp9QZCIu+gOZqiaWX/XUfNEJhRRY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-aqnDHrMhPMOKC6AGfGAPAw-1; Mon, 18 Jan 2021 10:26:09 -0500
+X-MC-Unique: aqnDHrMhPMOKC6AGfGAPAw-1
+Received: by mail-ed1-f70.google.com with SMTP id a24so2719110eda.14
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:26:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dMzXjiQjEPYFOo6AtaVtJ1kcDh5p275fQW5WvHPO2L0=;
+        b=K5LcWIHb34TkafG6PE2BRfYFdGMtYVWSPJH06Afz/5MTjqh1P1zzWZlfyWTKAUtUt/
+         zn+c/wXdX7INoGeSjo7X7EoEqUULNALHel0+zXKZSsozN31VHByUB2VQ/3Fc8GCAgU1L
+         Tu0w2pvgov9IqkTS4JUYHGyK6Mn/KT6SpEl9cEfjp+UwiM3sNKezyqcnki8qnHb6fQ28
+         nNrZDqCSJOAtMA12zKFvtIqzxqM1CV/syBl+DFp7WbOYPTSvVaFlrGiMv3B0n6tMUdbG
+         jlllmq51KGraNHzn/AR5yMuqMszkHjixM3p92YCqlJT2LDcQKZTY+5BMY/lw1fGM9qVS
+         bqww==
+X-Gm-Message-State: AOAM533MScCDpNyJYciw6LArwNxd16HU7a7hnDsvyRozKPJZM/82U4NN
+        w/ESNvxiOsyvAHS2orSFtEkPBo0r7nudue2klnG5jemXeltOR8sdJpLtlSziRD0/c0cyrGcmY3Z
+        8YXF7rN68CiIsZUs1DkItgwTS
+X-Received: by 2002:a05:6402:134b:: with SMTP id y11mr27152edw.88.1610983567981;
+        Mon, 18 Jan 2021 07:26:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwF49o+cmHwf7i/a7bjhOMU/XdEU5zICm4lAbBHNnk8POocRIVlXS+Kxss5+2xBcHEXFtlGdg==
+X-Received: by 2002:a05:6402:134b:: with SMTP id y11mr27143edw.88.1610983567834;
+        Mon, 18 Jan 2021 07:26:07 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id p3sm10680297edh.50.2021.01.18.07.26.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 07:26:06 -0800 (PST)
+Subject: Re: [PATCH v1 1/2] ACPI: scan: Rearrange memory allocation in
+ acpi_device_add()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <3494203.VBaj39JGmp@kreacher> <2999734.9HhbEeWEHR@kreacher>
+ <8218eff4-6629-ac20-ec3f-a66aad445bb6@redhat.com>
+ <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bbcf5658-0097-9641-a790-ba65fcdaffe7@redhat.com>
+Date:   Mon, 18 Jan 2021 16:26:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3df5e5hjreiqauet"
-Content-Disposition: inline
-In-Reply-To: <20210118020848.11721-5-andre.przywara@arm.com>
+In-Reply-To: <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---3df5e5hjreiqauet
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 1/18/21 4:16 PM, Rafael J. Wysocki wrote:
+> On Sat, Jan 16, 2021 at 1:37 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 1/14/21 7:46 PM, Rafael J. Wysocki wrote:
+>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>>
+>>> The upfront allocation of new_bus_id is done to avoid allocating
+>>> memory under acpi_device_lock, but it doesn't really help,
+>>> because (1) it leads to many unnecessary memory allocations for
+>>> _ADR devices, (2) kstrdup_const() is run under that lock anyway and
+>>> (3) it complicates the code.
+>>>
+>>> Rearrange acpi_device_add() to allocate memory for a new struct
+>>> acpi_device_bus_id instance only when necessary, eliminate a redundant
+>>> local variable from it and reduce the number of labels in there.
+>>>
+>>> No intentional functional impact.
+>>>
+>>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>> ---
+>>>  drivers/acpi/scan.c |   57 +++++++++++++++++++++++-----------------------------
+>>>  1 file changed, 26 insertions(+), 31 deletions(-)
+>>>
+>>> Index: linux-pm/drivers/acpi/scan.c
+>>> ===================================================================
+>>> --- linux-pm.orig/drivers/acpi/scan.c
+>>> +++ linux-pm/drivers/acpi/scan.c
+>>> @@ -621,12 +621,23 @@ void acpi_bus_put_acpi_device(struct acp
+>>>       put_device(&adev->dev);
+>>>  }
+>>>
+>>> +static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+>>> +{
+>>> +     struct acpi_device_bus_id *acpi_device_bus_id;
+>>> +
+>>> +     /* Find suitable bus_id and instance number in acpi_bus_id_list. */
+>>> +     list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+>>> +             if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
+>>> +                     return acpi_device_bus_id;
+>>> +     }
+>>> +     return NULL;
+>>> +}
+>>> +
+>>>  int acpi_device_add(struct acpi_device *device,
+>>>                   void (*release)(struct device *))
+>>>  {
+>>> +     struct acpi_device_bus_id *acpi_device_bus_id;
+>>>       int result;
+>>> -     struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
+>>> -     int found = 0;
+>>>
+>>>       if (device->handle) {
+>>>               acpi_status status;
+>>> @@ -652,38 +663,26 @@ int acpi_device_add(struct acpi_device *
+>>>       INIT_LIST_HEAD(&device->del_list);
+>>>       mutex_init(&device->physical_node_lock);
+>>>
+>>> -     new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
+>>> -     if (!new_bus_id) {
+>>> -             pr_err(PREFIX "Memory allocation error\n");
+>>> -             result = -ENOMEM;
+>>> -             goto err_detach;
+>>> -     }
+>>> -
+>>>       mutex_lock(&acpi_device_lock);
+>>> -     /*
+>>> -      * Find suitable bus_id and instance number in acpi_bus_id_list
+>>> -      * If failed, create one and link it into acpi_bus_id_list
+>>> -      */
+>>> -     list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+>>> -             if (!strcmp(acpi_device_bus_id->bus_id,
+>>> -                         acpi_device_hid(device))) {
+>>> -                     acpi_device_bus_id->instance_no++;
+>>> -                     found = 1;
+>>> -                     kfree(new_bus_id);
+>>> -                     break;
+>>> +
+>>> +     acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+>>> +     if (acpi_device_bus_id) {
+>>> +             acpi_device_bus_id->instance_no++;
+>>> +     } else {
+>>> +             acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+>>> +                                          GFP_KERNEL);
+>>> +             if (!acpi_device_bus_id) {
+>>> +                     result = -ENOMEM;
+>>> +                     goto err_unlock;
+>>>               }
+>>> -     }
+>>> -     if (!found) {
+>>> -             acpi_device_bus_id = new_bus_id;
+>>>               acpi_device_bus_id->bus_id =
+>>>                       kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+>>>               if (!acpi_device_bus_id->bus_id) {
+>>> -                     pr_err(PREFIX "Memory allocation error for bus id\n");
+>>> +                     kfree(acpi_device_bus_id);
+>>>                       result = -ENOMEM;
+>>> -                     goto err_free_new_bus_id;
+>>> +                     goto err_unlock;
+>>>               }
+>>
+>> When I have cases like this, where 2 mallocs are necessary I typically do it like this:
+>>
+>>         const char *bus_id;
+>>
+>>         ...
+>>
+>>         } else {
+>>                 acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+>>                                              GFP_KERNEL);
+>>                 bus_id = kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+>>                 if (!acpi_device_bus_id || !bus_id) {
+>>                         kfree(acpi_device_bus_id);
+>>                         kfree(bus_id);
+>>                         result = -ENOMEM;
+>>                         goto err_unlock;
+>>                 }
+>>                 acpi_device_bus_id->bus_id = bus_id;
+>>                 list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+>>         }
+>>
+>>         ...
+>>
+>> So that there is only one if / 1 error-handling path for both mallocs.
+>> I personally find this a bit cleaner.
+> 
+> Yes, that looks better.
+> 
+> Let me do it this way, but I won't resend the patch if you don't mind.
 
-On Mon, Jan 18, 2021 at 02:08:31AM +0000, Andre Przywara wrote:
-> Port A is used for an internal connection to some analogue circuitry
-> which looks like an AC200 IP (as in the H6), though this is not
-> mentioned in the manual.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Not resending is fine.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Regards,
 
-Thanks!
-Maxime
+Hans
 
---3df5e5hjreiqauet
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAWohQAKCRDj7w1vZxhR
-xWwgAQDzUsiSsvVWmGYKTIjfAvDSb4cyvKqd41IRoxEonfT0PgEAsDfaZINzDpAE
-5B80+1Z81y4fyQd1D7swQqnjvF4/JA0=
-=81EK
------END PGP SIGNATURE-----
 
---3df5e5hjreiqauet--
+
+> 
+>> Either way, with or without this change, the patch looks good to me:
+>>
+>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Thanks!
+> 
+
