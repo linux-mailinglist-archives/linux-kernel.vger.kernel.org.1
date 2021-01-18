@@ -2,145 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86562F9F9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4B92F9FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391419AbhARM3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:29:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11554 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391480AbhARM0H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:26:07 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DK9v05GwMzMLhC;
-        Mon, 18 Jan 2021 20:23:56 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 18 Jan 2021 20:25:10 +0800
-Subject: Re: [PATCH v2 1/2] vfio/iommu_type1: Populate full dirty when detach
- non-pinned group
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20210115092643.728-1-zhukeqian1@huawei.com>
- <20210115092643.728-2-zhukeqian1@huawei.com>
- <20210115110144.61e3c843@omen.home.shazbot.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <f8de434c-1993-cfe8-c451-2235be1ceb85@huawei.com>
-Date:   Mon, 18 Jan 2021 20:25:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S2391485AbhARMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:35:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390724AbhARLps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:45:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D95C522CF6;
+        Mon, 18 Jan 2021 11:44:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610970295;
+        bh=robM1FCf2o6+qoV9voRAPYcuZqSUj2u4npsE/QEkB1A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MH1KEqPCf7bLu7cCmct2B4x8qJSz/cFW1yUwzfXNM+DlkQpLQv+SHwdC9Xi0wU19Z
+         AiKxze4lBKAW3zQkyK5UGfkQ2Q8jLewjDJ6wnKVjSxws+83Rvv8Tz3PhYX8RGVj3fA
+         YD65scDAX3FYgejKCaDHPcluft61TOP5GFfdRclY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 102/152] cfg80211: select CONFIG_CRC32
+Date:   Mon, 18 Jan 2021 12:34:37 +0100
+Message-Id: <20210118113357.631944183@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20210115110144.61e3c843@omen.home.shazbot.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
+
+[ Upstream commit 152a8a6c017bfdeda7f6d052fbc6e151891bd9b6 ]
+
+Without crc32 support, this fails to link:
+
+arm-linux-gnueabi-ld: net/wireless/scan.o: in function `cfg80211_scan_6ghz':
+scan.c:(.text+0x928): undefined reference to `crc32_le'
+
+Fixes: c8cb5b854b40 ("nl80211/cfg80211: support 6 GHz scanning")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/wireless/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
+index 27026f587fa61..f620acd2a0f5e 100644
+--- a/net/wireless/Kconfig
++++ b/net/wireless/Kconfig
+@@ -21,6 +21,7 @@ config CFG80211
+ 	tristate "cfg80211 - wireless configuration API"
+ 	depends on RFKILL || !RFKILL
+ 	select FW_LOADER
++	select CRC32
+ 	# may need to update this when certificates are changed and are
+ 	# using a different algorithm, though right now they shouldn't
+ 	# (this is here rather than below to allow it to be a module)
+-- 
+2.27.0
 
 
-On 2021/1/16 2:01, Alex Williamson wrote:
-> On Fri, 15 Jan 2021 17:26:42 +0800
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> 
->> If a group with non-pinned-page dirty scope is detached with dirty
->> logging enabled, we should fully populate the dirty bitmaps at the
->> time it's removed since we don't know the extent of its previous DMA,
->> nor will the group be present to trigger the full bitmap when the user
->> retrieves the dirty bitmap.
->>
->> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
->> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  drivers/vfio/vfio_iommu_type1.c | 18 +++++++++++++++++-
->>  1 file changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 0b4dedaa9128..4e82b9a3440f 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -236,6 +236,19 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
->>  	}
->>  }
->>  
->> +static void vfio_iommu_populate_bitmap_full(struct vfio_iommu *iommu)
->> +{
->> +	struct rb_node *n;
->> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
->> +
->> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
->> +		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
->> +
->> +		if (dma->iommu_mapped)
->> +			bitmap_set(dma->bitmap, 0, dma->size >> pgshift);
->> +	}
->> +}
->> +
->>  static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu, size_t pgsize)
->>  {
->>  	struct rb_node *n;
->> @@ -2415,8 +2428,11 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>  	 * Removal of a group without dirty tracking may allow the iommu scope
->>  	 * to be promoted.
->>  	 */
->> -	if (update_dirty_scope)
->> +	if (update_dirty_scope) {
->>  		update_pinned_page_dirty_scope(iommu);
->> +		if (iommu->dirty_page_tracking)
->> +			vfio_iommu_populate_bitmap_full(iommu);
->> +	}
->>  	mutex_unlock(&iommu->lock);
->>  }
->>  
-> 
-> This doesn't do the right thing.  This marks the bitmap dirty if:
-> 
->  * The detached group dirty scope was not limited to pinned pages
-> 
->  AND
-> 
->  * Dirty tracking is enabled
-> 
->  AND
-> 
->  * The vfio_dma is *currently* (ie. after the detach) iommu_mapped
-> 
-> We need to mark the bitmap dirty based on whether the vfio_dma *was*
-> iommu_mapped by the group that is now detached.  Thanks,
-> 
-> Alex
-> 
-Hi Alex,
 
-Yes, I missed this point again :-(. The update_dirty_scope means we detached
-an iommu backed group, and that means the vfio_dma *was* iommu_mapped by this
-group, so we can populate full bitmap unconditionally, right?
-
-Thanks,
-Keqian
-
-
-> .
-> 
