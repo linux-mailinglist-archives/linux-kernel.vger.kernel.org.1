@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490712FA2A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489B12FA2A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392757AbhAROOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:14:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
+        id S2392742AbhAROOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:14:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390886AbhARONR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:13:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A99D322B49;
-        Mon, 18 Jan 2021 14:12:34 +0000 (UTC)
+        id S2392602AbhARONU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:13:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1347C22C9C;
+        Mon, 18 Jan 2021 14:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610979156;
-        bh=/9YqueDD6mDPFdGvI3qBNOd4tWcc0HxJ2vpRRbZaonA=;
+        s=k20201202; t=1610979159;
+        bh=RQiUXiAMN3snTHBqujy0NwbRRJAqNS4N8r8Z2NSgAtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uR4LB8ak2ZlvEt/aHcUTsyXUKfPDgKtWvVhx7Dh5ou2Wy9cc6G2Dd+M/f2mBKwe2c
-         FnrC0LBp7YtVFRjRg/QOy4SuSj28xjZ8ViRR2xkmttPgDoN3pm7e0lVnXfTIvcClv+
-         BCWnInQjmgcEAC5fVA6rSe1TMGDja3iCUnc2ax+ANbkf7nM+UNx46oIrqBqWz5sVAd
-         XDrPzkzRUqaswHbhuoqSl/3hwnJnj07XYQ1OqPRDqYjSVV1fAm4aIDNsIXmPX70/9z
-         bwoPuNc5+LDMyBpOSRQB8BLLmG6nIiy7a8MxkhYgfVot7xxQOYPHPGboFJz4uuu0vY
-         voYSyEpPlCyuw==
+        b=qqKJwyBTp+XGJgCVYcCfBB4tCiWNx94u+8/FDxzNI6CarQLa+RrpD7JddnSioQHaP
+         yGzLIarUHWcFkbIkijgKecD8BYWm6S90f2nwoNZlFE8YPGfOuNPQTAQAYBYmLjuMDe
+         GqhCCNvB3wEsNc3XWLgvWEnW13MdAa3jlvBAdFjdYvaAglv6hfB75EVSoeENAtYR59
+         IwUoP1VGLzWgqAko0bnUbL0no8PoEK/0UoHNzfv4QAjPAQGTA8bcROL/iG6v5eumfJ
+         34Qvr6LR78dzNhkPfhL7L+6MOv0sBwcSyJRSnhlFkMUuWsojD/78QCzZ3CkSjt27Ez
+         WBwrfbFL1h1/A==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>, Mel Gorman <mgorman@suse.de>,
         Frederic Weisbecker <frederic@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: [RFC PATCH 3/8] static_call: Pull some static_call declarations to the type headers
-Date:   Mon, 18 Jan 2021 15:12:18 +0100
-Message-Id: <20210118141223.123667-4-frederic@kernel.org>
+Subject: [RFC PATCH 4/8] preempt: Introduce CONFIG_PREEMPT_DYNAMIC
+Date:   Mon, 18 Jan 2021 15:12:19 +0100
+Message-Id: <20210118141223.123667-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118141223.123667-1-frederic@kernel.org>
 References: <20210118141223.123667-1-frederic@kernel.org>
@@ -43,135 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Michal Hocko <mhocko@kernel.org>
 
-Some static call declarations are going to be needed on low level header
-files. Move the necessary material to the dedicated static call types
-header to avoid inclusion dependency hell.
+Preemption mode selection is currently hardcoded on Kconfig choices.
+Introduce a dedicated option to tune preemption flavour at boot time,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+This will be only available on architectures efficiently supporting
+static calls in order not to tempt with the feature against additional
+overhead that might be prohibitive or undesirable.
+
+CONFIG_PREEMPT_DYNAMIC is automatically selected by CONFIG_PREEMPT if
+the architecture provides the necessary support (CONFIG_STATIC_CALL_INLINE,
+CONFIG_GENERIC_ENTRY, and provide with __preempt_schedule_function() /
+__preempt_schedule_notrace_function()).
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/static_call.h       | 23 -----------------------
- include/linux/static_call_types.h | 29 +++++++++++++++++++++++++++++
- 2 files changed, 29 insertions(+), 23 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  7 +++++++
+ arch/Kconfig                                  |  9 +++++++++
+ arch/x86/Kconfig                              |  1 +
+ kernel/Kconfig.preempt                        | 19 +++++++++++++++++++
+ 4 files changed, 36 insertions(+)
 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 076f124c957a..c272ccd811de 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -107,26 +107,10 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 9e3cdb271d06..75e6c5d736fb 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3916,6 +3916,13 @@
+ 			Format: {"off"}
+ 			Disable Hardware Transactional Memory
  
- #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
- 
--/*
-- * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-- * the symbol table so that objtool can reference it when it generates the
-- * .static_call_sites section.
-- */
--#define __static_call(name)						\
--({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
--})
--
- #else
- #define STATIC_CALL_TRAMP_ADDR(name) NULL
- #endif
- 
--
--#define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
--	extern typeof(func) STATIC_CALL_TRAMP(name);
--
- #define static_call_update(name, func)					\
- ({									\
- 	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
-@@ -134,8 +118,6 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 			     STATIC_CALL_TRAMP_ADDR(name), func);	\
- })
- 
--extern long __static_call_return0(void);
--
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
- extern int __init static_call_init(void);
-@@ -176,7 +158,6 @@ extern int static_call_text_reserved(void *start, void *end);
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- #define EXPORT_STATIC_CALL(name)					\
-@@ -209,7 +190,6 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- static inline
-@@ -254,9 +234,6 @@ struct static_call_key {
- 		.func = NULL,						\
- 	}
- 
--#define static_call(name)						\
--	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
--
- static inline void __static_call_nop(void) { }
- 
- /*
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 89135bb35bf7..632a9e79c003 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,32 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
++	preempt=	[KNL]
++			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
++			none - Limited to cond_resched() calls
++			voluntary - Limited to cond_resched() and might_sleep() calls
++			full - Any section that isn't explicitly preempt disabled
++			       can be preempted anytime.
 +
-+extern long __static_call_return0(void);
+ 	print-fatal-signals=
+ 			[KNL] debug: print fatal signals
+ 
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 24862d15f3a3..84db237bdb67 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1090,6 +1090,15 @@ config HAVE_STATIC_CALL_INLINE
+ 	bool
+ 	depends on HAVE_STATIC_CALL
+ 
++config HAVE_PREEMPT_DYNAMIC
++	bool
++	depends on HAVE_STATIC_CALL_INLINE
++	depends on GENERIC_ENTRY
++	help
++	   Select this if the architecture support boot time preempt setting
++	   on top of static calls. It is strongly advised to support inline
++	   static call to avoid any overhead.
 +
-+#ifdef CONFIG_HAVE_STATIC_CALL
+ config ARCH_WANT_LD_ORPHAN_WARN
+ 	bool
+ 	help
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..cdae92ec29d2 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -224,6 +224,7 @@ config X86
+ 	select HAVE_STACK_VALIDATION		if X86_64
+ 	select HAVE_STATIC_CALL
+ 	select HAVE_STATIC_CALL_INLINE		if HAVE_STACK_VALIDATION
++	select HAVE_PREEMPT_DYNAMIC		if HAVE_STATIC_CALL_INLINE
+ 	select HAVE_RSEQ
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index bf82259cff96..416017301660 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -40,6 +40,7 @@ config PREEMPT
+ 	depends on !ARCH_NO_PREEMPT
+ 	select PREEMPTION
+ 	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
++	select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
+ 	help
+ 	  This option reduces the latency of the kernel by making
+ 	  all kernel code (that is not executing in a critical section)
+@@ -80,3 +81,21 @@ config PREEMPT_COUNT
+ config PREEMPTION
+        bool
+        select PREEMPT_COUNT
 +
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
++config PREEMPT_DYNAMIC
++	bool
++	help
++	  This option allows to define the preemption model on the kernel
++	  command line parameter and thus override the default preemption
++	  model defined during compile time.
 +
-+#define static_call(name)	__static_call(name)
++	  The feature is primarily interesting for Linux distributions which
++	  provide a pre-built kernel binary to reduce the number of kernel
++	  flavors they offer while still offering different usecases.
 +
-+#else
++	  The runtime overhead is negligible with HAVE_STATIC_CALL_INLINE enabled
++	  but if runtime patching is not available for the specific architecture
++	  then the potential overhead should be considered.
 +
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
++	  Interesting if you want the same pre-built kernel should be used for
++	  both Server and Desktop workloads.
 -- 
 2.25.1
 
