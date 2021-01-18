@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0832FA7DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A292F2FA806
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407250AbhARRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:47:20 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:50881 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436707AbhARRp6 (ORCPT
+        id S2436710AbhARRxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:53:48 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:59660 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436653AbhARRqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:45:58 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C11E73EBDE;
-        Mon, 18 Jan 2021 18:45:13 +0100 (CET)
-Subject: Re: [PATCH 1/2] media: venus: core: Add sdm660 DT compatible and
- resource struct
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, phone-devel@vger.kernel.org
-References: <20210115185252.333562-1-angelogioacchino.delregno@somainline.org>
- <20210115185252.333562-2-angelogioacchino.delregno@somainline.org>
- <2dc8a95f-110f-526f-18a8-6393e508c3a6@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <eabc91cc-de96-08ef-756c-87fe43d6fadc@somainline.org>
-Date:   Mon, 18 Jan 2021 18:45:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 18 Jan 2021 12:46:44 -0500
+Received: from mail-lf1-f71.google.com ([209.85.167.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l1Yb0-0004aO-Su
+        for linux-kernel@vger.kernel.org; Mon, 18 Jan 2021 17:45:53 +0000
+Received: by mail-lf1-f71.google.com with SMTP id 7so6911416lfz.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:45:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ooFCSpxNJTp9XtUwL6uKTwDWwzCSip4jz+DezusF5A=;
+        b=i+r8DV0uXH2WVac77CJ8Mt0H+YhX0AEUUIxJwfGsRgOi0xeO5MJCjzwTBNMhsjFmSA
+         C4qVCHwfkJrTY/LRqR+WpnrwCo9PYF9Ow+pRlYdHoGEJDSPX7r2VCrp3relm9QUCuHj2
+         UGo96AoW3grTqkwXREAlfWfeurz/b1akOj/Edvify6PgitAK2M/PksuMljwvQ0hMOvaX
+         82MyGEBK2KuHjaoOtlX+N7QP6T4d57gsknKngdHWalWYCZV/ySNwdv9xfFfI53ZMyUaZ
+         xFOGOZom8ncSixYKKuigy31aHNfb2ev4+d6WhC1ylrDRsv1poQgpvga/tHeL3bwOHf1S
+         kBAg==
+X-Gm-Message-State: AOAM531A6xeZN2lljR8E2iXzbTMUAG49XUlMWn4NMLfTWiEM90OOKHbT
+        FyRVyExqHglU+o2MzUbB43czyH3Uzg/+RrykYstTzbSIm9+UxQxJqAgZuNKZv/A25eTCgIdIwc6
+        N8k5XWH+SnW6Xa4xqLtrr01s+YWOWqmw8euzn98SXawElQBBkfw6Fdy0RWw==
+X-Received: by 2002:ac2:561b:: with SMTP id v27mr96328lfd.425.1610991942362;
+        Mon, 18 Jan 2021 09:45:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxuGUEvNmZZQTHUk/701mXMBvtSTVf4z3qsKQY/HZdODD33tzB7RECpncnDEPw+84K5lE4EfDpC8UXPo4rOcIs=
+X-Received: by 2002:ac2:561b:: with SMTP id v27mr96320lfd.425.1610991942149;
+ Mon, 18 Jan 2021 09:45:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2dc8a95f-110f-526f-18a8-6393e508c3a6@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210118134523.178605-1-kai.heng.feng@canonical.com> <CAO-hwJ+29t8D1RkEh23=k_x4vOWwo3HvR_3GAA9M2pPNMaGLNQ@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+29t8D1RkEh23=k_x4vOWwo3HvR_3GAA9M2pPNMaGLNQ@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 19 Jan 2021 01:45:30 +0800
+Message-ID: <CAAd53p4JHX5R1KxSuz_PMsdJiZ85rnJR_LwG-RmgNs-0hKubrQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: multitouch: Apply MT_QUIRK_CONFIDENCE quirk for
+ multi-input devices
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/01/21 18:21, Stanimir Varbanov ha scritto:
-> Hi Angelo,
-> 
-> Thanks for the patch!
-> 
-> On 1/15/21 8:52 PM, AngeloGioacchino Del Regno wrote:
->> Add the SDM660 DT compatible and its resource structure, also
->> including support for the Venus pmdomains, in order to support
->> the Venus block in SDM630, SDM636, SDM660 and SDA variants.
->>
->> This SoC features Venus 4.4 (HFI3XX), with one vcodec used for
->> both encoding and decoding, switched on through two GDSCs.
->> The core clock for this Venus chip is powered by the RPM VDD_CX
->> power domain.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> ---
->>   drivers/media/platform/qcom/venus/core.c | 66 ++++++++++++++++++++++++
->>   1 file changed, 66 insertions(+)
->>
->> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
->> index bdd293faaad0..83ca86a63241 100644
->> --- a/drivers/media/platform/qcom/venus/core.c
->> +++ b/drivers/media/platform/qcom/venus/core.c
->> @@ -565,6 +565,71 @@ static const struct venus_resources sdm845_res_v2 = {
->>   	.fwname = "qcom/venus-5.2/venus.mdt",
->>   };
->>   
->> +static const struct freq_tbl sdm660_freq_table[] = {
->> +	{ 0, 518400000 },
->> +	{ 0, 441600000 },
->> +	{ 0, 404000000 },
->> +	{ 0, 320000000 },
->> +	{ 0, 269330000 },
->> +	{ 0, 133330000 },
->> +};
->> +
->> +static const struct reg_val sdm660_reg_preset[] = {
->> +	{ 0x80010, 0x001f001f },
->> +	{ 0x80018, 0x00000156 },
->> +	{ 0x8001C, 0x00000156 },
->> +};
->> +
->> +static const struct bw_tbl sdm660_bw_table_enc[] = {
->> +	{  979200,  1044000, 0, 2446336, 0 },	/* 4k UHD @ 30 */
->> +	{  864000,   887000, 0, 2108416, 0 },	/* 720p @ 240 */
->> +	{  489600,   666000, 0, 1207296, 0 },	/* 1080p @ 60 */
->> +	{  432000,   578000, 0, 1058816, 0 },	/* 720p @ 120 */
->> +	{  244800,   346000, 0,  616448, 0 },	/* 1080p @ 30 */
->> +	{  216000,   293000, 0,  534528, 0 },	/* 720p @ 60 */
->> +	{  108000,   151000, 0,  271360, 0 },	/* 720p @ 30 */
->> +};
->> +
->> +static const struct bw_tbl sdm660_bw_table_dec[] = {
->> +	{  979200,  2365000, 0, 1892000, 0 },	/* 4k UHD @ 30 */
->> +	{  864000,  1978000, 0, 1554000, 0 },	/* 720p @ 240 */
->> +	{  489600,  1133000, 0,  895000, 0 },	/* 1080p @ 60 */
->> +	{  432000,   994000, 0,  781000, 0 },	/* 720p @ 120 */
->> +	{  244800,   580000, 0,  460000, 0 },	/* 1080p @ 30 */
->> +	{  216000,   501000, 0,  301000, 0 },	/* 720p @ 60 */
->> +	{  108000,   255000, 0,  202000, 0 },	/* 720p @ 30 */
->> +};
->> +
->> +static const struct venus_resources sdm660_res = {
->> +	.freq_tbl = sdm660_freq_table,
->> +	.freq_tbl_size = ARRAY_SIZE(sdm660_freq_table),
->> +	.reg_tbl = sdm660_reg_preset,
->> +	.reg_tbl_size = ARRAY_SIZE(sdm660_reg_preset),
->> +	.bw_tbl_enc = sdm660_bw_table_enc,
->> +	.bw_tbl_enc_size = ARRAY_SIZE(sdm660_bw_table_enc),
->> +	.bw_tbl_dec = sdm660_bw_table_dec,
->> +	.bw_tbl_dec_size = ARRAY_SIZE(sdm660_bw_table_dec),
->> +	.clks = {"core", "iface", "bus_throttle", "bus" },
->> +	.clks_num = 4,
->> +	.vcodec0_clks = { "vcodec0_core" },
->> +	.vcodec_clks_num = 1,
->> +	.vcodec_pmdomains = { "venus", "vcodec0" },
->> +	.vcodec_pmdomains_num = 2,
->> +	.opp_pmdomain = (const char *[]) { "cx", NULL },
->> +	.vcodec_num = 1,
->> +	.max_load = 1036800,
->> +	.hfi_version = HFI_VERSION_3XX,
->> +	.vmem_id = VIDC_RESOURCE_NONE,
->> +	.vmem_size = 0,
->> +	.vmem_addr = 0,
->> +	.cp_start = 0,
->> +	.cp_size = 0x79000000,
->> +	.cp_nonpixel_start = 0x1000000,
->> +	.cp_nonpixel_size = 0x28000000,
->> +	.dma_mask = 0xd9000000 - 1,
->> +	.fwname = "qcom/venus-4.4/venus.mdt",
-> 
-> Did you try venus-4.2 firmware from linux-firmware tree [1] ?
-> 
+Hi,
 
-No I haven't.. and I can't... my Sony devices (but I think that this is
-a practice of all OEMs/ODMs) are using a Sony signed venus firmware, so
-I am totally limited to use the firmware that comes with the device.
+On Mon, Jan 18, 2021 at 10:41 PM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> Hi,
+>
+> On Mon, Jan 18, 2021 at 2:45 PM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Palm ejection stops working on some Elan and Synaptics touchpad after
+> > commit 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for
+> > some devices").
+> >
+> > The commit changes the mt_class from MT_CLS_WIN_8 to
+> > MT_CLS_WIN_8_FORCE_MULTI_INPUT, so MT_QUIRK_CONFIDENCE isn't applied
+> > anymore.
+> >
+> > So also apply the quirk since MT_CLS_WIN_8_FORCE_MULTI_INPUT is
+> > essentially MT_CLS_WIN_8.
+> >
+> > Fixes: 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for some devices")
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> Thanks for the patch.
+>
+> IIt seems I was too lazy to write a regression test for it, and this
+> strikes back.
+> Can you also work on a regression test for this at
+> https://gitlab.freedesktop.org/libevdev/hid-tools ?
 
-Besides that, the version is still different so, even if I had any
-possibility to try that, I don't think that it would work anyway...
+Of course. I'll do it later this week. Currently I have both affected
+Elan and Synaptics touchpad in hand.
+Will this be a blocker of getting the patch merged?
 
->> +};
->> +
->>   static const struct freq_tbl sc7180_freq_table[] = {
->>   	{  0, 500000000 },
->>   	{  0, 434000000 },
->> @@ -613,6 +678,7 @@ static const struct venus_resources sc7180_res = {
->>   static const struct of_device_id venus_dt_match[] = {
->>   	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res, },
->>   	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res, },
->> +	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res, },
->>   	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res, },
->>   	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2, },
->>   	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res, },
->>
-> 
-> Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> 
+Kai-Heng
 
-Thank you!
-- Angelo
+>
+> Cheers,
+> Benjamin
+>
+>
+>
+>
+> > ---
+> >  drivers/hid/hid-multitouch.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+> > index 0743ef51d3b2..8429ebe7097e 100644
+> > --- a/drivers/hid/hid-multitouch.c
+> > +++ b/drivers/hid/hid-multitouch.c
+> > @@ -758,7 +758,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+> >                         MT_STORE_FIELD(inrange_state);
+> >                         return 1;
+> >                 case HID_DG_CONFIDENCE:
+> > -                       if (cls->name == MT_CLS_WIN_8 &&
+> > +                       if ((cls->name == MT_CLS_WIN_8 ||
+> > +                            cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT) &&
+> >                                 (field->application == HID_DG_TOUCHPAD ||
+> >                                  field->application == HID_DG_TOUCHSCREEN))
+> >                                 app->quirks |= MT_QUIRK_CONFIDENCE;
+> > --
+> > 2.29.2
+> >
+>
