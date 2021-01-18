@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702202FAA41
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8269B2FAA68
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394062AbhARTcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        id S2437396AbhARTa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:30:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390383AbhARLhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C41722B4E;
-        Mon, 18 Jan 2021 11:37:05 +0000 (UTC)
+        id S2390419AbhARLiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:38:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0AE522C9D;
+        Mon, 18 Jan 2021 11:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969826;
-        bh=u/uHDV/cYGZnTfypdQ2dMvlAOFNoUEzaJecQfzK9iAw=;
+        s=korg; t=1610969831;
+        bh=pHsrknxLbm2+TJwdXPtNjOIDAvP4x3BeYEw2KreNtEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RsDoIGrCjNVIgtZJtYAKEaGQsrvAz/BAS2osHombXL7C5VVQYI1mQcWjZXLukhWhT
-         75W2lzhFcS7Sbam9OFnB23UgY9kXBC7FcEzhlpQ1yflJ3NZEC+bXwtxpHCc9lS2D0I
-         SSNc/rilwLuMl7PQFOfcsuy4rMLqwGlh+OrZHz2E=
+        b=leBYE2mK4mmG3nJAY05vve+kS0R/2rFylCaUINOI+ytCjoj/Aq8C+6YiWFqui43v8
+         DR6D+fpjaqe2guA943FdZjhohHeHpz3KmGLOxcc3w1RZ2U765WfUP65yiwXGdYQmvM
+         42ZGNYuUC/Ie3avgz3+vQo2AdOCPoN687TNsZOME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoel Caspersen <yoel@kviknet.dk>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 41/43] netfilter: conntrack: fix reading nf_conntrack_buckets
-Date:   Mon, 18 Jan 2021 12:35:04 +0100
-Message-Id: <20210118113336.921993504@linuxfoundation.org>
+        stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.19 43/43] kbuild: enforce -Werror=return-type
+Date:   Mon, 18 Jan 2021 12:35:06 +0100
+Message-Id: <20210118113337.013171620@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
 References: <20210118113334.966227881@linuxfoundation.org>
@@ -41,47 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Olaf Hering <olaf@aepfle.de>
 
-commit f6351c3f1c27c80535d76cac2299aec44c36291e upstream.
+commit 172aad81a882443eefe1bd860c4eddc81b14dd5b upstream.
 
-The old way of changing the conntrack hashsize runtime was through changing
-the module param via file /sys/module/nf_conntrack/parameters/hashsize. This
-was extended to sysctl change in commit 3183ab8997a4 ("netfilter: conntrack:
-allow increasing bucket size via sysctl too").
+Catch errors which at least gcc tolerates by default:
+ warning: 'return' with no value, in function returning non-void [-Wreturn-type]
 
-The commit introduced second "user" variable nf_conntrack_htable_size_user
-which shadow actual variable nf_conntrack_htable_size. When hashsize is
-changed via module param this "user" variable isn't updated. This results in
-sysctl net/netfilter/nf_conntrack_buckets shows the wrong value when users
-update via the old way.
-
-This patch fix the issue by always updating "user" variable when reading the
-proc file. This will take care of changes to the actual variable without
-sysctl need to be aware.
-
-Fixes: 3183ab8997a4 ("netfilter: conntrack: allow increasing bucket size via sysctl too")
-Reported-by: Yoel Caspersen <yoel@kviknet.dk>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/nf_conntrack_standalone.c |    3 +++
- 1 file changed, 3 insertions(+)
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -500,6 +500,9 @@ nf_conntrack_hash_sysctl(struct ctl_tabl
- {
- 	int ret;
- 
-+	/* module_param hashsize could have changed value */
-+	nf_conntrack_htable_size_user = nf_conntrack_htable_size;
-+
- 	ret = proc_dointvec(table, write, buffer, lenp, ppos);
- 	if (ret < 0 || !write)
- 		return ret;
+--- a/Makefile
++++ b/Makefile
+@@ -438,7 +438,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__
+ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-strict-aliasing -fno-common -fshort-wchar \
+ 		   -Werror-implicit-function-declaration \
+-		   -Wno-format-security \
++		   -Werror=return-type -Wno-format-security \
+ 		   -std=gnu89
+ KBUILD_CPPFLAGS := -D__KERNEL__
+ KBUILD_AFLAGS_KERNEL :=
 
 
