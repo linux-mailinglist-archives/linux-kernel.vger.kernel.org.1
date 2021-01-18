@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680662FA73E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89E12FA73A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407038AbhARRQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:16:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39314 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406956AbhARRPU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:15:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610990033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zPWPbpxZWQ8Q/hCVXbr12g2BZoHJDH3rLZiVqLyNR4s=;
-        b=TSFWgb4YRv+0ARlBogCSgoCzR4gk2qGnQDUoomf1nCfJan7JSBCzp1p/OF5Fyr4pjEaTpd
-        UJoL1lmcCRcGtbZs7zZM+9Lr0eExdqAm9WccucwnCVh9RFRgTq2L7j2b1V8hD9uC+Vgv4z
-        Haayh1I6Kk9JtfuAElxFP3UChaAn2LQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-CkabUPLpMdumkNK9YORFNQ-1; Mon, 18 Jan 2021 12:13:52 -0500
-X-MC-Unique: CkabUPLpMdumkNK9YORFNQ-1
-Received: by mail-ed1-f69.google.com with SMTP id f19so8105434edq.20
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:13:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zPWPbpxZWQ8Q/hCVXbr12g2BZoHJDH3rLZiVqLyNR4s=;
-        b=T6CEpidVkvM0B5J3VrVRx1D9fWOxMbPpECEWHQtw7sasDvHBMQwYCQTTyFdNyfeYeW
-         HgFD92It3hGRd85AFMoDyAcvBPJxVPdKCGwA4K3dyffqiscSuABfxc7bvI4przIAM0ZO
-         L8C0VqeljteKzOTkK/QnvJZA4HLY3BpNyqmVxvF4+0X0Rbdvxpi7GTQv2XRIkSM3qGCB
-         2HEHinQCRQPtz32hAxVjIku3mvHm2a26ZXlkb9CJe3CHTTKVe2qnJQsb82buy3de9EPf
-         +IwGe3OUI/7bOYKMDkR9AbfZp/3V2P0ilU/6+2uukQdZOp+LjeSJ6e7+SrLT9uiYGSf5
-         bCCg==
-X-Gm-Message-State: AOAM532DZ4etkyTWqY2CL8a1D3sXfZkttRgCceB5BJTa5ejKgdbds+s0
-        ogc0eJcu3JoLENde+ylhiFfH4Nd/ladIQATpURPTReq152BZkHbySOx5t9sLYywexBTwho8Bj0N
-        xSUmgmoULjTRjqqPo8G1rif2SZqStZobAfKnWHniH95hGfGWqfF8Rl61/YsnTbwdeQu3TXth8ed
-        8=
-X-Received: by 2002:a50:ef04:: with SMTP id m4mr342204eds.283.1610990030856;
-        Mon, 18 Jan 2021 09:13:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwoj1e6TAGfavAW61fVh95F7eCJo8dz9I2P4799nex8prpjvxVLKTzylFJOQiCPtugh+B7R1w==
-X-Received: by 2002:a50:ef04:: with SMTP id m4mr342188eds.283.1610990030608;
-        Mon, 18 Jan 2021 09:13:50 -0800 (PST)
-Received: from kherbst.pingu.com ([2a02:8108:3d3f:f97c:65d6:8fd9:2fe5:eed])
-        by smtp.gmail.com with ESMTPSA id de4sm3126429edb.38.2021.01.18.09.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 09:13:50 -0800 (PST)
-From:   Karol Herbst <kherbst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Karol Herbst <kherbst@redhat.com>
-Subject: [PATCH] drm/nouveau/svm: fail NOUVEAU_SVM_INIT ioctl on unsupported devices
-Date:   Mon, 18 Jan 2021 18:13:46 +0100
-Message-Id: <20210118171346.2053021-1-kherbst@redhat.com>
-X-Mailer: git-send-email 2.29.2
+        id S2407003AbhARRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:15:24 -0500
+Received: from mga18.intel.com ([134.134.136.126]:14256 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407000AbhARROA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:14:00 -0500
+IronPort-SDR: jgT180sITbFf52JiqHuI4q6lmZlm2IUsKw/p1SihYf/PickUfAgARdLr14yXZCosTKcS6tf0ax
+ wifQlR1mT4NA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="166494841"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="166494841"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 09:13:12 -0800
+IronPort-SDR: LzA/uh7JspkW3LdbsSeABYObh+4WRAiQX2209NaAyRjhwUCi4zb+QwtkGd47mDVIzHIo/KmNdU
+ VK3n3lxAiA1Q==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="402103087"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 09:13:09 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1l1Y6V-002OAi-1j; Mon, 18 Jan 2021 19:14:11 +0200
+Date:   Mon, 18 Jan 2021 19:14:11 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-mm <linux-mm@kvack.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] [v2] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for
+ unhashed addresses
+Message-ID: <20210118171411.GG4077@smile.fi.intel.com>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210116220950.47078-2-timur@kernel.org>
+ <CAHp75Vdk6y8dGNJOswZwfOeva_sqVcw-f=yYgf_rptjHXxfZvw@mail.gmail.com>
+ <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes a crash when trying to create a channel on e.g. Turing GPUs when
-NOUVEAU_SVM_INIT was called before.
+On Mon, Jan 18, 2021 at 09:57:55AM -0600, Timur Tabi wrote:
+> On 1/18/21 4:03 AM, Andy Shevchenko wrote:
+> > On Sun, Jan 17, 2021 at 12:12 AM Timur Tabi <timur@kernel.org> wrote:
 
-Fixes: eeaf06ac1a558 ("drm/nouveau/svm: initial support for shared virtual memory")
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_svm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+...
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index 4f69e4c3dafd..1c3f890377d2 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -315,6 +315,10 @@ nouveau_svmm_init(struct drm_device *dev, void *data,
- 	struct drm_nouveau_svm_init *args = data;
- 	int ret;
- 
-+	/* We need to fail if svm is disabled */
-+	if (!cli->drm->svm)
-+		return -ENOSYS;
-+
- 	/* Allocate tracking for SVM-enabled VMM. */
- 	if (!(svmm = kzalloc(sizeof(*svmm), GFP_KERNEL)))
- 		return -ENOMEM;
+> > Any user of this? (For the record, I don't see any other mail except this one)
+
+> It's patch #2 of this set.
+
+I haven't got that one.
+
+> They were all sent together.
+
+Apparently not to me.
+
+> http://lkml.iu.edu/hypermail/linux/kernel/2101.2/00245.html
+> 
+> Let me know what you think.
+
+Makes sense. Hint: use lore.kernel.org references as they are much better in
+terms of provided features and patch representation.
+
+...
+
+> > >          DUMP_PREFIX_NONE,
+> > >          DUMP_PREFIX_ADDRESS,
+> > > -       DUMP_PREFIX_OFFSET
+> > > +       DUMP_PREFIX_OFFSET,
+> > > +       DUMP_PREFIX_UNHASHED,
+> > 
+> > Since it's an address, I would like to group them together, i.e. put
+> > after DUMP_PREFIX_ADDRESS.
+> 
+> I didn't want to change the numbering of any existing enums, just in case
+> there are users that accidentally hard-code the values.  I'm trying to make
+> this patch as unobtrusive as possible.
+
+But isn't it good to expose those issues (and fix them)?
+
+...
+
+> > Perhaps even add _ADDRESS to DUMP_PREFIX_UNHASHED, but this maybe too
+> long.
+> 
+> I think DUMP_PREFIX_ADDRESS_UNHASHED is too long.
+
+What about introducing new two like these:
+
+	DUMP_PREFIX_OFFSET,
+	DUMP_PREFIX_ADDRESS,
+	DUMP_PREFIX_ADDR_UNHASHED,
+	DUMP_PREFIX_ADDR_HASHED,
+
+and allow people step-by-step move to them?
+
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
