@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5012FABFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBFC2FAC75
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389951AbhARU6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:58:08 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:40720 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388520AbhARU5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:57:40 -0500
-Received: from example.org (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id AA00720479;
-        Mon, 18 Jan 2021 20:56:34 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 21:56:29 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [RFC PATCH v3 1/8] Use refcount_t for ucounts reference counting
-Message-ID: <20210118205629.zro2qkd3ut42bpyq@example.org>
-References: <cover.1610722473.git.gladkov.alexey@gmail.com>
- <116c7669744404364651e3b380db2d82bb23f983.1610722473.git.gladkov.alexey@gmail.com>
- <CAHk-=wjsg0Lgf1Mh2UiJE4sqBDDo0VhFVBUbhed47ot2CQQwfQ@mail.gmail.com>
- <20210118194551.h2hrwof7b3q5vgoi@example.org>
- <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
+        id S2389714AbhARKMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389181AbhARJou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:44:50 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFF3C061575;
+        Mon, 18 Jan 2021 01:44:07 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3A5D2AF0;
+        Mon, 18 Jan 2021 10:44:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610963046;
+        bh=u/RGNnTWYJkbFYhanUxjfVEHJfSz/1T8zo9agvGtStE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XlfpbthhtUr1NTmAtFPFZ/OAla0Ej7qPB5RDBO8m8YRHC873pDiRXuT/Ik0DRHR1a
+         I985M5iCiBG+bFLuwNRNOfl8b1m6MJC0HvD+JqoHhxPoNF3ILBwUzOfdg7j06n3w0S
+         Z6817DKfi58aoQG1c47KA8EgsIRh5D+qkK2XqLRs=
+Date:   Mon, 18 Jan 2021 11:43:50 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 1/3] drm: bridge/panel: Cleanup connector on bridge detach
+Message-ID: <YAVYVkb7SPZLAiOZ@pendragon.ideasonboard.com>
+References: <20210117112646.98353-1-paul@crapouillou.net>
+ <20210117112646.98353-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 18 Jan 2021 20:56:57 +0000 (UTC)
+In-Reply-To: <20210117112646.98353-2-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:34:29PM -0800, Linus Torvalds wrote:
-> On Mon, Jan 18, 2021 at 11:46 AM Alexey Gladkov
-> <gladkov.alexey@gmail.com> wrote:
-> >
-> > Sorry about that. I thought that this code is not needed when switching
-> > from int to refcount_t. I was wrong.
+Hi Paul,
+
+Thank you for the patch.
+
+On Sun, Jan 17, 2021 at 11:26:44AM +0000, Paul Cercueil wrote:
+> If we don't call drm_connector_cleanup() manually in
+> panel_bridge_detach(), the connector will be cleaned up with the other
+> DRM objects in the call to drm_mode_config_cleanup(). However, since our
+> drm_connector is devm-allocated, by the time drm_mode_config_cleanup()
+> will be called, our connector will be long gone. Therefore, the
+> connector must be cleaned up when the bridge is detached to avoid
+> use-after-free conditions.
 > 
-> Well, you _may_ be right. I personally didn't check how the return
-> value is used.
+> Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper from the lvds-encoder bridge.")
+> Cc: <stable@vger.kernel.org> # 4.12+
+> Cc: Andrzej Hajda <a.hajda@samsung.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/bridge/panel.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> I only reacted to "it certainly _may_ be used, and there is absolutely
-> no comment anywhere about why it wouldn't matter".
+> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+> index 0ddc37551194..975d65c14c9c 100644
+> --- a/drivers/gpu/drm/bridge/panel.c
+> +++ b/drivers/gpu/drm/bridge/panel.c
+> @@ -87,6 +87,10 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
+>  
+>  static void panel_bridge_detach(struct drm_bridge *bridge)
+>  {
+> +	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+> +	struct drm_connector *connector = &panel_bridge->connector;
+> +
+> +	drm_connector_cleanup(connector);
 
-I have not found examples where checked the overflow after calling
-refcount_inc/refcount_add.
+The panel bridge driver only creates the connector if the
+DRM_BRIDGE_ATTACH_NO_CONNECTOR flag wasn't set in panel_bridge_attach().
+We shouldn't clean up the connector unconditionally.
 
-For example in kernel/fork.c:2298 :
+A better fix would be to stop using the devm_* API, but that's more
+complicated.
 
-   current->signal->nr_threads++;                           
-   atomic_inc(&current->signal->live);                      
-   refcount_inc(&current->signal->sigcnt);  
-
-$ semind search signal_struct.sigcnt
-def include/linux/sched/signal.h:83  		refcount_t		sigcnt;
-m-- kernel/fork.c:723 put_signal_struct 		if (refcount_dec_and_test(&sig->sigcnt))
-m-- kernel/fork.c:1571 copy_signal 		refcount_set(&sig->sigcnt, 1);
-m-- kernel/fork.c:2298 copy_process 				refcount_inc(&current->signal->sigcnt);
-
-It seems to me that the only way is to use __refcount_inc and then compare
-the old value with REFCOUNT_MAX
-
-Since I have not seen examples of such checks, I thought that this is
-acceptable. Sorry once again. I have not tried to hide these changes.
+>  }
+>  
+>  static void panel_bridge_pre_enable(struct drm_bridge *bridge)
 
 -- 
-Rgrds, legion
+Regards,
 
+Laurent Pinchart
