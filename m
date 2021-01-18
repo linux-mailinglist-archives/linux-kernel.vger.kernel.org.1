@@ -2,186 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C712FACE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7802FACC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389704AbhARVnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:43:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388661AbhARJ6y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:58:54 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D884CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:58:13 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b8so8383494plx.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:58:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=J5Dlakpa6uscV9wI+hxTT1e6AnkifWVChxQ3u0oHgAk=;
-        b=b5hJhCKrotp/TDa/9Uf1MBhZqtL56ZL4fDD75pbp7afcoNHFk5rAdvanGFJON/fanQ
-         e5pv+XHqAQBdZcAuM/UyKyPEzwaIbVqoGa96d8Mm17HDCdvg5NeOJzazAzp4qnY3vhP9
-         7gHzWCsuQQpM/dz5MXkSqfynpOoaf3qHJQUty/nrVTWDlpTWM/gpq7JLR+COChxk7/LN
-         EsEVH7mDRFodrON3MCceSSRAxQxI54/Jbya/tPpNCxIjgFvCzXX4a71Et0bso4OGqt7k
-         6Wan2n0Gl6u3CMMw9nnjDyVZXpY0efE2vTGbs994tqbA6wnF5AIY/s0Srk0Pmd8y9LJb
-         q32w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=J5Dlakpa6uscV9wI+hxTT1e6AnkifWVChxQ3u0oHgAk=;
-        b=LQC5dkrdYfGh0KkE3an8H0eg3a6G/pnGolDCpN57bJxLALbpXILUWyJZO0fushEE2p
-         Kv1KJ/sH1LdLmnAxva7V6tP/8XncG7l8LYknXelHNeg/Lk4BPw4hTx94udSwVp5EHMsx
-         QkNIxuxNGTAn1nZdA8gOBzOisNYu1e3Rs1t4Cdd/qqS+LeccMHhlZmVco063oKpSTn4C
-         56u/UKwWw0NvDggV6dREdpRFxwee6a7h9dshuNjH6ZYg+yLrGNaofmYfTwMs83nd23nc
-         OpY+sIf2N/xSIkTu6TneD4LaAVTDCRuERQccdwv+rOrVtw+YSDMpeb6xE6723tNKUFLf
-         b+/Q==
-X-Gm-Message-State: AOAM533Uyhg8oUbGnEFu+s+LCzOkOJel0+ppbgFzK13p3zqaTmvhKGup
-        Zal2+9FngA/fSsOZ1qVxcDbXkw==
-X-Google-Smtp-Source: ABdhPJzSn0ETidLntnQdkh8DW6sl+g3rqAMIpMzhQZ9ghdObttxe4TiUGn/0B/YlcXT/eWavHFQEow==
-X-Received: by 2002:a17:902:6b02:b029:da:c6c0:d650 with SMTP id o2-20020a1709026b02b02900dac6c0d650mr25918569plk.74.1610963893396;
-        Mon, 18 Jan 2021 01:58:13 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id p8sm15780055pjo.21.2021.01.18.01.58.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 01:58:12 -0800 (PST)
-Date:   Mon, 18 Jan 2021 15:28:10 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 06/12] opp: Add dev_pm_opp_find_level_ceil()
-Message-ID: <20210118095810.ta7cy7kjntalfnx7@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-7-digetx@gmail.com>
+        id S2394712AbhARVfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:35:36 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:55252 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389448AbhARKDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:03:33 -0500
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxKL6hXAVgG7UGAA--.10640S3;
+        Mon, 18 Jan 2021 18:02:09 +0800 (CST)
+Subject: Re: [PATCH 1/4] MIPS: process: Reorder header files
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+ <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
+ <20210115144631.GE15166@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <78c9211d-5304-a2b6-3a94-df9b324b7046@loongson.cn>
+Date:   Mon, 18 Jan 2021 18:02:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-7-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210115144631.GE15166@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxKL6hXAVgG7UGAA--.10640S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr4fWryUAF4kZr1ktFy3XFb_yoW5WF1kpF
+        4qyF48Jr4DAF18Gr13ur12kF1qqw4DXr13GryjgFyUAa4xtwnYg3yvkrnxtr1kAayqg3WU
+        WFZrGFn8C3y5XaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+        9x07jz7KsUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> Add a ceil version of the dev_pm_opp_find_level(). It's handy to have if
-> levels don't start from 0 in OPP table and zero usually means a minimal
-> level.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 49 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  8 +++++++
->  2 files changed, 57 insertions(+)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 341484d58e6c..df0969002555 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -449,6 +449,55 @@ struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_exact);
->  
-> +/**
-> + * dev_pm_opp_find_level_ceil() - search for an rounded up level
-> + * @dev:		device for which we do this operation
-> + * @level:		level to search for
-> + *
-> + * Return: Searches for rounded up match in the opp table and returns pointer
-> + * to the  matching opp if found, else returns ERR_PTR in case of error and
-> + * should be handled using IS_ERR. Error return values can be:
-> + * EINVAL:	for bad pointer
-> + * ERANGE:	no match found for search
-> + * ENODEV:	if device not found in list of registered devices
-> + *
-> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
-> + * use.
-> + */
-> +struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
-> +					      unsigned int *level)
-> +{
-> +	struct opp_table *opp_table;
-> +	struct dev_pm_opp *temp_opp, *opp = ERR_PTR(-ERANGE);
-> +
-> +	opp_table = _find_opp_table(dev);
-> +	if (IS_ERR(opp_table)) {
-> +		int r = PTR_ERR(opp_table);
-> +
-> +		dev_err(dev, "%s: OPP table not found (%d)\n", __func__, r);
-> +		return ERR_PTR(r);
-> +	}
-> +
-> +	mutex_lock(&opp_table->lock);
-> +
-> +	list_for_each_entry(temp_opp, &opp_table->opp_list, node) {
-> +		if (temp_opp->available && temp_opp->level >= *level) {
-> +			opp = temp_opp;
-> +			*level = opp->level;
-> +
-> +			/* Increment the reference count of OPP */
-> +			dev_pm_opp_get(opp);
-> +			break;
-> +		}
-> +	}
-> +
-> +	mutex_unlock(&opp_table->lock);
-> +	dev_pm_opp_put_opp_table(opp_table);
-> +
-> +	return opp;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
-> +
->  static noinline struct dev_pm_opp *_find_freq_ceil(struct opp_table *opp_table,
->  						   unsigned long *freq)
->  {
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index f344be844bde..b7dc993487c7 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -111,6 +111,8 @@ struct dev_pm_opp *dev_pm_opp_find_freq_exact(struct device *dev,
->  					      bool available);
->  struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
->  					       unsigned int level);
-> +struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
-> +					      unsigned int *level);
->  
->  struct dev_pm_opp *dev_pm_opp_find_freq_floor(struct device *dev,
->  					      unsigned long *freq);
-> @@ -234,6 +236,12 @@ static inline struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
->  	return ERR_PTR(-ENOTSUPP);
->  }
->  
-> +static inline struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
-> +					unsigned int *level)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
->  static inline struct dev_pm_opp *dev_pm_opp_find_freq_floor(struct device *dev,
->  					unsigned long *freq)
->  {
+On 01/15/2021 10:46 PM, Thomas Bogendoerfer wrote:
 
-Applied. Thanks.
+> On Tue, Jan 12, 2021 at 08:29:14PM +0800, Jinyang He wrote:
+>> Just reorder the header files.
+> This alone isn't worth a commit, IMHO. I bet there are lots of includes
+> no longer needed, so removing and sorting them is ok for me.
+>
+> Thomas.
+>
 
--- 
-viresh
+Hi, Thomas,
+
+Thanks for your advice. I analyzed majority of the symbols in this file.
+The following are examples of header file references:
+
+Space indicates that it cannot be found. (Maybe I missed it.)
+
+     Header files                                Examples in this file
+     #include <linux/completion.h>
+*   #include <linux/cpu.h> get_online_cpus
+*   #include <linux/errno.h>                    EOPNOTSUPP
+     #include <linux/export.h>
+*   #include <linux/init.h> arch_initcall
+*   #include <linux/kallsyms.h> kallsyms_lookup_name
+*   #include <linux/kernel.h> __kernel_text_address
+     #include <linux/mm.h>
+     #include <linux/mman.h>
+*   #include <linux/nmi.h> nmi_cpu_backtrace
+*   #include <linux/personality.h> ADDR_NO_RANDOMIZE
+     #include <linux/ptrace.h>
+*   #include <linux/prctl.h>                    PR_FP_MODE_FR
+     #include <linux/random.h>
+*   #include <linux/sched.h>                    PF_KTHREAD
+*   #include <linux/sched/debug.h> in_sched_functions
+     #include <linux/sched/task.h>
+*   #include <linux/sched/task_stack.h> task_stack_page
+     #include <linux/stddef.h>
+     #include <linux/sys.h>
+     #include <linux/tick.h>
+     #include <linux/uaccess.h>
+     #include <linux/unistd.h>
+
+*   #include <asm/abi.h> current->thread.abi->vdso->size
+*   #include <asm/asm.h>                        ALMASK
+     #include <asm/bootinfo.h>
+     #include <asm/cpu.h>
+*   #include <asm/dsemul.h> dsemul_thread_cleanup
+*   #include <asm/dsp.h>                        init_dsp
+     #include <asm/elf.h>
+     #include <asm/exec.h>
+*   #include <asm/fpu.h>                        lose_fpu
+*   #include <asm/inst.h> mips_instruction
+     #include <asm/io.h>
+*   #include <asm/irq.h>                        on_irq_stack
+*   #include <asm/irq_regs.h>                    get_irq_regs
+*   #include <asm/isadep.h>                        KU_USER
+     #include <asm/mips-cps.h>
+*   #include <asm/msa.h>                        is_msa_enabled
+*   #include <asm/mipsregs.h>                    ST0_CU0
+*   #include <asm/processor.h> VDSO_RANDOMIZE_SIZE
+*   #include <asm/reg.h>                        MIPS32_EF_R1
+     #include <asm/stacktrace.h>
+
+
+Here about this file config is:
+
+Enable:
+CONFIG_HOTPLUG_CPU, CONFIG_MIPS_FP_SUPPORT, CONFIG_STACKPROTECTOR,
+CONFIG_CPU_LOONGSON64, CONFIG_KALLSYMS, CONFIG_64BIT
+
+Disable:
+CONFIG_CPU_R3000, CONFIG_CPU_TX39XX, CONFIG_MIPS_MT_FPAFF, 
+CONFIG_CPU_MICROMIPS
+CONFIG_MIPS_O32_FP64_SUPPORT, CONFIG_32BIT, CONFIG_MIPS32_O32
+
+By including only these header files which marked by '*', I have been able
+to compile and use certain functions (unwind_stack) normally. So are other
+header files no longer needed?
+
+In addition, <linux/cpu.h> includes <linux/cpumask.h>, and <linux/cpumask.h>
+includes <linux/kernel.h>. What should we do?
+
+Thanks,
+Jinyang
+
