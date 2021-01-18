@@ -2,149 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBDF2F97FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963052F9807
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 04:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731378AbhARC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:56:57 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:62802 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731357AbhARC44 (ORCPT
+        id S1731454AbhARC6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:58:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36122 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731397AbhARC6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:56:56 -0500
-X-UUID: 3c519507fd0f437081defd32a9a62e7f-20210118
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=0em+L8nboXyN5nqrai5ZhBQakH44tZ0SkP9/VKi1jl4=;
-        b=NTS5bM8qvxYuWLCN3n46aIpZBWKMUi8MO88IIPhjVDOQLeuQWLN2uV5i6ncx7v5zuadEtv1W6iYsipF8FXMps8p3m8Qtsve31AmKV2fgW4gc5pfI+A5qBm6TuiBIL92o+5LrLBhggQUUY8V2ARPQ+v6FLnNidXUhiHbcCsIAatc=;
-X-UUID: 3c519507fd0f437081defd32a9a62e7f-20210118
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1858029874; Mon, 18 Jan 2021 10:55:35 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 Jan
- 2021 10:55:33 +0800
-Received: from [10.19.240.15] (10.19.240.15) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 18 Jan 2021 10:55:32 +0800
-Message-ID: <1610938533.5980.11.camel@mcddlt001>
-Subject: Re: [PATCH] pci: avoid unsync of LTR mechanism configuration
-From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>,
-        <kerun.zhu@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <lambert.wang@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <haijun.liu@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 18 Jan 2021 10:55:33 +0800
-In-Reply-To: <20210112213635.GA1854447@bjorn-Precision-5520>
-References: <20210112213635.GA1854447@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Sun, 17 Jan 2021 21:58:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610938629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LedkJCf2woputitHVAf5yD7dLglL44/GLUzYpe6i5Ac=;
+        b=CCl5CT5HkbbI0WYFEu4qyBj/xh2YI/pk8tRlCAHUz9T8YeRvhNtID18pSVIEmzURtu+xc7
+        sOX0IDCe2gsH5p02mx4zlhOrACSOymfHQUCyvGRasRcxG+is7VQQhzW+DOisIzaGJko8QI
+        tjewS2Hm0MK4JJ6sByeFPVTZpquj6NE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453--H6RMxbAPcaOGMYXHLPdGA-1; Sun, 17 Jan 2021 21:57:07 -0500
+X-MC-Unique: -H6RMxbAPcaOGMYXHLPdGA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5600F8145F7;
+        Mon, 18 Jan 2021 02:57:06 +0000 (UTC)
+Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7072D71C97;
+        Mon, 18 Jan 2021 02:57:04 +0000 (UTC)
+Subject: Re: [PATCH] virtio_ring: boolean values to a bool variable
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1610704825-17724-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <1d311c25-9051-ddcd-e7e1-5adbb8a913f9@redhat.com>
+Date:   Mon, 18 Jan 2021 10:57:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: AEA3A7EE47DDF04712E42F9002E2427F938FEDBADB231A5E2D59475E1619EA042000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <1610704825-17724-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAxLTEyIGF0IDE1OjM2IC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBOb3RlIHN1YmplY3QgbGluZSB0aXBzIGF0IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAx
-NzEwMjYyMjM3MDEuR0EyNTY0OUBiaGVsZ2Fhcy1nbGFwdG9wLnJvYW0uY29ycC5nb29nbGUuY29t
-DQo+IA0KPiBPbiBUdWUsIEphbiAxMiwgMjAyMSBhdCAwMzoyNzozOVBNICswODAwLCBtaW5nY2h1
-YW5nLnFpYW9AbWVkaWF0ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IE1pbmdjaHVhbmcgUWlhbyA8
-bWluZ2NodWFuZy5xaWFvQG1lZGlhdGVrLmNvbT4NCj4gPiANCj4gPiBJbiBwY2kgYnVzIHNjYW4g
-ZmxvdywgdGhlIExUUiBtZWNoYW5pc20gZW5hYmxlIGJpdCBvZiBERVZDVEwyIHJlZ2lzdGVyDQo+
-ID4gaXMgY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZpY2UgYW5kIGl0
-J3MgYnJpZGdlIGJvdGgNCj4gPiBzdXBwb3J0IExUUiBtZWNoYW5pc20sIExUUiBtZWNoYW5pc20g
-b2YgZGV2aWNlIGFuZCBpdCdzIGJyaWRnZSB3aWxsDQo+ID4gYmUgZW5hYmxlZCBpbiBERVZDVEwy
-IHJlZ2lzdGVyLiBBbmQgdGhlIGZsYWcgcGNpX2Rldi0+bHRyX3BhdGggd2lsbA0KPiA+IGJlIHNl
-dCBhcyAxLg0KPiANCj4gcy9pdCdzL2l0cy8gdHdpY2UgYWJvdmUuDQo+IEl0J3MgPT0gSXQgaXMu
-DQo+IEl0cyA9PSBiZWxvbmdpbmcgdG8gJ2l0Jy4NCj4gV2VpcmQsIEkga25vdywgYnV0IHRoYXQn
-cyBFbmdsaXNoIGZvciB5b3UgOikNCj4gDQo+ID4gRm9yIHNvbWUgcGNpZSBwcm9kdWN0cywgcGNp
-ZSBsaW5rIGJlY29tZXMgZG93biB3aGVuIGRldmljZSByZXNldC4gQW5kIHRoZW4NCj4gPiB0aGUg
-TFRSIG1lY2hhbmlzbSBlbmFibGUgYml0IG9mIGJyaWRnZSB3aWxsIGJlY29tZSAwIGJhc2VkIG9u
-IGRlc2NyaXB0aW9uDQo+ID4gaW4gUENJRSByNC4wLCBzZWMgNy44LjE2LiBIb3dldmVyLCB0aGUg
-cGNpX2Rldi0+bHRyX3BhdGggdmFsdWUgb2YgYnJpZGdlDQo+ID4gaXMgc3RpbGwgMS4gUmVtb3Zl
-IGFuZCByZXNjYW4gZmxvdyBjb3VsZCBiZSB0cmlnZ2VyZWQgdG8gcmVjb3ZlciBhZnRlcg0KPiA+
-IGRldmljZSByZXNldC4gSW4gdGhlIGJ1cyByZXNjYW4gZmxvdywgdGhlIExUUiBtZWNoYW5pc20g
-b2YgZGV2aWNlIHdpbGwgYmUNCj4gPiBlbmFibGVkIGluIHBjaV9jb25maWd1cmVfbHRyKCkgZHVl
-IHRvIGx0cl9wYXRoIG9mIGl0cyBicmlkZ2UgaXMgc3RpbGwgMS4NCj4gDQo+IHMvcGNpZS9QQ0ll
-LyB0d2ljZSBhYm92ZS4NCj4gcy9QQ0lFL1BDSWUvOyBhbHNvIHJlZmVyZW5jZSByNS4wIGluc3Rl
-YWQgb2YgcjQuMCBpZiBwb3NzaWJsZS4NCj4gDQoNClNvcnJ5IGZvciB0aGUgbWlzc3BlbGxpbmcg
-YW5kIGluY29udmVuaWVuY2UuIFRoYW5rcyBmb3IgdGhlIGNvcnJlY3Rpb24NCmFuZCBJIHdpbGwg
-Zm9sbG93IHRoZSBzdWdnZXN0aW9uIGluIGxhdGVyIHBhdGNoLg0KDQo+IFRoaXMgc291bmRzIGxp
-a2UgYSBnZW5lcmFsIHByb2JsZW0gb2YgbW9zdCBkZXZpY2UgY29uZmlnIGJpdHMgYmVpbmcNCj4g
-Y2xlYXJlZCBieSByZXNldC4gIFVzdWFsbHkgdGhlc2UgYXJlIHJlc3RvcmVkIGJ5IHBjaV9yZXN0
-b3JlX3N0YXRlKCkuDQo+IElzIHRoYXQgZnVuY3Rpb24gbWlzc2luZyBhIHJlc3RvcmUgZm9yIFBD
-SV9FWFBfREVWQ1RMMj8gIEknZCByYXRoZXINCj4gaGF2ZSBhIGdlbmVyYWwtcHVycG9zZSB3YXkg
-b2YgcmVzdG9yaW5nIGFsbCB0aGUgY29uZmlnIHN0YXRlIHRoYW4NCj4gbGl0dGxlIHBpZWNlcyBz
-Y2F0dGVyZWQgYWxsIG92ZXIuDQo+IA0KDQpBY3R1YWxseSBpdOKAmXMgbm90IFBDSV9FWFBfREVW
-Q1RMMiByZXN0b3JlIG1pc3NpbmcgaXNzdWUuIFRoZQ0KUENJX0VYUF9ERVZDVEwyIGlzIGNvcnJl
-Y3RseSBzYXZlZC9yZXN0b3JlZCBkdXJpbmcgYnJpZGdlIHJ1bnRpbWUNCnN1c3BlbmQvcmVzdW1l
-Lg0KDQpJdOKAmXMgdGhlIGlzc3VlIHRoYXQgbHRyX3BhdGggdmFsdWUgb2YgdGhlIGJyaWRnZSBt
-aXNtYXRjaGVzIHRoZSBhY3R1YWwNCnZhbHVlIGluIGJyaWRnZeKAmXMgUENJX0VYUF9ERVZDVEwy
-Lg0KDQpIZXJlIGlzIHRoZSBzY2VuYXJpbyBmb3IgdGhlIGlzc3VlOg0KMS5QQ0kgYnVzIHNjYW4g
-ZG9uZQ0KICAgLUZvciBib3RoIFBDSWUgRGV2aWNlIGFuZCBicmlkZ2U6DQogICAgICAtIkxUUiBN
-ZWNoYW5pc20gRW5hYmxlIiBiaXQgaW4gUENJX0VYUF9ERVZDVEwyIGlzIDENCiAgICAgIC0gbHRy
-X3BhdGggdmFsdWUgaXMgMQ0KDQoyLkRldmljZSByZXNldHMgYW5kIFBDSWUgbGluayBpcyBkb3du
-LCB0aGVuICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2UgY2hhbmdlcyB0byAw
-IGFjY29yZGluZyB0byBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4NCiAgIC1UaGUgbHRyX3BhdGgg
-dmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEgYnV0IHRoZSAiTFRSIE1lY2hhbmlzbQ0KRW5hYmxl
-IiBiaXQgd2l0aGluIFBDSV9FWFBfREVWQ1RMMiBjaGFuZ2VkIHRvIDAuDQoNCjMuVHJpZ2dlciBk
-ZXZpY2UgcmVtb3ZhbCBhbmQgYnJpZGdlIGVudGVycyBydW50aW1lIHN1c3BlbmQgZmxvdy4NCiAg
-IC0iTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBicmlkZ2UgaXMgMCBhbmQgc2F2ZWQgYnkN
-CnBjaV9zYXZlX3N0YXRlKCkuDQoNCjQuVHJpZ2dlciBidXMgcmVzY2FuIGFuZCBicmlkZ2UgZW50
-ZXJzIHJ1bnRpbWUgcmVzdW1lIGZsb3cuDQogICAtIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQg
-b2YgYnJpZGdlIGlzIHJlc3RvcmVkIGJ5DQpwY2lfcmVzdG9yZV9zdGF0ZSgpIGFuZCB0aGUgdmFs
-dWUgaXMgMC4NCg0KNS5TY2FuIGRldmljZSBhbmQgY29uZmlndXJlIGRldmljZSdzIExUUiBpbiBw
-Y2lfY29uZmlndXJlX2x0cigpLg0KICAgLSJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG9mIGRl
-dmljZSBpcyBjb25maWd1cmVkIGFzIDEgZHVlIHRvDQpicmlkZ2UncyBsdHJfcGF0aCB2YWx1ZSBp
-cyAxLg0KDQo2LlRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJy
-aWRnZSBpcyBkaWZmZXJlbnQgbm93Lg0KICAgLVdoZW4gZGV2aWNlIHNlbmRzIExUUiBNZXNzYWdl
-LCBicmlkZ2Ugd2lsbCB0cmVhdCB0aGUgTWVzc2FnZSBhcw0KVW5zdXBwb3J0ZWQgUmVxdWVzdCBh
-Y2NvcmRpbmcgdG8gUENJZSByNS4wLCBzZWMgNi4xOC4NCg0KVGhpcyBwYXRjaCBpcyB1c2VkIHRv
-IG1ha2UgYnJpZGdlJ3MgbHRyX3BhdGggdmFsdWUgbWF0Y2ggIkxUUiBNZWNoYW5pc20NCkVuYWJs
-ZSIgYml0IHdpdGhpbiBERVZDVEwyIHJlZ2lzdGVyIGFuZCBhdm9pZCB0aGUgVW5zdXBwb3J0ZWQg
-UmVxdWVzdC4NCg0KPiA+IFdoZW4gZGV2aWNlJ3MgTFRSIG1lY2hhbmlzbSBpcyBlbmFibGVkLCBk
-ZXZpY2Ugd2lsbCBzZW5kIExUUiBtZXNzYWdlIHRvDQo+ID4gYnJpZGdlLiBCcmlkZ2UgcmVjZWl2
-ZXMgdGhlIGRldmljZSdzIExUUiBtZXNzYWdlIGFuZCBmb3VuZCBicmlkZ2UncyBMVFINCj4gPiBt
-ZWNoYW5pc20gaXMgZGlzYWJsZWQuIFRoZW4gdGhlIGJyaWRnZSB3aWxsIGdlbmVyYXRlIHVuc3Vw
-cG9ydGVkIHJlcXVlc3QNCj4gPiBhbmQgb3RoZXIgZXJyb3IgaGFuZGxpbmcgZmxvdyB3aWxsIGJl
-IHRyaWdnZXJlZCBzdWNoIGFzIEFFUiBOb24tRmF0YWwNCj4gPiBlcnJvciBoYW5kbGluZy4NCj4g
-PiANCj4gPiBUaGlzIHBhdGNoIGlzIHVzZWQgdG8gYXZvaWQgdGhpcyB1bnN1cHBvcnRlZCByZXF1
-ZXN0IGFuZCBtYWtlIHRoZSBicmlkZ2Uncw0KPiA+IGx0cl9wYXRoIHZhbHVlIGlzIGFsaWduZWQg
-d2l0aCBERVZDVEwyIHJlZ2lzdGVyIHZhbHVlLiBDaGVjayBicmlkZ2UNCj4gPiByZWdpc3RlciB2
-YWx1ZSBpZiBhbGlnbmVkIHdpdGggbHRyX3BhdGggaW4gcGNpX2NvbmZpZ3VyZV9sdHIoKS4gSWYN
-Cj4gPiByZWdpc3RlciB2YWx1ZSBpcyBkaXNhYmxlIGFuZCB0aGUgbHRyX3BhdGggaXMgMSwgd2Ug
-bmVlZCBjb25maWd1cmUNCj4gPiB0aGUgcmVnaXN0ZXIgdmFsdWUgYXMgZW5hYmxlLg0KPiA+IA0K
-PiA+IFNpZ25lZC1vZmYtYnk6IE1pbmdjaHVhbmcgUWlhbyA8bWluZ2NodWFuZy5xaWFvQG1lZGlh
-dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wY2kvcHJvYmUuYyB8IDE4ICsrKysrKysr
-KysrKysrKy0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMyBkZWxl
-dGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcHJvYmUuYyBiL2Ry
-aXZlcnMvcGNpL3Byb2JlLmMNCj4gPiBpbmRleCA5NTNmMTVhYmM4NTAuLjQ5MzU1Y2Y0YWY1NCAx
-MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gKysrIGIvZHJpdmVycy9w
-Y2kvcHJvYmUuYw0KPiA+IEBAIC0yMTMyLDkgKzIxMzIsMjEgQEAgc3RhdGljIHZvaWQgcGNpX2Nv
-bmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgCSAqIENvbXBsZXggYW5kIGFs
-bCBpbnRlcm1lZGlhdGUgU3dpdGNoZXMgaW5kaWNhdGUgc3VwcG9ydCBmb3IgTFRSLg0KPiA+ICAJ
-ICogUENJZSByNC4wLCBzZWMgNi4xOC4NCj4gPiAgCSAqLw0KPiA+IC0JaWYgKHBjaV9wY2llX3R5
-cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUIHx8DQo+ID4gLQkgICAgKChicmlkZ2Ug
-PSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldikpICYmDQo+ID4gLQkgICAgICBicmlkZ2UtPmx0cl9w
-YXRoKSkgew0KPiA+ICsJaWYgKHBjaV9wY2llX3R5cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9P
-VF9QT1JUKSB7DQo+ID4gKwkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9E
-RVZDVEwyLA0KPiA+ICsJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiArCQlkZXYt
-Pmx0cl9wYXRoID0gMTsNCj4gPiArCQlyZXR1cm47DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJYnJp
-ZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KPiA+ICsJaWYgKGJyaWRnZSAmJiBicmlk
-Z2UtPmx0cl9wYXRoKSB7DQo+ID4gKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdvcmQoYnJpZGdl
-LCBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KPiA+ICsJCWlmICghKGN0bCAmIFBDSV9FWFBfREVW
-Q1RMMl9MVFJfRU4pKSB7DQo+ID4gKwkJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChicmlkZ2Us
-IFBDSV9FWFBfREVWQ1RMMiwNCj4gPiArCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0K
-PiA+ICsJCX0NCj4gPiArDQo+ID4gIAkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJ
-X0VYUF9ERVZDVEwyLA0KPiA+ICAJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiAg
-CQlkZXYtPmx0cl9wYXRoID0gMTsNCj4gPiAtLSANCj4gPiAyLjE4LjANCj4gPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IGxpbnV4LWFybS1rZXJu
-ZWwgbWFpbGluZyBsaXN0DQo+ID4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-DQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1h
-cm0ta2VybmVsDQoNCg==
+
+On 2021/1/15 下午6:00, Jiapeng Zhong wrote:
+> Fix the following coccicheck warnings:
+>
+> ./drivers/virtio/virtio_ring.c:1637:1-29: WARNING: Assignment of
+> 0/1 to bool variable.
+>
+> ./drivers/virtio/virtio_ring.c:1636:1-30: WARNING: Assignment of
+> 0/1 to bool variable.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+
+
+It looks to me it's not the only places:
+
+git grep avail_wrap_counter
+drivers/virtio/virtio_ring.c:                   bool avail_wrap_counter;
+drivers/virtio/virtio_ring.c: vq->packed.avail_wrap_counter ^= 1;
+drivers/virtio/virtio_ring.c: vq->packed.avail_wrap_counter ^= 1;
+drivers/virtio/virtio_ring.c:   if (wrap_counter != 
+vq->packed.avail_wrap_counter)
+drivers/virtio/virtio_ring.c:   vq->packed.avail_wrap_counter = 1;
+
+Thanks
+
+
+> ---
+>   drivers/virtio/virtio_ring.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 71e16b5..5adb361 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -1633,8 +1633,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
+>   	vq->packed.vring.device = device;
+>   
+>   	vq->packed.next_avail_idx = 0;
+> -	vq->packed.avail_wrap_counter = 1;
+> -	vq->packed.used_wrap_counter = 1;
+> +	vq->packed.avail_wrap_counter = true;
+> +	vq->packed.used_wrap_counter = true;
+>   	vq->packed.event_flags_shadow = 0;
+>   	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
+>   
 
