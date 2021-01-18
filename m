@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4992FA946
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC75D2FA937
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407816AbhARSug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:50:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:42250 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407723AbhARSpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:45:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4908BD6E;
-        Mon, 18 Jan 2021 10:44:59 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F54D3F719;
-        Mon, 18 Jan 2021 10:44:55 -0800 (PST)
-Subject: Re: [PATCH v4 6/7] iommu/mediatek: Gather iova in iommu_unmap to
- achieve tlb sync once
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
-        kernel-team@android.com, Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@ACULAB.COM>
-References: <20210107122909.16317-1-yong.wu@mediatek.com>
- <20210107122909.16317-7-yong.wu@mediatek.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <57eb2ea5-f44c-9828-cbd4-9cb2af877ad8@arm.com>
-Date:   Mon, 18 Jan 2021 18:44:56 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2393737AbhARStD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:49:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407652AbhARSrN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:47:13 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F15C061573;
+        Mon, 18 Jan 2021 10:46:33 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id h205so25453089lfd.5;
+        Mon, 18 Jan 2021 10:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UidCJzrD1s3AVXDJyUdxsL6wVFlBwRYb0i46sQWrpls=;
+        b=L3ZbwSzFxfsTz1EyEfOxok0FLzZ0eRcDto8duBQKohBmqsPb+2T6TMJgrmWNB0oD2o
+         NRxjMURON1U1xetQjUJiDc4ZstPB9x4Tu04XYkm2E0vITcVuASkJDuEb2svJIfIAod/b
+         zrg0FqPaHb23qLIXOvNLujGv+dlQA26mR5rkBy80BwRInLwoVDcWiws+2DhEo3MnWqTc
+         SnkbzAxB3hc+MiEs5HdUhmyRIHpKMjtsww8CMSF3flsLzxKILij59MqbGMSIsXL2HbbO
+         jJjq+7NLKnfC+8/aYk7sKqVMmcP4Uc9KfQIZ42UwXCkkMWcvsBoKcYb1dYMPJAdqfc0+
+         RG6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UidCJzrD1s3AVXDJyUdxsL6wVFlBwRYb0i46sQWrpls=;
+        b=Klf64EA/LtSfHSwZAEDx/uWwRZ0vHbzBDdX1hFVREQlwpph/W2K2eCMK2mYLPOzl4Y
+         5sFaXRQ0upRzfbeAzY31pwMHdobdkeQpjSTxexBMqtWMcGOKLY+FXsXS+20cJx3bwOXA
+         +uWU3Jk/SM748yvNGq/FeGUnulq92bNkasWyxf0VEm/AmuzWd0lstfFF2QT5pzl4005t
+         6bYANG9naZ6SnsKIZpreEK+FtdRtpeqdiYq+r6eb+6Kn+nRI7N5VDyZha1F8CSEF+UeZ
+         vHnY2/G+vV1llq6ojtyF84XNYhWBHxvcOg/zD8J2Y6bAPG+cgHb6N8NPBnjZ71UygQp9
+         qdHA==
+X-Gm-Message-State: AOAM53295zQZy16uMBGHBO2op3OSmiyweO7RqrdZix9+Lg5MlyApm0oJ
+        a5kqkTxphdYfUbHzv0QNRc7U0wm3WJc=
+X-Google-Smtp-Source: ABdhPJyKl7ievkY1ZBSHBEckLW2JgrnWYAHbBqO6hoWkjId7DSctCw0+7jXcaH+tVtNY9qjfBQAybQ==
+X-Received: by 2002:a05:6512:612:: with SMTP id b18mr223180lfe.598.1610995591917;
+        Mon, 18 Jan 2021 10:46:31 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id w20sm1988160lfk.67.2021.01.18.10.46.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 10:46:31 -0800 (PST)
+Subject: Re: [PATCH v3 01/12] opp: Fix adding OPP entries in a wrong order if
+ rate is unavailable
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-2-digetx@gmail.com>
+ <20210118074416.5mjogew62fjohzlm@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <d91dd85b-c100-140d-ee23-9641caf5dcc7@gmail.com>
+Date:   Mon, 18 Jan 2021 21:46:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20210107122909.16317-7-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210118074416.5mjogew62fjohzlm@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 12:29, Yong Wu wrote:
-> In current iommu_unmap, this code is:
+18.01.2021 10:44, Viresh Kumar пишет:
+> On 18-01-21, 03:55, Dmitry Osipenko wrote:
+>> Fix adding OPP entries in a wrong (opposite) order if OPP rate is
+>> unavailable. The OPP comparison was erroneously skipped, thus OPPs
+>> were left unsorted.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+>> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/opp/core.c | 10 ++++------
+>>  1 file changed, 4 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+>> index dfc4208d3f87..48618ff3e99e 100644
+>> --- a/drivers/opp/core.c
+>> +++ b/drivers/opp/core.c
+>> @@ -1527,12 +1527,10 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
+>>  	mutex_lock(&opp_table->lock);
+>>  	head = &opp_table->opp_list;
+>>  
+>> -	if (likely(!rate_not_available)) {
+>> -		ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
+>> -		if (ret) {
+>> -			mutex_unlock(&opp_table->lock);
+>> -			return ret;
+>> -		}
+>> +	ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
+>> +	if (ret) {
+>> +		mutex_unlock(&opp_table->lock);
+>> +		return ret;
+>>  	}
+>>  
+>>  	list_add(&new_opp->node, head);
 > 
-> 	iommu_iotlb_gather_init(&iotlb_gather);
-> 	ret = __iommu_unmap(domain, iova, size, &iotlb_gather);
-> 	iommu_iotlb_sync(domain, &iotlb_gather);
+> Applied. Thanks.
 > 
-> We could gather the whole iova range in __iommu_unmap, and then do tlb
-> synchronization in the iommu_iotlb_sync.
+> I am not sending it for 5.11-rc as there shouldn't be any users which
+> are impacted because of this right now, right ?
 > 
-> This patch implement this, Gather the range in mtk_iommu_unmap.
-> then iommu_iotlb_sync call tlb synchronization for the gathered iova range.
-> we don't call iommu_iotlb_gather_add_page since our tlb synchronization
-> could be regardless of granule size.
-> 
-> In this way, gather->start is impossible ULONG_MAX, remove the checking.
-> 
-> This patch aims to do tlb synchronization *once* in the iommu_unmap.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->   drivers/iommu/mtk_iommu.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 66a00a2cb445..d3b8a1649093 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -430,7 +430,12 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
->   			      struct iommu_iotlb_gather *gather)
->   {
->   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
-> +	unsigned long end = iova + size - 1;
->   
-> +	if (gather->start > iova)
-> +		gather->start = iova;
-> +	if (gather->end < end)
-> +		gather->end = end;
->   	return dom->iop->unmap(dom->iop, iova, size, gather);
->   }
->   
-> @@ -445,9 +450,6 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
->   	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
->   	size_t length = gather->end - gather->start + 1;
->   
-> -	if (gather->start == ULONG_MAX)
-> -		return;
-> -
->   	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
->   				       data);
->   }
-> 
+right
