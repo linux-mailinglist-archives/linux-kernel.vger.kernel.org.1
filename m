@@ -2,255 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61762FA0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9FA2FA0CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391976AbhARNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S2404224AbhARNJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389744AbhARNIU (ORCPT
+        with ESMTP id S2390640AbhARNJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:08:20 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E72EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:07:39 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id q18so16425110wrn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:07:39 -0800 (PST)
+        Mon, 18 Jan 2021 08:09:12 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63432C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:08:32 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id w79so18523405qkb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:08:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fApAfVti2xStmYCcy/4S1EcAaXemwrEyH97isCiUdgA=;
-        b=fkfgG2GGlDRAgOzcHfGUCb5XrhGcmeGRdSsDpWQ8suunOwB4DhxAxKytiwq57Sy9nT
-         QkDRZSmhuWpxYdFiLinfXIlrNME/6hLpoih0jLyM2+85NyfLDjC6bX4zk8Cbpg1ckS8w
-         43g0ssguzSAKsd5PI4H3Cv2F5Lbi9w57NCHLB6aWqc2L9117nWRDOAUVPr8HRBb0zTGG
-         8C6LmyoQD8ep+dDWpxj1G1Vpijwr3/XqXxCZ+Bx5pF+7Ui+Anrw7aG5VbVyhzUcZYB6H
-         w9uA4Ly8A4SjYwuzwqtkowELj81pooRxM08PXZPWALIZSHrPIZlraNJlR1waEDT8n6bt
-         KUGw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y0jOa20hYwCAA9+mLbUWHauihKEmdoZpSDEChlOtOxo=;
+        b=EkH4aq1xxjyfmsU0Qi0IUIAjOfLWThaxN2gouwrYjLk8GNQuzI4/LbtYtx+61cn0lj
+         Ex6UC9cKvGUA+ypXcM9yyg5sSfGp/hhRRi045Cy/VHvIdXXbdXCFfk5Tbp3r5FSL5+so
+         SKopSQmX4XvDYlvYKZ1bMAWPcnNTq2nJ3JcBvgDLKYIurEmKLmTjRiUh0aElyhLcVPT8
+         QqmhdpaNwsyhgoKQ/rA1GAPrZG1a5BobVudLseS8qtlyWhftmHapYcjytWQEw1IltTIW
+         0quj20ptSkZAsku7RUvbfJJV/fXcEw4U7mAqvjkwE6kw9apbjRLRtin92FcT97qht7l8
+         o3QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fApAfVti2xStmYCcy/4S1EcAaXemwrEyH97isCiUdgA=;
-        b=KS9R4P0g7t9NXkd7u8hAkBgLofaIDDqclT6T1pyrMQRRffNZamqbIwKTrZb35ygqjq
-         JSvbQsHz6i7PlJqvkra4Y1AnyMUDBRINqDI4plZTPnqI1RtWFOjS7Gkt0fsN7iaSb0bM
-         nX3BXwL1RQ4UeJ+o8ZGJ0s8tkKe+s42wZzb8awnsw3wimADo426dM+gnLuZK03gjVSAW
-         mMuEPl0KQzDG2dM4t81K9e4I6ydLrRhxlFCT68PQKxnapsum0O9KdxEX132z5lHOyB2M
-         n6LerwyFtKp0nsS3oBJsMCD0V2VdaNmSyWu8prq/gOvQ6sqn8kVuXiT1W72IRY0kcZvE
-         pXEw==
-X-Gm-Message-State: AOAM533FufHXq1iGsYlUzgQVtMmN6dqQOfVyQYiFO0j8dHoJzLfH9Fgi
-        JCyKvCOebIwhJveBL81zmfcgBw==
-X-Google-Smtp-Source: ABdhPJyQKadjPOln9TuGqhkP3mnY+iLzGGewW27eQj9ewfg04ijF5C6QPMBPqYy4T4GANzpf1dk/VQ==
-X-Received: by 2002:adf:d1cb:: with SMTP id b11mr20350208wrd.118.1610975257074;
-        Mon, 18 Jan 2021 05:07:37 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:3d4d:985d:87b7:4d55])
-        by smtp.gmail.com with ESMTPSA id b7sm28827076wru.33.2021.01.18.05.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 05:07:36 -0800 (PST)
-Date:   Mon, 18 Jan 2021 13:07:35 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 12/21] arm64: cpufeature: Add an early command-line
- cpufeature override facility
-Message-ID: <20210118130735.aor3g4eqxazf3mkq@google.com>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-13-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y0jOa20hYwCAA9+mLbUWHauihKEmdoZpSDEChlOtOxo=;
+        b=bjyIlsIOTNth1Xu4RMmrwXH/fKkviSLaF9ILF2FWZ1L+k5QsO7plS443lUlS/KFac+
+         /FzhKVh3RcA2ImwM/fVYEuoJdqzvzklGPPnGhFU98B9CAXYs42Fqs1x+Pvu2Yb/MP0hE
+         fVtWcZSkFPHonJd6p610VkcviUT2heIBA7R9n4nnwollLK2u2pM4zFV3R8S8A3Dq79EX
+         gTWgwNJYlY56i/7tEbMqwX4ut4mGAOd7WlV8A//RFr2sj56Ve56lSu3iWgTz2OQPiOEG
+         Pr6vqxIg8C4EAuOybRRFcwuvLO8HsKChRes839ApZjUTczSoIyBDqQAY55qNo9bBgMk2
+         Z8Ew==
+X-Gm-Message-State: AOAM531oG8e300ziPh7XRfzuDxqZZsTB9uvwLjULjjMFgTRi4xIoKAS9
+        w/7B7djGOgMAEEpa97OSljjrom+AOulzUUYdE5HtnQ==
+X-Google-Smtp-Source: ABdhPJy1dn0illdPKpjCZ3i6pG59dMkga3rShB9ObsNFNWP3NsbiWGSv1YvjkUlr4JgMEveOtVtBKAsV9YLqo45WZpE=
+X-Received: by 2002:a37:70d:: with SMTP id 13mr23735344qkh.326.1610975311245;
+ Mon, 18 Jan 2021 05:08:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-13-maz@kernel.org>
+References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-3-glider@google.com>
+ <YAVzNrBIlp0UJKfs@alley>
+In-Reply-To: <YAVzNrBIlp0UJKfs@alley>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 18 Jan 2021 14:08:19 +0100
+Message-ID: <CAG_fn=UmjC2LOCXRpp+vTZ6nr0M7=dCKjFYgVFVvmqftTkjGYw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] lib: add error_report_notify to collect debugging
+ tools' reports
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:24AM +0000, Marc Zyngier wrote:
-> In order to be able to override CPU features at boot time,
-> let's add a command line parser that matches options of the
-> form "cpureg.feature=value", and store the corresponding
-> value into the override val/mask pair.
-> 
-> No features are currently defined, so no expected change in
-> functionality.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Mon, Jan 18, 2021 at 12:38 PM Petr Mladek <pmladek@suse.com> wrote:
+Thanks for your input! Some responses below.
 
-Acked-by: David Brazdil <dbrazdil@google.com>
+>
+> On Fri 2021-01-15 14:03:33, Alexander Potapenko wrote:
+> > With the introduction of various production error-detection tools, such=
+ as
+> > MTE-based KASAN and KFENCE, the need arises to efficiently notify the
+> > userspace OS components about kernel errors. Currently, no facility exi=
+sts
+> > to notify userspace about a kernel error from such bug-detection tools.
+> > The problem is obviously not restricted to the above bug detection tool=
+s,
+> > and applies to any error reporting mechanism that does not panic the
+> > kernel; this series, however, will only add support for KASAN and KFENC=
+E
+> > reporting.
+> >
+> > +++ b/lib/error_report_notify.c
+> > +/*
+> > + * Trace hook for the error_report_start event. In an unlikely case of=
+ another
+> > + * task already printing a report bail out, otherwise save the current=
+ pid
+> > + * together with in_task() return value.
+>
+> This is not reliable. Some events might get lost.
 
-> ---
->  arch/arm64/kernel/Makefile         |   2 +-
->  arch/arm64/kernel/head.S           |   1 +
->  arch/arm64/kernel/idreg-override.c | 119 +++++++++++++++++++++++++++++
->  3 files changed, 121 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kernel/idreg-override.c
-> 
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index 86364ab6f13f..2262f0392857 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -17,7 +17,7 @@ obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
->  			   return_address.o cpuinfo.o cpu_errata.o		\
->  			   cpufeature.o alternative.o cacheinfo.o		\
->  			   smp.o smp_spin_table.o topology.o smccc-call.o	\
-> -			   syscall.o proton-pack.o
-> +			   syscall.o proton-pack.o idreg-override.o
->  
->  targets			+= efi-entry.o
->  
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index d74e5f84042e..b3c4dd04f74b 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -435,6 +435,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
->  
->  	mov	x0, x21				// pass FDT address in x0
->  	bl	early_fdt_map			// Try mapping the FDT early
-> +	bl	init_shadow_regs
->  	bl	switch_to_vhe
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->  	bl	kasan_early_init
-> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> new file mode 100644
-> index 000000000000..392f93b67103
-> --- /dev/null
-> +++ b/arch/arm64/kernel/idreg-override.c
-> @@ -0,0 +1,119 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Early cpufeature override framework
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + * Author: Marc Zyngier <maz@kernel.org>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/libfdt.h>
-> +
-> +#include <asm/cacheflush.h>
-> +#include <asm/setup.h>
-> +
-> +struct reg_desc {
-> +	const char * const	name;
-> +	u64 * const		val;
-> +	u64 * const		mask;
-> +	struct {
-> +		const char * const	name;
-> +		u8			 shift;
-nit: There's an extra space before `shift`.
 
-> +	} 			fields[];
-> +};
-> +
-> +static const struct reg_desc * const regs[] __initdata = {
-> +};
-> +
-> +static int __init find_field(const char *cmdline, const struct reg_desc *reg,
-> +			     int f, u64 *v)
-> +{
-> +	char buf[256], *str;
-> +	size_t len;
-> +
-> +	snprintf(buf, ARRAY_SIZE(buf), "%s.%s=", reg->name, reg->fields[f].name);
-> +
-> +	str = strstr(cmdline, buf);
-> +	if (!(str == cmdline || (str > cmdline && *(str - 1) == ' ')))
-> +		return -1;
-> +
-> +	str += strlen(buf);
-> +	len = strcspn(str, " ");
-> +	len = min(len, ARRAY_SIZE(buf) - 1);
-> +	strncpy(buf, str, len);
-> +	buf[len] = 0;
-> +
-> +	return kstrtou64(buf, 0, v);
-> +}
-> +
-> +static void __init match_options(const char *cmdline)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(regs); i++) {
-> +		int f;
-> +
-> +		if (!regs[i]->val || !regs[i]->mask)
-> +			continue;
-> +
-> +		for (f = 0; regs[i]->fields[f].name; f++) {
-> +			u64 v;
-> +
-> +			if (find_field(cmdline, regs[i], f, &v))
-> +				continue;
-> +
-> +			*regs[i]->val  |= (v & 0xf) << regs[i]->fields[f].shift;
-> +			*regs[i]->mask |= 0xfUL << regs[i]->fields[f].shift;
-> +		}
-> +	}
-> +}
-> +
-> +static __init void parse_cmdline(void)
-> +{
-> +	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
-> +		const u8 *prop;
-> +		void *fdt;
-> +		int node;
-> +
-> +		fdt = get_early_fdt_ptr();
-> +		if (!fdt)
-> +			goto out;
-> +
-> +		node = fdt_path_offset(fdt, "/chosen");
-> +		if (node < 0)
-> +			goto out;
-> +
-> +		prop = fdt_getprop(fdt, node, "bootargs", NULL);
-> +		if (!prop)
-> +			goto out;
-> +
-> +		match_options(prop);
-> +
-> +		if (!IS_ENABLED(CONFIG_CMDLINE_EXTEND))
-> +			return;
-> +	}
-> +
-> +out:
-> +	match_options(CONFIG_CMDLINE);
-> +}
-> +
-> +void __init init_shadow_regs(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(regs); i++) {
-> +		if (regs[i]->val)
-> +			*regs[i]->val  = 0;
-> +		if (regs[i]->mask)
-> +			*regs[i]->mask = 0;
-> +	}
-> +
-> +	parse_cmdline();
-> +
-> +	for (i = 0; i < ARRAY_SIZE(regs); i++) {
-> +		if (regs[i]->val)
-> +			__flush_dcache_area(regs[i]->val, sizeof(*regs[i]->val));
-> +		if (regs[i]->mask)
-> +			__flush_dcache_area(regs[i]->mask, sizeof(*regs[i]->mask));
-> +	}
-> +}
-> -- 
-> 2.29.2
-> 
+> > +
+> > +     /* Pairs with acquire in last_report_show(). */
+> > +     atomic_inc_return_release(&num_reports);
+> > +     schedule_delayed_work(&reporting_done, 0);
+>
+> Why delayed work when it gets queued immediately?
+
+Because error reports may be sent from a place where waiting is
+forbidden (in the case of KFENCE that is the page fault handler).
+A delayed work ensures the notification occurs in a wait-safe context.
+
+
+> > +static void skip_extra_info(const char **buf, size_t *len)
+> > +{
+> > +     int num_brackets =3D IS_ENABLED(CONFIG_PRINTK_TIME) +
+> > +                        IS_ENABLED(CONFIG_PRINTK_CALLER);
+>
+> The timestamp can be disabled also at runtime by
+> /sys/module/printk/parameters/time
+
+Guess that would result in disabling it for the whole kernel, which is
+too aggressive.
+
+
+> IMHO, removing the timestamp is a bad idea. It will complicate
+> matching the message with other events.
+
+Given that we are moving away from sysfs, the report size limit can be
+increased, therefore we don't have to remove the timestamp to save
+space anymore.
+
+> I am afraid that some reports would get shrunken anyway.
+Do you have any particular subsystem in mind? We could probably
+increase the report buffer to, say, 16K, to avoid this.
+
+> I suggest to use some lockless ringbuffer to store these
+> messages. Either ftrace or printk one.
+>
+> But the biggest problem would be that console might be called
+> asynchronously from another process. The messages might get
+> lost in the meantime.
+
+Do you mean that one process may call printk(), but the console probe
+for that message will be executed in the context of another process?
+If so, that would be a problem. Could it be possible to extend the
+console trace event to pass an extra caller id?
+
+>
+> There are many other more reliable solutions:
+>
+> Either add hook into vprintk_store() and make another copy of the
+> message into your buffer. But there will still be the problem
+> that you could not store more reports in parallel. So, it won't
+> be reliable anyway.
+
+At least for now, we do not expect many reports to come in parallel:
+this feature is meant for collecting the long tail of memory
+corruptions from production devices.
+
+>
+> Or add a hook into /dev/kmsg interface. It allows to read any
+> stored message immediately and quickly. Well, you would need
+> to have your own reader of this interface.
+
+This probably could be done, but isn't the console tracepoint designed
+exactly for this?
+
+> Or add your own reader of the main printk log.
+>
+> Or give up on having your own buffers. Instead just inform userspace
+> about a new report via the pooled interface. And get the messages
+> from the main log, e.g. via /dev/kmsg.
+
+Yes, that could be an option, although the need to search for
+tool-specific strings in kmsg and figure out where the report starts
+and ends still persists.
+At the end of the day, this sounds like the best approach for now,
+that we could later extend to store the logs.
+
+
+> I agree with Andrew that this might be _very_ dangerous feature.
+> It is another way how to get messages from kernel. It looks like
+> a hack how to get certain messages from the main kernel log
+> into a separate log. This might end up with implementing
+> yet another printk() or trace_printk().
+
+Initially our intent was to refactor KFENCE error reporting so that
+the whole report is stored in a buffer and can be exposed to userspace
+via a VFS entry.
+Then it turned out we'd need something similar for KASAN, which
+would've also resulted in a major rewrite.
+So we thought a much more generic solution would be to let the tools
+"tee" their output to a specific file on demand.
+Yes, sounds like duplicating the kernel log :)
+On the other hand, we never really planned to extend printk or
+duplicate parts of it, so unless trace_console() is a good fit we'd
+probably refrain from storing the logs for now.
+
+> I suggest to integrate this better with printk():
+>
+>    + We already have printk_context() that allows to handle
+>      messages a special way.
+>
+>    + Just store extra flag into the main log buffer for these
+>      messages.
+>
+>    + Allow to read the messages via some interface, either
+>      /dev/kmsg or a new one. We already store PID and context
+>      info into the main log buffer. It will allow to put
+>      relevant lines together.
+>
+>    + Anyway, I strongly suggest to avoid your own buffer. It looks
+>      like an overhead. It it would get more complicated when
+>      there are more users, ...
+
+Having the special flag for the error reports is handy, but given the
+existence of CONFIG_PRINTK_CALLER may not be worth the effort, at
+least for now.
+
+>
+>
+> I still have to think about it. This feature heavily depends on
+> printk(). It makes sense to integrate it there. But we also
+> need to keep it simple because printk() is already pretty
+> complicated.
+>
+> Best Regards,
+> Petr
+
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
