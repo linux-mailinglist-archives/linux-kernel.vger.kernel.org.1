@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5CF2F9F2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830A82F9F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391189AbhARLzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:55:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37938 "EHLO mail.kernel.org"
+        id S2389440AbhARL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:56:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388852AbhARLmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:42:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF1222227;
-        Mon, 18 Jan 2021 11:41:45 +0000 (UTC)
+        id S2390815AbhARLnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:43:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6434D22573;
+        Mon, 18 Jan 2021 11:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970105;
-        bh=Iz9suBUobb5QOaUb3ui3gi1MHAkT4knNtmy5HQe/irg=;
+        s=korg; t=1610970173;
+        bh=mYeu+wPSmKow5purnFSA8na6KJAizKa/dfDCL08jO0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HoWKFE6FY99qT6pC3NLtjqzjPTb0fU7+/8Y3KGowq2hBu8McDdrAwetTvyOolUo6P
-         nA3RbNnKrnl0fPPmdxc40UEE3Lq9whJGxOD8N4daxLLIl2Jid4ZBj+fxyC0dBimcMx
-         r0eughbWf3XtXxqqNKi0VJkvgttp74v37o25/Qgo=
+        b=QVrhb4oKN7FFgQq36fUJ6Dajhz3om41S00s557H1ynZ+Tu2r0qP8T7GadpcghIRvQ
+         dMs4EQW8fOQDztmr4SQs8WcSzoIncta49QBpNIoF6Ds5n0vQbZv+f3JDzv3wcovo4R
+         emJR/OExQq/6l+dKS7EH3YvqaggL/GY6/ln+SH+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Demers <alexandre.f.demers@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 009/152] drm/amdgpu: fix DRM_INFO flood if display core is not supported (bug 210921)
-Date:   Mon, 18 Jan 2021 12:33:04 +0100
-Message-Id: <20210118113353.215516490@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.10 037/152] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+Date:   Mon, 18 Jan 2021 12:33:32 +0100
+Message-Id: <20210118113354.561611007@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -40,33 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Demers <alexandre.f.demers@gmail.com>
+From: Will Deacon <will@kernel.org>
 
-commit ff9346dbabbb6595c5c20d90d88ae4a2247487a9 upstream.
+commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
 
-This fix bug 210921 where DRM_INFO floods log when hitting an unsupported ASIC in
-amdgpu_device_asic_has_dc_support(). This info should be only called once.
+GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+beyond the stack pointer, resulting in memory corruption if an interrupt
+is taken after the stack pointer has been adjusted but before the
+reference has been executed. This leads to subtle, infrequent data
+corruption such as the EXT4 problems reported by Russell King at the
+link below.
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=210921
-Signed-off-by: Alexandre Demers <alexandre.f.demers@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Life is too short for buggy compilers, so raise the minimum GCC version
+required by arm64 to 5.1.
+
+Reported-by: Russell King <linux@armlinux.org.uk>
+Suggested-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
+Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/compiler-gcc.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3008,7 +3008,7 @@ bool amdgpu_device_asic_has_dc_support(e
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -13,6 +13,12 @@
+ /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 */
+ #if GCC_VERSION < 40900
+ # error Sorry, your version of GCC is too old - please use 4.9 or newer.
++#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
++/*
++ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
++ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
++ */
++# error Sorry, your version of GCC is too old - please use 5.1 or newer.
  #endif
- 	default:
- 		if (amdgpu_dc > 0)
--			DRM_INFO("Display Core has been requested via kernel parameter "
-+			DRM_INFO_ONCE("Display Core has been requested via kernel parameter "
- 					 "but isn't supported by ASIC, ignoring\n");
- 		return false;
- 	}
+ 
+ /*
 
 
