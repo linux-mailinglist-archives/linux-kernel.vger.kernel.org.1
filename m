@@ -2,156 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C942FA24B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF252FA24A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404518AbhARN5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:57:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404791AbhARNz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:55:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A7C221F8;
-        Mon, 18 Jan 2021 13:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610978117;
-        bh=ykgFhUqSM1dyJBvw0Rywlt6WHe0ZmeC2SAS93hYZkRo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gWfeqVULU5LOFwX+zHhR7ooyTHeoB068knM+l7TtzY1V0br2LJrTuprNWbLljIhSQ
-         +IIYMEH0tVE2PhpBjBJ82jzb2swQU2zcc/bErazzIdDOE+GsQgdW+gv9xN2I1tO9sn
-         fajtB1v9z2BXgF/PaVGp4U8KqNCfBqzvzInOoOCCn8yoSLtbnnl+SDTA/vy2LrEiJK
-         +Ex1pRMOnqoywNYYLBIHHMsPGGHyEsdksyTN48/XXE92yDXyoGgq1KR+JieSNUzgZe
-         EamHHfuud0RIXDgf1lj13cZ1lxYPNL5H/uWPALj39S4PXZc4SbQ7gQvDubzk1giXy9
-         KxS6dZ0ghhFgg==
-Date:   Mon, 18 Jan 2021 13:54:40 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/13] regulator: hi6421v600-regulator: move it from
- staging
-Message-ID: <20210118135440.GM4455@sirena.org.uk>
-References: <cover.1610975633.git.mchehab+huawei@kernel.org>
- <d0a7cae3c654d25e01b0c436e00de55a21cd7f64.1610975633.git.mchehab+huawei@kernel.org>
+        id S2391180AbhARN5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:57:30 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:59051 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404779AbhARNz5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:55:57 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2332920008;
+        Mon, 18 Jan 2021 13:55:07 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 14:55:07 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH] media: i2c: fix odd_ptr_err.cocci warnings
+Message-ID: <YAWTO11tkNPnslKV@aptenodytes>
+References: <alpine.DEB.2.22.394.2101162109350.2697@hadrien>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nrXiCraHbXeog9mY"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QNxCC/ko3tLIeCxU"
 Content-Disposition: inline
-In-Reply-To: <d0a7cae3c654d25e01b0c436e00de55a21cd7f64.1610975633.git.mchehab+huawei@kernel.org>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.DEB.2.22.394.2101162109350.2697@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nrXiCraHbXeog9mY
-Content-Type: text/plain; charset=us-ascii
+--QNxCC/ko3tLIeCxU
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 02:28:12PM +0100, Mauro Carvalho Chehab wrote:
+Hi,
 
-> index f385146d2bd1..3b23ad56b31a 100644
-> --- a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.ya=
-ml
-> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.ya=
-ml
-> @@ -60,6 +60,8 @@ required:
->    - reg
->    - regulators
-> =20
-> +additionalProperties: false
-> +
->  examples:
->    - |
->      /* pmic properties */
+On Sat 16 Jan 21, 21:11, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
+>=20
+> PTR_ERR should access the value just tested by IS_ERR
 
-Why is this part of this patch?
+Good catch!
 
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Device driver for regulators in Hisi IC
-> +//
-> +// Copyright (c) 2013 Linaro Ltd.
-> +// Copyright (c) 2011 Hisilicon.
-> +//
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-This looks like it needs an update.
+Cheers,
 
-> +// This program is free software; you can redistribute it and/or modify
-> +// it under the terms of the GNU General Public License version 2 as
-> +// published by the Free Software Foundation.
-> +//
-> +// This program is distributed in the hope that it will be useful,
-> +// but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +// GNU General Public License for more details.
+Paul
 
-This boilerplate can be removed.
+> Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
+>=20
+> Fixes: 11c0d8fdccc5 ("media: i2c: Add support for the OV8865 image sensor=
+")
+> CC: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+>=20
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.g=
+it master
+> head:   b3a3cbdec55b090d22a09f75efb7c7d34cb97f25
+> commit: 11c0d8fdccc56fa15cb15906480b4737c31dd085 [2650/3956] media: i2c: =
+Add support for the OV8865 image sensor
+> :::::: branch date: 2 days ago
+> :::::: commit date: 4 days ago
+>=20
+>  ov8865.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- a/drivers/media/i2c/ov8865.c
+> +++ b/drivers/media/i2c/ov8865.c
+> @@ -2849,7 +2849,7 @@ static int ov8865_probe(struct i2c_clien
+>  	sensor->avdd =3D devm_regulator_get(dev, "avdd");
+>  	if (IS_ERR(sensor->avdd)) {
+>  		dev_err(dev, "cannot get AVDD (analog) regulator\n");
+> -		ret =3D PTR_ERR(sensor->dvdd);
+> +		ret =3D PTR_ERR(sensor->avdd);
+>  		goto error_endpoint;
+>  	}
+>=20
 
-> +static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
-> +{
-> +	struct hi6421_spmi_reg_info *sreg =3D rdev_get_drvdata(rdev);
-> +	struct hi6421_spmi_pmic *pmic =3D sreg->pmic;
-> +	int ret;
-> +
-> +	/* cannot enable more than one regulator at one time */
-> +	mutex_lock(&sreg->enable_mutex);
-> +	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
-> +		     HISI_REGS_ENA_PROTECT_TIME + 1000);
-> +
-> +	/* set enable register */
-> +	ret =3D hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
-> +				   rdev->desc->enable_mask,
-> +				   rdev->desc->enable_mask);
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
-If for some reason the PMIC is sufficiently fragile to need a delay
-between enables it's not clear why the driver is doing it before
-enabling rather than after, presumably there's issues with the regulator
-ramping up and stabalising its output=20
-
-> +	/* set enable register to 0 */
-> +	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
-> +				    rdev->desc->enable_mask, 0);
-
-I'm not sure all these comments are adding anything.
-
-> +	if (unlikely(selector >=3D rdev->desc->n_voltages))
-> +		return -EINVAL;
-
-This should not be a hot path that needs an unlikely() annotation.
-
-> +static unsigned int
-> +hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
-> +				       int input_uV, int output_uV,
-> +				       int load_uA)
-> +{
-> +	struct hi6421_spmi_reg_info *sreg =3D rdev_get_drvdata(rdev);
-> +
-> +	if (load_uA || ((unsigned int)load_uA > sreg->eco_uA))
-> +		return REGULATOR_MODE_NORMAL;
-
-This means that for *any* load at all we select NORMAL - I'm not
-convinced this is intentional?
-
---nrXiCraHbXeog9mY
+--QNxCC/ko3tLIeCxU
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFkx8ACgkQJNaLcl1U
-h9CCJQf+JZE52OG1ptTsbSKUutT6ORzmQVWG6aAfTo8g32Z9wgbLY2jYIVYh/gEd
-dqFNvXFpVCy22tOaAKybiteHGhS4941GKXI5zQ/bkRTVaNt9S4H6qACeNJ9OZUvv
-OKP1s5V1Xpdgodu4Zd1VAKrT1ewYxt6y4R2mltc5rb4sm9J2vkeYjnVd2bioe6Xp
-BHMYppqMJoy3bxiRFizy91HxmwSD/v6FYk3FIn40+vYIGQ2OjBElMhBPO9xrdRy6
-2BCgn+4WIQrK2pYGvE9Q4Kl7/9gj2SRUWEnUiVtygitrMCOC4OxyWbPMXZqFPo7f
-uB6wUGsnEx2kEvbE5bryKYom/wcxlA==
-=06Fz
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmAFkzsACgkQ3cLmz3+f
+v9FKbQf+NcZH7Muof9WMCk2hCgMCuDHJPB+r4d23+jph+8Z55rc0NvIIzZLiFO/v
+YdaRBSz14ar2gMp4o8lifD3AQxKEvyCga90LqwJ329WpHvk4E8SKW0KI7jNv5XWU
+EWR7LVxSrunBYwt7lYAiP0By6KWpDxvrXPfk6fLvbvxG0xH+ewaZ557xvh976uRr
+jpCZNx93uT8XKW5dutl2zLz3MLhyRWm0s46yeGHX5VJk3BdfCNTF9heApuuy0Oiu
+zvf0yXjHk4Z4NQypzveWg8ekdKHe/rfZosWsaBkSrVmK5fXZVPVOw1nDo8PCs+jf
+1sZbPyTNC/qySeSiLDY+J4/mjU8vvw==
+=oRMb
 -----END PGP SIGNATURE-----
 
---nrXiCraHbXeog9mY--
+--QNxCC/ko3tLIeCxU--
