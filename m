@@ -2,55 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E459E2F9D5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFC52F9D61
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389827AbhARK7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:59:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55342 "EHLO mx2.suse.de"
+        id S2388388AbhARK7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:59:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:32920 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389410AbhARK6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:58:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3588B1C1;
-        Mon, 18 Jan 2021 10:57:59 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 10:57:57 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Imran Khan <imran.f.khan@oracle.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Remove redundant sched_numa_balancing check.
-Message-ID: <20210118105757.GA20777@suse.de>
-References: <20210118103218.204373-1-imran.f.khan@oracle.com>
+        id S2389652AbhARK5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:57:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 907681FB;
+        Mon, 18 Jan 2021 02:56:53 -0800 (PST)
+Received: from [10.37.8.29] (unknown [10.37.8.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF5F33F68F;
+        Mon, 18 Jan 2021 02:56:50 -0800 (PST)
+Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
+ <20210115120043.50023-5-vincenzo.frascino@arm.com>
+ <20210115154520.GD44111@C02TD0UTHF1T.local>
+ <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
+ <0c1b9a6b-0326-a24f-6418-23a0723adecf@arm.com>
+ <20210118104116.GB29688@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <ead05a9a-edef-7be9-b173-3a62caf187c3@arm.com>
+Date:   Mon, 18 Jan 2021 11:00:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210118103218.204373-1-imran.f.khan@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210118104116.GB29688@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:32:18PM +1100, Imran Khan wrote:
-> task_numa_fault is invoked from do_numa_page/do_huge_pmd_numa_page,
-> for task_numa_work induced memory faults. task_numa_work is scheduled
-> from task_tick_numa which is invoked only if sched_numa_balancing
-> is true.
-> 
-> So task_numa_fault will not get invoked if sched_numa_balancing is
-> false and hence we can avoid checking it again in task_numa_fault.
-> 
-> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
 
-If NUMA balancing is disabled at runtime, there may still be PTEs that
-are marked for NUMA balancing. While these still get handled at fault,
-there is no point tracking the fault information in task_numa_fault and
-this function can still get called after sched_numa_balancing is
-disabled.
+
+On 1/18/21 10:41 AM, Mark Rutland wrote:
+> On Sun, Jan 17, 2021 at 12:27:08PM +0000, Vincenzo Frascino wrote:
+>> Hi Mark,
+>>
+>> On 1/16/21 2:22 PM, Vincenzo Frascino wrote:
+>>>> Is there any chance that this can be used for the last bytes of the
+>>>> virtual address space? This might need to change to `_addr == _end` if
+>>>> that is possible, otherwise it'll terminate early in that case.
+>>>>
+>>> Theoretically it is a possibility. I will change the condition and add a note
+>>> for that.
+>>>
+>>
+>> I was thinking to the end of the virtual address space scenario and I forgot
+>> that if I use a condition like `_addr == _end` the tagging operation overflows
+>> to the first granule of the next allocation. This disrupts tagging accesses for
+>> that memory area hence I think that `_addr < _end` is the way to go.
+> 
+> I think it implies `_addr != _end` is necessary. Otherwise, if `addr` is
+> PAGE_SIZE from the end of memory, and `size` is PAGE_SIZE, `_end` will
+> be 0, so using `_addr < _end` will mean the loop will terminate after a
+> single MTE tag granule rather than the whole page.
+> 
+> Generally, for some addr/increment/size combination (where all are
+> suitably aligned), you need a pattern like:
+> 
+> | do {
+> |       thing(addr);
+> |       addr += increment;
+> | } while (addr != end);
+> 
+> ... or:
+> 
+> | for (addr = start; addr != end; addr += increment) {
+> |       thing(addr);
+> | }
+> 
+> ... to correctly handle working at the very end of the VA space.
+> 
+> We do similar for page tables, e.g. when we use pmd_addr_end().
+>
+
+Good point! I agree it wraps around otherwise. I will change it accordingly.
+
+Thanks!
+
+> Thanks,
+> Mark.
+> 
 
 -- 
-Mel Gorman
-SUSE Labs
+Regards,
+Vincenzo
