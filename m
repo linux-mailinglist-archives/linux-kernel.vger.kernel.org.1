@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8082D2FAB0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84782FAB15
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437780AbhARUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:09:53 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:41946 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394185AbhARUJh (ORCPT
+        id S2437856AbhARUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:11:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437707AbhARUKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:09:37 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 17EE32EA2F1;
-        Mon, 18 Jan 2021 15:08:53 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id 6wxIMQiKLd4y; Mon, 18 Jan 2021 14:55:17 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        Mon, 18 Jan 2021 15:10:02 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F99C061573;
+        Mon, 18 Jan 2021 12:09:22 -0800 (PST)
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 06E792EA2DB;
-        Mon, 18 Jan 2021 15:08:51 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, ddiss@suse.de,
-        bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-Date:   Mon, 18 Jan 2021 15:08:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by ms.lwn.net (Postfix) with ESMTPSA id E63E36E3;
+        Mon, 18 Jan 2021 20:09:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E63E36E3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611000562; bh=/qc4sI+d/qQsfNmrCR3YiQfbWy7XrqPIVXFuvYWWNlY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rl65h/QO8uqqx+CNKBDsu42onqe8o3RgriKsRP4cXlQilbyxuUd1jnP+UQNOev5bG
+         IQ23PCOSWBUhjb4vH0Mg1LoVDrFdb58AMuC+/QpnzgXPiQySFDpIRyxfAwuP5M0ppa
+         fVPaN2stKK9qIXIRNZZuRn2CF0jxVD9OS6hCppwOmqfEFKCBrddHidBLhb8KMB6t+B
+         1dw8DHX0PmBnVisunNbJti4sCgctNuGA0qcyqzndeAJ64etY9q2UojUGtUow2mEY1q
+         dYNPkdFRpH/fI1tTgzlG7zv4IZZs4gGpDasZMFBTAGxeC2TB3SJex+y7BW4VsfHlEf
+         1O2EYH5FtvpTw==
+Date:   Mon, 18 Jan 2021 13:09:20 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] docs: submitting-patches: Emphasise the
+ requirement to Cc: stable when using Fixes: tag
+Message-ID: <20210118130920.791dcc0d@lwn.net>
+In-Reply-To: <20210113163315.1331064-1-lee.jones@linaro.org>
+References: <20210113163315.1331064-1-lee.jones@linaro.org>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <20210118182854.GJ4605@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
-> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
+On Wed, 13 Jan 2021 16:33:15 +0000
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> Clear-up any confusion surrounding the Fixes: tag with regards to the
+> need to Cc: the stable mailing list when submitting stable patch
+> candidates.
 > 
->> After several flawed attempts to detect overflow, take the fastest
->> route by stating as a pre-condition that the 'order' function argument
->> cannot exceed 16 (2^16 * 4k = 256 MiB).
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+> v2:
+>  - Link to the 'stable-kernel-rules' document as per Greg's request
 > 
-> That doesn't help, the point of the overflow check is similar to
-> overflow checks in kcalloc: to prevent the routine from allocating
-> less memory than the caller might assume.
-> 
-> For instance ipr_store_update_fw() uses request_firmware() (which is
-> controlled by userspace) to drive the length argument to
-> sgl_alloc_order(). If userpace gives too large a value this will
-> corrupt kernel memory.
-> 
-> So this math:
-> 
->    	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+>  Documentation/process/submitting-patches.rst | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-But that check itself overflows if order is too large (e.g. 65).
-A pre-condition says that the caller must know or check a value
-is sane, and if the user space can have a hand in the value passed
-the caller _must_ check pre-conditions IMO. A pre-condition also
-implies that the function's implementation will not have code to
-check the pre-condition.
+Applied, thanks.
 
-My "log of both sides" proposal at least got around the overflowing
-left shift problem. And one reviewer, Bodo Stroesser, liked it.
-
-> Needs to be checked, add a precondition to order does not help. I
-> already proposed a straightforward algorithm you can use.
-
-It does help, it stops your proposed check from being flawed :-)
-
-Giving a false sense of security seems more dangerous than a
-pre-condition statement IMO. Bart's original overflow check (in
-the mainline) limits length to 4GB (due to wrapping inside a 32
-bit unsigned).
-
-Also note there is another pre-condition statement in that function's
-definition, namely that length cannot be 0.
-
-So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
-notes and come up with a solution that you are _all_ happy with.
-The pre-condition works for me and is the fastest. The 'length'
-argument might be large, say > 1 GB [I use 1 GB in testing but
-did try 4GB and found the bug I'm trying to fix] but having
-individual elements greater than say 32 MB each does not
-seem very practical (and fails on the systems that I test with).
-In my testing the largest element size is 4 MB.
-
-
-Doug Gilbert
-
+jon
