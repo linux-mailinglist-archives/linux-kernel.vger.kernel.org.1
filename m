@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EA12FAD11
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCC32FAD12
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388134AbhARWDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        id S2388278AbhARWFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387894AbhARWD0 (ORCPT
+        with ESMTP id S1728923AbhARWEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:03:26 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3225C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:45 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id u27so2549244uaa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:02:45 -0800 (PST)
+        Mon, 18 Jan 2021 17:04:39 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B7C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:03:53 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id u17so35797135iow.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:03:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9BjWeKnLhtX9WXPmjSXlj5EkkOdetRobr1udf+4AmzQ=;
-        b=a+9n5eZgCWi/s4vOPejRYrhDUcnrW08Zt0Nbg4Vzc+dhj8SIke/Z96SUBtUSWulSz0
-         MUYd3MF5e44z88vDRzUNpWZOO6I4kZHXLwldldcl1xmRhrsd5lodyqaJtcLzk8P/6GoS
-         o4N+ejsO0uBBQ1QpQCXmiLNjYZGOd6qC954c0=
+        bh=wmpYwUNdr+rzX8LoCj7WnsumrrYlK3+Y6xiLf7Go+mc=;
+        b=B6vRXq95C8RQIvWa7d7RRwNNKW9nce0IoW229pBAKW3t+tshh0JNkgyESfEXbMJkar
+         RCZ4QPO4YNU+j1Tzu2VZghho/YcL7DKPjWj2DcGOUwyfLCb1MpeSiOjhcHPvBZK/fTOX
+         KkB1+GapG2CBXuLmtxWThwHQez1t3EkHnnGw0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9BjWeKnLhtX9WXPmjSXlj5EkkOdetRobr1udf+4AmzQ=;
-        b=BQ0pEVsZm84bffSKAh0mm+eij3YSZWzhIV+qzfUdD5GjVrDSBDI25S7cAPz7OB6jY7
-         ChA85BHPpdS4IkbGrSiO9hGDU9+XWfA7prsMi4GwR/f3PPaMCYvLU3qF0eqlB3VLd6fH
-         qiloeG24DUwhIH+wOnExZo7B6wW3dyKKl4JCPgL590yzGkeEK54Vk7CxVBVGqpcXl9qo
-         ldxomQjtq29JVugU9zM9mV+7rjxUd3mT1oCGlopgC7dUlbh5vlf+iavMgGxUPrItf8RX
-         p5kHa/A3wIuZpW6+aC2SQiyk6B3Z1MLtOTzxcJm/LaT4oRcBxxZ0Cnj0l+A/KSvD4who
-         CEkg==
-X-Gm-Message-State: AOAM530DUwD9cU2eMGdh2UTyc5u9feppb+ApiMZc1f0V1ZhGNcLZlgtS
-        sPO0c6fJ5sYw2RKgcxl6GbvdTRZTySjm6ToFChmFEA==
-X-Google-Smtp-Source: ABdhPJwuKHEEKlq5+7w41SyHuZ4THOU/eaMaoFBLcg0lHoFbaTX6gWLt3qWUpjxuMdkGEK3o+Xzp/yffgED7H2sZRvU=
-X-Received: by 2002:ab0:cb:: with SMTP id 69mr821626uaj.10.1611007364845; Mon,
- 18 Jan 2021 14:02:44 -0800 (PST)
+        bh=wmpYwUNdr+rzX8LoCj7WnsumrrYlK3+Y6xiLf7Go+mc=;
+        b=TA5/Qg3/fj8ls3j39e8BljTBeXH2/hq8z6yFX64wooq3JjW0PYSEK+qtOTWGWN1Gj+
+         KltLgDnYiZyxWWLWqV58kJX/2RHjh7dAuKm7oTXyynUz2/FivDcUUVdpnFHVck3PvhB7
+         UxiRwgeCoENEX5gfBeuhFQVM7GIou00xfrPyqLY5DY0Ij69BSm2j0EsnTR4oeJ+WMaOJ
+         cDupuKniBmvUfubQizZuX5V1NEFmZjPS7X1fchtCzow0NUDkBrvXiGMCdwpiOWM4t81z
+         iotAHWlCLltue2xHVtKd6B5T0y/7TmdoCTzec4yE2GOyzJLfL2aHh/dWLGshllBPH8yR
+         piWQ==
+X-Gm-Message-State: AOAM530CI8FmSxNLNAE1IqYGjqSZnyCE6GGznvwfXX8Vm2clb7O4fWEM
+        NwJn48mC/sbnF16oRoe2cRA9LsMnJkpEFw==
+X-Google-Smtp-Source: ABdhPJxdgFe7WVJXps+2TUhzOYY6BopvtsAPdrxyCTEJcG/ns/aUTmc6i9XWNL1TAgtIo1ERrbliRA==
+X-Received: by 2002:a5e:c00e:: with SMTP id u14mr831748iol.194.1611007432369;
+        Mon, 18 Jan 2021 14:03:52 -0800 (PST)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id a18sm10873638ilt.52.2021.01.18.14.03.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 14:03:51 -0800 (PST)
+Received: by mail-io1-f48.google.com with SMTP id p72so10969067iod.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:03:51 -0800 (PST)
+X-Received: by 2002:a92:85c7:: with SMTP id f190mr942562ilh.234.1611007431670;
+ Mon, 18 Jan 2021 14:03:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116052623.3196274-1-grundler@chromium.org> <20210116052623.3196274-3-grundler@chromium.org>
-In-Reply-To: <20210116052623.3196274-3-grundler@chromium.org>
-From:   Grant Grundler <grundler@chromium.org>
-Date:   Mon, 18 Jan 2021 22:02:33 +0000
-Message-ID: <CANEJEGuDnZ6ujsRnn7xmO-y+SxxqxyaQCJXmHeV3XgfLsA8cDg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] net: usb: cdc_ncm: don't spew notifications
-To:     Grant Grundler <grundler@chromium.org>,
-        nic_swsd <nic_swsd@realtek.com>
-Cc:     Oliver Neukum <oliver@neukum.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
+ <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
+ <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com>
+ <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com> <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+In-Reply-To: <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Jan 2021 14:03:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
+Message-ID: <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
+Subject: Re: Splicing to/from a tty
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+nic_swsd [adding per Realtek developer team request]
+On Mon, Jan 18, 2021 at 1:54 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> But it might well be some other conversion bug of mine even if I tried
+> to keep it fairly minimal and straight-forward.
 
-On Sat, Jan 16, 2021 at 5:27 AM Grant Grundler <grundler@chromium.org> wrote:
->
-> RTL8156 sends notifications about every 32ms.
-> Only display/log notifications when something changes.
->
-> This issue has been reported by others:
->         https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
->         https://lkml.org/lkml/2020/8/27/1083
->
-> ...
-> [785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
-> [785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
-> [785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-> [785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
-> [785962.929954] usb 1-1: Manufacturer: Realtek
-> [785962.929956] usb 1-1: SerialNumber: 000000001
-> [785962.991755] usbcore: registered new interface driver cdc_ether
-> [785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
-> [785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
-> [785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
-> [785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
-> [785963.019211] usbcore: registered new interface driver cdc_ncm
-> [785963.023856] usbcore: registered new interface driver cdc_wdm
-> [785963.025461] usbcore: registered new interface driver cdc_mbim
-> [785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
-> [785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-> [785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-> [785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-> ...
->
-> This is about 2KB per second and will overwrite all contents of a 1MB
-> dmesg buffer in under 10 minutes rendering them useless for debugging
-> many kernel problems.
->
-> This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
-> the majority of those logs useless too.
->
-> When the link is up (expected state), spew amount is >2x higher:
-> ...
-> [786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-> [786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-> [786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-> [786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-> [786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-> [786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-> ...
->
-> Chrome OS cannot support RTL8156 until this is fixed.
->
-> Signed-off-by: Grant Grundler <grundler@chromium.org>
-> ---
->  drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
->  include/linux/usb/usbnet.h |  2 ++
->  2 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-> index 25498c311551..5de096545b86 100644
-> --- a/drivers/net/usb/cdc_ncm.c
-> +++ b/drivers/net/usb/cdc_ncm.c
-> @@ -1827,6 +1827,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
->         uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
->         uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
->
-> +       /* if the speed hasn't changed, don't report it.
-> +        * RTL8156 shipped before 2021 sends notification about every 32ms.
-> +        */
-> +       if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
-> +               return;
-> +
-> +       dev->rx_speed = rx_speed;
-> +       dev->tx_speed = tx_speed;
-> +
->         /*
->          * Currently the USB-NET API does not support reporting the actual
->          * device speed. Do print it instead.
-> @@ -1867,7 +1876,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
->                  * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
->                  * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
->                  */
-> -               usbnet_link_change(dev, !!event->wValue, 0);
-> +               if (netif_carrier_ok(dev->net) != !!event->wValue)
-> +                       usbnet_link_change(dev, !!event->wValue, 0);
->                 break;
->
->         case USB_CDC_NOTIFY_SPEED_CHANGE:
-> diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-> index 88a7673894d5..cfbfd6fe01df 100644
-> --- a/include/linux/usb/usbnet.h
-> +++ b/include/linux/usb/usbnet.h
-> @@ -81,6 +81,8 @@ struct usbnet {
->  #              define EVENT_LINK_CHANGE        11
->  #              define EVENT_SET_RX_MODE        12
->  #              define EVENT_NO_IP_ALIGN        13
-> +       u32                     rx_speed;       /* in bps - NOT Mbps */
-> +       u32                     tx_speed;       /* in bps - NOT Mbps */
->  };
->
->  static inline struct usb_driver *driver_of(struct usb_interface *intf)
-> --
-> 2.29.2
->
+Duh. I completely forgot to handle the canon_copy_from_read_buf()
+case. So ICANON mode was entirely scrogged and would just return
+-EFAULT.
+
+That would do it. I'm surprised how well everything I did actually
+worked - because all my normal terminal apps (shell, editor etc)
+obviously end up not using icanon at all.
+
+I'll have a third patch in a moment, but while it's ready I want to
+actually reboot and confirm it first.
+
+             Linus
