@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46552FA5B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC05E2FA594
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391586AbhARQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:11:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405923AbhARQEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:04:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1790522C9C;
-        Mon, 18 Jan 2021 16:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610985840;
-        bh=J6NpMp0NPKuO97iBfNt9hYs8ZZSyHPbQhori3CpJO4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hBHdKdaIoNV7Iis1gwh0Ltj6k+n2XAB2brhKxbew0ep90IQtOdynxvYLaY/lzLRHp
-         Sw63r6l7xJiUtDcoWcjKepe1Vhu2f65WKIm40QE8LhLvnsZDbre2snS5CX0bswkuWr
-         EJKTBfUYYqVV3ByKEDl6g4JLwhgRvxWrLkvQ9o94yn7GBS5vnjeJ1DY4Zg6pwAbe8q
-         wm1Fmo02FrUcqhbzFi/7THNIHimUuLEzaI5EkRj2yQj+zhsFpz2eyTHNmFyIW+tWIR
-         Yk9/E94W/jwYD+Fnadl7aQ/NpOxJy+fzch4PUtYFbi9HFHtEHiga/86hgP65/vz9ho
-         Owx9Tqs+BU5UA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1F53440CE2; Mon, 18 Jan 2021 13:03:58 -0300 (-03)
-Date:   Mon, 18 Jan 2021 13:03:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 05/22] perf tools: Make perf_config_system global
-Message-ID: <20210118160358.GD12699@kernel.org>
-References: <20210102220441.794923-1-jolsa@kernel.org>
- <20210102220441.794923-6-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210102220441.794923-6-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        id S2406390AbhARQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:05:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406080AbhARQE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:04:56 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1C2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:04:06 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id x23so18709490lji.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=CRVjXKKrBcqwznGwkqTzMqru1Q83Wf5kKWHY7eqB8zM=;
+        b=lbWZcFrp2/xw+8YB57Zf263+bZpNgoZ7EoISNDLdIhXY1lIpJ3pER18lYziEAhGzZt
+         k3Vy+kuDQ52eFj2/nSBqgI1Dzl/17VaiB072NC5dPTgG5h+DniV+PC/ASDYnAGnZdixj
+         m9l3MdV3f/QuJS67asRhuBCF82FyEAw2vfbo5w94pdSc4pwxaMSfXD9C3dd5IY7WXNR5
+         Vt41zbAu78xzxub//34cHf+ASxBcrXUjYu11iy/unGV0P/R3W15JKXODhM6o0iOGh3GY
+         Fm9Ier+d+Gx93110sQLSgc1L5RT0LGqEB7uEP4gXzBmdWf7Eds+qBBubBvXZ7kJS3I8q
+         5yhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=CRVjXKKrBcqwznGwkqTzMqru1Q83Wf5kKWHY7eqB8zM=;
+        b=FYz+zBt3e9MT6+nU0/6DQkevv0uQDWGvO5V5RLiEXrA5Mv3Xd3Uk8AkwZygh8mlakz
+         e7pf62UwKwRX9eBYQx2G1i2tJz6C/p3+2wRClOOTcExqbAjCAg0vXJ/jwYFg4N/jQbWu
+         b9+Y0O8euDUQrat5Ya5CGc8VnK6buYh1a6CbQ+eXEIgo4sA4mD8Na4+Uawtmb7s/yeEk
+         hq0Cp5RPThJYC1NBWWum0QAFnRsj4XpFNbJJ6l3HIHBZae/4TCOeCvVDeNp+qrDwrNWD
+         qeqa+T0vAu0xX2gcij0PGDw8ton7p5UzPIxuF+n68kyEce9Sg7TT9U+VBv2e5/46jcbT
+         lzSQ==
+X-Gm-Message-State: AOAM5319+X0TljwtN4es7PPB7mdHYz1GdLQGpFOq/3DUqYj2GcZu7wPI
+        yfnuzz+JiHRK38m5dO8RXha1
+X-Google-Smtp-Source: ABdhPJyhoURVwyFMMZQYjFq/YzVLjesKUyS4L8Y3IIHImbFP5hN46ZurI3143j9QemFLDSa+xuFSiw==
+X-Received: by 2002:a2e:898c:: with SMTP id c12mr147949lji.193.1610985844464;
+        Mon, 18 Jan 2021 08:04:04 -0800 (PST)
+Received: from ?IPv6:2a00:1370:8117:3ba7:1569:a6db:ab8:291f? ([2a00:1370:8117:3ba7:1569:a6db:ab8:291f])
+        by smtp.gmail.com with ESMTPSA id j17sm1946104lfb.145.2021.01.18.08.04.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 08:04:03 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: Compilation issue with Linaro ARM toolchain
+From:   Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>
+In-Reply-To: <20210118155921.GA462671@xps15>
+Date:   Mon, 18 Jan 2021 19:04:02 +0300
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linaro Toolchain Working Group 
+        <linaro-toolchain@lists.linaro.org>, keescook@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <061303A4-51F3-42E0-BCE3-BFAF416D7609@linaro.org>
+References: <70249918-0081-aef4-0605-85db700aadc5@orpaltech.com>
+ <20210118155921.GA462671@xps15>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sergey Suloev <ssuloev@orpaltech.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Jan 02, 2021 at 11:04:24PM +0100, Jiri Olsa escreveu:
-> Making perf_config_system global, it will be used
-> outside the config.c object in following patches.
+> On 18 Jan 2021, at 18:59, Mathieu Poirier <mathieu.poirier@linaro.org> =
+wrote:
+>=20
+> Adding the Linaro toolchain group mailing list.
+>=20
+> On Mon, Jan 18, 2021 at 05:49:39PM +0300, Sergey Suloev wrote:
+>> Hi, guys,
+>>=20
+>> I am having an issue builduing kernel 5.11 (rc4) with Linaro ARM =
+toolchain.
+>> The issue seems to be related to CC plugins sources.
+>> Here is my build log: https://pastebin.com/DTn7Szax. I have never =
+seen this
+>> before with versions 5.10 and below.
 
-Thanks, applied.
+Thanks, Mathieu.
 
-- Arnaldo
+Hi Sergey,
 
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/config.c | 2 +-
->  tools/perf/util/config.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 34fe80ccdad1..4e0455a6bb5f 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -521,7 +521,7 @@ static int perf_env_bool(const char *k, int def)
->  	return v ? perf_config_bool(k, v) : def;
->  }
->  
-> -static int perf_config_system(void)
-> +int perf_config_system(void)
->  {
->  	return !perf_env_bool("PERF_CONFIG_NOSYSTEM", 0);
->  }
-> diff --git a/tools/perf/util/config.h b/tools/perf/util/config.h
-> index d6c4f80f367c..bf68e4acea73 100644
-> --- a/tools/perf/util/config.h
-> +++ b/tools/perf/util/config.h
-> @@ -38,6 +38,7 @@ int perf_config_bool(const char *, const char *);
->  int config_error_nonbool(const char *);
->  const char *perf_etc_perfconfig(void);
->  const char *perf_home_perfconfig(void);
-> +int perf_config_system(void);
->  
->  struct perf_config_set *perf_config_set__new(void);
->  struct perf_config_set *perf_config_set__load_file(const char *file);
-> -- 
-> 2.26.2
-> 
+MPC (along with GMP and MPFR) are libraries that GCC and its plugins =
+depend on.  I think, installing libmpc-dev or equivalent should fix the =
+problem; installing an equivalent of =E2=80=9Capt build-dep gcc=E2=80=9D =
+might be more robust.
 
--- 
+Linux kernel has recently relaxed the way it detects support for =
+compiler plugins, so it=E2=80=99s now enabling them more often than =
+before.
 
-- Arnaldo
+Hope this helps,
+
+--
+Maxim Kuvyrkov
+https://www.linaro.org
+
