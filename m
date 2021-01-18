@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704392F9F9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640E32F9EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391375AbhARM2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:28:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
+        id S2391236AbhARMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:01:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390846AbhARLpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:45:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF88C22D70;
-        Mon, 18 Jan 2021 11:45:18 +0000 (UTC)
+        id S2390788AbhARLqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC13522472;
+        Mon, 18 Jan 2021 11:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970319;
-        bh=Zgk/19i1yMlq4oz+1uWUniWM+GHBsARsGPeYHZlzWAI=;
+        s=korg; t=1610970392;
+        bh=HD219p2bjaksFPf8izzghIpIbKQvW3YpDH4Gm8+FzAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UArGULIYhKd3EtDFlPVWoFQghGR2diheLiXWDZlv7ejIn509A1JregSx35C96NNqy
-         1Knyzmlu82KTMORR/dLupAjr4fGkz/IMg+HDH/ZRUqxv/l7ztCe8t4VGjUSvrhSu+6
-         XJx2ZWktZqZWRjgZ5lpPJuJERYap0HnKDCxJcMVY=
+        b=BBvpxxaYh7LLdLnKacjZm4C5MUihN3s306G0ox7LiCM0Kcj09isC/LUKt9Aoes7jX
+         YW5GgdgVOBz0QXhGTngfZlziceZbTXyrMCQwjoffwcie0SgYTHV5O1Y8YUJcd2EYeE
+         QojGC37NaWdBq5rkd+0yFGU3DqopJNMeZmelyhI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 129/152] NFS: nfs_delegation_find_inode_server must first reference the superblock
-Date:   Mon, 18 Jan 2021 12:35:04 +0100
-Message-Id: <20210118113358.906826201@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.10 133/152] RDMA/restrack: Dont treat as an error allocation ID wrapping
+Date:   Mon, 18 Jan 2021 12:35:08 +0100
+Message-Id: <20210118113359.099475996@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -39,53 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 113aac6d567bda783af36d08f73bfda47d8e9a40 upstream.
+commit 3c638cdb8ecc0442552156e0fed8708dd2c7f35b upstream.
 
-Before referencing the inode, we must ensure that the superblock can be
-referenced. Otherwise, we can end up with iput() calling superblock
-operations that are no longer valid or accessible.
+xa_alloc_cyclic() call returns positive number if ID allocation
+succeeded but wrapped. It is not an error, so normalize the "ret"
+variable to zero as marker of not-an-error.
 
-Fixes: e39d8a186ed0 ("NFSv4: Fix an Oops during delegation callbacks")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+   drivers/infiniband/core/restrack.c:261 rdma_restrack_add()
+   warn: 'ret' can be either negative or positive
+
+Fixes: fd47c2f99f04 ("RDMA/restrack: Convert internal DB from hash to XArray")
+Link: https://lore.kernel.org/r/20201216100753.1127638-1-leon@kernel.org
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/delegation.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/infiniband/core/restrack.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/nfs/delegation.c
-+++ b/fs/nfs/delegation.c
-@@ -1011,22 +1011,24 @@ nfs_delegation_find_inode_server(struct
- 				 const struct nfs_fh *fhandle)
- {
- 	struct nfs_delegation *delegation;
--	struct inode *freeme, *res = NULL;
-+	struct super_block *freeme = NULL;
-+	struct inode *res = NULL;
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -244,6 +244,7 @@ void rdma_restrack_add(struct rdma_restr
+ 	} else {
+ 		ret = xa_alloc_cyclic(&rt->xa, &res->id, res, xa_limit_32b,
+ 				      &rt->next_id, GFP_KERNEL);
++		ret = (ret < 0) ? ret : 0;
+ 	}
  
- 	list_for_each_entry_rcu(delegation, &server->delegations, super_list) {
- 		spin_lock(&delegation->lock);
- 		if (delegation->inode != NULL &&
- 		    !test_bit(NFS_DELEGATION_REVOKED, &delegation->flags) &&
- 		    nfs_compare_fh(fhandle, &NFS_I(delegation->inode)->fh) == 0) {
--			freeme = igrab(delegation->inode);
--			if (freeme && nfs_sb_active(freeme->i_sb))
--				res = freeme;
-+			if (nfs_sb_active(server->super)) {
-+				freeme = server->super;
-+				res = igrab(delegation->inode);
-+			}
- 			spin_unlock(&delegation->lock);
- 			if (res != NULL)
- 				return res;
- 			if (freeme) {
- 				rcu_read_unlock();
--				iput(freeme);
-+				nfs_sb_deactive(freeme);
- 				rcu_read_lock();
- 			}
- 			return ERR_PTR(-EAGAIN);
+ 	if (!ret)
 
 
