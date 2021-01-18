@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818F22FA2F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5172FA325
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404980AbhAROZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404955AbhAROZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:25:29 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DA3C061575;
-        Mon, 18 Jan 2021 06:24:44 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id u25so24337011lfc.2;
-        Mon, 18 Jan 2021 06:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yzGPQHJyJrZ9ltTCbmSP8D0KGxFbljRtwv+aoMP5SnA=;
-        b=Vi3UrjWycuWNIjdW9WPNwwFLKLO4cVYSKgvRNZXAiJdg5DrJ4BhAIROrjnz7QDDM8C
-         pI9gS++OPTnlOxSvp4K41zl7KfpGx6lCmgRPih0dqi4UkvaPdKrlT/4zvwi8iLAIPshG
-         GvtHZUI3a81iCqKXSVJNpzHcJ6QB/+ZuUEwB57rBj68ZfrkaTPakWOwSXnwfBJzLpa4B
-         Urwf2gcNGSf8IJc98sz8y0X4wvFgjxFwJAd2xleDBEGm3o89JVJWTIipClr3TlYBdd+j
-         eJWCIzYBZ4i8JpGluPa/fyTuK8xmHPzItIsEqPGnPFlHuWTl/Q/D9Qy9VDSNI62X73d7
-         DzYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yzGPQHJyJrZ9ltTCbmSP8D0KGxFbljRtwv+aoMP5SnA=;
-        b=ARCvbXEFR5FAkBdqI+Klj6n3oAnsNZ9euClDAdky+I/6dPBBLKlkkOTZ61bNAIcsPO
-         5qPrYoAmukI2o5Q1pYZOK4ZQdi18tfit7fH8C0ybpRpAwZI82JI9SvWtDOdTpiopiUKN
-         G1H+HlMjwKxXyJKiW9fj4Glvx/RhT7SBNUaygmPCHlzJxEgeqATSL0y9poyHyUt6DhLh
-         osQhURZOSp9/ntYUjPIvOZOp/KmK2UrIuoKYDZrLrs89rATUgAvL0Loumz5oVjygyPqV
-         NMoqdu6jN8wzQbk8E4WdHYDlrOvijxJiJ4JbksGDJsSzVjqaYnImQoiAAscsNh75XgHm
-         78+w==
-X-Gm-Message-State: AOAM531j0sJH9Sf34qQ5WDWchtVUkh2IDP3CgY6ZwsMeynON9tXQbbOr
-        bRBvXP4WZrjsD4YdoIkjFRU=
-X-Google-Smtp-Source: ABdhPJw+B1oWzDyTE/Q47yHVmjUMwotouMlJKNJVC8Bp5ALYZYTd4fue4N4mSUcemavdLpDhD4U86A==
-X-Received: by 2002:ac2:59ce:: with SMTP id x14mr11932677lfn.545.1610979883078;
-        Mon, 18 Jan 2021 06:24:43 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id l1sm1917257lfk.201.2021.01.18.06.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 06:24:41 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:24:39 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "anton@tuxera.com" <anton@tuxera.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "andy.lavr@gmail.com" <andy.lavr@gmail.com>
-Subject: Re: [PATCH v17 04/10] fs/ntfs3: Add file operations and
- implementation
-Message-ID: <20210118142439.p24chxfa4eq3ogsa@kari-VirtualBox>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-5-almaz.alexandrovich@paragon-software.com>
- <20210103215732.vbgcrf42xnao6gw2@kari-VirtualBox>
- <cf76ecec5ec1419eacf4c170df65a57d@paragon-software.com>
+        id S2405011AbhAROei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:34:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390559AbhARLoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:44:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCF4822CF6;
+        Mon, 18 Jan 2021 11:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610970187;
+        bh=PGVt/uwhb/VpQsf7HIsOOMkO7FiMHcLIxoVXDsofli8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O/r73ZnN7O1rijVNmzS3fEQym32duIcewjfpudVvrugvp6e3DMvUkKrG5Y8R4XDQl
+         f6Ig0mwtNmghs0p8eBeOKhBEIXd89TRKMKJofyOYb7mXHtZAvOF58YC05v+LNz0Cg4
+         XmmBgE09FL87HQ/vm+cCu218mC1/eVuBbyth8AaY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.10 033/152] MIPS: relocatable: fix possible boot hangup with KASLR enabled
+Date:   Mon, 18 Jan 2021 12:33:28 +0100
+Message-Id: <20210118113354.367543655@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf76ecec5ec1419eacf4c170df65a57d@paragon-software.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:00:53AM +0000, Konstantin Komarov wrote:
-> From: Kari Argillander <kari.argillander@gmail.com>
-> Sent: Monday, January 4, 2021 12:58 AM
-> > On Thu, Dec 31, 2020 at 06:23:55PM +0300, Konstantin Komarov wrote:
+From: Alexander Lobakin <alobakin@pm.me>
+
+commit 69e976831cd53f9ba304fd20305b2025ecc78eab upstream.
+
+LLVM-built Linux triggered a boot hangup with KASLR enabled.
+
+arch/mips/kernel/relocate.c:get_random_boot() uses linux_banner,
+which is a string constant, as a random seed, but accesses it
+as an array of unsigned long (in rotate_xor()).
+When the address of linux_banner is not aligned to sizeof(long),
+such access emits unaligned access exception and hangs the kernel.
+
+Use PTR_ALIGN() to align input address to sizeof(long) and also
+align down the input length to prevent possible access-beyond-end.
+
+Fixes: 405bc8fd12f5 ("MIPS: Kernel: Implement KASLR using CONFIG_RELOCATABLE")
+Cc: stable@vger.kernel.org # 4.7+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/mips/kernel/relocate.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -187,8 +187,14 @@ static int __init relocate_exception_tab
+ static inline __init unsigned long rotate_xor(unsigned long hash,
+ 					      const void *area, size_t size)
+ {
+-	size_t i;
+-	unsigned long *ptr = (unsigned long *)area;
++	const typeof(hash) *ptr = PTR_ALIGN(area, sizeof(hash));
++	size_t diff, i;
++
++	diff = (void *)ptr - area;
++	if (unlikely(size < diff + sizeof(hash)))
++		return hash;
++
++	size = ALIGN_DOWN(size - diff, sizeof(hash));
  
-> > > +static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
-> > > +{
+ 	for (i = 0; i < size / sizeof(hash); i++) {
+ 		/* Rotate by odd number of bits and XOR. */
 
-> > > +	/* Return error if mode is not supported */
-> > > +	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-> > > +		     FALLOC_FL_COLLAPSE_RANGE))
-> > > +		return -EOPNOTSUPP;
 
-> > > +
-> > > +	if (mode & FALLOC_FL_PUNCH_HOLE) {
-
-> > > +	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
-
-> > > +	} else {
-
-> > > +		if (mode & FALLOC_FL_KEEP_SIZE) {
-> > 
-> > Isn't this hole else already (mode & FALLOC_FL_KEEP_SIZE?
-> 
-> Sorry, can you please clarify your question? Not sure, understood it.
-
-I have hide unrelevant code now. So maybe now you see better what I
-mean. Last else have to be already FALLOC_FL_KEEP_SIZE so if statment is
-not needed.
