@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E877F2F97BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA932F97BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbhARCMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:12:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:48702 "EHLO foss.arm.com"
+        id S1731145AbhARCNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:13:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:48698 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731122AbhARCLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:11:10 -0500
+        id S1731113AbhARCLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:11:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90B15143B;
-        Sun, 17 Jan 2021 18:09:55 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E345A143D;
+        Sun, 17 Jan 2021 18:09:57 -0800 (PST)
 Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0372C3F719;
-        Sun, 17 Jan 2021 18:09:52 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C76E93F719;
+        Sun, 17 Jan 2021 18:09:55 -0800 (PST)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>
@@ -29,14 +29,11 @@ Cc:     Icenowy Zheng <icenowy@aosc.io>,
         Yangtao Li <tiny.windzz@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org
-Subject: [PATCH v3 12/21] net: stmmac: dwmac-sun8i: Prepare for second EMAC clock register
-Date:   Mon, 18 Jan 2021 02:08:39 +0000
-Message-Id: <20210118020848.11721-13-andre.przywara@arm.com>
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v3 13/21] phy: sun4i-usb: Rework HCI PHY (aka. "pmu_unk1") handling
+Date:   Mon, 18 Jan 2021 02:08:40 +0000
+Message-Id: <20210118020848.11721-14-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20210118020848.11721-1-andre.przywara@arm.com>
 References: <20210118020848.11721-1-andre.przywara@arm.com>
@@ -44,57 +41,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner H616 SoC has two EMAC controllers, with the second one
-being tied to the internal PHY, but also using a separate EMAC clock
-register.
+As Icenowy pointed out, newer manuals (starting with H6) actually
+document the register block at offset 0x800 as "HCI controller and PHY
+interface", also describe the bits in our "PMU_UNK1" register.
+Let's put proper names to those "unknown" variables and symbols.
 
-To tell the driver about which clock register to use, we add a parameter
-to our syscon phandle. The driver will use this value as an index into
-the regmap, so that we can address more than the first register, if
-needed.
+While we are at it, generalise the existing code by allowing a bitmap
+of bits to clear, to cover newer SoCs: The A100 and H616 use a different
+bit for the SIDDQ control.
 
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/phy/allwinner/phy-sun4i-usb.c | 29 +++++++++++----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index 58e0511badba..00c10ec7b693 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -1129,6 +1129,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
- 	struct stmmac_priv *priv;
- 	struct net_device *ndev;
- 	struct regmap *regmap;
-+	struct reg_field syscon_field;
-+	u32 syscon_idx = 0;
+diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+index 788dd5cdbb7d..539209fe3468 100644
+--- a/drivers/phy/allwinner/phy-sun4i-usb.c
++++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+@@ -43,7 +43,7 @@
+ #define REG_PHYCTL_A33			0x10
+ #define REG_PHY_OTGCTL			0x20
  
- 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
- 	if (ret)
-@@ -1190,8 +1192,12 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
+-#define REG_PMU_UNK1			0x10
++#define REG_HCI_PHY_CTL			0x10
+ 
+ #define PHYCTL_DATA			BIT(7)
+ 
+@@ -115,9 +115,9 @@ struct sun4i_usb_phy_cfg {
+ 	int hsic_index;
+ 	enum sun4i_usb_phy_type type;
+ 	u32 disc_thresh;
++	u32 hci_phy_ctl_siddq;
+ 	u8 phyctl_offset;
+ 	bool dedicated_clocks;
+-	bool enable_pmu_unk1;
+ 	bool phy0_dual_route;
+ 	int missing_phys;
+ };
+@@ -288,6 +288,12 @@ static int sun4i_usb_phy_init(struct phy *_phy)
  		return ret;
  	}
  
--	gmac->regmap_field = devm_regmap_field_alloc(dev, regmap,
--						     *gmac->variant->syscon_field);
-+	syscon_field = *gmac->variant->syscon_field;
-+	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 1,
-+					 &syscon_idx);
-+	if (!ret)
-+		syscon_field.reg += syscon_idx * sizeof(u32);
-+	gmac->regmap_field = devm_regmap_field_alloc(dev, regmap, syscon_field);
- 	if (IS_ERR(gmac->regmap_field)) {
- 		ret = PTR_ERR(gmac->regmap_field);
- 		dev_err(dev, "Unable to map syscon register: %d\n", ret);
-@@ -1263,6 +1269,8 @@ static const struct of_device_id sun8i_dwmac_match[] = {
- 		.data = &emac_variant_a64 },
- 	{ .compatible = "allwinner,sun50i-h6-emac",
- 		.data = &emac_variant_h6 },
-+	{ .compatible = "allwinner,sun50i-h616-emac",
-+		.data = &emac_variant_h6 },
- 	{ }
++	if (phy->pmu && data->cfg->hci_phy_ctl_siddq) {
++		val = readl(phy->pmu + REG_HCI_PHY_CTL);
++		val &= ~data->cfg->hci_phy_ctl_siddq;
++		writel(val, phy->pmu + REG_HCI_PHY_CTL);
++	}
++
+ 	if (data->cfg->type == sun8i_a83t_phy ||
+ 	    data->cfg->type == sun50i_h6_phy) {
+ 		if (phy->index == 0) {
+@@ -297,11 +303,6 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+ 			writel(val, data->base + data->cfg->phyctl_offset);
+ 		}
+ 	} else {
+-		if (phy->pmu && data->cfg->enable_pmu_unk1) {
+-			val = readl(phy->pmu + REG_PMU_UNK1);
+-			writel(val & ~2, phy->pmu + REG_PMU_UNK1);
+-		}
+-
+ 		/* Enable USB 45 Ohm resistor calibration */
+ 		if (phy->index == 0)
+ 			sun4i_usb_phy_write(phy, PHY_RES45_CAL_EN, 0x01, 1);
+@@ -863,7 +864,6 @@ static const struct sun4i_usb_phy_cfg sun4i_a10_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A10,
+ 	.dedicated_clocks = false,
+-	.enable_pmu_unk1 = false,
  };
- MODULE_DEVICE_TABLE(of, sun8i_dwmac_match);
+ 
+ static const struct sun4i_usb_phy_cfg sun5i_a13_cfg = {
+@@ -872,7 +872,6 @@ static const struct sun4i_usb_phy_cfg sun5i_a13_cfg = {
+ 	.disc_thresh = 2,
+ 	.phyctl_offset = REG_PHYCTL_A10,
+ 	.dedicated_clocks = false,
+-	.enable_pmu_unk1 = false,
+ };
+ 
+ static const struct sun4i_usb_phy_cfg sun6i_a31_cfg = {
+@@ -881,7 +880,6 @@ static const struct sun4i_usb_phy_cfg sun6i_a31_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A10,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = false,
+ };
+ 
+ static const struct sun4i_usb_phy_cfg sun7i_a20_cfg = {
+@@ -890,7 +888,6 @@ static const struct sun4i_usb_phy_cfg sun7i_a20_cfg = {
+ 	.disc_thresh = 2,
+ 	.phyctl_offset = REG_PHYCTL_A10,
+ 	.dedicated_clocks = false,
+-	.enable_pmu_unk1 = false,
+ };
+ 
+ static const struct sun4i_usb_phy_cfg sun8i_a23_cfg = {
+@@ -899,7 +896,6 @@ static const struct sun4i_usb_phy_cfg sun8i_a23_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A10,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = false,
+ };
+ 
+ static const struct sun4i_usb_phy_cfg sun8i_a33_cfg = {
+@@ -908,7 +904,6 @@ static const struct sun4i_usb_phy_cfg sun8i_a33_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = false,
+ };
+ 
+ static const struct sun4i_usb_phy_cfg sun8i_a83t_cfg = {
+@@ -925,7 +920,7 @@ static const struct sun4i_usb_phy_cfg sun8i_h3_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = true,
++	.hci_phy_ctl_siddq = BIT(1),
+ 	.phy0_dual_route = true,
+ };
+ 
+@@ -935,7 +930,7 @@ static const struct sun4i_usb_phy_cfg sun8i_r40_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = true,
++	.hci_phy_ctl_siddq = BIT(1),
+ 	.phy0_dual_route = true,
+ };
+ 
+@@ -945,7 +940,7 @@ static const struct sun4i_usb_phy_cfg sun8i_v3s_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = true,
++	.hci_phy_ctl_siddq = BIT(1),
+ 	.phy0_dual_route = true,
+ };
+ 
+@@ -955,7 +950,7 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = true,
++	.hci_phy_ctl_siddq = BIT(1),
+ 	.phy0_dual_route = true,
+ };
+ 
 -- 
 2.17.5
 
