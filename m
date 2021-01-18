@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0912F97CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E877F2F97BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731206AbhARCQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:16:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:48696 "EHLO foss.arm.com"
+        id S1730458AbhARCMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:12:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:48702 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731112AbhARCLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:11:08 -0500
+        id S1731122AbhARCLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:11:10 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C05311435;
-        Sun, 17 Jan 2021 18:09:52 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90B15143B;
+        Sun, 17 Jan 2021 18:09:55 -0800 (PST)
 Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDB363F719;
-        Sun, 17 Jan 2021 18:09:50 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0372C3F719;
+        Sun, 17 Jan 2021 18:09:52 -0800 (PST)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>
@@ -28,10 +28,15 @@ Cc:     Icenowy Zheng <icenowy@aosc.io>,
         Shuosheng Huang <huangshuosheng@allwinnertech.com>,
         Yangtao Li <tiny.windzz@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: [PATCH v3 11/21] soc: sunxi: sram: Add support for more than one EMAC clock
-Date:   Mon, 18 Jan 2021 02:08:38 +0000
-Message-Id: <20210118020848.11721-12-andre.przywara@arm.com>
+        linux-sunxi@googlegroups.com,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org
+Subject: [PATCH v3 12/21] net: stmmac: dwmac-sun8i: Prepare for second EMAC clock register
+Date:   Mon, 18 Jan 2021 02:08:39 +0000
+Message-Id: <20210118020848.11721-13-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20210118020848.11721-1-andre.przywara@arm.com>
 References: <20210118020848.11721-1-andre.przywara@arm.com>
@@ -39,96 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner H616 adds a second EMAC clock register at offset 0x34, for
-controlling the second EMAC in this chip.
+The Allwinner H616 SoC has two EMAC controllers, with the second one
+being tied to the internal PHY, but also using a separate EMAC clock
+register.
 
-Allow to extend the regmap in this case, to cover more than the current
-4 bytes exported.
+To tell the driver about which clock register to use, we add a parameter
+to our syscon phandle. The driver will use this value as an index into
+the regmap, so that we can address more than the first register, if
+needed.
 
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
- drivers/soc/sunxi/sunxi_sram.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/sunxi/sunxi_sram.c b/drivers/soc/sunxi/sunxi_sram.c
-index d4c7bd59429e..42833e33a96c 100644
---- a/drivers/soc/sunxi/sunxi_sram.c
-+++ b/drivers/soc/sunxi/sunxi_sram.c
-@@ -283,7 +283,7 @@ int sunxi_sram_release(struct device *dev)
- EXPORT_SYMBOL(sunxi_sram_release);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+index 58e0511badba..00c10ec7b693 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -1129,6 +1129,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
+ 	struct stmmac_priv *priv;
+ 	struct net_device *ndev;
+ 	struct regmap *regmap;
++	struct reg_field syscon_field;
++	u32 syscon_idx = 0;
  
- struct sunxi_sramc_variant {
--	bool has_emac_clock;
-+	int num_emac_clocks;
+ 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+ 	if (ret)
+@@ -1190,8 +1192,12 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	gmac->regmap_field = devm_regmap_field_alloc(dev, regmap,
+-						     *gmac->variant->syscon_field);
++	syscon_field = *gmac->variant->syscon_field;
++	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 1,
++					 &syscon_idx);
++	if (!ret)
++		syscon_field.reg += syscon_idx * sizeof(u32);
++	gmac->regmap_field = devm_regmap_field_alloc(dev, regmap, syscon_field);
+ 	if (IS_ERR(gmac->regmap_field)) {
+ 		ret = PTR_ERR(gmac->regmap_field);
+ 		dev_err(dev, "Unable to map syscon register: %d\n", ret);
+@@ -1263,6 +1269,8 @@ static const struct of_device_id sun8i_dwmac_match[] = {
+ 		.data = &emac_variant_a64 },
+ 	{ .compatible = "allwinner,sun50i-h6-emac",
+ 		.data = &emac_variant_h6 },
++	{ .compatible = "allwinner,sun50i-h616-emac",
++		.data = &emac_variant_h6 },
+ 	{ }
  };
- 
- static const struct sunxi_sramc_variant sun4i_a10_sramc_variant = {
-@@ -291,20 +291,31 @@ static const struct sunxi_sramc_variant sun4i_a10_sramc_variant = {
- };
- 
- static const struct sunxi_sramc_variant sun8i_h3_sramc_variant = {
--	.has_emac_clock = true,
-+	.num_emac_clocks = 1,
- };
- 
- static const struct sunxi_sramc_variant sun50i_a64_sramc_variant = {
--	.has_emac_clock = true,
-+	.num_emac_clocks = 1,
-+};
-+
-+static const struct sunxi_sramc_variant sun50i_h616_sramc_variant = {
-+	.num_emac_clocks = 2,
- };
- 
- #define SUNXI_SRAM_EMAC_CLOCK_REG	0x30
- static bool sunxi_sram_regmap_accessible_reg(struct device *dev,
- 					     unsigned int reg)
- {
--	if (reg == SUNXI_SRAM_EMAC_CLOCK_REG)
--		return true;
--	return false;
-+	const struct sunxi_sramc_variant *variant;
-+
-+	variant = of_device_get_match_data(dev);
-+
-+	if (reg < SUNXI_SRAM_EMAC_CLOCK_REG)
-+		return false;
-+	if (reg > SUNXI_SRAM_EMAC_CLOCK_REG + variant->num_emac_clocks * 4)
-+		return false;
-+
-+	return true;
- }
- 
- static struct regmap_config sunxi_sram_emac_clock_regmap = {
-@@ -312,7 +323,7 @@ static struct regmap_config sunxi_sram_emac_clock_regmap = {
- 	.val_bits       = 32,
- 	.reg_stride     = 4,
- 	/* last defined register */
--	.max_register   = SUNXI_SRAM_EMAC_CLOCK_REG,
-+	.max_register   = SUNXI_SRAM_EMAC_CLOCK_REG + 4,
- 	/* other devices have no business accessing other registers */
- 	.readable_reg	= sunxi_sram_regmap_accessible_reg,
- 	.writeable_reg	= sunxi_sram_regmap_accessible_reg,
-@@ -343,7 +354,7 @@ static int sunxi_sram_probe(struct platform_device *pdev)
- 	if (!d)
- 		return -ENOMEM;
- 
--	if (variant->has_emac_clock) {
-+	if (variant->num_emac_clocks > 0) {
- 		emac_clock = devm_regmap_init_mmio(&pdev->dev, base,
- 						   &sunxi_sram_emac_clock_regmap);
- 
-@@ -387,6 +398,10 @@ static const struct of_device_id sunxi_sram_dt_match[] = {
- 		.compatible = "allwinner,sun50i-h5-system-control",
- 		.data = &sun50i_a64_sramc_variant,
- 	},
-+	{
-+		.compatible = "allwinner,sun50i-h616-system-control",
-+		.data = &sun50i_h616_sramc_variant,
-+	},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, sunxi_sram_dt_match);
+ MODULE_DEVICE_TABLE(of, sun8i_dwmac_match);
 -- 
 2.17.5
 
