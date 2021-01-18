@@ -2,54 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EED2FA4FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7572FA51A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393565AbhARPmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:42:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:38178 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393360AbhARPjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:39:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFA59D6E;
-        Mon, 18 Jan 2021 07:38:54 -0800 (PST)
-Received: from e123427-lin.arm.com (unknown [10.57.56.252])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2192A3F68F;
-        Mon, 18 Jan 2021 07:38:51 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-msm@vger.kernel.org,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
-        Sham Muthayyan <smuthayy@codeaurora.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Ilia Mirkin <imirkin@alum.mit.edu>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [RESEND PATCH] PCI: qcom: use PHY_REFCLK_USE_PAD only for ipq8064
-Date:   Mon, 18 Jan 2021 15:38:42 +0000
-Message-Id: <161098429512.19724.6931812959409748673.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201019165555.8269-1-ansuelsmth@gmail.com>
-References: <20201019165555.8269-1-ansuelsmth@gmail.com>
+        id S2393409AbhARPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393474AbhARPka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:40:30 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0900C061574;
+        Mon, 18 Jan 2021 07:39:49 -0800 (PST)
+Received: from zn.tnic (p200300ec2f069f009291f9f4a50f0191.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9f00:9291:f9f4:a50f:191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 445BA1EC04F0;
+        Mon, 18 Jan 2021 16:39:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610984388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=RzHd1xNl9QC5sTnjUIzkxqrURiWyyH0SsnXWur2agWQ=;
+        b=ReASYQRviTwk2Oz0omPg5AaPzLdaKZMDCFMmuXmfjdiCEaDtlk4b3lpo2OLC823dl/5QCl
+        PHWX4op3lR0ASByj0t1RBRP+vHTX/n+RXYFKMsJFWvC5/ogbUXoGq5BqDVag1zY8euFQna
+        EOU9NwQ9xWa5zukG8TL/V4HLmfQoJuQ=
+Date:   Mon, 18 Jan 2021 16:39:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210118153939.GC30090@zn.tnic>
+References: <20210111214452.1826-1-tony.luck@intel.com>
+ <20210115003817.23657-1-tony.luck@intel.com>
+ <20210115152754.GC9138@zn.tnic>
+ <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 18:55:55 +0200, Ansuel Smith wrote:
-> The use of PHY_REFCLK_USE_PAD introduced a regression for apq8064
-> devices. It was tested that while apq doesn't require the padding, ipq
-> SoC must use it or the kernel hangs on boot.
+On Fri, Jan 15, 2021 at 11:34:35AM -0800, Luck, Tony wrote:
+> In the user mode case we should only bump mce_count to "1" and
+> before task_work() gets called.
 
-Applied to pci/dwc, thanks!
+Ok, right, it should not be possible to trigger a second MCE while
+queue_task_work() runs when it is a user MCE. The handler itself won't
+touch the page with the hw error so our assumption is that it'll get
+poisoned.
 
-[1/1] PCI: qcom: use PHY_REFCLK_USE_PAD only for ipq8064
-      https://git.kernel.org/lpieralisi/pci/c/cef11c377a
+If it doesn't, I guess the memory failure code will kill the process
+yadda yadda...
 
-Thanks,
-Lorenzo
+> It shouldn't hurt to do the same checks. Maybe it will catch something
+> weird - like an NMI handler on return from the machine check doing a
+> get_user() that hits another machine check during the return from this
+> machine check.
+
+Eww.
+
+> AndyL has made me extra paranoid. :-)
+
+Yeah, he comes up with the nuttiest scenarios. :-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
