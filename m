@@ -2,113 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812B42F9CB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673C82F9CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389778AbhARKPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:15:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43838 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389339AbhARJwK (ORCPT
+        id S2389826AbhARKQE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 05:16:04 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:36959 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389350AbhARJwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:52:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610963442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r6zQEH2ZgVft/o+0qtfsDU1QY8mzvxQi41Uv+5hZEWU=;
-        b=Ot9+rl+XUWus/3iOMAzxxdeBr+XrZz2M6JjzaliG/PZmHHLJS7mW7G7a9lLsqVDuIjkdGV
-        OUqXzXYkWC7KU79G8uRHyS+kIpt6n+flaTgUAafABzEQ+nckNdQ/66SKHdni/d9ej//EMF
-        Ots3ewtz0V3oBA7jg/gef32Ps1WzbC4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-VFNe5a4uOOW0EqXpWP48zw-1; Mon, 18 Jan 2021 04:50:39 -0500
-X-MC-Unique: VFNe5a4uOOW0EqXpWP48zw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45C17107ACE4;
-        Mon, 18 Jan 2021 09:50:36 +0000 (UTC)
-Received: from [10.36.112.158] (ovpn-112-158.ams2.redhat.com [10.36.112.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ABDAB5B699;
-        Mon, 18 Jan 2021 09:50:27 +0000 (UTC)
-Subject: Re: [PATCH v2 0/2] Make it possible to reserve memory on 64bit
- platform
-To:     "zhaowei1102@thundersoft.com" <zhaowei1102@thundersoft.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kerneldev <kerneldev@karsmulder.nl>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        gpiccoli <gpiccoli@canonical.com>, aquini <aquini@redhat.com>,
-        gustavoars <gustavoars@kernel.org>, ojeda <ojeda@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        guohanjun <guohanjun@huawei.com>,
-        mchehab+huawei <mchehab+huawei@kernel.org>
-References: <1610793673-64008-1-git-send-email-zhaowei1102@thundersoft.com>
- <CAPcyv4hGu3r=m+7Wkf3a94G=ZM4cQB87pt0ThadoUrk8cY7ovw@mail.gmail.com>
- <202101181151049299923@thundersoft.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <15269a61-3b16-4c07-2486-6940c559261e@redhat.com>
-Date:   Mon, 18 Jan 2021 10:50:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 18 Jan 2021 04:52:42 -0500
+Received: by mail-lf1-f50.google.com with SMTP id o17so23178731lfg.4;
+        Mon, 18 Jan 2021 01:52:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f6/A9O7eNdKAIZiobaJeehhCHfZRWG7ySyY4et57HyA=;
+        b=rvASG1sleFE6IWPcqdVgBCSj6h80l7q7KNJCVTj5AYrNNckmnU5t0xUgNZ2Vqa2F2q
+         nboP1vVDtYLluQWci/GQOCnzR49qnPCcmzLX4KYXwiDNZmX1rIPfutToMwUrNdqC91ne
+         ggOK0e5un7Hn4vDrZWD5VzTSAzfEMIvQzS3yVhwZ/TRDXuXgPNyIJRfvuAIMVD1lo0u7
+         Fj0m1kTuEYImcIiqblF719HVkKwe78TbCQlL08rvgdfAbc9obSPl55DLJ4t2lp10Ljq7
+         m5B8wQGDhdbrzyqbuSb9vEBdUemJzXij7Lvu6LXnl3h2VclHtbTaEetZTaSAzJ0DO7A1
+         Q85Q==
+X-Gm-Message-State: AOAM531dgxImMXY50iN1fyHWr8sMRfHZmNsSPmDgLovsdIr3yzMgaDJT
+        DOz2yOr2m3m8++XadwNB3ESZJnwhRpfDHA==
+X-Google-Smtp-Source: ABdhPJxiy1BvWVxBFtbE+Ncgm9Y36VPfh1+9CPLxrCt5ZIsofyLkh6nMVX7xLjWQJLH8Fyya/8jkng==
+X-Received: by 2002:a19:ac06:: with SMTP id g6mr11017729lfc.611.1610963511458;
+        Mon, 18 Jan 2021 01:51:51 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id u5sm1845138lfr.154.2021.01.18.01.51.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:51:50 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id u11so17493929ljo.13;
+        Mon, 18 Jan 2021 01:51:50 -0800 (PST)
+X-Received: by 2002:a2e:a407:: with SMTP id p7mr10355197ljn.78.1610963510141;
+ Mon, 18 Jan 2021 01:51:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202101181151049299923@thundersoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-5-samuel@sholland.org>
+ <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com> <20210106110643.agq3mjyhgvg3w4i6@gilmour>
+ <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com>
+ <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org> <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
+In-Reply-To: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 18 Jan 2021 17:51:38 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64WmrbJ_Dtecg2AmWo1Hok0zGt2GCST_KcSAOn-o97U4g@mail.gmail.com>
+Message-ID: <CAGb2v64WmrbJ_Dtecg2AmWo1Hok0zGt2GCST_KcSAOn-o97U4g@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use
+ RSB for AXP805 PMIC connection
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.01.21 04:51, zhaowei1102@thundersoft.com wrote:
->     On Sat, Jan 16, 2021 at 2:43 AM Wesley Zhao
->     <zhaowei1102@thundersoft.com> wrote:
->     >>
->     >> I was trying to reserve some memory to save logs incase that
->     Android panic or hang and then
->     >> I can read the logs from QNX side from the memory reserved before
->     on the Qualcomm 8155 hypervisor platform,
->     >> and I find the "reserve=" parameter only support 32bit,so I made
->     some change and send these patches.
->     > 
->     >See Documentation/admin-guide/kernel-parameters.txt
->     > 
->     >        memmap=nn[KMG]$ss[KMG]
->     >                        [KNL,ACPI] Mark specific memory as reserved.
->     >                        Region of memory to be reserved is from ss
->     to ss+nn.
->     >                        Example: Exclude memory from
->     0x18690000-0x1869ffff
->     >                                 memmap=64K$0x18690000
->     >                                 or
->     >                                 memmap=0x10000$0x18690000
->     >                        Some bootloaders may need an escape character
->     >before '$',
->     >                        like Grub2, otherwise '$' and the following
->     number
->     >                        will be eaten.
->     Sorry，what is your point：
->      static int __init reserve_setup(char *str)
->      static struct resource reserve[MAXRESERVE];
->      for (;;) {
->      unsigned int io_start, io_num;*  // these code is not compatible
->     with 64bit，i start from here*
-> 
+On Wed, Jan 13, 2021 at 5:16 PM Chen-Yu Tsai <wens@csie.org> wrote:
+>
+> On Thu, Jan 7, 2021 at 6:27 PM Samuel Holland <samuel@sholland.org> wrote:
+> >
+> > On 1/6/21 5:38 AM, Chen-Yu Tsai wrote:
+> > > On Wed, Jan 6, 2021 at 7:06 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> > >>
+> > >> On Mon, Jan 04, 2021 at 10:54:19AM +0000, André Przywara wrote:
+> > >>> On 03/01/2021 10:00, Samuel Holland wrote:
+> > >>>> On boards where the only peripheral connected to PL0/PL1 is an X-Powers
+> > >>>> PMIC, configure the connection to use the RSB bus rather than the I2C
+> > >>>> bus. Compared to the I2C controller that shares the pins, the RSB
+> > >>>> controller allows a higher bus frequency, and it is more CPU-efficient.
+> > >>>
+> > >>> But is it really necessary to change the DTs for those boards in this
+> > >>> way? It means those newer DTs now become incompatible with older
+> > >>> kernels, and I don't know if those reasons above really justify this.
+> > >>>
+> > >>> I understand that we officially don't care about "newer DTs on older
+> > >>> kernels", but do we really need to break this deliberately, for no
+> > >>> pressing reasons?
+> > >>>
+> > >>> P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
+> > >>> just want to avoid breaking existing ones.
+> > >>
+> > >> Doing so would also introduce some inconsistencies, one more thing to
+> > >> consider during reviews, and would require more testing effort.
+> > >>
+> > >> I'm not sure that stretching our - already fairly sparse - resources
+> > >> thin would be very wise here, especially for something that we don't
+> > >> have to do and for a setup that isn't really used that much.
+> > >
+> > > As soon as some software component starts running RSB, (which I assume
+> > > is what Samuel is planning to do in Crust?), there's a chance that it
+> > > doesn't switch the chip back to I2C. And then Linux won't be able to
+> > > access it.
+> >
+> > Crust can handle either way via a config option, which currently
+> > defaults to I2C for H6. It must use the same selection as Linux, not
+> > only because of the PMIC mode, but also because of the pinctrl.
+>
+> Could Crust be made to also handle pinctrl?
+>
+> > TF-A is already converted to use RSB[1], and it does switch the PMIC
+> > back to I2C before handing off to U-Boot[2]. So new TF-A + old Linux is
+> > fine. However, Linux currently does not switch the PMIC back. So the
+> > most likely problem from this patch is that, with new Linux + old TF-A,
+> > TF-A will be unable to power down the board or access regulators after
+> > an SoC reset.
+> >
+> > I expect there will be a TF-A release between now and when 5.12 hits
+> > stable, but people tend not upgrade their U-Boot/TF-A very often.
+> >
+> > We could solve this by having the Linux RSB driver switch all child
+> > devices back to I2C in .shutdown, or by dropping this patch and only
+> > using RSB for new boards (which would also address Andre's concern).
+>
+> This will work for most cases, except in a kernel panic or IIRC direct
+> reboot using sysrq. So it's not robust as we'd like it to be.
 
-Dan's point is that you should look into using "memmap=" instead of
-"reserve=".
+I also wonder what would happen when there are multiple RSB devices, and
+we switch them back to I2C one by one. It's not like there's an option
+to switch all of them back at the same time, unlike switching from I2C
+to RSB. The A80 and A83T are the platforms that would be affected.
 
--- 
-Thanks,
+So I merged the previous patch, i.e. changes to the .dtsi, but I think
+we should delay this one by a release. That would give us more time to
+think about it, and let users upgrade U-Boot/TF-A.
 
-David / dhildenb
+ChenYu
 
+> ChenYu
+>
+> > Cheers,
+> > Samuel
+> >
+> > [1]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7576
+> > [2]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7575
+> >
+> > > So I'm for keeping things consistent and converting all users to RSB.
+> > >
+> > >
+> > > ChenYu
+> > >
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> > To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/bc95a8d2-ebec-489c-10af-fd5a80ea1276%40sholland.org.
