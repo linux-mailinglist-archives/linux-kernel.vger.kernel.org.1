@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372D32FA6FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315A02FA776
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406711AbhARRDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
+        id S2393644AbhARRZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390579AbhARRCi (ORCPT
+        with ESMTP id S2391575AbhARRCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 12:02:38 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD30CC061573;
-        Mon, 18 Jan 2021 09:01:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4B1C061574;
+        Mon, 18 Jan 2021 09:01:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=baMXZw5lvGF/G8581QjF8wrs+U9YxbMcE+gHKjNQji4=; b=Ol5QwQ9QSRhy+78YE4534eV0v2
-        V8vgAwBi5YzvaHp+L53P1hG9YNRllssT8JenrgUNjvnlJtiDHdANZge3hx7mpIsS3tvYQRKpHarBL
-        MFs0TVcTbpJhCvLbw0WqwpDtHc/5l2/WJtoGhJXzu7sDH2mRGkSTErRLt16bzKJkVnjiI4z7feeN8
-        Tq7fkx0l0n3VQNV/kZJpY3gCAFU3qK1rfM4qs4gMVVxvalzimjbXL7rhAUFi8rrfcHcjFdxAme3u5
-        gmXIPQHejDvRR4QXktDq+HOLasAVWFkF3cxw2/YsJSJoWTkEL7FvbsitLB2CHgYvow9J/XoF+c8Nv
-        ZU7Jz6/w==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=GiGV59fseE/dUGuOBWZVrWWnl8FxLW/HEwRXpXDCibY=; b=U5T8xGax/StZjW8cKV+M0UUYMa
+        ES4mcbkGJPkHuRYCaaYSOTBMPKg7gR9F25yoWnhoiBYsEjRzTYRjbPu+yLtxardh3R4kb5p6cb1dA
+        tp/E9mV+5pxhrGUsUj0iaqtvoVhj7+yrp1MH54/eRiNw8SJC3VPvdRBC4QisJAGj5JKry2TFZaK7I
+        AwhWPSKRPjLdvuGOMlWvUCUtREJ4k586x43/h3JOxjPSbiyi90+gzylpY0f+xpl1un3fsBkDg4y/L
+        cCV9KHhGVMO+D/KN1D7HPJnhC9zEN0asFqLtsa8XAKhmDtMZuvarzSS5wKlJwl2eZMUfzgcPghtcs
+        Rk7MHMJw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1XuX-00D7HH-BJ; Mon, 18 Jan 2021 17:01:50 +0000
+        id 1l1XuZ-00D7HK-6p; Mon, 18 Jan 2021 17:01:51 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 00/27] Page folios
-Date:   Mon, 18 Jan 2021 17:01:21 +0000
-Message-Id: <20210118170148.3126186-1-willy@infradead.org>
+Subject: [PATCH v2 01/27] mm: Introduce struct folio
+Date:   Mon, 18 Jan 2021 17:01:22 +0000
+Message-Id: <20210118170148.3126186-2-willy@infradead.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210118170148.3126186-1-willy@infradead.org>
+References: <20210118170148.3126186-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some functions which take a struct page as an argument operate on
-PAGE_SIZE bytes.  Others operate on the entire compound page if
-passed either a head or tail page.  Others operate on the compound
-page if passed a head page, but PAGE_SIZE bytes if passed a tail page.
-Yet others either BUG or do the wrong thing if passed a tail page.
+We have trouble keeping track of whether we've already called
+compound_head() to ensure we're not operating on a tail page.  Further,
+it's never clear whether we intend a struct page to refer to PAGE_SIZE
+bytes or page_size(compound_head(page)).
 
-This patch series starts to resolve this ambiguity by introducing a new
-type, the struct folio.  A function which takes a struct folio argument
-declares that it will operate on the entire page.  In return, the caller
-guarantees that the pointer it is passing does not point to a tail page.
+Introduce a new type 'struct folio' that always refers to an entire
+(possibly compound) page, and points to the head page (or base page).
 
-This allows us to do less work.  Now we have a type that is guaranteed
-not to be a tail page, we can avoid calling compound_head().  That saves
-us hundreds of bytes of text and even manages to reduce the amount of
-data in the kernel image somehow.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/mm.h       | 26 ++++++++++++++++++++++++++
+ include/linux/mm_types.h | 17 +++++++++++++++++
+ 2 files changed, 43 insertions(+)
 
-This patch series is just an introduction.  I have dozens more patches
-in progress which you can find at
-https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
-(currently based on next-20210118)
-
-The focus for this patch series is on introducing infrastructure.
-The big correctness proof that exists in this patch series is to make
-it clear that one cannot wait (for the page lock or writeback) on a
-tail page.  I don't believe there were any places which could miss a
-wakeup due to this, but it's hard to prove that without struct folio.
-Now the compiler proves it for us.
-
-Matthew Wilcox (Oracle) (27):
-  mm: Introduce struct folio
-  mm: Add folio_pgdat
-  mm/vmstat: Add folio stat wrappers
-  mm/debug: Add VM_BUG_ON_FOLIO and VM_WARN_ON_ONCE_FOLIO
-  mm: Add put_folio
-  mm: Add get_folio
-  mm: Create FolioFlags
-  mm: Handle per-folio private data
-  mm: Add folio_index, folio_page and folio_contains
-  mm/util: Add folio_mapping and folio_file_mapping
-  mm/memcg: Add folio_memcg, lock_folio_memcg and unlock_folio_memcg
-  mm/memcg: Add mem_cgroup_folio_lruvec
-  mm: Add unlock_folio
-  mm: Add lock_folio
-  mm: Add lock_folio_killable
-  mm: Convert lock_page_async to lock_folio_async
-  mm/filemap: Convert lock_page_for_iocb to lock_folio_for_iocb
-  mm/filemap: Convert wait_on_page_locked_async to
-    wait_on_folio_locked_async
-  mm/filemap: Convert end_page_writeback to end_folio_writeback
-  mm: Convert wait_on_page_bit to wait_on_folio_bit
-  mm: Add wait_for_stable_folio and wait_on_folio_writeback
-  mm: Add wait_on_folio_locked & wait_on_folio_locked_killable
-  mm: Convert lock_page_or_retry to lock_folio_or_retry
-  mm/filemap: Convert wake_up_page_bit to wake_up_folio_bit
-  mm: Convert test_clear_page_writeback to test_clear_folio_writeback
-  mm/filemap: Convert page wait queues to be folios
-  cachefiles: Switch to wait_page_key
-
- fs/afs/write.c             |   2 +-
- fs/cachefiles/rdwr.c       |  13 +--
- fs/io_uring.c              |   2 +-
- include/linux/fscache.h    |   6 +
- include/linux/memcontrol.h |  22 ++++
- include/linux/mm.h         |  88 +++++++++++----
- include/linux/mm_types.h   |  33 ++++++
- include/linux/mmdebug.h    |  20 ++++
- include/linux/page-flags.h | 106 ++++++++++++++----
- include/linux/pagemap.h    | 194 ++++++++++++++++++++++----------
- include/linux/vmstat.h     |  60 ++++++++++
- mm/filemap.c               | 223 ++++++++++++++++++-------------------
- mm/memcontrol.c            |  36 ++++--
- mm/memory.c                |  10 +-
- mm/page-writeback.c        |  48 ++++----
- mm/swapfile.c              |   6 +-
- mm/util.c                  |  20 ++--
- 17 files changed, 610 insertions(+), 279 deletions(-)
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a5d618d08506..0858af6479a3 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -924,6 +924,11 @@ static inline unsigned int compound_order(struct page *page)
+ 	return page[1].compound_order;
+ }
+ 
++static inline unsigned int folio_order(struct folio *folio)
++{
++	return compound_order(&folio->page);
++}
++
+ static inline bool hpage_pincount_available(struct page *page)
+ {
+ 	/*
+@@ -975,6 +980,26 @@ static inline unsigned int page_shift(struct page *page)
+ 
+ void free_compound_page(struct page *page);
+ 
++static inline unsigned long folio_nr_pages(struct folio *folio)
++{
++	return compound_nr(&folio->page);
++}
++
++static inline struct folio *next_folio(struct folio *folio)
++{
++	return folio + folio_nr_pages(folio);
++}
++
++static inline unsigned int folio_shift(struct folio *folio)
++{
++	return PAGE_SHIFT + folio_order(folio);
++}
++
++static inline size_t folio_size(struct folio *folio)
++{
++	return PAGE_SIZE << folio_order(folio);
++}
++
+ #ifdef CONFIG_MMU
+ /*
+  * Do pte_mkwrite, but only if the vma says VM_WRITE.  We do this when
+@@ -1615,6 +1640,7 @@ extern void pagefault_out_of_memory(void);
+ 
+ #define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
+ #define offset_in_thp(page, p)	((unsigned long)(p) & (thp_size(page) - 1))
++#define offset_in_folio(folio, p) ((unsigned long)(p) & (folio_size(folio) - 1))
+ 
+ /*
+  * Flags passed to show_mem() and show_free_areas() to suppress output in
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 07d9acb5b19c..875dc6cd6ad2 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -223,6 +223,23 @@ struct page {
+ #endif
+ } _struct_page_alignment;
+ 
++/*
++ * A struct folio is either a base (order-0) page or the head page of
++ * a compound page.
++ */
++struct folio {
++	struct page page;
++};
++
++static inline struct folio *page_folio(struct page *page)
++{
++	unsigned long head = READ_ONCE(page->compound_head);
++
++	if (unlikely(head & 1))
++		return (struct folio *)(head - 1);
++	return (struct folio *)page;
++}
++
+ static inline atomic_t *compound_mapcount_ptr(struct page *page)
+ {
+ 	return &page[1].compound_mapcount;
 -- 
 2.29.2
 
