@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19712FAAE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A230D2FAAF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437705AbhARUFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:05:37 -0500
-Received: from ms.lwn.net ([45.79.88.28]:39452 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437621AbhARUFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:05:21 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 11C892AE;
-        Mon, 18 Jan 2021 20:04:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 11C892AE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611000263; bh=Y7rJwr2mM18zxjmzhrBMFAJSO0iyh4PFq6jV4mPl2GI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b80i6IruC0XzdrlDSE5phBn0nrGb0xvZoGDtTYAHwsrmpk1Pnf68tmeBf7NsufNCn
-         yjopiDZ3JyLYAkyh87hvu/Ocn3hThbl9WhKNZQ7ONHbuCPKkAJYiTlxTn05/ITeb6O
-         Kl0+XRv9cG7WTGpeNtEuV/8dCWNfxVZnJbeeaEAVq6MpochLqUj5J+dDpgmNAN537v
-         nWjnBCHOjgbswwSHMeRwVnBKjXzHpuCDrFVYTJq89yvnA5dzPXlkq5O5f+y1DPEDBr
-         Hqn+4e75MUD2oNVYdCUTxBWP4SfnQ+Dhq5Yog/+r2jRNQUcM8/2IKHm81VcowH+3vB
-         LWMCLgKPaNYVA==
-Date:   Mon, 18 Jan 2021 13:04:22 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     SeongJae Park <sjpark@amazon.de>, paulmck@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] docs: Update Korean translation
-Message-ID: <20210118130422.032fecf0@lwn.net>
-In-Reply-To: <20210117100931.9347-1-sj38.park@gmail.com>
-References: <20210117100931.9347-1-sj38.park@gmail.com>
-Organization: LWN.net
+        id S2394186AbhARUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:07:12 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:47487 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394159AbhARUGL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:06:11 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l1amH-001sJb-0B; Mon, 18 Jan 2021 21:05:28 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l1amG-001eR9-7v; Mon, 18 Jan 2021 21:05:28 +0100
+Subject: Re: [PATCH] sh: kernel: traps: remove unused variable
+To:     Anders Roxell <anders.roxell@linaro.org>,
+        ysato@users.sourceforge.jp, dalias@libc.org
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201210124422.3858524-1-anders.roxell@linaro.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <0c036e4f-837c-c854-ef28-24cb55153a55@physik.fu-berlin.de>
+Date:   Mon, 18 Jan 2021 21:05:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201210124422.3858524-1-anders.roxell@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021 11:09:28 +0100
-SeongJae Park <sj38.park@gmail.com> wrote:
-
-> This patchset updates Korean translation of 'howto.rst' and links
-> the 'memory-barriers.txt' translation in the index rst file.
+On 12/10/20 1:44 PM, Anders Roxell wrote:
+> When building defconfig the following warning shows up:
 > 
-> SeongJae Park (3):
->   Documentation/kokr/howto: Replace HTTP links with HTTPS ones:
->     Documentation/process
->   docs/kokr: make reporting-bugs.rst obsolete
->   docs/kokr: Link memory-barriers.txt to rst
+> arch/sh/kernel/traps.c: In function 'nmi_trap_handler':
+> arch/sh/kernel/traps.c:183:15: warning: unused variable 'cpu' [-Wunused-variable]
+>   unsigned int cpu = smp_processor_id();
+>                ^~~
 > 
->  Documentation/translations/ko_KR/howto.rst |  4 ++--
->  Documentation/translations/ko_KR/index.rst | 15 +++++++++++++++
->  2 files changed, 17 insertions(+), 2 deletions(-)
+> Remove an unused variable 'cpu'.
+> 
+> Fixes: fe3f1d5d7cd3 ("sh: Get rid of nmi_count()")
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  arch/sh/kernel/traps.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
+> index f5beecdac693..e76b22157099 100644
+> --- a/arch/sh/kernel/traps.c
+> +++ b/arch/sh/kernel/traps.c
+> @@ -180,7 +180,6 @@ static inline void arch_ftrace_nmi_exit(void) { }
+>  
+>  BUILD_TRAP_HANDLER(nmi)
+>  {
+> -	unsigned int cpu = smp_processor_id();
+>  	TRAP_HANDLER_DECL;
+>  
+>  	arch_ftrace_nmi_enter();
 
-Series applied, thanks.
+Good catch. Now I have one warning less when building the kernel for my SH-7785LCR ;-).
 
-jon
+Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
