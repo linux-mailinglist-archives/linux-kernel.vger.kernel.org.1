@@ -2,136 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1BC2FAC5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E48F2FAC8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437328AbhARVP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:15:26 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55220 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389750AbhARKN2 (ORCPT
+        id S2388892AbhARVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389649AbhARKLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:13:28 -0500
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610964684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/UXteJ4q1RUvbDYgjdibBzKfEcwwMRlj+E7dvre1TI0=;
-        b=pAqmAlg1z7mJ+SViKIpMJGSPkSknvLg8+gCfWhK/NRenAFZPKzb0j2sKy+GRDZjkwNOogm
-        IcT7MdKYlqgJ5Xg0KFqdEhxpYD0r81nQUZJRx5A7/mQadalPTAqkY/2qoGmHxPh9IzddTI
-        IkGGriiXMZ4Ta3F5mq9DuPndXKjllNP069RGeKLvJJmsuPO/5J8vbbKoKK9B4A257qf882
-        OeAdRjIRt/jqdIW0I3CxYqAROBZ/sMrnKXgo8sOzT22sNAdUNfCLZZQRgYo58D4jLPzziv
-        kFbRyzv6MqRit2iiq7zD7VGllcBeMoDKbHZe9Ea4+DuCKXfIWJv8cTgxi+62KQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610964684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/UXteJ4q1RUvbDYgjdibBzKfEcwwMRlj+E7dvre1TI0=;
-        b=ehG/U/01RZlEXQDkzKHw3AFchjNZA+XgsHlywWTQuQ1TkxMP6ntbv6Tahk9Dsh/V7y8p1N
-        aQL5x0wwy2qvKNBg==
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Mon, 18 Jan 2021 05:11:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603EEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:11:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nFKAUCWrek4ATN0kUUcq76KLTyBcFv0f0+VspmkLRQs=; b=BzQ9cW0VSonjlzajMqim2vuYZo
+        1A55EYoOGkphlDgYBQYliI+xAWl02oxHQFeG2PQT9nNLz91BVerdujNlFhiS5tyjIKYYIYScLPNGE
+        xtOKeiR0emcguzIKVXlahCF9jKajn9vJSzg0PC1sQG5hwvMKSI0ac6pxJr1Gj9/GTljcZGVmVakZx
+        3eZgZLHNZKEuz3RoM9HJ3gkARl4aYbVIJ4ITacXt9o50K6VKDJOKKAt5p+pcMC+XC+oFgMn43tqiZ
+        vLkePepsm2Jk6Vb5UJtRfEdub4DPATT4+FhrxfxBfgO+rUyXIP3JoNYgwyvsOyfvzc0aR3k6i9f3t
+        CWuZIxTA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1RUa-00CeNF-NW; Mon, 18 Jan 2021 10:10:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E8F3630015A;
+        Mon, 18 Jan 2021 11:10:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C95C720291083; Mon, 18 Jan 2021 11:10:33 +0100 (CET)
+Date:   Mon, 18 Jan 2021 11:10:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v3 16/19] scsi: libsas: Switch back to original event notifiers API
-Date:   Mon, 18 Jan 2021 11:09:52 +0100
-Message-Id: <20210118100955.1761652-17-a.darwish@linutronix.de>
-In-Reply-To: <20210118100955.1761652-1-a.darwish@linutronix.de>
-References: <20210118100955.1761652-1-a.darwish@linutronix.de>
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/perf: Use static_call for x86_pmu.guest_get_msrs
+Message-ID: <YAVembO7LBuLpAKE@hirez.programming.kicks-ass.net>
+References: <20210118072151.44481-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118072151.44481-1-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libsas event notifiers required an extension where gfp_t flags must be
-explicitly passed. For bisectability, a temporary _gfp() variant of such
-functions were added. All call sites then got converted use the _gfp()
-variants and explicitly pass GFP context. Having no callers left, the
-original libsas notifiers were then modified to accept gfp_t flags by
-default.
+On Mon, Jan 18, 2021 at 03:21:51PM +0800, Like Xu wrote:
+> Clean up that CONFIG_RETPOLINE crud and replace the
+> indirect call x86_pmu.guest_get_msrs with static_call().
+> 
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
 
-Switch back to the original event notifiers API, while still passing GFP
-context.  The _gfp() notifier variants will be removed afterwards.
-
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Cc: Jason Yan <yanaijie@huawei.com>
----
- drivers/scsi/libsas/sas_event.c | 6 +++---
- drivers/scsi/libsas/sas_init.c  | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/scsi/libsas/sas_event.c b/drivers/scsi/libsas/sas_event.c
-index 3d0cc407b33f..542831887769 100644
---- a/drivers/scsi/libsas/sas_event.c
-+++ b/drivers/scsi/libsas/sas_event.c
-@@ -109,7 +109,7 @@ void sas_enable_revalidation(struct sas_ha_struct *ha)
- 
- 		sas_phy = container_of(port->phy_list.next, struct asd_sas_phy,
- 				port_phy_el);
--		sas_notify_port_event_gfp(sas_phy,
-+		sas_notify_port_event(sas_phy,
- 				PORTE_BROADCAST_RCVD, GFP_KERNEL);
- 	}
- 	mutex_unlock(&ha->disco_mutex);
-@@ -141,7 +141,7 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
- 
- 	BUG_ON(event >= PORT_NUM_EVENTS);
- 
--	ev = sas_alloc_event_gfp(phy, gfp_flags);
-+	ev = sas_alloc_event(phy, gfp_flags);
- 	if (!ev)
- 		return -ENOMEM;
- 
-@@ -171,7 +171,7 @@ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 
- 	BUG_ON(event >= PHY_NUM_EVENTS);
- 
--	ev = sas_alloc_event_gfp(phy, gfp_flags);
-+	ev = sas_alloc_event(phy, gfp_flags);
- 	if (!ev)
- 		return -ENOMEM;
- 
-diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
-index f06b83211e3b..62260e84ca2d 100644
---- a/drivers/scsi/libsas/sas_init.c
-+++ b/drivers/scsi/libsas/sas_init.c
-@@ -404,8 +404,8 @@ void sas_resume_ha(struct sas_ha_struct *ha)
- 
- 		if (phy->suspended) {
- 			dev_warn(&phy->phy->dev, "resume timeout\n");
--			sas_notify_phy_event_gfp(phy, PHYE_RESUME_TIMEOUT,
--						 GFP_KERNEL);
-+			sas_notify_phy_event(phy, PHYE_RESUME_TIMEOUT,
-+					     GFP_KERNEL);
- 		}
- 	}
- 
-@@ -604,8 +604,8 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy,
- 			if (cmpxchg(&phy->in_shutdown, 0, 1) == 0) {
- 				pr_notice("The phy%d bursting events, shut it down.\n",
- 					  phy->id);
--				sas_notify_phy_event_gfp(phy, PHYE_SHUTDOWN,
--							 gfp_flags);
-+				sas_notify_phy_event(phy, PHYE_SHUTDOWN,
-+						     gfp_flags);
- 			}
- 		} else {
- 			/* Do not support PHY control, stop allocating events */
--- 
-2.30.0
-
+Thanks!
