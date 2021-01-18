@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B628D2FA9A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773A32FA9E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbhARLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:39:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
+        id S2437036AbhARTPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:15:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390149AbhARLh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C3E22571;
-        Mon, 18 Jan 2021 11:36:16 +0000 (UTC)
+        id S2390498AbhARLiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:38:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 992D2221EC;
+        Mon, 18 Jan 2021 11:38:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969777;
-        bh=0thjbtQYsA7aykU+mLkTYnE/zohDwhWqFMB8iiAU/co=;
+        s=korg; t=1610969908;
+        bh=dXuMAfBKCBi2SX5HxRW7MZYwE9tglm8NkGuh2VHqTmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wsv8psmXoYavfJfxTHlxJSLMQRWWrcgUcrWGEUuePsyZuvwAzcHXtpZ3ilJ9W/v3h
-         knHjbNefB2SymhhsO/OfHJs05iADewdlqSVY6TYaJ6CUI2qRG+lvbtuvaNLaLHKZTL
-         owMV/U1zNJitiSH/U9dH+aZjqwSJezVQlgIYTWY8=
+        b=HN40YwXqM6XYVoq0tCpWlgVKgmMWE+EFKAeD1GQFPsVqG6eIKtLdzbvRoV6WAIkoX
+         HDTeJ3XoXslQhWNyVqrIcHGhzzgwjb9XcP5voCLzhH3caaS1/5oo6LtbyYNJ/1izEj
+         NvCrv6NGsgX32OGNtlckU7QE/JEqhvNDOoSpM4I8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Akilesh Kailash <akailash@google.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 09/43] dm snapshot: flush merged data before committing metadata
-Date:   Mon, 18 Jan 2021 12:34:32 +0100
-Message-Id: <20210118113335.395586843@linuxfoundation.org>
+        stable@vger.kernel.org, Oded Gabbay <ogabbay@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 33/76] habanalabs: register to pci shutdown callback
+Date:   Mon, 18 Jan 2021 12:34:33 +0100
+Message-Id: <20210118113342.564351641@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Akilesh Kailash <akailash@google.com>
+From: Oded Gabbay <ogabbay@kernel.org>
 
-commit fcc42338375a1e67b8568dbb558f8b784d0f3b01 upstream.
+[ Upstream commit fcaebc7354188b0d708c79df4390fbabd4d9799d ]
 
-If the origin device has a volatile write-back cache and the following
-events occur:
+We need to make sure our device is idle when rebooting a virtual
+machine. This is done in the driver level.
 
-1: After finishing merge operation of one set of exceptions,
-   merge_callback() is invoked.
-2: Update the metadata in COW device tracking the merge completion.
-   This update to COW device is flushed cleanly.
-3: System crashes and the origin device's cache where the recent
-   merge was completed has not been flushed.
+The firmware will later handle FLR but we want to be extra safe and
+stop the devices until the FLR is handled.
 
-During the next cycle when we read the metadata from the COW device,
-we will skip reading those metadata whose merge was completed in
-step (1). This will lead to data loss/corruption.
-
-To address this, flush the origin device post merge IO before
-updating the metadata.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Akilesh Kailash <akailash@google.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-snap.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/misc/habanalabs/habanalabs_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -137,6 +137,11 @@ struct dm_snapshot {
- 	 * for them to be committed.
- 	 */
- 	struct bio_list bios_queued_during_merge;
-+
-+	/*
-+	 * Flush data after merge.
-+	 */
-+	struct bio flush_bio;
+diff --git a/drivers/misc/habanalabs/habanalabs_drv.c b/drivers/misc/habanalabs/habanalabs_drv.c
+index 8c342fb499ca6..ae50bd55f30af 100644
+--- a/drivers/misc/habanalabs/habanalabs_drv.c
++++ b/drivers/misc/habanalabs/habanalabs_drv.c
+@@ -443,6 +443,7 @@ static struct pci_driver hl_pci_driver = {
+ 	.id_table = ids,
+ 	.probe = hl_pci_probe,
+ 	.remove = hl_pci_remove,
++	.shutdown = hl_pci_remove,
+ 	.driver.pm = &hl_pm_ops,
  };
  
- /*
-@@ -1061,6 +1066,17 @@ shut:
- 
- static void error_bios(struct bio *bio);
- 
-+static int flush_data(struct dm_snapshot *s)
-+{
-+	struct bio *flush_bio = &s->flush_bio;
-+
-+	bio_reset(flush_bio);
-+	bio_set_dev(flush_bio, s->origin->bdev);
-+	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
-+
-+	return submit_bio_wait(flush_bio);
-+}
-+
- static void merge_callback(int read_err, unsigned long write_err, void *context)
- {
- 	struct dm_snapshot *s = context;
-@@ -1074,6 +1090,11 @@ static void merge_callback(int read_err,
- 		goto shut;
- 	}
- 
-+	if (flush_data(s) < 0) {
-+		DMERR("Flush after merge failed: shutting down merge");
-+		goto shut;
-+	}
-+
- 	if (s->store->type->commit_merge(s->store,
- 					 s->num_merging_chunks) < 0) {
- 		DMERR("Write error in exception store: shutting down merge");
-@@ -1198,6 +1219,7 @@ static int snapshot_ctr(struct dm_target
- 	s->first_merging_chunk = 0;
- 	s->num_merging_chunks = 0;
- 	bio_list_init(&s->bios_queued_during_merge);
-+	bio_init(&s->flush_bio, NULL, 0);
- 
- 	/* Allocate hash table for COW data */
- 	if (init_hash_tables(s)) {
-@@ -1391,6 +1413,8 @@ static void snapshot_dtr(struct dm_targe
- 
- 	mutex_destroy(&s->lock);
- 
-+	bio_uninit(&s->flush_bio);
-+
- 	dm_put_device(ti, s->cow);
- 
- 	dm_put_device(ti, s->origin);
+-- 
+2.27.0
+
 
 
