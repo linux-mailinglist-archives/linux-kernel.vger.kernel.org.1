@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E1D2F9B0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6A22F9B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387497AbhARINk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:13:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733192AbhARINa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:13:30 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B98C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:12:50 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l1PeX-0002bZ-Bf; Mon, 18 Jan 2021 09:12:45 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l1PeV-0006w5-Cb; Mon, 18 Jan 2021 09:12:43 +0100
-Date:   Mon, 18 Jan 2021 09:12:37 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Bruno Thomsen <bruno.thomsen@gmail.com>,
-        devicetree@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        linux-kernel@vger.kernel.org, Bruno Thomsen <bth@kamstrup.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx7d-flex-concentrator: fix pcf2127 reset
-Message-ID: <20210118081237.mgcxyob42hv5hdnp@pengutronix.de>
-References: <20210111151537.12530-1-bruno.thomsen@gmail.com>
- <20210118063252.GJ28365@dragon>
+        id S2387594AbhARIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:16:36 -0500
+Received: from mga03.intel.com ([134.134.136.65]:4440 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387519AbhARIQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:16:31 -0500
+IronPort-SDR: GphGWMlzH8kAydya9wJEiZxu1AsdefYRmDK3KwkMiJ+O3Qy9lrIRlpm11ft4deyFlXoB23MVFN
+ pcgw62Ai1dFw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="178858764"
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="178858764"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 00:14:41 -0800
+IronPort-SDR: XIDnbbshtYmYF2VwX7P7oQN9JVWobXBnovfjFlRsfyUKaVCXYqBI7skhFdp6fjRbyjZjFATABq
+ bdJoxLQJ2EmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="406148235"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Jan 2021 00:14:37 -0800
+Subject: Re: [PATCH 3/5] sched/fair: Make select_idle_cpu() proportional to
+ cores
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210115100855.23679-1-mgorman@techsingularity.net>
+ <20210115100855.23679-4-mgorman@techsingularity.net>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <f9036411-39d0-2c28-aec5-5e185d01d3f0@linux.intel.com>
+Date:   Mon, 18 Jan 2021 16:14:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tehix5zhhrl3q6mw"
-Content-Disposition: inline
-In-Reply-To: <20210118063252.GJ28365@dragon>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210115100855.23679-4-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/1/15 18:08, Mel Gorman wrote:
+> From: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> Instead of calculating how many (logical) CPUs to scan, compute how
+> many cores to scan.
+> 
+> This changes behaviour for anything !SMT2.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/core.c  | 18 +++++++++++++-----
+>  kernel/sched/fair.c  | 12 ++++++++++--
+>  kernel/sched/sched.h |  2 ++
+>  3 files changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 15d2562118d1..ada8faac2e4d 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7444,11 +7444,19 @@ int sched_cpu_activate(unsigned int cpu)
+>  	balance_push_set(cpu, false);
+>  
+>  #ifdef CONFIG_SCHED_SMT
+> -	/*
+> -	 * When going up, increment the number of cores with SMT present.
+> -	 */
+> -	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+> -		static_branch_inc_cpuslocked(&sched_smt_present);
+> +	do {
+> +		int weight = cpumask_weight(cpu_smt_mask(cpu));
+> +
+> +		if (weight > sched_smt_weight)
+> +			sched_smt_weight = weight;
+> +
+> +		/*
+> +		 * When going up, increment the number of cores with SMT present.
+> +		 */
+> +		if (weight == 2)
+> +			static_branch_inc_cpuslocked(&sched_smt_present);
+> +
+> +	} while (0);
+>  #endif
+>  	set_cpu_active(cpu, true);
+>  
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index c8d8e185cf3b..0811e2fe4f19 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6010,6 +6010,8 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
+>  DEFINE_STATIC_KEY_FALSE(sched_smt_present);
+>  EXPORT_SYMBOL_GPL(sched_smt_present);
+>  
+> +int sched_smt_weight __read_mostly = 1;
+> +
+>  static inline void set_idle_cores(int cpu, int val)
+>  {
+>  	struct sched_domain_shared *sds;
+> @@ -6124,6 +6126,8 @@ static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int t
+>  
+>  #else /* CONFIG_SCHED_SMT */
+>  
+> +#define sched_smt_weight	1
+> +
+>  static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>  	return -1;
+> @@ -6136,6 +6140,8 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
+>  
+>  #endif /* CONFIG_SCHED_SMT */
+>  
+> +#define sis_min_cores		2
+> +
+>  /*
+>   * Scan the LLC domain for idle CPUs; this is dynamically regulated by
+>   * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+> @@ -6166,10 +6172,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>  		avg_cost = this_sd->avg_scan_cost + 1;
+>  
+>  		span_avg = sd->span_weight * avg_idle;
+> -		if (span_avg > 4*avg_cost)
+> +		if (span_avg > sis_min_cores*avg_cost)
+>  			nr = div_u64(span_avg, avg_cost);
+>  		else
+> -			nr = 4;
+> +			nr = sis_min_cores;
+> +
+> +		nr *= sched_smt_weight;
 
---tehix5zhhrl3q6mw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is it better to put this into an inline wrapper to hide sched_smt_weight if !CONFIG_SCHED_SMT?
 
-On Mon, Jan 18, 2021 at 02:32:53PM +0800, Shawn Guo wrote:
-> On Mon, Jan 11, 2021 at 04:15:37PM +0100, Bruno Thomsen wrote:
-> > RTC pcf2127 device driver has changed default behaviour of the watchdog
-> > feature in v5.11-rc1. Now you need to explicitly enable it with a
-> > device tree property, "reset-source", when used in the board design.
->=20
-> It sound that the existing DTBs are broken by this default behaviour
-> change?
-
-I didn't do a representative research, but I expect that there are only
-very few machines that have a working watchdog setup using the pcf2127.
-All other machines were surprised by commit
-
-	0e735eaae165 ("rtc: pcf2127: add watchdog feature support")
-
-because they suddenly had a non-functional watchdog device. The
-alternative would be to "fix" the device trees of all these machines to
-restore pre-v5.4-rc1 behaviour. This is IMHO worse.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---tehix5zhhrl3q6mw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAFQukACgkQwfwUeK3K
-7Am55gf+Ovx9hJP0bLpt4Sc5iOSaKU/x3Jo40vV0amY/uvZkHTPJEbRb5R7sweFC
-mXjK0WkkLhLKJZJHSmiz2AC4iu3Hf/Q96IjQ8XxmsSHdszv4Kit3ALwFSRNB3b5q
-2xzq1t1MNYchIH2hHoBRx/RZR0t6+0JwJhHfldsC1kce8mFp6upg3bsNlesM1HmT
-hWARzMC1ev4JiRj9NkVQLy0NZWOrgZD6Tr/PARigv25vKA6i7xUdxwlekJQkFmrf
-8Scvj8/yFfPczgFhOwMTIMqai0cJVvMEbpVq/wqftAh+OLqA3z0uPKaUQ4toXto0
-SPAEZZUqJ5pZhsEh7yPoZhjrzElWaw==
-=bunu
------END PGP SIGNATURE-----
-
---tehix5zhhrl3q6mw--
+Thanks,
+-Aubrey
