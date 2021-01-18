@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08922F9AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92C02F9B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733308AbhARIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:09:29 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45397 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733218AbhARIJX (ORCPT
+        id S2387553AbhARIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:10:05 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45624 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387474AbhARIJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:09:23 -0500
-Received: by mail-ot1-f49.google.com with SMTP id n42so15424386ota.12;
-        Mon, 18 Jan 2021 00:09:07 -0800 (PST)
+        Mon, 18 Jan 2021 03:09:54 -0500
+Received: by mail-io1-f71.google.com with SMTP id x7so28026006ion.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:09:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QpDzGIVBbYEco6RAafAKtGUYoFM/UMj629CQOFKn9sw=;
-        b=s82t1LffZ71jgAJ9Hec4xS8g4P7Ij6qH2J3e9kp3JXgwQsbISxl8qjnlbdb0tnHe1B
-         DjW5w/CcgJ8/58QVS8Bb1rKmAedaxYqW0FpBGV4DK4nwgCgRmQ5c9c8X73KAluF9qPMx
-         wI+9E4R0ANll5ACbEOcUpA0asfUObre/1vajUdWTyedzYaGpk3m0BKqmEtqddO1WZAA7
-         203CupWda36KXkz8kdE0kX91p8CUXA3rhFuhtrtiuZhMi1gB5XU+fKbHt0KTW6FNq7kz
-         kpY0kRxkgNR61vXFqZRbakfnMHt68jXVfwRfMYAelMMxUcbGxLWgL1WAhpmVUT93QNiq
-         Wg4A==
-X-Gm-Message-State: AOAM5313XFXl2dkcxu5fbp+Ebomb0v71WTpYi5UzRSeEP3qc1uYCQZKv
-        1Jiwk4c7Z5LiAtrx6jLPkAQV5dkYFYJ8TEJYaao=
-X-Google-Smtp-Source: ABdhPJz6E5rYTn4BlDUweSYAYPmPFr2zeRdP4qj7iaXD7O97tnKyPzYv37ySEgWivsWC+kF3vWrpeiiptZZkTu5YINw=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr16764312oth.250.1610957322297;
- Mon, 18 Jan 2021 00:08:42 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=wEiWUD1KoU2kz++HYBOdztSbeG+sfsDlGM9Lh98rKKM=;
+        b=Q30oCXeWFV73Z4+682yoEWnb6ccvtIjh3YOr1g2GbSC0YFjny9MhkPshGZcjj2YSyz
+         lSzya4+cMqGIoNVDi7MPakFHKhxGiOKZ4fe8s+cXdBWpYae1qwPA3e8vW5U8tfV8R2ZV
+         iZN8g7W11WEkKf1bUBTx9jeh6iVyYOeNwUicZYnOPSjR2S3zRoj+XbSqG5nOuPEUgrys
+         63iIBiil8XBIauijaNb0kjEqvR3l3cWyehq5S462P7mNat0enbleb+gV2V088W2/1S0t
+         YcO0gk1eGe3URMzBkl9MotRSYGRjXze/kXJ9f9OFPQe2tOI/kPzPN3FGANGLtfs1/yDl
+         v3Gg==
+X-Gm-Message-State: AOAM533u5QBnbUUcUKixk3xudQ0CbwAielDeIeJuQlO8ypcma/qTdcxn
+        V8CPujY7nJkzOk+DWMIgu20WwKRIdjJx2xw+rkHvGjZZgFZU
+X-Google-Smtp-Source: ABdhPJy3DgoWHLFvzuYDkJzDwwA1JaPpvsFtlorUiuid/k905n8sJMZK4Xd3jj5HaJiA1RUHc/Jk2/sDAy2KQkj3cP16ie+7PFKI
 MIME-Version: 1.0
-References: <20210112134555.1787924-1-aford173@gmail.com>
-In-Reply-To: <20210112134555.1787924-1-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Jan 2021 09:08:31 +0100
-Message-ID: <CAMuHMdU6bc1hH2a8gCTAE3UvnxgQ+P93Yg7We578GHbYRH2c=g@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: Enable CLK_RCAR_USB2_CLOCK_SEL
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a92:cccd:: with SMTP id u13mr20286819ilq.273.1610957353923;
+ Mon, 18 Jan 2021 00:09:13 -0800 (PST)
+Date:   Mon, 18 Jan 2021 00:09:13 -0800
+In-Reply-To: <000000000000f054d005b8f87274@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d43c1305b9283c0a@google.com>
+Subject: Re: WARNING in io_disable_sqo_submit
+From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, davem@davemloft.net,
+        hdanton@sina.com, io-uring@vger.kernel.org,
+        johannes.berg@intel.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+syzbot has bisected this issue to:
 
-On Tue, Jan 12, 2021 at 2:46 PM Adam Ford <aford173@gmail.com> wrote:
-> The RZ/G2 Series has the optional CLK_RCAR_USB2_CLOCK_SEL.
-> Enable it by default.  It's disabled by default in the
-> the device tree, so it should be safe to enable it here.
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
 
-Thanks for your patch!
+    mac80211: always wind down STA state
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b8b83b500000
+start commit:   a1339d63 Merge tag 'powerpc-5.11-4' of git://git.kernel.or..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1078b83b500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b8b83b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f207c7500000
 
-I will accept this patch once the Beacon Kit DTS starts using this, and
-the patch description can be changed to "... enabled because it's used by
-Beacon Kit".
+Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
 
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -932,6 +932,7 @@ CONFIG_SM_GCC_8250=y
->  CONFIG_SM_GPUCC_8150=y
->  CONFIG_SM_GPUCC_8250=y
->  CONFIG_QCOM_HFPLL=y
-> +CONFIG_CLK_RCAR_USB2_CLOCK_SEL=y
->  CONFIG_HWSPINLOCK=y
->  CONFIG_HWSPINLOCK_QCOM=y
->  CONFIG_ARM_MHU=y
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
