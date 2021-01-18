@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CA92F9EF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0592F9F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403790AbhARL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390936AbhARLq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:57 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EE9C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:46:17 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id 11so10044661pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gzlwaPkTlP/ZmJOY5fxJliyLPQaZ8STG1NZSoSJX0e8=;
-        b=AMrcT41venp9oOMLrdEMRufFZ13OH9ME5n2x86QPk+pJHIuS38ApYkNDA66+piA1ZE
-         gyJglzZ56sTOHHhoCMqkQhuFBbRj6o5Z6R330X1ZBwvlVrg12Vj1VCXbRG5WUz+en+Sm
-         ZcNZFE4TcnZi6PkMNFaL/poXIVQd2O7oNVTXDBFeOXYXlbFqUjZyP0HIvwjc/197jQE4
-         At3I4s1SBtF19Z8xVdvYn9Znk1CvC0GRfWQaNyCdFp4hTL4MJG+NZrkFBXSP5m8G8IS2
-         EsCFtpsuTheyhw5l4K88KP27axqL1IWUaBB2UPxwWc9YAHUpk9ececnBa1yKbszkcVHv
-         MiZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gzlwaPkTlP/ZmJOY5fxJliyLPQaZ8STG1NZSoSJX0e8=;
-        b=BjZyn2O2X6/5AJJqI0zgSNKzdfGB6GlYElMK97CB2rn/UTd6HEACQBH+4YhXWdrVhT
-         GoyFv5BzpuXROEo3uN1SnSCYc0AfPJYBetRMMCH6ooHubr6tQjpg0IeJd0pZa2mHafZ0
-         ffR5QV7XJ6Hz0419nTOdifHPFtnE2o9iUDCU+1XbypYFsxl8dk/ZEpKMSaYHqstE27pd
-         +t0wKBByM+WY1lH3Ev5L2Bvyh8xPH7UwSp5/FbWqKG1qQkPuaKGjHe5siLQamUSPD2nY
-         0P6Rkm0mo1tNggR7+3fefnLSuNJbzpzJx/mxKUISGvY50yJp8t2ohYh1+CiyfI746CxE
-         U99w==
-X-Gm-Message-State: AOAM532MSnyp+WE51hPssCDapNN/uyvqTuzBEMUufiMYLPvsxGg/Pldq
-        ZdCsStxr1KFUbe0QD+9+abnkXQ==
-X-Google-Smtp-Source: ABdhPJziOaaMILfmkjkhAuMyBMxzmMtTG6xMcp/+fEGOYCNqSgENDW5xJ+AakPLst9AI0D1btKh8ZA==
-X-Received: by 2002:a62:4e12:0:b029:1b6:7eac:c740 with SMTP id c18-20020a624e120000b02901b67eacc740mr8044883pfb.65.1610970376621;
-        Mon, 18 Jan 2021 03:46:16 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id d8sm11839722pjm.30.2021.01.18.03.46.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 03:46:15 -0800 (PST)
-Date:   Mon, 18 Jan 2021 17:16:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 00/12] OPP API fixes and improvements
-Message-ID: <20210118114613.fzq7nkrdfm53upkr@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
+        id S2391217AbhARLzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:55:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388207AbhARLmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:42:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C780722CF6;
+        Mon, 18 Jan 2021 11:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610970101;
+        bh=4SfJdloB45KTxytxtJ2ZFq4iDMuLZiL5ji8CUdcueb4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZxdSNGEYP5YwD7QnvRxY6FgRTeIzNeLaMhzIkGzYLc5OkEUjdwO38JvIIFUn+Gdka
+         JpqJFAO3W16OPyLR3OpvF1w2W6TR7onnrrUu7X1KAyqcEyiMIGQ7Wczj7s6b6nspRK
+         bG6PQ7PFnz6VmhY5s8uG4qy6+H74Er8p+IcGAtz0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        stable@kernel.org, Michael Kelley <mikelley@microsoft.com>
+Subject: [PATCH 5.10 007/152] x86/hyperv: check cpu mask after interrupt has been disabled
+Date:   Mon, 18 Jan 2021 12:33:02 +0100
+Message-Id: <20210118113353.117595762@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-1-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> Hi,
-> 
-> This series fixes problems and adds features to OPP API that are required
-> for implementation of a power domain driver for NVIDIA Tegra SoCs.
-> 
-> It is a continuation of [1], where Viresh Kumar asked to factor OPP
-> patches into a separate series. I factored out the patches into this
-> series, addressed the previous review comments and re-based patches
-> on top of [2], which replaced some of my patches that added resource-managed
-> helpers.
-> 
-> [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
-> [2] https://lore.kernel.org/linux-pm/20210101165507.19486-1-tiny.windzz@gmail.com/
+From: Wei Liu <wei.liu@kernel.org>
 
-Hi Dmitry,
+commit ad0a6bad44758afa3b440c254a24999a0c7e35d5 upstream.
 
-I have applied 9 out of 12 patches already. Thanks.
+We've observed crashes due to an empty cpu mask in
+hyperv_flush_tlb_others.  Obviously the cpu mask in question is changed
+between the cpumask_empty call at the beginning of the function and when
+it is actually used later.
 
--- 
-viresh
+One theory is that an interrupt comes in between and a code path ends up
+changing the mask. Move the check after interrupt has been disabled to
+see if it fixes the issue.
+
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20210105175043.28325-1-wei.liu@kernel.org
+Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/x86/hyperv/mmu.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+--- a/arch/x86/hyperv/mmu.c
++++ b/arch/x86/hyperv/mmu.c
+@@ -66,11 +66,17 @@ static void hyperv_flush_tlb_others(cons
+ 	if (!hv_hypercall_pg)
+ 		goto do_native;
+ 
+-	if (cpumask_empty(cpus))
+-		return;
+-
+ 	local_irq_save(flags);
+ 
++	/*
++	 * Only check the mask _after_ interrupt has been disabled to avoid the
++	 * mask changing under our feet.
++	 */
++	if (cpumask_empty(cpus)) {
++		local_irq_restore(flags);
++		return;
++	}
++
+ 	flush_pcpu = (struct hv_tlb_flush **)
+ 		     this_cpu_ptr(hyperv_pcpu_input_arg);
+ 
+
+
