@@ -2,50 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2852F9B17
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A734D2F9B1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387634AbhARIRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:17:10 -0500
-Received: from verein.lst.de ([213.95.11.211]:46965 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733169AbhARIRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:17:00 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3085367373; Mon, 18 Jan 2021 09:16:16 +0100 (CET)
-Date:   Mon, 18 Jan 2021 09:16:15 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Oliver Giles <ohw.giles@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: Splicing to/from a tty
-Message-ID: <20210118081615.GA1397@lst.de>
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+        id S2387702AbhARITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:19:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387572AbhARIS4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:18:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610957849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8p71lFNP7FXrIuyl6skw0ASk5esBQ6KVEaZUK9bQhEI=;
+        b=JRIApjMddu30MNshfek+jWhC2y7NpHGB1NB9NnhRRSmPbSyEa0vOV2eadn8UUrkuElHQKv
+        SdMWqjTvRZtYNjEDnI/wuZcCsY1fyTCvNDuk9QGJsICr4DLiOqr51XfTKnDGSNw+2jsEwF
+        bZbm1rlLfjWS9eZPpt+sgscWC86kKWA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-RyavO7BoPcSUSkiY8quevw-1; Mon, 18 Jan 2021 03:17:26 -0500
+X-MC-Unique: RyavO7BoPcSUSkiY8quevw-1
+Received: by mail-wm1-f72.google.com with SMTP id u67so1486222wmb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:17:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8p71lFNP7FXrIuyl6skw0ASk5esBQ6KVEaZUK9bQhEI=;
+        b=Q/ai4OlqC64XgKxT47WpKTrLKYvJQqrK//j9wiFhMEFgMhGCG9JX/kRdgJ6jQ7KoV/
+         X4IkXZCt79wpcwfugCJlIb4A1c+aeUsymMIqej/LmrXjpY370SjStlpTTQJ6Uo4/n1O1
+         9mz40+rt46470OgkX/UJYXCpN1VR9GBNgf2DvxDGbIUY9zrmRhXtKkWNBYgBW/xvuyyt
+         0kJzVaRJ0YkN3exl5jJXGqVdXybsU07PHKsHe+I4pWhNokiXpDAvnAF8mZXyJ9vw6l90
+         OMtet5j7mNoaj8ikZ8JWX5kxmdzhGuheKJkLVvqEhqnIpmGLQpD5wuNTscxKkeziZUsR
+         +Qlg==
+X-Gm-Message-State: AOAM530LHC4smKvu4pB0faY5sViv50bgCrHzTXqO9pzQ10queSXOOyV+
+        r6LvIvGShoAZqN0wB75ZZ+QSryHORsBQ2iO4x8zocrQk3xij8HF+L936L9kIH0YE7yOzoa4jvZ2
+        9LrvWs1tU69YoGa0awJ8254P7W1PjMa62qlC/e8ZnPpW9DT8B7wT0qM50+cQhstjxw2JyxbIBmT
+        8=
+X-Received: by 2002:a1c:7d8e:: with SMTP id y136mr19233396wmc.25.1610957844882;
+        Mon, 18 Jan 2021 00:17:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwWNpmRpqtOwIwpRwr9ajm9ng9gHciOz2/IHbrBx5b2wdpPFb2jiNCZIdjtb8rJFTA5f1KwGQ==
+X-Received: by 2002:a1c:7d8e:: with SMTP id y136mr19233369wmc.25.1610957844580;
+        Mon, 18 Jan 2021 00:17:24 -0800 (PST)
+Received: from minerva.redhat.com ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id l8sm4906002wmi.8.2021.01.18.00.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 00:17:23 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Enric Balletbo i Serra <eballetbo@gmail.com>,
+        Javier Martinez Canillas <javier@dowhile0.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: [PATCH] ARM: dts: omap3-igep: Change email address in copyright notice
+Date:   Mon, 18 Jan 2021 09:17:07 +0100
+Message-Id: <20210118081707.160596-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 08:35:41PM +1300, Oliver Giles wrote:
-> Commit 36e2c7421f02 (fs: don't allow splice read/write without explicit ops) broke my userspace application which talks to an SSL VPN by splice()ing between "openssl s_client" and "pppd". The latter operates over a pty, and since that commit there is no fallback for splice()ing between a pipe and a pty, or any tty for that matter.
-> 
-> The above commit mentions switching them to the iter ops and using generic_file_splice_read. IIUC, this would require implementing iter ops also on the line disciplines, which sounds pretty disruptive.
-> 
-> For my case, I attempted to instead implement splice_write and splice_read in tty_fops; I managed to get splice_write working calling ld->ops->write, but splice_read is not so simple because the tty_ldisc_ops read method expects a userspace buffer. So I cannot see how to implement this without either (a) using set_fs, or (b) implementing iter ops on all line disciplines.
+I've switched employer a long time ago and the mentioned email address no
+longer exists. Use my personal address to prevent the issue in the future.
 
-set_fs is gone for all the important platforms.  So yes, you basically
-need to convert to iov_iter or have a huge splice_write parallel
-infrastucture.
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-> 
-> Is splice()ing between a tty and a pipe worth supporting at all? Not a big deal for my use case at least, but it used to work.
+ arch/arm/boot/dts/omap3-igep.dtsi            | 2 +-
+ arch/arm/boot/dts/omap3-igep0020-common.dtsi | 2 +-
+ arch/arm/boot/dts/omap3-igep0020-rev-f.dts   | 2 +-
+ arch/arm/boot/dts/omap3-igep0020.dts         | 2 +-
+ arch/arm/boot/dts/omap3-igep0030-common.dtsi | 2 +-
+ arch/arm/boot/dts/omap3-igep0030-rev-g.dts   | 2 +-
+ arch/arm/boot/dts/omap3-igep0030.dts         | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-Our normal policy is no regressions for exiting userspace.  By that we'd
-have to fix it.  Let me see if I can help you with this in any way.
+diff --git a/arch/arm/boot/dts/omap3-igep.dtsi b/arch/arm/boot/dts/omap3-igep.dtsi
+index 5de2be9bbe6..99f5585097a 100644
+--- a/arch/arm/boot/dts/omap3-igep.dtsi
++++ b/arch/arm/boot/dts/omap3-igep.dtsi
+@@ -2,7 +2,7 @@
+ /*
+  * Common device tree for IGEP boards based on AM/DM37x
+  *
+- * Copyright (C) 2012 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2012 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2012 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ /dts-v1/;
+diff --git a/arch/arm/boot/dts/omap3-igep0020-common.dtsi b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
+index af8aa5f0feb..73d8f471b9e 100644
+--- a/arch/arm/boot/dts/omap3-igep0020-common.dtsi
++++ b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
+@@ -2,7 +2,7 @@
+ /*
+  * Common Device Tree Source for IGEPv2
+  *
+- * Copyright (C) 2014 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2014 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2014 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+diff --git a/arch/arm/boot/dts/omap3-igep0020-rev-f.dts b/arch/arm/boot/dts/omap3-igep0020-rev-f.dts
+index 567232584f0..9dca5bfc87a 100644
+--- a/arch/arm/boot/dts/omap3-igep0020-rev-f.dts
++++ b/arch/arm/boot/dts/omap3-igep0020-rev-f.dts
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Source for IGEPv2 Rev. F (TI OMAP AM/DM37x)
+  *
+- * Copyright (C) 2012 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2012 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+diff --git a/arch/arm/boot/dts/omap3-igep0020.dts b/arch/arm/boot/dts/omap3-igep0020.dts
+index e341535a716..c6f863bc03a 100644
+--- a/arch/arm/boot/dts/omap3-igep0020.dts
++++ b/arch/arm/boot/dts/omap3-igep0020.dts
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Source for IGEPv2 Rev. C (TI OMAP AM/DM37x)
+  *
+- * Copyright (C) 2012 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2012 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2012 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+diff --git a/arch/arm/boot/dts/omap3-igep0030-common.dtsi b/arch/arm/boot/dts/omap3-igep0030-common.dtsi
+index 71b0ae807ec..742e3e14706 100644
+--- a/arch/arm/boot/dts/omap3-igep0030-common.dtsi
++++ b/arch/arm/boot/dts/omap3-igep0030-common.dtsi
+@@ -2,7 +2,7 @@
+ /*
+  * Common Device Tree Source for IGEP COM MODULE
+  *
+- * Copyright (C) 2014 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2014 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2014 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+diff --git a/arch/arm/boot/dts/omap3-igep0030-rev-g.dts b/arch/arm/boot/dts/omap3-igep0030-rev-g.dts
+index df6ba121983..8e9c12cf51a 100644
+--- a/arch/arm/boot/dts/omap3-igep0030-rev-g.dts
++++ b/arch/arm/boot/dts/omap3-igep0030-rev-g.dts
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Source for IGEP COM MODULE Rev. G (TI OMAP AM/DM37x)
+  *
+- * Copyright (C) 2014 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2014 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2014 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+diff --git a/arch/arm/boot/dts/omap3-igep0030.dts b/arch/arm/boot/dts/omap3-igep0030.dts
+index 32f31035daa..5188f96f431 100644
+--- a/arch/arm/boot/dts/omap3-igep0030.dts
++++ b/arch/arm/boot/dts/omap3-igep0030.dts
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Source for IGEP COM MODULE Rev. E (TI OMAP AM/DM37x)
+  *
+- * Copyright (C) 2012 Javier Martinez Canillas <javier@osg.samsung.com>
++ * Copyright (C) 2012 Javier Martinez Canillas <javier@dowhile0.org>
+  * Copyright (C) 2012 Enric Balletbo i Serra <eballetbo@gmail.com>
+  */
+ 
+-- 
+2.29.2
+
