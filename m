@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A232F9950
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 06:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4913B2F9955
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 06:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731742AbhARFeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 00:34:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24973 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725794AbhARFeN (ORCPT
+        id S1731778AbhARFhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 00:37:36 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:34588 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731223AbhARFhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 00:34:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610947964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pDPCAVJcJa7C+5eBbyflXnWUh5KwAB1+USyHP1tOpTI=;
-        b=NM1gofHb9d1d08doebk6/ufcwzz/m8hCBTwPv2xbyypFH50+NHB3LMxsrPpj+2LN47irvb
-        GjPg0Q5GThvCFX8bX1Y/mjcQCF3AOCFDH6J3zGtwjDHHz57uXJ+SAQBvio1eblby8+umPc
-        nWqjHs2NOGJhKtZ0VDcD9yS8+u6U0Z4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-9KjLBBToNRGaLv5l7aAqmQ-1; Mon, 18 Jan 2021 00:32:39 -0500
-X-MC-Unique: 9KjLBBToNRGaLv5l7aAqmQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 18 Jan 2021 00:37:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610948227; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=TjYdGssVsPJFHu21J0UDvrX/gV9OIWsRXIPK5jhOiOg=; b=Ba+iJkvRTtFCQsGypOZ+OJPKmTmB0r+XBTIk9apoYnLYc3b0hmuI8Cg6uqw5uEeQLuimmrWc
+ fENOLjHWejAaq//KCyMpPRiNaGKUYIyKEBIJksmE8Eo3byNNMlvFNqBr76qg2TcV+KxBrB4m
+ vr+VPSjLHRnGxB9cdR64lDdIZ/0=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 60051e59e23dedcc3a9bf136 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 05:36:25
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 11DDDC43465; Mon, 18 Jan 2021 05:36:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.120] (unknown [49.207.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6CC7107ACF9;
-        Mon, 18 Jan 2021 05:32:38 +0000 (UTC)
-Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D16B71CA0;
-        Mon, 18 Jan 2021 05:32:32 +0000 (UTC)
-Subject: Re: [PATCH V2] mlx5: vdpa: fix possible uninitialized var
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, elic@nvidia.com
-References: <20210114070904.9981-1-jasowang@redhat.com>
- <20210117052810-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <9184ab89-2d64-7f5f-6e16-2f572cc192bc@redhat.com>
-Date:   Mon, 18 Jan 2021 13:32:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E82BDC433C6;
+        Mon, 18 Jan 2021 05:36:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E82BDC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
+ 'assigned-performance-states'
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        ulf.hansson@linaro.org, viresh.kumar@linaro.org
+Cc:     robh+dt@kernel.org, wsa@kernel.org, swboyd@chromium.org,
+        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, linux-i2c@vger.kernel.org
+References: <20201224111210.1214-1-rojay@codeaurora.org>
+ <20201224111210.1214-4-rojay@codeaurora.org> <YAGqKfDfB7EEuZVn@builder.lan>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
+Date:   Mon, 18 Jan 2021 11:06:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210117052810-mutt-send-email-mst@kernel.org>
+In-Reply-To: <YAGqKfDfB7EEuZVn@builder.lan>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/1/17 下午6:30, Michael S. Tsirkin wrote:
-> On Thu, Jan 14, 2021 at 03:09:04PM +0800, Jason Wang wrote:
->> When compiling with -Werror=maybe-uninitialized, gcc may complains the
->> possible uninitialized umem. Since the callers won't pass value other
->> than 1 to 3, making 3 as default to fix the compiler warning.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> Of course if it's actually something else this is not DTRT ...
+On 1/15/2021 8:13 PM, Bjorn Andersson wrote:
+> On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
+> 
+>> @@ -629,6 +658,16 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+>>   	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
+>>   
+>>   	disable_irq(gi2c->irq);
+>> +
+>> +	/* Drop the assigned performance state */
+>> +	if (gi2c->assigned_pstate) {
+>> +		ret = dev_pm_genpd_set_performance_state(dev, 0);
+>> +		if (ret) {
+>> +			dev_err(dev, "Failed to set performance state\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+> 
+> Ulf, Viresh, I think we discussed this at the time of introducing the
+> performance states.
+> 
+> The client's state does not affect if its performance_state should
+> be included in the calculation of the aggregated performance_state, so
+> each driver that needs to keep some minimum performance state needs to
+> have these two snippets.
+> 
+> Would it not make sense to on enable/disable re-evaluate the
+> performance_state and potentially reconfigure the hardware
+> automatically?
 
+I agree, this will be repeated across multiple drivers which would
+need some minimal vote while they are active, handling this during
+genpd enable/disable in genpd core makes sense.
 
-It breaks some donw stream build (which mandates 
--Werror=maybe-uninitialized)
-
-
-> As long as we worry about this warning, let's have defence in depth:
->    	case 3:
->    		umem = &mvq->umem3;
->    		break;
->   +	default:
->   +		umem = NULL;
->   +              BUG();
->   +		break;
-
-
-Checkpatch doesn't like this:
-
-WARNING: Avoid crashing the kernel - try using WARN_ON & recovery code 
-rather than BUG() or BUG_ON()
-#20: FILE: drivers/vdpa/mlx5/net/mlx5_vnet.c:695:
-+        BUG();
-
-But if you stick, I can go this way.
-
-Thanks
-
-
->
->> ---
->>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> index f1d54814db97..07ccc61cd6f6 100644
->> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> @@ -703,7 +703,7 @@ static void umem_destroy(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue
->>   	case 2:
->>   		umem = &mvq->umem2;
->>   		break;
->> -	case 3:
->> +	default:
->>   		umem = &mvq->umem3;
->>   		break;
->>   	}
+> 
+> Regards,
+> Bjorn
+> 
+>>   	ret = geni_se_resources_off(&gi2c->se);
+>>   	if (ret) {
+>>   		enable_irq(gi2c->irq);
+>> @@ -654,6 +693,16 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> +	/* Set the assigned performance state */
+>> +	if (gi2c->assigned_pstate) {
+>> +		ret = dev_pm_genpd_set_performance_state(dev,
+>> +							 gi2c->assigned_pstate);
+>> +		if (ret) {
+>> +			dev_err(dev, "Failed to set performance state\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>>   	enable_irq(gi2c->irq);
+>>   	gi2c->suspended = 0;
+>>   	return 0;
 >> -- 
->> 2.25.1
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
