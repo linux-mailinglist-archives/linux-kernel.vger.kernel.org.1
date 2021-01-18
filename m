@@ -2,264 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70ED2FA882
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9E92FA88A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407508AbhARSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:16:38 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:49819 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407455AbhARSPm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:15:42 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5ED9C5C019E;
-        Mon, 18 Jan 2021 13:14:34 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 18 Jan 2021 13:14:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=cIp0hypZuyD95Ek3a+fBXpD1r5Z
-        WafZF1r/4Hh8s7qM=; b=e9l8/MixLc6AmcSVCIu3ArZg3QDUrmkdhov1mfhhnxK
-        fsJXuh++gzBbLYTMbYkN+dDMRyUzKHUhqddYmLkqfqqdFvtay74N2JiRn76tdGGo
-        jc1NLEM0gIbwNGL0ShMfD2WDFXO0HqDutD83Wjs2AjpwT0nj/EeNNMIw/LE6pRkl
-        S0Yia93YsL833zlV3sB+fueQYXh9zF6ofTsjXWLweIQ89qGpD/V9Tc6Qyq7VxhG4
-        FLQqaes+ya58eQLx6RZ6JifIr3hRXYtzj/veQAfarOSxoCzJz9k1HHSHBwvM5NS9
-        lc2A7phiNX5QmtTBdN+Rzu+2EShxfIDT8rGB7AkaTLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cIp0hy
-        pZuyD95Ek3a+fBXpD1r5ZWafZF1r/4Hh8s7qM=; b=EP7Zh7j1Ezz2zBkjTKDH3R
-        AFwZ/2dXwn3TLXaLjc/jJKxDPLl+xZiQGr5fabqNmxRdFM0tfHIa3nSgg5blQMm1
-        KhEXlbGwKu24XK1jfVwbMR5Vd7mHuvG4RM1oxcnlBv9M2AA4PUaaUhfaFC8OsL+w
-        E+Uq0G0M9CQOFilZz9jZW6i8S7UNMTwHUr8OQ/NJRc5zdLYCLGN33CeDla+3I5VJ
-        oZGK403zsvk6PdhCVN2s33YuHLq8cA8MQUPZSMTxKOImbpB9fT5hVj1Fkj0pPwYG
-        hjz6mqcYjBp8Se/+jqJuK8oWQLkHiPFZTiekXarnK5GSr2izZoEkOzH5XJwNaD6g
-        ==
-X-ME-Sender: <xms:CdAFYIJIst0cAXhjulwH-zC0i7OCJN20oUHcBZYxXkUYLqeRhjZlUA>
-    <xme:CdAFYILH223sCSNMNvRkYVk26TAqCHAAkE_eoKVKTzC7XLdZsOu0AajnDxs2bkUtx
-    Fql7BjRUyodzg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdduudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:CdAFYIsWC9u0a9__B-pddrTbFbhDUgjHaEQqczD3TqgheN5xPhHzew>
-    <xmx:CdAFYFbnANE2KBp5s00WAEiuUWYrEa-0Z16b221iXZ2YB6KRxlusIg>
-    <xmx:CdAFYPaHxeAP0aaJSug6SbmI0tgCIZJXPJC1vU4n_D12YvfZm60btQ>
-    <xmx:CtAFYLFb_6P9bLD6LCb8d7qaK7SYVbuXi2FQWIP7oIp_10PRTdD_DA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 95C99240068;
-        Mon, 18 Jan 2021 13:14:33 -0500 (EST)
-Date:   Mon, 18 Jan 2021 19:14:32 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        cw00.choi@samsung.com, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-Subject: Re: [PATCH] PM / devfreq: Add sysfs attributes to simple_ondemand
- governor
-Message-ID: <YAXQCK7dmHrSq29b@kroah.com>
-References: <20210115170530.22603-1-lukasz.luba@arm.com>
- <YAXCnMsUy3n+asfm@kroah.com>
- <43729797-2d3c-be12-ce72-bfe5bca54fa0@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2407457AbhARSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:17:38 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:29877 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436743AbhARSRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:17:18 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6005d07f0000>; Tue, 19 Jan 2021 02:16:31 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
+ 2021 18:16:31 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 18:16:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lYkNdlkqylcuDAYklTDm7aBpJEaEvq6XDVC42ZbSBz0WyJkkLMR4nos3kW4xXHDvt59Wd8QPrb98gJcB+xMMboyUT447vI+KH7xbzZP07k/x2ydNQm4IGlN/kI/ZSS5vC1tlLhSXBgzjL3ivJEiA5NdKCuuyDOoteuTI2xwPpnHeWjT7D4fNB6CKtjTJsP8XXXXxCRai05aRylcV07Ga5BFKdB6XCSq4nG3Cn6own9dTynklptAMldRWezausBbTgqPEE0uTgMjkP/ME+1Ix9uTdFlOUGlmfuqE+o2aQQwPCWYpwrThJIDTdTnXdgKd3erDw6ztvj/04NpvgsFplJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IwRTfgXlifdCtlutUS4baPAqei432iOgP77dJnQrfX4=;
+ b=FIml8hduyM1JCspw59UKtDNiw36A/XLEzh3n/a0bYbtDW6VTPiUikMr8CjMtExEalzVpWmF6ZRZbnoKzPO6KlTQg2RDUFi5hGqjDR4P2olrbj+OWqKtlPskI6Tt9OqvdWDtqAv8eNvPFPR9Oer1p/hAQglKn73mb8X85ZWnkwZGE5VQZoKi5D4ZncAa3a+oNRnncqG9DtO8bRD3EzZD0DMtRYrPQZXnaFyzTbgZf4Y/MtR5VjpUaNmPe2Q4zX4LZAzzjwWdB6OHdGiBVR0Krk/w2oYkCvkylSkohDrKEkdGJhMugU33muXwNFY7NzxPZX5NP2Co97M/Q3mwQHml3Hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4499.namprd12.prod.outlook.com (2603:10b6:5:2ab::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Mon, 18 Jan
+ 2021 18:16:28 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 18:16:28 +0000
+Date:   Mon, 18 Jan 2021 14:16:26 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+CC:     Max Gurtovoy <mgurtovoy@nvidia.com>, <alex.williamson@redhat.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
+        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
+        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>
+Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
+Message-ID: <20210118181626.GL4147@nvidia.com>
+References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
+ <20210118143806.036c8dbc.cohuck@redhat.com>
+ <20210118151020.GJ4147@nvidia.com>
+ <20210118170009.058c8c52.cohuck@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <43729797-2d3c-be12-ce72-bfe5bca54fa0@arm.com>
+In-Reply-To: <20210118170009.058c8c52.cohuck@redhat.com>
+X-ClientProxiedBy: MN2PR13CA0034.namprd13.prod.outlook.com
+ (2603:10b6:208:160::47) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR13CA0034.namprd13.prod.outlook.com (2603:10b6:208:160::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Mon, 18 Jan 2021 18:16:28 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1Z4k-0031Ls-TV; Mon, 18 Jan 2021 14:16:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610993791; bh=IwRTfgXlifdCtlutUS4baPAqei432iOgP77dJnQrfX4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=JaBL6lOwtUgJS8vV5R9nFhYvDT1OCbuesnTH/6+Z5uhgfNHFvKplTCDaaAg8gEAxu
+         6m4TwL0EtlaCTPf32doaZoyABN9WdfJhhRKWufY2t2RkYQI5lAvMDB5xYQskeUsiFQ
+         FUGdsU/r78Hp1s4JloyADB6wkvqsZw416PKTdhCGQZT+fUKKPGP9qTWGkC0BIWNhqy
+         49quHmnOs/VNJGMmM6G+MbPT+Dpm1+8TIIA+lFsFvsfvim3sQSEOPCNHQU4/IcGo7E
+         0VDTOMrUMA4T0FBiQA4ehyf4T7uHSJeaEc/lIqIuiYNetW4n7TNzM1nDor52AK12Q+
+         TVGBfCsVLnPUQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 05:56:06PM +0000, Lukasz Luba wrote:
-> 
-> 
-> On 1/18/21 5:17 PM, Greg KH wrote:
-> > On Fri, Jan 15, 2021 at 05:05:30PM +0000, Lukasz Luba wrote:
-> > > The simple_ondemand devfreq governor is used by quite a few devices, like
-> > > GPUs, DSPs, memory controllers, etc. It implements algorithm which tries
-> > > to predict the device frequency based on past statistics. There are two
-> > > tunables for the algorithm: 'upthreshold' and 'downdifferential'. These
-> > > tunables change the behavior of the decision, e.g. how fast to increase
-> > > the frequency or how rapidly limit the frequency. These values might be
-> > > different based on the application which is currently running, e.g.
-> > > different behavior is needed for a game than for web browsing or clean
-> > > desktop. The patch exports these two tunables so they can be adjusted
-> > > based on current need. There is also a check with the allowed ranges
-> > > to make sure the values are correct and safe.
-> > > 
-> > > Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> > > ---
-> > >   drivers/devfreq/governor_simpleondemand.c | 135 ++++++++++++++++++++++
-> > >   1 file changed, 135 insertions(+)
-> > > 
-> > > diff --git a/drivers/devfreq/governor_simpleondemand.c b/drivers/devfreq/governor_simpleondemand.c
-> > > index d57b82a2b570..4b3c182e0a49 100644
-> > > --- a/drivers/devfreq/governor_simpleondemand.c
-> > > +++ b/drivers/devfreq/governor_simpleondemand.c
-> > > @@ -15,6 +15,7 @@
-> > >   /* Default constants for DevFreq-Simple-Ondemand (DFSO) */
-> > >   #define DFSO_UPTHRESHOLD	(90)
-> > >   #define DFSO_DOWNDIFFERENCTIAL	(5)
-> > > +#define DFSO_MAX_VALUE		(100)
-> > >   static int devfreq_simple_ondemand_func(struct devfreq *df,
-> > >   					unsigned long *freq)
-> > >   {
-> > > @@ -84,15 +85,149 @@ static int devfreq_simple_ondemand_func(struct devfreq *df,
-> > >   	return 0;
-> > >   }
-> > > +static ssize_t upthreshold_show(struct device *dev,
-> > > +				struct device_attribute *attr, char *buf)
-> > > +{
-> > > +	struct devfreq_simple_ondemand_data *data;
-> > > +	struct devfreq *df = to_devfreq(dev);
-> > > +
-> > > +	if (!df->data)
-> > > +		return -EINVAL;
-> > > +
-> > > +	data = df->data;
-> > > +
-> > > +	return sprintf(buf, "%d\n", data->upthreshold);
-> > 
-> > sysfs_emit()?
-> > 
-> > Also, you forgot the Documentation/ABI/ updates for new sysfs files :(
-> 
-> True, I will remember next time.
-> 
-> > 
-> > 
-> > > +}
-> > > +
-> > > +static ssize_t upthreshold_store(struct device *dev,
-> > > +				 struct device_attribute *attr,
-> > > +				 const char *buf, size_t count)
-> > > +{
-> > > +	struct devfreq_simple_ondemand_data *data;
-> > > +	struct devfreq *df = to_devfreq(dev);
-> > > +	unsigned int value;
-> > > +	int ret;
-> > > +
-> > > +	if (!df->data)
-> > > +		return -EINVAL;
-> > > +
-> > > +	data = df->data;
-> > > +
-> > > +	ret = kstrtouint(buf, 10, &value);
-> > > +	if (ret < 0)
-> > > +		return -EINVAL;
-> > > +
-> > > +	mutex_lock(&df->lock);
-> > > +
-> > > +	if (value > DFSO_MAX_VALUE || value <= data->downdifferential) {
-> > > +		mutex_unlock(&df->lock);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	data->upthreshold = value;
-> > > +	mutex_unlock(&df->lock);
-> > > +
-> > > +	return count;
-> > > +}
-> > > +static DEVICE_ATTR_RW(upthreshold);
-> > > +
-> > > +static ssize_t downdifferential_show(struct device *dev,
-> > > +				     struct device_attribute *attr, char *buf)
-> > > +{
-> > > +	struct devfreq_simple_ondemand_data *data;
-> > > +	struct devfreq *df = to_devfreq(dev);
-> > > +
-> > > +	if (!df->data)
-> > > +		return -EINVAL;
-> > > +
-> > > +	data = df->data;
-> > > +
-> > > +	return sprintf(buf, "%d\n", data->downdifferential);
-> > > +}
-> > > +
-> > > +static ssize_t downdifferential_store(struct device *dev,
-> > > +				      struct device_attribute *attr,
-> > > +				      const char *buf, size_t count)
-> > > +{
-> > > +	struct devfreq_simple_ondemand_data *data;
-> > > +	struct devfreq *df = to_devfreq(dev);
-> > > +	unsigned int value;
-> > > +	int ret;
-> > > +
-> > > +	if (!df->data)
-> > > +		return -EINVAL;
-> > > +
-> > > +	data = df->data;
-> > > +
-> > > +	ret = kstrtouint(buf, 10, &value);
-> > > +	if (ret < 0)
-> > > +		return -EINVAL;
-> > > +
-> > > +	mutex_lock(&df->lock);
-> > > +
-> > > +	if (value > DFSO_MAX_VALUE || value >= data->upthreshold) {
-> > > +		mutex_unlock(&df->lock);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	data->downdifferential = value;
-> > > +	mutex_unlock(&df->lock);
-> > > +
-> > > +	return count;
-> > > +}
-> > > +static DEVICE_ATTR_RW(downdifferential);
-> > > +
-> > > +static void devfreq_simple_ondemand_sysfs_setup(struct devfreq *df)
-> > > +{
-> > > +	struct devfreq_simple_ondemand_data *data;
-> > > +	int ret;
-> > > +
-> > > +	if (!df->data) {
-> > > +		/* The memory will be freed automatically */
-> > > +		df->data = devm_kzalloc(&df->dev,
-> > > +				sizeof(struct devfreq_simple_ondemand_data),
-> > > +				GFP_KERNEL);
-> > > +		if (!df->data) {
-> > > +			dev_warn(&df->dev, "Unable to allocate memory");
-> > > +			return;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	data = df->data;
-> > > +
-> > > +	/* After new allocation setup default values, since they are used */
-> > > +	if (!data->upthreshold)
-> > > +		data->upthreshold = DFSO_UPTHRESHOLD;
-> > > +
-> > > +	if (!data->downdifferential)
-> > > +		data->downdifferential = DFSO_DOWNDIFFERENCTIAL;
-> > > +
-> > > +	ret = sysfs_create_file(&df->dev.kobj, &dev_attr_upthreshold.attr);
-> > > +	if (ret < 0)
-> > > +		dev_warn(&df->dev, "Unable to create 'upthreshold' attr\n");
-> > > +
-> > > +	ret = sysfs_create_file(&df->dev.kobj, &dev_attr_downdifferential.attr);
-> > > +	if (ret < 0)
-> > > +		dev_warn(&df->dev, "Unable to create 'downdifferential' attr\n");
-> > 
-> > You just raced with userspace and lost :(
-> > 
-> > Please use the default sysfs groups so that it all works properly.
-> > 
-> > Huge hint, when calling sysfs_* from a driver, that usually means you
-> > are doing something wrong.
-> 
-> I should have used kobject_init_and_add() and the default devfreq
-> sysfs group as a parent.
+On Mon, Jan 18, 2021 at 05:00:09PM +0100, Cornelia Huck wrote:
 
-No, never use "raw" kobjects in the sys/devices/ tree, that is a sure
-way to ensure that userspace will never be notified or see your
-attributes.
+> > You can say that all the HW specific things are in the mlx5_vfio_pci
+> > driver. It is an unusual driver because it must bind to both the PCI
+> > VF with a pci_driver and to the mlx5_core PF using an
+> > auxiliary_driver. This is needed for the object lifetimes to be
+> > correct.
+> 
+> Hm... I might be confused about the usage of the term 'driver' here.
+> IIUC, there are two drivers, one on the pci bus and one on the
+> auxiliary bus. Is the 'driver' you're talking about here more the
+> module you load (and not a driver in the driver core sense?)
 
-thanks,
+Here "driver" would be the common term meaning the code that realizes
+a subsytem for HW - so mlx5_vfio_pci is a VFIO driver because it
+ultimately creates a /dev/vfio* through the vfio subsystem.
 
-greg k-h
+The same way we usually call something like mlx5_en an "ethernet
+driver" not just a "pci driver"
+
+> Yes, sure. But it also shows that mlx5_vfio_pci aka the device-specific
+> code is rather small in comparison to the common vfio-pci code.
+> Therefore my question whether it will gain more specific changes (that
+> cannot be covered via the auxiliary driver.)
+
+I'm not sure what you mean "via the auxiliary driver" - there is only
+one mlx5_vfio_pci, and the non-RFC version with all the migration code
+is fairly big.
+
+The pci_driver contributes a 'struct pci_device *' and the
+auxiliary_driver contributes a 'struct mlx5_core_dev *'. mlx5_vfio_pci
+fuses them together into a VFIO device. Depending on the VFIO
+callback, it may use an API from the pci_device or from the
+mlx5_core_dev device, or both.
+
+Jason
