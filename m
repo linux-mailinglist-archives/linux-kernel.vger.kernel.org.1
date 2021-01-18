@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454532FA948
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9712FA964
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390630AbhARLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:40:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
+        id S2390728AbhARSza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:55:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390269AbhARLht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 419D822BF3;
-        Mon, 18 Jan 2021 11:36:59 +0000 (UTC)
+        id S2390629AbhARLkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:40:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38154223DB;
+        Mon, 18 Jan 2021 11:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969819;
-        bh=05DX630A9PR7Oe8hMyY9ck96ad9ymBtgx3IIv8RXasY=;
+        s=korg; t=1610970021;
+        bh=H1kzvoM1DFEhx9dLrpSvcsRIJ+XtcIwPFQyjRTswKro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F768+eqL4yKHu6w9kZE2ZcfNE6FuzZ9Qikr0IrG5tJuW8X2zdS9IGH+RnonTXp8AC
-         A9G2StNgHE87p5dcPUAyM/h818x09+4OiwwjOTcyysawqpmH3+FXlS9kHUXgH+batl
-         mn3+YCyc2szcB94jEmjzfifWkG2TsoZuiS729COw=
+        b=zV+eJ2QpIGV5E1Gj5PuSl++2GTXxlhdAa24aQUUFUk6IRJlpjChUMNtBMOVxP4CRO
+         s3U0KOa2iOZ/2DzZiuQ8ZNRBBCyCPPdK65RDTn4VS2Ja4TynAB9iYf9TsImTCiprct
+         PoNoGXCezrV16WluThX933ZTEyyTyg/ULdYmHxnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nir Soffer <nsoffer@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 38/43] dm: eliminate potential source of excessive kernel log noise
-Date:   Mon, 18 Jan 2021 12:35:01 +0100
-Message-Id: <20210118113336.790087745@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 62/76] RDMA/restrack: Dont treat as an error allocation ID wrapping
+Date:   Mon, 18 Jan 2021 12:35:02 +0100
+Message-Id: <20210118113343.931422759@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Snitzer <snitzer@redhat.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 0378c625afe80eb3f212adae42cc33c9f6f31abf upstream.
+commit 3c638cdb8ecc0442552156e0fed8708dd2c7f35b upstream.
 
-There wasn't ever a real need to log an error in the kernel log for
-ioctls issued with insufficient permissions. Simply return an error
-and if an admin/user is sufficiently motivated they can enable DM's
-dynamic debugging to see an explanation for why the ioctls were
-disallowed.
+xa_alloc_cyclic() call returns positive number if ID allocation
+succeeded but wrapped. It is not an error, so normalize the "ret"
+variable to zero as marker of not-an-error.
 
-Reported-by: Nir Soffer <nsoffer@redhat.com>
-Fixes: e980f62353c6 ("dm: don't allow ioctls to targets that don't map to whole devices")
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+   drivers/infiniband/core/restrack.c:261 rdma_restrack_add()
+   warn: 'ret' can be either negative or positive
+
+Fixes: fd47c2f99f04 ("RDMA/restrack: Convert internal DB from hash to XArray")
+Link: https://lore.kernel.org/r/20201216100753.1127638-1-leon@kernel.org
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/restrack.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -515,7 +515,7 @@ static int dm_blk_ioctl(struct block_dev
- 		 * subset of the parent bdev; require extra privileges.
- 		 */
- 		if (!capable(CAP_SYS_RAWIO)) {
--			DMWARN_LIMIT(
-+			DMDEBUG_LIMIT(
- 	"%s: sending ioctl %x to DM device without required privilege.",
- 				current->comm, cmd);
- 			r = -ENOIOCTLCMD;
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -234,6 +234,7 @@ static void rdma_restrack_add(struct rdm
+ 	} else {
+ 		ret = xa_alloc_cyclic(&rt->xa, &res->id, res, xa_limit_32b,
+ 				      &rt->next_id, GFP_KERNEL);
++		ret = (ret < 0) ? ret : 0;
+ 	}
+ 
+ 	if (!ret)
 
 
