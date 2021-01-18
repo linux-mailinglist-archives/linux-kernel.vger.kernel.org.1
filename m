@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D066A2FA5A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4262FA59D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406433AbhARQHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406409AbhARQGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:06:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48AF822472;
-        Mon, 18 Jan 2021 16:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610985942;
-        bh=zRzNpYETySFvElMPmAn1EDRcJKD6ENrHFykLFQlHWBw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CbghjvFGnS+lndRsHx9yfTSzUxjSkIGYfBz3gEHkJqA10T8OJFNvKNjDdfB4Z0ccw
-         wSY+ojjfLiAmdAUw2x6z8DG1+8E7ICohycEfOHDUY5/SfO9txHZl8L/fDyNdn1ZmrX
-         BnALXzcF5WCxrTbBHr3xODh0I89YKYRAgdhJlMtTw6CZyqwPIpBGcQxw0dMlPRXQaa
-         42QCQCLq+ct9EvLIhWSd6Ir2DFzw6ykGOZkuI1d2lwwgHMUQK/Pi0SWrJaqNDUDS0G
-         Yx68+Fvixbnpfl2q8w+N76YWhD9udHenjiPqxEksl5Lz5ZaJIQoqk1+pYE5cs4evqd
-         4K+wfih0tvn8g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1B34640CE2; Mon, 18 Jan 2021 13:05:40 -0300 (-03)
-Date:   Mon, 18 Jan 2021 13:05:40 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 06/22] perf tools: Make perf_config_global gobal
-Message-ID: <20210118160540.GF12699@kernel.org>
-References: <20210102220441.794923-1-jolsa@kernel.org>
- <20210102220441.794923-7-jolsa@kernel.org>
+        id S2406287AbhARQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406420AbhARQGc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:06:32 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1813C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:05:51 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id p5so18139841oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:05:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KYV6v28PmbLgIKD3dOyIEV8BYNhkb29qTPJqNvBC4G0=;
+        b=f9jaiCBSfMJKmnGKpqI597WW8A97ptieAH0VHgP5oRMfCKMawFDUUCERdK99KkeoTU
+         ntyT88ojQn0/AMsi+Ye3qur+Bz7FFg728JyOkiuVcQnwi+PaNm/iqYitqPPeuVhW5xED
+         dEwPczSHiBgw2YFb7voPk9oSHWB2kTes9niMJFqtADS+8VSJnMRf0yKjp46NYBSePlf0
+         Uae2ICsqxpe42/D33TAJaJJZFekbBQP2OwM/zoKTHl9cLeIUWV4y9EvaoFH229MfRVj1
+         yn4WSPbZNhcmzNMMctCqaPUmTx4kkJ7YT4pXhGuAwes+Y4BbQlmL0LxpmRNiZKqklGPK
+         95qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KYV6v28PmbLgIKD3dOyIEV8BYNhkb29qTPJqNvBC4G0=;
+        b=db7sgw8+3CIgtJUz95sPbKi+sZBQ+zWUGXgwwtE7mLr0xHjyO1J+gKDJ7U+FGWex9K
+         51wpgVTHVNmZsKZkJ2Alv7BTZYaY5uGWP1aNHAmz6jOmum1n80J2Uz8Bf1uLB9juZ99z
+         ptMalmjrLUeVX0heysXr2yHac/DCu8o40xy+e0Le009Id/bk1FzI3kz+tNxXzRk6pRgk
+         3P0Ovd+JeTvBTdjJFJYis2lrcot/HNknOGinv8DoNRH8YdLap5RvVVnutfddW98Ird+w
+         FyVP34z1aOO58lvsoWjIE05+YntthTeBUFpYDtK3sCxK/WBwDGbV58hh1rIwu3eNtgwk
+         A1Jw==
+X-Gm-Message-State: AOAM532xYu5n6/dC/npYXUyQdRS0VN9tXhzXq6oXoGwPTX2Y5OEm2HoW
+        kM8nRa8Pe4u0yk4vKHD06CuaWufznpuYlrHM7gQ=
+X-Google-Smtp-Source: ABdhPJzX8qvIYmuMWprM6f1xsibnLbeZdX6sAA0wHWRo2AhVGb5fXWaoGBx3iqMcjAqCUH2p5NDb4q3tvzVJWAv/+JM=
+X-Received: by 2002:a05:6808:651:: with SMTP id z17mr39609oih.150.1610985951282;
+ Mon, 18 Jan 2021 08:05:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210102220441.794923-7-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20210117123104.27589-1-benbjiang@tencent.com> <CAKfTPtCPUnhiNF0SxK-=RTaq+h1D0tK-OfRsubb38V23KFEB_w@mail.gmail.com>
+ <CAPJCdBnHHk40uBtrOisp=hY=5K3OLeUwpkPmgUURVf2DvDmY_Q@mail.gmail.com> <CAKfTPtDSKtavC=PtJKkY7g=VY-t=1aO-a_7NCjN=NiYei7SseA@mail.gmail.com>
+In-Reply-To: <CAKfTPtDSKtavC=PtJKkY7g=VY-t=1aO-a_7NCjN=NiYei7SseA@mail.gmail.com>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Tue, 19 Jan 2021 00:05:40 +0800
+Message-ID: <CAPJCdBmRrOcx6pSGoGWqrq5p-vzBhrYccOCPAkjue9S8YD-zNg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: add protection for delta of wait time
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Jan 02, 2021 at 11:04:25PM +0100, Jiri Olsa escreveu:
-> Making perf_config_global global, it will be used
-> outside the config.c object in following patches.
+Hi, Vincent
 
-Thanks, applied.
+On Mon, 18 Jan 2021 at 23:32, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Mon, 18 Jan 2021 at 15:11, Jiang Biao <benbjiang@gmail.com> wrote:
+> >
+> > Hi, Vincent
+> >
+> > On Mon, 18 Jan 2021 at 15:56, Vincent Guittot
+> > <vincent.guittot@linaro.org> wrote:
+> > >
+> > > On Sun, 17 Jan 2021 at 13:31, Jiang Biao <benbjiang@gmail.com> wrote:
+> > > >
+> > > > From: Jiang Biao <benbjiang@tencent.com>
+> > > >
+> > > > delta in update_stats_wait_end() might be negative, which would
+> > > > make following statistics go wrong.
+> > >
+> > > Could you describe the use case that generates a negative delta ?
+> > >
+> > > rq_clock is always increasing so this should not lead to a negative
+> > > value even if update_stats_wait_end/start are not called in the right
+> > > order,
+> > Yes, indeed.
+> >
+> > > This situation could happen after a migration if we forgot to call
+> > > update_stats_wait_start
+> > The migration case was what I worried about, but no regular use case
+> > comes into my mind. :)
+>
+> IIUC, you haven't faced the problem and it's only based on studying the code.
+Not yet. :).  Just found there are protections for
+sleep_time/block_time, but no protection
+for wait_time.
 
-- Arnaldo
+Think more later, the sleep_time/block_time do need to be protected
+for the migration case,
+because update_stats_enqueue_sleeper could be called right after
+migration with src cpu's
+sleep_start/block_start. But wait_time is not the case.
 
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/config.c | 2 +-
->  tools/perf/util/config.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 4e0455a6bb5f..6984c77068a3 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -526,7 +526,7 @@ int perf_config_system(void)
->  	return !perf_env_bool("PERF_CONFIG_NOSYSTEM", 0);
->  }
->  
-> -static int perf_config_global(void)
-> +int perf_config_global(void)
->  {
->  	return !perf_env_bool("PERF_CONFIG_NOGLOBAL", 0);
->  }
-> diff --git a/tools/perf/util/config.h b/tools/perf/util/config.h
-> index bf68e4acea73..2fd77aaff4d2 100644
-> --- a/tools/perf/util/config.h
-> +++ b/tools/perf/util/config.h
-> @@ -39,6 +39,7 @@ int config_error_nonbool(const char *);
->  const char *perf_etc_perfconfig(void);
->  const char *perf_home_perfconfig(void);
->  int perf_config_system(void);
-> +int perf_config_global(void);
->  
->  struct perf_config_set *perf_config_set__new(void);
->  struct perf_config_set *perf_config_set__load_file(const char *file);
-> -- 
-> 2.26.2
-> 
+The following case might be too extreme to happen. :)
 
--- 
+Thanks a lot for your patience.
 
-- Arnaldo
+Regards,
+Jiang
+
+>
+> > As an extreme case, would it be a problem if we disable/re-enable
+> > sched_schedstats during migration?
+> >
+> > static inline void
+> > update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> > {
+> >         u64 wait_start, prev_wait_start;
+> >
+> >         if (!schedstat_enabled()) // disable during migration
+> >                 return; // return here, and skip updating wait_start
+> > ...
+> > }
+> >
+> > static inline void
+> > update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> > {
+> >         struct task_struct *p;
+> >         u64 delta;
+> >
+> >         if (!schedstat_enabled())  // re-enable again
+> >                 return;
+> >
+> >         /*
+> >          * When the sched_schedstat changes from 0 to 1, some sched se
+> >          * maybe already in the runqueue, the se->statistics.wait_start
+> >          * will be 0.So it will let the delta wrong. We need to avoid this
+> >          * scenario.
+> >          */
+> >         if (unlikely(!schedstat_val(se->statistics.wait_start)))
+> >                 return;
+> >          //stale wait_start which might be bigger than rq_clock would
+> > be used. -)
+> >         delta = rq_clock(rq_of(cfs_rq)) -
+> > schedstat_val(se->statistics.wait_start);
+> > ...
+> >
+> > Thanks a lot.
+> > Regards,
+> > Jiang
