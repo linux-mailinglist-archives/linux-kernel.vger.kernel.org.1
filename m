@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2613A2FA7B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E66EA2FA7C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436624AbhARRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:40:53 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:46495 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407199AbhARRkJ (ORCPT
+        id S2436672AbhARRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407154AbhARRkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:40:09 -0500
-Received: by mail-ot1-f48.google.com with SMTP id w3so17005010otp.13;
-        Mon, 18 Jan 2021 09:39:46 -0800 (PST)
+        Mon, 18 Jan 2021 12:40:39 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE74C061573;
+        Mon, 18 Jan 2021 09:39:58 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id e7so19092354ljg.10;
+        Mon, 18 Jan 2021 09:39:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=rtEV+yO5hUryVrfLNZRshRF3BazYXZlOEOzIhM8uokE=;
+        b=guRYV35XTWl9ld5O144nAB/ZYsmBXhpzubFy8YZfybThYsmCspvbj5MNr8LyolLa2V
+         /+ywk5PzIoM4GIo8GDaeFN+y6yK6pNIoWwrcErfN9p3o4wqR7LBZ5yRjOAmXNf09T4yO
+         IfzJ2/cXyJRrQsykgn35+vZHR+r2PbebhBg8xYChgm8M3w+eYslmYHFuSJHgx7+YkQfn
+         CP6jD9p41btVW45GCZEM/VbFDI+31FhII17Zj94LpFT8JdphP9LFL+kSms2RMLJeEBGD
+         tXsFYWtTuPJzgbl57QUrfbSVFC74Oz81bNaE/78nK1peanmB1jCcrZNf39aWgT8DPcKC
+         dSyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TBu9By/8VRPgsqkSVXbZt+m8ccctd/56lGbUNRtH3tI=;
-        b=J6pVmnYr9M37tfcBZLsOeNhXDxnQvYM0uAe+L9wWWr1uPxHUxPamXdPt9mqi0YjUcx
-         Aq+ypNJp7aJtZ3vZoDw7+B4ek2OCKwUhfHZ9KOZ6c77tsdOzyBoP6oZOZ142qlZE6HmU
-         lkgEBB58SadOuB4qxNfnYOwk5QZ02npy1lE3Z1eI/3i1M+Kl8AUp3Wq95cOj3w4LJsUr
-         le4ClMM/GZgJno7xGvEj18ZsrHl5LbYXVbpVfMoxtBc2/Clp9d3Bna4NerZCe0JRSZGc
-         +p//I5gEB+9MwZL6fl82USiL8Y1QStZTuEKgBfClzz9osWsHOLVB6jjTb7IRvw8nnILA
-         Yjrg==
-X-Gm-Message-State: AOAM530ASu9aqiR1226g/abQME1rfL1wIj67HuEJR6/j3uce6Z7ZWM+E
-        bU3QEaZt46jtkF2MPK3u11N9jDXEKFRNsS+eMB8=
-X-Google-Smtp-Source: ABdhPJxUhvwAbVRYw3irl60YU62M+0M0hOssaiRs12vpO3+6daUkruZv7J346RSH/KO6+zjS42brpnTnh56DPMc/u8Q=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr458499otc.145.1610991561344;
- Mon, 18 Jan 2021 09:39:21 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=rtEV+yO5hUryVrfLNZRshRF3BazYXZlOEOzIhM8uokE=;
+        b=YQVrxWKPIlc46G4szKic/0pZ+tlOfrJWdyKQAle4lZZEo5jj+Wz75qAlH0yuI5+k4u
+         pez95dyxnlUEPqsYFZTXZ/3SXfqS/P5hSpXHnm6689mNvGDUiUjBRlmLN/5fObz8qcYX
+         myYKeB06nnTftab1VadKmMjQRRNrlTGQyCb1T/5esrlv0ZbnCe8P7PFpidFLIqk31h8L
+         UMIhMY5f3kblS5z7sLJT0W+ca7sOQv7hz4PzeCAZ1JMXRgszRtI2aVv2QVSfLuJ9GG1g
+         t4dX4OWbv4NFSw7oReSW08qEkpyNJjdGOFujklg7d+03XwLHRNCYb2lXS03qAJ4HNHPx
+         EUbQ==
+X-Gm-Message-State: AOAM533yJ5LAYppxehT63kxuTR0AXFVEI1S7/u8A09OjNsZ76LskJIiU
+        qPaG7r9wUj8jJMLPo7d1EPfO+/DXZWV/erJDkE6yf5SXW0zpAg==
+X-Google-Smtp-Source: ABdhPJyZK9bb5bJkuiSzKhYfsUlMOKgpGAVs019N1eEcHohcFTiaN5VVvF398PZeRQFoR49c3NBwmjGUleu3fZcrBp0=
+X-Received: by 2002:a05:651c:3ca:: with SMTP id f10mr305984ljp.508.1610991597284;
+ Mon, 18 Jan 2021 09:39:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com> <20201218031703.3053753-6-saravanak@google.com>
-In-Reply-To: <20201218031703.3053753-6-saravanak@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Jan 2021 18:39:10 +0100
-Message-ID: <CAMuHMdWDAg6+utMDLunPXmVtnP+13G2s0E-Fcnkc9bkNBs-cEg@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+From:   Paul Thomas <pthomas8589@gmail.com>
+Date:   Mon, 18 Jan 2021 12:39:45 -0500
+Message-ID: <CAD56B7eAZ0hb0kuRbALONMAgvuhHjqrShVRwf1s93ZSbv8xqww@mail.gmail.com>
+Subject: watchdog: watchdog_stop_on_reboot()
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hello,
 
-On Fri, Dec 18, 2020 at 4:34 AM Saravana Kannan <saravanak@google.com> wrote:
-> Cyclic dependencies in some firmware was one of the last remaining
-> reasons fw_devlink=on couldn't be set by default. Now that cyclic
-> dependencies don't block probing, set fw_devlink=on by default.
->
-> Setting fw_devlink=on by default brings a bunch of benefits (currently,
-> only for systems with device tree firmware):
-> * Significantly cuts down deferred probes.
-> * Device probe is effectively attempted in graph order.
-> * Makes it much easier to load drivers as modules without having to
->   worry about functional dependencies between modules (depmod is still
->   needed for symbol dependencies).
->
-> If this patch prevents some devices from probing, it's very likely due
-> to the system having one or more device drivers that "probe"/set up a
-> device (DT node with compatible property) without creating a struct
-> device for it.  If we hit such cases, the device drivers need to be
-> fixed so that they populate struct devices and probe them like normal
-> device drivers so that the driver core is aware of the devices and their
-> status. See [1] for an example of such a case.
->
-> [1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+I'm going through our out-of-tree commits, and was wondering if there
+is anything to be done with this one. Basically we remove both
+watchdog_stop_on_reboot() calls (not sure why there are two to begin
+with):
+--- a/drivers/watchdog/cadence_wdt.c
++++ b/drivers/watchdog/cadence_wdt.c
+@@ -330,7 +330,6 @@ static int cdns_wdt_probe(struct platform_device *pdev)
 
-Shimoda-san reported that next-20210111 and later fail to boot
-on Renesas R-Car Gen3 platforms. No output is seen, unless earlycon
-is enabled.
+        watchdog_init_timeout(cdns_wdt_device, wdt_timeout, dev);
+        watchdog_set_nowayout(cdns_wdt_device, nowayout);
+-       watchdog_stop_on_reboot(cdns_wdt_device);
+        watchdog_set_drvdata(cdns_wdt_device, wdt);
 
-I have bisected this to commit e590474768f1cc04 ("driver core: Set
-fw_devlink=on by default").
+        wdt->clk = devm_clk_get(dev, NULL);
+@@ -359,7 +358,6 @@ static int cdns_wdt_probe(struct platform_device *pdev)
 
-Gr{oetje,eeting}s,
+        spin_lock_init(&wdt->io_lock);
 
-                        Geert
+-       watchdog_stop_on_reboot(cdns_wdt_device);
+        watchdog_stop_on_unregister(cdns_wdt_device);
+        ret = devm_watchdog_register_device(dev, cdns_wdt_device);
+        if (ret)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+This seems to save us in certain conditions where the Software System
+Reset fails[1]. I'm not sure if there's other use cases where you
+really do want the watchdog to stop on reboot?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+This is on an arm64 Zyny Ultrascale+ platform.
+
+-Paul
+
+[1] The one reproducible example of the Software System Reset failing
+I have for our system is after a kernel oops from removing the
+xilinx_dma module.
+https://lore.kernel.org/lkml/CAD56B7d_9+0XuOBysxW=CADLTG_7RybBTM8hCYKSigB8ie8E_g@mail.gmail.com/
