@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6390A2FA22B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD21A2FA236
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392473AbhARNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:51:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404724AbhARNvB (ORCPT
+        id S2392359AbhARNx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:53:57 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:39901 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392477AbhARNvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:51:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610977774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=R1fTME2Xx4DitCdE2DcFGBglSf88fZqDqOdTt4xA428=;
-        b=VlCdwhXHDkTE1FiNU0Huz+F52WnZ+UCMmhQg4MGQ1XF7W/BD3vQkf/NsQd6H+rAQu2S7Uc
-        ES1hTN3u62fI+374TgOVVUDwxoDRBD4m/k4FC9fxp7+6dvZj7GI9ryZskQO/MTl3gZyDY4
-        ctb2aqN2AMyNgtGX92lcAh978vDOPAA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-tiHrkLwFOL-aVxEvhtIh6Q-1; Mon, 18 Jan 2021 08:49:33 -0500
-X-MC-Unique: tiHrkLwFOL-aVxEvhtIh6Q-1
-Received: by mail-qk1-f200.google.com with SMTP id b206so17136771qkc.14
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:49:33 -0800 (PST)
+        Mon, 18 Jan 2021 08:51:37 -0500
+Received: by mail-ot1-f48.google.com with SMTP id i30so3345692ota.6;
+        Mon, 18 Jan 2021 05:51:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R1fTME2Xx4DitCdE2DcFGBglSf88fZqDqOdTt4xA428=;
-        b=Evu7c4WMy8YicH/qjPBHUlGXWI+lrbRvD1GaKHx/uKAB/tjwAxC/aQp2pgbZeIQzYv
-         KVjhRBzF3z1+HjB2lSlWhBa+t3TYZWsInJ8WeHZ7z3fCJ9rPxynWc0z41G0TJ4z3ossY
-         q0si/KMBBMU0y2KcQ9iSOgGYtbAwRXFIsItGt2YiVp5QwOx4Er6jfyv81n4dpoq9JN+N
-         kO04vLF6+If6a68LK1h5UTU8UcKAJdPZw1G2XMo60PgnHeAi54THrfPLdsov1+JPWPid
-         rWL4gW6w4OjyEMEDzWgXW+uCHdHDIpUz2tm+PEFHz063BhfjH1kckiisVMGMaphIkzAX
-         xu9A==
-X-Gm-Message-State: AOAM531Gx/AmFH3VYK6Qq7XLGT3mog3rwUNPGkTiCMcWgU1UYl9QGLiw
-        2z4IOPWNXTPD4FcVDPGC/c5EB3MSGB8LoGLCLJMeYCszECgTSoiLk2ivgRF/BTMCjUCU8OCALL4
-        P+neet2LqAB3CwY75rZAjdhPN
-X-Received: by 2002:a37:6245:: with SMTP id w66mr24147611qkb.422.1610977772725;
-        Mon, 18 Jan 2021 05:49:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOMC29Y1VqUypHma5nna2hENgFdPeZytx7wLwpCWmcqSXDCFb+/gAcFgfbAQkjPmrqPo9vtA==
-X-Received: by 2002:a37:6245:: with SMTP id w66mr24147598qkb.422.1610977772555;
-        Mon, 18 Jan 2021 05:49:32 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 8sm10473419qkr.28.2021.01.18.05.49.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 05:49:31 -0800 (PST)
-From:   trix@redhat.com
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] clocksource: mxs_timer: add missing semicolon when DEBUG is defined
-Date:   Mon, 18 Jan 2021 05:49:26 -0800
-Message-Id: <20210118134926.613931-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QWMUyKQASjDR6+Q35MwW6JXNWk2Dq2HJlpeAoaLS16g=;
+        b=U8sKd9QezsIbNnfB0oHFc7/KZ9xz9f/jfQJ7QOqFjKFWUiK5TfKm+HXRaA9a8EuZJB
+         7dPAdsWEJ9rfWVBQxSo/E0x/yU9fgRn3uG7CCyuF+YroQK+oCS2BgUwsksUARYxzW6co
+         ehtaXdSN2seJM8y/lpvZYB+RomJmeynh9fo4hnJveNDqO7JfkMThXb2W12Pcm6WVp2rw
+         JevgVFNH5CO+yjJX4oi8Oteh/0xOlrEYSrC6vUapuFcmm5CSr+wuMLGHZ3xvlmnGqLWN
+         re+72ISwMbt34CkkcHWps1hL2qh6c9ocgp0h9+aXX45S3lPJp/m+QNyPnnIkINam4vxt
+         SRxA==
+X-Gm-Message-State: AOAM532biXHJ24Eq+1IPNbtRan3ohmEGBlB1zlJ3/DP2V3xMFZ9XD6Rg
+        xlfl/35sv9+rf38vIpAOhtHon4e7N2rS+Fe8LY5P9itw
+X-Google-Smtp-Source: ABdhPJzBwdU2RfzvFay30BhhzoDzprQ5FOfN1Lp3un+sHaj3r3ln2oPa4ry4/c4f1bHAhHTK2Ko4P8KaA5BYwJtDmAM=
+X-Received: by 2002:a9d:745a:: with SMTP id p26mr18059642otk.206.1610977851304;
+ Mon, 18 Jan 2021 05:50:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
+ <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
+In-Reply-To: <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 18 Jan 2021 14:50:33 +0100
+Message-ID: <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
+Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lennart@poettering.net,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+CC Mika and Andy.
 
-When DEBUG is defined this error occurs
-
-drivers/clocksource/mxs_timer.c:138:1: error:
-  expected ‘;’ before ‘}’ token
-
-The preceding statement needs a semicolon.
-
-Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/clocksource/mxs_timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
-index bc96a4cbf26c..55aa6b72d075 100644
---- a/drivers/clocksource/mxs_timer.c
-+++ b/drivers/clocksource/mxs_timer.c
-@@ -133,7 +133,7 @@ static void mxs_irq_clear(char *state)
- 	timrot_irq_acknowledge();
- 
- #ifdef DEBUG
--	pr_info("%s: changing mode to %s\n", __func__, state)
-+	pr_info("%s: changing mode to %s\n", __func__, state);
- #endif /* DEBUG */
- }
- 
--- 
-2.27.0
-
+On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
+> > "compatible" is present") creates two modaliases for certain ACPI
+> > devices. However userspace (systemd-udevd in this case) assumes uevent
+> > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
+> > assumption.
+> >
+> > Based on the assumption, systemd-udevd internally uses hashmap to
+> > store each line of uevent file, so the second modalias always replaces
+> > the first modalias.
+> >
+> > My attempt [1] is to add a new key, "MODALIAS1" for the second
+> > modalias. This brings up the question of whether each key in uevent
+> > file is unique. If it's no unique, this may break may userspace.
+>
+> Does anyone know if there's any user of the second modalias?
+> If there's no user of the second one, can we change it to OF_MODALIAS
+> or COMPAT_MODALIAS?
+>
+> Kai-Heng
+>
+> >
+> > [1] https://github.com/systemd/systemd/pull/18163
+> >
+> > Kai-Heng
