@@ -2,83 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCEA2F9DB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079B92F9DAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389136AbhARLLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:11:34 -0500
-Received: from first.geanix.com ([116.203.34.67]:40332 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389349AbhARLHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:07:47 -0500
-Received: from [IPv6:2a06:4004:10df:1:da27:a6d2:5305:fd0a] (_gateway [172.21.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 3A4374E4AB0;
-        Mon, 18 Jan 2021 11:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1610968022; bh=UTAJNPJuZKiKbfUBeRRbDLiD/CF2iT9OqIJEUKLZjSg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Tiv7/dTBeoLW2y/Q0CJ2i9yYTSgsUTs05XiBVVAbT0G2YNfJbyQacgZ1tQPHtsopZ
-         B9xgQENVDqVlFdlCIv4+BABOgUMvNJvHgrochkOLOUlOZ1z/9prZ/QM2CIjfkKVKZ4
-         REgrSogzi3jXycvyU8bumgD+/7+26mt+aB7mFn/0mGkvP74CnHRxcRKrpaxm+yPMVf
-         ek1jqNu/9QwTNARD0xUVQoOkMbQrdDSk0O8vVBf05n6aC42aTXo7PlQ72h119/5SvI
-         cyOlxC0dKiFQU8+K3obUGjib1ePXAK/m8QxJZqtu6VRBIopV1xUfRTD8UYhq7hMj91
-         WTWiCfu1s3fNw==
-Subject: Re: [PATCH] mtd: rawnand: gpmi: fix dst bit offset when extracting
- raw payload
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Han Xu <han.xu@nxp.com>, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210104103558.9035-1-miquel.raynal@bootlin.com>
- <7db4b36e-23a6-6075-132c-214d043e78bd@geanix.com>
- <20210104121516.3d50fb58@xps13>
-From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <d3ebfc3c-4842-a506-512a-28c6c02f6c42@geanix.com>
-Date:   Mon, 18 Jan 2021 12:07:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2389961AbhARLJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:09:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389523AbhARLId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:08:33 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA2DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:07:13 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b8so8479303plx.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:07:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=feZ3uWkB45G3qkYHMMjyOtNUBHLqccPp2pLPUm8pRu4=;
+        b=mf7Kssn8S1yHDw/w76N+87+PuNxRCtuQ4Q7V26JolTVWkTJqTVssqj5A0/ZYmV7hi6
+         oYuIePahHHVAVzyA2+166KrT6Pdk5tpow750hu8lZZC4VT2Q47/uW20VRlIzfX+hjv5I
+         JTkmnU9VF56N2+WGikQJZz3LkSlECSbEayo2tZIkyLXwV80N9bNcK/k+Dm0cGqPyp6eQ
+         NvsT8FwbhcbntiQwPd0MN2YQ5W4oyvacO7T/AjSdKFKUcXFoshWjvZ5Yjy6tdPiPZXok
+         acFyyB1AjREkIgK64CGKxrEb8kCmaljUQEI64KC9uJuztdEP1INUYG3KvWA8XhcPX9MF
+         ejng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=feZ3uWkB45G3qkYHMMjyOtNUBHLqccPp2pLPUm8pRu4=;
+        b=IM4qRQV3NdwvDaOsWziVce0xTaj5ILC1rUUowylm6UBrU60xAqJc6wBzdq1QWYnUwl
+         QNh/6DO7IkAp9yLihepmIxS90usvIBNb6k+EA4AAcqrQTMKGXyhQZR36w5RVgYL3RNng
+         NQKMx96cyUqwByyU7KJUXxo0N6HjlBbk5vikR+LLy/SioG6OQFqBzCgTFCC/wvXhQebW
+         wVcDBAY3T2TCDfIpmBWnFKVjCnTvcu+vcYYzxjMSrtkNu1TD3IYEphDoFMSNVQ/Fd+eU
+         hYjycx/674k+5LECNL6xoMk1fLfSSqafFLkG2nTINWVx/G4EKgjRhjxT4gI7f3ZoMCix
+         0wpQ==
+X-Gm-Message-State: AOAM531Xq5+KdxpybrSrOSDIhrpiO5Ei3vSM3/N4F1vUhkeLFx60eair
+        8dr7ozh0fbnEsFFIbI9RrI5d9A==
+X-Google-Smtp-Source: ABdhPJxHeOFm6YMK83rgDcn0XX+UetzTWiWwZhJq25SgCZO1Pf4dGh7auwwWXMr4/ThdAxMZxCPIfQ==
+X-Received: by 2002:a17:902:a512:b029:db:cf4c:336b with SMTP id s18-20020a170902a512b02900dbcf4c336bmr26211199plq.17.1610968033238;
+        Mon, 18 Jan 2021 03:07:13 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id 67sm3508157pfv.20.2021.01.18.03.07.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 03:07:12 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:37:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 08/12] opp: Add devm_pm_opp_register_set_opp_helper
+Message-ID: <20210118110710.q55fa44cle5fuhfk@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-9-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210104121516.3d50fb58@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-3.4 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118005524.27787-9-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> Add resource-managed version of dev_pm_opp_register_set_opp_helper().
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/opp/core.c     | 34 ++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  8 ++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index fde2ec00ab0e..8e0d2193fd5f 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -2857,3 +2857,37 @@ int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_set_voltage);
+> +
+> +static void devm_pm_opp_unregister_set_opp_helper(void *data)
+> +{
+> +	dev_pm_opp_unregister_set_opp_helper(data);
+> +}
+> +
+> +/**
+> + * devm_pm_opp_register_set_opp_helper() - Register custom set OPP helper
+> + * @dev: Device for which the helper is getting registered.
+> + * @set_opp: Custom set OPP helper.
+> + *
+> + * This is a resource-managed version of dev_pm_opp_register_set_opp_helper().
+> + *
+> + * Return: pointer to 'struct opp_table' on success and errorno otherwise.
+> + */
+> +struct opp_table *
+> +devm_pm_opp_register_set_opp_helper(struct device *dev,
+> +				    int (*set_opp)(struct dev_pm_set_opp_data *data))
+> +{
+> +	struct opp_table *opp_table;
+> +	int err;
+> +
+> +	opp_table = dev_pm_opp_register_set_opp_helper(dev, set_opp);
+> +	if (IS_ERR(opp_table))
+> +		return opp_table;
+> +
+> +	err = devm_add_action_or_reset(dev, devm_pm_opp_unregister_set_opp_helper,
+> +				       opp_table);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+> +	return opp_table;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_pm_opp_register_set_opp_helper);
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index e072148ae0e1..6de5853aaada 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -169,6 +169,7 @@ void dev_pm_opp_remove_table(struct device *dev);
+>  void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
+>  int dev_pm_opp_sync_regulators(struct device *dev);
+>  int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp);
+> +struct opp_table *devm_pm_opp_register_set_opp_helper(struct device *dev, int (*set_opp)(struct dev_pm_set_opp_data *data));
+>  #else
+>  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+>  {
+> @@ -428,6 +429,13 @@ static inline int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *
+>  	return -ENOTSUPP;
+>  }
+>  
+> +static inline struct opp_table *
+> +devm_pm_opp_register_set_opp_helper(struct device *dev,
+> +				    int (*set_opp)(struct dev_pm_set_opp_data *data))
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+>  #endif		/* CONFIG_PM_OPP */
+>  
+>  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
 
+Applied. Thanks.
 
-On 04/01/2021 12.15, Miquel Raynal wrote:
-> Hi Sean,
->
-> Sean Nyekjaer <sean@geanix.com> wrote on Mon, 4 Jan 2021 11:50:10 +0100:
->
->> On 04/01/2021 11.35, Miquel Raynal wrote:
->>> On Mon, 2020-12-21 at 10:00:13 UTC, Sean Nyekjaer wrote:
->>>> Re-add the multiply by 8 to "step * eccsize" to correct the destination bit offset
->>>> when extracting the data payload in gpmi_ecc_read_page_raw().
->>>>
->>>> Fixes: e5e5631cc889 ("mtd: rawnand: gpmi: Use nand_extract_bits()")
->>>> Cc: stable@vger.kernel.org
->>>> Reported-by: Martin Hundebøll <martin@geanix.com>
->>>> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
->>> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
->>>
->>> Miquel
->> Hi Miquel
->>
->> Will you please queue this for fixes? It's quite relevant for 5.10 LTS :)
-> Right, that will be quicker to have it in Linus' tree. I moved
-> the patch to the mtd/next branch.
->
-Hi Miquel,
+I had to apply it manually, please make sure it works fine.
 
-Any guess to when the mtd/fixes branch will be pulled into Linus' tree?
-
-/Sean
+-- 
+viresh
