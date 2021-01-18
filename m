@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24872F9AF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CADA2F9AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387484AbhARIEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:04:30 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:36320 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733263AbhARIE0 (ORCPT
+        id S2387534AbhARIF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733166AbhARIFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:04:26 -0500
-Received: by mail-oi1-f174.google.com with SMTP id 9so16908201oiq.3;
-        Mon, 18 Jan 2021 00:04:10 -0800 (PST)
+        Mon, 18 Jan 2021 03:05:53 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED60C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:05:13 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id e9so4047310plh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:05:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EVzoenPv8H7dYCyIKF7TOy5n3fEguS66BXhZey1tjI=;
+        b=LKdtGTm893C1HF7CoOyGb81h63hRw96/smPguJTmfSDqF2sa2IUiNXY9WwcBLzNDuP
+         55zG/106NZkmX2BAgkaNSvuDefC5ZHxi/s8kDrYLfAZSF4N3g0rU2rC/oEOJULpGStnX
+         i3GI6/uX6ScVLIQDRQDu3QYmWYKpOVsGynTgSI3KDlzZRZKdxW9CrEj2onWaZerrC6QJ
+         FKZKH1pCoW8aqgiL+vTkmSQ2XYYkCFRxayx9PJJbU37Kp2w1vFi8Lqvr9THJK/HZdRkU
+         EAEeMQl9Kka2O+JCxRLdbtqhrblT/XZajQvzzQqhAFVDB+NukUY0trNP33esddEfh1/V
+         eL6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2X31+WqxR9I4AUuC3W8xEHJl1BsJSRWOR9O2fY9EG3c=;
-        b=BNCENPYGjXolhxpN8Medv4GkkJ96c9aI1Z8UE0fNZTZdDN14yfWC9q2dIoeMUCElz+
-         HEK7loeFO5A1vW5HtM4htDzDixZphav2hZNqgZdv93FNLubXYhepG0riWxM7V3Nl741l
-         8dDfq4hTxwM4X5EQGR2om3K0SOaEXKEiL3VG0qyNEzWcuG9OvCZ6LmlJLIeCuY2HHTqD
-         SZBZcJ741N9aB4ZIZgWgUYr19GrWs2tL1FjxiVRw0p2V7pX7grs4lScw1cWL1zbn6uVw
-         lFsEH9IheSQCXOU7CtSEvYFYVAYK0o3p0vO9ixs8jUwvHPKgH1ZAIDgP0vmVHQvX62ts
-         fxHg==
-X-Gm-Message-State: AOAM532AhgofGWRkqYzKIW9/rFx5PELTQqzHQtXIdCfwdrAX+y1QyiDn
-        IM4roHXoJpWvf8r3C4ERl7aYoedWBSBWLOyz48k1JDF9FrQ=
-X-Google-Smtp-Source: ABdhPJwjRBDyAfs3ht+GoWPrW9KH2tViS2CPvJ/yaVAkWy3NhhsB8JPJy3dSseNhS+8YzCLDcMZim6/v3f3Wovc2mWE=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr12276013oia.148.1610957024702;
- Mon, 18 Jan 2021 00:03:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EVzoenPv8H7dYCyIKF7TOy5n3fEguS66BXhZey1tjI=;
+        b=FLVb6PZUwpODpZANkr/oN8XH+6WXuWoDKmf6S3rEK81AO0vYigHpHZpCajoyGNjqbS
+         g60U1FTLT9W32BW2TsR4ox3bESIbT0quvJ1IjaCJA6KGPIcHGsPdm0k3taAtFkfeck12
+         LJmdSV5m1qP6Hx+QplyMTnFCPeI4JiTOQn2QQ5vsDKO9o9Umb/DctL0Qo08DmbK/dt63
+         PjcLbdD9xgJTU57vObgm6VnwPFo65nSh9a19dztAQKZjjaMi9frN5KB/3iziD+c0+CNd
+         CInh1ipOffCnPPNPvuBO/lF7vA/jm9w5pUqbzPgTuR/SoY6bcUENXw1kRbmAH2Qr8VY9
+         ASxw==
+X-Gm-Message-State: AOAM5321GyOFLOsibrn9bAkPfyClW5E1VsJE+QEDuBZ21cc4FKHRXRs6
+        ifPk6NvfVLQs39sC9gJ/CTVhBQinARs=
+X-Google-Smtp-Source: ABdhPJzmoNMX3Fix04AnkO5H0on0INGwbUknpHeFiaHkIl7dygUyAWLxhsDoy8bBBxVNcjCO3b9dCg==
+X-Received: by 2002:a17:902:d50b:b029:de:675f:5b39 with SMTP id b11-20020a170902d50bb02900de675f5b39mr17871756plg.68.1610957113109;
+        Mon, 18 Jan 2021 00:05:13 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id j6sm2545696pfg.159.2021.01.18.00.05.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 00:05:12 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     tj@kernel.org
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] workqueue: fix annotation for WQ_SYSFS
+Date:   Mon, 18 Jan 2021 00:04:55 -0800
+Message-Id: <20210118080455.33499-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210118073340.62141-1-tony@atomide.com>
-In-Reply-To: <20210118073340.62141-1-tony@atomide.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Jan 2021 09:03:33 +0100
-Message-ID: <CAMuHMdXtMtmoLcRwMwOkmvHbvstoJsrqzxfTw8DPCJBqH-EAmw@mail.gmail.com>
-Subject: Re: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with
- simple-bus for auxdata
-To:     ext Tony Lindgren <tony@atomide.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 8:33 AM Tony Lindgren <tony@atomide.com> wrote:
-> After converting am335x to probe devices with simple-pm-bus I noticed
-> that we are not passing auxdata for of_platform_populate() like we do
-> with simple-bus.
->
-> While device tree using SoCs should no longer need platform data, there
-> are still quite a few drivers that still need it as can be seen with
-> git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
-> replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
-> needed.
->
-> Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
-> That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
-> And let's pass the auxdata for omaps to fix the issue for am335x.
->
-> As an alternative solution, adding simple-pm-bus handling directly to
-> drivers/of/platform.c was considered, but we would still need simple-pm-bus
-> device driver. So passing auxdata as platform data seems like the simplest
-> solution.
->
-> Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+'wq_sysfs_register()' in annotation for 'WQ_SYSFS' is unavailable,
+change it to 'workqueue_sysfs_register()'.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ include/linux/workqueue.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                        Geert
-
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 26de0cae2a0a..d15a7730ee18 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -311,7 +311,7 @@ enum {
+ 	WQ_MEM_RECLAIM		= 1 << 3, /* may be used for memory reclaim */
+ 	WQ_HIGHPRI		= 1 << 4, /* high priority */
+ 	WQ_CPU_INTENSIVE	= 1 << 5, /* cpu intensive workqueue */
+-	WQ_SYSFS		= 1 << 6, /* visible in sysfs, see wq_sysfs_register() */
++	WQ_SYSFS		= 1 << 6, /* visible in sysfs, see workqueue_sysfs_register() */
+ 
+ 	/*
+ 	 * Per-cpu workqueues are generally preferred because they tend to
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
