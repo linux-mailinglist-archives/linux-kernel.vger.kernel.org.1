@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3BA2FA680
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985C72FA684
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393532AbhARQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:41:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50774 "EHLO mail.kernel.org"
+        id S2393548AbhARQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:41:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390380AbhARQk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:40:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC26206F7;
-        Mon, 18 Jan 2021 16:39:48 +0000 (UTC)
+        id S2390380AbhARQlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:41:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0DE22BF3;
+        Mon, 18 Jan 2021 16:40:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610987989;
-        bh=/XyZZytsXsIiGIMUoHK1SO+Ufo+9X9KY7fkU6YpHpwA=;
+        s=korg; t=1610988038;
+        bh=vwCki1f6YIWIWNcCAyhuitSK8rQJU8G6+bsi8qQ/MdU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tw83WnlbDVTXWxk7hn9NDqNVAHRTcXQXINm45MJHO+zVdvtg5HQDXdFnyUNrnlaIu
-         QyTbxenJ9dZWdJsbJjDVpGJaTgNaBZLDgeshrm5abzLVYLC20sQoqIqIxBguEsOthM
-         YeUoWr8ZZLyK03Bg3yW4Na7uZjgJHcipLlIy3QGY=
-Date:   Mon, 18 Jan 2021 17:39:46 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <YAW50m8ymp6I9nYp@kroah.com>
-References: <20210118014951.250815-1-sashal@kernel.org>
- <YAVTDETPaJuaRPfc@kroah.com>
- <YAVT0XV7uX2NpIRe@kroah.com>
- <20210118133959.GZ4035784@sasha-vm>
- <YAWSgjWHCcJt6m0j@kroah.com>
- <20210118153135.GA4035784@sasha-vm>
+        b=pEWe309kIfgkz1Eu1f+wPHYVHxOtbzsVNujPC1GJa6MsOa/BJy2t4/qijjlzLxdCo
+         bfK8l/+BBd/F1Uk/pCenFp9kyjj1M5B/b/q7LTiehNbyvsZdvDd3iqUAW4GgmXwf3Q
+         N9HEwIHKuAZLd3BmTeP/ZdUIbALOSIWhBNTdFrPo=
+Date:   Mon, 18 Jan 2021 17:40:36 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        lennart@poettering.net,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
+Message-ID: <YAW6BI00Kr615kFk@kroah.com>
+References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
+ <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
+ <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
+ <20210118141238.GQ968855@lahna.fi.intel.com>
+ <YAWalPeMPt44lBgI@kroah.com>
+ <20210118144853.GP4077@smile.fi.intel.com>
+ <YAWiCkJwiOS8i50c@kroah.com>
+ <20210118152744.GW4077@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118153135.GA4035784@sasha-vm>
+In-Reply-To: <20210118152744.GW4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:31:35AM -0500, Sasha Levin wrote:
-> On Mon, Jan 18, 2021 at 02:52:02PM +0100, Greg KH wrote:
-> > On Mon, Jan 18, 2021 at 08:39:59AM -0500, Sasha Levin wrote:
-> > > I think it would also affect code that doesn't do things based on
-> > > SBULEVEL. Consider something like:
+On Mon, Jan 18, 2021 at 05:27:44PM +0200, Andy Shevchenko wrote:
+> On Mon, Jan 18, 2021 at 03:58:18PM +0100, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 18, 2021 at 04:48:53PM +0200, Andy Shevchenko wrote:
+> > > On Mon, Jan 18, 2021 at 03:26:28PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Mon, Jan 18, 2021 at 04:12:38PM +0200, Mika Westerberg wrote:
+> > > > > On Mon, Jan 18, 2021 at 02:50:33PM +0100, Rafael J. Wysocki wrote:
+> > > > > > On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
+> > > > > > <kai.heng.feng@canonical.com> wrote:
+> > > > > > > On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
+> > > > > > > <kai.heng.feng@canonical.com> wrote:
+> > > > > > > >
+> > > > > > > > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
+> > > > > > > > "compatible" is present") creates two modaliases for certain ACPI
+> > > > > > > > devices. However userspace (systemd-udevd in this case) assumes uevent
+> > > > > > > > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
+> > > > > > > > assumption.
+> > > > > > > >
+> > > > > > > > Based on the assumption, systemd-udevd internally uses hashmap to
+> > > > > > > > store each line of uevent file, so the second modalias always replaces
+> > > > > > > > the first modalias.
+> > > > > > > >
+> > > > > > > > My attempt [1] is to add a new key, "MODALIAS1" for the second
+> > > > > > > > modalias. This brings up the question of whether each key in uevent
+> > > > > > > > file is unique. If it's no unique, this may break may userspace.
+> > > > > > >
+> > > > > > > Does anyone know if there's any user of the second modalias?
+> > > > > > > If there's no user of the second one, can we change it to OF_MODALIAS
+> > > > > > > or COMPAT_MODALIAS?
+> > > > > 
+> > > > > The only users I'm aware are udev and the busybox equivalent (udev,
+> > > > > mdev) but I'm not sure if they use the second second modalias at all so
+> > > > > OF_MODALIAS for the DT compatible string sounds like a good way to solve
+> > > > > this.
+> > > > 
+> > > > As udev seems to "break" with this (which is where we got the original
+> > > > report from), I don't think you need to worry about that user :)
 > > > 
-> > > 	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
+> > > > Does anyone use mdev anymore, and in any ACPI-supported systems?
 > > > 
-> > > Which will cause 4.4.256 to now change the result of that comparison.
+> > > Yes, regularly.
 > > 
-> > Sure, but there are no in-kernel users like this, so my sympathy is
-> > quite low :)
+> > Ok, and how badly does it break when MODALIAS is multiple lines like
+> > this?  Or can it handle it?
 > 
-> Wouldn't it be an issue for the hacky in-kernel users too? For example,
-> right now the USB code does:
-> 
-> 	#define KERNEL_REL      bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
-> 	#define KERNEL_VER      bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
-> 
-> After 4.4.256, KERNEL_VER will be (5) rather than (4), indicating a
-> version of 4.5.
+> Since the mentioned change landed into v4.1 I never had a problem with my
+> setup. From my point of view it doesn't affect anyhow mdev setup.
 
-Which, really, is just fine.  This is an informational string that shows
-up in 'lsusb' for root hubs.  Same for V4L devices, they just want to
-send some string to userspace.  Yes, it might look odd, but nothing is
-going to break, it's just a string :)
+Do you actually have a device with multiple entries and try to do a rule
+based on it?  That's how this was triggered in udev, "normal" operations
+work just fine.
 
 thanks,
 
