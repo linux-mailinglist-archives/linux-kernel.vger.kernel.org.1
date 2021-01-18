@@ -2,106 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C71B2FADB2
+	by mail.lfdr.de (Postfix) with ESMTP id F03962FADB4
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404145AbhARXLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 18:11:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730963AbhARXLU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 18:11:20 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708C0C061573;
-        Mon, 18 Jan 2021 15:10:40 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id 34so7150459otd.5;
-        Mon, 18 Jan 2021 15:10:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YKM2X4wwUdQ578gqAdzYuCY1qiQMQTEjO9ZyJU1dqug=;
-        b=G2+vvjnutm+/HGZ9GjAjoAtP4zO26tu4TC44KdNHyc6BKPHNpiILtGGDx8GX/MJMqK
-         13am9cCPL8CJnCH9/GXbUuvuJ+8VVYl4Uc14tx3qQF4DNw33Yz2vsLZ7ItamlR0GVoby
-         xeDXm4DX7KeGgI/wzlAiIw91QZpUkzkZS5RC4lEcBxyJv/MgvqIIW/ceffrX1p2w+exl
-         TkeQ5FsOT6XDgJuxHsNKz8SojlxnX8ULvSi+j6jZ3voVFQBJh1OvW3kFenDgENx+wlX4
-         ceoZzaV/5+JWzGmJWodVjU2w5+eFnbjJQ1e0XwfqfFn1OMGhjlvlJN3Hg93wmWEgaBae
-         EYJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YKM2X4wwUdQ578gqAdzYuCY1qiQMQTEjO9ZyJU1dqug=;
-        b=NQxX9X5rXI62jgV8S6cPm6xzVTi6buYYu6nf36zGcymD+TKaxe6/uWzjnJ1Mm4PhQ6
-         Ryji1W2IWnfXfb7vsGsAFWFiDFK5J9ZxAs3F60KVeXJkQgQbWTY6JGuIKRHHjGlawRFZ
-         o8TCuIM661W7WthZB1sm25K80AI6yCvFFeh0ctrZZktiFmJreTeNWDUMFx5GO1rpyTH2
-         ha8CfcuSTfhf1E9NRWQwqhDgNEQAJY3IUZfGybdWYqbRXWSZDG6WZdgWSWJcPPMqUtJW
-         ZuGp01icf8DkLvxfHRUJlrKAouyo07P2kDxF7GVokoWP+35Z9jWoaGwn3YkE2uNz73Ma
-         Igbg==
-X-Gm-Message-State: AOAM5306vlv7Ohgt93QRDLKAaXJ3VS6NlMSpMyFR0PEUR0xyuUCp8OIe
-        HmIEywWLzF6aI+jW5GuLW0q8oRb5S/I=
-X-Google-Smtp-Source: ABdhPJyxsLhsQOCA8/TPcEd2K77PtM2Fj43QMa42tZIIiyIz0RsgfxBQ7iALAI+u/0jWu82PNgLIQw==
-X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr1338351otb.303.1611011439702;
-        Mon, 18 Jan 2021 15:10:39 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.6.112.162])
-        by smtp.googlemail.com with ESMTPSA id n11sm3563548oij.37.2021.01.18.15.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 15:10:39 -0800 (PST)
-Subject: Re: [PATCH net-next v3] bonding: add a vlan+srcmac tx hashing option
-To:     Jarod Wilson <jarod@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-References: <20210113223548.1171655-1-jarod@redhat.com>
- <20210115192103.1179450-1-jarod@redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <79af4145-48cc-0961-b341-c0e106beb14b@gmail.com>
-Date:   Mon, 18 Jan 2021 16:10:38 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210115192103.1179450-1-jarod@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2404278AbhARXL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 18:11:29 -0500
+Received: from mx.socionext.com ([202.248.49.38]:16450 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730151AbhARXLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 18:11:24 -0500
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 19 Jan 2021 08:10:41 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id CA473205902B;
+        Tue, 19 Jan 2021 08:10:41 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 19 Jan 2021 08:10:41 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 7D774B1D40;
+        Tue, 19 Jan 2021 08:10:41 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Rob Herring <robh@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2] PCI: designware-ep: Fix the reference to pci->num_{ib,ob}_windows before setting
+Date:   Tue, 19 Jan 2021 08:10:39 +0900
+Message-Id: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/15/21 12:21 PM, Jarod Wilson wrote:
-> diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
-> index adc314639085..36562dcd3e1e 100644
-> --- a/Documentation/networking/bonding.rst
-> +++ b/Documentation/networking/bonding.rst
-> @@ -951,6 +951,19 @@ xmit_hash_policy
->  		packets will be distributed according to the encapsulated
->  		flows.
->  
-> +	vlan+srcmac
-> +
-> +		This policy uses a very rudimentary vland ID and source mac
+The commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") gets
+the values of pci->num_ib_windows and pci->num_ob_windows from iATU
+registers instead of DT properties in dw_pcie_iatu_detect_regions*() or its
+unroll version.
 
-s/vland/vlan/
+However, before the values are set, the allocations in dw_pcie_ep_init()
+refer them to determine the sizes of window_map. As a result, null pointer
+dereference exception will occur when linking the EP function and the
+controller.
 
-> +		ID hash to load-balance traffic per-vlan, with failover
+  # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
+  Unable to handle kernel NULL pointer dereference at virtual address
+  0000000000000010
 
-drop ID on this line; just 'source mac'.
+The call trace is as follows:
 
+  Call trace:
+   _find_next_bit.constprop.1+0xc/0x88
+   dw_pcie_ep_set_bar+0x78/0x1f8
+   pci_epc_set_bar+0x9c/0xe8
+   pci_epf_test_core_init+0xe8/0x220
+   pci_epf_test_bind+0x1e0/0x378
+   pci_epf_bind+0x54/0xb0
+   pci_epc_epf_link+0x58/0x80
+   configfs_symlink+0x1c0/0x570
+   vfs_symlink+0xdc/0x198
+   do_symlinkat+0xa0/0x110
+   __arm64_sys_symlinkat+0x28/0x38
+   el0_svc_common+0x84/0x1a0
+   do_el0_svc+0x38/0x88
+   el0_svc+0x1c/0x28
+   el0_sync_handler+0x88/0xb0
+   el0_sync+0x140/0x180
 
-> +		should one leg fail. The intended use case is for a bond
-> +		shared by multiple virtual machines, all configured to
-> +		use their own vlan, to give lacp-like functionality
-> +		without requiring lacp-capable switching hardware.
-> +
-> +		The formula for the hash is simply
-> +
-> +		hash = (vlan ID) XOR (source MAC vendor) XOR (source MAC dev)
-> +
->  	The default value is layer2.  This option was added in bonding
->  	version 2.6.3.  In earlier versions of bonding, this parameter
->  	does not exist, and the layer2 policy is the only policy.  The
+The pci->num_{ib,ob}_windows should be referenced after they are set by
+dw_pcie_iatu_detect_regions*() called from dw_pcie_setup().
+
+Cc: Rob Herring <robh@kernel.org>
+Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+---
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 41 ++++++++++++-------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
+
+Changed since v1:
+- Add description of exception to commit message
+- Change the subject
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index bcd1cd9..adc7ca5 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -638,6 +638,7 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
++	struct device *dev = pci->dev;
+ 	unsigned int offset;
+ 	unsigned int nbars;
+ 	u8 hdr_type;
+@@ -669,6 +670,25 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ 	dw_pcie_setup(pci);
+ 	dw_pcie_dbi_ro_wr_dis(pci);
+ 
++	ep->ib_window_map = devm_kcalloc(dev,
++					 BITS_TO_LONGS(pci->num_ib_windows),
++					 sizeof(long),
++					 GFP_KERNEL);
++	if (!ep->ib_window_map)
++		return -ENOMEM;
++
++	ep->ob_window_map = devm_kcalloc(dev,
++					 BITS_TO_LONGS(pci->num_ob_windows),
++					 sizeof(long),
++					 GFP_KERNEL);
++	if (!ep->ob_window_map)
++		return -ENOMEM;
++
++	ep->outbound_addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
++			    GFP_KERNEL);
++	if (!ep->outbound_addr)
++		return -ENOMEM;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
+@@ -676,7 +696,6 @@ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
+ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+ {
+ 	int ret;
+-	void *addr;
+ 	u8 func_no;
+ 	struct resource *res;
+ 	struct pci_epc *epc;
+@@ -714,26 +733,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+ 	ep->phys_base = res->start;
+ 	ep->addr_size = resource_size(res);
+ 
+-	ep->ib_window_map = devm_kcalloc(dev,
+-					 BITS_TO_LONGS(pci->num_ib_windows),
+-					 sizeof(long),
+-					 GFP_KERNEL);
+-	if (!ep->ib_window_map)
+-		return -ENOMEM;
+-
+-	ep->ob_window_map = devm_kcalloc(dev,
+-					 BITS_TO_LONGS(pci->num_ob_windows),
+-					 sizeof(long),
+-					 GFP_KERNEL);
+-	if (!ep->ob_window_map)
+-		return -ENOMEM;
+-
+-	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
+-			    GFP_KERNEL);
+-	if (!addr)
+-		return -ENOMEM;
+-	ep->outbound_addr = addr;
+-
+ 	if (pci->link_gen < 1)
+ 		pci->link_gen = of_pci_get_max_link_speed(np);
+ 
+-- 
+2.7.4
+
