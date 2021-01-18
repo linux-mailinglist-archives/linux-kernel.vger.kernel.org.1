@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD66E2FA962
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8162FA95E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407878AbhARSy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:54:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39206 "EHLO mail.kernel.org"
+        id S2436929AbhARSyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:54:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407537AbhARSxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:53:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 656DD22C9E;
-        Mon, 18 Jan 2021 18:52:21 +0000 (UTC)
+        id S2407626AbhARSxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:53:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE48C22CA1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 18:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610995942;
-        bh=meXioWvRXrAEKQ2QmCDlsJQW56f6gV4B3JiBQN7nfJ8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EABP8zsnWObPQHQ2O115DQyqQGStFOBzIJpAy+VabOFv03C70zPa/xifzldsR6wPu
-         212200q9HMrAgvlnP9JTps7ZJGbF8g/FeFIOJeQ8aU9JKVj9DOwr0ng8crt3fCPlFN
-         +7vxlH3rHC9ooK5+0AvM8DTJ3UYjXBT/34RSbM2DSpIdqQnqcIE8sAKJMi/P9bLUfm
-         xd+HXpBWA34PL8zc6rtmziDqphmF0rEFCKaqIou2gSI9eZGfIrsealAQQ6vb7JZv2v
-         9nJ7bPV+PkhJTmuaXfdskbKPxMoikNQnz7afi2p7YqGearv5bcTyb7YdOqgkIPvlvp
-         svMtR8ebrJ77A==
+        s=k20201202; t=1610995943;
+        bh=GJwqoHFCgKzuo6XqtpQFCAp6J4lo7ISVnGnXRrRIuVs=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=OGX9+DaWaPUqukMrB34p3lbIRZWt2znui96fWzdv1qJt6DcHqFnkE10xZOtueWZx1
+         74PCNsssg/uXh7d2TMNBafg1SmES4LoPmatFdmMHMxQGU6H88NDlcSr1hx5uhGurKe
+         XeJtkYEnac05279nktL57I2wMn8ct0+B6m7W6AvDhuXMCCdxwjTdYo+DzvC5WDhzfn
+         mvh99N+drkxmeHCZbYRqZEXkjnOep/L0mM3qb47J5kXBGajeD58jxFBCzHTTslye4O
+         X57L5eEWgi2OF8VRPxNeSV/ReIPGWx7mBAFTl/qDVP08HnnN8lVMUy/ahlkZ71BAqU
+         d4+qntqIgMDgQ==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 1/3] habanalabs: zero pci counters packet before submit to FW
-Date:   Mon, 18 Jan 2021 20:52:15 +0200
-Message-Id: <20210118185217.4389-1-ogabbay@kernel.org>
+Subject: [PATCH 2/3] habanalabs: fix backward compatibility of idle check
+Date:   Mon, 18 Jan 2021 20:52:16 +0200
+Message-Id: <20210118185217.4389-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210118185217.4389-1-ogabbay@kernel.org>
+References: <20210118185217.4389-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+Need to take the lower 32 bits of the driver's 64-bit idle mask and put
+it in the legacy 32-bit variable that the userspace reads to know the
+idle mask.
 
-Driver does not zero some pci counters packets before sending
-to FW. This causes an out of sync PI/CI between driver and FW.
-
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 20f77f58edef..c9a12980218a 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -402,6 +402,10 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 	}
- 	counters->rx_throughput = result;
+diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+index 12efbd9d2e3a..d25892d61ec9 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
++++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+@@ -133,6 +133,8 @@ static int hw_idle(struct hl_device *hdev, struct hl_info_args *args)
  
-+	memset(&pkt, 0, sizeof(pkt));
-+	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_THROUGHPUT_GET <<
-+			CPUCP_PKT_CTL_OPCODE_SHIFT);
-+
- 	/* Fetch PCI tx counter */
- 	pkt.index = cpu_to_le32(cpucp_pcie_throughput_tx);
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
-@@ -414,6 +418,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 	counters->tx_throughput = result;
+ 	hw_idle.is_idle = hdev->asic_funcs->is_device_idle(hdev,
+ 					&hw_idle.busy_engines_mask_ext, NULL);
++	hw_idle.busy_engines_mask =
++			lower_32_bits(hw_idle.busy_engines_mask_ext);
  
- 	/* Fetch PCI replay counter */
-+	memset(&pkt, 0, sizeof(pkt));
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_REPLAY_CNT_GET <<
- 			CPUCP_PKT_CTL_OPCODE_SHIFT);
- 
+ 	return copy_to_user(out, &hw_idle,
+ 		min((size_t) max_size, sizeof(hw_idle))) ? -EFAULT : 0;
 -- 
 2.25.1
 
