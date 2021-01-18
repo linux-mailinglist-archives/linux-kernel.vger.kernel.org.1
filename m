@@ -2,67 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA082F9F0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFDD2F9F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391340AbhARMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:05:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403775AbhARL4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:56:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC25222BB;
-        Mon, 18 Jan 2021 11:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970943;
-        bh=MCZMe+96VzwdrWAGSyNE7Jn9QLmbaq5najiGzzeV4pk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8l6VRB1pI8ypImCD4mwfzNE4o6qTI8RrgiU/V6h6DRDZw1A4DW6HvefVWujjlfAQ
-         ZlyMzFYy36Jy3h0peWGKoX1YF81R4zx2ZfcX/YMy1GqVvzem6hrxyQFJZMO4aeELGD
-         BVGSX+loEiTggvx5mDAPe3woQYZT8butLGqkhJjg=
-Date:   Mon, 18 Jan 2021 12:37:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-usb@vger.kernel.org,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Subject: Re: [PATCH] usb: bdc: Remove the BDC PCI driver
-Message-ID: <YAVy3KKu7n522aUU@kroah.com>
-References: <20210115213142.35003-1-alcooperx@gmail.com>
- <878s8qwkgz.fsf@kernel.org>
+        id S2403856AbhARMQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:16:10 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55926 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391005AbhARLu5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:50:57 -0500
+Date:   Mon, 18 Jan 2021 11:50:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610970613;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XXR+Mc7a0o6z548wc/iH8rqPTaynm5hoY17VRwgNENM=;
+        b=IXxzHDqimWiZgKFPmVC1WBv0xRUewtX3XgojjDuUP+pLzCms7N/lnys71FfNOccCV0S5Zd
+        T+sfvoyL8QgSmjdIeUrYNSggJ76js1hBlUvzndtNEMqPt1jEJP6zyTtP0UwjHGa4Ec9Wpg
+        BDbdDXz01W1nqxrNz/YvrHVKPYgFv+W/NJliU2fvOOUmlPCb+WHQCXKx7sitf5gBcaI8aB
+        j3WntrIHj44xi42D53Ohpj9HPi3IkNzg1mEZ36D4qBZa0vA8USrk1+sGO4pTVXImMyHuE8
+        /N7+oiIaK1asvW3zzLfMXw5dndUGE8nHzLkkB9xYI6M1JHamW/dE1uSjpboVPA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610970613;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XXR+Mc7a0o6z548wc/iH8rqPTaynm5hoY17VRwgNENM=;
+        b=aVJ9wTb/c52+0TSUoCJoKqKS75+ieS0GUaHYn+a1NRBK5iGU4fpHLEVcFG533eALScx1BB
+        gXY2fiOs2Zt3NSAQ==
+From:   "tip-bot2 for kernel test robot" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] selftests/fpu: Fix debugfs_simple_attr.cocci warning
+Cc:     kernel test robot <lkp@intel.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <alpine.DEB.2.22.394.2010251117180.2714@hadrien>
+References: <alpine.DEB.2.22.394.2010251117180.2714@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878s8qwkgz.fsf@kernel.org>
+Message-ID: <161097061196.414.17803528374854236962.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 01:30:36PM +0200, Felipe Balbi wrote:
-> 
-> Hi,
-> 
-> Al Cooper <alcooperx@gmail.com> writes:
-> > The BDC PCI driver was only used for design verification with
-> > an PCI/FPGA board. The board no longer exists and is not in use
-> > anywhere. All instances of this core now exist as a memory mapped
-> > device on the platform bus.
-> >
-> > NOTE: This only removes the PCI driver and does not remove the
-> > platform driver.
-> >
-> > Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> 
-> It sounds like it could be used for pre-silicon verification of newer
-> Core Releases, much like Synopsys still uses the HAPS (with mainline
-> linux, mind you) for silicon validation.
-> 
-> Why would we delete this small shim if it *could* still be useful?
+The following commit has been merged into the x86/misc branch of tip:
 
-It ends up conflicting with the PCI id of a device that is actually in
-the wild (a camera on Apple laptops).  So it's good to drop this driver
-so the wrong driver doesn't get constantly bound to the wrong device.
+Commit-ID:     443121b3ebb9025fd99ff11851d3537cb756d456
+Gitweb:        https://git.kernel.org/tip/443121b3ebb9025fd99ff11851d3537cb756d456
+Author:        kernel test robot <lkp@intel.com>
+AuthorDate:    Sun, 25 Oct 2020 11:20:04 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 18 Jan 2021 11:03:26 +01:00
 
-thnaks,
+selftests/fpu: Fix debugfs_simple_attr.cocci warning
 
-greg k-h
+lib/test_fpu.c:66:0-23: WARNING: test_fpu_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+
+ Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE
+ for debugfs files.
+
+Semantic patch information:
+
+ Rationale: DEFINE_SIMPLE_ATTRIBUTE + debugfs_create_file()
+ imposes some significant overhead as compared to
+ DEFINE_DEBUGFS_ATTRIBUTE + debugfs_create_file_unsafe().
+
+In order to protect against file removal races, debugfs files created
+via debugfs_create_file() now get wrapped by a struct file_operations
+at their opening.
+
+If the original struct file_operations are known to be safe against
+removal races by themselves already, the proxy creation may be bypassed
+by creating the files through debugfs_create_file_unsafe().
+
+In order to help debugfs users who use the common
+DEFINE_SIMPLE_ATTRIBUTE() + debugfs_create_file() idiom to
+transition to removal safe struct file_operations, the helper macro
+DEFINE_DEBUGFS_ATTRIBUTE() has been introduced.
+
+Thus, the preferred strategy is to use
+  DEFINE_DEBUGFS_ATTRIBUTE() + debugfs_create_file_unsafe()
+now.
+
+Generated by: scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+
+Fixes: 4185b3b92792 ("selftests/fpu: Add an FPU selftest")
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/alpine.DEB.2.22.394.2010251117180.2714@hadrien
+---
+ lib/test_fpu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/test_fpu.c b/lib/test_fpu.c
+index c33764a..e82db19 100644
+--- a/lib/test_fpu.c
++++ b/lib/test_fpu.c
+@@ -63,7 +63,7 @@ static int test_fpu_get(void *data, u64 *val)
+ 	return status;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(test_fpu_fops, test_fpu_get, NULL, "%lld\n");
++DEFINE_DEBUGFS_ATTRIBUTE(test_fpu_fops, test_fpu_get, NULL, "%lld\n");
+ static struct dentry *selftest_dir;
+ 
+ static int __init test_fpu_init(void)
+@@ -72,8 +72,8 @@ static int __init test_fpu_init(void)
+ 	if (!selftest_dir)
+ 		return -ENOMEM;
+ 
+-	debugfs_create_file("test_fpu", 0444, selftest_dir, NULL,
+-			    &test_fpu_fops);
++	debugfs_create_file_unsafe("test_fpu", 0444, selftest_dir, NULL,
++				   &test_fpu_fops);
+ 
+ 	return 0;
+ }
