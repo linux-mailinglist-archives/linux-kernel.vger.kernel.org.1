@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83302F978E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B82F979F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730878AbhARCEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
+        id S1730956AbhARCJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730175AbhARCEf (ORCPT
+        with ESMTP id S1730458AbhARCJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:04:35 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F3EC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 18:03:55 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id x21so11767052iog.10
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 18:03:55 -0800 (PST)
+        Sun, 17 Jan 2021 21:09:14 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1933C061573;
+        Sun, 17 Jan 2021 18:08:33 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id v24so15169617lfr.7;
+        Sun, 17 Jan 2021 18:08:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O3vR2z56Ju8deovQ5OzdEqwpGVdMnT5d3k23oCPpdpE=;
-        b=w1ucSC4CsfArGDDmu/srEDmwi4U/Dw9W+lSlM9i1iNZ1ZKybUTK/XiJ/5JyoEnLEUs
-         dS+LJLuWDL4iWDzIY0g0GseCY0wBM6Noe3noRHom0GgjuTT3996zAGxplwRij9gSjMhN
-         v8sAdyCCxmEulp0ONSL5y4czlsC1L7GAOgHRJMw3HHAeX455xzWCUNV0U9HaBngDcfpJ
-         jqfwO5rnPJc2/vQhT4KC8/JCFlUqgEQkX0A+mNwJpsnCqfLbgYNvJUtaKCehSZSB40n0
-         Qk7ijENbiLCrUbysUNMtn0aqFhERqftlqYQkjlf8zxXNUMh9aAqHBdJSXqhZhihnGVqC
-         41/g==
+        bh=UCNr++Ssi+GCJXfceKYWtjuCgckAsDZ7Hj+PCOxiPFI=;
+        b=Wk1tFUMhMF6+naycYPO5gIKoQs44ym7L+cXKP2iv6fsgQkelky9y5Y9OVGM1P4yfTl
+         /RoxHrZ/ZrPlYJ3wP+lUMsmPfwbDCLvoeS26f0b+6SAdG2TwIkmWho2Zb/PwAWx5jY9S
+         0oOFpc05VzN4dyPOFoyBZDZVXfCgUok/9CqiOfZdWwIjrYFyVlhtwk+J30tzVrUxND32
+         rfnZ0DX1GVMyi5fnD/ePq+8Njwh68TqQKt1YmwTF5D2ra4kyhR8vwlZKDQX4Ou4s2HtR
+         bNgl1gDjrcgsSh4DG1BY7r6/4jlUmCi3lbROe8f3U77auAMgRLLXzjsvG1zPxVyLxSYh
+         RhGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O3vR2z56Ju8deovQ5OzdEqwpGVdMnT5d3k23oCPpdpE=;
-        b=Hl+DyHBgxrs4vq7nuIiZmQOeHKWmOsg7D++WSxQ/SHg+EIBwtxXqD+/ymuHtxgnAQi
-         eVp3OQG09YQWlbZz4AbFlEyI7OIfs09/LrXaQ8l1zLZwvK8WgW4ofGeSA5eawh+BHz9q
-         WEeEJDllGKWXYhNrKewZ1Y9x1Jwqx+69MCSLkK1FriLGVHBCbWvN61xjc8MkvCuYNm+p
-         sg+iKX70d66J2Pg1CCyBAlnnUNFPBI2OFCIffU+CUbMdVnlpayhqAA5V2DLrqn7SGqWB
-         vmZBniAyHDPJtgfQhBr4qWfZ9k6AP3Xkle3TsjJkPAVvwCAjliECTrHhH4GN+AV0pT7F
-         bubw==
-X-Gm-Message-State: AOAM530kIa0Meky0ej3HDEBL2xjK4MupdXKn2PjR3zCyLGRtAc+A8sUX
-        rZuIeswOh1oLOXzmZt8d/t2hvuHbNky93lFcRs/BCg==
-X-Google-Smtp-Source: ABdhPJwSC3CvfhYeFLcOwiQWyegVKqrUVeIKDA2mn4F/hw/vHFHUgiYddoussLLbP3atey+SsTKNy8OahClOEOWsGVM=
-X-Received: by 2002:a5d:940d:: with SMTP id v13mr1251502ion.193.1610935434645;
- Sun, 17 Jan 2021 18:03:54 -0800 (PST)
+        bh=UCNr++Ssi+GCJXfceKYWtjuCgckAsDZ7Hj+PCOxiPFI=;
+        b=S/bPIt9L0a/EDC8TI0Bi553ZQpV8hzWEL1/6qVMWprg5nZnZbKcpUh9dqfk1tbktlT
+         WyUDjsWShPSA0mDIAp+6O9kRRBD2+ccbkxYlvG4Rqkk2zW32fX9BN97R+0Zsj4wX8h2P
+         Y9enxKL/Qq8KVIYDn1kGkD6vRrlccorLvU7ARWWa5K7KKDnvtNn9oIneMJlmFf8+5KCU
+         uw5JTGtcGoLbMnWHcQb2D6bVyfBm5BGWxGumSV9ZKjeLRXI/1GY9UDOF6NrYk6p/qAJK
+         sJ0qxW46XcoOnzAp44QmTGxoLvN52WZK2oYS1pgfpHC1X/sQN7eExxBIsS1/PfWoj7Sy
+         gJcQ==
+X-Gm-Message-State: AOAM532YWJ8VjYo1IW2MuoTJGAXBhVZ0E5MMnn3TN6IBtE5HOiJlmoAx
+        TequX/meZOFZaZYtsdPdjO9qVKRSHvLcTyU9YgZAiDAVBiY=
+X-Google-Smtp-Source: ABdhPJy1F7PzMeYmUBqKJFwc+OMyBL9Qjt2TMLg2k5TKElN6wCIQIQXXiSfFrAe/V1nyxKQqvyrpCeqNeJ3jhJIIhmE=
+X-Received: by 2002:ac2:5689:: with SMTP id 9mr10870086lfr.175.1610935712208;
+ Sun, 17 Jan 2021 18:08:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210117035140.1437-1-alistair@alistair23.me> <20210117035140.1437-2-alistair@alistair23.me>
- <CAOesGMiLZGdjQTLj48B8dXV1vv2p-NG751m-bh61mJ-10N-rAw@mail.gmail.com> <CAKmqyKO_xxrzMHB7Fuxq_5xT6JH8sOudKAKgug_FiS08MiJ94w@mail.gmail.com>
-In-Reply-To: <CAKmqyKO_xxrzMHB7Fuxq_5xT6JH8sOudKAKgug_FiS08MiJ94w@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Sun, 17 Jan 2021 18:03:43 -0800
-Message-ID: <CAOesGMh9X3OwzftRQYVsz6=Wv_wkm-wh_ucN91e6FCbjnG3X+g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] remarkable2_defconfig: Add initial support for the reMarkable2
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1610615171-68296-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <87czy7lvjy.fsf@suse.com> <CAH2r5mvjDAgB6-kE=AOAwrETVk+R79z6Gd8gMnOTWqG-6Mnybw@mail.gmail.com>
+ <20210118000152.GH3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20210118000152.GH3579531@ZenIV.linux.org.uk>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 17 Jan 2021 20:08:21 -0600
+Message-ID: <CAH2r5mtaf6Kmg2RAxawsV9o=VHyu9hosqa4fZw5QDHLH-tacfg@mail.gmail.com>
+Subject: Re: [PATCH] fs/cifs: Replace one-element array with flexible-array member.
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Jan 17, 2021 at 5:36 PM Alistair Francis <alistair23@gmail.com> wrote:
+On Sun, Jan 17, 2021 at 6:02 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
 >
-> On Sun, Jan 17, 2021 at 5:30 PM Olof Johansson <olof@lixom.net> wrote:
+> On Sun, Jan 17, 2021 at 03:58:23PM -0600, Steve French wrote:
+> > Jiapeng,
+> > Aurelien is correct, you should respin this patch and correct for
+> > where it breaks the sizeof calculation.  For example your change:
 > >
-> > Hi Alistair,
+> > struct smb2_lock_rsp {
+> > @@ -1434,7 +1434,7 @@ struct smb2_query_directory_req {
+> >         __le16 FileNameOffset;
+> >         __le16 FileNameLength;
+> >         __le32 OutputBufferLength;
+> > -       __u8   Buffer[1];
+> > +       __u8   Buffer[];
+> >  } __packed;
 > >
-> > On Sun, Jan 17, 2021 at 3:09 PM Alistair Francis <alistair@alistair23.me> wrote:
-> > >
-> > > This defconfig is based on the one released by reMarkable with their
-> > > 4.14 kernel. I have updated it to match the latest kernels.
-> > >
-> > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > would have the side effect of making the file name off by one:
 > >
-> > It's awesome to see upstream support for contemporary consumer
-> > products being posted, thanks!
+> > smb2pdu.c-4654- req->FileNameOffset =
+> > smb2pdu.c:4655:         cpu_to_le16(sizeof(struct
+> > smb2_query_directory_req) - 1);
 >
-> No worries!
->
-> >
-> > When it comes to a dedicated defconfig, is that necessary in this
-> > case? The needed drivers should be possible to enable either in
-> > imx_v6_v7_defconfig, or in multi_v7_defconfig (or, rather, both)?
->
-> Most of the defconfi could be shared with a standard imx7 config, but
-> some of the extra components like the Wacom digitiser,
-> cyttsp5_i2c_adapter, max77818 and bd71815 might be better off in it's
-> own defconfig.
->
-> If the maintainers are happy with enabling some of those in a imx7
-> defconfig then I'm happy to do that. I have tried to split out the
-> config changes (I have two otehr series that build on this one) so it
-> should be easy to rebase it all on a standard one.
+> FWIW, that sizeof() - 1 should've been offsetof()...
 
-Yeah, enabling those in imx_v6_v7_defconfig and multi_v7_defconfig is
-fine (or, really, desirable and preferred).
+agreed
 
-Please enable as modules where possible (i.e anything that's fine to
-wait loading until after rootfs is mounted), to avoid kernel image
-growth on platforms that don't need those drivers.
+-- 
+Thanks,
 
-> > Adding new defconfigs is something we're avoiding as much as possible,
-> > since it adds CI overhead, and defconfigs easily get churny due to
-> > options moving around.
-> >
-> > In some cases we do it once per SoC family (i.e. the i.MX defconfigs),
-> > but we avoid it for products.
->
-> Makes sense, I will update my patches not to use a custom defconfig.
-
-Awesome, thanks!
-
-
--Olof
+Steve
