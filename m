@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155B52FA136
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421992FA139
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404410AbhARNTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:19:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38690 "EHLO
+        id S2404478AbhARNUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404400AbhARNTX (ORCPT
+        with ESMTP id S2404457AbhARNUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:19:23 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8251C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:18:42 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id 6so9142661wri.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:18:42 -0800 (PST)
+        Mon, 18 Jan 2021 08:20:19 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32484C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:19:39 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id m13so18134656ljo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:19:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dT8H6DDOS90XqFHWCI7TqFyOQmYmAu8E1f2CVSOpl/o=;
-        b=EgspKE8oFCLCiFmdwKtBz2VjUuROfWzgFVAWJT2v2444A0T/mq8eQwih4wjcbDddGB
-         kXj2hnBpS3W4vDilb//9GY6jrkUfIj44PxVpxH9MYX5ds+1WnMVw4MzIhG9J0reDPisi
-         scE5mTvdAw5Hlnnn4IAsMJw8kncej6tCC3sqbl6YcHhuoYyKStMyGTHZ33dug43+iaLi
-         /vLjOyriHbV/JZgpR6REiio1aSN9n5pXnhww3etjfo01vaa34iINw6EeAMAFbx+NYhgA
-         rmoDjcd5wEqNg07GM1PnTNgJTYdRNnZMMnL9gFv1EMrC7g5IwYhcj+CIV849advE4KO/
-         cG9g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=30Y90aBAs7JCradiJqSsGAdWWwSfg6flq2QshmCd+F0=;
+        b=DdzalSnTLN/NQPHzufb2YJKDvdAGLTgN4/Znr09MIb1moNn31wXoPGYTdUHh3Or7SI
+         qDNs73kP6Z6EwstehDZ+zCHonxvXk2vDfPlA8FpaNICimeVvbwMoTHuW6bcktZmgAP5A
+         3hi/Vb5bjiMDxId1ERIfPg0zrIUgb/Q5eaQxDpbaKKYZNAXkg5NT/z2LUEn+DXrc0xCM
+         GW2S0FVFdgChl4nBzGFWA/mK6wdS17Yfbo78n1uSWjL72S2ekF0o8ie9hP8PucLKnKY7
+         z0oJiU/vzKrNg3p3BsJV3QadhtKfjq0SeNAeRfzgbSfF5VHEOD4C1OXj/OCetV62WHsH
+         jVlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dT8H6DDOS90XqFHWCI7TqFyOQmYmAu8E1f2CVSOpl/o=;
-        b=hiB7gb7oevynojDvIlJW1rr3dGpadx+n+Co3OYLZujptbcRB21eQDEwaVQMPftX/Z1
-         Ck4kJL9sRYk52Coy5wfALFAx11zmDLDGyAYbAGxa52tc2VjlsbwjAVcov9WLAqccC98W
-         URZ8xkcnN/oo/KB5UW9nf0dQddT2PpkgSCKaQQVNULFp1g8G1C9TyIR9/5oVtbz8LPCq
-         /PDYVlVxMfHzpuNjZ+ytC43AXpNYA5snk06QzbHurr9i21H64TY6olhxenHvbRKShPIZ
-         /kZ0q952yBK+nU3bTfFX4KEWhYJP0zY0Eor3ZFa8gRbh4FLyKDPLVEOkv5vQNt6dc8G+
-         LCcw==
-X-Gm-Message-State: AOAM532t9q5FC6i0XN/gAXgr8Wc+uphMwrAIn+1x8bmW6N9CXh5lz1MT
-        R8ujg6hzQzAt5iFKyqXyqLoUBw==
-X-Google-Smtp-Source: ABdhPJwWobt6pVg/42LLNxfilYuO6c87nDIqhPBmiOFom1mvCywbxa/XGq5HBvenNWiYZUprwDAUKA==
-X-Received: by 2002:adf:e883:: with SMTP id d3mr25756288wrm.139.1610975921450;
-        Mon, 18 Jan 2021 05:18:41 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:3d4d:985d:87b7:4d55])
-        by smtp.gmail.com with ESMTPSA id y14sm25110466wru.96.2021.01.18.05.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 05:18:40 -0800 (PST)
-Date:   Mon, 18 Jan 2021 13:18:39 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 15/21] arm64: Add an aliasing facility for the idreg
- override
-Message-ID: <20210118131839.7ao33jeufq3dfnb4@google.com>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-16-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=30Y90aBAs7JCradiJqSsGAdWWwSfg6flq2QshmCd+F0=;
+        b=dR1Ap/bWGAce+SoD6OgsHzI09o6cDBhM+ppKpdi2bsCzko8TqWLiYlD0fMfQgPpohz
+         3uX4hsGfPzXdKHrotUkl425aIWxaeM0atS8fJ0+EDx+2xQr+QokN5TO/Kub0dNfqckVp
+         jwwoTk9OPEz0jnslUTqmsd9fvYEdWEndPWxYJjzMCHNo0kKFHtS/xuwebR2rYeKnGnIT
+         H3wkUECXcwqQmotcN3Lav8YIfcnBRm1AdqxCzTjhabMIp0yGWlkrKO23dXhPsOyYqInU
+         pyBDNyykIFmdniW7ivycqbumHK2+6arrlG++bsU7dzC8jw5f/v5IPUO/L2nZHzVjJdGR
+         jGBQ==
+X-Gm-Message-State: AOAM532PaBuTz/2Z0nziP/eZzuYyLlUnNZiHTmHfwuqZnR652hq/1KuC
+        mbAooR66Kty3H9S4ThyNCTmi6LKbeDoVbKIzjzZDIA==
+X-Google-Smtp-Source: ABdhPJwgirSexfJYg5xA5fqAGGMeT0ZdotdFmKURPfydXvped0xoAwJWbJ2SwBtHZ6yaIpyXR5AvWX7+5G+CgAIbaFU=
+X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr10391938ljo.368.1610975977549;
+ Mon, 18 Jan 2021 05:19:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-16-maz@kernel.org>
+References: <20210111182928.587285-1-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210111182928.587285-1-angelogioacchino.delregno@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 14:19:25 +0100
+Message-ID: <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:27AM +0000, Marc Zyngier wrote:
-> In order to map the override of idregs to options that a user
-> can easily understand, let's introduce yet another option
-> array, which maps an option to the corresponding idreg options.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: David Brazdil <dbrazdil@google.com>
+On Mon, Jan 11, 2021 at 7:29 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
 
-> ---
->  arch/arm64/kernel/idreg-override.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> index 75d9845f489b..16bc8b3b93ae 100644
-> --- a/arch/arm64/kernel/idreg-override.c
-> +++ b/arch/arm64/kernel/idreg-override.c
-> @@ -37,6 +37,12 @@ static const struct reg_desc * const regs[] __initdata = {
->  	&mmfr1,
->  };
->  
-> +static const struct {
-> +	const char * const	alias;
-> +	const char * const	feature;
-> +} aliases[] __initdata = {
-> +};
-> +
->  static int __init find_field(const char *cmdline, const struct reg_desc *reg,
->  			     int f, u64 *v)
->  {
-> @@ -80,6 +86,18 @@ static void __init match_options(const char *cmdline)
->  	}
->  }
->  
-> +static __init void match_aliases(const char *cmdline)
+> The Awinic AW9523(B) is a multi-function I2C gpio expander in a
+> TQFN-24L package, featuring PWM (max 37mA per pin, or total max
+> power 3.2Watts) for LED driving capability.
+>
+> It has two ports with 8 pins per port (for a total of 16 pins),
+> configurable as either PWM with 1/256 stepping or GPIO input/output,
+> 1.8V logic input; each GPIO can be configured as input or output
+> independently from each other.
+>
+> This IC also has an internal interrupt controller, which is capable
+> of generating an interrupt for each GPIO, depending on the
+> configuration, and will raise an interrupt on the INTN pin to
+> advertise this to an external interrupt controller.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+
+I really like the looks of this new version! :)
+
+Just some minor questions now:
+
+> +static int aw9523_gpio_irq_type(struct irq_data *d, unsigned int type)
 > +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(aliases); i++) {
-> +		char *str = strstr(cmdline, aliases[i].alias);
-> +
-> +		if ((str == cmdline || (str > cmdline && *(str - 1) == ' ')))
+> +       switch (type) {
+> +       case IRQ_TYPE_NONE:
+> +       case IRQ_TYPE_LEVEL_MASK:
+> +       case IRQ_TYPE_LEVEL_HIGH:
+> +       case IRQ_TYPE_LEVEL_LOW:
+> +               return 0;
 
-nit: Extract to a 'cmdline_contains' helper? Took me a good few seconds to
-parse this in the previous patch. Giving it a name would help, and now it's
-also shared.
+This still doesn't make sense, I think you can see why.
 
-> +			match_options(aliases[i].feature);
-> +	}
-> +}
-> +
->  static __init void parse_cmdline(void)
->  {
->  	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
-> @@ -100,6 +118,7 @@ static __init void parse_cmdline(void)
->  			goto out;
->  
->  		match_options(prop);
-> +		match_aliases(prop);
->  
->  		if (!IS_ENABLED(CONFIG_CMDLINE_EXTEND))
->  			return;
-> @@ -107,6 +126,7 @@ static __init void parse_cmdline(void)
->  
->  out:
->  	match_options(CONFIG_CMDLINE);
-> +	match_aliases(CONFIG_CMDLINE);
->  }
->  
->  void __init init_shadow_regs(void)
-> -- 
-> 2.29.2
-> 
+If level IRQs can fire both when the line is high and low without
+any configuration in any register whatsoever, then IRQs are
+*constantly* fireing. Which I suppose they are not.
+
+Something is wrong here. Either you just support one
+of them or there is a way to configure whether to act as
+high or low level.
+
+I'm also mildly sceptic because GPIO expanders ... do they
+really support level IRQs, and does it make sense when you
+think about it? I would rather expect edge IRQs as these have
+a natural trigger point and level IRQs may very well be gone
+by the time you come around to read the status register.
+I suppose it can be done but the events must be really slow
+then, slower than the 400kHz of an I2C bus.
+
+Can you please look over the interrupt logic in your specs?
+
+Yours,
+Linus Walleij
