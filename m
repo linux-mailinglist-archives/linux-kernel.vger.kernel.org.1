@@ -2,140 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BC42FABC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856842FABD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388445AbhARUpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        id S2394373AbhARUtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437971AbhARUlr (ORCPT
+        with ESMTP id S2394441AbhARUrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:41:47 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74BDC061573;
-        Mon, 18 Jan 2021 12:41:03 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id i63so3793363pfg.7;
-        Mon, 18 Jan 2021 12:41:03 -0800 (PST)
+        Mon, 18 Jan 2021 15:47:24 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165B4C061757;
+        Mon, 18 Jan 2021 12:46:37 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id c124so14715504wma.5;
+        Mon, 18 Jan 2021 12:46:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XEt+p0VH0Mt3UDzNuSZ5gd/vonSaeBsHxPfMF1613xI=;
-        b=QVcREkO6E03pZ35t4SFG34ZWgYyV2W8kKK+BslMmfJkLx5kJVYkSlcLCDMwj+r5mXw
-         shKZote+IpwaviD+P+YqhB1AMgQCXplD6w33c6AWRlicidFAzoMdEJ6govm/HVi5e5Ja
-         Ge7Ly4DnZhABPVnxOzizZEmYoSdIhzd/FrsMa55WcmfST1nP35AHOMq2MnAi4aJct4Xh
-         5+h+/VBN4XzddQLoFX39czJK3Sim+5unr1SfiRWA6zEUtuIFOMBG4LUt9gwRq5m3Qvwc
-         dqmjjGTPkZ/N8uxd1ED9HbqTmyMRY5Obm8hAkLURraCMQZlD/ksorXuZP5+XVtK61MEm
-         rtvw==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=9pd6NP8MKjOIZLtlaBPlwpeyWjI68tp87PnWyTG6FQo=;
+        b=P7MDBVp2loUeGaeaCPb9ydJEPSginKWp9PFeqivuX7x+oNuy4YmjoWQtCR+1FZK3lp
+         maXNw5mdKbPvYczcDHWlM1VN5o/qJXC8Uhfc0KXMZMW+XlhRpQOTnVDeD6cGQaY/ae00
+         6R968ILzIQlI9sYkvsO2YETiAmTtnlF+uKYDKJOTM5j2dx52jtb1QbE6NSD31vscEL3J
+         /fUGV1mjvjo3airWsTnBIuO+n2TcZaivt9BEOv+FhcIQtDZqu2wY+maAB2DBNumNRHK2
+         hkpiD7BY8Rwsz9rcQjFA4OkY9ZLZj/ryjbQS/C0SnPYdc/Av9l4eccXlKZO0yrLEL0rf
+         l+aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XEt+p0VH0Mt3UDzNuSZ5gd/vonSaeBsHxPfMF1613xI=;
-        b=e41flBa5aWP1NlgipZDrVd78R6PMRwA8hCs9EJYi/KYLkKCY9WBbPjI54ePKT1d2tW
-         8k0SraXrBYJ38srOTEbyZQ5a1ed00xigQBx0lI3nGdPfKMdJyP0eTYM6s4edGfDrRJu6
-         UwXmkCSBxxNJaCqeirjsOpL5qT3nBQQxSaPMsc5VLAYB4InHT5Rrf28YHpw3rLQDjp05
-         t9Oviz744y9AlhfO5tniBvtgfB2OQV8Rnot21ZlA+0Fqhao/Dx9j9A2y5aUvgRapPMMM
-         l3tGkJwPfINEpJqmNMZjuhLR1dM3KK2ODNxQtNQzHCsu0pvqEI41GywUxGcy5+tScjVQ
-         6VKg==
-X-Gm-Message-State: AOAM531GvjM9Lrq/0P++U9U4UCcU9UNye+5pbltUw3ecSV3wBYVpcEnP
-        T212Vjf60qfXa2QwmO6BodfLRyH+oGg=
-X-Google-Smtp-Source: ABdhPJyLjTYdmagnhqus/gAOrcz1oFASXA/BCZkIAYvcc9kUyRTd6YOSwO3KmLLMrOzpAVAjCjq6Bg==
-X-Received: by 2002:a63:464a:: with SMTP id v10mr1334521pgk.393.1611002462963;
-        Mon, 18 Jan 2021 12:41:02 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id jx15sm253311pjb.17.2021.01.18.12.41.00
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9pd6NP8MKjOIZLtlaBPlwpeyWjI68tp87PnWyTG6FQo=;
+        b=MzrVzoUR+J7m52AMvdiZl+mi0MAOrJiEd/CqWAE033asHnntega4kGD5sGfv5co0OP
+         hQmg2EJj64C4F0OX6CAoYdTlYPdSYaale/snjDt27RDpgVbOHfBUu/DwUVFVNxC/8r8P
+         pTHTxLLdR4ekm6AgdMf7w4RYHZ9DRIO9HO78it/Yn4Z4fzE4EbQfhuZZVs4rxSpIPGU/
+         RGKVPkmOL7Dpy2VPBS27m7OmndMlTbaTvrm9YN1L1VU7izifzpb+bTzpJ94BFGugj4ln
+         iMTFO/sjgVNm0ju129BRUA6CPG9Z+NvnfLE/Q1i2Hr53MQI58se9rX1kW2sjZPlfrsT6
+         FlWQ==
+X-Gm-Message-State: AOAM531+7Ymfi7rz67AJI/O8moeo33UUlNKLmDWu2iUxDclUmuWg+/Dm
+        jFjXHzPEdyNPCH5a92a5hj0=
+X-Google-Smtp-Source: ABdhPJyi0RSCbLsr1taKlUHRyiXCxtKBjT2oiXy25DuCHFmuTZZFyrIWKN1HWGLpUoWz11fxYUhB3Q==
+X-Received: by 2002:a05:600c:2044:: with SMTP id p4mr5632wmg.11.1611002795765;
+        Mon, 18 Jan 2021 12:46:35 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id 33sm35554183wrn.35.2021.01.18.12.46.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 12:41:02 -0800 (PST)
-Subject: Re: [PATCH net v2 2/2] sh_eth: Make PHY access aware of Runtime PM to
- fix reboot crash
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210118150656.796584-1-geert+renesas@glider.be>
- <20210118150656.796584-3-geert+renesas@glider.be>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ca2a63ba-95d8-8fad-94ed-e02d1a643df2@gmail.com>
-Date:   Mon, 18 Jan 2021 12:40:59 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        Mon, 18 Jan 2021 12:46:35 -0800 (PST)
+From:   Daniel Scally <djrscally@gmail.com>
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+Message-ID: <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
+Date:   Mon, 18 Jan 2021 20:46:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210118150656.796584-3-geert+renesas@glider.be>
+In-Reply-To: <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Laurent, thanks for the comments - really appreciate the detail.
 
 
-On 1/18/2021 7:06 AM, Geert Uytterhoeven wrote:
-> Wolfram reports that his R-Car H2-based Lager board can no longer be
-> rebooted in v5.11-rc1, as it crashes with an imprecise external abort.
-> The issue can be reproduced on other boards (e.g. Koelsch with R-Car
-> M2-W) too, if CONFIG_IP_PNP is disabled, and the Ethernet interface is
-> down at reboot time:
-> 
->     Unhandled fault: imprecise external abort (0x1406) at 0x00000000
->     pgd = (ptrval)
->     [00000000] *pgd=422b6835, *pte=00000000, *ppte=00000000
->     Internal error: : 1406 [#1] ARM
->     Modules linked in:
->     CPU: 0 PID: 1105 Comm: init Tainted: G        W         5.10.0-rc1-00402-ge2f016cf7751 #1048
->     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
->     PC is at sh_mdio_ctrl+0x44/0x60
->     LR is at sh_mmd_ctrl+0x20/0x24
->     ...
->     Backtrace:
->     [<c0451f30>] (sh_mdio_ctrl) from [<c0451fd4>] (sh_mmd_ctrl+0x20/0x24)
->      r7:0000001f r6:00000020 r5:00000002 r4:c22a1dc4
->     [<c0451fb4>] (sh_mmd_ctrl) from [<c044fc18>] (mdiobb_cmd+0x38/0xa8)
->     [<c044fbe0>] (mdiobb_cmd) from [<c044feb8>] (mdiobb_read+0x58/0xdc)
->      r9:c229f844 r8:c0c329dc r7:c221e000 r6:00000001 r5:c22a1dc4 r4:00000001
->     [<c044fe60>] (mdiobb_read) from [<c044c854>] (__mdiobus_read+0x74/0xe0)
->      r7:0000001f r6:00000001 r5:c221e000 r4:c221e000
->     [<c044c7e0>] (__mdiobus_read) from [<c044c9d8>] (mdiobus_read+0x40/0x54)
->      r7:0000001f r6:00000001 r5:c221e000 r4:c221e458
->     [<c044c998>] (mdiobus_read) from [<c044d678>] (phy_read+0x1c/0x20)
->      r7:ffffe000 r6:c221e470 r5:00000200 r4:c229f800
->     [<c044d65c>] (phy_read) from [<c044d94c>] (kszphy_config_intr+0x44/0x80)
->     [<c044d908>] (kszphy_config_intr) from [<c044694c>] (phy_disable_interrupts+0x44/0x50)
->      r5:c229f800 r4:c229f800
->     [<c0446908>] (phy_disable_interrupts) from [<c0449370>] (phy_shutdown+0x18/0x1c)
->      r5:c229f800 r4:c229f804
->     [<c0449358>] (phy_shutdown) from [<c040066c>] (device_shutdown+0x168/0x1f8)
->     [<c0400504>] (device_shutdown) from [<c013de44>] (kernel_restart_prepare+0x3c/0x48)
->      r9:c22d2000 r8:c0100264 r7:c0b0d034 r6:00000000 r5:4321fedc r4:00000000
->     [<c013de08>] (kernel_restart_prepare) from [<c013dee0>] (kernel_restart+0x1c/0x60)
->     [<c013dec4>] (kernel_restart) from [<c013e1d8>] (__do_sys_reboot+0x168/0x208)
->      r5:4321fedc r4:01234567
->     [<c013e070>] (__do_sys_reboot) from [<c013e2e8>] (sys_reboot+0x18/0x1c)
->      r7:00000058 r6:00000000 r5:00000000 r4:00000000
->     [<c013e2d0>] (sys_reboot) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
-> 
-> As of commit e2f016cf775129c0 ("net: phy: add a shutdown procedure"),
-> system reboot calls phy_disable_interrupts() during shutdown.  As this
-> happens unconditionally, the PHY registers may be accessed while the
-> device is suspended, causing undefined behavior, which may crash the
-> system.
-> 
-> Fix this by wrapping the PHY bitbang accessors in the sh_eth driver by
-> wrappers that take care of Runtime PM, to resume the device when needed.
-> 
-> Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Some specific responses below but assume a general "will do" to
+everything you mentioned otherwise...
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+On 18/01/2021 09:15, Laurent Pinchart wrote:
+>> +	  PMIC) and one designed for Chrome OS.
+> How about expanding this a bit to explain what the INT3472 stands for ?
+>
+> 	  The INT3472 is an Intel camera power controller, a logical device
+> 	  found on some Skylake-based systems that can map to different
+> 	  hardware devices depending on the platform. On machines
+> 	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
+> 	  machines designed for Windows, it maps to either a TP68470
+> 	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
+> 	  and power gates.
+
+Yeah sure ok
+
+
+>> This driver handles all three
+>> +	  situations by discovering information it needs to discern them at
+>> +	  runtime.
+>> +
+>> +	  If your device was designed for Chrome OS, this driver will provide
+>> +	  an ACPI operation region, which must be available before any of the
+>> +	  devices using this are probed. For this reason, you should select Y
+>> +	  if your device was designed for ChromeOS. This option also configures
+>> +	  the designware-i2c driver to be built-in, for the same reason.
+> Is the last sentence a leftover ?
+
+Oops - it is, but it was supposed to remind me to double check that that
+was still necessary. I'll take a look, thanks.
+
+
+>> +
+>> +#include "intel_skl_int3472_common.h"
+>> +
+>> +int skl_int3472_get_cldb_buffer(struct acpi_device *adev,
+>> +				struct int3472_cldb *cldb)
+>> +{
+>> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+>> +	acpi_handle handle = adev->handle;
+>> +	union acpi_object *obj;
+>> +	acpi_status status;
+>> +	int ret = 0;
+>> +
+>> +	status = acpi_evaluate_object(handle, "CLDB", NULL, &buffer);
+>> +	if (ACPI_FAILURE(status))
+>> +		return -ENODEV;
+>> +
+>> +	obj = buffer.pointer;
+>> +	if (!obj) {
+>> +		dev_err(&adev->dev, "ACPI device has no CLDB object\n");
+> Is this the code path that is taken on Chrome OS ? If so an error
+> message isn't appropriate. I'd drop this message, and instead add an
+> error message in the discrete PMIC code.
+
+Ah yes of course, thanks, I'll move the error message.
+
+
+>> +
+>> +	unsigned int n_gpios; /* how many GPIOs have we seen */
+>> +
+>> +	struct int3472_gpio_regulator regulator;
+>> +	struct int3472_gpio_clock clock;
+> You don't necessarily need to define separate structures for this, you
+> could also write
+>
+> 	struct {
+> 		char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
+> 		char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
+> 		struct gpio_desc *gpio;
+> 		struct regulator_dev *rdev;
+> 		struct regulator_desc rdesc;
+> 	} regulator;
+>
+> 	struct {
+> 		struct clk *clk;
+> 		struct clk_hw clk_hw;
+> 		struct clk_lookup *cl;
+> 		struct gpio_desc *gpio;
+> 	} clock;
+>
+> It's entirely up to you.
+
+
+Ooh yeah I like that more, thanks very much.
+
+
+>> +/* 79234640-9e10-4fea-a5c1-b5aa8b19756f */
+>> +static const guid_t int3472_gpio_guid =
+>> +	GUID_INIT(0x79234640, 0x9e10, 0x4fea,
+>> +		  0xa5, 0xc1, 0xb5, 0xaa, 0x8b, 0x19, 0x75, 0x6f);
+>> +
+>> +/* 822ace8f-2814-4174-a56b-5f029fe079ee */
+>> +static const guid_t cio2_sensor_module_guid =
+>> +	GUID_INIT(0x822ace8f, 0x2814, 0x4174,
+>> +		  0xa5, 0x6b, 0x5f, 0x02, 0x9f, 0xe0, 0x79, 0xee);
+> A comment that explains what those DSM functions do would be useful for
+> reference. It has taken lots of time to figure it out, let's spare the
+> pain to the next person who tries to understand this :-)
+
+
+Hah - good point, well made. I'll explain what they're for then.
+
+
+>> +static int skl_int3472_clk_enable(struct clk_hw *hw)
+>> +{
+>> +	struct int3472_gpio_clock *clk = to_int3472_clk(hw);
+>> +
+>> +	gpiod_set_value(clk->gpio, 1);
+> The clock enable() and disable() methods are not supposed to sleep,
+> while setting a GPIO value may sleep in the general case. Should this be
+> moved to skl_int3472_clk_prepare() ? Same for skl_int3472_clk_disable()
+> and skl_int3472_clk_unprepare().
+
+
+I was under the assumption the difference between gpiod_set_value() and
+gpiod_set_value_cansleep() was that gpiod_set_value() _can't_ sleep, but
+actually reading the function's comments it seems it will just complain
+if it turns out it can sleep:
+
+
+* This function can be called from contexts where we cannot sleep, and will
+* complain if the GPIO chip functions potentially sleep. It doesn't
+complain, on either of my devices, but I guess that can't be guaranteed
+for _every_ device, so these calls probably are safer in (un)prepare() yes.
+
+>> +			}
+>> +
+>> +			i++;
+>> +		}
+>> +	}
+>> +
+>> +	if (!func)
+>> +		return 0;
+> I initially thought this wasn't right, as if no entry was found in the
+> mapping table, func would still have its non-NULL value as passed to
+> this function. I then realized that you're checking if the match that
+> was found is NULL. A comment to explain this would be useful.
+
+
+Yep ok - I actually had one and decided it was superfluous and removed
+it - my bad.
+
+>> +
+>> +	status = acpi_get_handle(NULL, path, &handle);
+>> +	if (ACPI_FAILURE(status))
+>> +		return -EINVAL;
+>> +
+>> +	ret = acpi_bus_get_device(handle, &adev);
+>> +	if (ret)
+>> +		return -ENODEV;
+>> +
+>> +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
+>> +							   ares->data.gpio.pin_table[0],
+>> +							   func, 0, polarity);
+> I wonder if
+>
+> 	table_entry.key = acpi_dev_name(adev);
+> 	table_entry.chip_hwnum = ares->data.gpio.pin_table[0];
+> 	table_entry.con_id = func;
+> 	table_entry.idx = 0;
+> 	table_entry.flags = polarity;
+>
+> (with struct gpiod_lookup table_entry = { }; above) would be more
+> readable. Up to you.
+>
+>> +
+>> +	memcpy(&int3472->gpios.table[int3472->n_sensor_gpios], &table_entry,
+>> +	       sizeof(table_entry));
+> Ah, or maybe
+>
+> 	struct gpio_lookup *table_entry;
+>
+> 	table_entry = &int3472->gpios.table[int3472->n_sensor_gpios];
+> 	table_entry->key = acpi_dev_name(adev);
+> 	table_entry->chip_hwnum = ares->data.gpio.pin_table[0];
+> 	table_entry->con_id = func;
+> 	table_entry->idx = 0;
+> 	table_entry->flags = polarity;
+>
+> (no need to memset() to 0 first as the whole structure has been
+> allocated with kzalloc()).
+
+
+Yeah you're right, this looks much nicer - thanks.
+
+
+>> +	int ret = 0;
+>> +
+>> +	init.name = kasprintf(GFP_KERNEL, "%s-clk",
+>> +			      acpi_dev_name(int3472->adev));
+> You need to check for NULL and return -ENOMEM.
+
+
+Oops, of course, thanks
+
+
+>> +		goto err_unregister_clk;
+> If this fails, you will end up calling clk_unregister() and
+> clkdev_drop() in skl_int3472_discrete_remove(). You should replace the
+> check in the remove function with
+>
+> 	if (!int3472->clock.cl) {
+
+You're right, good spot, thank you.
+
+
+>> +		dev_err(&int3472->pdev->dev, "No sensor module config\n");
+>> +		return PTR_ERR(sensor_config);
+>> +	}
+> Would it make sense to call this in skl_int3472_discrete_probe() or
+> skl_int3472_parse_crs() and cache the config pointer ?
+
+
+Yes, probably actually, and then the GPIO mapping function can just
+check for its presence.
+
+
+>> +	init_data.constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
+>> +	init_data.num_consumer_supplies = 1;
+>> +	init_data.consumer_supplies = &sensor_config->supply_map;
+>> +
+>> +	snprintf(int3472->regulator.regulator_name,
+>> +		 GPIO_REGULATOR_NAME_LENGTH, "int3472-discrete-regulator");
+> s/GPIO_REGULATOR_NAME_LENGTH/sizeof(int3472->regulator.regulator_name)/
+>
+> Do regulator names need to be unique ? If so you may have a problem if a
+> platform has two discrete INT3472.
+
+
+Unlike clocks, the regulator framework doesn't shout at you when you do
+this, but I agree it's suboptimal at the very least, I'll set it to
+..."%s-regulator", acpi_dev_name(int3472->adev)... as with the clock.
+
+
+>> +	case INT3472_GPIO_TYPE_PRIVACY_LED:
+>> +		ret = skl_int3472_map_gpio_to_sensor(int3472, ares,
+>> +						     "indicator-led",
+>> +						     GPIO_ACTIVE_HIGH);
+> Mapping the indicator LED to the sensor isn't great, as all sensor
+> drivers would then need to handle it. Could it be handled in the
+> regulator instead, so that it would be turned on automatically when the
+> sensor is powered up ? Another option, more complicated, would be to
+> handle it in the CIO2 driver (but I'm not sure how we would map it).
+
+
+Not with the regulator, because it turns out only the 0x0b pin is one of
+those and those appear on very few devices in scope, so it wouldn't be
+called on a Surface Book 2 for example. Perhaps as part of clock
+prepare/enable? I don't much like the idea of it running in the CIO2
+driver to be honest, feels a bit out of place.
+
+
+>> +
+>> +	if (int3472->gpios_mapped)
+>> +		gpiod_remove_lookup_table(&int3472->gpios);
+> You could avoid the need for the gpios_mapped field by checking for
+>
+> 	if (int3472->gpios.list.next)
+>
+> Up to you.
+
+
+Thank you! I was scratching my head trying to figure out a better way of
+doing that.
+
