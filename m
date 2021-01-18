@@ -2,167 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F1D2F9E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7372F9E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390094AbhARLav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:30:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390279AbhARL3b (ORCPT
+        id S2390310AbhARL3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:29:51 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42614 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390270AbhARL3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:29:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610969283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GfkKudYaZlqmuF0tL9e4J/Hz3n8hnZrxD3cO+HhHt7c=;
-        b=W4OgQLaI6tfMdqwg5mv6ARmwxiI+ezp58HE0EMvahtX20vJKKeat7DiXkRN+iBXNRKofcR
-        Bucz1gxoqFDxdZM1NmB+483g9AJOmb2kMCWqdXUncWED9BvfMwKgII2Xl8wnBHw3k9I+Pc
-        ap34ZCAhPYko+hijKt4BWz8SE72FqmI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-olcYVM4MOKu9q5Tw3Q6kCw-1; Mon, 18 Jan 2021 06:28:00 -0500
-X-MC-Unique: olcYVM4MOKu9q5Tw3Q6kCw-1
-Received: by mail-wm1-f72.google.com with SMTP id d2so613440wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:28:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GfkKudYaZlqmuF0tL9e4J/Hz3n8hnZrxD3cO+HhHt7c=;
-        b=D7ef8Rc5y/FQuzwwmacigqSu38CiQgWdoG2OXlbXQgGISYav0Xkgg/T4l1MeMHpTIt
-         6qthIgkxHwwPNhhR8+ovPsQw8Uv5xVS+NBl3cIZUL4ET1BSPUMo3z6nsKERuCBZIU2v5
-         fqfRckv8DUN+7NierL8VdCkjXSPWrsWGkcjFG2k1nRhp4rvypz7uEaiShJPEI5TXj9tX
-         L/tOYTFt2eYkzT5UQVqXPORDJRxuH7U5PbdKJbrQTFrQzHFka5yUwBOem4hXd9Jpu2rX
-         EZ7qHrXITg9oNKxh0rZtgMRYXWIsNESn+3+jgQYsR8BnmsZcyd9Dok+YETBDYmlrhgoq
-         TKBA==
-X-Gm-Message-State: AOAM531wuZkcuHEnVUtS4Rz2W1avCBZMujSapRW+5dc1gVGx7vxwLI9c
-        vBGGp67jB6PBgBdQe0TrNsy78L3SD9ayOPJWH2HlOyHvlKkjJH2R1XGwNlqr+McFhqDWysOAHS7
-        HyheypPD9ae2NkS7ObtxAnzED
-X-Received: by 2002:adf:b1da:: with SMTP id r26mr21560887wra.198.1610969279348;
-        Mon, 18 Jan 2021 03:27:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXJ0k/cNJfD975QGqeq3Um6f+ympUYuBPRRl5bHpD0GmnEEsYtRLTxC5yL4qC2rX3vGpo1WA==
-X-Received: by 2002:adf:b1da:: with SMTP id r26mr21560869wra.198.1610969279157;
-        Mon, 18 Jan 2021 03:27:59 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id o14sm25518146wmc.28.2021.01.18.03.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 03:27:58 -0800 (PST)
-Date:   Mon, 18 Jan 2021 12:27:56 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jorgen Hansen <jhansen@vmware.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, pv-drivers@vmware.com,
-        gregkh@linuxfoundation.org, Norbert Slusarek <nslusarek@gmx.net>
-Subject: Re: [PATCH] VMCI: Enforce queuepair max size for
- IOCTL_VMCI_QUEUEPAIR_ALLOC
-Message-ID: <20210118112756.ekfebcbyqwz4dd4b@steredhat>
-References: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
+        Mon, 18 Jan 2021 06:29:06 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id A53081F44CE7
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Collabora kernel ML <kernel@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 RESEND 1/2] arm: lib: xor-neon: remove unnecessary
+ GCC < 4.6 warning
+In-Reply-To: <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
+References: <20210118105557.186614-1-adrian.ratiu@collabora.com>
+ <20210118105557.186614-2-adrian.ratiu@collabora.com>
+ <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
+Date:   Mon, 18 Jan 2021 13:28:18 +0200
+Message-ID: <87wnwafprh.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Norbert Slusarek <nslusarek@gmx.net>
+On Mon, 18 Jan 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> On Mon, Jan 18, 2021 at 11:56 AM Adrian Ratiu 
+> <adrian.ratiu@collabora.com> wrote: 
+>> 
+>> From: Nathan Chancellor <natechancellor@gmail.com> 
+>> 
+>> Drop warning because kernel now requires GCC >= v4.9 after 
+>> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9") 
+>> and clarify that -ftree-vectorize now always needs enabling for 
+>> GCC by directly testing the presence of CONFIG_CC_IS_GCC. 
+>> 
+>> Another reason to remove the warning is that Clang exposes 
+>> itself as GCC < 4.6 so it triggers the warning about GCC which 
+>> doesn't make much sense and risks misleading users. 
+>> 
+>> As a side-note remark, -fttree-vectorize is on by default in 
+>> Clang, but it currently does not work (see linked issues). 
+>> 
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/496 Link: 
+>> https://github.com/ClangBuiltLinux/linux/issues/503 
+>> Reported-by: Nick Desaulniers <ndesaulniers@google.com> 
+>> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com> 
+>> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com> 
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com> 
+> 
+> Shouldn't there be a check for whatever minimum version of clang 
+> produces optimized code now? As I understand it, the warning was 
+> originally meant to complain about both old gcc and any version 
+> of clang, while waiting for a new version of clang to produce 
+> vectorized code. 
+> 
+> Has that happened now? 
 
-On Mon, Jan 11, 2021 at 04:18:53AM -0800, Jorgen Hansen wrote:
->When create the VMCI queue pair tracking data structures on the host
->side, the IOCTL for creating the VMCI queue pair didn't validate
->the queue pair size parameters. This change adds checks for this.
->
->This avoids a memory allocation issue in qp_host_alloc_queue, as
->reported by nslusarek@gmx.net. The check in qp_host_alloc_queue
->has also been updated to enforce the maximum queue pair size
->as defined by VMCI_MAX_GUEST_QP_MEMORY.
->
->The fix has been verified using sample code supplied by
->nslusarek@gmx.net.
->
->Reported-by: nslusarek@gmx.net
->Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
->Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
->---
-> drivers/misc/vmw_vmci/vmci_queue_pair.c | 12 ++++++++----
-> include/linux/vmw_vmci_defs.h           |  4 ++--
-> 2 files changed, 10 insertions(+), 6 deletions(-)
->
->diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
->index 525ef96..39d2f191 100644
->--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
->+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
->@@ -237,7 +237,9 @@ static struct qp_list qp_guest_endpoints = {
-> #define QPE_NUM_PAGES(_QPE) ((u32) \
-> 			     (DIV_ROUND_UP(_QPE.produce_size, PAGE_SIZE) + \
-> 			      DIV_ROUND_UP(_QPE.consume_size, PAGE_SIZE) + 2))
->-
->+#define QP_SIZES_ARE_VALID(_prod_qsize, _cons_qsize) \
->+	((_prod_qsize) + (_cons_qsize) >= max(_prod_qsize, _cons_qsize) && \
->+	 (_prod_qsize) + (_cons_qsize) <= VMCI_MAX_GUEST_QP_MEMORY)
->
-> /*
->  * Frees kernel VA space for a given queue and its queue header, and
->@@ -528,7 +530,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
-> 	u64 num_pages;
-> 	const size_t queue_size = sizeof(*queue) + sizeof(*(queue->kernel_if));
->
->-	if (size > SIZE_MAX - PAGE_SIZE)
->+	if (size > min(VMCI_MAX_GUEST_QP_MEMORY, SIZE_MAX - PAGE_SIZE))
-> 		return NULL;
-> 	num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
-> 	if (num_pages > (SIZE_MAX - queue_size) /
->@@ -1929,6 +1931,9 @@ int vmci_qp_broker_alloc(struct vmci_handle handle,
-> 			 struct vmci_qp_page_store *page_store,
-> 			 struct vmci_ctx *context)
-> {
->+	if (!QP_SIZES_ARE_VALID(produce_size, consume_size))
->+		return VMCI_ERROR_NO_RESOURCES;
->+
-> 	return qp_broker_alloc(handle, peer, flags, priv_flags,
-> 			       produce_size, consume_size,
-> 			       page_store, context, NULL, NULL, NULL, NULL);
->@@ -2685,8 +2690,7 @@ int vmci_qpair_alloc(struct vmci_qp **qpair,
-> 	 * used by the device is NO_RESOURCES, so use that here too.
-> 	 */
->
->-	if (produce_qsize + consume_qsize < max(produce_qsize, consume_qsize) ||
->-	    produce_qsize + consume_qsize > VMCI_MAX_GUEST_QP_MEMORY)
->+	if (!QP_SIZES_ARE_VALID(produce_qsize, consume_qsize))
-> 		return VMCI_ERROR_NO_RESOURCES;
->
-> 	retval = vmci_route(&src, &dst, false, &route);
->diff --git a/include/linux/vmw_vmci_defs.h b/include/linux/vmw_vmci_defs.h
->index be0afe6..e36cb11 100644
->--- a/include/linux/vmw_vmci_defs.h
->+++ b/include/linux/vmw_vmci_defs.h
->@@ -66,7 +66,7 @@ enum {
->  * consists of at least two pages, the memory limit also dictates the
->  * number of queue pairs a guest can create.
->  */
->-#define VMCI_MAX_GUEST_QP_MEMORY (128 * 1024 * 1024)
->+#define VMCI_MAX_GUEST_QP_MEMORY ((size_t)(128 * 1024 * 1024))
-> #define VMCI_MAX_GUEST_QP_COUNT  (VMCI_MAX_GUEST_QP_MEMORY / PAGE_SIZE / 2)
->
-> /*
->@@ -80,7 +80,7 @@ enum {
->  * too much kernel memory (especially on vmkernel).  We limit a queuepair to
->  * 32 KB, or 16 KB per queue for symmetrical pairs.
->  */
->-#define VMCI_MAX_PINNED_QP_MEMORY (32 * 1024)
->+#define VMCI_MAX_PINNED_QP_MEMORY ((size_t)(32 * 1024))
->
-> /*
->  * We have a fixed set of resource IDs available in the VMX.
->-- 
->2.6.2
->
->_______________________________________________
->Virtualization mailing list
->Virtualization@lists.linux-foundation.org
->https://lists.linuxfoundation.org/mailman/listinfo/virtualization
->
+No, clang does not produce vectorized code by default, not even 
+with the -ftree-vectorize flag explicitely added like in the next 
+patch in this series (that flag is enabled by default in clang 
+anyway, so no effect).
 
+Clang needs more investigation and testing because with additional 
+code changes it can be "forced" to output vectorized code, but 
+that is outside the scope of this series.
+
+If you think it's a good idea I can add a warning only for Clang 
+which makes more sense than telling clang users to upgrade their 
+GCC, since now Clang is officially supported. What do you think?
+
+
+>
+>        Arnd
