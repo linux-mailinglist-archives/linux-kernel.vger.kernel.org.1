@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186892FAB09
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8082D2FAB0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389987AbhARUJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:09:35 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:55465 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388785AbhARUJG (ORCPT
+        id S2437780AbhARUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:09:53 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:41946 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394185AbhARUJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:09:06 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1l1ap6-001t61-Tb; Mon, 18 Jan 2021 21:08:24 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1l1ap6-001eo0-9b; Mon, 18 Jan 2021 21:08:24 +0100
-Subject: Re: [PATCH] sh: Remove unused HAVE_COPY_THREAD_TLS macro
-To:     Jinyang He <hejinyang@loongson.cn>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1602474624-3225-1-git-send-email-hejinyang@loongson.cn>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <668e2039-b17e-64e3-30a9-ad019ba3af93@physik.fu-berlin.de>
-Date:   Mon, 18 Jan 2021 21:08:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 18 Jan 2021 15:09:37 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 17EE32EA2F1;
+        Mon, 18 Jan 2021 15:08:53 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id 6wxIMQiKLd4y; Mon, 18 Jan 2021 14:55:17 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 06E792EA2DB;
+        Mon, 18 Jan 2021 15:08:51 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, ddiss@suse.de,
+        bvanassche@acm.org
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+Date:   Mon, 18 Jan 2021 15:08:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1602474624-3225-1-git-send-email-hejinyang@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210118182854.GJ4605@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 5:50 AM, Jinyang He wrote:
-> Fixes: 	e1cc9d8d596e ("sh: switch to copy_thread_tls()")
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->  arch/sh/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
+On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
+> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
 > 
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index d209271..165f291 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -30,7 +30,6 @@ config SUPERH
->  	select HAVE_ARCH_KGDB
->  	select HAVE_ARCH_SECCOMP_FILTER
->  	select HAVE_ARCH_TRACEHOOK
-> -	select HAVE_COPY_THREAD_TLS
->  	select HAVE_DEBUG_BUGVERBOSE
->  	select HAVE_DEBUG_KMEMLEAK
->  	select HAVE_DYNAMIC_FTRACE
+>> After several flawed attempts to detect overflow, take the fastest
+>> route by stating as a pre-condition that the 'order' function argument
+>> cannot exceed 16 (2^16 * 4k = 256 MiB).
+> 
+> That doesn't help, the point of the overflow check is similar to
+> overflow checks in kcalloc: to prevent the routine from allocating
+> less memory than the caller might assume.
+> 
+> For instance ipr_store_update_fw() uses request_firmware() (which is
+> controlled by userspace) to drive the length argument to
+> sgl_alloc_order(). If userpace gives too large a value this will
+> corrupt kernel memory.
+> 
+> So this math:
+> 
+>    	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
 
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+But that check itself overflows if order is too large (e.g. 65).
+A pre-condition says that the caller must know or check a value
+is sane, and if the user space can have a hand in the value passed
+the caller _must_ check pre-conditions IMO. A pre-condition also
+implies that the function's implementation will not have code to
+check the pre-condition.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+My "log of both sides" proposal at least got around the overflowing
+left shift problem. And one reviewer, Bodo Stroesser, liked it.
+
+> Needs to be checked, add a precondition to order does not help. I
+> already proposed a straightforward algorithm you can use.
+
+It does help, it stops your proposed check from being flawed :-)
+
+Giving a false sense of security seems more dangerous than a
+pre-condition statement IMO. Bart's original overflow check (in
+the mainline) limits length to 4GB (due to wrapping inside a 32
+bit unsigned).
+
+Also note there is another pre-condition statement in that function's
+definition, namely that length cannot be 0.
+
+So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
+notes and come up with a solution that you are _all_ happy with.
+The pre-condition works for me and is the fastest. The 'length'
+argument might be large, say > 1 GB [I use 1 GB in testing but
+did try 4GB and found the bug I'm trying to fix] but having
+individual elements greater than say 32 MB each does not
+seem very practical (and fails on the systems that I test with).
+In my testing the largest element size is 4 MB.
+
+
+Doug Gilbert
 
