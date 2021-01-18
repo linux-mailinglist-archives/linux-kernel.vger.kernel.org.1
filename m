@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEF52FAA4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702202FAA41
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437403AbhARTeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:34:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
+        id S2394062AbhARTcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390330AbhARLht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F3D22BEA;
-        Mon, 18 Jan 2021 11:36:56 +0000 (UTC)
+        id S2390383AbhARLhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C41722B4E;
+        Mon, 18 Jan 2021 11:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969817;
-        bh=SB8J9olcChwxi0/uJFauBUyLvKbKCQcEBb/seqsizw0=;
+        s=korg; t=1610969826;
+        bh=u/uHDV/cYGZnTfypdQ2dMvlAOFNoUEzaJecQfzK9iAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+6tAy0obl7RCHG1vc35merDjR6Tjy8uprOFpiZQsmiZvl0kbhBxDknPl+Q4aR22P
-         LtdooUH/TRjubiO7a/9/gdT/4GfP/jexcKdcaIN2Y5nU5Z4q4ASxTIWUs32nT76UWq
-         4tbiY2CwimgY97ALPSek64cVfkSfizBIt7/QzuoA=
+        b=RsDoIGrCjNVIgtZJtYAKEaGQsrvAz/BAS2osHombXL7C5VVQYI1mQcWjZXLukhWhT
+         75W2lzhFcS7Sbam9OFnB23UgY9kXBC7FcEzhlpQ1yflJ3NZEC+bXwtxpHCc9lS2D0I
+         SSNc/rilwLuMl7PQFOfcsuy4rMLqwGlh+OrZHz2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.19 37/43] net: sunrpc: interpret the return value of kstrtou32 correctly
-Date:   Mon, 18 Jan 2021 12:35:00 +0100
-Message-Id: <20210118113336.741823700@linuxfoundation.org>
+        stable@vger.kernel.org, Yoel Caspersen <yoel@kviknet.dk>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.19 41/43] netfilter: conntrack: fix reading nf_conntrack_buckets
+Date:   Mon, 18 Jan 2021 12:35:04 +0100
+Message-Id: <20210118113336.921993504@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
 References: <20210118113334.966227881@linuxfoundation.org>
@@ -39,47 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: j.nixdorf@avm.de <j.nixdorf@avm.de>
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
+commit f6351c3f1c27c80535d76cac2299aec44c36291e upstream.
 
-A return value of 0 means success. This is documented in lib/kstrtox.c.
+The old way of changing the conntrack hashsize runtime was through changing
+the module param via file /sys/module/nf_conntrack/parameters/hashsize. This
+was extended to sysctl change in commit 3183ab8997a4 ("netfilter: conntrack:
+allow increasing bucket size via sysctl too").
 
-This was found by trying to mount an NFS share from a link-local IPv6
-address with the interface specified by its index:
+The commit introduced second "user" variable nf_conntrack_htable_size_user
+which shadow actual variable nf_conntrack_htable_size. When hashsize is
+changed via module param this "user" variable isn't updated. This results in
+sysctl net/netfilter/nf_conntrack_buckets shows the wrong value when users
+update via the old way.
 
-  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
+This patch fix the issue by always updating "user" variable when reading the
+proc file. This will take care of changes to the actual variable without
+sysctl need to be aware.
 
-Before this commit this failed with EINVAL and also caused the following
-message in dmesg:
-
-  [...] NFS: bad IP address specified: addr=fe80::1%1
-
-The syscall using the same address based on the interface name instead
-of its index succeeds.
-
-Credits for this patch go to my colleague Christian Speich, who traced
-the origin of this bug to this line of code.
-
-Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
-Fixes: 00cfaa943ec3 ("replace strict_strto calls")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 3183ab8997a4 ("netfilter: conntrack: allow increasing bucket size via sysctl too")
+Reported-by: Yoel Caspersen <yoel@kviknet.dk>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sunrpc/addr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_standalone.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/sunrpc/addr.c
-+++ b/net/sunrpc/addr.c
-@@ -184,7 +184,7 @@ static int rpc_parse_scope_id(struct net
- 			scope_id = dev->ifindex;
- 			dev_put(dev);
- 		} else {
--			if (kstrtou32(p, 10, &scope_id) == 0) {
-+			if (kstrtou32(p, 10, &scope_id) != 0) {
- 				kfree(p);
- 				return 0;
- 			}
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -500,6 +500,9 @@ nf_conntrack_hash_sysctl(struct ctl_tabl
+ {
+ 	int ret;
+ 
++	/* module_param hashsize could have changed value */
++	nf_conntrack_htable_size_user = nf_conntrack_htable_size;
++
+ 	ret = proc_dointvec(table, write, buffer, lenp, ppos);
+ 	if (ret < 0 || !write)
+ 		return ret;
 
 
