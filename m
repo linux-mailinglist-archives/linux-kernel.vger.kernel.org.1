@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BF82F9EAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C11C2F9E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390831AbhARLsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:48:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33334 "EHLO mail.kernel.org"
+        id S2390722AbhARLlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:41:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390536AbhARLjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:39:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F6D32222A;
-        Mon, 18 Jan 2021 11:39:05 +0000 (UTC)
+        id S2390425AbhARLiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:38:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 499C4229F0;
+        Mon, 18 Jan 2021 11:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969945;
-        bh=JSbjI4yoN2wZ9ddBSamIdE+fONzuijnoJrm9icxhy0A=;
+        s=korg; t=1610969788;
+        bh=LRsymFWRyAlciZDqiRWK/ntSKv42t36TUPbsZRWPdvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Drz5tvXWHqlX0hWuzdt/VBBEklgXa3T6J5H/MVt8wiOHJZ4XUnZNVT0aziuLfnug9
-         VXEL1IvgxR1/hpj09xqJbr+eiDVd3ZRyZhKstlBLSnUj8pqEZftmyHqLuZb9dlLcFd
-         Sv5n/hMMH/B7PBJMdlmZAYYc/DhSEGVqNY5H9Cb4=
+        b=D9uB1PEjIltD9R6Ambssdgj2bLkagmI9UEjosfso8m7c7rv8DgnKFO4uVCnGH+aWm
+         gfd5l4WnAiU7p9BACHILsOc2+a9sJg+ylj+XO386/dis/6rDO78/65zwTjKUBG+ngi
+         bXZnDztstB5PAAShOvjqApAUH5NqVitCD7gPPTCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 48/76] ARM: picoxcell: fix missing interrupt-parent properties
-Date:   Mon, 18 Jan 2021 12:34:48 +0100
-Message-Id: <20210118113343.285202658@linuxfoundation.org>
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        stable@kernel.org
+Subject: [PATCH 4.19 26/43] dump_common_audit_data(): fix racy accesses to ->d_name
+Date:   Mon, 18 Jan 2021 12:34:49 +0100
+Message-Id: <20210118113336.208080694@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit bac717171971176b78c72d15a8b6961764ab197f ]
+commit d36a1dd9f77ae1e72da48f4123ed35627848507d upstream.
 
-dtc points out that the interrupts for some devices are not parsable:
+We are not guaranteed the locking environment that would prevent
+dentry getting renamed right under us.  And it's possible for
+old long name to be freed after rename, leading to UAF here.
 
-picoxcell-pc3x2.dtsi:45.19-49.5: Warning (interrupts_property): /paxi/gem@30000: Missing interrupt-parent
-picoxcell-pc3x2.dtsi:51.21-55.5: Warning (interrupts_property): /paxi/dmac@40000: Missing interrupt-parent
-picoxcell-pc3x2.dtsi:57.21-61.5: Warning (interrupts_property): /paxi/dmac@50000: Missing interrupt-parent
-picoxcell-pc3x2.dtsi:233.21-237.5: Warning (interrupts_property): /rwid-axi/axi2pico@c0000000: Missing interrupt-parent
+Cc: stable@kernel.org # v2.6.2+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-There are two VIC instances, so it's not clear which one needs to be
-used. I found the BSP sources that reference VIC0, so use that:
-
-https://github.com/r1mikey/meta-picoxcell/blob/master/recipes-kernel/linux/linux-picochip-3.0/0001-picoxcell-support-for-Picochip-picoXcell-SoC.patch
-
-Acked-by: Jamie Iles <jamie@jamieiles.com>
-Link: https://lore.kernel.org/r/20201230152010.3914962-1-arnd@kernel.org'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/picoxcell-pc3x2.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ security/lsm_audit.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
-index 5ae8607883395..3fcc86d7b735f 100644
---- a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
-+++ b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
-@@ -45,18 +45,21 @@
- 		emac: gem@30000 {
- 			compatible = "cadence,gem";
- 			reg = <0x30000 0x10000>;
-+			interrupt-parent = <&vic0>;
- 			interrupts = <31>;
- 		};
+--- a/security/lsm_audit.c
++++ b/security/lsm_audit.c
+@@ -277,7 +277,9 @@ static void dump_common_audit_data(struc
+ 		struct inode *inode;
  
- 		dmac1: dmac@40000 {
- 			compatible = "snps,dw-dmac";
- 			reg = <0x40000 0x10000>;
-+			interrupt-parent = <&vic0>;
- 			interrupts = <25>;
- 		};
+ 		audit_log_format(ab, " name=");
++		spin_lock(&a->u.dentry->d_lock);
+ 		audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
++		spin_unlock(&a->u.dentry->d_lock);
  
- 		dmac2: dmac@50000 {
- 			compatible = "snps,dw-dmac";
- 			reg = <0x50000 0x10000>;
-+			interrupt-parent = <&vic0>;
- 			interrupts = <26>;
- 		};
- 
-@@ -234,6 +237,7 @@
- 		axi2pico@c0000000 {
- 			compatible = "picochip,axi2pico-pc3x2";
- 			reg = <0xc0000000 0x10000>;
-+			interrupt-parent = <&vic0>;
- 			interrupts = <13 14 15 16 17 18 19 20 21>;
- 		};
- 	};
--- 
-2.27.0
-
+ 		inode = d_backing_inode(a->u.dentry);
+ 		if (inode) {
+@@ -295,8 +297,9 @@ static void dump_common_audit_data(struc
+ 		dentry = d_find_alias(inode);
+ 		if (dentry) {
+ 			audit_log_format(ab, " name=");
+-			audit_log_untrustedstring(ab,
+-					 dentry->d_name.name);
++			spin_lock(&dentry->d_lock);
++			audit_log_untrustedstring(ab, dentry->d_name.name);
++			spin_unlock(&dentry->d_lock);
+ 			dput(dentry);
+ 		}
+ 		audit_log_format(ab, " dev=");
 
 
