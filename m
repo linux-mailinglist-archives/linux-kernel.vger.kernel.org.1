@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9C02FA811
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5AC2FA813
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436709AbhARRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:55:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407287AbhARRzU (ORCPT
+        id S2436781AbhARRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407290AbhARRzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:55:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610992434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IhIQFSef6xQsm2RYtUZFG04are7fA83Sxz47gDbqsgA=;
-        b=CF6BfLh+gqXv86yLrSikXDGXYB5KrcrwqhbP2zpG95OsxfAOLT6UEpmdWWGCMurVH2db+J
-        qBV93oFItChMYCYpLtG+W+BlNj5INxFV/T4OyO2t+afWXEbFu9Q9vD3xOvxQ6wEhZk4afN
-        +EaYUQIl1/djv/lhq8WhbkGrTUQLGQc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-x3_c4nDEMMChGXP42vfu9Q-1; Mon, 18 Jan 2021 12:53:47 -0500
-X-MC-Unique: x3_c4nDEMMChGXP42vfu9Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 18 Jan 2021 12:55:24 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADBBC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:54:28 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B9F1800D42;
-        Mon, 18 Jan 2021 17:53:45 +0000 (UTC)
-Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DF85619C66;
-        Mon, 18 Jan 2021 17:53:43 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 11:53:37 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        dvyukov@google.com, keescook@chromium.org
-Subject: Re: [PATCH] ubsan: Require GCC-8+ or Clang to use UBSAN
-Message-ID: <20210118175337.rnh2b6vdnqw3ue63@treble>
-References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
- <20210104151317.GR3021@hirez.programming.kicks-ass.net>
- <YAAj9aAcPsV9I6UL@hirez.programming.kicks-ass.net>
- <e291008b-6b4d-9da4-1353-0762bc68e8ea@virtuozzo.com>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 7A3A43EBD3;
+        Mon, 18 Jan 2021 18:54:26 +0100 (CET)
+Subject: Re: [PATCH v3 1/7] regulator: qcom-labibb: Implement voltage selector
+ ops
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
+ <20210117220830.150948-2-angelogioacchino.delregno@somainline.org>
+ <20210118120453.GC4455@sirena.org.uk>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <032d29df-9892-4774-2a61-7b634deafe06@somainline.org>
+Date:   Mon, 18 Jan 2021 18:54:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e291008b-6b4d-9da4-1353-0762bc68e8ea@virtuozzo.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210118120453.GC4455@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 02:09:28PM +0300, Andrey Ryabinin wrote:
+Il 18/01/21 13:04, Mark Brown ha scritto:
+> On Sun, Jan 17, 2021 at 11:08:24PM +0100, AngeloGioacchino Del Regno wrote:
+>> Implement {get,set}_voltage_sel, list_voltage, map_voltage with
+>> the useful regulator regmap helpers in order to be able to manage
+>> the voltage of LAB (positive) and IBB (negative) regulators.
 > 
+> Please do not submit new versions of already applied patches, please
+> submit incremental updates to the existing code.  Modifying existing
+> commits creates problems for other users building on top of those
+> commits so it's best practice to only change pubished git commits if
+> absolutely essential.
 > 
-> On 1/14/21 1:59 PM, Peter Zijlstra wrote:
-> > On Mon, Jan 04, 2021 at 04:13:17PM +0100, Peter Zijlstra wrote:
-> >> On Tue, Dec 22, 2020 at 11:04:54PM -0600, Josh Poimboeuf wrote:
-> >>> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
-> >>> signed-overflow-UB warnings.  The type mismatch between 'i' and
-> >>> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
-> >>> which also happens to violate uaccess rules:
-> >>>
-> >>>   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
-> >>>
-> >>> Fix it by making the variable types match.
-> >>>
-> >>> This is similar to a previous commit:
-> >>>
-> >>>   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
-> >>
-> >> Maybe it's time we make UBSAN builds depend on GCC-8+ ?
-> > 
-> > ---
-> > Subject: ubsan: Require GCC-8+ or Clang to use UBSAN
-> > 
-> > Just like how we require GCC-8.2 for KASAN due to compiler bugs, require
-> > a sane version of GCC for UBSAN.
-> > 
-> > Specifically, before GCC-8 UBSAN doesn't respect -fwrapv and thinks
-> > signed arithmetic is buggered.
-> > 
-> 
-> Actually removing CONFIG_UBSAN_SIGNED_OVERFLOW would give us the same
-> effect without restricting GCC versions.
 
-Is that preferable?  Always happy to remove code, just need some
-justification behind it.
+Sorry for that. Should I send a v4 to fix that?
 
--- 
-Josh
-
+- Angelo
