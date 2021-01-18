@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D842FACAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBC72FACAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394639AbhARV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:29:22 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54928 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389243AbhARKLL (ORCPT
+        id S2394690AbhARV2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389308AbhARKLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:11:11 -0500
+        Mon, 18 Jan 2021 05:11:09 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB78C061573;
+        Mon, 18 Jan 2021 02:10:23 -0800 (PST)
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610964615;
+        s=2020; t=1610964620;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NkkVqWalPLNmP6iVYEJDDHa+oGp/xpN9IA9pHFCSXuc=;
-        b=3eRqL9y+7byzmwk5sC5SAOBdhjvwnwTr0utAQkVdOvjkskWzHKPMbtzJUHvjhOOMgJFfPg
-        pq/l3CaQKZ2rDwYXDLWl7r/NCEKrvJyc/WSyfRjuLyXsI718Q9Ij3NmuJCFCeWF/ifqFjR
-        HsC06+E/cNTLpe9bzVI0IFbmpcfS9p+ObA7hGrOEUXl5xm+CTLL6L4t1+/JO2p05Jn/DMz
-        0qXVVPFJVK21Ci8ZQHdYRaqXN33nsbLUMnH3lJA+hqw9G/1Cp/Ch6FTKLBz/xGkFXuRY5Z
-        rV2zzLSfknhnVYNvTHtgeNpTvA1JzP9lb6ZLhGXJ4umwS2TiRCI4G905CR80eQ==
+        bh=fWch7q4X9I9Uk59vgur/xC+IuR+UeFD+mvuJnp1FdCw=;
+        b=AVq9smyoqXl8QRQOILIrev2nt++sD4ifNl5b+wxPpM4RXcxQgOoWOPbnzxEuTp/F7Aq+qE
+        fkb+PMWd2gi3SRF5v0TMJzCdmwTjC2iDDevLiEHDpnOZzGFAnIJBHCNaWqj+LscLThbj3l
+        SrsoTFmuCr1PDDFQoBIRUppREiXgvquPYKcxXXUJNDl6PevyKLWF1Qg9eREG11FwBOemLy
+        QYHQOXBucuK4FXMMwTqcUlvNgIB9bnPKtRlRJHkMyd3p0JgFUlglvGVzgqIbDZgHUo55Hp
+        yZJEpQQDL6hf7PAQqzBuoYpjfBPyp1oAoeZ4hV87UtJRm+30T0O1/ECazpQNTA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610964615;
+        s=2020e; t=1610964620;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NkkVqWalPLNmP6iVYEJDDHa+oGp/xpN9IA9pHFCSXuc=;
-        b=ZiRlKOwt0FrqWs3i3ZKpzeotwm2y9y52KBunqHiQ1LqlP7ErxJ2IOowZV3BVVTIdC+6OQ9
-        MzMinMdqWmGT7HDw==
+        bh=fWch7q4X9I9Uk59vgur/xC+IuR+UeFD+mvuJnp1FdCw=;
+        b=igLcECIwHI0B+U9Ie7aRiZWOKOBgFmoUoTj0BNOQJXrBKebtkqTOXwT5kIaJVMB1vXQ+Ed
+        3aB70g4NEF5+z6BA==
 To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Christoph Hellwig <hch@infradead.org>,
@@ -46,9 +49,9 @@ Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Sebastian A. Siewior" <bigeasy@linutronix.de>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v3 03/19] scsi: libsas: Introduce a _gfp() variant of event notifiers
-Date:   Mon, 18 Jan 2021 11:09:39 +0100
-Message-Id: <20210118100955.1761652-4-a.darwish@linutronix.de>
+Subject: [PATCH v3 04/19] scsi: mvsas: Pass gfp_t flags to libsas event notifiers
+Date:   Mon, 18 Jan 2021 11:09:40 +0100
+Message-Id: <20210118100955.1761652-5-a.darwish@linutronix.de>
 In-Reply-To: <20210118100955.1761652-1-a.darwish@linutronix.de>
 References: <20210118100955.1761652-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
@@ -57,17 +60,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sas_alloc_event() uses in_interrupt() to decide which allocation should
-be used.
-
-The usage of in_interrupt() in drivers is phased out and Linus clearly
-requested that code which changes behaviour depending on context should
-either be separated or the context be conveyed in an argument passed by
-the caller, which usually knows the context.
-
-The in_interrupt() check is also only partially correct, because it
-fails to choose the correct code path when just preemption or interrupts
-are disabled. For example, as in the following call chain:
+mvsas calls the non _gfp version of the libsas event notifiers API,
+leading to the buggy call chains below:
 
   mvsas/mv_sas.c: mvs_work_queue() [process context]
   spin_lock_irqsave(mvs_info::lock, )
@@ -80,231 +74,119 @@ are disabled. For example, as in the following call chain:
         -> in_interrupt() = false
           -> invalid GFP_KERNEL allocation
 
-Introduce sas_alloc_event_gfp(), sas_notify_port_event_gfp(), and
-sas_notify_phy_event_gfp(), which all behave like the non _gfp()
-variants but use a caller-passed GFP mask for allocations.
+Use the new event notifiers API instead, which requires callers to
+explicitly pass the gfp_t memory allocation flags.
 
-For bisectability, all callers will be modified first to pass GFP
-context, then the non _gfp() libsas API variants will be modified to
-take a gfp_t by default.
+Below are context analysis for the modified functions:
+
+=> mvs_bytes_dmaed():
+
+Since it is invoked from both process and atomic contexts, let its
+callers pass the gfp_t flags. Call chains:
+
+  scsi_scan.c: do_scsi_scan_host() [has msleep()]
+    -> shost->hostt->scan_start()
+    -> [mvsas/mv_init.c: Scsi_Host::scsi_host_template .scan_start = mvs_scan_start()]
+    -> mvsas/mv_sas.c: mvs_scan_start()
+      -> mvs_bytes_dmaed(..., GFP_KERNEL)
+
+  mvsas/mv_sas.c: mvs_work_queue()
+  spin_lock_irqsave(mvs_info::lock,)
+    -> mvs_bytes_dmaed(..., GFP_ATOMIC)
+
+  mvsas/mv_64xx.c: mvs_64xx_isr() || mvsas/mv_94xx.c: mvs_94xx_isr()
+    -> mvsas/mv_chips.h: mvs_int_full()
+      -> mvsas/mv_sas.c: mvs_int_port()
+        -> mvs_bytes_dmaed(..., GFP_ATOMIC);
+
+=> mvs_work_queue():
+
+Invoked from process context, but it calls all the libsas event notifier
+APIs under a spin_lock_irqsave(). Pass GFP_ATOMIC.
 
 Fixes: 1c393b970e0f ("scsi: libsas: Use dynamic alloced work to avoid sas event lost")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 Reviewed-by: John Garry <john.garry@huawei.com>
 Cc: Jason Yan <yanaijie@huawei.com>
 ---
- Documentation/scsi/libsas.rst      |  2 +
- drivers/scsi/libsas/sas_event.c    | 67 ++++++++++++++++++++++++------
- drivers/scsi/libsas/sas_init.c     | 21 +++++++---
- drivers/scsi/libsas/sas_internal.h |  4 ++
- include/scsi/libsas.h              |  4 ++
- 5 files changed, 80 insertions(+), 18 deletions(-)
+ drivers/scsi/mvsas/mv_sas.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
-index 6722e352444b..ea63ab3a9216 100644
---- a/Documentation/scsi/libsas.rst
-+++ b/Documentation/scsi/libsas.rst
-@@ -191,6 +191,8 @@ The event interface::
- 	/* LLDD calls these to notify the class of an event. */
- 	void sas_notify_port_event(struct sas_phy *, enum port_event);
- 	void sas_notify_phy_event(struct sas_phy *, enum phy_event);
-+	void sas_notify_port_event_gfp(struct sas_phy *, enum port_event, gfp_t);
-+	void sas_notify_phy_event_gfp(struct sas_phy *, enum phy_event, gfp_t);
- 
- The port notification::
- 
-diff --git a/drivers/scsi/libsas/sas_event.c b/drivers/scsi/libsas/sas_event.c
-index 112a1b76f63b..ba266a17250a 100644
---- a/drivers/scsi/libsas/sas_event.c
-+++ b/drivers/scsi/libsas/sas_event.c
-@@ -131,18 +131,15 @@ static void sas_phy_event_worker(struct work_struct *work)
- 	sas_free_event(ev);
+diff --git a/drivers/scsi/mvsas/mv_sas.c b/drivers/scsi/mvsas/mv_sas.c
+index e5e3e95f78b0..484e01428da2 100644
+--- a/drivers/scsi/mvsas/mv_sas.c
++++ b/drivers/scsi/mvsas/mv_sas.c
+@@ -216,7 +216,7 @@ void mvs_set_sas_addr(struct mvs_info *mvi, int port_id, u32 off_lo,
+ 	MVS_CHIP_DISP->write_port_cfg_data(mvi, port_id, hi);
  }
  
--int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event)
-+static int __sas_notify_port_event(struct asd_sas_phy *phy,
-+				   enum port_event event,
-+				   struct asd_sas_event *ev)
+-static void mvs_bytes_dmaed(struct mvs_info *mvi, int i)
++static void mvs_bytes_dmaed(struct mvs_info *mvi, int i, gfp_t gfp_flags)
  {
--	struct asd_sas_event *ev;
- 	struct sas_ha_struct *ha = phy->ha;
- 	int ret;
+ 	struct mvs_phy *phy = &mvi->phy[i];
+ 	struct asd_sas_phy *sas_phy = &phy->sas_phy;
+@@ -229,7 +229,7 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i)
+ 		return;
+ 	}
  
- 	BUG_ON(event >= PORT_NUM_EVENTS);
+-	sas_notify_phy_event(sas_phy, PHYE_OOB_DONE);
++	sas_notify_phy_event_gfp(sas_phy, PHYE_OOB_DONE, gfp_flags);
  
--	ev = sas_alloc_event(phy);
--	if (!ev)
--		return -ENOMEM;
--
- 	INIT_SAS_EVENT(ev, sas_port_event_worker, phy, event);
+ 	if (sas_phy->phy) {
+ 		struct sas_phy *sphy = sas_phy->phy;
+@@ -261,7 +261,7 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i)
  
- 	ret = sas_queue_event(event, &ev->work, ha);
-@@ -151,20 +148,41 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event)
+ 	sas_phy->frame_rcvd_size = phy->frame_rcvd_size;
  
- 	return ret;
+-	sas_notify_port_event(sas_phy, PORTE_BYTES_DMAED);
++	sas_notify_port_event_gfp(sas_phy, PORTE_BYTES_DMAED, gfp_flags);
  }
-+
-+int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
-+			      gfp_t gfp_flags)
-+{
-+	struct asd_sas_event *ev;
-+
-+	ev = sas_alloc_event_gfp(phy, gfp_flags);
-+	if (!ev)
-+		return -ENOMEM;
-+
-+	return __sas_notify_port_event(phy, event, ev);
-+}
-+EXPORT_SYMBOL_GPL(sas_notify_port_event_gfp);
-+
-+int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event)
-+{
-+	struct asd_sas_event *ev;
-+
-+	ev = sas_alloc_event(phy);
-+	if (!ev)
-+		return -ENOMEM;
-+
-+	return __sas_notify_port_event(phy, event, ev);
-+}
- EXPORT_SYMBOL_GPL(sas_notify_port_event);
  
--int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event)
-+static inline int __sas_notify_phy_event(struct asd_sas_phy *phy,
-+					 enum phy_event event,
-+					 struct asd_sas_event *ev)
- {
--	struct asd_sas_event *ev;
- 	struct sas_ha_struct *ha = phy->ha;
- 	int ret;
- 
- 	BUG_ON(event >= PHY_NUM_EVENTS);
- 
--	ev = sas_alloc_event(phy);
--	if (!ev)
--		return -ENOMEM;
--
- 	INIT_SAS_EVENT(ev, sas_phy_event_worker, phy, event);
- 
- 	ret = sas_queue_event(event, &ev->work, ha);
-@@ -173,5 +191,28 @@ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event)
- 
- 	return ret;
+ void mvs_scan_start(struct Scsi_Host *shost)
+@@ -277,7 +277,7 @@ void mvs_scan_start(struct Scsi_Host *shost)
+ 	for (j = 0; j < core_nr; j++) {
+ 		mvi = ((struct mvs_prv_info *)sha->lldd_ha)->mvi[j];
+ 		for (i = 0; i < mvi->chip->n_phy; ++i)
+-			mvs_bytes_dmaed(mvi, i);
++			mvs_bytes_dmaed(mvi, i, GFP_KERNEL);
+ 	}
+ 	mvs_prv->scan_finished = 1;
  }
-+
-+int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
-+			     gfp_t gfp_flags)
-+{
-+	struct asd_sas_event *ev;
-+
-+	ev = sas_alloc_event_gfp(phy, gfp_flags);
-+	if (!ev)
-+		return -ENOMEM;
-+
-+	return __sas_notify_phy_event(phy, event, ev);
-+}
-+EXPORT_SYMBOL_GPL(sas_notify_phy_event_gfp);
-+
-+int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event)
-+{
-+	struct asd_sas_event *ev;
-+
-+	ev = sas_alloc_event(phy);
-+	if (!ev)
-+		return -ENOMEM;
-+
-+	return __sas_notify_phy_event(phy, event, ev);
-+}
- EXPORT_SYMBOL_GPL(sas_notify_phy_event);
--
-diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
-index 6dc2505d36af..f8ae1f0f17d3 100644
---- a/drivers/scsi/libsas/sas_init.c
-+++ b/drivers/scsi/libsas/sas_init.c
-@@ -584,16 +584,15 @@ sas_domain_attach_transport(struct sas_domain_function_template *dft)
- }
- EXPORT_SYMBOL_GPL(sas_domain_attach_transport);
- 
--
--struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
-+static struct asd_sas_event *__sas_alloc_event(struct asd_sas_phy *phy,
-+					       gfp_t gfp_flags)
- {
- 	struct asd_sas_event *event;
--	gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
- 	struct sas_ha_struct *sas_ha = phy->ha;
- 	struct sas_internal *i =
- 		to_sas_internal(sas_ha->core.shost->transportt);
- 
--	event = kmem_cache_zalloc(sas_event_cache, flags);
-+	event = kmem_cache_zalloc(sas_event_cache, gfp_flags);
- 	if (!event)
- 		return NULL;
- 
-@@ -604,7 +603,8 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
- 			if (cmpxchg(&phy->in_shutdown, 0, 1) == 0) {
- 				pr_notice("The phy%d bursting events, shut it down.\n",
- 					  phy->id);
--				sas_notify_phy_event(phy, PHYE_SHUTDOWN);
-+				sas_notify_phy_event_gfp(phy, PHYE_SHUTDOWN,
-+							 gfp_flags);
+@@ -1892,20 +1892,21 @@ static void mvs_work_queue(struct work_struct *work)
+ 			if (!(tmp & PHY_READY_MASK)) {
+ 				sas_phy_disconnected(sas_phy);
+ 				mvs_phy_disconnected(phy);
+-				sas_notify_phy_event(sas_phy,
+-					PHYE_LOSS_OF_SIGNAL);
++				sas_notify_phy_event_gfp(sas_phy,
++					PHYE_LOSS_OF_SIGNAL, GFP_ATOMIC);
+ 				mv_dprintk("phy%d Removed Device\n", phy_no);
+ 			} else {
+ 				MVS_CHIP_DISP->detect_porttype(mvi, phy_no);
+ 				mvs_update_phyinfo(mvi, phy_no, 1);
+-				mvs_bytes_dmaed(mvi, phy_no);
++				mvs_bytes_dmaed(mvi, phy_no, GFP_ATOMIC);
+ 				mvs_port_notify_formed(sas_phy, 0);
+ 				mv_dprintk("phy%d Attached Device\n", phy_no);
  			}
- 		} else {
- 			/* Do not support PHY control, stop allocating events */
-@@ -618,6 +618,17 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
- 	return event;
- }
+ 		}
+ 	} else if (mwq->handler & EXP_BRCT_CHG) {
+ 		phy->phy_event &= ~EXP_BRCT_CHG;
+-		sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD);
++		sas_notify_port_event_gfp(sas_phy,
++				PORTE_BROADCAST_RCVD, GFP_ATOMIC);
+ 		mv_dprintk("phy%d Got Broadcast Change\n", phy_no);
+ 	}
+ 	list_del(&mwq->entry);
+@@ -2022,7 +2023,7 @@ void mvs_int_port(struct mvs_info *mvi, int phy_no, u32 events)
+ 				mdelay(10);
+ 			}
  
-+struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
-+{
-+	return __sas_alloc_event(phy, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
-+}
-+
-+struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
-+					  gfp_t gfp_flags)
-+{
-+	return __sas_alloc_event(phy, gfp_flags);
-+}
-+
- void sas_free_event(struct asd_sas_event *event)
- {
- 	struct asd_sas_phy *phy = event->phy;
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 53ea32ed17a7..52e09c3e2b50 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -49,6 +49,8 @@ int  sas_register_phys(struct sas_ha_struct *sas_ha);
- void sas_unregister_phys(struct sas_ha_struct *sas_ha);
- 
- struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy);
-+struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
-+					  gfp_t gfp_flags);
- void sas_free_event(struct asd_sas_event *event);
- 
- int  sas_register_ports(struct sas_ha_struct *sas_ha);
-@@ -77,6 +79,8 @@ int sas_smp_phy_control(struct domain_device *dev, int phy_id,
- int sas_smp_get_phy_events(struct sas_phy *phy);
- 
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event);
-+int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
-+			     gfp_t flags);
- void sas_device_set_phy(struct domain_device *dev, struct sas_port *port);
- struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
- struct domain_device *sas_ex_to_ata(struct domain_device *ex_dev, int phy_id);
-diff --git a/include/scsi/libsas.h b/include/scsi/libsas.h
-index 3387149502e9..e6a43163ab5b 100644
---- a/include/scsi/libsas.h
-+++ b/include/scsi/libsas.h
-@@ -704,5 +704,9 @@ int sas_request_addr(struct Scsi_Host *shost, u8 *addr);
- 
- int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event);
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event);
-+int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
-+			      gfp_t gfp_flags);
-+int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
-+			     gfp_t gfp_flags);
- 
- #endif /* _SASLIB_H_ */
+-			mvs_bytes_dmaed(mvi, phy_no);
++			mvs_bytes_dmaed(mvi, phy_no, GFP_ATOMIC);
+ 			/* whether driver is going to handle hot plug */
+ 			if (phy->phy_event & PHY_PLUG_OUT) {
+ 				mvs_port_notify_formed(&phy->sas_phy, 0);
 -- 
 2.30.0
 
