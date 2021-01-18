@@ -2,211 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC922FA044
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AD22FA047
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391825AbhARMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:45:40 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2364 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391747AbhARMkX (ORCPT
+        id S2391942AbhARMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404070AbhARMjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:40:23 -0500
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DKB9X0kwJz67dKJ;
-        Mon, 18 Jan 2021 20:36:32 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 18 Jan 2021 13:39:38 +0100
-Received: from [10.47.8.82] (10.47.8.82) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
- 2021 12:39:37 +0000
-Subject: Re: [PATCH v4 3/3] iommu/iova: Flush CPU rcache for when a depot
- fills
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     <joro@8bytes.org>, <will@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <iommu@lists.linux-foundation.org>
-References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
- <1607538189-237944-4-git-send-email-john.garry@huawei.com>
- <YAHRwZXoRZFJkgE8@larix.localdomain>
- <7a4f3d74-2f0d-1ffa-95cf-cfeaa81d8c7e@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <7b2b4f7c-d240-4922-4204-60cee61c8a60@huawei.com>
-Date:   Mon, 18 Jan 2021 12:38:23 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 18 Jan 2021 07:39:55 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA48BC061573;
+        Mon, 18 Jan 2021 04:39:13 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id e22so32431953iom.5;
+        Mon, 18 Jan 2021 04:39:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=/0ekt6oq+WlNqCRvHUlDFjjWLqrVQZ0WTiXLJub6TII=;
+        b=EuJrgbYOcyXpDYrS4gzh38ZbG5H31XHAgl/f+bwdQYi02raaP0x2yOu6thClppbaGe
+         176k2GtIJQRIuIclnFzmJSRQdqDlHVKvhReRhVrbV1zX7HH2N2wESKsI5hqjhK+XJojE
+         9/yxOMvHX3lSwzATnj5aThd5cuieVDGQp1+eDFc63NldL0Zkxig1aGSNpnt4CvODWPxs
+         R5Dtcl1cXF9rLBYFlUKGUcuqSuZbMHPCFCMNSNnRkfWZ95LuPgUXyFoAHZMxTBPsupdU
+         N3Fual2nqFL6cSPLndFT5VlETMfoO8fussQJymQ0ZdKP6TEEwLlzHVdmc2WDFuE5VsFV
+         DtZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=/0ekt6oq+WlNqCRvHUlDFjjWLqrVQZ0WTiXLJub6TII=;
+        b=nnR7oelH22vb1zr+Z1xyG4xeUp9M2Ux9H7nQPiKJSqhBLn1phMPVsoDBw3mr5cTJmT
+         N95YDFHop30F+gWWrEGYiDDVPlYS/me/IOYhEzFZ7yHsV+6ptcgnDqpkMfl9NHlBsZL9
+         qwy6rCs03Z/FH91qTTz1t1Jj+SGiYYWgDVoQ58UUUcvgPhzoa3cQwnJW3lgozhkwmZeT
+         GeW2bylM92P+riuY698KY1+kL3OizjvHFlM5yY8kUyLSeaWc4E7dnfSLGV/gu+XFeDA+
+         Rp1U20KSOGua7K0VsX4jTKN0BXReBvT7CCwd7WSdpl9DE8mbqq6crapLNvLyWbFq+B3L
+         ExoA==
+X-Gm-Message-State: AOAM530OB5XFTyiaBMzo01Lf3aiGxVDwPWUyhSknn12xkSNFzbDlUg04
+        mGJTqPfZdkKg1Y11oAMVTUN8GVq7FvMLc++kTxxXtnqiA1GFHw==
+X-Google-Smtp-Source: ABdhPJyKFkgMRRtDcUlteA7Z7Cb43j3RGyiiF4/1dj6xu/OkHFbEaMvPpMtTWNcJqIXXEtubJXeZ02fXeaYlgg9oMmE=
+X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr6888410ilq.112.1610973553097;
+ Mon, 18 Jan 2021 04:39:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <7a4f3d74-2f0d-1ffa-95cf-cfeaa81d8c7e@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.8.82]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
+ <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
+ <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
+ <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
+ <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
+ <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
+ <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
+ <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
+ <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
+ <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
+ <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
+ <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
+ <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com> <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
+In-Reply-To: <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 18 Jan 2021 13:39:01 +0100
+Message-ID: <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
+Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Bill Wendling <morbo@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/01/2021 19:21, Robin Murphy wrote:
->>
->> It would be good to understand why the rcache doesn't stabilize. Could be
->> a bug, or just need some tuning
->>
->> In strict mode, if a driver does Alloc-Free-Alloc and the first alloc
->> misses the rcache, the second allocation hits it. The same sequence in
->> non-strict mode misses the cache twice, because the IOVA is added to the
->> flush queue on Free.
->>
->> So rather than AFAFAF.. we get AAA..FFF.., only once the fq_timer 
->> triggers
->> or the FQ is full.
+On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
+>
+> On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > [ big snip ]
+>
+> [More snippage.]
+>
+> > [ CC Fangrui ]
+> >
+> > With the attached...
+> >
+> >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+> > undefined symbols
+> >
+> > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
+> > For details see ClangBuiltLinux issue #1250 "Unknown symbol
+> > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
+> >
+> Thanks for confirming that this works with the above patch.
+>
+> > @ Bill Nick Sami Nathan
+> >
+> > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
+>
+> The integrated assembler and this option are more-or-less orthogonal
+> to each other. One can still use the GNU assembler with PGO. If you're
+> having an issue, it may be related to ClangBuiltLinux issue #1250.
+>
+> > 2. Can you please try Nick's DWARF v5 support patchset v5 and
+> > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
+> >
+> I know Nick did several tests with PGO. He may have looked into it
+> already, but we can check.
+>
 
-Sounds right
+Reproducible.
 
->> Interestingly the FQ size is 2x IOVA_MAG_SIZE, so we
->> could allocate 2 magazines worth of fresh IOVAs before alloc starts
->> hitting the cache. If a job allocates more than that, some magazines are
->> going to the depot, and with multi-CPU jobs those will get used on other
->> CPUs during the next alloc bursts, causing the progressive increase in
->> rcache consumption. I wonder if setting IOVA_MAG_SIZE > IOVA_FQ_SIZE 
->> helps
->> reuse of IOVAs?
+LLVM_IAS=1 + DWARF5 = Not bootable
 
-Looking back through the lore history, I don't know where the 
-IOVA_FQ_SIZE = 256 came from. I guess it's size of 2x IOVA_MAG_SIZE (1x 
-for loaded and 1x for prev) for the reason you mention.
+I will try:
 
->>
->> Then again I haven't worked out the details, might be entirely wrong. 
->> I'll
->> have another look next week.
-> 
+LLVM_IAS=1 + DWARF4
 
-cheers
+- Sedat -
 
-> I did start digging into the data (thanks for that!) before Christmas, 
-> but between being generally frazzled and trying to remember how to write 
-> Perl to massage the numbers out of the log dump I never got round to 
-> responding, sorry.
-
-As you may have seen:
-https://raw.githubusercontent.com/hisilicon/kernel-dev/064c4dc8869b3f2ad07edffceafde0b129f276b0/lsi3008_dmesg
-
-I had to change some block configs via sysfs to ever get IOVA locations 
-for size > 0. And even then, I still got none bigger than 
-IOVA_RANGE_CACHE_MAX_SIZE.
-
-Note: For a log like:
-[13175.361915] print_iova2 iova_allocs(=5000000 ... too_big=47036
-
-47036 is number of IOVA size > IOVA_RANGE_CACHE_MAX_SIZE, in case it was 
-not clear.
-
-And I never hit the critical point of a depot bin filling, but it may 
-just take even longer.
-
-However with IOVA size = 0 always occurring, then I noticed that the 
-depot size = 0 bin fills up relatively quickly. As such, I am now 
-slightly skeptical of the approach I have taken here, i.e purge the 
-whole rcache.
-
-> 
-> The partial thoughts that I can recall right now are firstly that the 
-> total numbers of IOVAs are actually pretty meaningless, it really needs 
-> to be broken down by size (that's where my Perl-hacking stalled...); 
-> secondly that the pattern is far more than just a steady increase - the 
-> CPU rcache count looks to be heading asymptotically towards ~65K IOVAs 
-> all the time, representing (IIRC) two sizes being in heavy rotation, 
-> while the depot is happily ticking along in a steady state as expected, 
-> until it suddenly explodes out of nowhere; thirdly, I'd really like to 
-> see instrumentation of the flush queues at the same time, since I think 
-> they're the real culprit.
-> 
-> My theory so far is that everyone is calling queue_iova() frequently 
-> enough to keep the timer at bay and their own queues drained. Then at 
-> the ~16H mark, *something* happens that pauses unmaps long enough for 
-> the timer to fire, and at that point all hell breaks loose.
-
-So do you think that the freeing the IOVA magazines when the depot fills 
-is the cause of this? That was our analysis.
-
-> The depot is 
-> suddenly flooded with IOVAs of *all* sizes, indicative of all the queues 
-> being flushed at once (note that the two most common sizes have been 
-> hovering perilously close to "full" the whole time), but then, 
-> crucially, *that keeps happening*. My guess is that the load of 
-> fq_flush_timeout() slows things down enough that the the timer then 
-> keeps getting the chance to expire and repeat the situation.
-
-Not sure on that one.
-
-> 
-> The main conclusion I draw from this is the same one that was my initial 
-> gut feeling; that MAX_GLOBAL_MAGS = 32 is utter bollocks.
-
-Yeah, I tend to agree with that. Or, more specifically, how things work 
-today is broken, and MAX_GLOBAL_MAGS = 32 is very much involved with that.
-
-> The CPU rcache 
-> capacity scales with the number of CPUs; the flush queue capacity scales 
-> with the number of CPUs; it is nonsensical that the depot size does not 
-> correspondingly scale with the number of CPUs (I note that the testing 
-> on the original patchset cites a 16-CPU system, where that depot 
-> capacity is conveniently equal to the total rcache capacity).
-> 
-> Now yes, purging the rcaches when the depot is full does indeed help 
-> mitigate this scenario - I assume it provides enough of a buffer where 
-> the regular free_iova_fast() calls don't hit queue_iova() for a while 
-> (and gives fq_ring_free() some reprieve on the CPU handling the 
-> timeout), giving enough leeway for the flood to finish before anyone 
-> starts hitting queues/locks/etc. and stalling again, and thus break the 
-> self-perpetuating timeout cycle. But that's still only a damage 
-> limitation exercise! It's planning for failure to just lie down and 
-> assume that the depot is going to be full if fq_flush_timeout() ever 
-> fires because it's something like an order of magnitude smaller than the 
-> flush queue capacity (even for a uniform distribution of IOVA sizes) on 
-> super-large systems.
-> 
-> I'm honestly tempted to move my position further towards a hard NAK on 
-> this approach, because all the evidence so far points to it being a 
-> bodge around a clear and easily-fixed scalability oversight. At the very 
-> least I'd now want to hear a reasoned justification for why you want to 
-> keep the depot at an arbitrary fixed size while the whole rest of the 
-> system scales 
-
-
->(I'm assuming that since my previous suggestion to try 
-> changes in that area seems to have been ignored).
-> 
-
-So I said that it should fix the problem of the throughput going through 
-the floor at this 16h mark.
-
-But we see 2x tightly coupled problems:
-a. leading up to the ~16H critical point, throughput is slowly degrading 
-and becomes quite unstable (not shown in the log)
-For the LSI3008 card, we don't see that. But then no IOVA size > 
-IOVA_RANGE_CACHE_MAX_SIZE occur there.
-
-b. at the critical point, throughput goes through the floor
-
-So b. should be fixed with the suggestion to have unlimited/higher depot 
-max bin size, but I reckon that we would still see a. And I put that 
-down to the fact that we have IOVA sizes > IOVA_RANGE_CACHE_MAX_SIZE at 
-a certain rate always. As the rb tree grows over time, they become 
-slower and slower to alloc+free - that's our theory. Allowing the depot 
-to grow further isn’t going to help that.
-
-Maybe Leizhen's idea to trim the rcache periodically is overall better, 
-but I am concerned on implementation.
-
-If not, then if we allow depot bin size to scale/grow, I would like to 
-see more efficient handling for IOVA size > IOVA_RANGE_CACHE_MAX_SIZE.
-
-Thanks,
-John
+> > I would like to know what the impact of the Clang's Integrated
+> > Assembler and DWARF v5 are.
+> >
+> > I dropped both means...
+> >
+> > 1. Do not pass "LLVM_IAS=1" to make.
+> > 2. Use default DWARF v2 (with Nick's patchset: CONFIG_DEBUG_INFO_DWARF2=y).
+> >
+> > ...for a successfull build and boot on bare metal.
+> >
+>
+> [Next message]
+>
+> > On each rebuild I need to pass to make ...?
+> >
+> >   LLVM=1 -fprofile-use=vmlinux.profdata
+> >
+> Yes.
+>
+> > Did you try together with passing LLVM_IAS=1 to make?
+>
+> One of my tests was with the integrated assembler enabled. Are you
+> finding issues with it?
+>
+> The problem with using top-of-tree clang is that it's not necessarily
+> stable. You could try using the clang 11.x release (changing the
+> "CLANG_VERSION >= 120000" in kernel/pgo/Kconfig/ to "CLANG_VERSION >=
+> 110000").
+>
+> -bw
