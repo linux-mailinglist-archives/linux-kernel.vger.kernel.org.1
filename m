@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E852FA97F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36932FA98F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407934AbhARS7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:59:35 -0500
-Received: from mga17.intel.com ([192.55.52.151]:64241 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393758AbhARS5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:57:44 -0500
-IronPort-SDR: EEZuxuME9l3mE+QixIgGXDuO0xp8Zaqr71Dui4xTDjcLI47ZQuLKznQOKgEV099g24wbwHMezC
- mmkVDRO8QK5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158611194"
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="158611194"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 10:55:47 -0800
-IronPort-SDR: oCdYzketkaLRX/z309sV9gO2FA4IjaKM+Zp4dSLawAnabkyVDYNPwOZlz07BgBRyUoCzHguLfr
- oE0JeVKPjEGw==
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="500721539"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 10:55:42 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1Zhk-002W6O-7O; Mon, 18 Jan 2021 20:56:44 +0200
-Date:   Mon, 18 Jan 2021 20:56:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        andy@kernel.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
-Message-ID: <20210118185644.GH4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-5-djrscally@gmail.com>
- <20210118133942.GI4077@smile.fi.intel.com>
- <d4671ea998010c9400ed7fd6cdf0d8ecf9a79af4.camel@perches.com>
+        id S2393834AbhARTBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:01:44 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:41229 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407946AbhARTAu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 14:00:50 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l1Zl2-001a8Z-7F; Mon, 18 Jan 2021 20:00:07 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l1Zl1-001X3a-Jb; Mon, 18 Jan 2021 20:00:07 +0100
+Subject: Re: [PATCH] sh: check return code of request_irq
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Paul Mundt <lethal@linux-sh.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201212161831.GA28098@roeck-us.net>
+ <20201222205402.2269377-1-ndesaulniers@google.com>
+ <fe77cdc9-7ef1-a300-259b-65b451b2551a@physik.fu-berlin.de>
+ <CANiq72nXe_BAyxb+VVf0CSCm749FLsQ5c6wCQQNc97ef_Z8YwA@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <49b26402-9368-ce39-62dc-8404e3ea937c@physik.fu-berlin.de>
+Date:   Mon, 18 Jan 2021 20:00:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d4671ea998010c9400ed7fd6cdf0d8ecf9a79af4.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CANiq72nXe_BAyxb+VVf0CSCm749FLsQ5c6wCQQNc97ef_Z8YwA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:43:14AM -0800, Joe Perches wrote:
-> On Mon, 2021-01-18 at 15:39 +0200, Andy Shevchenko wrote:
-> > On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
-> > > We want to refer to an i2c device by name before it has been
-> > 
-> > I²C
+Hi Miguel!
+
+On 1/1/21 9:42 PM, Miguel Ojeda wrote:
+> On Fri, Jan 1, 2021 at 2:50 PM John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+>>
+>> Verified on my SH-7785LCR board. Boots fine.
+>>
+>> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 > 
-> Andy, are you next going to suggest renaming all the files with i2c?
-
-Where did you get this from?
-
-> Please do not use the pedantic I²C, 7 bit ascii is just fine here.
+> Thanks for testing, John!
 > 
-> My keyboard does not have a superscripted 2 key, and yes, I know
-> how to use it with multiple keypresses but it's irrelevant.
+> I think Masahiro was concerned about the error case (I assume you
+> tested the happy path).
 
-I2C is fine for me as well.
+Not sure about testing the error case though. How do I make request_irq()
+fail?
 
-...
-
-> > > created by the kernel; add a function that constructs the name
-> > > from the acpi device instead.
-> > 
-> > acpi -> ACPI
+> In any case, if no maintainer suggests something else, looks good to
+> me (and it is no worse than the status quo unless the `pr_err()` can
+> somehow kill it), so:
 > 
-> Same deal with acpi filenames.
+>     Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-Where did you get about *file* names, really? Maybe you read again above?
+I agree.
 
-...
-
-> > Prefix: "i2c: core: "
-> 
-> Please stop being a pedant on these trivial things.
-> It's unimportant and has almost no value.
-
-This series is going to have a new version, that's why I did those comments.
-If it had been the only comments, I would have not posted them.
+Adrian
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
