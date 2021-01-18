@@ -2,155 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3818F2FA523
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D211A2FA513
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393400AbhARPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:50:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29876 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405993AbhARPe1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:34:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610983979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JTZcVq1Ep1CR1WH46c5PqheI+6A00IvbUKXMhBi/vHM=;
-        b=TB6OYNVAI+W9AlWt/1Q81fKLBiah2xxnWem93LTbIez+ZPxySdqW+pyYMhHVILaJTF//ZD
-        A7J+NM8UMNPt9VGxGWotltJNTvGw8RbdsoZSjSoefYyAjnKQW87qGKtg1HBL04FgUwH1+u
-        WjhEyOd0sK7Yu9jQaIGgHD/R2HkL4Pg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-DxDYq23cNhmisSjqQrwKqQ-1; Mon, 18 Jan 2021 10:32:57 -0500
-X-MC-Unique: DxDYq23cNhmisSjqQrwKqQ-1
-Received: by mail-ed1-f69.google.com with SMTP id n8so6033377edo.19
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JTZcVq1Ep1CR1WH46c5PqheI+6A00IvbUKXMhBi/vHM=;
-        b=Ylhd7gZwiR/hmlUMVHmI9AsreaQGIBzCuXTW00gTbLADEeYZ6IQnYaSiX7jIlbK13u
-         /EloQkDT5gDEAJiII+0m3cxYQ/P33Wn2pjS10DdVazV04ytJnncevsQrliYGIiAGdCE3
-         Z1y9ofvN8EPStVW5EvtPsz2SjiQ/zTCnPS9YADndRVVZz75/a+0Tw8J4xPj8oijI/Y0c
-         JqCneAIjmG5Cd0ZeM94bZV/CglEKSVI+AVxz82zu1kw6wznNNTCJKy4xTA4yPAKNFR+l
-         xlijGgHng7F4Oq0mUhpa+LmnDb2NFcnJboje09ripgqTczbxJyRELwjxIYLDzEyfCzL6
-         xLrg==
-X-Gm-Message-State: AOAM5315kpm3bXKdz49IFQVxQGD4OALADZtlLH2Y8M1xPT0vAxus2kBA
-        egXQQFbnPSBDKTix6GvIPmVoN4VUEB5XkzQkpHMUFgTyLUieeWMPUtsutGfFsX3cjdClivUI8TN
-        ZlnWsOY59auFiv2W1YIOTqwsa
-X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr159910ejc.227.1610983976402;
-        Mon, 18 Jan 2021 07:32:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJycAq+hqWDtUQe7NVghv7pF04QqTqMhEAqZ/RU/z2hM4W99B0SgV7qJ5jp+uqhNGO9HnpVacg==
-X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr159882ejc.227.1610983976211;
-        Mon, 18 Jan 2021 07:32:56 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id v15sm330168ejj.4.2021.01.18.07.32.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 07:32:55 -0800 (PST)
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-To:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "robert.moore@intel.com" <robert.moore@intel.com>,
-        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
- <20210118135121.GM4077@smile.fi.intel.com>
- <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
- <20210118152323.GV4077@smile.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
-Date:   Mon, 18 Jan 2021 16:32:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2405701AbhARPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:46:52 -0500
+Received: from ms.lwn.net ([45.79.88.28]:49906 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405477AbhARPeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:34:25 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 19242385;
+        Mon, 18 Jan 2021 15:33:08 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 19242385
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610983988; bh=XC7KRMeUDNxNiOYz2a2HT8kOQVSM5OckAmd87Y8oQvw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hgl09VVwWWUMo6xbZvho6YKf49FldIleZSiRXJB/6yjTJXdm/9mOVi7QLoRNczXSn
+         z0rsd77UdJa9mlf2KToHng++tJWfI/Ki75i2X3pwZKrAFu+X1rQ/7RFP2hJvwFtTj9
+         1AvD90LFLMz56/2Bv2cFx1DASAooc/lIET6qCLuiMNogN9vpr3FvDet29oEKaakx/a
+         O6CgOvtZxNF7QAFCYuzpjBYkymQZxHwrugaW9v1EqXyM3PmNGvtDrOWTM5b/ByD6cf
+         mYScIrliAi1Kv0zdwe33Fn6AZuH3Up8MEFNwMWADXzQxQigbIZvRScJgumYVWMA9I5
+         4C08pDaZOSylA==
+Date:   Mon, 18 Jan 2021 08:33:06 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next] docs: bpf: Fixup atomics documentation
+Message-ID: <20210118083306.4c16153d@lwn.net>
+In-Reply-To: <20210118113643.232579-1-jackmanb@google.com>
+References: <20210118113643.232579-1-jackmanb@google.com>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <20210118152323.GV4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 18 Jan 2021 11:36:43 +0000
+Brendan Jackman <jackmanb@google.com> wrote:
 
-On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
-> On Mon, Jan 18, 2021 at 02:51:30PM +0000, Barnabás Pőcze wrote:
->> 2021. január 18., hétfő 14:51 keltezéssel, Andy Shevchenko írta:
->>
->>> On Mon, Jan 18, 2021 at 11:12:34AM +0000, Barnabás Pőcze wrote:
->>>> 2021. január 18., hétfő 1:34 keltezéssel, Daniel Scally írta:
->>>
->>>> Have you considered putting the source (and header) files into a dedicated
->>>> folder? I think it'd help manageability in the long run, and it'd be immediately
->>>> obvious that these source files form a single "unit".
->>>
->>> What would be the folder name? Because, for example, intel_cht_int33fe* have no
->>> folder (yet?) and here it's kinda similar case when HID describes something
->>> else than just one IP.
->>
->> I think "intel_skl_int3472" would not be a bad name for the folder. And I believe
->> "intel_cht_int33fe" could be given its own folder as well.
+> This fixues up the markup to fix a warning, be more consistent with
+> use of monospace, and use the correct .rst syntax for <em> (* instead
+> of _). It also clarifies the explanation of Clang's -mcpu
+> requirements for this feature, Alexei pointed out that use of the
+> word "version" was confusing here.
+
+This starts to sound like material for more than one patch...?
+
+> NB this conflicts with Lukas' patch at [1], here where I've added
+> `::` to fix the warning, I also kept the original ':' which appears
+> in the output text.
+
+And why did you do that?  
+
+> [1] https://lore.kernel.org/bpf/CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com/T/#t
 > 
-> I;m not objecting (at some point in the past I had proposed moving Intel stuff
-> to a separate folder, but at that time PDx86 has no folders at all and Darren
-> was kinda not in favour of creating ones, but things changed), just let's hear
-> Hans on this.
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  Documentation/networking/filter.rst | 30 +++++++++++++++--------------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
+> 
+> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+> index f6d8f90e9a56..ba03e90a9163 100644
+> --- a/Documentation/networking/filter.rst
+> +++ b/Documentation/networking/filter.rst
+> @@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
+>  Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
+>  
+>  It also includes atomic operations, which use the immediate field for extra
+> -encoding.
+> +encoding: ::
 
-I'm in favor of using a folder for this and "intel_skl_int3472" is fine with me.
+Things like this read really strangely.  Just say "encoding::" and be done
+with it, please.
 
-With that said I'm not entirely sure if I'm in favor of the _skl_ part of
-the folder and driver name or not.
+Thanks,
 
-The INT3472 ACPI device is used with other CPUs, e.g. Apollo Lake too and
-I think the driver should work fine with those.
-
-The intel_cht_int33fe case is special because the driver only applies
-to some models with an INT33FE ACPI device (the whole INT33FE ACPI device
-is a horrible thing which seems to stem from Intel rushing Bay Trail to
-market to try and compete on the tablet market).
-
-With that all said SKL probably is the first SoC to feature this and I
-guess future IPUs may still use INT3472 given Intel's BAD habit of
-re-using ACPI HIDs for multiple incompatible generations. So I guess
-that keeping it is fine; and if we then need an incompatible INT3472
-driver for newer IPUs we can use a different prefix for those.
-
-TL;DR:
-
-1. Using a folder is fine, desirable even
-2. I've some concerns about the name, but I'm not really objecting,
-just giving my 2 cents.
-
-Regards,
-
-Hans
-
-
+jon
