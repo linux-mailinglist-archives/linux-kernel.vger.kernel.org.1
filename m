@@ -2,129 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE712F9DD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8622F9DDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389881AbhARLQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:16:02 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11400 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388400AbhARKrH (ORCPT
+        id S2388951AbhARLSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387914AbhARKrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:47:07 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DK7j33pDQz7Wsv;
-        Mon, 18 Jan 2021 18:45:11 +0800 (CST)
-Received: from [10.40.166.221] (10.40.166.221) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 18 Jan 2021 18:46:05 +0800
-Message-ID: <600566ED.40906@hisilicon.com>
-Date:   Mon, 18 Jan 2021 18:46:05 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Mon, 18 Jan 2021 05:47:00 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB4C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:17 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id l12so10738600wry.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+fkffY+nPqGD3vYic1AfpbGuHGz6tUdaM1VMSnDCxTM=;
+        b=eg6HqEaviaXtmJLqNG0sbWZO58l9omPjV2/Yf+1OWKiXo2xQfIY3haYyAYjYyOCZk3
+         3fVnpqsVfaW14kqGbl8zwW1AUDPssaRsVg1j/mJodMaA9R6dE4o7eW9XiIXHkJrWVL/7
+         XeEzy9sN/QjDOOYPniuzLHg06bw3oXf7qTEYTWfGRngw9kht7v6r1k2Liv91uWLynABR
+         o7bfJE4qDpQUTNmaPNjJe5K49oWyX8HjFecW1QRfScIlw5pkyk5LYaNGRXToH1d4fHbr
+         SynCXSvir5+2SVwVvM7IE3/3ZkLtkvOSvgXRl6cIpf7ubRURKqu2h1T7mArmkXZGBSmf
+         XVJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+fkffY+nPqGD3vYic1AfpbGuHGz6tUdaM1VMSnDCxTM=;
+        b=ALSZCysJeOPut8JmVZRo4Dto4dNkYSOIGNQqf+iWSr5RCqPS2DVwHwh3AwWKE3YoDn
+         1PYtm3+iM2sPEtw2ate8u/Vb6aKMHudnHuDdb6lSjBjWYOVIn538e+8xilKJqDKmcO5U
+         nZVKGTQqTpwIFTmXZOpNVqVAjA8BH99FTSPpp+LaPauKsH2ygwd67Oc/ln7/iI0UMc01
+         g350sHFrlOuHE+e+GtTTqz/4b7+2bunXhZt3naOVPqeZlPy/ZfsrGJSWYUaPThQlxYoW
+         i74LY7PA8gnaKdwNuQFh39FmtM6PKRQ4yzANiHLQ7DQDeTjXTlxbd3RsTzBx9OyN7Xi9
+         2MGA==
+X-Gm-Message-State: AOAM532jfGetuLayDFIWquJ36fAjp5UfZy0MW9H0upm3T+fi3Dojiqu3
+        NRLZgSe6iJE2M77HleEXG35+mrtiV0aO+3KC
+X-Google-Smtp-Source: ABdhPJzUDa5H9rvD47XC6RgKN8RmkNCjX7fOcG4ws8rg8O6vdS2h6s7hb0qR4QqfcY1T3hqI0qxp/A==
+X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr26079176wrw.62.1610966776009;
+        Mon, 18 Jan 2021 02:46:16 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id a12sm32467478wrh.71.2021.01.18.02.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 02:46:15 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:46:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] mfd: intel-lpss: Add Intel Alder Lake PCH-P PCI IDs
+Message-ID: <20210118104613.GC4903@dell>
+References: <20210105153925.62283-1-andriy.shevchenko@linux.intel.com>
+ <20210114102220.GS3975472@dell>
+ <20210118103035.GY4077@smile.fi.intel.com>
 MIME-Version: 1.0
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-CC:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Jamie Iles" <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        "Alexander Shiyan" <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tony Prisk <linux@prisktech.co.nz>,
-        Krzysztof Halasa <khalasa@piap.pl>, <xuwei5@hisilicon.com>
-Subject: Re: [v2] Old platforms: bring out your dead
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com> <CAK8P3a2DZ8xQp7R=H=wewHnT2=a_=M53QsZOueMVEf7tOZLKNg@mail.gmail.com> <60013F54.9050305@hisilicon.com> <CAK8P3a26Ca_59NiGGGv+CHYZSmkTRESpgV4aGFPhrY=KBa8aBA@mail.gmail.com> <14914300-b98a-fc60-fc06-0a6d62729d8e@huawei.com> <CAK8P3a3wXPANtLwPOHUqWw_EtdVwOJhwmUeT5WZbc7XKiyK7mQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a3wXPANtLwPOHUqWw_EtdVwOJhwmUeT5WZbc7XKiyK7mQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.166.221]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210118103035.GY4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Mon, 18 Jan 2021, Andy Shevchenko wrote:
 
-On 2021/1/15 20:04, Arnd Bergmann wrote:
-> On Fri, Jan 15, 2021 at 12:09 PM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/1/15 17:26, Arnd Bergmann wrote:
->>> On Fri, Jan 15, 2021 at 8:08 AM Wei Xu <xuwei5@hisilicon.com> wrote:
->>>> On 2021/1/14 0:14, Arnd Bergmann wrote:
->>>>> On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
->>>>> * mmp -- added in 2009, DT support is active, but board files might go
->>>>> * cns3xxx -- added in 2010, last fixed in 2019, probably no users left
->>>>> * hisi (hip01/hip05) -- servers added in 2013, replaced with arm64 in 2016
->>>>
->>>> I think it is OK to drop the support of the hip01(arm32) and hip05(arm64).
->>>> Could you also help to drop the support of the hip04(arm32) which I think nobody use as well?
->>>
->>> Thank you for your reply! I actually meant to write hip04 instead of hip05,
->>> so I was only asking about the two 32-bit targets. I would expect that
->>> hip05 still has a few users, but wouldn't mind removing that as well if you
->>> are sure there are none.
->>>
->>> Since Zhen Lei is starting to upstream Kunpeng506 and Kunpeng509
->>> support, can you clarify how much reuse of IP blocks there is between
->>> hip04 and those? In particular, hip04 has custom code for (at least)
->>> platmcpm, clk, irqchip, ethernet, and hw_rng, probably more as those
->>> were only the ones I see on a quick grep.
->>>
->>> If we remove hip04, should we remove all these drivers right away,
->>> or keep some of them around?
->>
->> I think the drivers should be kept.
+> On Thu, Jan 14, 2021 at 10:22:20AM +0000, Lee Jones wrote:
+> > On Tue, 05 Jan 2021, Andy Shevchenko wrote:
+> > 
+> > > Add Intel Alder Lake LPSS PCI IDs.
 > 
-> Ok, will do.
+> > Applied, thanks.
 > 
->> Currently, at least hip04_eth.c and irq-hip04.c are used. These drivers
->> were originally written for Hip04, but the drivers used by other boards
->> maybe similar to them. Therefore, these drivers are extended without
->> adding new drivers.
+> Thanks.
 > 
-> Right, so the other chips just use compatible="hisilicon,hip04-intc"
-> etc. in their device trees? Is there a public copy of the dts files
-> somewhere that I can use for cross-referencing? Sorry if I'm
-> messing up the timeline for your upstreaming plans.
-> 
-> It might actually be easier to leave hip01 and hip04 in the
-> tree for the moment until you have upstreamed the other SoC
-> support, and then we clean up by removing the unused bits
-> afterwards. I'll leave it to you both to tell me which way is easier
-> for you.
+> Any news about [1]?
 
-I have aligned with Leizhen and as you suggested it is better to keep them 
-for the moment.
-Thanks!
+It had fallen through the cracks.
 
-Best Regards,
-Wei
+Now applied.
 
-> 
->       Arnd
-> .
-> 
+> [1]: https://lore.kernel.org/lkml/20201027104616.49098-1-andriy.shevchenko@linux.intel.com/
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
