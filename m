@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C8C2F9FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E48B2F9FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404054AbhARMen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:34:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39540 "EHLO mail.kernel.org"
+        id S2391378AbhARMbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:31:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390732AbhARLps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390733AbhARLps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 06:45:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E96422D3E;
-        Mon, 18 Jan 2021 11:44:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C84322D2C;
+        Mon, 18 Jan 2021 11:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970297;
-        bh=EKTbyFaF2UQrly7zSwaVBucChT2Tp/Ny4dti8XsZIms=;
+        s=korg; t=1610970300;
+        bh=3gPF9/Qq2nnH+Y2lF69bSgqk4tVzW5V0TqOy3BGnQKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NARBNwIhwWSb4Bby+ZTBT32VA+dTsFsTgdPioME1dx2SVuL9/L/mMFQGqInJKMY31
-         m6dM5Y+LEGCFda05nPUj0CCADYoWnKcX4lri+3OUy/hngramb0CZ2Rz88dJAmPQrIp
-         5ygfaXbCaL8gUYqGRtMgXuFrxG1iB0xT/CBpULAY=
+        b=W6bRZvNwmWdyIM7rDVet8st6xePSg38nCmXLX9GBZcGfjsEgpaNH6yKYICc514xoa
+         HNLIhZpKBjqmpPGUZdLlkpKq826tq6KRKzWr5Kzx6mtPiGs5OdxfCLgjZiiI1IoQek
+         Dtx7y1Ast1G/h/jByTNZNmlBusVh9cvjF8C45o7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Or Gerlitz <gerlitz.or@gmail.com>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.10 120/152] nvme-tcp: Fix warning with CONFIG_DEBUG_PREEMPT
-Date:   Mon, 18 Jan 2021 12:34:55 +0100
-Message-Id: <20210118113358.478751518@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 121/152] NFS4: Fix use-after-free in trace_event_raw_event_nfs4_set_lock
+Date:   Mon, 18 Jan 2021 12:34:56 +0100
+Message-Id: <20210118113358.525944454@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -41,35 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-commit ada831772188192243f9ea437c46e37e97a5975d upstream.
+commit 3d1a90ab0ed93362ec8ac85cf291243c87260c21 upstream.
 
-We shouldn't call smp_processor_id() in a preemptible
-context, but this is advisory at best, so instead
-call __smp_processor_id().
+It is only safe to call the tracepoint before rpc_put_task() because
+'data' is freed inside nfs4_lock_release (rpc_release).
 
-Fixes: db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq context")
-Reported-by: Or Gerlitz <gerlitz.or@gmail.com>
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 48c9579a1afe ("Adding stateid information to tracepoints")
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/nvme/host/tcp.c |    2 +-
+ fs/nfs/nfs4proc.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -286,7 +286,7 @@ static inline void nvme_tcp_queue_reques
- 	 * directly, otherwise queue io_work. Also, only do that if we
- 	 * are on the same cpu, so we don't introduce contention.
- 	 */
--	if (queue->io_cpu == smp_processor_id() &&
-+	if (queue->io_cpu == __smp_processor_id() &&
- 	    sync && empty && mutex_trylock(&queue->send_mutex)) {
- 		queue->more_requests = !last;
- 		nvme_tcp_send_all(queue);
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7106,9 +7106,9 @@ static int _nfs4_do_setlk(struct nfs4_st
+ 					data->arg.new_lock_owner, ret);
+ 	} else
+ 		data->cancelled = true;
++	trace_nfs4_set_lock(fl, state, &data->res.stateid, cmd, ret);
+ 	rpc_put_task(task);
+ 	dprintk("%s: done, ret = %d!\n", __func__, ret);
+-	trace_nfs4_set_lock(fl, state, &data->res.stateid, cmd, ret);
+ 	return ret;
+ }
+ 
 
 
