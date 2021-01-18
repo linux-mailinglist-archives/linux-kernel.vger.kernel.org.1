@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8622F9DDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F392F9DBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388951AbhARLSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S2389837AbhARLNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387914AbhARKrA (ORCPT
+        with ESMTP id S2389045AbhARKrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:47:00 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB4C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:17 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id l12so10738600wry.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:17 -0800 (PST)
+        Mon, 18 Jan 2021 05:47:25 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829BDC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:42 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id d13so28660536ioy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+fkffY+nPqGD3vYic1AfpbGuHGz6tUdaM1VMSnDCxTM=;
-        b=eg6HqEaviaXtmJLqNG0sbWZO58l9omPjV2/Yf+1OWKiXo2xQfIY3haYyAYjYyOCZk3
-         3fVnpqsVfaW14kqGbl8zwW1AUDPssaRsVg1j/mJodMaA9R6dE4o7eW9XiIXHkJrWVL/7
-         XeEzy9sN/QjDOOYPniuzLHg06bw3oXf7qTEYTWfGRngw9kht7v6r1k2Liv91uWLynABR
-         o7bfJE4qDpQUTNmaPNjJe5K49oWyX8HjFecW1QRfScIlw5pkyk5LYaNGRXToH1d4fHbr
-         SynCXSvir5+2SVwVvM7IE3/3ZkLtkvOSvgXRl6cIpf7ubRURKqu2h1T7mArmkXZGBSmf
-         XVJA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SlpVFG70d1haAhgfDosF+AGq4k9Rce7hROvWA+Bpu+o=;
+        b=hyntPPIMGuqz6MhhQHoy89/WERg7VMJS9GpxnFwqrnQqmJSjwI/FL1NoEs7p6RdLa8
+         /zAfa8lcN+DOqWaG0yXTNsYiFQQPoklAIcsBi1N0/WxUEWsmZilPPhPcdY8OfHWCbaV0
+         CmVDttL80BxG1idnxWXuNA29VzJIGbhWehA6z05p3BXSpN+t/tj444WlB1DCzvKRj315
+         2MM3cTivgnFW/Dyk5wW8Y3JY95QWtzMwpxxbTJ+pyLL3HrANPMc51u6XsJWw6R1C5BT/
+         nRagJvkqkqrZWTQdMkFvbwusT88ggx8TW7jZ7wdLa5Q/Zu9VgCva94eHT7YnSD2RFOJr
+         WkOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+fkffY+nPqGD3vYic1AfpbGuHGz6tUdaM1VMSnDCxTM=;
-        b=ALSZCysJeOPut8JmVZRo4Dto4dNkYSOIGNQqf+iWSr5RCqPS2DVwHwh3AwWKE3YoDn
-         1PYtm3+iM2sPEtw2ate8u/Vb6aKMHudnHuDdb6lSjBjWYOVIn538e+8xilKJqDKmcO5U
-         nZVKGTQqTpwIFTmXZOpNVqVAjA8BH99FTSPpp+LaPauKsH2ygwd67Oc/ln7/iI0UMc01
-         g350sHFrlOuHE+e+GtTTqz/4b7+2bunXhZt3naOVPqeZlPy/ZfsrGJSWYUaPThQlxYoW
-         i74LY7PA8gnaKdwNuQFh39FmtM6PKRQ4yzANiHLQ7DQDeTjXTlxbd3RsTzBx9OyN7Xi9
-         2MGA==
-X-Gm-Message-State: AOAM532jfGetuLayDFIWquJ36fAjp5UfZy0MW9H0upm3T+fi3Dojiqu3
-        NRLZgSe6iJE2M77HleEXG35+mrtiV0aO+3KC
-X-Google-Smtp-Source: ABdhPJzUDa5H9rvD47XC6RgKN8RmkNCjX7fOcG4ws8rg8O6vdS2h6s7hb0qR4QqfcY1T3hqI0qxp/A==
-X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr26079176wrw.62.1610966776009;
-        Mon, 18 Jan 2021 02:46:16 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a12sm32467478wrh.71.2021.01.18.02.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 02:46:15 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:46:13 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mfd: intel-lpss: Add Intel Alder Lake PCH-P PCI IDs
-Message-ID: <20210118104613.GC4903@dell>
-References: <20210105153925.62283-1-andriy.shevchenko@linux.intel.com>
- <20210114102220.GS3975472@dell>
- <20210118103035.GY4077@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SlpVFG70d1haAhgfDosF+AGq4k9Rce7hROvWA+Bpu+o=;
+        b=bIz6haqvxxCwXlmuiSDk2CDpsax1WwhddFuQvy5XUGed2PPqlflLBkv0ChLNurny3D
+         8lWO0P4dxzFfnmJSEUTA66nJTTgYjYJPLu3Cbfnks5kMBv5vXJd+I6b8Ep+7IsyINFcz
+         UExQBR7Gy2P+yCNiyHTbPhL36dfgJzqeHH0/Zd0bQKxH+SGYppuuZLs2ba55JTZQiu0k
+         1vbOLOzumHvV5PsJOjeBrXsrfXrYop5bt0uRS3v+e7llmwV9G1ZdZw+xTeZ+0N662SFG
+         ErWrQk4G8BdT2v3/sOIO/OYCpapAJz2pYXGczXReJeHNOTDYiz5JsKK/HSIU3/qzaWOE
+         RqZw==
+X-Gm-Message-State: AOAM531LVONPs2ZEggaLyq2ol5Al8sy9bOWUE3JVabyl4QdrNkTPqePz
+        AXRgWNRl9Xov2bEViTHWpxSDDd/6ah5DHxomh6o03Q==
+X-Google-Smtp-Source: ABdhPJwfSq1SQ7TLblWt7iM5zpWAuhnB5VJegpIITRV7IPSuwAx+odOBL7l3eFDnoUItHdT2zO82/C2n9A7nCVHfT90=
+X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr20340034ilu.165.1610966801671;
+ Mon, 18 Jan 2021 02:46:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210118103035.GY4077@smile.fi.intel.com>
+References: <20210118080004.6367-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210118080004.6367-1-lukas.bulwahn@gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 18 Jan 2021 11:46:30 +0100
+Message-ID: <CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com>
+Subject: Re: [PATCH for bpf-next] docs: bpf: add minimal markup to address doc warning
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Andy Shevchenko wrote:
+Thanks Lukas. Sorry I didn't get around to fixing it so far.
 
-> On Thu, Jan 14, 2021 at 10:22:20AM +0000, Lee Jones wrote:
-> > On Tue, 05 Jan 2021, Andy Shevchenko wrote:
-> > 
-> > > Add Intel Alder Lake LPSS PCI IDs.
-> 
-> > Applied, thanks.
-> 
-> Thanks.
-> 
-> Any news about [1]?
+On Mon, 18 Jan 2021 at 09:00, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 91c960b00566 ("bpf: Rename BPF_XADD and prepare to encode other
+> atomics in .imm") modified the BPF documentation, but missed some ReST
+> markup.
+>
+> Hence, make htmldocs warns on Documentation/networking/filter.rst:1053:
+>
+>   WARNING: Inline emphasis start-string without end-string.
+>
+> Add some minimal markup to address this warning.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-It had fallen through the cracks.
+Acked-By: Brendan Jackman <jackmanb@google.com>
 
-Now applied.
-
-> [1]: https://lore.kernel.org/lkml/20201027104616.49098-1-andriy.shevchenko@linux.intel.com/
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> ---
+> applies cleanly on next-20210118
+>
+> Brendan, please ack.
+>
+> Alexei, please pick this minor cleanup patch on your bpf-next.
+>
+>  Documentation/networking/filter.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+> index f6d8f90e9a56..45f6fde1776c 100644
+> --- a/Documentation/networking/filter.rst
+> +++ b/Documentation/networking/filter.rst
+> @@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
+>  Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
+>
+>  It also includes atomic operations, which use the immediate field for extra
+> -encoding.
+> +encoding::
+>
+>     .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
+>     .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
+>
+> -The basic atomic operations supported are:
+> +The basic atomic operations supported are::
+>
+>      BPF_ADD
+>      BPF_AND
+> --
+> 2.17.1
+>
