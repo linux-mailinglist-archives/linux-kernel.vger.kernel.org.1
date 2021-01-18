@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6602FA2DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818F22FA2F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404823AbhAROWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:22:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:36964 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392974AbhAROVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:21:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F1911FB;
-        Mon, 18 Jan 2021 06:20:24 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9CE3F68F;
-        Mon, 18 Jan 2021 06:20:23 -0800 (PST)
-Subject: Re: [PATCH 3/3] arm64: dts: rockchip: rename thermal subnodes for
- rk3399.dtsi
-To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
-Cc:     linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-References: <20210117150953.16475-1-jbx6244@gmail.com>
- <20210117150953.16475-3-jbx6244@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c92467e0-3901-4a1c-3857-6ef055acc381@arm.com>
-Date:   Mon, 18 Jan 2021 14:20:23 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2404980AbhAROZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:25:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404955AbhAROZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:25:29 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DA3C061575;
+        Mon, 18 Jan 2021 06:24:44 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id u25so24337011lfc.2;
+        Mon, 18 Jan 2021 06:24:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yzGPQHJyJrZ9ltTCbmSP8D0KGxFbljRtwv+aoMP5SnA=;
+        b=Vi3UrjWycuWNIjdW9WPNwwFLKLO4cVYSKgvRNZXAiJdg5DrJ4BhAIROrjnz7QDDM8C
+         pI9gS++OPTnlOxSvp4K41zl7KfpGx6lCmgRPih0dqi4UkvaPdKrlT/4zvwi8iLAIPshG
+         GvtHZUI3a81iCqKXSVJNpzHcJ6QB/+ZuUEwB57rBj68ZfrkaTPakWOwSXnwfBJzLpa4B
+         Urwf2gcNGSf8IJc98sz8y0X4wvFgjxFwJAd2xleDBEGm3o89JVJWTIipClr3TlYBdd+j
+         eJWCIzYBZ4i8JpGluPa/fyTuK8xmHPzItIsEqPGnPFlHuWTl/Q/D9Qy9VDSNI62X73d7
+         DzYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yzGPQHJyJrZ9ltTCbmSP8D0KGxFbljRtwv+aoMP5SnA=;
+        b=ARCvbXEFR5FAkBdqI+Klj6n3oAnsNZ9euClDAdky+I/6dPBBLKlkkOTZ61bNAIcsPO
+         5qPrYoAmukI2o5Q1pYZOK4ZQdi18tfit7fH8C0ybpRpAwZI82JI9SvWtDOdTpiopiUKN
+         G1H+HlMjwKxXyJKiW9fj4Glvx/RhT7SBNUaygmPCHlzJxEgeqATSL0y9poyHyUt6DhLh
+         osQhURZOSp9/ntYUjPIvOZOp/KmK2UrIuoKYDZrLrs89rATUgAvL0Loumz5oVjygyPqV
+         NMoqdu6jN8wzQbk8E4WdHYDlrOvijxJiJ4JbksGDJsSzVjqaYnImQoiAAscsNh75XgHm
+         78+w==
+X-Gm-Message-State: AOAM531j0sJH9Sf34qQ5WDWchtVUkh2IDP3CgY6ZwsMeynON9tXQbbOr
+        bRBvXP4WZrjsD4YdoIkjFRU=
+X-Google-Smtp-Source: ABdhPJw+B1oWzDyTE/Q47yHVmjUMwotouMlJKNJVC8Bp5ALYZYTd4fue4N4mSUcemavdLpDhD4U86A==
+X-Received: by 2002:ac2:59ce:: with SMTP id x14mr11932677lfn.545.1610979883078;
+        Mon, 18 Jan 2021 06:24:43 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id l1sm1917257lfk.201.2021.01.18.06.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 06:24:41 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:24:39 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "andy.lavr@gmail.com" <andy.lavr@gmail.com>
+Subject: Re: [PATCH v17 04/10] fs/ntfs3: Add file operations and
+ implementation
+Message-ID: <20210118142439.p24chxfa4eq3ogsa@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-5-almaz.alexandrovich@paragon-software.com>
+ <20210103215732.vbgcrf42xnao6gw2@kari-VirtualBox>
+ <cf76ecec5ec1419eacf4c170df65a57d@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <20210117150953.16475-3-jbx6244@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf76ecec5ec1419eacf4c170df65a57d@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-17 15:09, Johan Jonker wrote:
-> A test with the command below gives for example this error:
-> /arch/arm64/boot/dts/rockchip/rk3399-evb.dt.yaml:
-> thermal-zones: 'cpu', 'gpu' do not match any of the regexes:
-> '^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$', 'pinctrl-[0-9]+'
-> 
-> Rename Rockchip rk3399 thermal subnodes so that it ends
-> with "-thermal"
-> 
-> make ARCH=arm64 dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/
-> thermal/thermal-zones.yaml
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->   arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 2 +-
->   arch/arm64/boot/dts/rockchip/rk3399.dtsi        | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> index c88295782..b20774081 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> @@ -126,7 +126,7 @@
->   };
->   
->   &thermal_zones {
-> -	cpu_thermal: cpu {
-> +	cpu_thermal: cpu-thermal {
->   		polling-delay-passive = <100>;
->   		polling-delay = <1000>;
->   		thermal-sensors = <&tsadc 0>;
+On Mon, Jan 18, 2021 at 10:00:53AM +0000, Konstantin Komarov wrote:
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Monday, January 4, 2021 12:58 AM
+> > On Thu, Dec 31, 2020 at 06:23:55PM +0300, Konstantin Komarov wrote:
+ 
+> > > +static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+> > > +{
 
-Passing observation: why is this DT not just referencing &cpu_thermal 
-directly to add the board-specific parts (and not repeat all the SoC 
-default properties) anyway? Cleaning the whole thing up might have been 
-a good idea :/
+> > > +	/* Return error if mode is not supported */
+> > > +	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
+> > > +		     FALLOC_FL_COLLAPSE_RANGE))
+> > > +		return -EOPNOTSUPP;
 
-Robin.
+> > > +
+> > > +	if (mode & FALLOC_FL_PUNCH_HOLE) {
 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index 4e94b7ebd..3de493ad6 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -761,7 +761,7 @@
->   	};
->   
->   	thermal_zones: thermal-zones {
-> -		cpu_thermal: cpu {
-> +		cpu_thermal: cpu-thermal {
->   			polling-delay-passive = <100>;
->   			polling-delay = <1000>;
->   
-> @@ -805,7 +805,7 @@
->   			};
->   		};
->   
-> -		gpu_thermal: gpu {
-> +		gpu_thermal: gpu-thermal {
->   			polling-delay-passive = <100>;
->   			polling-delay = <1000>;
->   
+> > > +	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
+
+> > > +	} else {
+
+> > > +		if (mode & FALLOC_FL_KEEP_SIZE) {
+> > 
+> > Isn't this hole else already (mode & FALLOC_FL_KEEP_SIZE?
 > 
+> Sorry, can you please clarify your question? Not sure, understood it.
+
+I have hide unrelevant code now. So maybe now you see better what I
+mean. Last else have to be already FALLOC_FL_KEEP_SIZE so if statment is
+not needed.
