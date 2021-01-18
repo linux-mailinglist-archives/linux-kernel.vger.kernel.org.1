@@ -2,179 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329CC2F9B24
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868442F9B2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387767AbhARIVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:21:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
+        id S2387617AbhARIYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387536AbhARIU4 (ORCPT
+        with ESMTP id S1733226AbhARIYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:20:56 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D903C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:20:16 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id t29so4637670pfg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:20:16 -0800 (PST)
+        Mon, 18 Jan 2021 03:24:34 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE34C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:23:52 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id m187so6495570wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:23:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dsBrzAiHn/QqryQ1yrFMR23Xt9wevpoQ3xsv50VodOw=;
-        b=pXraTakKGaWCltyhTSmcgtT+BADsn0u85spUUygpv9366XMpechk3LWV5NWxlOgP9p
-         te3WIXjJflC0y4B5fONLnx62ixn//P/uz0ANB7sjqj9VsZ1y0grYViulzjHEL13BeFBz
-         FPZNsN5G4KvjBcMcAKPBGcCkNIX4cxNzHi/ztEehFeyt3R4TFkZN9VlzDnoLaOVgeeR9
-         nm9djeWNyGvlxmTLGZFI6teMtPgNXNdg1nuc5OcySkh92GplWAfxe73U+jPUuw5bQ8P5
-         elu+CvBPCMFc0Okeq1tbJPBy3LQg0tBv6ZxyboK4d0Orexvh4B61y3Gig+FTndtG1AO/
-         dLow==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=M2czl7AdXkeiTJE6+fnFESw8QQNDAv21y8gTRe13G3s=;
+        b=SewdvCuVtGMVvQa+3LWuDIOjAtprDaXDN8yaxSzOVZKUBuqZW28dnBlMA7IjH6h6EP
+         O7HydD212ho94Nbe8iV33BxENkJHznH7g1twrxWqp8+7/rj1d4p2sI2PrjeQXhj/POXh
+         pouFhJnmQPPzvezRbAXe97S18WUEBAbAbsFoqRXhDqEqAYZ734l3nO6QZ389dGtY0mR8
+         /lJNXV9lEMpZCku+BnLJdpxo9jAhE1kKXOMM//3fe8geKIWTNF8I7VCvXzIkGcEZ7pS6
+         qmPZqUiRl1aIKG1KP8CKOOFdDOYyXLyGAaxwvsu3JRr6RxHlhlwjkC3Gv+PASs3jHq4P
+         Hjtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dsBrzAiHn/QqryQ1yrFMR23Xt9wevpoQ3xsv50VodOw=;
-        b=ZMMk60Dm3OelwXCZNJnYWI0eYXtJKWhrr+uQMoLrwAyCAsA/u+vHEjdN1aK5j44Oq8
-         vo6kffRU1/lf+a/4tHDhC8SuP+Av2rxsVsM3rxAzvyPEKVUk2xIBRZjreZ3OafaMvcgZ
-         lAOYGVXHv8GyPRJpWENgeCjHcx3nwQt1fBlW1NodWz4lTbopXuRkvDxTYj0x6XnOHbiP
-         Uu/EkTQoomr9XG4RsDf5dP3uSHFLpuGP2YXLGTp7eybCXufNiA2G9Oorukm3RUKZqsGk
-         jreGWi/bApUKuE5yjbEfu3u/ZqzvrtqDtYrZoMDdX6tvdvzdoLaifHoZfnnDOw11So3b
-         ZmBQ==
-X-Gm-Message-State: AOAM533+Lt5jnK8l5OB95mgn4R3fH0HwXOVY6NViR4rY5JlX3JWrkdmu
-        XzHU5KLzDGgmOmZo90h6U2WRBQ==
-X-Google-Smtp-Source: ABdhPJxLQmWRXH5EaNL+jpl63GF0SKDZkSgigNJXKSCuVDXdkRAYwYzXTcfvmbHPqhxTSBOfw3cTsw==
-X-Received: by 2002:a62:97:0:b029:1ab:93bf:43a1 with SMTP id 145-20020a6200970000b02901ab93bf43a1mr24989223pfa.75.1610958016148;
-        Mon, 18 Jan 2021 00:20:16 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id j17sm14631894pfh.183.2021.01.18.00.20.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 00:20:15 -0800 (PST)
-Date:   Mon, 18 Jan 2021 13:50:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] opp: Add dev_pm_opp_sync_regulators()
-Message-ID: <20210118082013.32y5tndlbw4xrdgc@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-5-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-5-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=M2czl7AdXkeiTJE6+fnFESw8QQNDAv21y8gTRe13G3s=;
+        b=Ujmjb703Z9MElavAfmStKdbbO7nAoxpM0VEZGKSk1+T7i+t7eJGP84vsJ+/+I3f/MM
+         O4lUNJV80CSJNC+4G+arsEBc92/5N16hTGI+zbmLIfA4DUctKJQv+R/Qf7Y6GbFGPFIY
+         HjAUYl4kdFlAhfTNZuQEM+PBklm2pZ6jDBn1Rpvy2O3AomnVf0feb45+2RkIrpeOjM5T
+         urIIcUWjhSx7WhST7x4x0845xXZScxB2tNwleGvYphnjbIuwkX5iWkgdKLCNDQFtKAlR
+         h5UCOm0qEVQPXo8hbcW9RVZ5OizDwjDXWM+Fd2czljNCe1DIbl26R/IOr6OZFolDM37e
+         /A0A==
+X-Gm-Message-State: AOAM533ZYwiS9MD8USacV3J1ZzUtU+Diq4ISCILRQcI8XwRHklgkba/B
+        f8PFN88pYUwpYkIW1wq2i05a9kJcEuLaFQ==
+X-Google-Smtp-Source: ABdhPJzUIdERXVaNzWyi/T2hRfvLw85RB8089LN9Z6eORPK4jumPEfOAhsKk1UA7NLCNPRJ/5XNctw==
+X-Received: by 2002:a05:600c:3551:: with SMTP id i17mr19401993wmq.140.1610958231178;
+        Mon, 18 Jan 2021 00:23:51 -0800 (PST)
+Received: from localhost.localdomain ([163.172.76.58])
+        by smtp.googlemail.com with ESMTPSA id b7sm27292961wru.33.2021.01.18.00.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 00:23:50 -0800 (PST)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v2] sparc: sparc64_defconfig: add necessary configs for qemu
+Date:   Mon, 18 Jan 2021 08:23:45 +0000
+Message-Id: <20210118082345.16163-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> Extend OPP API with dev_pm_opp_sync_regulators() function, which syncs
-> voltage state of regulators.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 45 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  6 ++++++
->  2 files changed, 51 insertions(+)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 7b4d07279638..99d18befc209 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -2686,3 +2686,48 @@ void dev_pm_opp_remove_table(struct device *dev)
->  	dev_pm_opp_put_opp_table(opp_table);
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_remove_table);
-> +
-> +/**
-> + * dev_pm_opp_sync_regulators() - Sync state of voltage regulators
-> + * @dev:	device for which we do this operation
-> + *
-> + * Sync voltage state of the OPP table regulators.
-> + *
-> + * Return: 0 on success or a negative error value.
-> + */
-> +int dev_pm_opp_sync_regulators(struct device *dev)
-> +{
-> +	struct opp_table *opp_table;
-> +	struct regulator *reg;
-> +	int i, ret = 0;
-> +
-> +	/* Device may not have OPP table */
-> +	opp_table = _find_opp_table(dev);
-> +	if (IS_ERR(opp_table))
-> +		return 0;
-> +
-> +	/* Regulator may not be required for the device */
-> +	if (!opp_table->regulators)
-> +		goto put_table;
-> +
-> +	mutex_lock(&opp_table->lock);
+The sparc64 qemu machines uses sunhme network hardware by default, so for
+simple NFS boot testing using qemu, having CONFIG_HAPPYMEAL is useful.
+And so we need also IP_PNP_DHCP for NFS boot.
+For the same reason we need to enable its storage which is a PATA_CMD64.
+And finally, we need CONFIG_DEVTMPFS for handling recent udev/systemd.
 
-What exactly do you need this lock for ?
+All those options will permit to enable boot testing in both kernelCI
+and gentoo's kernelCI.
 
-> +
-> +	/* Nothing to sync if voltage wasn't changed */
-> +	if (!opp_table->enabled)
-> +		goto unlock;
-> +
-> +	for (i = 0; i < opp_table->regulator_count; i++) {
-> +		reg = opp_table->regulators[i];
-> +		ret = regulator_sync_voltage(reg);
-> +		if (ret)
-> +			break;
-> +	}
-> +unlock:
-> +	mutex_unlock(&opp_table->lock);
-> +put_table:
-> +	/* Drop reference taken by _find_opp_table() */
-> +	dev_pm_opp_put_opp_table(opp_table);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index c24bd34339d7..1c3a09cc8dcd 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -162,6 +162,7 @@ int dev_pm_opp_set_sharing_cpus(struct device *cpu_dev, const struct cpumask *cp
->  int dev_pm_opp_get_sharing_cpus(struct device *cpu_dev, struct cpumask *cpumask);
->  void dev_pm_opp_remove_table(struct device *dev);
->  void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
-> +int dev_pm_opp_sync_regulators(struct device *dev);
->  #else
->  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
->  {
-> @@ -398,6 +399,11 @@ static inline void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask
->  {
->  }
->  
-> +static inline int dev_pm_opp_sync_regulators(struct device *dev)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
->  #endif		/* CONFIG_PM_OPP */
->  
->  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
-> -- 
-> 2.29.2
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+Changes since v1:
+- Added CONFIG_DEVTMPFS for udev
+- Changed PCNET32 to HAPPYMEAL, as the default netword card is sunhme
 
+ arch/sparc/configs/sparc64_defconfig | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/sparc/configs/sparc64_defconfig b/arch/sparc/configs/sparc64_defconfig
+index bde4d21a8ac8..439ec8bc6dca 100644
+--- a/arch/sparc/configs/sparc64_defconfig
++++ b/arch/sparc/configs/sparc64_defconfig
+@@ -236,3 +236,9 @@ CONFIG_CRYPTO_TWOFISH=m
+ CONFIG_CRC16=m
+ CONFIG_LIBCRC32C=m
+ CONFIG_VCC=m
++CONFIG_ATA=y
++CONFIG_PATA_CMD64X=y
++CONFIG_HAPPYMEAL=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++CONFIG_DEVTMPFS=y
 -- 
-viresh
+2.26.2
+
