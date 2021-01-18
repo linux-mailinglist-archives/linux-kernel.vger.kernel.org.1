@@ -2,158 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE302F9D35
+	by mail.lfdr.de (Postfix) with ESMTP id E75252F9D36
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389477AbhARKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389819AbhARK3M (ORCPT
+        id S2388682AbhARKwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:52:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389857AbhARK3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:29:12 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84C9C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:28:17 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id e17so1769407qto.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:28:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/TkzcR6kWeiv6t4IoqwMwIdTH7b0PFudFxRU7qciUjA=;
-        b=DROzjAF/QDbj0tr+au8yUVh8IsGBdQALoMrUzGGAjnsbAIG601LX1NKeK0DGQeFlfC
-         KFUnLTXRwPQ+BsYNICcqEFxf6IdGCrrF/bO3qFV+UlGCGh1DBPLPbhqHoEEZqEWws5N9
-         VHn6GEkFXRB8DJmCJ6qLxelY9kemc9C7zO57IURj1IUwnDeOArbb+wftAyOzxwy0mhXW
-         szjEAVY3sGoXTWyC4mhtkf8AqikT9ZC4RPaXJUsgWnlRbgw3sFmKkFkKiOxRzczAfoLx
-         Eqb8tV/ZTB2KbdmeRJfOr25QvJe1MMa1MQNSW6dUG2c56VtJDkruQlzHcGrgGUmxLnuN
-         1/0A==
+        Mon, 18 Jan 2021 05:29:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610965695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcioXB/UdMlsYBZivaxmZD1my4PTiLM/bF+IXbZJzro=;
+        b=N1XNSgvkV0QSicFKjl4ecPCq1eJYfzEQcnf0OJvdKqiphSWVvZ88kUQWy0u9jPjiRmSFWZ
+        YpXRGTxmLkolT7bfW7c9UUUEv1lktWk1bDFqXI3pJF/MKWOBm+hq7OeV96KTy2dUBGicWk
+        dqeCdZP3+NbeFACRDDwSd4aDewck3ls=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-hLdX5rbUNLG_v22qFF_w9Q-1; Mon, 18 Jan 2021 05:28:12 -0500
+X-MC-Unique: hLdX5rbUNLG_v22qFF_w9Q-1
+Received: by mail-ej1-f71.google.com with SMTP id h4so5086943eja.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:28:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/TkzcR6kWeiv6t4IoqwMwIdTH7b0PFudFxRU7qciUjA=;
-        b=t3mv5P0jMn3P7JdyfbArQQXVa54VNR5gUwPdzmuhwDF3nbkRAfEYHo6qBLukqaakKn
-         2G5akRoCJhgyFqawberuQt8ziEYzn17JTht6xJdA+BkuQDdYs9ngYc3IZPk4rhlB4juI
-         alfEu7iyPmD5aqWGMvGw3DOKAfD17LxR6/gDq9myeMAQcxwC2968Y3Jtb6yALDb26R9J
-         nByC+glAnFWFFKSoRdxNkLJvAGGWF+nHjcm3Tm2atvbM/ewQq5m2/4lEeYoRpmgwuU0U
-         N11Ad03fD/fFqFGgq9DYvEyRRrGE17u/IvYbKOa98RzWxLjHxh9UEGq95a/sfwG2ZCBq
-         oX1A==
-X-Gm-Message-State: AOAM532YVMunG+LQZh7tRsggTb99LZaaUhLeAG8qb6Td3KiTRSeeOZfK
-        XbV/rOGR1vfjt+phYj5E4+JqnH62KCXrN9hmOcQgDA==
-X-Google-Smtp-Source: ABdhPJy9UVrXbeUYiMAsuNdsUca4XuVLWSbQ+G5mjrfOa30MUGTsoWYCcLjFFRwwOVX481hx0YNn4X6qLqhQrSHnZIY=
-X-Received: by 2002:ac8:6cf:: with SMTP id j15mr22124864qth.180.1610965696933;
- Mon, 18 Jan 2021 02:28:16 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DcioXB/UdMlsYBZivaxmZD1my4PTiLM/bF+IXbZJzro=;
+        b=kfpbgI0/9atp1AV+ytNyIDWS9j6L5k9VaSewAO6tLjvZsaRFACU8vamFrA0ELWDl/5
+         0oJj/PXeGBATCrRCYcGeH8byOSFkfX3A+JZX9qzf6D63Gy/XjhNJEzWFFuqe7SjASjT7
+         LaGpJ6lqegSI3Ryk0O0UV1BvbU7fBG4kboi+cG/N3jBwWbSFFsuvDnPxPsUv5IVL+FHm
+         Me+vpr6HJAF5+yUQfPUxbgnPvRtlUqzINmPYQS+M/FAJrxOApWVhtY4CgV68WjXGp7uf
+         eJI5EYtAm+6xw6xBw/toTaUGAVG7RJHG2ZotrdL1XGO6y+TlUwtoSREWgaK7TfosCEci
+         aBBA==
+X-Gm-Message-State: AOAM530ZovDtxH6doOz6Hr6jXUAu3zzNGBprre3enlfMq+bYTcXrDSI9
+        m+kJhXpE9hA4xmOdFiIr/KrafS7iry09T8SY+DD+VWeCFAT+ScA3qtSUec0Lcmt0/rTpefPe3R/
+        2RXkgWSAQ8uUQHE4N/EVEiAqK
+X-Received: by 2002:a05:6402:30ac:: with SMTP id df12mr19641486edb.175.1610965691360;
+        Mon, 18 Jan 2021 02:28:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzKjZRu6y7Eez6K9LchcmhzoZWqgCU36cr2SlmBxQJtlWrydRl+v98Thet1XSfWUW/hCuozkQ==
+X-Received: by 2002:a05:6402:30ac:: with SMTP id df12mr19641475edb.175.1610965691206;
+        Mon, 18 Jan 2021 02:28:11 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id q9sm5667939ejd.113.2021.01.18.02.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 02:28:10 -0800 (PST)
+Subject: Re: [PATCH v2 00/12] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+References: <20210117160555.78376-1-hdegoede@redhat.com>
+ <20210118095509.GA4903@dell>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <8905f9f2-1c1c-1b64-d70d-374f84568ccb@redhat.com>
+Date:   Mon, 18 Jan 2021 11:28:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210118092159.145934-1-elver@google.com>
-In-Reply-To: <20210118092159.145934-1-elver@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 18 Jan 2021 11:28:05 +0100
-Message-ID: <CAG_fn=VDdRLmFaKDkrUk=evkQJDboMm50w6R53w2CWhNGz_o6g@mail.gmail.com>
-Subject: Re: [PATCH mm 1/4] kfence: add missing copyright and description headers
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210118095509.GA4903@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:22 AM Marco Elver <elver@google.com> wrote:
->
-> Add missing copyright and description headers to KFENCE source files.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-> ---
-> If appropriate, to be squashed into:
->
->         mm: add Kernel Electric-Fence infrastructure
-> ---
->  include/linux/kfence.h | 6 ++++++
->  mm/kfence/core.c       | 5 +++++
->  mm/kfence/kfence.h     | 6 ++++++
->  mm/kfence/report.c     | 5 +++++
->  4 files changed, 22 insertions(+)
->
-> diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-> index c2c1dd100cba..a70d1ea03532 100644
-> --- a/include/linux/kfence.h
-> +++ b/include/linux/kfence.h
-> @@ -1,4 +1,10 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Kernel Electric-Fence (KFENCE). Public interface for allocator and fa=
-ult
-> + * handler integration. For more info see Documentation/dev-tools/kfence=
-.rst.
-> + *
-> + * Copyright (C) 2020, Google LLC.
-> + */
->
->  #ifndef _LINUX_KFENCE_H
->  #define _LINUX_KFENCE_H
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index a5f8aa410a30..cfe3d32ac5b7 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KFENCE guarded object allocator and fault handling.
-> + *
-> + * Copyright (C) 2020, Google LLC.
-> + */
->
->  #define pr_fmt(fmt) "kfence: " fmt
->
-> diff --git a/mm/kfence/kfence.h b/mm/kfence/kfence.h
-> index 97282fa77840..1accc840dbbe 100644
-> --- a/mm/kfence/kfence.h
-> +++ b/mm/kfence/kfence.h
-> @@ -1,4 +1,10 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Kernel Electric-Fence (KFENCE). For more info please see
-> + * Documentation/dev-tools/kfence.rst.
-> + *
-> + * Copyright (C) 2020, Google LLC.
-> + */
->
->  #ifndef MM_KFENCE_KFENCE_H
->  #define MM_KFENCE_KFENCE_H
-> diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-> index 1996295ae71d..901bd7ee83d8 100644
-> --- a/mm/kfence/report.c
-> +++ b/mm/kfence/report.c
-> @@ -1,4 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KFENCE reporting.
-> + *
-> + * Copyright (C) 2020, Google LLC.
-> + */
->
->  #include <stdarg.h>
->
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+Hi,
 
+On 1/18/21 10:55 AM, Lee Jones wrote:
+> On Sun, 17 Jan 2021, Hans de Goede wrote:
+> 
+>> Hi All,
+>>
+>> This series reworks the arizona codec jack-detect support to use
+>> the snd_soc_jack helpers instead of direct extcon reporting.
+>>
+>> This is done by reworking the extcon driver into an arizona-jackdet
+>> library and then modifying the codec drivers to use that directly,
+>> replacing the old separate extcon child-devices and extcon-driver.
+>>
+>> This brings the arizona-codec jack-detect handling inline with how
+>> all other ASoC codec driver do this.
+>>
+>> This was developed and tested on a Lenovo Yoga Tablet 1051L with
+>> a WM5102 codec.
+>>
+>> The MFD, ASoC and extcon parts can be merged independent from each-other
+>> although that could lead to a case where both the extcon driver and
+>> the new arizona-jackdet library will try to do jack-detection. If we
+>> end up with a git tree in that state then one of the 2 will fail to
+>> load because the other will already have claimed the IRQs, so this
+>> is not a problem really.
+>>
+>> Or the entire series could be merged through the MFD tree if people
+>> prefer that.
+>>
+>> Note that this series also paves the way for some further cleanups,
+>> removing some jackdetect related variables like hp_ena and hp_clamp
+>> from the arizona data struct shared between all the MFD child devices.
+>> I've deliberately not done that cleanup as part of this patch-series,
+>> since IMHO the series is big enough as is. These cleanups can be done
+>> in a follow-up series once this series has landed.
+> 
+> Would you mind using `git format-patch` to create your cover-letters
+> in the future please?  This one is missing useful information such as
+> the diff-stat and patch list.
 
---=20
-Alexander Potapenko
-Software Engineer
+I never heard about that git feature until today, so I learn something
+new every day :)
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+I just tested it and it seems useful. I will try to use it next time.
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Regards,
+
+Hans
+
