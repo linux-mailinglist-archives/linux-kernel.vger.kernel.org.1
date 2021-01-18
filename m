@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138772FA564
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB022FA53E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406101AbhARP5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:57:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:38426 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405992AbhARPyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:54:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC96E31B;
-        Mon, 18 Jan 2021 07:53:28 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 061FA3F68F;
-        Mon, 18 Jan 2021 07:53:26 -0800 (PST)
-Date:   Mon, 18 Jan 2021 15:52:28 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v3 02/21] mmc: sunxi: add support for A100 mmc
- controller
-Message-ID: <20210118155228.3bd0e909@slackpad.fritz.box>
-In-Reply-To: <20210118132854.yiwn7rnvcyexgqim@gilmour>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
-        <20210118020848.11721-3-andre.przywara@arm.com>
-        <20210118132854.yiwn7rnvcyexgqim@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2406063AbhARPyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405846AbhARPxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:53:32 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A739BC061575;
+        Mon, 18 Jan 2021 07:52:51 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ox12so47063ejb.2;
+        Mon, 18 Jan 2021 07:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bpv56niFjct5w6LbQ/DkAciW7isXZ8qi5X4Zeb1XX6Y=;
+        b=IpHuRpIFuVFujFy5t9HcQNNG/7HGMeq6IPbI118FOlbOKiCNMUiYo2EB6e6iYuNUc5
+         HCUQxQ+WRrk53KVYiL4yppa4qgCeXzBL8MGLTJxVGJjb4xfX7ltqH0amF6XFEoGwpWnr
+         PGRHHG6nAyJVt2jaoetXvuouBCxixHdEgMDb0XsrGTIAxGXdRb1KCGzFGo8j782DB5nP
+         6Ze7+LnRqdpI9Jo2ffadmsFIgCMS6CfS5X7GYBqVJxCJEA5RohPA/Y2DFRHBTfAwLUol
+         wara7zYTapg8myTlm3FvRskfjWAqxqaXH+RF25woqIl2fogZQIujkm+uEMDuWdAD6UAk
+         sDUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bpv56niFjct5w6LbQ/DkAciW7isXZ8qi5X4Zeb1XX6Y=;
+        b=bmBW+xGg0K2bJYa9yDQfGhud3+/vzBiA0C8Y3bx6PWQqY+Eo+H9twANuCBZj7g+ope
+         zi/kDOmGhZhIqjc7CmLY/mp+brOqnfp5wety0ogaRJqQrb45ILx76Fc71o2tYpSAAbs3
+         ns+tM1nhK1PQ85bnFMDFKIPjri/MOybvvN8Bp38Igrb4KbS+4Ol8+hIzOBAZH8gJWJhm
+         NQHcainBgwzc+oWFj2WHVsUGjIVxNSVaL1NXFYCM7q2ub0smBt8iMgjnxEEk4a0tpwKM
+         yz+P/tjxroJSjwrBAoSA28JN3RtaiEGG4hqSulAWYW4iL01ApVXilsZGyjGUaE9jInpW
+         MPiA==
+X-Gm-Message-State: AOAM531KVROvBoZziC7XiA9PrQ7zFXckrFXO8rYxU0q1hXDPdxmkGMJB
+        DTt+z4TrkKorMLXdFVqaLAY=
+X-Google-Smtp-Source: ABdhPJzCkES0uIah85lOrhLCxqlNpN6TfPMxHwPwGpmokPHpCfuVQ2ublkAr1ApqwXEQh+RWsmLlgA==
+X-Received: by 2002:a17:906:59a:: with SMTP id 26mr206706ejn.309.1610985170471;
+        Mon, 18 Jan 2021 07:52:50 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id f13sm9561694ejf.42.2021.01.18.07.52.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 07:52:49 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] ARM: dts: rockchip: assign a fixed index to mmc devices on rk322x boards
+Date:   Mon, 18 Jan 2021 16:52:38 +0100
+Message-Id: <20210118155242.7172-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 14:28:54 +0100
-Maxime Ripard <maxime@cerno.tech> wrote:
+Recently introduced async probe on mmc devices can shuffle block IDs.
+Pin them to fixed values to ease booting in environments where UUIDs are
+not practical. Use newly introduced aliases for mmcblk devices from [1].
+The sort order is based on reg address.
 
-Hi Maxime,
+[1] https://patchwork.kernel.org/patch/11747669/
 
-> On Mon, Jan 18, 2021 at 02:08:29AM +0000, Andre Przywara wrote:
-> > From: Yangtao Li <frank@allwinnertech.com>
-> > 
-> > This patch adds support for A100 MMC controller, which use word
-> > address for internal dma.
-> > 
-> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
-> 
-> We should also disable the timings setup in probe to derive them from
-> the DT. This is causing issues on some SoCs already, so it would be
-> best to not make the situation worse
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rk322x.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-But only for those new SoCs, where we have the speed modes in the DT
-in every case (so only new ones)? And this disabling would be
-SoC/compatible string dependent? Happy to send a patch later if that is
-what you were thinking about.
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index 9910f9b5c..f10c4d2fa 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -14,6 +14,9 @@
+ 	interrupt-parent = <&gic>;
+ 
+ 	aliases {
++		mmc0 = &sdmmc;
++		mmc1 = &sdio;
++		mmc2 = &emmc;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
+-- 
+2.11.0
 
-Also I was wondering about the voltage dependent speed modes: At the
-moment the driver declares both MMC_CAP_1_8V_DDR and MMC_CAP_3_3V_DDR,
-so I mimic this in the .dtsi. However in the eventual DTB this looks
-somewhat dodgy, since most boards only support one of those voltages. Do
-we ignore this, and rely on the vqmmc-supply to limit this choice?
-
-Cheers,
-Andre
-
-Btw: This patch is already in Ulf's -next tree, I just included it here
-for the sake of completeness. Is that a problem? I don't think it
-affects the build, so we don't care too much? 
