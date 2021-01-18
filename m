@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80332FA8B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D310D2FA8C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405538AbhARPGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405393AbhARPFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:05:45 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0567C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:05:04 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id u25so24537571lfc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:05:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ri3ViwJIemCRo5Li//ENyLUFjkwkOFqO5AGiqHf+oUY=;
-        b=J331cjUcPG1tS5LoQgX2hRDa6mKfwajLBC1eFES7fOibDhYewVXHQyKQEWG2xYPZIf
-         Bh+BOz3otEDNfsKc5ab4MvmeQ5urrdGPC5Khca7RebCWDRObMz+WQM+B5hee9jRrYHzB
-         6SyV9UYRrG2o7wiLW0uqJQMJUxNJPFG11mtx9R++Ri3SWLwKh9awxAaekulbtLy218dH
-         oiCz8L9F35auVvyeiUAkqLfKC7Puj6g73fe/AipJyBAXU1Q0MaE+UuhKcJTE41H91vAX
-         hruB5gULNTqa/mvuYs+ehJznauVpD3Qkx4niQcw72qNYBGTzRkFulCzFq5R8Qljqom9r
-         H/rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ri3ViwJIemCRo5Li//ENyLUFjkwkOFqO5AGiqHf+oUY=;
-        b=n77nLZi1AXSsJP2T9uHYfyEZjKp8Kw4Px0VmA6ruKLOx+TXICzpkSs0f1KNsyTXdfY
-         Y392Xj+aAayXd+CPgbJGPIB4Dl2yG5AljshjywloGuCVEK8+/MNFQIyi4VtlIFB5Pggx
-         YAcMadsaqWF1VjXSwRDVlYPICejIKQWEgn/SIc3KJ1wr53iEOAaELREpgpGVneQlMoc4
-         xjx9G/BT/MyQGClhu9O6QRfxLM6AlD6u9Dm/AkQ1NSaLVkP6P48eBTm/9UediWGo8Zxe
-         fzOtiOr9u5BiCJPBmT4efZGRTZlo0rVoJZ4snMy9Q13Ngfr1h+Y/791O0P4Nja6tvX9k
-         HBHQ==
-X-Gm-Message-State: AOAM530WylQBt6kvbLXleWraJnZCMtwwpqr6MCtr9GoqX5hgOW3RZg2/
-        EZXJs48Zato6vIEY0fVG+yk9k7fwEzrEr2YrLW6XZw==
-X-Google-Smtp-Source: ABdhPJxFI1/1/BERIAvssx71vAzMx/DieoiLXAg12yNY2zsJZ74uR0QW2dajc0J1Br5Sw3ihpextmWaR6Wp3bLSIuho=
-X-Received: by 2002:a19:8bc6:: with SMTP id n189mr11053598lfd.291.1610982303209;
- Mon, 18 Jan 2021 07:05:03 -0800 (PST)
+        id S2393688AbhARS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392937AbhARPGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:06:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56C2422BF3;
+        Mon, 18 Jan 2021 15:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610982338;
+        bh=O6M1n/+xN3XivdFxg/+MeYf0/keKDicCppxhlPQcqAo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gu4q31Ni9yGfcWk46rz/cLDZVGk5skrlSQ0hEbFEU2l+cFzxD2LvJvCh+TMY7DNWw
+         OsbMuu1lvYbvUuKIHXO2vMxoHqqzJLyqNyIPtzTWfpsXmIU87GkEjdXojUOOx9YY47
+         Hv0daJ84K6I9xYWSAzqu3i/z6PMRjYZoNLUbNdh0TQ8358/2WoJ207Pm7xnMgLIwxX
+         mhE8cPknJ6sm7Tb09I1hPPJLJRjFUfhJeLXDKka+a4aoXBEjfbzZah32BNKEMawIlp
+         s96ecjh0LQnBQsbGQplb8R+rMfQqJS3imqFt81LxnkecaBOW4UJpysnFpD+wHYjbma
+         akC2YMZzsTnxQ==
+Received: by mail-ed1-f54.google.com with SMTP id b21so9122897edy.6;
+        Mon, 18 Jan 2021 07:05:38 -0800 (PST)
+X-Gm-Message-State: AOAM530x5bhKVGxke+aLaEpgIbZSf8GqITwKuyHLBMCnrYTJaFm0t3iW
+        jkGgEfKLsd6UsMTB+RJ9wo47W22EhzctYr6B9Q==
+X-Google-Smtp-Source: ABdhPJyfXzalDLfP+23Rji9ljj49KRJPNaWxn9PX5oQgRjG3us5FDJGuKT75vRlC9zwSL0fJPMRPsmGBGhMExyQutg0=
+X-Received: by 2002:a05:6402:55:: with SMTP id f21mr20025590edu.38.1610982336942;
+ Mon, 18 Jan 2021 07:05:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107025731.226017-1-warthog618@gmail.com>
-In-Reply-To: <20210107025731.226017-1-warthog618@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 18 Jan 2021 16:04:51 +0100
-Message-ID: <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
+References: <20210116090656.11752-1-chunfeng.yun@mediatek.com> <20210116090656.11752-4-chunfeng.yun@mediatek.com>
+In-Reply-To: <20210116090656.11752-4-chunfeng.yun@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 18 Jan 2021 23:05:25 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__DtGc85JNyxWcebof5h3_Os2ugyy1P0jZsOs0Yzj2miw@mail.gmail.com>
+Message-ID: <CAAOTY__DtGc85JNyxWcebof5h3_Os2ugyy1P0jZsOs0Yzj2miw@mail.gmail.com>
+Subject: Re: [PATCH next 04/15] dt-bindings: phy: mediatek: hdmi-phy: modify
+ compatible items
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Min Guo <min.guo@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
+Hi, Chunfeng:
 
->   selftests: gpio: rework and simplify test implementation
->   selftests: gpio: remove obsolete gpio-mockup-chardev.c
->   selftests: remove obsolete build restriction for gpio
->   selftests: remove obsolete gpio references from kselftest_deps.sh
->   tools: gpio: remove uAPI v1 code no longer used by selftests
->   selftests: gpio: port to GPIO uAPI v2
->   selftests: gpio: add CONFIG_GPIO_CDEV to config
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=881=
+6=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=885:07=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> The compatilbe "mediatek,mt7623-hdmi-tx" is not supported in driver,
+> and in fact uses "mediatek,mt2701-hdmi-tx" instead on MT7623, so changes
+> the compatible items to make dependence clear.
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  .../devicetree/bindings/phy/mediatek,hdmi-phy.yaml    | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml=
+ b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
+> index 4752517a1446..0d94950b84ca 100644
+> --- a/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
+> @@ -21,10 +21,13 @@ properties:
+>      pattern: "^hdmi-phy@[0-9a-f]+$"
+>
+>    compatible:
+> -    enum:
+> -      - mediatek,mt2701-hdmi-phy
+> -      - mediatek,mt7623-hdmi-phy
+> -      - mediatek,mt8173-hdmi-phy
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7623-hdmi-phy
+> +          - const: mediatek,mt2701-hdmi-phy
+> +      - const: mediatek,mt2701-hdmi-phy
+> +      - const: mediatek,mt8173-hdmi-phy
+>
 
-Bartosz I think you can just merge these patches into the GPIO tree, at least
-I think that is what I have done in the past.
+I like move 'items' to the bottom.
 
-Yours,
-Linus Walleij
+- const: mediatek,mt2701-hdmi-phy
+- const: mediatek,mt8173-hdmi-phy
+
+- items:
+  - enum:
+      - mediatek,mt7623-hdmi-phy
+  - const: mediatek,mt2701-hdmi-phy
+
+Regards,
+Chun-Kuang.
+
+>    reg:
+>      maxItems: 1
+> --
+> 2.18.0
