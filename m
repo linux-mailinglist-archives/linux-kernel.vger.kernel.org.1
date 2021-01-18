@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8342F98B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838F12F98C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730646AbhAREl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:41:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:31561 "EHLO mga06.intel.com"
+        id S1730844AbhAREod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 23:44:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726186AbhARElZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:41:25 -0500
-IronPort-SDR: G7g3NllnhW27/xK2IRZWNlBQhJAWuYmfyCSff1Ws8r0+FcEjmnp4XWDmjPVcotQZNPh1UUI3Vt
- O7zRo03T2bhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="240300002"
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="240300002"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:40:44 -0800
-IronPort-SDR: eEvw7leSaaJN9eymLLgynxNsOGJeSV55yCiBp97NG8dJkQ0Ik5jtq/b2whwL85LQOqaO9CSC4d
- 2hq4jBbHNtUQ==
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="383426844"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:40:41 -0800
-Subject: Re: [PATCH] KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding
- in intel_arch_events[]
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-References: <20201230081916.63417-1-like.xu@linux.intel.com>
- <1ff5381c-3057-7ca2-6f62-bbdcefd8e427@linux.intel.com>
- <YAHRMK5SmrmMx8hg@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <b3623ea4-b2a1-e825-68f9-d97a6e7a07f4@intel.com>
-Date:   Mon, 18 Jan 2021 12:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726350AbhAREo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 23:44:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F46224B0;
+        Mon, 18 Jan 2021 04:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610945026;
+        bh=AOeIzUAyMYJhagELJkXlIlVvJ3mEHHKHK6fP6TKYtC8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=biAB2Xr2baQqdfX57k6P+JuluJ9hoMBlhuM5AbSN/d8zBkeYQwDgycILOlKLeunk+
+         INei5/rkzqlXOColh0AoWysg7cnD8ksQQLRy56zXytltwnNSUH0QSXpbevkdpeKa4w
+         Wk4j4pFjsEejs5OOfQPTwcVrdgb0BH2MHkb99tNVFYc3qI2V0QCSxA5XsDApqwzWET
+         55m6SPLF02xR/U3PI7zgBofcDQV95zACLlXJaxmwvH7Z7wS5EGYvPyHZHBB3i5tGxp
+         azfYeWGiOSBDx+wQGrBcNhEXGVJQyFw0qyOmUu3GJU3PBVS0cd/N0ijT6hmtf23Et1
+         xki/6ww2aNxfw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Add clock drivers for SM8350
+Date:   Mon, 18 Jan 2021 10:13:16 +0530
+Message-Id: <20210118044321.2571775-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YAHRMK5SmrmMx8hg@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/16 1:30, Sean Christopherson wrote:
-> On Fri, Jan 15, 2021, Like Xu wrote:
->> Ping ?
->>
->> On 2020/12/30 16:19, Like Xu wrote:
->>> The HW_REF_CPU_CYCLES event on the fixed counter 2 is pseudo-encoded as
->>> 0x0300 in the intel_perfmon_event_map[]. Correct its usage.
->>>
->>> Fixes: 62079d8a4312 ("KVM: PMU: add proper support for fixed counter 2")
->>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-thx.
->
->>> ---
->>>    arch/x86/kvm/vmx/pmu_intel.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->>> index a886a47daebd..013e8d253dfa 100644
->>> --- a/arch/x86/kvm/vmx/pmu_intel.c
->>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->>> @@ -29,7 +29,7 @@ static struct kvm_event_hw_type_mapping intel_arch_events[] = {
->>>    	[4] = { 0x2e, 0x41, PERF_COUNT_HW_CACHE_MISSES },
->>>    	[5] = { 0xc4, 0x00, PERF_COUNT_HW_BRANCH_INSTRUCTIONS },
->>>    	[6] = { 0xc5, 0x00, PERF_COUNT_HW_BRANCH_MISSES },
->>> -	[7] = { 0x00, 0x30, PERF_COUNT_HW_REF_CPU_CYCLES },
->>> +	[7] = { 0x00, 0x03, PERF_COUNT_HW_REF_CPU_CYCLES },
-> In a follow up patch, would it be sane/appropriate to define these magic numbers
-> in asm/perf_event.h and share them between intel_perfmon_event_map and
-> intel_arch_events?  Without this patch, it's not at all obvious that these are
-> intended to align with the Core (arch?) event definitions.
+This adds gcc clock controller drivers for the controller found
+in SM8350 SoC
 
-The asm/perf_event.h is x86 generic and svm has a amd_perfmon_event_map.
+Changes in v4:
+ - Add Ack from Rob on binding
+ - modularize alpha_pll_trion_set_rate()
 
-How about adding an interface similar to perf_get_x86_pmu_capability()
-so that we can use magic numbers directly from the host perf ?
-(it looks we may have a performance drop, compared to static array)
+Changes in v3:
+ - Drop rpmh clk patches applied
+ - Add a new patch to replace regval with val as suggested by Stephen
+ - Fix comments for new Lucid 5LPE PLL: sort new defines by BIT numbers, fix
+   comments, use alpha_pll_check_rate_margin(), rework
+   clk_lucid_5lpe_pll_postdiv_set_rate() logic
+ - Add power domains and optional clocks in bindings
+ - Fix comments for gcc sm8350 driver: clean includes used, use only
+   .fw_name for clocks defined in DT, use floor ops for sdcc clocks, remove
+   critical clocks and enable them in probe, add comments for clks using
+   BRANCH_HALT_SKIP and BRANCH_HALT_DELAY
 
----
-thx, likexu
+Changes in v2:
+ - Add r-b from Bjorn
+ - Add the gcc_qupv3_wrap_1_{m|s}_ahb_clk and gcc_qupv3_wrap1_s5_clk
 
->
->>>    };
->>>    /* mapping between fixed pmc index and intel_arch_events array */
+Vinod Koul (3):
+  clk: qcom: clk-alpha-pll: replace regval with val
+  clk: qcom: clk-alpha-pll: modularize alpha_pll_trion_set_rate()
+  dt-bindings: clock: Add SM8350 GCC clock bindings
+
+Vivek Aknurwar (2):
+  clk: qcom: clk-alpha-pll: Add support for Lucid 5LPE PLL
+  clk: qcom: gcc: Add clock driver for SM8350
+
+ .../bindings/clock/qcom,gcc-sm8350.yaml       |   96 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-alpha-pll.c              |  209 +-
+ drivers/clk/qcom/clk-alpha-pll.h              |    4 +
+ drivers/clk/qcom/gcc-sm8350.c                 | 3790 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sm8350.h   |  261 ++
+ 7 files changed, 4353 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm8350.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm8350.h
+
+-- 
+2.26.2
 
