@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BE62FA01A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503362FA08C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404172AbhARMku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:40:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390844AbhARMgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:36:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9CC522286;
-        Mon, 18 Jan 2021 12:35:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610973356;
-        bh=zyiVT4P7E60Eo9KHOBaHS2pbNeuf9t+bbd1HG0CCSqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mv0V0Egf16ygNO/YL+b6SqsCi4MTGY3Xn8aCTzJ+7VogtboS4b4QdI+kAv9sXbMBg
-         HEOeBkCH7D0WVJqtNB/scWX73i5wURdjS9VIIkwxgCW9C8WGo+DKVbGU6dX4ZRHtPP
-         TXBR9cdKOdAJ4AouDBD9nItiVkPrJ5aPvcwg3fEEwfr6eR73zpmhShNvL/dvngPU+n
-         p2lDXjaeb1y76IJmJI0cvWUTsOLAfys1T7RQPDLxSPewlF4R1JmkBJHFy7QMZ77WJ1
-         wGk48g7GpQOtsam3tOCBIabNueWNEPNS4dUweFekJomWLJvuxeE62tPrNNFxEwZz9p
-         9GAxh19VCbNnw==
-Date:   Mon, 18 Jan 2021 12:35:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH 3/6] devicetree/bindings: Initial commit of
- silergy,sy7636a-regulator.yaml
-Message-ID: <20210118123519.GF4455@sirena.org.uk>
-References: <20210117042539.1609-1-alistair@alistair23.me>
- <20210117042539.1609-3-alistair@alistair23.me>
+        id S2391979AbhARM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:57:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391680AbhARMgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:36:09 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70667C061573;
+        Mon, 18 Jan 2021 04:35:28 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id d26so16289092wrb.12;
+        Mon, 18 Jan 2021 04:35:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=dDqpVUDIXcJxr0nlcBjerifvUAz/3KcnYbeDUROK8QQ=;
+        b=fl6qCPK0st1ldqXiDkQnc419pVnLOQ0MSAIv9SHxcspuyM8ZHmzNgoJAbRlU10C3A6
+         5+R4zmEEDlO3BLLTeWgkqnwbPdrskLCiiMZO3P3TtdOMzGrZC33Rt0fYfVfly0H+xZ3S
+         xHRzv87/bSu4nxCaNTgZ6VYZKlg3BBZKDEPa3dXMdKdO9i7l5A+LQ8XXprPDaDLIlTQT
+         upgEumMBp6yh2r41woGp62z1C4Qgb7yzBbF4ZyOYVisRvcaOBFc/aqBHMPTmh3dyJV5+
+         UVMEOHk9VWtz2x1WtOYCl0P7D45S8ow0FmRCW3fRH2pFRfsyhca3LCXxI/Cv0yqIOQDs
+         nQgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=dDqpVUDIXcJxr0nlcBjerifvUAz/3KcnYbeDUROK8QQ=;
+        b=bOEPeV3nA3/Vs353xeclKBlzvDR7w3qcBWP6Te3AbULgMfriWygnBGcdL69Wj+CIgu
+         /VExGcIe9Wxk6FzypF29pK882p/cbqvYXxhVd76pFOG6bYR6hkDyn5NAC1rZVRXtqqs4
+         Py5ADsVG7c0gdjYMwdBaWwmh8PuBsiG6U36o5JDqZ1wPcyvL6cwjSWHoaaPAqtmgv0qt
+         4sZfz2T5XcXBVbQNyDurW3DoyUqw54X8ohVn2Onp4aeXsPElPC5Xy4FFxdy8b6WH15NN
+         QsxOv4pmBZ7f1V8kJZOyB67Ho4UAtSudJ13rKroVZ2sHCFgfpBcCqlz68kWt9q3Xra6R
+         /nkg==
+X-Gm-Message-State: AOAM533T9L/FpePYPBPk6FE0wCppe7o3XL6XUG11McLziDnxUAdVHcGc
+        ExlhFhNkFVGspRqSFU27XBQ=
+X-Google-Smtp-Source: ABdhPJz6TFx4ZcRZ3wBY64+lquhHyb/9EVGtIBxJImQ9wVhyzU+A7KvmYddJtho3ZOk+pbS8rdhD9Q==
+X-Received: by 2002:adf:eb4e:: with SMTP id u14mr25832729wrn.99.1610973327263;
+        Mon, 18 Jan 2021 04:35:27 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id 33sm32880949wrn.35.2021.01.18.04.35.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 04:35:26 -0800 (PST)
+Subject: Re: [PATCH v2 1/7] acpi: utils: move acpi_lpss_dep() to utils
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-2-djrscally@gmail.com>
+ <YAU3msXszVZ8CLjs@pendragon.ideasonboard.com>
+ <20210118122950.GE4077@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <a0e3cc39-c497-5fab-947e-e47d44509b9f@gmail.com>
+Date:   Mon, 18 Jan 2021 12:35:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VuQYccsttdhdIfIP"
-Content-Disposition: inline
-In-Reply-To: <20210117042539.1609-3-alistair@alistair23.me>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210118122950.GE4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---VuQYccsttdhdIfIP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 18/01/2021 12:29, Andy Shevchenko wrote:
+> On Mon, Jan 18, 2021 at 09:24:10AM +0200, Laurent Pinchart wrote:
+>> On Mon, Jan 18, 2021 at 12:34:22AM +0000, Daniel Scally wrote:
+> ...
+>
+>>> +bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle);
+>> "lpss" stands for low power subsystem, an Intel device within the PCH
+>> that handles I2C, SPI, UART, ... I think the function should be renamed,
+>> as it's now generic. acpi_dev_has_dep() is a potential candidate, I'm
+>> sure better ones exist. A bit of kerneldoc would also not hurt.
+> Actually a good suggestions. Please apply my tag after addressing above.
 
-On Sat, Jan 16, 2021 at 08:25:36PM -0800, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A-regulator Power Management chip
-> driver.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Will do, thanks
 
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sy7636a-regulator
-
-Compatible strings should be in the form vendor,device. =20
-
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        regulator@60 {
-> +          compatible =3D "sy7636a-regulator";
-> +          reg_epdpmic: vcom {
-> +            regulator-name =3D "vcom";
-> +            regulator-boot-on;
-> +          };
-> +        };
-> +    };
-
-There's no documentation of VCOM as a valid regulator in the binding.
-
---VuQYccsttdhdIfIP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFgIYACgkQJNaLcl1U
-h9Cm3Af8DSa6B05Wbp5ktuy3F+5rF0PIrxE8TRtVen/czTvYnWGjb/v+EkHZWtSx
-FVWtD/JKNZVvGMNx59MdAQYTzpAmPFoysqyLvRdmvMXwXKREqioh4qHcQb7J+nO4
-qcp8frhkKqExFFeYc/LCx/nDosEuCcAUgOFXoz1nHTPJoh4PtTJM2hd3Vi6R7mrf
-lyvDMuJ+McU0KTFIBonc7YGCv4W/z24sG6digErTJwBv8+ss+1Z/0wElK+VvFiSr
-nL0UcErPi39oElZ/CQTPJJKywJ12uaYZi9PVvlCSLOXyZNkroOD5rTwDAYUKCjCC
-RsMw+mdK2pRBVsAazrok75ZA2XHozQ==
-=qfar
------END PGP SIGNATURE-----
-
---VuQYccsttdhdIfIP--
