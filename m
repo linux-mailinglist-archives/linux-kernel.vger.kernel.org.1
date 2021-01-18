@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7782A2FA936
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4992FA946
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407788AbhARSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:48:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393772AbhARSp0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:45:26 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158AFC061573;
-        Mon, 18 Jan 2021 10:44:46 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id m13so19247392ljo.11;
-        Mon, 18 Jan 2021 10:44:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m9tPZEWAJ0kOhm4O/8sptvQx+KLZAi/Ezlz9DZ5Lzzw=;
-        b=HIcMkOkLlSoHWH3wqzkEPBCe0BQob75nBypcfRmK6i63y0gf0bkSc/PdWSL9c5MYbY
-         Ogeh+SIoeKxe+uqHId3F49qJBx7c8DrpIho8Wnh36zuOiPNEytc/u14af5tSfrhFzVzH
-         U3H+kpsCBdtfL4oRjt5i/Wob0/Snk23HWwqe6pkjaFWHPErTajhSqqQiJrCpSR8OED1X
-         79Y5owxTBaHBIXrmCeGSzOg5HU2kFPgoNxKzJWF5ehTJ8heEaF5dheZgQx52rngyqqE4
-         RHDD+lwxnH+ba2409CU5UdLoI4FAgDF6qmWe1MTn0L8mdQBOHAKF03k57hYP4ziDLZXH
-         2gKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m9tPZEWAJ0kOhm4O/8sptvQx+KLZAi/Ezlz9DZ5Lzzw=;
-        b=mLXgkXPi/+/kbkmaicTz01w4J4yKBBvY+ZnOb9ImJxQwYcylzuUw0qcKoiMhsXkjfG
-         nRYMqHh5s/vWNqY9QLIr4KsDmg6V6KRIN0Lczxfj+gIyQPCWc8J4HBGuWKo/jNDt6on/
-         UWebOLjgDUUKF+KK6vFVI1zPVA/n30dpeqqkGKJVAkwZNo4Yp+vezAN9rmdbzGgM+EsM
-         1BUWiqoAyVqqvECI5e+dKPvbmlGgW2mMClKePv80m8ZZQyNSuPTar0o3JJO90TsUye1p
-         lpQ9DCAf6PK07ee6Eq3JTT2/thuxOJEhf2g+e+FGKvNq74YJ8feXHAtcZ8Sv/eQq1EGS
-         D4Iw==
-X-Gm-Message-State: AOAM532LARdTW0NiOM44aplWYfnKPVK+sHmnNu4tYuGJp+xOthLgTxUH
-        4zlkkt1Y+1UthuO0AtvE5noXvyecoLc=
-X-Google-Smtp-Source: ABdhPJzqPEioWPRzst3A8xaUpHPO8uguVNXO608ISL5tUcGmJmqGr6eq4B3RTHyUtokS/sEtJ91yIg==
-X-Received: by 2002:a05:651c:1bb:: with SMTP id c27mr386000ljn.44.1610995484516;
-        Mon, 18 Jan 2021 10:44:44 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id i27sm1865991lfo.213.2021.01.18.10.44.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 10:44:43 -0800 (PST)
-Subject: Re: [PATCH v3 1/3] PM: domains: Make set_performance_state() callback
- optional
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210118011330.4145-1-digetx@gmail.com>
- <20210118011330.4145-2-digetx@gmail.com>
- <20210118072855.anncyl6z3e5uznvd@vireshk-i7>
- <CAPDyKFquCGUSTvcCpmN0vm1eGEz9B_hYSNm7wojhgwuXT=jkEQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1e54674e-000d-d3a1-6123-715f8f445726@gmail.com>
-Date:   Mon, 18 Jan 2021 21:44:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S2407816AbhARSug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:50:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:42250 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407723AbhARSpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:45:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4908BD6E;
+        Mon, 18 Jan 2021 10:44:59 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F54D3F719;
+        Mon, 18 Jan 2021 10:44:55 -0800 (PST)
+Subject: Re: [PATCH v4 6/7] iommu/mediatek: Gather iova in iommu_unmap to
+ achieve tlb sync once
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com, Christoph Hellwig <hch@infradead.org>,
+        David Laight <David.Laight@ACULAB.COM>
+References: <20210107122909.16317-1-yong.wu@mediatek.com>
+ <20210107122909.16317-7-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <57eb2ea5-f44c-9828-cbd4-9cb2af877ad8@arm.com>
+Date:   Mon, 18 Jan 2021 18:44:56 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFquCGUSTvcCpmN0vm1eGEz9B_hYSNm7wojhgwuXT=jkEQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107122909.16317-7-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.01.2021 13:59, Ulf Hansson пишет:
-> On Mon, 18 Jan 2021 at 08:28, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>
->> On 18-01-21, 04:13, Dmitry Osipenko wrote:
->>> Make set_performance_state() callback optional in order to remove the
->>> need from power domain drivers to implement a dummy callback. If callback
->>> isn't implemented by a GENPD driver, then the performance state is passed
->>> to the parent domain.
->>>
->>> Tested-by: Peter Geis <pgwipeout@gmail.com>
->>> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->>> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
->>> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
->>> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  drivers/base/power/domain.c | 11 +++++------
->>>  1 file changed, 5 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
->>> index 9a14eedacb92..a3e1bfc233d4 100644
->>> --- a/drivers/base/power/domain.c
->>> +++ b/drivers/base/power/domain.c
->>> @@ -339,9 +339,11 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
->>>                       goto err;
->>>       }
->>>
->>> -     ret = genpd->set_performance_state(genpd, state);
->>> -     if (ret)
->>> -             goto err;
->>> +     if (genpd->set_performance_state) {
->>> +             ret = genpd->set_performance_state(genpd, state);
->>> +             if (ret)
->>> +                     goto err;
->>> +     }
->>
->> Earlier in this routine we also have this:
->>
->> if (!parent->set_performance_state)
->>         continue;
->>
->> Should we change that too ?
+On 2021-01-07 12:29, Yong Wu wrote:
+> In current iommu_unmap, this code is:
 > 
-> Good point! I certainly overlooked that when reviewing. We need to
-> reevaluate the new state when propagating to the parent(s).
+> 	iommu_iotlb_gather_init(&iotlb_gather);
+> 	ret = __iommu_unmap(domain, iova, size, &iotlb_gather);
+> 	iommu_iotlb_sync(domain, &iotlb_gather);
 > 
-> To me, it looks like when doing the propagation we must check if the
-> parent has the ->set_performance_state() callback assigned. If so, we
-> should call dev_pm_opp_xlate_performance_state(), but otherwise just
-> use the value of "state", when doing the reevaluation.
+> We could gather the whole iova range in __iommu_unmap, and then do tlb
+> synchronization in the iommu_iotlb_sync.
 > 
-> Does it make sense?
+> This patch implement this, Gather the range in mtk_iommu_unmap.
+> then iommu_iotlb_sync call tlb synchronization for the gathered iova range.
+> we don't call iommu_iotlb_gather_add_page since our tlb synchronization
+> could be regardless of granule size.
+> 
+> In this way, gather->start is impossible ULONG_MAX, remove the checking.
+> 
+> This patch aims to do tlb synchronization *once* in the iommu_unmap.
 
-I played a tad with the power domains by creating a couple dummy domains
-and putting them into a parent->child chain. Yours suggestion works well
-for the case where intermediate domain doesn't implement the
-set_performance_state() callback, i.e. the performance state is
-propagated through the whole chain instead of stopping on the domain
-that doesn't implement the callback.
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-I'll make a v4, thanks.
-
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/mtk_iommu.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 66a00a2cb445..d3b8a1649093 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -430,7 +430,12 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
+>   			      struct iommu_iotlb_gather *gather)
+>   {
+>   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
+> +	unsigned long end = iova + size - 1;
+>   
+> +	if (gather->start > iova)
+> +		gather->start = iova;
+> +	if (gather->end < end)
+> +		gather->end = end;
+>   	return dom->iop->unmap(dom->iop, iova, size, gather);
+>   }
+>   
+> @@ -445,9 +450,6 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
+>   	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
+>   	size_t length = gather->end - gather->start + 1;
+>   
+> -	if (gather->start == ULONG_MAX)
+> -		return;
+> -
+>   	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
+>   				       data);
+>   }
+> 
