@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7382FA51E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039542FA535
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405908AbhARPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:48:43 -0500
-Received: from gentwo.org ([3.19.106.255]:52088 "EHLO gentwo.org"
+        id S2390139AbhARPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:52:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:62210 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405834AbhARPra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:47:30 -0500
-Received: by gentwo.org (Postfix, from userid 1002)
-        id DAB243F806; Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id D7E153EB3B;
-        Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 15:46:43 +0000 (UTC)
-From:   Christoph Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Michal Hocko <mhocko@suse.com>
-cc:     Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: SLUB: percpu partial object count is highly inaccurate, causing
- some memory wastage and maybe also worse tail latencies?
-In-Reply-To: <20210118110319.GC14336@dhcp22.suse.cz>
-Message-ID: <alpine.DEB.2.22.394.2101181537150.69690@www.lameter.com>
-References: <CAG48ez2Qx5K1Cab-m8BdSibp6wLTip6ro4=-umR7BLsEgjEYzA@mail.gmail.com> <alpine.DEB.2.22.394.2101121627490.20570@www.lameter.com> <e4d89d4f-62d4-43e3-9dd7-2496e955b437@suse.cz> <20210118110319.GC14336@dhcp22.suse.cz>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S2405968AbhARPtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:49:55 -0500
+IronPort-SDR: SX+H5SrnUIW2aS2wMCkpMkZcWy2ZvRZJVWgboaMifx7YmFupuBtJ2t6I/5iloxDoSmmB9YMDTY
+ /WTcr3CoTvew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="197515034"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="197515034"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:47:56 -0800
+IronPort-SDR: FZXyR9Yj44AZW1W+LqW4U2uJWS72nNLBgaMb8phX095Yo+3wF3tUF5Me7OfVam8nLncN+xmLgG
+ ZG1fjOoDg+og==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="353541314"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:47:51 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1Wlw-002J6b-KM; Mon, 18 Jan 2021 17:48:52 +0200
+Date:   Mon, 18 Jan 2021 17:48:52 +0200
+From:   "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "robert.moore@intel.com" <robert.moore@intel.com>,
+        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <20210118154852.GY4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
+ <20210118135121.GM4077@smile.fi.intel.com>
+ <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
+ <20210118152323.GV4077@smile.fi.intel.com>
+ <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Michal Hocko wrote:
+On Mon, Jan 18, 2021 at 04:32:54PM +0100, Hans de Goede wrote:
+> On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
 
-> > Hm this would be similar to recommending a periodical echo > drop_caches
-> > operation. We actually discourage from that (and yeah, some tools do that, and
-> > we now report those in dmesg). I believe the kernel should respond to memory
-> > pressure and not OOM prematurely by itself, including SLUB.
->
-> Absolutely agreed! Partial caches are a very deep internal
-> implementation detail of the allocator and admin has no bussiness into
-> fiddling with that. This would only lead to more harm than good.
-> Comparision to drop_caches is really exact!
+...
 
-Really? The maximum allocation here has a upper boundary that depends on
-the number of possible partial per cpu slabs. There is a worst case
-scenario that is not nice and wastes some memory but it is not an OOM
-situation and the system easily recovers from it.
+> 1. Using a folder is fine, desirable even
+> 2. I've some concerns about the name, but I'm not really objecting,
+> just giving my 2 cents.
 
-The slab shrinking is not needed but if you are concerned about reclaiming
-more memory right now then I guess you may want to run the slab shrink
-operation.
+Let's get into compromised summary:
+ - create a folder for these driver files
+ - name it without _skl_ while leaving this in the file / driver names
 
-Dropping the page cache is bad? Well sometimes you want more free memory
-due to a certain operation that needs to be started and where you do not
-want the overhead of page cache processing.
+Does everybody agree on this approach?
 
-You can go crazy and expect magical things from either operation. True.
-
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
