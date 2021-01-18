@@ -2,82 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A5E2F9C64
+	by mail.lfdr.de (Postfix) with ESMTP id D15352F9C65
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388506AbhARJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:16:35 -0500
-Received: from forward103p.mail.yandex.net ([77.88.28.106]:40335 "EHLO
-        forward103p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388277AbhARJH1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:07:27 -0500
-Received: from myt6-5578c6b2b9c3.qloud-c.yandex.net (myt6-5578c6b2b9c3.qloud-c.yandex.net [IPv6:2a02:6b8:c12:37a8:0:640:5578:c6b2])
-        by forward103p.mail.yandex.net (Yandex) with ESMTP id 8A37F18C17B1;
-        Mon, 18 Jan 2021 12:05:22 +0300 (MSK)
-Received: from myt6-9bdf92ffd111.qloud-c.yandex.net (myt6-9bdf92ffd111.qloud-c.yandex.net [2a02:6b8:c12:468a:0:640:9bdf:92ff])
-        by myt6-5578c6b2b9c3.qloud-c.yandex.net (mxback/Yandex) with ESMTP id dLSFXTknEI-5MDO4bZ5;
-        Mon, 18 Jan 2021 12:05:22 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1610960722;
-        bh=eae+71nwdCl87dQPfVh8jK749vbX5rWsf1eR+dT00F0=;
-        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
-        b=p2LDhD9WmMAGk9IAIwWMUC73UpO78OT1UkOm6yWt+eFHRUNBmyIj/wHhmqtRxKoW1
-         Zd9ll/JSQEsieEzp+/FgZq69gZ41+AA9fB5PrPKQZxEjkBy/C8kwAXwgCbTPVXWMeP
-         4HK9TLwpufKDgQLlB0+cMBJSSzo6eNM5Yv/So8UI=
-Authentication-Results: myt6-5578c6b2b9c3.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by myt6-9bdf92ffd111.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id mPweMU6MOS-5LIeMc8N;
-        Mon, 18 Jan 2021 12:05:21 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] gpiolib: warning on gpiochip->to_irq defined
-Date:   Mon, 18 Jan 2021 12:05:08 +0300
-Message-Id: <20210118090508.21686-1-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+        id S2388527AbhARJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:17:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42272 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388309AbhARJHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:07:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 836B9AC6E;
+        Mon, 18 Jan 2021 09:05:41 +0000 (UTC)
+Subject: Re: [PATCH v2] drm/ast: Disable fast reset after DRAM initial
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@linux.ie, tommy_huang@aspeedtech.com,
+        jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+        arc_sung@aspeedtech.com
+References: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
+ <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <787f3c79-b6e5-6015-9fb6-feb3d2ae15e0@suse.de>
+Date:   Mon, 18 Jan 2021 10:05:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gpiochip->to_irq method is redefined in gpiochip_add_irqchip.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu
+Content-Type: multipart/mixed; boundary="kXR6DXVkPIyEon41C4dActgVuQYMitqSM";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@linux.ie, tommy_huang@aspeedtech.com, jenmin_yuan@aspeedtech.com,
+ airlied@redhat.com, arc_sung@aspeedtech.com
+Message-ID: <787f3c79-b6e5-6015-9fb6-feb3d2ae15e0@suse.de>
+Subject: Re: [PATCH v2] drm/ast: Disable fast reset after DRAM initial
+References: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
+ <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
 
-A lot of gpiod driver's still define ->to_irq method, let's give
-a gentle warning that they can no longer rely on it, so they can remove
-it on ocassion.
+--kXR6DXVkPIyEon41C4dActgVuQYMitqSM
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: e0d8972898139 ("gpio: Implement tighter IRQ chip integration")
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
-v1->v2:
-- Change chip_err to chip_warn
----
- drivers/gpio/gpiolib.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 5ce0c14c637b..5a9410c2537d 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1489,6 +1489,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 		type = IRQ_TYPE_NONE;
- 	}
- 
-+	if (gc->to_irq)
-+		chip_warn(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
-+
- 	gc->to_irq = gpiochip_to_irq;
- 	gc->irq.default_type = type;
- 	gc->irq.lock_key = lock_key;
--- 
-2.29.2
+Am 12.01.21 um 08:58 schrieb KuoHsiang Chou:
+> [Bug][AST2500]
+>=20
+> V1:
+> When AST2500 acts as stand-alone VGA so that DRAM and DVO initializatio=
+n
+> have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+> However, HW suggests disable Fast reset mode after DRAM initializaton,
+> because fast reset mode is mainly designed for ARM ICE debugger.
+> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be=
 
+> first enabled to avoid system deadlock before disable fast reset mode.
+>=20
+> V2:
+> Use to_pci_dev() to get revision of PCI configuration.
+>=20
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> ---
+>   drivers/gpu/drm/ast/ast_drv.h  |  1 +
+>   drivers/gpu/drm/ast/ast_main.c |  5 +++
+>   drivers/gpu/drm/ast/ast_post.c | 71 +++++++++++++++++++++------------=
+-
+>   3 files changed, 51 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
+v.h
+> index da6dfb677540..a2cf5fef2399 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+>   void ast_post_gpu(struct drm_device *dev);
+>   u32 ast_mindwm(struct ast_private *ast, u32 r);
+>   void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
+> +void ast_patch_ahb_2500(struct ast_private *ast);
+>   /* ast dp501 */
+>   void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+>   bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
+ain.c
+> index 3775fe26f792..0e4dfcc25623 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device =
+*dev, u32 *scu_rev)
+>   {
+>   	struct device_node *np =3D dev->pdev->dev.of_node;
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> +	struct pci_dev *pdev =3D to_pci_dev(dev->dev);
+>   	uint32_t data, jregd0, jregd1;
+>=20
+>   	/* Defaults */
+> @@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device=
+ *dev, u32 *scu_rev)
+>   	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff)=
+;
+>   	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff)=
+;
+>   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+> +		/* Patch AST2500 */
+> +		if (((pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=3D=
+ 0))
+> +			ast_patch_ahb_2500(ast);
+> +
+>   		/* Double check it's actually working */
+>   		data =3D ast_read32(ast, 0xf004);
+>   		if (data !=3D 0xFFFFFFFF) {
+> diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_p=
+ost.c
+> index 8902c2f84bf9..1f0007daa005 100644
+> --- a/drivers/gpu/drm/ast/ast_post.c
+> +++ b/drivers/gpu/drm/ast/ast_post.c
+> @@ -2026,6 +2026,33 @@ static bool ast_dram_init_2500(struct ast_privat=
+e *ast)
+>   	return true;
+>   }
+>=20
+> +void ast_patch_ahb_2500(struct ast_private *ast)
+> +{
+> +	u32	data;
+> +
+> +patch_ahb_lock:
+> +	/* Clear bus lock condition */
+> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	data =3D ast_mindwm(ast, 0x1e6e2070);
+> +	if (data & 0x08000000) {					/* check fast reset */
+> +
+> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
+> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
+> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
+> +		udelay(1000);
+> +	}
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	do {
+> +		data =3D ast_mindwm(ast, 0x1e6e2000);
+> +		if (data =3D=3D 0xffffffff)
+> +			goto patch_ahb_lock;
+> +	}	while (data !=3D 1);
+> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
+> +}
+> +
+>   void ast_post_chip_2500(struct drm_device *dev)
+>   {
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> @@ -2033,39 +2060,31 @@ void ast_post_chip_2500(struct drm_device *dev)=
+
+>   	u8 reg;
+>=20
+>   	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
+> +	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
+>   		/* Clear bus lock condition */
+> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> -		ast_write32(ast, 0xf004, 0x1e6e0000);
+> -		ast_write32(ast, 0xf000, 0x1);
+> -		ast_write32(ast, 0x12000, 0x1688a8a8);
+> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
+> -			;
+> -
+> -		ast_write32(ast, 0x10000, 0xfc600309);
+> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
+> -			;
+> +		ast_patch_ahb_2500(ast);
+> +
+> +		/* Disable watchdog */
+> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
+> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
+> +		/* Reset USB port */
+> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
+> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
+> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
+> +			mdelay(100);
+> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
+> +		}
+> +		/* Modify eSPI reset pin */
+> +		temp =3D ast_mindwm(ast, 0x1E6E2070);
+> +		if (temp & 0x02000000)
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
+
+Instead of answering my question, you simply deleted the comments. It=20
+doesn't work like that.
+
+Best regards
+Thomas
+
+>=20
+>   		/* Slow down CPU/AHB CLK in VGA only mode */
+>   		temp =3D ast_read32(ast, 0x12008);
+>   		temp |=3D 0x73;
+>   		ast_write32(ast, 0x12008, temp);
+>=20
+> -		/* Reset USB port to patch USB unknown device issue */
+> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
+> -		temp |=3D 0x00004000;
+> -		ast_moutdwm(ast, 0x1e6e2094, temp);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
+> -		if (temp & 0x00800000) {
+> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+> -			mdelay(100);
+> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+> -		}
+> -
+>   		if (!ast_dram_init_2500(ast))
+>   			drm_err(dev, "DRAM init failed !\n");
+>=20
+> --
+> 2.18.4
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--kXR6DXVkPIyEon41C4dActgVuQYMitqSM--
+
+--O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAFT2QFAwAAAAAACgkQlh/E3EQov+BE
+Yg//Zsf21OOH1g8P1WhXigwyJH6+bXjeKymUjVRiRq6Sn7DxH30cF8a4tZVls/7eWYaB6a9us6di
+++TgrIawbyxm4DHPh96n0Qi92zzPUvYFWL1G12znzcW/R1pev13f64oP4c3cD9wIs8YnG1Cad51M
+lSubl5e9PMzqmZg8R2WG2ruVJ0X02kEYtfjHmOhQlYtgxdT/Tn2K8l0qcid2rtKMVn1/VAxVOtvK
+jZQb+Bw8+LttHO8jTaMyI7VdU4Up8qI6eOhHe//m3DlQ/6rNO5BbT/lT6XKdW7Oiaqng494KWbC7
+NdIJMFAJx7O9kiaz96eFq2DgoJkLgmM30wZLI69/NtDhgQWV16tmCcfxwYyvjLTCN+cvCP1T42KE
+6UyKV2Fe0eYk3hrxzO7zz/5NZrtzOtIwJ3O5g+YM3RMkX/E6lYz0KBGNJKYWEEw/5BpV8XVZ4CcT
+OPftd66y/DHhZeSE+dp4RnsT9d6/PTWhG+onxnTgrknAXYTvuHSB5rgRROgZZkWAEny4RhMG5aQp
+JxCXGGV7eLk5jjtyWOpXeDp6SDZeQTcHpc9kgnCGIyLxP5HchmlL8BdUsjnvAHQftEJJ5ZA4nyFU
+pBsksWq7WloDYtDGG5TSUHTQvoAD5eyCtj13PPVUq0Ol8PGehBge0Uscs9/fI0SwJldkkNz42UX8
+MLE=
+=311s
+-----END PGP SIGNATURE-----
+
+--O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu--
