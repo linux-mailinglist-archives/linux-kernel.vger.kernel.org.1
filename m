@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013AC2FAACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0032FAAD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437792AbhARUAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:00:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50500 "EHLO mail.kernel.org"
+        id S2437619AbhARUCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:02:35 -0500
+Received: from www.zeus03.de ([194.117.254.33]:58760 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390382AbhART7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:59:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBFD22C9D;
-        Mon, 18 Jan 2021 19:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610999897;
-        bh=7DSRjq0tdxrLyUFJAHtwzljinnDtGmto18bO0yFeb6g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FAyD2IPTlITXhh5tqwsqG1zNg8kqzJH99N2eLtIcGP0cFSiRS0SczAE2Ox3auOqOE
-         Lbq8lI75blykbsG5gjUo+S7JhOyblrfmQsVg41PrXNz2da9CP/NaoItStwnTR76PSL
-         AcwBvIU+d3DhYWU57Mfd6LHGCOHsdWoRGN5zjJDLeA4JdmrSuDkBU8qbv2OCcyngBU
-         ECdLXRePkZ5N/kfUz0TUcMT7NR7D3mzfQcdSvL9EP334Di+2k7hxokzNadDslL5XEc
-         xOlAU/p1AtgunQDiq/4PHUJ90YLt46L/lOMJ5qxGHbmRP/4KccTpIF6qqz1KRxGuRW
-         tbzr2PUWjG6rg==
-Date:   Mon, 18 Jan 2021 11:58:16 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 7/7] net: ipa: allow arbitrary number of
- interconnects
-Message-ID: <20210118115816.149d71f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <466069e3-2658-5ba7-7704-2cac3293f79a@linaro.org>
-References: <20210115125050.20555-1-elder@linaro.org>
-        <20210115125050.20555-8-elder@linaro.org>
-        <20210116191207.277a391a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <466069e3-2658-5ba7-7704-2cac3293f79a@linaro.org>
+        id S2437705AbhART7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 14:59:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=MlSaK6Ui06f/EDER6E9Oq6CxLQur
+        WoAScEmV6KaaYek=; b=Rtn9M8+NkVXK811BrWD2In+E3sqdwPOYWWIYtFwIEqhc
+        358kjkItswWvWl9w1a3wbjoPIiQ5SHRGVgcq+KN2D2wLSRsxJeT2bZAnw2mTtteg
+        Nj8ogbYrOCaLY+Z6v8XRG5jJ344fyoQJn74ZYcDQfwaudpicYduMVyvCY3WhFTc=
+Received: (qmail 828814 invoked from network); 18 Jan 2021 20:58:37 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Jan 2021 20:58:37 +0100
+X-UD-Smtp-Session: l3s3148p1@eVTIJTK5BokgAwDPXwacAOByz8F9Mgm1
+Date:   Mon, 18 Jan 2021 20:58:35 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 2/2] sh_eth: Make PHY access aware of Runtime PM
+ to fix reboot crash
+Message-ID: <20210118195835.GB112457@ninjato>
+References: <20210118150656.796584-1-geert+renesas@glider.be>
+ <20210118150656.796584-3-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
+Content-Disposition: inline
+In-Reply-To: <20210118150656.796584-3-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021 10:03:41 -0600 Alex Elder wrote:
-> On 1/16/21 9:12 PM, Jakub Kicinski wrote:
-> > On Fri, 15 Jan 2021 06:50:50 -0600 Alex Elder wrote:  
-> >> Currently we assume that the IPA hardware has exactly three
-> >> interconnects.  But that won't be guaranteed for all platforms,
-> >> so allow any number of interconnects to be specified in the
-> >> configuration data.
-> >>
-> >> For each platform, define an array of interconnect data entries
-> >> (still associated with the IPA clock structure), and record the
-> >> number of entries initialized in that array.
-> >>
-> >> Loop over all entries in this array when initializing, enabling,
-> >> disabling, or tearing down the set of interconnects.
-> >>
-> >> With this change we no longer need the ipa_interconnect_id
-> >> enumerated type, so get rid of it.  
-> > 
-> > Okay, all the platforms supported as of the end of the series
-> > still have 3 interconnects, or there is no upstream user of
-> > this functionality, if you will. What's the story?  
-> 
-> The short answer is that there is another version of IPA that
-> has four interconnects instead of three.  (A DTS file for it is
-> in "sdxprairie.dtsi" in the Qualcomm "downstream" code.)  I hope
-> to have that version supported this year, but it's not my top
-> priority right now.  Generalizing the interconnect definitions
-> as done in this series improves the driver, but you're right, it
-> is technically not required at this time.
-> 
-> And some more background:
-> The upstream IPA driver is derived from the Qualcomm downstream
-> code published at codeaurora.org.  The downstream driver is huge
-> (it's well over 100,000 lines of code) and it supports lots of
-> IPA versions and some features that are not present upstream.
-> 
-> In order to have any hope of getting upstream support for the
-> IPA hardware, the downstream driver functionality was reduced,
-> removing support for filtering, routing, and NAT.  I spent many
-> months refactoring and reworking that code to make it more
-> "upstreamable," and eventually posted the result for review.
-> 
-> Now that there is an upstream driver, a long term goal is to
-> add back functionality that got removed, matching the most
-> important features and hardware support found in the downstream
-> code.  So in cases like this, even though this feature is not
-> yet required, adding it now lays groundwork to make later work
-> easier.
-> 
-> Everything I do with the upstream IPA driver is aimed at in-tree
-> support for additional IPA features and hardware versions.  So
-> even if an improvement isn't required *now*, there is at least
-> a general plan to add support "soon" for something that will
-> need it.
-> 
-> Beyond even that, there are some things I intend to do that
-> will improve the driver, even if they aren't technically
-> required near-term.  For example, I'd like to dynamically
-> allocate endpoints based on what's needed, rather than
-> having the driver support any number of them up to a maximum
-> fixed at build time.
-> 
-> Probably a longer response than you needed, but I thought it
-> would help to provide more background.  Besides, you *did* ask
-> for "the story..."
 
-Thanks, I think I get it now.
+--UHN/qo2QbUvPLonB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But it does sound a little too much like aligning with the vendor
-driver for the sake of aligning with the vendor driver. This makes 
-the review for someone not familiar with the vendor driver hard, 
-and raises questions like "is this really needed upstream or just
-downstream / out-of-tree". Please try to reorient the work towards
-implementing particular pieces of functionality upstream start to end. 
+On Mon, Jan 18, 2021 at 04:06:56PM +0100, Geert Uytterhoeven wrote:
+> Wolfram reports that his R-Car H2-based Lager board can no longer be
+> rebooted in v5.11-rc1, as it crashes with an imprecise external abort.
+> The issue can be reproduced on other boards (e.g. Koelsch with R-Car
+> M2-W) too, if CONFIG_IP_PNP is disabled, and the Ethernet interface is
+> down at reboot time:
+>=20
+>     Unhandled fault: imprecise external abort (0x1406) at 0x00000000
+>     pgd =3D (ptrval)
+>     [00000000] *pgd=3D422b6835, *pte=3D00000000, *ppte=3D00000000
+>     Internal error: : 1406 [#1] ARM
+>     Modules linked in:
+>     CPU: 0 PID: 1105 Comm: init Tainted: G        W         5.10.0-rc1-00=
+402-ge2f016cf7751 #1048
+>     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
+>     PC is at sh_mdio_ctrl+0x44/0x60
+>     LR is at sh_mmd_ctrl+0x20/0x24
+>     ...
+>     Backtrace:
+>     [<c0451f30>] (sh_mdio_ctrl) from [<c0451fd4>] (sh_mmd_ctrl+0x20/0x24)
+>      r7:0000001f r6:00000020 r5:00000002 r4:c22a1dc4
+>     [<c0451fb4>] (sh_mmd_ctrl) from [<c044fc18>] (mdiobb_cmd+0x38/0xa8)
+>     [<c044fbe0>] (mdiobb_cmd) from [<c044feb8>] (mdiobb_read+0x58/0xdc)
+>      r9:c229f844 r8:c0c329dc r7:c221e000 r6:00000001 r5:c22a1dc4 r4:00000=
+001
+>     [<c044fe60>] (mdiobb_read) from [<c044c854>] (__mdiobus_read+0x74/0xe=
+0)
+>      r7:0000001f r6:00000001 r5:c221e000 r4:c221e000
+>     [<c044c7e0>] (__mdiobus_read) from [<c044c9d8>] (mdiobus_read+0x40/0x=
+54)
+>      r7:0000001f r6:00000001 r5:c221e000 r4:c221e458
+>     [<c044c998>] (mdiobus_read) from [<c044d678>] (phy_read+0x1c/0x20)
+>      r7:ffffe000 r6:c221e470 r5:00000200 r4:c229f800
+>     [<c044d65c>] (phy_read) from [<c044d94c>] (kszphy_config_intr+0x44/0x=
+80)
+>     [<c044d908>] (kszphy_config_intr) from [<c044694c>] (phy_disable_inte=
+rrupts+0x44/0x50)
+>      r5:c229f800 r4:c229f800
+>     [<c0446908>] (phy_disable_interrupts) from [<c0449370>] (phy_shutdown=
++0x18/0x1c)
+>      r5:c229f800 r4:c229f804
+>     [<c0449358>] (phy_shutdown) from [<c040066c>] (device_shutdown+0x168/=
+0x1f8)
+>     [<c0400504>] (device_shutdown) from [<c013de44>] (kernel_restart_prep=
+are+0x3c/0x48)
+>      r9:c22d2000 r8:c0100264 r7:c0b0d034 r6:00000000 r5:4321fedc r4:00000=
+000
+>     [<c013de08>] (kernel_restart_prepare) from [<c013dee0>] (kernel_resta=
+rt+0x1c/0x60)
+>     [<c013dec4>] (kernel_restart) from [<c013e1d8>] (__do_sys_reboot+0x16=
+8/0x208)
+>      r5:4321fedc r4:01234567
+>     [<c013e070>] (__do_sys_reboot) from [<c013e2e8>] (sys_reboot+0x18/0x1=
+c)
+>      r7:00000058 r6:00000000 r5:00000000 r4:00000000
+>     [<c013e2d0>] (sys_reboot) from [<c0100060>] (ret_fast_syscall+0x0/0x5=
+4)
+>=20
+> As of commit e2f016cf775129c0 ("net: phy: add a shutdown procedure"),
+> system reboot calls phy_disable_interrupts() during shutdown.  As this
+> happens unconditionally, the PHY registers may be accessed while the
+> device is suspended, causing undefined behavior, which may crash the
+> system.
+>=20
+> Fix this by wrapping the PHY bitbang accessors in the sh_eth driver by
+> wrappers that take care of Runtime PM, to resume the device when needed.
+>=20
+> Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Applied, with a warning :)
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Thanks for debugging and fixing this, Geert!
+
+
+--UHN/qo2QbUvPLonB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAF6GsACgkQFA3kzBSg
+KbbEVg/8CbHfWKcP2AUfaglUNA6335SvezgMyjIKuCOGrTN/7AsQVt69NxB8o24x
+Ja2xyRmYvRx/mj/APFIiM7BO5LJLocsYAZNzA5zci01oNE5vgs0X9y9uz2Uousnz
+B61OGakN5ZpN64qEeWaV7uDwnvwEX3u5PaV/HB/3pTua3hT3ezUXALyFb07O1elT
+uzTRePSnS2YEDznIRYdHIwHcbjZHJEoaNb/ZCqv9CuWQK2OvOfC3zK0hYHOiOUaM
+31xNyDTG1GAooAJVjaPmQc9jLRuC9Ck6pe8QVzMPCpx5Jug6cl4ZpwqjQlQrVZHj
+XjhBPrTz9q7gaem+Nkos0ph2cEUjDQj7Ajxh7zJLJA0t2PtXBzuRomwQX0B8h6Bt
+wLw/rRaggwTsFJrrUOAVvI3VQaFYdnjleS4DrSkFl0Qu1H6CsJLvRYDFMXxHWTy0
+HWZH716fnSN6j3h1wek1m9voS3AggT/L5/teypI9gBEM0G9dqP8Z7/P3p+MfGtNM
+3HHCK7tZuVrbogkvAusBS6Ug3PoVwtH7lvn+dRTzaz9CebbCJyFoWiMp2PHur5gJ
+Ca2K6UpEXjf/NepGXeZViEcKj6s9Tueyqdp8H2nyetzZA6fs5sRitw4pjgp+lrbP
+zgNQysu0vbXA2/4SqUKxTpmDj5V4BWU+ReHubbN/2wwVub9r7wc=
+=4qx2
+-----END PGP SIGNATURE-----
+
+--UHN/qo2QbUvPLonB--
