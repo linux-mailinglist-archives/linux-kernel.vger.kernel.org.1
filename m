@@ -2,173 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057232F9F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD932F9F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403982AbhARMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:06:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:34258 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403824AbhARMCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:02:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E77A31B;
-        Mon, 18 Jan 2021 04:01:37 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39A3F3F719;
-        Mon, 18 Jan 2021 04:01:35 -0800 (PST)
-Date:   Mon, 18 Jan 2021 12:01:32 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "A, Rashmi" <rashmi.a@intel.com>,
-        "Vaidya, Mahesh R" <mahesh.r.vaidya@intel.com>
-Subject: Re: [PATCH v1 5/9] firmware: keembay: Add support for Trusted
- Firmware Service call
-Message-ID: <20210118120132.GC25035@e120937-lin>
-References: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
- <20210114152700.21916-6-muhammad.husaini.zulkifli@intel.com>
- <20210114164811.GG4854@sirena.org.uk>
- <20210115185803.infufa4thlffagxk@bogus>
- <DM6PR11MB287679CF20BBC7C81B6E38F5B8A40@DM6PR11MB2876.namprd11.prod.outlook.com>
+        id S2391359AbhARMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391315AbhARMCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:02:49 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DB5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:02:07 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 15so10799364pgx.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V7HW5Fn5HqLLSx1V6tfhUzIQT3KvnzKSP/Tp5i7ao8Q=;
+        b=foMgbK9+xSCa7cPcjEBKOC32mrd3JFNOSTTijm0db1uK1Tj7O387n4xTOTjMeKaSLy
+         3/ksApl3DqGDdbVwb2jLAYVLWj1czd6rEhuhQefabMWbjJNqF8pWqyAJQZwu5DszdFHU
+         1TGnqUK4Ay7sOUJIXTpxaxB4xn+0x8gaWhun6WTYth7Gtc7p6Fcm4edEjci/sSBI8rIi
+         qRrn4ThVdmkMxop8ZJc6IYPE7/6gG9wsvniiRvbtVc8pS+vfHeaHF1sLOXHLNIhAE5qf
+         T28ekBadRD0epMZc1WRDbXHzvMxBnF/2RsA9IOQDJlUXKikZB1PVvjfJgMas2SSUhTRz
+         oxMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V7HW5Fn5HqLLSx1V6tfhUzIQT3KvnzKSP/Tp5i7ao8Q=;
+        b=Su6GgJAlNNg1wqDciAXiw91K7o5Z1Pc8Ab1b/9/ZG3TG3IcixOA4jf9c9gYzUMcQvB
+         3BDRJcQQ8sVsluuhkcj6TgDKrCISjKL1de4yV0vWnH2JGls5U6qk111JYrv3lqxVOEzW
+         ug4Xq4n/XiSnLFKt5Ec294JEk2NhlIxUQBktFYbxEKHM7EwfC+i9NON9LIl9WKKZ0nh5
+         9ifhotgrU5p/hGC5XTOKZfq3Fbj5Qq99TlJiI4G6Xv7ru799OW3QFG37hmjj02YwXGiE
+         djVAaHZb9H3N2pwqn8E1SnlmRFYaS0tnevwAcP2Wo9KctMU+1eWemnPMJmQTImQUJ0yc
+         J3zw==
+X-Gm-Message-State: AOAM531CgzaQkhh0O1LKu+z2tdHREhql2/zuKv6W5NqvTaH1adOVrPdc
+        qsx/hzBY3u1gv9Yo9hXlr+Pba9Ts4x0vRTt3/n8=
+X-Google-Smtp-Source: ABdhPJwIpGgRaQ5jpp/Lql9aNM1L2bu9IsIaQARThbryiR57zrZbo5CMa5Ay7ikc17JjghePtBgVTKA4qzZSDocr+HI=
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
+ 66-20020a6204450000b029019c162bbbefmr25981538pfe.40.1610971327005; Mon, 18
+ Jan 2021 04:02:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB287679CF20BBC7C81B6E38F5B8A40@DM6PR11MB2876.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210117160555.78376-1-hdegoede@redhat.com> <20210117160555.78376-8-hdegoede@redhat.com>
+In-Reply-To: <20210117160555.78376-8-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Jan 2021 14:02:56 +0200
+Message-ID: <CAHp75Vc92WoJm5T1jbF7UUjCNrVZr2as8ccEWxCZ9aP7z+ZyLA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/12] ASoC: arizona-jack: Use arizona->dev for runtime-pm
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi 
+On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Use arizona->dev for runtime-pm as the main shared/libray code from
+> sound/soc/codecs/arizona.c does.
 
-sorry I'm a bit late on this.
+Can you elaborate switchings from get() to get_sync() in few places
+along with moving disable()?
 
-On Mon, Jan 18, 2021 at 10:28:33AM +0000, Zulkifli, Muhammad Husaini wrote:
-> Hi Sudeep and Mark,
-> 
-> Thanks for the review. I replied inline.
-> 
-> >-----Original Message-----
-> >From: Sudeep Holla <sudeep.holla@arm.com>
-> >Sent: Saturday, January 16, 2021 2:58 AM
-> >To: Mark Brown <broonie@kernel.org>
-> >Cc: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>;
-> >ulf.hansson@linaro.org; lgirdwood@gmail.com; robh+dt@kernel.org;
-> >devicetree@vger.kernel.org; Hunter, Adrian <adrian.hunter@intel.com>;
-> >michal.simek@xilinx.com; linux-mmc@vger.kernel.org; linux-
-> >kernel@vger.kernel.org; Shevchenko, Andriy
-> ><andriy.shevchenko@intel.com>; A, Rashmi <rashmi.a@intel.com>; Vaidya,
-> >Mahesh R <mahesh.r.vaidya@intel.com>; Sudeep Holla
-> ><sudeep.holla@arm.com>
-> >Subject: Re: [PATCH v1 5/9] firmware: keembay: Add support for Trusted
-> >Firmware Service call
-> >
-> >On Thu, Jan 14, 2021 at 04:48:11PM +0000, Mark Brown wrote:
-> >> On Thu, Jan 14, 2021 at 11:26:56PM +0800, Muhammad Husaini Zulkifli
-> >wrote:
-> >> > Export inline function to encapsulate AON_CFG1 for controling the
-> >> > I/O Rail supplied voltage levels which communicate with Trusted Firmware.
-> >>
-> >> Adding Sudeep for the SMCCC bits, not deleting any context for his
-> >> benefit.
-> >>
-> >
-> >Thanks Mark for cc-ing me and joining the dots. I completely forgot about that
-> >fact that this platform was using SCMI using SMC as transport. Sorry for that and
-> >it is my fault. I did review the SCMI/SMC support for this platform sometime in
-> >June/July last year and forgot the fact it is same platform when
-> >voltage/regulator support patches for SD/MMC was posted sometime later last
-> >year. I concentrated on SMCCC conventions and other details.
-> 
-> Yes Sudeep. I redesigned the way I handle the smccc call. Previously it was handled directly in mmc driver.
-> After few discussion, we conclude to create an abstraction using regulator framework to encapsulate this smccc call
-> during set voltage operation. Using standard abstraction will make things easier for the maintainer.
-> 
-> >
-> >[...]
-> >
-> >> > +#define ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE		\
-> >> > +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,		\
-> >> > +			   ARM_SMCCC_SMC_32,		\
-> >> > +			   ARM_SMCCC_OWNER_SIP,		\
-> >> > +			   KEEMBAY_SET_SD_VOLTAGE_ID)
-> >> > +
-> >> > +#define ARM_SMCCC_SIP_KEEMBAY_GET_SD_VOLTAGE		\
-> >> > +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,		\
-> >> > +			   ARM_SMCCC_SMC_32,		\
-> >> > +			   ARM_SMCCC_OWNER_SIP,		\
-> >> > +			   KEEMBAY_GET_SD_VOLTAGE_ID)
-> >> > +
-> >> > +#define KEEMBAY_REG_NUM_CONSUMERS 2
-> >> > +
-> >> > +struct keembay_reg_supply {
-> >> > +	struct regulator *consumer;
-> >> > +};
-> >> > +
-> >> > +#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
-> >> > +/*
-> >> > + * Voltage applied on the IO Rail is controlled from the Always On
-> >> > +Register using specific
-> >> > + * bits in AON_CGF1 register. This is a secure register. Keem Bay
-> >> > +SOC cannot exposed this
-> >> > + * register address to the outside world.
-> >> > + */
-> >> > +static inline int keembay_set_io_rail_supplied_voltage(int volt) {
-> >> > +	struct arm_smccc_res res;
-> >> > +
-> >> > +
-> >	arm_smccc_1_1_invoke(ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTA
-> >GE, volt,
-> >> > +&res);
-> >>
-> >> There is a SCMI voltage domain protocol intended for just this use
-> >> case of controlling regulators managed by the firmware, why are you
-> >> not using that for these systems?  See drivers/firmware/arm_scmi/voltage.c.
-> 
-> From mmc maintainer's perspective, I should use the common modelling either using 
-> regulator framework or pinctrl to perform voltage operation. Not just directly invoke 
-> smccc call in the mmc driver. That is why I came up with this regulator driver to perform 
-> voltage operation. 
-> 
 
-There is an SCMI regulator driver built on top of SCMIv3.0 Voltage Domain
-Protocol, so as long as your SCMI platform firmware support the new VD
-protocol you should be able to wire up a generic SCMI regulator in the DT
-(as described in the arm,scmi.txt bindings) and then just use the usual
-regulator framework ops with such SCMI regulator without the need to add
-a custom regulator using custom SMCCC calls).
-
-Thanks
-
-Cristian
-
-> >>
-> >
-> >Indeed. Please switch to using the new voltage protocol added for this without
-> >any extra code. You just need to wire up DT for this.
-> 
-> May I know even if I wire up the DT, how should I call this from the mmc driver
-> For set/get voltage operation? Any example?
-> 
-> >
-> >Just for curiosity, where is SCMI platform firmware implemented ? On Cortex-
-> >A, secure side or external processor. Does this platform run TF-A ?
-> 
-> The KMB SCMI framework is implemented in secure runtime firmware (TF-A BL31). 
-> Hopefully I am answering your question.
-> 
-> >
-> >--
-> >Regards,
-> >Sudeep
+-- 
+With Best Regards,
+Andy Shevchenko
