@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18212FA27C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4E42FA2C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391434AbhARM05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:26:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
+        id S2392848AbhAROSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:18:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390879AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3BB9222B3;
-        Mon, 18 Jan 2021 11:45:39 +0000 (UTC)
+        id S2390568AbhARLpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:45:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B27A230FB;
+        Mon, 18 Jan 2021 11:44:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970340;
-        bh=0G3mvyihlNYVY0qink1d/lmxEzbO5HZb4AV5AQgkc/k=;
+        s=korg; t=1610970274;
+        bh=0uvvG1ERfvBLzRrpVkVpMhhn5ozcI2Z00UpayjdTPV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5ce1MocAt+mJmMzzOMsdtFofEI0aN5ekYkcUzsWQ16hS1DxGLniL3/3rAAK0QTL5
-         cd7A64oypjFZ/EelNsgguyFFfKPLEfdqzooQ3eQGZ5jeBall0fq9EaYdNmhi9CKK8M
-         8lrl1D7qpEzbYy9xAS18acm1+PSijHw8wec+85pE=
+        b=Cd5nY8w6gPPgJr6iG+iHQzsfmdlort7/9qIrt1EzVO4k1bYu/LtmeKHe3SGtix7dG
+         Ftzy80BCZHiaYEYPFa7LjVa+tKWepouIdrqZrfXo59Io6OUuw75IksXlIglOr8VUd/
+         jaqFVPHN5pIB1Dn6ifcTC5s7QWmGH6hd/QUsUasY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 108/152] blk-mq-debugfs: Add decode for BLK_MQ_F_TAG_HCTX_SHARED
-Date:   Mon, 18 Jan 2021 12:34:43 +0100
-Message-Id: <20210118113357.907022810@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Martin Raiber <martin@urbackup.org>
+Subject: [PATCH 5.10 111/152] mm: dont put pinned pages into the swap cache
+Date:   Mon, 18 Jan 2021 12:34:46 +0100
+Message-Id: <20210118113358.050858954@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -39,40 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 02f938e9fed1681791605ca8b96c2d9da9355f6a ]
+[ Upstream commit feb889fb40fafc6933339cf1cca8f770126819fb ]
 
-Showing the hctx flags for when BLK_MQ_F_TAG_HCTX_SHARED is set gives
-something like:
+So technically there is nothing wrong with adding a pinned page to the
+swap cache, but the pinning obviously means that the page can't actually
+be free'd right now anyway, so it's a bit pointless.
 
-root@debian:/home/john# more /sys/kernel/debug/block/sda/hctx0/flags
-alloc_policy=FIFO SHOULD_MERGE|TAG_QUEUE_SHARED|3
+However, the real problem is not with it being a bit pointless: the real
+issue is that after we've added it to the swap cache, we'll try to unmap
+the page.  That will succeed, because the code in mm/rmap.c doesn't know
+or care about pinned pages.
 
-Add the decoding for that flag.
+Even the unmapping isn't fatal per se, since the page will stay around
+in memory due to the pinning, and we do hold the connection to it using
+the swap cache.  But when we then touch it next and take a page fault,
+the logic in do_swap_page() will map it back into the process as a
+possibly read-only page, and we'll then break the page association on
+the next COW fault.
 
-Fixes: 32bc15afed04b ("blk-mq: Facilitate a shared sbitmap per tagset")
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Honestly, this issue could have been fixed in any of those other places:
+(a) we could refuse to unmap a pinned page (which makes conceptual
+sense), or (b) we could make sure to re-map a pinned page writably in
+do_swap_page(), or (c) we could just make do_wp_page() not COW the
+pinned page (which was what we historically did before that "mm:
+do_wp_page() simplification" commit).
+
+But while all of them are equally valid models for breaking this chain,
+not putting pinned pages into the swap cache in the first place is the
+simplest one by far.
+
+It's also the safest one: the reason why do_wp_page() was changed in the
+first place was that getting the "can I re-use this page" wrong is so
+fraught with errors.  If you do it wrong, you end up with an incorrectly
+shared page.
+
+As a result, using "page_maybe_dma_pinned()" in either do_wp_page() or
+do_swap_page() would be a serious bug since it is only a (very good)
+heuristic.  Re-using the page requires a hard black-and-white rule with
+no room for ambiguity.
+
+In contrast, saying "this page is very likely dma pinned, so let's not
+add it to the swap cache and try to unmap it" is an obviously safe thing
+to do, and if the heuristic might very rarely be a false positive, no
+harm is done.
+
+Fixes: 09854ba94c6a ("mm: do_wp_page() simplification")
+Reported-and-tested-by: Martin Raiber <martin@urbackup.org>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-mq-debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/vmscan.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 4d6e83e5b4429..4de03da9a624b 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -246,6 +246,7 @@ static const char *const hctx_flag_name[] = {
- 	HCTX_FLAG_NAME(BLOCKING),
- 	HCTX_FLAG_NAME(NO_SCHED),
- 	HCTX_FLAG_NAME(STACKING),
-+	HCTX_FLAG_NAME(TAG_HCTX_SHARED),
- };
- #undef HCTX_FLAG_NAME
- 
--- 
-2.27.0
-
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1240,6 +1240,8 @@ static unsigned int shrink_page_list(str
+ 			if (!PageSwapCache(page)) {
+ 				if (!(sc->gfp_mask & __GFP_IO))
+ 					goto keep_locked;
++				if (page_maybe_dma_pinned(page))
++					goto keep_locked;
+ 				if (PageTransHuge(page)) {
+ 					/* cannot split THP, skip it */
+ 					if (!can_split_huge_page(page, NULL))
 
 
