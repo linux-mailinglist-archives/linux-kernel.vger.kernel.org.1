@@ -2,170 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87252FADC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488FE2FADD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733005AbhARXaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 18:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726601AbhARXaN (ORCPT
+        id S1733009AbhARXiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 18:38:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32692 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729804AbhARXiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 18:30:13 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754FFC061573;
-        Mon, 18 Jan 2021 15:29:32 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id e22so12357449iog.6;
-        Mon, 18 Jan 2021 15:29:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=r6GhUyjBJryqxkAoJ8s2TX/9ptHi3eesMQhsJFMSBQ8=;
-        b=sMYMSVO4r89wjawMeSRSrqW+MJLWdaohaSAXdRiRWdhv8DAEfAJYPgPw9hO7E/dESJ
-         vu4m7IrOLqv6HH8Q5lEUPgg2+KP/0MrYn0FkoWpDcc0UxX7WzZ+7KXRCZHeSeMew+PTe
-         CWK3OG1f+7yoZWHVGHtmPnCSDqidTtpVkgJfqXFDyb9M73BFMJH6ShN3qtAlj6YwQM2S
-         aTI+VQhenjm+wZIcCOzz9944TwGFx83CrlMbohCFsxraaaGDMv4B7Z6oxF3FyhDsmEuG
-         6S1Tw+SA+BGC9b3V1Y4pot3U8QmGf1vD9BGdArn0ADBuUsYbD4wPYJHOQkufGQVNf8bV
-         3acQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=r6GhUyjBJryqxkAoJ8s2TX/9ptHi3eesMQhsJFMSBQ8=;
-        b=C4ApBcKX+MMjirioZP2ELwpOg/srYXpEP03y3UP1IuimkqXJE+T5oWnGkGGxS43riZ
-         pG1IufEhQZMPiyj4pu6qhKKs2uvQLYeo7t+uXYWGQco+W6bPODYhPzFLo1ymGYHB3k/+
-         ROCZBDTdIfOJ1CkgoR0W1YgPAy5Zp843dK8GZfTB/U8Kj2lmyK60yXcBa/y0z6kpoXS6
-         b/Ze/KHb6bG/uWwmMgmTWwagYOvpuCnmXHbhlIDRra6iNwDUQg4cH4friE4U1SL7SJFq
-         O04QvRHDRaN+DtPcWG0ejXSGqBqFlLFblVOlrHWdgvnzafgfrZvuZnyJddfizF6DLkoW
-         Rhgw==
-X-Gm-Message-State: AOAM531CoweGtJJcYUsgZTarDTx1ADZOOqWZVoic4cZc3Y93VPbv87J7
-        Vx7BxggPvMLWAYDdgyoqYqcReULVLjN27/WjiQ0=
-X-Google-Smtp-Source: ABdhPJyuCX/ePcfxvkCz+sX4s+ZEGG0u/bp2cI0TpjI908prPnh39uBWji4CyG38aw8IwOeDmOaR7ECXrSoo7GooEfM=
-X-Received: by 2002:a92:d990:: with SMTP id r16mr1232898iln.10.1611012571781;
- Mon, 18 Jan 2021 15:29:31 -0800 (PST)
+        Mon, 18 Jan 2021 18:38:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611013010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=evmA0OdyD5M8kY9qOkiMZu9GD1M5IQ2ieILxxBsie0w=;
+        b=NECGjpltR2w1zuBKhoVxpcc6//binQYjgCgF3OhBJsayl5MKDoTySHhN9Lzx0ZgG70q7cR
+        rm+Vx/5uuoAKa7jEWxujaSkonCmfhsymMzF6IrDEIuVGrlQ9abf/c+DolD7tfyJ/zWPXmm
+        AxIijtwewgvy6DBnUbNn+L8OlMc+7ZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-7qf1DA_HP76SP8BqpolMWQ-1; Mon, 18 Jan 2021 18:36:49 -0500
+X-MC-Unique: 7qf1DA_HP76SP8BqpolMWQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CA1359;
+        Mon, 18 Jan 2021 23:36:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6B365D9CD;
+        Mon, 18 Jan 2021 23:36:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <2758811.1610621106@warthog.procyon.org.uk>
+References: <2758811.1610621106@warthog.procyon.org.uk>
+To:     linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com
+Cc:     dhowells@redhat.com, jlayton@redhat.com, dwysocha@redhat.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@lst.de>, dchinner@redhat.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Cut down implementation of fscache new API
 MIME-Version: 1.0
-References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
- <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
- <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
- <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
- <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
- <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
- <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
- <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
- <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
- <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
- <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
- <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
- <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
- <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
- <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com>
- <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com> <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com>
-In-Reply-To: <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 19 Jan 2021 00:29:19 +0100
-Message-ID: <CA+icZUVTnH86M7=YkU_bQyK4wiRg7Oe46QTVD3AfZ2aNRFqD1g@mail.gmail.com>
-Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <160654.1611012999.1@warthog.procyon.org.uk>
+Date:   Mon, 18 Jan 2021 23:36:39 +0000
+Message-ID: <160655.1611012999@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:56 PM Bill Wendling <morbo@google.com> wrote:
->
-> On Mon, Jan 18, 2021 at 9:26 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
-> > > >
-> > > > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >
-> > > > > [ big snip ]
-> > > >
-> > > > [More snippage.]
-> > > >
-> > > > > [ CC Fangrui ]
-> > > > >
-> > > > > With the attached...
-> > > > >
-> > > > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
-> > > > > undefined symbols
-> > > > >
-> > > > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
-> > > > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
-> > > > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
-> > > > >
-> > > > Thanks for confirming that this works with the above patch.
-> > > >
-> > > > > @ Bill Nick Sami Nathan
-> > > > >
-> > > > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
-> > > >
-> > > > The integrated assembler and this option are more-or-less orthogonal
-> > > > to each other. One can still use the GNU assembler with PGO. If you're
-> > > > having an issue, it may be related to ClangBuiltLinux issue #1250.
-> > > >
-> > > > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
-> > > > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
-> > > > >
-> > > > I know Nick did several tests with PGO. He may have looked into it
-> > > > already, but we can check.
-> > > >
-> > >
-> > > Reproducible.
-> > >
-> > > LLVM_IAS=1 + DWARF5 = Not bootable
-> > >
-> > > I will try:
-> > >
-> > > LLVM_IAS=1 + DWARF4
-> > >
-> >
-> > I was not able to boot into such a built Linux-kernel.
-> >
-> PGO will have no effect on debugging data. If this is an issue with
-> DWARF, then it's likely orthogonal to the PGO patch.
->
-> > For me worked: DWARF2 and LLVM_IAS=1 *not* set.
-> >
-> > Of course, this could be an issue with my system's LLVM/Clang.
-> >
-> > Debian clang version
-> > 12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
-> >
-> Please use the official clang 11.0.1 release
-> (https://releases.llvm.org/download.html), modifying the
-> kernel/pgo/Kconfig as I suggested above. The reason we specify clang
-> 12 for the minimal version is because of an issue that was recently
-> fixed.
->
-> > Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
-> > and especially CONFIG_DEBUG_INFO_DWARF5=y?
-> > Success means I was able to boot in QEMU and/or bare metal.
-> >
-> The DWARF5 patch isn't in yet, so I don't want to rely upon it too much.
->
+Take a look at:
 
-That means to build the first PGO-enabled kernel with clang-11 and
-rebuild in a second step again with the same clang-11.
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/
 
-Just FYI:
-I was able to boot into a Linux-kernel  rebuild with *no  LLVM_IAS=1*
-(means use "GNU AS 2.35.1") set and DWARF5 using LLVM=1 from
-LLVM/Clang-12.
+I've extracted the netfs helper library from my patch set and built an
+alternative cut-down I/O API for the existing fscache code as a bridge to
+moving to a new fscache implementation.  With this, a netfs now has two
+choices: use the existing API as is or use the netfs lib and the alternative
+API.  You can't mix the two APIs - a netfs has to use one or the other.
 
-- Sedat -
+It works with AFS, at least for reading data through a cache, and without a
+cache, xfstests is quite happy.  I was able to take a bunch of the AFS patches
+from my fscache-iter branch (the full rewrite) and apply them with minimal
+changes.  Since it goes through the new I/O API in both cases, those changes
+should be the same.  The main differences are in the cookie wrangling API.
+
+The alternative API is different from the current in the following ways:
+
+ (1) It uses kiocbs to do async DIO rather than using readpage() with page
+     wake queue snooping and vfs_write().
+
+ (2) It uses SEEK_HOLE/SEEK_DATA rather than bmap() to determine the location
+     of data in the file.  This is still broken because we can't rely on this
+     information in the backing filesystem.
+
+ (3) It completely changes how PG_fscache is used.  As for the new API, it's
+     used to indicate an in progress write to the cache from a page rather
+     than a page the cache knows about.
+
+ (4) It doesn't keep track of the netfs's pages beyond the termination of an
+     I/O operation.  The old API added pages that have outstanding writes to
+     the cache to a radix three for a background writer; now an async kiocb is
+     dispatched.
+
+ (5) The netfs needs to call fscache_begin_read_operation() from its
+     ->begin_cache_operation() handler as passed to the netfs helper lib.
+     This tells the netfs helpers how to access the cache.
+
+ (6) It relies on the netfs helper lib to reissue a failed cache read to the
+     server.
+
+ (7) Handles THPs.
+
+ (8) Implements completely ->readahead() and ->readpage() and implements a
+     chunk of ->write_begin().
+
+Things it doesn't address:
+
+ (1) Mapping the content independently of the backing filesystem's metadata.
+
+ (2) Getting rid of the backpointers into the netfs.
+
+ (3) Simplifying the management of cookies and objects and their processing.
+
+ (4) Holding an open file to the cache for any great length of time.  It gets
+     a new file struct for each read op it does on the cache and drops it
+     again afterwards.
+
+ (5) Pinning the cache context/state required to handle a deferred write to
+     the cache from ->write_begin() as performed by, say, ->writepages().
+
+David
+
