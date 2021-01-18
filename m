@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD732FA283
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB542FA29C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392632AbhAROFb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 09:05:31 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:52645 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392622AbhAROE4 (ORCPT
+        id S2404901AbhAROLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:11:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392694AbhAROKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:04:56 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-175-xOhOvC86NguXJNtyDtvyUg-1; Mon, 18 Jan 2021 14:03:08 +0000
-X-MC-Unique: xOhOvC86NguXJNtyDtvyUg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 18 Jan 2021 14:03:07 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 18 Jan 2021 14:03:07 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Lutomirski' <luto@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Mazur <krzysiek@podlesie.net>,
-        =?iso-8859-2?Q?Krzysztof_Ol=EAdzki?= <ole@ans.pl>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively
- initialize state
-Thread-Topic: [PATCH 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively
- initialize state
-Thread-Index: AQHW7WJaj1C/G8lQukGQKbQ/ZO1Lg6otaOUA
-Date:   Mon, 18 Jan 2021 14:03:07 +0000
-Message-ID: <71144eab31a34dc7add39655a289f8a8@AcuMS.aculab.com>
-References: <cover.1610950681.git.luto@kernel.org>
- <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
-In-Reply-To: <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 18 Jan 2021 09:10:18 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505F7C061573;
+        Mon, 18 Jan 2021 06:09:38 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id e7so18342413ljg.10;
+        Mon, 18 Jan 2021 06:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iG/KODEdFe2K5XObeKF2Vt9sHmAGSpX5UKzCfopjxSU=;
+        b=Doz5K836XN1Hu+ccBz6D+76OvCCWqvKkTjJEAyQHNkKqiW4p8y8ozBLbZTrINgHPyp
+         VuNMnMugMs+ZDX4Hpa5bMn4VXIk46qKF4OrdpToe2/qcEFtMszNKdhSk1fgDh8yMex2X
+         fiPsJW+kYFl2JskHlpVQzzyZKfWTQo923x35mOiTa2nlrS8HVwYTe8n+GMuSKqO2M7iO
+         83HX6CI3Y/Dd8klK+A06De/2Peb1dQ+qChXMAdvjSktv/KOQ427Zv6Ru4tBfNq6GBnk2
+         MvhxbZg28tKsGm5ahRBPRR0XQ8tOmBM7rx1UErFmOEbugwnaMWfTPyZZ/YJfiMA49OHP
+         aOVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iG/KODEdFe2K5XObeKF2Vt9sHmAGSpX5UKzCfopjxSU=;
+        b=LL+ecc1ZeiqR9ytjHds7s27wZ2/7dd1EMbKmC7ynOWn1s6Xzjb81Z/E51v4prgiqO3
+         02PNhWCfnUDzebzLY33VcBSD+mipjiTWrVNA3O7wscENNf3ekJOk/cIRB6qpmjc6Iu39
+         ux/vxbevKJ0yctMV8V7682exeBstAQtxl+BpP3Z077IuFnLC8Z7XICq3n8tFXyXHp8pY
+         ZYZk+w6jvpFpB0/r6ErwQfkcsNjcBgmpB/+iOJVIdcHyw7Ah/FkzozXRwNXmakJMRNvj
+         gUN3egK8hyZfxYUPf4+vGW0F18IXMAtbwBoeU4CzP1v/IlMbM8lyrHLbAdj0Rq7sA+25
+         9WRA==
+X-Gm-Message-State: AOAM5331uhmZpSj3KLNz1o1XsedapExnhLh9MYINxj555TjrN83oGNFs
+        uA754rc04JDxccZtpXnNFS+SHzOhHVYXpw==
+X-Google-Smtp-Source: ABdhPJw1Gz9tbnGLQVkzqltWwFI0JVgvnT623otswaeYadxrv4/5z7VU+iCrgj9FnAJXYbtqgUBEng==
+X-Received: by 2002:a2e:9246:: with SMTP id v6mr10308478ljg.221.1610978974812;
+        Mon, 18 Jan 2021 06:09:34 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id v11sm1695394ljg.128.2021.01.18.06.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 06:09:34 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:09:31 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "andy.lavr@gmail.com" <andy.lavr@gmail.com>
+Subject: Re: [PATCH v17 02/10] fs/ntfs3: Add initialization of super block
+Message-ID: <20210118140931.e2qdposfez2jsbbr@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-3-almaz.alexandrovich@paragon-software.com>
+ <20210103195017.fim2msuzj3kup6rq@kari-VirtualBox>
+ <750a0cef33f34c0989cacfb0bcd4ac5e@paragon-software.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <750a0cef33f34c0989cacfb0bcd4ac5e@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski
-> Sent: 18 January 2021 06:21
+On Mon, Jan 18, 2021 at 09:35:05AM +0000, Konstantin Komarov wrote:
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Sunday, January 3, 2021 10:50 PM
+> > On Thu, Dec 31, 2020 at 06:23:53PM +0300, Konstantin Komarov wrote:
+> > > diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+> > 
+> > > +int ntfs_create_inode(struct inode *dir, struct dentry *dentry,
+> > > +		      const struct cpu_str *uni, umode_t mode, dev_t dev,
+> > > +		      const char *symname, u32 size, int excl,
+> > > +		      struct ntfs_fnd *fnd, struct inode **new_inode)
+> > > +{
+> > 
+> > > +#ifdef CONFIG_NTFS3_FS_POSIX_ACL
+> > 
+> > In Kconfig this is NTFS3_POSIX_ACL. This repeat every file.
+> > 
 > 
-> Currently, requesting kernel FPU access doesn't distinguish which parts of
-> the extended ("FPU") state are needed.  This is nice for simplicity, but
-> there are a few cases in which it's suboptimal:
+> This is OK. You may refer to similar parts of ext4/btrfs sources as a
+> reference:
+> fs/ext4/Kconfig or fs/btrfs/Kconfig
 > 
->  - The vast majority of in-kernel FPU users want XMM/YMM/ZMM state but do
->    not use legacy 387 state.  These users want MXCSR initialized but don't
->    care about the FPU control word.  Skipping FNINIT would save time.
->    (Empirically, FNINIT is several times slower than LDMXCSR.)
-> 
->  - Code that wants MMX doesn't want need MXCSR or FCW initialized.
->    _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
->    initializing MXCSR will fail.
-> 
->  - Any future in-kernel users of XFD (eXtended Feature Disable)-capable
->    dynamic states will need special handling.
-> 
-> This patch adds a more specific API that allows callers specify exactly
-> what they want.
 
-Is it worth returning whether the required fpu feature is available?
-Or, maybe optionally, available cheaply?
-
-There are also code fragments that really just want one or two
-[xyx]mm registers to speed something up.
-For instance PCIe reads can be a lot faster if a wide register
-can be used.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+But in ext4 and btrfs Kconfig specify *_FS_POSIX_ACL. In ntfs3 Kconfig
+specify *_POSIX_ACL. So we missing _FS_ in our Kconfig?
 
