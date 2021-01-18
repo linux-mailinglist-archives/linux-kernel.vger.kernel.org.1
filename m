@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC75D2FA937
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D7B2FA938
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393737AbhARStD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:49:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407652AbhARSrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:47:13 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F15C061573;
-        Mon, 18 Jan 2021 10:46:33 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id h205so25453089lfd.5;
-        Mon, 18 Jan 2021 10:46:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UidCJzrD1s3AVXDJyUdxsL6wVFlBwRYb0i46sQWrpls=;
-        b=L3ZbwSzFxfsTz1EyEfOxok0FLzZ0eRcDto8duBQKohBmqsPb+2T6TMJgrmWNB0oD2o
-         NRxjMURON1U1xetQjUJiDc4ZstPB9x4Tu04XYkm2E0vITcVuASkJDuEb2svJIfIAod/b
-         zrg0FqPaHb23qLIXOvNLujGv+dlQA26mR5rkBy80BwRInLwoVDcWiws+2DhEo3MnWqTc
-         SnkbzAxB3hc+MiEs5HdUhmyRIHpKMjtsww8CMSF3flsLzxKILij59MqbGMSIsXL2HbbO
-         jJjq+7NLKnfC+8/aYk7sKqVMmcP4Uc9KfQIZ42UwXCkkMWcvsBoKcYb1dYMPJAdqfc0+
-         RG6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UidCJzrD1s3AVXDJyUdxsL6wVFlBwRYb0i46sQWrpls=;
-        b=Klf64EA/LtSfHSwZAEDx/uWwRZ0vHbzBDdX1hFVREQlwpph/W2K2eCMK2mYLPOzl4Y
-         5sFaXRQ0upRzfbeAzY31pwMHdobdkeQpjSTxexBMqtWMcGOKLY+FXsXS+20cJx3bwOXA
-         +uWU3Jk/SM748yvNGq/FeGUnulq92bNkasWyxf0VEm/AmuzWd0lstfFF2QT5pzl4005t
-         6bYANG9naZ6SnsKIZpreEK+FtdRtpeqdiYq+r6eb+6Kn+nRI7N5VDyZha1F8CSEF+UeZ
-         vHnY2/G+vV1llq6ojtyF84XNYhWBHxvcOg/zD8J2Y6bAPG+cgHb6N8NPBnjZ71UygQp9
-         qdHA==
-X-Gm-Message-State: AOAM53295zQZy16uMBGHBO2op3OSmiyweO7RqrdZix9+Lg5MlyApm0oJ
-        a5kqkTxphdYfUbHzv0QNRc7U0wm3WJc=
-X-Google-Smtp-Source: ABdhPJyKl7ievkY1ZBSHBEckLW2JgrnWYAHbBqO6hoWkjId7DSctCw0+7jXcaH+tVtNY9qjfBQAybQ==
-X-Received: by 2002:a05:6512:612:: with SMTP id b18mr223180lfe.598.1610995591917;
-        Mon, 18 Jan 2021 10:46:31 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id w20sm1988160lfk.67.2021.01.18.10.46.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 10:46:31 -0800 (PST)
-Subject: Re: [PATCH v3 01/12] opp: Fix adding OPP entries in a wrong order if
- rate is unavailable
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-2-digetx@gmail.com>
- <20210118074416.5mjogew62fjohzlm@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d91dd85b-c100-140d-ee23-9641caf5dcc7@gmail.com>
-Date:   Mon, 18 Jan 2021 21:46:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S2393744AbhARStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:49:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:42302 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436896AbhARSrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:47:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 857F331B;
+        Mon, 18 Jan 2021 10:46:47 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C90F3F719;
+        Mon, 18 Jan 2021 10:46:42 -0800 (PST)
+Subject: Re: [PATCH v4 7/7] iommu/mediatek: Remove the tlb-ops for v7s
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     youlin.pei@mediatek.com, anan.sun@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org
+References: <20210107122909.16317-1-yong.wu@mediatek.com>
+ <20210107122909.16317-8-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <520e2eab-7ee8-6bfd-4b98-f89ec2f9aaea@arm.com>
+Date:   Mon, 18 Jan 2021 18:46:42 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210118074416.5mjogew62fjohzlm@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107122909.16317-8-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.01.2021 10:44, Viresh Kumar пишет:
-> On 18-01-21, 03:55, Dmitry Osipenko wrote:
->> Fix adding OPP entries in a wrong (opposite) order if OPP rate is
->> unavailable. The OPP comparison was erroneously skipped, thus OPPs
->> were left unsorted.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/opp/core.c | 10 ++++------
->>  1 file changed, 4 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->> index dfc4208d3f87..48618ff3e99e 100644
->> --- a/drivers/opp/core.c
->> +++ b/drivers/opp/core.c
->> @@ -1527,12 +1527,10 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
->>  	mutex_lock(&opp_table->lock);
->>  	head = &opp_table->opp_list;
->>  
->> -	if (likely(!rate_not_available)) {
->> -		ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
->> -		if (ret) {
->> -			mutex_unlock(&opp_table->lock);
->> -			return ret;
->> -		}
->> +	ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
->> +	if (ret) {
->> +		mutex_unlock(&opp_table->lock);
->> +		return ret;
->>  	}
->>  
->>  	list_add(&new_opp->node, head);
+On 2021-01-07 12:29, Yong Wu wrote:
+> Until now, we have already used the tlb operations from iommu framework,
+> then the tlb operations for v7s can be removed.
 > 
-> Applied. Thanks.
-> 
-> I am not sending it for 5.11-rc as there shouldn't be any users which
-> are impacted because of this right now, right ?
-> 
+> Correspondingly, Switch the paramenter "cookie" to the internal structure.
 
-right
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/mtk_iommu.c | 27 ++++-----------------------
+>   1 file changed, 4 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index d3b8a1649093..86ab577c9520 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -182,10 +182,8 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
+>   	return container_of(dom, struct mtk_iommu_domain, domain);
+>   }
+>   
+> -static void mtk_iommu_tlb_flush_all(void *cookie)
+> +static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
+>   {
+> -	struct mtk_iommu_data *data = cookie;
+> -
+>   	for_each_m4u(data) {
+>   		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
+>   			       data->base + data->plat_data->inv_sel_reg);
+> @@ -195,9 +193,9 @@ static void mtk_iommu_tlb_flush_all(void *cookie)
+>   }
+>   
+>   static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+> -					   size_t granule, void *cookie)
+> +					   size_t granule,
+> +					   struct mtk_iommu_data *data)
+>   {
+> -	struct mtk_iommu_data *data = cookie;
+>   	unsigned long flags;
+>   	int ret;
+>   	u32 tmp;
+> @@ -219,7 +217,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   		if (ret) {
+>   			dev_warn(data->dev,
+>   				 "Partial TLB flush timed out, falling back to full flush\n");
+> -			mtk_iommu_tlb_flush_all(cookie);
+> +			mtk_iommu_tlb_flush_all(data);
+>   		}
+>   		/* Clear the CPE status */
+>   		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
+> @@ -227,22 +225,6 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   	}
+>   }
+>   
+> -static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
+> -					    unsigned long iova, size_t granule,
+> -					    void *cookie)
+> -{
+> -	struct mtk_iommu_data *data = cookie;
+> -	struct iommu_domain *domain = &data->m4u_dom->domain;
+> -
+> -	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
+> -}
+> -
+> -static const struct iommu_flush_ops mtk_iommu_flush_ops = {
+> -	.tlb_flush_all = mtk_iommu_tlb_flush_all,
+> -	.tlb_flush_walk = mtk_iommu_tlb_flush_range_sync,
+> -	.tlb_add_page = mtk_iommu_tlb_flush_page_nosync,
+> -};
+> -
+>   static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
+>   {
+>   	struct mtk_iommu_data *data = dev_id;
+> @@ -326,7 +308,6 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
+>   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
+>   		.ias = 32,
+>   		.oas = 34,
+> -		.tlb = &mtk_iommu_flush_ops,
+>   		.iommu_dev = data->dev,
+>   	};
+>   
+> 
