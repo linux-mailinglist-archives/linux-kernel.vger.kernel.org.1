@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D0A2FA20E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFD82FA209
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392447AbhARNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:48:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404804AbhARNro (ORCPT
+        id S2404803AbhARNsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:48:10 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50896 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404527AbhARNqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:47:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610977578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=X4UKy1ZlErLNFqSWKqt0fMjDDkpt5JLUt2TOmRC3MUA=;
-        b=RaJKSMMXT4M4vyynURCu+J8D0PIAY7GHEA9onY8pgVnhDwPW24WM0FFmFYS8o97mz/Db9E
-        TNmgGvj2hfoL5u0Urk6PFIhTup/wlcnNwa4qGwauj+gYxfLsxYkUNAXilbkjNpuaEEriGa
-        U3k9EomI+evmR+05PQsySOvPXG2dYUo=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-7RE-Uw4wPli5WwUc9WI9qg-1; Mon, 18 Jan 2021 08:46:17 -0500
-X-MC-Unique: 7RE-Uw4wPli5WwUc9WI9qg-1
-Received: by mail-qt1-f199.google.com with SMTP id n22so440734qtv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:46:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X4UKy1ZlErLNFqSWKqt0fMjDDkpt5JLUt2TOmRC3MUA=;
-        b=k93ecitC4GPz8uXjejjLda/paRL9EUaNMJmszzyK82Uqp47VQuGZb0gBHO7XQXEYaB
-         L8HfJdawZSvPbLFBFnPLX9zlNO2chWhCPCh/8n7jpK2im/NsVQ6/rklaQgTREDypIfD2
-         lvmyZRHhZes0U5ppyiv52JmBqKyS//dgydF/TsQJnxZzxyoxdbgj7iffagmWAh6uSna8
-         lv6BIKa+pTjK0yvEpbOhlZ4hREiRVOpTFNEIRFQpYHWwOtCM28dJHcUwije9Pn6LE24R
-         A6E7g0CQntHx/bMPd5YKkGz9fz6HbD7tytL7VL7rNhsEZdrJgt0B6RpshwYMcdqQzdLD
-         Y0rg==
-X-Gm-Message-State: AOAM530nRkerFgsN8sG/vemNzWr4c4eFGAAdp0OKRMzWDCu5WUKjRT/i
-        zgwkg8+ASI8yzz8RXE3h+8y/jG1UaJ5KuxK6BhqebTezc4SUSx7mJ5OjKFYhWPT5jUhSFT+JQpL
-        oSSNd8BbJqae4/K6gfY5Xuv/f
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr24266747qva.18.1610977575147;
-        Mon, 18 Jan 2021 05:46:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwfTxYTWOMK1FOKD7X9onRCJISzmAUfQaJXpGwZwHEk8ttsMbuo7RxaMz2e+7c5NBGily/iGQ==
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr24266551qva.18.1610977571564;
-        Mon, 18 Jan 2021 05:46:11 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o21sm11026169qko.9.2021.01.18.05.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 05:46:10 -0800 (PST)
-From:   trix@redhat.com
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        peter.ujfalusi@ti.com, robert.jarzmik@free.fr,
-        romain.perier@gmail.com, jacopo+renesas@jmondi.org,
-        allen.lkml@gmail.com, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] media: pxa_camera: declare variable when DEBUG is defined
-Date:   Mon, 18 Jan 2021 05:45:13 -0800
-Message-Id: <20210118134513.613097-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 18 Jan 2021 08:46:13 -0500
+Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l1UqW-00011C-AN; Mon, 18 Jan 2021 13:45:29 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-input@vger.kernel.org (open list:HID CORE LAYER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] HID: multitouch: Apply MT_QUIRK_CONFIDENCE quirk for multi-input devices
+Date:   Mon, 18 Jan 2021 21:45:23 +0800
+Message-Id: <20210118134523.178605-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Palm ejection stops working on some Elan and Synaptics touchpad after
+commit 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for
+some devices").
 
-When DEBUG is defined this error occurs
+The commit changes the mt_class from MT_CLS_WIN_8 to
+MT_CLS_WIN_8_FORCE_MULTI_INPUT, so MT_QUIRK_CONFIDENCE isn't applied
+anymore.
 
-drivers/media/platform/pxa_camera.c:1410:7: error:
-  ‘i’ undeclared (first use in this function)
-  for (i = 0; i < vb->num_planes; i++)
-       ^
-The variable 'i' is missing, so declare it.
+So also apply the quirk since MT_CLS_WIN_8_FORCE_MULTI_INPUT is
+essentially MT_CLS_WIN_8.
 
-Fixes: 6f28435d1c15 ("[media] media: platform: pxa_camera: trivial move of functions")
-Signed-off-by: Tom Rix <trix@redhat.com>
+Fixes: 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for some devices")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- drivers/media/platform/pxa_camera.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hid/hid-multitouch.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
-index b664ce7558a1..75fad9689c90 100644
---- a/drivers/media/platform/pxa_camera.c
-+++ b/drivers/media/platform/pxa_camera.c
-@@ -1386,6 +1386,9 @@ static int pxac_vb2_prepare(struct vb2_buffer *vb)
- 	struct pxa_camera_dev *pcdev = vb2_get_drv_priv(vb->vb2_queue);
- 	struct pxa_buffer *buf = vb2_to_pxa_buffer(vb);
- 	int ret = 0;
-+#ifdef DEBUG
-+	int i;
-+#endif
- 
- 	switch (pcdev->channels) {
- 	case 1:
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 0743ef51d3b2..8429ebe7097e 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -758,7 +758,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 			MT_STORE_FIELD(inrange_state);
+ 			return 1;
+ 		case HID_DG_CONFIDENCE:
+-			if (cls->name == MT_CLS_WIN_8 &&
++			if ((cls->name == MT_CLS_WIN_8 ||
++			     cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT) &&
+ 				(field->application == HID_DG_TOUCHPAD ||
+ 				 field->application == HID_DG_TOUCHSCREEN))
+ 				app->quirks |= MT_QUIRK_CONFIDENCE;
 -- 
-2.27.0
+2.29.2
 
