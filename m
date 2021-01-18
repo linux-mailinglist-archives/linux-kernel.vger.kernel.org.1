@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16002F9E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6D52F9EA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbhARLh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:37:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60910 "EHLO mail.kernel.org"
+        id S2390829AbhARLrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:47:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390313AbhARLgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:36:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D99C222B3;
-        Mon, 18 Jan 2021 11:35:58 +0000 (UTC)
+        id S2390513AbhARLjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:39:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E217E223E8;
+        Mon, 18 Jan 2021 11:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969758;
-        bh=ZRf0tHMkuD9fOooc5JgFR6IuPvDSlLfDzjQtFstq5ZI=;
+        s=korg; t=1610969917;
+        bh=/TpIWJHKIKeo3ag1s8Vm+eQe+JfpDBJA6BfFKVg4ZZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RYmkIrNy9K+/hEE8WmHQeaH1PkCwoqjswVVuthgPmu3OhxF/mVr9PHA6OLhD/27GE
-         QxTHeVUs1pJ6B+D7YO3rsS5x+aXaUfzDKYv8poqq00S8d6zmIChjazttvZcnutf+DW
-         ZJmLkcKtxHTwUkbKoVE83iW4VnSuM13Nt3nP3MNw=
+        b=C8S70ab99i06CgWeBbdlEvd4k+yKq2zmO+HINKv5gk6JswSyOJ6X6eOLhc9b1v6nD
+         aO9jokbM1uqg1u9EgWC+yHrTmF+DiV547j7naS433fQyRtGhx5bd6aPwFBuDcNEtEc
+         sArEJkAngYvgwI2Nu5du8HOrySVzCGax3oomYi6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 13/43] ARC: build: remove non-existing bootpImage from KBUILD_IMAGE
-Date:   Mon, 18 Jan 2021 12:34:36 +0100
-Message-Id: <20210118113335.588944282@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 37/76] bfq: Fix computation of shallow depth
+Date:   Mon, 18 Jan 2021 12:34:37 +0100
+Message-Id: <20210118113342.758147366@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 9836720911cfec25d3fbdead1c438bf87e0f2841 ]
+[ Upstream commit 6d4d273588378c65915acaf7b2ee74e9dd9c130a ]
 
-The deb-pkg builds for ARCH=arc fail.
+BFQ computes number of tags it allows to be allocated for each request type
+based on tag bitmap. However it uses 1 << bitmap.shift as number of
+available tags which is wrong. 'shift' is just an internal bitmap value
+containing logarithm of how many bits bitmap uses in each bitmap word.
+Thus number of tags allowed for some request types can be far to low.
+Use proper bitmap.depth which has the number of tags instead.
 
-  $ export CROSS_COMPILE=<your-arc-compiler-prefix>
-  $ make -s ARCH=arc defconfig
-  $ make ARCH=arc bindeb-pkg
-  SORTTAB vmlinux
-  SYSMAP  System.map
-  MODPOST Module.symvers
-  make KERNELRELEASE=5.10.0-rc4 ARCH=arc KBUILD_BUILD_VERSION=2 -f ./Makefile intdeb-pkg
-  sh ./scripts/package/builddeb
-  cp: cannot stat 'arch/arc/boot/bootpImage': No such file or directory
-  make[4]: *** [scripts/Makefile.package:87: intdeb-pkg] Error 1
-  make[3]: *** [Makefile:1527: intdeb-pkg] Error 2
-  make[2]: *** [debian/rules:13: binary-arch] Error 2
-  dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
-  make[1]: *** [scripts/Makefile.package:83: bindeb-pkg] Error 2
-  make: *** [Makefile:1527: bindeb-pkg] Error 2
-
-The reason is obvious; arch/arc/Makefile sets $(boot)/bootpImage as
-the default image, but there is no rule to build it.
-
-Remove the meaningless KBUILD_IMAGE assignment so it will fallback
-to the default vmlinux. With this change, you can build the deb package.
-
-I removed the 'bootpImage' target as well. At best, it provides
-'make bootpImage' as an alias of 'make vmlinux', but I do not see
-much sense in doing so.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/Makefile | 6 ------
- 1 file changed, 6 deletions(-)
+ block/bfq-iosched.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index 16e6cc22e25cc..b07fdbdd8c836 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -91,12 +91,6 @@ libs-y		+= arch/arc/lib/ $(LIBGCC)
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index ba32adaeefdd0..7d19aae015aeb 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -6320,13 +6320,13 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * limit 'something'.
+ 	 */
+ 	/* no more than 50% of tags for async I/O */
+-	bfqd->word_depths[0][0] = max((1U << bt->sb.shift) >> 1, 1U);
++	bfqd->word_depths[0][0] = max(bt->sb.depth >> 1, 1U);
+ 	/*
+ 	 * no more than 75% of tags for sync writes (25% extra tags
+ 	 * w.r.t. async I/O, to prevent async I/O from starving sync
+ 	 * writes)
+ 	 */
+-	bfqd->word_depths[0][1] = max(((1U << bt->sb.shift) * 3) >> 2, 1U);
++	bfqd->word_depths[0][1] = max((bt->sb.depth * 3) >> 2, 1U);
  
- boot		:= arch/arc/boot
+ 	/*
+ 	 * In-word depths in case some bfq_queue is being weight-
+@@ -6336,9 +6336,9 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * shortage.
+ 	 */
+ 	/* no more than ~18% of tags for async I/O */
+-	bfqd->word_depths[1][0] = max(((1U << bt->sb.shift) * 3) >> 4, 1U);
++	bfqd->word_depths[1][0] = max((bt->sb.depth * 3) >> 4, 1U);
+ 	/* no more than ~37% of tags for sync writes (~20% extra tags) */
+-	bfqd->word_depths[1][1] = max(((1U << bt->sb.shift) * 6) >> 4, 1U);
++	bfqd->word_depths[1][1] = max((bt->sb.depth * 6) >> 4, 1U);
  
--#default target for make without any arguments.
--KBUILD_IMAGE	:= $(boot)/bootpImage
--
--all:	bootpImage
--bootpImage: vmlinux
--
- boot_targets += uImage uImage.bin uImage.gz
- 
- $(boot_targets): vmlinux
+ 	for (i = 0; i < 2; i++)
+ 		for (j = 0; j < 2; j++)
 -- 
 2.27.0
 
