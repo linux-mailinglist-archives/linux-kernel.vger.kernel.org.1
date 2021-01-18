@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756342F9CC6
+	by mail.lfdr.de (Postfix) with ESMTP id 088262F9CC5
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390048AbhARKXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:23:16 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55222 "EHLO
+        id S2389098AbhARKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:22:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55226 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389754AbhARKNb (ORCPT
+        with ESMTP id S2389755AbhARKNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 05:13:31 -0500
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610964695;
+        s=2020; t=1610964700;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rCoUnEGucDJKkx1I4wm0D1GIGgiWaqTeEVIetS2fm+4=;
-        b=Q3xEKCocQgMx+JuhL1cJPT9+A+G1/5qYduRgToKI9PLcLpIOe9/wrDEln9LBeQcIxFNDS3
-        9gd8ZCtW8zzFB5hCn/gMGvjGnvry29pb+lYShIZ9JVQ61w07VW+t5O5CI+3dhXf9b5E8+1
-        1wvqCHNTjSJ3OP1XLYQQrsIU/aVHKRGF2Pi+wZc2FFX7wqGuSEvyMd6a/xG8I8yXRaWiCw
-        BvOsMFbjDrfWpk4UU4jNYKbpKELGKC6FPx21NQirF+yFbduHz7o/26p9G/t8IwJSTHIUbJ
-        yv10hMH5DV3w7Uk6VSZGAd7Wufr95Ik80ZW/yKa3ZhRWjdyu63kO+dx7xQt9xA==
+        bh=W6/Fxq6SJj3l0bOA5qvsrvqpyxVzx43C+xNlo/yLFZw=;
+        b=T51AGJvCCyB37OPwZBIVl77FYUq4EN1NIy90CCgnRpC8idRs/C+eI6ukTwl+6LfDKqu9Ac
+        xE5Hun1RLNa1ChFGAcJ0mAmMbqtjQ4CEZM4K2Cobw5tty5aHSmpaZP25gfM0ZEH2otaxGL
+        ujeZT+kaUsMdh3UV7PghgAHvxuafTmYkrxuB23qjHWsn0PsXks6Z62fV372uPigXrOIhmT
+        1x6ImdI7iko+UoSvrB8bSeQMY/FWEWRMAsrrnxnNYqFGVhD7ZnGO2sm64nkpGPG5U8R0+A
+        GQCN5Wk3zQH6rXeyDsttm8JDaFblATdlez7aeQDap5QdKScrpEI7Y6VIG4+AUQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610964695;
+        s=2020e; t=1610964700;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rCoUnEGucDJKkx1I4wm0D1GIGgiWaqTeEVIetS2fm+4=;
-        b=9vHl+lAFxHJX7yhS1t9HtiVS04XjwW2xuJ746m6vtlxdAZ3EadGte6AKGSrfFYJs5MzSPZ
-        3X+Rf8EWcHbQjhCQ==
+        bh=W6/Fxq6SJj3l0bOA5qvsrvqpyxVzx43C+xNlo/yLFZw=;
+        b=YosGUwS1s0wB0AUqsP5y5u17hHJtvhsyRWYKWbubU1zuixAPNwIkEwXVfHT6uXd5glLUCB
+        BJ7WK0Kb6/BOoODQ==
 To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Christoph Hellwig <hch@infradead.org>,
@@ -46,9 +46,9 @@ Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Sebastian A. Siewior" <bigeasy@linutronix.de>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v3 18/19] scsi: mvsas: Switch back to original libsas event notifiers
-Date:   Mon, 18 Jan 2021 11:09:54 +0100
-Message-Id: <20210118100955.1761652-19-a.darwish@linutronix.de>
+Subject: [PATCH v3 19/19] scsi: libsas: Remove temporarily-added _gfp() API variants
+Date:   Mon, 18 Jan 2021 11:09:55 +0100
+Message-Id: <20210118100955.1761652-20-a.darwish@linutronix.de>
 In-Reply-To: <20210118100955.1761652-1-a.darwish@linutronix.de>
 References: <20210118100955.1761652-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
@@ -57,62 +57,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libsas event notifiers required an extension where gfp_t flags must be
-explicitly passed. For bisectability, a temporary _gfp() variant of such
-functions were added. All call sites then got converted use the _gfp()
-variants and explicitly pass GFP context. Having no callers left, the
-original libsas notifiers were then modified to accept gfp_t flags by
-default.
-
-Switch back to the original libas API, while still passing GFP context.
-The libsas _gfp() variants will be removed afterwards.
+These variants were added for bisectability. Remove them, as all call
+sites have now been convertd to use the original API.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 Reviewed-by: John Garry <john.garry@huawei.com>
+Cc: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/scsi/mvsas/mv_sas.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/scsi/libsas.rst      |  2 --
+ drivers/scsi/libsas/sas_event.c    | 14 --------------
+ drivers/scsi/libsas/sas_init.c     |  7 -------
+ drivers/scsi/libsas/sas_internal.h |  4 ----
+ include/scsi/libsas.h              |  4 ----
+ 5 files changed, 31 deletions(-)
 
-diff --git a/drivers/scsi/mvsas/mv_sas.c b/drivers/scsi/mvsas/mv_sas.c
-index 484e01428da2..1acea528f27f 100644
---- a/drivers/scsi/mvsas/mv_sas.c
-+++ b/drivers/scsi/mvsas/mv_sas.c
-@@ -229,7 +229,7 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i, gfp_t gfp_flags)
- 		return;
- 	}
+diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
+index c65086470a15..6589dfefbc02 100644
+--- a/Documentation/scsi/libsas.rst
++++ b/Documentation/scsi/libsas.rst
+@@ -191,8 +191,6 @@ The event interface::
+ 	/* LLDD calls these to notify the class of an event. */
+ 	void sas_notify_port_event(struct sas_phy *, enum port_event, gfp_t);
+ 	void sas_notify_phy_event(struct sas_phy *, enum phy_event, gfp_t);
+-	void sas_notify_port_event_gfp(struct sas_phy *, enum port_event, gfp_t);
+-	void sas_notify_phy_event_gfp(struct sas_phy *, enum phy_event, gfp_t);
  
--	sas_notify_phy_event_gfp(sas_phy, PHYE_OOB_DONE, gfp_flags);
-+	sas_notify_phy_event(sas_phy, PHYE_OOB_DONE, gfp_flags);
+ The port notification::
  
- 	if (sas_phy->phy) {
- 		struct sas_phy *sphy = sas_phy->phy;
-@@ -261,7 +261,7 @@ static void mvs_bytes_dmaed(struct mvs_info *mvi, int i, gfp_t gfp_flags)
+diff --git a/drivers/scsi/libsas/sas_event.c b/drivers/scsi/libsas/sas_event.c
+index 542831887769..f703115e7a25 100644
+--- a/drivers/scsi/libsas/sas_event.c
++++ b/drivers/scsi/libsas/sas_event.c
+@@ -155,13 +155,6 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
+ }
+ EXPORT_SYMBOL_GPL(sas_notify_port_event);
  
- 	sas_phy->frame_rcvd_size = phy->frame_rcvd_size;
- 
--	sas_notify_port_event_gfp(sas_phy, PORTE_BYTES_DMAED, gfp_flags);
-+	sas_notify_port_event(sas_phy, PORTE_BYTES_DMAED, gfp_flags);
+-int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
+-			      gfp_t gfp_flags)
+-{
+-	return sas_notify_port_event(phy, event, gfp_flags);
+-}
+-EXPORT_SYMBOL_GPL(sas_notify_port_event_gfp);
+-
+ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
+ 			 gfp_t gfp_flags)
+ {
+@@ -184,10 +177,3 @@ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(sas_notify_phy_event);
+-
+-int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
+-			     gfp_t gfp_flags)
+-{
+-	return sas_notify_phy_event(phy, event, gfp_flags);
+-}
+-EXPORT_SYMBOL_GPL(sas_notify_phy_event_gfp);
+diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
+index 62260e84ca2d..2b0f98ca6ec3 100644
+--- a/drivers/scsi/libsas/sas_init.c
++++ b/drivers/scsi/libsas/sas_init.c
+@@ -619,13 +619,6 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy,
+ 	return event;
  }
  
- void mvs_scan_start(struct Scsi_Host *shost)
-@@ -1892,7 +1892,7 @@ static void mvs_work_queue(struct work_struct *work)
- 			if (!(tmp & PHY_READY_MASK)) {
- 				sas_phy_disconnected(sas_phy);
- 				mvs_phy_disconnected(phy);
--				sas_notify_phy_event_gfp(sas_phy,
-+				sas_notify_phy_event(sas_phy,
- 					PHYE_LOSS_OF_SIGNAL, GFP_ATOMIC);
- 				mv_dprintk("phy%d Removed Device\n", phy_no);
- 			} else {
-@@ -1905,7 +1905,7 @@ static void mvs_work_queue(struct work_struct *work)
- 		}
- 	} else if (mwq->handler & EXP_BRCT_CHG) {
- 		phy->phy_event &= ~EXP_BRCT_CHG;
--		sas_notify_port_event_gfp(sas_phy,
-+		sas_notify_port_event(sas_phy,
- 				PORTE_BROADCAST_RCVD, GFP_ATOMIC);
- 		mv_dprintk("phy%d Got Broadcast Change\n", phy_no);
- 	}
+-struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
+-					  gfp_t gfp_flags)
+-{
+-
+-	return sas_alloc_event(phy, gfp_flags);
+-}
+-
+ void sas_free_event(struct asd_sas_event *event)
+ {
+ 	struct asd_sas_phy *phy = event->phy;
+diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
+index 294cdcb4ce42..d7a1fb5c10c6 100644
+--- a/drivers/scsi/libsas/sas_internal.h
++++ b/drivers/scsi/libsas/sas_internal.h
+@@ -49,8 +49,6 @@ int  sas_register_phys(struct sas_ha_struct *sas_ha);
+ void sas_unregister_phys(struct sas_ha_struct *sas_ha);
+ 
+ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy, gfp_t gfp_flags);
+-struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
+-					  gfp_t gfp_flags);
+ void sas_free_event(struct asd_sas_event *event);
+ 
+ int  sas_register_ports(struct sas_ha_struct *sas_ha);
+@@ -80,8 +78,6 @@ int sas_smp_get_phy_events(struct sas_phy *phy);
+ 
+ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
+ 			 gfp_t flags);
+-int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
+-			     gfp_t flags);
+ void sas_device_set_phy(struct domain_device *dev, struct sas_port *port);
+ struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
+ struct domain_device *sas_ex_to_ata(struct domain_device *ex_dev, int phy_id);
+diff --git a/include/scsi/libsas.h b/include/scsi/libsas.h
+index fda56e151695..9271d7a49b90 100644
+--- a/include/scsi/libsas.h
++++ b/include/scsi/libsas.h
+@@ -706,9 +706,5 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
+ 			  gfp_t gfp_flags);
+ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
+ 			 gfp_t gfp_flags);
+-int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
+-			      gfp_t gfp_flags);
+-int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
+-			     gfp_t gfp_flags);
+ 
+ #endif /* _SASLIB_H_ */
 -- 
 2.30.0
 
