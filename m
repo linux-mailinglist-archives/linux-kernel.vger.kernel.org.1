@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506182FA423
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FE92FA3EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405553AbhARPH3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 10:07:29 -0500
-Received: from wnbcorp.com ([175.126.38.143]:36200 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405384AbhARPEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:04:31 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IEuW70008569;
-        Mon, 18 Jan 2021 23:58:47 +0900
-Message-Id: <202101181458.10IEuW70008569@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2393166AbhARPAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393064AbhARPAK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:00:10 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639FFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:59:29 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id b5so7650456ejv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:59:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iSBE4jHyV0yiGAPlv7yUlmbeiPPVBYbZTBnxyeVqKhc=;
+        b=WimftGn8DrHzzSkaIaeyHp4Rf5wrkFzQejolh5k7FrvTM1X4tQJfL6BPb0pntGz5jU
+         rtis3d7qLkXwTnZ5Tx904Tmlx9JxRGOiLxQfHo9Xwf3G6ebDePuOuAbmEudqlWIgpKH3
+         wAaDjsOriul24e2cFyWZJa1xIFzJ5Tu2vWnjXgx8gqcU3GlCpQ3CwbO6ka7jUCCoTj9S
+         naNB+8tAa2C/krD+3BFO+Ri5/sPlH+nxGyXWmMo9A1D6Sj8LFoMEmXyp76OSZkPloVe8
+         ZVRWa+2RG6siOwJdiU3Qh9JpKK2Mx30aqtBYekBA70fIzUkvnuudh6Vdtw5WNHXS8Nxv
+         ETJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iSBE4jHyV0yiGAPlv7yUlmbeiPPVBYbZTBnxyeVqKhc=;
+        b=mXeHV6BP3CVfC5hXhKkHom539vmHgKfQ+EKDgUO2eTXOvknwzeMD8qDnkwTH9NzfwZ
+         r8HRxLgw2Pt7LPSvrF6iIzKGbcw0z43oOgFWM8omR7/mkZgJ9u8mXMDEFg54H3DRmHuC
+         1WOsluCpCofovokBkhvrarTteiCiL1Su+RJUmgJ4Yq5oBgZlSEBw0ivUbNTRsNOG58Fl
+         058N+k40Cw3PcQncMjgcuspQWb+UaEbfuUyaM4j6EXTtC5F7kGyACTMMjEyDW1eUeXWH
+         v70LeJCQOSN4ssfc3OjEmg1X2jZIq0Q0D0p4a8BVPwj+bCN+3+SHNQyMtEkqFyGWzxiW
+         tiuw==
+X-Gm-Message-State: AOAM532Zi1RQFuQQauidLgl/czj5J054agFw798UQW4PshmjSU0FXIT0
+        3zQYIqixZLlJ4uL6B4A1XdJ2gatAslhRl/sH0ruMNA==
+X-Google-Smtp-Source: ABdhPJwI73VNVTnVNFqoeKDEdVqoH328eZPX4L/8TfI3OnSMbLTmqOtJyvigmGCGUUyH0NQs8m/gMD5eGsq/Db7OWWY=
+X-Received: by 2002:a17:906:388b:: with SMTP id q11mr46695ejd.421.1610981968099;
+ Mon, 18 Jan 2021 06:59:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 15:58:46 +0100
-Reply-To: johnsonwilson389@gmail.com
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com> <20210114131622.8951-5-chiawei_wang@aspeedtech.com>
+In-Reply-To: <20210114131622.8951-5-chiawei_wang@aspeedtech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 15:59:16 +0100
+Message-ID: <CACRpkdbqJuKHH+sR3LfWV72kM7TEhimFVi1viuQGkP8DWOODow@mail.gmail.com>
+Subject: Re: [PATCH v5 4/5] pinctrl: aspeed-g5: Adapt to new LPC device tree layout
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Corey Minyard <minyard@acm.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW@aspeedtech.com, haiyue.wang@linux.intel.com,
+        cyrilbur@gmail.com, Robert Lippert <rlippert@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Thu, Jan 14, 2021 at 2:17 PM Chia-Wei, Wang
+<chiawei_wang@aspeedtech.com> wrote:
 
-Sir/Madam,
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
+>
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
 
-CONGRATULATIONS!!!
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+I suppose the patches need to go in together. Tell me if you
+need me to apply this one patch to the pinctrl tree.
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+Yours,
+Linus Walleij
