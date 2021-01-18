@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399252FAA30
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEF52FAA4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390404AbhART3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:29:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
+        id S2437403AbhARTeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390433AbhARLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B3FE2222A;
-        Mon, 18 Jan 2021 11:36:44 +0000 (UTC)
+        id S2390330AbhARLht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F3D22BEA;
+        Mon, 18 Jan 2021 11:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969805;
-        bh=9WDmxl/CUD42kTmVZNq2QHjPCFpT1qSSXntCIXC47dE=;
+        s=korg; t=1610969817;
+        bh=SB8J9olcChwxi0/uJFauBUyLvKbKCQcEBb/seqsizw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=022MLbVtGLhUAoqEOAuEHGCFlWs4KlPJccg4PwcFmXdNlgAHHWM0NLCfttsk8p2M8
-         7RhMA+eLYnHrcBF0anBC8MFnhGPw5EZuR76P0JKbZ6e6GDkL9K9b9xYU5wcDPkYQXi
-         S/ukTcl88d+fczZpSQnJ6/3juy5i9be/ZF3ftrLQ=
+        b=Q+6tAy0obl7RCHG1vc35merDjR6Tjy8uprOFpiZQsmiZvl0kbhBxDknPl+Q4aR22P
+         LtdooUH/TRjubiO7a/9/gdT/4GfP/jexcKdcaIN2Y5nU5Z4q4ASxTIWUs32nT76UWq
+         4tbiY2CwimgY97ALPSek64cVfkSfizBIt7/QzuoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Halcrow <mhalcrow@google.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 33/43] ext4: fix superblock checksum failure when setting password salt
-Date:   Mon, 18 Jan 2021 12:34:56 +0100
-Message-Id: <20210118113336.550144567@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.19 37/43] net: sunrpc: interpret the return value of kstrtou32 correctly
+Date:   Mon, 18 Jan 2021 12:35:00 +0100
+Message-Id: <20210118113336.741823700@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
 References: <20210118113334.966227881@linuxfoundation.org>
@@ -40,38 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: j.nixdorf@avm.de <j.nixdorf@avm.de>
 
-commit dfd56c2c0c0dbb11be939b804ddc8d5395ab3432 upstream.
+commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
 
-When setting password salt in the superblock, we forget to recompute the
-superblock checksum so it will not match until the next superblock
-modification which recomputes the checksum. Fix it.
+A return value of 0 means success. This is documented in lib/kstrtox.c.
 
-CC: Michael Halcrow <mhalcrow@google.com>
-Reported-by: Andreas Dilger <adilger@dilger.ca>
-Fixes: 9bd8212f981e ("ext4 crypto: add encryption policy and password salt support")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201216101844.22917-8-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+This was found by trying to mount an NFS share from a link-local IPv6
+address with the interface specified by its index:
+
+  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
+
+Before this commit this failed with EINVAL and also caused the following
+message in dmesg:
+
+  [...] NFS: bad IP address specified: addr=fe80::1%1
+
+The syscall using the same address based on the interface name instead
+of its index succeeds.
+
+Credits for this patch go to my colleague Christian Speich, who traced
+the origin of this bug to this line of code.
+
+Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
+Fixes: 00cfaa943ec3 ("replace strict_strto calls")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/ioctl.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/sunrpc/addr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1092,7 +1092,10 @@ resizefs_out:
- 			err = ext4_journal_get_write_access(handle, sbi->s_sbh);
- 			if (err)
- 				goto pwsalt_err_journal;
-+			lock_buffer(sbi->s_sbh);
- 			generate_random_uuid(sbi->s_es->s_encrypt_pw_salt);
-+			ext4_superblock_csum_set(sb);
-+			unlock_buffer(sbi->s_sbh);
- 			err = ext4_handle_dirty_metadata(handle, NULL,
- 							 sbi->s_sbh);
- 		pwsalt_err_journal:
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -184,7 +184,7 @@ static int rpc_parse_scope_id(struct net
+ 			scope_id = dev->ifindex;
+ 			dev_put(dev);
+ 		} else {
+-			if (kstrtou32(p, 10, &scope_id) == 0) {
++			if (kstrtou32(p, 10, &scope_id) != 0) {
+ 				kfree(p);
+ 				return 0;
+ 			}
 
 
