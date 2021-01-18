@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A252FA337
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D0A2FA332
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392613AbhAROhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:37:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
+        id S2392986AbhAROhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:37:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389763AbhARLnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:43:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA7222C9E;
-        Mon, 18 Jan 2021 11:42:42 +0000 (UTC)
+        id S2390816AbhARLnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:43:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BABC22CA1;
+        Mon, 18 Jan 2021 11:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970163;
-        bh=ZaxmYAtPovvFtipAxAYfImaO2vyGuNvCQP6Vs2/QdZY=;
+        s=korg; t=1610970177;
+        bh=1dIDN0ULXaX1I0wGfaYr57lJiYFXQwecWjwbpdAfrXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ewaf+X+bttecWHAcOEO8QjR5V7kJr8g2rDKmo4zwhA7wHHEG6RdZqFGN+YrtvMe/O
-         qPt0QDhe/nJtpcLCVy2WZJ9qqhtPZQLUFMT0wviGix1Xi4mukLTeX5RAVEwOCSzHhL
-         du76mQEWKsKlD2womm8TSq5l9OVU4+esvKY0E3YU=
+        b=2QrA8LIIrOkc4WjocbyhtHova1eUptuT489SdrXmdTanGQGrQk9c3Cwq8cBa+jK3t
+         UTfj2cpU0JH0HKvAdMvvd+m00Q8MA5wL4EtV74lpjI2zUyr2cdJ48hLbptihdqhpzn
+         t5WuyXbK91whoBehb/vSN12RLXSgZUSunTu1iY9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: [PATCH 5.10 036/152] xen/privcmd: allow fetching resource sizes
-Date:   Mon, 18 Jan 2021 12:33:31 +0100
-Message-Id: <20210118113354.512931546@linuxfoundation.org>
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 039/152] mm/hugetlb: fix potential missing huge page size info
+Date:   Mon, 18 Jan 2021 12:33:34 +0100
+Message-Id: <20210118113354.660018113@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -41,84 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Pau Monne <roger.pau@citrix.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-commit ef3a575baf53571dc405ee4028e26f50856898e7 upstream.
+commit 0eb98f1588c2cc7a79816d84ab18a55d254f481c upstream.
 
-Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
-addr = 0 in order to fetch the size of a specific resource.
+The huge page size is encoded for VM_FAULT_HWPOISON errors only.  So if
+we return VM_FAULT_HWPOISON, huge page size would just be ignored.
 
-Add a shortcut to the default map resource path, since fetching the
-size requires no address to be passed in, and thus no VMA to setup.
-
-This is missing from the initial implementation, and causes issues
-when mapping resources that don't have fixed or known sizes.
-
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Tested-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: stable@vger.kernel.org # >= 4.18
-Link: https://lore.kernel.org/r/20210112115358.23346-1-roger.pau@citrix.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Link: https://lkml.kernel.org/r/20210107123449.38481-1-linmiaohe@huawei.com
+Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/privcmd.c |   25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ mm/hugetlb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -717,14 +717,15 @@ static long privcmd_ioctl_restrict(struc
- 	return 0;
- }
- 
--static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
-+static long privcmd_ioctl_mmap_resource(struct file *file,
-+				struct privcmd_mmap_resource __user *udata)
- {
- 	struct privcmd_data *data = file->private_data;
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct privcmd_mmap_resource kdata;
- 	xen_pfn_t *pfns = NULL;
--	struct xen_mem_acquire_resource xdata;
-+	struct xen_mem_acquire_resource xdata = { };
- 	int rc;
- 
- 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
-@@ -734,6 +735,22 @@ static long privcmd_ioctl_mmap_resource(
- 	if (data->domid != DOMID_INVALID && data->domid != kdata.dom)
- 		return -EPERM;
- 
-+	/* Both fields must be set or unset */
-+	if (!!kdata.addr != !!kdata.num)
-+		return -EINVAL;
-+
-+	xdata.domid = kdata.dom;
-+	xdata.type = kdata.type;
-+	xdata.id = kdata.id;
-+
-+	if (!kdata.addr && !kdata.num) {
-+		/* Query the size of the resource. */
-+		rc = HYPERVISOR_memory_op(XENMEM_acquire_resource, &xdata);
-+		if (rc)
-+			return rc;
-+		return __put_user(xdata.nr_frames, &udata->num);
-+	}
-+
- 	mmap_write_lock(mm);
- 
- 	vma = find_vma(mm, kdata.addr);
-@@ -768,10 +785,6 @@ static long privcmd_ioctl_mmap_resource(
- 	} else
- 		vma->vm_private_data = PRIV_VMA_LOCKED;
- 
--	memset(&xdata, 0, sizeof(xdata));
--	xdata.domid = kdata.dom;
--	xdata.type = kdata.type;
--	xdata.id = kdata.id;
- 	xdata.frame = kdata.idx;
- 	xdata.nr_frames = kdata.num;
- 	set_xen_guest_handle(xdata.frame_list, pfns);
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4372,7 +4372,7 @@ retry:
+ 		 * So we need to block hugepage fault by PG_hwpoison bit check.
+ 		 */
+ 		if (unlikely(PageHWPoison(page))) {
+-			ret = VM_FAULT_HWPOISON |
++			ret = VM_FAULT_HWPOISON_LARGE |
+ 				VM_FAULT_SET_HINDEX(hstate_index(h));
+ 			goto backout_unlocked;
+ 		}
 
 
