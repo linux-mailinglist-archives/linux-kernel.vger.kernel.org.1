@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36822F9C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7772F9C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389233AbhARJqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:46:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388941AbhARJfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:35:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CAA422240;
-        Mon, 18 Jan 2021 09:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610961875;
-        bh=6mgle/x6hSN9LcoF8jEt4JlCxcOO312A+xusGVEd5EQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=azHxQhyCQXEjnoTHE8fNM722loaTnR7dZKuHSCrAcpZ+AC9i5iUAbyrGiEweIqTqy
-         UvHJ2fBT6/PaNQs+lXW0OLhxJODt/qpM1Temg9yJ8Sr324QI3+IJd5JjBaqpKuhVTY
-         8Dc31P36NsAANKxKSo3LiqV/7lrhApjKFJLlP3XI=
-Date:   Mon, 18 Jan 2021 10:24:33 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <YAVT0XV7uX2NpIRe@kroah.com>
-References: <20210118014951.250815-1-sashal@kernel.org>
- <YAVTDETPaJuaRPfc@kroah.com>
+        id S2389264AbhARJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:47:07 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48350 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388946AbhARJfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:35:31 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxSL4PVAVguK4GAA--.10639S3;
+        Mon, 18 Jan 2021 17:25:36 +0800 (CST)
+Subject: Re: [PATCH 2/2] compiler.h: Include asm/rwonce.h under ARM64 and
+ ALPHA to fix build errors
+To:     Yonghong Song <yhs@fb.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
+ <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
+ <33050fcc-a4a0-af2e-6fba-dca248f5f23b@fb.com>
+Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        kernel test robot <lkp@intel.com>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <5663510d-2aa5-c1f2-d0c8-5313cc2a4a18@loongson.cn>
+Date:   Mon, 18 Jan 2021 17:25:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAVTDETPaJuaRPfc@kroah.com>
+In-Reply-To: <33050fcc-a4a0-af2e-6fba-dca248f5f23b@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxSL4PVAVguK4GAA--.10639S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw1rtF4UCF4xKw1xJr13Jwb_yoW8GFWxpF
+        4DZr4kKrZ8Wry5JrsYvr12kr43A39xGrW5tF97W348Z3WIqFy7GanYgwn8CF4xWanIqFWI
+        k3W2gry3Jw4jv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU83kuDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:21:16AM +0100, Greg KH wrote:
-> On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
-> > SUBLEVEL only has 8 bits of space, which means that we'll overflow it
-> > once it reaches 256.
-> > 
-> > Few of the stable branches will imminently overflow SUBLEVEL while
-> > there's no risk of overflowing VERSION.
-> > 
-> > Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
-> > should create a better balance between the different version numbers we
-> > use.
-> > 
-> > The downside here is that Linus will have 8 bits less to play with, but
-> > given our current release cadence (~10 weeks), the number of Linus's
-> > fingers & toes (20), and the current VERSION (5) we can calculate that
-> > VERSION will overflow in just over 1,000 years, so I'm kicking this can
-> > down the road.
-> > 
-> > Cc: stable@kernel.org
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  Makefile | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Makefile b/Makefile
-> > index 9e73f82e0d863..dc2bad7a440d8 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1252,8 +1252,8 @@ endef
-> >  
-> >  define filechk_version.h
-> >  	echo \#define LINUX_VERSION_CODE $(shell                         \
-> > -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> > -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-> > +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
-> > +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
-> 
-> As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
-> that try to suck out the version/patchlevel number of the kernel release
-> into their own fields.  Things like USB host controller strings, v4l
-> ioctl reports, scsi driver ioctls, and other places do fun bit-movements
-> to try to unreverse this bit packing.
-> 
-> So how about we just provide a "real" version/subversion/revision
-> #define as well, and clean up all in-kernel users, so we can get this to
-> work, and we can change it in the future more easily.
+On 01/14/2021 01:14 AM, Yonghong Song wrote:
+> I do not think this fix is correct. x86 does not define its own
+> rwonce.h and still compiles fine.
+>
+> As noted in the above, we have include/asm-generic/rwonce.h.
+> Once you do a proper build, you will have rwonce.h in arch
+> generated directory like
+>
+> -bash-4.4$ find . -name rwonce.h
+> ./include/asm-generic/rwonce.h
+> ./arch/alpha/include/asm/rwonce.h
+> ./arch/arm64/include/asm/rwonce.h
+> ./arch/x86/include/generated/asm/rwonce.h
+>
+> for mips, it should generated in 
+> arch/mips/include/generated/asm/rwonce.h. Please double check why this 
+> does not happen.
 
-Or, I can just stop doing stable releases at .255 and then abuse the
-EXTRAVERSION field to put in sub-revision values.
+Hi Yonghong,
 
-Or, we can just not worry about it as anyone using these really old
-kernels, userspace will work just fine (the number going backwards for
-these fields isn't going to break anything), it's only any crazy
-out-of-tree code that will get confused if they are trying to do
-different build options based on SUBLEVEL :)
+Thank you very much for your reply.
+You are right, this patch is meaningless.
 
-thanks,
+I find this build error when make M=samples/bpf after make clean,
+so the ./arch/mips/include/generated/asm/rwonce.h is not exist.
 
-greg k-h
+After rebuild the kernel, this header file can be found when make
+M=samples/bpf due to samples/bpf/Makefile contains $LINUXINCLUDE.
+
+$ find . -name rwonce.h
+./include/asm-generic/rwonce.h
+./arch/arm64/include/asm/rwonce.h
+./arch/mips/include/generated/asm/rwonce.h
+./arch/alpha/include/asm/rwonce.h
+$ cat ./arch/mips/include/generated/asm/rwonce.h
+#include <asm-generic/rwonce.h>
+
+
+Hi Sergei and kernel test robot,
+
+Thank you for your suggestion and report,
+please ignore this patch, sorry for the noise.
+
+Thanks,
+Tiezhu
+
