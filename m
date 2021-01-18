@@ -2,65 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2B92FA577
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 159B82FA574
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405857AbhARQAq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 11:00:46 -0500
-Received: from wnbcorp.com ([175.126.38.143]:43937 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2406024AbhARP5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:57:05 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IFo6L0015945;
-        Tue, 19 Jan 2021 00:52:07 +0900
-Message-Id: <202101181552.10IFo6L0015945@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2406189AbhARQAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:00:18 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:44019 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406153AbhARP4Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:56:25 -0500
+Received: by mail-lf1-f50.google.com with SMTP id 23so24726357lfg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:56:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3eG9WjyYerA7IMe+nqJfGvwMRUcLVhIdRjzA7l646S4=;
+        b=gEebQfc77IYFzAn+yjOUV4cwGMvzz5WwkZzxhPzpP7PB0ezIUYZQMGFwgukkAXOr2K
+         FXb3fLxQv61Y8+jYalI3H3YTaBIIcQxNrdYg1iw+npYFqKe/57kBMgFHE2oP7N90sA7v
+         pPdm64lk/Yv6+iX03U6T9cPM4F030hZmc67q8vDat0cFfSYTCnfBRzFuciR9rAD76Ak3
+         fdPSojEbKowzwsd8wAuAKGvcHiJHmJ5Yo2PSBLxSwIlUOgtlbcqfv31adj9Jrzb1Ruat
+         JpvqcmcnZ9aWKvu+exK98jdDHoML3nmI8V8Gjqwrry9xtXqXvNuhYXOosTkL8ObK7rfL
+         CT/g==
+X-Gm-Message-State: AOAM533lrbJkC8BpmW0Udz5aI/EvE9D/4qw7wZ4UWsZMpVdOY1tTjkjV
+        fSyOWlrpNL9lK/EvE9OK9pLZIuapba9Ckw==
+X-Google-Smtp-Source: ABdhPJzZyaeRNj8YaKcr7UKTODBoworH6UaDS3QljD3RnSIEcI7S4JRgMacjDcXezXFVCUMKrvAm5A==
+X-Received: by 2002:ac2:544d:: with SMTP id d13mr11158947lfn.397.1610985342052;
+        Mon, 18 Jan 2021 07:55:42 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id j26sm1935828lfh.251.2021.01.18.07.55.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 07:55:41 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id o13so24783789lfr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:55:41 -0800 (PST)
+X-Received: by 2002:a19:810:: with SMTP id 16mr11942847lfi.233.1610985341262;
+ Mon, 18 Jan 2021 07:55:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 16:52:14 +0100
-Reply-To: johnsonwilson389@gmail.com
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+ <20210118020848.11721-3-andre.przywara@arm.com> <20210118132854.yiwn7rnvcyexgqim@gilmour>
+ <20210118155228.3bd0e909@slackpad.fritz.box>
+In-Reply-To: <20210118155228.3bd0e909@slackpad.fritz.box>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 18 Jan 2021 23:55:29 +0800
+X-Gmail-Original-Message-ID: <CAGb2v662hFdGe2H-m67whUURju=M=Pe8FM2PYfOndF0daT+6Sg@mail.gmail.com>
+Message-ID: <CAGb2v662hFdGe2H-m67whUURju=M=Pe8FM2PYfOndF0daT+6Sg@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH v3 02/21] mmc: sunxi: add support for
+ A100 mmc controller
+To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Mon, Jan 18, 2021 at 11:53 PM Andre Przywara <andre.przywara@arm.com> wrote:
+>
+> On Mon, 18 Jan 2021 14:28:54 +0100
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi Maxime,
+>
+> > On Mon, Jan 18, 2021 at 02:08:29AM +0000, Andre Przywara wrote:
+> > > From: Yangtao Li <frank@allwinnertech.com>
+> > >
+> > > This patch adds support for A100 MMC controller, which use word
+> > > address for internal dma.
+> > >
+> > > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> >
+> > We should also disable the timings setup in probe to derive them from
+> > the DT. This is causing issues on some SoCs already, so it would be
+> > best to not make the situation worse
+>
+> But only for those new SoCs, where we have the speed modes in the DT
+> in every case (so only new ones)? And this disabling would be
+> SoC/compatible string dependent? Happy to send a patch later if that is
+> what you were thinking about.
+>
+> Also I was wondering about the voltage dependent speed modes: At the
+> moment the driver declares both MMC_CAP_1_8V_DDR and MMC_CAP_3_3V_DDR,
+> so I mimic this in the .dtsi. However in the eventual DTB this looks
+> somewhat dodgy, since most boards only support one of those voltages. Do
+> we ignore this, and rely on the vqmmc-supply to limit this choice?
 
-Sir/Madam,
+IIRC the DDR flags for separate voltages was added after we (I) added
+MMC DDR support to our driver.
 
-CONGRATULATIONS!!!
+And yes, the core also checks vqmmc-supply before actually selecting
+the mode.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+ChenYu
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+> Cheers,
+> Andre
+>
+> Btw: This patch is already in Ulf's -next tree, I just included it here
+> for the sake of completeness. Is that a problem? I don't think it
+> affects the build, so we don't care too much?
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210118155228.3bd0e909%40slackpad.fritz.box.
