@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4EB2FA365
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E856D2FA35C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405089AbhAROnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:43:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393161AbhAROmy (ORCPT
+        id S2390808AbhAROnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:43:24 -0500
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:46319 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405039AbhAROmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:42:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610980887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uEqfmUs2U7YlcQztfzJZToke7xdfCbfYWSoDMToy3VI=;
-        b=WAWEkqyLYMxTXNu3clX9fCIKMTuDV7wHvAavfiAqML7QZhO78Do7nW/qp3CCCmjVwnJgZH
-        pxGYB/ocIjQl4m7amNZpt10ahgg/xamA7iIEU+ud3YlJIKF5Df2Vz7ijD9iRuTzjrPzk5t
-        h/6K2T71tUupIlOCOm3LkMEoAt18zjc=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-BiPs8eRnMkut6CWRyRbcbA-1; Mon, 18 Jan 2021 09:41:24 -0500
-X-MC-Unique: BiPs8eRnMkut6CWRyRbcbA-1
-Received: by mail-pj1-f72.google.com with SMTP id v14so4241723pjt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:41:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uEqfmUs2U7YlcQztfzJZToke7xdfCbfYWSoDMToy3VI=;
-        b=mL+vsENLXwI92D9ZQMwhBzR3Q2QnrKHSwbILGxcDsQniGyEPmycysYDXS/06KIbMD5
-         2iQ9sSy6dXWrOiTNe+M104cNBY/DyVgsDkdTY5EDJ8/RGdMOq2IfRrdcaurxDSbfpsCI
-         RkLgZ0KtdtG2P67D3EMZuoa+cqnGvig5Pn3l5pZIt4P38o2cqqnBta7hz5mxFaqrP6k3
-         DzWR6vug7Uwl/Pg1txBThh8ZGGh7CjpWw3lQdw4qm2UliXp2ei7CF6Pxx1Aeok9EHROP
-         xlFj5cL8REBZyBBNEx+SEOc0/WFmNBg02L2LSjv1uSXwR16n9dje+9i/nrQwD4IYBlHc
-         X5bg==
-X-Gm-Message-State: AOAM531BS4QSiQZreCKmcGe7Fhki4s5Km1XGV4fiMTjLSsLFVOH+PT0B
-        AA0vOHbq8pR1VU3UWOIPXtnP3pIPWQf6Wb07Ee/plQ6GWUr+9BcsNWZI8a77UypHbHKJYFGH/qj
-        fNaK/I0flP6uh/bAQhiA32xS5w7rrJnPJTtBEjSL3
-X-Received: by 2002:a63:fb54:: with SMTP id w20mr25836178pgj.419.1610980883648;
-        Mon, 18 Jan 2021 06:41:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzyCCW/HTfkwwAokVUmKSOBLcFIO5ocMaaHWbwHvZEJHyyyVlpSZz63R8NF3aGloEqenwFRZ9f1OBYzxqxoWR8=
-X-Received: by 2002:a63:fb54:: with SMTP id w20mr25836165pgj.419.1610980883431;
- Mon, 18 Jan 2021 06:41:23 -0800 (PST)
+        Mon, 18 Jan 2021 09:42:13 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 505A123B0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:41:21 +0000 (GMT)
+Received: (qmail 15643 invoked from network); 18 Jan 2021 14:41:21 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 18 Jan 2021 14:41:21 -0000
+Date:   Mon, 18 Jan 2021 14:41:19 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
+Message-ID: <20210118144119.GR3592@techsingularity.net>
+References: <20210115100855.23679-1-mgorman@techsingularity.net>
+ <20210115100855.23679-6-mgorman@techsingularity.net>
+ <05522d03-e86d-420e-4e88-f098d9a22908@linux.intel.com>
 MIME-Version: 1.0
-References: <20210118134523.178605-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210118134523.178605-1-kai.heng.feng@canonical.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 18 Jan 2021 15:41:12 +0100
-Message-ID: <CAO-hwJ+29t8D1RkEh23=k_x4vOWwo3HvR_3GAA9M2pPNMaGLNQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: multitouch: Apply MT_QUIRK_CONFIDENCE quirk for
- multi-input devices
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <05522d03-e86d-420e-4e88-f098d9a22908@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jan 18, 2021 at 08:55:03PM +0800, Li, Aubrey wrote:
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 12e08da90024..6c0f841e9e75 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6006,6 +6006,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
+> >  	return new_cpu;
+> >  }
+> >  
+> > +static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus)
+> 
+> Sorry if I missed anything, why p and cpus are needed here?
+> 
 
-On Mon, Jan 18, 2021 at 2:45 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
+They are not needed. The original code was matching the calling pattern
+for select_idle_core() which needs p and cpus to check if sibling CPUs
+are allowed.
+
+> > @@ -6135,7 +6147,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >  
+> >  	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> >  
+> > -	if (sched_feat(SIS_PROP)) {
+> > +	if (sched_feat(SIS_PROP) && !smt) {
 >
-> Palm ejection stops working on some Elan and Synaptics touchpad after
-> commit 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for
-> some devices").
->
-> The commit changes the mt_class from MT_CLS_WIN_8 to
-> MT_CLS_WIN_8_FORCE_MULTI_INPUT, so MT_QUIRK_CONFIDENCE isn't applied
-> anymore.
->
-> So also apply the quirk since MT_CLS_WIN_8_FORCE_MULTI_INPUT is
-> essentially MT_CLS_WIN_8.
->
-> Fixes: 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk for some devices")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Is it possible the system does have a idle core, but I still don't want to scan the entire llc domain?
+> 
 
-Thanks for the patch.
+This version is matching historical behaviour. To limit the scan for cores,
+select_idle_core() would need to obey SIS_PROP and that patch was dropped
+as it introduced regressions. It would only be considered once SIS_PROP
+had better metrics for limiting the depth of the search.
 
-IIt seems I was too lazy to write a regression test for it, and this
-strikes back.
-Can you also work on a regression test for this at
-https://gitlab.freedesktop.org/libevdev/hid-tools ?
+> >  		u64 avg_cost, avg_idle, span_avg;
+> >  
+> >  		/*
+> > @@ -6159,16 +6171,29 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >  	for_each_cpu_wrap(cpu, cpus, target) {
+> >  		if (!--nr)
+> >  			return -1;
+> 
+> It looks like nr only makes sense when smt = false now, can it be moved into else branch below?
+> 
 
-Cheers,
-Benjamin
+It can. I expect the saving to be marginal and it will need to move back
+when/if select_idle_core() obeys SIS_PROP.
 
+> > -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> > -			break;
+> > +		if (smt) {
+> > +			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > +			if ((unsigned int)i < nr_cpumask_bits)
+> > +				return i;
+> 
+> What if the last idle core is selected here, should we set_idle_cores false before return?
+> 
 
+We'd have to check what bits were still set in the cpus mask and
+determine if they represent an idle core. I severely doubt it would be
+worth the cost given that the availability of idle cores can change at
+any instant.
 
-
-> ---
->  drivers/hid/hid-multitouch.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-> index 0743ef51d3b2..8429ebe7097e 100644
-> --- a/drivers/hid/hid-multitouch.c
-> +++ b/drivers/hid/hid-multitouch.c
-> @@ -758,7 +758,8 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
->                         MT_STORE_FIELD(inrange_state);
->                         return 1;
->                 case HID_DG_CONFIDENCE:
-> -                       if (cls->name == MT_CLS_WIN_8 &&
-> +                       if ((cls->name == MT_CLS_WIN_8 ||
-> +                            cls->name == MT_CLS_WIN_8_FORCE_MULTI_INPUT) &&
->                                 (field->application == HID_DG_TOUCHPAD ||
->                                  field->application == HID_DG_TOUCHSCREEN))
->                                 app->quirks |= MT_QUIRK_CONFIDENCE;
-> --
-> 2.29.2
->
-
+-- 
+Mel Gorman
+SUSE Labs
