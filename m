@@ -2,164 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43552FA4E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3818F2FA523
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390633AbhARPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:37:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405966AbhARPdi (ORCPT
+        id S2393400AbhARPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:50:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405993AbhARPe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:33:38 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0315AC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:55 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id x20so24619577lfe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u07UYgoAVjMxvHxgb1YR1v1Q7hBZbcqsqw16DHX66HU=;
-        b=XTBueRi92z7UjdGoyL185/1MwLAbHB2KsvPRpvVfZufS8a3Nw54vRtsFpV1R+4g7Ya
-         EzIqFvX2QhSiK4iItDrugEQcpTCQPOj0A35EIMkbfCVUB3tdiXOBOp/ucPrieIJZdNUA
-         VqB17gucbzhn9MAfS0MfKcBpxu/dm5FYlADwecJaws0dde2mIB2SFLEil/1FyxMc+7oH
-         oWQxNGR43PXzbXYocQcomLTAsQJOpsyseUQB279q2g7f0UvHM+852iRSlAbjueyJylCk
-         vZQcoWoL/pb7FMs5C4tnLeHLKm3wEAxRMuIucoxPHGzMsvFsSftzCJog/f9WAmnhnayY
-         KgKQ==
+        Mon, 18 Jan 2021 10:34:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610983979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTZcVq1Ep1CR1WH46c5PqheI+6A00IvbUKXMhBi/vHM=;
+        b=TB6OYNVAI+W9AlWt/1Q81fKLBiah2xxnWem93LTbIez+ZPxySdqW+pyYMhHVILaJTF//ZD
+        A7J+NM8UMNPt9VGxGWotltJNTvGw8RbdsoZSjSoefYyAjnKQW87qGKtg1HBL04FgUwH1+u
+        WjhEyOd0sK7Yu9jQaIGgHD/R2HkL4Pg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-DxDYq23cNhmisSjqQrwKqQ-1; Mon, 18 Jan 2021 10:32:57 -0500
+X-MC-Unique: DxDYq23cNhmisSjqQrwKqQ-1
+Received: by mail-ed1-f69.google.com with SMTP id n8so6033377edo.19
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:32:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u07UYgoAVjMxvHxgb1YR1v1Q7hBZbcqsqw16DHX66HU=;
-        b=Fz904/+Jt75lXnHWZ5gKNXqAL0hcQq3+v89RlJMp1PHc8MiVyXVcsseOhdY6PLxajm
-         0BWIu+NLqJf/Ygh7CBO2cHkH7cYwzvE6f7xOx/VwTGyvblh8+clqtVKIuomaTSVoF419
-         0aVtmqLEultRnBWD/NA48231w0wKuxFB3H7io1gOGz1M+jbV7RrOAYdPPb3D3/GuAzS7
-         MJmd7iuodtsAeXNG9HZFSIBDf/BwcmPkLBcqtt3V/4XEcbdnh8eDxL9okzcsVlgx6hxz
-         rn8nfxwe+5f3Ettll73pPWzc1R+j1vENFhU/Z26/RMWQf1vzxlwkbUCo90nmWF1z3bXh
-         9CbQ==
-X-Gm-Message-State: AOAM530FhPCODzItSlF31BppAzT6S5j8nXeMbA89cjlnLCGhqNM8ahJI
-        IU1ll1dFX0QBUK7Q4c+YaG7faUouIOf9901iQyhuvQ==
-X-Google-Smtp-Source: ABdhPJxFmDrCKdTYpy9t5SkG6dA6FTsr7Mzc1WO+JkLaQm+PfSCMQvsrUVlOgzwppyWsD00FP+170mYz5dQVrWoPEqw=
-X-Received: by 2002:a19:7718:: with SMTP id s24mr11721742lfc.277.1610983973495;
- Mon, 18 Jan 2021 07:32:53 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JTZcVq1Ep1CR1WH46c5PqheI+6A00IvbUKXMhBi/vHM=;
+        b=Ylhd7gZwiR/hmlUMVHmI9AsreaQGIBzCuXTW00gTbLADEeYZ6IQnYaSiX7jIlbK13u
+         /EloQkDT5gDEAJiII+0m3cxYQ/P33Wn2pjS10DdVazV04ytJnncevsQrliYGIiAGdCE3
+         Z1y9ofvN8EPStVW5EvtPsz2SjiQ/zTCnPS9YADndRVVZz75/a+0Tw8J4xPj8oijI/Y0c
+         JqCneAIjmG5Cd0ZeM94bZV/CglEKSVI+AVxz82zu1kw6wznNNTCJKy4xTA4yPAKNFR+l
+         xlijGgHng7F4Oq0mUhpa+LmnDb2NFcnJboje09ripgqTczbxJyRELwjxIYLDzEyfCzL6
+         xLrg==
+X-Gm-Message-State: AOAM5315kpm3bXKdz49IFQVxQGD4OALADZtlLH2Y8M1xPT0vAxus2kBA
+        egXQQFbnPSBDKTix6GvIPmVoN4VUEB5XkzQkpHMUFgTyLUieeWMPUtsutGfFsX3cjdClivUI8TN
+        ZlnWsOY59auFiv2W1YIOTqwsa
+X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr159910ejc.227.1610983976402;
+        Mon, 18 Jan 2021 07:32:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJycAq+hqWDtUQe7NVghv7pF04QqTqMhEAqZ/RU/z2hM4W99B0SgV7qJ5jp+uqhNGO9HnpVacg==
+X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr159882ejc.227.1610983976211;
+        Mon, 18 Jan 2021 07:32:56 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id v15sm330168ejj.4.2021.01.18.07.32.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 07:32:55 -0800 (PST)
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+To:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "robert.moore@intel.com" <robert.moore@intel.com>,
+        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
+ <20210118135121.GM4077@smile.fi.intel.com>
+ <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
+ <20210118152323.GV4077@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+Date:   Mon, 18 Jan 2021 16:32:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210117123104.27589-1-benbjiang@tencent.com> <CAKfTPtCPUnhiNF0SxK-=RTaq+h1D0tK-OfRsubb38V23KFEB_w@mail.gmail.com>
- <CAPJCdBnHHk40uBtrOisp=hY=5K3OLeUwpkPmgUURVf2DvDmY_Q@mail.gmail.com>
-In-Reply-To: <CAPJCdBnHHk40uBtrOisp=hY=5K3OLeUwpkPmgUURVf2DvDmY_Q@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 18 Jan 2021 16:32:41 +0100
-Message-ID: <CAKfTPtDSKtavC=PtJKkY7g=VY-t=1aO-a_7NCjN=NiYei7SseA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: add protection for delta of wait time
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210118152323.GV4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 at 15:11, Jiang Biao <benbjiang@gmail.com> wrote:
->
-> Hi, Vincent
->
-> On Mon, 18 Jan 2021 at 15:56, Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > On Sun, 17 Jan 2021 at 13:31, Jiang Biao <benbjiang@gmail.com> wrote:
-> > >
-> > > From: Jiang Biao <benbjiang@tencent.com>
-> > >
-> > > delta in update_stats_wait_end() might be negative, which would
-> > > make following statistics go wrong.
-> >
-> > Could you describe the use case that generates a negative delta ?
-> >
-> > rq_clock is always increasing so this should not lead to a negative
-> > value even if update_stats_wait_end/start are not called in the right
-> > order,
-> Yes, indeed.
->
-> > This situation could happen after a migration if we forgot to call
-> > update_stats_wait_start
-> The migration case was what I worried about, but no regular use case
-> comes into my mind. :)
+Hi,
 
-IIUC, you haven't faced the problem and it's only based on studying the code.
+On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
+> On Mon, Jan 18, 2021 at 02:51:30PM +0000, Barnabás Pőcze wrote:
+>> 2021. január 18., hétfő 14:51 keltezéssel, Andy Shevchenko írta:
+>>
+>>> On Mon, Jan 18, 2021 at 11:12:34AM +0000, Barnabás Pőcze wrote:
+>>>> 2021. január 18., hétfő 1:34 keltezéssel, Daniel Scally írta:
+>>>
+>>>> Have you considered putting the source (and header) files into a dedicated
+>>>> folder? I think it'd help manageability in the long run, and it'd be immediately
+>>>> obvious that these source files form a single "unit".
+>>>
+>>> What would be the folder name? Because, for example, intel_cht_int33fe* have no
+>>> folder (yet?) and here it's kinda similar case when HID describes something
+>>> else than just one IP.
+>>
+>> I think "intel_skl_int3472" would not be a bad name for the folder. And I believe
+>> "intel_cht_int33fe" could be given its own folder as well.
+> 
+> I;m not objecting (at some point in the past I had proposed moving Intel stuff
+> to a separate folder, but at that time PDx86 has no folders at all and Darren
+> was kinda not in favour of creating ones, but things changed), just let's hear
+> Hans on this.
 
-> As an extreme case, would it be a problem if we disable/re-enable
-> sched_schedstats during migration?
->
-> static inline void
-> update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> {
->         u64 wait_start, prev_wait_start;
->
->         if (!schedstat_enabled()) // disable during migration
->                 return; // return here, and skip updating wait_start
-> ...
-> }
->
-> static inline void
-> update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> {
->         struct task_struct *p;
->         u64 delta;
->
->         if (!schedstat_enabled())  // re-enable again
->                 return;
->
->         /*
->          * When the sched_schedstat changes from 0 to 1, some sched se
->          * maybe already in the runqueue, the se->statistics.wait_start
->          * will be 0.So it will let the delta wrong. We need to avoid this
->          * scenario.
->          */
->         if (unlikely(!schedstat_val(se->statistics.wait_start)))
->                 return;
->          //stale wait_start which might be bigger than rq_clock would
-> be used. -)
->         delta = rq_clock(rq_of(cfs_rq)) -
-> schedstat_val(se->statistics.wait_start);
-> ...
->
-> Thanks a lot.
-> Regards,
-> Jiang
->
-> }
-> >
-> > >
-> > > Add protection for delta of wait time, like what have been done in
-> > > update_stats_enqueue_sleeper() for deltas of sleep/block time.
-> > >
-> > > Signed-off-by: Jiang Biao <benbjiang@tencent.com>
-> > > ---
-> > >  kernel/sched/fair.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index c0374c1152e0..ac950ac950bc 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -917,6 +917,9 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> > >
-> > >         delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
-> > >
-> > > +       if ((s64)delta < 0)
-> > > +               delta = 0;
-> > > +
-> > >         if (entity_is_task(se)) {
-> > >                 p = task_of(se);
-> > >                 if (task_on_rq_migrating(p)) {
-> > > --
-> > > 2.21.0
-> > >
+I'm in favor of using a folder for this and "intel_skl_int3472" is fine with me.
+
+With that said I'm not entirely sure if I'm in favor of the _skl_ part of
+the folder and driver name or not.
+
+The INT3472 ACPI device is used with other CPUs, e.g. Apollo Lake too and
+I think the driver should work fine with those.
+
+The intel_cht_int33fe case is special because the driver only applies
+to some models with an INT33FE ACPI device (the whole INT33FE ACPI device
+is a horrible thing which seems to stem from Intel rushing Bay Trail to
+market to try and compete on the tablet market).
+
+With that all said SKL probably is the first SoC to feature this and I
+guess future IPUs may still use INT3472 given Intel's BAD habit of
+re-using ACPI HIDs for multiple incompatible generations. So I guess
+that keeping it is fine; and if we then need an incompatible INT3472
+driver for newer IPUs we can use a different prefix for those.
+
+TL;DR:
+
+1. Using a folder is fine, desirable even
+2. I've some concerns about the name, but I'm not really objecting,
+just giving my 2 cents.
+
+Regards,
+
+Hans
+
+
