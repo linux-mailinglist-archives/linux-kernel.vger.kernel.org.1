@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2909F2F9C7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D12F9C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388957AbhARJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S2388934AbhARJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388677AbhARJWv (ORCPT
+        with ESMTP id S2388681AbhARJWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:22:51 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC073C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:10 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id x12so1768476wmk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:10 -0800 (PST)
+        Mon, 18 Jan 2021 04:22:52 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CF3C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:12 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id k126so16544702qkf.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:22:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=hkWRLHOHbnA69ZqWFvUpIIVeHgC2CbanywSC7oN8uXE=;
-        b=uXQQtcl2dxthbSBXRYjIkrcPQI0tlYId8LVzD6aku69Meg/Cb5VHsBAUfDaXyqlyNE
-         L0LG16fo4mpl7oxowLlMuvAA0pLCbSQDE1fLIa9gXtmWKV0dVKvkMKtH368GR6bm60ib
-         UUjsovJ/7NiA9c2e4lDEIS1gCHQA3hMwS+oQKu6DtLKHkzMnwtNztxrV3dqp0TcOrHSH
-         Qr9vMAlwwvR0Ppk3IFFcF+XrVrNwfgzYbw+5chQj3BKMMoyRDy7EUZdWAYMfntntTUJa
-         Uaw1w2CAI8GOeEWD6RLWo3qOE7+nn4WN6RS9+KyJePm34p5nPezFIwI0ZDJfiurfemnn
-         Cnhg==
+        bh=exfgNhM4N6uxD6xPVxC+GkQm5KFoVDD34vOu2HQsR3U=;
+        b=ePa1WRaCHti215OfsTBoRnjp4MNG6hanio44aTAdKSk7OEAeDYW5/CKBE91Wpfm4uF
+         JPjSsc8RKA/agGfzfj/fG4LSrFfXTB0qYOJ+I6dnQIS1xC1ZKo0wIREzG27iu4Aao5JN
+         lCw7K2vIXOpyZMneU/1cCghX6s4Hm6qiRrwFMlQKQTGfhhizvNmhGEAivNiePPYmxFZC
+         RfL8cOqWYkMsyvcF/RmmBZ9vFbgRmJCEtqxMPLCdMBppJkIpG0zHhsvJCGMNL5kKXcmi
+         la3nxydC/oLo5cf3APb/ZEpxDFLqVil3fhbQY+uE7sYOOTKsFgkNOgD8RhKtCaBsokxD
+         /lLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hkWRLHOHbnA69ZqWFvUpIIVeHgC2CbanywSC7oN8uXE=;
-        b=FRHJoJVaR2A6CkysDjt3nxIrUY+Yr37qG66J8Zlrgg/3KG8chsvCfjGsBmXR5KhJbU
-         1fKGqLjhJtJLxPxgc+Sxwa99RSNnSYULJamWAAUcKNh6X5St2TTvvVz/KwTpdRQcLzMD
-         Xg5gIcdL+VAacU4504qxd43lQ1SvFaT/K59iY4D41eJxb7qyG1Ua6hwHMuI6LJCVcm5B
-         LZBjgltll1KdN61iLZ3Vzlzg0tEoVuhNQSGiiP94vV9HSzGEka4LUbWnDgr7XFtdjpO7
-         pwzBe9D7PsUu8Mlq1eFoXUZvAxbOOcB+rbGjgvuDI+WsEkg4pkHu00EM07/Crl0uvuG4
-         1kKQ==
-X-Gm-Message-State: AOAM530xfx2HBravIjin55lYMUlulALrZSpvROkhbPdDPLk9dRs7T8lr
-        rq9XRBvBCRaf3GGWwPvvsQ8LOmNztA==
-X-Google-Smtp-Source: ABdhPJz/CP9bGY7nHc+SIQfL2A3fIqdDuw/7wztym7OBqCB81VON8CIJFu4EL4SK0b0w9a+W5FeUzqqKbA==
+        bh=exfgNhM4N6uxD6xPVxC+GkQm5KFoVDD34vOu2HQsR3U=;
+        b=Dw44lW9Q2O2qdmiG5DY9420n/7M8B9waDoeeGLf28n2On4H/th+lQAwhHtQFBfwvDn
+         77qikQXJUbZUy1Kh21UlC73NIY3CiEhNykFFG8CgT2jI/QQjSU+3JJ03/lHk7iMF3dGs
+         riapo2ea3oKWovY1qr8zRrxrLIfOBl3cHv4WF0YFbaS5iKvQQ2ZU7mhVPP89yk7wZs2R
+         JfZ5XvCKLYk2tO9oQ0oJhEYhTCUcdR18MomkQqDYSpafH/YO8QHoeeV86V+apUJURqgw
+         0c8GoflJJuo9V8TJ+7sFF0krEFksNv53mAtDk3TtaUZozTqamNC5bFOb0aZpTE80sR1Z
+         yf3Q==
+X-Gm-Message-State: AOAM533qBTzmPAc8WAuWO9IPDf2BUgNV8nshFsL/54CnyALq0kmHPvr8
+        bUlYTtj6i0G+8oFROniOKlNGil4wnA==
+X-Google-Smtp-Source: ABdhPJy8ONyucjfHLa97PFzhpN5DSEpMmxhWWaRYJ69zcueJZKwhz/5HDEgSPCZMClEEXg/UelKUDYehmQ==
 Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
- (user=elver job=sendgmr) by 2002:a05:600c:19c7:: with SMTP id
- u7mr9181180wmq.122.1610961729366; Mon, 18 Jan 2021 01:22:09 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:21:58 +0100
+ (user=elver job=sendgmr) by 2002:a0c:8e04:: with SMTP id v4mr23462144qvb.56.1610961731717;
+ Mon, 18 Jan 2021 01:22:11 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:21:59 +0100
 In-Reply-To: <20210118092159.145934-1-elver@google.com>
-Message-Id: <20210118092159.145934-3-elver@google.com>
+Message-Id: <20210118092159.145934-4-elver@google.com>
 Mime-Version: 1.0
 References: <20210118092159.145934-1-elver@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH mm 3/4] kfence, arm64: add missing copyright and description header
+Subject: [PATCH mm 4/4] kfence: add missing copyright header to documentation
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, akpm@linux-foundation.org
 Cc:     glider@google.com, dvyukov@google.com, andreyknvl@google.com,
@@ -63,31 +63,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing copyright and description header to KFENCE source file.
+Add missing copyright header to KFENCE documentation.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
 If appropriate, to be squashed into:
 
-	arm64, kfence: enable KFENCE for ARM64
+	kfence, Documentation: add KFENCE documentation
 ---
- arch/arm64/include/asm/kfence.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/dev-tools/kfence.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
-index 6c0afeeab635..d061176d57ea 100644
---- a/arch/arm64/include/asm/kfence.h
-+++ b/arch/arm64/include/asm/kfence.h
-@@ -1,4 +1,9 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * arm64 KFENCE support.
-+ *
-+ * Copyright (C) 2020, Google LLC.
-+ */
+diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
+index 06a454ec7712..58a0a5fa1ddc 100644
+--- a/Documentation/dev-tools/kfence.rst
++++ b/Documentation/dev-tools/kfence.rst
+@@ -1,4 +1,5 @@
+ .. SPDX-License-Identifier: GPL-2.0
++.. Copyright (C) 2020, Google LLC.
  
- #ifndef __ASM_KFENCE_H
- #define __ASM_KFENCE_H
+ Kernel Electric-Fence (KFENCE)
+ ==============================
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
