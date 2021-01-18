@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E258A2F9EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952512F9EF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391288AbhARMAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:00:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S2403840AbhARL70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:59:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390821AbhARLqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E66D922D3E;
-        Mon, 18 Jan 2021 11:46:12 +0000 (UTC)
+        id S2390768AbhARLql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 017CD22D6D;
+        Mon, 18 Jan 2021 11:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970373;
-        bh=csRo0i/abD8CxbJqj8flWRgNY1Gum9YGGdsUJ75INGs=;
+        s=korg; t=1610970380;
+        bh=ojR4t/mAT3JA9J1G/0MD/Csf5oOzfNgyvMT45KsYCdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZyL/15NeoP258WSdtu1HtOnOHDhnpb8fW67HWpSLSWrSKBlspGtyIIQ0Q0vUwFgSY
-         f2tLXGv6d+gG3zLhGZxmaQG0XuqI+4aSRKc4s9nCLbGhoaTqddC/eqtYvTB5/QP0dN
-         K1Nc+oU6NJXp9QI+vHUIQ3h3VbQ12iCOF2VB1Y9w=
+        b=haOxmQPw8fV8XUuROPXupv5QNLTsWf/o3a5ccd6SGPJO1aklg5yKGASHDirDzfJSq
+         oTmnkjlMB4GsSA8leCyyQTHW3O1E+d47SYq6ywkkI2dcgm6ZZSbFBMC4/6NnMKSUgy
+         w407Hq89uImdAKU7Iw//qkY2L7sOA5ezrLqb7RDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yongping Zhang <yongping.zhang@broadcom.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 135/152] bnxt_en: Improve stats context resource accounting with RDMA driver loaded.
-Date:   Mon, 18 Jan 2021 12:35:10 +0100
-Message-Id: <20210118113359.195028006@linuxfoundation.org>
+        stable@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.10 138/152] umount(2): move the flag validity checks first
+Date:   Mon, 18 Jan 2021 12:35:13 +0100
+Message-Id: <20210118113359.337215714@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -42,52 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 869c4d5eb1e6fbda66aa790c48bdb946d71494a0 upstream.
+commit a0a6df9afcaf439a6b4c88a3b522e3d05fdef46f upstream.
 
-The function bnxt_get_ulp_stat_ctxs() does not count the stats contexts
-used by the RDMA driver correctly when the RDMA driver is freeing the
-MSIX vectors.  It assumes that if the RDMA driver is registered, the
-additional stats contexts will be needed.  This is not true when the
-RDMA driver is about to unregister and frees the MSIX vectors.
+Unfortunately, there's userland code that used to rely upon these
+checks being done before anything else to check for UMOUNT_NOFOLLOW
+support.  That broke in 41525f56e256 ("fs: refactor ksys_umount").
+Separate those from the rest of checks and move them to ksys_umount();
+unlike everything else in there, this can be sanely done there.
 
-This slight error leads to over accouting of the stats contexts needed
-after the RDMA driver has unloaded.  This will cause some firmware
-warning and error messages in dmesg during subsequent config. changes
-or ifdown/ifup.
-
-Fix it by properly accouting for extra stats contexts only if the
-RDMA driver is registered and MSIX vectors have been successfully
-requested.
-
-Fixes: c027c6b4e91f ("bnxt_en: get rid of num_stat_ctxs variable")
-Reviewed-by: Yongping Zhang <yongping.zhang@broadcom.com>
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Sargun Dhillon <sargun@sargun.me>
+Fixes: 41525f56e256 ("fs: refactor ksys_umount")
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/namespace.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -222,8 +222,12 @@ int bnxt_get_ulp_msix_base(struct bnxt *
- 
- int bnxt_get_ulp_stat_ctxs(struct bnxt *bp)
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1713,8 +1713,6 @@ static int can_umount(const struct path
  {
--	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP))
--		return BNXT_MIN_ROCE_STAT_CTXS;
-+	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP)) {
-+		struct bnxt_en_dev *edev = bp->edev;
-+
-+		if (edev->ulp_tbl[BNXT_ROCE_ULP].msix_requested)
-+			return BNXT_MIN_ROCE_STAT_CTXS;
-+	}
+ 	struct mount *mnt = real_mount(path->mnt);
  
+-	if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
+-		return -EINVAL;
+ 	if (!may_mount())
+ 		return -EPERM;
+ 	if (path->dentry != path->mnt->mnt_root)
+@@ -1728,6 +1726,7 @@ static int can_umount(const struct path
  	return 0;
  }
+ 
++// caller is responsible for flags being sane
+ int path_umount(struct path *path, int flags)
+ {
+ 	struct mount *mnt = real_mount(path->mnt);
+@@ -1749,6 +1748,10 @@ static int ksys_umount(char __user *name
+ 	struct path path;
+ 	int ret;
+ 
++	// basic validity checks done first
++	if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
++		return -EINVAL;
++
+ 	if (!(flags & UMOUNT_NOFOLLOW))
+ 		lookup_flags |= LOOKUP_FOLLOW;
+ 	ret = user_path_at(AT_FDCWD, name, lookup_flags, &path);
 
 
