@@ -2,179 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487532FA127
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FF82FA12B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404374AbhARNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:15:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:35658 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404325AbhARNN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:13:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D709A106F;
-        Mon, 18 Jan 2021 05:13:12 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.89.163])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E12693F719;
-        Mon, 18 Jan 2021 05:13:05 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        hca@linux.ibm.com, catalin.marinas@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        teawater <teawaterz@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH RFC] virtio-mem: check against memhp_get_pluggable_range() which memory we can hotplug
-Date:   Mon, 18 Jan 2021 18:43:02 +0530
-Message-Id: <1610975582-12646-5-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
-References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+        id S2403939AbhARNSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:18:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392000AbhARNPX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:15:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610975634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HFZsBHiz4wdGL9jh27P3G4596mkxpbLR98+Xm6UedWU=;
+        b=RCaggWcsKiuhTbAhHO75dx2jPXiZQPbRWsgr7AOH0HTvb7LA8ylBuYbIpMfSfC1ejNgqS7
+        W4BL87jw4ESiQRzw6TgGXmRHSty4PGziMfAQoXx8ctom3lxuM0lxxCmDKSXa8IOML2rXzd
+        xjvREVdo9GxL0muKUFtDdCeApgxHN40=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-bA_IYWyNOH6cUboIfr8_Kw-1; Mon, 18 Jan 2021 08:13:52 -0500
+X-MC-Unique: bA_IYWyNOH6cUboIfr8_Kw-1
+Received: by mail-ed1-f69.google.com with SMTP id dg17so7599374edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:13:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HFZsBHiz4wdGL9jh27P3G4596mkxpbLR98+Xm6UedWU=;
+        b=OcgvPOxBgQLmSGTLp8MdinQXstg/jUdaxNYwHO1icIgpbkdtPGBwG4CPGKQQh58gPr
+         uaXvYXTsDUp7gg5+6mZfdTe2IaK6s73qZwMSInGBBdnvOhHebmHJ/gPAWaUGEX2o/dnF
+         Z7tADng0VbJ5u+a+HptMDJm5ra/aBqGI1YCJrgCnUYZ/LL7iQF9dIDAnulOTzTaa75dy
+         DCAglptfaJ4aXprupppV9e6Pcvr6RqLjdKsNGT2WsX17xT1dE9hambndGi2oFbhvmg2A
+         Ks1O/lYDFxAmpt5+52F0dYkZfbRKzJ2sWzatWJV98dU5RIyQZCStoyDBG0DgfPIJO7B/
+         Gb/w==
+X-Gm-Message-State: AOAM531sjBWMHCSyOgSp9FDktmWHg/Qwx7azGALuj8Pnr057Uc8XjW7B
+        6q7PsFYzlylmAkeEHRm26AIHGDDUtVA1PHo5LUl4g8EzWbUgPX3OixwSM967xqA4XX96fb5A4dG
+        lhUv2SVYgrowJ9Kymcxl7M+Gu
+X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr18998977edt.160.1610975631549;
+        Mon, 18 Jan 2021 05:13:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyowQiRgZnged9Qb0Zo0/qKoQBk5KnmnJWS/yh3aTYVlECY53QqL30hVVGrJsyCFMoChS4w6Q==
+X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr18998965edt.160.1610975631416;
+        Mon, 18 Jan 2021 05:13:51 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id e7sm7083396ejb.19.2021.01.18.05.13.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 05:13:50 -0800 (PST)
+Subject: Re: [PATCH v3 3/5] mfd: arizona: Add support for ACPI enumeration of
+ WM5102 connected over SPI
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org,
+        Christian Hartmann <cornogle@googlemail.com>
+References: <20210117212252.206115-1-hdegoede@redhat.com>
+ <20210117212252.206115-4-hdegoede@redhat.com>
+ <20210118130227.GI4455@sirena.org.uk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <5ccf48f4-45dc-3a30-3d6a-cce066f01270@redhat.com>
+Date:   Mon, 18 Jan 2021 14:13:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20210118130227.GI4455@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+Hi,
 
-Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
-are more restrictions of which memory we can actually hotplug, especially
-om arm64 or s390x once we support them: we might receive something like
--E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
-operation.
+On 1/18/21 2:02 PM, Mark Brown wrote:
+> On Sun, Jan 17, 2021 at 10:22:50PM +0100, Hans de Goede wrote:
+> 
+>> +	/*
+>> +	 * Some DSDTs wrongly declare the IRQ trigger-type as IRQF_TRIGGER_FALLING
+>> +	 * The IRQ line will stay low when a new IRQ event happens between reading
+>> +	 * the IRQ status flags and acknowledging them. When the IRQ line stays
+>> +	 * low like this the IRQ will never trigger again when its type is set
+>> +	 * to IRQF_TRIGGER_FALLING. Correct the IRQ trigger-type to fix this.
+>> +	 */
+>> +	arizona->pdata.irq_flags = IRQF_TRIGGER_LOW;
+> 
+> Are you sure that all the relevant interrupt controllers support active
+> low interrupts?  There were issues on some systems with missing support
+> for active low interrupts (see the bodge in wm8994-irq.c to work around
+> them) - it's entirely likely that there are DSDTs that are just plain
+> buggy here but if someone's copying and pasting it smells like there may
+> be some systems that actually need an edge triggered interrupt that
+> they're getting it from.
 
-So, check right when initializing the device which memory we can add,
-warning the user. Try only adding actually pluggable ranges: in the worst
-case, no memory provided by our device is pluggable.
+I'm only aware of one series of devices / models which actually
+use the combination of ACPI enumeration and the WM5102 codec, and that
+is the Lenovo Yoga Tablet 2 series (in 8, 10 and 13 inch versions
+shipping with both Windows and Android). These all use a Bay Trail
+SoC which is capable of using active low interrupts.
 
-In the usual case, we expect all device memory to be pluggable, and in
-corner cases only some memory at the end of the device-managed memory
-region to not be pluggable.
+More in general I'm not aware of any (recent-ish) x86 GPIO controllers
+not being able to do active low interrupts. In theory we could hit this
+code path on ARM devices using ACPI enumeration, but I don't think it
+is likely we will see a combination of ARM + ACPI enumeration +
+WM5102 + GPIO controller not capable of active-low interrupts.
 
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: catalin.marinas@arm.com
-Cc: teawater <teawaterz@linux.alibaba.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: hca@linux.ibm.com
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/virtio/virtio_mem.c | 40 +++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 13 deletions(-)
+This overriding of the flags definitely is necessary on the Lenovo
+devices in question. I could add a
+"if (dmi_name_in_vendors("LENOVO"))" guard around it, but that
+seems unnecessary.
 
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 9fc9ec4a25f5..1fe40b2d7b6d 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2222,7 +2222,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
-  */
- static void virtio_mem_refresh_config(struct virtio_mem *vm)
- {
--	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
-+	const struct range pluggable_range = memhp_get_pluggable_range(true);
- 	uint64_t new_plugged_size, usable_region_size, end_addr;
- 
- 	/* the plugged_size is just a reflection of what _we_ did previously */
-@@ -2234,15 +2234,25 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
- 	/* calculate the last usable memory block id */
- 	virtio_cread_le(vm->vdev, struct virtio_mem_config,
- 			usable_region_size, &usable_region_size);
--	end_addr = vm->addr + usable_region_size;
--	end_addr = min(end_addr, phys_limit);
-+	end_addr = min(vm->addr + usable_region_size - 1,
-+		       pluggable_range.end);
- 
--	if (vm->in_sbm)
--		vm->sbm.last_usable_mb_id =
--					 virtio_mem_phys_to_mb_id(end_addr) - 1;
--	else
--		vm->bbm.last_usable_bb_id =
--				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
-+	if (vm->in_sbm) {
-+		vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr);
-+		if (!IS_ALIGNED(end_addr + 1, memory_block_size_bytes()))
-+			vm->sbm.last_usable_mb_id--;
-+	} else {
-+		vm->bbm.last_usable_bb_id = virtio_mem_phys_to_bb_id(vm,
-+								     end_addr);
-+		if (!IS_ALIGNED(end_addr + 1, vm->bbm.bb_size))
-+			vm->bbm.last_usable_bb_id--;
-+	}
-+	/*
-+	 * If we cannot plug any of our device memory (e.g., nothing in the
-+	 * usable region is addressable), the last usable memory block id will
-+	 * be smaller than the first usable memory block id. We'll stop
-+	 * attempting to add memory with -ENOSPC from our main loop.
-+	 */
- 
- 	/* see if there is a request to change the size */
- 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
-@@ -2364,6 +2374,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
- 
- static int virtio_mem_init(struct virtio_mem *vm)
- {
-+	const struct range pluggable_range = memhp_get_pluggable_range(true);
- 	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
- 	uint64_t sb_size, addr;
- 	uint16_t node_id;
-@@ -2405,9 +2416,10 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 	if (!IS_ALIGNED(vm->addr + vm->region_size, memory_block_size_bytes()))
- 		dev_warn(&vm->vdev->dev,
- 			 "The alignment of the physical end address can make some memory unusable.\n");
--	if (vm->addr + vm->region_size > phys_limit)
-+	if (vm->addr < pluggable_range.start ||
-+	    vm->addr + vm->region_size - 1 > pluggable_range.end)
- 		dev_warn(&vm->vdev->dev,
--			 "Some memory is not addressable. This can make some memory unusable.\n");
-+			 "Some device memory is not addressable/pluggable. This can make some memory unusable.\n");
- 
- 	/*
- 	 * We want subblocks to span at least MAX_ORDER_NR_PAGES and
-@@ -2429,7 +2441,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 				     vm->sbm.sb_size;
- 
- 		/* Round up to the next full memory block */
--		addr = vm->addr + memory_block_size_bytes() - 1;
-+		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
-+		       memory_block_size_bytes() - 1;
- 		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
- 		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
- 	} else {
-@@ -2450,7 +2463,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 		}
- 
- 		/* Round up to the next aligned big block */
--		addr = vm->addr + vm->bbm.bb_size - 1;
-+		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
-+		       vm->bbm.bb_size - 1;
- 		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, addr);
- 		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
- 	}
--- 
-2.20.1
+Regards,
+
+Hans
+
+
+
+> 
+>> +
+>> +	/* Wait 200 ms after jack insertion */
+>> +	arizona->pdata.micd_detect_debounce = 200;
+>> +
+>> +	/* Use standard AOSP values for headset-button mappings */
+>> +	arizona->pdata.micd_ranges = arizona_micd_aosp_ranges;
+>> +	arizona->pdata.num_micd_ranges = ARRAY_SIZE(arizona_micd_aosp_ranges);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct acpi_device_id arizona_acpi_match[] = {
+>> +	{
+>> +		.id = "WM510204",
+>> +		.driver_data = WM5102,
+>> +	},
+>> +	{
+>> +		.id = "WM510205",
+>> +		.driver_data = WM5102,
+>> +	},
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(acpi, arizona_acpi_match);
+>> +#else
+>> +static int arizona_spi_acpi_probe(struct arizona *arizona)
+>> +{
+>> +	return -ENODEV;
+>> +}
+>> +#endif
+>> +
+>>  static int arizona_spi_probe(struct spi_device *spi)
+>>  {
+>>  	const struct spi_device_id *id = spi_get_device_id(spi);
+>> @@ -77,6 +191,12 @@ static int arizona_spi_probe(struct spi_device *spi)
+>>  	arizona->dev = &spi->dev;
+>>  	arizona->irq = spi->irq;
+>>  
+>> +	if (has_acpi_companion(&spi->dev)) {
+>> +		ret = arizona_spi_acpi_probe(arizona);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>>  	return arizona_dev_init(arizona);
+>>  }
+>>  
+>> @@ -104,6 +224,7 @@ static struct spi_driver arizona_spi_driver = {
+>>  		.name	= "arizona",
+>>  		.pm	= &arizona_pm_ops,
+>>  		.of_match_table	= of_match_ptr(arizona_of_match),
+>> +		.acpi_match_table = ACPI_PTR(arizona_acpi_match),
+>>  	},
+>>  	.probe		= arizona_spi_probe,
+>>  	.remove		= arizona_spi_remove,
+>> -- 
+>> 2.28.0
+>>
 
