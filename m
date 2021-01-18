@@ -2,147 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432102F9A52
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923212F9A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731070AbhARHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:03:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbhARHD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:03:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 489C52231F;
-        Mon, 18 Jan 2021 07:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610953368;
-        bh=MCSVF1Y74zrStqoku6vsdRcyPqaVtI7qb+YwR/JrFUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cq0gc9h9md0+AFO2H1wHwGtpCUgbc9kJwaAfEVKOjMM010F4kDaHA1qymLTImhwoU
-         VyuzGvOfferRv9KzX1+QhVxksjN16HgduN4MdG5P1XkRDtSBzv7sEyxixLrlrfWv2f
-         uFP2Y7C0GnFOiLYpAKAhxaHfuEVThU6s0x02OVbhgJSnSnhNLrSdx+KY2qv1fh3jJ8
-         Xok/J3eeww0JlurKFrna0eEStIRzyZaqUmXWPK0mE682ZzKspPBwJ+Iz4kqyBTFTJS
-         frqzbdQgYTjY6S9xMwN+Ua6gHz5gqLqjyJhV4ZCn41YTMMysPDR9ixvKUT/G9L79U/
-         ZOsHkyoHocYLg==
-Date:   Mon, 18 Jan 2021 15:02:42 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, catalin.marinas@arm.com, will@kernel.org,
-        krzk@kernel.org, kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] arm64: dts: imx8mq-librem5: enable the LCD panel
-Message-ID: <20210118070241.GL28365@dragon>
-References: <20210112095151.4995-1-martin.kepplinger@puri.sm>
- <20210112095151.4995-7-martin.kepplinger@puri.sm>
+        id S1731860AbhARHFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:05:07 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:40372 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhARHFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 02:05:01 -0500
+Received: by mail-lf1-f44.google.com with SMTP id v24so15896671lfr.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:04:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oPwSy7oft+VDkUSBLHsMKUlmCLuusXCOkWMlOuyI7Ro=;
+        b=p/yh4Qf8Cn7JgqE/f6P6vHhJoO9CVcmIJVqhng+vQSl5j2RrJYoyJKxYTmriGMi0vq
+         DqF+CYh2OC/6DtPu3mb/y5DeTCcPiGHpLFjAs/g11rcRyURK58bOo6kVJKQpHm2V3BFY
+         9hJ665bFQ1FkJtSgcTCO7iEXOqYddvSCMvBF/GXNGtEiYhnp+mmqOtJvfcx4/a87b6Wi
+         bqf4DCeJYedYHaMLjSbWiWOYhBkSN/rT0qMRYEpU4Ojttt5f3TDMjjGHpAjYbTmNumjG
+         5Jt6lJwEuTLSiwXyJbMjwMTsFpyjt7iI8Lo1raorDcwm9L1JHzE7QuZdOuQWQPxNPfAQ
+         aZSw==
+X-Gm-Message-State: AOAM530uZBUD7L2tBml9KLiXYt/kJIJ1zWnYKjl1prJ9cr6VchTlOzqo
+        L22NuUnpIXda3C2i8EkpaiJDFEAMrbVBQ5ffN90=
+X-Google-Smtp-Source: ABdhPJxW5SYUDosPvksc5H2uaK10MD4Tmw8YzfmY5K8/mQH6+2OUVH6OvXu1+GvI0qa2CodskCd2aGoVVKVk3f33DOY=
+X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr8720788lfu.112.1610953459180;
+ Sun, 17 Jan 2021 23:04:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112095151.4995-7-martin.kepplinger@puri.sm>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
+ <20201130193842.10569-3-kan.liang@linux.intel.com> <20201201172903.GT3040@hirez.programming.kicks-ass.net>
+ <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
+ <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
+ <c868c6f7-c89f-ecc5-b771-2701b6029788@linux.intel.com> <20201210142515.GR2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201210142515.GR2414@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 18 Jan 2021 16:04:08 +0900
+Message-ID: <CAM9d7chme3WFQzsqHeQx+1vaLpCG7qL=D6QO4+_Vnt=byzC5sQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:51:48AM +0100, Martin Kepplinger wrote:
-> This enables the Librem5's ft8006p based LCD panel driven by the
-> imx8mq's Northwest Logic DSI IP core and mxsfb display controller.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../boot/dts/freescale/imx8mq-librem5.dtsi    | 51 ++++++++++++++++++-
->  1 file changed, 49 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> index f77b51d3c132..440931f81c12 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> @@ -310,6 +310,17 @@
->  		>;
->  	};
->  
-> +	pinctrl_dsirst: dsirstgrp {
-> +		fsl,pins = <
-> +			/* DSI_RST */
-> +			MX8MQ_IOMUXC_ENET_RD3_GPIO1_IO29	0x83
-> +			/* DSI_TE */
-> +			MX8MQ_IOMUXC_ENET_RD2_GPIO1_IO28	0x83
-> +			/* TP_RST */
-> +			MX8MQ_IOMUXC_ENET_RX_CTL_GPIO1_IO24	0x83
-> +		>;
-> +	};
-> +
->  	pinctrl_ecspi1: ecspigrp {
->  		fsl,pins = <
->  			MX8MQ_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI	0x83
-> @@ -817,12 +828,12 @@
->  		compatible = "tps65132";
->  		reg = <0x3e>;
->  
-> -		outp {
-> +		reg_lcd_avdd: outp {
->  			regulator-name = "LCD_AVDD";
->  			vin-supply = <&reg_lcd_3v4>;
->  		};
->  
-> -		outn {
-> +		reg_lcd_avee: outn {
->  			regulator-name = "LCD_AVEE";
->  			vin-supply = <&reg_lcd_3v4>;
->  		};
-> @@ -947,6 +958,42 @@
->  	};
->  };
->  
-> +&lcdif {
-> +	status = "okay";
-> +};
-> +
-> +&mipi_dsi {
-> +	status = "okay";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
+Hi Peter and Kan,
 
-Please end property list with `status`.
+On Thu, Dec 10, 2020 at 11:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Dec 10, 2020 at 08:52:55AM -0500, Liang, Kan wrote:
+> >
+> >
+> > On 12/10/2020 2:13 AM, Namhyung Kim wrote:
+> > > Hi Peter and Kan,
+> > >
+> > > How can we move this forward?
+> >
+> > Hi Namhyung,
+> >
+> > Thanks for the test. The changes look good to me.
+> >
+> > Hi Peter,
+> >
+> > Should we resend the patch set for further review?
+>
+> I've not yet seen a coherent replacement of #3, what I send was just a
+> PoC.
 
-> +
-> +	lcd_panel: panel@0 {
-> +		compatible = "mantix,mlaf057we51-x";
-> +		reg = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_dsirst>;
-> +		avdd-supply = <&reg_lcd_avdd>;
-> +		avee-supply = <&reg_lcd_avee>;
-> +		vddi-supply = <&reg_lcd_1v8>;
-> +		backlight = <&backlight_dsi>;
-> +		reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
+Any updates?
 
-Have a newline between properties and child node.
-
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&mipi_dsi_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	ports {
-> +		port@1 {
-> +			reg = <1>;
-
-Ditto
-
-Shawn
-
-> +			mipi_dsi_out: endpoint {
-> +				remote-endpoint = <&panel_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &pgc_gpu {
->  	power-supply = <&buck3_reg>;
->  };
-> -- 
-> 2.20.1
-> 
+Thanks,
+Namhyung
