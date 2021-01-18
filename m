@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830A82F9F28
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86042F9F30
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389440AbhARL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:56:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
+        id S2391246AbhARLz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:55:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390815AbhARLnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:43:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6434D22573;
-        Mon, 18 Jan 2021 11:42:52 +0000 (UTC)
+        id S2389440AbhARLmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:42:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5B6922573;
+        Mon, 18 Jan 2021 11:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970173;
-        bh=mYeu+wPSmKow5purnFSA8na6KJAizKa/dfDCL08jO0Y=;
+        s=korg; t=1610970113;
+        bh=EQUDigRn9h2RO0qrHNUk82m+mJ/oaU9Pc6AvRnPmPM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QVrhb4oKN7FFgQq36fUJ6Dajhz3om41S00s557H1ynZ+Tu2r0qP8T7GadpcghIRvQ
-         dMs4EQW8fOQDztmr4SQs8WcSzoIncta49QBpNIoF6Ds5n0vQbZv+f3JDzv3wcovo4R
-         emJR/OExQq/6l+dKS7EH3YvqaggL/GY6/ln+SH+4=
+        b=RJ1z4Ze6pvLgPW1drZhqjLfhz6STYUpGIT+bkMQPj86UQPytQqDJtdgkMWq3VJe0M
+         Sny8uaTwRl9m3D98hDiMwBw3AfgYS1APSe3sHcIjt56pAw/GFA+XU3db5JSc1d7Hwp
+         GAye4Volrq1UO1BfpT4lqUxY9UE02Qvwwy5JRyaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.10 037/152] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-Date:   Mon, 18 Jan 2021 12:33:32 +0100
-Message-Id: <20210118113354.561611007@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Straub <lukasstraub2@web.de>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 043/152] dm integrity: fix flush with external metadata device
+Date:   Mon, 18 Jan 2021 12:33:38 +0100
+Message-Id: <20210118113354.846963787@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -46,55 +40,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
+commit 9b5948267adc9e689da609eb61cf7ed49cae5fa8 upstream.
 
-GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-beyond the stack pointer, resulting in memory corruption if an interrupt
-is taken after the stack pointer has been adjusted but before the
-reference has been executed. This leads to subtle, infrequent data
-corruption such as the EXT4 problems reported by Russell King at the
-link below.
+With external metadata device, flush requests are not passed down to the
+data device.
 
-Life is too short for buggy compilers, so raise the minimum GCC version
-required by arm64 to 5.1.
+Fix this by submitting the flush request in dm_integrity_flush_buffers. In
+order to not degrade performance, we overlap the data device flush with
+the metadata device flush.
 
-Reported-by: Russell King <linux@armlinux.org.uk>
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: <stable@vger.kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Reported-by: Lukas Straub <lukasstraub2@web.de>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/compiler-gcc.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/md/dm-bufio.c     |    6 ++++
+ drivers/md/dm-integrity.c |   60 +++++++++++++++++++++++++++++++++++++---------
+ include/linux/dm-bufio.h  |    1 
+ 3 files changed, 56 insertions(+), 11 deletions(-)
 
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -13,6 +13,12 @@
- /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 */
- #if GCC_VERSION < 40900
- # error Sorry, your version of GCC is too old - please use 4.9 or newer.
-+#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
-+/*
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-+ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-+ */
-+# error Sorry, your version of GCC is too old - please use 5.1 or newer.
- #endif
+--- a/drivers/md/dm-bufio.c
++++ b/drivers/md/dm-bufio.c
+@@ -1534,6 +1534,12 @@ sector_t dm_bufio_get_device_size(struct
+ }
+ EXPORT_SYMBOL_GPL(dm_bufio_get_device_size);
  
- /*
++struct dm_io_client *dm_bufio_get_dm_io_client(struct dm_bufio_client *c)
++{
++	return c->dm_io;
++}
++EXPORT_SYMBOL_GPL(dm_bufio_get_dm_io_client);
++
+ sector_t dm_bufio_get_block_number(struct dm_buffer *b)
+ {
+ 	return b->block;
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -1379,12 +1379,52 @@ thorough_test:
+ #undef MAY_BE_HASH
+ }
+ 
+-static void dm_integrity_flush_buffers(struct dm_integrity_c *ic)
++struct flush_request {
++	struct dm_io_request io_req;
++	struct dm_io_region io_reg;
++	struct dm_integrity_c *ic;
++	struct completion comp;
++};
++
++static void flush_notify(unsigned long error, void *fr_)
++{
++	struct flush_request *fr = fr_;
++	if (unlikely(error != 0))
++		dm_integrity_io_error(fr->ic, "flusing disk cache", -EIO);
++	complete(&fr->comp);
++}
++
++static void dm_integrity_flush_buffers(struct dm_integrity_c *ic, bool flush_data)
+ {
+ 	int r;
++
++	struct flush_request fr;
++
++	if (!ic->meta_dev)
++		flush_data = false;
++	if (flush_data) {
++		fr.io_req.bi_op = REQ_OP_WRITE,
++		fr.io_req.bi_op_flags = REQ_PREFLUSH | REQ_SYNC,
++		fr.io_req.mem.type = DM_IO_KMEM,
++		fr.io_req.mem.ptr.addr = NULL,
++		fr.io_req.notify.fn = flush_notify,
++		fr.io_req.notify.context = &fr;
++		fr.io_req.client = dm_bufio_get_dm_io_client(ic->bufio),
++		fr.io_reg.bdev = ic->dev->bdev,
++		fr.io_reg.sector = 0,
++		fr.io_reg.count = 0,
++		fr.ic = ic;
++		init_completion(&fr.comp);
++		r = dm_io(&fr.io_req, 1, &fr.io_reg, NULL);
++		BUG_ON(r);
++	}
++
+ 	r = dm_bufio_write_dirty_buffers(ic->bufio);
+ 	if (unlikely(r))
+ 		dm_integrity_io_error(ic, "writing tags", r);
++
++	if (flush_data)
++		wait_for_completion(&fr.comp);
+ }
+ 
+ static void sleep_on_endio_wait(struct dm_integrity_c *ic)
+@@ -2110,7 +2150,7 @@ offload_to_thread:
+ 
+ 	if (unlikely(dio->op == REQ_OP_DISCARD) && likely(ic->mode != 'D')) {
+ 		integrity_metadata(&dio->work);
+-		dm_integrity_flush_buffers(ic);
++		dm_integrity_flush_buffers(ic, false);
+ 
+ 		dio->in_flight = (atomic_t)ATOMIC_INIT(1);
+ 		dio->completion = NULL;
+@@ -2195,7 +2235,7 @@ static void integrity_commit(struct work
+ 	flushes = bio_list_get(&ic->flush_bio_list);
+ 	if (unlikely(ic->mode != 'J')) {
+ 		spin_unlock_irq(&ic->endio_wait.lock);
+-		dm_integrity_flush_buffers(ic);
++		dm_integrity_flush_buffers(ic, true);
+ 		goto release_flush_bios;
+ 	}
+ 
+@@ -2409,7 +2449,7 @@ skip_io:
+ 	complete_journal_op(&comp);
+ 	wait_for_completion_io(&comp.comp);
+ 
+-	dm_integrity_flush_buffers(ic);
++	dm_integrity_flush_buffers(ic, true);
+ }
+ 
+ static void integrity_writer(struct work_struct *w)
+@@ -2451,7 +2491,7 @@ static void recalc_write_super(struct dm
+ {
+ 	int r;
+ 
+-	dm_integrity_flush_buffers(ic);
++	dm_integrity_flush_buffers(ic, false);
+ 	if (dm_integrity_failed(ic))
+ 		return;
+ 
+@@ -2654,7 +2694,7 @@ static void bitmap_flush_work(struct wor
+ 	unsigned long limit;
+ 	struct bio *bio;
+ 
+-	dm_integrity_flush_buffers(ic);
++	dm_integrity_flush_buffers(ic, false);
+ 
+ 	range.logical_sector = 0;
+ 	range.n_sectors = ic->provided_data_sectors;
+@@ -2663,9 +2703,7 @@ static void bitmap_flush_work(struct wor
+ 	add_new_range_and_wait(ic, &range);
+ 	spin_unlock_irq(&ic->endio_wait.lock);
+ 
+-	dm_integrity_flush_buffers(ic);
+-	if (ic->meta_dev)
+-		blkdev_issue_flush(ic->dev->bdev, GFP_NOIO);
++	dm_integrity_flush_buffers(ic, true);
+ 
+ 	limit = ic->provided_data_sectors;
+ 	if (ic->sb->flags & cpu_to_le32(SB_FLAG_RECALCULATING)) {
+@@ -2934,11 +2972,11 @@ static void dm_integrity_postsuspend(str
+ 		if (ic->meta_dev)
+ 			queue_work(ic->writer_wq, &ic->writer_work);
+ 		drain_workqueue(ic->writer_wq);
+-		dm_integrity_flush_buffers(ic);
++		dm_integrity_flush_buffers(ic, true);
+ 	}
+ 
+ 	if (ic->mode == 'B') {
+-		dm_integrity_flush_buffers(ic);
++		dm_integrity_flush_buffers(ic, true);
+ #if 1
+ 		/* set to 0 to test bitmap replay code */
+ 		init_journal(ic, 0, ic->journal_sections, 0);
+--- a/include/linux/dm-bufio.h
++++ b/include/linux/dm-bufio.h
+@@ -150,6 +150,7 @@ void dm_bufio_set_minimum_buffers(struct
+ 
+ unsigned dm_bufio_get_block_size(struct dm_bufio_client *c);
+ sector_t dm_bufio_get_device_size(struct dm_bufio_client *c);
++struct dm_io_client *dm_bufio_get_dm_io_client(struct dm_bufio_client *c);
+ sector_t dm_bufio_get_block_number(struct dm_buffer *b);
+ void *dm_bufio_get_block_data(struct dm_buffer *b);
+ void *dm_bufio_get_aux_data(struct dm_buffer *b);
 
 
