@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168662FA3CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C782FA3CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbhARO5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:57:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21771 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405440AbhARO4P (ORCPT
+        id S2405449AbhARO4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405446AbhARO4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:56:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610981689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a4fFJIs4FEO7n3SaQ79hr7vT0S2c5hk6pQH7CBXK3TE=;
-        b=Oms7rQuP6so+hY6vGQUEKe0jFUblBPgv2Pac8exKDpeHkb5i4M9vReTECcifvqfn1YIBgh
-        d+lJXY0WbAki/5TYhF7nHfQVs6rzhsbBEYE3eko4njAK/ZOemkOLl/QDG1Ex+AFPvpycoz
-        zYo3XtFH6OBDNVPuL0P8iDX9He3M5QE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-PQIg1cB-NZ6yTiczm6emCg-1; Mon, 18 Jan 2021 09:54:45 -0500
-X-MC-Unique: PQIg1cB-NZ6yTiczm6emCg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89217806664;
-        Mon, 18 Jan 2021 14:54:43 +0000 (UTC)
-Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4089118038;
-        Mon, 18 Jan 2021 14:54:38 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 08:54:36 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v4] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210118145436.3qceoxtn7rl2yllg@treble>
-References: <20210115171617.47273-1-broonie@kernel.org>
- <YAWU0D50KH4mVTgn@alley>
+        Mon, 18 Jan 2021 09:56:23 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EEC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:55:43 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id bx12so3892575edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=09OWnlfXjcogYNVXeufU+daH3KK6SF0uozk3EDI2xc0=;
+        b=Ev4ise7mk+YfkUErtOqsnwcDFyrMpCScNp5Psyu6jm+IHZGb5AwxdoGBoXxuFX61mn
+         v2wNMdPzRA6DGQ8J8z4yP8QZBUdxpmSc05ndX3QWTS6XRi52tsQwLDjoAaMSXQn7zPLo
+         PsvzPQv221Crp/lfaRs//J6sa5jk4TF72mUxit1qwocnPg4B8nnuhf0d4TM0t7cDiQ0F
+         JcXBLfrE+G/mFv1ucW2UAxMuvZZbQWbewZ2DpHcPPDqqkxwgBbCEy2W4Wk+jD/4X+8xJ
+         ficH1ht6iUzOuUBsJ5itApxU1eCDRDbauNKd7+kNvcME5dJbo+1Odl9v0dDFzTN1mZy/
+         RBeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=09OWnlfXjcogYNVXeufU+daH3KK6SF0uozk3EDI2xc0=;
+        b=pTalj51f4XZRzJnqdJGFtpsPyiss82VPaFGQqxQVyAMRtKVjxEy38rsOroRrI45wjP
+         Tn+5YrCDrDySlTfxaH9mwTlaS3cDOZvY9FeWyYMd3eZLHMSMZ7UBAKPun0/vKyI5zGm6
+         mdcFgWjbxOKv2DYpsVNOVd4ST7gCtENgTOcUN+2X8m+DTcSKpZFnzCJIm4l2q7gsunrR
+         UBkQtzEYsalCFx/B/8jZUfmrIsL9NyeBQqqI6SYqnqOiWmyl3xjm4aNSUkGqcNUFaBAI
+         62gD+jOfVWyV7YmYtvs4uoWRykYWogopAx26DInuVCVl1ZE0gJIJkaS4zU6KnYi1Vu+L
+         /G5Q==
+X-Gm-Message-State: AOAM530AFCVwerRLsNM1Ed+bars/M4L8MSv4sKDsLTa6XIEqNqujU0rk
+        9gow/118k43j3uIK0GRc3AX9krYliSebv2uac6ZEWw==
+X-Google-Smtp-Source: ABdhPJy+a9+KdfIbj4llUoSCWn/X0q20L19eACDpfVzZgzCAWDztQO7cPFmXXFG84iqiR4H9I/Tc4icao+FF/ozbz+k=
+X-Received: by 2002:a50:d6dc:: with SMTP id l28mr19968203edj.105.1610981741946;
+ Mon, 18 Jan 2021 06:55:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YAWU0D50KH4mVTgn@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210111054428.3273-1-dqfext@gmail.com> <20210111054428.3273-3-dqfext@gmail.com>
+In-Reply-To: <20210111054428.3273-3-dqfext@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 15:55:30 +0100
+Message-ID: <CACRpkdYA2fWF_1K+2aYoZnBAsm9H3=VHpeT4ZDU5sCdrOUWx=w@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] drivers: net: dsa: mt7530: MT7530 optional
+ GPIO support
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:02:31PM +0100, Petr Mladek wrote:
-> Hi Mark,
-> 
-> first, thanks a lot for writing this.
-> 
-> On Fri 2021-01-15 17:16:17, Mark Brown wrote:
-> > From: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > Add documentation for reliable stacktrace. This is intended to describe
-> > the semantics and to be an aid for implementing architecture support for
-> > HAVE_RELIABLE_STACKTRACE.
-> > 
-> > Unwinding is a subtle area, and architectures vary greatly in both
-> > implementation and the set of concerns that affect them, so I've tried
-> > to avoid making this too specific to any given architecture. I've used
-> > examples from both x86_64 and arm64 to explain corner cases in more
-> > detail, but I've tried to keep the descriptions sufficient for those who
-> > are unfamiliar with the particular architecture.
-> >
-> > I've tried to give rationale for all the recommendations/requirements,
-> > since that makes it easier to spot nearby issues, or when a check
-> > happens to catch a few things at once.
-> 
-> The above looks enough for the commit message. Well, Josh, typically
-> asks for a directive style, example:
-> 
-> Instead of "I've tried to give rationale...", please use something like
-> "The documentation gives rationale...".
+On Mon, Jan 11, 2021 at 6:46 AM DENG Qingfang <dqfext@gmail.com> wrote:
 
-True, we do try to use imperative form like "Try to give rationale...".
+> MT7530's LED controller can drive up to 15 LED/GPIOs.
+>
+> Add support for GPIO control and allow users to use its GPIOs by
+> setting gpio-controller property in device tree.
+>
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 
-Though documentation is less technical than code, so maybe technical
-language is less important.
+Double-check the initial output conditions as indicated by
+Russell, if you really want to be thorough, use an oscilloscope
+but check the specs at least.
 
-> > I believe what I have written is
-> > sound, but as some of this was reverse-engineered I may have missed
-> > things worth noting.
-> > 
-> > I've made a few assumptions about preferred behaviour, notably:
-> > 
-> > * If you can reliably unwind through exceptions, you should (as x86_64
-> >   does).
-> > 
-> > * It's fine to omit ftrace_return_to_handler and other return
-> >   trampolines so long as these are not subject to patching and the
-> >   original return address is reported. Most architectures do this for
-> >   ftrace_return_handler, but not other return trampolines.
-> > 
-> > * For cases where link register unreliability could result in duplicate
-> >   entries in the trace or an inverted trace, I've assumed this should be
-> >   treated as unreliable. This specific case shouldn't matter to
-> >   livepatching, but I assume that that we want a reliable trace to have
-> >   the correct order.
-> 
-> This looks like a background that is typically part of the cover
-> leter. It mentions some Mark's doubts.
-> 
-> Could anyone please answer whether the above assumptions are correct
-> or not? We should remove them from the commit message. If any
-> assumption is wrong, we should fix the documentation.
+> +static u32
+> +mt7530_gpio_to_bit(unsigned int offset)
+> +{
+> +       return BIT(offset + offset / 3);
+> +}
 
-Agreed, this section can probably be dropped.
+So for offset 0..14 this becomes bits
+0, 1, 2, 4, 5, 6, 8, 9, 10, 12  ... 18
 
--- 
-Josh
+What is the logic in this and is it what you intend?
+Please add a comment explaining what the offset is supposed
+to become for offsets 0..14 and why.
 
+> +       gc->ngpio = 15;
+
+And it really IS 15 not 16? Not that I know network equipment
+very well...
+
+Yours,
+Linus Walleij
