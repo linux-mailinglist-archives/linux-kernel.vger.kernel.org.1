@@ -2,167 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A9A2FA26F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097AD2FA276
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392518AbhARODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391506AbhARMal (ORCPT
+        id S2392595AbhARODw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:03:52 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:40031 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391219AbhARM2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:30:41 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0340C061573;
-        Mon, 18 Jan 2021 04:30:00 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id h17so13243685wmq.1;
-        Mon, 18 Jan 2021 04:30:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FzGV10dI6ZpCA2nzpn5G+6o7uEH+RKuRyEulvqsPDU4=;
-        b=hy/V2TiCpAJ7z7YjhEPWYKcx/gU9FQkGAA8OtyaIlQIJIvYF7CMtzIy9K5mo6IhR/D
-         b+myXUK7kh6b3H9Va+O286n3sgbzYF8qak27rCm61GAuFMOpFFF9dmq/T2xx5rOspCCe
-         6ELJuoMA9gmVNuop8B1Zxk9/ZclehfSRer93OXEWdb9egwxBhouvOhQwOqbVlBETXu0c
-         WTu5jcvBqo+140REppGtOL1dkP4qLFZFXNp2oG4ysG47XPxuCVjY4AcyDdOxHAoSJ5oh
-         A6BLjuzpzwTpn7L5EVqyyZHgrQNeAuX8h7UEHYIBzLabiAmrga+WZGDXmAxbGmWcX3Wq
-         jtjw==
+        Mon, 18 Jan 2021 07:28:31 -0500
+Received: by mail-oi1-f169.google.com with SMTP id p5so17502505oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:28:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FzGV10dI6ZpCA2nzpn5G+6o7uEH+RKuRyEulvqsPDU4=;
-        b=SuCH812THrSQ+fSFCbCquN7VJVTBlBANF62Tq+9DK13fsjZpGQDEOUSzmo4SITdDu1
-         axQYkIgD38hg7JzqNtq3S1a7L8ob2/ZFVmLexTAXX8D2nrAR7kiZIeKPUNzJl6Hq8Hgz
-         HxFkSbc7L2grIeHU317LLl+kFXyQutX+FfhpOHxZ4D0LZRT8vD5mbcCHO55u1unLibdT
-         zu4sjUENuyqcdCgXgGICwJQzP3YIr1zSx7AqCgxxajdPHXBN9Zjn6UIxowlmLLIlc/4o
-         1DN7yzMPV2KzEr1ilrLO6cH8mRbo5R9DmJITxNqVd7R5i8LU8NF3vYe0PD7a2ZjT0A6N
-         UjrA==
-X-Gm-Message-State: AOAM530JjMW0x24/gnTTmv/3pzWLLD2L3sD/KQzguQfiT4cThffuweAL
-        wSv/SPwSrOCjG8rg3QCANQ8=
-X-Google-Smtp-Source: ABdhPJwxQxNCtvGlqGznn2AdXtcobkjDpAbRbMwujkdc/FtV9D6ONVzOIgDt4qsSel8AXEevNXIGwA==
-X-Received: by 2002:a1c:808d:: with SMTP id b135mr20212219wmd.157.1610972999713;
-        Mon, 18 Jan 2021 04:29:59 -0800 (PST)
-Received: from [192.168.8.130] ([85.255.234.152])
-        by smtp.gmail.com with ESMTPSA id a6sm9979264wmj.27.2021.01.18.04.29.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 04:29:59 -0800 (PST)
-Subject: Re: WARNING in io_disable_sqo_submit
-To:     syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, hdanton@sina.com, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <000000000000219cec05b9252334@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <1e51be0f-98a1-6dd2-63da-02e92e79a4ef@gmail.com>
-Date:   Mon, 18 Jan 2021 12:26:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gaIQafbLKqUO8DmT84Dip1Hdgpm2ABLHEOu0dotUJU8=;
+        b=AjSr0ycv3JbPljN6WDE/2BrAr7YQw2Kq6K+elgpi4FBdcFCRVxR4egQ80t9JEGJFsi
+         xJlY+hEcwfDhScDhou+pe/uu8AyqGxi6laXS3vEQbxjYvR5UXji/UPDtw22XfTVlyEcc
+         P44PNguu4UXP2nPDnQyeWr8YY0/vsJwg5R8f9lgJWa/SnAZtizEYLaDZL3I341c97gY1
+         3WEdsdBncm1bKHu1HuFE3uugDyGEBcBlqcE6scVavaJl6mJffhwbH7bzNNqbI4bRF1iF
+         lcNqI2evmxjjjzStvAimJw1Mi76jRw1M++1S3bQiip2acnMNpzUVyDdMfeku4Q8j0rTb
+         ZSdw==
+X-Gm-Message-State: AOAM532jchCUm4lD7BZE64tHyzSn0vgwwB+XVkUemAf1erG6Xhu8OPuo
+        tG4iw7fO+KWVPLftOB6fLNmX33hYw8cbU57ohOI=
+X-Google-Smtp-Source: ABdhPJz1GwiXU+qWm//9EYtjp1S5Xk44DKAOE51qMOGR9tXIV7MeqE7Ob/7JcwZKUurBwZ/zWL7Lg0u4zmzzhoyyCe0=
+X-Received: by 2002:aca:31d5:: with SMTP id x204mr5249304oix.153.1610972863647;
+ Mon, 18 Jan 2021 04:27:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <000000000000219cec05b9252334@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210104164500.1311091-1-geert@linux-m68k.org>
+ <CAMuHMdXG_B-3y1MWh64T6LU3Gmo6UQGGWU8EbLApjDeXVLL3GQ@mail.gmail.com>
+ <20210114020311.GE2002709@lianli.shorne-pla.net> <CAMuHMdWnrPBAh_U43C7jA8wDvyAegqCM3OP++NkkiT1Co5yjkQ@mail.gmail.com>
+ <20210118114331.GF2002709@lianli.shorne-pla.net>
+In-Reply-To: <20210118114331.GF2002709@lianli.shorne-pla.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 18 Jan 2021 13:27:32 +0100
+Message-ID: <CAMuHMdUxAEE2A=dyhdH5Tscin_=m_b61WfRpLvj6pJfdPjd1nA@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/soc/litex: Add restart handler
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/01/2021 04:27, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    a1339d63 Merge tag 'powerpc-5.11-4' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17532a58d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f207c7500000
-> 
+Hi Stafford,
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.11
+On Mon, Jan 18, 2021 at 12:43 PM Stafford Horne <shorne@gmail.com> wrote:
+> On Thu, Jan 14, 2021 at 02:48:49PM +0100, Geert Uytterhoeven wrote:
+> > On Thu, Jan 14, 2021 at 3:03 AM Stafford Horne <shorne@gmail.com> wrote:
+> > > On Mon, Jan 04, 2021 at 05:49:03PM +0100, Geert Uytterhoeven wrote:
+> > > > On Mon, Jan 4, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > Let the LiteX SoC Controller a register a restart handler, which resets
+> > > > > the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
+> > > > >
+> > > > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > > ---
+> > > > > Tested with linux-on-litex-vexriscv.
+> > > > >
+> > > > > This patch is based on upstream, i.e. not on top of Gabriel Somlo's
+> > > > > "[PATCH v5 0/4] drivers/soc/litex: support 32-bit subregisters, 64-bit
+> > > > > CPUs"
+> > > > > (https://lore.kernel.org/lkml/20201227161320.2194830-1-gsomlo@gmail.com/)
+> > > >
+> > > > Bummer, and that's why the RESET_REG_* definitions are no longer
+> > > > next to the SCRATCH_REG_* definitions :-(
+> > >
+> > > If it helps I have accepted Gabriel's patches and put them onto for-next.
+> > >
+> > >   https://github.com/openrisc/linux/commits/for-next
+> > >
+> > > I am happy to take and test a patch based on that.  Or I can do the adjustments
+> > > to base the patch on that myself.  Let me know.
+> >
+> > Thanks for letting me know! V3 sent.
+>
+> Hi Geert,
+>
+> I don't seem to see v3 anywhere.  Where did you send it and what is the subject?
 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 9113 at fs/io_uring.c:8917 io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
-> Modules linked in:
-> CPU: 1 PID: 9113 Comm: syz-executor.0 Not tainted 5.11.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
-> Code: e0 07 83 c0 03 38 d0 7c 04 84 d2 75 2e 83 8b 14 01 00 00 01 4c 89 e7 e8 31 0a 24 07 5b 5d 41 5c e9 98 e1 9a ff e8 93 e1 9a ff <0f> 0b e9 00 ff ff ff e8 a7 a1 dd ff e9 37 ff ff ff e8 6d a1 dd ff
-> RSP: 0018:ffffc9000311fe98 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffff888024b43000 RCX: 0000000000000000
-> RDX: ffff888147071bc0 RSI: ffffffff81d7e82d RDI: ffff888024b430d0
-> RBP: ffff8880115d1900 R08: 0000000000000000 R09: 0000000014555c01
-> R10: ffffffff81d7eae5 R11: 0000000000000001 R12: ffff888024b43000
-> R13: ffff888014555c01 R14: ffff888024b43040 R15: ffff888024b430d0
-> FS:  00007f85abf55700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fd3adeb5000 CR3: 00000000115d2000 CR4: 0000000000350ef0
-> Call Trace:
->  io_uring_flush+0x28b/0x3a0 fs/io_uring.c:9134
->  filp_close+0xb4/0x170 fs/open.c:1280
->  close_fd+0x5c/0x80 fs/file.c:626
->  __do_sys_close fs/open.c:1299 [inline]
->  __se_sys_close fs/open.c:1297 [inline]
->  __x64_sys_close+0x2f/0xa0 fs/open.c:1297
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45e219
-> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007f85abf54c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-> RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 000000000045e219
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-> RBP: 000000000119bfb0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-> R13: 00007ffe5217973f R14: 00007f85abf559c0 R15: 000000000119bf8c
-> 
+https://lore.kernel.org/linux-riscv/20210114134813.2238587-1-geert@linux-m68k.org/
+
+So "b4 am 20210114134813.2238587-1-geert@linux-m68k.org" should give you
+a copy.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Pavel Begunkov
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
