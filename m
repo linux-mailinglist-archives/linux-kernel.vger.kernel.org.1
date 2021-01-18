@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0592F9F2F
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5CF2F9F2E
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391217AbhARLzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:55:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S2391189AbhARLzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:55:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388207AbhARLmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388852AbhARLmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 06:42:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C780722CF6;
-        Mon, 18 Jan 2021 11:41:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF1222227;
+        Mon, 18 Jan 2021 11:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970101;
-        bh=4SfJdloB45KTxytxtJ2ZFq4iDMuLZiL5ji8CUdcueb4=;
+        s=korg; t=1610970105;
+        bh=Iz9suBUobb5QOaUb3ui3gi1MHAkT4knNtmy5HQe/irg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZxdSNGEYP5YwD7QnvRxY6FgRTeIzNeLaMhzIkGzYLc5OkEUjdwO38JvIIFUn+Gdka
-         JpqJFAO3W16OPyLR3OpvF1w2W6TR7onnrrUu7X1KAyqcEyiMIGQ7Wczj7s6b6nspRK
-         bG6PQ7PFnz6VmhY5s8uG4qy6+H74Er8p+IcGAtz0=
+        b=HoWKFE6FY99qT6pC3NLtjqzjPTb0fU7+/8Y3KGowq2hBu8McDdrAwetTvyOolUo6P
+         nA3RbNnKrnl0fPPmdxc40UEE3Lq9whJGxOD8N4daxLLIl2Jid4ZBj+fxyC0dBimcMx
+         r0eughbWf3XtXxqqNKi0VJkvgttp74v37o25/Qgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        stable@kernel.org, Michael Kelley <mikelley@microsoft.com>
-Subject: [PATCH 5.10 007/152] x86/hyperv: check cpu mask after interrupt has been disabled
-Date:   Mon, 18 Jan 2021 12:33:02 +0100
-Message-Id: <20210118113353.117595762@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexandre Demers <alexandre.f.demers@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 009/152] drm/amdgpu: fix DRM_INFO flood if display core is not supported (bug 210921)
+Date:   Mon, 18 Jan 2021 12:33:04 +0100
+Message-Id: <20210118113353.215516490@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -39,51 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Liu <wei.liu@kernel.org>
+From: Alexandre Demers <alexandre.f.demers@gmail.com>
 
-commit ad0a6bad44758afa3b440c254a24999a0c7e35d5 upstream.
+commit ff9346dbabbb6595c5c20d90d88ae4a2247487a9 upstream.
 
-We've observed crashes due to an empty cpu mask in
-hyperv_flush_tlb_others.  Obviously the cpu mask in question is changed
-between the cpumask_empty call at the beginning of the function and when
-it is actually used later.
+This fix bug 210921 where DRM_INFO floods log when hitting an unsupported ASIC in
+amdgpu_device_asic_has_dc_support(). This info should be only called once.
 
-One theory is that an interrupt comes in between and a code path ends up
-changing the mask. Move the check after interrupt has been disabled to
-see if it fixes the issue.
-
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20210105175043.28325-1-wei.liu@kernel.org
-Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=210921
+Signed-off-by: Alexandre Demers <alexandre.f.demers@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/hyperv/mmu.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/hyperv/mmu.c
-+++ b/arch/x86/hyperv/mmu.c
-@@ -66,11 +66,17 @@ static void hyperv_flush_tlb_others(cons
- 	if (!hv_hypercall_pg)
- 		goto do_native;
- 
--	if (cpumask_empty(cpus))
--		return;
--
- 	local_irq_save(flags);
- 
-+	/*
-+	 * Only check the mask _after_ interrupt has been disabled to avoid the
-+	 * mask changing under our feet.
-+	 */
-+	if (cpumask_empty(cpus)) {
-+		local_irq_restore(flags);
-+		return;
-+	}
-+
- 	flush_pcpu = (struct hv_tlb_flush **)
- 		     this_cpu_ptr(hyperv_pcpu_input_arg);
- 
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3008,7 +3008,7 @@ bool amdgpu_device_asic_has_dc_support(e
+ #endif
+ 	default:
+ 		if (amdgpu_dc > 0)
+-			DRM_INFO("Display Core has been requested via kernel parameter "
++			DRM_INFO_ONCE("Display Core has been requested via kernel parameter "
+ 					 "but isn't supported by ASIC, ignoring\n");
+ 		return false;
+ 	}
 
 
