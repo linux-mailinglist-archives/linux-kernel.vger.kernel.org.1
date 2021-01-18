@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6056D2F9EC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6531E2F9EF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391096AbhARLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:52:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36544 "EHLO mail.kernel.org"
+        id S2388207AbhARMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:00:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390640AbhARLkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:40:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DFB22CF6;
-        Mon, 18 Jan 2021 11:40:07 +0000 (UTC)
+        id S2390718AbhARLqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 887E322D2C;
+        Mon, 18 Jan 2021 11:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970007;
+        s=korg; t=1610970371;
         bh=GekihNCoOoEUzhejpjuQ3jj1f5TvQxmJ+dDFtgWv0o8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cGtVxZMiq5uSkaK3uENMwAJ+fEjwzQkRtddxIfUNfreAxLZujH7qF7LHh9V3AwoRg
-         T6JhpwRdnWeKVArJ12w8jgRvzX1eMyc+dwfwbElt+haOB7Vm+Lq5oDtABgyKif71bK
-         qhckC6KUYT7z3h4MLLSq91MBQWb6nRFcSnOlVppc=
+        b=U18ZlA5g/BvWe/sRPrUSI6G1fj8u2YuZqjzw4tME56mFH/UJyp9DfR8ZVR8jK8zlW
+         EJZYkmzGqjUICJ5N9z51qvIlsW3ZO8281t+uS7yNnKBXtry3uZosuy7FZv4DBkntnI
+         R1S5kdja9kvNX29pnqcaPlHe+8F1L0OnFh/T/Hzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 75/76] netfilter: nf_nat: Fix memleak in nf_nat_init
-Date:   Mon, 18 Jan 2021 12:35:15 +0100
-Message-Id: <20210118113344.556629108@linuxfoundation.org>
+Subject: [PATCH 5.10 152/152] netfilter: nf_nat: Fix memleak in nf_nat_init
+Date:   Mon, 18 Jan 2021 12:35:27 +0100
+Message-Id: <20210118113400.011569941@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
