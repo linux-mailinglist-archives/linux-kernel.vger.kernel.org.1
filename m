@@ -2,145 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2922FA86A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8072FA871
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407315AbhARSMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        id S2436540AbhARSOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406850AbhARSLj (ORCPT
+        with ESMTP id S2407322AbhARSNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:11:39 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB5C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:10:59 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id u4so10337994pjn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:10:59 -0800 (PST)
+        Mon, 18 Jan 2021 13:13:52 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23288C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:13:12 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id n6so3529850edt.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:13:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mOeEBdPivrLRTESI8UsU78b1key2d9wivkYHIjFi1HQ=;
-        b=SRvvX6clwPIzZCmoK5B852dtqFYzURkZTDETDOiNKC9WCvItApmb3bwpsYpJ9R77hb
-         hTK9hGhikayhd2D4B7fJnyqE7axKtf8UEGFB0lVPWgTSWMXycPpDJXtjBAa050Fpz6Hw
-         9KDLDR9P7UdoUOC+advN0r+dE3MMXrBjNBX/0HZDZx7aO5QB7+T4yJZx9z9KqNfLkcCe
-         ddSP5ah/kP6Dy2NLBNNAoNquz5ado3NBXYVIzTOJCPeePrgBcJGkkOsgUQG9unQB7t1/
-         ZRHeA8QIg+6LM9E5idDMUPiN+x1XvHmjQOxdwIUyOkMrNYuJNE3wKJ66DUVmkiD1FXpn
-         ALzA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5/GffFuFlw745aos0mMDInR5/+1OnFdmMtYO+uUhg2M=;
+        b=hTBOE8IXg/WJQ66zFYSGvoGHUPozmXKncCOT8pMSlyRWR3asl6sIr+i04xA0dnIUHW
+         lDtKJ2YZk3ilWZuI6W0u4ENLb1IS7/WkylllRqeUq6PrSeVL4u+mvorhY/qpZwDKsV0p
+         Y3FfbzSgYt2xOjgFtn/Iamfk9kIT+eamju/PqffYfXK0VMnYP8x0/mQd/dCz+YZ3n5iI
+         i1ppUWdKHJowTuNTxR8zIfFI6FpK7y8a3DOkhVzS/ky9vFerw6Kd8zQ3hEYyunRPhf8R
+         /2UqS2KFtSF1IH6pvdEaqmpBaZ0Nz8mYhxSqFkHgq+3r70hU10wNtoiq0PPs9TyqjmcI
+         srAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mOeEBdPivrLRTESI8UsU78b1key2d9wivkYHIjFi1HQ=;
-        b=Zz2EqGTjyTP3ojnF2G50hKlC3XSFi8inVDV4wQJ1UmwypiYoHNe06p5/BBBLiP8Hvo
-         KQmIZzoGaI3u9Bfr8iYfBBjh5W3WSrqGc2tvqS0Ifai61s+kBEmo+7TgRU3foQ8IuZKp
-         lqB+T4LLgMAByh2rQ9EQhfxzl2hi0x2DhPhl85SG8fV1H296xNeuglMhlwiPvJq6SFg2
-         D/iApu0AJ0Eshwg3+8geB3vrCeoj/+6JEqwF0ms9qka1r0hkAHmhfEAYgk7jYsV0GG6D
-         u1H6pddehK6e6MjvMOKZlESb+AzcD3UtuPaS0ZPppm5RxPL3CvYP/B1RaNx8vNKtkgc+
-         pWsA==
-X-Gm-Message-State: AOAM532aVQ1Z9Zm7kGfbrMndog2a+Xo+eECKBzYQUPGg0UdG4XwFMJ3U
-        lXW0zk1iMgZ9PH9tZVdLycbN
-X-Google-Smtp-Source: ABdhPJyiYiIdO1xvfBnwfb92PNL9TNxSmGQrZxKFZmhnYL4psIaLQHtwG9BJWFZvb2L9AIvjfJ/dIg==
-X-Received: by 2002:a17:90a:4494:: with SMTP id t20mr513625pjg.155.1610993458566;
-        Mon, 18 Jan 2021 10:10:58 -0800 (PST)
-Received: from localhost.localdomain ([2409:4072:6d10:e0cf:bf2b:fc5e:cb6d:136])
-        by smtp.gmail.com with ESMTPSA id x14sm16628569pfp.77.2021.01.18.10.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 10:10:57 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     linux@armlinux.org.uk, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2] ARM: kernel: Fix interrupted SMC calls
-Date:   Mon, 18 Jan 2021 23:40:40 +0530
-Message-Id: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5/GffFuFlw745aos0mMDInR5/+1OnFdmMtYO+uUhg2M=;
+        b=K58Avcci98mFwntY8sPbi7tCDy32ZYWjA0mQi7qhw1USRZuFlxNRbvafv7ay3Ucdt/
+         OdQ0PxmCMwC/MqJwOH8Yzr3Jnmik8IwaJyQQckFwVBdHbfvtnU0IuxsgGagJbV/bujEI
+         CICO3kNsOvEHRqOSheO/T0+v5lP/GItj0bbBn28eCq7KDokL5BuZJNBN39Ilxrntel/F
+         o6liLLaITv3iVgWcUNnbjYK6jnklEADXvroV4oggmPHiiT7I4bqzYI/ggd5FTdI5TynM
+         af5OYDp4qpWrZL2+w4AVw6bZaiofz6yRJBywksTPJsFugs5UJNSJnMT/O4fLqnRwaO8d
+         WGUA==
+X-Gm-Message-State: AOAM5337x4/16rUZrobXBiyY923cAqJtsV5g8ZcPHAsCL8fhVX+gbQJ6
+        uh5hikJNbh5h8+ryLEe5ebmmWNPMRVkM6KiYX+yccg==
+X-Google-Smtp-Source: ABdhPJzdNQQBYyQ0gl4tv1fQABCn+G+BKTLfUUbSb6c4hkGpkDFcC3Nue3bavrH7lklU+DAABx0KIFLa01lixsftE2g=
+X-Received: by 2002:a05:6402:60a:: with SMTP id n10mr539898edv.230.1610993590685;
+ Mon, 18 Jan 2021 10:13:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210118113352.764293297@linuxfoundation.org>
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 18 Jan 2021 23:42:59 +0530
+Message-ID: <CA+G9fYuvDpuK7Nt=eGeyBtOgwLZJOSBniONfc3YqqknC3FFp1A@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/152] 5.10.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Qualcomm ARM32 platforms, the SMC call can return before it has
-completed. If this occurs, the call can be restarted, but it requires
-using the returned session ID value from the interrupted SMC call.
+On Mon, 18 Jan 2021 at 17:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.9 release.
+> There are 152 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Jan 2021 11:33:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.9-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-The ARM32 SMCC code already has the provision to add platform specific
-quirks for things like this. So let's make use of it and add the
-Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
-driver.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This change is similar to the below one added for ARM64 a while ago:
-commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Without this change, the Qualcomm ARM32 platforms like SDX55 will return
--EINVAL for SMC calls used for modem firmware loading and validation.
+Summary
+------------------------------------------------------------------------
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+kernel: 5.10.9-rc1
+git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+git branch: linux-5.10.y
+git commit: 293595df2bc42c77b0150d51073b49e09bb0d213
+git describe: v5.10.8-153-g293595df2bc4
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.8-153-g293595df2bc4
 
-Changes in v2:
+No regressions (compared to build v5.10.7-104-gc6e710bf849b)
 
-* Preserved callee saved registers and used the registers r4, r5 which
-  are getting pushed onto the stack.
 
- arch/arm/kernel/asm-offsets.c |  3 +++
- arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+fixes (compared to build v5.10.7-104-gc6e710bf849b)
+------------------------------------------------------------------------
 
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index a1570c8bab25..2e2fa6fc2d4f 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -23,6 +23,7 @@
- #include <asm/vdso_datapage.h>
- #include <asm/hardware/cache-l2x0.h>
- #include <linux/kbuild.h>
-+#include <linux/arm-smccc.h>
- #include "signal.h"
- 
- /*
-@@ -147,6 +148,8 @@ int main(void)
-   DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
-   DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
- #endif
-+  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
-+  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
-   BLANK();
-   DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
-   DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
-diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
-index 00664c78faca..931df62a7831 100644
---- a/arch/arm/kernel/smccc-call.S
-+++ b/arch/arm/kernel/smccc-call.S
-@@ -3,7 +3,9 @@
-  * Copyright (c) 2015, Linaro Limited
-  */
- #include <linux/linkage.h>
-+#include <linux/arm-smccc.h>
- 
-+#include <asm/asm-offsets.h>
- #include <asm/opcodes-sec.h>
- #include <asm/opcodes-virt.h>
- #include <asm/unwind.h>
-@@ -27,7 +29,14 @@ UNWIND(	.fnstart)
- UNWIND(	.save	{r4-r7})
- 	ldm	r12, {r4-r7}
- 	\instr
--	pop	{r4-r7}
-+	ldr	r4, [sp, #36]
-+	cmp	r4, #0
-+	beq	1f			// No quirk structure
-+	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
-+	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
-+	bne	1f			// No quirk present
-+	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
-+1:	pop	{r4-r7}
- 	ldr	r12, [sp, #(4 * 4)]
- 	stm	r12, {r0-r3}
- 	bx	lr
--- 
-2.25.1
+mips:
+  build:
+    * clang-10-allnoconfig
+    * clang-10-tinyconfig
+    * clang-11-allnoconfig
+    * clang-11-tinyconfig
 
+
+Ran 57479 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* fwts
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* network-basic-tests
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* perf
+* kvm-unit-tests
+* kunit
+* rcutorture
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
