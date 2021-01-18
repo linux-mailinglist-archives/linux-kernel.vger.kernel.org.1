@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4112FA887
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D3F2FA864
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405410AbhARPKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:10:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
+        id S2407085AbhARReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:34:00 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:28763 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390784AbhARLmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:42:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0047022D3E;
-        Mon, 18 Jan 2021 11:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970122;
-        bh=LI0bfn1qrxCNxBHyYC+ws2yo72/ytcyeMI2UR/92oqs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSR+7lIluCRCbglBR1s0e7PxHhgf487OHrwxXDuh2/nBjaJ3iHS7YZI1iCjv5fc27
-         i7VjMvT9ybY0HQxHN6cSrp8W1SiNhxl+pPv7JQNqaZzrKjvQcOlpvQJ5Jtzek8ddO3
-         K9M7Eml21pMo4ZJCzJB5PIdzTx+FmSI99fXFHzdQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ignat Korchagin <ignat@cloudflare.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 047/152] dm crypt: do not call bio_endio() from the dm-crypt tasklet
-Date:   Mon, 18 Jan 2021 12:33:42 +0100
-Message-Id: <20210118113355.042583605@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
-References: <20210118113352.764293297@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2436527AbhARRbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:31:22 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DKJhX0S9Yz9txQD;
+        Mon, 18 Jan 2021 18:30:20 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ZaCSH8ZfAc0y; Mon, 18 Jan 2021 18:30:19 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DKJhW47ZQz9txPj;
+        Mon, 18 Jan 2021 18:30:19 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3A80C8B7B6;
+        Mon, 18 Jan 2021 18:30:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FsaQn5CKJ16a; Mon, 18 Jan 2021 18:30:25 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 39BD98B7AE;
+        Mon, 18 Jan 2021 18:30:24 +0100 (CET)
+Subject: Re: {standard input}:577: Error: unsupported relocation against base
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <202101051834.FGH835Vs-lkp@intel.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
+Date:   Mon, 18 Jan 2021 15:24:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <202101051834.FGH835Vs-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ignat Korchagin <ignat@cloudflare.com>
-
-commit 8e14f610159d524cd7aac37982826d3ef75c09e8 upstream.
-
-Sometimes, when dm-crypt executes decryption in a tasklet, we may get
-"BUG: KASAN: use-after-free in tasklet_action_common.constprop..."
-with a kasan-enabled kernel.
-
-When the decryption fully completes in the tasklet, dm-crypt will call
-bio_endio(), which in turn will call clone_endio() from dm.c core code. That
-function frees the resources associated with the bio, including per bio private
-structures. For dm-crypt it will free the current struct dm_crypt_io, which
-contains our tasklet object, causing use-after-free, when the tasklet is being
-dequeued by the kernel.
-
-To avoid this, do not call bio_endio() from the current tasklet context, but
-delay its execution to the dm-crypt IO workqueue.
-
-Fixes: 39d42fa96ba1 ("dm crypt: add flags to optionally bypass kcryptd workqueues")
-Cc: <stable@vger.kernel.org> # v5.9+
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/md/dm-crypt.c |   24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1730,6 +1730,12 @@ static void crypt_inc_pending(struct dm_
- 	atomic_inc(&io->io_pending);
- }
- 
-+static void kcryptd_io_bio_endio(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+	bio_endio(io->base_bio);
-+}
-+
- /*
-  * One of the bios was finished. Check for completion of
-  * the whole request and correctly clean up the buffer.
-@@ -1752,7 +1758,23 @@ static void crypt_dec_pending(struct dm_
- 		kfree(io->integrity_metadata);
- 
- 	base_bio->bi_status = error;
--	bio_endio(base_bio);
-+
-+	/*
-+	 * If we are running this function from our tasklet,
-+	 * we can't call bio_endio() here, because it will call
-+	 * clone_endio() from dm.c, which in turn will
-+	 * free the current struct dm_crypt_io structure with
-+	 * our tasklet. In this case we need to delay bio_endio()
-+	 * execution to after the tasklet is done and dequeued.
-+	 */
-+	if (tasklet_trylock(&io->tasklet)) {
-+		tasklet_unlock(&io->tasklet);
-+		bio_endio(base_bio);
-+		return;
-+	}
-+
-+	INIT_WORK(&io->work, kcryptd_io_bio_endio);
-+	queue_work(cc->io_queue, &io->work);
- }
- 
- /*
 
 
+Le 05/01/2021 à 11:58, kernel test robot a écrit :
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> commit: 8b8319b181fd9d6821703fef1228b4dcde613a16 powerpc/44x: Don't support 440 when CONFIG_PPC_47x is set
+
+I see no link with that commit. Looks like the problem has been existing for some time.
+It exists on the commit before that one, it exists on v5.9 and it exists on v5.10 with that commit 
+reverted.
+
+> date:   5 weeks ago
+> config: powerpc-randconfig-p002-20210105 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8b8319b181fd9d6821703fef1228b4dcde613a16
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 8b8319b181fd9d6821703fef1228b4dcde613a16
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     {standard input}: Assembler messages:
+>>> {standard input}:577: Error: unsupported relocation against base
+>     {standard input}:580: Error: unsupported relocation against base
+>     {standard input}:583: Error: unsupported relocation against base
+>     {standard input}:586: Error: unsupported relocation against base
+>     {standard input}:589: Error: unsupported relocation against base
+>     {standard input}:592: Error: unsupported relocation against base
+>     {standard input}:595: Error: unsupported relocation against base
+>     {standard input}:598: Error: unsupported relocation against base
+>     {standard input}:601: Error: unsupported relocation against base
+>     {standard input}:604: Error: unsupported relocation against base
+>     {standard input}:607: Error: unsupported relocation against base
+>     {standard input}:610: Error: unsupported relocation against base
+>     {standard input}:613: Error: unsupported relocation against base
+>     {standard input}:616: Error: unsupported relocation against base
+>     {standard input}:619: Error: unsupported relocation against base
+>     {standard input}:622: Error: unsupported relocation against base
+>     {standard input}:625: Error: unsupported relocation against base
+>     {standard input}:628: Error: unsupported relocation against base
+>     {standard input}:631: Error: unsupported relocation against base
+>     {standard input}:634: Error: unsupported relocation against base
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
