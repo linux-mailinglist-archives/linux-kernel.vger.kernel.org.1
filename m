@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B032FA809
+	by mail.lfdr.de (Postfix) with ESMTP id 9F11B2FA80A
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436735AbhARRyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:54:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
+        id S2407275AbhARRyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:54:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436713AbhARRxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:53:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A5320829;
-        Mon, 18 Jan 2021 17:53:07 +0000 (UTC)
+        id S2436729AbhARRxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E27D422227;
+        Mon, 18 Jan 2021 17:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610992387;
-        bh=0OQWgKZQ6VGf6zu4G8sKJqZ/sYzVV9HDJ8zCK16fQbU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q5bFs066xeFa+TKXr8qDQf+VNQtJ5K0GJM7YsMKAtVElRfaEF3Kp7ZixzKQj9jqHB
-         HCxjziWB494pclOdRf0LSXzlTgOi0fBEf8fodxZoXm9z304Xvn8if5mAd2S/GTXR09
-         IVZxhs2xWys0B57e7KqoXjDjCxe7D/BxSHV2qK9McGFdCGQmbPGi9igJu3xLyMR0Qp
-         xaTB+XneI0/V6p6KtfYtIFkFmq0xcsyfg4mszbmKOW6QtmGyWxlSqSl3uIDikYoHQj
-         36ZVzbO83L3z1/egKnn9qNlzsY0GDCOBsWCvgcyyDHnVgYRtjTHaRoxyuUOsiNZ9zj
-         4OpxwlI1pgZ6w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.11-rc4
-Date:   Mon, 18 Jan 2021 17:52:20 +0000
-Message-Id: <20210118175307.44A5320829@mail.kernel.org>
+        s=k20201202; t=1610992393;
+        bh=2BUVn/G7ZLhzQ7BKdANSYLDJE9+tWZ93amHRzaBmVy4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mS0liz8ZtG5Own/099bZ5X2A2wNMH5QZuZxd+Fmu7bCe+6hkLbY1Ayn1YmyPhqA05
+         N2C2CJ4Pqck6/pkECVwQ9XOj49W06S3PF0Bg9B9n81vq84DEwgK6YKDn2saDAkGDFn
+         x9tA9f/NS+c+yICAaSokw0nB4iNJW4IroYHqT4CyaFyV/T4Mq/0AI8j9aCszK4+/6g
+         x/Osw1OAhwbHLBsJfDCrt+oj3OCnqi7u0+SYVw69PQ+2bUSRLT3PDe+Bl4MJ0s6/7h
+         /2YQvHO558YN6bkPMUW0i9mSZvBtVDGEJhs1OWfmTAru+QIxBn1Um+zMgak1pJJmPn
+         E8r4pTTfHyF+Q==
+Subject: Re: [PATCH 1/2] [v2] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for
+ unhashed addresses
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-mm <linux-mm@kvack.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210116220950.47078-2-timur@kernel.org>
+ <CAHp75Vdk6y8dGNJOswZwfOeva_sqVcw-f=yYgf_rptjHXxfZvw@mail.gmail.com>
+ <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
+ <20210118171411.GG4077@smile.fi.intel.com>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <ac04b231-863a-fa7c-08d7-563620d40c29@kernel.org>
+Date:   Mon, 18 Jan 2021 11:53:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210118171411.GG4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+On 1/18/21 11:14 AM, Andy Shevchenko wrote:
+> But isn't it good to expose those issues (and fix them)?
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+I suppose.
 
-are available in the Git repository at:
+>>> Perhaps even add _ADDRESS to DUMP_PREFIX_UNHASHED, but this maybe too
+>> long.
+>>
+>> I think DUMP_PREFIX_ADDRESS_UNHASHED is too long.
+> What about introducing new two like these:
+> 
+> 	DUMP_PREFIX_OFFSET,
+> 	DUMP_PREFIX_ADDRESS,
+> 	DUMP_PREFIX_ADDR_UNHASHED,
+> 	DUMP_PREFIX_ADDR_HASHED,
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc4
+I think we're approaching bike-shedding.  DUMP_PREFIX_ADDR_HASHED and 
+DUMP_PREFIX_ADDRESS are the same thing.
 
-for you to fetch changes up to 4d163ad79b155c71bf30366dc38f8d2502f78844:
-
-  spi: cadence: cache reference clock rate during probe (2021-01-15 14:14:38 +0000)
-
-----------------------------------------------------------------
-spi: Fixes for v5.11
-
-A few more bug fixes for SPI, both driver specific ones.  The caching in
-the Cadence driver is to avoid a deadlock trying to retrieve the cached
-value later at runtime.
-
-----------------------------------------------------------------
-Christophe Leroy (1):
-      spi: fsl: Fix driver breakage when SPI_CS_HIGH is not set in spi->mode
-
-Michael Hennerich (1):
-      spi: cadence: cache reference clock rate during probe
-
- drivers/spi/spi-cadence.c | 6 ++++--
- drivers/spi/spi-fsl-spi.c | 5 ++---
- 2 files changed, 6 insertions(+), 5 deletions(-)
+I don't want people to have to move from DUMP_PREFIX_ADDRESS to some 
+other enum for no change in functionality.  I'm willing to rearrange the 
+code so that it's enumerated more consistently, but I don't think 
+there's anything wrong with DUMP_PREFIX_UNHASHED.  It's succinct and clear.
