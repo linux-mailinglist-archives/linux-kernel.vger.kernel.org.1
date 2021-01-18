@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74342FAD79
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A9B2FAD71
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731435AbhARWnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:43:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        id S2389454AbhARWlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389410AbhARWln (ORCPT
+        with ESMTP id S2389060AbhARWlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:41:43 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B02C0617A4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:47 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id o10so653975wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:47 -0800 (PST)
+        Mon, 18 Jan 2021 17:41:22 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E6C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:48 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id i63so14897566wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gHiJhxMJMTlKf0rwnSY2fvsJQElsTJK9TpSX7iDgS9U=;
-        b=c/wzvuGs7H2n2IY5w2J7DUpQ6H/5aj0IhNxht22Kh3XJC8ekmOjvgFNC9UH3S1cqPX
-         kpA7gmlOrragpwi/LxDDh7L9I98as16dNbr3ZfA2TEEp76/rDn5RJKp+28mz1JypJ/KE
-         uu7WBmoNGTSPta8rTtAyxml3RjhGp6LjHiiKv7jTB8jelN/v845/Qd+oalAl6PjiOqYB
-         dVi2xU8NJFxAcLXd4UlxB1+LL21o2p9uAyVJraIM/VmAdrelF/1K2aDFE7puguv4v7jW
-         waeoFb4BOBoafcnJhQgKR6PxIsHJbbKYU3qxrKJThGACD6WynCZHcsR9CUG3jz8B6BLB
-         8Fig==
+        bh=bsbmv5w03vnjiOCZ9ztIqVycOKtYQMyD++uj7S+oBaA=;
+        b=Bsh8Bp+n5RmhG7/A1tk/zBERDgsg3vE0KB/FhLBZTXnBAq5QOOEEdrU31mfSmMqCPJ
+         DNDTYNKEelWwGh+68MTZDVDgM1QzfqNT0A8vJcNK7bxsFBj4jyZ2GukkquZtLx2jYQrn
+         BNVqduN/oyFGGn7S2xJMD0XAUS08favqjEHTJXZr23Dts4ri0GWfUBcfoi4N31PkbXLr
+         WruY2feR0j/LBtAjS/7070DhSx3AMrCBYDPD03RhcnEQsgDeLkq8N9XYcsGPU9WosL4S
+         mKEB4ese7E4bIg8MzltSffdUbaNXjXJ75sbkc68wTExMK+u/8qBc7cxrgGkfKa1K1yAc
+         S0QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gHiJhxMJMTlKf0rwnSY2fvsJQElsTJK9TpSX7iDgS9U=;
-        b=amRg2tCTaSJZOlcpiZp69tUJlHyWkeMNmqX/yQrkwHB9PL3wqiICfjiUth0dnTbkGH
-         S9hbz5/KVxfJ/MrguU0AyLOQgi1spqLJqH9otHBvK6qctdmm2sPFJz9Q7ezNCxl3t5S9
-         0AQB+4dnTLXiHheWvQM7y2eb1WHFE8bc8RxuFhZQubW891e6KGotFJxl0a5AW5ei1Ebq
-         6ZKzOzE+/UPpc9wqO/isgbkyiIJIcyuEvGgiSQ2Qi8QdFvDxXLPWosjUAX9XhWWDENIK
-         3D+SWbR7+TtE3KlO/UXr3N7O/1mH9Iwtj2OtsZeOmc6g3uJDljP/SZKMTwJJpVpGePa/
-         31MQ==
-X-Gm-Message-State: AOAM531o0fh7kmz0lGdilHYt3eZHG8Q0Ye+lrKV2NYBtZPgKfsK5WF6g
-        uI774El5HKc9ysqpoGhzKTu6eA==
-X-Google-Smtp-Source: ABdhPJzdlcg52fvz/z4ZD7lsZ+PnpThAHnHstBLslXgw7h+m2r6Bas2FH1QY72pFWP27L7ZRpVV8fQ==
-X-Received: by 2002:a1c:24c4:: with SMTP id k187mr1361332wmk.14.1611009586380;
-        Mon, 18 Jan 2021 14:39:46 -0800 (PST)
+        bh=bsbmv5w03vnjiOCZ9ztIqVycOKtYQMyD++uj7S+oBaA=;
+        b=M/VGzB7f3yeQVikbF5MR0Ttdz+qNsPvAMVMXqt28HhpC/4/c1RuTbuSC6E8vU/Q+H4
+         dK4ZBo/FRnP/lI+hOhz/VtgGcl1iN6APR7B12UE3RF9+zRbet2t/2m+Lf6wgoNmBDIBa
+         wM1LHHn1X1f/FdnMK5JrN1ZKv4OLgjxe6c00o1Pg7TUmKycbtoIw+u4qa59gxm9AgeSs
+         IYh568gAbIfvmz4Dp1vQ/14VJdhPF48YmmvOdlqIXtVReKDfgxYnjYf4K0seJhVzk485
+         DXu1xDeCIdcwqWwL4x6KxOUEJgH2qUnPblkg73okJPDhrFGkmCPDIqZM4PTPg3wKIif8
+         7kJA==
+X-Gm-Message-State: AOAM531hpxN32h7yMLmM//bBvpGljiI0gxXMGmgwGawVPr7w38Vk1vBa
+        diB0QuOSMhMUgq7j4HNSxOpECw==
+X-Google-Smtp-Source: ABdhPJxf9wv/NbZWRWTYHfdIWGD0Af2LP2U86lGlj7VSdMQG3e6T/oH2CHblGaF/iv8B8HArifotJg==
+X-Received: by 2002:a1c:e90a:: with SMTP id q10mr1272961wmc.102.1611009587458;
+        Mon, 18 Jan 2021 14:39:47 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.45
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:45 -0800 (PST)
+        Mon, 18 Jan 2021 14:39:46 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 12/20] RDMA/core/sa_query: Demote non-conformant kernel-doc header
-Date:   Mon, 18 Jan 2021 22:39:21 +0000
-Message-Id: <20210118223929.512175-13-lee.jones@linaro.org>
+Subject: [PATCH 13/20] RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+Date:   Mon, 18 Jan 2021 22:39:22 +0000
+Message-Id: <20210118223929.512175-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
 References: <20210118223929.512175-1-lee.jones@linaro.org>
@@ -66,33 +69,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/core/sa_query.c:1449: warning: Function parameter or member 'client' not described in 'opa_pr_query_possible'
- drivers/infiniband/core/sa_query.c:1449: warning: Function parameter or member 'sa_dev' not described in 'opa_pr_query_possible'
- drivers/infiniband/core/sa_query.c:1449: warning: Function parameter or member 'device' not described in 'opa_pr_query_possible'
- drivers/infiniband/core/sa_query.c:1449: warning: Function parameter or member 'port_num' not described in 'opa_pr_query_possible'
- drivers/infiniband/core/sa_query.c:1449: warning: Function parameter or member 'rec' not described in 'opa_pr_query_possible'
+ drivers/infiniband/hw/i40iw/i40iw_uk.c:129: warning: Function parameter or member 'total_size' not described in 'i40iw_qp_get_next_send_wqe'
+ drivers/infiniband/hw/i40iw/i40iw_uk.c:129: warning: Function parameter or member 'wr_id' not described in 'i40iw_qp_get_next_send_wqe'
+ drivers/infiniband/hw/i40iw/i40iw_uk.c:724: warning: Excess function parameter 'post_cq' description in 'i40iw_cq_poll_completion'
+ drivers/infiniband/hw/i40iw/i40iw_uk.c:1058: warning: Function parameter or member 'queue' not described in 'i40iw_clean_cq'
 
+Cc: Faisal Latif <faisal.latif@intel.com>
+Cc: Shiraz Saleem <shiraz.saleem@intel.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/core/sa_query.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/i40iw/i40iw_uk.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 89a831fa1885b..5bd047042e686 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1434,7 +1434,7 @@ enum opa_pr_supported {
- 	PR_IB_SUPPORTED
- };
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_uk.c b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+index c3633c9944db4..f521be16bf31b 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_uk.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+@@ -119,6 +119,8 @@ void i40iw_qp_post_wr(struct i40iw_qp_uk *qp)
+  * @qp: hw qp ptr
+  * @wqe_idx: return wqe index
+  * @wqe_size: size of sq wqe
++ * @total_size: work request length
++ * @wr_id: work request id
+  */
+ u64 *i40iw_qp_get_next_send_wqe(struct i40iw_qp_uk *qp,
+ 				u32 *wqe_idx,
+@@ -717,7 +719,6 @@ static enum i40iw_status_code i40iw_cq_post_entries(struct i40iw_cq_uk *cq,
+  * i40iw_cq_poll_completion - get cq completion info
+  * @cq: hw cq
+  * @info: cq poll information returned
+- * @post_cq: update cq tail
+  */
+ static enum i40iw_status_code i40iw_cq_poll_completion(struct i40iw_cq_uk *cq,
+ 						       struct i40iw_cq_poll_info *info)
+@@ -1051,7 +1052,7 @@ void i40iw_device_init_uk(struct i40iw_dev_uk *dev)
  
--/**
-+/*
-  * opa_pr_query_possible - Check if current PR query can be an OPA query.
-  *
-  * Retuns PR_NOT_SUPPORTED if a path record query is not
+ /**
+  * i40iw_clean_cq - clean cq entries
+- * @ queue completion context
++ * @queue: completion context
+  * @cq: cq to clean
+  */
+ void i40iw_clean_cq(void *queue, struct i40iw_cq_uk *cq)
 -- 
 2.25.1
 
