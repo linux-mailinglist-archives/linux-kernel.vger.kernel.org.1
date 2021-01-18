@@ -2,316 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE512F97ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A6C2F97E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbhARCuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:50:18 -0500
-Received: from mail-eopbgr690058.outbound.protection.outlook.com ([40.107.69.58]:22915
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731090AbhARCuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:50:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JEbBKBFF8eHLYVyFkWnCaw0/utzPDae7KBq5NGjNkbrxxcvs/rnI0p/hZ4M3iVouLw4iww804lh2IAHQAnutftxovTbd+WplEy9b1woEJ+EcEfaJEjDK+lE2aX78RmbIMGVsJ+kuyooKuocjxcD5hSd4417sTQc0RWNTrShCc4xbq+0xXWU38x2N1xBKkBhOUSkHVE0/BtuufqDMceCge9d8Z/0TazJDybJKeHl/NLm5yz0KMSnNtR8iKVCDfkx5AhdXcGDaeI4625c1X3t0oItc8GgnrCpZMzUM5PnLsD/h6FsHBpWu9JmwuI6UWmvLbk3rct3O1W5fc8L37Eub3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CCIb88vO48StOorvK6QkzxZeLdC5Yi/tifLX3M7hAhw=;
- b=m1/OwfI6dJNB4RTxz59L4taqyfpYp3oQwXwSL8YuXtpbW0TZ/TtPiqHcDwApWMri2TwKj/hls/dTL2NBTmTrCz/lkSjxObEvGc0AP9BQW6X1FMGvEMVSAqS6t/fK5ITyZ64FFrg4eELThRL4domMBNP6Vp3j6yG+T49aBnnPMVMplWUsXOFAcrNxGHGj2esOtaoml1XULGX+Pkw/Czdlc4d0AlCnhjSwJaY00Z71n5ky3/rFb3Qe4rYX8srlnCM0LNEmmQslj8JbeUqoFOhUgOehDHrdcKPukqVXyLyW1N4PYQJA8pf+OtNRYLoNs2nGidh9vNuYEUZ9j6mijK3LFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CCIb88vO48StOorvK6QkzxZeLdC5Yi/tifLX3M7hAhw=;
- b=mgH9DGjNLhblcFhvDY2oHL7DiLZqXFNzxJjGDW2GSOKHA/U6hm8dQ1utgZfdQebCbFVAXpAceHxF3t80vAad408kAskU+8nWi5TBVYFpB4SZjaD6yHdJ1E+0FL9fNCjkhjob29CWmHk8UC+Me6bCJ0DQn3Z/i2SopQnlooe6VZE=
-Received: from SN4PR0501CA0153.namprd05.prod.outlook.com
- (2603:10b6:803:2c::31) by DM6PR02MB4522.namprd02.prod.outlook.com
- (2603:10b6:5:24::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Mon, 18 Jan
- 2021 02:49:27 +0000
-Received: from SN1NAM02FT029.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:2c:cafe::29) by SN4PR0501CA0153.outlook.office365.com
- (2603:10b6:803:2c::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend
- Transport; Mon, 18 Jan 2021 02:49:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT029.mail.protection.outlook.com (10.152.72.110) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3763.12 via Frontend Transport; Mon, 18 Jan 2021 02:49:27 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Sun, 17 Jan 2021 18:49:25 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Sun, 17 Jan 2021 18:49:25 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- mdf@kernel.org,
- trix@redhat.com,
- robh+dt@kernel.org,
- linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- chinnikishore369@gmail.com
-Received: from [10.140.6.60] (port=39926 helo=xhdnavam40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <nava.manne@xilinx.com>)
-        id 1l1Kbc-0001PD-P4; Sun, 17 Jan 2021 18:49:25 -0800
-From:   Nava kishore Manne <nava.manne@xilinx.com>
-To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <linux-fpga@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <git@xilinx.com>, <chinnikishore369@gmail.com>,
-        Nava kishore Manne <nava.manne@xilinx.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH 3/3] fpga: versal-fpga: Add versal fpga manager driver
-Date:   Mon, 18 Jan 2021 08:13:18 +0530
-Message-ID: <20210118024318.9530-3-nava.manne@xilinx.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210118024318.9530-1-nava.manne@xilinx.com>
-References: <20210118024318.9530-1-nava.manne@xilinx.com>
+        id S1731087AbhARCs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:48:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36977 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730997AbhARCsZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:48:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610938017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6ekTaCUkKdjepJubjr84NceoQSjqFD24PhaaJLdYi8=;
+        b=X3jrm6aCp2fmHuVv4/5glyoku801RZqSXgCHfF0vQURec625XSoUPcHoumkkw5zVc9MOSy
+        lUDH5V2VZzgzLEdEm785coWL7T1fXs2EY0ejB9A1ONPZeqbnovVS7MuZ8RKjGrZD2vRJx9
+        SxapfmzK0QlTDidTDZaL/AaTa1eC+ws=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-HGDmO5YxNpSzg8ZGWPAqfQ-1; Sun, 17 Jan 2021 21:46:53 -0500
+X-MC-Unique: HGDmO5YxNpSzg8ZGWPAqfQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B343107ACE3;
+        Mon, 18 Jan 2021 02:46:49 +0000 (UTC)
+Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 466675C6AB;
+        Mon, 18 Jan 2021 02:46:33 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
+ <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+ <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
+ <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com>
+ <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
+ <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com>
+ <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <65fe1a40-abc0-77ed-56df-3f0a70615016@redhat.com>
+Date:   Mon, 18 Jan 2021 10:46:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 514a065c-4f02-463e-b94b-08d8bb5babc1
-X-MS-TrafficTypeDiagnostic: DM6PR02MB4522:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB45228B32680A75F7327A4174C2A40@DM6PR02MB4522.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8EJqeTbbr61G/5fmcGRxXBYWkmzOgq8pI0la95YeDbi1AO/BmwsfRKaxrKvnhJGOW8zmlbtzLTLkXjjTBoBdY9QWiTOZIUYq/N1qoq+eU908MXtXh4961bQcSWicB0pwEzIcFRYtbD4QapC4XzaMhdT1g25iC1W/KHsw/LkTYhRb3XKf2lCcAXiV0tq1CI1lV5QGT6BkmFjDqBxgzi4XnXRKhlaQ9VLlDCvI2VLqPbRtmPU0H1S2fWMmnSJ+DZDQ3heYVnoejLA4KkDT9hEieRCib1+hPb6DLWnhTbz2KEf0Kb0pi7q7r1vN5Ohp3Dyqlchj1dv/SqM0jX7+DaM8zqRx9lCSHS0dyYjrXCAbtpNSS8/OIDdHMsSIEOJbm8kCVpxLBlxMmFzesQm8QIo3LbnrKULDhiNXhgCuH9hj1MM+kdv/6UJyW6vLTaV7Lsxd8ckwCoT39mCqaimD+GU/xL6gkmbqFtRn6p41kq03fyi9raRCIHHoycbqZNOILVKOSXu/VgFNPpkRZYgm7luONQ==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(39850400004)(376002)(46966006)(82740400003)(36906005)(6666004)(8676002)(110136005)(1076003)(82310400003)(7696005)(36756003)(54906003)(478600001)(70586007)(7636003)(70206006)(316002)(4326008)(26005)(356005)(336012)(2906002)(107886003)(5660300002)(8936002)(2616005)(426003)(47076005)(9786002)(186003)(102446001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 02:49:27.0143
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 514a065c-4f02-463e-b94b-08d8bb5babc1
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT029.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4522
+In-Reply-To: <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds driver for versal fpga manager.
 
-PDI source type can be DDR, OCM, QSPI flash etc..
-But driver allocates memory always from DDR, Since driver supports only
-DDR source type.
+On 2021/1/17 下午3:57, Yuri Benditovich wrote:
+> On Thu, Jan 14, 2021 at 5:39 AM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> On 2021/1/13 下午10:33, Willem de Bruijn wrote:
+>>> On Tue, Jan 12, 2021 at 11:11 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>> On 2021/1/13 上午7:47, Willem de Bruijn wrote:
+>>>>> On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
+>>>>> <yuri.benditovich@daynix.com> wrote:
+>>>>>> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
+>>>>>> <yuri.benditovich@daynix.com> wrote:
+>>>>>>> On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
+>>>>>>> <yuri.benditovich@daynix.com> wrote:
+>>>>>>>> Existing TUN module is able to use provided "steering eBPF" to
+>>>>>>>> calculate per-packet hash and derive the destination queue to
+>>>>>>>> place the packet to. The eBPF uses mapped configuration data
+>>>>>>>> containing a key for hash calculation and indirection table
+>>>>>>>> with array of queues' indices.
+>>>>>>>>
+>>>>>>>> This series of patches adds support for virtio-net hash reporting
+>>>>>>>> feature as defined in virtio specification. It extends the TUN module
+>>>>>>>> and the "steering eBPF" as follows:
+>>>>>>>>
+>>>>>>>> Extended steering eBPF calculates the hash value and hash type, keeps
+>>>>>>>> hash value in the skb->hash and returns index of destination virtqueue
+>>>>>>>> and the type of the hash. TUN module keeps returned hash type in
+>>>>>>>> (currently unused) field of the skb.
+>>>>>>>> skb->__unused renamed to 'hash_report_type'.
+>>>>>>>>
+>>>>>>>> When TUN module is called later to allocate and fill the virtio-net
+>>>>>>>> header and push it to destination virtqueue it populates the hash
+>>>>>>>> and the hash type into virtio-net header.
+>>>>>>>>
+>>>>>>>> VHOST driver is made aware of respective virtio-net feature that
+>>>>>>>> extends the virtio-net header to report the hash value and hash report
+>>>>>>>> type.
+>>>>>>> Comment from Willem de Bruijn:
+>>>>>>>
+>>>>>>> Skbuff fields are in short supply. I don't think we need to add one
+>>>>>>> just for this narrow path entirely internal to the tun device.
+>>>>>>>
+>>>>>> We understand that and try to minimize the impact by using an already
+>>>>>> existing unused field of skb.
+>>>>> Not anymore. It was repurposed as a flags field very recently.
+>>>>>
+>>>>> This use case is also very narrow in scope. And a very short path from
+>>>>> data producer to consumer. So I don't think it needs to claim scarce
+>>>>> bits in the skb.
+>>>>>
+>>>>> tun_ebpf_select_queue stores the field, tun_put_user reads it and
+>>>>> converts it to the virtio_net_hdr in the descriptor.
+>>>>>
+>>>>> tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
+>>>>> field in skb->cb is fragile, as in theory some code could overwrite
+>>>>> that between field between ndo_select_queue and
+>>>>> ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
+>>>>> control again. But in practice, I don't believe anything does.
+>>>>>
+>>>>> Alternatively an existing skb field that is used only on disjoint
+>>>>> datapaths, such as ingress-only, could be viable.
+>>>> A question here. We had metadata support in XDP for cooperation between
+>>>> eBPF programs. Do we have something similar in the skb?
+>>>>
+>>>> E.g in the RSS, if we want to pass some metadata information between
+>>>> eBPF program and the logic that generates the vnet header (either hard
+>>>> logic in the kernel or another eBPF program). Is there any way that can
+>>>> avoid the possible conflicts of qdiscs?
+>>> Not that I am aware of. The closest thing is cb[].
+>>>
+>>> It'll have to aliase a field like that, that is known unused for the given path.
+>>
+>> Right, we need to make sure cb is not used by other ones. I'm not sure
+>> how hard to achieve that consider Qemu installs the eBPF program but it
+>> doesn't deal with networking configurations.
+>>
+>>
+>>> One other approach that has been used within linear call stacks is out
+>>> of band. Like percpu variables softnet_data.xmit.more and
+>>> mirred_rec_level. But that is perhaps a bit overwrought for this use
+>>> case.
+>>
+>> Yes, and if we go that way then eBPF turns out to be a burden since we
+>> need to invent helpers to access those auxiliary data structure. It
+>> would be better then to hard-coded the RSS in the kernel.
+>>
+>>
+>>>>>>> Instead, you could just run the flow_dissector in tun_put_user if the
+>>>>>>> feature is negotiated. Indeed, the flow dissector seems more apt to me
+>>>>>>> than BPF here. Note that the flow dissector internally can be
+>>>>>>> overridden by a BPF program if the admin so chooses.
+>>>>>>>
+>>>>>> When this set of patches is related to hash delivery in the virtio-net
+>>>>>> packet in general,
+>>>>>> it was prepared in context of RSS feature implementation as defined in
+>>>>>> virtio spec [1]
+>>>>>> In case of RSS it is not enough to run the flow_dissector in tun_put_user:
+>>>>>> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
+>>>>>> hash type and queue index
+>>>>>> according to the (mapped) parameters (key, hash types, indirection
+>>>>>> table) received from the guest.
+>>>>> TUNSETSTEERINGEBPF was added to support more diverse queue selection
+>>>>> than the default in case of multiqueue tun. Not sure what the exact
+>>>>> use cases are.
+>>>>>
+>>>>> But RSS is exactly the purpose of the flow dissector. It is used for
+>>>>> that purpose in the software variant RPS. The flow dissector
+>>>>> implements a superset of the RSS spec, and certainly computes a
+>>>>> four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
+>>>>> has already computed a 4-tuple hash.
+>>>>>
+>>>>> What it does not give is a type indication, such as
+>>>>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
+>>>>> In datapaths where the NIC has already computed the four-tuple hash
+>>>>> and stored it in skb->hash --the common case for servers--, That type
+>>>>> field is the only reason to have to compute again.
+>>>> The problem is there's no guarantee that the packet comes from the NIC,
+>>>> it could be a simple VM2VM or host2VM packet.
+>>>>
+>>>> And even if the packet is coming from the NIC that calculates the hash
+>>>> there's no guarantee that it's the has that guest want (guest may use
+>>>> different RSS keys).
+>>> Ah yes, of course.
+>>>
+>>> I would still revisit the need to store a detailed hash_type along with
+>>> the hash, as as far I can tell that conveys no actionable information
+>>> to the guest.
+>>
+>> Yes, need to figure out its usage. According to [1], it only mention
+>> that storing has type is a charge of driver. Maybe Yuri can answer this.
+>>
+> For the case of Windows VM we can't know how exactly the network stack
+> uses provided hash data (including hash type). But: different releases
+> of Windows
+> enable different hash types (for example UDP hash is enabled only on
+> Server 2016 and up).
+>
+> Indeed the Windows requires a little more from the network adapter/driver
+> than Linux does.
+>
+> The addition of RSS support to virtio specification takes in account
+> the widest set of
+> requirements (i.e. Windows one), our initial impression is that this
+> should be enough also for Linux.
+>
+> The NDIS specification in part of RSS is _mandatory_ and there are
+> certification tests
+> that check that the driver provides the hash data as expected. All the
+> high-performance
+> network adapters have such RSS functionality in the hardware.
+> With pre-RSS QEMU (i.e. where the virtio-net device does not indicate
+> the RSS support)
+> the virtio-net driver for Windows does all the job related to RSS:
+> - hash calculation
+> - hash/hash_type delivery
+> - reporting each packet on the correct CPU according to RSS settings
+>
+> With RSS support in QEMU all the packets always come on a proper CPU and
+> the driver never needs to reschedule them. The driver still need to
+> calculate the
+> hash and report it to Windows. In this case we do the same job twice: the device
+> (QEMU or eBPF) does calculate the hash and get proper queue/CPU to deliver
+> the packet. But the hash is not delivered by the device, so the driver needs to
+> recalculate it and report to the Windows.
+>
+> If we add HASH_REPORT support (current set of patches) and the device
+> indicates this
+> feature we can avoid hash recalculation in the driver assuming we
+> receive the correct hash
+> value and hash type. Otherwise the driver can't know which exactly
+> hash the device has calculated.
+>
+> Please let me know if I did not answer the question.
 
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
----
- drivers/fpga/Kconfig       |   8 ++
- drivers/fpga/Makefile      |   1 +
- drivers/fpga/versal-fpga.c | 149 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 158 insertions(+)
- create mode 100644 drivers/fpga/versal-fpga.c
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 5645226ca3ce..9f779c3a6739 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -216,4 +216,12 @@ config FPGA_MGR_ZYNQMP_FPGA
- 	  to configure the programmable logic(PL) through PS
- 	  on ZynqMP SoC.
- 
-+config FPGA_MGR_VERSAL_FPGA
-+        tristate "Xilinx Versal FPGA"
-+        depends on ARCH_ZYNQMP || COMPILE_TEST
-+        help
-+          Select this option to enable FPGA manager driver support for
-+          Xilinx Versal SOC. This driver uses the versal soc firmware
-+          interface to load programmable logic(PL) images
-+          on versal soc.
- endif # FPGA
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index d8e21dfc6778..40c9adb6a644 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -18,6 +18,7 @@ obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
- obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
- obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
- obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
-+obj-$(CONFIG_FPGA_MGR_VERSAL_FPGA)      += versal-fpga.o
- obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
- obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
- 
-diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
-new file mode 100644
-index 000000000000..2a42aa78b182
---- /dev/null
-+++ b/drivers/fpga/versal-fpga.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2021 Xilinx, Inc.
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <linux/fpga/fpga-mgr.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/string.h>
-+#include <linux/firmware/xlnx-zynqmp.h>
-+
-+/* Constant Definitions */
-+#define PDI_SOURCE_TYPE	0xF
-+
-+/**
-+ * struct versal_fpga_priv - Private data structure
-+ * @dev:	Device data structure
-+ * @flags:	flags which is used to identify the PL Image type
-+ */
-+struct versal_fpga_priv {
-+	struct device *dev;
-+	u32 flags;
-+};
-+
-+static int versal_fpga_ops_write_init(struct fpga_manager *mgr,
-+				      struct fpga_image_info *info,
-+				      const char *buf, size_t size)
-+{
-+	struct versal_fpga_priv *priv;
-+
-+	priv = mgr->priv;
-+	priv->flags = info->flags;
-+
-+	return 0;
-+}
-+
-+static int versal_fpga_ops_write(struct fpga_manager *mgr,
-+				 const char *buf, size_t size)
-+{
-+	struct versal_fpga_priv *priv;
-+	dma_addr_t dma_addr = 0;
-+	char *kbuf;
-+	int ret;
-+
-+	priv = mgr->priv;
-+
-+	kbuf = dma_alloc_coherent(priv->dev, size, &dma_addr, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	memcpy(kbuf, buf, size);
-+
-+	wmb(); /* ensure all writes are done before initiate FW call */
-+
-+	ret = zynqmp_pm_load_pdi(PDI_SOURCE_TYPE, dma_addr);
-+
-+	dma_free_coherent(priv->dev, size, kbuf, dma_addr);
-+
-+	return ret;
-+}
-+
-+static int versal_fpga_ops_write_complete(struct fpga_manager *mgr,
-+					  struct fpga_image_info *info)
-+{
-+	return 0;
-+}
-+
-+static enum fpga_mgr_states versal_fpga_ops_state(struct fpga_manager *mgr)
-+{
-+	return FPGA_MGR_STATE_OPERATING;
-+}
-+
-+static const struct fpga_manager_ops versal_fpga_ops = {
-+	.state = versal_fpga_ops_state,
-+	.write_init = versal_fpga_ops_write_init,
-+	.write = versal_fpga_ops_write,
-+	.write_complete = versal_fpga_ops_write_complete,
-+};
-+
-+static int versal_fpga_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct versal_fpga_priv *priv;
-+	struct fpga_manager *mgr;
-+	int err, ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->dev = dev;
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-+	if (ret < 0) {
-+		dev_err(dev, "no usable DMA configuration");
-+		return ret;
-+	}
-+
-+	mgr = devm_fpga_mgr_create(dev, "Xilinx Versal FPGA Manager",
-+				   &versal_fpga_ops, priv);
-+	if (!mgr)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, mgr);
-+
-+	err = fpga_mgr_register(mgr);
-+	if (err) {
-+		dev_err(dev, "unable to register FPGA manager");
-+		fpga_mgr_free(mgr);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int versal_fpga_remove(struct platform_device *pdev)
-+{
-+	struct fpga_manager *mgr = platform_get_drvdata(pdev);
-+
-+	fpga_mgr_unregister(mgr);
-+	fpga_mgr_free(mgr);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id versal_fpga_of_match[] = {
-+	{ .compatible = "xlnx,versal-fpga", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, versal_fpga_of_match);
-+
-+static struct platform_driver versal_fpga_driver = {
-+	.probe = versal_fpga_probe,
-+	.remove = versal_fpga_remove,
-+	.driver = {
-+		.name = "versal_fpga_manager",
-+		.of_match_table = of_match_ptr(versal_fpga_of_match),
-+	},
-+};
-+
-+module_platform_driver(versal_fpga_driver);
-+
-+MODULE_AUTHOR("Nava kishore Manne <nava.manne@xilinx.com>");
-+MODULE_AUTHOR("Appana Durga Kedareswara rao <appanad.durga.rao@xilinx.com>");
-+MODULE_DESCRIPTION("Xilinx Versal FPGA Manager");
-+MODULE_LICENSE("GPL");
--- 
-2.18.0
+I think I get you. The hash type is also a kind of classification (e.g 
+TCP or UDP). Any possibility that it can be deduced from the driver? (Or 
+it could be too expensive to do that).
+
+Thanks
+
+
+>
+>> Thanks
+>>
+>> [1]
+>> https://docs.microsoft.com/en-us/windows-hardware/drivers/network/indicating-rss-receive-data
+>>
+>>
 
