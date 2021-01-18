@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AE42FA1B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55E82FA1B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392324AbhARNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:34:54 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34061 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392259AbhARNac (ORCPT
+        id S2392199AbhARNdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392208AbhARNaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:30:32 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4AF3C58073D;
-        Mon, 18 Jan 2021 08:29:24 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 18 Jan 2021 08:29:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=t9OxNww6HWANpl54DQNy0q2p7lT
-        jdtSam7hUc9ITNzs=; b=attOfT2JhEVIdl47sbSUK/s47o8YAfdcDGViEkjPbvU
-        kN8PHV6KfcrnUlnGI0H/zGWV/lYQ/pducVd00hrRS9hHyg5OfAtW+KJ2R7HwnmfM
-        5iq8BYpz51zKcuocrj/vP/AFPEJr6TVyHo59LKoSM2ypTJ3ltvkw7ig3SZRLpt6J
-        lHil40Rhw642JFs1NT3z9U4K8NleFiVPQLc4Z9OuIehemycr1YyXyJA5QKrxo70H
-        eDLO50qTvALYLnz1Ks4SUZiW4qcyk2hcYolm3Rb5rS0qbMkRO+CHH2VOMDGu+ErN
-        xB781iOqbwRtIrqoJ26sBo1Tswut5Ch0qwYcnIjPcpQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=t9OxNw
-        w6HWANpl54DQNy0q2p7lTjdtSam7hUc9ITNzs=; b=JLHGu7fHEcDAC3NTaQcGeg
-        2zuGNPvX2PpaqiuoI2b+5uzzAGAZgsRdDByCUBrgB5fy0cMCaP8CRolCKBFlJ/sR
-        X1kRLMWD9VZ6my4AMb3FldcOg4/VuN8U/YhM4GT73PUa1F/5q2hVOXgfoYPozTZ5
-        aPe+HCCQI4UpJlR3uDhTcIce8tHBGGduqmC3B0l2roCmjTnsJyz7d+k3U/uJrFUm
-        13np3cXhXdbg9687Nt2cHPGOEfgZEtC5AmgJGmZTjcnrCkszd6i4m39MRGK1M6rb
-        AAPkScJKpYr5N/NKGipPdD39TJBWKAktFxffAtxjpmnUKEjF36E2OMxwMGpWom3g
-        ==
-X-ME-Sender: <xms:NI0FYLIiNmWXWwbaBOvX3PkXmJan0ViGFZ-ojBJmhyXS1K3iVNa5lw>
-    <xme:NI0FYPLNRltU0bDEd2GQ1Xxu5PT-iD6D6C9A7Sk6FAfmmOa9lZLnp7l12gQSmiHRi
-    -Zrhngv83FYsfv-lsA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdehvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:NI0FYDt0pSg1-AUo5z1Yvjzoxwbl3xLerUXHPUiBfMJIcKdBKKSBTA>
-    <xmx:NI0FYEbrJoo_yNV_QLnwaAmtR3yoHU3_Tjg0sjzAjVTBfcXu1H1P3A>
-    <xmx:NI0FYCbVvp5PEZ8UjVR07oNPg80W2GiLGc4M9heDz_EqLypu37LF9w>
-    <xmx:NI0FYOQCrC6S2s8pkCXuA9lrz5vEuC25zctrNXBuf5ScukApMwpr8Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D162B240057;
-        Mon, 18 Jan 2021 08:29:23 -0500 (EST)
-Date:   Mon, 18 Jan 2021 14:29:22 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 03/21] dt-bindings: pinctrl: Add Allwinner H616
- compatible strings
-Message-ID: <20210118132922.bsq34567ojf3q7mm@gilmour>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-4-andre.przywara@arm.com>
+        Mon, 18 Jan 2021 08:30:18 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55258C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:29:38 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id y187so13798931wmd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:29:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=azSUNypoUfXkpBNPZlINL/zcgEf9pXSAwHyqYLVciok=;
+        b=Hdiq7ktUglPw2zVeBs7zzB+XtzIcpfitaPaWUCwOh9Lp9grsNlqjNfLEhWzbdqjyLr
+         XwhO7yBQNhaa8PVRuXmwzBb4HoBM0FMU2kRFd1BKaZ4uX5qIute8XLIkw7aleByJtYGf
+         BXUpgbwE6/LwYO5XnDY7K5pT8zQ7ng+PiUgi2+ewvj/+yl6NJJxZ448sKc8AC8xmExWX
+         iyq8MLnxO818KbMz6m0jlISbSB5HOIgfxzwLAjOrQi8IDKamWFVMBQUCoTXjfam8WtZw
+         NpPZUO8H3m3DlxZyqJQvFXYlVIjWbYG5/v1nBe7gt5DE1oDYURdCVacMi3U98mL76gyk
+         ElPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=azSUNypoUfXkpBNPZlINL/zcgEf9pXSAwHyqYLVciok=;
+        b=UkUFnO8ggEXJjiemY4t9wK+24VdMFmAVeiRzpb+zM2mVrianaFqhk77SUyVQzgdT1O
+         tEQEcGb6Wa7y7RggMMwf1SJ19h4+wgUISp4vzZ3lv85Mrtm5q40Itl/M+fZzOk5bWV6d
+         1f3b/pXcvEF5oRgvJvmprKEiXFgknRZAPhlZ3kLUppBEeLEHk1EtDzN1bLUXIE/jCwxm
+         yayrjD1TXIrN8CZETBF9pWyrrQoEPtp59u5cGZ7gycD672lYgp1CzuZfPvBHHFZgID5e
+         3qnbSHSa9BkVD1Ry1UI2D3jufquqt47VQP6G4NDzdQhezfkXLrwUlP8lbJCcceJSmMFx
+         UkSQ==
+X-Gm-Message-State: AOAM532md6AtJNYvdafz6mDO2FpBqV9vv+miJ6NP5OvbG5LrgglMnVWv
+        WFOPnMiCVtxM+7tyjhXQ1WdxLiruRJBg3w==
+X-Google-Smtp-Source: ABdhPJwuICFtdmLsGWmzfsOVlfdR9kik5BbE6wWl9u1IG/qQD53UckSQXbc/RrHmiYn+JKe9B1+ugg==
+X-Received: by 2002:a1c:40d6:: with SMTP id n205mr21244747wma.0.1610976576985;
+        Mon, 18 Jan 2021 05:29:36 -0800 (PST)
+Received: from google.com ([2a01:4b00:8523:2d03:3d4d:985d:87b7:4d55])
+        by smtp.gmail.com with ESMTPSA id g5sm30955277wro.60.2021.01.18.05.29.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 05:29:36 -0800 (PST)
+Date:   Mon, 18 Jan 2021 13:29:35 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 17/21] KVM: arm64: Document HVC_VHE_RESTART stub
+ hypercall
+Message-ID: <20210118132935.mutemf7j7wtyz7wz@google.com>
+References: <20210118094533.2874082-1-maz@kernel.org>
+ <20210118094533.2874082-18-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7nwyzr24mrjxwgux"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118020848.11721-4-andre.przywara@arm.com>
+In-Reply-To: <20210118094533.2874082-18-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 18, 2021 at 09:45:29AM +0000, Marc Zyngier wrote:
+> For completeness, let's document the HVC_VHE_RESTART stub.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: David Brazdil <dbrazdil@google.com>
 
---7nwyzr24mrjxwgux
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ---
+>  Documentation/virt/kvm/arm/hyp-abi.rst | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/arm/hyp-abi.rst b/Documentation/virt/kvm/arm/hyp-abi.rst
+> index 83cadd8186fa..1ba628baf11b 100644
+> --- a/Documentation/virt/kvm/arm/hyp-abi.rst
+> +++ b/Documentation/virt/kvm/arm/hyp-abi.rst
+> @@ -58,6 +58,15 @@ these functions (see arch/arm{,64}/include/asm/virt.h):
+>    into place (arm64 only), and jump to the restart address while at HYP/EL2.
+>    This hypercall is not expected to return to its caller.
+>  
+> +* ::
+> +
+> +    x0 = HVC_VHE_RESTART (arm64 only)
+> +
+> +  Attempt to upgrade the kernel's exception level from EL1 to EL2 by enabling
+> +  the VHE mode. This is conditioned by the CPU supporting VHE, the EL2 MMU
+> +  being off, and VHE not being disabled by any other mean (comment line option,
+'means' (both singular and plural), and 'command line'
 
-On Mon, Jan 18, 2021 at 02:08:30AM +0000, Andre Przywara wrote:
-> A new SoC, a new compatible string.
-> Also we were too miserly with just allowing seven interrupt banks.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Maxime
-
---7nwyzr24mrjxwgux
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAWNMgAKCRDj7w1vZxhR
-xfN+AP90aYXbY08sDFUSinXCA22Rk+Qm62JSM2tvdDBHmNO2iAEA69kKXTttiaA/
-0gVIfdRT6KZpkqlutGYANT73gjGWdgo=
-=AJkx
------END PGP SIGNATURE-----
-
---7nwyzr24mrjxwgux--
+> +  for example).
+> +
+>  Any other value of r0/x0 triggers a hypervisor-specific handling,
+>  which is not documented here.
+>  
+> -- 
+> 2.29.2
+> 
