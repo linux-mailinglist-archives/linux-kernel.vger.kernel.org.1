@@ -2,94 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C0E2F9D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E459E2F9D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389347AbhARK6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:58:18 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42296 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389186AbhARK5O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:57:14 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 6BB681F44C3B
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel@collabora.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 RESEND 2/2] arm: lib: xor-neon: move pragma options to makefile
-Date:   Mon, 18 Jan 2021 12:55:57 +0200
-Message-Id: <20210118105557.186614-3-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118105557.186614-1-adrian.ratiu@collabora.com>
-References: <20210118105557.186614-1-adrian.ratiu@collabora.com>
+        id S2389827AbhARK7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:59:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55342 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389410AbhARK6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:58:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3588B1C1;
+        Mon, 18 Jan 2021 10:57:59 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 10:57:57 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Imran Khan <imran.f.khan@oracle.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Remove redundant sched_numa_balancing check.
+Message-ID: <20210118105757.GA20777@suse.de>
+References: <20210118103218.204373-1-imran.f.khan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210118103218.204373-1-imran.f.khan@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using a pragma like GCC optimize is a bad idea because it tags
-all functions with an __attribute__((optimize)) which replaces
-optimization options rather than appending so could result in
-dropping important flags. Not recommended for production use.
+On Mon, Jan 18, 2021 at 09:32:18PM +1100, Imran Khan wrote:
+> task_numa_fault is invoked from do_numa_page/do_huge_pmd_numa_page,
+> for task_numa_work induced memory faults. task_numa_work is scheduled
+> from task_tick_numa which is invoked only if sched_numa_balancing
+> is true.
+> 
+> So task_numa_fault will not get invoked if sched_numa_balancing is
+> false and hence we can avoid checking it again in task_numa_fault.
+> 
+> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
 
-Because these options should always be enabled for this file,
-it's better to set them via command line. tree-vectorize is on
-by default in Clang, but it doesn't hurt to make it explicit.
+If NUMA balancing is disabled at runtime, there may still be PTEs that
+are marked for NUMA balancing. While these still get handled at fault,
+there is no point tracking the fault information in task_numa_fault and
+this function can still get called after sched_numa_balancing is
+disabled.
 
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
----
- arch/arm/lib/Makefile   |  2 +-
- arch/arm/lib/xor-neon.c | 10 ----------
- 2 files changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index 6d2ba454f25b..12d31d1a7630 100644
---- a/arch/arm/lib/Makefile
-+++ b/arch/arm/lib/Makefile
-@@ -45,6 +45,6 @@ $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
- 
- ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-   NEON_FLAGS			:= -march=armv7-a -mfloat-abi=softfp -mfpu=neon
--  CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
-+  CFLAGS_xor-neon.o		+= $(NEON_FLAGS) -ftree-vectorize -Wno-unused-variable
-   obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
- endif
-diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
-index e1e76186ec23..62b493e386c4 100644
---- a/arch/arm/lib/xor-neon.c
-+++ b/arch/arm/lib/xor-neon.c
-@@ -14,16 +14,6 @@ MODULE_LICENSE("GPL");
- #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
- #endif
- 
--/*
-- * Pull in the reference implementations while instructing GCC (through
-- * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
-- * NEON instructions.
-- */
--#ifdef CONFIG_CC_IS_GCC
--#pragma GCC optimize "tree-vectorize"
--#endif
--
--#pragma GCC diagnostic ignored "-Wunused-variable"
- #include <asm-generic/xor.h>
- 
- struct xor_block_template const xor_block_neon_inner = {
 -- 
-2.30.0
-
+Mel Gorman
+SUSE Labs
