@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3966F2FA2B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8FA2FA29F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392818AbhARORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:17:12 -0500
-Received: from mail-ve1eur01hn2203.outbound.protection.outlook.com ([52.100.7.203]:61166
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404602AbhAROKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:10:51 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kyc8z0uV4RLfYYrYmEZLY4pAgIOkxkyEaGQZFKIKD2aBrepOzYAz1iOizSK6s57bFdwYd5Zhq2G8MBzWhnT/91OzR4HDfj4M+7R9Ovw6I8RN4n+2M5krkHlgbUzcRNq5pX+J6UWudZAx3hUJJKmT/na2R73qedyn6TEZji1XlxINVbyt9NgnEJxd25SCAsd7vtxYks0DcdOzYGCRenjLHr+9OhmI1jvcq3gwgNkjBQSZIWurcFtjhIvyjvStwMa5DYAexw9/6zVAz29iuQGgzkk7oU1l+AVlbxW/6NExlGGPLpuu3HBewxVXCtVqjiB0f0Wx6dN2ezgvAqH7clcgdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Ch+TDBVQwmtp0AZCA0o9OKX8vp7eqp2AkDNaCu/lnw=;
- b=E3vCuZX1WXR1TsJ+3+a2SXNnon2K7XLLCp/FmNPW4+TycuOQ1xe1oKd41UYpEhUrYaP26DVfPWgEmyfjjZiDeq663mNGNISsHKqg8ooHU8+j9cxQ43q/LJrFEXf4nDAgOb/qykIfN/bb39jD93DhdMEIgxYWIArMblq9akzU/FfaAf3Z90XGFci9VNy1rQg7l3Oc8oHjqk2IVDCDEmWBQVzlfq6R95UtQ8us1/UzTq7WBm8SIWqQlBFLgIHrLs6HtFHyu57FX8wzYTq2xgZNTt4C3u5FEKxe1iufyJu43C5Oi/9ytMKOocVQv1sQbzXwbpOjTm2h8naNOHP/DSzZlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 62.153.209.162) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=schleissheimer.de; dmarc=none action=none
- header.from=schleissheimer.de; dkim=fail (no key for signature)
- header.d=schleissheimer.de; arc=none
+        id S2392695AbhAROMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392623AbhAROLy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:11:54 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A72C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:11:12 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id w3so16297496otp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:11:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Ch+TDBVQwmtp0AZCA0o9OKX8vp7eqp2AkDNaCu/lnw=;
- b=FuMqjrLAHPKo0BZugJOTasvayMSGUe6NSXZtI7ivpZxH2sJzdNwVYpJYv4sAGaZWBK0SgC2GjEEBtzDdKYvJH7bVmZ6d/QZU0dUzZj4tYn3Cc/TxRhEbXgVkY9KCM/x7NimSWRwUlCpPkysninu9Yv7vTcZkYkfFlgUjpU2lGOI=
-Received: from AM7PR02CA0026.eurprd02.prod.outlook.com (2603:10a6:20b:100::36)
- by VI1P190MB0782.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:122::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Mon, 18 Jan
- 2021 14:10:02 +0000
-Received: from VI1EUR04FT056.eop-eur04.prod.protection.outlook.com
- (2603:10a6:20b:100:cafe::f2) by AM7PR02CA0026.outlook.office365.com
- (2603:10a6:20b:100::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend
- Transport; Mon, 18 Jan 2021 14:10:02 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 62.153.209.162)
- smtp.mailfrom=schleissheimer.de; vger.kernel.org; dkim=fail (no key for
- signature) header.d=schleissheimer.de;vger.kernel.org; dmarc=none action=none
- header.from=schleissheimer.de;
-Received-SPF: Fail (protection.outlook.com: domain of schleissheimer.de does
- not designate 62.153.209.162 as permitted sender)
- receiver=protection.outlook.com; client-ip=62.153.209.162;
- helo=mail.schleissheimer.de;
-Received: from mail.schleissheimer.de (62.153.209.162) by
- VI1EUR04FT056.mail.protection.outlook.com (10.152.28.242) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.12 via Frontend Transport; Mon, 18 Jan 2021 14:10:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=schleissheimer.de; s=dkim1;
-        h=Message-Id:Date:Subject:Cc:To:From; bh=2Ch+TDBVQwmtp0AZCA0o9OKX8vp7eqp2AkDNaCu/lnw=;
-        b=pRllO+N3qGsfhl6Rpram2B+hbHcyVBK0jL826ibpuy9nja4MkymWejsMSLpdruY9Pir4ffMmkckPbBuzGU07MpWnqZ5kHnVsyZbCbjIynFh6sggX9VmiK77v0JMCx9F7ZpDQpULegGss0FBBNvtBVHJgU5WDEdI0mZNyaseMlzA=;
-Received: from [192.168.10.165] (port=40438 helo=contiredmine.schleissheimer.de)
-        by mail.schleissheimer.de with esmtp (Exim 4.82_1-5b7a7c0-XX)
-        (envelope-from <schuchmann@schleissheimer.de>)
-        id 1l1VEA-0003DD-2g; Mon, 18 Jan 2021 15:09:54 +0100
-X-CTCH-RefID: str=0001.0A782F23.600596B2.00D5,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-From:   Sven Schuchmann <schuchmann@schleissheimer.de>
-To:     schuchmann@schleissheimer.de
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: lp50xx: add setting of default intensity from DT
-Date:   Mon, 18 Jan 2021 14:09:47 +0000
-Message-Id: <20210118140947.3887-1-schuchmann@schleissheimer.de>
-X-Mailer: git-send-email 2.17.1
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YTfhLTeONPL73/4VsK/L5S1/wO9PGRB6hEc7qRvlGaU=;
+        b=tgcy/L3H/Qw7bHHyLmey5F+KqM83VfkcQx7AsVH3k+511OrzZYbnp6uoRjbsQUgVoZ
+         uYFJnhcKFFvimpHV+b5EMZ/OaiuWtVFV+/zH9IXwYphxU5/h1eRLSu1TYQnLqbsMrzaZ
+         CTIKaxNLPsoEXEKUg9hFgJ/QMsQlmF7EZKp1xPIPBmQ6ogBhLtDquPS2rp4KD8nAROUW
+         drgwqIX8hELlxTfE94k6es3kfiBjVSQ0t3l+9U/hOSi0b3zftPHdEqy3ZsOP2rs9BRw6
+         RfxzO2KHbWFHwCvZSJGnLYP35RGmzgNAeAHnDdkrYrMfOz0B7ciTu62AIggE1rE5Zh8l
+         m0hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YTfhLTeONPL73/4VsK/L5S1/wO9PGRB6hEc7qRvlGaU=;
+        b=ZBwW4I01X/5Bfpdy6nmCwp0mulD2TFzVm/2wprEv9T5Lv1MJvFYnzlPxJYtr4AwhLW
+         f1i1Sji9G1AE40Jfl9qN1s9vnMJM4YRvLLcyqp6HGSJiuvaG/AO5l8Pz4uN4nWNiwf71
+         ugVj428et/dHEoTVcQoKL2QnT4H4QbF3OsD1BB4Lqs3oJuhUxR6IePQ6zaBJzX7vOmvn
+         7nt0lS1lchb5iLkPNPn0vnVxIMxhMPO0XAkKOqfN19H6gOBnSBF5c0DkuWNJa9VQLVCZ
+         +B4gltFNs0rc7f1XWgUUgqQQ9gn6XRl64Kka9eC796Y9bhZYtNJJKGSxH/x1ynoFBs2r
+         d+lg==
+X-Gm-Message-State: AOAM531RjCEms755Dh+RsERulrPnJlV1a7rYcws1gi7+frfdXbV92lgA
+        ojenmPeAPhT/waFTwb+XrYgmapSP4X4RvkYjeLh9Tul34KGBIw==
+X-Google-Smtp-Source: ABdhPJz69ks0tL9qgtuiPnA+eRQcufcCFOJtt2fjlCfcPtDhD/C4ZpH69TUkTWFYbHx8Hd2XWW1uFpbbDSdYFmjKIio=
+X-Received: by 2002:a9d:e91:: with SMTP id 17mr17287891otj.237.1610979072263;
+ Mon, 18 Jan 2021 06:11:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 16550122-721b-4180-a5af-08d8bbbabf1f
-X-MS-TrafficTypeDiagnostic: VI1P190MB0782:
-X-Microsoft-Antispam-PRVS: <VI1P190MB078202232CD70D35CC6D02AA84A40@VI1P190MB0782.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RCuWqk5qLPUTjxwndmWHjsycLJTWYMlryyXwW9EtEtkzzjQ0dLZ2Qjy68H6nef0Y9aIrZlq2gL6uu6t4td5JryE9G012viG6kabPf5hN1gwol9uaysckj08u4cb/apC/C5zz/Tkd4FvA7U+CHszGbZ4IUd6eduLCmL9H1GH3rnL4Q3Rf+dKUCABy5FyvA2e6KdtsCyYMDklQNVVXz/nFM2gFlOI3p0P1Ild6D7AxF3SpGud365YYjBi7Y3gspJrTzzVWIwhKJtXo4E2UNKGNHNUo8ZSIX44HYrGXpcvr/RwJ9nLrL8mRulLKtMtXOctuWoJke1AmS+YyoY2aTxy4FhH5Nl/UxJtKstKCTscnUbgf+SUoD2mFL7BbNQAokU3bIiIbdd0tKr8VgOoQFvR1JWPt552yy6lr1okemZNKeet6WfXVsrQ840lTSLAgatOiipKyCy5edT4kPorwAEZsftLQnhMXl+2Yxu4vOjw/FCd6/73UWSIOvVvE7Acksulo7wY98GDrkvKFo3d7Tjp5IhKw3JTF7xPuy6Hm24oNq8oiHw5Yo/dFIrgnW7Al8JJuRCg9xyP4VbLc4Yq5JW/2hfmXy9rVpuBCKUd/jeZI6is=
-X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:www.schleissheimer.de;CAT:NONE;SFS:(346002)(136003)(396003)(376002)(39840400004)(46966006)(26005)(82310400003)(186003)(54906003)(316002)(478600001)(37006003)(336012)(34010700045)(1076003)(34206002)(356005)(47076005)(4326008)(2906002)(7636003)(70586007)(36756003)(5660300002)(7696005)(8936002)(83380400001)(6666004)(426003)(9786002)(8676002)(2616005)(70206006);DIR:OUT;SFP:1501;
-X-OriginatorOrg: schleissheimer.de
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 14:10:01.6859
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16550122-721b-4180-a5af-08d8bbbabf1f
-X-MS-Exchange-CrossTenant-Id: ba05321a-a007-44df-8805-c7e62d5887b5
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ba05321a-a007-44df-8805-c7e62d5887b5;Ip=[62.153.209.162];Helo=[mail.schleissheimer.de]
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT056.eop-eur04.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P190MB0782
+References: <20210117123104.27589-1-benbjiang@tencent.com> <CAKfTPtCPUnhiNF0SxK-=RTaq+h1D0tK-OfRsubb38V23KFEB_w@mail.gmail.com>
+In-Reply-To: <CAKfTPtCPUnhiNF0SxK-=RTaq+h1D0tK-OfRsubb38V23KFEB_w@mail.gmail.com>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Mon, 18 Jan 2021 22:11:01 +0800
+Message-ID: <CAPJCdBnHHk40uBtrOisp=hY=5K3OLeUwpkPmgUURVf2DvDmY_Q@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: add protection for delta of wait time
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use a multicolor-led together with a trigger
-the led needs to have an intensity set to see something.
-The trigger changes the brightness of the led but if there
-is no intensity we actually see nothing.
+Hi, Vincent
 
-This patch adds the ability to set the default intensity
-of each led so that it is turned on from DT.
+On Mon, 18 Jan 2021 at 15:56, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Sun, 17 Jan 2021 at 13:31, Jiang Biao <benbjiang@gmail.com> wrote:
+> >
+> > From: Jiang Biao <benbjiang@tencent.com>
+> >
+> > delta in update_stats_wait_end() might be negative, which would
+> > make following statistics go wrong.
+>
+> Could you describe the use case that generates a negative delta ?
+>
+> rq_clock is always increasing so this should not lead to a negative
+> value even if update_stats_wait_end/start are not called in the right
+> order,
+Yes, indeed.
 
-Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
----
- Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 6 +++++-
- drivers/leds/leds-lp50xx.c                              | 4 ++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+> This situation could happen after a migration if we forgot to call
+> update_stats_wait_start
+The migration case was what I worried about, but no regular use case
+comes into my mind. :)
+As an extreme case, would it be a problem if we disable/re-enable
+sched_schedstats during migration?
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-index c192b5feadc7..f810c4e84c44 100644
---- a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-@@ -69,7 +69,11 @@ patternProperties:
-     patternProperties:
-       "(^led-[0-9a-f]$|led)":
-         type: object
--        $ref: common.yaml#
-+        allOf:
-+          - $ref: common.yaml#
-+        properties:
-+          default-intensity:
-+            The intensity the LED get initialised with.
- 
- required:
-   - compatible
-diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-index f13117eed976..55b9e0c9e737 100644
---- a/drivers/leds/leds-lp50xx.c
-+++ b/drivers/leds/leds-lp50xx.c
-@@ -501,6 +501,10 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
- 			}
- 
- 			mc_led_info[num_colors].color_index = color_id;
-+
-+			fwnode_property_read_u32(led_node, "default-intensity",
-+				&mc_led_info[num_colors].intensity);
-+
- 			num_colors++;
- 		}
- 
--- 
-2.17.1
+static inline void
+update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
+{
+        u64 wait_start, prev_wait_start;
 
+        if (!schedstat_enabled()) // disable during migration
+                return; // return here, and skip updating wait_start
+...
+}
+
+static inline void
+update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
+{
+        struct task_struct *p;
+        u64 delta;
+
+        if (!schedstat_enabled())  // re-enable again
+                return;
+
+        /*
+         * When the sched_schedstat changes from 0 to 1, some sched se
+         * maybe already in the runqueue, the se->statistics.wait_start
+         * will be 0.So it will let the delta wrong. We need to avoid this
+         * scenario.
+         */
+        if (unlikely(!schedstat_val(se->statistics.wait_start)))
+                return;
+         //stale wait_start which might be bigger than rq_clock would
+be used. -)
+        delta = rq_clock(rq_of(cfs_rq)) -
+schedstat_val(se->statistics.wait_start);
+...
+
+Thanks a lot.
+Regards,
+Jiang
+
+}
+>
+> >
+> > Add protection for delta of wait time, like what have been done in
+> > update_stats_enqueue_sleeper() for deltas of sleep/block time.
+> >
+> > Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+> > ---
+> >  kernel/sched/fair.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index c0374c1152e0..ac950ac950bc 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -917,6 +917,9 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> >
+> >         delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
+> >
+> > +       if ((s64)delta < 0)
+> > +               delta = 0;
+> > +
+> >         if (entity_is_task(se)) {
+> >                 p = task_of(se);
+> >                 if (task_on_rq_migrating(p)) {
+> > --
+> > 2.21.0
+> >
