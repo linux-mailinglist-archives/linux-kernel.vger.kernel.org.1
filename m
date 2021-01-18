@@ -2,65 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293E72FAA5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC002FAA6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437478AbhARTiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:38:12 -0500
-Received: from ms.lwn.net ([45.79.88.28]:37522 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394051AbhARTcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:32:39 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BD782559;
-        Mon, 18 Jan 2021 19:31:57 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BD782559
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1610998318; bh=lFqXBHvWyIcVmFiDXcgQKlHNf9HagjYDA8Gw0gv+HhU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EJ79yiUmU5GZttXIefS6STv4NgwZ3a4mnowe0+Xj2dOLw7qvPpwfaipu8FOKukg4+
-         asUFQVpGxcGdMhzjXrZrbv7cyA0qKqhaYifp87F0uwVSzvoNiXbWh2wmx/JgcsTXyM
-         E6O07pOZ+5zocYwj1VLkB4unsi+26ap2yYIvnFQ1BpSrqY1D+d8lfUEjd3k2C69rJ3
-         IcBDLGPGsqz/JlbvUiIRXLAqC5NBaJr5vlUeLd94nvfBkKH8NfoazbksLtJnbQx1/b
-         JXxsEVo4eXtMDrJKmEcOUK4y+ZY0cUhHf5n46IsYaOJLyluaiCLWDI0dXDv6/Khc/c
-         /QWecHZFH8B9A==
-Date:   Mon, 18 Jan 2021 12:31:56 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Subject: Re: [PATCH] docs: process/howto.rst: make sections on bug reporting
- match practice
-Message-ID: <20210118123156.02f8ca28@lwn.net>
-In-Reply-To: <20210116143542.69199-1-linux@leemhuis.info>
-References: <20210116143542.69199-1-linux@leemhuis.info>
-Organization: LWN.net
+        id S2437401AbhARTmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:42:40 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:49746 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437340AbhARTdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 14:33:47 -0500
+Date:   Mon, 18 Jan 2021 19:32:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610998379; bh=z2BgOHJQihEnZJluF+2PjwdFI80xZFFK5NdPVZjc2KU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=RtXGISrjXU7lTSaAaDTkKXl/3TbgsmZk3CMUU+Y/Lv4b/vdC9DIOMcC9GiK0tMUVR
+         pclzQoZkmqRAczGjRuTKEgbg+L8HMcSBxS41Uyb3qbDsSVlc29Xk7pzunDBx0IbjW/
+         Uun5Ri1kLZrGZOpHWwnnQcvlWhuEcAloXEgWWNvrB3YSLUIwiDwzCFXPjUPsD0Lxjs
+         rtcZo1z+m+nIqfk5925u7dVy/1I1GYmWEgsCy2IBThOg7WlV5J4UF+3RwNsAUCUEQ6
+         mmdjqD3D8B+JQgvdZl3vPSvVY4Vb+VLPDsqcaPhCRHDJgpu/wW1GXg7MR7/gf/LCNO
+         d5FYEWbBU8/Cg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Meir Lichtinger <meirl@mellanox.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next 1/2] net: introduce UDP GRO netdev feature
+Message-ID: <20210118193232.87583-1-alobakin@pm.me>
+In-Reply-To: <20210118193122.87271-1-alobakin@pm.me>
+References: <20210118193122.87271-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Jan 2021 15:35:42 +0100
-Thorsten Leemhuis <linux@leemhuis.info> wrote:
+Introduce a new netdev_feature, NETIF_F_GRO_UDP, to allow user
+to turn UDP GRO on and off when there is no socket, e.g. when
+forwarding.
+Defaults to off to not change current datapath.
 
-> The file Documentation/process/howto.rst points to bugzilla.kernel.org
-> as the primary place to report kernel bugs to. For most of the kernel
-> that's the wrong place, as the MAINTAINERS file shows. Adjust those
-> sections to make them match current practice.
-> 
-> This change also removes a contradiction with the recently added text
-> Documentation/admin-guide/reporting-issues.rst, which is a reason for a
-> 'this needs further discussion' warning note in there. The change is
-> thus a prerequisite to remove that warning, nevertheless it is left for
-> now to make sure people review the text's approach more carefully.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+Suggested-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/linux/netdev_features.h | 4 +++-
+ net/ethtool/common.c            | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Applied, thanks.
+diff --git a/include/linux/netdev_features.h b/include/linux/netdev_feature=
+s.h
+index 934de56644e7..c6526aa13684 100644
+--- a/include/linux/netdev_features.h
++++ b/include/linux/netdev_features.h
+@@ -84,6 +84,7 @@ enum {
+ =09NETIF_F_GRO_FRAGLIST_BIT,=09/* Fraglist GRO */
+=20
+ =09NETIF_F_HW_MACSEC_BIT,=09=09/* Offload MACsec operations */
++=09NETIF_F_GRO_UDP_BIT,=09=09/* Enable UDP GRO */
+=20
+ =09/*
+ =09 * Add your fresh new feature above and remember to update
+@@ -157,6 +158,7 @@ enum {
+ #define NETIF_F_GRO_FRAGLIST=09__NETIF_F(GRO_FRAGLIST)
+ #define NETIF_F_GSO_FRAGLIST=09__NETIF_F(GSO_FRAGLIST)
+ #define NETIF_F_HW_MACSEC=09__NETIF_F(HW_MACSEC)
++#define NETIF_F_GRO_UDP=09=09__NETIF_F(GRO_UDP)
+=20
+ /* Finds the next feature with the highest number of the range of start ti=
+ll 0.
+  */
+@@ -234,7 +236,7 @@ static inline int find_next_netdev_feature(u64 feature,=
+ unsigned long start)
+ #define NETIF_F_SOFT_FEATURES=09(NETIF_F_GSO | NETIF_F_GRO)
+=20
+ /* Changeable features with no special hardware requirements that defaults=
+ to off. */
+-#define NETIF_F_SOFT_FEATURES_OFF=09NETIF_F_GRO_FRAGLIST
++#define NETIF_F_SOFT_FEATURES_OFF=09(NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UD=
+P)
+=20
+ #define NETIF_F_VLAN_FEATURES=09(NETIF_F_HW_VLAN_CTAG_FILTER | \
+ =09=09=09=09 NETIF_F_HW_VLAN_CTAG_RX | \
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index 24036e3055a1..e45128882372 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -68,6 +68,7 @@ const char netdev_features_strings[NETDEV_FEATURE_COUNT][=
+ETH_GSTRING_LEN] =3D {
+ =09[NETIF_F_HW_TLS_RX_BIT] =3D=09 "tls-hw-rx-offload",
+ =09[NETIF_F_GRO_FRAGLIST_BIT] =3D=09 "rx-gro-list",
+ =09[NETIF_F_HW_MACSEC_BIT] =3D=09 "macsec-hw-offload",
++=09[NETIF_F_GRO_UDP_BIT] =3D=09=09 "rx-gro-udp",
+ };
+=20
+ const char
+--=20
+2.30.0
 
-jon
+
