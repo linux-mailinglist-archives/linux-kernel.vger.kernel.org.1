@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E932F9C70
+	by mail.lfdr.de (Postfix) with ESMTP id EA88D2F9C72
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388796AbhARJYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:24:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388565AbhARJSV (ORCPT
+        id S2388827AbhARJYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:24:47 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55760 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388571AbhARJTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:18:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44E2C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=d0B2hFv3lHdM9TBPzjM9IKfLfYu/9AxcqqtQjLF2crQ=; b=QkLUcq4X8dxRqsXPDc7Y9lJck
-        3QIAiv0C0MkGBIJb3dDg7ZBcYhOV05UNg+TlQkkzDjScHmScwwlaUHiokzk0lOBaV43/+2xoGhWGf
-        D+64OyCT9ahStm/k0XRMJT/jIp5xP/mJbxx2PHKz3w9zKF54QPGLWcKfLTcR5IPqzmKF0ZDhJ5R0m
-        aYBlgL7QXtqZhxzgplPp8W6aXDTvcv/M8F+ULI07V2NO+63QSEZPCNQ4msrShdPKnsINYQhJxQawz
-        +1pv2oTUHJVXv5G3VWvfK8lO12b6DWEwuTsxTmkCRFcII96Bq39l9AAm3MMZJ860iDK+YbDfMTdxZ
-        BA2BqYang==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49488)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l1QfH-0006CK-Qh; Mon, 18 Jan 2021 09:17:35 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l1QfF-0003t7-Eh; Mon, 18 Jan 2021 09:17:33 +0000
-Date:   Mon, 18 Jan 2021 09:17:33 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmerdabbelt@google.com,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, guoren@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: Re: [PATCH v3 0/4] initrd: Use unified initrd reserve function in
- ARM/RISCV
-Message-ID: <20210118091733.GD1551@shell.armlinux.org.uk>
-References: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
- <48c006a8-a352-488c-4981-768faffbe343@huawei.com>
- <20210117100903.GB1551@shell.armlinux.org.uk>
- <cc47f8cf-8778-43ab-77de-9dd220de7c26@huawei.com>
+        Mon, 18 Jan 2021 04:19:55 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BB0AF2BB;
+        Mon, 18 Jan 2021 10:19:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610961551;
+        bh=gjnQsqFgxtpSq29xrtqXIVq4Xvc9Ow3B2rHgXQ+GU3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lYwoQ3Lh7ouSl1TmFTMKG2c4wx3waTDRv8f10AxBqjGIpJ796ly2IOzm2fvAnYDmO
+         hHwEVuJD5DngMdlfvi6mFvMcWOxI85BE53JDlzDfMPsMeAxt5r/1BoGo+k1qmj3jIP
+         DPG34Im8q/Jek+X88TtBRdYDlavT/vy9MRdiHNjE=
+Date:   Mon, 18 Jan 2021 11:18:55 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+Message-ID: <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-5-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc47f8cf-8778-43ab-77de-9dd220de7c26@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210118003428.568892-5-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:01:40AM +0800, Kefeng Wang wrote:
-> 
-> On 2021/1/17 18:09, Russell King - ARM Linux admin wrote:
-> > On Sun, Jan 17, 2021 at 12:57:55PM +0800, Kefeng Wang wrote:
-> > > Correct Russell's mail address (from linux@armlinux.org.uk to
-> > > rmk+kernel@armlinux.org.uk, should update the MAINTAINERS)
-> > No. MAINTAINERS is correct.
-> 
-> I got following message,  so I check mail of your recent patches, and send a
-> new one.
-> 
-> Please ignore it, there may be some other problems.
-> 
-> "*Delivery has failed to these recipients or groups:*
-> 
-> linux@armlinux.org.uk <mailto:linux@armlinux.org.uk>
-> A communication failure occurred during the delivery of this message. Please
-> to resend the message later. If the problem continues, contact your
-> helpdesk."
+Hi Daniel,
 
-That is a most unhelpful bounce message - I suppose it's designed for
-non-technical people to ensure that the problem can't be resolved.
+Thank you for the patch.
 
-From what I can see from my end, every attempt involving your email
-address last week (wangkefeng.wang@huawei.com) has been successful, so
-I suspect the problem is not at my end.
+On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
+> We want to refer to an i2c device by name before it has been
 
-In any case, all @armlinux.org.uk addresses hit the same server, so
-if there's a "communication failure" for the domain, it would affect
-all local-parts equally.
+s/i2c device/acpi i2c device/ ?
+
+> created by the kernel; add a function that constructs the name
+> from the acpi device instead.
+> 
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+> 
+> 	- Stopped using devm_kasprintf()
+> 
+>  drivers/i2c/i2c-core-acpi.c | 16 ++++++++++++++++
+>  include/linux/i2c.h         |  5 +++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
+> index 37c510d9347a..98c3ba9a2350 100644
+> --- a/drivers/i2c/i2c-core-acpi.c
+> +++ b/drivers/i2c/i2c-core-acpi.c
+> @@ -497,6 +497,22 @@ struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
+>  }
+>  EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
+>  
+> +/**
+> + * i2c_acpi_dev_name - Construct i2c device name for devs sourced from ACPI
+> + * @adev:     ACPI device to construct the name for
+> + *
+> + * Constructs the name of an i2c device matching the format used by
+> + * i2c_dev_set_name() to allow users to refer to an i2c device by name even
+> + * before they have been instantiated.
+> + *
+> + * The caller is responsible for freeing the returned pointer.
+> + */
+> +char *i2c_acpi_dev_name(struct acpi_device *adev)
+> +{
+> +	return kasprintf(GFP_KERNEL, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
+
+There's a real danger of a memory leak, as the function name sounds very
+similar to dev_name() or acpi_dev_name() and those don't allocate
+memory. I'm not sure what a better name would be, but given that this
+function is only used in patch 6/7 and not in the I2C subsystem itself,
+I wonder if we should inline this kasprintf() call in the caller and
+drop this patch.
+
+> +}
+> +EXPORT_SYMBOL_GPL(i2c_acpi_dev_name);
+> +
+>  #ifdef CONFIG_ACPI_I2C_OPREGION
+>  static int acpi_gsb_i2c_read_bytes(struct i2c_client *client,
+>  		u8 cmd, u8 *data, u8 data_len)
+> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+> index 4d40a4b46810..b82aac05b17f 100644
+> --- a/include/linux/i2c.h
+> +++ b/include/linux/i2c.h
+> @@ -998,6 +998,7 @@ bool i2c_acpi_get_i2c_resource(struct acpi_resource *ares,
+>  u32 i2c_acpi_find_bus_speed(struct device *dev);
+>  struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
+>  				       struct i2c_board_info *info);
+> +char *i2c_acpi_dev_name(struct acpi_device *adev);
+>  struct i2c_adapter *i2c_acpi_find_adapter_by_handle(acpi_handle handle);
+>  #else
+>  static inline bool i2c_acpi_get_i2c_resource(struct acpi_resource *ares,
+> @@ -1014,6 +1015,10 @@ static inline struct i2c_client *i2c_acpi_new_device(struct device *dev,
+>  {
+>  	return ERR_PTR(-ENODEV);
+>  }
+> +static inline char *i2c_acpi_dev_name(struct acpi_device *adev)
+> +{
+> +	return NULL;
+> +}
+>  static inline struct i2c_adapter *i2c_acpi_find_adapter_by_handle(acpi_handle handle)
+>  {
+>  	return NULL;
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards,
+
+Laurent Pinchart
