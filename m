@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992462F9CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C232F9CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389497AbhARKE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:04:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        id S2389337AbhARKVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:21:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388298AbhARJsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:48:40 -0500
+        id S2389444AbhARKDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:03:19 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E068322AAC;
-        Mon, 18 Jan 2021 09:46:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EB4722ADC;
+        Mon, 18 Jan 2021 10:00:28 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l1R6s-008RhD-5m; Mon, 18 Jan 2021 09:46:06 +0000
+        id 1l1R72-008RhD-7u; Mon, 18 Jan 2021 09:46:17 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v4 09/21] arm64: cpufeature: Add global feature override facility
-Date:   Mon, 18 Jan 2021 09:45:21 +0000
-Message-Id: <20210118094533.2874082-10-maz@kernel.org>
+Subject: [PATCH v4 19/21] arm64: cpufeatures: Allow disabling of BTI from the command-line
+Date:   Mon, 18 Jan 2021 09:45:31 +0000
+Message-Id: <20210118094533.2874082-20-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210118094533.2874082-1-maz@kernel.org>
 References: <20210118094533.2874082-1-maz@kernel.org>
@@ -54,106 +54,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a facility to globally override a feature, no matter what
-the HW says. Yes, this sounds dangerous, but we do respect the
-"safe" value for a given feature. This doesn't mean the user
-doesn't need to know what they are doing.
+In order to be able to disable BTI at runtime, whether it is
+for testing purposes, or to work around HW issues, let's add
+support for overriding the ID_AA64PFR1_EL1.BTI field.
 
-Nothing uses this yet, so we are pretty safe. For now.
+This is further mapped on the arm64.nobti command-line alias.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/include/asm/cpufeature.h |  2 ++
- arch/arm64/kernel/cpufeature.c      | 44 +++++++++++++++++++++++++----
- 2 files changed, 41 insertions(+), 5 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  3 +++
+ arch/arm64/include/asm/cpufeature.h             |  2 ++
+ arch/arm64/kernel/cpufeature.c                  |  5 ++++-
+ arch/arm64/kernel/idreg-override.c              | 12 ++++++++++++
+ arch/arm64/mm/mmu.c                             |  2 +-
+ 5 files changed, 22 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 2786fd39a047..7599fd0f1ad7 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -373,6 +373,9 @@
+ 	arcrimi=	[HW,NET] ARCnet - "RIM I" (entirely mem-mapped) cards
+ 			Format: <io>,<irq>,<nodeID>
+ 
++	arm64.nobti	[ARM64] Unconditionally disable Branch Target
++			Identification support
++
+ 	ataflop=	[HW,M68k]
+ 
+ 	atarimouse=	[HW,MOUSE] Atari Mouse
 diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9a555809b89c..465d2cb63bfc 100644
+index 80a5f423444e..d3e0f6dd43c4 100644
 --- a/arch/arm64/include/asm/cpufeature.h
 +++ b/arch/arm64/include/asm/cpufeature.h
-@@ -75,6 +75,8 @@ struct arm64_ftr_reg {
- 	u64				sys_val;
- 	u64				user_val;
- 	const struct arm64_ftr_bits	*ftr_bits;
-+	u64				*override_val;
-+	u64				*override_mask;
- };
+@@ -816,6 +816,8 @@ static inline unsigned int get_vmid_bits(u64 mmfr1)
  
- extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+ extern u64 id_aa64mmfr1_val;
+ extern u64 id_aa64mmfr1_mask;
++extern u64 id_aa64pfr1_val;
++extern u64 id_aa64pfr1_mask;
+ 
+ u32 get_kvm_ipa_limit(void);
+ void dump_cpu_features(void);
 diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index e99eddec0a46..aaa075c6f029 100644
+index 5b9343d2e9f0..f223171a7c34 100644
 --- a/arch/arm64/kernel/cpufeature.c
 +++ b/arch/arm64/kernel/cpufeature.c
-@@ -544,13 +544,17 @@ static const struct arm64_ftr_bits ftr_raz[] = {
- 	ARM64_FTR_END,
- };
+@@ -557,6 +557,8 @@ static const struct arm64_ftr_bits ftr_raz[] = {
  
--#define ARM64_FTR_REG(id, table) {		\
--	.sys_id = id,				\
--	.reg = 	&(struct arm64_ftr_reg){	\
--		.name = #id,			\
--		.ftr_bits = &((table)[0]),	\
-+#define ARM64_FTR_REG_OVERRIDE(id, table, v, m) {		\
-+		.sys_id = id,					\
-+		.reg = 	&(struct arm64_ftr_reg){		\
-+			.name = #id,				\
-+			.ftr_bits = &((table)[0]),		\
-+			.override_val = v,			\
-+			.override_mask = m,			\
- 	}}
+ u64 id_aa64mmfr1_val;
+ u64 id_aa64mmfr1_mask;
++u64 id_aa64pfr1_val;
++u64 id_aa64pfr1_mask;
  
-+#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, NULL, NULL)
-+
  static const struct __ftr_reg_entry {
  	u32			sys_id;
- 	struct arm64_ftr_reg 	*reg;
-@@ -760,6 +764,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
- 	u64 strict_mask = ~0x0ULL;
- 	u64 user_mask = 0;
- 	u64 valid_mask = 0;
-+	u64 override_val = 0, override_mask = 0;
+@@ -592,7 +594,8 @@ static const struct __ftr_reg_entry {
  
- 	const struct arm64_ftr_bits *ftrp;
- 	struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
-@@ -767,9 +772,38 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
- 	if (!reg)
- 		return;
+ 	/* Op1 = 0, CRn = 0, CRm = 4 */
+ 	ARM64_FTR_REG(SYS_ID_AA64PFR0_EL1, ftr_id_aa64pfr0),
+-	ARM64_FTR_REG(SYS_ID_AA64PFR1_EL1, ftr_id_aa64pfr1),
++	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64PFR1_EL1, ftr_id_aa64pfr1,
++			       &id_aa64pfr1_val, &id_aa64pfr1_mask),
+ 	ARM64_FTR_REG(SYS_ID_AA64ZFR0_EL1, ftr_id_aa64zfr0),
  
-+	if (reg->override_mask && reg->override_val) {
-+		override_mask = *reg->override_mask;
-+		override_val = *reg->override_val;
-+	}
-+
- 	for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
- 		u64 ftr_mask = arm64_ftr_mask(ftrp);
- 		s64 ftr_new = arm64_ftr_value(ftrp, new);
-+		s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
-+
-+		if ((ftr_mask & override_mask) == ftr_mask) {
-+			s64 tmp = arm64_ftr_safe_value(ftrp, ftr_ovr, ftr_new);
-+			char *str = NULL;
-+
-+			if (ftr_ovr != tmp) {
-+				/* Unsafe, remove the override */
-+				*reg->override_mask &= ~ftr_mask;
-+				*reg->override_val &= ~ftr_mask;
-+				tmp = ftr_ovr;
-+				str = "ignoring override";
-+			} else if (ftr_new != tmp) {
-+				/* Override was valid */
-+				ftr_new = tmp;
-+				str = "forced";
-+			}
-+
-+			if (str)
-+				pr_warn("%s[%d:%d]: %s to %llx\n",
-+					reg->name,
-+					ftrp->shift + ftrp->width - 1,
-+					ftrp->shift, str, tmp);
-+		}
+ 	/* Op1 = 0, CRn = 0, CRm = 5 */
+diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+index 143fe7b8e3ce..a9e3ed193fd4 100644
+--- a/arch/arm64/kernel/idreg-override.c
++++ b/arch/arm64/kernel/idreg-override.c
+@@ -33,6 +33,16 @@ static const struct reg_desc mmfr1 __initdata = {
+ 	},
+ };
  
- 		val = arm64_ftr_set_value(ftrp, val, ftr_new);
++static const struct reg_desc pfr1 __initdata = {
++	.name		= "id_aa64pfr1",
++	.val		= &id_aa64pfr1_val,
++	.mask		= &id_aa64pfr1_mask,
++	.fields		= {
++	        { "bt", ID_AA64PFR1_BT_SHIFT },
++		{}
++	},
++};
++
+ extern u64 kaslr_feature_val;
+ extern u64 kaslr_feature_mask;
  
+@@ -50,6 +60,7 @@ static const struct reg_desc kaslr __initdata = {
+ 
+ static const struct reg_desc * const regs[] __initdata = {
+ 	&mmfr1,
++	&pfr1,
+ 	&kaslr,
+ };
+ 
+@@ -59,6 +70,7 @@ static const struct {
+ } aliases[] __initdata = {
+ 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
+ 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
++	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
+ 	{ "nokaslr",			"kaslr.disabled=1" },
+ };
+ 
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index ae0c3d023824..617e704c980b 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -628,7 +628,7 @@ static bool arm64_early_this_cpu_has_bti(void)
+ 	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+ 		return false;
+ 
+-	pfr1 = read_sysreg_s(SYS_ID_AA64PFR1_EL1);
++	pfr1 = __read_sysreg_by_encoding(SYS_ID_AA64PFR1_EL1);
+ 	return cpuid_feature_extract_unsigned_field(pfr1,
+ 						    ID_AA64PFR1_BT_SHIFT);
+ }
 -- 
 2.29.2
 
