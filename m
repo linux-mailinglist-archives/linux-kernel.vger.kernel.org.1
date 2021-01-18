@@ -2,128 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488FE2FADD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4C82FADD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 00:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733009AbhARXiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 18:38:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32692 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729804AbhARXiR (ORCPT
+        id S1733044AbhARXlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 18:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbhARXlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 18:38:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611013010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=evmA0OdyD5M8kY9qOkiMZu9GD1M5IQ2ieILxxBsie0w=;
-        b=NECGjpltR2w1zuBKhoVxpcc6//binQYjgCgF3OhBJsayl5MKDoTySHhN9Lzx0ZgG70q7cR
-        rm+Vx/5uuoAKa7jEWxujaSkonCmfhsymMzF6IrDEIuVGrlQ9abf/c+DolD7tfyJ/zWPXmm
-        AxIijtwewgvy6DBnUbNn+L8OlMc+7ZI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-9-7qf1DA_HP76SP8BqpolMWQ-1; Mon, 18 Jan 2021 18:36:49 -0500
-X-MC-Unique: 7qf1DA_HP76SP8BqpolMWQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CA1359;
-        Mon, 18 Jan 2021 23:36:46 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6B365D9CD;
-        Mon, 18 Jan 2021 23:36:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <2758811.1610621106@warthog.procyon.org.uk>
-References: <2758811.1610621106@warthog.procyon.org.uk>
-To:     linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com
-Cc:     dhowells@redhat.com, jlayton@redhat.com, dwysocha@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Christoph Hellwig <hch@lst.de>, dchinner@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Cut down implementation of fscache new API
+        Mon, 18 Jan 2021 18:41:42 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7FFC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:41:01 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id t29so5991989pfg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 15:41:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=c/nlLYINAVyRBHFgQGInQrmkjIpXuU+UuJDo8Ulbu0g=;
+        b=CeUbDfkSixcnj7Je9G2EmxupRgBW6vpM+Vjuc4TcLNGrMBZE60j6gj2mcFsRzHbrvr
+         dAyMAVGWL74LsxN/Gr0S3TBQ0MY9d+MYNqf8ygYSUQVG6wT6tC7MND3WFyrIsb9ANYGp
+         mGqMznnPa2Bq3SqHrpXWh3RM+3w1hPFJwJg7G+wfbTxjRYmdzlM47mPnagqaQkUA26WL
+         o7AfpjvZOs7CNJaNalorSoKUnOIMVk7+VBwLRS02n2MsMdDBV1Zqaj0Phd/n9UDZy+jx
+         1CoG+8BvWHe3HU7fpUYrhLSj2sQqF6E1NMR8mxsiQNBvdNqBbDKhrNM3XRxYxXn5NcXI
+         E/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=c/nlLYINAVyRBHFgQGInQrmkjIpXuU+UuJDo8Ulbu0g=;
+        b=a4hpW2DyNjxA6j5MOkzkq7TsYuvmlb90G74gZ795Y0LS/e9o1YgAskHbmHGKJOS3zm
+         s787NkajHCvpPTXh+zAk95eWQwH6nu2ePRRU5zMIKP3hCqGlR1C5rU2QNkBsUXAxfHTv
+         LNSSkIJT3i36x2wyEuruG7o3A9tOnMY/hr5PN1nLtbSAGIxhAfVWIiUFyUwZifoL9Y8U
+         RQLU4goTOD8eKdmYKvkjmMbAJYkO3kuvhvLij1iytYeiE/TlI1eWb1V1hwKGozaVt6Xl
+         NPAkoFw0xnkO+2OSQniIbw4A0HsLFnaOxwEq9V9L9wEdza8hD20E/9a4EWchEuTvDN+H
+         VuFw==
+X-Gm-Message-State: AOAM531QwgTt5vRbLBmczcfO7Ur7CA0UJg7eED4E0rct5FAV9ZaXZ0d/
+        6eltO7s6Fc+YLkkCDWR4VXfmkHl2CUh41hui
+X-Google-Smtp-Source: ABdhPJxvqOsZyL74EzO30ITL+q2wdyblNkeX7/6HMu7klkOfxj5G6opd5X57U+/HpseZPrVzjyi+Ow==
+X-Received: by 2002:a63:4f01:: with SMTP id d1mr1861356pgb.279.1611013261303;
+        Mon, 18 Jan 2021 15:41:01 -0800 (PST)
+Received: from zzyiwei.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id x15sm16443040pfa.80.2021.01.18.15.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 15:41:00 -0800 (PST)
+From:   Yiwei Zhang <zzyiwei@android.com>
+To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Yiwei Zhang <zzyiwei@android.com>
+Subject: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
+Date:   Mon, 18 Jan 2021 23:40:57 +0000
+Message-Id: <20210118234057.270930-1-zzyiwei@android.com>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+In-Reply-To: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
+References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <160654.1611012999.1@warthog.procyon.org.uk>
-Date:   Mon, 18 Jan 2021 23:36:39 +0000
-Message-ID: <160655.1611012999@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Take a look at:
+On the success of virtio_gpu_object_create, add size of newly allocated
+bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
+bo lost its last refcount, subtract the bo size from the tracked
+total_mem if the original underlying memory allocation is successful.
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/
+Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+---
+ drivers/gpu/drm/virtio/Kconfig          |  1 +
+ drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
+ drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-I've extracted the netfs helper library from my patch set and built an
-alternative cut-down I/O API for the existing fscache code as a bridge to
-moving to a new fscache implementation.  With this, a netfs now has two
-choices: use the existing API as is or use the netfs lib and the alternative
-API.  You can't mix the two APIs - a netfs has to use one or the other.
-
-It works with AFS, at least for reading data through a cache, and without a
-cache, xfstests is quite happy.  I was able to take a bunch of the AFS patches
-from my fscache-iter branch (the full rewrite) and apply them with minimal
-changes.  Since it goes through the new I/O API in both cases, those changes
-should be the same.  The main differences are in the cookie wrangling API.
-
-The alternative API is different from the current in the following ways:
-
- (1) It uses kiocbs to do async DIO rather than using readpage() with page
-     wake queue snooping and vfs_write().
-
- (2) It uses SEEK_HOLE/SEEK_DATA rather than bmap() to determine the location
-     of data in the file.  This is still broken because we can't rely on this
-     information in the backing filesystem.
-
- (3) It completely changes how PG_fscache is used.  As for the new API, it's
-     used to indicate an in progress write to the cache from a page rather
-     than a page the cache knows about.
-
- (4) It doesn't keep track of the netfs's pages beyond the termination of an
-     I/O operation.  The old API added pages that have outstanding writes to
-     the cache to a radix three for a background writer; now an async kiocb is
-     dispatched.
-
- (5) The netfs needs to call fscache_begin_read_operation() from its
-     ->begin_cache_operation() handler as passed to the netfs helper lib.
-     This tells the netfs helpers how to access the cache.
-
- (6) It relies on the netfs helper lib to reissue a failed cache read to the
-     server.
-
- (7) Handles THPs.
-
- (8) Implements completely ->readahead() and ->readpage() and implements a
-     chunk of ->write_begin().
-
-Things it doesn't address:
-
- (1) Mapping the content independently of the backing filesystem's metadata.
-
- (2) Getting rid of the backpointers into the netfs.
-
- (3) Simplifying the management of cookies and objects and their processing.
-
- (4) Holding an open file to the cache for any great length of time.  It gets
-     a new file struct for each read op it does on the cache and drops it
-     again afterwards.
-
- (5) Pinning the cache context/state required to handle a deferred write to
-     the cache from ->write_begin() as performed by, say, ->writepages().
-
-David
+diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+index b925b8b1da16..e103b7e883b1 100644
+--- a/drivers/gpu/drm/virtio/Kconfig
++++ b/drivers/gpu/drm/virtio/Kconfig
+@@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+ 	select DRM_KMS_HELPER
+ 	select DRM_GEM_SHMEM_HELPER
+ 	select VIRTIO_DMA_SHARED_BUFFER
++	select TRACE_GPU_MEM
+ 	help
+ 	   This is the virtual GPU driver for virtio.  It can be used with
+ 	   QEMU based VMMs (like KVM or Xen).
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+index 6a232553c99b..7c60e7486bc4 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.h
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+@@ -249,6 +249,10 @@ struct virtio_gpu_device {
+ 	spinlock_t resource_export_lock;
+ 	/* protects map state and host_visible_mm */
+ 	spinlock_t host_visible_lock;
++
++#ifdef CONFIG_TRACE_GPU_MEM
++	atomic64_t total_mem;
++#endif
+ };
+ 
+ struct virtio_gpu_fpriv {
+diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+index d69a5b6da553..1e16226cebbe 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_object.c
++++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+@@ -25,12 +25,29 @@
+ 
+ #include <linux/dma-mapping.h>
+ #include <linux/moduleparam.h>
++#ifdef CONFIG_TRACE_GPU_MEM
++#include <trace/events/gpu_mem.h>
++#endif
+ 
+ #include "virtgpu_drv.h"
+ 
+ static int virtio_gpu_virglrenderer_workaround = 1;
+ module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+ 
++#ifdef CONFIG_TRACE_GPU_MEM
++static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
++					      s64 delta)
++{
++	u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
++
++	trace_gpu_mem_total(0, 0, total_mem);
++}
++#else
++static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
++{
++}
++#endif
++
+ int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+ {
+ 	if (virtio_gpu_virglrenderer_workaround) {
+@@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+ 	struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+ 
+ 	if (bo->created) {
++		virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+ 		virtio_gpu_cmd_unref_resource(vgdev, bo);
+ 		virtio_gpu_notify(vgdev);
+ 		/* completion handler calls virtio_gpu_cleanup_object() */
+@@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+ 		virtio_gpu_object_attach(vgdev, bo, ents, nents);
+ 	}
+ 
++	virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+ 	*bo_ptr = bo;
+ 	return 0;
+ 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
