@@ -2,196 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCDB2F9D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B532F9D9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389418AbhARLIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        id S2389343AbhARLIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389298AbhARLH0 (ORCPT
+        with ESMTP id S2389332AbhARLHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:07:26 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0145C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:44 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id q18so16052559wrn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:44 -0800 (PST)
+        Mon, 18 Jan 2021 06:07:30 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0008FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:49 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id 11so9989321pfu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NnBFT8EP9V7MmU84deKSaC5Ci7/3yuRujoqea2uYBqU=;
-        b=S0v70/XeJSnyzyiifqGs12j42+wMyVfdZmFp9vAYkXCvNspcgkhHm/aAnQRXxVKwXn
-         xMc//0tppKYCReKyia6kMXMXxqRWsrWfKSwZ+LPj8fybmUm1d6i1vYA87dayQ08MyOUc
-         0p6Akb3D1OU7oM6tdHFfjG3TkuwOE22g9Eqvgr8tCeZ9J9ESNatB5rJHEaL49J/XzUYf
-         qe/5UI+KoiKw5ugbwxf6Dph+sNadI0zgVCRMqckEhTL5F2NEWen6hNvI4IiTIZ5yzVvT
-         ko0skt3XiUtvAqGdh6+/oV51WMeZ7c1SEhK/K0YPo731oBI195bJhJXW106wUlun6yJy
-         2TKQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=hF8evVGI9RRZx1GF/hLvIc76/vJir8iUDvWkskLLhsk=;
+        b=lJ3e3XxEk/NoFVfGOAf3oI9tdt+xgWhbiDi5MSGlQrRg6Al1V9IofzBSoJ93tJjeTg
+         150RfvM9gZd7nhNhWMhjX5/lGqF+nj+vPbswtpE9PaCiLuXI/MQdVpqSoQIKfhUZlE1N
+         ZK3LW519SgxPOgbI6WoUyLw2BcL6Aw99UVyU5NIcyEbqZsHGnClDRffN+4gAt2pncH2w
+         J7uKv53TNcyDAhH71wlAwN/EyfgsbsYKP8KdS1q+6jf39vQB2suWkMPF/rgptk0jqB99
+         d9z94vr3Glq+543VqetbxRrzyzB7oPmOx/zrU5tEYsOt1YLQYBINZ38LM4QvMAGT5PKh
+         hGyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NnBFT8EP9V7MmU84deKSaC5Ci7/3yuRujoqea2uYBqU=;
-        b=gmJskgvS8F1NVBzF9Pwxq/GD1J3XueHvOgyrDwXAiuHWIafdtX5i4Dt9vGqTjeRk3r
-         InW6uQko0nAQLhriu/NF2Dw4DLJXyy0trqsBifNmwn/VcQzEUnhMkiel5rT+A1ARaCDi
-         27pup06V4t/pVRQEL4WkjBSJGV5ULV+IPp8O69xJ5TaQ2PKxnnMWU3sXUbb+ysj5pTNX
-         ENIsosESdmTWEST4P9NRJBTlp0n54ELuwdXwUm9gERDXDIiBIdbpUWxVOfpkiUcIs3hC
-         Ij92/wRs9TwOttYOYOyMlHE/RlpGv8NwwKSY6jKTEl5Nu0To2KNZEySG2TtskNojl/rF
-         godg==
-X-Gm-Message-State: AOAM530DGdMW9z3goZ+CvHRJ12zzfo1lv4f0+//S8SoeiGoVE62DQbCd
-        5M12/q0c/XwVnvgiLAeKqYNNYw==
-X-Google-Smtp-Source: ABdhPJwWGXCEWcvWmyWLYTOB7DQ3+9c+Y1HcC/heAJVGshcFFa64ZS5RxK5AbQjre5wgJBvYLRmsBQ==
-X-Received: by 2002:a5d:40ce:: with SMTP id b14mr24876133wrq.350.1610968003510;
-        Mon, 18 Jan 2021 03:06:43 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:3d4d:985d:87b7:4d55])
-        by smtp.gmail.com with ESMTPSA id g1sm29961893wrq.30.2021.01.18.03.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 03:06:42 -0800 (PST)
-Date:   Mon, 18 Jan 2021 11:06:41 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Elena Petrova <lenaptr@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        George Popescu <georgepope@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        George Popescu <george.apopescu97@gmail.com>
-Subject: Re: [PATCH v3 3/9] KVM: arm64: Enable UBSAN_BOUNDS for the both the
- kernel and hyp/nVHE
-Message-ID: <20210118110641.ak4jlzu34lxzluzy@google.com>
-References: <20210115171830.3602110-1-lenaptr@google.com>
- <20210115171830.3602110-4-lenaptr@google.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hF8evVGI9RRZx1GF/hLvIc76/vJir8iUDvWkskLLhsk=;
+        b=ZMtiCwz7BiSFQdz/b8e5OEDi60FI7qc24Ia3e+8crzbhy9y8+/gkL5LheWXfrdF0rv
+         RL121UL0hNAWxq1SqSQUIDMJU2EnKYfpkd63z6FSE7v87zv74v5wXfXAlicba38wOVX+
+         LJ7Z3m0EqTVEvpqE+WHWF3OX5Jf9CCWByeabDbp2vuHg/Ft+CdJ8ymXNXETxO29+wjXq
+         0LazAx9NL4Ts/JTL8IMrmmXaFa1x5DbTsdH/ket7qJcNVSCCBl9p3tQqRyYIZdxMO6qS
+         Da94n9hkW31vVX+Q5vKV48ju6zqm3oryPrlOMggw5Fdb/+sdxxqA1IDssDNm0BK5tqcF
+         DMxg==
+X-Gm-Message-State: AOAM531W3p10gIREaGBz5a51bXkH0q8gQZHjgrWO+eOON8Uyjgrjyh2O
+        88Mu05sMyytr48h2Wi1qkPsSlw==
+X-Google-Smtp-Source: ABdhPJwuLWRbz4a61aSCqABub+Be14J1PCrBXuBkLL43LPK8J4dcu4SD55H38N5RI7el+dvrZUeXYA==
+X-Received: by 2002:a05:6a00:847:b029:1b3:b9c3:11fb with SMTP id q7-20020a056a000847b02901b3b9c311fbmr14956958pfk.44.1610968009522;
+        Mon, 18 Jan 2021 03:06:49 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p9sm15682274pfq.136.2021.01.18.03.06.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 03:06:48 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:36:47 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 04/12] opp: Add dev_pm_opp_sync_regulators()
+Message-ID: <20210118110647.msuo4r2nvq6sentc@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-5-digetx@gmail.com>
+ <20210118110029.sjczugppsvrxd2tl@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115171830.3602110-4-lenaptr@google.com>
+In-Reply-To: <20210118110029.sjczugppsvrxd2tl@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:18:24PM +0000, Elena Petrova wrote:
-> From: George Popescu <georgepope@google.com>
+On 18-01-21, 16:30, Viresh Kumar wrote:
+> On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> > Extend OPP API with dev_pm_opp_sync_regulators() function, which syncs
+> > voltage state of regulators.
+> > 
+> > Tested-by: Peter Geis <pgwipeout@gmail.com>
+> > Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> > Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  drivers/opp/core.c     | 45 ++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/pm_opp.h |  6 ++++++
+> >  2 files changed, 51 insertions(+)
+> > 
+> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > index 7b4d07279638..99d18befc209 100644
+> > --- a/drivers/opp/core.c
+> > +++ b/drivers/opp/core.c
+> > @@ -2686,3 +2686,48 @@ void dev_pm_opp_remove_table(struct device *dev)
+> >  	dev_pm_opp_put_opp_table(opp_table);
+> >  }
+> >  EXPORT_SYMBOL_GPL(dev_pm_opp_remove_table);
+> > +
+> > +/**
+> > + * dev_pm_opp_sync_regulators() - Sync state of voltage regulators
+> > + * @dev:	device for which we do this operation
+> > + *
+> > + * Sync voltage state of the OPP table regulators.
+> > + *
+> > + * Return: 0 on success or a negative error value.
+> > + */
+> > +int dev_pm_opp_sync_regulators(struct device *dev)
+> > +{
+> > +	struct opp_table *opp_table;
+> > +	struct regulator *reg;
+> > +	int i, ret = 0;
+> > +
+> > +	/* Device may not have OPP table */
+> > +	opp_table = _find_opp_table(dev);
+> > +	if (IS_ERR(opp_table))
+> > +		return 0;
+> > +
+> > +	/* Regulator may not be required for the device */
+> > +	if (!opp_table->regulators)
+> > +		goto put_table;
+> > +
+> > +	mutex_lock(&opp_table->lock);
+> > +
+> > +	/* Nothing to sync if voltage wasn't changed */
+> > +	if (!opp_table->enabled)
+> > +		goto unlock;
+> > +
+> > +	for (i = 0; i < opp_table->regulator_count; i++) {
+> > +		reg = opp_table->regulators[i];
+> > +		ret = regulator_sync_voltage(reg);
+> > +		if (ret)
+> > +			break;
+> > +	}
+> > +unlock:
+> > +	mutex_unlock(&opp_table->lock);
+> > +put_table:
+> > +	/* Drop reference taken by _find_opp_table() */
+> > +	dev_pm_opp_put_opp_table(opp_table);
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
+> > diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> > index c24bd34339d7..1c3a09cc8dcd 100644
+> > --- a/include/linux/pm_opp.h
+> > +++ b/include/linux/pm_opp.h
+> > @@ -162,6 +162,7 @@ int dev_pm_opp_set_sharing_cpus(struct device *cpu_dev, const struct cpumask *cp
+> >  int dev_pm_opp_get_sharing_cpus(struct device *cpu_dev, struct cpumask *cpumask);
+> >  void dev_pm_opp_remove_table(struct device *dev);
+> >  void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
+> > +int dev_pm_opp_sync_regulators(struct device *dev);
+> >  #else
+> >  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+> >  {
+> > @@ -398,6 +399,11 @@ static inline void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask
+> >  {
+> >  }
+> >  
+> > +static inline int dev_pm_opp_sync_regulators(struct device *dev)
+> > +{
+> > +	return -ENOTSUPP;
+> > +}
+> > +
+> >  #endif		/* CONFIG_PM_OPP */
+> >  
+> >  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
 > 
-> If an out of bounds happens inside the hyp/nVHE code, the ubsan_out_of_bounds
-> handler stores the logging data inside the kvm_ubsan_buffer. The one responsible
-> for printing is the kernel ubsan_out_of_bounds handler. The process of
-> decapsulating the data from the buffer is straightforward.
+> Applied. Thanks.
 > 
-> Signed-off-by: George Popescu <georgepope@google.com>
-> Signed-off-by: Elena Petrova <lenaptr@google.com>
-> ---
->  arch/arm64/include/asm/kvm_ubsan.h | 19 ++++++++++++++++++-
->  arch/arm64/kvm/hyp/nvhe/ubsan.c    | 14 ++++++++++++--
->  arch/arm64/kvm/kvm_ubsan_buffer.c  | 10 ++++++++++
->  3 files changed, 40 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-> index fb32c7fd65d4..4f471acb88b0 100644
-> --- a/arch/arm64/include/asm/kvm_ubsan.h
-> +++ b/arch/arm64/include/asm/kvm_ubsan.h
-> @@ -9,6 +9,23 @@
->  #define UBSAN_MAX_TYPE 6
->  #define KVM_UBSAN_BUFFER_SIZE 1000
->  
-> +
-> +struct ubsan_values {
-> +	void *lval;
-> +	void *rval;
-> +	char op;
-> +};
-> +
->  struct kvm_ubsan_info {
-> -	int type;
-> +	enum {
-> +		UBSAN_OUT_OF_BOUNDS,
-> +	} type;
-> +	union {
-> +		struct out_of_bounds_data out_of_bounds_data;
-> +	};
-> +	union {
-> +		struct ubsan_values u_val;
-> +	};
+> I had to apply it manually, please make sure it looks okay.
 
-I don't see this second union having more members later in the series.
-Remove it? Even the 'struct ubsan_values' seems redundant and we could just
-have those three fields directly here.
+Sorry about this, I wanted to reply to
+"opp: Add devm_pm_opp_register_set_opp_helper" and replied to this one
+accidentally.
 
->  };
-> +
-> +void __ubsan_handle_out_of_bounds(void *_data, void *index);
-> diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> index 8a194fb1f6cf..55a8f6db8555 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> @@ -13,7 +13,6 @@
->  #include <asm/kvm_ubsan.h>
->  #include <asm/kvm_debug_buffer.h>
->  #include <kvm/arm_pmu.h>
-> -#include <ubsan.h>
->  
->  DEFINE_KVM_DEBUG_BUFFER(struct kvm_ubsan_info, kvm_ubsan_buffer,
->                  kvm_ubsan_buff_wr_ind, KVM_UBSAN_BUFFER_SIZE);
-> @@ -44,7 +43,18 @@ void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
->  
->  void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
->  
-> -void __ubsan_handle_out_of_bounds(void *_data, void *index) {}
-> +void __ubsan_handle_out_of_bounds(void *_data, void *index)
-> +{
-> +	struct kvm_ubsan_info *slot;
-> +	struct out_of_bounds_data *data = _data;
-> +
-> +	slot = kvm_ubsan_buffer_next_slot();
-> +	if (slot) {
-> +		slot->type = UBSAN_OUT_OF_BOUNDS;
-> +		slot->out_of_bounds_data = *data;
-> +		slot->u_val.lval = index;
-> +	}
-> +}
->  
->  void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
->  
-> diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> index 4a1959ba9f68..a1523f86be3c 100644
-> --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
-> +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> @@ -17,6 +17,15 @@
->  DECLARE_KVM_DEBUG_BUFFER(struct kvm_ubsan_info, kvm_ubsan_buffer,
->  		kvm_ubsan_buff_wr_ind, KVM_UBSAN_BUFFER_SIZE);
->  
-> +void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
-> +{
-> +	switch (slot->type) {
-> +	case UBSAN_OUT_OF_BOUNDS:
-> +		__ubsan_handle_out_of_bounds(&slot->out_of_bounds_data,
-> +				slot->u_val.lval);
-> +		break;
-> +	}
-> +}
->  
->  void iterate_kvm_ubsan_buffer(unsigned long left, unsigned long right)
->  {
-> @@ -26,6 +35,7 @@ void iterate_kvm_ubsan_buffer(unsigned long left, unsigned long right)
->  	slot = (struct kvm_ubsan_info *) this_cpu_ptr_nvhe_sym(kvm_ubsan_buffer);
->  	for (i = left; i < right; ++i) {
->  		/* check ubsan data */
-> +		__kvm_check_ubsan_data(slot + i);
-
-Not sure why this is breaking out into another function. The code will not
-be shared with any other user.
-
->  		slot[i].type = 0;
-
-This invalidation is redundant. The buffer's cursor will be reset on next
-hypercall, which will implicitly invalidate all entries.
-
->  	}
->  }
-> -- 
-> 2.30.0.296.g2bfb1c46d8-goog
-> 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+-- 
+viresh
