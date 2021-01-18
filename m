@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9932FA1E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BEC2FA1EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404669AbhARNmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:42:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
+        id S2404786AbhARNnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:43:46 -0500
+Received: from mga03.intel.com ([134.134.136.65]:16734 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404697AbhARNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:40:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 030FA2065E;
-        Mon, 18 Jan 2021 13:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610977201;
-        bh=+hQ/DQfrKXADkEoj0kzneLBbQSy5clevR8ljdD3I8DA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XJNW+Ombn7kHROG7crCO5CxWLDsEhG+hq9RJUgowONq56+Wh8LPDNp6zeYYnOKiRg
-         +3WbO1xhJn0jXbMIiYI9T5DS0t3nqgXmzETspZXZw2Ccyyv+69WBHRCZREySY+RSXv
-         Rd11mkbO9w2UwmQH2Q+W3IEcACOJruG2Uwdjkqv+y86t+39CDWsXGysIF6zfTC1bCX
-         YuBe9hJulZKY+ae76IWdbkP7D6sr52gY3DjBSddrZlETbgh7P12vfR9ru6nAJnUquU
-         V1krPdnYvMLfCcfVcdIewUTJKeljWu+jn1DjnCze975LPbiAWOB6sWhApBq807thBE
-         J4AZq9I+w6YYw==
-Date:   Mon, 18 Jan 2021 08:39:59 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <20210118133959.GZ4035784@sasha-vm>
-References: <20210118014951.250815-1-sashal@kernel.org>
- <YAVTDETPaJuaRPfc@kroah.com>
- <YAVT0XV7uX2NpIRe@kroah.com>
+        id S2404725AbhARNml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:42:41 -0500
+IronPort-SDR: d+iQA7gcngR9R6i30mDQhJ3ibIkuKTk5hvSl1rFVkELGJqpt4c0q2Ym+/8wO/VbHWu4UnNVkAX
+ zEnOAZtNqRDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="178888346"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="178888346"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:40:47 -0800
+IronPort-SDR: ZGAvVgV96vvvYodLz60JaqJJE1Z3LvXlkHoKY1z42HuJh7wvaRWGo7rnTxuKX6PRg7RAL/BuZe
+ NKe6SO/GYY3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="500650840"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 18 Jan 2021 05:40:46 -0800
+Received: from [10.254.79.158] (kliang2-MOBL.ccr.corp.intel.com [10.254.79.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 8DD4358072C;
+        Mon, 18 Jan 2021 05:40:45 -0800 (PST)
+Subject: Re: [PATCH V4 4/6] perf script: Add support for
+ PERF_SAMPLE_CODE_PAGE_SIZE
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+References: <20210105195752.43489-1-kan.liang@linux.intel.com>
+ <20210105195752.43489-5-kan.liang@linux.intel.com>
+ <20210115192538.GG457607@kernel.org>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <cc3557dc-d293-f268-5fc4-03cca8f7b274@linux.intel.com>
+Date:   Mon, 18 Jan 2021 08:40:44 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YAVT0XV7uX2NpIRe@kroah.com>
+In-Reply-To: <20210115192538.GG457607@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:24:33AM +0100, Greg KH wrote:
->On Mon, Jan 18, 2021 at 10:21:16AM +0100, Greg KH wrote:
->> On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
->> > SUBLEVEL only has 8 bits of space, which means that we'll overflow it
->> > once it reaches 256.
->> >
->> > Few of the stable branches will imminently overflow SUBLEVEL while
->> > there's no risk of overflowing VERSION.
->> >
->> > Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
->> > should create a better balance between the different version numbers we
->> > use.
->> >
->> > The downside here is that Linus will have 8 bits less to play with, but
->> > given our current release cadence (~10 weeks), the number of Linus's
->> > fingers & toes (20), and the current VERSION (5) we can calculate that
->> > VERSION will overflow in just over 1,000 years, so I'm kicking this can
->> > down the road.
->> >
->> > Cc: stable@kernel.org
->> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->> > ---
->> >  Makefile | 4 ++--
->> >  1 file changed, 2 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/Makefile b/Makefile
->> > index 9e73f82e0d863..dc2bad7a440d8 100644
->> > --- a/Makefile
->> > +++ b/Makefile
->> > @@ -1252,8 +1252,8 @@ endef
->> >
->> >  define filechk_version.h
->> >  	echo \#define LINUX_VERSION_CODE $(shell                         \
->> > -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
->> > -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
->> > +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
->> > +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
+
+
+On 1/15/2021 2:25 PM, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jan 05, 2021 at 11:57:50AM -0800,kan.liang@linux.intel.com  escreveu:
+>> From: Stephane Eranian<eranian@google.com>
 >>
->> As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
->> that try to suck out the version/patchlevel number of the kernel release
->> into their own fields.  Things like USB host controller strings, v4l
->> ioctl reports, scsi driver ioctls, and other places do fun bit-movements
->> to try to unreverse this bit packing.
+>> Display sampled code page sizes when PERF_SAMPLE_CODE_PAGE_SIZE was set.
 >>
->> So how about we just provide a "real" version/subversion/revision
->> #define as well, and clean up all in-kernel users, so we can get this to
->> work, and we can change it in the future more easily.
->
->Or, I can just stop doing stable releases at .255 and then abuse the
->EXTRAVERSION field to put in sub-revision values.
->
->Or, we can just not worry about it as anyone using these really old
->kernels, userspace will work just fine (the number going backwards for
->these fields isn't going to break anything), it's only any crazy
->out-of-tree code that will get confused if they are trying to do
->different build options based on SUBLEVEL :)
+>> For example,
+>> perf script --fields comm,event,ip,code_page_size
+>>              dtlb mem-loads:uP:            445777 4K
+>>              dtlb mem-loads:uP:            40f724 4K
+>>              dtlb mem-loads:uP:            474926 4K
+>>              dtlb mem-loads:uP:            401075 4K
+>>              dtlb mem-loads:uP:            401095 4K
+>>              dtlb mem-loads:uP:            401095 4K
+>>              dtlb mem-loads:uP:            4010cc 4K
+>>              dtlb mem-loads:uP:            440b6f 4K
+>>
+>> Acked-by: Namhyung Kim<namhyung@kernel.org>
+>> Acked-by: Jiri Olsa<jolsa@redhat.com>
+>> Signed-off-by: Stephane Eranian<eranian@google.com>
+> You missed your Signed-off-by, I'm adding it, please ack this change.
 
-I think it would also affect code that doesn't do things based on
-SBULEVEL. Consider something like:
+The patch 4 and 5 are from Stephane. I only made minor changes so that 
+the code can be rebased to the latest perf/core branch (c07b45a355ee).
 
-	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
+May add a tag as below.
 
-Which will cause 4.4.256 to now change the result of that comparison.
+[kan.liang@linux.intel.com: Rebase on top of acme's perf/core branch 
+commit c07b45a355ee]
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
--- 
+
 Thanks,
-Sasha
+Kan
