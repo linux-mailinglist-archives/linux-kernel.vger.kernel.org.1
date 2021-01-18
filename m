@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2060A2F9B97
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079CB2F9B93
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388112AbhARIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:54:24 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:37702 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387937AbhARIyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:54:13 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx++RvTAVguaoGAA--.11215S2;
-        Mon, 18 Jan 2021 16:53:04 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf] samples/bpf: Update README.rst for manually compiling LLVM and clang
-Date:   Mon, 18 Jan 2021 16:53:02 +0800
-Message-Id: <1610959982-6420-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx++RvTAVguaoGAA--.11215S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr47Xw15WFWrtw4kXw1fJFb_yoW8Ar1rpF
-        4UXa4a9rZYgFy2vF9xGw48ZF4fXrZ8XFy5GFyxJry8Z3ZxAFn7tr42kayrXF48WrZ29r43
-        Ar1S9FWkAF1DZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfU8Z2-UUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S2388012AbhARIxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:53:55 -0500
+Received: from verein.lst.de ([213.95.11.211]:47062 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387937AbhARIxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:53:53 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 66CE968AFE; Mon, 18 Jan 2021 09:53:11 +0100 (CET)
+Date:   Mon, 18 Jan 2021 09:53:11 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Oliver Giles <ohw.giles@gmail.com>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Splicing to/from a tty
+Message-ID: <20210118085311.GA2735@lst.de>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current samples/bpf/README.rst, the url of llvm and clang git
-may be out of date, they are unable to access:
+On Sat, Jan 16, 2021 at 05:46:33PM +0100, Johannes Berg wrote:
+> > For my case, I attempted to instead implement splice_write and
+> > splice_read in tty_fops; I managed to get splice_write working calling
+> > ld->ops->write, but splice_read is not so simple because the
+> > tty_ldisc_ops read method expects a userspace buffer. So I cannot see
+> > how to implement this without either (a) using set_fs, or (b)
+> > implementing iter ops on all line disciplines.
+> > 
+> > Is splice()ing between a tty and a pipe worth supporting at all? Not a
+> > big deal for my use case at least, but it used to work.
+> 
+> Is it even strictly related to the tty?
+> 
+> I was just now looking into why my cgit/fcgi/nginx setup no longer
+> works, and the reason is getting -EINVAL from sendfile() when the input
+> is a file and the output is a pipe().
 
-$ git clone http://llvm.org/git/llvm.git
-Cloning into 'llvm'...
-fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-$ git clone --depth 1 http://llvm.org/git/clang.git
-Cloning into 'clang'...
-fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+Yes, pipes do not support ->splice_write currenly.   I think just wiring
+up iter_file_splice_write would work.  Al?
 
-The Clang Getting Started page [1] might have more accurate information,
-I verified the procedure and it is proved to be feasible, so we should
-update it to reflect the reality.
-
-[1] https://clang.llvm.org/get_started.html
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- samples/bpf/README.rst | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-index dd34b2d..f606c08 100644
---- a/samples/bpf/README.rst
-+++ b/samples/bpf/README.rst
-@@ -65,11 +65,9 @@ To generate a smaller llc binary one can use::
- Quick sniplet for manually compiling LLVM and clang
- (build dependencies are cmake and gcc-c++)::
- 
-- $ git clone http://llvm.org/git/llvm.git
-- $ cd llvm/tools
-- $ git clone --depth 1 http://llvm.org/git/clang.git
-- $ cd ..; mkdir build; cd build
-- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
-+ $ git clone https://github.com/llvm/llvm-project.git
-+ $ cd llvm-project; mkdir build; cd build
-+ $ cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="BPF;X86" -G "Unix Makefiles" ../llvm
-  $ make -j $(getconf _NPROCESSORS_ONLN)
- 
- It is also possible to point make to the newly compiled 'llc' or
--- 
-2.1.0
-
+> So I wrote a simple test program (below) and that errors out on kernel
+> 5.10.4, while it works fine on the 5.9.16 I currently have. Haven't
+> tried reverting anything yet, but now that I haev a test program it
+> should be simple to even bisect.
+> 
+> johannes
+> 
+> 
+> #include <unistd.h>
+> #include <sys/types.h>
+> #include <sys/stat.h>
+> #include <fcntl.h>
+> #include <sys/sendfile.h>
+> #include <stdio.h>
+> #include <assert.h>
+> 
+> int main(int argc, char **argv)
+> {
+> 	int in = open(argv[0], O_RDONLY);
+> 	int p[2], out;
+> 	off_t off = 0;
+> 	int err;
+> 
+> 	assert(in >= 0);
+> 	assert(pipe(p) >= 0);
+> 	out = p[1];
+> 	err = sendfile(out, in, &off, 1024);
+> 	if (err < 0)
+> 		perror("sendfile");
+> 	assert(err == 1024);
+> 
+> 	return 0;
+> }
+> 
+---end quoted text---
