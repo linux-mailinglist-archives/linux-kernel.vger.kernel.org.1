@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3E22FA9AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E852FA97F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436998AbhARTHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:07:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
+        id S2407934AbhARS7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:59:35 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64241 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390584AbhARLjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1286C222BB;
-        Mon, 18 Jan 2021 11:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610969951;
-        bh=LsDiKpAXfFsvoIt/CkJHtJcTokFYsuXapYBygCW0Ys4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ruS/9hf12xaXkqkqoCYdNtNsYyVCdevm1OTWhIZng2TPa7jdYysPF/p1/mM07RoJI
-         0X3Kja3uAy4VYucSeN8zPivGthZ2MzMqOe9lxILlncsItfBToMJL8Ei2mpDA8LCbgS
-         Jrg377sa2d+MEmZh3RSTWwhOgW9rSMW8v2oc4k0NYxRqJJHsVZQa5km5G69TTkCwkn
-         I/odljS3nKROcrnfU38/+nDJTS1qh5Clq4xxnZMha6/t7IFk2FBoJFNXuzK+hLdw2t
-         Ou0ncyzFJsLjeezn/Aw7M6T35zaFVLeUvn//ySvadNsLBqYA61860LmBQNFf7WuqIF
-         ZiBVSCzokXnpw==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Jack Pham <jackp@codeaurora.org>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH v2 4/4] dt-bindings: usb: qcom,dwc3: Add bindings for
- SM8150, SM8250, SM8350
-In-Reply-To: <20210115174723.7424-5-jackp@codeaurora.org>
-References: <20210115174723.7424-1-jackp@codeaurora.org>
- <20210115174723.7424-5-jackp@codeaurora.org>
-Date:   Mon, 18 Jan 2021 13:39:02 +0200
-Message-ID: <87zh16v5ih.fsf@kernel.org>
+        id S2393758AbhARS5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:57:44 -0500
+IronPort-SDR: EEZuxuME9l3mE+QixIgGXDuO0xp8Zaqr71Dui4xTDjcLI47ZQuLKznQOKgEV099g24wbwHMezC
+ mmkVDRO8QK5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158611194"
+X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
+   d="scan'208";a="158611194"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 10:55:47 -0800
+IronPort-SDR: oCdYzketkaLRX/z309sV9gO2FA4IjaKM+Zp4dSLawAnabkyVDYNPwOZlz07BgBRyUoCzHguLfr
+ oE0JeVKPjEGw==
+X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
+   d="scan'208";a="500721539"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 10:55:42 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1Zhk-002W6O-7O; Mon, 18 Jan 2021 20:56:44 +0200
+Date:   Mon, 18 Jan 2021 20:56:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        andy@kernel.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+Message-ID: <20210118185644.GH4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-5-djrscally@gmail.com>
+ <20210118133942.GI4077@smile.fi.intel.com>
+ <d4671ea998010c9400ed7fd6cdf0d8ecf9a79af4.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d4671ea998010c9400ed7fd6cdf0d8ecf9a79af4.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 18, 2021 at 10:43:14AM -0800, Joe Perches wrote:
+> On Mon, 2021-01-18 at 15:39 +0200, Andy Shevchenko wrote:
+> > On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
+> > > We want to refer to an i2c device by name before it has been
+> > 
+> > I²C
+> 
+> Andy, are you next going to suggest renaming all the files with i2c?
 
-Hi,
+Where did you get this from?
 
-Jack Pham <jackp@codeaurora.org> writes:
-> Add compatible strings for the USB DWC3 controller on QCOM SM8150,
-> SM8250 and SM8350 SoCs.
->
-> Note the SM8150 & SM8250 compatibles are already being used in the
-> dts but was missing from the documentation.
->
-> Signed-off-by: Jack Pham <jackp@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Docum=
-entation/devicetree/bindings/usb/qcom,dwc3.yaml
-> index 2cf525d21e05..da47f43d6b04 100644
-> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> @@ -17,6 +17,9 @@ properties:
->            - qcom,msm8998-dwc3
->            - qcom,sc7180-dwc3
->            - qcom,sdm845-dwc3
-> +          - qcom,sm8150-dwc3
-> +          - qcom,sm8250-dwc3
-> +          - qcom,sm8350-dwc3
+> Please do not use the pedantic I²C, 7 bit ascii is just fine here.
+> 
+> My keyboard does not have a superscripted 2 key, and yes, I know
+> how to use it with multiple keypresses but it's irrelevant.
 
-nicely done!
+I2C is fine for me as well.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+...
 
-=2D-=20
-balbi
+> > > created by the kernel; add a function that constructs the name
+> > > from the acpi device instead.
+> > 
+> > acpi -> ACPI
+> 
+> Same deal with acpi filenames.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Where did you get about *file* names, really? Maybe you read again above?
 
------BEGIN PGP SIGNATURE-----
+...
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmAFc1YRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZxrw//fSf5M/ifV+IvyWh08Kp8BJ+dLMcZAZNu
-kOAV4BxvEAwPCylflF/FudCWIzMlYDnlYEAQGKjas2gXqOaI3Cz/vewlBfF4wa/X
-Xme7xWRedpKmKxpL71P0NrdQ3DzDwFdo1mCRbshh3m15MUrWpuDf7PtzBE1sIZg6
-u804URsW2Q0k9NWLjYM/NhhqeRnaZwMFLlI6njmPF8yqqzkYi62/u8GxV2YXnJ14
-oXCl/WQwRcklGMPrR/JCGmL4RFiWmVaMEovPjBCVvO4JielFIrRsRXkYHoOrAHWj
-fOGTaN7TQII3J+toOK2OmRVeccXdUM54bdo7bC3Mb9TCHi916B0LIZLobMMAy4D0
-Tz6prg4F5MCkZuyo5ePzW5ZnK9b8HstXd3A4mv2qk87eeJVndWraHzzW6GTnQj8K
-h5l74ftKn3QpwwFXkB01N6qjzfBIoo5IeBTQUZXcQDve+gIxXX5iNWKeUMofqJaq
-byrI5DHrWbAX2DI8df4lPUdZ13nPrJlEnny/FlOzsc/q2Ay32Hah9ZTaknna1k/y
-Bs+zku8yF4Ghoc7m+Zjct0k4m8JIbRYXSpCD/kVsH2bbA40XbRfOTdsHUcBYfEhu
-YLsMyQrOsL3PG02iwN/7mWgfdiwEFqrcLZFNqVLikFznokD3fZMYKxyn1IKVoLAd
-wIJDcmVJZHg=
-=uCXF
------END PGP SIGNATURE-----
---=-=-=--
+> > Prefix: "i2c: core: "
+> 
+> Please stop being a pedant on these trivial things.
+> It's unimportant and has almost no value.
+
+This series is going to have a new version, that's why I did those comments.
+If it had been the only comments, I would have not posted them.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
