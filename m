@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F302FAC08
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBA02FAC37
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394410AbhARVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:00:39 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55304 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389761AbhARKOi (ORCPT
+        id S2388939AbhARVCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389766AbhARKOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:14:38 -0500
+        Mon, 18 Jan 2021 05:14:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5947C061793;
+        Mon, 18 Jan 2021 02:13:34 -0800 (PST)
 Date:   Mon, 18 Jan 2021 10:13:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1610964813;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=N200xvYKaDL7tHm8Rzwrr0HU1/brDxR7TTDvWBDPLPY=;
-        b=m9AYFj5VAUrZGPnVhJRAn1+6dNN+lQWQ/sjdgozJ4mG5yHgiXNXaVQ936EmR7LZxBDXtdV
-        5+OCVCryVglIv8EqHZmert6+9NhNrtfK96ngpvwmYZUBmQWOva+CdMceH72HTFKUyNwDo6
-        1mVqhcqhRs24eGne/8u9rm3DIMDEhssgvPqSezaxmjf+UUDcAKdujEZKu1T20sZD6Jn3pt
-        QdIPFmCGMoIx/jdl3Yf0cH+R7fQ5509fQtLuVt0NJYvRIyViCDIo7JoqttRtX92/7QDzXd
-        W5ZgTxlYosZYDNJIq7G/3Ln9KnhOkvTBhSHelpM36Qra5BxmXQvBfXFGmI59+Q==
+        bh=I2ZBM6WkkiZotXtGMigd0N7nPvK1eFfLEiGUGFc86FY=;
+        b=vsLEBqvdZIc1cE16oUcQ757RVmSFFpE/eZo6R53qepCH06UtlSkVJH654Xvclp1xs+pt6Y
+        T8MwNi+ovAwSNH1bDxf1DbjTW44pgr0lWo3rPF8LAkB6LMLMmxSyk/eZeAajAfEEFHdC4x
+        v84NcKUS7n1pfTLQHCjtzOJ6fPkGrM+GWDCDZ5jSMRetk55tM4AqF33tIEf6YeB2hugWrm
+        IodAJDZ7qYp4nTI86+62z2caHDChfhYiSJ8hKrlBp3pfw6ZicOgkOXyiJhRHV5gYgGZgZE
+        F18in2vqoRwFAjly8fIsD00bfx3N2FHkfNJ5GVX3sFJIYgmzmv1NJyc3RTl1cg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1610964813;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=N200xvYKaDL7tHm8Rzwrr0HU1/brDxR7TTDvWBDPLPY=;
-        b=TY2TIpagEQcRsbJCWn4zRHflORQYn1Vb5X4junA8NW3sXszMZ+5WcZTttd386LamVReBXL
-        +OgAfbOIQX6OEDAQ==
-From:   "tip-bot2 for Vasily Gorbik" <tip-bot2@linutronix.de>
+        bh=I2ZBM6WkkiZotXtGMigd0N7nPvK1eFfLEiGUGFc86FY=;
+        b=sXzE6NWxJ/FoPJWXxBbw+4SmJLCJgSflcZqq7qYy19gH60MsxsJPmYLGFgCq8Vs4mnz3bm
+        rU1zVkt5sITOxvDw==
+From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/tools: Use tools headers for instruction
- decoder selftests
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+Subject: [tip: objtool/core] objtool: Make SP memory operation match PUSH/POP
+ semantics
+Cc:     Julien Thierry <jthierry@redhat.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161096481258.414.12537383171975793205.tip-bot2@tip-bot2>
+Message-ID: <161096481275.414.13788440546596030328.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,58 +57,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     c8d7b7e592f471ec1da39d872dc6bbf767a812e7
-Gitweb:        https://git.kernel.org/tip/c8d7b7e592f471ec1da39d872dc6bbf767a812e7
-Author:        Vasily Gorbik <gor@linux.ibm.com>
-AuthorDate:    Fri, 13 Nov 2020 00:03:20 +01:00
+Commit-ID:     201ef5a974e24112953b74cc9f33dcfc4cbcc1cb
+Gitweb:        https://git.kernel.org/tip/201ef5a974e24112953b74cc9f33dcfc4cbcc1cb
+Author:        Julien Thierry <jthierry@redhat.com>
+AuthorDate:    Wed, 14 Oct 2020 08:38:02 +01:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
-CommitterDate: Wed, 13 Jan 2021 18:13:11 -06:00
+CommitterDate: Wed, 13 Jan 2021 18:13:10 -06:00
 
-x86/tools: Use tools headers for instruction decoder selftests
+objtool: Make SP memory operation match PUSH/POP semantics
 
-Currently the x86 instruction decoder is used from:
-- the kernel itself,
-- from tools like objtool and perf,
-- within x86 tools, i.e. instruction decoder selftests.
+Architectures without PUSH/POP instructions will always access the stack
+though memory operations (SRC/DEST_INDIRECT). Make those operations have
+the same effect on the CFA as PUSH/POP, with no stack pointer
+modification.
 
-The first two cases are similar, because tools headers try to mimic
-kernel headers.
-
-Instruction decoder selftests include some of the kernel headers
-directly, including uapi headers. This works until headers dependencies
-are kept to a minimum and tools are not cross-compiled. Since the goal
-of the x86 instruction decoder selftests is not to verify uapi headers,
-move it to using tools headers, like is already done for vdso2c tool,
-mkpiggy and other tools in arch/x86/boot/.
-
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/tools/Makefile | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/objtool/check.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/x86/tools/Makefile b/arch/x86/tools/Makefile
-index 55b1ab3..bddfc9a 100644
---- a/arch/x86/tools/Makefile
-+++ b/arch/x86/tools/Makefile
-@@ -29,14 +29,14 @@ posttest: $(obj)/insn_decoder_test vmlinux $(obj)/insn_sanity
- hostprogs += insn_decoder_test insn_sanity
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 00d00f9..270adc3 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2065,6 +2065,14 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 			break;
  
- # -I needed for generated C source and C source which in the kernel tree.
--HOSTCFLAGS_insn_decoder_test.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/uapi/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/uapi/
-+HOSTCFLAGS_insn_decoder_test.o := -Wall -I$(srctree)/tools/arch/x86/lib/ -I$(srctree)/tools/arch/x86/include/ -I$(objtree)/arch/x86/lib/
+ 		case OP_SRC_REG_INDIRECT:
++			if (!cfi->drap && op->dest.reg == cfa->base &&
++			    op->dest.reg == CFI_BP) {
++
++				/* mov disp(%rsp), %rbp */
++				cfa->base = CFI_SP;
++				cfa->offset = cfi->stack_size;
++			}
++
+ 			if (cfi->drap && op->src.reg == CFI_BP &&
+ 			    op->src.offset == cfi->drap_offset) {
  
--HOSTCFLAGS_insn_sanity.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/
-+HOSTCFLAGS_insn_sanity.o := -Wall -I$(srctree)/tools/arch/x86/lib/ -I$(srctree)/tools/arch/x86/include/ -I$(objtree)/arch/x86/lib/
+@@ -2086,6 +2094,12 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 				/* mov disp(%rbp), %reg */
+ 				/* mov disp(%rsp), %reg */
+ 				restore_reg(cfi, op->dest.reg);
++
++			} else if (op->src.reg == CFI_SP &&
++				   op->src.offset == regs[op->dest.reg].offset + cfi->stack_size) {
++
++				/* mov disp(%rsp), %reg */
++				restore_reg(cfi, op->dest.reg);
+ 			}
  
- # Dependencies are also needed.
--$(obj)/insn_decoder_test.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/inat.c $(srctree)/arch/x86/include/asm/inat_types.h $(srctree)/arch/x86/include/asm/inat.h $(srctree)/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
-+$(obj)/insn_decoder_test.o: $(srctree)/tools/arch/x86/lib/insn.c $(srctree)/tools/arch/x86/lib/inat.c $(srctree)/tools/arch/x86/include/asm/inat_types.h $(srctree)/tools/arch/x86/include/asm/inat.h $(srctree)/tools/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
+ 			break;
+@@ -2163,6 +2177,12 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
+ 			/* mov reg, disp(%rsp) */
+ 			save_reg(cfi, op->src.reg, CFI_CFA,
+ 				 op->dest.offset - cfi->cfa.offset);
++
++		} else if (op->dest.reg == CFI_SP) {
++
++			/* mov reg, disp(%rsp) */
++			save_reg(cfi, op->src.reg, CFI_CFA,
++				 op->dest.offset - cfi->stack_size);
+ 		}
  
--$(obj)/insn_sanity.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/inat.c $(srctree)/arch/x86/include/asm/inat_types.h $(srctree)/arch/x86/include/asm/inat.h $(srctree)/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
-+$(obj)/insn_sanity.o: $(srctree)/tools/arch/x86/lib/insn.c $(srctree)/tools/arch/x86/lib/inat.c $(srctree)/tools/arch/x86/include/asm/inat_types.h $(srctree)/tools/arch/x86/include/asm/inat.h $(srctree)/tools/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
- 
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include
- hostprogs	+= relocs
+ 		break;
