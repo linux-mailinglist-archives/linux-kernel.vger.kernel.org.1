@@ -2,65 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298192FA5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AA32FA5D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406540AbhARQTA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 11:19:00 -0500
-Received: from wnbcorp.com ([175.126.38.143]:41045 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2406544AbhARQSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:18:38 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IGDS51018938;
-        Tue, 19 Jan 2021 01:13:50 +0900
-Message-Id: <202101181613.10IGDS51018938@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2406529AbhARQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:15:46 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:43302 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406484AbhARQPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:15:09 -0500
+Received: by mail-oi1-f179.google.com with SMTP id q25so18165410oij.10;
+        Mon, 18 Jan 2021 08:14:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kytasFWKgvc5nOgZfApzBHs9Vw3bTByXjqhFQofMSYo=;
+        b=RGI6HfMoHdxn5lyZ+SlMsj2bSwT8qKwQpbYmgsWhn9OFG0Am9NViYAZ91tMMjFU+eP
+         ui5lE3XjrbdqeDAgQOJslQSGsIZaNG1j+vJ6sE8Y1NqnyekEk3ctLRV8qhTzDKQAWRmO
+         wDBMGIyOQyA7uTQA1gXM4vCc5gSEZ8tb0b6Z8USchHFg9FrBHVPStUccznOAIkvJbPEy
+         MoMyJqkthuipkg/el6xyY7nPRHr4a+4riyJgIZVz7KRN6erEoym+M0LjYz/WVL3C8sJ7
+         Nf+JwwHlDFt+/cTbXXuR1bgKzsiDxVLeZjzkTGHY6dN1g2oGooJwGOTgWMve7OYY+jTR
+         NwBw==
+X-Gm-Message-State: AOAM530zBHSQpZSaF4htpm3zwggfKKNGwxATFtskCm7oCM1jvKb6SWzW
+        cSIQZzxl3m/BXC2UzMFk1DIulYx7m+OQoFFdtxI=
+X-Google-Smtp-Source: ABdhPJzcYWh4Vned6TY+/VKW3DmEPz34IY9LpEHScCK2HKDVDzY0CKS2HMxu5PygiGqOof6JgT3sOGKw7PMfZula10Q=
+X-Received: by 2002:aca:5c05:: with SMTP id q5mr47953oib.157.1610986468728;
+ Mon, 18 Jan 2021 08:14:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 17:13:49 +0100
-Reply-To: johnsonwilson389@gmail.com
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
+In-Reply-To: <20210118003428.568892-3-djrscally@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 18 Jan 2021 17:14:17 +0100
+Message-ID: <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>
+> In some ACPI tables we encounter, devices use the _DEP method to assert
+> a dependence on other ACPI devices as opposed to the OpRegions that the
+> specification intends. We need to be able to find those devices "from"
+> the dependee, so add a function to parse all ACPI Devices and check if
+> the include the handle of the dependee device in their _DEP buffer.
 
-Sir/Madam,
+What exactly do you need this for?
 
-CONGRATULATIONS!!!
+Would it be practical to look up the suppliers in acpi_dep_list instead?
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Note that supplier drivers may remove entries from there, but does
+that matter for your use case?
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+>         - Used acpi_lpss_dep() as Andy suggested.
+>
+>  drivers/acpi/utils.c    | 34 ++++++++++++++++++++++++++++++++++
+>  include/acpi/acpi_bus.h |  2 ++
+>  2 files changed, 36 insertions(+)
+>
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 78b38775f18b..ec6a2406a886 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -831,6 +831,18 @@ bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
+>         return false;
+>  }
+>
+> +static int acpi_dev_match_by_dep(struct device *dev, const void *data)
+> +{
+> +       struct acpi_device *adev = to_acpi_device(dev);
+> +       const struct acpi_device *dependee = data;
+> +       acpi_handle handle = dependee->handle;
+> +
+> +       if (acpi_lpss_dep(adev, handle))
+> +               return 1;
+> +
+> +       return 0;
+> +}
+> +
+>  /**
+>   * acpi_dev_present - Detect that a given ACPI device is present
+>   * @hid: Hardware ID of the device.
+> @@ -866,6 +878,28 @@ bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+>  }
+>  EXPORT_SYMBOL(acpi_dev_present);
+>
+> +/**
+> + * acpi_dev_get_next_dep_dev - Return next ACPI device dependent on input dev
+> + * @adev: Pointer to the dependee device
+> + * @prev: Pointer to the previous dependent device (or NULL for first match)
+> + *
+> + * Return the next ACPI device which declares itself dependent on @adev in
+> + * the _DEP buffer.
+> + *
+> + * The caller is responsible to call put_device() on the returned device.
+> + */
+> +struct acpi_device *acpi_dev_get_next_dep_dev(struct acpi_device *adev,
+> +                                             struct acpi_device *prev)
+> +{
+> +       struct device *start = prev ? &prev->dev : NULL;
+> +       struct device *dev;
+> +
+> +       dev = bus_find_device(&acpi_bus_type, start, adev, acpi_dev_match_by_dep);
+> +
+> +       return dev ? to_acpi_device(dev) : NULL;
+> +}
+> +EXPORT_SYMBOL(acpi_dev_get_next_dep_dev);
+> +
+>  /**
+>   * acpi_dev_get_next_match_dev - Return the next match of ACPI device
+>   * @adev: Pointer to the previous acpi_device matching this @hid, @uid and @hrv
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 02a716a0af5d..33deb22294f2 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -683,6 +683,8 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+>
+> +struct acpi_device *
+> +acpi_dev_get_next_dep_dev(struct acpi_device *adev, struct acpi_device *prev);
+>  struct acpi_device *
+>  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
+>  struct acpi_device *
+> --
+> 2.25.1
+>
