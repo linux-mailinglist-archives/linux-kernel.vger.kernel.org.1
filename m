@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEA82FA1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9932FA1E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404731AbhARNms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:42:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404706AbhARNk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2404669AbhARNmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:42:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404697AbhARNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 08:40:56 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A58C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:40:06 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id x23so18201888lji.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:40:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=agRpMrek+Sppj7GIr8oRcD/VoAZuQ4C+XG8ubwmjo4k=;
-        b=rocze4a/cGqaTl37flewv1kZPlkcZC9Q9GsT3LiMVLV4JD2GajATAopnT7qRD69wU4
-         m0KgxlHf3pEq/+MUD29LiuAm+v7BInGssiPywyFKZkz16/+AWlEv13Nt2YprofI2SVxs
-         nqlrR7i1XvjYhJJlOeMW7jiRbGy5/e4u8Ed4srNbFCH7mMoCFXr4aFVuQlfSkGbAN5zY
-         HIk5z8BBJ+iis8mmOm/OYKMatP40OzQH6ziMc1219ug3iLjnjZy+6LcLmj39a4qZtSUU
-         3gJdT9ikQ97hGpsCqXtr924Fc6VPbm27drkGXsnsSrIpheyWNp9j7yP+v+nPjYDPfE/s
-         piwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=agRpMrek+Sppj7GIr8oRcD/VoAZuQ4C+XG8ubwmjo4k=;
-        b=eYuW/aylJZJI82rs2MlqLC1SnslpqMGDRYziRcSIguRwGXQab+V8FJlhMNbEAk8U0q
-         zSommCBQM3mZZwwZu9hBnQUIYz7hfWBm13Q/wRc9gcrXfoAKKgsNR3Si55/hnkf6wLZn
-         upoJ1QP64jpFC99qMH4wves13M9vicUrGJNyAsgawDJePaGXC/LWmpE31sNC7v0pBd+3
-         pg4m4En1tIMIqGnw3ck3HOGs2Z3Ef4oSMRvmtqW+0gBcJxqFKFt2/24rjQAIe0P4J9C0
-         sLpjUIeVgshKIXj4ByfgT5TQNrsa99TTkljNVZl5l4DQv4XBo6ciEv6TKZamimRRxhLz
-         loBw==
-X-Gm-Message-State: AOAM531k/8+0dBAV5rUu4gvQNQeG6E+bqQYr6eqRi80Fx2A277q+ziNO
-        xbXuXd1zqbhBzeMfS3l8ZoOyIPvmD2FHBkKDsF5l/zkH6ag=
-X-Google-Smtp-Source: ABdhPJwAvKK/U4EUCHlui/R7DHrDRKoSCCyv/UBKJaKwItG3nr4+TGKZ/eoC10L2NTt8VIP1H8+TMonSXEUM/aAoSCY=
-X-Received: by 2002:a2e:3503:: with SMTP id z3mr11263570ljz.74.1610977205079;
- Mon, 18 Jan 2021 05:40:05 -0800 (PST)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 030FA2065E;
+        Mon, 18 Jan 2021 13:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610977201;
+        bh=+hQ/DQfrKXADkEoj0kzneLBbQSy5clevR8ljdD3I8DA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XJNW+Ombn7kHROG7crCO5CxWLDsEhG+hq9RJUgowONq56+Wh8LPDNp6zeYYnOKiRg
+         +3WbO1xhJn0jXbMIiYI9T5DS0t3nqgXmzETspZXZw2Ccyyv+69WBHRCZREySY+RSXv
+         Rd11mkbO9w2UwmQH2Q+W3IEcACOJruG2Uwdjkqv+y86t+39CDWsXGysIF6zfTC1bCX
+         YuBe9hJulZKY+ae76IWdbkP7D6sr52gY3DjBSddrZlETbgh7P12vfR9ru6nAJnUquU
+         V1krPdnYvMLfCcfVcdIewUTJKeljWu+jn1DjnCze975LPbiAWOB6sWhApBq807thBE
+         J4AZq9I+w6YYw==
+Date:   Mon, 18 Jan 2021 08:39:59 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Message-ID: <20210118133959.GZ4035784@sasha-vm>
+References: <20210118014951.250815-1-sashal@kernel.org>
+ <YAVTDETPaJuaRPfc@kroah.com>
+ <YAVT0XV7uX2NpIRe@kroah.com>
 MIME-Version: 1.0
-References: <20210112133010.21397-1-digetx@gmail.com> <20210112133010.21397-2-digetx@gmail.com>
-In-Reply-To: <20210112133010.21397-2-digetx@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 18 Jan 2021 14:39:53 +0100
-Message-ID: <CACRpkdZunRyQhWcMxKC1qXfO9gni_n_1Hr90C-RA3jSpXcOYzA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] gpio: tegra: Add dependency on GPIOLIB_IRQCHIP
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YAVT0XV7uX2NpIRe@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:30 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-
-> Add dependency on GPIOLIB_IRQCHIP in order to fix driver compilation.
+On Mon, Jan 18, 2021 at 10:24:33AM +0100, Greg KH wrote:
+>On Mon, Jan 18, 2021 at 10:21:16AM +0100, Greg KH wrote:
+>> On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
+>> > SUBLEVEL only has 8 bits of space, which means that we'll overflow it
+>> > once it reaches 256.
+>> >
+>> > Few of the stable branches will imminently overflow SUBLEVEL while
+>> > there's no risk of overflowing VERSION.
+>> >
+>> > Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
+>> > should create a better balance between the different version numbers we
+>> > use.
+>> >
+>> > The downside here is that Linus will have 8 bits less to play with, but
+>> > given our current release cadence (~10 weeks), the number of Linus's
+>> > fingers & toes (20), and the current VERSION (5) we can calculate that
+>> > VERSION will overflow in just over 1,000 years, so I'm kicking this can
+>> > down the road.
+>> >
+>> > Cc: stable@kernel.org
+>> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> > ---
+>> >  Makefile | 4 ++--
+>> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/Makefile b/Makefile
+>> > index 9e73f82e0d863..dc2bad7a440d8 100644
+>> > --- a/Makefile
+>> > +++ b/Makefile
+>> > @@ -1252,8 +1252,8 @@ endef
+>> >
+>> >  define filechk_version.h
+>> >  	echo \#define LINUX_VERSION_CODE $(shell                         \
+>> > -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+>> > -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
+>> > +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
+>> > +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
+>>
+>> As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
+>> that try to suck out the version/patchlevel number of the kernel release
+>> into their own fields.  Things like USB host controller strings, v4l
+>> ioctl reports, scsi driver ioctls, and other places do fun bit-movements
+>> to try to unreverse this bit packing.
+>>
+>> So how about we just provide a "real" version/subversion/revision
+>> #define as well, and clean up all in-kernel users, so we can get this to
+>> work, and we can change it in the future more easily.
 >
-> Fixes: efcdca286eef ("gpio: tegra: Convert to gpio_irq_chip")
-> Reported-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>Or, I can just stop doing stable releases at .255 and then abuse the
+>EXTRAVERSION field to put in sub-revision values.
+>
+>Or, we can just not worry about it as anyone using these really old
+>kernels, userspace will work just fine (the number going backwards for
+>these fields isn't going to break anything), it's only any crazy
+>out-of-tree code that will get confused if they are trying to do
+>different build options based on SUBLEVEL :)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I think it would also affect code that doesn't do things based on
+SBULEVEL. Consider something like:
 
-Yours,
-Linus Walleij
+	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
+
+Which will cause 4.4.256 to now change the result of that comparison.
+
+-- 
+Thanks,
+Sasha
