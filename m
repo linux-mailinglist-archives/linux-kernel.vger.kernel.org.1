@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2C72FAD7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1496F2FAD68
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732090AbhARWpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S2389231AbhARWlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389350AbhARWlk (ORCPT
+        with ESMTP id S2389009AbhARWlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:41:40 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668E0C06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:45 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id u14so10853153wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:45 -0800 (PST)
+        Mon, 18 Jan 2021 17:41:18 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82223C0617A1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:46 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id l12so12684505wry.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6wNCEKXSovrgDcg/eymskQwC0/mm+MKrGvoBfPJUQt0=;
-        b=P/cRXjIXkqCzwdQPKm+lw89m4nei/klZZcPENBNA6i+oROmqLZrEd49470LIOAu5wZ
-         zGjIZiD2PnMlzePE+CgTKz4Ntlws8tuauVJNX6RUWRVBvC92gHuQty4Zpp6qixgCEm2f
-         /8CBBU5izhqOnJ1Vt3Y2g6ltjpRQ2jrLAgaRQeZjb1oqkxMDlbtqYN0vgRdR5u7H9kKz
-         98rrngFqUJdd5GwCVWDtbSlAmU3dPsmslI/rm9iynd7v7ZzKvWKh8dRSwE85LKw6azNx
-         pshmvdTd/6zZVOlfHbt2o9rEfEAjRNkuymXBm+wk8mZY3St7PRKjiccjzfUAe2oJZyy2
-         uMPQ==
+        bh=cwzNP5kyHoQeZRxeZSVY+m4WgCNHmZim89Aex+bzV3M=;
+        b=DE6emldwpqG09140iU8DJVIgEVttWIINr5Lyz4ugvS4DsV0dLBfNxYlSnC0vczze2C
+         9Ld7waXjDpfvS+Ez0w90iivhrKe0y8nE9y4gDBEjvdrmswkfS6jnIB54//9B2j0rc826
+         j4nTGlxxPOdqnaxA8TofEn7/nsnwnN+/A3S/nE4ZBscU5SwDeKpTj8PtK3JHOtJsFwja
+         KGNOMeHXDalpBDCos7sMEQ4mN9RV57pN4MAPuc5LA9h4dAcjOxy979wHnVUrDxVb31po
+         b+rV+pTXCFvW6YkCBNzIk5gH+RnHBBoxZEBiPRvS/VOeH1SiPjtu013xXZa26F3uo75n
+         lrbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6wNCEKXSovrgDcg/eymskQwC0/mm+MKrGvoBfPJUQt0=;
-        b=DNPAGxwBaotnqGhZoqzqYTllhNuzmzQfKTK/Jqz3kO7S68FbNoI3boVv70MAw1YcNQ
-         YI9cehzZKT5oLtzqrk8ltyXWFczlPuNOPb/HrDVsnQ7vU8K3rd2lxGOW5A+wmyr4DT2R
-         b+9aAeYP5wqCMWQdTyoexawSqv/3rOGLEveapb2hR9D95dq8DoE7E6sTQHjtatCdR/a3
-         Xsdm0m9oPxuS14aexz1EWPDAwxTn9xEjPDu+xlW+2rm2LNOWkEWfOEOhvQARbLv6Avty
-         JGZt9jakiAZoejME/BMs5rUpcyXT8iIfz9wCM5gJgCKsB7ULxKCTeseVEhPFUufysGtI
-         SM3Q==
-X-Gm-Message-State: AOAM530VzBflgNVinDECguYNsoyHpl0r7Kpv70un4tlQ25i2floXUamS
-        Sc5RKQq7nTJpQj4v8seicld2zQ==
-X-Google-Smtp-Source: ABdhPJzM1pEz5Fy5M6FAKs8Lx2eEYfMI1Dfk/J4XW9ajHHf4mJATxMpAzXP9cK2DtoskVJL4vaO7qQ==
-X-Received: by 2002:a1c:6484:: with SMTP id y126mr1286178wmb.45.1611009584143;
-        Mon, 18 Jan 2021 14:39:44 -0800 (PST)
+        bh=cwzNP5kyHoQeZRxeZSVY+m4WgCNHmZim89Aex+bzV3M=;
+        b=M1UqCtVqOB2Q2/fStVVz/ZzkQl95H7qIUHWoKNO0xpQKPxmrDGjsrELY0t4/3wDbS+
+         AjjPUUmFdIzCIXKOfXDL5acOH+UTpCJ/7BzNFgZp1qnvLuwPmG323i4K3SSnLkG97/wI
+         +gpXqWzh4ZiN5dp29bwTQVCDFCb59lMTi+9QVC1Eg5pqXjqoTr2GDyBfjS8EVPBwL4wt
+         2/UMgtTnHmSvQw58hMrty4Qk/tqsMvXllWknfULecSSIEbiS/v/1tomG9GHy8CjP3xiF
+         C7W8g0fYohVAZm5bv186nQycXNQcyR3WguV4zuTxv6Vcp2+0XOoOX/HEjby1gZjVBn5m
+         SOiA==
+X-Gm-Message-State: AOAM531cP0Hbvq66OGjv8eoSwyiJnX1nLhM3WAw9AhA2/tYVST70lRlY
+        aQo9HR1JTUIoKXpL5n+UTBJFhg==
+X-Google-Smtp-Source: ABdhPJywvIwmt0EOck4Pbkb+KtkE7KXOTIlpGFAE9ml3JcVB5KSkZ2lIFh8jLT1cKdtTrG5XBxeluQ==
+X-Received: by 2002:adf:9d42:: with SMTP id o2mr1408439wre.135.1611009585324;
+        Mon, 18 Jan 2021 14:39:45 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.43
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:43 -0800 (PST)
+        Mon, 18 Jan 2021 14:39:44 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 10/20] RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing descriptions
-Date:   Mon, 18 Jan 2021 22:39:19 +0000
-Message-Id: <20210118223929.512175-11-lee.jones@linaro.org>
+Subject: [PATCH 11/20] RDMA/core/multicast: Provide description for 'ib_init_ah_from_mcmember()'s 'rec' param
+Date:   Mon, 18 Jan 2021 22:39:20 +0000
+Message-Id: <20210118223929.512175-12-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
 References: <20210118223929.512175-1-lee.jones@linaro.org>
@@ -69,89 +66,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/i40iw/i40iw_puda.c:517: warning: Function parameter or member 'dev' not described in 'i40iw_puda_qp_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:517: warning: Function parameter or member 'qp' not described in 'i40iw_puda_qp_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:517: warning: Excess function parameter 'rsrc' description in 'i40iw_puda_qp_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:629: warning: Function parameter or member 'dev' not described in 'i40iw_puda_cq_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:629: warning: Function parameter or member 'cq' not described in 'i40iw_puda_cq_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:629: warning: Excess function parameter 'rsrc' description in 'i40iw_puda_cq_wqe'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:792: warning: Function parameter or member 'vsi' not described in 'i40iw_puda_dele_resources'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:792: warning: Excess function parameter 'dev' description in 'i40iw_puda_dele_resources'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:884: warning: Function parameter or member 'vsi' not described in 'i40iw_puda_create_rsrc'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:884: warning: Excess function parameter 'dev' description in 'i40iw_puda_create_rsrc'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:1135: warning: Function parameter or member 'pfpdu' not described in 'i40iw_ieq_create_pbufl'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:1442: warning: Function parameter or member 'vsi' not described in 'i40iw_ieq_receive'
- drivers/infiniband/hw/i40iw/i40iw_puda.c:1442: warning: Excess function parameter 'dev' description in 'i40iw_ieq_receive'
+ drivers/infiniband/core/multicast.c:739: warning: Function parameter or member 'rec' not described in 'ib_init_ah_from_mcmember'
 
-Cc: Faisal Latif <faisal.latif@intel.com>
-Cc: Shiraz Saleem <shiraz.saleem@intel.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_puda.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/infiniband/core/multicast.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_puda.c b/drivers/infiniband/hw/i40iw/i40iw_puda.c
-index 924be4b03c9a0..d1c8cc0a62365 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_puda.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_puda.c
-@@ -511,7 +511,8 @@ static void i40iw_puda_qp_setctx(struct i40iw_puda_rsrc *rsrc)
- 
- /**
-  * i40iw_puda_qp_wqe - setup wqe for qp create
-- * @rsrc: resource for qp
-+ * @dev: iwarp device
-+ * @qp: resource for qp
-  */
- static enum i40iw_status_code i40iw_puda_qp_wqe(struct i40iw_sc_dev *dev, struct i40iw_sc_qp *qp)
- {
-@@ -623,7 +624,8 @@ static enum i40iw_status_code i40iw_puda_qp_create(struct i40iw_puda_rsrc *rsrc)
- 
- /**
-  * i40iw_puda_cq_wqe - setup wqe for cq create
-- * @rsrc: resource for cq
-+ * @dev: iwarp device
-+ * @cq: cq to setup
-  */
- static enum i40iw_status_code i40iw_puda_cq_wqe(struct i40iw_sc_dev *dev, struct i40iw_sc_cq *cq)
- {
-@@ -782,7 +784,7 @@ static void i40iw_puda_free_cq(struct i40iw_puda_rsrc *rsrc)
- 
- /**
-  * i40iw_puda_dele_resources - delete all resources during close
-- * @dev: iwarp device
-+ * @vsi: pointer to vsi structure
-  * @type: type of resource to dele
-  * @reset: true if reset chip
-  */
-@@ -876,7 +878,7 @@ static enum i40iw_status_code i40iw_puda_allocbufs(struct i40iw_puda_rsrc *rsrc,
- 
- /**
-  * i40iw_puda_create_rsrc - create resouce (ilq or ieq)
-- * @dev: iwarp device
-+ * @vsi: pointer to vsi structure
-  * @info: resource information
-  */
- enum i40iw_status_code i40iw_puda_create_rsrc(struct i40iw_sc_vsi *vsi,
-@@ -1121,6 +1123,7 @@ static void  i40iw_ieq_compl_pfpdu(struct i40iw_puda_rsrc *ieq,
- 
- /**
-  * i40iw_ieq_create_pbufl - create buffer list for single fpdu
-+ * @pfpdu: partial management per user qp
-  * @rxlist: resource list for receive ieq buffes
-  * @pbufl: temp. list for buffers for fpddu
-  * @buf: first receive buffer
-@@ -1434,7 +1437,7 @@ static void i40iw_ieq_handle_exception(struct i40iw_puda_rsrc *ieq,
- 
- /**
-  * i40iw_ieq_receive - received exception buffer
-- * @dev: iwarp device
-+ * @vsi: pointer to vsi structure
-  * @buf: exception buffer received
-  */
- static void i40iw_ieq_receive(struct i40iw_sc_vsi *vsi,
+diff --git a/drivers/infiniband/core/multicast.c b/drivers/infiniband/core/multicast.c
+index 740f03ecc05d7..57519ca6cd2c7 100644
+--- a/drivers/infiniband/core/multicast.c
++++ b/drivers/infiniband/core/multicast.c
+@@ -721,6 +721,7 @@ EXPORT_SYMBOL(ib_sa_get_mcmember_rec);
+  * member record and gid of the device.
+  * @device:	RDMA device
+  * @port_num:	Port of the rdma device to consider
++ * @rec:	Multicast member record to use
+  * @ndev:	Optional netdevice, applicable only for RoCE
+  * @gid_type:	GID type to consider
+  * @ah_attr:	AH attribute to fillup on successful completion
 -- 
 2.25.1
 
