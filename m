@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5D02F9DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458B02F9DFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390210AbhARLWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:22:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390133AbhARLSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:18:51 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061B4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:18:08 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id n10so10713307pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vCOkqFp410/php68wIRNQR6nVYYVNeZ2EZUFKVUPxHE=;
-        b=ezT0GZsmJBLOfurM03WOn2TH3aLnuBejXUqCkZ+NK5SRGAz2JKR3x1O6idpx8Lcj1y
-         0DLHQbq74VYLZHUDI9nLk3/HEtEDabFAT9XCZqQZCnLGcktr5ymGPSkqescO+8q0zxz6
-         4t09QgDxM2HTQpk1L0jpwMc2iy8lqttqsoH8Lb2Rv0jVDXX7GtOeKpbHmgvhHGqaRlZu
-         t45b4ndPwrUdB0XBDGk9eQl0K22WmC7Pd1KzoZXyUrQ04URjcKde2N/Hz6kgLB61T82T
-         FQDHpgyT3kty8uiNwyuKBJZREsN/LtS86t+ZwNiEh0mPOGk+8zEXwq656s41toAB97Ce
-         kG9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vCOkqFp410/php68wIRNQR6nVYYVNeZ2EZUFKVUPxHE=;
-        b=kli3XFBvjg51tVr8nxL0Z4/Y4VBIr3c7e8kP55Te4WBy8lGCoF/fK6bR2y0pyA+efp
-         Jic9Nme+cWybT+iCvj3keyXIGU1y+jFMtjjkSnD789Om737xXxvt1aPD6WlUueIiXZ1T
-         skK+OJiHM7/hePAakNlTe22hSu8fS0NqRRFZkq77SRxVcBhZl5PF/3y71vfpFgODt/CO
-         rp8mKW8WdF78GigLEV4Y3mJP+M9gVn2j+gs+h/CY2DzQchZHiUAVrfh/rAUQ2poekdr7
-         /4iaLodAGJfTeGaD1Zna679m9FBETbsQ55N0uBAbukjtJEOOvYKv6Zdu3AZLeaynHCA6
-         0F+A==
-X-Gm-Message-State: AOAM531yUmniVtfsyltNacaaNHMAYz220OIfcgimZBfiFst4Xgyk2/GU
-        TGIhpCJhzqXVs72ZpnsJ9jX2sw==
-X-Google-Smtp-Source: ABdhPJyhitKtN+Jw9TBHJr0LGjKjQtmfdaFk9RpKz7yIieZEnFiC+GNt+YuNqD4+blf9WjeEIS9HtQ==
-X-Received: by 2002:a62:2e47:0:b029:1b7:840e:edc7 with SMTP id u68-20020a622e470000b02901b7840eedc7mr4547464pfu.52.1610968688492;
-        Mon, 18 Jan 2021 03:18:08 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id bv21sm16763805pjb.1.2021.01.18.03.18.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 03:18:07 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:48:05 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 11/12] opp: Handle missing OPP table in
- dev_pm_opp_xlate_performance_state()
-Message-ID: <20210118111805.ex5sou3ya2kpue4w@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-12-digetx@gmail.com>
+        id S2390221AbhARLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:22:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390137AbhARLTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:19:04 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2481520E65;
+        Mon, 18 Jan 2021 11:18:23 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l1SY8-008Sno-QZ; Mon, 18 Jan 2021 11:18:21 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118005524.27787-12-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 18 Jan 2021 11:18:20 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Fix the return value of
+ smp_call_function_single()
+In-Reply-To: <20210118093137.3383-1-yejune.deng@gmail.com>
+References: <20210118093137.3383-1-yejune.deng@gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <af2ea1ad8df12907fa24eb4bf44c6e99@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: yejune.deng@gmail.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> NVIDIA Tegra SoCs have a power domains topology such that child domains
-> only clamp a power rail, while parent domain controls shared performance
-> state of the multiple child domains. In this case child's domain doesn't
-> need to have OPP table. Hence we want to allow children power domains to
-> pass performance state to the parent domain if child's domain doesn't have
-> OPP table.
+On 2021-01-18 09:31, Yejune Deng wrote:
+> In smp_call_function_single(), the 3rd parameter isn't the return value
+> and it's always positive. But it may return a negative value. So the
+> 'ret' is should be the return value of the smp_call_function_single().
 > 
-> The dev_pm_opp_xlate_performance_state() gets src_table=NULL if a child
-> power domain doesn't have OPP table and in this case we should pass the
-> performance state to the parent domain.
+> In check_kvm_target_cpu(), 'phys_target' is more readable than 'ret'.
 > 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 > ---
->  drivers/opp/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/kvm/arm.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 7726c4c40b53..ca8c6acc29f4 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -2419,7 +2419,7 @@ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table,
->  	 * and so none of them have the "required-opps" property set. Return the
->  	 * pstate of the src_table as it is in such cases.
->  	 */
-> -	if (!src_table->required_opp_count)
-> +	if (!src_table || !src_table->required_opp_count)
->  		return pstate;
->  
->  	for (i = 0; i < src_table->required_opp_count; i++) {
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 04c44853b103..5fa5c04106de 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1815,9 +1815,9 @@ static int init_hyp_mode(void)
+>  	return err;
+>  }
+> 
+> -static void check_kvm_target_cpu(void *ret)
+> +static void check_kvm_target_cpu(void *phys_target)
+>  {
+> -	*(int *)ret = kvm_target_cpu();
+> +	*(int *)phys_target = kvm_target_cpu();
+>  }
+> 
+>  struct kvm_vcpu *kvm_mpidr_to_vcpu(struct kvm *kvm, unsigned long 
+> mpidr)
+> @@ -1879,7 +1879,7 @@ void kvm_arch_irq_bypass_start(struct
+> irq_bypass_consumer *cons)
+>  int kvm_arch_init(void *opaque)
+>  {
+>  	int err;
+> -	int ret, cpu;
+> +	int ret, cpu, phys_target;
+>  	bool in_hyp_mode;
+> 
+>  	if (!is_hyp_mode_available()) {
+> @@ -1900,7 +1900,7 @@ int kvm_arch_init(void *opaque)
+>  			 "Only trusted guests should be used on this system.\n");
+> 
+>  	for_each_online_cpu(cpu) {
+> -		smp_call_function_single(cpu, check_kvm_target_cpu, &ret, 1);
+> +		ret = smp_call_function_single(cpu, check_kvm_target_cpu, 
+> &phys_target, 1);
+>  		if (ret < 0) {
+>  			kvm_err("Error, CPU %d not supported!\n", cpu);
+>  			return -ENODEV;
 
-Applied. Thanks.
+That's not the purpose of this code. We check the target CPU
+for so that we can decide to *fail* the KVM init if there is
+a CPU we do not support (we definitely used to do that with
+32bit), and the error message clearly states this.
 
+So if you want to handle a cross-call failure, please do that.
+But don't change the existing semantics of this code.
+
+         M.
 -- 
-viresh
+Jazz is not dead. It just smells funny...
