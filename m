@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBEE2F9E20
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAAA2F9E1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390256AbhARL2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S2390208AbhARL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390094AbhARLRL (ORCPT
+        with ESMTP id S2390095AbhARLRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Jan 2021 06:17:11 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE914C0613ED;
-        Mon, 18 Jan 2021 03:15:40 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id l12so10831967wry.2;
-        Mon, 18 Jan 2021 03:15:40 -0800 (PST)
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7CAC061786;
+        Mon, 18 Jan 2021 03:15:57 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id j12so662876pjy.5;
+        Mon, 18 Jan 2021 03:15:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0h1i352EiVbHiUM8JHOCOF/H+GACCn8PizeJpCi8MZk=;
-        b=F2CYbEyEXwQGfdqcrbmovXlv9qqvFFdfI+1XieT55dWKUke8Wv+eXrWrPD2ZgoYDBe
-         9uhTtLHazLCucke3uj7QUY+AIx7lC19ZQPYsnQtkCtWucV4hyEttt3p/A+/wmV8jx1g5
-         MpxIP+u7aEKiPhFpNTfQBsCfoGbvFx05pj4NZVg3evYw1ql63xnnyBnf7F60W0/Zu8X9
-         75i/Cbn8LdOqmBnMa+IzHgZA1IaHxRHvkGdK0nYeqbK4Hm1HMvA9ZJdf46SWH41o7Uv7
-         24uYQIjSyps1USHOySYs7r4PTtxrubT2JtkXRBQo21YDbuW1AEk6mfCr0OYTVZP7xGY/
-         AkFg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MEcP/jXGbBiYAGjKbm8TZg9WyvuGSXiAJBLZ0ICy+xU=;
+        b=V70qUeYBNTQokBJye3dL3FuBAVfXkSgWh/fMzFEbJ4Om7rCtcsLelbvJPsulTyLdAm
+         2WnY0h9ffnh6LaxREqaACV7oWOmsI19Am+NKEDsloMQ/KV3vd6mpy+xSCGtVHc+/Qg1E
+         nXfcVyHmTAtrSIfpD5Q9KslTfScWx4Mot+DI6FMrNrgqI7JPsVsvdBB7ehEvZUUZajs7
+         7kV7YycSpaxLAZ9K1o3X5Y4B8ni+1EykAmIRl6/5TqXmSHfjJyr/HER+4Sk9yE2X7zEX
+         hKgNq3m/zwknGQQpvdL8UMT6WV/maGHLj9BNpYXYUtRxOkY8c/EgFBR5FI9cXk3VVIvo
+         bQHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0h1i352EiVbHiUM8JHOCOF/H+GACCn8PizeJpCi8MZk=;
-        b=SLFMeGKpHMuu7/Ym9GuD3LV6j0OJv0WCtemRLII+hc2diq6YqdRKWrGf7rnYh+AkHq
-         R+wE6Y+yZrIHYbWbVWIOFl5z1BBQ0TYXL10QGxcbJRJIIkXA3wJdLCRU8l6jTR9zwR2t
-         zzzCKnzp/AYTcIDjyYMebsIbgjIqR+RzuQywmmxG3pdrVfhWalDDCTt666yVRTa+k/Lh
-         GFkUKSgZINnblC5yGUQl9OqZe7p4d/k1D2YgdZifNkhcHWdA1UXIqHhinmvAogqR2Rmt
-         AN8cPudsnO0irY84PbjuJ6JbJGPRbAcUu4ndPC1WAmGUX2It/q+LVEC8FkeYGPxyNw4Z
-         sjrQ==
-X-Gm-Message-State: AOAM531jwnB6bciXoskkHYt/EKko+nXAundPF4GKJMQiYwDpSAqaIjRT
-        1L5PdBQFfQROpnOmuNYfpGY=
-X-Google-Smtp-Source: ABdhPJwgAK+FAy6FwNo9C9xaA0grlmR2OjOv3U3cw7OLWr3F7meQ7e9jvAIodhO2RqLRbQHD4OD3pA==
-X-Received: by 2002:adf:8290:: with SMTP id 16mr24504028wrc.27.1610968539530;
-        Mon, 18 Jan 2021 03:15:39 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd2700989047bbcea0de57.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:9890:47bb:cea0:de57])
-        by smtp.gmail.com with ESMTPSA id b132sm26778440wmh.21.2021.01.18.03.15.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MEcP/jXGbBiYAGjKbm8TZg9WyvuGSXiAJBLZ0ICy+xU=;
+        b=H9HxcMT8yH8//7L3bNxZtJRTS2Vi7m/DExwwhQF3oXaPsI+lgH3ghFF/HKy4eQRQs+
+         GhpMzMZWq4qfR2DfH6CJM1eSMvqawxZc0bTmQJJTSOMKmeGIIAUfTuInJvBasd4hf4GH
+         RoazHyjLQ5NQep3FatEEl8PoXKYWYFMveUhCM8oRUSf6IfYJohPpJAQT7v4grgff0oje
+         OH58NzavYE9r+0VzmSFJmVQ2YoH0p/Q5QjsVC+2RW4n0XuZ0GR1sgPsCvlGEe5cC2x/S
+         QJMA8yPB1ZIfix8Lnbuv1yW186EB+/m4htZc4OliibwkVzGBMuzgUthFqQp3ekm4tcCo
+         4uuQ==
+X-Gm-Message-State: AOAM532qEWaTmL+xH1Seelj4IixzqtfRppTr4TdIdo459VsjdD+/TsTH
+        PlgLzRrho0uYQ7i99fpYuxg=
+X-Google-Smtp-Source: ABdhPJzIA7f6QITJZVgUDFUwqyAqFe8mQ4Y6gMz9weJZceNtPamkoh7FYxO04+is9qPJPNBoSj7/ng==
+X-Received: by 2002:a17:902:7149:b029:db:a6de:4965 with SMTP id u9-20020a1709027149b02900dba6de4965mr25938179plm.3.1610968556564;
+        Mon, 18 Jan 2021 03:15:56 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id p9sm15708032pfq.136.2021.01.18.03.15.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 03:15:38 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     shawnguo@kernel.org, krzk@kernel.org, robh+dt@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v5 3/3] arm64: defconfig: Enable PF8x00 as builtin
-Date:   Mon, 18 Jan 2021 12:15:31 +0100
-Message-Id: <20210118111531.903154-4-adrien.grassein@gmail.com>
+        Mon, 18 Jan 2021 03:15:55 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH net-next] net: tun: fix misspellings using codespell tool
+Date:   Mon, 18 Jan 2021 03:15:39 -0800
+Message-Id: <20210118111539.35886-1-dong.menglong@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118111531.903154-1-adrien.grassein@gmail.com>
-References: <20210118111531.903154-1-adrien.grassein@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is mandatory for the nitrogen8m mini board
-when booting from the sdcard slot.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+Some typos are found out by codespell tool:
+
+$ codespell -w -i 3 ./drivers/net/tun.c
+aovid  ==> avoid
+
+Fix typos found by codespell.
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/tun.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 15fe99544c67..fe7f82ceba9d 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -607,6 +607,7 @@ CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8973=y
- CONFIG_REGULATOR_MP8859=y
- CONFIG_REGULATOR_PCA9450=y
-+CONFIG_REGULATOR_PF8X00=y
- CONFIG_REGULATOR_PFUZE100=y
- CONFIG_REGULATOR_PWM=y
- CONFIG_REGULATOR_QCOM_RPMH=y
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 702215596889..62690baa19bc 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -2735,7 +2735,7 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
+ 		err = register_netdevice(tun->dev);
+ 		if (err < 0)
+ 			goto err_detach;
+-		/* free_netdev() won't check refcnt, to aovid race
++		/* free_netdev() won't check refcnt, to avoid race
+ 		 * with dev_put() we need publish tun after registration.
+ 		 */
+ 		rcu_assign_pointer(tfile->tun, tun);
 -- 
 2.25.1
 
