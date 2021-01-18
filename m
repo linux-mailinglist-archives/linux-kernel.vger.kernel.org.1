@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EC42FA275
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18212FA27C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391528AbhARM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:27:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
+        id S2391434AbhARM05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:26:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390877AbhARLqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3004B22E00;
-        Mon, 18 Jan 2021 11:45:35 +0000 (UTC)
+        id S2390879AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3BB9222B3;
+        Mon, 18 Jan 2021 11:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970335;
-        bh=fvB57iQnjJIvUrvLqVzqPQYyzUtToAI32yr4n9HXUno=;
+        s=korg; t=1610970340;
+        bh=0G3mvyihlNYVY0qink1d/lmxEzbO5HZb4AV5AQgkc/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=by0v1cFEhicWLBqzC0f6iH5unb4niGTQoKrNzrCe3G4ZU10B4fp1dCVXIg5BvIUjt
-         rNd0Ty1VToBez0bA8T5q1iDqU9VIC5SmJ3ZxUak91xhuOVWUDnmgnOh4AmMgZBTKPl
-         2JVcVz4Yh28y5ZjeAptkRO38Iyvp07SI2EzkgQ2U=
+        b=R5ce1MocAt+mJmMzzOMsdtFofEI0aN5ekYkcUzsWQ16hS1DxGLniL3/3rAAK0QTL5
+         cd7A64oypjFZ/EelNsgguyFFfKPLEfdqzooQ3eQGZ5jeBall0fq9EaYdNmhi9CKK8M
+         8lrl1D7qpEzbYy9xAS18acm1+PSijHw8wec+85pE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 106/152] net/mlx5: Fix passing zero to PTR_ERR
-Date:   Mon, 18 Jan 2021 12:34:41 +0100
-Message-Id: <20210118113357.816585407@linuxfoundation.org>
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 108/152] blk-mq-debugfs: Add decode for BLK_MQ_F_TAG_HCTX_SHARED
+Date:   Mon, 18 Jan 2021 12:34:43 +0100
+Message-Id: <20210118113357.907022810@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -40,82 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: John Garry <john.garry@huawei.com>
 
-[ Upstream commit 0c4accc41cb56e527c8c049f5495af9f3d6bef7e ]
+[ Upstream commit 02f938e9fed1681791605ca8b96c2d9da9355f6a ]
 
-Fix smatch warnings:
+Showing the hctx flags for when BLK_MQ_F_TAG_HCTX_SHARED is set gives
+something like:
 
-drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c:105 esw_acl_egress_lgcy_setup() warn: passing zero to 'PTR_ERR'
-drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c:177 esw_acl_egress_ofld_setup() warn: passing zero to 'PTR_ERR'
-drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c:184 esw_acl_ingress_lgcy_setup() warn: passing zero to 'PTR_ERR'
-drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c:262 esw_acl_ingress_ofld_setup() warn: passing zero to 'PTR_ERR'
+root@debian:/home/john# more /sys/kernel/debug/block/sda/hctx0/flags
+alloc_policy=FIFO SHOULD_MERGE|TAG_QUEUE_SHARED|3
 
-esw_acl_table_create() never returns NULL, so
-NULL test should be removed.
+Add the decoding for that flag.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 32bc15afed04b ("blk-mq: Facilitate a shared sbitmap per tagset")
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c  | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c  | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ block/blk-mq-debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-index d46f8b225ebe3..2b85d4777303a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-@@ -101,7 +101,7 @@ int esw_acl_egress_lgcy_setup(struct mlx5_eswitch *esw,
- 	vport->egress.acl = esw_acl_table_create(esw, vport->vport,
- 						 MLX5_FLOW_NAMESPACE_ESW_EGRESS,
- 						 table_size);
--	if (IS_ERR_OR_NULL(vport->egress.acl)) {
-+	if (IS_ERR(vport->egress.acl)) {
- 		err = PTR_ERR(vport->egress.acl);
- 		vport->egress.acl = NULL;
- 		goto out;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c
-index c3faae67e4d6e..4c74e2690d57b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c
-@@ -173,7 +173,7 @@ int esw_acl_egress_ofld_setup(struct mlx5_eswitch *esw, struct mlx5_vport *vport
- 		table_size++;
- 	vport->egress.acl = esw_acl_table_create(esw, vport->vport,
- 						 MLX5_FLOW_NAMESPACE_ESW_EGRESS, table_size);
--	if (IS_ERR_OR_NULL(vport->egress.acl)) {
-+	if (IS_ERR(vport->egress.acl)) {
- 		err = PTR_ERR(vport->egress.acl);
- 		vport->egress.acl = NULL;
- 		return err;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-index b68976b378b81..d64fad2823e73 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-@@ -180,7 +180,7 @@ int esw_acl_ingress_lgcy_setup(struct mlx5_eswitch *esw,
- 		vport->ingress.acl = esw_acl_table_create(esw, vport->vport,
- 							  MLX5_FLOW_NAMESPACE_ESW_INGRESS,
- 							  table_size);
--		if (IS_ERR_OR_NULL(vport->ingress.acl)) {
-+		if (IS_ERR(vport->ingress.acl)) {
- 			err = PTR_ERR(vport->ingress.acl);
- 			vport->ingress.acl = NULL;
- 			return err;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
-index 4e55d7225a265..548c005ea6335 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
-@@ -258,7 +258,7 @@ int esw_acl_ingress_ofld_setup(struct mlx5_eswitch *esw,
- 	vport->ingress.acl = esw_acl_table_create(esw, vport->vport,
- 						  MLX5_FLOW_NAMESPACE_ESW_INGRESS,
- 						  num_ftes);
--	if (IS_ERR_OR_NULL(vport->ingress.acl)) {
-+	if (IS_ERR(vport->ingress.acl)) {
- 		err = PTR_ERR(vport->ingress.acl);
- 		vport->ingress.acl = NULL;
- 		return err;
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 4d6e83e5b4429..4de03da9a624b 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -246,6 +246,7 @@ static const char *const hctx_flag_name[] = {
+ 	HCTX_FLAG_NAME(BLOCKING),
+ 	HCTX_FLAG_NAME(NO_SCHED),
+ 	HCTX_FLAG_NAME(STACKING),
++	HCTX_FLAG_NAME(TAG_HCTX_SHARED),
+ };
+ #undef HCTX_FLAG_NAME
+ 
 -- 
 2.27.0
 
