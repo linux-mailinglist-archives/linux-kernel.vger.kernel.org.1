@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CC42F9F00
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005B82F9F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403841AbhARMCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:02:38 -0500
+        id S2403976AbhARMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:21:02 -0500
 Received: from mail.kernel.org ([198.145.29.99]:39540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390482AbhARLqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E8E9222B3;
-        Mon, 18 Jan 2021 11:46:29 +0000 (UTC)
+        id S2390882AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FBCB22B4E;
+        Mon, 18 Jan 2021 11:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970389;
-        bh=Gg6PwU+DaG0jicgYy+tMOcNo0mdKuM1yOqb00f8dMWU=;
+        s=korg; t=1610970349;
+        bh=6boEI4Ozq88vjLqutXtJQjPiRqTl7llm4a1hhdJzFJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6Htn9ti3uCqx8ouSl1A0DgYfwVFc63WIk+lreu01aem2AKoJPPQ/PSf10ZiGlrWt
-         sZ3pQz1jN7CP72D1jO1oqJ15DVi47md813N2SNyWr19VsVKP2+U0DHN0NtS0Hq11am
-         b7LKj85qR8WZrT05dxt6dbtgSosWDK4sc3+bDLZI=
+        b=moH6I3/YIoEyalwTQmMeiTZ0HEM2XLoRZVuqJb//tT1aa/SGp7LiSfbhSoDOFBJ9+
+         hlC8aISToHp/wQhTexEMPjvsFRI4QPEaiEq2FTvUp0snRjH1g2hICLSRQVzdM8QVgz
+         39cgi62ZN5+tD01aaX2Izhp82w4w+gNzAOdeZVuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>,
-        Akeem G Abodunrin <akeem.g.abodunrin@intel.com>,
-        Bloomfield Jon <jon.bloomfield@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.10 142/152] drm/i915/gt: Restore clear-residual mitigations for Ivybridge, Baytrail
-Date:   Mon, 18 Jan 2021 12:35:17 +0100
-Message-Id: <20210118113359.526297329@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 143/152] mm, slub: consider rest of partial list if acquire_slab() fails
+Date:   Mon, 18 Jan 2021 12:35:18 +0100
+Message-Id: <20210118113359.576663697@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -44,40 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Jann Horn <jannh@google.com>
 
-commit 09aa9e45863e9e25dfbf350bae89fc3c2964482c upstream.
+commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
 
-The mitigation is required for all gen7 platforms, now that it does not
-cause GPU hangs, restore it for Ivybridge and Baytrail.
+acquire_slab() fails if there is contention on the freelist of the page
+(probably because some other CPU is concurrently freeing an object from
+the page).  In that case, it might make sense to look for a different page
+(since there might be more remote frees to the page from other CPUs, and
+we don't want contention on struct page).
 
-Fixes: 47f8253d2b89 ("drm/i915/gen7: Clear all EU/L3 residual contexts")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Cc: Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>
-Cc: Akeem G Abodunrin <akeem.g.abodunrin@intel.com>
-Cc: Bloomfield Jon <jon.bloomfield@intel.com>
-Reviewed-by: Akeem G Abodunrin <akeem.g.abodunrin@intel.com>
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111225220.3483-2-chris@chris-wilson.co.uk
-(cherry picked from commit 008ead6ef8f588a8c832adfe9db201d9be5fd410)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+However, the current code accidentally stops looking at the partial list
+completely in that case.  Especially on kernels without CONFIG_NUMA set,
+this means that get_partial() fails and new_slab_objects() falls back to
+new_slab(), allocating new pages.  This could lead to an unnecessary
+increase in memory fragmentation.
+
+Link: https://lkml.kernel.org/r/20201228130853.1871516-1-jannh@google.com
+Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gt/intel_ring_submission.c |    2 +-
+ mm/slub.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_ring_submission.c
-+++ b/drivers/gpu/drm/i915/gt/intel_ring_submission.c
-@@ -1291,7 +1291,7 @@ int intel_ring_submission_setup(struct i
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1971,7 +1971,7 @@ static void *get_partial_node(struct kme
  
- 	GEM_BUG_ON(timeline->hwsp_ggtt != engine->status_page.vma);
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			break;
++			continue; /* cmpxchg raced */
  
--	if (IS_HASWELL(engine->i915) && engine->class == RENDER_CLASS) {
-+	if (IS_GEN(engine->i915, 7) && engine->class == RENDER_CLASS) {
- 		err = gen7_ctx_switch_bb_init(engine);
- 		if (err)
- 			goto err_ring_unpin;
+ 		available += objects;
+ 		if (!object) {
 
 
