@@ -2,85 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED172FAA3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA782FAAA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394035AbhARTbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:31:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390424AbhARLiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 385FF22CAD;
-        Mon, 18 Jan 2021 11:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610969842;
-        bh=DFDLTsvgjvFrpYts0MUpDKjSJv7X4cfmoGmxg2T+lxE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Ht/K/dOm+n6j+u4svc925LDLs7DG0tdGysPEGezRHEQ/ebqEso/O5saSc7kmWadXV
-         /JyQEf9IQNXMGToB5jEMQT3iUdB4shoFnfHzwJBKDSD05Fi6PCVVpVxXlDGP1Sn1nj
-         MKnl++d/T1RP7oj8YwCWeVerHgo7Hffwz0ye3T/grhGJ8McwpKAYw5JkmVNyh/3zx7
-         +rBLamk68TUHdDNi84r/8RIFAlAVfvs76/Sat5LZkkNWf2fJ6eSH15402pGzdrfhrd
-         vVrDgTWH+kPj1/kj+CVgLG353yl0vv+EL2h7AhoKS5WsPWnEHu7dNUu8u1mYSidrCU
-         bLWa0+5qSHtag==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 1/7] dt-bindings: usb: qcom,dwc3: Add binding for SDX55
-In-Reply-To: <20210118051005.55958-2-manivannan.sadhasivam@linaro.org>
-References: <20210118051005.55958-1-manivannan.sadhasivam@linaro.org>
- <20210118051005.55958-2-manivannan.sadhasivam@linaro.org>
-Date:   Mon, 18 Jan 2021 13:37:14 +0200
-Message-ID: <8735yywk5x.fsf@kernel.org>
+        id S2390444AbhARTx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:53:27 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47536 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393965AbhART0e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 14:26:34 -0500
+Received: from 89-64-82-41.dynamic.chello.pl (89.64.82.41) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 29d09316bb40c20e; Mon, 18 Jan 2021 20:25:37 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ACPI: scan: Rearrange code related to acpi_get_device_data()
+Date:   Mon, 18 Jan 2021 20:25:37 +0100
+Message-ID: <3445520.6OZ3MRzmT7@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi,
+There are two callers of acpi_get_device_data(), acpi_bus_get_device()
+and acpi_bus_get_acpi_device(), but only one of them takes the int
+return value into account.  Moreover, the latter knows that it passes
+a valid return pointer to acpi_get_device_data() and it properly
+clears that pointer upfront, so it doesn't need acpi_get_device_data()
+to do that.
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-> Add devicetree binding for SDX55 USB controller based on Qcom designware
-> IP.
->
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+For this reason, rearrange acpi_get_device_data() to return a strct
+acpi_device pointer instead of an int and adapt its callers to that.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+While at it, rename acpi_get_device_data() to handle_to_device(),
+because the old name does not really reflect the functionality
+provided by that function.
 
-=2D-=20
-balbi
+No intentional functional impact.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
------BEGIN PGP SIGNATURE-----
+On top of https://patchwork.kernel.org/project/linux-acpi/patch/20210115215752.389656-1-hdegoede@redhat.com/
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmAFcuoRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZxIRAAlpEpxTpJDTCzj+N4SW/IvB68Da7w97Zi
-3Y1rUZSbQmbLkclkDEnF0H10rF1oT2b39xeVbj++j56S1BCB3XVRli+LRYcnEx+o
-SissxEDGr1baczSn8uZJ/UgWIEFrp1JztyqLSWtA62NCEmC7+HQoZf0765CMELVv
-V3dC8Y6GFRWBNErxfuwoJdVgbWe3SPNrrkTodnAZxNKsxiV2V23jy1j+kWRKMabx
-50gMSKBbAhbLNuvZMVoOHp3TgXZofcCboT0RH6sr0ycBGipJkIjApn03zslFL2RW
-tgIR2Y1H4HN3JimLP4NEfERyCU0v0ibwf/gLMdMy4/psfEcoE7E+I2GLadAlL5wa
-0iDVPyLvjmpyj136DAM0X07iZsak5mpeaTMvkrYqPDABnOflfyOAv5eysXPkh+Sf
-xh/676DIR7LfNBrdPrql/69sQmW54t9kBR803jYHhYr8tvVdqYLnKFGNMpEFGH1+
-/05EFqwnR3M5cppmBPL2qhP7y8Blig29o/YTB6ysrArdkcfosp7ZrABliUJ0CuU4
-bfKjRDeJamJGoYTZu0hcKX5pF+/3teJXESoBK3j0jXTGkr+mCCJG+VfWArXEd3x5
-BoKrdA2D65G+i/kyZ6x983augUgAit9GW4y2IldPMHhE0E4GgDWnpoEuBnmuxk3+
-s2CVt/FiDaI=
-=KbUF
------END PGP SIGNATURE-----
---=-=-=--
+---
+ drivers/acpi/scan.c |   35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -578,29 +578,31 @@ static void acpi_scan_drop_device(acpi_h
+ 	mutex_unlock(&acpi_device_del_lock);
+ }
+ 
+-static int acpi_get_device_data(acpi_handle handle, struct acpi_device **device,
+-				void (*callback)(void *))
++static struct acpi_device *handle_to_device(acpi_handle handle,
++					    void (*callback)(void *))
+ {
++	struct acpi_device *adev = NULL;
+ 	acpi_status status;
+ 
+-	if (!device)
+-		return -EINVAL;
+-
+-	*device = NULL;
+-
+ 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
+-				    (void **)device, callback);
+-	if (ACPI_FAILURE(status) || !*device) {
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "No context for object [%p]\n",
+-				  handle));
+-		return -ENODEV;
++				    (void **)&adev, callback);
++	if (ACPI_FAILURE(status) || !adev) {
++		acpi_handle_debug(handle, "No context!\n");
++		return NULL;
+ 	}
+-	return 0;
++	return adev;
+ }
+ 
+ int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device)
+ {
+-	return acpi_get_device_data(handle, device, NULL);
++	if (!device)
++		return -EINVAL;
++
++	*device = handle_to_device(handle, NULL);
++	if (!*device)
++		return -ENODEV;
++
++	return 0;
+ }
+ EXPORT_SYMBOL(acpi_bus_get_device);
+ 
+@@ -612,10 +614,7 @@ static void get_acpi_device(void *dev)
+ 
+ struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
+ {
+-	struct acpi_device *adev = NULL;
+-
+-	acpi_get_device_data(handle, &adev, get_acpi_device);
+-	return adev;
++	return handle_to_device(handle, get_acpi_device);
+ }
+ 
+ void acpi_bus_put_acpi_device(struct acpi_device *adev)
+
+
+
