@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F3D2FA772
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94402FA771
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393614AbhARRZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
+        id S2393601AbhARRYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393188AbhARRCj (ORCPT
+        with ESMTP id S2393241AbhARRCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:02:39 -0500
+        Mon, 18 Jan 2021 12:02:41 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67595C061757;
-        Mon, 18 Jan 2021 09:01:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA278C0613C1;
+        Mon, 18 Jan 2021 09:02:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=pHmMPYJfZBRLbAE614BrSgF4Qt/dpevDIb6z8WYnHzg=; b=upDCq41TAfuJW199l8kNMMsOjq
-        VGVd3mp6l0SS6Xm2saByaP4FkNxCxDqC5Te2JUP5F1uY3sZ9vV8GXZaK9kvYzp51TuJTN3Jh8xJ4m
-        3hCnkl7bS8m0lOIYzNeVGh3CkCBUGJ29mQpy/Bkpdht7dxfGjPq8K3wlEK6vV+MmRmiR6P20FWusj
-        sKW4huCk47QVjjeB9wjTyLbNCQUHRYBByzxIcD15PhqyZ/ly97A25h+BltJpA7JZyrnIVYKHrEBgQ
-        euAbCzEymx86TS68eo/aiA1EUFb4JlWrqWB9i8dsyVS1u7jxiIDSHL5aFnnOMgkR6qh1OLwhmk8r4
-        uMbgrZQw==;
+        bh=+DOkCmek4HHcJHEf17y14LMV7qJyfgtPXciPHOMgp4c=; b=RseyoOWNsj/IsGNXM8mXh73BJG
+        9RSOaS1o1cXyZNqUIEDm5cb2sDKqoz3OsR4isb4MqtTTVoWjDYuC7+KMe8HrG0++qG3LnL5wrPrni
+        NyRTvOHazgtIVE39BdPwh+CZfEjzePatjYOmRQstHhzpRTAspLvd0559NKPi7iwJmYtXw8yy0KbU/
+        mEIl+FkrZVTFX0ax7P+Amr3ig2DbNwT69UX2hv2QvKtslYU6nXhBx3GZtnqGuv7IAvx/Cqo6weB5T
+        LOHQ+gRgNwc+cIcItJeWf7eLC9Q0tFdAWvdbqymtNUP+0DVNh2qgHwMfI2mqlj3bE25KwJTWmWP+R
+        afxDj3IQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1Xuc-00D7Hr-ML; Mon, 18 Jan 2021 17:01:55 +0000
+        id 1l1Xue-00D7I2-V4; Mon, 18 Jan 2021 17:01:57 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 03/27] mm/vmstat: Add folio stat wrappers
-Date:   Mon, 18 Jan 2021 17:01:24 +0000
-Message-Id: <20210118170148.3126186-4-willy@infradead.org>
+Subject: [PATCH v2 04/27] mm/debug: Add VM_BUG_ON_FOLIO and VM_WARN_ON_ONCE_FOLIO
+Date:   Mon, 18 Jan 2021 17:01:25 +0000
+Message-Id: <20210118170148.3126186-5-willy@infradead.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210118170148.3126186-1-willy@infradead.org>
 References: <20210118170148.3126186-1-willy@infradead.org>
@@ -43,94 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow page counters to be more readily modified by callers which have
-a folio.  Name these wrappers with 'stat' instead of 'state' as requested
-by Linus here:
-https://lore.kernel.org/linux-mm/CAHk-=wj847SudR-kt+46fT3+xFFgiwpgThvm7DJWGdi4cVrbnQ@mail.gmail.com/
+These are the folio equivalents of VM_BUG_ON_PAGE and VM_WARN_ON_ONCE_PAGE.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- include/linux/vmstat.h | 60 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ include/linux/mmdebug.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 773135fc6e19..3c3373c2c3c2 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -396,6 +396,54 @@ static inline void drain_zonestat(struct zone *zone,
- 			struct per_cpu_pageset *pset) { }
- #endif		/* CONFIG_SMP */
+diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
+index 5d0767cb424a..77d24e1dcaec 100644
+--- a/include/linux/mmdebug.h
++++ b/include/linux/mmdebug.h
+@@ -23,6 +23,13 @@ void dump_mm(const struct mm_struct *mm);
+ 			BUG();						\
+ 		}							\
+ 	} while (0)
++#define VM_BUG_ON_FOLIO(cond, folio)					\
++	do {								\
++		if (unlikely(cond)) {					\
++			dump_page(&folio->page, "VM_BUG_ON_FOLIO(" __stringify(cond)")");\
++			BUG();						\
++		}							\
++	} while (0)
+ #define VM_BUG_ON_VMA(cond, vma)					\
+ 	do {								\
+ 		if (unlikely(cond)) {					\
+@@ -48,6 +55,17 @@ void dump_mm(const struct mm_struct *mm);
+ 	}								\
+ 	unlikely(__ret_warn_once);					\
+ })
++#define VM_WARN_ON_ONCE_FOLIO(cond, folio)	({			\
++	static bool __section(".data.once") __warned;			\
++	int __ret_warn_once = !!(cond);					\
++									\
++	if (unlikely(__ret_warn_once && !__warned)) {			\
++		dump_page(&folio->page, "VM_WARN_ON_ONCE_FOLIO(" __stringify(cond)")");\
++		__warned = true;					\
++		WARN_ON(1);						\
++	}								\
++	unlikely(__ret_warn_once);					\
++})
  
-+static inline
-+void __inc_zone_folio_stat(struct folio *folio, enum zone_stat_item item)
-+{
-+	__inc_zone_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void __dec_zone_folio_stat(struct folio *folio, enum zone_stat_item item)
-+{
-+	__dec_zone_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void inc_zone_folio_stat(struct folio *folio, enum zone_stat_item item)
-+{
-+	inc_zone_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void dec_zone_folio_stat(struct folio *folio, enum zone_stat_item item)
-+{
-+	dec_zone_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void __inc_node_folio_stat(struct folio *folio, enum node_stat_item item)
-+{
-+	__inc_node_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void __dec_node_folio_stat(struct folio *folio, enum node_stat_item item)
-+{
-+	__dec_node_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void inc_node_folio_stat(struct folio *folio, enum node_stat_item item)
-+{
-+	inc_node_page_state(&folio->page, item);
-+}
-+
-+static inline
-+void dec_node_folio_stat(struct folio *folio, enum node_stat_item item)
-+{
-+	dec_node_page_state(&folio->page, item);
-+}
-+
- static inline void __mod_zone_freepage_state(struct zone *zone, int nr_pages,
- 					     int migratetype)
- {
-@@ -530,6 +578,18 @@ static inline void __dec_lruvec_page_state(struct page *page,
- 	__mod_lruvec_page_state(page, idx, -1);
- }
- 
-+static inline void __inc_lruvec_folio_stat(struct folio *folio,
-+					   enum node_stat_item idx)
-+{
-+	__mod_lruvec_page_state(&folio->page, idx, 1);
-+}
-+
-+static inline void __dec_lruvec_folio_stat(struct folio *folio,
-+					   enum node_stat_item idx)
-+{
-+	__mod_lruvec_page_state(&folio->page, idx, -1);
-+}
-+
- static inline void inc_lruvec_state(struct lruvec *lruvec,
- 				    enum node_stat_item idx)
- {
+ #define VM_WARN_ON(cond) (void)WARN_ON(cond)
+ #define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
+@@ -56,11 +74,13 @@ void dump_mm(const struct mm_struct *mm);
+ #else
+ #define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
+ #define VM_BUG_ON_PAGE(cond, page) VM_BUG_ON(cond)
++#define VM_BUG_ON_FOLIO(cond, folio) VM_BUG_ON(cond)
+ #define VM_BUG_ON_VMA(cond, vma) VM_BUG_ON(cond)
+ #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
+ #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
++#define VM_WARN_ON_ONCE_FOLIO(cond, folio)  BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
+ #endif
 -- 
 2.29.2
 
