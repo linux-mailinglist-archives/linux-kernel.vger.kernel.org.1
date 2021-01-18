@@ -2,156 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AA32FA5D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703092FA5DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406529AbhARQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:15:46 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:43302 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406484AbhARQPJ (ORCPT
+        id S2406435AbhARQQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406539AbhARQPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:15:09 -0500
-Received: by mail-oi1-f179.google.com with SMTP id q25so18165410oij.10;
-        Mon, 18 Jan 2021 08:14:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kytasFWKgvc5nOgZfApzBHs9Vw3bTByXjqhFQofMSYo=;
-        b=RGI6HfMoHdxn5lyZ+SlMsj2bSwT8qKwQpbYmgsWhn9OFG0Am9NViYAZ91tMMjFU+eP
-         ui5lE3XjrbdqeDAgQOJslQSGsIZaNG1j+vJ6sE8Y1NqnyekEk3ctLRV8qhTzDKQAWRmO
-         wDBMGIyOQyA7uTQA1gXM4vCc5gSEZ8tb0b6Z8USchHFg9FrBHVPStUccznOAIkvJbPEy
-         MoMyJqkthuipkg/el6xyY7nPRHr4a+4riyJgIZVz7KRN6erEoym+M0LjYz/WVL3C8sJ7
-         Nf+JwwHlDFt+/cTbXXuR1bgKzsiDxVLeZjzkTGHY6dN1g2oGooJwGOTgWMve7OYY+jTR
-         NwBw==
-X-Gm-Message-State: AOAM530zBHSQpZSaF4htpm3zwggfKKNGwxATFtskCm7oCM1jvKb6SWzW
-        cSIQZzxl3m/BXC2UzMFk1DIulYx7m+OQoFFdtxI=
-X-Google-Smtp-Source: ABdhPJzcYWh4Vned6TY+/VKW3DmEPz34IY9LpEHScCK2HKDVDzY0CKS2HMxu5PygiGqOof6JgT3sOGKw7PMfZula10Q=
-X-Received: by 2002:aca:5c05:: with SMTP id q5mr47953oib.157.1610986468728;
- Mon, 18 Jan 2021 08:14:28 -0800 (PST)
+        Mon, 18 Jan 2021 11:15:48 -0500
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D5AC061573;
+        Mon, 18 Jan 2021 08:15:06 -0800 (PST)
+Received: from localhost.localdomain (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id E1BC41F524;
+        Mon, 18 Jan 2021 17:15:02 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH] clk: qcom: smd: Add missing RPM clocks for msm8992/4
+Date:   Mon, 18 Jan 2021 17:14:41 +0100
+Message-Id: <20210118161442.104660-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
-In-Reply-To: <20210118003428.568892-3-djrscally@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 18 Jan 2021 17:14:17 +0100
-Message-ID: <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> In some ACPI tables we encounter, devices use the _DEP method to assert
-> a dependence on other ACPI devices as opposed to the OpRegions that the
-> specification intends. We need to be able to find those devices "from"
-> the dependee, so add a function to parse all ACPI Devices and check if
-> the include the handle of the dependee device in their _DEP buffer.
+This was omitted when first adding the clocks for these SoCs.
 
-What exactly do you need this for?
+Fixes: b4297844995 ("clk: qcom: smd: Add support for MSM8992/4 rpm clocks")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/clk/qcom/clk-smd-rpm.c         | 16 ++++++++++++++++
+ include/dt-bindings/clock/qcom,rpmcc.h |  2 ++
+ include/linux/soc/qcom/smd-rpm.h       |  1 +
+ 3 files changed, 19 insertions(+)
 
-Would it be practical to look up the suppliers in acpi_dep_list instead?
+diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+index 0e1dfa89489e..91d610042a5d 100644
+--- a/drivers/clk/qcom/clk-smd-rpm.c
++++ b/drivers/clk/qcom/clk-smd-rpm.c
+@@ -624,6 +624,8 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8976 = {
+ };
+ 
+ /* msm8992 */
++DEFINE_CLK_SMD_RPM_BRANCH(msm8992, bi_tcxo, bi_tcxo_a, QCOM_SMD_RPM_MISC_CLK, 0,
++								19200000);
+ DEFINE_CLK_SMD_RPM(msm8992, pnoc_clk, pnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+ DEFINE_CLK_SMD_RPM(msm8992, ocmemgx_clk, ocmemgx_a_clk, QCOM_SMD_RPM_MEM_CLK, 2);
+ DEFINE_CLK_SMD_RPM(msm8992, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, 0);
+@@ -642,6 +644,8 @@ DEFINE_CLK_SMD_RPM(msm8992, ipa_clk, ipa_a_clk, QCOM_SMD_RPM_IPA_CLK, 0);
+ DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8992, ln_bb_clk, ln_bb_a_clk, 8);
+ DEFINE_CLK_SMD_RPM(msm8992, mmssnoc_ahb_clk, mmssnoc_ahb_a_clk,
+ 		   QCOM_SMD_RPM_BUS_CLK, 3);
++DEFINE_CLK_SMD_RPM_BRANCH(msm8992, mss_cfg_ahb_clk, mss_cfg_ahb_a_clk,
++			QCOM_SMD_RPM_MFFG_CLK, 0, 19200000);
+ DEFINE_CLK_SMD_RPM_QDSS(msm8992, qdss_clk, qdss_a_clk,
+ 			QCOM_SMD_RPM_MISC_CLK, 1);
+ DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8992, rf_clk1, rf_clk1_a, 4);
+@@ -653,6 +657,8 @@ DEFINE_CLK_SMD_RPM(msm8992, ce1_clk, ce1_a_clk, QCOM_SMD_RPM_CE_CLK, 0);
+ DEFINE_CLK_SMD_RPM(msm8992, ce2_clk, ce2_a_clk, QCOM_SMD_RPM_CE_CLK, 1);
+ 
+ static struct clk_smd_rpm *msm8992_clks[] = {
++	[RPM_SMD_XO_CLK_SRC] = &msm8992_bi_tcxo,
++	[RPM_SMD_XO_A_CLK_SRC] = &msm8992_bi_tcxo_a,
+ 	[RPM_SMD_PNOC_CLK] = &msm8992_pnoc_clk,
+ 	[RPM_SMD_PNOC_A_CLK] = &msm8992_pnoc_a_clk,
+ 	[RPM_SMD_OCMEMGX_CLK] = &msm8992_ocmemgx_clk,
+@@ -685,6 +691,8 @@ static struct clk_smd_rpm *msm8992_clks[] = {
+ 	[RPM_SMD_LN_BB_A_CLK] = &msm8992_ln_bb_a_clk,
+ 	[RPM_SMD_MMSSNOC_AHB_CLK] = &msm8992_mmssnoc_ahb_clk,
+ 	[RPM_SMD_MMSSNOC_AHB_A_CLK] = &msm8992_mmssnoc_ahb_a_clk,
++	[RPM_SMD_MSS_CFG_AHB_CLK] = &msm8992_mss_cfg_ahb_clk,
++	[RPM_SMD_MSS_CFG_AHB_A_CLK] = &msm8992_mss_cfg_ahb_a_clk,
+ 	[RPM_SMD_QDSS_CLK] = &msm8992_qdss_clk,
+ 	[RPM_SMD_QDSS_A_CLK] = &msm8992_qdss_a_clk,
+ 	[RPM_SMD_RF_CLK1] = &msm8992_rf_clk1,
+@@ -707,6 +715,8 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8992 = {
+ };
+ 
+ /* msm8994 */
++DEFINE_CLK_SMD_RPM_BRANCH(msm8994, bi_tcxo, bi_tcxo_a, QCOM_SMD_RPM_MISC_CLK, 0,
++								19200000);
+ DEFINE_CLK_SMD_RPM(msm8994, pnoc_clk, pnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+ DEFINE_CLK_SMD_RPM(msm8994, ocmemgx_clk, ocmemgx_a_clk, QCOM_SMD_RPM_MEM_CLK, 2);
+ DEFINE_CLK_SMD_RPM(msm8994, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, 0);
+@@ -725,6 +735,8 @@ DEFINE_CLK_SMD_RPM(msm8994, ipa_clk, ipa_a_clk, QCOM_SMD_RPM_IPA_CLK, 0);
+ DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8994, ln_bb_clk, ln_bb_a_clk, 8);
+ DEFINE_CLK_SMD_RPM(msm8994, mmssnoc_ahb_clk, mmssnoc_ahb_a_clk,
+ 		   QCOM_SMD_RPM_BUS_CLK, 3);
++DEFINE_CLK_SMD_RPM_BRANCH(msm8994, mss_cfg_ahb_clk, mss_cfg_ahb_a_clk,
++			QCOM_SMD_RPM_MFFG_CLK, 0, 19200000);
+ DEFINE_CLK_SMD_RPM_QDSS(msm8994, qdss_clk, qdss_a_clk,
+ 			QCOM_SMD_RPM_MISC_CLK, 1);
+ DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8994, rf_clk1, rf_clk1_a, 4);
+@@ -737,6 +749,8 @@ DEFINE_CLK_SMD_RPM(msm8994, ce2_clk, ce2_a_clk, QCOM_SMD_RPM_CE_CLK, 1);
+ DEFINE_CLK_SMD_RPM(msm8994, ce3_clk, ce3_a_clk, QCOM_SMD_RPM_CE_CLK, 2);
+ 
+ static struct clk_smd_rpm *msm8994_clks[] = {
++	[RPM_SMD_XO_CLK_SRC] = &msm8994_bi_tcxo,
++	[RPM_SMD_XO_A_CLK_SRC] = &msm8994_bi_tcxo_a,
+ 	[RPM_SMD_PNOC_CLK] = &msm8994_pnoc_clk,
+ 	[RPM_SMD_PNOC_A_CLK] = &msm8994_pnoc_a_clk,
+ 	[RPM_SMD_OCMEMGX_CLK] = &msm8994_ocmemgx_clk,
+@@ -769,6 +783,8 @@ static struct clk_smd_rpm *msm8994_clks[] = {
+ 	[RPM_SMD_LN_BB_A_CLK] = &msm8994_ln_bb_a_clk,
+ 	[RPM_SMD_MMSSNOC_AHB_CLK] = &msm8994_mmssnoc_ahb_clk,
+ 	[RPM_SMD_MMSSNOC_AHB_A_CLK] = &msm8994_mmssnoc_ahb_a_clk,
++	[RPM_SMD_MSS_CFG_AHB_CLK] = &msm8994_mss_cfg_ahb_clk,
++	[RPM_SMD_MSS_CFG_AHB_A_CLK] = &msm8994_mss_cfg_ahb_a_clk,
+ 	[RPM_SMD_QDSS_CLK] = &msm8994_qdss_clk,
+ 	[RPM_SMD_QDSS_A_CLK] = &msm8994_qdss_a_clk,
+ 	[RPM_SMD_RF_CLK1] = &msm8994_rf_clk1,
+diff --git a/include/dt-bindings/clock/qcom,rpmcc.h b/include/dt-bindings/clock/qcom,rpmcc.h
+index 8aaba7cd9589..e8e256dbcc8a 100644
+--- a/include/dt-bindings/clock/qcom,rpmcc.h
++++ b/include/dt-bindings/clock/qcom,rpmcc.h
+@@ -149,5 +149,7 @@
+ #define RPM_SMD_CE2_A_CLK			103
+ #define RPM_SMD_CE3_CLK				104
+ #define RPM_SMD_CE3_A_CLK			105
++#define RPM_SMD_MSS_CFG_AHB_CLK			106
++#define RPM_SMD_MSS_CFG_AHB_A_CLK		107
+ 
+ #endif
+diff --git a/include/linux/soc/qcom/smd-rpm.h b/include/linux/soc/qcom/smd-rpm.h
+index f2645ec52520..ce51b18f7128 100644
+--- a/include/linux/soc/qcom/smd-rpm.h
++++ b/include/linux/soc/qcom/smd-rpm.h
+@@ -37,6 +37,7 @@ struct qcom_smd_rpm;
+ #define QCOM_SMD_RPM_IPA_CLK	0x617069
+ #define QCOM_SMD_RPM_CE_CLK	0x6563
+ #define QCOM_SMD_RPM_AGGR_CLK	0x72676761
++#define QCOM_SMD_RPM_MFFG_CLK	0x6766636d
+ 
+ int qcom_rpm_smd_write(struct qcom_smd_rpm *rpm,
+ 		       int state,
+-- 
+2.29.2
 
-Note that supplier drivers may remove entries from there, but does
-that matter for your use case?
-
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
->         - Used acpi_lpss_dep() as Andy suggested.
->
->  drivers/acpi/utils.c    | 34 ++++++++++++++++++++++++++++++++++
->  include/acpi/acpi_bus.h |  2 ++
->  2 files changed, 36 insertions(+)
->
-> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> index 78b38775f18b..ec6a2406a886 100644
-> --- a/drivers/acpi/utils.c
-> +++ b/drivers/acpi/utils.c
-> @@ -831,6 +831,18 @@ bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
->         return false;
->  }
->
-> +static int acpi_dev_match_by_dep(struct device *dev, const void *data)
-> +{
-> +       struct acpi_device *adev = to_acpi_device(dev);
-> +       const struct acpi_device *dependee = data;
-> +       acpi_handle handle = dependee->handle;
-> +
-> +       if (acpi_lpss_dep(adev, handle))
-> +               return 1;
-> +
-> +       return 0;
-> +}
-> +
->  /**
->   * acpi_dev_present - Detect that a given ACPI device is present
->   * @hid: Hardware ID of the device.
-> @@ -866,6 +878,28 @@ bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
->  }
->  EXPORT_SYMBOL(acpi_dev_present);
->
-> +/**
-> + * acpi_dev_get_next_dep_dev - Return next ACPI device dependent on input dev
-> + * @adev: Pointer to the dependee device
-> + * @prev: Pointer to the previous dependent device (or NULL for first match)
-> + *
-> + * Return the next ACPI device which declares itself dependent on @adev in
-> + * the _DEP buffer.
-> + *
-> + * The caller is responsible to call put_device() on the returned device.
-> + */
-> +struct acpi_device *acpi_dev_get_next_dep_dev(struct acpi_device *adev,
-> +                                             struct acpi_device *prev)
-> +{
-> +       struct device *start = prev ? &prev->dev : NULL;
-> +       struct device *dev;
-> +
-> +       dev = bus_find_device(&acpi_bus_type, start, adev, acpi_dev_match_by_dep);
-> +
-> +       return dev ? to_acpi_device(dev) : NULL;
-> +}
-> +EXPORT_SYMBOL(acpi_dev_get_next_dep_dev);
-> +
->  /**
->   * acpi_dev_get_next_match_dev - Return the next match of ACPI device
->   * @adev: Pointer to the previous acpi_device matching this @hid, @uid and @hrv
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 02a716a0af5d..33deb22294f2 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -683,6 +683,8 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
->
->  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
->
-> +struct acpi_device *
-> +acpi_dev_get_next_dep_dev(struct acpi_device *adev, struct acpi_device *prev);
->  struct acpi_device *
->  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
->  struct acpi_device *
-> --
-> 2.25.1
->
