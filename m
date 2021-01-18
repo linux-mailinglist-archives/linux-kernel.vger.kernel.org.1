@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD0D2F9B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D232F9BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 10:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387908AbhARI6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:58:01 -0500
-Received: from www.zeus03.de ([194.117.254.33]:59930 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387770AbhARI55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:57:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=odbwHB50SLc5EVMnx2MmbfbSij/6
-        RS2X0gG9yUbXGvQ=; b=35cEMqbixgG9D9YOqRlnGxyBA/GzVCNs+bow7itYaiBZ
-        5Zzww7jebMcxC0HKguv8zEdCcVEzm+bgFOtWATnL4QUSJesyLRDLpNiWblKMQIzR
-        /xh/qXyfIVDQMAVOTfUhf2/gjtTMauZqWbHtJ9eym28EVct1nQNSDeHR7VpJWh8=
-Received: (qmail 629519 invoked from network); 18 Jan 2021 09:57:15 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Jan 2021 09:57:15 +0100
-X-UD-Smtp-Session: l3s3148p1@gSBe6Ci5oIYgAwDPXwacAOByz8F9Mgm1
-Date:   Mon, 18 Jan 2021 09:57:11 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: watchdog: renesas,wdt: add r8a779a0
- (V3U) support
-Message-ID: <20210118085711.GA1018@ninjato>
-References: <20201218173731.12839-1-wsa+renesas@sang-engineering.com>
- <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
+        id S2387992AbhARI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:59:16 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:45894 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387918AbhARI7M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:59:12 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 10I8qj7E044071;
+        Mon, 18 Jan 2021 16:52:45 +0800 (GMT-8)
+        (envelope-from kuohsiang_chou@aspeedtech.com)
+Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 Jan
+ 2021 16:58:03 +0800
+From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
+        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
+Subject: [PATCH] drm/ast: Update the sequence of Clearing Fast-reset
+Date:   Mon, 18 Jan 2021 16:57:55 +0800
+Message-ID: <20210118085755.107804-1-kuohsiang_chou@aspeedtech.com>
+X-Mailer: git-send-email 2.18.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
-Content-Disposition: inline
-In-Reply-To: <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.206]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 10I8qj7E044071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[Bug][AST2500]
+If SCU00 is not unlocked, just enter its password again.
+It is unnecessary to clear AHB lock condition and restore WDT default
+setting again, before Fast-reset clearing.
 
---nFreZHaLTZJo0R7j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+---
+ drivers/gpu/drm/ast/ast_post.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-On Fri, Dec 18, 2020 at 06:37:26PM +0100, Wolfram Sang wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->=20
-> Please apply it to the watchdog-tree.
+diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
+index 1f0007daa005..4f194c5fd2c2 100644
+--- a/drivers/gpu/drm/ast/ast_post.c
++++ b/drivers/gpu/drm/ast/ast_post.c
+@@ -2030,7 +2030,6 @@ void ast_patch_ahb_2500(struct ast_private *ast)
+ {
+ 	u32	data;
 
-Guenter, could you pick/ack it, please?
+-patch_ahb_lock:
+ 	/* Clear bus lock condition */
+ 	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+ 	ast_moutdwm(ast, 0x1e600084, 0x00010000);
+@@ -2044,11 +2043,9 @@ void ast_patch_ahb_2500(struct ast_private *ast)
+ 		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
+ 		udelay(1000);
+ 	}
+-	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+ 	do {
++		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+ 		data = ast_mindwm(ast, 0x1e6e2000);
+-		if (data == 0xffffffff)
+-			goto patch_ahb_lock;
+ 	}	while (data != 1);
+ 	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
+ }
+--
+2.18.4
 
->=20
->  Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml =
-b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> index 6933005b52bd..ab66d3f0c476 100644
-> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> @@ -50,6 +50,7 @@ properties:
->                - renesas,r8a77980-wdt     # R-Car V3H
->                - renesas,r8a77990-wdt     # R-Car E3
->                - renesas,r8a77995-wdt     # R-Car D3
-> +              - renesas,r8a779a0-wdt     # R-Car V3U
->            - const: renesas,rcar-gen3-wdt # R-Car Gen3 and RZ/G2
-> =20
->    reg:
-> --=20
-> 2.29.2
->=20
-
---nFreZHaLTZJo0R7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAFTWMACgkQFA3kzBSg
-KbbE1Q/8DueMvbDDst01JemJotsD5DZn6/VwnSUwluawt6ObGTDYwxfbcyBkoUzt
-HaladCExuPmRaLjDwhG5TPQ1jChelhrJzwjks+SEr0p9WngO7ivZsidG9pzuR/fc
-5K8Rk/dbTuEfafV9tLDfLsLZT8aNWa8YmaSx01BcgUoeKEJilw2V+Uy0RSUamQU5
-C6dxS2gIG7oevY4rAL3VmPBxQuKxI6yYLlacy8yb7p0XkIaQj9Mnl5WXQ1ZKeZtT
-HXKjAP3gTpmyX5+2PxEk673q7PfOHFVN0tlg3kQIJliUBjlpIRTeysyT2v7nYg/S
-r17jEOlKp7zhKqHbzr8JNVLNQx/ZylBq7ItewEHum4OQQuxuTNNuGV8Dj5Syj8bR
-FBA84UApMgIBEm9/V30OXsOxbLZw8vc9P/VGALzOiobQsrzaG5bBIl423jZx8q8S
-hm9EJ9PR0wRKqPPROOv8+A2ZO/bCd35VJ2TM9P28TQwWToMrON0DVlIoBf9g3cXh
-kxthluUr/f3F3vS4UHlqwn2xxZrd4Xtf4P7pkpxcZFK+cW08w325N3VxXkIOAE11
-2xcSgnPp0JqJzJpNKkbH5MHPb8BNOdSs/ACUX5QKkxWxCMj9yXIAx4a+WUSyqhPk
-lex5jN1fDQzofZ6JMvLKerrr7KvgzAu18GRUcRZHE2O5edC5izo=
-=8zwP
------END PGP SIGNATURE-----
-
---nFreZHaLTZJo0R7j--
