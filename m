@@ -2,184 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B532F9D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F95A2F9DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389343AbhARLIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389332AbhARLHa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:07:30 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0008FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:49 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id 11so9989321pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:06:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hF8evVGI9RRZx1GF/hLvIc76/vJir8iUDvWkskLLhsk=;
-        b=lJ3e3XxEk/NoFVfGOAf3oI9tdt+xgWhbiDi5MSGlQrRg6Al1V9IofzBSoJ93tJjeTg
-         150RfvM9gZd7nhNhWMhjX5/lGqF+nj+vPbswtpE9PaCiLuXI/MQdVpqSoQIKfhUZlE1N
-         ZK3LW519SgxPOgbI6WoUyLw2BcL6Aw99UVyU5NIcyEbqZsHGnClDRffN+4gAt2pncH2w
-         J7uKv53TNcyDAhH71wlAwN/EyfgsbsYKP8KdS1q+6jf39vQB2suWkMPF/rgptk0jqB99
-         d9z94vr3Glq+543VqetbxRrzyzB7oPmOx/zrU5tEYsOt1YLQYBINZ38LM4QvMAGT5PKh
-         hGyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hF8evVGI9RRZx1GF/hLvIc76/vJir8iUDvWkskLLhsk=;
-        b=ZMtiCwz7BiSFQdz/b8e5OEDi60FI7qc24Ia3e+8crzbhy9y8+/gkL5LheWXfrdF0rv
-         RL121UL0hNAWxq1SqSQUIDMJU2EnKYfpkd63z6FSE7v87zv74v5wXfXAlicba38wOVX+
-         LJ7Z3m0EqTVEvpqE+WHWF3OX5Jf9CCWByeabDbp2vuHg/Ft+CdJ8ymXNXETxO29+wjXq
-         0LazAx9NL4Ts/JTL8IMrmmXaFa1x5DbTsdH/ket7qJcNVSCCBl9p3tQqRyYIZdxMO6qS
-         Da94n9hkW31vVX+Q5vKV48ju6zqm3oryPrlOMggw5Fdb/+sdxxqA1IDssDNm0BK5tqcF
-         DMxg==
-X-Gm-Message-State: AOAM531W3p10gIREaGBz5a51bXkH0q8gQZHjgrWO+eOON8Uyjgrjyh2O
-        88Mu05sMyytr48h2Wi1qkPsSlw==
-X-Google-Smtp-Source: ABdhPJwuLWRbz4a61aSCqABub+Be14J1PCrBXuBkLL43LPK8J4dcu4SD55H38N5RI7el+dvrZUeXYA==
-X-Received: by 2002:a05:6a00:847:b029:1b3:b9c3:11fb with SMTP id q7-20020a056a000847b02901b3b9c311fbmr14956958pfk.44.1610968009522;
-        Mon, 18 Jan 2021 03:06:49 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id p9sm15682274pfq.136.2021.01.18.03.06.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 03:06:48 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:36:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] opp: Add dev_pm_opp_sync_regulators()
-Message-ID: <20210118110647.msuo4r2nvq6sentc@vireshk-i7>
-References: <20210118005524.27787-1-digetx@gmail.com>
- <20210118005524.27787-5-digetx@gmail.com>
- <20210118110029.sjczugppsvrxd2tl@vireshk-i7>
+        id S2389870AbhARLJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389234AbhARLH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:07:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B05E22B39
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610968036;
+        bh=B/17V8ik89vtsXGIR5+vI5O++z0spXLfDzc6QxMu1fw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aTncI8ZU9DRrKPERRayj9QYLytI0Kh+XAzNNCPDY6hqs/y7KuJuqxqeCdOcn8KWwc
+         5kdM3q49VqwsdsSkm/vEWzFMrM5Whjsk9/kmfhr281dFmQjO4IbeN+fJ/IbZvicFYb
+         3bSyhppvNYV9ry/FEBGh8NN7Y1duwazKrnAi6jAbDWvf+GcAhaPxBWmXl1oKAgaUmJ
+         iIiWmCyw0ZE2C3TAqiAFD/EmORNKiRUWakTeZ5j7tTC6E9/QRxTiO+FJ9ZgPQ+tFKQ
+         9G7Ggh11IX1tRv2WvdXIjH9Il5uij+2ckkAzdclt4F8PYSXT6MHzoNXZe1IAQfWzhH
+         Ky2X/UAZ1Qm6Q==
+Received: by mail-oo1-f45.google.com with SMTP id p72so3993196oop.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:07:16 -0800 (PST)
+X-Gm-Message-State: AOAM530vlr2hU9tCJKuEFjIzrnX8NFFuNARJRxbbV2PlUTfWXjVNV6f4
+        8wrS8d8oL0fcq/+Qrb2QYItntmvpwbx92VjFSPY=
+X-Google-Smtp-Source: ABdhPJwFPZPGTu+Qjt9R5//bzwsGU6Uluiu6wFnMEUYHL4qzZzXqr90zENIoo/pr0j/FCN9aMvSZ7HQR7ov/ZjCCIL8=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr16559894ooj.15.1610968035764;
+ Mon, 18 Jan 2021 03:07:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118110029.sjczugppsvrxd2tl@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210118105557.186614-1-adrian.ratiu@collabora.com> <20210118105557.186614-2-adrian.ratiu@collabora.com>
+In-Reply-To: <20210118105557.186614-2-adrian.ratiu@collabora.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 18 Jan 2021 12:06:59 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
+Message-ID: <CAK8P3a3dDgbppAB3Bm2iJA7LOqRvHZew1_e-yE1R=9mS4W4xjQ@mail.gmail.com>
+Subject: Re: [PATCH v3 RESEND 1/2] arm: lib: xor-neon: remove unnecessary GCC
+ < 4.6 warning
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Collabora kernel ML <kernel@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 16:30, Viresh Kumar wrote:
-> On 18-01-21, 03:55, Dmitry Osipenko wrote:
-> > Extend OPP API with dev_pm_opp_sync_regulators() function, which syncs
-> > voltage state of regulators.
-> > 
-> > Tested-by: Peter Geis <pgwipeout@gmail.com>
-> > Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> > Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  drivers/opp/core.c     | 45 ++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/pm_opp.h |  6 ++++++
-> >  2 files changed, 51 insertions(+)
-> > 
-> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> > index 7b4d07279638..99d18befc209 100644
-> > --- a/drivers/opp/core.c
-> > +++ b/drivers/opp/core.c
-> > @@ -2686,3 +2686,48 @@ void dev_pm_opp_remove_table(struct device *dev)
-> >  	dev_pm_opp_put_opp_table(opp_table);
-> >  }
-> >  EXPORT_SYMBOL_GPL(dev_pm_opp_remove_table);
-> > +
-> > +/**
-> > + * dev_pm_opp_sync_regulators() - Sync state of voltage regulators
-> > + * @dev:	device for which we do this operation
-> > + *
-> > + * Sync voltage state of the OPP table regulators.
-> > + *
-> > + * Return: 0 on success or a negative error value.
-> > + */
-> > +int dev_pm_opp_sync_regulators(struct device *dev)
-> > +{
-> > +	struct opp_table *opp_table;
-> > +	struct regulator *reg;
-> > +	int i, ret = 0;
-> > +
-> > +	/* Device may not have OPP table */
-> > +	opp_table = _find_opp_table(dev);
-> > +	if (IS_ERR(opp_table))
-> > +		return 0;
-> > +
-> > +	/* Regulator may not be required for the device */
-> > +	if (!opp_table->regulators)
-> > +		goto put_table;
-> > +
-> > +	mutex_lock(&opp_table->lock);
-> > +
-> > +	/* Nothing to sync if voltage wasn't changed */
-> > +	if (!opp_table->enabled)
-> > +		goto unlock;
-> > +
-> > +	for (i = 0; i < opp_table->regulator_count; i++) {
-> > +		reg = opp_table->regulators[i];
-> > +		ret = regulator_sync_voltage(reg);
-> > +		if (ret)
-> > +			break;
-> > +	}
-> > +unlock:
-> > +	mutex_unlock(&opp_table->lock);
-> > +put_table:
-> > +	/* Drop reference taken by _find_opp_table() */
-> > +	dev_pm_opp_put_opp_table(opp_table);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
-> > diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> > index c24bd34339d7..1c3a09cc8dcd 100644
-> > --- a/include/linux/pm_opp.h
-> > +++ b/include/linux/pm_opp.h
-> > @@ -162,6 +162,7 @@ int dev_pm_opp_set_sharing_cpus(struct device *cpu_dev, const struct cpumask *cp
-> >  int dev_pm_opp_get_sharing_cpus(struct device *cpu_dev, struct cpumask *cpumask);
-> >  void dev_pm_opp_remove_table(struct device *dev);
-> >  void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
-> > +int dev_pm_opp_sync_regulators(struct device *dev);
-> >  #else
-> >  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
-> >  {
-> > @@ -398,6 +399,11 @@ static inline void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask
-> >  {
-> >  }
-> >  
-> > +static inline int dev_pm_opp_sync_regulators(struct device *dev)
-> > +{
-> > +	return -ENOTSUPP;
-> > +}
-> > +
-> >  #endif		/* CONFIG_PM_OPP */
-> >  
-> >  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
-> 
-> Applied. Thanks.
-> 
-> I had to apply it manually, please make sure it looks okay.
+On Mon, Jan 18, 2021 at 11:56 AM Adrian Ratiu
+<adrian.ratiu@collabora.com> wrote:
+>
+> From: Nathan Chancellor <natechancellor@gmail.com>
+>
+> Drop warning because kernel now requires GCC >= v4.9 after
+> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9")
+> and clarify that -ftree-vectorize now always needs enabling
+> for GCC by directly testing the presence of CONFIG_CC_IS_GCC.
+>
+> Another reason to remove the warning is that Clang exposes
+> itself as GCC < 4.6 so it triggers the warning about GCC
+> which doesn't make much sense and risks misleading users.
+>
+> As a side-note remark, -fttree-vectorize is on by default in
+> Clang, but it currently does not work (see linked issues).
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/496
+> Link: https://github.com/ClangBuiltLinux/linux/issues/503
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 
-Sorry about this, I wanted to reply to
-"opp: Add devm_pm_opp_register_set_opp_helper" and replied to this one
-accidentally.
+Shouldn't there be a check for whatever minimum version of clang
+produces optimized code now? As I understand it, the warning
+was originally meant to complain about both old gcc and any
+version of clang, while waiting for a new version of clang to
+produce vectorized code.
 
--- 
-viresh
+Has that happened now?
+
+       Arnd
