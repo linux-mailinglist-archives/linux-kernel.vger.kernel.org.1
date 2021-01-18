@@ -2,158 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD2E2F9805
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBDF2F97FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731427AbhARC6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:58:19 -0500
-Received: from mail-co1nam11on2070.outbound.protection.outlook.com ([40.107.220.70]:48238
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731397AbhARC6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:58:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T7lqh3f40B5XlgsItWiz3OMaaeLO6QcyzChB8V23uoj9V5r7g1mXxrw4xodQ8cEM866sB77qVRRuXirgBHksFygfC5wRJi3xgBub0XzEkuyQI1YQVTGjvSe3IK98D9C0pmUCACoUZuLr7Bhdq6ZJLLYvpVZjut36tKlQxZJEbJ9fDidYa7dXYlVWFQbdhP8WnVyMClTAsOge07dwcGfgZjm5XHxNvqLUu3uulyWhfS6hMVBrMs94gDTLsETE5D8LyCKE4C0L3keTLAv/1jsIf5/d8z7zdAu74EnbrwYYLIuEVfx5ui5Nba6yiQEymai6vFX4QM5j9I9bhS6KzxD8CA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Hg6uxNY3+Il/igarO0HtEFd6IFRD6RDWMVM/m+yzL8=;
- b=oU6xI1j/4ejoCDh5dwnv36qcfwZ3R57TIHQ3ctmKeRtylaGJHstPp7bYJS9zRClOSJFE0Tu38Bt2mRDbgoNBQw3dHmUJbJe3Uiutn1q98/44SwAeKRcUO+nZsWoalqD5ZSHvibEyT/hcJ4ogskDzK6uPZKM+JfPCX1T0Oigtykn1kx5z4ySWwHkHvbHOG0bh8J8Mgj7fk2j0Cs0ByFlEzNDAlCuVRWqYNOh/TmQaw8tgGQnF3JY/gUtZIvXoHxLLubB4YPrt30X1jU4Q3kYAWPIKRmk7cC2plG79KWkNv7of8JNovPb2Q54r1dXZ/CprMpABql7/6P/ufWl/DQB03A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Hg6uxNY3+Il/igarO0HtEFd6IFRD6RDWMVM/m+yzL8=;
- b=g6b6x7EZAL/TudNVr+CmU78DVabQkXaMWpVpKvCstkDGeWgHZseXBMWfxmTwz7WJlOiR4+19ELOEG6zD98ney9gR7IggHlP6c1pW/Zwib0HhmGTl9naoHbG6qof94GARp5lpy5BGxUgo3G8tYLDVo5lFmxolwcQ3h2ojfcaM2Hc=
-Received: from CY4PR19CA0042.namprd19.prod.outlook.com (2603:10b6:903:103::28)
- by SJ0PR02MB7440.namprd02.prod.outlook.com (2603:10b6:a03:29c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
- 2021 02:57:12 +0000
-Received: from CY1NAM02FT017.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:103:cafe::5d) by CY4PR19CA0042.outlook.office365.com
- (2603:10b6:903:103::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend
- Transport; Mon, 18 Jan 2021 02:57:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT017.mail.protection.outlook.com (10.152.75.181) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3763.12 via Frontend Transport; Mon, 18 Jan 2021 02:57:12 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Sun, 17 Jan 2021 18:57:00 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Sun, 17 Jan 2021 18:57:00 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- mdf@kernel.org,
- trix@redhat.com,
- robh+dt@kernel.org,
- linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- chinnikishore369@gmail.com
-Received: from [10.140.6.60] (port=41770 helo=xhdnavam40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <nava.manne@xilinx.com>)
-        id 1l1Kix-0004GM-Dh; Sun, 17 Jan 2021 18:56:59 -0800
-From:   Nava kishore Manne <nava.manne@xilinx.com>
-To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <linux-fpga@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <git@xilinx.com>, <chinnikishore369@gmail.com>,
-        Nava kishore Manne <nava.manne@xilinx.com>
-Subject: [PATCH 2/2] fpga: zynqmp: Adds secure BitStream loading support for Xilinx
-Date:   Mon, 18 Jan 2021 08:20:58 +0530
-Message-ID: <20210118025058.10051-2-nava.manne@xilinx.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210118025058.10051-1-nava.manne@xilinx.com>
-References: <20210118025058.10051-1-nava.manne@xilinx.com>
+        id S1731378AbhARC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:56:57 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:62802 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731357AbhARC44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:56:56 -0500
+X-UUID: 3c519507fd0f437081defd32a9a62e7f-20210118
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=0em+L8nboXyN5nqrai5ZhBQakH44tZ0SkP9/VKi1jl4=;
+        b=NTS5bM8qvxYuWLCN3n46aIpZBWKMUi8MO88IIPhjVDOQLeuQWLN2uV5i6ncx7v5zuadEtv1W6iYsipF8FXMps8p3m8Qtsve31AmKV2fgW4gc5pfI+A5qBm6TuiBIL92o+5LrLBhggQUUY8V2ARPQ+v6FLnNidXUhiHbcCsIAatc=;
+X-UUID: 3c519507fd0f437081defd32a9a62e7f-20210118
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1858029874; Mon, 18 Jan 2021 10:55:35 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 Jan
+ 2021 10:55:33 +0800
+Received: from [10.19.240.15] (10.19.240.15) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 18 Jan 2021 10:55:32 +0800
+Message-ID: <1610938533.5980.11.camel@mcddlt001>
+Subject: Re: [PATCH] pci: avoid unsync of LTR mechanism configuration
+From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>,
+        <kerun.zhu@mediatek.com>, <linux-pci@vger.kernel.org>,
+        <lambert.wang@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <haijun.liu@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 18 Jan 2021 10:55:33 +0800
+In-Reply-To: <20210112213635.GA1854447@bjorn-Precision-5520>
+References: <20210112213635.GA1854447@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7824eb2-e925-478b-5d11-08d8bb5cc134
-X-MS-TrafficTypeDiagnostic: SJ0PR02MB7440:
-X-Microsoft-Antispam-PRVS: <SJ0PR02MB7440441D9416834DD9CFBFBFC2A40@SJ0PR02MB7440.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:89;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tM0/djXI3IIApwWV1BX/rBoknae+mEBj2yj1LwUj+omIGrDQHoRon5s8s6u59XYFGRbsBCoevJcEqQ8qKJN7VLiOMK1t1pt4CbFeAs+FmNq+tCF9C8fJdaBYOIa3tx8oqTwdyfg4iJR9knsm0YDjb7ttGFPtJCQv2hJY/KEj6gbGeMja8ZkKdRMYuiDsr8aierUGB9xtbyVFSj8VRbc+UoMpMhqAx1nUwoPy5+ZbSzQSm9GJBXmPwDLD5Q3BteIKw+8YFjejMyITfbQkuqRdA8nrw7MgYQLa3LAfXVwlpkn7mUGMj/inPsg9bzlwZ3UirhIsqX8zS8uSkZA8YAAiA6B4LJafR+0SoRaG4Atwkav0g0NECVFO/lZ3VQHWkKMCbZhklB7ashB+ADPe6YBJwVzFeZx+CUFIxixO/+iiKYKRcnjygpzX7D+BmUUK9v7L1eaU/9TZlsJ6VRo4gPsG1KQ6w+4zSUZRw/5CJHQyCg3c4wnW0uRJ4v4MScb6mGN8cN+JD4dPB70b2XZvKrlGGQ==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39850400004)(46966006)(82740400003)(54906003)(8936002)(7636003)(356005)(110136005)(336012)(36756003)(107886003)(1076003)(5660300002)(70586007)(2616005)(316002)(70206006)(4326008)(7696005)(8676002)(2906002)(82310400003)(478600001)(36906005)(426003)(9786002)(26005)(47076005)(186003)(102446001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 02:57:12.5105
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7824eb2-e925-478b-5d11-08d8bb5cc134
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT017.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7440
+X-TM-SNTS-SMTP: AEA3A7EE47DDF04712E42F9002E2427F938FEDBADB231A5E2D59475E1619EA042000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds secure BitStream Loading support for the Xilinx
-ZynqMp chip.
-
-Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
----
- drivers/fpga/zynqmp-fpga.c           | 8 ++++++++
- include/linux/firmware/xlnx-zynqmp.h | 3 +++
- 2 files changed, 11 insertions(+)
-
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index 125743c9797f..0ce34553944b 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -56,6 +56,14 @@ static int zynqmp_fpga_ops_write(struct fpga_manager *mgr,
- 
- 	wmb(); /* ensure all writes are done before initiate FW call */
- 
-+	if (priv->flags & FPGA_MGR_ENCRYPTED_BITSTREAM)
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_DEVKEY;
-+
-+	if (priv->flags & FPGA_MGR_DDR_MEM_AUTH_BITSTREAM)
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_AUTHENTICATION_DDR;
-+	else if (priv->flags & FPGA_MGR_SECURE_MEM_AUTH_BITSTREAM)
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_AUTHENTICATION_OCM;
-+
- 	if (priv->flags & FPGA_MGR_PARTIAL_RECONFIG)
- 		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_PARTIAL;
- 
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 87114ee645b1..8a4038bf85e2 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -62,6 +62,9 @@
-  */
- #define XILINX_ZYNQMP_PM_FPGA_FULL	0x0U
- #define XILINX_ZYNQMP_PM_FPGA_PARTIAL	BIT(0)
-+#define XILINX_ZYNQMP_PM_FPGA_AUTHENTICATION_DDR	BIT(1)
-+#define XILINX_ZYNQMP_PM_FPGA_AUTHENTICATION_OCM	BIT(2)
-+#define XILINX_ZYNQMP_PM_FPGA_ENCRYPTION_DEVKEY		BIT(4)
- 
- enum pm_api_id {
- 	PM_GET_API_VERSION = 1,
--- 
-2.18.0
+T24gVHVlLCAyMDIxLTAxLTEyIGF0IDE1OjM2IC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
+PiBOb3RlIHN1YmplY3QgbGluZSB0aXBzIGF0IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAx
+NzEwMjYyMjM3MDEuR0EyNTY0OUBiaGVsZ2Fhcy1nbGFwdG9wLnJvYW0uY29ycC5nb29nbGUuY29t
+DQo+IA0KPiBPbiBUdWUsIEphbiAxMiwgMjAyMSBhdCAwMzoyNzozOVBNICswODAwLCBtaW5nY2h1
+YW5nLnFpYW9AbWVkaWF0ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IE1pbmdjaHVhbmcgUWlhbyA8
+bWluZ2NodWFuZy5xaWFvQG1lZGlhdGVrLmNvbT4NCj4gPiANCj4gPiBJbiBwY2kgYnVzIHNjYW4g
+ZmxvdywgdGhlIExUUiBtZWNoYW5pc20gZW5hYmxlIGJpdCBvZiBERVZDVEwyIHJlZ2lzdGVyDQo+
+ID4gaXMgY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZpY2UgYW5kIGl0
+J3MgYnJpZGdlIGJvdGgNCj4gPiBzdXBwb3J0IExUUiBtZWNoYW5pc20sIExUUiBtZWNoYW5pc20g
+b2YgZGV2aWNlIGFuZCBpdCdzIGJyaWRnZSB3aWxsDQo+ID4gYmUgZW5hYmxlZCBpbiBERVZDVEwy
+IHJlZ2lzdGVyLiBBbmQgdGhlIGZsYWcgcGNpX2Rldi0+bHRyX3BhdGggd2lsbA0KPiA+IGJlIHNl
+dCBhcyAxLg0KPiANCj4gcy9pdCdzL2l0cy8gdHdpY2UgYWJvdmUuDQo+IEl0J3MgPT0gSXQgaXMu
+DQo+IEl0cyA9PSBiZWxvbmdpbmcgdG8gJ2l0Jy4NCj4gV2VpcmQsIEkga25vdywgYnV0IHRoYXQn
+cyBFbmdsaXNoIGZvciB5b3UgOikNCj4gDQo+ID4gRm9yIHNvbWUgcGNpZSBwcm9kdWN0cywgcGNp
+ZSBsaW5rIGJlY29tZXMgZG93biB3aGVuIGRldmljZSByZXNldC4gQW5kIHRoZW4NCj4gPiB0aGUg
+TFRSIG1lY2hhbmlzbSBlbmFibGUgYml0IG9mIGJyaWRnZSB3aWxsIGJlY29tZSAwIGJhc2VkIG9u
+IGRlc2NyaXB0aW9uDQo+ID4gaW4gUENJRSByNC4wLCBzZWMgNy44LjE2LiBIb3dldmVyLCB0aGUg
+cGNpX2Rldi0+bHRyX3BhdGggdmFsdWUgb2YgYnJpZGdlDQo+ID4gaXMgc3RpbGwgMS4gUmVtb3Zl
+IGFuZCByZXNjYW4gZmxvdyBjb3VsZCBiZSB0cmlnZ2VyZWQgdG8gcmVjb3ZlciBhZnRlcg0KPiA+
+IGRldmljZSByZXNldC4gSW4gdGhlIGJ1cyByZXNjYW4gZmxvdywgdGhlIExUUiBtZWNoYW5pc20g
+b2YgZGV2aWNlIHdpbGwgYmUNCj4gPiBlbmFibGVkIGluIHBjaV9jb25maWd1cmVfbHRyKCkgZHVl
+IHRvIGx0cl9wYXRoIG9mIGl0cyBicmlkZ2UgaXMgc3RpbGwgMS4NCj4gDQo+IHMvcGNpZS9QQ0ll
+LyB0d2ljZSBhYm92ZS4NCj4gcy9QQ0lFL1BDSWUvOyBhbHNvIHJlZmVyZW5jZSByNS4wIGluc3Rl
+YWQgb2YgcjQuMCBpZiBwb3NzaWJsZS4NCj4gDQoNClNvcnJ5IGZvciB0aGUgbWlzc3BlbGxpbmcg
+YW5kIGluY29udmVuaWVuY2UuIFRoYW5rcyBmb3IgdGhlIGNvcnJlY3Rpb24NCmFuZCBJIHdpbGwg
+Zm9sbG93IHRoZSBzdWdnZXN0aW9uIGluIGxhdGVyIHBhdGNoLg0KDQo+IFRoaXMgc291bmRzIGxp
+a2UgYSBnZW5lcmFsIHByb2JsZW0gb2YgbW9zdCBkZXZpY2UgY29uZmlnIGJpdHMgYmVpbmcNCj4g
+Y2xlYXJlZCBieSByZXNldC4gIFVzdWFsbHkgdGhlc2UgYXJlIHJlc3RvcmVkIGJ5IHBjaV9yZXN0
+b3JlX3N0YXRlKCkuDQo+IElzIHRoYXQgZnVuY3Rpb24gbWlzc2luZyBhIHJlc3RvcmUgZm9yIFBD
+SV9FWFBfREVWQ1RMMj8gIEknZCByYXRoZXINCj4gaGF2ZSBhIGdlbmVyYWwtcHVycG9zZSB3YXkg
+b2YgcmVzdG9yaW5nIGFsbCB0aGUgY29uZmlnIHN0YXRlIHRoYW4NCj4gbGl0dGxlIHBpZWNlcyBz
+Y2F0dGVyZWQgYWxsIG92ZXIuDQo+IA0KDQpBY3R1YWxseSBpdOKAmXMgbm90IFBDSV9FWFBfREVW
+Q1RMMiByZXN0b3JlIG1pc3NpbmcgaXNzdWUuIFRoZQ0KUENJX0VYUF9ERVZDVEwyIGlzIGNvcnJl
+Y3RseSBzYXZlZC9yZXN0b3JlZCBkdXJpbmcgYnJpZGdlIHJ1bnRpbWUNCnN1c3BlbmQvcmVzdW1l
+Lg0KDQpJdOKAmXMgdGhlIGlzc3VlIHRoYXQgbHRyX3BhdGggdmFsdWUgb2YgdGhlIGJyaWRnZSBt
+aXNtYXRjaGVzIHRoZSBhY3R1YWwNCnZhbHVlIGluIGJyaWRnZeKAmXMgUENJX0VYUF9ERVZDVEwy
+Lg0KDQpIZXJlIGlzIHRoZSBzY2VuYXJpbyBmb3IgdGhlIGlzc3VlOg0KMS5QQ0kgYnVzIHNjYW4g
+ZG9uZQ0KICAgLUZvciBib3RoIFBDSWUgRGV2aWNlIGFuZCBicmlkZ2U6DQogICAgICAtIkxUUiBN
+ZWNoYW5pc20gRW5hYmxlIiBiaXQgaW4gUENJX0VYUF9ERVZDVEwyIGlzIDENCiAgICAgIC0gbHRy
+X3BhdGggdmFsdWUgaXMgMQ0KDQoyLkRldmljZSByZXNldHMgYW5kIFBDSWUgbGluayBpcyBkb3du
+LCB0aGVuICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2UgY2hhbmdlcyB0byAw
+IGFjY29yZGluZyB0byBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4NCiAgIC1UaGUgbHRyX3BhdGgg
+dmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEgYnV0IHRoZSAiTFRSIE1lY2hhbmlzbQ0KRW5hYmxl
+IiBiaXQgd2l0aGluIFBDSV9FWFBfREVWQ1RMMiBjaGFuZ2VkIHRvIDAuDQoNCjMuVHJpZ2dlciBk
+ZXZpY2UgcmVtb3ZhbCBhbmQgYnJpZGdlIGVudGVycyBydW50aW1lIHN1c3BlbmQgZmxvdy4NCiAg
+IC0iTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBicmlkZ2UgaXMgMCBhbmQgc2F2ZWQgYnkN
+CnBjaV9zYXZlX3N0YXRlKCkuDQoNCjQuVHJpZ2dlciBidXMgcmVzY2FuIGFuZCBicmlkZ2UgZW50
+ZXJzIHJ1bnRpbWUgcmVzdW1lIGZsb3cuDQogICAtIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQg
+b2YgYnJpZGdlIGlzIHJlc3RvcmVkIGJ5DQpwY2lfcmVzdG9yZV9zdGF0ZSgpIGFuZCB0aGUgdmFs
+dWUgaXMgMC4NCg0KNS5TY2FuIGRldmljZSBhbmQgY29uZmlndXJlIGRldmljZSdzIExUUiBpbiBw
+Y2lfY29uZmlndXJlX2x0cigpLg0KICAgLSJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG9mIGRl
+dmljZSBpcyBjb25maWd1cmVkIGFzIDEgZHVlIHRvDQpicmlkZ2UncyBsdHJfcGF0aCB2YWx1ZSBp
+cyAxLg0KDQo2LlRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJy
+aWRnZSBpcyBkaWZmZXJlbnQgbm93Lg0KICAgLVdoZW4gZGV2aWNlIHNlbmRzIExUUiBNZXNzYWdl
+LCBicmlkZ2Ugd2lsbCB0cmVhdCB0aGUgTWVzc2FnZSBhcw0KVW5zdXBwb3J0ZWQgUmVxdWVzdCBh
+Y2NvcmRpbmcgdG8gUENJZSByNS4wLCBzZWMgNi4xOC4NCg0KVGhpcyBwYXRjaCBpcyB1c2VkIHRv
+IG1ha2UgYnJpZGdlJ3MgbHRyX3BhdGggdmFsdWUgbWF0Y2ggIkxUUiBNZWNoYW5pc20NCkVuYWJs
+ZSIgYml0IHdpdGhpbiBERVZDVEwyIHJlZ2lzdGVyIGFuZCBhdm9pZCB0aGUgVW5zdXBwb3J0ZWQg
+UmVxdWVzdC4NCg0KPiA+IFdoZW4gZGV2aWNlJ3MgTFRSIG1lY2hhbmlzbSBpcyBlbmFibGVkLCBk
+ZXZpY2Ugd2lsbCBzZW5kIExUUiBtZXNzYWdlIHRvDQo+ID4gYnJpZGdlLiBCcmlkZ2UgcmVjZWl2
+ZXMgdGhlIGRldmljZSdzIExUUiBtZXNzYWdlIGFuZCBmb3VuZCBicmlkZ2UncyBMVFINCj4gPiBt
+ZWNoYW5pc20gaXMgZGlzYWJsZWQuIFRoZW4gdGhlIGJyaWRnZSB3aWxsIGdlbmVyYXRlIHVuc3Vw
+cG9ydGVkIHJlcXVlc3QNCj4gPiBhbmQgb3RoZXIgZXJyb3IgaGFuZGxpbmcgZmxvdyB3aWxsIGJl
+IHRyaWdnZXJlZCBzdWNoIGFzIEFFUiBOb24tRmF0YWwNCj4gPiBlcnJvciBoYW5kbGluZy4NCj4g
+PiANCj4gPiBUaGlzIHBhdGNoIGlzIHVzZWQgdG8gYXZvaWQgdGhpcyB1bnN1cHBvcnRlZCByZXF1
+ZXN0IGFuZCBtYWtlIHRoZSBicmlkZ2Uncw0KPiA+IGx0cl9wYXRoIHZhbHVlIGlzIGFsaWduZWQg
+d2l0aCBERVZDVEwyIHJlZ2lzdGVyIHZhbHVlLiBDaGVjayBicmlkZ2UNCj4gPiByZWdpc3RlciB2
+YWx1ZSBpZiBhbGlnbmVkIHdpdGggbHRyX3BhdGggaW4gcGNpX2NvbmZpZ3VyZV9sdHIoKS4gSWYN
+Cj4gPiByZWdpc3RlciB2YWx1ZSBpcyBkaXNhYmxlIGFuZCB0aGUgbHRyX3BhdGggaXMgMSwgd2Ug
+bmVlZCBjb25maWd1cmUNCj4gPiB0aGUgcmVnaXN0ZXIgdmFsdWUgYXMgZW5hYmxlLg0KPiA+IA0K
+PiA+IFNpZ25lZC1vZmYtYnk6IE1pbmdjaHVhbmcgUWlhbyA8bWluZ2NodWFuZy5xaWFvQG1lZGlh
+dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wY2kvcHJvYmUuYyB8IDE4ICsrKysrKysr
+KysrKysrKy0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMyBkZWxl
+dGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcHJvYmUuYyBiL2Ry
+aXZlcnMvcGNpL3Byb2JlLmMNCj4gPiBpbmRleCA5NTNmMTVhYmM4NTAuLjQ5MzU1Y2Y0YWY1NCAx
+MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gKysrIGIvZHJpdmVycy9w
+Y2kvcHJvYmUuYw0KPiA+IEBAIC0yMTMyLDkgKzIxMzIsMjEgQEAgc3RhdGljIHZvaWQgcGNpX2Nv
+bmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgCSAqIENvbXBsZXggYW5kIGFs
+bCBpbnRlcm1lZGlhdGUgU3dpdGNoZXMgaW5kaWNhdGUgc3VwcG9ydCBmb3IgTFRSLg0KPiA+ICAJ
+ICogUENJZSByNC4wLCBzZWMgNi4xOC4NCj4gPiAgCSAqLw0KPiA+IC0JaWYgKHBjaV9wY2llX3R5
+cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUIHx8DQo+ID4gLQkgICAgKChicmlkZ2Ug
+PSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldikpICYmDQo+ID4gLQkgICAgICBicmlkZ2UtPmx0cl9w
+YXRoKSkgew0KPiA+ICsJaWYgKHBjaV9wY2llX3R5cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9P
+VF9QT1JUKSB7DQo+ID4gKwkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9E
+RVZDVEwyLA0KPiA+ICsJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiArCQlkZXYt
+Pmx0cl9wYXRoID0gMTsNCj4gPiArCQlyZXR1cm47DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJYnJp
+ZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KPiA+ICsJaWYgKGJyaWRnZSAmJiBicmlk
+Z2UtPmx0cl9wYXRoKSB7DQo+ID4gKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdvcmQoYnJpZGdl
+LCBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KPiA+ICsJCWlmICghKGN0bCAmIFBDSV9FWFBfREVW
+Q1RMMl9MVFJfRU4pKSB7DQo+ID4gKwkJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChicmlkZ2Us
+IFBDSV9FWFBfREVWQ1RMMiwNCj4gPiArCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0K
+PiA+ICsJCX0NCj4gPiArDQo+ID4gIAkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJ
+X0VYUF9ERVZDVEwyLA0KPiA+ICAJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiAg
+CQlkZXYtPmx0cl9wYXRoID0gMTsNCj4gPiAtLSANCj4gPiAyLjE4LjANCj4gPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IGxpbnV4LWFybS1rZXJu
+ZWwgbWFpbGluZyBsaXN0DQo+ID4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
+DQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1h
+cm0ta2VybmVsDQoNCg==
 
