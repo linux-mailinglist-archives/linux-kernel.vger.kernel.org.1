@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5C02FAA35
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97E72FAA4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437344AbhARTay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:30:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
+        id S2437438AbhARTfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:35:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390430AbhARLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B4122CF6;
-        Mon, 18 Jan 2021 11:37:24 +0000 (UTC)
+        id S2390393AbhARLhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C040A229C6;
+        Mon, 18 Jan 2021 11:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969845;
-        bh=kH6n2pMmgkZJ0ua89HOGXyqDJ56t0QQxQPc3Ad0jmCE=;
+        s=korg; t=1610969784;
+        bh=NYavTJCf3mSOA+70l+TusabymJ0buWA/rdHDdRRk9Dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLph9kuLRPZ3+HdmIajxxJdMByitWAH003puiIuvPR/vLXn5iqed+FxChgYEpnYEX
-         90UxAmIC8Hse8bmhNDBuEYatZDmj6aUdrZFyxRv5s+SjiqX+sXQ5wd+LTRIcxcvn4Y
-         Yg2PuEvW8d2QrCvqnPgABYcbKdeM6JR9uPbyM9Lo=
+        b=x65232TxkuyOa/jP4DBV94jTlzCTa9YzmK4MvycaH8bsH6ZeIvIUv3XCjcwojJAgy
+         s+hggDiEF9Gl0VgOePZ+UW0KYKUcIiwZmxxpPkDggO1pCFp+vG1d39wZ828QZwnLl7
+         CCDR0g+s3XUcYZEdXBPuVyPm31Be+vGIKH32B/DY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 22/43] ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
-Date:   Mon, 18 Jan 2021 12:34:45 +0100
-Message-Id: <20210118113336.021370608@linuxfoundation.org>
+        stable@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 24/43] ARM: picoxcell: fix missing interrupt-parent properties
+Date:   Mon, 18 Jan 2021 12:34:47 +0100
+Message-Id: <20210118113336.109849698@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
 References: <20210118113334.966227881@linuxfoundation.org>
@@ -41,39 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit ee61cfd955a64a58ed35cbcfc54068fcbd486945 ]
+[ Upstream commit bac717171971176b78c72d15a8b6961764ab197f ]
 
-It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
-that caller doesn't have to deal with !CONFIG_ACPI build issue.
+dtc points out that the interrupts for some devices are not parsable:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+picoxcell-pc3x2.dtsi:45.19-49.5: Warning (interrupts_property): /paxi/gem@30000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:51.21-55.5: Warning (interrupts_property): /paxi/dmac@40000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:57.21-61.5: Warning (interrupts_property): /paxi/dmac@50000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:233.21-237.5: Warning (interrupts_property): /rwid-axi/axi2pico@c0000000: Missing interrupt-parent
+
+There are two VIC instances, so it's not clear which one needs to be
+used. I found the BSP sources that reference VIC0, so use that:
+
+https://github.com/r1mikey/meta-picoxcell/blob/master/recipes-kernel/linux/linux-picochip-3.0/0001-picoxcell-support-for-Picochip-picoXcell-SoC.patch
+
+Acked-by: Jamie Iles <jamie@jamieiles.com>
+Link: https://lore.kernel.org/r/20201230152010.3914962-1-arnd@kernel.org'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/acpi.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index cd412817654fa..019468f072b7d 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -812,6 +812,13 @@ static inline int acpi_device_modalias(struct device *dev,
- 	return -ENODEV;
- }
+diff --git a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+index a1266cf8776ce..8362c6a3bcd30 100644
+--- a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
++++ b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+@@ -54,18 +54,21 @@
+ 		emac: gem@30000 {
+ 			compatible = "cadence,gem";
+ 			reg = <0x30000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <31>;
+ 		};
  
-+static inline struct platform_device *
-+acpi_create_platform_device(struct acpi_device *adev,
-+			    struct property_entry *properties)
-+{
-+	return NULL;
-+}
-+
- static inline bool acpi_dma_supported(struct acpi_device *adev)
- {
- 	return false;
+ 		dmac1: dmac@40000 {
+ 			compatible = "snps,dw-dmac";
+ 			reg = <0x40000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <25>;
+ 		};
+ 
+ 		dmac2: dmac@50000 {
+ 			compatible = "snps,dw-dmac";
+ 			reg = <0x50000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <26>;
+ 		};
+ 
+@@ -243,6 +246,7 @@
+ 		axi2pico@c0000000 {
+ 			compatible = "picochip,axi2pico-pc3x2";
+ 			reg = <0xc0000000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <13 14 15 16 17 18 19 20 21>;
+ 		};
+ 	};
 -- 
 2.27.0
 
