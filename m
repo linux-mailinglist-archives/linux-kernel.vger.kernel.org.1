@@ -2,133 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA88D2F9C72
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773652F9C77
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388827AbhARJYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:24:47 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:55760 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388571AbhARJTz (ORCPT
+        id S2388853AbhARJb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388595AbhARJVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:19:55 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BB0AF2BB;
-        Mon, 18 Jan 2021 10:19:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610961551;
-        bh=gjnQsqFgxtpSq29xrtqXIVq4Xvc9Ow3B2rHgXQ+GU3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lYwoQ3Lh7ouSl1TmFTMKG2c4wx3waTDRv8f10AxBqjGIpJ796ly2IOzm2fvAnYDmO
-         hHwEVuJD5DngMdlfvi6mFvMcWOxI85BE53JDlzDfMPsMeAxt5r/1BoGo+k1qmj3jIP
-         DPG34Im8q/Jek+X88TtBRdYDlavT/vy9MRdiHNjE=
-Date:   Mon, 18 Jan 2021 11:18:55 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
-Message-ID: <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-5-djrscally@gmail.com>
+        Mon, 18 Jan 2021 04:21:12 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195CCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:20:32 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id u19so16745343edx.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:20:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nWwUvnxm6cFMUMsyK2REaR6ASGoMuBGGZ9JavqL//w4=;
+        b=IsxNjrjqUFOd3RJMycZUTd/74CrPYXCA1rwY6o8n9iYZFY3Q79GsF63WDwM4iTo+EK
+         VzQAENcyPtRqLg/POO0/bk4QTOIP0d3L3HR/Epzderpzk8FOi+bC/c34FkJSOnBdVzhv
+         crBG7o1zUUorAfBWER0YTeswXDVMp4tPEzyqH4TacvxamKOQzDsQY9cLG4uDLroPm9Cf
+         e7MN8wgvBBL2eyhTvJHrprtsBZiyoj8QwYnFU7e4zokBXhebSp6+Y7H2OEd4qYFdO+Lv
+         bTZTEv7xMxmdkNpG3QqBR/TqWSx2pZ3oV9TjsVKQ1XCZR6BRwGVH0iFgIP30S+U1wv9Q
+         Q8fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWwUvnxm6cFMUMsyK2REaR6ASGoMuBGGZ9JavqL//w4=;
+        b=Rv2vjgOQvq2oKknmkRZAyh5olxBeo4Py1WtqBaZbz4HiVs3SPbkOzyW7ts9yy2fRtz
+         nmBCtPK1ME2UdDdSM+3a5NUqtC1guWzTAGyIHrjniQ7H/685FgtBqnFUBDz2wMta0auq
+         k0AYKzifIlbjNxncngC6g65SGp/capy+ZrliL8hZkGkC26vD0jeezXx1auTg+FK15Cep
+         aycgLYxu1eqoX12ckS5y9CJ9HM4TjtMlCuQTJWs05D9nASlV/g8/ARt6rv6/Bw/1yjVm
+         ZiY7iO+X0cxbKI0zxMvuMPNgaFsHzJceNbUY5q/uT/2mxUcC30pQU9ocXsA/U7UdBQNg
+         W/1A==
+X-Gm-Message-State: AOAM5324ZBrGsvvz/zINRNAW0bITiaVAithVQE6mdc5doDNX58YiCmJX
+        hQNzElfyoFRmKp5yE4RjbL0bGQ==
+X-Google-Smtp-Source: ABdhPJwPa49hq9EFj0Fqi4nYmNdK6gmH/6OLEaDLMVGoc/4IVEOjzZY8Bg7rmvldqK0fk7f4A9Vc9w==
+X-Received: by 2002:aa7:d98a:: with SMTP id u10mr469709eds.275.1610961630618;
+        Mon, 18 Jan 2021 01:20:30 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-28.medicom.bg. [84.238.221.28])
+        by smtp.googlemail.com with ESMTPSA id g14sm7476538edm.31.2021.01.18.01.20.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:20:30 -0800 (PST)
+Subject: Re: [PATCH v2 1/4] media: v4l2-ctrls: Add intra-refresh period
+ control
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Maheshwar Ajja <majja@codeaurora.org>
+References: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
+ <20201206102717.19000-2-stanimir.varbanov@linaro.org>
+ <6eb7ea37-e460-2884-9e07-6ff6f9a15414@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <38417ba8-02af-8fef-9e28-8605dca41921@linaro.org>
+Date:   Mon, 18 Jan 2021 11:20:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <6eb7ea37-e460-2884-9e07-6ff6f9a15414@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210118003428.568892-5-djrscally@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-Thank you for the patch.
 
-On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
-> We want to refer to an i2c device by name before it has been
-
-s/i2c device/acpi i2c device/ ?
-
-> created by the kernel; add a function that constructs the name
-> from the acpi device instead.
+On 1/12/21 12:05 PM, Hans Verkuil wrote:
+> On 06/12/2020 11:27, Stanimir Varbanov wrote:
+>> Add a control to set intra-refresh period.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  .../userspace-api/media/v4l/ext-ctrls-codec.rst       | 11 +++++++++++
+>>  drivers/media/v4l2-core/v4l2-ctrls.c                  |  2 ++
+>>  include/uapi/linux/v4l2-controls.h                    |  1 +
+>>  3 files changed, 14 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index 454ecd9a0f83..d65d7c1381b7 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -1104,6 +1104,17 @@ enum v4l2_mpeg_video_h264_entropy_mode -
+>>      macroblocks is refreshed until the cycle completes and starts from
+>>      the top of the frame. Applicable to H264, H263 and MPEG4 encoder.
+>>  
+>> +``V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD (integer)``
+>> +    Intra macroblock refresh period. This sets the period to refresh
+>> +    the whole frame. With other words, this defines the number of frames
 > 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
+> With -> In
 > 
-> 	- Stopped using devm_kasprintf()
+>> +    for which the whole frame will be intra-refreshed.  An example:
+>> +    setting period to 1 means that the whole frame will be refreshed,
+>> +    setting period to 2 means that the half of macroblocks will be
+>> +    intra-refreshed on frameX and the other half of macroblocks
+>> +    will be refreshed in frameX + 1 and so on. Setting period to zero
+>> +    means no period is specified.
+>> +    Applicable to H264 and HEVC encoders.
 > 
->  drivers/i2c/i2c-core-acpi.c | 16 ++++++++++++++++
->  include/linux/i2c.h         |  5 +++++
->  2 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-> index 37c510d9347a..98c3ba9a2350 100644
-> --- a/drivers/i2c/i2c-core-acpi.c
-> +++ b/drivers/i2c/i2c-core-acpi.c
-> @@ -497,6 +497,22 @@ struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
->  }
->  EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
->  
-> +/**
-> + * i2c_acpi_dev_name - Construct i2c device name for devs sourced from ACPI
-> + * @adev:     ACPI device to construct the name for
-> + *
-> + * Constructs the name of an i2c device matching the format used by
-> + * i2c_dev_set_name() to allow users to refer to an i2c device by name even
-> + * before they have been instantiated.
-> + *
-> + * The caller is responsible for freeing the returned pointer.
-> + */
-> +char *i2c_acpi_dev_name(struct acpi_device *adev)
-> +{
-> +	return kasprintf(GFP_KERNEL, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
+> I'm confused. Isn't this the same as V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB?
+> Except that here you don't give the number of macroblocks but instead the number
+> of frames it will take to fully refresh a frame and leave it to the driver to
+> calculate the number of macroblocks?
 
-There's a real danger of a memory leak, as the function name sounds very
-similar to dev_name() or acpi_dev_name() and those don't allocate
-memory. I'm not sure what a better name would be, but given that this
-function is only used in patch 6/7 and not in the I2C subsystem itself,
-I wonder if we should inline this kasprintf() call in the caller and
-drop this patch.
+Yes, correct. The periodic control looks more generic because it doesn't
+limit the type of intra-refresh (cyclic vs random vs adaptive) but
+instead set the number of frames to fully refresh the whole frame and is
+also taken from Android mediacodec [1], where the user doesn't care too
+much what intra-refresh type will be used but instead how much frames
+are needed to fully refresh.
 
-> +}
-> +EXPORT_SYMBOL_GPL(i2c_acpi_dev_name);
-> +
->  #ifdef CONFIG_ACPI_I2C_OPREGION
->  static int acpi_gsb_i2c_read_bytes(struct i2c_client *client,
->  		u8 cmd, u8 *data, u8 data_len)
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 4d40a4b46810..b82aac05b17f 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -998,6 +998,7 @@ bool i2c_acpi_get_i2c_resource(struct acpi_resource *ares,
->  u32 i2c_acpi_find_bus_speed(struct device *dev);
->  struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
->  				       struct i2c_board_info *info);
-> +char *i2c_acpi_dev_name(struct acpi_device *adev);
->  struct i2c_adapter *i2c_acpi_find_adapter_by_handle(acpi_handle handle);
->  #else
->  static inline bool i2c_acpi_get_i2c_resource(struct acpi_resource *ares,
-> @@ -1014,6 +1015,10 @@ static inline struct i2c_client *i2c_acpi_new_device(struct device *dev,
->  {
->  	return ERR_PTR(-ENODEV);
->  }
-> +static inline char *i2c_acpi_dev_name(struct acpi_device *adev)
-> +{
-> +	return NULL;
-> +}
->  static inline struct i2c_adapter *i2c_acpi_find_adapter_by_handle(acpi_handle handle)
->  {
->  	return NULL;
+> 
+> If I am right, then you need to clearly document the relationship between the
+> two controls, and what happens if you set them both.
+
+Yep, I can add such description.
+
+One note here; the CYCLIC_INTRA_REFRESH_MB and INTRA_REFRESH_PERIOD are
+not interchangeable because intra-refresh period could use different
+type of inter-refresh, eg. random vs cyclic.
+
+> 
+> It seems the venus driver already supports V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB,
+> so why add this control as well?
+
+The cyclic intra-refresh control in Venus driver is just enumerable but
+ignored when set, in other words it does nothing.
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+
+[1]
+https://developer.android.com/reference/android/media/MediaFormat#KEY_INTRA_REFRESH_PERIOD
 
 -- 
-Regards,
-
-Laurent Pinchart
+regards,
+Stan
