@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D8C2FA2B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62A12FA2A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392777AbhARORE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 09:17:04 -0500
-Received: from wnbcorp.com ([175.126.38.143]:59752 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2392745AbhAROON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:14:13 -0500
-Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IEBt5V002199;
-        Mon, 18 Jan 2021 23:12:13 +0900
-Message-Id: <202101181412.10IEBt5V002199@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2392665AbhARONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:13:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392605AbhARONO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:13:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4DDB22B39;
+        Mon, 18 Jan 2021 14:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610979149;
+        bh=t1B1q/VJWade+4dpTf+GU6cznZzV1+nHf2BiPOHUkBo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XO4Lx/ao4z8CVKE9hMZAwrURVuSw1QgYJDvsB6z4faBicLGrF1gu53EFaRA617+rV
+         dScnF+Jb5x7mSlcvoTc6WlNkd+kLjG8eNGqtTmzPK+5xWYIQ28C/ujrmpBP7xl2WXW
+         wtO0be9lxtrBaONkSy/YAGeDZqluCGC7Mv+Czeny27ox5e/mP1nMsBESaxOMJZaIN7
+         eDyC7/Q8ELNb5JnGNUFguK/uhyHqIjUElIHIg7O+OnenUNL2PbRao9YmuogCo0Sw8a
+         nnDGj5ExAjlB1lyr5/HF8lXNHTMIMzG2sMKQ7BlNyniTmpPr4WYiJVhxs3id8hlV2g
+         KlAscKZl4a8LA==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
+Subject: [RFC PATCH 0/7] preempt: Tune preemption flavour on boot v4
+Date:   Mon, 18 Jan 2021 15:12:15 +0100
+Message-Id: <20210118141223.123667-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Mon, 18 Jan 2021 15:12:11 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+Hi,
 
-Sir/Madam,
+Here is a new version of the feature that can select the preempt flavour
+on boot time. Note that it doesn't entirely mimic the actual real
+config-based preemption flavours, because at least preempt-RCU
+implementation is there in any case.
 
-CONGRATULATIONS!!!
+Also there is still some work to do against subsystems that may play
+their own games with CONFIG_PREEMPT.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+In this version:
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+* Restore the initial simple __static_call_return0() implementation.
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+* Uninline __static_call_return0 on all flavours since its address is
+always needed on DEFINE_STATIC_CALL()
 
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+* Introduce DEFINE_STATIC_CALL_RET0()
 
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	preempt/dynamic-v4
 
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+HEAD: b5f3b1da9df4197d0b0ffe0f55f0f6a8c838d75f
 
-MR. WILSON WARREN JOHNSON
+Thanks,
+	Frederic
+---
 
-Tel: +31-620-561-787
+Peter Zijlstra (Intel) (4):
+      preempt/dynamic: Provide cond_resched() and might_resched() static calls
+      preempt/dynamic: Provide preempt_schedule[_notrace]() static calls
+      preempt/dynamic: Provide irqentry_exit_cond_resched() static call
+      preempt/dynamic: Support dynamic preempt with preempt= boot option
 
-Fax: +31-84-438-5342
+Peter Zijlstra (2):
+      static_call/x86: Add __static_call_return0()
+      static_call: Pull some static_call declarations to the type headers
 
-Email: johnsonwilson389@gmail.com
+Frederic Weisbecker (1):
+      static_call: Provide DEFINE_STATIC_CALL_RET0()
+
+Michal Hocko (1):
+      preempt: Introduce CONFIG_PREEMPT_DYNAMIC
 
 
-
+ Documentation/admin-guide/kernel-parameters.txt |  7 ++
+ arch/Kconfig                                    |  9 +++
+ arch/x86/Kconfig                                |  1 +
+ arch/x86/include/asm/preempt.h                  | 34 ++++++---
+ arch/x86/kernel/static_call.c                   | 17 ++++-
+ include/linux/entry-common.h                    |  4 ++
+ include/linux/kernel.h                          | 23 ++++--
+ include/linux/sched.h                           | 27 ++++++-
+ include/linux/static_call.h                     | 43 ++++--------
+ include/linux/static_call_types.h               | 29 ++++++++
+ kernel/Kconfig.preempt                          | 19 +++++
+ kernel/entry/common.c                           | 10 ++-
+ kernel/sched/core.c                             | 93 ++++++++++++++++++++++++-
+ kernel/static_call.c                            |  5 ++
+ 14 files changed, 271 insertions(+), 50 deletions(-)
