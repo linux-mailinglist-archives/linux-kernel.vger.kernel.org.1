@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D512F9F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0472F9F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391477AbhARMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:24:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:34508 "EHLO foss.arm.com"
+        id S2391478AbhARMYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:24:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391382AbhARMWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:22:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EC3431B;
-        Mon, 18 Jan 2021 04:21:45 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.39.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B62633F719;
-        Mon, 18 Jan 2021 04:21:42 -0800 (PST)
-Date:   Mon, 18 Jan 2021 12:21:35 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org, linux-doc@vgert.kernel.org
-Subject: Re: [PATCH v3] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210118122135.GA31263@C02TD0UTHF1T.local>
-References: <20210115142446.13880-1-broonie@kernel.org>
- <20210115164718.GE44111@C02TD0UTHF1T.local>
- <20210115171251.GF4384@sirena.org.uk>
- <20210115102014.76e51309@lwn.net>
+        id S2391463AbhARMXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:23:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C7DB2065E;
+        Mon, 18 Jan 2021 12:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610972577;
+        bh=fF4wtqQGQ2Oe/6iqTOjeEP/+CSVc/k3JPe+jPgdiYZQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Ar035qCvQMyBju8zFR/+3aDLKPcaM9RA81lnEyPn5cg+h8+B9y+e2CuyCXTVtb1ns
+         DGHqqy9wxa5u0IaGXJgYQA1CqGY+dckYCBLrhyfTZsibxJxxPt70Z1/FDNSBwIvB5X
+         Hs2k49nngppxx+nRrqSoKzgZqAAWH6I8VqWXdd5ZH6rtmdO8PUr3DtuQbqd1gErBpw
+         X1SwKc+plhlWKbURMEyRgIlss4Tc3WD8JH1x+I5QMZfjRAy4b7b+1av2Xa9jzKOVen
+         3oTZt0fVVQpDMbDrm7tNcRsYFqVxFm5J44h1Hsn6A1AMtMp2RLP8WUHZKGJUgppXXo
+         8eh2fAaySYNiQ==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-usb@vger.kernel.org,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Subject: Re: [PATCH] usb: bdc: Remove the BDC PCI driver
+In-Reply-To: <YAVy3KKu7n522aUU@kroah.com>
+References: <20210115213142.35003-1-alcooperx@gmail.com>
+ <878s8qwkgz.fsf@kernel.org> <YAVy3KKu7n522aUU@kroah.com>
+Date:   Mon, 18 Jan 2021 14:22:49 +0200
+Message-ID: <87wnwav3hi.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115102014.76e51309@lwn.net>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:20:14AM -0700, Jonathan Corbet wrote:
-> On Fri, 15 Jan 2021 17:12:51 +0000
-> Mark Brown <broonie@kernel.org> wrote:
-> 
-> > On Fri, Jan 15, 2021 at 04:47:18PM +0000, Mark Rutland wrote:
-> > > On Fri, Jan 15, 2021 at 02:24:46PM +0000, Mark Brown wrote:  
-> > 
-> > > > +    3. Considerations
-> > > > +       3.1 Identifying successful termination  
-> > 
-> > > It looks like we forgot to update this with the addition of the new
-> > > section 3, so this needs a trivial update to add that and fix the
-> > > numbering.  
-> > 
-> > Bah, I thought the point with structured documentation formats was that
-> > tooling would handle stuff like this :/
-> 
-> The tooling *will* handle it if you let it, it's a simple matter of
-> replacing the hand-generated table of contents with a Sphinx directive.  I
-> think that's generally the right thing to do, but it does have the
-> downside of only putting the TOC in the generated docs.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Ah, I was not aware of that, and I had copied the TOC style from
-Documentation/livepatch/livepatch.rst.
 
-That does sound like the right thing to do generally, and I have no
-problem doing that here, but I guess we be consistent and either do that
-for all or none of the Documentation/livepatch/*.rst documents. I guess
-we could do that as a followup?
+Hi,
 
-Thanks,
-Mark.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> Al Cooper <alcooperx@gmail.com> writes:
+>> > The BDC PCI driver was only used for design verification with
+>> > an PCI/FPGA board. The board no longer exists and is not in use
+>> > anywhere. All instances of this core now exist as a memory mapped
+>> > device on the platform bus.
+>> >
+>> > NOTE: This only removes the PCI driver and does not remove the
+>> > platform driver.
+>> >
+>> > Signed-off-by: Al Cooper <alcooperx@gmail.com>
+>>=20
+>> It sounds like it could be used for pre-silicon verification of newer
+>> Core Releases, much like Synopsys still uses the HAPS (with mainline
+>> linux, mind you) for silicon validation.
+>>=20
+>> Why would we delete this small shim if it *could* still be useful?
+>
+> It ends up conflicting with the PCI id of a device that is actually in
+> the wild (a camera on Apple laptops).  So it's good to drop this driver
+> so the wrong driver doesn't get constantly bound to the wrong device.
+
+I see. Oh well...
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmAFfZkRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQavQBAA1MhmHql36rIsV2AInQNInIzr80zE6/75
+uXso+pSgN7F5FnIhy+OGsCMim/pvrmsEYTyflB3eP8bMlclD2he7QBOEBJkRPQJ4
+J22LWXPoyiP1OIuxzfenec1BJMFnA88gf6NQkE7NU4HIbZkVjz8vH1l2s+Qrhou4
+CNPx4oDEc56nlAxHdWZhMjAhsiRPbf1ro4ocOeM0HoCP3jkk7xsOvAV+2iRbfbAF
+tliO2Pp0ygjTZg4Q0iF7G77NhpTKYd2jlwYYOQAS6K5WaFj+GLVoimlalBePx877
+3jfAlRUQj0QYDpbLXkohgRNcwyIUu2BUmhj2HUc4ULZIGpLLl9yy8LqowPo3BkLJ
+uFDhlTJ/Gn6VlUpY4svIxDZhYgQ2lm3FIFT0k5s7V/NwegCE+hoKlmBEuv1mHTYI
+Jh34G88ycIjO9MrFCNw7JDLB8SY4ajhI43/G5NMpDyoJF7z1wdftHs5NlBaHupd+
+qaO/uDCSxxMb7eqZqgJws7YwGbjHBhyETezJjZMX8Xf7Ps6UJq++nNd+L/DAJ1iU
+TaZnKx64ydb2BEQVOe1wiaBO+LU8CamWWaobRPSfym3rCoZoHr+1GknPceJdZXn4
+DKkkX+PhO+zUDAe8NKnOp4Kf5ZQncny55QDj5nS8rzoczGlQNpovV1qYuiLLuql7
+kHEOzNv2+yk=
+=4Bh8
+-----END PGP SIGNATURE-----
+--=-=-=--
