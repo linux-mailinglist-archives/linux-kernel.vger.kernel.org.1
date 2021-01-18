@@ -2,19 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D11E2FA600
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7525D2FA603
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406488AbhARQXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:23:12 -0500
-Received: from relay04.th.seeweb.it ([5.144.164.165]:51659 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406583AbhARQVB (ORCPT
+        id S2406575AbhARQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406577AbhARQUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:21:01 -0500
+        Mon, 18 Jan 2021 11:20:36 -0500
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122D7C061575;
+        Mon, 18 Jan 2021 08:19:56 -0800 (PST)
 Received: from localhost.localdomain (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id C53A71FAFE;
-        Mon, 18 Jan 2021 17:19:51 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 11A951F524;
+        Mon, 18 Jan 2021 17:19:54 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
@@ -25,117 +28,120 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Rajendra Nayak <rnayak@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] drivers: soc: qcom: rpmpd: Add msm8994 RPM Power Domains
-Date:   Mon, 18 Jan 2021 17:19:41 +0100
-Message-Id: <20210118161943.105733-1-konrad.dybcio@somainline.org>
+Subject: [PATCH 2/2] arm64: dts: qcom: msm8992/4: Add RPM Power Domains
+Date:   Mon, 18 Jan 2021 17:19:42 +0100
+Message-Id: <20210118161943.105733-2-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210118161943.105733-1-konrad.dybcio@somainline.org>
+References: <20210118161943.105733-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSM8994 uses similar to MSM8996, legacy-style voltage
-control, but does not include a VDD_SC_CX line.
-
-This setup is also correct for MSM8992.
-
-Do note that there exist some boards that use a tertiary PMIC
-(most likely pm8004), where SMPB on VDDGFX becomes SMPC. I
-cannot test this configuration though.
-
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
- drivers/soc/qcom/rpmpd.c                      | 28 +++++++++++++++++++
- include/dt-bindings/power/qcom-rpmpd.h        |  9 ++++++
- 3 files changed, 38 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8992.dtsi | 30 +++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8994.dtsi | 30 +++++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-index 64825128ee97..1ea21acbbd55 100644
---- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-+++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-@@ -19,6 +19,7 @@ properties:
-       - qcom,msm8916-rpmpd
-       - qcom,msm8939-rpmpd
-       - qcom,msm8976-rpmpd
-+      - qcom,msm8994-rpmpd
-       - qcom,msm8996-rpmpd
-       - qcom,msm8998-rpmpd
-       - qcom,qcs404-rpmpd
-diff --git a/drivers/soc/qcom/rpmpd.c b/drivers/soc/qcom/rpmpd.c
-index 85d1207b72d7..27733b0e7fca 100644
---- a/drivers/soc/qcom/rpmpd.c
-+++ b/drivers/soc/qcom/rpmpd.c
-@@ -21,6 +21,8 @@
-  * RPMPD_X is X encoded as a little-endian, lower-case, ASCII string */
- #define RPMPD_SMPA 0x61706d73
- #define RPMPD_LDOA 0x616f646c
-+#define RPMPD_SMPB 0x62706d73
-+#define RPMPD_LDOB 0x626f646c
- #define RPMPD_RWCX 0x78637772
- #define RPMPD_RWMX 0x786d7772
- #define RPMPD_RWLC 0x636c7772
-@@ -184,6 +186,31 @@ static const struct rpmpd_desc msm8976_desc = {
- 	.max_state = RPM_SMD_LEVEL_TURBO_HIGH,
- };
+diff --git a/arch/arm64/boot/dts/qcom/msm8992.dtsi b/arch/arm64/boot/dts/qcom/msm8992.dtsi
+index 7c2770f60b07..b2046497dcaa 100644
+--- a/arch/arm64/boot/dts/qcom/msm8992.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8992.dtsi
+@@ -4,6 +4,7 @@
  
-+/* msm8994 RPM Power domains */
-+DEFINE_RPMPD_PAIR(msm8994, vddcx, vddcx_ao, SMPA, CORNER, 1);
-+DEFINE_RPMPD_PAIR(msm8994, vddmx, vddmx_ao, SMPA, CORNER, 2);
-+/* Attention! *Some* 8994 boards with pm8004 may use SMPC here! */
-+DEFINE_RPMPD_CORNER(msm8994, vddgfx, SMPB, 2);
-+
-+DEFINE_RPMPD_VFC(msm8994, vddcx_vfc, SMPA, 1);
-+DEFINE_RPMPD_VFC(msm8994, vddgfx_vfc, SMPB, 2);
-+
-+static struct rpmpd *msm8994_rpmpds[] = {
-+	[MSM8994_VDDCX] =	&msm8994_vddcx,
-+	[MSM8994_VDDCX_AO] =	&msm8994_vddcx_ao,
-+	[MSM8994_VDDCX_VFC] =	&msm8994_vddcx_vfc,
-+	[MSM8994_VDDMX] =	&msm8994_vddmx,
-+	[MSM8994_VDDMX_AO] =	&msm8994_vddmx_ao,
-+	[MSM8994_VDDGFX] =	&msm8994_vddgfx,
-+	[MSM8994_VDDGFX_VFC] =	&msm8994_vddgfx_vfc,
-+};
-+
-+static const struct rpmpd_desc msm8994_desc = {
-+	.rpmpds = msm8994_rpmpds,
-+	.num_pds = ARRAY_SIZE(msm8994_rpmpds),
-+	.max_state = MAX_CORNER_RPMPD_STATE,
-+};
-+
- /* msm8996 RPM Power domains */
- DEFINE_RPMPD_PAIR(msm8996, vddcx, vddcx_ao, SMPA, CORNER, 1);
- DEFINE_RPMPD_PAIR(msm8996, vddmx, vddmx_ao, SMPA, CORNER, 2);
-@@ -302,6 +329,7 @@ static const struct of_device_id rpmpd_match_table[] = {
- 	{ .compatible = "qcom,msm8916-rpmpd", .data = &msm8916_desc },
- 	{ .compatible = "qcom,msm8939-rpmpd", .data = &msm8939_desc },
- 	{ .compatible = "qcom,msm8976-rpmpd", .data = &msm8976_desc },
-+	{ .compatible = "qcom,msm8994-rpmpd", .data = &msm8994_desc },
- 	{ .compatible = "qcom,msm8996-rpmpd", .data = &msm8996_desc },
- 	{ .compatible = "qcom,msm8998-rpmpd", .data = &msm8998_desc },
- 	{ .compatible = "qcom,qcs404-rpmpd", .data = &qcs404_desc },
-diff --git a/include/dt-bindings/power/qcom-rpmpd.h b/include/dt-bindings/power/qcom-rpmpd.h
-index 7714487ac76b..d711e250cf2c 100644
---- a/include/dt-bindings/power/qcom-rpmpd.h
-+++ b/include/dt-bindings/power/qcom-rpmpd.h
-@@ -94,6 +94,15 @@
- #define MSM8976_VDDMX_AO	4
- #define MSM8976_VDDMX_VFL	5
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/qcom,gcc-msm8994.h>
++#include <dt-bindings/power/qcom-rpmpd.h>
  
-+/* MSM8994 Power Domain Indexes */
-+#define MSM8994_VDDCX		0
-+#define MSM8994_VDDCX_AO	1
-+#define MSM8994_VDDCX_VFC	2
-+#define MSM8994_VDDMX		3
-+#define MSM8994_VDDMX_AO	4
-+#define MSM8994_VDDGFX		5
-+#define MSM8994_VDDGFX_VFC	6
+ / {
+ 	interrupt-parent = <&intc>;
+@@ -713,6 +714,35 @@ rpmcc: rpmcc {
+ 					compatible = "qcom,rpmcc-msm8992";
+ 					#clock-cells = <1>;
+ 				};
 +
- /* MSM8996 Power Domain Indexes */
- #define MSM8996_VDDCX		0
- #define MSM8996_VDDCX_AO	1
++				rpmpd: power-controller {
++					compatible = "qcom,msm8994-rpmpd";
++					#power-domain-cells = <1>;
++					operating-points-v2 = <&rpmpd_opp_table>;
++
++					rpmpd_opp_table: opp-table {
++						compatible = "operating-points-v2";
++
++						rpmpd_opp_ret: opp1 {
++							opp-level = <1>;
++						};
++						rpmpd_opp_svs_krait: opp2 {
++							opp-level = <2>;
++						};
++						rpmpd_opp_svs_soc: opp3 {
++							opp-level = <3>;
++						};
++						rpmpd_opp_nom: opp4 {
++							opp-level = <4>;
++						};
++						rpmpd_opp_turbo: opp5 {
++							opp-level = <5>;
++						};
++						rpmpd_opp_super_turbo: opp6 {
++							opp-level = <6>;
++						};
++					};
++				};
+ 			};
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+index 7ff1dfaddd79..e694aaad3c99 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+@@ -4,6 +4,7 @@
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/qcom,gcc-msm8994.h>
++#include <dt-bindings/power/qcom-rpmpd.h>
+ 
+ / {
+ 	interrupt-parent = <&intc>;
+@@ -235,6 +236,35 @@ rpmcc: rpmcc {
+ 					compatible = "qcom,rpmcc-msm8994";
+ 					#clock-cells = <1>;
+ 				};
++
++				rpmpd: power-controller {
++					compatible = "qcom,msm8994-rpmpd";
++					#power-domain-cells = <1>;
++					operating-points-v2 = <&rpmpd_opp_table>;
++
++					rpmpd_opp_table: opp-table {
++						compatible = "operating-points-v2";
++
++						rpmpd_opp_ret: opp1 {
++							opp-level = <1>;
++						};
++						rpmpd_opp_svs_krait: opp2 {
++							opp-level = <2>;
++						};
++						rpmpd_opp_svs_soc: opp3 {
++							opp-level = <3>;
++						};
++						rpmpd_opp_nom: opp4 {
++							opp-level = <4>;
++						};
++						rpmpd_opp_turbo: opp5 {
++							opp-level = <5>;
++						};
++						rpmpd_opp_super_turbo: opp6 {
++							opp-level = <6>;
++						};
++					};
++				};
+ 			};
+ 		};
+ 	};
 -- 
 2.29.2
 
