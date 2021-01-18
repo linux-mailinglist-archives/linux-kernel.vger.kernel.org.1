@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC90A2FA5C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698462FA5E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406235AbhARQOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390757AbhARQAk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:00:40 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA26CC0613ED
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:59:11 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id k64so1132214wmb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:59:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6OdTPYEA2p5+e67drhVq+n88z8c6ioQj4MZmywIDAFM=;
-        b=eMBuLjmixjlbs4KF0qZwuBWsre4MhQNj8gm7XxkbXIPimS+tmeY3wm5Tke/4fDyObv
-         J7FhRpPLOUyZ0NkB7PA9Whh3FFh/p4zRylDnczG+AOHircxNJd35i3cmWageo/SngS6F
-         +pW8+PP117T9sFvwjbYfoOL06tsyW6srmnXTBEbbhcpDTG7Hvn0dpBpV39Jx35cmxWr2
-         /qLfWcOFJHeCP6JN6sMRxyEmS4zkokORJhKHdr/XW8BoHiv8rm7yiZ0+2V6ABjqFxyNz
-         r9Z6s0Lbx39CdrnhmIkAPnCj/h3bH+OuVy3XNiwSKHvJtIqR/06iUUW9y7ilPymgagbD
-         8g2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6OdTPYEA2p5+e67drhVq+n88z8c6ioQj4MZmywIDAFM=;
-        b=VZOQ+p2XT+rZsgqmnjfTWTp2wzUFbrgts4lIIWOfYnWGIOd/hj2Dg3dwzmmdSp7P7q
-         OGvPPzTLzUaIAQrFWN4b3xIAAtWQ4zVVsCxisUzctVvzZd8MrKfIC3yc4SQKes2MNJdb
-         E21x5lRivAe793bvLUY5IeNyDennTZ45xa94a7KQBzpCJjwI0XH/zJgoOQBCF4eGXFQ6
-         HHEQXnhuef60kbz6khtsmJmJUoTwyfycf4zfmNjZqRd6+hCtNqk/4CSoyxdqFIRhS3UF
-         ajkzspvCg1MtU4PVCMLVtIbcl+kJObLjQsTw/fcJBRqoU5q/X4n7Xfr6mGQtm8bz7CbT
-         7RCg==
-X-Gm-Message-State: AOAM531lurckbgkOln5CCu4J1KdZfA1Ob973q7FYoxQ129GTF+XesFib
-        ADEqdapPMT5CqFehVUH6+0CtbBkcOEDRKg==
-X-Google-Smtp-Source: ABdhPJx33zg0bqJm2Kmy1Jtk2wZJhRlq1DTndo3IekH3vxXdp0oYMj9T3RZMul5MMDMPA5R/Y/vw0BsdArAwKg==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a1c:6208:: with SMTP id
- w8mr82357wmb.24.1610985550410; Mon, 18 Jan 2021 07:59:10 -0800 (PST)
-Date:   Mon, 18 Jan 2021 15:57:35 +0000
-In-Reply-To: <20210118155735.532663-1-jackmanb@google.com>
-Message-Id: <20210118155735.532663-3-jackmanb@google.com>
-Mime-Version: 1.0
-References: <20210118155735.532663-1-jackmanb@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next v2 2/2] docs: bpf: Clarify -mcpu=v3 requirement for
- atomic ops
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2406558AbhARQSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:18:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406050AbhARP6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:58:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EA0922472;
+        Mon, 18 Jan 2021 15:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610985477;
+        bh=3mL14MhIvJJvxqHYBiUoh/lNf5ixZAZYrFJjpAy7XUA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OaPn0qTXK5ef/EMCR9972JYJl08QlWqmaU8T+MiWWO0blTySDb3N/3NZvjhBO1bga
+         wSAGsZAZEXpx/xYufBIZ3+WU/qyGymmVKRF7AiZPGJXKI7ZRT5Eu+ZUhdkCA7j9/px
+         6+LkGA+tZd3mazIIxzGK/nlAmHvoJ3Rd4L+zvPu6qRialPJO8RIrYqhpkxGH1Qeobk
+         vEmy9vhCuWQdT1lPnEZHX4JMvs/Qh50TUBaP4yA5PDv2tgBrUQjwpkxk+Ly6aWAxZ2
+         lpNS3kdjHPdwqQvoXt4YqwTTUX0s01hUa9r79cvV3r9eT4MYDO4FObbrYy76dsovQ8
+         Kb+qD46cHylsw==
+Subject: Re: [PATCH 1/2] [v2] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for
+ unhashed addresses
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-mm <linux-mm@kvack.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210116220950.47078-2-timur@kernel.org>
+ <CAHp75Vdk6y8dGNJOswZwfOeva_sqVcw-f=yYgf_rptjHXxfZvw@mail.gmail.com>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
+Date:   Mon, 18 Jan 2021 09:57:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75Vdk6y8dGNJOswZwfOeva_sqVcw-f=yYgf_rptjHXxfZvw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexei pointed out [1] that this wording is pretty confusing. Here's
-an attempt to be more explicit and clear.
+On 1/18/21 4:03 AM, Andy Shevchenko wrote:
+> On Sun, Jan 17, 2021 at 12:12 AM Timur Tabi <timur@kernel.org> wrote:
+> 
+> (Hint: -v<n> to the git format-patch will create a versioned subject
+> prefix for you automatically)
 
-[1] https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/T/#m07264fc18fdc43af02fc1320968afefcc73d96f4
+I like to keep the version in the git repo  itself so that I don't need 
+to keep track of it separately, but thanks for the hint.  I might use it 
+somewhere else.
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- Documentation/networking/filter.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+>> Hashed addresses are useless in hexdumps unless you're comparing
+>> with other hashed addresses, which is unlikely.  However, there's
+>> no need to break existing code, so introduce a new prefix type
+>> that prints unhashed addresses.
+> 
+> Any user of this? (For the record, I don't see any other mail except this one)
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index 4c2bb4c6364d..b3f457802836 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1081,9 +1081,10 @@ before is loaded back to ``R0``.
- 
- Note that 1 and 2 byte atomic operations are not supported.
- 
--Except ``BPF_ADD`` *without* ``BPF_FETCH`` (for legacy reasons), all 4 byte
--atomic operations require alu32 mode. Clang enables this mode by default in
--architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
-+Clang can generate atomic instructions by default when ``-mcpu=v3`` is
-+enabled. If a lower version for ``-mcpu`` is set, the only atomic instruction
-+Clang can generate is ``BPF_ADD`` *without* ``BPF_FETCH``. If you need to enable
-+the atomics features, while keeping a lower ``-mcpu`` version, you can use
- ``-Xclang -target-feature -Xclang +alu32``.
- 
- You may encounter ``BPF_XADD`` - this is a legacy name for ``BPF_ATOMIC``,
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+It's patch #2 of this set.  They were all sent together.
 
+http://lkml.iu.edu/hypermail/linux/kernel/2101.2/00245.html
+
+Let me know what you think.
+
+>>          DUMP_PREFIX_NONE,
+>>          DUMP_PREFIX_ADDRESS,
+>> -       DUMP_PREFIX_OFFSET
+>> +       DUMP_PREFIX_OFFSET,
+>> +       DUMP_PREFIX_UNHASHED,
+> 
+> Since it's an address, I would like to group them together, i.e. put
+> after DUMP_PREFIX_ADDRESS.
+
+I didn't want to change the numbering of any existing enums, just in 
+case there are users that accidentally hard-code the values.  I'm trying 
+to make this patch as unobtrusive as possible.
+
+ > Perhaps even add _ADDRESS to DUMP_PREFIX_UNHASHED, but this maybe too 
+long.
+
+I think DUMP_PREFIX_ADDRESS_UNHASHED is too long.
+
+>> + * @prefix_type: controls whether prefix of an offset, hashed address,
+>> + *  unhashed address, or none is printed (%DUMP_PREFIX_OFFSET,
+>> + *  %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_UNHASHED, %DUMP_PREFIX_NONE)
+> 
+> Yeah, exactly, here you use different ordering.
+
+That's because it's a comment.
+
+>> + * @prefix_type: controls whether prefix of an offset, hashed address,
+>> + *  unhashed address, or none is printed (%DUMP_PREFIX_OFFSET,
+>> + *  %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_UNHASHED, %DUMP_PREFIX_NONE)
+> 
+> In both cases I would rather use colon and list one per line. What do you think?
+
+Hmmmm.... if I'm going to change the patch anyway, sure.
+
+>> +               case DUMP_PREFIX_UNHASHED:
+> 
+> Here is a third type of ordering, can you please be consistent?
+> 
+>>                  case DUMP_PREFIX_ADDRESS:
+
+Fair enough.
