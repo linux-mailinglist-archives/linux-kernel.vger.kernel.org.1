@@ -2,322 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8050D2FA8DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E02FA906
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436865AbhARSab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:30:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436728AbhARS31 (ORCPT
+        id S2407494AbhARSj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436782AbhARS3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:29:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610994480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RO9BQ4gIYT4Y+WIqNDUp5CVyTFzspTWs4LN/9aBCM0E=;
-        b=dyq5yCcofq5W9j2wj+6fbxsfBAQ4T7ZqovhVJ7dvcrwkKZpV8S1oNmzSZsTuH0YCqqR8cg
-        gjzS0Ru5kc3A87MH2pJWKWPuKT4UrBYyG7o/TkMWHHaXGGTJ6CkGHbk6wM02mt/kqF+hHR
-        4XWAoUR1OnI5TI9VUw5jN2TooAcRjQc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-KTnox24DPBmHOVNgSe1uxQ-1; Mon, 18 Jan 2021 13:27:58 -0500
-X-MC-Unique: KTnox24DPBmHOVNgSe1uxQ-1
-Received: by mail-wr1-f69.google.com with SMTP id m20so8725925wrh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:27:58 -0800 (PST)
+        Mon, 18 Jan 2021 13:29:37 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7871AC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:28:56 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id w79so19518363qkb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:28:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V6OfwHc1CUnuze+sIKYDwiSSMcP1Mnt94yrNdzONXMc=;
+        b=I70gxMCGa6VXFTdCUVqIrxDoriChErMWEhWVmnDCztvFEV9K/n3ElBkgmgrtpg1BjL
+         JCXkgxdsL9K9xEv/0cEKuSXqiuiK5Zk061N68H4RaQ/56J+SpmBKSe2uRjtgWjwu3Ec2
+         NX5qA1+NkpWXw70tjWcvipfP7S9DA4dn6/H9GgFqdazctTtrzJX/fPCeqUHTo0gTwJrl
+         82xJGfkL9mF0QqRezQdtrPfNLCQiTjrXcwyRcZ80pnlFank7cK6kcJoxYmfKzIbst7lK
+         bXFmYGu0MlcKlzYwaIe7d3MvE0MsWb4ucMN22I1k2+G6PbJMn+J79JLr8bQ/Z26005lm
+         dhIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RO9BQ4gIYT4Y+WIqNDUp5CVyTFzspTWs4LN/9aBCM0E=;
-        b=C9v1LcTxEmrsDaMcnkndbfwlBR3NT/Q3Q8t9kH9ldSYS1hJarI9Jz3SPG8GFmuPqJk
-         G5rgWjDaSPdMFlS3ihFzPlIQvI/uaNyka2/CB+I9Otut8stl3I2QmjCTgaqcLUKUsd8c
-         qoE5CWgu1Uxk5N6kGa7dKQKKuIEQWbCHVVPN+CMX1poaX2qCE/f8EoDlQ4D0Vv2miWcR
-         /8bnB6+6kw9XJun8nCoy9aE9MQE/KTq8OUgC/2gQO4R2LKCipo3yTV29hTw9IOdFNjVM
-         kpgBdSgI/soev9EE4ie1FQha9GcnkQwPKwwYPcgk+G2IrVKO62SRFdjMWpjQXIxueBUU
-         5iJQ==
-X-Gm-Message-State: AOAM531WUdLNYnQQBeqAHGoPMoxYC0f5iB1IsS/kgAYV/tv2qDZFHzY3
-        Cmz9QAWT9FGvy7A91FbyScQiZ7CAJaaZnh0toy64rP+ej06oovrcStdr4E7uFOCvV/vc/4Tof2G
-        TLxVXHMV5zCsMJNMipdaiIpn2Y51lA4pVtZbFgHv9gidX3sVxzpsN2Qk0PXE/vGtUc6sSqDSWtZ
-        RS
-X-Received: by 2002:a1c:730f:: with SMTP id d15mr579285wmb.135.1610994476882;
-        Mon, 18 Jan 2021 10:27:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy52T6muva6uT/9VQbA/e19xDfw5pSrtXU3K2BnaH0bn9AQwT88sgb/wNBjl14VGUD8FoztSg==
-X-Received: by 2002:a1c:730f:: with SMTP id d15mr579259wmb.135.1610994476605;
-        Mon, 18 Jan 2021 10:27:56 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q6sm258757wmj.32.2021.01.18.10.27.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 10:27:55 -0800 (PST)
-Subject: Re: [kvm-unit-tests PATCH] x86: Add tests for PKS
-To:     Thomas Huth <thuth@redhat.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201105081805.5674-1-chenyi.qiang@intel.com>
- <20201105081805.5674-9-chenyi.qiang@intel.com>
- <6174185b-25e0-f2a2-3f71-d8bbe6ca889d@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7aa67008-a72f-f6e3-2de4-4b9b9e62cd86@redhat.com>
-Date:   Mon, 18 Jan 2021 19:27:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V6OfwHc1CUnuze+sIKYDwiSSMcP1Mnt94yrNdzONXMc=;
+        b=YhNjlqHNSx2D41pMAaOvZ28jwmiqmrxQHmqsBFDzCXjK34/Z+V7Q5LTl1MqPr0786E
+         wBIIv5DBbZEfssGtz4JeEvVbQXHz3BIE8r/AY043j8LZwibScBu8pCvAYNCsxj5ErFiz
+         J2bTiSRxIuDfat0dckykUOdfK4faaPsHvDuNBgOH/NpKWZx9DUDDYvrPsCpjncgg4byW
+         Ws1G4rRQOleof6vnFdPmIXDWAtA6+WzZqsvqgXH63YLWgF+QqFGdcZpd7kzJBl0k2Jtd
+         TdW63flnKS+5txNgdcaV2CB1aXOXO5YYpfqdiAe9WjhRdWsIdgI3SNP4c72u5VO3fudd
+         P2pQ==
+X-Gm-Message-State: AOAM532Ul0u0JpzQJJ60HYuMg13Q+04RTWInvFH0SqaTarR7XO99Dc8U
+        k8KqlBRMev4aGhgMjEpOfE66yQ==
+X-Google-Smtp-Source: ABdhPJyoVuq3nY/icnfkE0mrabkzzFBuuTfwE9NxFbO6a8QayKjQV5IZB1bxXI2yG/S0i+cPYI2Vfw==
+X-Received: by 2002:a37:6846:: with SMTP id d67mr840329qkc.219.1610994535549;
+        Mon, 18 Jan 2021 10:28:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id u5sm11368459qka.86.2021.01.18.10.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 10:28:54 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1ZGo-0031bp-7D; Mon, 18 Jan 2021 14:28:54 -0400
+Date:   Mon, 18 Jan 2021 14:28:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Douglas Gilbert <dgilbert@interlog.com>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, ddiss@suse.de,
+        bvanassche@acm.org
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+Message-ID: <20210118182854.GJ4605@ziepe.ca>
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
 MIME-Version: 1.0
-In-Reply-To: <6174185b-25e0-f2a2-3f71-d8bbe6ca889d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118163006.61659-2-dgilbert@interlog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/01/21 18:45, Thomas Huth wrote:
-> On 05/11/2020 09.18, Chenyi Qiang wrote:
->> This unit-test is intended to test the KVM support for Protection Keys
->> for Supervisor Pages (PKS). If CR4.PKS is set in long mode, supervisor
->> pkeys are checked in addition to normal paging protections and Access or
->> Write can be disabled via a MSR update without TLB flushes when
->> permissions change.
->>
->> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
->> ---
->>   lib/x86/msr.h       |   1 +
->>   lib/x86/processor.h |   2 +
->>   x86/Makefile.x86_64 |   1 +
->>   x86/pks.c           | 146 ++++++++++++++++++++++++++++++++++++++++++++
->>   x86/unittests.cfg   |   5 ++
->>   5 files changed, 155 insertions(+)
->>   create mode 100644 x86/pks.c
->>
->> diff --git a/lib/x86/msr.h b/lib/x86/msr.h
->> index 6ef5502..e36934b 100644
->> --- a/lib/x86/msr.h
->> +++ b/lib/x86/msr.h
->> @@ -209,6 +209,7 @@
->>   #define MSR_IA32_EBL_CR_POWERON        0x0000002a
->>   #define MSR_IA32_FEATURE_CONTROL        0x0000003a
->>   #define MSR_IA32_TSC_ADJUST        0x0000003b
->> +#define MSR_IA32_PKRS            0x000006e1
->>   #define FEATURE_CONTROL_LOCKED                (1<<0)
->>   #define FEATURE_CONTROL_VMXON_ENABLED_INSIDE_SMX    (1<<1)
->> diff --git a/lib/x86/processor.h b/lib/x86/processor.h
->> index 74a2498..985fdd0 100644
->> --- a/lib/x86/processor.h
->> +++ b/lib/x86/processor.h
->> @@ -50,6 +50,7 @@
->>   #define X86_CR4_SMEP   0x00100000
->>   #define X86_CR4_SMAP   0x00200000
->>   #define X86_CR4_PKE    0x00400000
->> +#define X86_CR4_PKS    0x01000000
->>   #define X86_EFLAGS_CF    0x00000001
->>   #define X86_EFLAGS_FIXED 0x00000002
->> @@ -157,6 +158,7 @@ static inline u8 cpuid_maxphyaddr(void)
->>   #define    X86_FEATURE_RDPID        (CPUID(0x7, 0, ECX, 22))
->>   #define    X86_FEATURE_SPEC_CTRL        (CPUID(0x7, 0, EDX, 26))
->>   #define    X86_FEATURE_ARCH_CAPABILITIES    (CPUID(0x7, 0, EDX, 29))
->> +#define    X86_FEATURE_PKS            (CPUID(0x7, 0, ECX, 31))
->>   #define    X86_FEATURE_NX            (CPUID(0x80000001, 0, EDX, 20))
->>   #define    X86_FEATURE_RDPRU        (CPUID(0x80000008, 0, EBX, 4))
->> diff --git a/x86/Makefile.x86_64 b/x86/Makefile.x86_64
->> index af61d85..3a353df 100644
->> --- a/x86/Makefile.x86_64
->> +++ b/x86/Makefile.x86_64
->> @@ -20,6 +20,7 @@ tests += $(TEST_DIR)/tscdeadline_latency.flat
->>   tests += $(TEST_DIR)/intel-iommu.flat
->>   tests += $(TEST_DIR)/vmware_backdoors.flat
->>   tests += $(TEST_DIR)/rdpru.flat
->> +tests += $(TEST_DIR)/pks.flat
->>   include $(SRCDIR)/$(TEST_DIR)/Makefile.common
->> diff --git a/x86/pks.c b/x86/pks.c
->> new file mode 100644
->> index 0000000..a3044cf
->> --- /dev/null
->> +++ b/x86/pks.c
->> @@ -0,0 +1,146 @@
->> +#include "libcflat.h"
->> +#include "x86/desc.h"
->> +#include "x86/processor.h"
->> +#include "x86/vm.h"
->> +#include "x86/msr.h"
->> +
->> +#define CR0_WP_MASK      (1UL << 16)
->> +#define PTE_PKEY_BIT     59
->> +#define SUPER_BASE        (1 << 24)
->> +#define SUPER_VAR(v)      (*((__typeof__(&(v))) (((unsigned long)&v) 
->> + SUPER_BASE)))
->> +
->> +volatile int pf_count = 0;
->> +volatile unsigned save;
->> +volatile unsigned test;
->> +
->> +static void set_cr0_wp(int wp)
->> +{
->> +    unsigned long cr0 = read_cr0();
->> +
->> +    cr0 &= ~CR0_WP_MASK;
->> +    if (wp)
->> +        cr0 |= CR0_WP_MASK;
->> +    write_cr0(cr0);
->> +}
->> +
->> +void do_pf_tss(unsigned long error_code);
->> +void do_pf_tss(unsigned long error_code)
->> +{
->> +    printf("#PF handler, error code: 0x%lx\n", error_code);
->> +    pf_count++;
->> +    save = test;
->> +    wrmsr(MSR_IA32_PKRS, 0);
->> +}
->> +
->> +extern void pf_tss(void);
->> +
->> +asm ("pf_tss: \n\t"
->> +#ifdef __x86_64__
->> +    // no task on x86_64, save/restore caller-save regs
->> +    "push %rax; push %rcx; push %rdx; push %rsi; push %rdi\n"
->> +    "push %r8; push %r9; push %r10; push %r11\n"
->> +    "mov 9*8(%rsp), %rdi\n"
->> +#endif
->> +    "call do_pf_tss \n\t"
->> +#ifdef __x86_64__
->> +    "pop %r11; pop %r10; pop %r9; pop %r8\n"
->> +    "pop %rdi; pop %rsi; pop %rdx; pop %rcx; pop %rax\n"
->> +#endif
->> +    "add $"S", %"R "sp\n\t" // discard error code
->> +    "iret"W" \n\t"
->> +    "jmp pf_tss\n\t"
->> +    );
->> +
->> +static void init_test(void)
->> +{
->> +    pf_count = 0;
->> +
->> +    invlpg(&test);
->> +    invlpg(&SUPER_VAR(test));
->> +    wrmsr(MSR_IA32_PKRS, 0);
->> +    set_cr0_wp(0);
->> +}
->> +
->> +int main(int ac, char **av)
->> +{
->> +    unsigned long i;
->> +    unsigned int pkey = 0x2;
->> +    unsigned int pkrs_ad = 0x10;
->> +    unsigned int pkrs_wd = 0x20;
->> +
->> +    if (!this_cpu_has(X86_FEATURE_PKS)) {
->> +        printf("PKS not enabled\n");
->> +        return report_summary();
->> +    }
->> +
->> +    setup_vm();
->> +    setup_alt_stack();
->> +    set_intr_alt_stack(14, pf_tss);
->> +    wrmsr(MSR_EFER, rdmsr(MSR_EFER) | EFER_LMA);
->> +
->> +    // First 16MB are user pages
->> +    for (i = 0; i < SUPER_BASE; i += PAGE_SIZE) {
->> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= 
->> ((unsigned long)pkey << PTE_PKEY_BIT);
->> +        invlpg((void *)i);
->> +    }
->> +
->> +    // Present the same 16MB as supervisor pages in the 16MB-32MB range
->> +    for (i = SUPER_BASE; i < 2 * SUPER_BASE; i += PAGE_SIZE) {
->> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= 
->> ~SUPER_BASE;
->> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= 
->> ~PT_USER_MASK;
->> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= 
->> ((unsigned long)pkey << PTE_PKEY_BIT);
->> +        invlpg((void *)i);
->> +    }
->> +
->> +    write_cr4(read_cr4() | X86_CR4_PKS);
->> +    write_cr3(read_cr3());
->> +
->> +    init_test();
->> +    set_cr0_wp(1);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
->> +    SUPER_VAR(test) = 21;
->> +    report(pf_count == 1 && test == 21 && save == 0,
->> +           "write to supervisor page when pkrs is ad and wp == 1");
->> +
->> +    init_test();
->> +    set_cr0_wp(0);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
->> +    SUPER_VAR(test) = 22;
->> +    report(pf_count == 1 && test == 22 && save == 21,
->> +           "write to supervisor page when pkrs is ad and wp == 0");
->> +
->> +    init_test();
->> +    set_cr0_wp(1);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
->> +    SUPER_VAR(test) = 23;
->> +    report(pf_count == 1 && test == 23 && save == 22,
->> +           "write to supervisor page when pkrs is wd and wp == 1");
->> +
->> +    init_test();
->> +    set_cr0_wp(0);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
->> +    SUPER_VAR(test) = 24;
->> +    report(pf_count == 0 && test == 24,
->> +           "write to supervisor page when pkrs is wd and wp == 0");
->> +
->> +    init_test();
->> +    set_cr0_wp(0);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
->> +    test = 25;
->> +    report(pf_count == 0 && test == 25,
->> +           "write to user page when pkrs is wd and wp == 0");
->> +
->> +    init_test();
->> +    set_cr0_wp(1);
->> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
->> +    test = 26;
->> +    report(pf_count == 0 && test == 26,
->> +           "write to user page when pkrs is wd and wp == 1");
->> +
->> +    init_test();
->> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
->> +    (void)((__typeof__(&(test))) (((unsigned long)&test)));
->> +    report(pf_count == 0, "read from user page when pkrs is ad");
->> +
->> +    return report_summary();
->> +}
->> diff --git a/x86/unittests.cfg b/x86/unittests.cfg
->> index 3a79151..b75419e 100644
->> --- a/x86/unittests.cfg
->> +++ b/x86/unittests.cfg
->> @@ -127,6 +127,11 @@ file = pku.flat
->>   arch = x86_64
->>   extra_params = -cpu host
->> +[pks]
->> +file = pks.flat
->> +arch = x86_64
->> +extra_params = -cpu host
->> +
->>   [asyncpf]
->>   file = asyncpf.flat
->>   extra_params = -m 2048
->>
-> 
-> Ping? ... Paolo, I think this one fell through the cracks?
-> 
->   Thomas
-> 
+On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
 
-No, it's just that the KVM patches haven't been merged yet (and there's 
-no QEMU implementation yet).  But I'm getting to it.
+> After several flawed attempts to detect overflow, take the fastest
+> route by stating as a pre-condition that the 'order' function argument
+> cannot exceed 16 (2^16 * 4k = 256 MiB).
 
-Paolo
+That doesn't help, the point of the overflow check is similar to
+overflow checks in kcalloc: to prevent the routine from allocating
+less memory than the caller might assume.
 
+For instance ipr_store_update_fw() uses request_firmware() (which is
+controlled by userspace) to drive the length argument to
+sgl_alloc_order(). If userpace gives too large a value this will
+corrupt kernel memory.
+
+So this math:
+
+  	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+
+Needs to be checked, add a precondition to order does not help. I
+already proposed a straightforward algorithm you can use.
+
+Jason
