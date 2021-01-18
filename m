@@ -2,164 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50672FA10B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08A22FA110
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404353AbhARNOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:14:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38878 "EHLO mx2.suse.de"
+        id S2404486AbhARNQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:16:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:35584 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391961AbhARNNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:13:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610975540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2HWlEcvjoTMsI47i3B2eDVwrEWOw9JoCLpGemiNPf30=;
-        b=WRI2Tg5vF8LWLchV6CyUa6ivZgv/GZ8dICb27aHO7w65YYVBVTsSCslltgUdJL+5iSUSY3
-        q3FLiSeOueIALl6QC9t2JrZVeaylnKbjNcKK2h5TXpo0xEyqGu3vB46UNAw6PAJ1uQU2tS
-        rvY30do+2Sn34TtauQe67VRF6eknetE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92D72ACBA;
-        Mon, 18 Jan 2021 13:12:20 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 14:12:19 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <20210118131219.GD14336@dhcp22.suse.cz>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210113144654.GD22493@dhcp22.suse.cz>
- <YAHA4uBSLlnxxAbu@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAHA4uBSLlnxxAbu@cmpxchg.org>
+        id S2404164AbhARNNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:13:35 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15F2331B;
+        Mon, 18 Jan 2021 05:12:49 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.89.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3054D3F719;
+        Mon, 18 Jan 2021 05:12:43 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        hca@linux.ibm.com, catalin.marinas@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range with platform
+Date:   Mon, 18 Jan 2021 18:42:58 +0530
+Message-Id: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15-01-21 11:20:50, Johannes Weiner wrote:
-> On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
-> > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
-> > > When a value is written to a cgroup's memory.high control file, the
-> > > write() context first tries to reclaim the cgroup to size before
-> > > putting the limit in place for the workload. Concurrent charges from
-> > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > 
-> > > In the past, a write to memory.high would first put the limit in place
-> > > for the workload, then do targeted reclaim until the new limit has
-> > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > to the described starvation issue. However, this sequence could cause
-> > > excessive latencies in the workload, when allocating threads could be
-> > > put into long penalty sleeps on the sudden memory.high overage created
-> > > by the write(), before that had a chance to work it off.
-> > > 
-> > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > limit, reflect that the cgroup may well fail to converge due to
-> > > concurrent workload activity. Bail out of the loop after a few tries.
-> > 
-> > I can see that you have provided some more details in follow up replies
-> > but I do not see any explicit argument why an excessive time for writer
-> > is an actual problem. Could you be more specific?
-> 
-> Our writer isn't necessarily time sensitive, but there is a difference
-> between a) the write taking a few seconds to reclaim down the
-> requested delta and b) the writer essentially turning into kswapd for
-> the workload and busy-spinning inside the kernel indefinitely.
-> 
-> We've seen the writer stuck in this function for minutes, long after
-> the requested delta has been reclaimed, consuming alarming amounts of
-> CPU cycles - CPU time that should really be accounted to the workload,
-> not the system software performing the write.
+This series adds a mechanism allowing platforms to weigh in and prevalidate
+incoming address range before proceeding further with the memory hotplug.
+This helps prevent potential platform errors for the given address range,
+down the hotplug call chain, which inevitably fails the hotplug itself.
 
-OK, this is an important detail. So the context which is doing the work
-doesn't belong to the target memcg? If that is the case then I do
-understand why you consider it a problem. In general I would recommend
-running operations like this one in scope of the affected cgroup. But
-maybe that is not really an option in your setup.
+This mechanism was suggested by David Hildenbrand during another discussion
+with respect to a memory hotplug fix on arm64 platform.
 
-Anyway this is an important information to have in the changelog.
+https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
 
-> Obviously, we could work around it using timeouts and signals. In
-> fact, we may have to until the new kernel is deployed everywhere. But
-> this is the definition of an interface change breaking userspace, so
-> I'm a bit surprised by your laid-back response.
+This mechanism focuses on the addressibility aspect and not [sub] section
+alignment aspect. Hence check_hotplug_memory_range() and check_pfn_span()
+have been left unchanged. Wondering if all these can still be unified in
+an expanded memhp_range_allowed() check, that can be called from multiple
+memory hot add and remove paths.
 
-Well, I was basing my feedback on the available information in the
-changelog. It is quite clear that somebody has to pay for the work.
-Moving as much of the work to the writer makes sense as long as the
-context is runing in the same cgroup so the work gets accounted
-properly. If this assumption doesn't match the reality then we have to
-re-evaluate our priorities here.
+This series applies on v5.11-rc4 and has been tested on arm64. But only
+build tested on s390.
 
-> > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > Cc: <stable@vger.kernel.org> # 5.8+
-> > 
-> > Why is this worth backporting to stable? The behavior is different but I
-> > do not think any of them is harmful.
-> 
-> The referenced patch changed user-visible behavior in a way that is
-> causing real production problems for us. From stable-kernel-rules:
-> 
->  - It must fix a real bug that bothers people (not a, "This could be a
->    problem..." type thing).
-> 
-> > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > 
-> > I am not against the patch. The existing interface doesn't provide any
-> > meaningful feedback to the userspace anyway. User would have to re check
-> > to see the result of the operation. So how hard we try is really an
-> > implementation detail.
-> 
-> Yeah, I wish it was a bit more consistent from an interface POV.
-> 
-> Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
-> trying to reclaim went into the tree at the same exact time as Chris's
-> series "mm, memcg: reclaim harder before high throttling" (commit
-> b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
-> 
-> Chris's patch changes memory.high reclaim on the allocation side from
-> 
-> 	reclaim once, sleep if there is still overage
-> 
-> to
-> 
-> 	reclaim the overage as long as you make forward progress;
-> 	sleep after 16 no-progress loops if there is still overage
-> 
-> Roman's patch describes a problem where allocating threads go to sleep
-> when memory.high is lowered by a wider step. This is exceedingly
-> unlikely after Chris's change.
-> 
-> Because after Chris's change, memory.high is reclaimed on the
-> allocation side as aggressively as memory.max. The only difference is
-> that upon failure, one sleeps and the other OOMs.
-> 
-> If Roman's issue were present after Chris's change, then we'd also see
-> premature OOM kills when memory.max is lowered by a large step. And I
-> have never seen that happening.
+Changes in V3
 
-This should be something quite easy to double check right?
+- Updated the commit message in [PATCH 1/3]
+- Replaced 1 with 'true' and 0 with 'false' in memhp_range_allowed()
+- Updated memhp_range.end as VMEM_MAX_PHYS - 1 and updated vmem_add_mapping() on s390
+- Changed memhp_range_allowed() behaviour in __add_pages()
+- Updated __add_pages() to return E2BIG when memhp_range_allowed() fails for non-linear mapping based requests
 
-> So I suggest instead of my fix here, we revert Roman's patch instead,
-> as it should no longer be needed. Thoughts?
+Changes in V2:
 
-Reverting 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when
-lowering memory.high") would certainly help to throttle producers but it
-still doesn't solve the underlying problem that a lot of work could be
-done in a context which lives outside of the memcg, right? The effect
-would be much smaller and it shouldn't be effectivelly unbounded but
-still something we should think about.
+https://lore.kernel.org/linux-mm/1608218912-28932-1-git-send-email-anshuman.khandual@arm.com/
 
-That being said going with the revert sounds like a slightly better
-approach to me.
+- Changed s390 version per Heiko and updated the commit message
+- Called memhp_range_allowed() only for arch_add_memory() in pagemap_range()
+- Exported the symbol memhp_get_pluggable_range() 
+
+Changes in V1:
+
+https://lore.kernel.org/linux-mm/1607400978-31595-1-git-send-email-anshuman.khandual@arm.com/
+
+- Fixed build problems with (MEMORY_HOTPLUG & !MEMORY_HOTREMOVE)
+- Added missing prototype for arch_get_mappable_range()
+- Added VM_BUG_ON() check for memhp_range_allowed() in arch_add_memory() per David
+
+Changes in RFC V2:
+
+https://lore.kernel.org/linux-mm/1606706992-26656-1-git-send-email-anshuman.khandual@arm.com/
+
+Incorporated all review feedbacks from David.
+
+- Added additional range check in __segment_load() on s390 which was lost
+- Changed is_private init in pagemap_range()
+- Moved the framework into mm/memory_hotplug.c
+- Made arch_get_addressable_range() a __weak function
+- Renamed arch_get_addressable_range() as arch_get_mappable_range()
+- Callback arch_get_mappable_range() only handles range requiring linear mapping
+- Merged multiple memhp_range_allowed() checks in register_memory_resource()
+- Replaced WARN() with pr_warn() in memhp_range_allowed()
+- Replaced error return code ERANGE with E2BIG
+
+Changes in RFC V1:
+
+https://lore.kernel.org/linux-mm/1606098529-7907-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (3):
+  mm/memory_hotplug: Prevalidate the address range being added with platform
+  arm64/mm: Define arch_get_mappable_range()
+  s390/mm: Define arch_get_mappable_range()
+
+David Hildenbrand (1):
+  virtio-mem: check against memhp_get_pluggable_range() which memory we can hotplug
+
+ arch/arm64/mm/mmu.c            | 15 +++----
+ arch/s390/mm/init.c            |  1 +
+ arch/s390/mm/vmem.c            | 15 ++++++-
+ drivers/virtio/virtio_mem.c    | 40 +++++++++++------
+ include/linux/memory_hotplug.h | 10 +++++
+ mm/memory_hotplug.c            | 79 ++++++++++++++++++++++++++--------
+ mm/memremap.c                  |  6 +++
+ 7 files changed, 125 insertions(+), 41 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
