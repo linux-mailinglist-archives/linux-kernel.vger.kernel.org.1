@@ -2,47 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07972F9F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606762F9F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391350AbhARMIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:08:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45028 "EHLO mail.kernel.org"
+        id S2390923AbhARMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:07:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403958AbhARMGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:06:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C810B222BB;
-        Mon, 18 Jan 2021 12:05:30 +0000 (UTC)
+        id S2389047AbhARMHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:07:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C933222BB;
+        Mon, 18 Jan 2021 12:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610971531;
-        bh=Lzm0BRSPRh6hdv3HRtMexM0LcDTwJy2kZUXSLb2saBw=;
+        s=k20201202; t=1610971596;
+        bh=q/FYT+FiLtSjL+KOgS20Z7N04SjGI/P+GlPMtd2nG60=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=psaRCDOFpGvW4U/D19GI5blrsYUQ3xjIhj8we01ZTwpt0nYzBUxMPdwrpxz56ySU/
-         wHTGJIwabtWA0oinSG6V3xhuG0pXGqJLxE6Cdxoh/0/wYFD/t3gDgjhfWuVdOKInWl
-         ABWAJy13NIrp4i+y3tW3jtalxIt5kH/BFrHxr5WqJDzfEPTtmW6vIWXsKYr9dwAMRg
-         D+a48KLDsJKyHnsJD117XDUzu1F0cWmY9HWmiM70iNi7tqQ089V8BPNcoisOSiatAW
-         fnMKMtF4GqM1B69HYjBSyvu/CRg9gH9palkwuVHyLiDgZRwn1pM/FSnf78lWTFTyAT
-         73qzfRXGR+Pxw==
-Date:   Mon, 18 Jan 2021 12:04:54 +0000
+        b=XFh0dYiGpx4oVbGvJ+staJ5LrwgAf5GdKJDUFEjr5UDoxNnGQBI8y8J8NlsPIufoO
+         M6q1bBYN2LC5/GD6yVc681THbRJs0DoxBjd/Njx/vV4N1MidSMwgT4x+Cx4UaHMx0U
+         iZLUKrXKNgLVV4Zg0WdTUyFWfhvA+OWu4kGLmWEkvSuDUT2vSBrToEL+k/NpcEG7hp
+         W9yM1oYm1p2zy5KlUxDxHKikDgScSt86a27jsK0/fb2aLOYhE6mU+lpaFlfV9UZkgj
+         CjRUGr4mF8pKErGOTyGEW8Sko6KzP134rX2uR5rKKvIlhLw0pTAr85K4TgB2cikoRc
+         yO/Ye2ELoD7MQ==
+Date:   Mon, 18 Jan 2021 12:05:58 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-Subject: Re: [PATCH v3 1/7] regulator: qcom-labibb: Implement voltage
- selector ops
-Message-ID: <20210118120453.GC4455@sirena.org.uk>
-References: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
- <20210117220830.150948-2-angelogioacchino.delregno@somainline.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v3 18/21] dt-bindings: allwinner: Add H616 compatible
+ strings
+Message-ID: <20210118120558.GD4455@sirena.org.uk>
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+ <20210118020848.11721-19-andre.przywara@arm.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DIOMP1UsTsWJauNi"
+        protocol="application/pgp-signature"; boundary="jL2BoiuKMElzg3CS"
 Content-Disposition: inline
-In-Reply-To: <20210117220830.150948-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210118020848.11721-19-andre.przywara@arm.com>
 X-Cookie: Huh?
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -50,34 +61,34 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---DIOMP1UsTsWJauNi
+--jL2BoiuKMElzg3CS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 17, 2021 at 11:08:24PM +0100, AngeloGioacchino Del Regno wrote:
-> Implement {get,set}_voltage_sel, list_voltage, map_voltage with
-> the useful regulator regmap helpers in order to be able to manage
-> the voltage of LAB (positive) and IBB (negative) regulators.
+On Mon, Jan 18, 2021 at 02:08:45AM +0000, Andre Przywara wrote:
+> Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
+> bindings, and pair them with an existing fallback compatible string,
+> as the devices are compatible.
+> This covers I2C, infrared, RTC and SPI.
+>=20
+> Use enums to group all compatible devices together.
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+Please submit normal, per subsystem patches for things like this.
 
---DIOMP1UsTsWJauNi
+--jL2BoiuKMElzg3CS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFeWUACgkQJNaLcl1U
-h9ChhQf+I84AxaUISvCxfDx9zsu0Oy+N1I0gO7//RG7oyTwhUfw8jWyp6jVqXapv
-iL+DD+h/sdD5p2k/gli9USjGQryOhhNmhSYTL9KDIs9Q7tLDb0np/vDPrJ1tsvpT
-nlAT0Tw2Vg/gozbfVbI9bp3iKH1aTIAYBD0dLoc+mx/IN8XZK8Sfh1RKq4dGDy67
-3ibSJ7yMxAZGm7JB9lHhq+X5ZYjhQ4JbT9pTkNzX+RqkzGQDkK96oFJv+6P88qNX
-Jg9qgdwml9Yj4LBkXnDXr38y2TqD6ERPpPbs9AmyliM//zSLNQEr99g9XLhaQsCd
-oBD1Huu6CQJ8H90pum4sL4c0cRs+bg==
-=y1H8
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFeaUACgkQJNaLcl1U
+h9A+Fwf+LAkNmQitmzhglYIYHsNeibirBy6k8yPJ2w1+MZulWEhOeDJvaqgbS3ct
+4Q3qFxVZGkgzzsypXzU0iEB03Vzxy33H6J3QPfNqMhNQPQOZOXQho3xTuKgar9P+
+qQEQDJFYL1qpMKz3+CqO4SQotdjIFEJYNd/O44cnTCU98AnHARvi32ajvs7+VzNu
+HHKAsqKmQT4a4nPA31joiWxp2XAC7rA1q+KZ7iL5rWIKuJkp4pfkXK58QiBegXhz
+CCCrggzrjimyFakw4WA6IWyTF2pE6maY0UyLrP9n6AHPC/DDIvalzos5xjC7KWj8
+KsITNqrGnlImwAjQ5fSm/X1uTyqipw==
+=MpJn
 -----END PGP SIGNATURE-----
 
---DIOMP1UsTsWJauNi--
+--jL2BoiuKMElzg3CS--
