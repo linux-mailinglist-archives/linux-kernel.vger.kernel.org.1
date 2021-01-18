@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448A92FABB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F472FABAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394366AbhARUjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S2394394AbhARUiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388344AbhARKgK (ORCPT
+        with ESMTP id S2387996AbhARKgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:36:10 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75F3C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:35:28 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id u14so9122015wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:35:28 -0800 (PST)
+        Mon, 18 Jan 2021 05:36:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857DBC061757;
+        Mon, 18 Jan 2021 02:35:44 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c124so13101327wma.5;
+        Mon, 18 Jan 2021 02:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=qHpDKbbt9PoxvMMJSyeYFi59FeeRW2QqtBOFQG4nRUk=;
-        b=FcoB3gR2ELrvK/bDWk+9b2EVwT1WDXHWxfjZhk7qVT4jpoJhESvyN5hz8Fp9xgSqBE
-         72NMvGtFMO6eylthlgM+xJtBuyXGsj/wyH7nkfFae/kVCek8sSbFUPdWv67G6KEdI1rD
-         JdW5t+5I4dKgQHUCEjgkOWmKXCAxbO29UMdkpr2GCTkyVtZqezfZsoheXohyTs21Si+b
-         scnQFvUWH7v0gO4OpK+y+GBcf4uvxjJ38EP6T1MZbkR8LzFlGFsV36ot35MLzg+Bt1gU
-         ZnoKWNLX9VMiMvnaP6VUO37K/SgkN8qj32AYkMCIPPY+2kPYvU5bUZUNAw1w7GIzlGz1
-         DY9A==
+        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=sdjxudr61Uts0CJPUO0ptlpFH4t8XuWtSUvltKTeu/w=;
+        b=KiBcLdjEMeNXY6KCVUy9KRQrCd+oQFLbB8a3RL9tPKbShfiAw3dOZvnaApZc3dpfwI
+         b0pennEhFkL1nsy15iWZ2iz2UIp+DHObfbhe6zVSAVDs4/KMzDF0cGuA41lPvDwciD+R
+         TDRimv/OgoK44kz8gu94/SvN/OY6w1CnHk+BsXG3puZ+B+BiHlsnk1KYhmn937QV6ALp
+         r1qIer2QAB3dCrH3bTOGCDpmfm8v3PXOCS2ZdP+sBMZHNWQOt/TqSjobwjAigVsImaup
+         I8lHibktyhqQM9gC8bT/zQg/4yCPUx/kEiqqEt9h1tnyKhYdLOb1ukuZNAJjwWKBr4Qu
+         +Tnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=qHpDKbbt9PoxvMMJSyeYFi59FeeRW2QqtBOFQG4nRUk=;
-        b=mHKHrO5MxcP/ogujKiVJ1XbcYEsck4POn3bMSFOfiERuLOKszNz5Gh6CIxWweQLJRH
-         cnTv51zTnSC6x0Zz0hDE/qd1dfgcu/9hovJ52y6jC0HfNcgjtGxShq6vTN87vyeTzlcp
-         9sNaYj1AC+/empE2m9hbN79lD/mrUfHztempY3jETaovWNqzgKZ426Skp0KYX5uB+0jm
-         TG2qrNTjfgFFZdXKQv+JFHEMJKNNRcoCEGH4EgY08dOQyjL3GBRHjyhtKA1e/OUvJOZq
-         eQip1YYnwsd3865wkumvkPRJAnTfcEF0gghh5XfZIqUvZwC4xRcTybuaX+Fpu6IVuDdl
-         YHKg==
-X-Gm-Message-State: AOAM531pzC9bCpQTqJiHf4D4Ul7fNsuxbDlDNv/A7SXLvezMZKHWwWov
-        b6/tCfcT/xRrm23jjRzO0WA=
-X-Google-Smtp-Source: ABdhPJyYvvw3xaQNo+D3suMyynXxgvVKqK0uHDFVWfhr8+6J2pJ33erDo63LzXfW8gJiIgsMbnE2Dg==
-X-Received: by 2002:a05:600c:214d:: with SMTP id v13mr9526674wml.186.1610966127598;
-        Mon, 18 Jan 2021 02:35:27 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id a12sm32386007wrh.71.2021.01.18.02.35.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 02:35:27 -0800 (PST)
-Subject: Re: [PATCH v2] software_node: Add kernel-doc comments to exported
- symbols
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com
-References: <20210113000209.322218-1-djrscally@gmail.com>
- <20210118094945.GX11878@paasikivi.fi.intel.com>
- <20210118103355.GZ4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <0c433f0a-3ae5-1956-988c-9f4dfdb79fbc@gmail.com>
-Date:   Mon, 18 Jan 2021 10:35:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
+         :subject:date:message-id:mime-version:content-transfer-encoding
+         :thread-index:content-language;
+        bh=sdjxudr61Uts0CJPUO0ptlpFH4t8XuWtSUvltKTeu/w=;
+        b=mcqVOSOByGZ2lbJoWGN9mz9+RRdgA644bj3UG4TaQY1fKyQSUELw0X7w049fMp/ShG
+         46NSq6/kDm3SzGH2hLkYMyf9ziVITf08wY5ekyvRHhvF4Ipg40bHicaoSpAdHB5fc7Ga
+         tIPW5aqudtwjJUTRnT9QIauFibVYxt9GzrXrbRVuVflJ8p2duF22zrWlXD4272W4UqGe
+         bnqLR9Q/spQOwIuRKAShr9FHhqKEuYmEuBf/PUfvBoVAHzYxr63ZwSJkh7ilKW2r9bhr
+         GQW0Q0WQ7trnHxArwJrN76sHdl8yCzdjJC3q5kSjrBKhFPw8aDPz/X5s+rTljmNA7XJU
+         ny7g==
+X-Gm-Message-State: AOAM5311C2kc/OoPS/q+Tayvb8Z8a06caIWEy3w8x8nOKihBUHajbXhd
+        qxwaxmT4y9zwkm5jEEx8/NE=
+X-Google-Smtp-Source: ABdhPJzC0Mvm9IJPrgzjYLI8UEjrhypmUYqZAuikpTgtyFJQL6Un9LpHRADBfIEfqUSzBjI2HuL3Qg==
+X-Received: by 2002:a05:600c:19cc:: with SMTP id u12mr19675937wmq.26.1610966143356;
+        Mon, 18 Jan 2021 02:35:43 -0800 (PST)
+Received: from CBGR90WXYV0 (host86-183-162-242.range86-183.btcentralplus.com. [86.183.162.242])
+        by smtp.gmail.com with ESMTPSA id c20sm24821042wmb.38.2021.01.18.02.35.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 02:35:42 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: "Paul Durrant" <paul@xen.org>
+Reply-To: <paul@xen.org>
+To:     "'Lee Jones'" <lee.jones@linaro.org>
+Cc:     <linux-kernel@vger.kernel.org>, "'Wei Liu'" <wei.liu@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'Jesper Dangaard Brouer'" <hawk@kernel.org>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'Rusty Russell'" <rusty@rustcorp.com.au>,
+        <xen-devel@lists.xenproject.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, "'Andrew Lunn'" <andrew@lunn.ch>
+References: <20210115200905.3470941-1-lee.jones@linaro.org> <20210115200905.3470941-3-lee.jones@linaro.org>
+In-Reply-To: <20210115200905.3470941-3-lee.jones@linaro.org>
+Subject: RE: [PATCH 2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+Date:   Mon, 18 Jan 2021 10:35:41 -0000
+Message-ID: <00d601d6ed85$ac1d8f60$0458ae20$@xen.org>
 MIME-Version: 1.0
-In-Reply-To: <20210118103355.GZ4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGx99OgEkOz45dOTqKA2L+6769RlgFYXaBkqmxYlxA=
+Content-Language: en-gb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/01/2021 10:33, Andy Shevchenko wrote:
-> On Mon, Jan 18, 2021 at 11:49:46AM +0200, Sakari Ailus wrote:
->> On Wed, Jan 13, 2021 at 12:02:09AM +0000, Daniel Scally wrote:
->>> + * to_software_node() - Fetch software node associated with a firmware node handle
->> Please wrap lines over 80 (unless there's a reason to keep them longer).
-> Does kernel-doc behave good when you wrap the function summary line?
-> My impression that summary should be one line.
->
-Same, but I can shorten the line by s/associated with/linked to or
-something along those lines
+> -----Original Message-----
+> From: Lee Jones <lee.jones@linaro.org>
+> Sent: 15 January 2021 20:09
+> To: lee.jones@linaro.org
+> Cc: linux-kernel@vger.kernel.org; Wei Liu <wei.liu@kernel.org>; Paul Durrant <paul@xen.org>; David S.
+> Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Alexei Starovoitov <ast@kernel.org>;
+> Daniel Borkmann <daniel@iogearbox.net>; Jesper Dangaard Brouer <hawk@kernel.org>; John Fastabend
+> <john.fastabend@gmail.com>; Rusty Russell <rusty@rustcorp.com.au>; xen-devel@lists.xenproject.org;
+> netdev@vger.kernel.org; bpf@vger.kernel.org; Andrew Lunn <andrew@lunn.ch>
+> Subject: [PATCH 2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in
+> 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not
+> described in 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in
+> 'netback_probe'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in
+> 'netback_probe'
+> 
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Paul Durrant <paul@xen.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Rusty Russell <rusty@rustcorp.com.au>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: netdev@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Reviewed-by: Paul Durrant <paul@xen.org>
+
