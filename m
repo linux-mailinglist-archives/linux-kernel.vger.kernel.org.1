@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B46E2F9C6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E932F9C70
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388760AbhARJXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S2388796AbhARJYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388560AbhARJRd (ORCPT
+        with ESMTP id S2388565AbhARJSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:17:33 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592B5C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:16:52 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id j8so3948583oon.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:16:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XSK+lvyQA4uXA5xPhZ/8h6A7IFG5qSuPlS2fMmSK9uE=;
-        b=g0OihKEQp3iql/CK/5EC0JwmqXVTR+AOVENIOuGMPFsGSeHvvkxftBiA9Mu5HHh+Dt
-         yvdAaWFsnRmu/efRdYIFkFNmcwDY8n4XbSXOGUbzF5HMyG2W6010KLYjXpnOvsskibZO
-         41hEyNwNAI1zV/ra54yz7iIQq6oPLY47r80NacYWAAwb5D3RUTBWZXYtnHP66WVTtG6g
-         9MLMjmxBLg1sV9mbRo4JoyerLfkcZl/BKB52D6wLSbFj5QWAETS8bW05NLyQ1eOxD3DM
-         RwBSlkQU9mbctTrNWvRgt1eLrUWZbgF/aXRyp0nsHBbGv+pc8JZJer9XJF9JbSxim1YM
-         0wEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XSK+lvyQA4uXA5xPhZ/8h6A7IFG5qSuPlS2fMmSK9uE=;
-        b=hz5RjOVRv3ykA3lvCDy17C8/EUrt48tsebEhrD68VgMXki8WbNU4nDT/dElcJ2mKO6
-         IZ/ghGRSMEkpd3nAjXaNbPjeXKU9RCwmRJBkI50swTsK6vSPwfFUt+9vj218einVWuuT
-         19rQH/fSro8odbf2rQMNvACKRod40gpinAUXQfweYQblgk4zkzAjH+OuwzIBZEytoM8h
-         nfZA9x4i4E4dxB8HEgd/i/ecfSXpj1gGC8S8SYiH3ByerR8NrYSaMdphD4qJotl8PXNJ
-         f1E1nA37uAW6mg/7tNlfREepXSXL0KtQMsl1fNCk/T/Wi70dRFDKc1OQT/juG33ZnYsq
-         ayyg==
-X-Gm-Message-State: AOAM531iesDWj5uFYvlDATMzGWLJTcswO6XdbnNExjBiRREj2EqpSZAl
-        6bBvZEit7zj3Xtz1D6hMjw34OqrQsA1s4wE1tKgI7w==
-X-Google-Smtp-Source: ABdhPJzqTOl3MqL0bVrAhDZtCS3mLYK4WgEB46OSUFecnlcwl11ttUt9pEepSbvh3bw3kfb4oCIECDbWZljHghrIAlk=
-X-Received: by 2002:a4a:d396:: with SMTP id i22mr16311455oos.55.1610961411680;
- Mon, 18 Jan 2021 01:16:51 -0800 (PST)
+        Mon, 18 Jan 2021 04:18:21 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44E2C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:17:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=d0B2hFv3lHdM9TBPzjM9IKfLfYu/9AxcqqtQjLF2crQ=; b=QkLUcq4X8dxRqsXPDc7Y9lJck
+        3QIAiv0C0MkGBIJb3dDg7ZBcYhOV05UNg+TlQkkzDjScHmScwwlaUHiokzk0lOBaV43/+2xoGhWGf
+        D+64OyCT9ahStm/k0XRMJT/jIp5xP/mJbxx2PHKz3w9zKF54QPGLWcKfLTcR5IPqzmKF0ZDhJ5R0m
+        aYBlgL7QXtqZhxzgplPp8W6aXDTvcv/M8F+ULI07V2NO+63QSEZPCNQ4msrShdPKnsINYQhJxQawz
+        +1pv2oTUHJVXv5G3VWvfK8lO12b6DWEwuTsxTmkCRFcII96Bq39l9AAm3MMZJ860iDK+YbDfMTdxZ
+        BA2BqYang==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49488)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l1QfH-0006CK-Qh; Mon, 18 Jan 2021 09:17:35 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l1QfF-0003t7-Eh; Mon, 18 Jan 2021 09:17:33 +0000
+Date:   Mon, 18 Jan 2021 09:17:33 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmerdabbelt@google.com,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, guoren@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH v3 0/4] initrd: Use unified initrd reserve function in
+ ARM/RISCV
+Message-ID: <20210118091733.GD1551@shell.armlinux.org.uk>
+References: <20210115054606.124502-1-wangkefeng.wang@huawei.com>
+ <48c006a8-a352-488c-4981-768faffbe343@huawei.com>
+ <20210117100903.GB1551@shell.armlinux.org.uk>
+ <cc47f8cf-8778-43ab-77de-9dd220de7c26@huawei.com>
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
- <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-In-Reply-To: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Mon, 18 Jan 2021 11:16:40 +0200
-Message-ID: <CAOEp5OeQscazq2bSkT7ocnHZ5q_+ffSUcBqbUZpSz+dVEDcLhg@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>
-Cc:     Yan Vugenfirer <yan@daynix.com>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Willem de Bruijn <willemb@google.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Marco Elver <elver@google.com>, decui@microsoft.com,
-        cai@lca.pw, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cc47f8cf-8778-43ab-77de-9dd220de7c26@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexei,
+On Mon, Jan 18, 2021 at 09:01:40AM +0800, Kefeng Wang wrote:
+> 
+> On 2021/1/17 18:09, Russell King - ARM Linux admin wrote:
+> > On Sun, Jan 17, 2021 at 12:57:55PM +0800, Kefeng Wang wrote:
+> > > Correct Russell's mail address (from linux@armlinux.org.uk to
+> > > rmk+kernel@armlinux.org.uk, should update the MAINTAINERS)
+> > No. MAINTAINERS is correct.
+> 
+> I got following message,  so I check mail of your recent patches, and send a
+> new one.
+> 
+> Please ignore it, there may be some other problems.
+> 
+> "*Delivery has failed to these recipients or groups:*
+> 
+> linux@armlinux.org.uk <mailto:linux@armlinux.org.uk>
+> A communication failure occurred during the delivery of this message. Please
+> to resend the message later. If the problem continues, contact your
+> helpdesk."
 
-Can you please answer the questions in the last email of this thread?
-Your comment will be extremely helpful.
+That is a most unhelpful bounce message - I suppose it's designed for
+non-technical people to ensure that the problem can't be resolved.
 
-Thanks
+From what I can see from my end, every attempt involving your email
+address last week (wangkefeng.wang@huawei.com) has been successful, so
+I suspect the problem is not at my end.
 
-On Tue, Jan 12, 2021 at 10:55 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> > <yuri.benditovich@daynix.com> wrote:
-> > >
-> > > This program type can set skb hash value. It will be useful
-> > > when the tun will support hash reporting feature if virtio-net.
-> > >
-> > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > ---
-> > >  drivers/net/tun.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > > index 7959b5c2d11f..455f7afc1f36 100644
-> > > --- a/drivers/net/tun.c
-> > > +++ b/drivers/net/tun.c
-> > > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> > >                 prog = NULL;
-> > >         } else {
-> > >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > > +               if (IS_ERR(prog))
-> > > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> > >                 if (IS_ERR(prog))
-> > >                         return PTR_ERR(prog);
-> > >         }
-> >
-> > Comment from Alexei Starovoitov:
-> > Patches 1 and 2 are missing for me, so I couldn't review properly,
-> > but this diff looks odd.
-> > It allows sched_cls prog type to attach to tun.
-> > That means everything that sched_cls progs can do will be done from tun hook?
->
-> We do not have an intention to modify the packet in this steering eBPF.
-> There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-> that the eBPF needs to make possible to deliver the hash to the guest
-> VM - it is 'bpf_set_hash'
->
-> Does it mean that we need to define a new eBPF type for socket filter
-> operations + set_hash?
->
-> Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-> index and 8-bit of hash type.
-> But it is able to return only 32-bit integer, so in this set of
-> patches the eBPF returns
-> queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
->
-> If this is unacceptable, can you please recommend a better solution?
->
-> > sched_cls assumes l2 and can modify the packet.
->
-> The steering eBPF in TUN module also assumes l2.
->
-> > I think crashes are inevitable.
-> >
-> > > --
-> > > 2.17.1
-> > >
+In any case, all @armlinux.org.uk addresses hit the same server, so
+if there's a "communication failure" for the domain, it would affect
+all local-parts equally.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
