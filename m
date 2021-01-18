@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C732A2F9F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B46F2F9F9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403901AbhARMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:20:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37938 "EHLO mail.kernel.org"
+        id S2389075AbhARM2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:28:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390881AbhARLqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF286224B0;
-        Mon, 18 Jan 2021 11:45:44 +0000 (UTC)
+        id S2390841AbhARLpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:45:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEA5322DFB;
+        Mon, 18 Jan 2021 11:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970345;
-        bh=RruCIzkrTDhcZ24KmkI1cg/SgroFrb9eD/uIl9I/HYg=;
+        s=korg; t=1610970333;
+        bh=7qI5MX4ihyvHamnHEzgjFSbq9oa2m3EU0R4bWwb1D8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMW3GoEVZPj8Z6avYNPNve0/MMpk0Unwp+Hygmz/2y7KCjY2Jfo44wGn0WIqzmWmc
-         OF5ZU1mzkEivmFEChJ5fALSL1FMbSO9A9wXTWPVhupRbx58pLIIF9kmqGRVT4q+GNW
-         lVkk+o8/8aErDtGsKeB+41aavaJfyVjG0kyKXLZA=
+        b=JRZJGdoFk4OUYdBokLeaWxzpYwHByBsYNaZ1Ud8eFzeCr4suJLH7E9tWUMV7yvSU8
+         gdypfrviW9VhF1V4Wqhie5VJ8dWpTimWPXd5NUUM+mH1SENgRZTMWbZZ6h4J3QTeNp
+         xpBQjknFA63VCwCEJNGeBbY98Ygp1FdfYQunNp4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Oz Shlomo <ozsh@nvidia.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Roi Dayan <roid@nvidia.com>, Paul Blakey <paulb@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 100/152] bpf: Save correct stopping point in file seq iteration
-Date:   Mon, 18 Jan 2021 12:34:35 +0100
-Message-Id: <20210118113357.536129977@linuxfoundation.org>
+Subject: [PATCH 5.10 105/152] net/mlx5e: CT: Use per flow counter when CT flow accounting is enabled
+Date:   Mon, 18 Jan 2021 12:34:40 +0100
+Message-Id: <20210118113357.768887137@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -41,101 +42,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Lemon <bsd@fb.com>
+From: Oz Shlomo <ozsh@nvidia.com>
 
-[ Upstream commit 69ca310f34168eae0ada434796bfc22fb4a0fa26 ]
+[ Upstream commit eed38eeee734756596e2cc163bdc7dac3be501b1 ]
 
-On some systems, some variant of the following splat is
-repeatedly seen.  The common factor in all traces seems
-to be the entry point to task_file_seq_next().  With the
-patch, all warnings go away.
+Connection counters may be shared for both directions when the counter
+is used for connection aging purposes. However, if TC flow
+accounting is enabled then a unique counter is required per direction.
 
-    rcu: INFO: rcu_sched self-detected stall on CPU
-    rcu: \x0926-....: (20992 ticks this GP) idle=d7e/1/0x4000000000000002 softirq=81556231/81556231 fqs=4876
-    \x09(t=21033 jiffies g=159148529 q=223125)
-    NMI backtrace for cpu 26
-    CPU: 26 PID: 2015853 Comm: bpftool Kdump: loaded Not tainted 5.6.13-0_fbk4_3876_gd8d1f9bf80bb #1
-    Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A12 10/08/2018
-    Call Trace:
-     <IRQ>
-     dump_stack+0x50/0x70
-     nmi_cpu_backtrace.cold.6+0x13/0x50
-     ? lapic_can_unplug_cpu.cold.30+0x40/0x40
-     nmi_trigger_cpumask_backtrace+0xba/0xca
-     rcu_dump_cpu_stacks+0x99/0xc7
-     rcu_sched_clock_irq.cold.90+0x1b4/0x3aa
-     ? tick_sched_do_timer+0x60/0x60
-     update_process_times+0x24/0x50
-     tick_sched_timer+0x37/0x70
-     __hrtimer_run_queues+0xfe/0x270
-     hrtimer_interrupt+0xf4/0x210
-     smp_apic_timer_interrupt+0x5e/0x120
-     apic_timer_interrupt+0xf/0x20
-     </IRQ>
-    RIP: 0010:get_pid_task+0x38/0x80
-    Code: 89 f6 48 8d 44 f7 08 48 8b 00 48 85 c0 74 2b 48 83 c6 55 48 c1 e6 04 48 29 f0 74 19 48 8d 78 20 ba 01 00 00 00 f0 0f c1 50 20 <85> d2 74 27 78 11 83 c2 01 78 0c 48 83 c4 08 c3 31 c0 48 83 c4 08
-    RSP: 0018:ffffc9000d293dc8 EFLAGS: 00000202 ORIG_RAX: ffffffffffffff13
-    RAX: ffff888637c05600 RBX: ffffc9000d293e0c RCX: 0000000000000000
-    RDX: 0000000000000001 RSI: 0000000000000550 RDI: ffff888637c05620
-    RBP: ffffffff8284eb80 R08: ffff88831341d300 R09: ffff88822ffd8248
-    R10: ffff88822ffd82d0 R11: 00000000003a93c0 R12: 0000000000000001
-    R13: 00000000ffffffff R14: ffff88831341d300 R15: 0000000000000000
-     ? find_ge_pid+0x1b/0x20
-     task_seq_get_next+0x52/0xc0
-     task_file_seq_get_next+0x159/0x220
-     task_file_seq_next+0x4f/0xa0
-     bpf_seq_read+0x159/0x390
-     vfs_read+0x8a/0x140
-     ksys_read+0x59/0xd0
-     do_syscall_64+0x42/0x110
-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    RIP: 0033:0x7f95ae73e76e
-    Code: Bad RIP value.
-    RSP: 002b:00007ffc02c1dbf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-    RAX: ffffffffffffffda RBX: 000000000170faa0 RCX: 00007f95ae73e76e
-    RDX: 0000000000001000 RSI: 00007ffc02c1dc30 RDI: 0000000000000007
-    RBP: 00007ffc02c1ec70 R08: 0000000000000005 R09: 0000000000000006
-    R10: fffffffffffff20b R11: 0000000000000246 R12: 00000000019112a0
-    R13: 0000000000000000 R14: 0000000000000007 R15: 00000000004283c0
+Instantiate a unique counter per direction if the conntrack accounting
+extension is enabled. Use a shared counter when the connection accounting
+extension is disabled.
 
-If unable to obtain the file structure for the current task,
-proceed to the next task number after the one returned from
-task_seq_get_next(), instead of the next task number from the
-original iterator.
-
-Also, save the stopping task number from task_seq_get_next()
-on failure in case of restarts.
-
-Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
-Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20201218185032.2464558-2-jonathan.lemon@gmail.com
+Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both directions")
+Signed-off-by: Oz Shlomo <ozsh@nvidia.com>
+Reported-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Reviewed-by: Paul Blakey <paulb@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/task_iter.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../ethernet/mellanox/mlx5/core/en/tc_ct.c    | 77 ++++++++++++-------
+ 1 file changed, 49 insertions(+), 28 deletions(-)
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 767c93d38bf55..f3d3a562a802a 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -158,13 +158,14 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
- 		if (!curr_task) {
- 			info->task = NULL;
- 			info->files = NULL;
-+			info->tid = curr_tid;
- 			return NULL;
- 		}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+index e521254d886ef..072363e73f1ce 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+@@ -118,16 +118,17 @@ struct mlx5_ct_tuple {
+ 	u16 zone;
+ };
  
- 		curr_files = get_files_struct(curr_task);
- 		if (!curr_files) {
- 			put_task_struct(curr_task);
--			curr_tid = ++(info->tid);
-+			curr_tid = curr_tid + 1;
- 			info->fd = 0;
- 			goto again;
+-struct mlx5_ct_shared_counter {
++struct mlx5_ct_counter {
+ 	struct mlx5_fc *counter;
+ 	refcount_t refcount;
++	bool is_shared;
+ };
+ 
+ struct mlx5_ct_entry {
+ 	struct rhash_head node;
+ 	struct rhash_head tuple_node;
+ 	struct rhash_head tuple_nat_node;
+-	struct mlx5_ct_shared_counter *shared_counter;
++	struct mlx5_ct_counter *counter;
+ 	unsigned long cookie;
+ 	unsigned long restore_cookie;
+ 	struct mlx5_ct_tuple tuple;
+@@ -394,13 +395,14 @@ mlx5_tc_ct_set_tuple_match(struct mlx5e_priv *priv, struct mlx5_flow_spec *spec,
+ }
+ 
+ static void
+-mlx5_tc_ct_shared_counter_put(struct mlx5_tc_ct_priv *ct_priv, struct mlx5_ct_entry *entry)
++mlx5_tc_ct_counter_put(struct mlx5_tc_ct_priv *ct_priv, struct mlx5_ct_entry *entry)
+ {
+-	if (!refcount_dec_and_test(&entry->shared_counter->refcount))
++	if (entry->counter->is_shared &&
++	    !refcount_dec_and_test(&entry->counter->refcount))
+ 		return;
+ 
+-	mlx5_fc_destroy(ct_priv->dev, entry->shared_counter->counter);
+-	kfree(entry->shared_counter);
++	mlx5_fc_destroy(ct_priv->dev, entry->counter->counter);
++	kfree(entry->counter);
+ }
+ 
+ static void
+@@ -699,7 +701,7 @@ mlx5_tc_ct_entry_add_rule(struct mlx5_tc_ct_priv *ct_priv,
+ 	attr->dest_ft = ct_priv->post_ct;
+ 	attr->ft = nat ? ct_priv->ct_nat : ct_priv->ct;
+ 	attr->outer_match_level = MLX5_MATCH_L4;
+-	attr->counter = entry->shared_counter->counter;
++	attr->counter = entry->counter->counter;
+ 	attr->flags |= MLX5_ESW_ATTR_FLAG_NO_IN_PORT;
+ 
+ 	mlx5_tc_ct_set_tuple_match(netdev_priv(ct_priv->netdev), spec, flow_rule);
+@@ -732,13 +734,34 @@ mlx5_tc_ct_entry_add_rule(struct mlx5_tc_ct_priv *ct_priv,
+ 	return err;
+ }
+ 
+-static struct mlx5_ct_shared_counter *
++static struct mlx5_ct_counter *
++mlx5_tc_ct_counter_create(struct mlx5_tc_ct_priv *ct_priv)
++{
++	struct mlx5_ct_counter *counter;
++	int ret;
++
++	counter = kzalloc(sizeof(*counter), GFP_KERNEL);
++	if (!counter)
++		return ERR_PTR(-ENOMEM);
++
++	counter->is_shared = false;
++	counter->counter = mlx5_fc_create(ct_priv->dev, true);
++	if (IS_ERR(counter->counter)) {
++		ct_dbg("Failed to create counter for ct entry");
++		ret = PTR_ERR(counter->counter);
++		kfree(counter);
++		return ERR_PTR(ret);
++	}
++
++	return counter;
++}
++
++static struct mlx5_ct_counter *
+ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 			      struct mlx5_ct_entry *entry)
+ {
+ 	struct mlx5_ct_tuple rev_tuple = entry->tuple;
+-	struct mlx5_ct_shared_counter *shared_counter;
+-	struct mlx5_core_dev *dev = ct_priv->dev;
++	struct mlx5_ct_counter *shared_counter;
+ 	struct mlx5_ct_entry *rev_entry;
+ 	__be16 tmp_port;
+ 	int ret;
+@@ -767,25 +790,20 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 	rev_entry = rhashtable_lookup_fast(&ct_priv->ct_tuples_ht, &rev_tuple,
+ 					   tuples_ht_params);
+ 	if (rev_entry) {
+-		if (refcount_inc_not_zero(&rev_entry->shared_counter->refcount)) {
++		if (refcount_inc_not_zero(&rev_entry->counter->refcount)) {
+ 			mutex_unlock(&ct_priv->shared_counter_lock);
+-			return rev_entry->shared_counter;
++			return rev_entry->counter;
  		}
+ 	}
+ 	mutex_unlock(&ct_priv->shared_counter_lock);
+ 
+-	shared_counter = kzalloc(sizeof(*shared_counter), GFP_KERNEL);
+-	if (!shared_counter)
+-		return ERR_PTR(-ENOMEM);
+-
+-	shared_counter->counter = mlx5_fc_create(dev, true);
+-	if (IS_ERR(shared_counter->counter)) {
+-		ct_dbg("Failed to create counter for ct entry");
+-		ret = PTR_ERR(shared_counter->counter);
+-		kfree(shared_counter);
++	shared_counter = mlx5_tc_ct_counter_create(ct_priv);
++	if (IS_ERR(shared_counter)) {
++		ret = PTR_ERR(shared_counter);
+ 		return ERR_PTR(ret);
+ 	}
+ 
++	shared_counter->is_shared = true;
+ 	refcount_set(&shared_counter->refcount, 1);
+ 	return shared_counter;
+ }
+@@ -798,10 +816,13 @@ mlx5_tc_ct_entry_add_rules(struct mlx5_tc_ct_priv *ct_priv,
+ {
+ 	int err;
+ 
+-	entry->shared_counter = mlx5_tc_ct_shared_counter_get(ct_priv, entry);
+-	if (IS_ERR(entry->shared_counter)) {
+-		err = PTR_ERR(entry->shared_counter);
+-		ct_dbg("Failed to create counter for ct entry");
++	if (nf_ct_acct_enabled(dev_net(ct_priv->netdev)))
++		entry->counter = mlx5_tc_ct_counter_create(ct_priv);
++	else
++		entry->counter = mlx5_tc_ct_shared_counter_get(ct_priv, entry);
++
++	if (IS_ERR(entry->counter)) {
++		err = PTR_ERR(entry->counter);
+ 		return err;
+ 	}
+ 
+@@ -820,7 +841,7 @@ mlx5_tc_ct_entry_add_rules(struct mlx5_tc_ct_priv *ct_priv,
+ err_nat:
+ 	mlx5_tc_ct_entry_del_rule(ct_priv, entry, false);
+ err_orig:
+-	mlx5_tc_ct_shared_counter_put(ct_priv, entry);
++	mlx5_tc_ct_counter_put(ct_priv, entry);
+ 	return err;
+ }
+ 
+@@ -918,7 +939,7 @@ mlx5_tc_ct_del_ft_entry(struct mlx5_tc_ct_priv *ct_priv,
+ 	rhashtable_remove_fast(&ct_priv->ct_tuples_ht, &entry->tuple_node,
+ 			       tuples_ht_params);
+ 	mutex_unlock(&ct_priv->shared_counter_lock);
+-	mlx5_tc_ct_shared_counter_put(ct_priv, entry);
++	mlx5_tc_ct_counter_put(ct_priv, entry);
+ 
+ }
+ 
+@@ -956,7 +977,7 @@ mlx5_tc_ct_block_flow_offload_stats(struct mlx5_ct_ft *ft,
+ 	if (!entry)
+ 		return -ENOENT;
+ 
+-	mlx5_fc_query_cached(entry->shared_counter->counter, &bytes, &packets, &lastuse);
++	mlx5_fc_query_cached(entry->counter->counter, &bytes, &packets, &lastuse);
+ 	flow_stats_update(&f->stats, bytes, packets, 0, lastuse,
+ 			  FLOW_ACTION_HW_STATS_DELAYED);
+ 
 -- 
 2.27.0
 
