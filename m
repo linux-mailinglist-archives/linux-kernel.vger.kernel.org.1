@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E23B2F9F38
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF482F9F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390626AbhARLvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:51:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34192 "EHLO mail.kernel.org"
+        id S2390918AbhARMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390595AbhARLkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:40:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB17222BB;
-        Mon, 18 Jan 2021 11:39:55 +0000 (UTC)
+        id S2390900AbhARLqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA8F22D5B;
+        Mon, 18 Jan 2021 11:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969996;
-        bh=MjrKb1h4tMErpsH8+EzAbPNEt6Oz+fy/TlWsRz575As=;
+        s=korg; t=1610970375;
+        bh=igt8EuL5nuiUf7f+sJcAA1cbkSnPUBA1VkxbnqbKkS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DO0jeqqP5975fy3bkVWvz0MjuKE+CQ8vmLd5Bj+0ILFZVPYm9lO9dOckIIlm/s9rF
-         Taz72Dp5F9TzJr85IiTsZX3xjftC60Z8QmMHFwuxSKs4Kmqh+qDSUrK2rIf3/R/dvd
-         nXEchNxnRzEtqlFU+H4hSEr3RbqjL5RBJtyKlmog=
+        b=S5sbOJ8aRbP3XcoMQjx1z6b68mrzV/21HmlRvS7yL711BUinklyojZowJHxddAfBa
+         jYfraPbkCAoEMRSurIYMNPAtvCzXObqJ+kKUZ9WsOadnnlhwh/s4HiQ6X5c9hzDTSv
+         mHjSMekD1MfVlwGxhT1CFxlaOiW6peFx5Pa1rtKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Nixdorf <j.nixdorf@avm.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.4 70/76] net: sunrpc: interpret the return value of kstrtou32 correctly
-Date:   Mon, 18 Jan 2021 12:35:10 +0100
-Message-Id: <20210118113344.316368952@linuxfoundation.org>
+        stable@vger.kernel.org, Hans Petter Selasky <hanss@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.10 136/152] RDMA/mlx5: Fix wrong free of blue flame register on error
+Date:   Mon, 18 Jan 2021 12:35:11 +0100
+Message-Id: <20210118113359.242728586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
+References: <20210118113352.764293297@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: j.nixdorf@avm.de <j.nixdorf@avm.de>
+From: Mark Bloch <mbloch@nvidia.com>
 
-commit 86b53fbf08f48d353a86a06aef537e78e82ba721 upstream.
+commit 1c3aa6bd0b823105c2030af85d92d158e815d669 upstream.
 
-A return value of 0 means success. This is documented in lib/kstrtox.c.
+If the allocation of the fast path blue flame register fails, the driver
+should free the regular blue flame register allocated a statement above,
+not the one that it just failed to allocate.
 
-This was found by trying to mount an NFS share from a link-local IPv6
-address with the interface specified by its index:
-
-  mount("[fe80::1%1]:/srv/nfs", "/mnt", "nfs", 0, "nolock,addr=fe80::1%1")
-
-Before this commit this failed with EINVAL and also caused the following
-message in dmesg:
-
-  [...] NFS: bad IP address specified: addr=fe80::1%1
-
-The syscall using the same address based on the interface name instead
-of its index succeeds.
-
-Credits for this patch go to my colleague Christian Speich, who traced
-the origin of this bug to this line of code.
-
-Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
-Fixes: 00cfaa943ec3 ("replace strict_strto calls")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 16c1975f1032 ("IB/mlx5: Create profile infrastructure to add and remove stages")
+Link: https://lore.kernel.org/r/20210113121703.559778-6-leon@kernel.org
+Reported-by: Hans Petter Selasky <hanss@nvidia.com>
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sunrpc/addr.c |    2 +-
+ drivers/infiniband/hw/mlx5/main.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sunrpc/addr.c
-+++ b/net/sunrpc/addr.c
-@@ -185,7 +185,7 @@ static int rpc_parse_scope_id(struct net
- 			scope_id = dev->ifindex;
- 			dev_put(dev);
- 		} else {
--			if (kstrtou32(p, 10, &scope_id) == 0) {
-+			if (kstrtou32(p, 10, &scope_id) != 0) {
- 				kfree(p);
- 				return 0;
- 			}
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4362,7 +4362,7 @@ static int mlx5_ib_stage_bfrag_init(stru
+ 
+ 	err = mlx5_alloc_bfreg(dev->mdev, &dev->fp_bfreg, false, true);
+ 	if (err)
+-		mlx5_free_bfreg(dev->mdev, &dev->fp_bfreg);
++		mlx5_free_bfreg(dev->mdev, &dev->bfreg);
+ 
+ 	return err;
+ }
 
 
