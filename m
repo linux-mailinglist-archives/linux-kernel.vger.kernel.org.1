@@ -2,96 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6AA2FACE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C712FACE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438154AbhARVkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:40:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388730AbhARKAW (ORCPT
+        id S2389704AbhARVnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388661AbhARJ6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:00:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610963895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+kcNifTiiJT73LLmGdVsxYP8+/HWLaO459BHqgyZfYI=;
-        b=ZWHuXqH6+klfVlQEYSHFM64Zf10+EwIvk8drGkWanh3g/1b8M/hBQMyuwZ5Hft3ba0saNA
-        DS0+iV6XD1ju21cKwrhwTNh+nsOaiA5cuJR1A4CUHNuOVMU0d84gJctGm5O8QgevsncEk2
-        eb6US6XGEpAV1jcwWTKJ8FlS7G9pzNg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-81-3GIrPRjjN5OKo0sxsfb_aw-1; Mon, 18 Jan 2021 04:58:11 -0500
-X-MC-Unique: 3GIrPRjjN5OKo0sxsfb_aw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7454610054FF;
-        Mon, 18 Jan 2021 09:58:10 +0000 (UTC)
-Received: from [10.36.112.158] (ovpn-112-158.ams2.redhat.com [10.36.112.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 983135D9CD;
-        Mon, 18 Jan 2021 09:58:09 +0000 (UTC)
-Subject: Re: [PATCH] hugetlbfs: remove meaningless variable avoid_reserve
-To:     Miaohe Lin <linmiaohe@huawei.com>, mike.kravetz@oracle.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210116092644.42697-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5076218b-19f2-fdeb-21b7-d5ce1fcabc24@redhat.com>
-Date:   Mon, 18 Jan 2021 10:58:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 18 Jan 2021 04:58:54 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D884CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:58:13 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id b8so8383494plx.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:58:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J5Dlakpa6uscV9wI+hxTT1e6AnkifWVChxQ3u0oHgAk=;
+        b=b5hJhCKrotp/TDa/9Uf1MBhZqtL56ZL4fDD75pbp7afcoNHFk5rAdvanGFJON/fanQ
+         e5pv+XHqAQBdZcAuM/UyKyPEzwaIbVqoGa96d8Mm17HDCdvg5NeOJzazAzp4qnY3vhP9
+         7gHzWCsuQQpM/dz5MXkSqfynpOoaf3qHJQUty/nrVTWDlpTWM/gpq7JLR+COChxk7/LN
+         EsEVH7mDRFodrON3MCceSSRAxQxI54/Jbya/tPpNCxIjgFvCzXX4a71Et0bso4OGqt7k
+         6Wan2n0Gl6u3CMMw9nnjDyVZXpY0efE2vTGbs994tqbA6wnF5AIY/s0Srk0Pmd8y9LJb
+         q32w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J5Dlakpa6uscV9wI+hxTT1e6AnkifWVChxQ3u0oHgAk=;
+        b=LQC5dkrdYfGh0KkE3an8H0eg3a6G/pnGolDCpN57bJxLALbpXILUWyJZO0fushEE2p
+         Kv1KJ/sH1LdLmnAxva7V6tP/8XncG7l8LYknXelHNeg/Lk4BPw4hTx94udSwVp5EHMsx
+         QkNIxuxNGTAn1nZdA8gOBzOisNYu1e3Rs1t4Cdd/qqS+LeccMHhlZmVco063oKpSTn4C
+         56u/UKwWw0NvDggV6dREdpRFxwee6a7h9dshuNjH6ZYg+yLrGNaofmYfTwMs83nd23nc
+         OpY+sIf2N/xSIkTu6TneD4LaAVTDCRuERQccdwv+rOrVtw+YSDMpeb6xE6723tNKUFLf
+         b+/Q==
+X-Gm-Message-State: AOAM533Uyhg8oUbGnEFu+s+LCzOkOJel0+ppbgFzK13p3zqaTmvhKGup
+        Zal2+9FngA/fSsOZ1qVxcDbXkw==
+X-Google-Smtp-Source: ABdhPJzSn0ETidLntnQdkh8DW6sl+g3rqAMIpMzhQZ9ghdObttxe4TiUGn/0B/YlcXT/eWavHFQEow==
+X-Received: by 2002:a17:902:6b02:b029:da:c6c0:d650 with SMTP id o2-20020a1709026b02b02900dac6c0d650mr25918569plk.74.1610963893396;
+        Mon, 18 Jan 2021 01:58:13 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p8sm15780055pjo.21.2021.01.18.01.58.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:58:12 -0800 (PST)
+Date:   Mon, 18 Jan 2021 15:28:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 06/12] opp: Add dev_pm_opp_find_level_ceil()
+Message-ID: <20210118095810.ta7cy7kjntalfnx7@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-7-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210116092644.42697-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118005524.27787-7-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.01.21 10:26, Miaohe Lin wrote:
-> The variable avoid_reserve is meaningless because we never changed its
-> value and just passed it to alloc_huge_page(). So remove it to make code
-> more clear that in hugetlbfs_fallocate, we never avoid reserve when alloc
-> hugepage yet.
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> Add a ceil version of the dev_pm_opp_find_level(). It's handy to have if
+> levels don't start from 0 in OPP table and zero usually means a minimal
+> level.
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  fs/hugetlbfs/inode.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/opp/core.c     | 49 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  8 +++++++
+>  2 files changed, 57 insertions(+)
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 88751e35e69d..23ad6ed8b75f 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -680,7 +680,6 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->  		 */
->  		struct page *page;
->  		unsigned long addr;
-> -		int avoid_reserve = 0;
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 341484d58e6c..df0969002555 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -449,6 +449,55 @@ struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_exact);
 >  
->  		cond_resched();
+> +/**
+> + * dev_pm_opp_find_level_ceil() - search for an rounded up level
+> + * @dev:		device for which we do this operation
+> + * @level:		level to search for
+> + *
+> + * Return: Searches for rounded up match in the opp table and returns pointer
+> + * to the  matching opp if found, else returns ERR_PTR in case of error and
+> + * should be handled using IS_ERR. Error return values can be:
+> + * EINVAL:	for bad pointer
+> + * ERANGE:	no match found for search
+> + * ENODEV:	if device not found in list of registered devices
+> + *
+> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
+> + * use.
+> + */
+> +struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+> +					      unsigned int *level)
+> +{
+> +	struct opp_table *opp_table;
+> +	struct dev_pm_opp *temp_opp, *opp = ERR_PTR(-ERANGE);
+> +
+> +	opp_table = _find_opp_table(dev);
+> +	if (IS_ERR(opp_table)) {
+> +		int r = PTR_ERR(opp_table);
+> +
+> +		dev_err(dev, "%s: OPP table not found (%d)\n", __func__, r);
+> +		return ERR_PTR(r);
+> +	}
+> +
+> +	mutex_lock(&opp_table->lock);
+> +
+> +	list_for_each_entry(temp_opp, &opp_table->opp_list, node) {
+> +		if (temp_opp->available && temp_opp->level >= *level) {
+> +			opp = temp_opp;
+> +			*level = opp->level;
+> +
+> +			/* Increment the reference count of OPP */
+> +			dev_pm_opp_get(opp);
+> +			break;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&opp_table->lock);
+> +	dev_pm_opp_put_opp_table(opp_table);
+> +
+> +	return opp;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
+> +
+>  static noinline struct dev_pm_opp *_find_freq_ceil(struct opp_table *opp_table,
+>  						   unsigned long *freq)
+>  {
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index f344be844bde..b7dc993487c7 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -111,6 +111,8 @@ struct dev_pm_opp *dev_pm_opp_find_freq_exact(struct device *dev,
+>  					      bool available);
+>  struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>  					       unsigned int level);
+> +struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+> +					      unsigned int *level);
 >  
-> @@ -717,7 +716,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->  		}
+>  struct dev_pm_opp *dev_pm_opp_find_freq_floor(struct device *dev,
+>  					      unsigned long *freq);
+> @@ -234,6 +236,12 @@ static inline struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>  	return ERR_PTR(-ENOTSUPP);
+>  }
 >  
->  		/* Allocate page and add to page cache */
-> -		page = alloc_huge_page(&pseudo_vma, addr, avoid_reserve);
-> +		page = alloc_huge_page(&pseudo_vma, addr, 0);
->  		hugetlb_drop_vma_policy(&pseudo_vma);
->  		if (IS_ERR(page)) {
->  			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> 
+> +static inline struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+> +					unsigned int *level)
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+>  static inline struct dev_pm_opp *dev_pm_opp_find_freq_floor(struct device *dev,
+>  					unsigned long *freq)
+>  {
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Applied. Thanks.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+viresh
