@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA312F98A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7DA2F989D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbhARE2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:28:32 -0500
-Received: from mail-dm6nam10on2082.outbound.protection.outlook.com ([40.107.93.82]:50817
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728690AbhARE2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:28:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jiJnFdSf3CGCByInJA2zuVZEBLMhrRHYmNbmKgtzyjuiMgNpxx7JqtXx89E5AQrC+smBogXRchNexjxagZYeWATRTjB1TRQk+YRKBL4Qz5ZZZtVZok1pcsp82tpYu5fvWCiBCa4DTtL24c2b8BWxEdXU1ASJZ0hPPybg47jicsqrZKlnkzLnbapAAbl31GFgBFyHxeW5UQW4zou7mZHebMLIzuUwCCO9BDMIQMM2qP/o8Q7u8HCQEwOWXpzXBbxq9ttzI8wczAuT1O0zgeuh0XcBI0N5EYzmc3pUDYQg8uEBe1MRhiDgsmLzMWh11grKF4EeAO0ryrscfAUFAVFwLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hU7e4Lab+GoLyhqudA5m/Mt+CzQd+haaHkp+UTOv/D8=;
- b=PiG+awJYJz8ccNaFqZd2hxNNsbqu3pqN499y3p2A6XWmwos69V12oOk1fUAlohoMikFzIK+2/2fDx5l+bg3bLjPZ8XfPQKaSNTMDSp171SDv8HF6nQ7CnpHVIA6Ek/T/upizOg2qL0MoN9F26tywcvtYp8Cx2GGlLJG5wdqfbqL3qChz6uxOueIm9k7QPFt8ypMXhdsbBbiqUo6M9n8vWolt4uHF6MF8UX/Y9HSMu9IOtxxLDGIgib78jaL6kGUWh9hmrUt4wKAtwryIU61zYM4QA6+ZP6HRSAfDOw0GDIOpGv9LIy150QvgyWyrTfyMIcNy1jucgs5WHbHDrn0JTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hU7e4Lab+GoLyhqudA5m/Mt+CzQd+haaHkp+UTOv/D8=;
- b=fd6BZLeyw4FO9inD6487J3EeRM7QAm1p7WCCC9RZa18r0vpl1lEhjcdMquWiPthVCljrJqr+oqzxC8/PRxY/ICJbMa0kNELPxKR1b/xhgoWPlYFg1dIWzPdbhiKv720/Z5VrTorOAwzvTMHJFRFtq0mtxZ0WLs+cMV/bUGeT09c=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=windriver.com;
-Received: from PH0PR11MB5077.namprd11.prod.outlook.com (2603:10b6:510:3b::17)
- by PH0PR11MB5175.namprd11.prod.outlook.com (2603:10b6:510:3d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
- 2021 04:27:36 +0000
-Received: from PH0PR11MB5077.namprd11.prod.outlook.com
- ([fe80::564:ae38:9aae:7896]) by PH0PR11MB5077.namprd11.prod.outlook.com
- ([fe80::564:ae38:9aae:7896%6]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
- 04:27:36 +0000
-From:   Xiaolei Wang <xiaolei.wang@windriver.com>
-To:     ulf.hansson@linaro.org
-Cc:     pali@kernel.org, lee.jones@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaolei.wang@windriver.com
-Subject: [PATCH] mmc: core: Apply trim broken quirk to R1J57L
-Date:   Mon, 18 Jan 2021 12:27:17 +0800
-Message-Id: <20210118042717.2549123-1-xiaolei.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK0PR01CA0060.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::24) To PH0PR11MB5077.namprd11.prod.outlook.com
- (2603:10b6:510:3b::17)
+        id S1730417AbhARE2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 23:28:02 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:52064 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbhARE16 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 23:27:58 -0500
+Received: by mail-io1-f72.google.com with SMTP id y20so24435539ioy.18
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:27:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=qC8G0IPXg9beaQej+tLqh5V/dMR/FwgnyQdMvOOVq98=;
+        b=hJdCp5CnGlpBIhMPmtro+Nvc8EUhbLAZpTVzPYbqr4x5DEGKsGzOEGkJkZJW2oTt2g
+         3k+qMnMFELnblz9I7TaKT7/Oxt6VD8DZPOpwmlvtxmOBaK3b+KDy30alRVG6XWXrbPcn
+         iNiVgyuhgXOhq9ZIBVTGLARGWqsTmjqMkQAhCspRKyNCNcEmVjio4zZBbHk3KUUqELYy
+         wU9KJn+DRD69Kn7uSEviXcKsLRjWHpxo5E0LU73EtEjNWqaL2YZMEJ9KnsyCaarNausJ
+         Dv/f+uMfrJrypPp2fberNmnd3Juq2exe6Zdi85m6uUxiGi2NhTOLxaeZed++8k8zFKDc
+         3KEA==
+X-Gm-Message-State: AOAM5327MVBoIKNyTbWbTmuOXw9T/KNzaEt5Jt0CIEkt3L9q+eQLFO0m
+        aDdEex3+1BM4+T2fbnWwYiZJgVgcp4xKUGnU+fV0yrPpFgQq
+X-Google-Smtp-Source: ABdhPJxcjLG96jCODEMWVyf7lnLaM1Jx6ebp8DYdB5L4tSPIAZywJDtkn0sLJ8ywd+/kXYFXE0aYokKBeNSDkSIQtgcdfKIXwUoS
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpggp7.wrs.com (60.247.85.82) by HK0PR01CA0060.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Mon, 18 Jan 2021 04:27:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 87c8a992-a2bc-4aeb-a19a-08d8bb69619a
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5175:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR11MB51751E7C3A98167EFAEF2D7595A40@PH0PR11MB5175.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GoCl0RgTXBzR2eHsV1ZeRT2GrnVIk7tw7Jyoz2AnSX77KsT3YAfhWOpYp4xP/xpShXoPf079gE4HqwE3bE/zXqbTaLR86gwwhyLzseULpgsiU5q3xEpv0kY4+DyVaBdK+6vX6z4covdBs2C8PndBGOZBJAlsqQdzPN5SeRE8gYuJIPaEtHoca69Gr6fGQ/lqJ+RhuD79W7w2uTRf11gJpb6XBfxBVMyXrbPMGQvOhoOnv1Nxc/eYX7h3KSeCR3Ku/rTGp6aNmq4xKqbW8AlhYmzcO7K142hPg08o7MChJ4GvybDIOrdVMpvXukip2AWqcDq0f0DBEmPI4xZ3tdFzeRv8mnsUe+pwvWpY3KHSRsH4N8sUd81Hg7VsHczBF4znPa7Mtxa/EEaVO3hytq5/LOoze4Z2G/4HhZr0NCJZkMM1Jpem5B3s3nvf6j7YE2YNPP8cAHS0TSIeKvbY4v1Ybl53qx6e4Rp48RVAPeHoGQK+9CiivfTDeTmg9n1qamIF2LzhrlESCrbGFnSzc+VHcw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5077.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39840400004)(376002)(396003)(136003)(478600001)(26005)(6512007)(1076003)(86362001)(6666004)(107886003)(52116002)(8936002)(956004)(6916009)(8676002)(316002)(66556008)(6486002)(4326008)(66476007)(66946007)(44832011)(5660300002)(2616005)(2906002)(186003)(36756003)(6506007)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?yjMEg4lU6Efmhn7Rip69THkz6DuQvFFzjyA/vJc/I70x0xnCF/v+8TUn8XBz?=
- =?us-ascii?Q?KmA+VyjuKlys/KmveYke2Dvbziwst8KOFufjnXVKGzOY8fHZTzBHRN/TPYD+?=
- =?us-ascii?Q?focjZj2dxCVmliQ38v4YUXLVcrh4y8ABGKoSC1ZbuuNZHmKN1quLaUg/gSCE?=
- =?us-ascii?Q?6UEZtr5KaquY6aMyE23vOp6q+CYtGDkIf7hCpVfxHppluJf0yMPaFAz2GeHy?=
- =?us-ascii?Q?F7Nn+i7arblO44MoNPyNjM/aME2AvPeE5MBd/djYWqvCZ5yhVQ0IGNFSjhN5?=
- =?us-ascii?Q?j/uQYgmPkf3gYJdtxDopAe2aFNkF5T6spz9yMiLtnrgMHs+8vHvlcmlCnCOQ?=
- =?us-ascii?Q?yx2vcGuihmNtaBqqTejvRYXGAzPrUy+xQ5n6vMPcEkg3myUwpZtVzUR4BEyY?=
- =?us-ascii?Q?GxoufzRKl08g8jPjMq9QHXnN4178c/HGcJF3uyTTP5H28hdA9nlKLQ/vmpEc?=
- =?us-ascii?Q?SA09mLTxnyEfhUl3loY8a54XN2Sqe4qbVroKpslnuXmM254oljYsKGwT6Oer?=
- =?us-ascii?Q?rNUx7wZWfJT7kOI1GDrH0k/XqSxG1nIESPmJVU0+EaK8D4VRJNvvNzwgSwrp?=
- =?us-ascii?Q?AilzGoDRbf5SvABx1wjkmUPQcZkLmofC7fxlqipn6AIM0XFB8svCpbaQf5BJ?=
- =?us-ascii?Q?CJMGyzHy3m8f0LZBc8KN9esRnBuVCtI+P8IaY+00rixENA0CY7SHoLuT71PP?=
- =?us-ascii?Q?OHbe0ML0e7t6GV5auTqz/sJXtJzNuXlJ/sp65o/yx0xNnLxsXbqkOYkCAa0z?=
- =?us-ascii?Q?29ViI0trjz4tiPAjTczWn4V0Ulrz5AqDfM+VVr/mw6czpsZYY/j/gHUlXokt?=
- =?us-ascii?Q?4PA/o0m1cZSMfYHfg7oFxBzctI9pNLuAtGQ+WIZZh+PuciyDHwpitIavfxDe?=
- =?us-ascii?Q?JM45ho3h20ZIhYbake3QmXmeQqdd2e1eVrUTPZMO3RyYi+rRf+7p7xWpvdJD?=
- =?us-ascii?Q?gFI+59rzkzUfxBX5ova5BMxo7xnhi2vKfXjmageR9IzHNSBOYJDNQgZ1nKOK?=
- =?us-ascii?Q?tjy7?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87c8a992-a2bc-4aeb-a19a-08d8bb69619a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5077.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 04:27:35.9903
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hralCGIs/17EEKgHNBD0STIiUw5KF6TV2qKgrhq6/0I1UpWJkctldY/mCznja5pYchn20fQGcK8vAm/0msR3nvqBPy/tHrPqyBoxWHbIESY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5175
+X-Received: by 2002:a6b:9346:: with SMTP id v67mr15981999iod.108.1610944037885;
+ Sun, 17 Jan 2021 20:27:17 -0800 (PST)
+Date:   Sun, 17 Jan 2021 20:27:17 -0800
+In-Reply-To: <000000000000f054d005b8f87274@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000219cec05b9252334@google.com>
+Subject: Re: WARNING in io_disable_sqo_submit
+From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-R1J57L mmc chip hw capibility indicates that it supports trim function,
-but this function does not work properly, the SDIO bus does not respond,
-and the IO has been waiting so set quirks to skip trim
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
----
- drivers/mmc/core/quirks.h | 4 ++++
- 1 file changed, 4 insertions(+)
+HEAD commit:    a1339d63 Merge tag 'powerpc-5.11-4' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17532a58d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f207c7500000
 
-diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index d68e6e513a4f..63e02391c133 100644
---- a/drivers/mmc/core/quirks.h
-+++ b/drivers/mmc/core/quirks.h
-@@ -89,6 +89,8 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
- 		  MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
- 	MMC_FIXUP("VZL00M", CID_MANFID_SAMSUNG, CID_OEMID_ANY, add_quirk_mmc,
- 		  MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
-+	MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_quirk_mmc,
-+		  MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
- 
- 	/*
- 	 *  On Some Kingston eMMCs, performing trim can result in
-@@ -98,6 +100,8 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
- 		  MMC_QUIRK_TRIM_BROKEN),
- 	MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_quirk_mmc,
- 		  MMC_QUIRK_TRIM_BROKEN),
-+	MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_quirk_mmc,
-+		  MMC_QUIRK_TRIM_BROKEN),
- 
- 	END_FIXUP
- };
--- 
-2.25.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 9113 at fs/io_uring.c:8917 io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
+Modules linked in:
+CPU: 1 PID: 9113 Comm: syz-executor.0 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
+Code: e0 07 83 c0 03 38 d0 7c 04 84 d2 75 2e 83 8b 14 01 00 00 01 4c 89 e7 e8 31 0a 24 07 5b 5d 41 5c e9 98 e1 9a ff e8 93 e1 9a ff <0f> 0b e9 00 ff ff ff e8 a7 a1 dd ff e9 37 ff ff ff e8 6d a1 dd ff
+RSP: 0018:ffffc9000311fe98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888024b43000 RCX: 0000000000000000
+RDX: ffff888147071bc0 RSI: ffffffff81d7e82d RDI: ffff888024b430d0
+RBP: ffff8880115d1900 R08: 0000000000000000 R09: 0000000014555c01
+R10: ffffffff81d7eae5 R11: 0000000000000001 R12: ffff888024b43000
+R13: ffff888014555c01 R14: ffff888024b43040 R15: ffff888024b430d0
+FS:  00007f85abf55700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd3adeb5000 CR3: 00000000115d2000 CR4: 0000000000350ef0
+Call Trace:
+ io_uring_flush+0x28b/0x3a0 fs/io_uring.c:9134
+ filp_close+0xb4/0x170 fs/open.c:1280
+ close_fd+0x5c/0x80 fs/file.c:626
+ __do_sys_close fs/open.c:1299 [inline]
+ __se_sys_close fs/open.c:1297 [inline]
+ __x64_sys_close+0x2f/0xa0 fs/open.c:1297
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e219
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f85abf54c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 000000000045e219
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 000000000119bfb0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffe5217973f R14: 00007f85abf559c0 R15: 000000000119bf8c
 
