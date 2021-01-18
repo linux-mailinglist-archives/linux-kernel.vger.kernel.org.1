@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440CD2F9F72
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D512F9F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390474AbhARMXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391196AbhARMW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:22:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DC6C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=icRNAkK0szBBjqq/5Vje/Fh2SCFts7ZENzZRRvbWGz8=; b=tbic5vIrHaPdWR83ygRvHMuxWa
-        z0VUx/9IC9FnTQzv0B8OJ9vsmvMWn28fj7RyGYAeAsHr5UYpvbJmwkm21MgzIGrxXhrCUGWJpUaKq
-        Aa6Ehl2Z/l2h+r61EHVdetB6eh44sPxCC1705IukbuvbBYgHZBZBKdGbmMgqnPPxyDNDiMfRgTvoq
-        OoZVqpRJVOhHDfWWTmZe6Ju9dRN+I4/SKdCEBsTE82KMmxheZCc4GtmA1M6cQPQzC+8iRXAjP26nO
-        Gc9moMo4MpUub6s4aCjdK7rcypZS6aAwL092JcI5+wwWPTP0My0lkWQ+z26EdrAw2VAOG3kUJwbs/
-        PE5LuESg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1TXK-00CnRY-L3; Mon, 18 Jan 2021 12:21:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 33C1D30015A;
-        Mon, 18 Jan 2021 13:21:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1B79220290D25; Mon, 18 Jan 2021 13:21:32 +0100 (CET)
-Date:   Mon, 18 Jan 2021 13:21:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Mazur <krzysiek@podlesie.net>,
-        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively
- initialize state
-Message-ID: <YAV9TBMZ+Xs9ielC@hirez.programming.kicks-ass.net>
-References: <cover.1610950681.git.luto@kernel.org>
- <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
+        id S2391477AbhARMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:24:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:34508 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391382AbhARMWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:22:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EC3431B;
+        Mon, 18 Jan 2021 04:21:45 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.39.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B62633F719;
+        Mon, 18 Jan 2021 04:21:42 -0800 (PST)
+Date:   Mon, 18 Jan 2021 12:21:35 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org, linux-doc@vgert.kernel.org
+Subject: Re: [PATCH v3] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210118122135.GA31263@C02TD0UTHF1T.local>
+References: <20210115142446.13880-1-broonie@kernel.org>
+ <20210115164718.GE44111@C02TD0UTHF1T.local>
+ <20210115171251.GF4384@sirena.org.uk>
+ <20210115102014.76e51309@lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
+In-Reply-To: <20210115102014.76e51309@lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 10:20:38PM -0800, Andy Lutomirski wrote:
+On Fri, Jan 15, 2021 at 10:20:14AM -0700, Jonathan Corbet wrote:
+> On Fri, 15 Jan 2021 17:12:51 +0000
+> Mark Brown <broonie@kernel.org> wrote:
+> 
+> > On Fri, Jan 15, 2021 at 04:47:18PM +0000, Mark Rutland wrote:
+> > > On Fri, Jan 15, 2021 at 02:24:46PM +0000, Mark Brown wrote:  
+> > 
+> > > > +    3. Considerations
+> > > > +       3.1 Identifying successful termination  
+> > 
+> > > It looks like we forgot to update this with the addition of the new
+> > > section 3, so this needs a trivial update to add that and fix the
+> > > numbering.  
+> > 
+> > Bah, I thought the point with structured documentation formats was that
+> > tooling would handle stuff like this :/
+> 
+> The tooling *will* handle it if you let it, it's a simple matter of
+> replacing the hand-generated table of contents with a Sphinx directive.  I
+> think that's generally the right thing to do, but it does have the
+> downside of only putting the TOC in the generated docs.
 
->  - Code that wants MMX doesn't want need MXCSR or FCW initialized.
->    _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
->    initializing MXCSR will fail.
+Ah, I was not aware of that, and I had copied the TOC style from
+Documentation/livepatch/livepatch.rst.
 
-> +#define KFPU_MMX	0		/* nothing gets initialized */
+That does sound like the right thing to do generally, and I have no
+problem doing that here, but I guess we be consistent and either do that
+for all or none of the Documentation/livepatch/*.rst documents. I guess
+we could do that as a followup?
 
-This... why is that correct?
+Thanks,
+Mark.
