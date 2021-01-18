@@ -2,200 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45852FA6B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3012FA6BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393243AbhARQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S2393608AbhARQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:51:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393423AbhARQtT (ORCPT
+        with ESMTP id S2393588AbhARQvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:49:19 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BF3C061573;
-        Mon, 18 Jan 2021 08:48:37 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id s11so11030192edd.5;
-        Mon, 18 Jan 2021 08:48:37 -0800 (PST)
+        Mon, 18 Jan 2021 11:51:03 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27DFC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:50:22 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id 7so9869403wrz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MdavDPScT8OMhzBsegf4N4uuSFdYSkhFpD+67Vj7XX4=;
-        b=rjR+0plW0jpyDPgI6e9OUdyRjou3VeQ4qpxqBG4i+DV6JbdbOvKLk63j4OWwBKmW8R
-         M9Cx5VPfOMI1eTNEhutT7gh4rcGKXVvX+bvhAm4f/LBHg0T59erwISKG2qvBSfPqnji4
-         gyqbBXlutXpdB8Hw2x2L+XimtM5305BezpSXAcq5Gqxr2W/PoSpTbhwjDx49u24F2cUi
-         Enh3cXAf2WxwL5a3RW0BtK1Ho3cdTruGR6IXrNpgkEkvaszjs3COnsX0NhZPhNePFut9
-         +TJK4lsKmLMFdR/T5Sb/QgiwwIGrpL8K8XH5PLoATmTEM7tgOljPnWLFlKvTnzNE9Ltj
-         DFag==
+        bh=M9bVC0D29PiLP3SooWshnzjodDmaOHzWL9fgwIDTFtE=;
+        b=NrUZFBbOrp+MV6hCesD9V21DcHAX2TDzjSa4H5fIA2WP7yuAHlHnHVgsuqfj9/Ar4B
+         xhm/DSf/WJys9Z+rHzrtvDRGvpeN7gAadWoywSUrKmyGjNsAu8032PWZAkoJ67pkQaQX
+         CCm4IZ6+7tb8VapRAjoc07ZZgXEte6nRi3xkK2mfMxqhP7b2C3WxXJhXSnN7z7q3mmPl
+         uc7quskK2T8hBe4SyJglQAzk8zyBlTbbIx7mjG6DQT5zMff7GAhfPaWcczVbYA2MpQRo
+         tRJStZBla6/xWEO0wwWfsi9jIbfsbJBVlE9WO+Su+tIX4JoGaLC7XX7jhlCw0yzw1ue9
+         sGOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=MdavDPScT8OMhzBsegf4N4uuSFdYSkhFpD+67Vj7XX4=;
-        b=LPaZpPwE5S5sLdCn0tfTEOqFM7hq7TnzAKqJTEn8XO4kPr+9kQ7qUK80TuO1O/Xff8
-         bkSBvHPazbn97AHJFA+Z7azJcl0+3OXghwKFU6+ox3Zg87o6W9tBjEoJ3jRneM53r4eJ
-         VJAUjViYZnYgYvarAYmthrvJ1qohh029EXF/WRrAjUYtnuv6XP23wDM2y84IeF5LvjN7
-         nUokZFYAZzKjx0xNN/lLTg0KyJLlIipD+/+esuVTrPzpWVd5UcFErTVcBGOWIARAFay6
-         mdaGQLTbIxWhPOK4xJRyqEZ4ZrCPH1kanf/PFcuuKE8MbJDcF2ydlYFf2Co50dNom7kH
-         TuXA==
-X-Gm-Message-State: AOAM531V05WSr6W0MjmH2mB12ikFsKADmxK7P5bwbMbLjpSAZnrnAcKX
-        8PzeG3HHiozA3Y5S8rBQarXjZPZhaio=
-X-Google-Smtp-Source: ABdhPJzpYtzVUi2XrlE1b/f2Q7A5d5j6NrtBFUvOylh6ry9hP/bQDkPOSi1NNGAvQoaDbG4A2SJGFw==
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr262073edv.211.1610988516027;
-        Mon, 18 Jan 2021 08:48:36 -0800 (PST)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id m24sm9618925ejo.52.2021.01.18.08.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 08:48:35 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: rockchip: cleanup cpu_thermal node of
- rk3399-rock960.dts
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        bh=M9bVC0D29PiLP3SooWshnzjodDmaOHzWL9fgwIDTFtE=;
+        b=e5mEq7owb2024bFQawXsTTDNt2PN5izfzcGEu9mLwa6Q6HLQhcVFFivKTG+oQNMagB
+         klV3GSuWXtYPsvzlYQbaRh+KojbmSyEEWoT0ZRGkhTFWP1cfhjTBU9HSP9/aIPLa91qw
+         btXmYw1Lj8BCgxqM2Sg4w9UB1UJ96/9K4smCFQgyWFTHydTr2K8ZHGSjnbQfn4ivCGvA
+         J+loA0hZY264GcUF1TA7oUglcgARRcixQt72Rn/Czdma7pDgLoNstYiipXkCalnpa1AD
+         gyCzXZ/riDSSzMLofxa4W0sIXgkieg+rPhXDeczecSW/PmUfU3+91Il3kwbT+cNNn5Q1
+         TQQA==
+X-Gm-Message-State: AOAM530vHa5I99bGBeZhG+Adix17Iz9LIaBhXUaBQJMDydlH2EV9fyl2
+        pa9zohxbC93Gjzid5uv0NFpUSA==
+X-Google-Smtp-Source: ABdhPJw2g9byjlOuPcRSObz4o40FaDhPEf7OhIi+GNChZIesXRE+MPNBuJiYipRn8nsrRLQdNDN3LQ==
+X-Received: by 2002:adf:c387:: with SMTP id p7mr358073wrf.95.1610988621672;
+        Mon, 18 Jan 2021 08:50:21 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id v14sm28797342wru.8.2021.01.18.08.50.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 08:50:21 -0800 (PST)
+Subject: Re: [PATCH v3 0/5] Expose RPi4's bootloader configuration
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         linux-kernel@vger.kernel.org
-References: <20210118163306.8693-1-jbx6244@gmail.com>
-Message-ID: <c6dfa1a7-4a61-2e80-fe43-add1af611395@gmail.com>
-Date:   Mon, 18 Jan 2021 17:48:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Cc:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org,
+        devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        robh+dt@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        tim.gover@raspberrypi.com, phil@raspberrypi.com
+References: <20210112142342.7290-1-nsaenzjulienne@suse.de>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <e8ca9365-a1f2-1f9d-377c-13bf97883cce@linaro.org>
+Date:   Mon, 18 Jan 2021 16:50:20 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210118163306.8693-1-jbx6244@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210112142342.7290-1-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Sorry.
-This can go in the bin...
-It needs more cleanup...
-See question below.
 
-On 1/18/21 5:33 PM, Johan Jonker wrote:
-> The cpu_thermal node in the rk3399-rock960.dts file does not
-> reference &cpu_thermal directly to add the board-specific parts,
-> but also repeats all the SoC default properties.
-> Clean the whole thing up and fix alignment.
-> Place node in the correct alphabetical order.
+On 12/01/2021 14:23, Nicolas Saenz Julienne wrote:
+> Soon to be released versions of RPi4's firmware will take of care
+> passing their bootloader's configuration[1] to the OS by copying it into
+> memory and creating a reserved memory node in the board's DT. By
+> modeling this reserved memory node as an nvmem device using
+> 'nvmem-rmem', which this series introduces, user-space applications will
+> be able to query this information through nvmem's sysfs interface.
 > 
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> An alternative approach, less nice IMO, would be to create a
+> platform-specific 'soc' driver.
+> 
+> Regards,
+> Nicolas
+> 
+> [1] https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711_bootloader_config.md
+> 
 > ---
->  arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 75 ++++++++++++-------------
->  1 file changed, 36 insertions(+), 39 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> index b20774081..bff8a73d9 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> @@ -63,6 +63,42 @@
->  
->  };
->  
-> +&cpu_thermal {
-> +	polling-delay-passive = <100>;
-> +	polling-delay = <1000>;
-> +	thermal-sensors = <&tsadc 0>;
-> +	sustainable-power = <1550>;
-> +
-> +	trips {
-> +		cpu_alert0: cpu_alert0 {
-> +			temperature = <65000>;
-> +			hysteresis = <2000>;
-> +			type = "passive";
-> +		};
-> +
-> +		cpu_alert1: cpu_alert1 {
-> +			temperature = <75000>;
-> +			hysteresis = <2000>;
-> +			type = "passive";
-> +		};
-> +
-> +		cpu_crit: cpu_crit {
-> +			temperature = <95000>;
-> +			hysteresis = <2000>;
-> +			type = "critical";
-> +		};
-> +	};
-> +
-> +	cooling-maps {
-> +		map0 {
-> +			trip = <&cpu_alert1>;
-> +			cooling-device =
-> +				<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +				<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +		};
-> +	};
-> +};
-> +
->  &pcie0 {
->  	ep-gpios = <&gpio2 RK_PA2 GPIO_ACTIVE_HIGH>;
->  };
-> @@ -125,45 +161,6 @@
->  	status = "okay";
->  };
->  
-> -&thermal_zones {
-> -	cpu_thermal: cpu-thermal {
-> -		polling-delay-passive = <100>;
-> -		polling-delay = <1000>;
-> -		thermal-sensors = <&tsadc 0>;
-> -		sustainable-power = <1550>;
-> -
-> -		trips {
-> -			cpu_alert0: cpu_alert0 {
-> -				    temperature = <65000>;
-> -				    hysteresis = <2000>;
-> -				    type = "passive";
-> -			};
-> -
-> -			cpu_alert1: cpu_alert1 {
-> -				    temperature = <75000>;
-> -				    hysteresis = <2000>;
-> -				    type = "passive";
-> -			};
-> -
-> -			cpu_crit: cpu_crit {
-> -				  temperature = <95000>;
-> -				  hysteresis = <2000>;
-> -				  type = "critical";
-> -			};
-> -		};
-> -
-> -		cooling-maps {
-
-> -			     map0 {
-> -
-> -			     trip = <&cpu_alert1>;
-
-The trip property points to "cpu_alert1", while in rk3399.dtsi that is
-"&cpu_alert0"
-What is correct here?
-
-
-> -			     cooling-device =
-> -					<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> -					<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> -			};
-> -		};
-> -	};
-> -};
-> -
->  &usbdrd_dwc3_0 {
->  	dr_mode = "otg";
->  };
+> Changes since v2:
+>   - Fix DT bingins
+> 
+> Changes since v1:
+>   - Avoid the reserved-memory indirection by integrating the nvmem driver
+>     into the reserved memory node.
+> 
+> Nicolas Saenz Julienne (5):
+>    dt-bindings: nvmem: Add bindings for rmem driver
+>    nvmem: Add driver to expose reserved memory as nvmem
+>    ARM: dts: bcm2711: Add reserved memory template to hold firmware
+>      configuration
+>    arm64: defconfig: Enable nvmem's rmem driver
+>    ARM: multi_v7_defconfig: Enable nvmem's rmem driver
 > 
 
 
-				map0 {
-					trip = <&cpu_alert0>;
-					cooling-device =
-						<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-						<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-				};
+Thanks Applied (1/5) and (2/5), rest of patches should go via arm-soc tree!
+
+--srini
+
+>   .../devicetree/bindings/nvmem/rmem.yaml       | 49 ++++++++++
+>   arch/arm/boot/dts/bcm2711-rpi-4-b.dts         | 17 ++++
+>   arch/arm/configs/multi_v7_defconfig           |  1 +
+>   arch/arm64/configs/defconfig                  |  1 +
+>   drivers/nvmem/Kconfig                         |  8 ++
+>   drivers/nvmem/Makefile                        |  2 +
+>   drivers/nvmem/rmem.c                          | 97 +++++++++++++++++++
+>   drivers/of/platform.c                         |  1 +
+>   8 files changed, 176 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/nvmem/rmem.yaml
+>   create mode 100644 drivers/nvmem/rmem.c
+> 
