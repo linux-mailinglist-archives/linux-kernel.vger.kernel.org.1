@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A172FA56D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63D02FA56A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406157AbhARP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405877AbhARPby (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:31:54 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539EFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:31:14 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id n8so9825663ljg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:31:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GmHEGCdwQHARp3B4YMUOnTLBy+5mVFsyu+/MErTxaXw=;
-        b=kyEp7GIhT1v4d/7XAS32gC6Y1US3M+nKBTOFWVEf8C31ny/J+VWn4Ah5Y7uUK1IPzY
-         6G8JJvkv2YC/1Brh51oHQ2vy7aUVI500kvBmDewIuR2SIpI2mxd7lOLydmSFIpMAxDBu
-         YG/tnJ2KzkgIlCt4gnfCoiDnL7tKIg6PD26SMQkjY520+Tvd5JOJdZg3t36tzc+a9caq
-         sTRUihx2NOoYODclssvdAA3iBdTP0iFwlMNpxKLs4tNQ6jciOVTvXkqFtyMNgJZksINe
-         Tf2W2DGwsbAc9vmJZaLrQiSucsfW/Qj+pVka1cD49FdKgZrfVgripRXwJ2BEj47qec6x
-         82ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GmHEGCdwQHARp3B4YMUOnTLBy+5mVFsyu+/MErTxaXw=;
-        b=L5sQywxF6/daQFW/DyOCMP35X6Hq7rql+wTTwOrIx2u5em1jYErHF4MPqZQInsxTyT
-         HOLotSFoCVpRZwux0OqH47qz43PgzT21SqpimqrbyO6eo6r3zoEf3psQbAjh4Vcmg8JO
-         fnWokhYyCflvuLwQgbIl2LCdSWbDz0I2ad6Ljd+6xCShs+OscqH502h4iEbknhlNLcVs
-         ELg6Dgufb+JAa0l6xyN9pQ+4QFxGU/H+3tIs6JYwhC+8c1mjSk6B6TpsMpg7Irkn4fvq
-         x72oC/Ld458ZpWh21dga39U2WiQ36Pj1aRV3wytxpW8e5jfw8H+CtKerndB4WTFqlcHN
-         BfEA==
-X-Gm-Message-State: AOAM530Cjcg6ZRZhrBgACCiKIL3eGCJ15BOrI5fB8Cwqxrw6WADtPbAD
-        RHYqGT5aXGuC1qtsvFl3ZO4h5Nwj2IL8cF4ARmGWPQ==
-X-Google-Smtp-Source: ABdhPJxcvXvcSXWa0CL8Ppd+eKUAmT4SoQgGohbGuNGPnTU3j8aHn2PbJKj6LH/2Zxb6tlIimw60klS5OZnI5ezoc30=
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr93368ljo.368.1610983872916;
- Mon, 18 Jan 2021 07:31:12 -0800 (PST)
+        id S2405776AbhARP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:58:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405809AbhARPcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:32:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E32CC22285;
+        Mon, 18 Jan 2021 15:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610983897;
+        bh=EeJ+3Jco+lNKpr9hXwjA6rDdhWpj9jUW25+zaQVf7+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kKV0t6kteF/opVxelGpcl1v/ZaY3GHnF2PzmRP0LQ9Y7K0LIy14BHgvhg9pLfTbNx
+         beqYvvrBU7yci2IpSpddUzGAeU9qrZfn5EfyqEHK0b08NXA3K6BB95YsJ0OHn9uehw
+         A1eX0rejxG/yPfldnPjSRQ8S4GeBmWzQy7zNgL+a5UoVQ4eYdy/Sb+C6p2KyrzZthp
+         dIB8AVTvlXKriKQPw+/Bh/eKKYuLtdwvgNCpWq2zb7UlAC8jCUnKWtm8Sg/SHFq2Fo
+         U4Rez8JYJuBfbeMy2C2/WdZw/WOT4+d73Gr5LC8rm52rq+xmKsB0KGofwea+YvjO34
+         Gw2xZVh2F6llQ==
+Date:   Mon, 18 Jan 2021 10:31:35 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Message-ID: <20210118153135.GA4035784@sasha-vm>
+References: <20210118014951.250815-1-sashal@kernel.org>
+ <YAVTDETPaJuaRPfc@kroah.com>
+ <YAVT0XV7uX2NpIRe@kroah.com>
+ <20210118133959.GZ4035784@sasha-vm>
+ <YAWSgjWHCcJt6m0j@kroah.com>
 MIME-Version: 1.0
-References: <1610705349-24310-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610705349-24310-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 18 Jan 2021 16:31:01 +0100
-Message-ID: <CACRpkdZHFdUGarbV7Dpf0unde3KYYQ98aHq5V91JYTaetw+fag@mail.gmail.com>
-Subject: Re: [PATCH] drivers/pinctrl/bcm: Simplify bool comparison
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YAWSgjWHCcJt6m0j@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:09 AM Jiapeng Zhong
-<abaci-bugfix@linux.alibaba.com> wrote:
-
-> Fix the follow coccicheck warnings:
+On Mon, Jan 18, 2021 at 02:52:02PM +0100, Greg KH wrote:
+>On Mon, Jan 18, 2021 at 08:39:59AM -0500, Sasha Levin wrote:
+>> I think it would also affect code that doesn't do things based on
+>> SBULEVEL. Consider something like:
+>>
+>> 	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
+>>
+>> Which will cause 4.4.256 to now change the result of that comparison.
 >
-> ./drivers/pinctrl/bcm/pinctrl-ns2-mux.c:856:29-38: WARNING:
-> Comparison to bool.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+>Sure, but there are no in-kernel users like this, so my sympathy is
+>quite low :)
 
-Patch applied.
+Wouldn't it be an issue for the hacky in-kernel users too? For example,
+right now the USB code does:
 
-Yours,
-Linus Walleij
+	#define KERNEL_REL      bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+	#define KERNEL_VER      bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
+
+After 4.4.256, KERNEL_VER will be (5) rather than (4), indicating a
+version of 4.5.
+
+-- 
+Thanks,
+Sasha
