@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D902FAA2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6C52FA9B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393996AbhART26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:28:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
+        id S2407260AbhARTId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:08:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390434AbhARLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1E3223DB;
-        Mon, 18 Jan 2021 11:37:27 +0000 (UTC)
+        id S2390533AbhARLjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:39:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED0E1221EC;
+        Mon, 18 Jan 2021 11:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969847;
-        bh=6e72mQQeOkpy6P1S4ZJ1L+Rw9IbGA/l+p3Ag9iSANpU=;
+        s=korg; t=1610969943;
+        bh=7bugfp03IjuaYTQSOapwGQoSc8e3lJ0dGIuhuZmt97Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIf3+7svpRC1CiFJJT6JuiUk0NhMghUWhzRUmYtFDpz0vH/jmt6jSeXWMGFTCz7hN
-         fI4QfOvvwDS9H2wIVqUzivJbRoK73JrDbKROERmTrAFJLDio9dUqQyEiWWX5dcUbzN
-         XCmjBr4wJuXwfmYnca+5iWpknk/+87S8LHWnBC4M=
+        b=rbYVwsb1c3r56eiMjKJtk5Q7NtDjgTm4OWxOLZlJfDnlcBzNzP5RWuXFmqLQksvHG
+         FuoSqMgorS7+uNrk/J+xnUsfg+eD7ssX158hKS9eZeqJnQlzJuA2zkxu8at0cge9zB
+         C2wkx6FmBQwcMODecAW6NQOKmB4YEf1Suk5Xg0a8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alexey Minnekhanov <alexeymin@postmarketos.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/43] drm/msm: Call msm_init_vram before binding the gpu
-Date:   Mon, 18 Jan 2021 12:34:46 +0100
-Message-Id: <20210118113336.063185500@linuxfoundation.org>
+Subject: [PATCH 5.4 47/76] drm/msm: Call msm_init_vram before binding the gpu
+Date:   Mon, 18 Jan 2021 12:34:47 +0100
+Message-Id: <20210118113343.236095780@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,10 +59,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 3ba3ae9749bec..81de5e1659551 100644
+index 108632a1f2438..8d9d86c76a4e9 100644
 --- a/drivers/gpu/drm/msm/msm_drv.c
 +++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -483,14 +483,14 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
+@@ -432,14 +432,14 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
  
  	drm_mode_config_init(ddev);
  
