@@ -2,123 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A531B2FA210
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6390A2FA22B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391961AbhARNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:49:31 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11557 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392151AbhARNsw (ORCPT
+        id S2392473AbhARNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:51:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22845 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404724AbhARNvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:48:52 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DKCkZ544QzMLhC;
-        Mon, 18 Jan 2021 21:46:46 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 18 Jan 2021 21:48:03 +0800
-Subject: Re: [PATCH 6/6] vfio/iommu_type1: Drop parameter "pgsize" of
- update_user_bitmap
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20210107044401.19828-1-zhukeqian1@huawei.com>
- <20210107044401.19828-7-zhukeqian1@huawei.com>
- <20210115164409.3e7ddb28@omen.home.shazbot.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <279c11d9-e79b-2057-3e0c-ac12ab6d917e@huawei.com>
-Date:   Mon, 18 Jan 2021 21:48:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 18 Jan 2021 08:51:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610977774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=R1fTME2Xx4DitCdE2DcFGBglSf88fZqDqOdTt4xA428=;
+        b=VlCdwhXHDkTE1FiNU0Huz+F52WnZ+UCMmhQg4MGQ1XF7W/BD3vQkf/NsQd6H+rAQu2S7Uc
+        ES1hTN3u62fI+374TgOVVUDwxoDRBD4m/k4FC9fxp7+6dvZj7GI9ryZskQO/MTl3gZyDY4
+        ctb2aqN2AMyNgtGX92lcAh978vDOPAA=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-tiHrkLwFOL-aVxEvhtIh6Q-1; Mon, 18 Jan 2021 08:49:33 -0500
+X-MC-Unique: tiHrkLwFOL-aVxEvhtIh6Q-1
+Received: by mail-qk1-f200.google.com with SMTP id b206so17136771qkc.14
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:49:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R1fTME2Xx4DitCdE2DcFGBglSf88fZqDqOdTt4xA428=;
+        b=Evu7c4WMy8YicH/qjPBHUlGXWI+lrbRvD1GaKHx/uKAB/tjwAxC/aQp2pgbZeIQzYv
+         KVjhRBzF3z1+HjB2lSlWhBa+t3TYZWsInJ8WeHZ7z3fCJ9rPxynWc0z41G0TJ4z3ossY
+         q0si/KMBBMU0y2KcQ9iSOgGYtbAwRXFIsItGt2YiVp5QwOx4Er6jfyv81n4dpoq9JN+N
+         kO04vLF6+If6a68LK1h5UTU8UcKAJdPZw1G2XMo60PgnHeAi54THrfPLdsov1+JPWPid
+         rWL4gW6w4OjyEMEDzWgXW+uCHdHDIpUz2tm+PEFHz063BhfjH1kckiisVMGMaphIkzAX
+         xu9A==
+X-Gm-Message-State: AOAM531Gx/AmFH3VYK6Qq7XLGT3mog3rwUNPGkTiCMcWgU1UYl9QGLiw
+        2z4IOPWNXTPD4FcVDPGC/c5EB3MSGB8LoGLCLJMeYCszECgTSoiLk2ivgRF/BTMCjUCU8OCALL4
+        P+neet2LqAB3CwY75rZAjdhPN
+X-Received: by 2002:a37:6245:: with SMTP id w66mr24147611qkb.422.1610977772725;
+        Mon, 18 Jan 2021 05:49:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOMC29Y1VqUypHma5nna2hENgFdPeZytx7wLwpCWmcqSXDCFb+/gAcFgfbAQkjPmrqPo9vtA==
+X-Received: by 2002:a37:6245:: with SMTP id w66mr24147598qkb.422.1610977772555;
+        Mon, 18 Jan 2021 05:49:32 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 8sm10473419qkr.28.2021.01.18.05.49.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 05:49:31 -0800 (PST)
+From:   trix@redhat.com
+To:     daniel.lezcano@linaro.org, tglx@linutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, viresh.kumar@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] clocksource: mxs_timer: add missing semicolon when DEBUG is defined
+Date:   Mon, 18 Jan 2021 05:49:26 -0800
+Message-Id: <20210118134926.613931-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210115164409.3e7ddb28@omen.home.shazbot.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+When DEBUG is defined this error occurs
 
-On 2021/1/16 7:44, Alex Williamson wrote:
-> On Thu, 7 Jan 2021 12:44:01 +0800
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> 
->> We always use the smallest supported page size of vfio_iommu as
->> pgsize. Drop parameter "pgsize" of update_user_bitmap.
->>
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  drivers/vfio/vfio_iommu_type1.c | 9 ++++-----
->>  1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 82649a040148..bceda5e8baaa 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -978,10 +978,9 @@ static void vfio_update_pgsize_bitmap(struct vfio_iommu *iommu)
->>  }
->>  
->>  static int update_user_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
->> -			      struct vfio_dma *dma, dma_addr_t base_iova,
->> -			      size_t pgsize)
->> +			      struct vfio_dma *dma, dma_addr_t base_iova)
->>  {
->> -	unsigned long pgshift = __ffs(pgsize);
->> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
->>  	unsigned long nbits = dma->size >> pgshift;
->>  	unsigned long bit_offset = (dma->iova - base_iova) >> pgshift;
->>  	unsigned long copy_offset = bit_offset / BITS_PER_LONG;
->> @@ -1046,7 +1045,7 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
->>  		if (dma->iova > iova + size - 1)
->>  			break;
->>  
->> -		ret = update_user_bitmap(bitmap, iommu, dma, iova, pgsize);
->> +		ret = update_user_bitmap(bitmap, iommu, dma, iova);
->>  		if (ret)
->>  			return ret;
->>  
->> @@ -1192,7 +1191,7 @@ static int vfio_dma_do_unmap(struct vfio_iommu *iommu,
->>  
->>  		if (unmap->flags & VFIO_DMA_UNMAP_FLAG_GET_DIRTY_BITMAP) {
->>  			ret = update_user_bitmap(bitmap->data, iommu, dma,
->> -						 unmap->iova, pgsize);
->> +						 unmap->iova);
->>  			if (ret)
->>  				break;
->>  		}
-> 
-> Same as the previous, both call sites already have both pgsize and
-> pgshift, pass both rather than recalculate.  Thanks,
-> 
-My idea is that the "pgsize" parameter goes here and there, disturbs our sight when read code.
-To be frankly, the recalculate is negligible. Or we can add new fields in vfio_iommu, which are
-updated in vfio_update_pgsize_bitmap().
+drivers/clocksource/mxs_timer.c:138:1: error:
+  expected ‘;’ before ‘}’ token
 
-Thanks,
-Keqian
+The preceding statement needs a semicolon.
 
+Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/clocksource/mxs_timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
+index bc96a4cbf26c..55aa6b72d075 100644
+--- a/drivers/clocksource/mxs_timer.c
++++ b/drivers/clocksource/mxs_timer.c
+@@ -133,7 +133,7 @@ static void mxs_irq_clear(char *state)
+ 	timrot_irq_acknowledge();
+ 
+ #ifdef DEBUG
+-	pr_info("%s: changing mode to %s\n", __func__, state)
++	pr_info("%s: changing mode to %s\n", __func__, state);
+ #endif /* DEBUG */
+ }
+ 
+-- 
+2.27.0
 
-> Alex
-> 
-> .
-> 
