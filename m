@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6C52FA9B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6371D2FA97D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407260AbhARTId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:08:33 -0500
+        id S2390530AbhARLkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:40:08 -0500
 Received: from mail.kernel.org ([198.145.29.99]:33364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390533AbhARLjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:39:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED0E1221EC;
-        Mon, 18 Jan 2021 11:39:02 +0000 (UTC)
+        id S2390403AbhARLhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E439022ADC;
+        Mon, 18 Jan 2021 11:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969943;
-        bh=7bugfp03IjuaYTQSOapwGQoSc8e3lJ0dGIuhuZmt97Q=;
+        s=korg; t=1610969793;
+        bh=7qZctB+wVDZvRl3IuGRuLTWmXyJBRmOZJZw2yJV1oYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rbYVwsb1c3r56eiMjKJtk5Q7NtDjgTm4OWxOLZlJfDnlcBzNzP5RWuXFmqLQksvHG
-         FuoSqMgorS7+uNrk/J+xnUsfg+eD7ssX158hKS9eZeqJnQlzJuA2zkxu8at0cge9zB
-         C2wkx6FmBQwcMODecAW6NQOKmB4YEf1Suk5Xg0a8=
+        b=EjGgkZV4vn/AuM+hX6jy5AIM8IvZwGzDhjii7zKx3429WJLFgp0PioIOiJR1VRo1u
+         hC4spbNUq4O0/9P/g2DHNAMi6es4m0tZbDVK4moqlzIMV5gRk16o+mwfKHNdbX7rP3
+         AAdsLrz+Cy4JXLXutKuqoYgy9G2KEKHx51d8jArc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Craig Tatlor <ctatlor97@gmail.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 47/76] drm/msm: Call msm_init_vram before binding the gpu
-Date:   Mon, 18 Jan 2021 12:34:47 +0100
-Message-Id: <20210118113343.236095780@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 28/43] ASoC: Intel: fix error code cnl_set_dsp_D0()
+Date:   Mon, 18 Jan 2021 12:34:51 +0100
+Message-Id: <20210118113336.305611097@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Craig Tatlor <ctatlor97@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d863f0c7b536288e2bd40cbc01c10465dd226b11 ]
+commit f373a811fd9a69fc8bafb9bcb41d2cfa36c62665 upstream.
 
-vram.size is needed when binding a gpu without an iommu and is defined
-in msm_init_vram(), so run that before binding it.
+Return -ETIMEDOUT if the dsp boot times out instead of returning
+success.
 
-Signed-off-by: Craig Tatlor <ctatlor97@gmail.com>
-Reviewed-by: Brian Masney <masneyb@onstation.org>
-Tested-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl platform")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lore.kernel.org/r/X9NEvCzuN+IObnTN@mwanda
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/msm/msm_drv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/cnl-sst.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 108632a1f2438..8d9d86c76a4e9 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -432,14 +432,14 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
- 
- 	drm_mode_config_init(ddev);
- 
--	/* Bind all our sub-components: */
--	ret = component_bind_all(dev, ddev);
-+	ret = msm_init_vram(ddev);
- 	if (ret)
- 		goto err_destroy_mdss;
- 
--	ret = msm_init_vram(ddev);
-+	/* Bind all our sub-components: */
-+	ret = component_bind_all(dev, ddev);
- 	if (ret)
--		goto err_msm_uninit;
-+		goto err_destroy_mdss;
- 
- 	if (!dev->dma_parms) {
- 		dev->dma_parms = devm_kzalloc(dev, sizeof(*dev->dma_parms),
--- 
-2.27.0
-
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -212,6 +212,7 @@ static int cnl_set_dsp_D0(struct sst_dsp
+ 				"dsp boot timeout, status=%#x error=%#x\n",
+ 				sst_dsp_shim_read(ctx, CNL_ADSP_FW_STATUS),
+ 				sst_dsp_shim_read(ctx, CNL_ADSP_ERROR_CODE));
++			ret = -ETIMEDOUT;
+ 			goto err;
+ 		}
+ 	} else {
 
 
