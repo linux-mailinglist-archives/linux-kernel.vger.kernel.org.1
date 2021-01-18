@@ -2,94 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057992FA06C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DC12FA05D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391881AbhARMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:51:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391933AbhARMqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:46:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F855222B3;
-        Mon, 18 Jan 2021 12:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610973942;
-        bh=LNff0UBizKktpvktRVvs3pjfNMwgUksevEkhf0JcYwI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=abJnP8jAPPSr3/4Q485xn7McL6jqFW/7C/W5qSPLFxokl/1c1a2K5By3XkDw0etT8
-         K12Z/7Yyu4vrsvwpAsmktLjpopz/JhcVmStVgQASYlcp41i9HN+L1CBUR1H7g1fMc2
-         0ldAN/dGZGzHfOPI78CWC2d3MVNN8JGzVYXj25rEkOoJfStPfETspU1qw+gXATl6QO
-         MXcOgBA9b9POSx8wMWdgBC3oKDEfmlEo0LdynkWzl3L/YH8RWJJ0KrjSNyU6cfqiVM
-         i+BY+3nXUrxSX1nHMCmGzt5kfdqR5RMxWJq9PhgdQYgKICTm9oSbNkVP4FmZPA2njQ
-         15teiqit6t1zg==
-Date:   Mon, 18 Jan 2021 12:45:05 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
- nodes
-Message-ID: <20210118124505.GG4455@sirena.org.uk>
-References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
- <20210104183821.GA29033@kozik-lap>
- <20210104212449.GJ5645@sirena.org.uk>
- <20210105165529.GB20401@kozik-lap>
- <20210106145931.GE4752@sirena.org.uk>
- <20210108161635.1b9303c8.timon.baetz@protonmail.com>
- <20210108161653.GA4554@sirena.org.uk>
- <20210115071914.0407a928.timon.baetz@protonmail.com>
- <20210115134213.GB4384@sirena.org.uk>
- <20210116090306.7c3d8023.timon.baetz@protonmail.com>
+        id S2404287AbhARMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:49:37 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42767 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404147AbhARMqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:46:52 -0500
+Received: by mail-io1-f72.google.com with SMTP id k26so21522657ios.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:46:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=YJ2ANZh2M04vWIUzXzQCuyA7q10YXGQQfQOyJ16QsJQ=;
+        b=PQ33IcZxEsatkGnWTgGRzAEtrXmkeWVHTwJDwaxHJvKPkiai5PZXX2m4gufFaL9SWU
+         rNgt+MMYieZDRcNUogLY/4LHRHnSBFkxatx8ZXh85HtTgr9ThNgxIdt/qcwc6SAux3aN
+         bLwpE6BvrTR5jfawwmcZeukVzdTa9unWxpORKmSs7dupXIE3VebcrwPYYBExZB6pMWdm
+         hlWVY7x+VPaJKWP87myo9LVc7cIkIkr6p+ocDpRr+8z9aVHP89l/rELvaDWY+2Ym8hmH
+         bXEEdXr+NmuOlB5lT7tNr7XfXFw+U83CNpFH2StjUp4pnq678mlPi3QVr0mcY4H6yt3E
+         sf1A==
+X-Gm-Message-State: AOAM533PfciQHEnQCuX/VAGAyRt9xkos4ol47JPiY/ri3zrC/LRmQWbI
+        VyPfTlkfaRm+17Ycbh/djKEWGQaEyvWxFh/bfE5iCsgr83aq
+X-Google-Smtp-Source: ABdhPJyvUCul7O32EEGQQpAgC1b3Kmj9J0hr07NS4qMNTULjpHrJ7HHEC4Gn8bVciPY4mooj+jjd4oOi/jKLw1acis6LzuYEZgP+
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="V32M1hWVjliPHW+c"
-Content-Disposition: inline
-In-Reply-To: <20210116090306.7c3d8023.timon.baetz@protonmail.com>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a92:85d4:: with SMTP id f203mr5939706ilh.232.1610973970611;
+ Mon, 18 Jan 2021 04:46:10 -0800 (PST)
+Date:   Mon, 18 Jan 2021 04:46:10 -0800
+In-Reply-To: <1e51be0f-98a1-6dd2-63da-02e92e79a4ef@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000042c22b05b92c1b44@google.com>
+Subject: Re: WARNING in io_disable_sqo_submit
+From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---V32M1hWVjliPHW+c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in io_sq_thread_stop
 
-On Sat, Jan 16, 2021 at 08:03:25AM +0000, Timon Baetz wrote:
+INFO: task kworker/u4:0:8 blocked for more than 143 seconds.
+      Not tainted 5.11.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:0    state:D stack:24056 pid:    8 ppid:     2 flags:0x00004000
+Workqueue: events_unbound io_ring_exit_work
+Call Trace:
+ context_switch kernel/sched/core.c:4313 [inline]
+ __schedule+0x90c/0x21a0 kernel/sched/core.c:5064
+ schedule+0xcf/0x270 kernel/sched/core.c:5143
+ schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1854
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ kthread_park+0x122/0x1b0 kernel/kthread.c:557
+ io_sq_thread_park fs/io_uring.c:7445 [inline]
+ io_sq_thread_park fs/io_uring.c:7439 [inline]
+ io_sq_thread_stop+0xfe/0x570 fs/io_uring.c:7463
+ io_finish_async fs/io_uring.c:7481 [inline]
+ io_ring_ctx_free fs/io_uring.c:8646 [inline]
+ io_ring_exit_work+0x62/0x6d0 fs/io_uring.c:8739
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-> I could use extcon_get_extcon_dev("max8997-muic") and basically hard
-> code the extcon device name in the charger driver. Then I only need
-> charger-supply in DTS which could be added to the parent device's node.
+Showing all locks held in the system:
+3 locks held by kworker/u4:0/8:
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010069138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
+ #1: ffffc90000cd7da8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
+ #2: ffff88801bfd4870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7444 [inline]
+ #2: ffff88801bfd4870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7439 [inline]
+ #2: ffff88801bfd4870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_stop+0xd6/0x570 fs/io_uring.c:7463
+1 lock held by khungtaskd/1647:
+ #0: ffffffff8b373aa0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/8164:
+ #0: ffff8880151b8870 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:947
+2 locks held by kworker/u4:6/8415:
+2 locks held by kworker/0:4/8690:
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801007c538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
+ #1: ffffc9000288fda8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
+1 lock held by syz-executor.3/8865:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+1 lock held by syz-executor.2/8867:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+2 locks held by syz-executor.5/8869:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+ #1: ffffffff8b37c368 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #1: ffffffff8b37c368 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4f2/0x610 kernel/rcu/tree_exp.h:836
+1 lock held by syz-executor.4/8870:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+1 lock held by syz-executor.0/8872:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+1 lock held by syz-executor.1/8873:
+ #0: ffff888146ddcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
 
-> Would that be acceptable for everyone?
+=============================================
 
-Sounds reasonable to me.
+NMI backtrace for cpu 1
+CPU: 1 PID: 1647 Comm: khungtaskd Not tainted 5.11.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd43/0xfa0 kernel/hung_task.c:294
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 8415 Comm: kworker/u4:6 Not tainted 5.11.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_nc_worker
+RIP: 0010:__this_cpu_preempt_check+0xd/0x20 lib/smp_processor_id.c:70
+Code: 00 00 48 c7 c6 00 d9 9e 89 48 c7 c7 40 d9 9e 89 e9 98 fe ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 0f 1f 44 00 00 48 89 ee 5d <48> c7 c7 80 d9 9e 89 e9 77 fe ff ff cc cc cc cc cc cc cc 0f 1f 44
+RSP: 0018:ffffc9000c507af0 EFLAGS: 00000046
+RAX: 0000000000000001 RBX: 0000000000000000 RCX: 1ffffffff1a077ab
+RDX: 0000000000000000 RSI: ffffffff894bac40 RDI: ffffffff894bac40
+RBP: ffffffff8b3739e0 R08: 0000000000000000 R09: ffffffff8d038b8f
+R10: fffffbfff1a07171 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff88802f858bc0 R14: 00000000ffffffff R15: ffffffff889a5430
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbcc03ca000 CR3: 0000000011523000 CR4: 0000000000350ef0
+Call Trace:
+ lockdep_recursion_inc kernel/locking/lockdep.c:432 [inline]
+ lock_is_held_type+0x34/0x100 kernel/locking/lockdep.c:5475
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:123
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x5b7/0x710 kernel/locking/lockdep.c:5448
+ __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:174 [inline]
+ _raw_spin_unlock_bh+0x12/0x30 kernel/locking/spinlock.c:207
+ spin_unlock_bh include/linux/spinlock.h:399 [inline]
+ batadv_nc_purge_paths+0x2a5/0x3a0 net/batman-adv/network-coding.c:467
+ batadv_nc_worker+0x831/0xe50 net/batman-adv/network-coding.c:716
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
---V32M1hWVjliPHW+c
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Tested on:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAFgtAACgkQJNaLcl1U
-h9CpQwf/fIRDXKLWQlexshrS3nrpFq9wDSuen/Ofo0KT9QJTAemn2/WJXtmbZK9Z
-zZYiaapSLaOCjzqLmc0DgqttqYDjcNMUaOAe79kdHlFq69zSywqbgo2yPrBtDfLr
-8r7oiv10U6BS9p79q+ww4Ohnhc1WpRhWLlh+XUZUAhLw60+1nvZPSkX65TcNvGK6
-oYgk7/E4NFDc3QWf/6qbOFdqj9u2+TwF98PYOs1QXcF6XbBhesD47iew0ITwWYm3
-lIAPmaUpCAryiWDrQap/HvlbA9cvU1v3kHrXj9g96mxZfj/NULTEQPks3LSYqPRZ
-QozKbT6eTl+qq11mVKN4jgB3gHYOew==
-=xJlP
------END PGP SIGNATURE-----
+commit:         a1235e44 io_uring: cancel all requests on task exit
+git tree:       git://git.kernel.dk/linux-block io_uring-5.11
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c53584d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c6b6b5cccb0f38f2
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
---V32M1hWVjliPHW+c--
