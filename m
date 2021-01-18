@@ -2,65 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7820D2FA0BD
+	by mail.lfdr.de (Postfix) with ESMTP id E3CF22FA0BE
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391705AbhARNHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:07:08 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47766 "EHLO gloria.sntech.de"
+        id S2391897AbhARNHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:07:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:49493 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391972AbhARNEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:04:08 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l1UBn-00047p-Mz; Mon, 18 Jan 2021 14:03:23 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     richard@nod.at, robh+dt@kernel.org, vigneshr@ti.com,
-        miquel.raynal@bootlin.com, Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: (subset) [PATCH v16 0/8] Add Rockchip NFC drivers for RK3308 and others
-Date:   Mon, 18 Jan 2021 14:03:22 +0100
-Message-ID: <2205525.ECZNHGQPT7@diego>
-In-Reply-To: <161097370156.287816.7898637730580960045.b4-ty@sntech.de>
-References: <20201210002134.5686-1-yifeng.zhao@rock-chips.com> <161097370156.287816.7898637730580960045.b4-ty@sntech.de>
+        id S2388850AbhARNHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:07:07 -0500
+IronPort-SDR: NdAuvIMijyUZkN+ke7q69xjOuhDrmwrIAch+a0ZWDzN/iK5v6nyl3jSFupGhfSn82BFogil0qI
+ hDTIiQa2gKRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="176227810"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="176227810"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:05:14 -0800
+IronPort-SDR: Z4a7e9twg5ORZ3x9btiBnSsh5HzEFV6p2J/lJlFX/iclkhR1YWxwGNzRUUO9BE21p9QjkQRs+j
+ C4NA5X2qPwDw==
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="383566818"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.29.150]) ([10.255.29.150])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 05:05:09 -0800
+Subject: Re: [PATCH] x86/perf: Use static_call for x86_pmu.guest_get_msrs
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel test robot <lkp@intel.com>
+References: <20210118072151.44481-1-like.xu@linux.intel.com>
+ <202101182008.jQybUDa0-lkp@intel.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <a82754e7-9a2d-7ab4-466d-fc0d51a3b7f2@linux.intel.com>
+Date:   Mon, 18 Jan 2021 21:05:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <202101182008.jQybUDa0-lkp@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 18. Januar 2021, 13:57:36 CET schrieb Heiko Stuebner:
-> On Thu, 10 Dec 2020 08:21:30 +0800, Yifeng Zhao wrote:
-> > Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
-> > V900.This series patch can support all four versions.
-> > 
-> > 
-> > Changes in v16:
-> > - Fix some comments about 'ret' variable.
-> > 
-> > [...]
+I guess this fix will silence the compiler error,
+and v2 will be sent after the local 0day test passes.
+
+diff --git a/arch/x86/include/asm/perf_event.h 
+b/arch/x86/include/asm/perf_event.h
+index b9a7fd0a27e2..517f546b6b45 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -479,15 +479,11 @@ static inline void perf_events_lapic_init(void)   { }
+  static inline void perf_check_microcode(void) { }
+  #endif
+
+-#if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_CPU_SUP_INTEL)
+  extern struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr);
++
++#if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_CPU_SUP_INTEL)
+  extern int x86_perf_get_lbr(struct x86_pmu_lbr *lbr);
+  #else
+-static inline struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+-{
+-       *nr = 0;
+-       return NULL;
+-}
+  static inline int x86_perf_get_lbr(struct x86_pmu_lbr *lbr)
+  {
+         return -1;
+
+On 2021/1/18 20:12, kernel test robot wrote:
+> Hi Like,
 > 
-> Applied, thanks!
+> Thank you for the patch! Yet something to improve:
 > 
-> [6/8] arm: dts: rockchip: Add NFC node for RV1108 SoC
->       commit: 2525f194f9dc07c48b0a12697128357068c2e04b
-> [7/8] arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
->       commit: 9c2bfe53b2fc4a8a63311f162e80b27978db6c06
-> [8/8] arm: dts: rockchip: Add NFC node for RK3036 SoC
->       commit: 4cd9a03435bcd20ce6f524e3826fd263951c22fe
-
-I of course also applied patches 4-5 (arm32) in
-- https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/commit/?h=v5.12-armsoc/dts32&id=2525f194f9dc07c48b0a12697128357068c2e04b
-- https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/commit/?h=v5.12-armsoc/dts32&id=9c2bfe53b2fc4a8a63311f162e80b27978db6c06
-
-just b4 seemed to hickup with my 2 fetches for arm32+arm64.
-
-
-Heiko
-
+> [auto build test ERROR on tip/perf/core]
+> [also build test ERROR on v5.11-rc4 next-20210118]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Like-Xu/x86-perf-Use-static_call-for-x86_pmu-guest_get_msrs/20210118-153219
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
+> config: x86_64-randconfig-a002-20210118 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 95d146182fdf2315e74943b93fb3bb0cbafc5d89)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install x86_64 cross compiling tool for clang build
+>          # apt-get install binutils-x86-64-linux-gnu
+>          # https://github.com/0day-ci/linux/commit/0cd2262fad043a5edef91fca07d16759703658b8
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Like-Xu/x86-perf-Use-static_call-for-x86_pmu-guest_get_msrs/20210118-153219
+>          git checkout 0cd2262fad043a5edef91fca07d16759703658b8
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> arch/x86/events/core.c:670:31: error: redefinition of 'perf_guest_get_msrs'
+>     struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+>                                   ^
+>     arch/x86/include/asm/perf_event.h:486:45: note: previous definition is here
+>     static inline struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+>                                                 ^
+>     1 error generated.
+> 
+> 
+> vim +/perf_guest_get_msrs +670 arch/x86/events/core.c
+> 
+>     669	
+>   > 670	struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+>     671	{
+>     672		struct perf_guest_switch_msr *ret = NULL;
+>     673	
+>     674		ret = static_call(x86_pmu_guest_get_msrs)(nr);
+>     675		if (!ret)
+>     676			*nr = 0;
+>     677	
+>     678		return ret;
+>     679	}
+>     680	EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
+>     681	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
