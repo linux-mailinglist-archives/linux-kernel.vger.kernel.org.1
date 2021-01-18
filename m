@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7C82F9DF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263782F9E09
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390023AbhARLUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:20:06 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39741 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389207AbhARLOp (ORCPT
+        id S2390155AbhARLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:20:46 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:63284 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389994AbhARLP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:14:45 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l1STi-0001P2-Ai; Mon, 18 Jan 2021 11:13:46 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scsi: ibmvfc: Fix spelling mistake "succeded" -> "succeeded"
-Date:   Mon, 18 Jan 2021 11:13:46 +0000
-Message-Id: <20210118111346.70798-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 18 Jan 2021 06:15:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610968505; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=n/+AKCp0WfoXeqcSPUsaiGc887j6r3CbEnS8X7fCkRM=; b=e3NvLOtmqFKbsjuosRAeQ0FfPsBHPOnoJ5IHuYcWhdKKd86ge/dmBFBw8mDs4fUROtKznm/c
+ ElabaS90PQYNWTlWXCdpqpT4XGxSJRRPsoGxd67WLr0b6tjzNn7T6XCIplHFFQH3byJvRNNX
+ JTEaoFRnDO3qM3TE7xpKJ1Ehin4=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60056d9b7086580d329031a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 11:14:35
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BAB23C433ED; Mon, 18 Jan 2021 11:14:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.106] (unknown [182.18.191.137])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CA46C433CA;
+        Mon, 18 Jan 2021 11:14:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1CA46C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+Subject: Re: [PATCH v4 1/2] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>, dan.j.williams@intel.com,
+        broonie@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, ylal@codeaurora.org,
+        vinmenon@codeaurora.org
+References: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
+ <CAG_fn=V7LwUExnvVhAswj=VtEGPh9okB9ofzqnRfL2OV6qom5w@mail.gmail.com>
+From:   Vijayanand Jitta <vjitta@codeaurora.org>
+Message-ID: <b841a77d-742b-a810-d0bf-de67272f96fa@codeaurora.org>
+Date:   Mon, 18 Jan 2021 16:44:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG_fn=V7LwUExnvVhAswj=VtEGPh9okB9ofzqnRfL2OV6qom5w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-There is a spelling mistake in a ibmvfc_dbg debug message. Fix it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 1/7/2021 3:14 PM, Alexander Potapenko wrote:
+> On Wed, Dec 30, 2020 at 1:46 PM <vjitta@codeaurora.org> wrote:
+>>
+>> From: Yogesh Lal <ylal@codeaurora.org>
+>>
+>> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
+> I think "ORDER_SHIFT" is somewhat redundant, as "SMTH_ORDER" already
+> means this is a power of two we'll be using for shifting.
+> Leaving this up to you.
+> 
+> Alex
+> 
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 1db9e04f1ad3..755313b766b9 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -4808,7 +4808,7 @@ static void ibmvfc_channel_setup_done(struct ibmvfc_event *evt)
- 
- 	switch (mad_status) {
- 	case IBMVFC_MAD_SUCCESS:
--		ibmvfc_dbg(vhost, "Channel Setup succeded\n");
-+		ibmvfc_dbg(vhost, "Channel Setup succeeded\n");
- 		flags = be32_to_cpu(setup->flags);
- 		vhost->do_enquiry = 0;
- 		active_queues = be32_to_cpu(setup->num_scsi_subq_channels);
+Right, updated this to STACK_HASH_ORDER in v5.
+https://lkml.org/lkml/2021/1/18/255
+
+Thanks,
+Vijay
 -- 
-2.29.2
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of Code Aurora Forum, hosted by The Linux Foundation
