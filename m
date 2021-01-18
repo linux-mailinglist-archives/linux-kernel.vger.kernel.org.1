@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2358F2FAB59
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC7F2FAB5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437857AbhARUYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:24:03 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:46499 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394269AbhARUW2 (ORCPT
+        id S2437893AbhARUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:24:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728901AbhARUYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:22:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611001347; x=1642537347;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3vkIEGQPFf489pGA8tP/HOKmNsBhghNgESRdR43Dvi4=;
-  b=JEU1+kv9EJ0ycQnsQpKzQQEpFgMrxDgZUWCNTHk+xwG8JigKupzPT/j5
-   zGPxH/ApYkhz+CX8BImKCoG9f1jDNGFD9D2Hr5fPS7FsWp913k0bWIOcz
-   Fd9G3saQSvpNRk3THpN2SvLstNVzABA0mKi33n/KiQrap/IN8KAXIjp88
-   fRfNrn1h+XqQz05DQtEeJRFEJddFSbw5I5PFfu9xE2jB9DWxcrvpej+BA
-   XcHR2+EFlcyqk+MUvbw64kdtvB0235/99476Xi6Pn9JNRN2glVfZORVEw
-   w2002bfaqIwklCGmeCr6hSOYDxsK+++1YIvcZVpkQUpkn3026po284HOV
-   Q==;
-IronPort-SDR: rMWYeylswX1gedRqJc0sbzC07gP3jSvW+2wrO19QaXbFHctPUv6k3twJY5sL/DnbwtL9B/ThoV
- jZOqweyOj82hJFlZH9sQBO58Ar4LT5x4Ad2mZ/jAU49Ip7TE0NdG3JKaD5z5q2/pihHafrHo6n
- FXsLztcT+qP5WSqdBCjNREbRzbyaDx9hNUzwcUb6JK6zPr1Sb4ORd+MTSryXS8L+OgnVHxXvNA
- xRBUyxYF5+TnauZoxd1cub2mQYGLTGqGejLCCLkv5EiAAX8rUyFnpQAKQhsZBi6TefqS764vu9
- Y18=
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="103319071"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Jan 2021 13:20:37 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 18 Jan 2021 13:20:37 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 18 Jan 2021 13:20:36 -0700
-Date:   Mon, 18 Jan 2021 21:20:36 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: mrp: use stp state as substitute for
- unimplemented mrp state
-Message-ID: <20210118202036.wk2fuwa3hysg4dmj@soft-dev3.localdomain>
-References: <20210118181319.25419-1-rasmus.villemoes@prevas.dk>
- <20210118185618.75h45rjf6qqberic@soft-dev3.localdomain>
- <20210118194632.zn5yucjfibguemjq@skbuf>
+        Mon, 18 Jan 2021 15:24:37 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D558C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:23:57 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id h10so10837533pfo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:23:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PRwPVFLZbO3DnAQ42ccV130KeMHAu1TzeUayWROwv/U=;
+        b=D2VzllMwI2rSMF3fX1njbMFiKbfDpQ3IXRCYQgDbNGdf1yPZ150jNDDBeTZ+3rw+P2
+         5FnicS/fv346tnbPPjPFrElvpO4GK/EpxP39jG8NBTLBAGGP/hPE33tHcwGdcEesVXlt
+         G8liJ4Y7tDRNrqjMdNcP4RQoQ5Oytb2eoShFWME3gd1RaE8PrsGULM+jnSEOK3HIZce4
+         JmbvAKFS56TNaJj6y6eUWun9j6i2uLH9fusqwr9RscqhgmF5FGkyhquxgXrAaDb8k6y4
+         MAuYwzp0Myr0wGHUZzPbT4Nb1OU3+szJhcUoaMr+09LjodIERu1H1iPD84VKmY8eg4gN
+         lTfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PRwPVFLZbO3DnAQ42ccV130KeMHAu1TzeUayWROwv/U=;
+        b=YFke1H/sAqgIrAvwNGBR19XpHcci6oO4FyMSDZO/xjRNAcQo/yPjhfOHW11kS/xYOD
+         R0mhVS1OZvZxpA7BXHEpnEmrluuS2BWTjq0hDYORTxOq42ddDopt05BJSF5zaKZ+Kd7G
+         DL+SYg0QaS6rUUaS2SCUD4Hu0McmbNDDGCQT0/lCHnz1ncUJxAUP508O+irSO3+eZ3Oi
+         pgikogUI1JYgR5E8VKJykzeJDe4LMZeb6BdRk9SJcPy4q6AB8K655tUs6nP6Acn9INCw
+         ufox3JAjjumwmwPJj2Dr8ZvgbSGADvqma3tfmDbFcw+E26qtd+YoCTH5Tkb7lXkp7mha
+         zM0g==
+X-Gm-Message-State: AOAM530dy2tK7tKuUfUPgz1uIK7u+N5bL6zKcJhWAYyufpmuVagTeICb
+        xHuZJi+zCILrEEIM7cs0p7nhJQ==
+X-Google-Smtp-Source: ABdhPJy+XiAne7fTflPqmQNXkPVAJW9nmT50Uu+iH1IjIiuVrMWcUoQzrZt24boa3WoZAdDT6VX/dg==
+X-Received: by 2002:a63:c441:: with SMTP id m1mr1233168pgg.353.1611001437058;
+        Mon, 18 Jan 2021 12:23:57 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id br21sm259184pjb.9.2021.01.18.12.23.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 12:23:56 -0800 (PST)
+Date:   Mon, 18 Jan 2021 13:23:54 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
+        leo.yan@linaro.org, mnissler@google.com
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+Message-ID: <20210118202354.GC464579@xps15>
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118194632.zn5yucjfibguemjq@skbuf>
+In-Reply-To: <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 01/18/2021 19:46, Vladimir Oltean wrote:
+On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
+> Hello Mathieu, Suzuki
 > 
-> On Mon, Jan 18, 2021 at 07:56:18PM +0100, Horatiu Vultur wrote:
-> > The reason was to stay away from STP, because you can't run these two
-> > protocols at the same time. Even though in SW, we reuse port's state.
-> > In our driver(which is not upstreamed), we currently implement
-> > SWITCHDEV_ATTR_ID_MRP_PORT_STATE and just call the
-> > SWITCHDEV_ATTR_ID_PORT_STP_STATE.
+> On 2020-10-15 21:32, Mathieu Poirier wrote:
+> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+> > > On production systems with ETMs enabled, it is preferred to
+> > > exclude kernel mode(NS EL1) tracing for security concerns and
+> > > support only userspace(NS EL0) tracing. So provide an option
+> > > via kconfig to exclude kernel mode tracing if it is required.
+> > > This config is disabled by default and would not affect the
+> > > current configuration which has both kernel and userspace
+> > > tracing enabled by default.
+> > > 
+> > 
+> > One requires root access (or be part of a special trace group) to be
+> > able to use
+> > the cs_etm PMU.  With this kind of elevated access restricting tracing
+> > at EL1
+> > provides little in terms of security.
+> > 
 > 
-> And isn't Rasmus's approach reasonable, in that it allows unmodified
-> switchdev drivers to offload MRP port states without creating
-> unnecessary code churn?
+> Apart from the VM usecase discussed, I am told there are other
+> security concerns here regarding need to exclude kernel mode tracing
+> even for the privileged users/root. One such case being the ability
+> to analyze cryptographic code execution since ETMs can record all
+> branch instructions including timestamps in the kernel and there may
+> be other cases as well which I may not be aware of and hence have
+> added Denis and Mattias. Please let us know if you have any questions
+> further regarding this not being a security concern.
 
-I am sorry but I don't see this as the correct solution. In my opinion,
-I would prefer to have 3 extra lines in the driver and have a better
-view of what is happening. Than having 2 calls in the driver for
-different protocols.
-If it is not a problem to have STP calls when you configure the MRP,
-then why not just remove SWITCHDEV_ATTR_ID_MRP_PORT_STATE?
+Even if we were to apply this patch there are many ways to compromise a system
+or get the kernel to reveal important information using the perf subsystem.  I
+would perfer to tackle the problem at that level rather than concentrating on
+coresight.
 
 > 
-> Also, if it has no in-kernel users, why does it even exist as a
-> switchdev attribute?
-
--- 
-/Horatiu
+> After this discussion, I would like to post a v2 based on Suzuki's
+> feedback earlier. @Suzuki, I have a common config for ETM3 and ETM4
+> but couldn't get much idea on how to implement it for Intel PTs, if
+> you have any suggestions there, please do share or we can have this
+> only for Coresight ETMs.
+> 
+> Thanks,
+> Sai
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
