@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079CB2F9B93
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD0D2F9B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388012AbhARIxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:53:55 -0500
-Received: from verein.lst.de ([213.95.11.211]:47062 "EHLO verein.lst.de"
+        id S2387908AbhARI6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:58:01 -0500
+Received: from www.zeus03.de ([194.117.254.33]:59930 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387937AbhARIxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:53:53 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 66CE968AFE; Mon, 18 Jan 2021 09:53:11 +0100 (CET)
-Date:   Mon, 18 Jan 2021 09:53:11 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Oliver Giles <ohw.giles@gmail.com>, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: Splicing to/from a tty
-Message-ID: <20210118085311.GA2735@lst.de>
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+        id S2387770AbhARI55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:57:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=odbwHB50SLc5EVMnx2MmbfbSij/6
+        RS2X0gG9yUbXGvQ=; b=35cEMqbixgG9D9YOqRlnGxyBA/GzVCNs+bow7itYaiBZ
+        5Zzww7jebMcxC0HKguv8zEdCcVEzm+bgFOtWATnL4QUSJesyLRDLpNiWblKMQIzR
+        /xh/qXyfIVDQMAVOTfUhf2/gjtTMauZqWbHtJ9eym28EVct1nQNSDeHR7VpJWh8=
+Received: (qmail 629519 invoked from network); 18 Jan 2021 09:57:15 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Jan 2021 09:57:15 +0100
+X-UD-Smtp-Session: l3s3148p1@gSBe6Ci5oIYgAwDPXwacAOByz8F9Mgm1
+Date:   Mon, 18 Jan 2021 09:57:11 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: watchdog: renesas,wdt: add r8a779a0
+ (V3U) support
+Message-ID: <20210118085711.GA1018@ninjato>
+References: <20201218173731.12839-1-wsa+renesas@sang-engineering.com>
+ <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
 Content-Disposition: inline
-In-Reply-To: <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 05:46:33PM +0100, Johannes Berg wrote:
-> > For my case, I attempted to instead implement splice_write and
-> > splice_read in tty_fops; I managed to get splice_write working calling
-> > ld->ops->write, but splice_read is not so simple because the
-> > tty_ldisc_ops read method expects a userspace buffer. So I cannot see
-> > how to implement this without either (a) using set_fs, or (b)
-> > implementing iter ops on all line disciplines.
-> > 
-> > Is splice()ing between a tty and a pipe worth supporting at all? Not a
-> > big deal for my use case at least, but it used to work.
-> 
-> Is it even strictly related to the tty?
-> 
-> I was just now looking into why my cgit/fcgi/nginx setup no longer
-> works, and the reason is getting -EINVAL from sendfile() when the input
-> is a file and the output is a pipe().
 
-Yes, pipes do not support ->splice_write currenly.   I think just wiring
-up iter_file_splice_write would work.  Al?
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> So I wrote a simple test program (below) and that errors out on kernel
-> 5.10.4, while it works fine on the 5.9.16 I currently have. Haven't
-> tried reverting anything yet, but now that I haev a test program it
-> should be simple to even bisect.
-> 
-> johannes
-> 
-> 
-> #include <unistd.h>
-> #include <sys/types.h>
-> #include <sys/stat.h>
-> #include <fcntl.h>
-> #include <sys/sendfile.h>
-> #include <stdio.h>
-> #include <assert.h>
-> 
-> int main(int argc, char **argv)
-> {
-> 	int in = open(argv[0], O_RDONLY);
-> 	int p[2], out;
-> 	off_t off = 0;
-> 	int err;
-> 
-> 	assert(in >= 0);
-> 	assert(pipe(p) >= 0);
-> 	out = p[1];
-> 	err = sendfile(out, in, &off, 1024);
-> 	if (err < 0)
-> 		perror("sendfile");
-> 	assert(err == 1024);
-> 
-> 	return 0;
-> }
-> 
----end quoted text---
+On Fri, Dec 18, 2020 at 06:37:26PM +0100, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>=20
+> Please apply it to the watchdog-tree.
+
+Guenter, could you pick/ack it, please?
+
+>=20
+>  Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml =
+b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> index 6933005b52bd..ab66d3f0c476 100644
+> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
+> @@ -50,6 +50,7 @@ properties:
+>                - renesas,r8a77980-wdt     # R-Car V3H
+>                - renesas,r8a77990-wdt     # R-Car E3
+>                - renesas,r8a77995-wdt     # R-Car D3
+> +              - renesas,r8a779a0-wdt     # R-Car V3U
+>            - const: renesas,rcar-gen3-wdt # R-Car Gen3 and RZ/G2
+> =20
+>    reg:
+> --=20
+> 2.29.2
+>=20
+
+--nFreZHaLTZJo0R7j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAFTWMACgkQFA3kzBSg
+KbbE1Q/8DueMvbDDst01JemJotsD5DZn6/VwnSUwluawt6ObGTDYwxfbcyBkoUzt
+HaladCExuPmRaLjDwhG5TPQ1jChelhrJzwjks+SEr0p9WngO7ivZsidG9pzuR/fc
+5K8Rk/dbTuEfafV9tLDfLsLZT8aNWa8YmaSx01BcgUoeKEJilw2V+Uy0RSUamQU5
+C6dxS2gIG7oevY4rAL3VmPBxQuKxI6yYLlacy8yb7p0XkIaQj9Mnl5WXQ1ZKeZtT
+HXKjAP3gTpmyX5+2PxEk673q7PfOHFVN0tlg3kQIJliUBjlpIRTeysyT2v7nYg/S
+r17jEOlKp7zhKqHbzr8JNVLNQx/ZylBq7ItewEHum4OQQuxuTNNuGV8Dj5Syj8bR
+FBA84UApMgIBEm9/V30OXsOxbLZw8vc9P/VGALzOiobQsrzaG5bBIl423jZx8q8S
+hm9EJ9PR0wRKqPPROOv8+A2ZO/bCd35VJ2TM9P28TQwWToMrON0DVlIoBf9g3cXh
+kxthluUr/f3F3vS4UHlqwn2xxZrd4Xtf4P7pkpxcZFK+cW08w325N3VxXkIOAE11
+2xcSgnPp0JqJzJpNKkbH5MHPb8BNOdSs/ACUX5QKkxWxCMj9yXIAx4a+WUSyqhPk
+lex5jN1fDQzofZ6JMvLKerrr7KvgzAu18GRUcRZHE2O5edC5izo=
+=8zwP
+-----END PGP SIGNATURE-----
+
+--nFreZHaLTZJo0R7j--
