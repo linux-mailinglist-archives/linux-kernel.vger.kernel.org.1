@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B642F98DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBB72F98E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 06:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbhARE4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:56:30 -0500
-Received: from mga05.intel.com ([192.55.52.43]:43921 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbhARE42 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:56:28 -0500
-IronPort-SDR: uRo9Et2p2EXxZduwGqDUorwnZ92whXHcYDOVb+lvKxUpyvkcOWBLYHnIs6PONW+/jqq/ja7l9H
- goplEP2FvIqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="263562979"
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="263562979"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:54:42 -0800
-IronPort-SDR: x/F1t2tK6H5or7+JFTyHNHYtlkvRQ7PE4851Xm5SYNR2655Ho+VjAplpU1avtvAFDzAp6BNIXp
- e/n3d9zEyUwQ==
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="383428999"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 20:54:39 -0800
-Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210104021837.30473-1-yao.jin@linux.intel.com>
- <20210112100807.GB1273297@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
-Date:   Mon, 18 Jan 2021 12:54:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726261AbhARFBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 00:01:06 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50336 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbhARFBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 00:01:02 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10I4wcNw087118;
+        Sun, 17 Jan 2021 22:58:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610945918;
+        bh=FZFsA/XJzBlLNzf6/Dmk9x9gW0UhtWRu13aOk1GEEK4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=VWUOwKh9PKciy/+T6TedBSNWQvedGNfsszf0+YhIZ7BGUo0jAX0XLzADLJO8+jVJl
+         KeFdSmWnhVpOBinsOPQParSW+8jnrai8JUDtRcG1ok8SR6Xdtmr9uqy7GXRu+UyH0B
+         t4/xEzrBQU+Fhxcgwets8UXsbsN7kFzhKG5FvtsQ=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10I4wcAE014025
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 17 Jan 2021 22:58:38 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 17
+ Jan 2021 22:58:37 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 17 Jan 2021 22:58:37 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10I4wYvJ088286;
+        Sun, 17 Jan 2021 22:58:35 -0600
+Subject: Re: [PATCH 1/2] dt-bindings: soc: ti: ti,pruss: add ti,am1806-pruss
+To:     David Lechner <david@lechnology.com>, Suman Anna <s-anna@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210104183021.330112-1-david@lechnology.com>
+ <20210104183021.330112-2-david@lechnology.com>
+ <f03b9e77-510a-2ad4-4cb8-4aa3919abeb5@ti.com>
+ <8535db9a-5fd1-f2f2-086a-0f9d017e0e52@lechnology.com>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <5ad2d9a8-d60f-6541-6efd-2fa036ec7517@ti.com>
+Date:   Mon, 18 Jan 2021 10:28:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210112100807.GB1273297@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <8535db9a-5fd1-f2f2-086a-0f9d017e0e52@lechnology.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 1/12/2021 6:08 PM, Jiri Olsa wrote:
-> On Mon, Jan 04, 2021 at 10:18:37AM +0800, Jin Yao wrote:
->> The default event list includes the most common events which are widely
->> used by users. But with -e option, the current perf only counts the events
->> assigned by -e option. Users may want to collect some extra events with
->> the default list. For this case, users have to manually add all the events
->> from the default list. It's inconvenient. Also, users may don't know how to
->> get the default list.
+On 17/01/21 1:48 AM, David Lechner wrote:
+> On 1/15/21 10:45 AM, Suman Anna wrote:
+>> + Sekhar and Bartosz
 >>
->> Now it supports a simple syntax: -e +event
+>> Hi David,
 >>
->> The prefix '+' tells perf to append this event (or event list) to default
->> event list.
+>> On 1/4/21 12:30 PM, David Lechner wrote:
+>>> This adds a "ti,am1806-pruss" compatible type for the PRUSS found in
+>>> TI AM18xx/OMAP-L138 SoCs.
+>>>
+>>> Signed-off-by: David Lechner <david@lechnology.com>
+>>> ---
+>>>   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> index 037c51b2f972..a6ed23fdbc00 100644
+>>> --- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> +++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> @@ -61,6 +61,7 @@ properties:
+>>>       compatible:
+>>>       enum:
+>>> +      - ti,am1806-pruss  # for AM18xx/OMAP-L138 SoC family
 >>
->> Before:
->>
->> root@kbl-ppc:~# ./perf stat -e power/energy-pkg/ -a -- sleep 1
->>
->>   Performance counter stats for 'system wide':
->>
->>                2.04 Joules power/energy-pkg/
->>
->>         1.000863884 seconds time elapsed
->>
->> After:
->>
->> root@kbl-ppc:~# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
->>
->>   Performance counter stats for 'system wide':
->>
->>                2.11 Joules +power/energy-pkg/        #    0.000 K/sec
+>> Almost all the drivers for these SoCs use the prefix "ti,da850-xxx"
+>> for the
+>> compatibles. Can we switch to using those instead of ti,am1806?
 > 
-> I dont think we should print the extra '+' prefix
-> 
-> jirka
-> 
->>            8,007.17 msec   cpu-clock                 #    7.993 CPUs utilized
->>                 125        context-switches          #    0.016 K/sec
->>                   8        cpu-migrations            #    0.001 K/sec
->>                   2        page-faults               #    0.000 K/sec
->>           8,520,084        cycles                    #    0.001 GHz
->>           2,808,302        instructions              #    0.33  insn per cycle
->>             555,427        branches                  #    0.069 M/sec
->>              59,005        branch-misses             #   10.62% of all branches
->>
->>         1.001832003 seconds time elapsed
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> 
+> I wasn't sure which chips exactly are "DA850". If someone can tell
+> me, I can look at the docs to see if they have a PRUSS.
 
-Printing '+' prefix is the original behavior.
+Hi David, you can treat DA850 is same as OMAP-L138 for all purposes in
+kernel.
 
-Without this patch,
-
-root@kbl-ppc:# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
-
-  Performance counter stats for 'system wide':
-
-               2.02 Joules +power/energy-pkg/
-
-        1.000859434 seconds time elapsed
-
-The '+' prefix is printed. So I finally decide not to remove the '+' prefix in order to keep 
-original behavior.
-
-Thanks
-Jin Yao
-
+Thanks,
+Sekhar
 
