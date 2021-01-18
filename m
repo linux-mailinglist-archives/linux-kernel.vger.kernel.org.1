@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA752F9C81
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E932F9C83
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388681AbhARJlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        id S2389057AbhARJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:42:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388673AbhARJac (ORCPT
+        with ESMTP id S2388852AbhARJbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:30:32 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6194AC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:29:38 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 6so8426036wri.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CTgLJUEqtetOUnV2zas5KqZ4EY9oOOP8M49JHcOPywA=;
-        b=I+4oFB0MgkgBjVm5Jj+c26yE7J3Obn5Uivn2n9Fp/Criu/5WvR9jSF+6l5Mftrkyl0
-         LywxDJBSpWgUWo+Waeuq7vjxe7019LkJvKBZ9uv52xIojUEC5UNPNBiDsYwwfcZqtttt
-         tPWp9hSxYCsHc8M4d3gCPY9KSWXKYYLIS378E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=CTgLJUEqtetOUnV2zas5KqZ4EY9oOOP8M49JHcOPywA=;
-        b=RsBhvLm0PTVMqJherUnsELciA1J7T5ZHBkljsYI332kcDSC3IRTC+DwGkvo+5N1Xay
-         CwaXZ5mfePwLMqm8ZT8wcDce518ZnjbJPYevUKBJzVaY4mqStVGv9vjgLa3O/EfS7ZRI
-         3yA/x5LA/nNbYb4eUXKz32u+5679azRNBq8dWoVGM8EVjBFlcvM3th1XJeQ3cBmS6C/L
-         7jJ9lHb6fUob03CW8deTXit1X//akJnwtCAtP9wV67fHG3u5vYZ3FoFDBnAQeCS4DRRw
-         LJ9FW9mmCmKzXb9uyuG8ndMi/83gFeWR3t1D67/Dw2Ck03QMPi1Ae5A8FGZ4GQ87FE0B
-         NN7Q==
-X-Gm-Message-State: AOAM530xtKTL69XjO+aj77f72iLeTPVtPJN/RE3OEwAzQ5xuMz2N5qkL
-        0Px+tWPSOGXGFHuLRrPkKWkM6OJGCEzOf3nH
-X-Google-Smtp-Source: ABdhPJwZD2NhTSuMUUe1JnXazKkGPQJ8zIJYw38ZA8GsmaChXIwZBv1OUFyczb0noJoTAULMPt4RQQ==
-X-Received: by 2002:adf:dd09:: with SMTP id a9mr24721347wrm.90.1610962176960;
-        Mon, 18 Jan 2021 01:29:36 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id d7sm17087960wmb.47.2021.01.18.01.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 01:29:36 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:29:34 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
-Cc:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, dri-devel@lists.freedesktop.org,
-        george.kennedy@oracle.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, melissa.srw@gmail.com,
-        natechancellor@gmail.com, sam@ravnborg.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de,
-        yepeilin.cs@gmail.com
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
- fbcon_cursor
-Message-ID: <YAVU/vIwsqAzC7Qm@phenom.ffwll.local>
-Mail-Followup-To: syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@intel.com,
-        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        melissa.srw@gmail.com, natechancellor@gmail.com, sam@ravnborg.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de,
-        yepeilin.cs@gmail.com
-References: <00000000000091111005b435456e@google.com>
- <000000000000c37b3a05b916e95a@google.com>
+        Mon, 18 Jan 2021 04:31:23 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B1EC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6bZ+tjVem9NiiCz8+tie0IkJT1+H8oQhEMfEUdICqAE=; b=HNiuzpCLRr3uBFJSeD25QxwNLQ
+        Q4usXQ69KZcrf7I4Ebz1eeJLKRmcPdmunGrQuUlPQCXi2s9K2qVElCJeKYEBAPiC1Iu8iMaWDSmtA
+        4jyF6sS/S6dsun2VPAS/qswGgYeDJyuK4oYRbTlBe+U7FAypSvIAJK+2fb0yTvD7NScWYMYOw3LSU
+        L8UgZRL9xy3GOpoRb/hcC0x8Y2y18eLtvCXK4CMZs2FtL2bKxzFJSeQuNW7S55NZjbTOyqzgpi+Vl
+        ccKFhmBCq819aSHox134YRoX3GbOs954TYG8v4ZYezEJ0l0iAoz5eB/lUoAcAswyJZfkV/RS9Hkm5
+        rM8XAsCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l1Qrj-0005oW-8Z; Mon, 18 Jan 2021 09:30:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A70830015A;
+        Mon, 18 Jan 2021 10:30:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4FB5F20291083; Mon, 18 Jan 2021 10:30:21 +0100 (CET)
+Date:   Mon, 18 Jan 2021 10:30:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, cai@redhat.com, vincent.donnefort@arm.com,
+        decui@microsoft.com, paulmck@kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org
+Subject: Re: [PATCH 7/8] sched: Fix CPU hotplug / tighten is_per_cpu_kthread()
+Message-ID: <YAVVLRWCLbnQoXz2@hirez.programming.kicks-ass.net>
+References: <20210116113033.608340773@infradead.org>
+ <20210116113920.103635633@infradead.org>
+ <jhjsg6z4i2w.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000c37b3a05b916e95a@google.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <jhjsg6z4i2w.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 03:29:05AM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
+On Sun, Jan 17, 2021 at 04:57:27PM +0000, Valentin Schneider wrote:
+> On 16/01/21 12:30, Peter Zijlstra wrote:
+> > @@ -1796,13 +1796,28 @@ static inline bool rq_has_pinned_tasks(s
+> >   */
+> >  static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+> >  {
+> > +	/* When not in the task's cpumask, no point in looking further. */
+> >       if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> >               return false;
+> >
+> > +	/* migrate_disabled() must be allowed to finish. */
+> > +	if (is_migration_disabled(p))
+> >               return cpu_online(cpu);
+> >
+> > +	/* Non kernel threads are not allowed during either online or offline. */
+> > +	if (!(p->flags & PF_KTHREAD))
+> > +		return cpu_active(cpu);
+> > +
+> > +	/* KTHREAD_IS_PER_CPU is always allowed. */
+> > +	if (kthread_is_per_cpu(p))
+> > +		return cpu_online(cpu);
+> > +
+> > +	/* Regular kernel threads don't get to stay during offline. */
+> > +	if (cpu_rq(cpu)->balance_callback == &balance_push_callback)
+> > +		return cpu_active(cpu);
 > 
-> commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
-> Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Date:   Fri Oct 9 23:21:56 2020 +0000
+> is_cpu_allowed(, cpu) isn't guaranteed to have cpu_rq(cpu)'s rq_lock
+> held, so this can race with balance_push_set(, true). This shouldn't
+> matter under normal circumstances as we'll have sched_cpu_wait_empty()
+> further down the line.
 > 
->     drm/vkms: fbdev emulation support
+> This might get ugly with the rollback faff - this is jumping the gun a
+> bit, but that's something we'll have to address, and I think what I'm
+> concerned about is close to what you mentioned in
+> 
+>   http://lore.kernel.org/r/YAM1t2Qzr7Rib3bN@hirez.programming.kicks-ass.net
+> 
+> Here's what I'm thinking of:
+> 
+> _cpu_up()                            ttwu()
+>                                        select_task_rq()
+>                                          is_cpu_allowed()
+>                                            rq->balance_callback != balance_push_callback
+>   smpboot_unpark_threads() // FAIL
+>   (now going down, set push here)
+>   sched_cpu_wait_empty()
+>   ...                                  ttwu_queue()
+>   sched_cpu_dying()
+>   *ARGH*
+> 
 
-Not sure you want to annotate this, but this just makes the bug
-reproducible on vkms. It's a preexisting issue (probably a few decades
-old) of the fbcon code afaict. It might also be that you can only repro
-this when you have multiple fbcon drivers (vkms plus whatever your virtual
-machine has I guess).
--Daniel
+Let me try this then...
 
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148e2748d00000
-> start commit:   b3a3cbde Add linux-next specific files for 20210115
-> git tree:       linux-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=168e2748d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=128e2748d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cd8fe0d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17af5258d00000
-> 
-> Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
-> Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5057054b1cff..9b045296d646 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7495,6 +7495,8 @@ int sched_cpu_activate(unsigned int cpu)
+ 	return 0;
+ }
+ 
++unsigned long sched_cpu_rcu_state;
++
+ int sched_cpu_deactivate(unsigned int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+@@ -7519,6 +7521,11 @@ int sched_cpu_deactivate(unsigned int cpu)
+ 	 */
+ 	balance_push_set(cpu, true);
+ 
++	/*
++	 * See sched_cpu_wait_empty().
++	 */
++	sched_cpu_rcu_state = get_state_synchronize_rcu();
++
+ 	rq_lock_irqsave(rq, &rf);
+ 	if (rq->rd) {
+ 		update_rq_clock(rq);
+@@ -7578,6 +7585,12 @@ int sched_cpu_starting(unsigned int cpu)
+  */
+ int sched_cpu_wait_empty(unsigned int cpu)
+ {
++	/*
++	 * Guarantee that TTWU will observe balance_push_set(true),
++	 * such that all wakeups will refuse this CPU.
++	 */
++	cond_synchronize_rcu(sched_cpu_rcu_state);
++
+ 	balance_hotplug_wait();
+ 	return 0;
+ }
