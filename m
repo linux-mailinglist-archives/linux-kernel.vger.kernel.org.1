@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CB62F9E2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152F22F9E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390351AbhARLa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:30:56 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:43746 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390278AbhARL3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:29:30 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10IBSXxhC013639, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10IBSXxhC013639
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 18 Jan 2021 19:28:33 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 18 Jan 2021 19:28:32 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <kidman@realtek.com>, <max.chou@realtek.com>,
-        <abhishekpandit@chromium.org>, <josephsih@chromium.org>
-Subject: [PATCH] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
-Date:   Mon, 18 Jan 2021 19:28:27 +0800
-Message-ID: <20210118112827.6192-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S2390321AbhARLcq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 06:32:46 -0500
+Received: from wnbcorp.com ([175.126.38.143]:51955 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390176AbhARLbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:31:51 -0500
+Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IBRmib011380;
+        Mon, 18 Jan 2021 20:29:50 +0900
+Message-Id: <202101181129.10IBRmib011380@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Mon, 18 Jan 2021 12:29:25 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-By this change, it will enable WBS supported on the specific Realtek BT
-devices, such as RTL8822C and RTL8852A.
-In the future, it's able to maintain what the Realtek devices support WBS
-here.
+Sir/Madam,
 
-Tested-by: Hilda Wu <hildawu@realtek.com>
-Signed-off-by: Max Chou <max.chou@realtek.com>
----
- drivers/bluetooth/btrtl.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+CONGRATULATIONS!!!
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 24f03a1f8d57..835819c47ae6 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -38,6 +38,19 @@
- 	.hci_ver = (hciv), \
- 	.hci_bus = (bus)
- 
-+enum  btrtl_chip_id {
-+	CHIP_ID_8723A,		/* index  0 for RTL8723A*/
-+	CHIP_ID_8723B,		/* index  1 for RTL8723B*/
-+	CHIP_ID_8821A,		/* index  2 for RTL8821A*/
-+	CHIP_ID_8761A,		/* index  3 for RTL8761A*/
-+	CHIP_ID_8822B = 8,	/* index  8 for RTL8822B */
-+	CHIP_ID_8723D,		/* index  9 for RTL8723D */
-+	CHIP_ID_8821C,		/* index 10 for RTL8821C */
-+	CHIP_ID_8822C = 13,	/* index 13 for RTL8822C */
-+	CHIP_ID_8761B,		/* index 14 for RTL8761B */
-+	CHIP_ID_8852A = 18,	/* index 18 for RTL8852A */
-+};
-+
- struct id_table {
- 	__u16 match_flags;
- 	__u16 lmp_subver;
-@@ -58,6 +71,7 @@ struct btrtl_device_info {
- 	u8 *cfg_data;
- 	int cfg_len;
- 	bool drop_fw;
-+	int project_id;
- };
- 
- static const struct id_table ic_id_table[] = {
-@@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
- 
- 	/* Find project_id in table */
- 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
--		if (project_id == project_id_to_lmp_subver[i].id)
-+		if (project_id == project_id_to_lmp_subver[i].id) {
-+			btrtl_dev->project_id = project_id;
- 			break;
-+		}
- 	}
- 
- 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-@@ -725,12 +741,16 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
- 	/* Enable central-peripheral role (able to create new connections with
- 	 * an existing connection in slave role).
- 	 */
--	switch (btrtl_dev->ic_info->lmp_subver) {
--	case RTL_ROM_LMP_8822B:
-+	/* Enable WBS supported for the specific Realtek devices. */
-+	switch (btrtl_dev->project_id) {
-+	case CHIP_ID_8822C:
-+	case CHIP_ID_8852A:
- 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-+		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
- 		break;
- 	default:
- 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-+		rtl_dev_dbg(hdev, "WBS supported not enabled.");
- 		break;
- 	}
- 
--- 
-2.17.1
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
