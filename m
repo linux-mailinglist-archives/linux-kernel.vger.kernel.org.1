@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039542FA535
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB792FA534
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390139AbhARPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:52:53 -0500
-Received: from mga01.intel.com ([192.55.52.88]:62210 "EHLO mga01.intel.com"
+        id S2406015AbhARPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:52:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:38298 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405968AbhARPtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:49:55 -0500
-IronPort-SDR: SX+H5SrnUIW2aS2wMCkpMkZcWy2ZvRZJVWgboaMifx7YmFupuBtJ2t6I/5iloxDoSmmB9YMDTY
- /WTcr3CoTvew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="197515034"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="197515034"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:47:56 -0800
-IronPort-SDR: FZXyR9Yj44AZW1W+LqW4U2uJWS72nNLBgaMb8phX095Yo+3wF3tUF5Me7OfVam8nLncN+xmLgG
- ZG1fjOoDg+og==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="353541314"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:47:51 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1Wlw-002J6b-KM; Mon, 18 Jan 2021 17:48:52 +0200
-Date:   Mon, 18 Jan 2021 17:48:52 +0200
-From:   "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "robert.moore@intel.com" <robert.moore@intel.com>,
-        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <20210118154852.GY4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
- <20210118135121.GM4077@smile.fi.intel.com>
- <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
- <20210118152323.GV4077@smile.fi.intel.com>
- <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+        id S2390778AbhARPt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:49:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B7641FB;
+        Mon, 18 Jan 2021 07:49:09 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 559E53F68F;
+        Mon, 18 Jan 2021 07:49:06 -0800 (PST)
+Subject: Re: [PATCH v6 06/33] of/device: Move dma_range_map before
+ of_iommu_configure
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh@kernel.org>
+Cc:     youlin.pei@mediatek.com, devicetree@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        anan.sun@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+References: <20210111111914.22211-1-yong.wu@mediatek.com>
+ <20210111111914.22211-7-yong.wu@mediatek.com>
+ <20210114192732.GA3401278@robh.at.kernel.org>
+ <1610688626.4578.1.camel@mhfsdcap03>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1853732d-0efd-171e-9e1f-7ee7ed72a98f@arm.com>
+Date:   Mon, 18 Jan 2021 15:49:06 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1610688626.4578.1.camel@mhfsdcap03>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:32:54PM +0100, Hans de Goede wrote:
-> On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
+On 2021-01-15 05:30, Yong Wu wrote:
+> On Thu, 2021-01-14 at 13:27 -0600, Rob Herring wrote:
+>> On Mon, Jan 11, 2021 at 07:18:47PM +0800, Yong Wu wrote:
+>>> "dev->dma_range_map" contains the devices' dma_ranges information,
+>>> This patch moves dma_range_map before of_iommu_configure. The iommu
+>>> driver may need to know the dma_address requirements of its iommu
+>>> consumer devices.
+>>>
+>>> CC: Rob Herring <robh+dt@kernel.org>
+>>> CC: Frank Rowand <frowand.list@gmail.com>
+>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>>> ---
+>>>   drivers/of/device.c | 3 ++-
+>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/of/device.c b/drivers/of/device.c
+>>> index aedfaaafd3e7..1d84636149df 100644
+>>> --- a/drivers/of/device.c
+>>> +++ b/drivers/of/device.c
+>>> @@ -170,9 +170,11 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>>>   	dev_dbg(dev, "device is%sdma coherent\n",
+>>>   		coherent ? " " : " not ");
+>>>   
+>>> +	dev->dma_range_map = map;
+>>>   	iommu = of_iommu_configure(dev, np, id);
+>>>   	if (PTR_ERR(iommu) == -EPROBE_DEFER) {
+>>>   		kfree(map);
+>>> +		dev->dma_range_map = NULL;
+>>
+>> Not really going to matter, but you should probably clear dma_range_map
+>> before what it points to is freed.
+>>
+>> With that,
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
+> Thanks for the review. I will move it before "kfree(map)" in next
+> version.
 
-...
+Paul noticed that we already have a bug in assigning to this 
+unconditionally[1] - I'd totally forgotten about this series when I 
+theorised about IOMMU drivers wanting the information earlier, but 
+sweeping my inbox now only goes to show I was right to think of it :)
 
-> 1. Using a folder is fine, desirable even
-> 2. I've some concerns about the name, but I'm not really objecting,
-> just giving my 2 cents.
+We should really get something in as a fix independent of this series, 
+taking both angles into account.
 
-Let's get into compromised summary:
- - create a folder for these driver files
- - name it without _skl_ while leaving this in the file / driver names
+Robin.
 
-Does everybody agree on this approach?
+[1] 
+https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com/
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>>
+>>>   		return -EPROBE_DEFER;
+>>>   	}
+>>>   
+>>> @@ -181,7 +183,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>>>   
+>>>   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+>>>   
+>>> -	dev->dma_range_map = map;
+>>>   	return 0;
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(of_dma_configure_id);
+>>> -- 
+>>> 2.18.0
+>>>
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
