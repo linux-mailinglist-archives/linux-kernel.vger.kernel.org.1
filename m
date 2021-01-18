@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F392F9DBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E182F9DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389837AbhARLNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        id S2389201AbhARLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389045AbhARKrZ (ORCPT
+        with ESMTP id S2389110AbhARKr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:47:25 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829BDC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:42 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id d13so28660536ioy.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:46:42 -0800 (PST)
+        Mon, 18 Jan 2021 05:47:56 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5146C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:47:15 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id r4so13334587wmh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:47:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SlpVFG70d1haAhgfDosF+AGq4k9Rce7hROvWA+Bpu+o=;
-        b=hyntPPIMGuqz6MhhQHoy89/WERg7VMJS9GpxnFwqrnQqmJSjwI/FL1NoEs7p6RdLa8
-         /zAfa8lcN+DOqWaG0yXTNsYiFQQPoklAIcsBi1N0/WxUEWsmZilPPhPcdY8OfHWCbaV0
-         CmVDttL80BxG1idnxWXuNA29VzJIGbhWehA6z05p3BXSpN+t/tj444WlB1DCzvKRj315
-         2MM3cTivgnFW/Dyk5wW8Y3JY95QWtzMwpxxbTJ+pyLL3HrANPMc51u6XsJWw6R1C5BT/
-         nRagJvkqkqrZWTQdMkFvbwusT88ggx8TW7jZ7wdLa5Q/Zu9VgCva94eHT7YnSD2RFOJr
-         WkOA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nHf20OOCMo8x4Qdkj9BcWGoZ1gfgVypLNOIWfvt4zr0=;
+        b=GIDQCTkWdAQcVU5Y65kMWYXGOSSZ6ywq+wJSQGrBn28lZM3s438IHY/LWhXAc3zsPK
+         fhYbP0Ev37Ve0xrjNZInpO1RAuuc/ffmthMvZnnVU/2JtZ/vkp6+3SZWAq1oH8e/W+Oh
+         oOa7MpT0iKokhtW2+8rVyShUiYTbrI4O5RYahLFt21kK7lbX9KNDojzOSspNyGXTXr9V
+         TlHawqeTvr3VRoSEsCPX2xnmlVjTrowr1QkPAube3MF5ahZks6FwjYA7IGT2gSKLQvDb
+         kQ9s152UkO1YFgk44pvdQ0ZrHCnB9iFweh1swp8kyj14o5j/kt3PkkB2qHBNnMtJkDXK
+         AWvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SlpVFG70d1haAhgfDosF+AGq4k9Rce7hROvWA+Bpu+o=;
-        b=bIz6haqvxxCwXlmuiSDk2CDpsax1WwhddFuQvy5XUGed2PPqlflLBkv0ChLNurny3D
-         8lWO0P4dxzFfnmJSEUTA66nJTTgYjYJPLu3Cbfnks5kMBv5vXJd+I6b8Ep+7IsyINFcz
-         UExQBR7Gy2P+yCNiyHTbPhL36dfgJzqeHH0/Zd0bQKxH+SGYppuuZLs2ba55JTZQiu0k
-         1vbOLOzumHvV5PsJOjeBrXsrfXrYop5bt0uRS3v+e7llmwV9G1ZdZw+xTeZ+0N662SFG
-         ErWrQk4G8BdT2v3/sOIO/OYCpapAJz2pYXGczXReJeHNOTDYiz5JsKK/HSIU3/qzaWOE
-         RqZw==
-X-Gm-Message-State: AOAM531LVONPs2ZEggaLyq2ol5Al8sy9bOWUE3JVabyl4QdrNkTPqePz
-        AXRgWNRl9Xov2bEViTHWpxSDDd/6ah5DHxomh6o03Q==
-X-Google-Smtp-Source: ABdhPJwfSq1SQ7TLblWt7iM5zpWAuhnB5VJegpIITRV7IPSuwAx+odOBL7l3eFDnoUItHdT2zO82/C2n9A7nCVHfT90=
-X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr20340034ilu.165.1610966801671;
- Mon, 18 Jan 2021 02:46:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nHf20OOCMo8x4Qdkj9BcWGoZ1gfgVypLNOIWfvt4zr0=;
+        b=rhLlYXxJLXsTpiQO2sFVFiGMUDs1b3ssTHf5Lzm0KgwggK2ZMRMJn9RZG8+SrQBpbR
+         FkBvJ09tdWMHbMhjjWTpC64B9YKs9LvUTjU5QOst4qsfOsnko77OZ+AVNNdA3gYMfjNH
+         n/HUIRNfR8Xp53bLulQYHbwOIVXIoAHbnu0IERQh4rhTT79h1sDOQpHKHO1u+dYemk2Z
+         12JeEg9dWcjjv6E/nENbdCGtRH9akDigcRFpzuG3m2rB7q/vwmbNYwvUIzcs9Bo7bL0K
+         IF0YO4M3AXnBybIjA5nt6lpaLqIB/lxlxsVPgm87Leq0GKSbqpo8VTd9OLpqO1B8VclD
+         z9hQ==
+X-Gm-Message-State: AOAM530r4RW25JWXoxSfVbpH3y0A3KAKoW+k0/kYzrK8bgKTcqwWtfBZ
+        gR67wt5ZxHsrX9jUHXIRkO+69A==
+X-Google-Smtp-Source: ABdhPJx2SuIaE0os9zlqBPDDM6QMp5/GqngUcm6CMXsxuZJeI3DyE+gGaJ44JUHFhPAomftdX+aSow==
+X-Received: by 2002:a1c:730f:: with SMTP id d15mr20124727wmb.135.1610966834579;
+        Mon, 18 Jan 2021 02:47:14 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id p12sm1868057wmi.3.2021.01.18.02.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 02:47:13 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:47:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 00/12] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+Message-ID: <20210118104712.GD4903@dell>
+References: <20210117160555.78376-1-hdegoede@redhat.com>
+ <20210118095509.GA4903@dell>
+ <8905f9f2-1c1c-1b64-d70d-374f84568ccb@redhat.com>
 MIME-Version: 1.0
-References: <20210118080004.6367-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210118080004.6367-1-lukas.bulwahn@gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 18 Jan 2021 11:46:30 +0100
-Message-ID: <CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com>
-Subject: Re: [PATCH for bpf-next] docs: bpf: add minimal markup to address doc warning
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8905f9f2-1c1c-1b64-d70d-374f84568ccb@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Lukas. Sorry I didn't get around to fixing it so far.
+On Mon, 18 Jan 2021, Hans de Goede wrote:
 
-On Mon, 18 Jan 2021 at 09:00, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 91c960b00566 ("bpf: Rename BPF_XADD and prepare to encode other
-> atomics in .imm") modified the BPF documentation, but missed some ReST
-> markup.
->
-> Hence, make htmldocs warns on Documentation/networking/filter.rst:1053:
->
->   WARNING: Inline emphasis start-string without end-string.
->
-> Add some minimal markup to address this warning.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Hi,
+> 
+> On 1/18/21 10:55 AM, Lee Jones wrote:
+> > On Sun, 17 Jan 2021, Hans de Goede wrote:
+> > 
+> >> Hi All,
+> >>
+> >> This series reworks the arizona codec jack-detect support to use
+> >> the snd_soc_jack helpers instead of direct extcon reporting.
+> >>
+> >> This is done by reworking the extcon driver into an arizona-jackdet
+> >> library and then modifying the codec drivers to use that directly,
+> >> replacing the old separate extcon child-devices and extcon-driver.
+> >>
+> >> This brings the arizona-codec jack-detect handling inline with how
+> >> all other ASoC codec driver do this.
+> >>
+> >> This was developed and tested on a Lenovo Yoga Tablet 1051L with
+> >> a WM5102 codec.
+> >>
+> >> The MFD, ASoC and extcon parts can be merged independent from each-other
+> >> although that could lead to a case where both the extcon driver and
+> >> the new arizona-jackdet library will try to do jack-detection. If we
+> >> end up with a git tree in that state then one of the 2 will fail to
+> >> load because the other will already have claimed the IRQs, so this
+> >> is not a problem really.
+> >>
+> >> Or the entire series could be merged through the MFD tree if people
+> >> prefer that.
+> >>
+> >> Note that this series also paves the way for some further cleanups,
+> >> removing some jackdetect related variables like hp_ena and hp_clamp
+> >> from the arizona data struct shared between all the MFD child devices.
+> >> I've deliberately not done that cleanup as part of this patch-series,
+> >> since IMHO the series is big enough as is. These cleanups can be done
+> >> in a follow-up series once this series has landed.
+> > 
+> > Would you mind using `git format-patch` to create your cover-letters
+> > in the future please?  This one is missing useful information such as
+> > the diff-stat and patch list.
+> 
+> I never heard about that git feature until today, so I learn something
+> new every day :)
+> 
+> I just tested it and it seems useful. I will try to use it next time.
 
-Acked-By: Brendan Jackman <jackmanb@google.com>
+After all these years... That's so funny. :D
 
->
-> ---
-> applies cleanly on next-20210118
->
-> Brendan, please ack.
->
-> Alexei, please pick this minor cleanup patch on your bpf-next.
->
->  Documentation/networking/filter.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-> index f6d8f90e9a56..45f6fde1776c 100644
-> --- a/Documentation/networking/filter.rst
-> +++ b/Documentation/networking/filter.rst
-> @@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
->  Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
->
->  It also includes atomic operations, which use the immediate field for extra
-> -encoding.
-> +encoding::
->
->     .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
->     .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
->
-> -The basic atomic operations supported are:
-> +The basic atomic operations supported are::
->
->      BPF_ADD
->      BPF_AND
-> --
-> 2.17.1
->
+Happy to be of service.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
