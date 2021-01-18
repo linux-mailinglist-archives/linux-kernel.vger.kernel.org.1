@@ -2,190 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C302FA78E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE35B2FA790
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405559AbhARR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:29:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S2405938AbhARR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407061AbhARRWb (ORCPT
+        with ESMTP id S2393628AbhARR0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:22:31 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC26C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:21:11 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id y17so17205844wrr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:21:11 -0800 (PST)
+        Mon, 18 Jan 2021 12:26:30 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE07C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:25:48 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id f1so4342639edr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:25:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mcabCZTC0ctiX7BvFOy/77rikMOebwMRiE/IMCNir9k=;
-        b=FjF9TW8nhy9Gz0TiRekI5y1nTijSy4HtuPqCGx12ibM5MDuMQU2SZeRC0/Lc5gDYGj
-         prdGv6KdTrJBUmZB+iYWo5a1SHtCqcpGY5u/97TLyhONFJhRAZnorcCWbDfP35u16ZjJ
-         FAr8o8af5u1l+gbHg+CA1mUXcGe+bYC38S/4M=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nm6HrK7oawuOwyXp1xJbpJjKfOkLLT1pH7TKml+09Lw=;
+        b=oFaSiW4769WFoFpssMgp5qXiVVVfMhM+HhdNLvMoO+a7WHxDuc3F7Yx8KH2D+XBtIE
+         AOTsbnBbbLoRTx+ePSnZnEevl1yeTf8/wUNvTuk84MQPbcxHj2Lk9Vkm185AZh5LefEt
+         uCI4jqnVCtrwMNS6UgOgGod1dK9lAPkVYz+XgXDBNEXaoTJVPB0cEE+c6R9wb28q/beg
+         /Uzw7qaBWrSL4q7B9FyxycJGvtbRp3YElk7cC0KvKCwvt8chEqaIka7EOqCbyK573qf4
+         2yV1/urXsnpnH/RPH2PQIa4LohTNvZEOkBe38uAJnd4o5ZLjB8BC9FgLKWyEu1ntFdXe
+         rrCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=mcabCZTC0ctiX7BvFOy/77rikMOebwMRiE/IMCNir9k=;
-        b=jYfVxmUowgzSr90G2NS/Cat1KDhco6WeZ66ftVHwIF4nWLEk66yB47+vz7tLD0o18H
-         yfozIkJrnOi1fK2/viBGIaUJNCq1kPeNbzUkdqtNQPUP2ddOksVY0FcMGOaQJl9VB8fX
-         OfzJO93qgd7S92sdFD3EIoCT1Y+/JZytf7k5v+1XKe2SstR0NIMFgbdr/JhsLNbHVQha
-         GS9waam7HxDOAYN1yRKcbNUxkZsFWdAC4Drklq850wIHiyJVoLvw49227rk6890BwbSB
-         DLrm/fCVQQtuou+o20CBOFt0wx7XmvhklOS5SayvRMikHjPkbsMabR7NmAnTotSyfnFj
-         pY1Q==
-X-Gm-Message-State: AOAM532kPTOrBYlRDa4VWc5j7KKrThUvi9r/2yqmuw3E80uMuyRjP/Cy
-        jLzlXF6hu0PAPmF+RSI2/BN96Pqx+zJvMIg6
-X-Google-Smtp-Source: ABdhPJzY2WOEnEaMMZ51nvju1fIaYxTXy8mS3+BIiF2xcI5bBHn2eizXQ4q3XaruAJ3Wybg/kV0QDA==
-X-Received: by 2002:a5d:47af:: with SMTP id 15mr489829wrb.205.1610990469978;
-        Mon, 18 Jan 2021 09:21:09 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id d2sm30963689wre.39.2021.01.18.09.21.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nm6HrK7oawuOwyXp1xJbpJjKfOkLLT1pH7TKml+09Lw=;
+        b=sO/6+2AljV4dqWQO9h0wtUahRs7TVG5e8xYQ67L+5z/4lqIxdSfUp+f7c8lUx8jEdY
+         RpbLA03FU/GF4yJGyXmbWn74ACkoIexZjZxF+XTD9tm6X901XQc9STjXUavf7gdtfhKZ
+         ORFboeKXenRsmbIB2nBbw95M+WwnL/enmbhHpRfB2wfGsmIfMSV8Rsrm9zipJBHPCVxY
+         lU21fgPB5sSmZhmUTaW/2o0bEbroeai6U4o6j4FK1QfZ1lS5lvDYWcOkkZnL5MrE5in9
+         cgUdW+xo9fLpUd0OynH/5TsXdQW11e6sEr3R75vEcxy1irh3+Uavx7h5lyYX0hghU2C5
+         LAQQ==
+X-Gm-Message-State: AOAM531tIWyRj86/0UctGaNSFUgfH9tXlklA0rTcmZ+uOF2BoU5kAz8I
+        c1iiTVibHI7JhhokMwVYStVgZw==
+X-Google-Smtp-Source: ABdhPJz1pyAmhAauNOkUxMnR/3e6dn53nTHqN1bTYfRJ8Zp16VuteI2Oe1AcVs0mjVEn/I4H5nQ/XA==
+X-Received: by 2002:a05:6402:11c7:: with SMTP id j7mr396092edw.290.1610990747511;
+        Mon, 18 Jan 2021 09:25:47 -0800 (PST)
+Received: from google.com ([2a00:79e0:2:11:1ea0:b8ff:fe79:fe73])
+        by smtp.gmail.com with ESMTPSA id r7sm11127221edh.86.2021.01.18.09.25.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 09:21:08 -0800 (PST)
-Date:   Mon, 18 Jan 2021 18:21:06 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Zack Rusin <zackr@vmware.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eddie Dong <eddie.dong@intel.com>,
-        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>,
-        Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhiyuan Lv <zhiyuan.lv@intel.com>
-Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
-Message-ID: <YAXDgmWMR9s4OgxN@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        Zack Rusin <zackr@vmware.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eddie Dong <eddie.dong@intel.com>, Eric Anholt <eric@anholt.net>,
-        Faith <faith@valinux.com>, Gareth Hughes <gareth@valinux.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" <intel-gvt-dev@lists.freedesktop.org>,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>, jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>, Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>, Zhiyuan Lv <zhiyuan.lv@intel.com>
-References: <20210115181601.3432599-1-lee.jones@linaro.org>
- <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
- <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
- <20210118150945.GE4903@dell>
+        Mon, 18 Jan 2021 09:25:46 -0800 (PST)
+Date:   Mon, 18 Jan 2021 18:25:41 +0100
+From:   Piotr Figiel <figiel@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>
+Subject: Re: [PATCH v2] fs/proc: Expose RSEQ configuration
+Message-ID: <YAXElZrWTM3THlvK@google.com>
+References: <20210114185445.996-1-figiel@google.com>
+ <1530232798.13459.1610725460826.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210118150945.GE4903@dell>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <1530232798.13459.1610725460826.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:09:45PM +0000, Lee Jones wrote:
-> On Mon, 18 Jan 2021, Daniel Vetter wrote:
-> 
-> > On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
-> > > 
-> > > > On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
-> > > > 
-> > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > niggly little warnings.
-> > > > 
-> > > > Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
-> > > 
-> > > Thanks! For all the vmwgfx bits:
-> > > Reviewed-by: Zack Rusin <zackr@vmware.com>
-> > 
-> > Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
-> > (those generally go through other trees, pls holler if they're stuck).
-> 
-> Thanks Daniel, you're a superstar!
-> 
-> So Zack will take the vmwgfx parts?  Despite providing a R-b?
+Hi, thanks for review.
 
-I only merge stuff that's defacto abandoned already. Everything else I try
-to offload to whomever actually cares :-)
--Daniel
+On Fri, Jan 15, 2021 at 10:44:20AM -0500, Mathieu Desnoyers wrote:
+> ----- On Jan 14, 2021, at 1:54 PM, Piotr Figiel figiel@google.com wrote:
+> Added PeterZ, Paul and Boqun to CC. They are also listed as maintainers of rseq.
+> Please CC them in your next round of patches.
 
-> 
-> > Note that we have some build issue on some of the configs sfr uses, so drm
-> > trees are still stuck on old versions in linux-next. Hopefully should get
-> > resolved soon, the bugfix is in some subtree I've heard.
-> 
-> No worries.  Thanks for letting me know.
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+OK.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> > Since C/R preserves TLS memory and addresses RSEQ ABI will be
+> > restored using the address registered before C/R.
+> How do you plan to re-register the rseq TLS for each thread upon
+> restore ?
+
+In CRIU restorer there is a moment when the code runs on behalf of the
+restored thread after the memory is already restored but before the
+control is passed to the application code. I'm going to use rseq()
+syscall there with the checkpointed values of ABI address and signatures
+(obtained via the newly added procfs file).
+
+> I suspect you move the return IP to the abort either at checkpoint or
+> restore if you detect that the thread is running in a rseq critical
+> section.
+
+Actually in the prototype implementation I use PTRACE_SINGLESTEP during
+checkpointing (with some safeguards) to force the kernel to jump out of
+the critical section before registers values are fetched. This has the
+drawback though that the first instruction of abort handler is executed
+upon checkpointing.
+I'll likely rework it to update instruction pointer by getting abort
+address with PTRACE_PEEKTEXT (via RSEQ ABI).
+I think an option is to have a kernel interface to trigger the abort on
+userspace's request without need for some hacks. This could be a ptrace
+extension.  Alternatively attach could trigger RSEQ logic, but this is
+potentially a breaking change for debuggers.
+
+> > Detection whether the thread is in a critical section during C/R is
+> > needed to enforce behavior of RSEQ abort during C/R. Attaching with
+> > ptrace() before registers are dumped itself doesn't cause RSEQ
+> > abort.
+> Right, because the RSEQ abort is only done when going back to
+> user-space, and AFAIU the checkpointed process will cease to exist,
+> and won't go back to user-space, therefore bypassing any RSEQ abort.
+
+The checkpointed process doesn't have to cease to exist, actually it can
+continue, and when it's unpaused kernel will schedule the process and
+should call the abort handler for RSEQ CS. But this will happen on the
+checkpointing side after process state was already checkpointed.
+For C/R is important that the checkpoint (serialized process state) is
+safe wrt RSEQ.
+
+> > Restoring the instruction pointer within the critical section is
+> > problematic because rseq_cs may get cleared before the control is
+> > passed to the migrated application code leading to RSEQ invariants
+> > not being preserved.
+> The commit message should state that both the per-thread rseq TLS area
+> address and the signature are dumped within this new proc file.
+
+I'll include this in v3, thanks.
+
+> AFAIU lock_trace prevents concurrent exec() from modifying the task's
+> content.  What prevents a concurrent rseq register/unregister to be
+> executed concurrently with proc_pid_rseq ?
+
+Yes, in this shape only ptrace prevents, as it was the intended use
+case. Do you think it would make sense to add a mutex on task_struct for
+the purpose of casual reader (sys admin?) consistency? This would be
+locked only here and in the syscall during setting.
+
+(Alternatively SMP barrier could be used to enforce the order so that
+the ABI address is always written first, and the signature wouldn't make
+sense on ABI address = 0, but probably being simply consistent is
+better).
+
+> I wonder if all those parentheses are needed. Wouldn't it be enough to have:
+
+Will remove thanks.
+
+Best regards, Piotr.
