@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06A52FA1D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C692FA1DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404674AbhARNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:40:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404619AbhARNjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:39:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6204122B47;
-        Mon, 18 Jan 2021 13:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610977102;
-        bh=CKGA5U1m7LktFtAiPJHdYMiQ6jFYUHBd8ywDY2ARidU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jx6AtgH3z4eLtv0sAPk2+bzXX2US26vQedYVbQYBU37POqTHPNBXzWMAR88pSfoce
-         E8kGiyC6nD7f66d0i1oeEDx/BURD9IBMAW/v4puTwXT6GyPQ0BVT7ePdvYadzrq6N3
-         guCXr9gueuMz4LAOIE6E4gfAoCLx80du25VbDQ9I4x2VzEWK2vr3zyqPvcU6XXZIrj
-         4a1i1N25VTgak3g+dXzw/ayFIBLJ/r8akyXIdHvL96iJyIuJcPKTczzGZMkxSQ2bOv
-         QScLLEbTdCjE4QVLyU2EcGUhj1eSrJ24V92HVT1Fiyc+i7YHjZMj+nbzHj0UMW0LIB
-         mnU5lVL6T1xCg==
-Date:   Mon, 18 Jan 2021 08:38:21 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
-Message-ID: <20210118133821.GY4035784@sasha-vm>
-References: <20210118014951.250815-1-sashal@kernel.org>
- <YAVTDETPaJuaRPfc@kroah.com>
+        id S2404718AbhARNk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:40:57 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2365 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404641AbhARNjt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:39:49 -0500
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DKCRW1pPDz67dFQ;
+        Mon, 18 Jan 2021 21:33:43 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 18 Jan 2021 14:39:07 +0100
+Received: from localhost (10.47.75.177) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
+ 2021 13:39:06 +0000
+Date:   Mon, 18 Jan 2021 13:38:26 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Anand Ashok Dumbre" <ANANDASH@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michals@xilinx.com>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+Message-ID: <20210118133826.00004ba6@Huawei.com>
+In-Reply-To: <CAMRc=MfJec9cM8Y7MDux-kd1cuFxy_OiZHU7v-FH3A96H0LHGg@mail.gmail.com>
+References: <20201130142759.28216-1-brgl@bgdev.pl>
+        <20201130202110.62e7f989@archlinux>
+        <BY5PR02MB6916FD4844C5471C635DAD1AA9CA0@BY5PR02MB6916.namprd02.prod.outlook.com>
+        <20201213120442.3f98814a@archlinux>
+        <CAMRc=MfJec9cM8Y7MDux-kd1cuFxy_OiZHU7v-FH3A96H0LHGg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YAVTDETPaJuaRPfc@kroah.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.75.177]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:21:16AM +0100, Greg KH wrote:
->On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
->> SUBLEVEL only has 8 bits of space, which means that we'll overflow it
->> once it reaches 256.
->>
->> Few of the stable branches will imminently overflow SUBLEVEL while
->> there's no risk of overflowing VERSION.
->>
->> Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
->> should create a better balance between the different version numbers we
->> use.
->>
->> The downside here is that Linus will have 8 bits less to play with, but
->> given our current release cadence (~10 weeks), the number of Linus's
->> fingers & toes (20), and the current VERSION (5) we can calculate that
->> VERSION will overflow in just over 1,000 years, so I'm kicking this can
->> down the road.
->>
->> Cc: stable@kernel.org
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  Makefile | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/Makefile b/Makefile
->> index 9e73f82e0d863..dc2bad7a440d8 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -1252,8 +1252,8 @@ endef
->>
->>  define filechk_version.h
->>  	echo \#define LINUX_VERSION_CODE $(shell                         \
->> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
->> -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
->> +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
->> +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
->
->As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
->that try to suck out the version/patchlevel number of the kernel release
->into their own fields.  Things like USB host controller strings, v4l
->ioctl reports, scsi driver ioctls, and other places do fun bit-movements
->to try to unreverse this bit packing.
->
->So how about we just provide a "real" version/subversion/revision
->#define as well, and clean up all in-kernel users, so we can get this to
->work, and we can change it in the future more easily.
+On Mon, 18 Jan 2021 10:09:56 +0100
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-Uh, yes, I see what you mean. I'll fix those up and resend.
+> On Sun, Dec 13, 2020 at 1:04 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Fri, 11 Dec 2020 12:15:15 +0000
+> > Anand Ashok Dumbre <ANANDASH@xilinx.com> wrote:
+> >  
+> > > > -----Original Message-----
+> > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > Sent: Monday 30 November 2020 8:21 PM
+> > > > To: Bartosz Golaszewski <brgl@bgdev.pl>
+> > > > Cc: Lars-Peter Clausen <lars@metafoo.de>; Peter Meerwald-Stadler
+> > > > <pmeerw@pmeerw.net>; Michal Simek <michals@xilinx.com>; linux-
+> > > > iio@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> > > > kernel@vger.kernel.org; Bartosz Golaszewski
+> > > > <bgolaszewski@baylibre.com>; Anand Ashok Dumbre
+> > > > <ANANDASH@xilinx.com>
+> > > > Subject: Re: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+> > > >
+> > > > On Mon, 30 Nov 2020 15:27:56 +0100
+> > > > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > > >  
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > >
+> > > > > This is a follow-up to commit 750628c79bb1 ("iio: adc: xilinx-xadc:
+> > > > > use devm_krealloc()"). I noticed we can use even more devres helpers
+> > > > > and entirely drop the remove() callback.
+> > > > >
+> > > > > v1 -> v2:
+> > > > > - squash three patches adding more devres calls into one for easier
+> > > > > review
+> > > > > - don't insist on the 80 characters limit
+> > > > > - add a new helper: devm_krealloc_array() and use it
+> > > > >
+> > > > > v2 -> v3:
+> > > > > - drop the devm_krealloc_array() helper
+> > > > >
+> > > > > Bartosz Golaszewski (3):
+> > > > >   iio: adc: xilinx: use helper variable for &pdev->dev
+> > > > >   iio: adc: xilinx: use devm_krealloc() instead of kfree() + kcalloc()
+> > > > >   iio: adc: xilinx: use more devres helpers and remove remove()
+> > > > >
+> > > > >  drivers/iio/adc/xilinx-xadc-core.c | 157
+> > > > > ++++++++++++++---------------
+> > > > >  1 file changed, 74 insertions(+), 83 deletions(-)
+> > > > >  
+> > > >
+> > > > Series looks good to me but would like to leave it a little longer to let others
+> > > > take a look at it. That will probably mean it falls into next cycle now.
+> > > >
+> > > > +CC Anand who is looking at another series touching this driver and
+> > > > +might
+> > > > give this one a spin as well.
+> > > >
+> > > > Thanks,
+> > > >
+> > > > Jonathan  
+> > >
+> > > Hi Jonathan, Bartosz,
+> > >
+> > > I have tested and reviewed the patch and everything looks good.
+> > > I have another patch series on the same files that might cause conflicts.
+> > >
+> > > Reviewed-by: Anand Ashok Dumbre <anandash@xilinx.com>
+> > > Tested-by: Anand Ashok Dumbre <anandash@xilinx.com>  
+> > Thanks,
+> >
+> > Applied to the togreg branch of iio.git and pushed out as testing for
+> > the autobuilders to play with it.
+> >
+> > There was a small amount of fuzz.
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> 
+> Hi Jonathan,
+> 
+> I still don't see these patches in next - is any action required of me
+> to get this in for the next release?
 
--- 
-Thanks,
-Sasha
+Nope.  I still haven't gotten round to asking for the iio tree itself
+to be pulled into next, and I've been a bit busy so haven't yet sent a
+pull request to Greg KH this cycle.
+
+I'll get the second sorted, probably later this week.
+
+J
+
+> 
+> Bartosz
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
