@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C563D2FA5DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBE02FA5F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406590AbhARQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406215AbhARQRI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:17:08 -0500
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A57C061573;
-        Mon, 18 Jan 2021 08:16:11 -0800 (PST)
-Received: from localhost.localdomain (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 499983EED6;
-        Mon, 18 Jan 2021 17:16:09 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Hai Li <hali@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dsi: Correct io_start for MSM8994 (20nm PHY)
-Date:   Mon, 18 Jan 2021 17:15:58 +0100
-Message-Id: <20210118161600.104877-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.29.2
+        id S2406267AbhARQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:19:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:38918 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406502AbhARQSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:18:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CF3C31B;
+        Mon, 18 Jan 2021 08:18:07 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E86073F68F;
+        Mon, 18 Jan 2021 08:18:04 -0800 (PST)
+Subject: Re: [PATCH v3 5/7] iommu: Allow io_pgtable_tlb ops optional
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
+ <20201216103607.23050-6-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <310cc809-ac74-7048-8718-c65c815a1faa@arm.com>
+Date:   Mon, 18 Jan 2021 16:18:05 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201216103607.23050-6-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous registers were *almost* correct, but instead of
-PHYs, they were pointing at DSI PLLs, resulting in the PHY id
-autodetection failing miserably.
+On 2020-12-16 10:36, Yong Wu wrote:
+> This patch allows io_pgtable_tlb ops could be null since the IOMMU drivers
+> may use the tlb ops from iommu framework.
 
-Fixes: dcefc117cc19 ("drm/msm/dsi: Add support for msm8x94")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There's not much in it, but I guess this does make more sense overall 
+than just making .tlb_flush_all optional and drivers having to provide a 
+full set of NULL callbacks.
 
-diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-index 1afb7c579dbb..eca86bf448f7 100644
---- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-+++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-@@ -139,7 +139,7 @@ const struct msm_dsi_phy_cfg dsi_phy_20nm_cfgs = {
- 		.disable = dsi_20nm_phy_disable,
- 		.init = msm_dsi_phy_init_common,
- 	},
--	.io_start = { 0xfd998300, 0xfd9a0300 },
-+	.io_start = { 0xfd998500, 0xfd9a0500 },
- 	.num_dsi_phy = 2,
- };
- 
--- 
-2.29.2
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   include/linux/io-pgtable.h | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index adde9e49be08..c81796814afa 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -206,14 +206,16 @@ struct io_pgtable {
+>   
+>   static inline void io_pgtable_tlb_flush_all(struct io_pgtable *iop)
+>   {
+> -	iop->cfg.tlb->tlb_flush_all(iop->cookie);
+> +	if (iop->cfg.tlb && iop->cfg.tlb->tlb_flush_all)
+> +		iop->cfg.tlb->tlb_flush_all(iop->cookie);
+>   }
+>   
+>   static inline void
+>   io_pgtable_tlb_flush_walk(struct io_pgtable *iop, unsigned long iova,
+>   			  size_t size, size_t granule)
+>   {
+> -	iop->cfg.tlb->tlb_flush_walk(iova, size, granule, iop->cookie);
+> +	if (iop->cfg.tlb && iop->cfg.tlb->tlb_flush_walk)
+> +		iop->cfg.tlb->tlb_flush_walk(iova, size, granule, iop->cookie);
+>   }
+>   
+>   static inline void
+> @@ -221,7 +223,7 @@ io_pgtable_tlb_add_page(struct io_pgtable *iop,
+>   			struct iommu_iotlb_gather * gather, unsigned long iova,
+>   			size_t granule)
+>   {
+> -	if (iop->cfg.tlb->tlb_add_page)
+> +	if (iop->cfg.tlb && iop->cfg.tlb->tlb_add_page)
+>   		iop->cfg.tlb->tlb_add_page(gather, iova, granule, iop->cookie);
+>   }
+>   
+> 
