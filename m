@@ -2,109 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32DB2F9CC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4B22F9CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389918AbhARKV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388483AbhARKJS (ORCPT
+        id S2390010AbhARKWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:22:18 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55214 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389748AbhARKN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:09:18 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0F7C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:08:37 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id hs11so20529156ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qECQt3l5OEEcYku7TfMYOUTWED64ArCIIVRgQSduy+E=;
-        b=uWev3XS0PCKEpZ1iTWw0EVv6pDwiRAfP+5/Ac6+DuxygGfGjiIzWLxneVSCQYfj6NF
-         i+NknxUxkB7zCUZhGmzlkU8Yjfa0alZ990pFQ3Un1d8Cq654kwiprnwTaI6G/mvUQubK
-         uCRNPMMAJYhKmUdRAvBR6xKSNkmPLuU9+h5IQTlvb+zMoA6b+Q+o2imcUqYrjoJI/UIw
-         EVqVMX1OME+WsCxppmcz00+8F7yrtV+4uggI+uVZOUjJNFf4m0fBqQSLfiEDqDO44M87
-         DxLNZB8DmxIXqpF7sRsVrpJHuPVAk/7v6zqfq50uydLxJNMx4Sh801qS63Za2Zwp9XYZ
-         Gdkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qECQt3l5OEEcYku7TfMYOUTWED64ArCIIVRgQSduy+E=;
-        b=gv92EBeiUYh/A6SVyltRSfVVP7G6GN0Hf+e86G9A7BzOmGQYz/e8/vor+YAY6CJ/Bu
-         MVFT8FOr+oT9PLuqaGfLv+49Jwr+Nj44gocQB1Q/NpWwQ134BG4LxmiVXo0pRk8TTC46
-         xRCFgyxcDf39kwyVvXp3jfzD0mZQqt7ELvo1OHOpX1uxphYxE/w2M0gQJtiqOEUab/fs
-         yeJwmh6Or0DsfH0pVJ1As3S5Qusd4EZCMa+zmpzg/ZQeDt1vDJlhxRqfNgLy1kd07f8E
-         BgYPXcOowreqoN/kmm+NxCkjgsveeedgiVpRXkQuJwiZxWQgQyY/f84+cV4VONzJS0wh
-         o3zA==
-X-Gm-Message-State: AOAM5300gHiNqcRNw/hmAG5mFSQHfzbIdiR2MzFGHKFLsn3noHbgDn8d
-        LPDrGCoPNd+9/TLID4A0AQXdlQ==
-X-Google-Smtp-Source: ABdhPJyrwgYBnhQeuMb/RbRNmMxBdCmN47Y+UKBhEZP1a8ITTItX36PvKPTFgMWzCbD4CXwCVeBZjA==
-X-Received: by 2002:a17:906:2694:: with SMTP id t20mr12118442ejc.48.1610964516484;
-        Mon, 18 Jan 2021 02:08:36 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id r23sm9190014ejd.56.2021.01.18.02.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 02:08:35 -0800 (PST)
-Date:   Mon, 18 Jan 2021 11:08:12 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, iommu@lists.linux-foundation.org,
-        robin.murphy@arm.com
-Subject: Re: [PATCH v4 2/3] iommu/iova: Avoid double-negatives in magazine
- helpers
-Message-ID: <YAVeDOiKBEKZ2Tdq@myrica>
-References: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
- <1607538189-237944-3-git-send-email-john.garry@huawei.com>
- <YAHRKCkcHAEUdRNT@larix.localdomain>
- <69c30e85-4a72-a0e1-1e56-4ffbd0df5aba@huawei.com>
+        Mon, 18 Jan 2021 05:13:29 -0500
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610964670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZIkjwCTKmE8Eib8y4wjUibBMow6S+PJcbpOogmAT5w=;
+        b=wltenRSeNT5KKW/GIwse6fJ8JJpb/5+nZlC5IKiRV9IMm4llUpRmAJKUqnlP3OSIUc8jmP
+        WZ4b5R5UX4LPU8BTHllUvv+ROO7Y6cvQhYf3Fbrh5nCUq+ntsc28ftrK8wyH5Jnqc73L0o
+        UzF/vykIfmBCLvxqHgZrDovHbR711qJQhex+08cmJ5GT0LYdZUVMu+Pm62GT6G4ICBWV5I
+        ZH04VJ/kjSgHkzMY/PKdinQdoNRU6kowJMx1PLST8Ruxzt71qiopJBbnPjgT0ahqdBqqkI
+        ZfqLAappGKFw1iXmzXfReoCd6UEUByPHUFpdNYadKkxv2PKP9prOBIYT0qRSkQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610964670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZIkjwCTKmE8Eib8y4wjUibBMow6S+PJcbpOogmAT5w=;
+        b=ybSBwFSryf46ni2tqE7X//IWezpi7d1EnIQX4ENnp7XIgqvuRt8qr2eZnseZvht8soKjrv
+        T0CFamq75MYOwuBA==
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH v3 13/19] scsi: hisi_sas: Switch back to original libsas event notifiers
+Date:   Mon, 18 Jan 2021 11:09:49 +0100
+Message-Id: <20210118100955.1761652-14-a.darwish@linutronix.de>
+In-Reply-To: <20210118100955.1761652-1-a.darwish@linutronix.de>
+References: <20210118100955.1761652-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69c30e85-4a72-a0e1-1e56-4ffbd0df5aba@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:24:17AM +0000, John Garry wrote:
-> On 15/01/2021 17:30, Jean-Philippe Brucker wrote:
-> > On Thu, Dec 10, 2020 at 02:23:08AM +0800, John Garry wrote:
-> > > A similar crash to the following could be observed if initial CPU rcache
-> > > magazine allocations fail in init_iova_rcaches():
-> > 
-> 
-> thanks for having a look
-> 
-> > Any idea why that's happening?  This fix seems ok but if we're expecting
-> > allocation failures for the loaded magazine then we could easily get it
-> > for cpu_rcaches too, and get a similar abort at runtime.
-> 
-> It's not specifically that we expect them (allocation failures for the
-> loaded magazine), rather we should make safe against it.
-> 
-> So could you be more specific in your concern for the cpu_rcache failure?
-> cpu_rcache magazine assignment comes from this logic.
+libsas event notifiers required an extension where gfp_t flags must be
+explicitly passed. For bisectability, a temporary _gfp() variant of such
+functions were added. All call sites then got converted use the _gfp()
+variants and explicitly pass GFP context. Having no callers left, the
+original libsas notifiers were then modified to accept gfp_t flags by
+default.
 
-If this fails:
+Switch back to the original libas API, while still passing GFP context.
+The libsas _gfp() variants will be removed afterwards.
 
-drivers/iommu/iova.c:847: rcache->cpu_rcaches = __alloc_percpu(sizeof(*cpu_rcache), cache_line_size());
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: John Garry <john.garry@huawei.com>
+---
+ drivers/scsi/hisi_sas/hisi_sas_main.c  | 9 ++++-----
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 4 ++--
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 4 ++--
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 4 ++--
+ 4 files changed, 10 insertions(+), 11 deletions(-)
 
-then we'll get an Oops in __iova_rcache_get(). So if we're making the
-module safer against magazine allocation failure, shouldn't we also
-protect against cpu_rcaches allocation failure?
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index 54acaeab5bb7..625327e99b06 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -627,7 +627,7 @@ static void hisi_sas_bytes_dmaed(struct hisi_hba *hisi_hba, int phy_no,
+ 		return;
+ 	}
+ 
+-	sas_notify_phy_event_gfp(sas_phy, PHYE_OOB_DONE, gfp_flags);
++	sas_notify_phy_event(sas_phy, PHYE_OOB_DONE, gfp_flags);
+ 
+ 	if (sas_phy->phy) {
+ 		struct sas_phy *sphy = sas_phy->phy;
+@@ -655,7 +655,7 @@ static void hisi_sas_bytes_dmaed(struct hisi_hba *hisi_hba, int phy_no,
+ 	}
+ 
+ 	sas_phy->frame_rcvd_size = phy->frame_rcvd_size;
+-	sas_notify_port_event_gfp(sas_phy, PORTE_BYTES_DMAED, gfp_flags);
++	sas_notify_port_event(sas_phy, PORTE_BYTES_DMAED, gfp_flags);
+ }
+ 
+ static struct hisi_sas_device *hisi_sas_alloc_dev(struct domain_device *device)
+@@ -1430,7 +1430,7 @@ static void hisi_sas_rescan_topology(struct hisi_hba *hisi_hba, u32 state)
+ 				_sas_port = sas_port;
+ 
+ 				if (dev_is_expander(dev->dev_type))
+-					sas_notify_port_event_gfp(sas_phy,
++					sas_notify_port_event(sas_phy,
+ 							PORTE_BROADCAST_RCVD,
+ 							GFP_KERNEL);
+ 			}
+@@ -2209,8 +2209,7 @@ void hisi_sas_phy_down(struct hisi_hba *hisi_hba, int phy_no, int rdy,
+ 			return;
+ 		}
+ 		/* Phy down and not ready */
+-		sas_notify_phy_event_gfp(sas_phy,
+-					 PHYE_LOSS_OF_SIGNAL, gfp_flags);
++		sas_notify_phy_event(sas_phy, PHYE_LOSS_OF_SIGNAL, gfp_flags);
+ 		sas_phy_disconnected(sas_phy);
+ 
+ 		if (port) {
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+index 2e660c0476f1..7451377c4cb6 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+@@ -1423,8 +1423,8 @@ static irqreturn_t int_bcast_v1_hw(int irq, void *p)
+ 	}
+ 
+ 	if (!test_bit(HISI_SAS_RESET_BIT, &hisi_hba->flags))
+-		sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+-					  GFP_ATOMIC);
++		sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
++				      GFP_ATOMIC);
+ 
+ end:
+ 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT2,
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+index da62dfdb724d..502ad3e4f7cd 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+@@ -2825,8 +2825,8 @@ static void phy_bcast_v2_hw(int phy_no, struct hisi_hba *hisi_hba)
+ 	bcast_status = hisi_sas_phy_read32(hisi_hba, phy_no, RX_PRIMS_STATUS);
+ 	if ((bcast_status & RX_BCAST_CHG_MSK) &&
+ 	    !test_bit(HISI_SAS_RESET_BIT, &hisi_hba->flags))
+-		sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+-					  GFP_ATOMIC);
++		sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
++				      GFP_ATOMIC);
+ 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT0,
+ 			     CHL_INT0_SL_RX_BCST_ACK_MSK);
+ 	hisi_sas_phy_write32(hisi_hba, phy_no, SL_RX_BCAST_CHK_MSK, 0);
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 0307248fd973..28edf76e0f47 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -1607,8 +1607,8 @@ static irqreturn_t phy_bcast_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
+ 	bcast_status = hisi_sas_phy_read32(hisi_hba, phy_no, RX_PRIMS_STATUS);
+ 	if ((bcast_status & RX_BCAST_CHG_MSK) &&
+ 	    !test_bit(HISI_SAS_RESET_BIT, &hisi_hba->flags))
+-		sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD,
+-					  GFP_ATOMIC);
++		sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD,
++				      GFP_ATOMIC);
+ 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT0,
+ 			     CHL_INT0_SL_RX_BCST_ACK_MSK);
+ 	hisi_sas_phy_write32(hisi_hba, phy_no, SL_RX_BCAST_CHK_MSK, 0);
+-- 
+2.30.0
 
-Thanks,
-Jean
-
-> 
-> Anyway, logic like "if not full" or "if not empty" is poor as the outcome
-> for NULL is ambiguous (maybe there's a better word) and the code is not safe
-> against it, and so I replace with "if space" or "if have an IOVA",
-> respectively.
-> 
-> Thanks,
-> John
-> 
