@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6A52F971A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E17A2F970A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 02:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730525AbhARBEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 20:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S1730689AbhARBBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 20:01:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730472AbhARA5L (ORCPT
+        with ESMTP id S1729621AbhARA5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 19:57:11 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18D1C061795;
-        Sun, 17 Jan 2021 16:55:47 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id w26so16519202ljo.4;
-        Sun, 17 Jan 2021 16:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DilXPRI3TRJmzULgddpAwxGtKs9uc5bXa700Snpt8eg=;
-        b=jkazrJTlp36hPiUFrC7+kV3l/6K9OcH+n0l0ToQZJatwEfH45vuOuQHKdbSx5Agt/m
-         Zkx4gfKuxm8joxqX1fCVKjv7tfssLoyYjVBzVbctl4sHyY31hy2etFKh5TVmGHunzGVI
-         wPoW89LcSShSPDDGOzHRofjldjka5fVLPMgggkwnu1crxdMRmSPz8+dz2F4YrHWV2RrJ
-         jCeJtjFJV+hsdcu0GYJJYVIBKfiiKP4ggQ0wjotl4yJ1RhXZEuWz7fmiQlkPh4hkgIwV
-         /gD6sxhVwLpG9Sq+P0k6ktUIuGfpb1HLxo129X+uf5ZDsRhPvKjZQKfkTICNf9HtvS0R
-         hK8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DilXPRI3TRJmzULgddpAwxGtKs9uc5bXa700Snpt8eg=;
-        b=YejkF1/uF7f5rPtNmCHgCRruilv7dIfoQP0fODcbnbKZJKfccrV9dvxoCuK2pgx7hD
-         /o4AqqTefUQIg27O19FYvBU9jVGO2ku5D6aOmQ4OGgSJatFdkUggOI7Ep+wtq7Z1tXRk
-         lVMwTQPQPuFaKOfSsTS6HtCfpo3kotzadMW4KrxN6553/SC83WWqEF+VMTLcAJ+oAfNB
-         MeyLg8aE5W4Nfs8T2IecvGIzRD1sP4k1FwUq7nzdKZhRUg86XyUFPdJLByHwH9neewpG
-         Jh9mXSoN9T/1FP4pGAyUHD8bsDbjv4TMm4jXbLjFd5qHf0RzyfQ8lhtBuo5y3DKoja2r
-         uSDw==
-X-Gm-Message-State: AOAM531yrYcu1sFMV1B44rv5e3BMCdEPq9TQywIgIHh+gokh92aci7QK
-        qyvHQ4w6YAZ9HVCbsFFzL5Fv2+Wcjps=
-X-Google-Smtp-Source: ABdhPJwJPyNTEMevAfSEECE2toaXbJUsIn96iIntXcmUHGkNfR12JhXMpsdGv6/2GG1f0eSXZU1wzA==
-X-Received: by 2002:a2e:9497:: with SMTP id c23mr9805613ljh.362.1610931346276;
-        Sun, 17 Jan 2021 16:55:46 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id m24sm1484553ljj.62.2021.01.17.16.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 16:55:45 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v3 12/12] opp: Print OPP level in debug message of _opp_add_static_v2()
-Date:   Mon, 18 Jan 2021 03:55:24 +0300
-Message-Id: <20210118005524.27787-13-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210118005524.27787-1-digetx@gmail.com>
-References: <20210118005524.27787-1-digetx@gmail.com>
+        Sun, 17 Jan 2021 19:57:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF0CC061573;
+        Sun, 17 Jan 2021 16:56:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DJtdl2zSjz9sWL;
+        Mon, 18 Jan 2021 11:56:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610931390;
+        bh=dblihYaz5X39tjfecv/dai/t29h3iT+VXjnXgyxnQ+s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Z4/J6Gm8hLAk4tkbn4nod18cxVArddA9NWDnQreEPD8qdGbPnOBXGVOSGigfVerW8
+         Rv9WOTwHM2rEHzk4hMue+Nb06PNfwW4AsgJcRL3XPCi9rEDjBIDzPrnNIoqUS4n/WQ
+         ahQz1H1niNZ6sbhXZMD96Okn3LiOONu2E+mB5mAli6wFltzFYUTLmpXKKhOpGevEYA
+         +YsRX0vUDOUrxdVhXXYLBbiOvW3IdJxdBUgdt65cM6Xocrm8aGFdjd0FiW9G0Yhx6v
+         yhkTWd6D0xLmPueH08j1hCvpZpV0is3WKMCVOr9pVbDgdrElN6tmIF+LhDtDBzxpQb
+         ExKXP/WZte56g==
+Date:   Mon, 18 Jan 2021 11:56:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20210118115625.0dae1d02@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/j/H4e3/VxnyZ5RlZTzvJSXm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print OPP level in debug message of _opp_add_static_v2(). This helps to
-chase GENPD bugs.
+--Sig_/j/H4e3/VxnyZ5RlZTzvJSXm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/opp/of.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hi all,
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 63b16cdba5ea..758730d070da 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -822,10 +822,11 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
- 	if (new_opp->clock_latency_ns > opp_table->clock_latency_ns_max)
- 		opp_table->clock_latency_ns_max = new_opp->clock_latency_ns;
- 
--	pr_debug("%s: turbo:%d rate:%lu uv:%lu uvmin:%lu uvmax:%lu latency:%lu\n",
-+	pr_debug("%s: turbo:%d rate:%lu uv:%lu uvmin:%lu uvmax:%lu latency:%lu level:%u\n",
- 		 __func__, new_opp->turbo, new_opp->rate,
- 		 new_opp->supplies[0].u_volt, new_opp->supplies[0].u_volt_min,
--		 new_opp->supplies[0].u_volt_max, new_opp->clock_latency_ns);
-+		 new_opp->supplies[0].u_volt_max, new_opp->clock_latency_ns,
-+		 new_opp->level);
- 
- 	/*
- 	 * Notify the changes in the availability of the operable
--- 
-2.29.2
+Today's linux-next merge of the drm tree got a conflict in:
 
+  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+
+between commits:
+
+  3c517ca5212f ("Revert "drm/amdgpu/disply: fix documentation warnings in d=
+isplay manager"")
+  a7ddd22151fc ("Revert "drm/amd/display: Expose new CRC window property"")
+
+from Linus' tree and commit:
+
+  71338cb4a7c2 ("drm/amd/display: enable idle optimizations for linux (MALL=
+ stutter)")
+
+from the drm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+index 1182dafcef02,f084e2fc9569..000000000000
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+@@@ -336,6 -336,39 +336,13 @@@ struct amdgpu_display_manager=20
+  	 */
+  	const struct gpu_info_soc_bounding_box_v1_0 *soc_bounding_box;
+ =20
++ 	/**
++ 	 * @active_vblank_irq_count
++ 	 *
++ 	 * number of currently active vblank irqs
++ 	 */
++ 	uint32_t active_vblank_irq_count;
++=20
+ -#ifdef CONFIG_DEBUG_FS
+ -	/**
+ -	 * @crc_win_x_start_property:
+ -	 *
+ -	 * X start of the crc calculation window
+ -	 */
+ -	struct drm_property *crc_win_x_start_property;
+ -	/**
+ -	 * @crc_win_y_start_property:
+ -	 *
+ -	 * Y start of the crc calculation window
+ -	 */
+ -	struct drm_property *crc_win_y_start_property;
+ -	/**
+ -	 * @crc_win_x_end_property:
+ -	 *
+ -	 * X end of the crc calculation window
+ -	 */
+ -	struct drm_property *crc_win_x_end_property;
+ -	/**
+ -	 * @crc_win_y_end_property:
+ -	 *
+ -	 * Y end of the crc calculation window
+ -	 */
+ -	struct drm_property *crc_win_y_end_property;
+ -#endif
+  	/**
+  	 * @mst_encoders:
+  	 *
+
+--Sig_/j/H4e3/VxnyZ5RlZTzvJSXm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAE3LkACgkQAVBC80lX
+0GyWsAf8DbG8yMIm6wKl2OuMErnvA9zPz2NaqaQRFhiNApZsTin4cxJ0TnbrV8B7
+SmwQiBwyDXFejeUsCMdEhQXOdiJI660az7sBAy9zfAB20Z46Kf27Akzou272r322
+BKUGSdcPBSQo+8+TG5ICtXS2MexjAwlOICmc5OaI17V/HCiuvQS4fgpvsp/o0nUa
+bzdNY+xdM3KS5V97PBEMkyQ7yyDLkEx/HYgGjV4WrpokULFrdipqgj03mnasXR2y
+HB1bXvQb+qHWbLhuM8OUgBjMV8K3A5M8rucmh2At4qUI890+JeBWLNdD34TeELuP
+laxqtMCqc5vtepmoJlToYThCwzClQg==
+=bLvs
+-----END PGP SIGNATURE-----
+
+--Sig_/j/H4e3/VxnyZ5RlZTzvJSXm--
