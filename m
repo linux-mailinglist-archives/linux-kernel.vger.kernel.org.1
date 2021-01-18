@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAAA2FAD74
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A342FAD77
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389613AbhARWmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1731591AbhARWnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389250AbhARWle (ORCPT
+        with ESMTP id S2389326AbhARWlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:41:34 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE3FC0617BD
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:55 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id e15so8652328wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:54 -0800 (PST)
+        Mon, 18 Jan 2021 17:41:39 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25839C061381
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:56 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id c124so14892048wma.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:39:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1eFdUTJI7mmEj5LtJ6jTyl1yOrcuVdEGYg6Yi6ixeZ8=;
-        b=kNaajm5Jlop5jqlyD7FIYnB9+kiPHDeuU4FljyePtPzp4pU7am76kktTdXv76CafPF
-         NYIrC36USQ4FsHPPJE7OBKbHgqRiZKQFVZV+4A259mc78uUWaU1all44QLdPjpsafeBV
-         d/E7VgwAtCRpdu2DbPG8ZC5TydNz1QeyAxNp5C2qBIVU+11V9ZsN1MHPyhvFLHpLusrW
-         Sp11I1SuIbULBbFqk1k7OIk2vmpF0Y23IMOfriu8+v8rJwQn7945emEdXYtWU/k2A6d+
-         c5R9om3QR09rCp+HJll1RSUfWAJQxpB5eBBdeg6fM/ziUlVJbw2cAa+gXtH85WUJiRGv
-         d4Xw==
+        bh=o2Ps4NdwSah0TpS5Hl9/iU2xXHhQ0Nh1Ujaqty12+uY=;
+        b=m6chYw8W2yxmf8PKgJIUyE44dr27PL7aC2GJfBIhFlTCld/tHDlW5wwsWshXjL+loP
+         B0SVc5DRjHfBTXD3JNF7vT4jfE9FHtRTkTRwB+ff+kyCAYHTF6wWPyWcL8+KW8QH54SS
+         LTvEyAappDHL0SoIdO3eKlRwn1nkuMVbGDq4mTlZv9+oS9/Lhjzh1xvMyPS8++dOgVmA
+         Svi4NV3gzkerjb25v//Pt6AkJysS4CgI0ER2Vi3ReMM0egLOKzHCMAXX9E0+hGpWHIcK
+         61CzEByScPqu5eZQRRjflCRJaqfDNFJY/nZ4H/X+NLr5TtviDxVgvaLMSkXVCQRitX9T
+         GUdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1eFdUTJI7mmEj5LtJ6jTyl1yOrcuVdEGYg6Yi6ixeZ8=;
-        b=kjclgXk5WwH/e8XRlheKjxpDHSdXX/+6dFz9/C+tlk1IkIQ1v61MVXNR8Zx6ylokYD
-         T877UJc0Y720BD4VRAAWCsdej9s8hFtfYdAxZelgBSrcSoTF1mvRzrWHqs/gMTfavth4
-         agEuBYnXCAw5VNZ5Xyg0afpXjRfNWTgn8tBDAqRyJgBXN2IqwVrbY0WxWb+UUIrmPsnj
-         JJRGylVoZmbTAgLFbxi4cctMuQZ4ZLdr7byZfeZVHNxc9d66zfnj8KH2eE/eyXfFOmJS
-         mCHGedg/Yqes4QwT7jQfhmfad2mAWNwyEVSay7/A3dMqPgxp7gOU3i9H0uxFpMzdI2Vc
-         zHNQ==
-X-Gm-Message-State: AOAM531GFPauckrmHMk9vcRjbePJzxsVtXiUMd8pvvrwVyTQSIdsBijr
-        uvaHJV5yzrArz+EzeOUL/A6MZw==
-X-Google-Smtp-Source: ABdhPJyYvVMC/kR0w10Yl2A5bJOy60xhvhQYtJD0lozRUaqnUXTIIw6QOwzEndAcIRfZSfsYoYdLXQ==
-X-Received: by 2002:a1c:2009:: with SMTP id g9mr1279326wmg.7.1611009593850;
-        Mon, 18 Jan 2021 14:39:53 -0800 (PST)
+        bh=o2Ps4NdwSah0TpS5Hl9/iU2xXHhQ0Nh1Ujaqty12+uY=;
+        b=lpXTMz3mUrT+zT65ApqPRr0OfcVi5Zzy1u7+WLhgD3/57/Mpj12WNX6cfpFsVNtY0h
+         Y2fBII1lEO61P27++C4QCsl16YgCoG7465UzJHEt56jSZ2TJWzGQ2c8vhrm/mip9wmll
+         lPogY7kLxIKlbfPpTRtZFzmwf08gIVcXYRrLYZ6zuBvDHM13U4kIsjrZRcXFZiQf6Ceu
+         YxWhmgBpgODFeiB0wpdI8tPeGtJgFO90rEygi2+Eo45G3BJMwu7CvXexYLhphOFd7TuP
+         Soz9lFfUYGJ9pjU20TNNbjQjMQJJSS6IAVMwlHxxb05C+LPLN1vP3jB1VlfEBaG4BsYl
+         YHOQ==
+X-Gm-Message-State: AOAM5301FP0r3ykgf7TsBexT3hy5PD+ubJsryGOfKNYqvxwjD1v2uiOg
+        /u/0koRFly4VSQSfVCnJI+hIlg==
+X-Google-Smtp-Source: ABdhPJxW5uRN4NeDNBwkU6uVLJdshMT+VBEfC7iD9uFNzSF3xvGEs6kqcKqlrRzUWfdGXVx2TJrhqg==
+X-Received: by 2002:a1c:20cb:: with SMTP id g194mr1281480wmg.51.1611009594926;
+        Mon, 18 Jan 2021 14:39:54 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.52
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:53 -0800 (PST)
+        Mon, 18 Jan 2021 14:39:54 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 19/20] RDMA/core/iwpm_util: Fix some param description misspellings
-Date:   Mon, 18 Jan 2021 22:39:28 +0000
-Message-Id: <20210118223929.512175-20-lee.jones@linaro.org>
+Subject: [PATCH 20/20] RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
+Date:   Mon, 18 Jan 2021 22:39:29 +0000
+Message-Id: <20210118223929.512175-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
 References: <20210118223929.512175-1-lee.jones@linaro.org>
@@ -66,45 +66,99 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/core/iwpm_util.c:138: warning: Function parameter or member 'local_sockaddr' not described in 'iwpm_create_mapinfo'
- drivers/infiniband/core/iwpm_util.c:138: warning: Function parameter or member 'mapped_sockaddr' not described in 'iwpm_create_mapinfo'
- drivers/infiniband/core/iwpm_util.c:138: warning: Excess function parameter 'local_addr' description in 'iwpm_create_mapinfo'
- drivers/infiniband/core/iwpm_util.c:138: warning: Excess function parameter 'mapped_addr' description in 'iwpm_create_mapinfo'
- drivers/infiniband/core/iwpm_util.c:185: warning: Function parameter or member 'local_sockaddr' not described in 'iwpm_remove_mapinfo'
- drivers/infiniband/core/iwpm_util.c:185: warning: Excess function parameter 'local_addr' description in 'iwpm_remove_mapinfo'
+ drivers/infiniband/core/iwpm_msg.c:402: warning: Function parameter or member 'skb' not described in 'iwpm_register_pid_cb'
+ drivers/infiniband/core/iwpm_msg.c:475: warning: Function parameter or member 'skb' not described in 'iwpm_add_mapping_cb'
+ drivers/infiniband/core/iwpm_msg.c:553: warning: Function parameter or member 'skb' not described in 'iwpm_add_and_query_mapping_cb'
+ drivers/infiniband/core/iwpm_msg.c:636: warning: Function parameter or member 'skb' not described in 'iwpm_remote_info_cb'
+ drivers/infiniband/core/iwpm_msg.c:716: warning: Function parameter or member 'skb' not described in 'iwpm_mapping_info_cb'
+ drivers/infiniband/core/iwpm_msg.c:773: warning: Function parameter or member 'skb' not described in 'iwpm_ack_mapping_info_cb'
+ drivers/infiniband/core/iwpm_msg.c:803: warning: Function parameter or member 'skb' not described in 'iwpm_mapping_error_cb'
+ drivers/infiniband/core/iwpm_msg.c:851: warning: Function parameter or member 'skb' not described in 'iwpm_hello_cb'
 
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/core/iwpm_util.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/iwpm_msg.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/iwpm_util.c b/drivers/infiniband/core/iwpm_util.c
-index 13495b43dbc11..f80e5550b51f2 100644
---- a/drivers/infiniband/core/iwpm_util.c
-+++ b/drivers/infiniband/core/iwpm_util.c
-@@ -127,8 +127,8 @@ static struct hlist_head *get_mapinfo_hash_bucket(struct sockaddr_storage *,
+diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
+index 46686990a8271..30a0ff76b3327 100644
+--- a/drivers/infiniband/core/iwpm_msg.c
++++ b/drivers/infiniband/core/iwpm_msg.c
+@@ -392,7 +392,7 @@ static const struct nla_policy resp_reg_policy[IWPM_NLA_RREG_PID_MAX] = {
  /**
-  * iwpm_create_mapinfo - Store local and mapped IPv4/IPv6 address
-  *                       info in a hash table
-- * @local_addr: Local ip/tcp address
-- * @mapped_addr: Mapped local ip/tcp address
-+ * @local_sockaddr: Local ip/tcp address
-+ * @mapped_sockaddr: Mapped local ip/tcp address
-  * @nl_client: The index of the netlink client
-  * @map_flags: IWPM mapping flags
-  */
-@@ -174,7 +174,7 @@ int iwpm_create_mapinfo(struct sockaddr_storage *local_sockaddr,
- /**
-  * iwpm_remove_mapinfo - Remove local and mapped IPv4/IPv6 address
-  *                       info from the hash table
-- * @local_addr: Local ip/tcp address
-+ * @local_sockaddr: Local ip/tcp address
-  * @mapped_local_addr: Mapped local ip/tcp address
+  * iwpm_register_pid_cb - Process the port mapper response to
+  *                        iwpm_register_pid query
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
   *
-  * Returns err code if mapping info is not found in the hash table,
+  * If successful, the function receives the userspace port mapper pid
+@@ -468,7 +468,7 @@ static const struct nla_policy resp_add_policy[IWPM_NLA_RMANAGE_MAPPING_MAX] = {
+ /**
+  * iwpm_add_mapping_cb - Process the port mapper response to
+  *                       iwpm_add_mapping request
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  */
+ int iwpm_add_mapping_cb(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -545,7 +545,7 @@ static const struct nla_policy resp_query_policy[IWPM_NLA_RQUERY_MAPPING_MAX] =
+ /**
+  * iwpm_add_and_query_mapping_cb - Process the port mapper response to
+  *                                 iwpm_add_and_query_mapping request
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  */
+ int iwpm_add_and_query_mapping_cb(struct sk_buff *skb,
+@@ -627,7 +627,7 @@ int iwpm_add_and_query_mapping_cb(struct sk_buff *skb,
+ /**
+  * iwpm_remote_info_cb - Process remote connecting peer address info, which
+  *                       the port mapper has received from the connecting peer
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  *
+  * Stores the IPv4/IPv6 address info in a hash table
+@@ -706,7 +706,7 @@ static const struct nla_policy resp_mapinfo_policy[IWPM_NLA_MAPINFO_REQ_MAX] = {
+ /**
+  * iwpm_mapping_info_cb - Process a notification that the userspace
+  *                        port mapper daemon is started
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  *
+  * Using the received port mapper pid, send all the local mapping
+@@ -766,7 +766,7 @@ static const struct nla_policy ack_mapinfo_policy[IWPM_NLA_MAPINFO_NUM_MAX] = {
+ /**
+  * iwpm_ack_mapping_info_cb - Process the port mapper ack for
+  *                            the provided local mapping info records
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  */
+ int iwpm_ack_mapping_info_cb(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -796,7 +796,7 @@ static const struct nla_policy map_error_policy[IWPM_NLA_ERR_MAX] = {
+ /**
+  * iwpm_mapping_error_cb - Process port mapper notification for error
+  *
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  */
+ int iwpm_mapping_error_cb(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -841,7 +841,7 @@ static const struct nla_policy hello_policy[IWPM_NLA_HELLO_MAX] = {
+ /**
+  * iwpm_hello_cb - Process a hello message from iwpmd
+  *
+- * @skb:
++ * @skb: The socket buffer
+  * @cb: Contains the received message (payload and netlink header)
+  *
+  * Using the received port mapper pid, send the kernel's abi_version
 -- 
 2.25.1
 
