@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89E12FA73A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35062FA73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407003AbhARRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:15:24 -0500
-Received: from mga18.intel.com ([134.134.136.126]:14256 "EHLO mga18.intel.com"
+        id S2407067AbhARRQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:16:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:39764 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407000AbhARROA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:14:00 -0500
-IronPort-SDR: jgT180sITbFf52JiqHuI4q6lmZlm2IUsKw/p1SihYf/PickUfAgARdLr14yXZCosTKcS6tf0ax
- wifQlR1mT4NA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="166494841"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="166494841"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 09:13:12 -0800
-IronPort-SDR: LzA/uh7JspkW3LdbsSeABYObh+4WRAiQX2209NaAyRjhwUCi4zb+QwtkGd47mDVIzHIo/KmNdU
- VK3n3lxAiA1Q==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="402103087"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 09:13:09 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1l1Y6V-002OAi-1j; Mon, 18 Jan 2021 19:14:11 +0200
-Date:   Mon, 18 Jan 2021 19:14:11 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-mm <linux-mm@kvack.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] [v2] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for
- unhashed addresses
-Message-ID: <20210118171411.GG4077@smile.fi.intel.com>
-References: <20210116220950.47078-1-timur@kernel.org>
- <20210116220950.47078-2-timur@kernel.org>
- <CAHp75Vdk6y8dGNJOswZwfOeva_sqVcw-f=yYgf_rptjHXxfZvw@mail.gmail.com>
- <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
+        id S2405593AbhARRPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:15:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D4E731B;
+        Mon, 18 Jan 2021 09:14:24 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 403C83F719;
+        Mon, 18 Jan 2021 09:14:22 -0800 (PST)
+Subject: Re: [PATCH v3 6/7] iommu/mediatek: Gather iova in iommu_unmap to
+ achieve tlb sync once
+To:     Will Deacon <will@kernel.org>
+Cc:     youlin.pei@mediatek.com, anan.sun@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
+ <20201216103607.23050-7-yong.wu@mediatek.com>
+ <e1e17782-a9f3-6b64-1630-bf29af5241cf@arm.com>
+ <20210118165833.GA17722@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5043519d-fa2b-b066-8d6d-aa7a55a14b69@arm.com>
+Date:   Mon, 18 Jan 2021 17:14:22 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b39866a4-19cd-879b-1f3e-44126caf9193@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210118165833.GA17722@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:57:55AM -0600, Timur Tabi wrote:
-> On 1/18/21 4:03 AM, Andy Shevchenko wrote:
-> > On Sun, Jan 17, 2021 at 12:12 AM Timur Tabi <timur@kernel.org> wrote:
-
-...
-
-> > Any user of this? (For the record, I don't see any other mail except this one)
-
-> It's patch #2 of this set.
-
-I haven't got that one.
-
-> They were all sent together.
-
-Apparently not to me.
-
-> http://lkml.iu.edu/hypermail/linux/kernel/2101.2/00245.html
+On 2021-01-18 16:58, Will Deacon wrote:
+> On Mon, Jan 18, 2021 at 04:35:22PM +0000, Robin Murphy wrote:
+>> On 2020-12-16 10:36, Yong Wu wrote:
+>>> In current iommu_unmap, this code is:
+>>>
+>>> 	iommu_iotlb_gather_init(&iotlb_gather);
+>>> 	ret = __iommu_unmap(domain, iova, size, &iotlb_gather);
+>>> 	iommu_iotlb_sync(domain, &iotlb_gather);
+>>>
+>>> We could gather the whole iova range in __iommu_unmap, and then do tlb
+>>> synchronization in the iommu_iotlb_sync.
+>>>
+>>> This patch implement this, Gather the range in mtk_iommu_unmap.
+>>> then iommu_iotlb_sync call tlb synchronization for the gathered iova range.
+>>> we don't call iommu_iotlb_gather_add_page since our tlb synchronization
+>>> could be regardless of granule size.
+>>>
+>>> In this way, gather->start is impossible ULONG_MAX, remove the checking.
+>>>
+>>> This patch aims to do tlb synchronization *once* in the iommu_unmap.
+>>
+>> Assuming the update to patch #4 simply results in "unsigned long end = iova
+>> + size - 1;" here,
+>>
+>> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 > 
-> Let me know what you think.
-
-Makes sense. Hint: use lore.kernel.org references as they are much better in
-terms of provided features and patch representation.
-
-...
-
-> > >          DUMP_PREFIX_NONE,
-> > >          DUMP_PREFIX_ADDRESS,
-> > > -       DUMP_PREFIX_OFFSET
-> > > +       DUMP_PREFIX_OFFSET,
-> > > +       DUMP_PREFIX_UNHASHED,
-> > 
-> > Since it's an address, I would like to group them together, i.e. put
-> > after DUMP_PREFIX_ADDRESS.
+> There's a v4 here:
 > 
-> I didn't want to change the numbering of any existing enums, just in case
-> there are users that accidentally hard-code the values.  I'm trying to make
-> this patch as unobtrusive as possible.
+> https://lore.kernel.org/r/20210107122909.16317-1-yong.wu@mediatek.com
 
-But isn't it good to expose those issues (and fix them)?
+Ha, so there is! Apparently I missed that in my post-holiday sweep last 
+week and leant too heavily on the inbox-in-date-order assumption. Lemme 
+just go catch up...
 
-...
-
-> > Perhaps even add _ADDRESS to DUMP_PREFIX_UNHASHED, but this maybe too
-> long.
-> 
-> I think DUMP_PREFIX_ADDRESS_UNHASHED is too long.
-
-What about introducing new two like these:
-
-	DUMP_PREFIX_OFFSET,
-	DUMP_PREFIX_ADDRESS,
-	DUMP_PREFIX_ADDR_UNHASHED,
-	DUMP_PREFIX_ADDR_HASHED,
-
-and allow people step-by-step move to them?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Robin.
