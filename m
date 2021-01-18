@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190622F9879
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB712F9880
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 05:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732004AbhAREJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 23:09:00 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48215 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730993AbhAREIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 23:08:52 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DJytt01Mdz9sVr;
-        Mon, 18 Jan 2021 15:08:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610942890;
-        bh=9ji3rG4AewVlQsEVCx9uSjgE1CJ98CjDp+kMa3WXxrc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Iim22ibSSar2UWb47HnE0mQP3RFLg6/FBqtnrwl6CXrdMufmLx0+dH1RnjlTo/I0+
-         9kvhDjDdC8zVVSM1XB7WLmxKTu8g5nwwptQw1oBtZaWMP+zCrOiUqso2yc+GqFh51m
-         sVVKSRnnJ+o7zWrtJecZmyi+rE4QP/8jal8i/PacoTqaV35copqXHzFJwJfJpYpZ4V
-         kwYzOcK08YiUm/bj5+bVxSDIJq6kF0o8zomx0ywpsOvfj2h2MDr+E+CDZPEGdaU/8I
-         lGq5PEgbIt6VFRZBTvp2a/la9hPgiF9ppPkktvHIrOuHuSrr9wMWQlLWkMaAhn7O0e
-         tqt4eaVtFsWUQ==
-Date:   Mon, 18 Jan 2021 15:08:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: linux-next: manual merge of the kspp tree with the mips tree
-Message-ID: <20210118150804.378ac9f3@canb.auug.org.au>
+        id S1732058AbhAREND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 23:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730273AbhAREM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 23:12:59 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47106C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:12:19 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id x18so7933758pln.6
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 20:12:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dJSz008Gr3fMyHCiz6o58NLkvxxf8SsrpAa4i2B5A9Y=;
+        b=lsrqoPBrRDbShsY2EoTnFVgI9pXnwxl02VqP5w3FhW5fQzc16+sBDocMJ8OyX2aLoI
+         0Tx0I5lflR0vERpEC14lV6hjWrwWa+GULn+I1VAB/j/ovtUeAfkmxUHqk1oe5diVmYO5
+         MuCbyArZqKwFk/mgaP6hn6zXn1dcBrj42a7ZPZX8mGQ9tMTsXUhleB6TQ9ZyORGF5C/N
+         I8jUAXgyRMcmGp+W+PGqiW4n8tbsXatrPEBnJbhDRIb4pumnzrF8bpueoRbDGV/d3umv
+         8gsoE9O3KPQus6sg0HaLO09lrxjc3jUqv6H6WZ/HMrBB2/TTf5P8TUQ6WOVw6UgogcGR
+         ZyrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dJSz008Gr3fMyHCiz6o58NLkvxxf8SsrpAa4i2B5A9Y=;
+        b=hdOOkimNBOMYzYrtO/n9vg1McZ4KyEz7gOE9OQhdswT3nyEW42sTxCUJdgfWM8fjW3
+         w+7LVxTYT1MeooMUfSw5tKMcm6AtzULXFdeAP4sf0RRI16lfuhUqMriChDVoCwTryUBm
+         ozKIV14haU7EKeXBJWJgIXDt4qF1UgiQhifdYnvtA+xD2o6sVHVevgUFHjdOCr/F0eX2
+         jIx3CVFcrkVGPOBT+17Gfop6RvyzEMmHAYLcrPIa2Zsd4g7WQTXfAvsi7tBxTfpsYhj1
+         BcvgylFOeQyWJ/Sta3CFjh1+JLU+Mgg9hhoQA5dco3APXG8kefyAdGmhqi5RpOkfHxQm
+         WNrw==
+X-Gm-Message-State: AOAM530qqY+uQ3fq1I7NZhhgE5/DeJMnWLbVTWLZ+cGptvpkFVUHHNmc
+        VxaVeSxEcVmqrxP5KVSExGKB
+X-Google-Smtp-Source: ABdhPJwJIIwOwn0dK83qSwMSm4RoQFAzyfF1XJ5YfGOfsmnCR7lJpFOG2cYzoMEk3RttK5GQpmeHnQ==
+X-Received: by 2002:a17:903:230b:b029:dd:7cf1:8c33 with SMTP id d11-20020a170903230bb02900dd7cf18c33mr24507515plh.31.1610943138692;
+        Sun, 17 Jan 2021 20:12:18 -0800 (PST)
+Received: from localhost.localdomain ([103.77.37.182])
+        by smtp.gmail.com with ESMTPSA id h15sm6727319pja.4.2021.01.17.20.12.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 20:12:17 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     viresh.kumar@linaro.org, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 0/5] Add APCS support for SDX55
+Date:   Mon, 18 Jan 2021 09:41:51 +0530
+Message-Id: <20210118041156.50016-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dB7MnGXiui1776_s0n8kdSu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dB7MnGXiui1776_s0n8kdSu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+This series adds APCS mailbox and clock support for SDX55. The APCS IP
+in SDX55 provides IPC and clock functionalities. Hence, mailbox support
+is added to the "qcom-apcs-ipc-mailbox" driver and a dedicated clock
+driver "apcs-sdx55" is added.
 
-Today's linux-next merge of the kspp tree got a conflict in:
+Also, the clock to the APCS block is coming from 3 different sources:
 
-  include/asm-generic/vmlinux.lds.h
+1. Board XO
+2. Fixed rate GPLL0
+3. A7 PLL
 
-between commits:
+First source is from crystal osc, second is from GCC and third one is a
+separate clock source. Hence, a dedicated clk driver is added for the A7
+PLL as well.
 
-  9a427556fb8e ("vmlinux.lds.hf41b233de0ae: catch compound literals into da=
-ta and BSS")
-  f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data")
+Apart from the mailbox support, another intention of this series is to add
+the CPUFreq support to SDX55 platform. Since there is no dedicated hardware
+IP in SDX55 to do CPUFreq duties, this platform makes use of the clock and
+regulators directly via cpufreq-dt driver.
 
-from the mips tree and commit:
+The trick here is attaching the power domain to cpudev. Usually the power
+domains for the target device is attached in the bus driver or in the
+dedicated device drivers. But in this case, there is no dedicated CPUFreq
+driver nor a bus driver. After discussing with Viresh, I concluded that
+A7 PLL driver might be the best place to do this!
 
-  dc5723b02e52 ("kbuild: add support for Clang LTO")
+But this decision is subject to discussion, hence added Ulf and Viresh to
+this series.
 
-from the kspp tree.
+Thanks,
+Mani
 
-I fixed it up (9a427556fb8e and dc5723b02e52 made the same change to
-DATA_MAIN, which conflicted with the change in f41b233de0ae) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging. You may
-also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
+Changes in v3:
 
---=20
-Cheers,
-Stephen Rothwell
+* Incorporated review comments from Stephen for APCS clk driver and Rob for
+  APCS DT binding
 
---Sig_/dB7MnGXiui1776_s0n8kdSu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes in v2:
 
------BEGIN PGP SIGNATURE-----
+* Modified the max_register value as per the SDX55 IPC offset in mailbox
+  driver.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAFCaQACgkQAVBC80lX
-0GxP+Qf/fOmAeOySNZbDQqmFzQ3j0wOU3uotsQPWTuyt8clh0am68S0/pG6qUtO6
-IMZGYTweG+2kUrZoIJNjhVjAEBSjbwSUgzkXvMLiE/ziwuuCj0RSDiOcYW2DUoPs
-o/Ex7clslt1htbXKCpSaSkYb/y4dghPqrNDP3aX3bFb+emfG6O3j9AHxtIVGqRd/
-eey16CK/eyk6kUrrEKbYh4M/msHsf/HwAbkLCKbJ9/gnLzovtEqQuvMMHLFWM2RW
-fzWxm9CrKoHrlftw15si9WU0myyGTfs5ROpvVA+2WjACaQGewJSF8Q2hsjrHGuQ6
-V78DGtr/eDOVbl6LCmw8sdwGZVJ7YA==
-=v9bB
------END PGP SIGNATURE-----
+Manivannan Sadhasivam (5):
+  dt-bindings: mailbox: Add binding for SDX55 APCS
+  mailbox: qcom: Add support for SDX55 APCS IPC
+  dt-bindings: clock: Add Qualcomm A7 PLL binding
+  clk: qcom: Add A7 PLL support
+  clk: qcom: Add SDX55 APCS clock controller support
 
---Sig_/dB7MnGXiui1776_s0n8kdSu--
+ .../devicetree/bindings/clock/qcom,a7pll.yaml |  51 ++++++
+ .../mailbox/qcom,apcs-kpss-global.yaml        |  33 ++++
+ drivers/clk/qcom/Kconfig                      |  17 ++
+ drivers/clk/qcom/Makefile                     |   2 +
+ drivers/clk/qcom/a7-pll.c                     | 100 ++++++++++++
+ drivers/clk/qcom/apcs-sdx55.c                 | 149 ++++++++++++++++++
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c       |   7 +-
+ 7 files changed, 358 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,a7pll.yaml
+ create mode 100644 drivers/clk/qcom/a7-pll.c
+ create mode 100644 drivers/clk/qcom/apcs-sdx55.c
+
+-- 
+2.25.1
+
