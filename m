@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7F92FAA40
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5C02FAA35
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394039AbhARTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:32:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+        id S2437344AbhARTay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:30:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390422AbhARLiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 243EB22CA1;
-        Mon, 18 Jan 2021 11:37:18 +0000 (UTC)
+        id S2390430AbhARLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:38:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B4122CF6;
+        Mon, 18 Jan 2021 11:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969838;
-        bh=sssGw7VAmhQ9zYNCAgQ46mvt8+d/n+n3c7UnO0Lb+nc=;
+        s=korg; t=1610969845;
+        bh=kH6n2pMmgkZJ0ua89HOGXyqDJ56t0QQxQPc3Ad0jmCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0Dt5EbA3PfM95yOWXBZUXnHMBJXZ0zluXuA0/+qOWQYomQbKls79cXkt2yDbFEOx
-         MZxRxZG9uQhGnVlxZGZl1+2+7oLnFahamXKywNV33lybLGOq+XVPL55hoQqTZOqOEP
-         qceZwrg7MtC2WNDl/nP38Ner88U1TO3lRbBszxjg=
+        b=oLph9kuLRPZ3+HdmIajxxJdMByitWAH003puiIuvPR/vLXn5iqed+FxChgYEpnYEX
+         90UxAmIC8Hse8bmhNDBuEYatZDmj6aUdrZFyxRv5s+SjiqX+sXQ5wd+LTRIcxcvn4Y
+         Yg2PuEvW8d2QrCvqnPgABYcbKdeM6JR9uPbyM9Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        Shawn Guo <shawn.guo@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/43] arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
-Date:   Mon, 18 Jan 2021 12:34:42 +0100
-Message-Id: <20210118113335.870787462@linuxfoundation.org>
+Subject: [PATCH 4.19 22/43] ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+Date:   Mon, 18 Jan 2021 12:34:45 +0100
+Message-Id: <20210118113336.021370608@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
 References: <20210118113334.966227881@linuxfoundation.org>
@@ -46,48 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-[ Upstream commit 8a48c0a3360bf2bf4f40c980d0ec216e770e58ee ]
+[ Upstream commit ee61cfd955a64a58ed35cbcfc54068fcbd486945 ]
 
-fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-resulting in a build error.
-
-Provide copy_user_page() in <asm/page.h>.
-
-../fs/dax.c: In function 'copy_cow_page_dax':
-../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
+that caller doesn't have to deal with !CONFIG_ACPI build issue.
 
 Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-#Acked-by: Vineet Gupta <vgupta@synopsys.com> # v1
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-nvdimm@lists.01.org
-#Reviewed-by: Ira Weiny <ira.weiny@intel.com> # v2
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/include/asm/page.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/acpi.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-index 09ddddf71cc50..a70fef79c4055 100644
---- a/arch/arc/include/asm/page.h
-+++ b/arch/arc/include/asm/page.h
-@@ -13,6 +13,7 @@
- #ifndef __ASSEMBLY__
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index cd412817654fa..019468f072b7d 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -812,6 +812,13 @@ static inline int acpi_device_modalias(struct device *dev,
+ 	return -ENODEV;
+ }
  
- #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
-+#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
- 
- struct vm_area_struct;
++static inline struct platform_device *
++acpi_create_platform_device(struct acpi_device *adev,
++			    struct property_entry *properties)
++{
++	return NULL;
++}
++
+ static inline bool acpi_dma_supported(struct acpi_device *adev)
+ {
+ 	return false;
 -- 
 2.27.0
 
