@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD7D2F9F71
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD702F9F70
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391332AbhARMXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:23:23 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:37312 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391418AbhARMVm (ORCPT
+        id S2391441AbhARMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:23:16 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:54364 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404011AbhARMVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:21:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610972475; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GyOs5boWHE5ZDS7w/1hvsdodxkJzzGORG4OD1eAwl/8=; b=JR99LdUuYhf73R15v3F/eQrnMIgap7pmDHf3c5vj1J7Oy6Z0wIBJIdFb1FcBrGeVcIIhETfG
- DIARhdQ5Nry1VOGpZc1hdNxP2MRUUBZzwxIVs0wAN6kXkSEwFwZA1U9Av8+MBEjLGe6JESyg
- RLiNUb6CLxG5T4LbRhTa/srxX2E=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 60057d1ffd7e724dd3aabd20 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 12:20:47
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A84A9C43465; Mon, 18 Jan 2021 12:20:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98B17C433C6;
-        Mon, 18 Jan 2021 12:20:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 98B17C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        khalid.aziz@oracle.com, ngupta@nitingupta.dev,
-        vinmenon@codeaurora.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH V2] mm/compaction: correct deferral logic for proactive compaction
-Date:   Mon, 18 Jan 2021 17:50:08 +0530
-Message-Id: <1610972408-20986-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 18 Jan 2021 07:21:11 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10ICF5WX167030;
+        Mon, 18 Jan 2021 12:20:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=I/Gkifl18XJioa2EZqEq8waf3qGoKiu8TDdISQu8GPM=;
+ b=IiGuKj62Yfo/6y/lGbFftTw32iN3P42wvyCLA7IZECOrgWC/XPwi6/81drDhyRXmgkPn
+ ICg0p9NAY5D8XqIa+WLgU4NTx+F0NUZV9/c4Ifv8vU9XQfyb24T1o95NzKDCJxmdnVK7
+ P5zjInqMS+8OeUsLOGWCjbijHDrfnVSo7t//2TJh+xbvZPHIQ2t8SkazsNUM4VHjs1bQ
+ nFq7ZN1EnSTNUmeobXV5vP8MO3J6kl+ufYcaCIrd1NKW+cnaahbUFrJt0nV3+amORDaY
+ Uf3B8y6ieebxUyAxldKflksQlpkPGaRIkonh9xku5/oqZQadRI3uSFiB7ZFTbcjq+LNo SQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 363nnad27a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Jan 2021 12:20:23 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10IC9vT7035510;
+        Mon, 18 Jan 2021 12:20:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 364a1wch1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Jan 2021 12:20:23 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10ICKL4w013785;
+        Mon, 18 Jan 2021 12:20:21 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 Jan 2021 04:20:21 -0800
+Date:   Mon, 18 Jan 2021 15:20:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Antoine Jacquet <royale@zerezo.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
+Subject: Re: [PATCH] media: zr364xx: fix memory leaks in probe()
+Message-ID: <20210118122011.GA2696@kadam>
+References: <X/WMfVDCsxRghKHH@mwanda>
+ <196887f5-677f-0aeb-5f5c-fb4a918d6128@xs4all.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <196887f5-677f-0aeb-5f5c-fb4a918d6128@xs4all.nl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101180074
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101180074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-should_proactive_compact_node() returns true when sum of the
-weighted fragmentation score of all the zones in the node is greater
-than the wmark_high of compaction, which then triggers the proactive
-compaction that operates on the individual zones of the node. But
-proactive compaction runs on the zone only when its weighted
-fragmentation score is greater than wmark_low(=wmark_high - 10).
+On Wed, Jan 13, 2021 at 05:13:41PM +0100, Hans Verkuil wrote:
+> Hi Dan,
+> 
+> On 06/01/2021 11:10, Dan Carpenter wrote:
+> > Syzbot discovered that the probe error handling doesn't clean up the
+> > resources allocated in zr364xx_board_init().  There are several
+> > related bugs in this code so I have re-written the error handling.
+> > 
+> > 1)  Introduce a new function zr364xx_board_uninit() which cleans up
+> >     the resources in zr364xx_board_init().
+> > 2)  In zr364xx_board_init() if the call to zr364xx_start_readpipe()
+> >     fails then release the "cam->buffer.frame[i].lpvbits" memory
+> >     before returning.  This way every function either allocates
+> >     everything successfully or it cleans up after itself.
+> > 3)  Re-write the probe function so that each failure path goto frees
+> >     the most recent allocation.  That way we don't free anything
+> >     before it has been allocated and we can also verify that
+> >     everything is freed.
+> > 4)  Originally, in the probe function the "cam->v4l2_dev.release"
+> >     pointer was set to "zr364xx_release" near the start but I moved
+> >     that assignment to the end, after everything had succeeded.  The
+> >     release function was never actually called during the probe cleanup
+> >     process, but with this change I wanted to make it clear that we
+> >     don't want to call zr364xx_release() until everything is
+> >     allocated successfully.
+> > 
+> > Next I re-wrote the zr364xx_release() function.  Ideally this would
+> > have been a simple matter of copy and pasting the cleanup code from
+> > probe and adding an additional call to video_unregister_device().  But
+> > there are several quirks to note.
+> > 
+> > 1)  The original code never called video_unregister_device().  In other
+> >     words, this is an additional bugfix.
+> 
+> Not a bug, see below.
+> 
 
-This means that the sum of the weighted fragmentation scores of all the
-zones can exceed the wmark_high but individual weighted fragmentation
-zone scores can still be less than wmark_low which makes the unnecessary
-trigger of the proactive compaction only to return doing nothing.
+Thanks for reviewing this.  I will fix a send a v2.  I should have seen
+that.
 
-Issue with the return of proactive compaction with out even trying is
-its deferral. It is simply deferred for 1 << COMPACT_MAX_DEFER_SHIFT if
-the scores across the proactive compaction is same, thinking that
-compaction didn't make any progress but in reality it didn't even try.
-With the delay between successive retries for proactive compaction is
-500msec, it can result into the deferral for ~30sec with out even trying
-the proactive compaction.
+The layering here is sort of confusing in a way...  But not anything
+that needs to be dealt with immediately.
 
-Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
-50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
-sizes 5GB and 6GB respectively. After opening some apps on the android,
-the weighted fragmentation scores of these zones are 47 and 49
-respectively. Since the sum of these fragmentation scores are above the
-wmark_high which triggers the proactive compaction and there since the
-individual zones weighted fragmentation scores are below wmark_low, it
-returns without trying the proactive compaction. As a result the
-weighted fragmentation scores of the zones are still 47 and 49 which
-makes the existing logic to defer the compaction thinking that
-noprogress is made across the compaction.
-
-Fix this by checking just zone fragmentation score, not the weighted, in
-__compact_finished() and use the zones weighted fragmentation score in
-fragmentation_score_node(). In the test case above, If the weighted
-average of is above wmark_high, then individual score (not adjusted) of
-atleast one zone has to be above wmark_high. Thus it avoids the
-unnecessary trigger and deferrals of the proactive compaction.
-
-Fix-suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
-
-Changes in V2: Addressed comments from vlastimil
-
-Changes in V1: https://lore.kernel.org/patchwork/patch/1364646/
-
- mm/compaction.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e5acb97..1b98427 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1924,16 +1924,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
- }
- 
- /*
-- * A zone's fragmentation score is the external fragmentation wrt to the
-- * COMPACTION_HPAGE_ORDER scaled by the zone's size. It returns a value
-- * in the range [0, 100].
-+ * A weighted zone's fragmentation score is the external fragmentation
-+ * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-+ * returns a value in the range [0, 100].
-  *
-  * The scaling factor ensures that proactive compaction focuses on larger
-  * zones like ZONE_NORMAL, rather than smaller, specialized zones like
-  * ZONE_DMA32. For smaller zones, the score value remains close to zero,
-  * and thus never exceeds the high threshold for proactive compaction.
-  */
--static unsigned int fragmentation_score_zone(struct zone *zone)
-+static unsigned int fragmentation_score_zone_weighted(struct zone *zone)
- {
- 	unsigned long score;
- 
-@@ -1943,6 +1943,15 @@ static unsigned int fragmentation_score_zone(struct zone *zone)
- }
- 
- /*
-+ * A zone's fragmentation score is the external fragmentation wrt to the
-+ * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-+ */
-+static unsigned int fragmentation_score_zone(struct zone *zone)
-+{
-+	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-+}
-+
-+/*
-  * The per-node proactive (background) compaction process is started by its
-  * corresponding kcompactd thread when the node's fragmentation score
-  * exceeds the high threshold. The compaction process remains active till
-@@ -1958,7 +1967,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
- 		struct zone *zone;
- 
- 		zone = &pgdat->node_zones[zoneid];
--		score += fragmentation_score_zone(zone);
-+		score += fragmentation_score_zone_weighted(zone);
- 	}
- 
- 	return score;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+regards,
+dan carpenter
 
