@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F62F9C6A
+	by mail.lfdr.de (Postfix) with ESMTP id CCA052F9C6B
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388686AbhARJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:23:08 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:57777 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388420AbhARJNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:13:34 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id D89E2135F;
-        Mon, 18 Jan 2021 04:11:24 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 18 Jan 2021 04:11:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=+SBL1gY+jQ03Zxdw/U2FwonJEj2
-        kkbMC/Uq8/Ow8Sco=; b=Au0da3PnRsK8SESzkw6VKx1eyFztH9hPx7f11kR4JgI
-        RcCkzOalXtHJL/2CNJRBl96sbSVsjyD3OnwurtaW5z8TDQjnkiivtSStKA9OxmeA
-        DLgSY2qSenjjSMLlLfc5O+uECffE78+AN9s5HoKK2rYpcI8f5Lj2hLsiup0CDoPz
-        rlaXSymqXS88J9Hmibb3jvuCZxNgYjZvAt2F0HWdFDHWP7kDyjXvLIxgeO4FZK2Z
-        JuOLInL/YfdL2GRg/+k6jN2AxkhI7KCovdaF1w+SMA43qFedTDCluGB/DsH3rjW3
-        KNN6fauIjJXqkwsQR2/S1zmI+MH7qgCeqJRknDBQAFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+SBL1g
-        Y+jQ03Zxdw/U2FwonJEj2kkbMC/Uq8/Ow8Sco=; b=puBMouY9T2z2KqQ38zm74s
-        iZIiPBQpv/7b6wGG4D/2oSUSdQQJp0xmuWStygrNZGS77Rt3MUySAhx91IIFUG39
-        f4hMl1xH0klIFnufFaDmISdgqCjje7X7WFcd0rFsDp+hDAhYhgFEg+I3ACgFi7BS
-        wRkW8GX6hpJauHfW4uKE9gJPHiJZt2bUIeV42davunhnhpZv8v+nCd5FoE2mxiif
-        geqHFFxQVcsRMERqDbKKO/X/5hCrZ6cGAMnQNXAigxsVr7G5DItKr24C/uJeIz8s
-        MJlQV+ACsVlI7XR+81WzN7xKOrXpc2ALw6iHF3W1Uh0D9Mrib3Bplw2gD7+FWMAA
-        ==
-X-ME-Sender: <xms:vFAFYISgDhWDXE19wdvwzVbke4J2gmPY9bLXY8RkVOp8NJ7ymbk0KQ>
-    <xme:vFAFYFwMF9WX8kRY60pb5IHXpwdBr8KcjhP4soM_3Cs6r8qaGqonrwXHEyG_kxZ6l
-    RWjrb7HCbWKBttLinE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:vFAFYF1DG5T8IssAztbA-J0wHt295HSUNkV4WW9NoG5bNOUIz14MTw>
-    <xmx:vFAFYMCowJIuZulGn4NrRnTPPUI-fdU85SzmJUtZsKTe1uRdC8tBXQ>
-    <xmx:vFAFYBge6ODUERbY22CijfEXwJ04SpOZaB2ONzE4Pe50G_0i5cgRQQ>
-    <xmx:vFAFYBfkTWxlGfbK7Mt-K-x2FKXeZT13v27wHVrA7i_p_LVoRuW-5Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 112B11080057;
-        Mon, 18 Jan 2021 04:11:23 -0500 (EST)
-Date:   Mon, 18 Jan 2021 10:11:22 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] ARM: dts: sun8i: h2-plus: bananapi-m2-zero: Increase BT
- UART speed
-Message-ID: <20210118091122.k6jolfna5cskdwva@gilmour>
-References: <20210116103710.245617-1-jernej.skrabec@siol.net>
+        id S2388707AbhARJXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:23:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44430 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388427AbhARJN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:13:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610961101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p8fwS1DB31B2wR2MHPMBtXln7P5hjc1ZNhQlrBXPwpU=;
+        b=UlI0Jzs+dTrYQtcCFa2J7lZFVMOPOVHS9VV9j4F4uqTbPr5rfVU+YM3Lqe+O+zFE/6/z43
+        +EEe304ietTt3wEdJovmd0H8ocHvmtbmCCccLz0BBGuxui2q3lQsrHxMo1R68mUKP9BJ55
+        /EhVUZACcXeocBtJxkZ6JcuYdeDqMx8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 150BDB727;
+        Mon, 18 Jan 2021 09:11:41 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 10:11:40 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tang Yizhou <tangyizhou@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: [PATCH v2] mm, oom: Fix a comment in dump_task
+Message-ID: <20210118091140.GA14336@dhcp22.suse.cz>
+References: <20210115142314.12903-1-tangyizhou@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ajctxrre2mco3c3o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210116103710.245617-1-jernej.skrabec@siol.net>
+In-Reply-To: <20210115142314.12903-1-tangyizhou@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 15-01-21 22:23:14, Tang Yizhou wrote:
+> If p is a kthread, it will be checked in oom_unkillable_task() so
+> we can delete the corresponding comment.
+> 
+> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
 
---ajctxrre2mco3c3o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, this is outdated for a long time. Thanks
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-On Sat, Jan 16, 2021 at 11:37:10AM +0100, Jernej Skrabec wrote:
-> Bluetooth module on BananaPi M2 Zero can also be used for streaming
-> audio. However, for that case higher UART speed is required.
->=20
-> Add a max-speed property.
->=20
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> ---
+> v2: Update Cc list
+>  mm/oom_kill.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 04b19b7b5435..9f043ad29554 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -395,9 +395,8 @@ static int dump_task(struct task_struct *p, void *arg)
+>  	task = find_lock_task_mm(p);
+>  	if (!task) {
+>  		/*
+> -		 * This is a kthread or all of p's threads have already
+> -		 * detached their mm's.  There's no need to report
+> -		 * them; they can't be oom killed anyway.
+> +		 * All of p's threads have already detached their mm's. There's
+> +		 * no need to report them; they can't be oom killed anyway.
+>  		 */
+>  		return 0;
+>  	}
+> -- 
+> 2.22.0
 
-Applied, thanks
-
-Maxime
-
---ajctxrre2mco3c3o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAVQugAKCRDj7w1vZxhR
-xbrLAP9SvgvMWwxU+veIJLg51Y170F5m8hJxfQ31ybedPBQc2wEA1MLtBrdqTpAM
-8xQy1ihxAXqVZAh1sQ9zvGfmm4er4wA=
-=y2jw
------END PGP SIGNATURE-----
-
---ajctxrre2mco3c3o--
+-- 
+Michal Hocko
+SUSE Labs
