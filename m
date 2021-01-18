@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898902FAD97
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AE52FAD9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 23:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389880AbhARWys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 17:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731791AbhARWyj (ORCPT
+        id S2390720AbhARW43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 17:56:29 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53970 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731543AbhARW4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 17:54:39 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DF9C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 14:53:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=j91181JSgYI8g1sA6WaGkpGkvJ3oK1sV+oKNbvr6sd0=; b=w1XpGYdDUt/+bruJS1bJr7pVKo
-        rPBKxJ7D3y5Hw0V12q0ZbxD3+meXB62oluAmJiCVtYSzARHIcdLgEEzD+mH9K+m9YiMN69Nu6xqMY
-        igbLeuwxoiIy8/qOnPnVV9PUAgbKhpMFlu5rdXFeFfoyfE46RN8XkHP4iWCCTE5fWSb45YOioiwq8
-        ixvcq4sKNHpgivKViqVCbiHDg8hlTCo1LzDCO3+nMr2YBOJOagpZ1IQ/iDt6Bf+gKZs47J0mzqalh
-        9vHOb8FYEowLJC39bKo5cvQJuiJm6TjJw0+p37UEHKhYG0/81/NFqsTy1y7qL9dT9CBoiqXAo10Ri
-        NIvaZvZQ==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1dPC-0004l9-4s; Mon, 18 Jan 2021 22:53:50 +0000
-Subject: Re: [PATCH v5 1/2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-To:     vjitta@codeaurora.org, minchan@kernel.org, glider@google.com,
-        akpm@linux-foundation.org, dan.j.williams@intel.com,
-        broonie@kernel.org, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org, Vineet Gupta <vgupta@synopsys.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>
-References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2f12a84c-132b-7141-a89e-9e19de0e4b90@infradead.org>
-Date:   Mon, 18 Jan 2021 14:53:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 18 Jan 2021 17:56:19 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-195-EiLjVQKyMlKNguDyTOLLNQ-1; Mon, 18 Jan 2021 22:54:39 +0000
+X-MC-Unique: EiLjVQKyMlKNguDyTOLLNQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 18 Jan 2021 22:54:38 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 18 Jan 2021 22:54:38 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Masahiro Yamada' <masahiroy@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     Sasha Levin <sashal@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "stable@kernel.org" <stable@kernel.org>
+Subject: RE: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Thread-Topic: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Thread-Index: AQHW7YhKcfmCLj+UKEqQJ9L4NS8n/6ot/Bvw
+Date:   Mon, 18 Jan 2021 22:54:38 +0000
+Message-ID: <42c0c7a2a3944eeaa868dd35dd5b6e81@AcuMS.aculab.com>
+References: <20210118014951.250815-1-sashal@kernel.org>
+ <YAVTDETPaJuaRPfc@kroah.com>
+ <CAK7LNAStfNj0hvotctFonezQKQSbJfxU1HrwzWmyDc0+68fQ4Q@mail.gmail.com>
+In-Reply-To: <CAK7LNAStfNj0hvotctFonezQKQSbJfxU1HrwzWmyDc0+68fQ4Q@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 1:56 AM, vjitta@codeaurora.org wrote:
-> From: Yogesh Lal <ylal@codeaurora.org>
-> 
-> Use CONFIG_STACK_HASH_ORDER to configure STACK_HASH_SIZE.
-> 
-> Aim is to have configurable value for  STACK_HASH_SIZE,
-> so depend on use case one can configure it.
-> 
-> One example is of Page Owner, default value of
-> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
-> Making it configurable and use lower value helps to enable features like
-> CONFIG_PAGE_OWNER without any significant overhead.
-> 
-> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
-> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
-> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+RnJvbTogTWFzYWhpcm8gWWFtYWRhDQo+IFNlbnQ6IDE4IEphbnVhcnkgMjAyMSAxMDoyOA0KLi4u
+DQo+IEl0IGhlbHBzIGV4dGVybmFsIG1vZHVsZXMgdG8gYmUgY29tcGlsZWQgZm9yIG11bHRpcGxl
+IGtlcm5lbCB2ZXJzaW9ucy4NCj4gDQo+ICNpZiBLRVJORUxfVkVSU0lPTl9DT0RFIDwgS0VSTkVM
+X1ZFUlNJT04oNSwgNCwgMCkNCj4gICAgIGNvZGUgZm9yIHRoZSBrZXJuZWwgdmVyc2lvbnMgb2xk
+ZXIgdGhhbiA1LjQuMA0KPiAjZW5kaWYNCg0KSSd2ZSBqdXN0IGRvbmUgYSBzY2FuIHRocm91Z2gg
+c29tZSBkcml2ZXJzLg0KVGhlIG9ubHkgY2hlY2tzIHdpdGggYSBub24temVybyBzdWItcmV2IGFy
+ZSBmb3IgMi42Lm5ubi4NClNvIHByb3ZpZGVkIEtFUk5FTF9WRVJTSU9OX0NPREUgaXMgY2hhbmdl
+ZCB0byBtYXRjaA0Kbm90aGluZyBvZiBvdXJzIGJyZWFrcy4NCg0KSSd2ZSBvbmx5IGZvdW5kIHRl
+c3RzIGZvciB0aGUgZm9sbG93aW5nOg0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9W
+RVJTSU9OKDIsIDYsIDI4KQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9O
+KDIsIDYsIDMyKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDIsIDYs
+IDM0KQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDIsIDYsIDM2KQ0K
+I2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDMsIDEwLCAwKQ0KI2lmIExJ
+TlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDMsIDE3LCAwKQ0KI2lmIExJTlVYX1ZF
+UlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDMsIDE4LCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05f
+Q09ERSA8IEtFUk5FTF9WRVJTSU9OKDQsIDEwLCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8
+IEtFUk5FTF9WRVJTSU9OKDQsIDExLCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5F
+TF9WRVJTSU9OKDQsIDEzLCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJT
+SU9OKDQsIDE3LCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDQs
+IDE4LCAwKQ0KI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDUsIDAsIDAp
+DQojaWYgTElOVVhfVkVSU0lPTl9DT0RFIDwgS0VSTkVMX1ZFUlNJT04oNSwgMSwgMCkNCiNpZiBM
+SU5VWF9WRVJTSU9OX0NPREUgPCBLRVJORUxfVkVSU0lPTig1LCA3LCAwKQ0KI2lmIExJTlVYX1ZF
+UlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDUsIDgsIDApDQoNCkFsdGhvdWdoIHNvbWUgc2Vl
+bSB0byBiZSBhZ2FpbnN0IFZFUlNJT05fQ09ERSgpDQpyYXRoZXIgdGhhbiBLRVJORUxfVkVSU0lP
+TigpLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
+IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
+b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Hi,
-
-Did you see
-https://lore.kernel.org/lkml/202101050729.cwTd47Yw-lkp@intel.com/
-
-It seems that arch/arc/ does not have:
-   arc-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
-   (.text+0x6): undefined reference to `__irqentry_text_start'
->> arc-elf-ld: (.text+0x6): undefined reference to `__irqentry_text_start'
->> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
->> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
->> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
->> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
->> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
->> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
-
-
-
-
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
