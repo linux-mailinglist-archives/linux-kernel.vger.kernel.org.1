@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79972F9EB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E86E2F9E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390853AbhARLtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:49:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34128 "EHLO mail.kernel.org"
+        id S2390144AbhARLjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:39:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390547AbhARLjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:39:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 698B02245C;
-        Mon, 18 Jan 2021 11:39:17 +0000 (UTC)
+        id S2390402AbhARLhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E4122B40;
+        Mon, 18 Jan 2021 11:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969958;
-        bh=52cgkSDHRH+2o6cRpLrqyX2ojxeA/U2dXCx4mc7ZFyI=;
+        s=korg; t=1610969798;
+        bh=9B7rvRIs0JR6WZeRet5IG/Mx2kwHcgbhxHbzGYhH1p0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BHC15fZmTy/0SGXs6Y/Q1+1FnZh+bMOZtY9+67tMnQRkxA045T8BU5WvwCkeN+Ffh
-         Aj8ufMfFkNq3ifAXrQ6KgOPEhslKyqvRYbrwQsgbXpXq/IXcHH9tvtNDyWmZKhUoOi
-         p+5QRN6EX+wxsh4Tn4Ngz5CsfTWKzxYfYqiIiUiU=
+        b=C50L6bYiq4P26tjaiHms/uAlAA/gxzzePSYGICWsKUWMub1t2YhD1mwSSRnlQi1qa
+         tAeKHANzVTqFpT9DY6DQCb9eIr+cjyjp5ON/c264FN2uY+dYWNZowLY3dii4tfrZ8d
+         uVnqUlW4My+i8MiHvfgAy2R95uA0caZYMDYN/pZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 52/76] ASoC: meson: axg-tdmin: fix axg skew offset
-Date:   Mon, 18 Jan 2021 12:34:52 +0100
-Message-Id: <20210118113343.470325219@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.19 30/43] pNFS: Mark layout for return if return-on-close was not sent
+Date:   Mon, 18 Jan 2021 12:34:53 +0100
+Message-Id: <20210118113336.403447836@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
+References: <20210118113334.966227881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,56 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit a84dfb3d55934253de6aed38ad75990278a2d21e upstream.
+commit 67bbceedc9bb8ad48993a8bd6486054756d711f4 upstream.
 
-The signal captured on from tdm decoder of the AXG SoC is incorrect. It
-appears amplified. The skew offset of the decoder is wrong.
+If the layout return-on-close failed because the layoutreturn was never
+sent, then we should mark the layout for return again.
 
-Setting the skew offset to 3, like the g12 and sm1 SoCs, solves and gives
-correct data.
-
-Fixes: 13a22e6a98f8 ("ASoC: meson: add tdm input driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201217150834.3247526-1-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 9c47b18cf722 ("pNFS: Ensure we do clear the return-on-close layout stateid on fatal errors")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/meson/axg-tdmin.c |   13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ fs/nfs/pnfs.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/sound/soc/meson/axg-tdmin.c
-+++ b/sound/soc/meson/axg-tdmin.c
-@@ -228,15 +228,6 @@ static const struct axg_tdm_formatter_dr
- 	.regmap_cfg	= &axg_tdmin_regmap_cfg,
- 	.ops		= &axg_tdmin_ops,
- 	.quirks		= &(const struct axg_tdm_formatter_hw) {
--		.skew_offset	= 2,
--	},
--};
--
--static const struct axg_tdm_formatter_driver g12a_tdmin_drv = {
--	.component_drv	= &axg_tdmin_component_drv,
--	.regmap_cfg	= &axg_tdmin_regmap_cfg,
--	.ops		= &axg_tdmin_ops,
--	.quirks		= &(const struct axg_tdm_formatter_hw) {
- 		.skew_offset	= 3,
- 	},
- };
-@@ -247,10 +238,10 @@ static const struct of_device_id axg_tdm
- 		.data = &axg_tdmin_drv,
- 	}, {
- 		.compatible = "amlogic,g12a-tdmin",
--		.data = &g12a_tdmin_drv,
-+		.data = &axg_tdmin_drv,
- 	}, {
- 		.compatible = "amlogic,sm1-tdmin",
--		.data = &g12a_tdmin_drv,
-+		.data = &axg_tdmin_drv,
- 	}, {}
- };
- MODULE_DEVICE_TABLE(of, axg_tdmin_of_match);
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -1460,12 +1460,18 @@ void pnfs_roc_release(struct nfs4_layout
+ 		int ret)
+ {
+ 	struct pnfs_layout_hdr *lo = args->layout;
++	struct inode *inode = args->inode;
+ 	const nfs4_stateid *arg_stateid = NULL;
+ 	const nfs4_stateid *res_stateid = NULL;
+ 	struct nfs4_xdr_opaque_data *ld_private = args->ld_private;
+ 
+ 	switch (ret) {
+ 	case -NFS4ERR_NOMATCHING_LAYOUT:
++		spin_lock(&inode->i_lock);
++		if (pnfs_layout_is_valid(lo) &&
++		    nfs4_stateid_match_other(&args->stateid, &lo->plh_stateid))
++			pnfs_set_plh_return_info(lo, args->range.iomode, 0);
++		spin_unlock(&inode->i_lock);
+ 		break;
+ 	case 0:
+ 		if (res->lrs_present)
 
 
