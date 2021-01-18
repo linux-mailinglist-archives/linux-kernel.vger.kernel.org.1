@@ -2,723 +2,1961 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59932F9F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156002F9F39
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391188AbhARMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:14:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:54977 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391127AbhARMOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:14:20 -0500
-IronPort-SDR: 0JsJCZHRu0LuPqXabAj9RCnsrRRp67BWttwlWU4xgCnK3QdbLqOGM83TKO6hQXrSMTTjwmAJxC
- ujtgkqPm4h8Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="242865473"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="gz'50?scan'50,208,50";a="242865473"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 04:13:37 -0800
-IronPort-SDR: KHp0P0PIsVXlEyHo8yCjRy1R7eKpBOYBGziFSQrHI2cUfx5CdJoH6WaStaimN7AdCx4iP5iU5l
- /oBNU/0DEgIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="gz'50?scan'50,208,50";a="390791474"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 18 Jan 2021 04:13:33 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l1TPZ-0004GU-0z; Mon, 18 Jan 2021 12:13:33 +0000
-Date:   Mon, 18 Jan 2021 20:12:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Like Xu <like.xu@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/perf: Use static_call for x86_pmu.guest_get_msrs
-Message-ID: <202101182008.jQybUDa0-lkp@intel.com>
-References: <20210118072151.44481-1-like.xu@linux.intel.com>
+        id S2390957AbhARMNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389011AbhARMND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:13:03 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53636C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:12:23 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id n10so10793078pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:12:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nclnIxVxs7FTtBgCZoo1vBRAiCF6XixWDjYb3rdgNBw=;
+        b=IST8uLYRDL5e1U4x9+g5q1CLng3uaXJ+6eJzHrBPK7aj2Xee8evmGYN+jUw4S5VoZ5
+         I1Qk5+D3U9H2ugHw2bK5MeYmxF+bzqawO7V3hYNMb71FEXeIG1IO3hemHHD/yjqaT5Ux
+         vAJ8YGVgfR+N3T/2tEjRz+RO11lMzitoPcKXEOO6/ALhk9UgRW1W/MAGR12Nh2ZVyj44
+         CPHzf/i1nvNqyxlerp7JEAVKoM2xnlB88D3v8Ibjn7lxtz8ujgEL28vil/itJqAdupOU
+         whxOejGDqTX2CJFYVk5iYIfOuCZj2aBMCVFz+aCfHH1rPOmtQth2+iq0Oog8Tx8DJOrp
+         +KyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nclnIxVxs7FTtBgCZoo1vBRAiCF6XixWDjYb3rdgNBw=;
+        b=DoNIWr6tjTx2Giqo/AeGC/3XDKqkZtYj2oWLzc67JbeL9nN1clCdst601xPu8/Voca
+         LIrgF46rca5/Bz+BmjgjrJQwix9hASXgElaQxL2E7olIIsG3AaValHR8NCZBE+AkB16e
+         e8sEGs6MVVtmOwAkJi1fPVtlP3bN96PbOBfRsIZoKhOVJCpwFlLEar0vs53bmCsbUWL2
+         CAIYjkrdUX2qzrBlnQ1tKdU7RsaujZHsekNcuFJNK5+j9el52fD6jYeuJROq/qvfRPL5
+         p7TE/d7V93vAcrxeqaXnRlTdLwbH9+E9KLZBv9x+yK0c4Bu4vLKuYvWPeymwXGV+Xz61
+         HY6Q==
+X-Gm-Message-State: AOAM5332EAQX2SJCz2P85z281HRTFNT0uzHHztvfFqbmkiscpO8BAymZ
+        AbJigIeZQaGZaRyKy4wtecOwgWd1+4dgBxFDc/U=
+X-Google-Smtp-Source: ABdhPJzEljFwOAGh7uOaHZFbzxsDyqn1KfRV6aHmw0w3AslgLaYCv5RofbP+mNFiUZpPcv0QG+RFfPjN6w9pJl28nQA=
+X-Received: by 2002:a65:644b:: with SMTP id s11mr9321818pgv.4.1610971942379;
+ Mon, 18 Jan 2021 04:12:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
-Content-Disposition: inline
-In-Reply-To: <20210118072151.44481-1-like.xu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210117160555.78376-1-hdegoede@redhat.com> <20210117160555.78376-13-hdegoede@redhat.com>
+In-Reply-To: <20210117160555.78376-13-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Jan 2021 14:13:10 +0200
+Message-ID: <CAHp75VeOK4ZWqTATHU+nXsqSsqGESemSUMYX685kVuPqpf0mig@mail.gmail.com>
+Subject: Re: [PATCH v2 12/12] extcon: arizona: Drop the arizona extcon driver
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> The codec drivers for arizona codecs now take care of jack-detect
+> handling themselves; and drivers/mfd/arizona-core.c no longer
+> instantiates a "arizona-extcon" child-device for these.
+>
+> This means that the "arizona-extcon" driver is no longer needed
+> (there are no longer any devices for it to bind to), so it can
+> be dropped.
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.co>
 
-Hi Like,
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  MAINTAINERS                     |    1 -
+>  drivers/extcon/Kconfig          |    8 -
+>  drivers/extcon/Makefile         |    1 -
+>  drivers/extcon/extcon-arizona.c | 1816 -------------------------------
+>  4 files changed, 1826 deletions(-)
+>  delete mode 100644 drivers/extcon/extcon-arizona.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 66b56928cc47..9ded82d53c18 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19255,7 +19255,6 @@ F:      Documentation/devicetree/bindings/sound/wlf,arizona.yaml
+>  F:     Documentation/hwmon/wm83??.rst
+>  F:     arch/arm/mach-s3c/mach-crag6410*
+>  F:     drivers/clk/clk-wm83*.c
+> -F:     drivers/extcon/extcon-arizona.c
+>  F:     drivers/gpio/gpio-*wm*.c
+>  F:     drivers/gpio/gpio-arizona.c
+>  F:     drivers/hwmon/wm83??-hwmon.c
+> diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
+> index af58ebca2bf6..e3db936becfd 100644
+> --- a/drivers/extcon/Kconfig
+> +++ b/drivers/extcon/Kconfig
+> @@ -21,14 +21,6 @@ config EXTCON_ADC_JACK
+>         help
+>           Say Y here to enable extcon device driver based on ADC values.
+>
+> -config EXTCON_ARIZONA
+> -       tristate "Wolfson Arizona EXTCON support"
+> -       depends on MFD_ARIZONA && INPUT && SND_SOC
+> -       help
+> -         Say Y here to enable support for external accessory detection
+> -         with Wolfson Arizona devices. These are audio CODECs with
+> -         advanced audio accessory detection support.
+> -
+>  config EXTCON_AXP288
+>         tristate "X-Power AXP288 EXTCON support"
+>         depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
+> diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
+> index fe10a1b7d18b..1b390d934ca9 100644
+> --- a/drivers/extcon/Makefile
+> +++ b/drivers/extcon/Makefile
+> @@ -6,7 +6,6 @@
+>  obj-$(CONFIG_EXTCON)           += extcon-core.o
+>  extcon-core-objs               += extcon.o devres.o
+>  obj-$(CONFIG_EXTCON_ADC_JACK)  += extcon-adc-jack.o
+> -obj-$(CONFIG_EXTCON_ARIZONA)   += extcon-arizona.o
+>  obj-$(CONFIG_EXTCON_AXP288)    += extcon-axp288.o
+>  obj-$(CONFIG_EXTCON_FSA9480)   += extcon-fsa9480.o
+>  obj-$(CONFIG_EXTCON_GPIO)      += extcon-gpio.o
+> diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+> deleted file mode 100644
+> index aae82db542a5..000000000000
+> --- a/drivers/extcon/extcon-arizona.c
+> +++ /dev/null
+> @@ -1,1816 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> -/*
+> - * extcon-arizona.c - Extcon driver Wolfson Arizona devices
+> - *
+> - *  Copyright (C) 2012-2014 Wolfson Microelectronics plc
+> - */
+> -
+> -#include <linux/kernel.h>
+> -#include <linux/module.h>
+> -#include <linux/i2c.h>
+> -#include <linux/slab.h>
+> -#include <linux/interrupt.h>
+> -#include <linux/err.h>
+> -#include <linux/gpio/consumer.h>
+> -#include <linux/gpio.h>
+> -#include <linux/input.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/pm_runtime.h>
+> -#include <linux/property.h>
+> -#include <linux/regulator/consumer.h>
+> -#include <linux/extcon-provider.h>
+> -
+> -#include <sound/soc.h>
+> -
+> -#include <linux/mfd/arizona/core.h>
+> -#include <linux/mfd/arizona/pdata.h>
+> -#include <linux/mfd/arizona/registers.h>
+> -#include <dt-bindings/mfd/arizona.h>
+> -
+> -#define ARIZONA_MAX_MICD_RANGE 8
+> -
+> -#define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
+> -#define ARIZONA_MICD_CLAMP_MODE_JDH      0x5
+> -#define ARIZONA_MICD_CLAMP_MODE_JDL_GP5H 0x9
+> -#define ARIZONA_MICD_CLAMP_MODE_JDH_GP5H 0xb
+> -
+> -#define ARIZONA_TST_CAP_DEFAULT 0x3
+> -#define ARIZONA_TST_CAP_CLAMP   0x1
+> -
+> -#define ARIZONA_HPDET_MAX 10000
+> -
+> -#define HPDET_DEBOUNCE 500
+> -#define DEFAULT_MICD_TIMEOUT 2000
+> -
+> -#define ARIZONA_HPDET_WAIT_COUNT 15
+> -#define ARIZONA_HPDET_WAIT_DELAY_MS 20
+> -
+> -#define QUICK_HEADPHONE_MAX_OHM 3
+> -#define MICROPHONE_MIN_OHM      1257
+> -#define MICROPHONE_MAX_OHM      30000
+> -
+> -#define MICD_DBTIME_TWO_READINGS 2
+> -#define MICD_DBTIME_FOUR_READINGS 4
+> -
+> -#define MICD_LVL_1_TO_7 (ARIZONA_MICD_LVL_1 | ARIZONA_MICD_LVL_2 | \
+> -                        ARIZONA_MICD_LVL_3 | ARIZONA_MICD_LVL_4 | \
+> -                        ARIZONA_MICD_LVL_5 | ARIZONA_MICD_LVL_6 | \
+> -                        ARIZONA_MICD_LVL_7)
+> -
+> -#define MICD_LVL_0_TO_7 (ARIZONA_MICD_LVL_0 | MICD_LVL_1_TO_7)
+> -
+> -#define MICD_LVL_0_TO_8 (MICD_LVL_0_TO_7 | ARIZONA_MICD_LVL_8)
+> -
+> -struct arizona_extcon_info {
+> -       struct device *dev;
+> -       struct arizona *arizona;
+> -       struct mutex lock;
+> -       struct regulator *micvdd;
+> -       struct input_dev *input;
+> -
+> -       u16 last_jackdet;
+> -
+> -       int micd_mode;
+> -       const struct arizona_micd_config *micd_modes;
+> -       int micd_num_modes;
+> -
+> -       const struct arizona_micd_range *micd_ranges;
+> -       int num_micd_ranges;
+> -
+> -       bool micd_reva;
+> -       bool micd_clamp;
+> -
+> -       struct delayed_work hpdet_work;
+> -       struct delayed_work micd_detect_work;
+> -       struct delayed_work micd_timeout_work;
+> -
+> -       bool hpdet_active;
+> -       bool hpdet_done;
+> -       bool hpdet_retried;
+> -
+> -       int num_hpdet_res;
+> -       unsigned int hpdet_res[3];
+> -
+> -       bool mic;
+> -       bool detecting;
+> -       int jack_flips;
+> -
+> -       int hpdet_ip_version;
+> -
+> -       struct extcon_dev *edev;
+> -
+> -       struct gpio_desc *micd_pol_gpio;
+> -};
+> -
+> -static const struct arizona_micd_config micd_default_modes[] = {
+> -       { ARIZONA_ACCDET_SRC, 1, 0 },
+> -       { 0,                  2, 1 },
+> -};
+> -
+> -static const struct arizona_micd_range micd_default_ranges[] = {
+> -       { .max =  11, .key = BTN_0 },
+> -       { .max =  28, .key = BTN_1 },
+> -       { .max =  54, .key = BTN_2 },
+> -       { .max = 100, .key = BTN_3 },
+> -       { .max = 186, .key = BTN_4 },
+> -       { .max = 430, .key = BTN_5 },
+> -};
+> -
+> -/* The number of levels in arizona_micd_levels valid for button thresholds */
+> -#define ARIZONA_NUM_MICD_BUTTON_LEVELS 64
+> -
+> -static const int arizona_micd_levels[] = {
+> -       3, 6, 8, 11, 13, 16, 18, 21, 23, 26, 28, 31, 34, 36, 39, 41, 44, 46,
+> -       49, 52, 54, 57, 60, 62, 65, 67, 70, 73, 75, 78, 81, 83, 89, 94, 100,
+> -       105, 111, 116, 122, 127, 139, 150, 161, 173, 186, 196, 209, 220, 245,
+> -       270, 295, 321, 348, 375, 402, 430, 489, 550, 614, 681, 752, 903, 1071,
+> -       1257, 30000,
+> -};
+> -
+> -static const unsigned int arizona_cable[] = {
+> -       EXTCON_MECHANICAL,
+> -       EXTCON_JACK_MICROPHONE,
+> -       EXTCON_JACK_HEADPHONE,
+> -       EXTCON_JACK_LINE_OUT,
+> -       EXTCON_NONE,
+> -};
+> -
+> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info);
+> -
+> -static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
+> -                                   bool clamp)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int mask = 0, val = 0;
+> -       unsigned int cap_sel = 0;
+> -       int ret;
+> -
+> -       switch (arizona->type) {
+> -       case WM8998:
+> -       case WM1814:
+> -               mask = 0;
+> -               break;
+> -       case WM5110:
+> -       case WM8280:
+> -               mask = ARIZONA_HP1L_SHRTO | ARIZONA_HP1L_FLWR |
+> -                      ARIZONA_HP1L_SHRTI;
+> -               if (clamp) {
+> -                       val = ARIZONA_HP1L_SHRTO;
+> -                       cap_sel = ARIZONA_TST_CAP_CLAMP;
+> -               } else {
+> -                       val = ARIZONA_HP1L_FLWR | ARIZONA_HP1L_SHRTI;
+> -                       cap_sel = ARIZONA_TST_CAP_DEFAULT;
+> -               }
+> -
+> -               ret = regmap_update_bits(arizona->regmap,
+> -                                        ARIZONA_HP_TEST_CTRL_1,
+> -                                        ARIZONA_HP1_TST_CAP_SEL_MASK,
+> -                                        cap_sel);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev,
+> -                                "Failed to set TST_CAP_SEL: %d\n", ret);
+> -               break;
+> -       default:
+> -               mask = ARIZONA_RMV_SHRT_HP1L;
+> -               if (clamp)
+> -                       val = ARIZONA_RMV_SHRT_HP1L;
+> -               break;
+> -       }
+> -
+> -       snd_soc_dapm_mutex_lock(arizona->dapm);
+> -
+> -       arizona->hpdet_clamp = clamp;
+> -
+> -       /* Keep the HP output stages disabled while doing the clamp */
+> -       if (clamp) {
+> -               ret = regmap_update_bits(arizona->regmap,
+> -                                        ARIZONA_OUTPUT_ENABLES_1,
+> -                                        ARIZONA_OUT1L_ENA |
+> -                                        ARIZONA_OUT1R_ENA, 0);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev,
+> -                               "Failed to disable headphone outputs: %d\n",
+> -                                ret);
+> -       }
+> -
+> -       if (mask) {
+> -               ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1L,
+> -                                        mask, val);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev, "Failed to do clamp: %d\n",
+> -                                ret);
+> -
+> -               ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1R,
+> -                                        mask, val);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev, "Failed to do clamp: %d\n",
+> -                                ret);
+> -       }
+> -
+> -       /* Restore the desired state while not doing the clamp */
+> -       if (!clamp) {
+> -               ret = regmap_update_bits(arizona->regmap,
+> -                                        ARIZONA_OUTPUT_ENABLES_1,
+> -                                        ARIZONA_OUT1L_ENA |
+> -                                        ARIZONA_OUT1R_ENA, arizona->hp_ena);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev,
+> -                                "Failed to restore headphone outputs: %d\n",
+> -                                ret);
+> -       }
+> -
+> -       snd_soc_dapm_mutex_unlock(arizona->dapm);
+> -}
+> -
+> -static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -
+> -       mode %= info->micd_num_modes;
+> -
+> -       gpiod_set_value_cansleep(info->micd_pol_gpio,
+> -                                info->micd_modes[mode].gpio);
+> -
+> -       regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                          ARIZONA_MICD_BIAS_SRC_MASK,
+> -                          info->micd_modes[mode].bias <<
+> -                          ARIZONA_MICD_BIAS_SRC_SHIFT);
+> -       regmap_update_bits(arizona->regmap, ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                          ARIZONA_ACCDET_SRC, info->micd_modes[mode].src);
+> -
+> -       info->micd_mode = mode;
+> -
+> -       dev_dbg(arizona->dev, "Set jack polarity to %d\n", mode);
+> -}
+> -
+> -static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
+> -{
+> -       switch (info->micd_modes[0].bias) {
+> -       case 1:
+> -               return "MICBIAS1";
+> -       case 2:
+> -               return "MICBIAS2";
+> -       case 3:
+> -               return "MICBIAS3";
+> -       default:
+> -               return "MICVDD";
+> -       }
+> -}
+> -
+> -static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       const char *widget = arizona_extcon_get_micbias(info);
+> -       struct snd_soc_dapm_context *dapm = arizona->dapm;
+> -       struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+> -       int ret;
+> -
+> -       ret = snd_soc_component_force_enable_pin(component, widget);
+> -       if (ret != 0)
+> -               dev_warn(arizona->dev, "Failed to enable %s: %d\n",
+> -                        widget, ret);
+> -
+> -       snd_soc_dapm_sync(dapm);
+> -
+> -       if (!arizona->pdata.micd_force_micbias) {
+> -               ret = snd_soc_component_disable_pin(component, widget);
+> -               if (ret != 0)
+> -                       dev_warn(arizona->dev, "Failed to disable %s: %d\n",
+> -                                widget, ret);
+> -
+> -               snd_soc_dapm_sync(dapm);
+> -       }
+> -}
+> -
+> -static void arizona_start_mic(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       bool change;
+> -       int ret;
+> -       unsigned int mode;
+> -
+> -       /* Microphone detection can't use idle mode */
+> -       pm_runtime_get(info->dev);
+> -
+> -       if (info->detecting) {
+> -               ret = regulator_allow_bypass(info->micvdd, false);
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev,
+> -                               "Failed to regulate MICVDD: %d\n",
+> -                               ret);
+> -               }
+> -       }
+> -
+> -       ret = regulator_enable(info->micvdd);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to enable MICVDD: %d\n",
+> -                       ret);
+> -       }
+> -
+> -       if (info->micd_reva) {
+> -               const struct reg_sequence reva[] = {
+> -                       { 0x80,  0x3 },
+> -                       { 0x294, 0x0 },
+> -                       { 0x80,  0x0 },
+> -               };
+> -
+> -               regmap_multi_reg_write(arizona->regmap, reva, ARRAY_SIZE(reva));
+> -       }
+> -
+> -       if (info->detecting && arizona->pdata.micd_software_compare)
+> -               mode = ARIZONA_ACCDET_MODE_ADC;
+> -       else
+> -               mode = ARIZONA_ACCDET_MODE_MIC;
+> -
+> -       regmap_update_bits(arizona->regmap,
+> -                          ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                          ARIZONA_ACCDET_MODE_MASK, mode);
+> -
+> -       arizona_extcon_pulse_micbias(info);
+> -
+> -       ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                      ARIZONA_MICD_ENA, ARIZONA_MICD_ENA,
+> -                                      &change);
+> -       if (ret < 0) {
+> -               dev_err(arizona->dev, "Failed to enable micd: %d\n", ret);
+> -       } else if (!change) {
+> -               regulator_disable(info->micvdd);
+> -               pm_runtime_put_autosuspend(info->dev);
+> -       }
+> -}
+> -
+> -static void arizona_stop_mic(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       const char *widget = arizona_extcon_get_micbias(info);
+> -       struct snd_soc_dapm_context *dapm = arizona->dapm;
+> -       struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+> -       bool change = false;
+> -       int ret;
+> -
+> -       ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                      ARIZONA_MICD_ENA, 0,
+> -                                      &change);
+> -       if (ret < 0)
+> -               dev_err(arizona->dev, "Failed to disable micd: %d\n", ret);
+> -
+> -       ret = snd_soc_component_disable_pin(component, widget);
+> -       if (ret != 0)
+> -               dev_warn(arizona->dev,
+> -                        "Failed to disable %s: %d\n",
+> -                        widget, ret);
+> -
+> -       snd_soc_dapm_sync(dapm);
+> -
+> -       if (info->micd_reva) {
+> -               const struct reg_sequence reva[] = {
+> -                       { 0x80,  0x3 },
+> -                       { 0x294, 0x2 },
+> -                       { 0x80,  0x0 },
+> -               };
+> -
+> -               regmap_multi_reg_write(arizona->regmap, reva, ARRAY_SIZE(reva));
+> -       }
+> -
+> -       ret = regulator_allow_bypass(info->micvdd, true);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to bypass MICVDD: %d\n",
+> -                       ret);
+> -       }
+> -
+> -       if (change) {
+> -               regulator_disable(info->micvdd);
+> -               pm_runtime_mark_last_busy(info->dev);
+> -               pm_runtime_put_autosuspend(info->dev);
+> -       }
+> -}
+> -
+> -static struct {
+> -       unsigned int threshold;
+> -       unsigned int factor_a;
+> -       unsigned int factor_b;
+> -} arizona_hpdet_b_ranges[] = {
+> -       { 100,  5528,   362464 },
+> -       { 169, 11084,  6186851 },
+> -       { 169, 11065, 65460395 },
+> -};
+> -
+> -#define ARIZONA_HPDET_B_RANGE_MAX 0x3fb
+> -
+> -static struct {
+> -       int min;
+> -       int max;
+> -} arizona_hpdet_c_ranges[] = {
+> -       { 0,       30 },
+> -       { 8,      100 },
+> -       { 100,   1000 },
+> -       { 1000, 10000 },
+> -};
+> -
+> -static int arizona_hpdet_read(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int val, range;
+> -       int ret;
+> -
+> -       ret = regmap_read(arizona->regmap, ARIZONA_HEADPHONE_DETECT_2, &val);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to read HPDET status: %d\n",
+> -                       ret);
+> -               return ret;
+> -       }
+> -
+> -       switch (info->hpdet_ip_version) {
+> -       case 0:
+> -               if (!(val & ARIZONA_HP_DONE)) {
+> -                       dev_err(arizona->dev, "HPDET did not complete: %x\n",
+> -                               val);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               val &= ARIZONA_HP_LVL_MASK;
+> -               break;
+> -
+> -       case 1:
+> -               if (!(val & ARIZONA_HP_DONE_B)) {
+> -                       dev_err(arizona->dev, "HPDET did not complete: %x\n",
+> -                               val);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               ret = regmap_read(arizona->regmap, ARIZONA_HP_DACVAL, &val);
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev, "Failed to read HP value: %d\n",
+> -                               ret);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               regmap_read(arizona->regmap, ARIZONA_HEADPHONE_DETECT_1,
+> -                           &range);
+> -               range = (range & ARIZONA_HP_IMPEDANCE_RANGE_MASK)
+> -                          >> ARIZONA_HP_IMPEDANCE_RANGE_SHIFT;
+> -
+> -               if (range < ARRAY_SIZE(arizona_hpdet_b_ranges) - 1 &&
+> -                   (val < arizona_hpdet_b_ranges[range].threshold ||
+> -                    val >= ARIZONA_HPDET_B_RANGE_MAX)) {
+> -                       range++;
+> -                       dev_dbg(arizona->dev, "Moving to HPDET range %d\n",
+> -                               range);
+> -                       regmap_update_bits(arizona->regmap,
+> -                                          ARIZONA_HEADPHONE_DETECT_1,
+> -                                          ARIZONA_HP_IMPEDANCE_RANGE_MASK,
+> -                                          range <<
+> -                                          ARIZONA_HP_IMPEDANCE_RANGE_SHIFT);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               /* If we go out of range report top of range */
+> -               if (val < arizona_hpdet_b_ranges[range].threshold ||
+> -                   val >= ARIZONA_HPDET_B_RANGE_MAX) {
+> -                       dev_dbg(arizona->dev, "Measurement out of range\n");
+> -                       return ARIZONA_HPDET_MAX;
+> -               }
+> -
+> -               dev_dbg(arizona->dev, "HPDET read %d in range %d\n",
+> -                       val, range);
+> -
+> -               val = arizona_hpdet_b_ranges[range].factor_b
+> -                       / ((val * 100) -
+> -                          arizona_hpdet_b_ranges[range].factor_a);
+> -               break;
+> -
+> -       case 2:
+> -               if (!(val & ARIZONA_HP_DONE_B)) {
+> -                       dev_err(arizona->dev, "HPDET did not complete: %x\n",
+> -                               val);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               val &= ARIZONA_HP_LVL_B_MASK;
+> -               /* Convert to ohms, the value is in 0.5 ohm increments */
+> -               val /= 2;
+> -
+> -               regmap_read(arizona->regmap, ARIZONA_HEADPHONE_DETECT_1,
+> -                           &range);
+> -               range = (range & ARIZONA_HP_IMPEDANCE_RANGE_MASK)
+> -                          >> ARIZONA_HP_IMPEDANCE_RANGE_SHIFT;
+> -
+> -               /* Skip up a range, or report? */
+> -               if (range < ARRAY_SIZE(arizona_hpdet_c_ranges) - 1 &&
+> -                   (val >= arizona_hpdet_c_ranges[range].max)) {
+> -                       range++;
+> -                       dev_dbg(arizona->dev, "Moving to HPDET range %d-%d\n",
+> -                               arizona_hpdet_c_ranges[range].min,
+> -                               arizona_hpdet_c_ranges[range].max);
+> -                       regmap_update_bits(arizona->regmap,
+> -                                          ARIZONA_HEADPHONE_DETECT_1,
+> -                                          ARIZONA_HP_IMPEDANCE_RANGE_MASK,
+> -                                          range <<
+> -                                          ARIZONA_HP_IMPEDANCE_RANGE_SHIFT);
+> -                       return -EAGAIN;
+> -               }
+> -
+> -               if (range && (val < arizona_hpdet_c_ranges[range].min)) {
+> -                       dev_dbg(arizona->dev, "Reporting range boundary %d\n",
+> -                               arizona_hpdet_c_ranges[range].min);
+> -                       val = arizona_hpdet_c_ranges[range].min;
+> -               }
+> -               break;
+> -
+> -       default:
+> -               dev_warn(arizona->dev, "Unknown HPDET IP revision %d\n",
+> -                        info->hpdet_ip_version);
+> -               return -EINVAL;
+> -       }
+> -
+> -       dev_dbg(arizona->dev, "HP impedance %d ohms\n", val);
+> -       return val;
+> -}
+> -
+> -static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
+> -                              bool *mic)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       int id_gpio = arizona->pdata.hpdet_id_gpio;
+> -
+> -       if (!arizona->pdata.hpdet_acc_id)
+> -               return 0;
+> -
+> -       /*
+> -        * If we're using HPDET for accessory identification we need
+> -        * to take multiple measurements, step through them in sequence.
+> -        */
+> -       info->hpdet_res[info->num_hpdet_res++] = *reading;
+> -
+> -       /* Only check the mic directly if we didn't already ID it */
+> -       if (id_gpio && info->num_hpdet_res == 1) {
+> -               dev_dbg(arizona->dev, "Measuring mic\n");
+> -
+> -               regmap_update_bits(arizona->regmap,
+> -                                  ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                                  ARIZONA_ACCDET_MODE_MASK |
+> -                                  ARIZONA_ACCDET_SRC,
+> -                                  ARIZONA_ACCDET_MODE_HPR |
+> -                                  info->micd_modes[0].src);
+> -
+> -               gpio_set_value_cansleep(id_gpio, 1);
+> -
+> -               regmap_update_bits(arizona->regmap, ARIZONA_HEADPHONE_DETECT_1,
+> -                                  ARIZONA_HP_POLL, ARIZONA_HP_POLL);
+> -               return -EAGAIN;
+> -       }
+> -
+> -       /* OK, got both.  Now, compare... */
+> -       dev_dbg(arizona->dev, "HPDET measured %d %d\n",
+> -               info->hpdet_res[0], info->hpdet_res[1]);
+> -
+> -       /* Take the headphone impedance for the main report */
+> -       *reading = info->hpdet_res[0];
+> -
+> -       /* Sometimes we get false readings due to slow insert */
+> -       if (*reading >= ARIZONA_HPDET_MAX && !info->hpdet_retried) {
+> -               dev_dbg(arizona->dev, "Retrying high impedance\n");
+> -               info->num_hpdet_res = 0;
+> -               info->hpdet_retried = true;
+> -               arizona_start_hpdet_acc_id(info);
+> -               pm_runtime_put(info->dev);
+> -               return -EAGAIN;
+> -       }
+> -
+> -       /*
+> -        * If we measure the mic as high impedance
+> -        */
+> -       if (!id_gpio || info->hpdet_res[1] > 50) {
+> -               dev_dbg(arizona->dev, "Detected mic\n");
+> -               *mic = true;
+> -               info->detecting = true;
+> -       } else {
+> -               dev_dbg(arizona->dev, "Detected headphone\n");
+> -       }
+> -
+> -       /* Make sure everything is reset back to the real polarity */
+> -       regmap_update_bits(arizona->regmap, ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                          ARIZONA_ACCDET_SRC, info->micd_modes[0].src);
+> -
+> -       return 0;
+> -}
+> -
+> -static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+> -{
+> -       struct arizona_extcon_info *info = data;
+> -       struct arizona *arizona = info->arizona;
+> -       int id_gpio = arizona->pdata.hpdet_id_gpio;
+> -       unsigned int report = EXTCON_JACK_HEADPHONE;
+> -       int ret, reading;
+> -       bool mic = false;
+> -
+> -       mutex_lock(&info->lock);
+> -
+> -       /* If we got a spurious IRQ for some reason then ignore it */
+> -       if (!info->hpdet_active) {
+> -               dev_warn(arizona->dev, "Spurious HPDET IRQ\n");
+> -               mutex_unlock(&info->lock);
+> -               return IRQ_NONE;
+> -       }
+> -
+> -       /* If the cable was removed while measuring ignore the result */
+> -       ret = extcon_get_state(info->edev, EXTCON_MECHANICAL);
+> -       if (ret < 0) {
+> -               dev_err(arizona->dev, "Failed to check cable state: %d\n",
+> -                       ret);
+> -               goto out;
+> -       } else if (!ret) {
+> -               dev_dbg(arizona->dev, "Ignoring HPDET for removed cable\n");
+> -               goto done;
+> -       }
+> -
+> -       ret = arizona_hpdet_read(info);
+> -       if (ret == -EAGAIN)
+> -               goto out;
+> -       else if (ret < 0)
+> -               goto done;
+> -       reading = ret;
+> -
+> -       /* Reset back to starting range */
+> -       regmap_update_bits(arizona->regmap,
+> -                          ARIZONA_HEADPHONE_DETECT_1,
+> -                          ARIZONA_HP_IMPEDANCE_RANGE_MASK | ARIZONA_HP_POLL,
+> -                          0);
+> -
+> -       ret = arizona_hpdet_do_id(info, &reading, &mic);
+> -       if (ret == -EAGAIN)
+> -               goto out;
+> -       else if (ret < 0)
+> -               goto done;
+> -
+> -       /* Report high impedence cables as line outputs */
+> -       if (reading >= 5000)
+> -               report = EXTCON_JACK_LINE_OUT;
+> -       else
+> -               report = EXTCON_JACK_HEADPHONE;
+> -
+> -       ret = extcon_set_state_sync(info->edev, report, true);
+> -       if (ret != 0)
+> -               dev_err(arizona->dev, "Failed to report HP/line: %d\n",
+> -                       ret);
+> -
+> -done:
+> -       /* Reset back to starting range */
+> -       regmap_update_bits(arizona->regmap,
+> -                          ARIZONA_HEADPHONE_DETECT_1,
+> -                          ARIZONA_HP_IMPEDANCE_RANGE_MASK | ARIZONA_HP_POLL,
+> -                          0);
+> -
+> -       arizona_extcon_hp_clamp(info, false);
+> -
+> -       if (id_gpio)
+> -               gpio_set_value_cansleep(id_gpio, 0);
+> -
+> -       /* If we have a mic then reenable MICDET */
+> -       if (mic || info->mic)
+> -               arizona_start_mic(info);
+> -
+> -       if (info->hpdet_active) {
+> -               pm_runtime_put_autosuspend(info->dev);
+> -               info->hpdet_active = false;
+> -       }
+> -
+> -       info->hpdet_done = true;
+> -
+> -out:
+> -       mutex_unlock(&info->lock);
+> -
+> -       return IRQ_HANDLED;
+> -}
+> -
+> -static void arizona_identify_headphone(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       int ret;
+> -
+> -       if (info->hpdet_done)
+> -               return;
+> -
+> -       dev_dbg(arizona->dev, "Starting HPDET\n");
+> -
+> -       /* Make sure we keep the device enabled during the measurement */
+> -       pm_runtime_get(info->dev);
+> -
+> -       info->hpdet_active = true;
+> -
+> -       arizona_stop_mic(info);
+> -
+> -       arizona_extcon_hp_clamp(info, true);
+> -
+> -       ret = regmap_update_bits(arizona->regmap,
+> -                                ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                                ARIZONA_ACCDET_MODE_MASK,
+> -                                arizona->pdata.hpdet_channel);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+> -               goto err;
+> -       }
+> -
+> -       ret = regmap_update_bits(arizona->regmap, ARIZONA_HEADPHONE_DETECT_1,
+> -                                ARIZONA_HP_POLL, ARIZONA_HP_POLL);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Can't start HPDETL measurement: %d\n",
+> -                       ret);
+> -               goto err;
+> -       }
+> -
+> -       return;
+> -
+> -err:
+> -       arizona_extcon_hp_clamp(info, false);
+> -       pm_runtime_put_autosuspend(info->dev);
+> -
+> -       /* Just report headphone */
+> -       ret = extcon_set_state_sync(info->edev, EXTCON_JACK_HEADPHONE, true);
+> -       if (ret != 0)
+> -               dev_err(arizona->dev, "Failed to report headphone: %d\n", ret);
+> -
+> -       if (info->mic)
+> -               arizona_start_mic(info);
+> -
+> -       info->hpdet_active = false;
+> -}
+> -
+> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       int hp_reading = 32;
+> -       bool mic;
+> -       int ret;
+> -
+> -       dev_dbg(arizona->dev, "Starting identification via HPDET\n");
+> -
+> -       /* Make sure we keep the device enabled during the measurement */
+> -       pm_runtime_get_sync(info->dev);
+> -
+> -       info->hpdet_active = true;
+> -
+> -       arizona_extcon_hp_clamp(info, true);
+> -
+> -       ret = regmap_update_bits(arizona->regmap,
+> -                                ARIZONA_ACCESSORY_DETECT_MODE_1,
+> -                                ARIZONA_ACCDET_SRC | ARIZONA_ACCDET_MODE_MASK,
+> -                                info->micd_modes[0].src |
+> -                                arizona->pdata.hpdet_channel);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+> -               goto err;
+> -       }
+> -
+> -       if (arizona->pdata.hpdet_acc_id_line) {
+> -               ret = regmap_update_bits(arizona->regmap,
+> -                                        ARIZONA_HEADPHONE_DETECT_1,
+> -                                        ARIZONA_HP_POLL, ARIZONA_HP_POLL);
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev,
+> -                               "Can't start HPDETL measurement: %d\n",
+> -                               ret);
+> -                       goto err;
+> -               }
+> -       } else {
+> -               arizona_hpdet_do_id(info, &hp_reading, &mic);
+> -       }
+> -
+> -       return;
+> -
+> -err:
+> -       /* Just report headphone */
+> -       ret = extcon_set_state_sync(info->edev, EXTCON_JACK_HEADPHONE, true);
+> -       if (ret != 0)
+> -               dev_err(arizona->dev, "Failed to report headphone: %d\n", ret);
+> -
+> -       info->hpdet_active = false;
+> -}
+> -
+> -static void arizona_micd_timeout_work(struct work_struct *work)
+> -{
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> -                                               micd_timeout_work.work);
+> -
+> -       mutex_lock(&info->lock);
+> -
+> -       dev_dbg(info->arizona->dev, "MICD timed out, reporting HP\n");
+> -
+> -       info->detecting = false;
+> -
+> -       arizona_identify_headphone(info);
+> -
+> -       mutex_unlock(&info->lock);
+> -}
+> -
+> -static int arizona_micd_adc_read(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int val;
+> -       int ret;
+> -
+> -       /* Must disable MICD before we read the ADCVAL */
+> -       regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                          ARIZONA_MICD_ENA, 0);
+> -
+> -       ret = regmap_read(arizona->regmap, ARIZONA_MIC_DETECT_4, &val);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev,
+> -                       "Failed to read MICDET_ADCVAL: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       dev_dbg(arizona->dev, "MICDET_ADCVAL: %x\n", val);
+> -
+> -       val &= ARIZONA_MICDET_ADCVAL_MASK;
+> -       if (val < ARRAY_SIZE(arizona_micd_levels))
+> -               val = arizona_micd_levels[val];
+> -       else
+> -               val = INT_MAX;
+> -
+> -       if (val <= QUICK_HEADPHONE_MAX_OHM)
+> -               val = ARIZONA_MICD_STS | ARIZONA_MICD_LVL_0;
+> -       else if (val <= MICROPHONE_MIN_OHM)
+> -               val = ARIZONA_MICD_STS | ARIZONA_MICD_LVL_1;
+> -       else if (val <= MICROPHONE_MAX_OHM)
+> -               val = ARIZONA_MICD_STS | ARIZONA_MICD_LVL_8;
+> -       else
+> -               val = ARIZONA_MICD_LVL_8;
+> -
+> -       return val;
+> -}
+> -
+> -static int arizona_micd_read(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int val = 0;
+> -       int ret, i;
+> -
+> -       for (i = 0; i < 10 && !(val & MICD_LVL_0_TO_8); i++) {
+> -               ret = regmap_read(arizona->regmap, ARIZONA_MIC_DETECT_3, &val);
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev,
+> -                               "Failed to read MICDET: %d\n", ret);
+> -                       return ret;
+> -               }
+> -
+> -               dev_dbg(arizona->dev, "MICDET: %x\n", val);
+> -
+> -               if (!(val & ARIZONA_MICD_VALID)) {
+> -                       dev_warn(arizona->dev,
+> -                                "Microphone detection state invalid\n");
+> -                       return -EINVAL;
+> -               }
+> -       }
+> -
+> -       if (i == 10 && !(val & MICD_LVL_0_TO_8)) {
+> -               dev_err(arizona->dev, "Failed to get valid MICDET value\n");
+> -               return -EINVAL;
+> -       }
+> -
+> -       return val;
+> -}
+> -
+> -static int arizona_micdet_reading(void *priv)
+> -{
+> -       struct arizona_extcon_info *info = priv;
+> -       struct arizona *arizona = info->arizona;
+> -       int ret, val;
+> -
+> -       if (info->detecting && arizona->pdata.micd_software_compare)
+> -               ret = arizona_micd_adc_read(info);
+> -       else
+> -               ret = arizona_micd_read(info);
+> -       if (ret < 0)
+> -               return ret;
+> -
+> -       val = ret;
+> -
+> -       /* Due to jack detect this should never happen */
+> -       if (!(val & ARIZONA_MICD_STS)) {
+> -               dev_warn(arizona->dev, "Detected open circuit\n");
+> -               info->mic = false;
+> -               info->detecting = false;
+> -               arizona_identify_headphone(info);
+> -               return 0;
+> -       }
+> -
+> -       /* If we got a high impedence we should have a headset, report it. */
+> -       if (val & ARIZONA_MICD_LVL_8) {
+> -               info->mic = true;
+> -               info->detecting = false;
+> -
+> -               arizona_identify_headphone(info);
+> -
+> -               ret = extcon_set_state_sync(info->edev,
+> -                                             EXTCON_JACK_MICROPHONE, true);
+> -               if (ret != 0)
+> -                       dev_err(arizona->dev, "Headset report failed: %d\n",
+> -                               ret);
+> -
+> -               /* Don't need to regulate for button detection */
+> -               ret = regulator_allow_bypass(info->micvdd, true);
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev, "Failed to bypass MICVDD: %d\n",
+> -                               ret);
+> -               }
+> -
+> -               return 0;
+> -       }
+> -
+> -       /* If we detected a lower impedence during initial startup
+> -        * then we probably have the wrong polarity, flip it.  Don't
+> -        * do this for the lowest impedences to speed up detection of
+> -        * plain headphones.  If both polarities report a low
+> -        * impedence then give up and report headphones.
+> -        */
+> -       if (val & MICD_LVL_1_TO_7) {
+> -               if (info->jack_flips >= info->micd_num_modes * 10) {
+> -                       dev_dbg(arizona->dev, "Detected HP/line\n");
+> -
+> -                       info->detecting = false;
+> -
+> -                       arizona_identify_headphone(info);
+> -               } else {
+> -                       info->micd_mode++;
+> -                       if (info->micd_mode == info->micd_num_modes)
+> -                               info->micd_mode = 0;
+> -                       arizona_extcon_set_mode(info, info->micd_mode);
+> -
+> -                       info->jack_flips++;
+> -
+> -                       if (arizona->pdata.micd_software_compare)
+> -                               regmap_update_bits(arizona->regmap,
+> -                                                  ARIZONA_MIC_DETECT_1,
+> -                                                  ARIZONA_MICD_ENA,
+> -                                                  ARIZONA_MICD_ENA);
+> -
+> -                       queue_delayed_work(system_power_efficient_wq,
+> -                                          &info->micd_timeout_work,
+> -                                          msecs_to_jiffies(arizona->pdata.micd_timeout));
+> -               }
+> -
+> -               return 0;
+> -       }
+> -
+> -       /*
+> -        * If we're still detecting and we detect a short then we've
+> -        * got a headphone.
+> -        */
+> -       dev_dbg(arizona->dev, "Headphone detected\n");
+> -       info->detecting = false;
+> -
+> -       arizona_identify_headphone(info);
+> -
+> -       return 0;
+> -}
+> -
+> -static int arizona_button_reading(void *priv)
+> -{
+> -       struct arizona_extcon_info *info = priv;
+> -       struct arizona *arizona = info->arizona;
+> -       int val, key, lvl, i;
+> -
+> -       val = arizona_micd_read(info);
+> -       if (val < 0)
+> -               return val;
+> -
+> -       /*
+> -        * If we're still detecting and we detect a short then we've
+> -        * got a headphone.  Otherwise it's a button press.
+> -        */
+> -       if (val & MICD_LVL_0_TO_7) {
+> -               if (info->mic) {
+> -                       dev_dbg(arizona->dev, "Mic button detected\n");
+> -
+> -                       lvl = val & ARIZONA_MICD_LVL_MASK;
+> -                       lvl >>= ARIZONA_MICD_LVL_SHIFT;
+> -
+> -                       for (i = 0; i < info->num_micd_ranges; i++)
+> -                               input_report_key(info->input,
+> -                                                info->micd_ranges[i].key, 0);
+> -
+> -                       if (lvl && ffs(lvl) - 1 < info->num_micd_ranges) {
+> -                               key = info->micd_ranges[ffs(lvl) - 1].key;
+> -                               input_report_key(info->input, key, 1);
+> -                               input_sync(info->input);
+> -                       } else {
+> -                               dev_err(arizona->dev, "Button out of range\n");
+> -                       }
+> -               } else {
+> -                       dev_warn(arizona->dev, "Button with no mic: %x\n",
+> -                                val);
+> -               }
+> -       } else {
+> -               dev_dbg(arizona->dev, "Mic button released\n");
+> -               for (i = 0; i < info->num_micd_ranges; i++)
+> -                       input_report_key(info->input,
+> -                                        info->micd_ranges[i].key, 0);
+> -               input_sync(info->input);
+> -               arizona_extcon_pulse_micbias(info);
+> -       }
+> -
+> -       return 0;
+> -}
+> -
+> -static void arizona_micd_detect(struct work_struct *work)
+> -{
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> -                                               micd_detect_work.work);
+> -       struct arizona *arizona = info->arizona;
+> -       int ret;
+> -
+> -       cancel_delayed_work_sync(&info->micd_timeout_work);
+> -
+> -       mutex_lock(&info->lock);
+> -
+> -       /* If the cable was removed while measuring ignore the result */
+> -       ret = extcon_get_state(info->edev, EXTCON_MECHANICAL);
+> -       if (ret < 0) {
+> -               dev_err(arizona->dev, "Failed to check cable state: %d\n",
+> -                               ret);
+> -               mutex_unlock(&info->lock);
+> -               return;
+> -       } else if (!ret) {
+> -               dev_dbg(arizona->dev, "Ignoring MICDET for removed cable\n");
+> -               mutex_unlock(&info->lock);
+> -               return;
+> -       }
+> -
+> -       if (info->detecting)
+> -               arizona_micdet_reading(info);
+> -       else
+> -               arizona_button_reading(info);
+> -
+> -       pm_runtime_mark_last_busy(info->dev);
+> -       mutex_unlock(&info->lock);
+> -}
+> -
+> -static irqreturn_t arizona_micdet(int irq, void *data)
+> -{
+> -       struct arizona_extcon_info *info = data;
+> -       struct arizona *arizona = info->arizona;
+> -       int debounce = arizona->pdata.micd_detect_debounce;
+> -
+> -       cancel_delayed_work_sync(&info->micd_detect_work);
+> -       cancel_delayed_work_sync(&info->micd_timeout_work);
+> -
+> -       mutex_lock(&info->lock);
+> -       if (!info->detecting)
+> -               debounce = 0;
+> -       mutex_unlock(&info->lock);
+> -
+> -       if (debounce)
+> -               queue_delayed_work(system_power_efficient_wq,
+> -                                  &info->micd_detect_work,
+> -                                  msecs_to_jiffies(debounce));
+> -       else
+> -               arizona_micd_detect(&info->micd_detect_work.work);
+> -
+> -       return IRQ_HANDLED;
+> -}
+> -
+> -static void arizona_hpdet_work(struct work_struct *work)
+> -{
+> -       struct arizona_extcon_info *info = container_of(work,
+> -                                               struct arizona_extcon_info,
+> -                                               hpdet_work.work);
+> -
+> -       mutex_lock(&info->lock);
+> -       arizona_start_hpdet_acc_id(info);
+> -       mutex_unlock(&info->lock);
+> -}
+> -
+> -static int arizona_hpdet_wait(struct arizona_extcon_info *info)
+> -{
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int val;
+> -       int i, ret;
+> -
+> -       for (i = 0; i < ARIZONA_HPDET_WAIT_COUNT; i++) {
+> -               ret = regmap_read(arizona->regmap, ARIZONA_HEADPHONE_DETECT_2,
+> -                               &val);
+> -               if (ret) {
+> -                       dev_err(arizona->dev,
+> -                               "Failed to read HPDET state: %d\n", ret);
+> -                       return ret;
+> -               }
+> -
+> -               switch (info->hpdet_ip_version) {
+> -               case 0:
+> -                       if (val & ARIZONA_HP_DONE)
+> -                               return 0;
+> -                       break;
+> -               default:
+> -                       if (val & ARIZONA_HP_DONE_B)
+> -                               return 0;
+> -                       break;
+> -               }
+> -
+> -               msleep(ARIZONA_HPDET_WAIT_DELAY_MS);
+> -       }
+> -
+> -       dev_warn(arizona->dev, "HPDET did not appear to complete\n");
+> -
+> -       return -ETIMEDOUT;
+> -}
+> -
+> -static irqreturn_t arizona_jackdet(int irq, void *data)
+> -{
+> -       struct arizona_extcon_info *info = data;
+> -       struct arizona *arizona = info->arizona;
+> -       unsigned int val, present, mask;
+> -       bool cancelled_hp, cancelled_mic;
+> -       int ret, i;
+> -
+> -       cancelled_hp = cancel_delayed_work_sync(&info->hpdet_work);
+> -       cancelled_mic = cancel_delayed_work_sync(&info->micd_timeout_work);
+> -
+> -       pm_runtime_get_sync(info->dev);
+> -
+> -       mutex_lock(&info->lock);
+> -
+> -       if (info->micd_clamp) {
+> -               mask = ARIZONA_MICD_CLAMP_STS;
+> -               present = 0;
+> -       } else {
+> -               mask = ARIZONA_JD1_STS;
+> -               if (arizona->pdata.jd_invert)
+> -                       present = 0;
+> -               else
+> -                       present = ARIZONA_JD1_STS;
+> -       }
+> -
+> -       ret = regmap_read(arizona->regmap, ARIZONA_AOD_IRQ_RAW_STATUS, &val);
+> -       if (ret != 0) {
+> -               dev_err(arizona->dev, "Failed to read jackdet status: %d\n",
+> -                       ret);
+> -               mutex_unlock(&info->lock);
+> -               pm_runtime_put_autosuspend(info->dev);
+> -               return IRQ_NONE;
+> -       }
+> -
+> -       val &= mask;
+> -       if (val == info->last_jackdet) {
+> -               dev_dbg(arizona->dev, "Suppressing duplicate JACKDET\n");
+> -               if (cancelled_hp)
+> -                       queue_delayed_work(system_power_efficient_wq,
+> -                                          &info->hpdet_work,
+> -                                          msecs_to_jiffies(HPDET_DEBOUNCE));
+> -
+> -               if (cancelled_mic) {
+> -                       int micd_timeout = arizona->pdata.micd_timeout;
+> -
+> -                       queue_delayed_work(system_power_efficient_wq,
+> -                                          &info->micd_timeout_work,
+> -                                          msecs_to_jiffies(micd_timeout));
+> -               }
+> -
+> -               goto out;
+> -       }
+> -       info->last_jackdet = val;
+> -
+> -       if (info->last_jackdet == present) {
+> -               dev_dbg(arizona->dev, "Detected jack\n");
+> -               ret = extcon_set_state_sync(info->edev,
+> -                                             EXTCON_MECHANICAL, true);
+> -
+> -               if (ret != 0)
+> -                       dev_err(arizona->dev, "Mechanical report failed: %d\n",
+> -                               ret);
+> -
+> -               info->detecting = true;
+> -               info->mic = false;
+> -               info->jack_flips = 0;
+> -
+> -               if (!arizona->pdata.hpdet_acc_id) {
+> -                       arizona_start_mic(info);
+> -               } else {
+> -                       queue_delayed_work(system_power_efficient_wq,
+> -                                          &info->hpdet_work,
+> -                                          msecs_to_jiffies(HPDET_DEBOUNCE));
+> -               }
+> -
+> -               if (info->micd_clamp || !arizona->pdata.jd_invert)
+> -                       regmap_update_bits(arizona->regmap,
+> -                                          ARIZONA_JACK_DETECT_DEBOUNCE,
+> -                                          ARIZONA_MICD_CLAMP_DB |
+> -                                          ARIZONA_JD1_DB, 0);
+> -       } else {
+> -               dev_dbg(arizona->dev, "Detected jack removal\n");
+> -
+> -               arizona_stop_mic(info);
+> -
+> -               info->num_hpdet_res = 0;
+> -               for (i = 0; i < ARRAY_SIZE(info->hpdet_res); i++)
+> -                       info->hpdet_res[i] = 0;
+> -               info->mic = false;
+> -               info->hpdet_done = false;
+> -               info->hpdet_retried = false;
+> -
+> -               for (i = 0; i < info->num_micd_ranges; i++)
+> -                       input_report_key(info->input,
+> -                                        info->micd_ranges[i].key, 0);
+> -               input_sync(info->input);
+> -
+> -               for (i = 0; i < ARRAY_SIZE(arizona_cable) - 1; i++) {
+> -                       ret = extcon_set_state_sync(info->edev,
+> -                                       arizona_cable[i], false);
+> -                       if (ret != 0)
+> -                               dev_err(arizona->dev,
+> -                                       "Removal report failed: %d\n", ret);
+> -               }
+> -
+> -               /*
+> -                * If the jack was removed during a headphone detection we
+> -                * need to wait for the headphone detection to finish, as
+> -                * it can not be aborted. We don't want to be able to start
+> -                * a new headphone detection from a fresh insert until this
+> -                * one is finished.
+> -                */
+> -               arizona_hpdet_wait(info);
+> -
+> -               regmap_update_bits(arizona->regmap,
+> -                                  ARIZONA_JACK_DETECT_DEBOUNCE,
+> -                                  ARIZONA_MICD_CLAMP_DB | ARIZONA_JD1_DB,
+> -                                  ARIZONA_MICD_CLAMP_DB | ARIZONA_JD1_DB);
+> -       }
+> -
+> -out:
+> -       /* Clear trig_sts to make sure DCVDD is not forced up */
+> -       regmap_write(arizona->regmap, ARIZONA_AOD_WKUP_AND_TRIG,
+> -                    ARIZONA_MICD_CLAMP_FALL_TRIG_STS |
+> -                    ARIZONA_MICD_CLAMP_RISE_TRIG_STS |
+> -                    ARIZONA_JD1_FALL_TRIG_STS |
+> -                    ARIZONA_JD1_RISE_TRIG_STS);
+> -
+> -       mutex_unlock(&info->lock);
+> -
+> -       pm_runtime_mark_last_busy(info->dev);
+> -       pm_runtime_put_autosuspend(info->dev);
+> -
+> -       return IRQ_HANDLED;
+> -}
+> -
+> -/* Map a level onto a slot in the register bank */
+> -static void arizona_micd_set_level(struct arizona *arizona, int index,
+> -                                  unsigned int level)
+> -{
+> -       int reg;
+> -       unsigned int mask;
+> -
+> -       reg = ARIZONA_MIC_DETECT_LEVEL_4 - (index / 2);
+> -
+> -       if (!(index % 2)) {
+> -               mask = 0x3f00;
+> -               level <<= 8;
+> -       } else {
+> -               mask = 0x3f;
+> -       }
+> -
+> -       /* Program the level itself */
+> -       regmap_update_bits(arizona->regmap, reg, mask, level);
+> -}
+> -
+> -static int arizona_extcon_get_micd_configs(struct device *dev,
+> -                                          struct arizona *arizona)
+> -{
+> -       const char * const prop = "wlf,micd-configs";
+> -       const int entries_per_config = 3;
+> -       struct arizona_micd_config *micd_configs;
+> -       int nconfs, ret;
+> -       int i, j;
+> -       u32 *vals;
+> -
+> -       nconfs = device_property_count_u32(arizona->dev, prop);
+> -       if (nconfs <= 0)
+> -               return 0;
+> -
+> -       vals = kcalloc(nconfs, sizeof(u32), GFP_KERNEL);
+> -       if (!vals)
+> -               return -ENOMEM;
+> -
+> -       ret = device_property_read_u32_array(arizona->dev, prop, vals, nconfs);
+> -       if (ret < 0)
+> -               goto out;
+> -
+> -       nconfs /= entries_per_config;
+> -       micd_configs = devm_kcalloc(dev, nconfs, sizeof(*micd_configs),
+> -                                   GFP_KERNEL);
+> -       if (!micd_configs) {
+> -               ret = -ENOMEM;
+> -               goto out;
+> -       }
+> -
+> -       for (i = 0, j = 0; i < nconfs; ++i) {
+> -               micd_configs[i].src = vals[j++] ? ARIZONA_ACCDET_SRC : 0;
+> -               micd_configs[i].bias = vals[j++];
+> -               micd_configs[i].gpio = vals[j++];
+> -       }
+> -
+> -       arizona->pdata.micd_configs = micd_configs;
+> -       arizona->pdata.num_micd_configs = nconfs;
+> -
+> -out:
+> -       kfree(vals);
+> -       return ret;
+> -}
+> -
+> -static int arizona_extcon_device_get_pdata(struct device *dev,
+> -                                          struct arizona *arizona)
+> -{
+> -       struct arizona_pdata *pdata = &arizona->pdata;
+> -       unsigned int val = ARIZONA_ACCDET_MODE_HPL;
+> -       int ret;
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,hpdet-channel", &val);
+> -       switch (val) {
+> -       case ARIZONA_ACCDET_MODE_HPL:
+> -       case ARIZONA_ACCDET_MODE_HPR:
+> -               pdata->hpdet_channel = val;
+> -               break;
+> -       default:
+> -               dev_err(arizona->dev,
+> -                       "Wrong wlf,hpdet-channel DT value %d\n", val);
+> -               pdata->hpdet_channel = ARIZONA_ACCDET_MODE_HPL;
+> -       }
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,micd-detect-debounce",
+> -                                &pdata->micd_detect_debounce);
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,micd-bias-start-time",
+> -                                &pdata->micd_bias_start_time);
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,micd-rate",
+> -                                &pdata->micd_rate);
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,micd-dbtime",
+> -                                &pdata->micd_dbtime);
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,micd-timeout-ms",
+> -                                &pdata->micd_timeout);
+> -
+> -       pdata->micd_force_micbias = device_property_read_bool(arizona->dev,
+> -                                               "wlf,micd-force-micbias");
+> -
+> -       pdata->micd_software_compare = device_property_read_bool(arizona->dev,
+> -                                               "wlf,micd-software-compare");
+> -
+> -       pdata->jd_invert = device_property_read_bool(arizona->dev,
+> -                                                    "wlf,jd-invert");
+> -
+> -       device_property_read_u32(arizona->dev, "wlf,gpsw", &pdata->gpsw);
+> -
+> -       pdata->jd_gpio5 = device_property_read_bool(arizona->dev,
+> -                                                   "wlf,use-jd2");
+> -       pdata->jd_gpio5_nopull = device_property_read_bool(arizona->dev,
+> -                                               "wlf,use-jd2-nopull");
+> -
+> -       ret = arizona_extcon_get_micd_configs(dev, arizona);
+> -       if (ret < 0)
+> -               dev_err(arizona->dev, "Failed to read micd configs: %d\n", ret);
+> -
+> -       return 0;
+> -}
+> -
+> -static int arizona_extcon_probe(struct platform_device *pdev)
+> -{
+> -       struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+> -       struct arizona_pdata *pdata = &arizona->pdata;
+> -       struct arizona_extcon_info *info;
+> -       unsigned int val;
+> -       unsigned int clamp_mode;
+> -       int jack_irq_fall, jack_irq_rise;
+> -       int ret, mode, i, j;
+> -
+> -       if (!arizona->dapm || !arizona->dapm->card)
+> -               return -EPROBE_DEFER;
+> -
+> -       info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+> -       if (!info)
+> -               return -ENOMEM;
+> -
+> -       if (!dev_get_platdata(arizona->dev))
+> -               arizona_extcon_device_get_pdata(&pdev->dev, arizona);
+> -
+> -       info->micvdd = devm_regulator_get(&pdev->dev, "MICVDD");
+> -       if (IS_ERR(info->micvdd)) {
+> -               ret = PTR_ERR(info->micvdd);
+> -               dev_err(arizona->dev, "Failed to get MICVDD: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       mutex_init(&info->lock);
+> -       info->arizona = arizona;
+> -       info->dev = &pdev->dev;
+> -       info->last_jackdet = ~(ARIZONA_MICD_CLAMP_STS | ARIZONA_JD1_STS);
+> -       INIT_DELAYED_WORK(&info->hpdet_work, arizona_hpdet_work);
+> -       INIT_DELAYED_WORK(&info->micd_detect_work, arizona_micd_detect);
+> -       INIT_DELAYED_WORK(&info->micd_timeout_work, arizona_micd_timeout_work);
+> -       platform_set_drvdata(pdev, info);
+> -
+> -       switch (arizona->type) {
+> -       case WM5102:
+> -               switch (arizona->rev) {
+> -               case 0:
+> -                       info->micd_reva = true;
+> -                       break;
+> -               default:
+> -                       info->micd_clamp = true;
+> -                       info->hpdet_ip_version = 1;
+> -                       break;
+> -               }
+> -               break;
+> -       case WM5110:
+> -       case WM8280:
+> -               switch (arizona->rev) {
+> -               case 0 ... 2:
+> -                       break;
+> -               default:
+> -                       info->micd_clamp = true;
+> -                       info->hpdet_ip_version = 2;
+> -                       break;
+> -               }
+> -               break;
+> -       case WM8998:
+> -       case WM1814:
+> -               info->micd_clamp = true;
+> -               info->hpdet_ip_version = 2;
+> -               break;
+> -       default:
+> -               break;
+> -       }
+> -
+> -       info->edev = devm_extcon_dev_allocate(&pdev->dev, arizona_cable);
+> -       if (IS_ERR(info->edev)) {
+> -               dev_err(&pdev->dev, "failed to allocate extcon device\n");
+> -               return -ENOMEM;
+> -       }
+> -
+> -       ret = devm_extcon_dev_register(&pdev->dev, info->edev);
+> -       if (ret < 0) {
+> -               dev_err(arizona->dev, "extcon_dev_register() failed: %d\n",
+> -                       ret);
+> -               return ret;
+> -       }
+> -
+> -       info->input = devm_input_allocate_device(&pdev->dev);
+> -       if (!info->input) {
+> -               dev_err(arizona->dev, "Can't allocate input dev\n");
+> -               ret = -ENOMEM;
+> -               return ret;
+> -       }
+> -
+> -       info->input->name = "Headset";
+> -       info->input->phys = "arizona/extcon";
+> -
+> -       if (!pdata->micd_timeout)
+> -               pdata->micd_timeout = DEFAULT_MICD_TIMEOUT;
+> -
+> -       if (pdata->num_micd_configs) {
+> -               info->micd_modes = pdata->micd_configs;
+> -               info->micd_num_modes = pdata->num_micd_configs;
+> -       } else {
+> -               info->micd_modes = micd_default_modes;
+> -               info->micd_num_modes = ARRAY_SIZE(micd_default_modes);
+> -       }
+> -
+> -       if (arizona->pdata.gpsw > 0)
+> -               regmap_update_bits(arizona->regmap, ARIZONA_GP_SWITCH_1,
+> -                               ARIZONA_SW1_MODE_MASK, arizona->pdata.gpsw);
+> -
+> -       if (pdata->micd_pol_gpio > 0) {
+> -               if (info->micd_modes[0].gpio)
+> -                       mode = GPIOF_OUT_INIT_HIGH;
+> -               else
+> -                       mode = GPIOF_OUT_INIT_LOW;
+> -
+> -               ret = devm_gpio_request_one(&pdev->dev, pdata->micd_pol_gpio,
+> -                                           mode, "MICD polarity");
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev, "Failed to request GPIO%d: %d\n",
+> -                               pdata->micd_pol_gpio, ret);
+> -                       return ret;
+> -               }
+> -
+> -               info->micd_pol_gpio = gpio_to_desc(pdata->micd_pol_gpio);
+> -       } else {
+> -               if (info->micd_modes[0].gpio)
+> -                       mode = GPIOD_OUT_HIGH;
+> -               else
+> -                       mode = GPIOD_OUT_LOW;
+> -
+> -               /* We can't use devm here because we need to do the get
+> -                * against the MFD device, as that is where the of_node
+> -                * will reside, but if we devm against that the GPIO
+> -                * will not be freed if the extcon driver is unloaded.
+> -                */
+> -               info->micd_pol_gpio = gpiod_get_optional(arizona->dev,
+> -                                                        "wlf,micd-pol",
+> -                                                        GPIOD_OUT_LOW);
+> -               if (IS_ERR(info->micd_pol_gpio)) {
+> -                       ret = PTR_ERR(info->micd_pol_gpio);
+> -                       dev_err(arizona->dev,
+> -                               "Failed to get microphone polarity GPIO: %d\n",
+> -                               ret);
+> -                       return ret;
+> -               }
+> -       }
+> -
+> -       if (arizona->pdata.hpdet_id_gpio > 0) {
+> -               ret = devm_gpio_request_one(&pdev->dev,
+> -                                           arizona->pdata.hpdet_id_gpio,
+> -                                           GPIOF_OUT_INIT_LOW,
+> -                                           "HPDET");
+> -               if (ret != 0) {
+> -                       dev_err(arizona->dev, "Failed to request GPIO%d: %d\n",
+> -                               arizona->pdata.hpdet_id_gpio, ret);
+> -                       goto err_gpio;
+> -               }
+> -       }
+> -
+> -       if (arizona->pdata.micd_bias_start_time)
+> -               regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                  ARIZONA_MICD_BIAS_STARTTIME_MASK,
+> -                                  arizona->pdata.micd_bias_start_time
+> -                                  << ARIZONA_MICD_BIAS_STARTTIME_SHIFT);
+> -
+> -       if (arizona->pdata.micd_rate)
+> -               regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                  ARIZONA_MICD_RATE_MASK,
+> -                                  arizona->pdata.micd_rate
+> -                                  << ARIZONA_MICD_RATE_SHIFT);
+> -
+> -       switch (arizona->pdata.micd_dbtime) {
+> -       case MICD_DBTIME_FOUR_READINGS:
+> -               regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                  ARIZONA_MICD_DBTIME_MASK,
+> -                                  ARIZONA_MICD_DBTIME);
+> -               break;
+> -       case MICD_DBTIME_TWO_READINGS:
+> -               regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                  ARIZONA_MICD_DBTIME_MASK, 0);
+> -               break;
+> -       default:
+> -               break;
+> -       }
+> -
+> -       BUILD_BUG_ON(ARRAY_SIZE(arizona_micd_levels) <
+> -                    ARIZONA_NUM_MICD_BUTTON_LEVELS);
+> -
+> -       if (arizona->pdata.num_micd_ranges) {
+> -               info->micd_ranges = pdata->micd_ranges;
+> -               info->num_micd_ranges = pdata->num_micd_ranges;
+> -       } else {
+> -               info->micd_ranges = micd_default_ranges;
+> -               info->num_micd_ranges = ARRAY_SIZE(micd_default_ranges);
+> -       }
+> -
+> -       if (arizona->pdata.num_micd_ranges > ARIZONA_MAX_MICD_RANGE) {
+> -               dev_err(arizona->dev, "Too many MICD ranges: %d\n",
+> -                       arizona->pdata.num_micd_ranges);
+> -       }
+> -
+> -       if (info->num_micd_ranges > 1) {
+> -               for (i = 1; i < info->num_micd_ranges; i++) {
+> -                       if (info->micd_ranges[i - 1].max >
+> -                           info->micd_ranges[i].max) {
+> -                               dev_err(arizona->dev,
+> -                                       "MICD ranges must be sorted\n");
+> -                               ret = -EINVAL;
+> -                               goto err_gpio;
+> -                       }
+> -               }
+> -       }
+> -
+> -       /* Disable all buttons by default */
+> -       regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_2,
+> -                          ARIZONA_MICD_LVL_SEL_MASK, 0x81);
+> -
+> -       /* Set up all the buttons the user specified */
+> -       for (i = 0; i < info->num_micd_ranges; i++) {
+> -               for (j = 0; j < ARIZONA_NUM_MICD_BUTTON_LEVELS; j++)
+> -                       if (arizona_micd_levels[j] >= info->micd_ranges[i].max)
+> -                               break;
+> -
+> -               if (j == ARIZONA_NUM_MICD_BUTTON_LEVELS) {
+> -                       dev_err(arizona->dev, "Unsupported MICD level %d\n",
+> -                               info->micd_ranges[i].max);
+> -                       ret = -EINVAL;
+> -                       goto err_gpio;
+> -               }
+> -
+> -               dev_dbg(arizona->dev, "%d ohms for MICD threshold %d\n",
+> -                       arizona_micd_levels[j], i);
+> -
+> -               arizona_micd_set_level(arizona, i, j);
+> -               input_set_capability(info->input, EV_KEY,
+> -                                    info->micd_ranges[i].key);
+> -
+> -               /* Enable reporting of that range */
+> -               regmap_update_bits(arizona->regmap, ARIZONA_MIC_DETECT_2,
+> -                                  1 << i, 1 << i);
+> -       }
+> -
+> -       /* Set all the remaining keys to a maximum */
+> -       for (; i < ARIZONA_MAX_MICD_RANGE; i++)
+> -               arizona_micd_set_level(arizona, i, 0x3f);
+> -
+> -       /*
+> -        * If we have a clamp use it, activating in conjunction with
+> -        * GPIO5 if that is connected for jack detect operation.
+> -        */
+> -       if (info->micd_clamp) {
+> -               if (arizona->pdata.jd_gpio5) {
+> -                       /* Put the GPIO into input mode with optional pull */
+> -                       val = 0xc101;
+> -                       if (arizona->pdata.jd_gpio5_nopull)
+> -                               val &= ~ARIZONA_GPN_PU;
+> -
+> -                       regmap_write(arizona->regmap, ARIZONA_GPIO5_CTRL,
+> -                                    val);
+> -
+> -                       if (arizona->pdata.jd_invert)
+> -                               clamp_mode = ARIZONA_MICD_CLAMP_MODE_JDH_GP5H;
+> -                       else
+> -                               clamp_mode = ARIZONA_MICD_CLAMP_MODE_JDL_GP5H;
+> -               } else {
+> -                       if (arizona->pdata.jd_invert)
+> -                               clamp_mode = ARIZONA_MICD_CLAMP_MODE_JDH;
+> -                       else
+> -                               clamp_mode = ARIZONA_MICD_CLAMP_MODE_JDL;
+> -               }
+> -
+> -               regmap_update_bits(arizona->regmap,
+> -                                  ARIZONA_MICD_CLAMP_CONTROL,
+> -                                  ARIZONA_MICD_CLAMP_MODE_MASK, clamp_mode);
+> -
+> -               regmap_update_bits(arizona->regmap,
+> -                                  ARIZONA_JACK_DETECT_DEBOUNCE,
+> -                                  ARIZONA_MICD_CLAMP_DB,
+> -                                  ARIZONA_MICD_CLAMP_DB);
+> -       }
+> -
+> -       arizona_extcon_set_mode(info, 0);
+> -
+> -       pm_runtime_enable(&pdev->dev);
+> -       pm_runtime_idle(&pdev->dev);
+> -       pm_runtime_get_sync(&pdev->dev);
+> -
+> -       if (info->micd_clamp) {
+> -               jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
+> -               jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
+> -       } else {
+> -               jack_irq_rise = ARIZONA_IRQ_JD_RISE;
+> -               jack_irq_fall = ARIZONA_IRQ_JD_FALL;
+> -       }
+> -
+> -       ret = arizona_request_irq(arizona, jack_irq_rise,
+> -                                 "JACKDET rise", arizona_jackdet, info);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to get JACKDET rise IRQ: %d\n",
+> -                       ret);
+> -               goto err_pm;
+> -       }
+> -
+> -       ret = arizona_set_irq_wake(arizona, jack_irq_rise, 1);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to set JD rise IRQ wake: %d\n",
+> -                       ret);
+> -               goto err_rise;
+> -       }
+> -
+> -       ret = arizona_request_irq(arizona, jack_irq_fall,
+> -                                 "JACKDET fall", arizona_jackdet, info);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to get JD fall IRQ: %d\n", ret);
+> -               goto err_rise_wake;
+> -       }
+> -
+> -       ret = arizona_set_irq_wake(arizona, jack_irq_fall, 1);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to set JD fall IRQ wake: %d\n",
+> -                       ret);
+> -               goto err_fall;
+> -       }
+> -
+> -       ret = arizona_request_irq(arizona, ARIZONA_IRQ_MICDET,
+> -                                 "MICDET", arizona_micdet, info);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to get MICDET IRQ: %d\n", ret);
+> -               goto err_fall_wake;
+> -       }
+> -
+> -       ret = arizona_request_irq(arizona, ARIZONA_IRQ_HPDET,
+> -                                 "HPDET", arizona_hpdet_irq, info);
+> -       if (ret != 0) {
+> -               dev_err(&pdev->dev, "Failed to get HPDET IRQ: %d\n", ret);
+> -               goto err_micdet;
+> -       }
+> -
+> -       arizona_clk32k_enable(arizona);
+> -       regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_DEBOUNCE,
+> -                          ARIZONA_JD1_DB, ARIZONA_JD1_DB);
+> -       regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
+> -                          ARIZONA_JD1_ENA, ARIZONA_JD1_ENA);
+> -
+> -       ret = regulator_allow_bypass(info->micvdd, true);
+> -       if (ret != 0)
+> -               dev_warn(arizona->dev, "Failed to set MICVDD to bypass: %d\n",
+> -                        ret);
+> -
+> -       ret = input_register_device(info->input);
+> -       if (ret) {
+> -               dev_err(&pdev->dev, "Can't register input device: %d\n", ret);
+> -               goto err_hpdet;
+> -       }
+> -
+> -       pm_runtime_put(&pdev->dev);
+> -
+> -       return 0;
+> -
+> -err_hpdet:
+> -       arizona_free_irq(arizona, ARIZONA_IRQ_HPDET, info);
+> -err_micdet:
+> -       arizona_free_irq(arizona, ARIZONA_IRQ_MICDET, info);
+> -err_fall_wake:
+> -       arizona_set_irq_wake(arizona, jack_irq_fall, 0);
+> -err_fall:
+> -       arizona_free_irq(arizona, jack_irq_fall, info);
+> -err_rise_wake:
+> -       arizona_set_irq_wake(arizona, jack_irq_rise, 0);
+> -err_rise:
+> -       arizona_free_irq(arizona, jack_irq_rise, info);
+> -err_pm:
+> -       pm_runtime_put(&pdev->dev);
+> -       pm_runtime_disable(&pdev->dev);
+> -err_gpio:
+> -       gpiod_put(info->micd_pol_gpio);
+> -       return ret;
+> -}
+> -
+> -static int arizona_extcon_remove(struct platform_device *pdev)
+> -{
+> -       struct arizona_extcon_info *info = platform_get_drvdata(pdev);
+> -       struct arizona *arizona = info->arizona;
+> -       int jack_irq_rise, jack_irq_fall;
+> -       bool change;
+> -       int ret;
+> -
+> -       ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
+> -                                      ARIZONA_MICD_ENA, 0,
+> -                                      &change);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
+> -                       ret);
+> -       } else if (change) {
+> -               regulator_disable(info->micvdd);
+> -               pm_runtime_put(info->dev);
+> -       }
+> -
+> -       gpiod_put(info->micd_pol_gpio);
+> -
+> -       pm_runtime_disable(&pdev->dev);
+> -
+> -       regmap_update_bits(arizona->regmap,
+> -                          ARIZONA_MICD_CLAMP_CONTROL,
+> -                          ARIZONA_MICD_CLAMP_MODE_MASK, 0);
+> -
+> -       if (info->micd_clamp) {
+> -               jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
+> -               jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
+> -       } else {
+> -               jack_irq_rise = ARIZONA_IRQ_JD_RISE;
+> -               jack_irq_fall = ARIZONA_IRQ_JD_FALL;
+> -       }
+> -
+> -       arizona_set_irq_wake(arizona, jack_irq_rise, 0);
+> -       arizona_set_irq_wake(arizona, jack_irq_fall, 0);
+> -       arizona_free_irq(arizona, ARIZONA_IRQ_HPDET, info);
+> -       arizona_free_irq(arizona, ARIZONA_IRQ_MICDET, info);
+> -       arizona_free_irq(arizona, jack_irq_rise, info);
+> -       arizona_free_irq(arizona, jack_irq_fall, info);
+> -       cancel_delayed_work_sync(&info->hpdet_work);
+> -       regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
+> -                          ARIZONA_JD1_ENA, 0);
+> -       arizona_clk32k_disable(arizona);
+> -
+> -       return 0;
+> -}
+> -
+> -static struct platform_driver arizona_extcon_driver = {
+> -       .driver         = {
+> -               .name   = "arizona-extcon",
+> -       },
+> -       .probe          = arizona_extcon_probe,
+> -       .remove         = arizona_extcon_remove,
+> -};
+> -
+> -module_platform_driver(arizona_extcon_driver);
+> -
+> -MODULE_DESCRIPTION("Arizona Extcon driver");
+> -MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+> -MODULE_LICENSE("GPL");
+> -MODULE_ALIAS("platform:extcon-arizona");
+> --
+> 2.28.0
+>
 
-Thank you for the patch! Yet something to improve:
 
-[auto build test ERROR on tip/perf/core]
-[also build test ERROR on v5.11-rc4 next-20210118]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Like-Xu/x86-perf-Use-static_call-for-x86_pmu-guest_get_msrs/20210118-153219
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
-config: x86_64-randconfig-a002-20210118 (attached as .config)
-compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 95d146182fdf2315e74943b93fb3bb0cbafc5d89)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install x86_64 cross compiling tool for clang build
-        # apt-get install binutils-x86-64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/0cd2262fad043a5edef91fca07d16759703658b8
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Like-Xu/x86-perf-Use-static_call-for-x86_pmu-guest_get_msrs/20210118-153219
-        git checkout 0cd2262fad043a5edef91fca07d16759703658b8
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> arch/x86/events/core.c:670:31: error: redefinition of 'perf_guest_get_msrs'
-   struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
-                                 ^
-   arch/x86/include/asm/perf_event.h:486:45: note: previous definition is here
-   static inline struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
-                                               ^
-   1 error generated.
-
-
-vim +/perf_guest_get_msrs +670 arch/x86/events/core.c
-
-   669	
- > 670	struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
-   671	{
-   672		struct perf_guest_switch_msr *ret = NULL;
-   673	
-   674		ret = static_call(x86_pmu_guest_get_msrs)(nr);
-   675		if (!ret)
-   676			*nr = 0;
-   677	
-   678		return ret;
-   679	}
-   680	EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
-   681	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-PsijByHbW5Gnz3X7IDmizqkZ/wASbvdZrfsBAA==
-
---J2SCkAp4GZ/dPZZf--
+-- 
+With Best Regards,
+Andy Shevchenko
