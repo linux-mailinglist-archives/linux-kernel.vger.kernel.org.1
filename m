@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE8C2FA34E
+	by mail.lfdr.de (Postfix) with ESMTP id B6E642FA34F
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393027AbhAROkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:40:18 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:53401 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393029AbhAROjD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:39:03 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 888D63EED9;
-        Mon, 18 Jan 2021 15:38:16 +0100 (CET)
-Subject: Re: [PATCH v2 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
- Expander
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
-References: <20210111182928.587285-1-angelogioacchino.delregno@somainline.org>
- <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <1e34145b-a04a-1cbb-7fbc-87c69b8dcfd7@somainline.org>
-Date:   Mon, 18 Jan 2021 15:38:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2393087AbhAROkr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 09:40:47 -0500
+Received: from wnbcorp.com ([175.126.38.143]:33223 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392978AbhAROkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:40:08 -0500
+Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IEbs7O005835;
+        Mon, 18 Jan 2021 23:38:18 +0900
+Message-Id: <202101181438.10IEbs7O005835@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Mon, 18 Jan 2021 15:38:27 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/01/21 14:19, Linus Walleij ha scritto:
-> On Mon, Jan 11, 2021 at 7:29 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@somainline.org> wrote:
-> 
->> The Awinic AW9523(B) is a multi-function I2C gpio expander in a
->> TQFN-24L package, featuring PWM (max 37mA per pin, or total max
->> power 3.2Watts) for LED driving capability.
->>
->> It has two ports with 8 pins per port (for a total of 16 pins),
->> configurable as either PWM with 1/256 stepping or GPIO input/output,
->> 1.8V logic input; each GPIO can be configured as input or output
->> independently from each other.
->>
->> This IC also has an internal interrupt controller, which is capable
->> of generating an interrupt for each GPIO, depending on the
->> configuration, and will raise an interrupt on the INTN pin to
->> advertise this to an external interrupt controller.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> 
-> I really like the looks of this new version! :)
-> 
-> Just some minor questions now:
-> 
->> +static int aw9523_gpio_irq_type(struct irq_data *d, unsigned int type)
->> +{
->> +       switch (type) {
->> +       case IRQ_TYPE_NONE:
->> +       case IRQ_TYPE_LEVEL_MASK:
->> +       case IRQ_TYPE_LEVEL_HIGH:
->> +       case IRQ_TYPE_LEVEL_LOW:
->> +               return 0;
-> 
-> This still doesn't make sense, I think you can see why.
-> 
-> If level IRQs can fire both when the line is high and low without
-> any configuration in any register whatsoever, then IRQs are
-> *constantly* fireing. Which I suppose they are not.
-> 
-> Something is wrong here. Either you just support one
-> of them or there is a way to configure whether to act as
-> high or low level.
-> 
-> I'm also mildly sceptic because GPIO expanders ... do they
-> really support level IRQs, and does it make sense when you
-> think about it? I would rather expect edge IRQs as these have
-> a natural trigger point and level IRQs may very well be gone
-> by the time you come around to read the status register.
-> I suppose it can be done but the events must be really slow
-> then, slower than the 400kHz of an I2C bus.
-> 
-> Can you please look over the interrupt logic in your specs?
-> 
-> Yours,
-> Linus Walleij
-> 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Have I misunderstood this part of the API?
+Sir/Madam,
 
-By the way, this is really LEVEL irq, not EDGE... To avoid any
-misunderstanding, I think that the best way to show you what I
-am seeing is to just copy-paste the relevant piece from the
-datasheet for this hardware (it's not a confidential datasheet
-and freely found on the internet).
+CONGRATULATIONS!!!
 
-Check this out:
-" External MCU is required acknowledge by INTN pin. INTN is open-drain
-out-
-put, low-level active, and need external pull-up resistor.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-When AW9523B detect port change, any input state from high-level to
-low-level or from
-  low-level to high-level will generate interrupt after
-8us internal deglitch. "
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-...but since the datasheet is sometimes unclear about "things" (I am
-mostly sure that they have translated it to english from chinese), I
-have actually checked whether the INTN pin was pushed LOW when one of
-the inputs goes from HIGH to LOW.. and.. it does... and as you imagine
-yeah.. it's slow.. and yes, as slow as you can imagine. :)
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-So, in short, this chip is raising an interrupt when any input changes
-state, regardless of the change being LOW->HIGH or HIGH->LOW.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-Thanks
-- Angelo
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
