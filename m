@@ -2,82 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA052F9C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FD02F9C68
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388707AbhARJXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:23:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388427AbhARJN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:13:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610961101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p8fwS1DB31B2wR2MHPMBtXln7P5hjc1ZNhQlrBXPwpU=;
-        b=UlI0Jzs+dTrYQtcCFa2J7lZFVMOPOVHS9VV9j4F4uqTbPr5rfVU+YM3Lqe+O+zFE/6/z43
-        +EEe304ietTt3wEdJovmd0H8ocHvmtbmCCccLz0BBGuxui2q3lQsrHxMo1R68mUKP9BJ55
-        /EhVUZACcXeocBtJxkZ6JcuYdeDqMx8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 150BDB727;
-        Mon, 18 Jan 2021 09:11:41 +0000 (UTC)
-Date:   Mon, 18 Jan 2021 10:11:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tang Yizhou <tangyizhou@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH v2] mm, oom: Fix a comment in dump_task
-Message-ID: <20210118091140.GA14336@dhcp22.suse.cz>
-References: <20210115142314.12903-1-tangyizhou@huawei.com>
+        id S2388634AbhARJW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:22:29 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18694 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388454AbhARJNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:13:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600550f50003>; Mon, 18 Jan 2021 01:12:21 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 18 Jan 2021 09:12:19 +0000
+Date:   Mon, 18 Jan 2021 11:12:15 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+CC:     Thomas Zimmermann <tzimmermann@suse.de>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <daniel.vetter@ffwll.ch>,
+        <sam@ravnborg.org>, dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: Change eats memory on my server
+Message-ID: <20210118091215.GA40909@mtl-vdi-166.wap.labs.mlnx>
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <20210118074913.GA39161@mtl-vdi-166.wap.labs.mlnx>
+ <a39c1b62-3e22-2454-d68b-e9eb510891d3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20210115142314.12903-1-tangyizhou@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <a39c1b62-3e22-2454-d68b-e9eb510891d3@amd.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610961141; bh=CVvdqOczVyspDxDujTQIfx45D4m2o6GVOUtUkxyyc+U=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=YtCsLTLf2AqZhW6ubQCUsISYbmYQtxt3ankSIrXrrfI3ZFSiA6H2dkFyhSwwkDT4V
+         4B5CLsi+/j7dkyjoSyQbdP5VQGHi3WGRY6cOxqnTHWjM7G+/Eyvbx3yu7lCxVNzLLg
+         +00gZju4qQgVIf1HpNDI5wOhcjklKbYJLsfsETRyR7NYVcRhPqw/fTCVfQ10yAoYk3
+         ARcICzT9St/QA5UlwDNIOu8gsXdzATbUXZC7MzCfFY+3fmru8U7kndXpc1xQAB07r+
+         8yBAI16u0y8JZaICvDWVIOJxvKV/I+TRY5PqrtnMuZDAkxJsZp57CRaPlt/gdrW9wY
+         sftuGAeATBvfg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15-01-21 22:23:14, Tang Yizhou wrote:
-> If p is a kthread, it will be checked in oom_unkillable_task() so
-> we can delete the corresponding comment.
-> 
-> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
+On Mon, Jan 18, 2021 at 08:57:26AM +0100, Christian K=F6nig wrote:
+> Am 18.01.21 um 08:49 schrieb Eli Cohen:
+> > On Mon, Jan 18, 2021 at 08:43:12AM +0100, Christian K=F6nig wrote:
+> > > Hi Eli,
+> > >=20
+> > > have you already tried using kmemleak?
+> > >=20
+> > > This sounds like a leak of memory allocated using kmalloc(), so kmeml=
+eak
+> > > should be able to catch it.
+> > >=20
+> > Hi Christian,
+> >=20
+> > I have the following configured but I did not see any visible complaint
+> > in dmesg.
+> >=20
+> > CONFIG_HAVE_DEBUG_KMEMLEAK=3Dy
+> > CONFIG_DEBUG_KMEMLEAK=3Dy
+> > CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=3D16000
+> >=20
+> > Any other configuration that I need to set?
+>=20
+> As long as you don't have any kernel parameters to enable it I think you
+> need to do "echo scan > /sys/kernel/debug/kmemleak" to start a scan.
+>=20
+> The result can then be queried using "cat /sys/kernel/debug/kmemleak".
+>=20
 
-Yes, this is outdated for a long time. Thanks
-Acked-by: Michal Hocko <mhocko@suse.com>
+There are some minor leaks that I noticed a while ago coming from SE
+Linux. I don't think these leaks are killing my server but here they
+are. Maybe someone from SELInux would like to address them.
 
-> ---
-> v2: Update Cc list
->  mm/oom_kill.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 04b19b7b5435..9f043ad29554 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -395,9 +395,8 @@ static int dump_task(struct task_struct *p, void *arg)
->  	task = find_lock_task_mm(p);
->  	if (!task) {
->  		/*
-> -		 * This is a kthread or all of p's threads have already
-> -		 * detached their mm's.  There's no need to report
-> -		 * them; they can't be oom killed anyway.
-> +		 * All of p's threads have already detached their mm's. There's
-> +		 * no need to report them; they can't be oom killed anyway.
->  		 */
->  		return 0;
->  	}
-> -- 
-> 2.22.0
 
--- 
-Michal Hocko
-SUSE Labs
+unreferenced object 0xffff8884a5cd5000 (size 512):
+  comm "swapper/0", pid 1, jiffies 4294736382 (age 8097.039s)
+  hex dump (first 32 bytes):
+    03 00 00 00 05 00 00 00 03 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 ad 4e ad de  .............N..
+  backtrace:
+    [<0000000028e4d3ae>] selinux_sb_alloc_security+0x2e/0xf0
+    [<000000009037afcc>] security_sb_alloc+0x2b/0x50
+    [<00000000a8f69eea>] alloc_super+0x140/0x590
+    [<00000000b417f227>] sget_fc+0xa9/0x380
+    [<0000000041b639cf>] get_tree_single+0x26/0x100
+    [<00000000bf572b76>] vfs_get_tree+0x4c/0x140
+    [<00000000c0aa3dd6>] vfs_kern_mount.part.0+0x75/0xd0
+    [<00000000aa61ad1d>] kern_mount+0x2f/0x60
+    [<000000006ce5ffac>] init_sel_fs+0xf6/0x1a6
+    [<00000000d3ba532d>] do_one_initcall+0xbb/0x3a0
+    [<0000000084b518fb>] do_initcalls+0xff/0x129
+    [<00000000a0cc02b2>] kernel_init_freeable+0x14c/0x178
+    [<000000005767353a>] kernel_init+0xd/0x120
+    [<00000000d425dea7>] ret_from_fork+0x22/0x30
+unreferenced object 0xffff888498ae6a78 (size 8):
+  comm "(journald)", pid 379, jiffies 4294738985 (age 8094.447s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000a49c5ee1>] keyring_alloc+0x27/0x70
+    [<0000000047d4e2e0>] install_session_keyring_to_cred+0xd7/0x120
+    [<0000000092fa69fa>] join_session_keyring+0x109/0x1b0
+    [<00000000c31be2c8>] __do_sys_keyctl+0x2c2/0x310
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff888498ae6aa0 (size 8):
+  comm "(journald)", pid 379, jiffies 4294738985 (age 8094.447s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000d752137d>] key_create_or_update+0x45a/0x760
+    [<00000000cfad8dc7>] __do_sys_add_key+0x144/0x2a0
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88812bdab6e0 (size 8):
+  comm "(lymouthd)", pid 573, jiffies 4294744193 (age 8089.252s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000a49c5ee1>] keyring_alloc+0x27/0x70
+    [<0000000047d4e2e0>] install_session_keyring_to_cred+0xd7/0x120
+    [<0000000092fa69fa>] join_session_keyring+0x109/0x1b0
+    [<00000000c31be2c8>] __do_sys_keyctl+0x2c2/0x310
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88812bdab708 (size 8):
+  comm "(lymouthd)", pid 573, jiffies 4294744193 (age 8089.252s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000d752137d>] key_create_or_update+0x45a/0x760
+    [<00000000cfad8dc7>] __do_sys_add_key+0x144/0x2a0
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff8884945e6c00 (size 32):
+  comm "plymouthd", pid 585, jiffies 4294744220 (age 8089.268s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 03 00 00 00 18 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<000000007dc46eaf>] sk_prot_alloc+0x71/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000007ae589bb>] unix_create1+0x94/0x310
+    [<000000002da4459b>] unix_create+0x6b/0xd0
+    [<0000000022417d2a>] __sock_create+0x203/0x3c0
+    [<0000000099e43719>] __sys_socket+0xb6/0x160
+    [<00000000a9850552>] __x64_sys_socket+0x3d/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff888363795940 (size 32):
+  comm "plymouthd", pid 585, jiffies 4294744222 (age 8089.267s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 03 00 00 00 2b 00 00 00 00 00 00 00  ........+.......
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<00000000fd684046>] sk_prot_alloc+0x144/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000009df0b02a>] __netlink_create+0x4b/0x180
+    [<0000000046434ad4>] netlink_create+0x186/0x330
+    [<0000000022417d2a>] __sock_create+0x203/0x3c0
+    [<0000000099e43719>] __sys_socket+0xb6/0x160
+    [<00000000a9850552>] __x64_sys_socket+0x3d/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88811baa5ac0 (size 32):
+  comm "(ystemctl)", pid 677, jiffies 4294749096 (age 8084.410s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 01 00 00 00 18 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<000000007dc46eaf>] sk_prot_alloc+0x71/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000007ae589bb>] unix_create1+0x94/0x310
+    [<000000002da4459b>] unix_create+0x6b/0xd0
+    [<0000000022417d2a>] __sock_create+0x203/0x3c0
+    [<0000000099e43719>] __sys_socket+0xb6/0x160
+    [<00000000a9850552>] __x64_sys_socket+0x3d/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88811baa5a80 (size 32):
+  comm "(ystemctl)", pid 677, jiffies 4294749096 (age 8084.410s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 01 00 00 00 18 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<000000007dc46eaf>] sk_prot_alloc+0x71/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000007ae589bb>] unix_create1+0x94/0x310
+    [<00000000bf10ff2c>] unix_stream_connect+0x154/0x990
+    [<00000000a535f0b9>] __sys_connect+0xfd/0x130
+    [<000000006ffa2364>] __x64_sys_connect+0x3e/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88810c60d6b8 (size 8):
+  comm "(ystemctl)", pid 677, jiffies 4294749097 (age 8084.455s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000a49c5ee1>] keyring_alloc+0x27/0x70
+    [<0000000047d4e2e0>] install_session_keyring_to_cred+0xd7/0x120
+    [<0000000092fa69fa>] join_session_keyring+0x109/0x1b0
+    [<00000000c31be2c8>] __do_sys_keyctl+0x2c2/0x310
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff88810c60d6e0 (size 8):
+  comm "(ystemctl)", pid 677, jiffies 4294749097 (age 8084.455s)
+  hex dump (first 8 bytes):
+    01 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000727257f3>] selinux_key_alloc+0x33/0xa0
+    [<0000000023fcc23d>] security_key_alloc+0x3b/0x60
+    [<000000009b8f5c5c>] key_alloc+0x46e/0x900
+    [<00000000d752137d>] key_create_or_update+0x45a/0x760
+    [<00000000cfad8dc7>] __do_sys_add_key+0x144/0x2a0
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff8884c10ab380 (size 32):
+  comm "systemctl", pid 677, jiffies 4294749145 (age 8084.407s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 01 00 00 00 18 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<000000007dc46eaf>] sk_prot_alloc+0x71/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000007ae589bb>] unix_create1+0x94/0x310
+    [<000000002da4459b>] unix_create+0x6b/0xd0
+    [<0000000022417d2a>] __sock_create+0x203/0x3c0
+    [<0000000099e43719>] __sys_socket+0xb6/0x160
+    [<00000000a9850552>] __x64_sys_socket+0x3d/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+unreferenced object 0xffff8884c10ab2c0 (size 32):
+  comm "systemctl", pid 677, jiffies 4294749145 (age 8084.407s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    01 00 00 00 01 00 00 00 18 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000036de713e>] selinux_sk_alloc_security+0x55/0xc0
+    [<00000000fb9da50f>] security_sk_alloc+0x39/0x60
+    [<000000007dc46eaf>] sk_prot_alloc+0x71/0x190
+    [<00000000ed8b4081>] sk_alloc+0x2c/0x3c0
+    [<000000007ae589bb>] unix_create1+0x94/0x310
+    [<00000000bf10ff2c>] unix_stream_connect+0x154/0x990
+    [<00000000a535f0b9>] __sys_connect+0xfd/0x130
+    [<000000006ffa2364>] __x64_sys_connect+0x3e/0x50
+    [<00000000a99bb85a>] do_syscall_64+0x33/0x40
+    [<00000000acf36f32>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
