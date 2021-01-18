@@ -2,200 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B9C2F9B47
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E5C2F9B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387732AbhARI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733226AbhARI31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:29:27 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E2EC061573;
-        Mon, 18 Jan 2021 00:28:47 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id u25so22842545lfc.2;
-        Mon, 18 Jan 2021 00:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KLqGbxNa2Y//bSC/m+YoN3yy9E8IE8S0pxgJYj58niI=;
-        b=Tfe7yWK4zDgBHMzIL7TOZmcC9zEBk86gzt6EuxaaK+Ya2f8nnOhvclMuu/30j1XSiL
-         odccw1S4tfuCzYqsW9+c8tiQDO/Tl+gKvHR4mAMpnxAlKGSJyc+EdP72IvPJ1bHId9rl
-         wzsXvsD5i7PeY0MrYhJQiHBFuRmNhqw34635KhB9eBd2qOZ0QXcrZYzaQBToN4ShM+YS
-         qxWWwqOvZADYcDgzw3YOkPUrMyXdG9ozdXmdbK0YQlSDbnLJNWSI5HIfPzDjWd64F8nn
-         mf6KsiE2zuhDwMSd/kGAdsklAGp/Vwu8Y5o/ChUSF9A7hx/sTIarKpaE7v5J6UVUCg1X
-         MrLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KLqGbxNa2Y//bSC/m+YoN3yy9E8IE8S0pxgJYj58niI=;
-        b=tzDFbsdk8Fn6hToJ6hI5rGDtXZSlTikuMLx/bGlO/0BgWpUUpSrDyEoUe+N782vs3x
-         D+ZGDJs6CWApTPk0HpsBdQeuyF3QhnF+3/Iy1oGZgIu+rS4/CDaJpX5JEeetFnoG9fbf
-         twukx9QGH/1rUxEjMPVEajwk3ADlNgTACEM0VuYtnE0DHBvnE26zGh/2NyaaeqVTeNXh
-         EymWCgQlKwUcVjHMvB8CSM7fYU+GnW9pkrnounTj+4TD20mZZqoCtPwCQqlYxYOrM820
-         Tp+4EiWK5rFF9u2w89oRDoQE64OzTcKz7yngQCZht14TQWhbNJqTTqysMsQhXSEIkgxa
-         lquQ==
-X-Gm-Message-State: AOAM532BgJTa9sBEo9+AuCQlfLyTS4frwhYxeAtmGdAM/LDyuTNOFGqv
-        5tNI3bKvD4KuZu9d7s29FSxFQxk0VM/KG+eJ1MQ=
-X-Google-Smtp-Source: ABdhPJzQnwoABZVMam3MBtsrDW5CKBbIRNTR8LDPVSYlnnj70IT1dmoQYSz9szEAPTqj0/sUuSA1tQIbOLR4AZgLZKk=
-X-Received: by 2002:a19:991:: with SMTP id 139mr10815362lfj.637.1610958525450;
- Mon, 18 Jan 2021 00:28:45 -0800 (PST)
+        id S2387872AbhARIdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:33:21 -0500
+Received: from cmyk.emenem.pl ([217.79.154.63]:36392 "EHLO smtp.emenem.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726488AbhARIdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:33:15 -0500
+X-Greylist: delayed 418 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Jan 2021 03:33:14 EST
+X-Virus-Scanned: amavisd-new at emenem.pl
+Received: from [192.168.1.10] (50-78-106-33-static.hfc.comcastbusiness.net [50.78.106.33])
+        (authenticated bits=0)
+        by cmyk.emenem.pl (8.15.2/8.15.2) with ESMTPSA id 10I8PIpg000982
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NO);
+        Mon, 18 Jan 2021 09:25:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
+        t=1610958323; bh=kjJTObn3SNG9Ne0tArY10Alh9eMqJqgn6mocqk1M0Fw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=K9OnKgYAh5vzz99nWk4BwwLTddiIk+iVQwwLyss/HMCFP0snaQJ6tgbincKacC6ZA
+         79o37AV8YfXFtbcEtP54Ablg76LsrXz+E7Vtmh7/IXj5RXzYhqZoHbP6S6jC022cVB
+         uudMTDKBZTUpjvFt95R2rsZW/c81vZW0JGryznq4=
+Subject: Re: [PATCH 0/4] x86/fpu: Reduce unnecessary FNINIT and MXCSR usage
+To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <cover.1610950681.git.luto@kernel.org>
+From:   =?UTF-8?Q?Krzysztof_Ol=c4=99dzki?= <ole@ans.pl>
+Message-ID: <5162ba3a-0b4c-a295-44dd-7ea2f17ca74d@ans.pl>
+Date:   Mon, 18 Jan 2021 00:25:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com> <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net>
-In-Reply-To: <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Mon, 18 Jan 2021 16:28:34 +0800
-Message-ID: <CADiBU38g_E+iH4jTwQfPvJh4=WRH4vzQ12oubGg47gj+CpTU0A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and
- external vbus supply control
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        matthias.bgg@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <cover.1610950681.git.luto@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2021=E5=B9=B41=E6=9C=8818=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On 1/15/21 6:13 AM, cy_huang wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> >
-> > MT6360 not support for TCPC command to control source and sink.
->
-> does not
->
-Ack
-> > Uses external 5V vbus regulator as the vbus source control.
-> >
-> Use
->
-Ack
-> > Also adds the capability to report vsafe0v.
-> >
-> add
->
-Ack
-> So far this driver works without regulator. Unless I am missing something=
-,
-> this patch makes regulator support mandatory, meaning existing code will =
-fail.
-> I am not sure if that is appropriate/acceptable. Can we be sure that this=
- will
-> work for existing users of this driver ?
->
-Yes, I already checked all the src/snk functionality based on  the
-latest typec code.
-It'll be common for our TCPC. It didn't support for TCPC command.
-From the recent patches, actually, I have the local change to test the
-src capability.
-But I didn't submit it. It's almost the same to add set_vbus callback.
-That's why I submit this change after tcpci 'set_vbus callback' is added.
+On 2021-01-17 at 22:20, Andy Lutomirski wrote:
+> This series fixes two regressions: a boot failure on AMD K7 and a
+> performance regression on everything.
+> 
+> I did a double-take here -- the regressions were reported by different
+> people, both named Krzysztof :)
+> 
+> Andy Lutomirski (4):
+>    x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
+>    x86/mmx: Use KFPU_MMX for MMX string operations
+>    x86/fpu: Make the EFI FPU calling convention explicit
+>    x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
 
-> Thanks,
-> Guenter
->
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++++++=
-++
-> >  1 file changed, 29 insertions(+)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/=
-tcpm/tcpci_mt6360.c
-> > index f1bd9e0..0edf4b6 100644
-> > --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/of.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/regmap.h>
-> > +#include <linux/regulator/consumer.h>
-> >  #include <linux/usb/tcpm.h>
-> >
-> >  #include "tcpci.h"
-> > @@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
-> >       struct tcpci_data tdata;
-> >       struct tcpci *tcpci;
-> >       struct device *dev;
-> > +     struct regulator *vbus;
-> >       int irq;
-> >  };
-> >
-> > @@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct regmap =
-*regmap,
-> >       return regmap_raw_write(regmap, reg, &val, sizeof(u16));
-> >  }
-> >
-> > +static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_data=
- *data, bool src, bool snk)
-> > +{
-> > +     struct mt6360_tcpc_info *mti =3D container_of(data, struct mt6360=
-_tcpc_info, tdata);
-> > +     int ret;
-> > +
-> > +     /* To correctly handle the already enabled vbus and disable its s=
-upply first */
-> > +     if (regulator_is_enabled(mti->vbus)) {
-> > +             ret =3D regulator_disable(mti->vbus);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
->
-> Is it really a good idea to disable vbus if it happens to be already enab=
-led
-> and there is (another ?) request to enable it ?
->
-Yes, for  the state change from src_attach_wait to src_attach,
-It need to meet the requirement that  the vbus is at vsafe0v.
-So to disable it first is needed.
-And to prevent other users from enabling/disabling external vbus
-regulator in any case.
-I think we may change regulator_get  to 'regulator_get_exclusive'.
-From the design, 5v regulator only can be controlled via typec framework.
-If other user touch it, it'll affect the typec state transition.
-> > +
-> > +     if (src) {
-> > +             ret =3D regulator_enable(mti->vbus);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *td=
-ata)
-> >  {
-> >       struct regmap *regmap =3D tdata->regmap;
-> > @@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_devic=
-e *pdev)
-> >       if (mti->irq < 0)
-> >               return mti->irq;
-> >
-> > +     mti->vbus =3D devm_regulator_get(&pdev->dev, "vbus");
-> > +     if (IS_ERR(mti->vbus))
-> > +             return PTR_ERR(mti->vbus);
-> > +
-> >       mti->tdata.init =3D mt6360_tcpc_init;
-> > +     mti->tdata.set_vbus =3D mt6360_tcpc_set_vbus;
-> > +     mti->tdata.vbus_vsafe0v =3D 1;
-> >       mti->tcpci =3D tcpci_register_port(&pdev->dev, &mti->tdata);
-> >       if (IS_ERR(mti->tcpci)) {
-> >               dev_err(&pdev->dev, "Failed to register tcpci port\n");
-> >
->
+Thank you so much Andy!
+
+What a coincidence! Sadly, my AMD K7 is sitting somewhere in a closet, 
+on a different continent, and was running Linux for the last time over 
+10 years ago. :/ However, I can offer some testing on different AMD & 
+Intel CPUs.
+
+Now... It is 12 AM here so I tested it very quickly only on 5.4-stable, 
+where I initially noticed the problem. The patch applies almost cleanly 
+in this release, almost as arch/x86/platform/efi/efi_64.c does not have 
+kernel_fpu_begin() call to update. The kernel complies and boots.
+
+Here is the result for:
+  Intel(R) Xeon(R) CPU E3-1280 V2 @ 3.60GHz (family: 0x6, model: 0x3a, 
+stepping: 0x9)
+
+5.4-stable (with "Reset MXCSR to default in kernel_fpu_begin"):
+     avx       : 21072.000 MB/sec
+     prefetch64-sse: 20392.000 MB/sec
+     generic_sse: 18572.000 MB/sec
+xor: using function: avx (21072.000 MB/sec)
+
+5.4-stable-c4db485dd3f2378b4923503aed995f7816e265b7-revert:
+     avx       : 33764.000 MB/sec
+     prefetch64-sse: 23432.000 MB/sec
+     generic_sse: 21036.000 MB/sec
+xor: using function: avx (33764.000 MB/sec)
+
+5.4-stable-kernel_fpu_begin_mask:
+    avx       : 23576.000 MB/sec
+    prefetch64-sse: 23024.000 MB/sec
+    generic_sse: 20880.000 MB/sec
+xor: using function: avx (23576.000 MB/sec)
+
+So, the performance regression for prefetch64-sse and generic_sse is 
+almost gone, but the AVX code is still impacted. Not as much as before, 
+but still noticeably, and it is now barely better than fixed prefetch64-sse.
+
+I'm going to test the patches on 5.10 / 5.11-rc to make sure what I have 
+seen on 5.4 is not due to wrong backporting, and on different CPUs. 
+However, this may have to wait until Tuesday / Wednesday due to family 
+duties, as Monday is a holiday here.
+
+Best regards,
+  Krzysztof Olędzki
