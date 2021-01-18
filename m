@@ -2,121 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC7F2FAB5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA5E2FAB67
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437893AbhARUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
+        id S2437931AbhARUZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728901AbhARUYh (ORCPT
+        with ESMTP id S2437212AbhARUY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:24:37 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D558C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:23:57 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id h10so10837533pfo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 12:23:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PRwPVFLZbO3DnAQ42ccV130KeMHAu1TzeUayWROwv/U=;
-        b=D2VzllMwI2rSMF3fX1njbMFiKbfDpQ3IXRCYQgDbNGdf1yPZ150jNDDBeTZ+3rw+P2
-         5FnicS/fv346tnbPPjPFrElvpO4GK/EpxP39jG8NBTLBAGGP/hPE33tHcwGdcEesVXlt
-         G8liJ4Y7tDRNrqjMdNcP4RQoQ5Oytb2eoShFWME3gd1RaE8PrsGULM+jnSEOK3HIZce4
-         JmbvAKFS56TNaJj6y6eUWun9j6i2uLH9fusqwr9RscqhgmF5FGkyhquxgXrAaDb8k6y4
-         MAuYwzp0Myr0wGHUZzPbT4Nb1OU3+szJhcUoaMr+09LjodIERu1H1iPD84VKmY8eg4gN
-         lTfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PRwPVFLZbO3DnAQ42ccV130KeMHAu1TzeUayWROwv/U=;
-        b=YFke1H/sAqgIrAvwNGBR19XpHcci6oO4FyMSDZO/xjRNAcQo/yPjhfOHW11kS/xYOD
-         R0mhVS1OZvZxpA7BXHEpnEmrluuS2BWTjq0hDYORTxOq42ddDopt05BJSF5zaKZ+Kd7G
-         DL+SYg0QaS6rUUaS2SCUD4Hu0McmbNDDGCQT0/lCHnz1ncUJxAUP508O+irSO3+eZ3Oi
-         pgikogUI1JYgR5E8VKJykzeJDe4LMZeb6BdRk9SJcPy4q6AB8K655tUs6nP6Acn9INCw
-         ufox3JAjjumwmwPJj2Dr8ZvgbSGADvqma3tfmDbFcw+E26qtd+YoCTH5Tkb7lXkp7mha
-         zM0g==
-X-Gm-Message-State: AOAM530dy2tK7tKuUfUPgz1uIK7u+N5bL6zKcJhWAYyufpmuVagTeICb
-        xHuZJi+zCILrEEIM7cs0p7nhJQ==
-X-Google-Smtp-Source: ABdhPJy+XiAne7fTflPqmQNXkPVAJW9nmT50Uu+iH1IjIiuVrMWcUoQzrZt24boa3WoZAdDT6VX/dg==
-X-Received: by 2002:a63:c441:: with SMTP id m1mr1233168pgg.353.1611001437058;
-        Mon, 18 Jan 2021 12:23:57 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id br21sm259184pjb.9.2021.01.18.12.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 12:23:56 -0800 (PST)
-Date:   Mon, 18 Jan 2021 13:23:54 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
-        leo.yan@linaro.org, mnissler@google.com
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-Message-ID: <20210118202354.GC464579@xps15>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+        Mon, 18 Jan 2021 15:24:58 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D76EC061573;
+        Mon, 18 Jan 2021 12:24:15 -0800 (PST)
+Received: from zn.tnic (p200300ec2f069f0062c4736095b963a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9f00:62c4:7360:95b9:63a8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E31721EC0283;
+        Mon, 18 Jan 2021 21:24:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611001454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wg2C2nBbuOIoS8W3mFG5ELiW7MV2Ki338+OxxUJ5xdQ=;
+        b=RtFIAxXornjPEFiX1Srlbb2t6bk2lF+oLnAzkcRMedV6rByl6aIGIv/lKOkbyBG70ahfWT
+        jcHHlCmbrEyksnKcBp4vR2ZTQMgMan9kbBCDRpY/7cIv5QGBbkuj5DUKkrFVBT1UKjUmso
+        QU0sy23k/qpjfFqEM3DWGBmXEpVwoK4=
+Date:   Mon, 18 Jan 2021 21:24:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <20210118202409.GG30090@zn.tnic>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
+ <YAH6r3lak/F2wndp@rani.riverdale.lan>
+ <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+In-Reply-To: <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
-> Hello Mathieu, Suzuki
+On Sat, Jan 16, 2021 at 05:34:27PM +0100, Ard Biesheuvel wrote:
+> On Fri, 15 Jan 2021 at 21:27, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Fri, Jan 15, 2021 at 02:07:51PM -0500, Arvind Sankar wrote:
+> > > On Thu, Jan 07, 2021 at 11:34:15PM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > When 5-level page tables are enabled, clang triggers a BUILD_BUG_ON():
+> > > >
+> > > > x86_64-linux-ld: arch/x86/platform/efi/efi_64.o: in function `efi_sync_low_kernel_mappings':
+> > > > efi_64.c:(.text+0x22c): undefined reference to `__compiletime_assert_354'
+> > > >
+> > > > Use the same method as in commit c65e774fb3f6 ("x86/mm: Make PGDIR_SHIFT
+> > > > and PTRS_PER_P4D variable") and change it to MAYBE_BUILD_BUG_ON(),
+> > > > so it only triggers for constant input.
+> > > >
+> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/256
+> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > > ---
+> > > >  arch/x86/platform/efi/efi_64.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+> > > > index e1e8d4e3a213..62bb1616b4a5 100644
+> > > > --- a/arch/x86/platform/efi/efi_64.c
+> > > > +++ b/arch/x86/platform/efi/efi_64.c
+> > > > @@ -137,8 +137,8 @@ void efi_sync_low_kernel_mappings(void)
+> > > >      * As with PGDs, we share all P4D entries apart from the one entry
+> > > >      * that covers the EFI runtime mapping space.
+> > > >      */
+> > > > -   BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> > > > -   BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> > > > +   MAYBE_BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> > > > +   MAYBE_BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> > > >
+> > > >     pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
+> > > >     pgd_k = pgd_offset_k(EFI_VA_END);
+> > > > --
+> > > > 2.29.2
+> > > >
+> > >
+> > > I think this needs more explanation as to why clang is triggering this.
+> > > The issue mentions clang not inline p4d_index(), and I guess not
+> > > performing inter-procedural analysis either?
+> > >
+> > > For the second assertion there, everything is always constant AFAICT:
+> > > EFI_VA_START, EFI_VA_END and P4D_MASK are all constants regardless of
+> > > CONFIG_5LEVEL.
+> > >
+> > > For the first assertion, it isn't technically constant, but if
+> > > p4d_index() gets inlined, the compiler should be able to see that the
+> > > two are always equal, even though ptrs_per_p4d is not constant:
+> > >       EFI_VA_END >> 39 == MODULES_END >> 39
+> > > so the masking with ptrs_per_p4d-1 doesn't matter for the comparison.
+> > >
+> > > As a matter of fact, it seems like the four assertions could be combined
+> > > into:
+> > >       BUILD_BUG_ON((EFI_VA_END & P4D_MASK) != (MODULES_END & P4D_MASK));
+> > >       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> > > instead of separately asserting they're the same PGD entry and the same
+> > > P4D entry.
+> > >
+> > > Thanks.
+> >
+> > I actually don't quite get the MODULES_END check -- Ard, do you know
+> > what that's for?
+> >
 > 
-> On 2020-10-15 21:32, Mathieu Poirier wrote:
-> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
-> > > On production systems with ETMs enabled, it is preferred to
-> > > exclude kernel mode(NS EL1) tracing for security concerns and
-> > > support only userspace(NS EL0) tracing. So provide an option
-> > > via kconfig to exclude kernel mode tracing if it is required.
-> > > This config is disabled by default and would not affect the
-> > > current configuration which has both kernel and userspace
-> > > tracing enabled by default.
-> > > 
-> > 
-> > One requires root access (or be part of a special trace group) to be
-> > able to use
-> > the cs_etm PMU.  With this kind of elevated access restricting tracing
-> > at EL1
-> > provides little in terms of security.
-> > 
-> 
-> Apart from the VM usecase discussed, I am told there are other
-> security concerns here regarding need to exclude kernel mode tracing
-> even for the privileged users/root. One such case being the ability
-> to analyze cryptographic code execution since ETMs can record all
-> branch instructions including timestamps in the kernel and there may
-> be other cases as well which I may not be aware of and hence have
-> added Denis and Mattias. Please let us know if you have any questions
-> further regarding this not being a security concern.
+> Maybe Boris remembers? He wrote the original code for the 'new' EFI
+> page table layout.
 
-Even if we were to apply this patch there are many ways to compromise a system
-or get the kernel to reveal important information using the perf subsystem.  I
-would perfer to tackle the problem at that level rather than concentrating on
-coresight.
+That was added by Kirill for 5-level pgtables:
 
-> 
-> After this discussion, I would like to post a v2 based on Suzuki's
-> feedback earlier. @Suzuki, I have a common config for ETM3 and ETM4
-> but couldn't get much idea on how to implement it for Intel PTs, if
-> you have any suggestions there, please do share or we can have this
-> only for Coresight ETMs.
-> 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+  e981316f5604 ("x86/efi: Add 5-level paging support")
+
+ Documentation/x86/x86_64/mm.rst should explain the pagetable layout:
+
+   ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
+   ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI region mapping space
+   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
+   ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
+   ffffffff80000000 |-2048    MB |                  |         |
+   ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB | module mapping space
+   ffffffffff000000 |  -16    MB |                  |         |
+      FIXADDR_START | ~-11    MB | ffffffffff5fffff | ~0.5 MB | kernel-internal fixmap range, variable size and offset
+
+That thing which starts at -512 GB above is the last PGD on the
+pagetable. In it, between -4G and -68G there are 64G which are the EFI
+region mapping space for runtime services.
+
+Frankly I'm not sure what this thing is testing because the EFI VA range
+is hardcoded and I can't imagine it being somewhere else *except* in the
+last PGD.
+
+Lemme add Kirill for clarification.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
