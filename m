@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4C22FA8DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CC02FA8EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436918AbhARSbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:31:03 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:49859 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407621AbhARSaL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:30:11 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 40A395C017E;
-        Mon, 18 Jan 2021 13:29:15 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 18 Jan 2021 13:29:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=irrelevant.dk;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=TrwoMjews7HeqMv3rqhxGGZrx63
-        dLxThYRqHNKQaQHw=; b=lPZ4+SBA1r7o5A5UVLaiZnMi3b1gr0+40OgPXepEqQd
-        bBSYn4H0JA3nwqIjxX8RV0ruiOYwZKVE2XJnXQ+UywVu6We+y8oUVxw35TBZhFMg
-        za1BTTp2Qxzjidy03ucMoks/zQ0kwzMxQb/NV2CYE3YLZT6Yby69s06FkJZBQVld
-        j6ge3GivDOPc5Z3zlNaNo4hsezhv7v0EWoxwTUr9TQr/HWOdseuMDtPRXrTmALje
-        6RjdnMGJYga1KCTbEsZj8FmQmboYfJuEIOBsl8TA4/mn8UUsqz0CS49qUpj48cpS
-        lWDsb/4a/5V+bmZyyAp1pH3lf+FVsgTDBC0p/EvU2iQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TrwoMj
-        ews7HeqMv3rqhxGGZrx63dLxThYRqHNKQaQHw=; b=g9TXwBu8DP0yHAEovVMVqF
-        qn5vaEI9w3HWF0NCbte2NxoaBO1O9w3UAVx5QWPZa/zK92iGmJ2T4zpjKeLV9IbN
-        Afc6AD4Ka8xMS9mS5RpDxoRjoZIUt9uRh60VDHh4K/8aqXUJdQVij6+QrV+M9BsC
-        HbnU3gW513JkqrpDk5USdClH41UK/9eub2Uz2EtJuoRezRA76ylty6lZkj6v3QNr
-        4Z0B0+2PN2PYYtwjWTY4qf/YQzMHwwP2eAikyK/V5FR8XrEP5pu1UvDdJ8Zawvkb
-        4vGiYPUMFwQxADG/rB8gvpbwCeaonllOITrSrDjgkYtoy7NLeI6sfckhS6S15CnQ
-        ==
-X-ME-Sender: <xms:edMFYF23wDGRpykbnayjbvs1lV65Xxck-5WlYT0h0cd9qKv92oTrXQ>
-    <xme:edMFYPWoBTgmLTg1Kcn0TX5yetaqqczXmkwqRS-7cVIBEXqcLWq2fju6NJIyaSrTQ
-    Nd363OprC8v1TPlS8w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpefmlhgruhhs
-    ucflvghnshgvnhcuoehithhssehirhhrvghlvghvrghnthdrughkqeenucggtffrrghtth
-    gvrhhnpeejgeduffeuieetkeeileekvdeuleetveejudeileduffefjeegfffhuddvudff
-    keenucfkphepkedtrdduieejrdelkedrudeltdenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehithhssehirhhrvghlvghvrghnthdrughk
-X-ME-Proxy: <xmx:edMFYPWR2xC57X2vw4WszoDuaUi1RjciPrNMLlj0J7p-5WofwpC43A>
-    <xmx:edMFYOe-3OCp72W-tgo5d0xqqaplVj9hEcIjScQLMFbtLbz3t2pFeg>
-    <xmx:edMFYIVTBmupV7dCFGFDssPX-oPVZc8Rr4ak6iO4YlSXEFjDkPVsDw>
-    <xmx:e9MFYOFXI5-85xDLMC72GSRF4DX6RFhhVAK9JfyMuVUv26g7NIT8kA>
-Received: from apples.localdomain (80-167-98-190-cable.dk.customer.tdc.net [80.167.98.190])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 71454240064;
-        Mon, 18 Jan 2021 13:29:12 -0500 (EST)
-Date:   Mon, 18 Jan 2021 19:29:10 +0100
-From:   Klaus Jensen <its@irrelevant.dk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Klaus Jensen <k.jensen@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v2] nvme: allow use of cmb on v1.4 controllers
-Message-ID: <YAXTdohFxR5J9hwY@apples.localdomain>
-References: <20210115063046.274495-1-its@irrelevant.dk>
- <20210118175956.GD9901@lst.de>
+        id S2436886AbhARSdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:33:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:41886 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393654AbhARSbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:31:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 224C231B;
+        Mon, 18 Jan 2021 10:30:48 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74CF43F719;
+        Mon, 18 Jan 2021 10:30:46 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH v4 0/5] arm64: ARMv8.5-A: MTE: Add async mode support
+Date:   Mon, 18 Jan 2021 18:30:28 +0000
+Message-Id: <20210118183033.41764-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9zh8nUPFMjIf71aB"
-Content-Disposition: inline
-In-Reply-To: <20210118175956.GD9901@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset implements the asynchronous mode support for ARMv8.5-A
+Memory Tagging Extension (MTE), which is a debugging feature that allows
+to detect with the help of the architecture the C and C++ programmatic
+memory errors like buffer overflow, use-after-free, use-after-return, etc.
 
---9zh8nUPFMjIf71aB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+(Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+subset of its address space that is multiple of a 16 bytes granule. MTE
+is based on a lock-key mechanism where the lock is the tag associated to
+the physical memory and the key is the tag associated to the virtual
+address.
+When MTE is enabled and tags are set for ranges of address space of a task,
+the PE will compare the tag related to the physical memory with the tag
+related to the virtual address (tag check operation). Access to the memory
+is granted only if the two tags match. In case of mismatch the PE will raise
+an exception.
 
-On Jan 18 18:59, Christoph Hellwig wrote:
-> Thanks,
->=20
-> applied to nvme-5.11 with a little tweak to remove the cmbmsc local
-> variable and a comment explaining what is going on.
->=20
+The exception can be handled synchronously or asynchronously. When the
+asynchronous mode is enabled:
+  - Upon fault the PE updates the TFSR_EL1 register.
+  - The kernel detects the change during one of the following:
+    - Context switching
+    - Return to user/EL0
+    - Kernel entry from EL1
+    - Kernel exit to EL1
+  - If the register has been updated by the PE the kernel clears it and
+    reports the error.
 
-Sweet. Thanks!
+The series contains as well an optimization to mte_assign_mem_tag_range().
 
---9zh8nUPFMjIf71aB
-Content-Type: application/pgp-signature; name="signature.asc"
+The series is based on linux 5.11-rc3.
 
------BEGIN PGP SIGNATURE-----
+To simplify the testing a tree with the new patches on top has been made
+available at [1].
 
-iQEzBAEBCAAdFiEEUigzqnXi3OaiR2bATeGvMW1PDekFAmAF03MACgkQTeGvMW1P
-DekhmQf+N40f5rDRmSO7CSlFQfYPi1ynofliDqBI66v4OxHRADZzgnezvED991Sf
-kuaIBY+2CbBWpYmgHJt/M4C+EvsG46EpCCKYafu749XfswVkNGsKOPkBFl/4n5z6
-1odJHh7U/m1YGOpxKJ58k2ciqWAVeymThGqfSAyYZhqbhPToemWH1ryPoLhuJp84
-EWYW0xiwLM74dP4AzRY+r0osYR+qU7ZxEXNwdWq0r2UXS/ErAghTzSKODhzVtwYI
-zuiW8m3Sv2nOWK9b7zUjgI/7cH43En6xzxJtJm7t7ffbBbfiy5dDG42Ra8REJZ5k
-eKd5vJkp7yBPzL9EJ75U7gvcgf7Ycg==
-=uyHI
------END PGP SIGNATURE-----
+[1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async
 
---9zh8nUPFMjIf71aB--
+Changes:
+--------
+v4:
+  - Added support for kasan.mode (sync/async) kernel
+    command line parameter.
+  - Addressed review comments.
+v3:
+  - Exposed kasan_hw_tags_mode to convert the internal
+    KASAN represenetation.
+  - Added dsb() for kernel exit paths in arm64.
+  - Addressed review comments.
+v2:
+  - Fixed a compilation issue reported by krobot.
+  - General cleanup.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Vincenzo Frascino (5):
+  arm64: mte: Add asynchronous mode support
+  kasan: Add KASAN mode kernel parameter
+  kasan: Add report for async mode
+  arm64: mte: Enable async tag check fault
+  arm64: mte: Inline mte_assign_mem_tag_range()
+
+ Documentation/dev-tools/kasan.rst  |  3 ++
+ arch/arm64/include/asm/memory.h    |  3 +-
+ arch/arm64/include/asm/mte-kasan.h |  9 ++++-
+ arch/arm64/include/asm/mte.h       | 58 ++++++++++++++++++++++++++-
+ arch/arm64/kernel/entry-common.c   |  6 +++
+ arch/arm64/kernel/mte.c            | 63 +++++++++++++++++++++++++++++-
+ arch/arm64/lib/mte.S               | 15 -------
+ include/linux/kasan.h              |  3 ++
+ mm/kasan/hw_tags.c                 | 31 ++++++++++++++-
+ mm/kasan/kasan.h                   |  3 +-
+ mm/kasan/report.c                  | 16 +++++++-
+ 11 files changed, 185 insertions(+), 25 deletions(-)
+
+-- 
+2.30.0
+
