@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20882F9AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24872F9AF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733176AbhARIBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733306AbhARIAy (ORCPT
+        id S2387484AbhARIEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:04:30 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:36320 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733263AbhARIE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:00:54 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA944C061573;
-        Mon, 18 Jan 2021 00:00:13 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id 6so8170194wri.3;
-        Mon, 18 Jan 2021 00:00:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QrqziBluAm2S7jXEhlyaBX23uYOu5nIn+17iqFzqPgc=;
-        b=PoKTj57akzrAzBOa8fvLRnZicOvuIP3BcIDUm6snh/3aqOytbhsto0hj+3DpxwZuWd
-         demfto64a5AT8fDUlK0KIIUq6VDCKBryqDLDW/I45kUexbFy+eyH7Dob5BrcgQAaPuA8
-         avdA0wzGnqgHFIJhdnaqQlGGf6NJ8SEsjTjLOIjg3mYfFK0N2sKxOuNyM/RBkFW1vIt0
-         niCgRTGRFSSlcSFARrgjI8cWKlGHlVZc3IuXAh6+vTp5jbruNdbTiRF0NxPK/zTER3cq
-         o0WrL30jI+l+1kWLRSmsE5Zf4IbVAalV7oW+GAHSONCPNu4LpL57WHJioU6Z22TimKmE
-         ayOg==
+        Mon, 18 Jan 2021 03:04:26 -0500
+Received: by mail-oi1-f174.google.com with SMTP id 9so16908201oiq.3;
+        Mon, 18 Jan 2021 00:04:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QrqziBluAm2S7jXEhlyaBX23uYOu5nIn+17iqFzqPgc=;
-        b=VoaRpxXEvhVZaOhedZghmx+Q8PcfoET/cBnNqZeWFa6ZxcUKHBdj2RNmycyO1Gd6nz
-         YWzb0K9jtYQBSeyS3V9rCgpaePBGRw+TernZKBUVVDtfk8wnd3vaqmLJMAqUQDQNOc8k
-         ccs9TF6GKcN8mWi12KkrfaU3kou8RZjyQlu9hk2f2cb3hVM+Cbs0zNqBI8+gExSpBRfT
-         DgM51qyUfrqIOWADvVC8VTtF5/CiW3hpV+8j5pp9kX4y650wvFawYeU5L8MhGsGYlL3K
-         DzO8pgb2bK+G15asBwb233bMPlMwgdbpLmdtRlIJyYSrv+K0qr8k0FO90teDzunUqPnR
-         Q52g==
-X-Gm-Message-State: AOAM533I8/tWyt9bDIONao0jxyhn+s1n9ZvY4LNFo6PeP+pVKs63+MZa
-        2BZUQJlUnlk/zqgbton4av8=
-X-Google-Smtp-Source: ABdhPJxPXOD2LCsasbBNvZyD+MIQMWFrvrBqRcYhmt58KixPQUATj7Mv6o5OThbKodVhcZs9avJ0/A==
-X-Received: by 2002:adf:b359:: with SMTP id k25mr25033448wrd.98.1610956812441;
-        Mon, 18 Jan 2021 00:00:12 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d3e:6800:ad77:727f:e0e1:17c4])
-        by smtp.gmail.com with ESMTPSA id i11sm23187419wmq.10.2021.01.18.00.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 00:00:11 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for bpf-next] docs: bpf: add minimal markup to address doc warning
-Date:   Mon, 18 Jan 2021 09:00:04 +0100
-Message-Id: <20210118080004.6367-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2X31+WqxR9I4AUuC3W8xEHJl1BsJSRWOR9O2fY9EG3c=;
+        b=BNCENPYGjXolhxpN8Medv4GkkJ96c9aI1Z8UE0fNZTZdDN14yfWC9q2dIoeMUCElz+
+         HEK7loeFO5A1vW5HtM4htDzDixZphav2hZNqgZdv93FNLubXYhepG0riWxM7V3Nl741l
+         8dDfq4hTxwM4X5EQGR2om3K0SOaEXKEiL3VG0qyNEzWcuG9OvCZ6LmlJLIeCuY2HHTqD
+         SZBZcJ741N9aB4ZIZgWgUYr19GrWs2tL1FjxiVRw0p2V7pX7grs4lScw1cWL1zbn6uVw
+         lFsEH9IheSQCXOU7CtSEvYFYVAYK0o3p0vO9ixs8jUwvHPKgH1ZAIDgP0vmVHQvX62ts
+         fxHg==
+X-Gm-Message-State: AOAM532AhgofGWRkqYzKIW9/rFx5PELTQqzHQtXIdCfwdrAX+y1QyiDn
+        IM4roHXoJpWvf8r3C4ERl7aYoedWBSBWLOyz48k1JDF9FrQ=
+X-Google-Smtp-Source: ABdhPJwjRBDyAfs3ht+GoWPrW9KH2tViS2CPvJ/yaVAkWy3NhhsB8JPJy3dSseNhS+8YzCLDcMZim6/v3f3Wovc2mWE=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr12276013oia.148.1610957024702;
+ Mon, 18 Jan 2021 00:03:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20210118073340.62141-1-tony@atomide.com>
+In-Reply-To: <20210118073340.62141-1-tony@atomide.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 18 Jan 2021 09:03:33 +0100
+Message-ID: <CAMuHMdXtMtmoLcRwMwOkmvHbvstoJsrqzxfTw8DPCJBqH-EAmw@mail.gmail.com>
+Subject: Re: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with
+ simple-bus for auxdata
+To:     ext Tony Lindgren <tony@atomide.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 91c960b00566 ("bpf: Rename BPF_XADD and prepare to encode other
-atomics in .imm") modified the BPF documentation, but missed some ReST
-markup.
+On Mon, Jan 18, 2021 at 8:33 AM Tony Lindgren <tony@atomide.com> wrote:
+> After converting am335x to probe devices with simple-pm-bus I noticed
+> that we are not passing auxdata for of_platform_populate() like we do
+> with simple-bus.
+>
+> While device tree using SoCs should no longer need platform data, there
+> are still quite a few drivers that still need it as can be seen with
+> git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
+> replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
+> needed.
+>
+> Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
+> That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
+> And let's pass the auxdata for omaps to fix the issue for am335x.
+>
+> As an alternative solution, adding simple-pm-bus handling directly to
+> drivers/of/platform.c was considered, but we would still need simple-pm-bus
+> device driver. So passing auxdata as platform data seems like the simplest
+> solution.
+>
+> Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 
-Hence, make htmldocs warns on Documentation/networking/filter.rst:1053:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-  WARNING: Inline emphasis start-string without end-string.
+Gr{oetje,eeting}s,
 
-Add some minimal markup to address this warning.
+                        Geert
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210118
-
-Brendan, please ack.
-
-Alexei, please pick this minor cleanup patch on your bpf-next.
-
- Documentation/networking/filter.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index f6d8f90e9a56..45f6fde1776c 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
- Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
- 
- It also includes atomic operations, which use the immediate field for extra
--encoding.
-+encoding::
- 
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
- 
--The basic atomic operations supported are:
-+The basic atomic operations supported are::
- 
-     BPF_ADD
-     BPF_AND
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
