@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F23D2F99FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 07:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CE62F9A01
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 07:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732528AbhARGdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 01:33:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36482 "EHLO mail.kernel.org"
+        id S1732574AbhARGiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 01:38:46 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:36706 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732470AbhARGdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 01:33:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEFBF227C3;
-        Mon, 18 Jan 2021 06:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610951578;
-        bh=6N01wzOWjD4rcN3F+PsOZ2+FEiqBi+1ijLv2TWHWy1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DZhxDTkH4wOiwmQkjydK2eMj9TNaaYJmpx+GAz3q49VqQbiljqZ7R4DIpakgbcF6Y
-         T8r5mtoerAun0V4Aq06ChEmL0Tdci7RmiFkFIci1mKJDy9jimnRqEEeuC654YQAEUM
-         AUwdIzGyafW7ZD+C1NWNwdf8GMR7hAhQuBl9hx2xKwx7QmZwX22H+5MKS8w8iDzgAh
-         oyms8zIjaL3/SB9RP5D917Y/ru5sdAMdAcU6mgMvoZt/Lyl7ABJXAr1ejU0YiFq43O
-         jKWj754opqG8+X2S4t5jjzYjj1+kDO4H1HBcDgrMIq0GfUugUja7Sv2L++2iL8hmVn
-         dS/mKQujjh3MA==
-Date:   Mon, 18 Jan 2021 14:32:53 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Bruno Thomsen <bth@kamstrup.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH] ARM: dts: imx7d-flex-concentrator: fix pcf2127 reset
-Message-ID: <20210118063252.GJ28365@dragon>
-References: <20210111151537.12530-1-bruno.thomsen@gmail.com>
+        id S1726624AbhARGin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 01:38:43 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id C5993201D5;
+        Mon, 18 Jan 2021 07:38:01 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fTVnJEMH7k3n; Mon, 18 Jan 2021 07:38:00 +0100 (CET)
+Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id EF58C200BC;
+        Mon, 18 Jan 2021 07:38:00 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Mon, 18 Jan 2021 07:38:00 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 18 Jan
+ 2021 07:38:00 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id B737C3182E9B;
+ Mon, 18 Jan 2021 07:37:59 +0100 (CET)
+Date:   Mon, 18 Jan 2021 07:37:59 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+CC:     Dongseok Yi <dseok.yi@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <namkyu78.kim@samsung.com>, Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "Willem de Bruijn" <willemb@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
+ GRO fraglist
+Message-ID: <20210118063759.GK3576117@gauss3.secunet.de>
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
+ <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
+ <20210115171203.175115-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210111151537.12530-1-bruno.thomsen@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210115171203.175115-1-alobakin@pm.me>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 04:15:37PM +0100, Bruno Thomsen wrote:
-> RTC pcf2127 device driver has changed default behaviour of the watchdog
-> feature in v5.11-rc1. Now you need to explicitly enable it with a
-> device tree property, "reset-source", when used in the board design.
-
-It sound that the existing DTBs are broken by this default behaviour
-change?
-
+On Fri, Jan 15, 2021 at 05:12:33PM +0000, Alexander Lobakin wrote:
+> From: Dongseok Yi <dseok.yi@samsung.com>
+> Date: Fri, 15 Jan 2021 22:20:35 +0900
 > 
-> Fixes: 71ac13457d9d ("rtc: pcf2127: only use watchdog when explicitly available")
+> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> > skb_gso_segment is updated but following frag_skbs are not updated.
+> > 
+> > A call path skb_mac_gso_segment -> inet_gso_segment ->
+> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> > does not try to update UDP/IP header of the segment list but copy
+> > only the MAC header.
+> > 
+> > Update dport, daddr and checksums of each skb of the segment list
+> > in __udp_gso_segment_list. It covers both SNAT and DNAT.
+> > 
+> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > ---
+> > v1:
+> > Steffen Klassert said, there could be 2 options.
+> > https://lore.kernel.org/patchwork/patch/1362257/
+> > I was trying to write a quick fix, but it was not easy to forward
+> > segmented list. Currently, assuming DNAT only.
+> > 
+> > v2:
+> > Per Steffen Klassert request, move the procedure from
+> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+> > 
+> > To Alexander Lobakin, I've checked your email late. Just use this
+> > patch as a reference. It support SNAT too, but does not support IPv6
+> > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
+> > to the file is in IPv4 directory.
 > 
-> Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
-> Cc: Bruno Thomsen <bth@kamstrup.com>
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> I used another approach, tried to make fraglist GRO closer to plain
+> in terms of checksummming, as it is confusing to me why GSO packet
+> should have CHECKSUM_UNNECESSARY.
 
-Applied, thanks.
+This is intentional. With fraglist GRO, we don't mangle packets
+in the standard (non NAT) case. So the checksum is still correct
+after segmentation. That is one reason why it has good forwarding
+performance when software segmentation is needed. Checksuming
+touches the whole packet and has a lot of overhead, so it is
+heplfull to avoid it whenever possible.
 
-Shawn
+We should find a way to do the checksum only when we really
+need it. I.e. only if the headers of the head skb changed.
 
-> ---
->  arch/arm/boot/dts/imx7d-flex-concentrator.dts | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/imx7d-flex-concentrator.dts b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> index 84b095279e65..bd6b5285aa8d 100644
-> --- a/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> +++ b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> @@ -115,6 +115,7 @@ pcf2127: rtc@0 {
->  		compatible = "nxp,pcf2127";
->  		reg = <0>;
->  		spi-max-frequency = <2000000>;
-> +		reset-source;
->  	};
->  };
->  
-> 
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> -- 
-> 2.29.2
-> 
