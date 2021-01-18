@@ -2,111 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAB42FACA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163D2FACA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394665AbhARV1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:27:50 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:58751 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388513AbhARKKX (ORCPT
+        id S2438048AbhARV3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:29:04 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54866 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389058AbhARKLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:10:23 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 10IA30lm051718;
-        Mon, 18 Jan 2021 18:03:00 +0800 (GMT-8)
-        (envelope-from ryan_chen@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 Jan
- 2021 18:08:18 +0800
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <andrewrj@au1.ibm.com>,
-        <joel@linux.ibm.com>, <BMC-SW@aspeedtech.com>
-CC:     Ryan Chen <ryan_chen@aspeedtech.com>
-Subject: [PATCH 1/1] clk: aspeed: Fix APLL calculate formula for ast2600-A2
-Date:   Mon, 18 Jan 2021 18:08:13 +0800
-Message-ID: <20210118100813.30821-2-ryan_chen@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210118100813.30821-1-ryan_chen@aspeedtech.com>
-References: <20210118100813.30821-1-ryan_chen@aspeedtech.com>
+        Mon, 18 Jan 2021 05:11:10 -0500
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610964600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YPz2ivAXYO8ypWKYs2DG4DM8bLkjnxAi8lTBSR5FHbg=;
+        b=GfYI1+umBrd8K02Q4Q7xumP/54pZFLEdhLFrVXmx4sy3HOJi/I5eRU/HT2RXawz5RdT0Nv
+        3g9PToAnC2SSf247OFZa0V3IE0rdgbcbCrQIcTiWfA/ELUxCzoQU/AKzleakJOxC9Rj50p
+        dVYJqmovYUYMgg+7RehvakiQTBa/GgycSYs4qmwJUx2dH/BkfCKxjFwHriDpQ+EOPu+OQl
+        cPQJUOHqOgmrr3FFw565cCh8U+gsHho8UlERTzRVbHHuemI8zHZJ8ks9Eje2JOUTIMg04X
+        FKX88VFLLmXC6wdoWoO43duQPxg6E6Kw7VOCNZnT9Zj1CB+yCdMf+O6zz++FOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610964600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YPz2ivAXYO8ypWKYs2DG4DM8bLkjnxAi8lTBSR5FHbg=;
+        b=FMUSDdIRLEXr6uSAEdNbX4AvkhHu0Msd6AmCIvjbcxnigdkdg3hHeBeNdXCoJQUdp8LlTv
+        CL28ffE6efwgmOAg==
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH v3 00/19] scsi: libsas: Remove in_interrupt() check
+Date:   Mon, 18 Jan 2021 11:09:36 +0100
+Message-Id: <20210118100955.1761652-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 10IA30lm051718
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AST2600A1/A2 have different pll calculate formula.
+Hi,
 
-Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
----
- drivers/clk/clk-ast2600.c | 37 +++++++++++++++++++++++++++----------
- 1 file changed, 27 insertions(+), 10 deletions(-)
+Changelog v3
+------------
 
-diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
-index bbacaccad554..8933bd1506b3 100644
---- a/drivers/clk/clk-ast2600.c
-+++ b/drivers/clk/clk-ast2600.c
-@@ -17,7 +17,8 @@
- 
- #define ASPEED_G6_NUM_CLKS		71
- 
--#define ASPEED_G6_SILICON_REV		0x004
-+#define ASPEED_G6_SILICON_REV		0x014
-+#define CHIP_REVISION_ID			GENMASK(23, 16)
- 
- #define ASPEED_G6_RESET_CTRL		0x040
- #define ASPEED_G6_RESET_CTRL2		0x050
-@@ -190,18 +191,34 @@ static struct clk_hw *ast2600_calc_pll(const char *name, u32 val)
- static struct clk_hw *ast2600_calc_apll(const char *name, u32 val)
- {
- 	unsigned int mult, div;
-+	u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
- 
--	if (val & BIT(20)) {
--		/* Pass through mode */
--		mult = div = 1;
-+	if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
-+		if (val & BIT(24)) {
-+			/* Pass through mode */
-+			mult = div = 1;
-+		} else {
-+			/* F = 25Mhz * [(m + 1) / (n + 1)] / (p + 1) */
-+			u32 m = val & 0x1fff;
-+			u32 n = (val >> 13) & 0x3f;
-+			u32 p = (val >> 19) & 0xf;
-+
-+			mult = (m + 1);
-+			div = (n + 1) * (p + 1);
-+		}
- 	} else {
--		/* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)] */
--		u32 m = (val >> 5) & 0x3f;
--		u32 od = (val >> 4) & 0x1;
--		u32 n = val & 0xf;
-+		if (val & BIT(20)) {
-+			/* Pass through mode */
-+			mult = div = 1;
-+		} else {
-+			/* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)] */
-+			u32 m = (val >> 5) & 0x3f;
-+			u32 od = (val >> 4) & 0x1;
-+			u32 n = val & 0xf;
- 
--		mult = (2 - od) * (m + 2);
--		div = n + 1;
-+			mult = (2 - od) * (m + 2);
-+			div = n + 1;
-+		}
- 	}
- 	return clk_hw_register_fixed_factor(NULL, name, "clkin", 0,
- 			mult, div);
--- 
-2.17.1
+- Include latest version of John's patch. Collect r-b tags.
 
+- Limit all code to 80 columns, even for intermediate patches.
+
+- Rebase over v5.11-rc4
+
+Changelog v2
+------------
+
+https://lkml.kernel.org/r/20210112110647.627783-1-a.darwish@linutronix.de
+
+- Rebase on top of John's patch "scsi: libsas and users: Remove notifier
+  indirection", as it affects every other patch. Include it in this
+  series (patch #2).
+
+- Introduce patches #13 => #19, which modify call sites back to use the
+  original libsas notifier function names without _gfp() suffix.
+
+- Rebase over v5.11-rc3
+
+v1 / Cover letter
+-----------------
+
+https://lkml.kernel.org/r/20201218204354.586951-1-a.darwish@linutronix.de
+
+In the discussion about preempt count consistency across kernel
+configurations:
+
+  https://lkml.kernel.org/r/20200914204209.256266093@linutronix.de
+
+it was concluded that the usage of in_interrupt() and related context
+checks should be removed from non-core code.
+
+This includes memory allocation mode decisions (GFP_*). In the long run,
+usage of in_interrupt() and its siblings should be banned from driver
+code completely.
+
+This series addresses SCSI libsas. Basically, the function:
+
+  => drivers/scsi/libsas/sas_init.c:
+  struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
+  {
+        ...
+        gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
+        event = kmem_cache_zalloc(sas_event_cache, flags);
+        ...
+  }
+
+is transformed so that callers explicitly pass the gfp_t memory
+allocation flags. Affected libsas clients are modified accordingly.
+
+Patches #1, #2 => #7 have "Fixes: " tags and address bugs the were
+noticed during the context analysis.
+
+Thanks!
+
+8<--------------
+
+Ahmed S. Darwish (18):
+  Documentation: scsi: libsas: Remove notify_ha_event()
+  scsi: libsas: Introduce a _gfp() variant of event notifiers
+  scsi: mvsas: Pass gfp_t flags to libsas event notifiers
+  scsi: isci: port: link down: Pass gfp_t flags
+  scsi: isci: port: link up: Pass gfp_t flags
+  scsi: isci: port: broadcast change: Pass gfp_t flags
+  scsi: libsas: Pass gfp_t flags to event notifiers
+  scsi: pm80xx: Pass gfp_t flags to libsas event notifiers
+  scsi: aic94xx: Pass gfp_t flags to libsas event notifiers
+  scsi: hisi_sas: Pass gfp_t flags to libsas event notifiers
+  scsi: libsas: event notifiers API: Add gfp_t flags parameter
+  scsi: hisi_sas: Switch back to original libsas event notifiers
+  scsi: aic94xx: Switch back to original libsas event notifiers
+  scsi: pm80xx: Switch back to original libsas event notifiers
+  scsi: libsas: Switch back to original event notifiers API
+  scsi: isci: Switch back to original libsas event notifiers
+  scsi: mvsas: Switch back to original libsas event notifiers
+  scsi: libsas: Remove temporarily-added _gfp() API variants
+
+John Garry (1):
+  scsi: libsas and users: Remove notifier indirection
+
+ Documentation/scsi/libsas.rst          |  9 +----
+ drivers/scsi/aic94xx/aic94xx_scb.c     | 24 ++++++------
+ drivers/scsi/hisi_sas/hisi_sas.h       |  3 +-
+ drivers/scsi/hisi_sas/hisi_sas_main.c  | 29 +++++++-------
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  7 ++--
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  7 ++--
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |  7 ++--
+ drivers/scsi/isci/port.c               | 11 +++---
+ drivers/scsi/libsas/sas_event.c        | 27 ++++++-------
+ drivers/scsi/libsas/sas_init.c         | 19 ++++-----
+ drivers/scsi/libsas/sas_internal.h     |  6 +--
+ drivers/scsi/mvsas/mv_sas.c            | 25 ++++++------
+ drivers/scsi/pm8001/pm8001_hwi.c       | 54 ++++++++++++++++----------
+ drivers/scsi/pm8001/pm8001_sas.c       | 12 ++----
+ drivers/scsi/pm8001/pm80xx_hwi.c       | 46 ++++++++++++----------
+ include/scsi/libsas.h                  |  9 +++--
+ 16 files changed, 149 insertions(+), 146 deletions(-)
+
+base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+--
+2.30.0
