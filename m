@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FB42F9B7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BBC2F9B7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387958AbhARIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:48:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        id S2387990AbhARIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387903AbhARIrp (ORCPT
+        with ESMTP id S2387950AbhARIsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:47:45 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5060CC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:47:04 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id 6so8297493wri.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:47:04 -0800 (PST)
+        Mon, 18 Jan 2021 03:48:16 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452C8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:47:05 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d13so15555728wrc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:47:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OyQZB4rl5Zar0wRlUg3JZS81nsXMFf2BksOtPVpSskk=;
-        b=1eDIvqm2DYBQvrlEqrZOdoWFbDIRO661ivbAjhUrNDhelTRzl7byhn20hOJ85oJkbL
-         b7zrCpvOOaWz6/ecVYNyQ9+YN9D55OrwQgAjzIWATqfremCD8/lk8X6iMYKtdaGnvSpb
-         m+eLJP37fOXg5Z0WUwwbqFmRw748VjyEYfp7ApQHwSF41krg9wAExURz+5ScqvdOk4mg
-         WzRgr/PPaFcn8eUOi8Mq95V0H/jF4fvilivYDzZ1uZurTW9RNtjk+3d23p/fsUcPaqGC
-         ZzchM2EtTLBQOpYSu5VimxKpLNG042e1NYdZb7kDM3Zlw5rxjQmIwQVl4Z05XVJB7vZB
-         xujQ==
+        bh=8u2QoVss2UavcelbE4BrawmKFXEyru6c+YRhQ7iYuuo=;
+        b=Sm3PhrpBPJ137AQ3z5B1ZzYmp5XOc27tFEKSH7DZzea2NsslTMdd4ll2jv+fInlKud
+         P4fKiBDUoWVNbFzr2/SJ9PI+ALG3UxWl2WcmrjJyK9OVmlLKWzJccGondH2tASIDy7PN
+         tyDelH5GLOhJplrYl7A4VOdiZKaedrunuuoW66BXfZI/Cw1l36Y1ItbluxTVrrDA9rMX
+         9vYe7dWh0dmJt5lT0Peg4epzlQmlH4GLPtZaAGvIGljtspNHoqbQr7FuRarayJ4UOe0O
+         GPQ8GlhC/nKpnWqOgGgMFtD+dDfqMVYdKCAAIaxbBhDyzBVZIjqpACvcLx2kiewzP+HJ
+         ZkLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OyQZB4rl5Zar0wRlUg3JZS81nsXMFf2BksOtPVpSskk=;
-        b=U+DoOLrIfi9BLR3h2G2l0RtbXfXwTqBRns50jNRDpS3sKRwuF64qv/BdV+Xsy7N3el
-         M9w2jODh2FPRv+o77KwCzeLZXPo/B3FTtnfEW49Iw16rCV1x7+GXLSLrz6NABvF/QFGs
-         FADJ36Y25go3fjtlRlIkdsUC/psFca8o15wp2TK2hd6CZX5XmIF/1RmEeMLj63bF6t5V
-         VVbW+SZYwdFXMDPJVKvzcI+Jiuz8PsG4TS/liT+rjNMeK1rqSsTY6mH76CylC60YPx+i
-         upAojU/mHQkKfuEdOwUbzVsvM+VUV53bn9GJazLWQ0kuEZ/eM+pw4Qa7evWCmkF7ftzV
-         nxmQ==
-X-Gm-Message-State: AOAM530IcRFroZLTwxKyzYG8wlrdClhBDOMSL+z0BH0oXHhgOVY7Dvfe
-        ULS2Ofz/Tcwtsv7CjVWv0AKO1g==
-X-Google-Smtp-Source: ABdhPJxxgODJToo7TFdLLUjVzIUDyoOMj4r4LZZaidqcgw0ViKZvSuhZl4yqyYfhUNITTmsGPDGnWQ==
-X-Received: by 2002:a5d:6cd4:: with SMTP id c20mr24712137wrc.57.1610959622969;
-        Mon, 18 Jan 2021 00:47:02 -0800 (PST)
+        bh=8u2QoVss2UavcelbE4BrawmKFXEyru6c+YRhQ7iYuuo=;
+        b=sxtl/MtO6qI+GwLuYIyKlBIpoyPfxUB+oCy8ePYexer3pRyK69Psv6kX9aJPyQZlAQ
+         og6FZX+eYAVRmqKmoN1pXlmFQ6rTCLX0RR96reuIsi18SjL5y/JLhshnNGu0ROialDZZ
+         zUsbgv2CRSGvB5PBEenl89yFuWJBkg3DhqayLolDCrSlBarWee/TsHFHWuVh5Bx40s86
+         NXCcxNkaNHr8TPXW8cLPPbU+ylTRvJjH/FeuAnm0PoXFC4DGq1YMRPvLME8/ViDnkb68
+         Iw3vIzcIWlrUnvn/FoAeKAfRgpEGxmU4I4n/61ukGeKdlEuZqR+NcyfkqvVFweXOqdpQ
+         QJUw==
+X-Gm-Message-State: AOAM532St9/1AXHWXtgpyLFENoPSdmSREOpyeNWgRm+TzBPcyeBQfqxI
+        O9HvFLiDFJmOHljZlGVpp/9H6A==
+X-Google-Smtp-Source: ABdhPJyOR062eJcPDrMUnJ6U36q+eusFtWUgiq9folxccNLxdBoqcFKCwo7r0JY1IdYXfHj37a8UOA==
+X-Received: by 2002:adf:8503:: with SMTP id 3mr24920822wrh.56.1610959624016;
+        Mon, 18 Jan 2021 00:47:04 -0800 (PST)
 Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id y63sm26224518wmd.21.2021.01.18.00.47.02
+        by smtp.googlemail.com with ESMTPSA id y63sm26224518wmd.21.2021.01.18.00.47.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 00:47:02 -0800 (PST)
+        Mon, 18 Jan 2021 00:47:03 -0800 (PST)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jack Pham <jackp@codeaurora.org>,
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ferry Toth <fntoth@gmail.com>, Peter Chen <peter.chen@nxp.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v3 1/4] usb: gadget: u_audio: Free requests only after callback
-Date:   Mon, 18 Jan 2021 09:46:39 +0100
-Message-Id: <20210118084642.322510-2-jbrunet@baylibre.com>
+        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/4] usb: gadget: u_audio: factorize ssize to alsa fmt conversion
+Date:   Mon, 18 Jan 2021 09:46:40 +0100
+Message-Id: <20210118084642.322510-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210118084642.322510-1-jbrunet@baylibre.com>
 References: <20210118084642.322510-1-jbrunet@baylibre.com>
@@ -69,65 +68,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+Factorize format related code common to the capture and playback path.
 
-As per the kernel doc for usb_ep_dequeue(), it states that "this
-routine is asynchronous, that is, it may return before the completion
-routine runs". And indeed since v5.0 the dwc3 gadget driver updated
-its behavior to place dequeued requests on to a cancelled list to be
-given back later after the endpoint is stopped.
-
-The free_ep() was incorrectly assuming that a request was ready to
-be freed after calling dequeue which results in a use-after-free
-in dwc3 when it traverses its cancelled list. Fix this by moving
-the usb_ep_free_request() call to the callback itself in case the
-ep is disabled.
-
-Fixes: eb9fecb9e69b0 ("usb: gadget: f_uac2: split out audio core")
-Reported-and-tested-by: Ferry Toth <fntoth@gmail.com>
-Reviewed-and-tested-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- drivers/usb/gadget/function/u_audio.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/u_audio.c | 43 +++++++++++++--------------
+ 1 file changed, 21 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index e6d32c536781..908e49dafd62 100644
+index 908e49dafd62..27f941f71a9d 100644
 --- a/drivers/usb/gadget/function/u_audio.c
 +++ b/drivers/usb/gadget/function/u_audio.c
-@@ -89,7 +89,12 @@ static void u_audio_iso_complete(struct usb_ep *ep, struct usb_request *req)
- 	struct snd_uac_chip *uac = prm->uac;
+@@ -244,6 +244,25 @@ static snd_pcm_uframes_t uac_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return bytes_to_frames(substream->runtime, prm->hw_ptr);
+ }
  
- 	/* i/f shutting down */
--	if (!prm->ep_enabled || req->status == -ESHUTDOWN)
-+	if (!prm->ep_enabled) {
-+		usb_ep_free_request(ep, req);
-+		return;
++static u64 uac_ssize_to_fmt(int ssize)
++{
++	u64 ret;
++
++	switch (ssize) {
++	case 3:
++		ret = SNDRV_PCM_FMTBIT_S24_3LE;
++		break;
++	case 4:
++		ret = SNDRV_PCM_FMTBIT_S32_LE;
++		break;
++	default:
++		ret = SNDRV_PCM_FMTBIT_S16_LE;
++		break;
 +	}
 +
-+	if (req->status == -ESHUTDOWN)
- 		return;
- 
- 	/*
-@@ -336,8 +341,14 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 
- 	for (i = 0; i < params->req_number; i++) {
- 		if (prm->ureq[i].req) {
--			usb_ep_dequeue(ep, prm->ureq[i].req);
--			usb_ep_free_request(ep, prm->ureq[i].req);
-+			if (usb_ep_dequeue(ep, prm->ureq[i].req))
-+				usb_ep_free_request(ep, prm->ureq[i].req);
-+			/*
-+			 * If usb_ep_dequeue() cannot successfully dequeue the
-+			 * request, the request will be freed by the completion
-+			 * callback.
-+			 */
++	return ret;
++}
 +
- 			prm->ureq[i].req = NULL;
- 		}
- 	}
+ static int uac_pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_uac_chip *uac = snd_pcm_substream_chip(substream);
+@@ -269,34 +288,14 @@ static int uac_pcm_open(struct snd_pcm_substream *substream)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		spin_lock_init(&uac->p_prm.lock);
+ 		runtime->hw.rate_min = p_srate;
+-		switch (p_ssize) {
+-		case 3:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
+-			break;
+-		case 4:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+-			break;
+-		default:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+-			break;
+-		}
++		runtime->hw.formats = uac_ssize_to_fmt(p_ssize);
+ 		runtime->hw.channels_min = num_channels(p_chmask);
+ 		runtime->hw.period_bytes_min = 2 * uac->p_prm.max_psize
+ 						/ runtime->hw.periods_min;
+ 	} else {
+ 		spin_lock_init(&uac->c_prm.lock);
+ 		runtime->hw.rate_min = c_srate;
+-		switch (c_ssize) {
+-		case 3:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
+-			break;
+-		case 4:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+-			break;
+-		default:
+-			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+-			break;
+-		}
++		runtime->hw.formats = uac_ssize_to_fmt(c_ssize);
+ 		runtime->hw.channels_min = num_channels(c_chmask);
+ 		runtime->hw.period_bytes_min = 2 * uac->c_prm.max_psize
+ 						/ runtime->hw.periods_min;
 -- 
 2.29.2
 
