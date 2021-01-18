@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF482F9F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D406A2F9EF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390918AbhARMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:17:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        id S2403820AbhARL7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:59:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390900AbhARLqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:46:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA8F22D5B;
-        Mon, 18 Jan 2021 11:46:15 +0000 (UTC)
+        id S2390907AbhARLqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:46:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A351122D6F;
+        Mon, 18 Jan 2021 11:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970375;
-        bh=igt8EuL5nuiUf7f+sJcAA1cbkSnPUBA1VkxbnqbKkS4=;
+        s=korg; t=1610970378;
+        bh=4RkIzTO63mVOllbmZosH6X5tOFnqqnOdptqyXrq7G/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S5sbOJ8aRbP3XcoMQjx1z6b68mrzV/21HmlRvS7yL711BUinklyojZowJHxddAfBa
-         jYfraPbkCAoEMRSurIYMNPAtvCzXObqJ+kKUZ9WsOadnnlhwh/s4HiQ6X5c9hzDTSv
-         mHjSMekD1MfVlwGxhT1CFxlaOiW6peFx5Pa1rtKA=
+        b=qG62kmbXLXFciStGuIwjjDK1b/AJEwZvLB0iZgAd4VVFR2qHfyt0DofMSAo2YPBgZ
+         UhMZhnPqP4ZyOVqSsx1yISVX7Ii3lesY0BMWvV/RtSMaqLo7hdmzhLernYE6RCOakv
+         g7Wlvi0A9epjeSokoOt3DTYgS9+5+IYfp3ZdnRHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Petter Selasky <hanss@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>,
+        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 136/152] RDMA/mlx5: Fix wrong free of blue flame register on error
-Date:   Mon, 18 Jan 2021 12:35:11 +0100
-Message-Id: <20210118113359.242728586@linuxfoundation.org>
+Subject: [PATCH 5.10 137/152] IB/mlx5: Fix error unwinding when set_has_smi_cap fails
+Date:   Mon, 18 Jan 2021 12:35:12 +0100
+Message-Id: <20210118113359.289754282@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -41,18 +40,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Bloch <mbloch@nvidia.com>
+From: Parav Pandit <parav@nvidia.com>
 
-commit 1c3aa6bd0b823105c2030af85d92d158e815d669 upstream.
+commit 2cb091f6293df898b47f4e0f2e54324e2bbaf816 upstream.
 
-If the allocation of the fast path blue flame register fails, the driver
-should free the regular blue flame register allocated a statement above,
-not the one that it just failed to allocate.
+When set_has_smi_cap() fails, multiport master cleanup is missed. Fix it
+by doing the correct error unwinding goto.
 
-Fixes: 16c1975f1032 ("IB/mlx5: Create profile infrastructure to add and remove stages")
-Link: https://lore.kernel.org/r/20210113121703.559778-6-leon@kernel.org
-Reported-by: Hans Petter Selasky <hanss@nvidia.com>
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Fixes: a989ea01cb10 ("RDMA/mlx5: Move SMI caps logic")
+Link: https://lore.kernel.org/r/20210113121703.559778-3-leon@kernel.org
+Signed-off-by: Parav Pandit <parav@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -63,14 +60,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/infiniband/hw/mlx5/main.c
 +++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -4362,7 +4362,7 @@ static int mlx5_ib_stage_bfrag_init(stru
+@@ -3950,7 +3950,7 @@ static int mlx5_ib_stage_init_init(struc
  
- 	err = mlx5_alloc_bfreg(dev->mdev, &dev->fp_bfreg, false, true);
+ 	err = set_has_smi_cap(dev);
  	if (err)
--		mlx5_free_bfreg(dev->mdev, &dev->fp_bfreg);
-+		mlx5_free_bfreg(dev->mdev, &dev->bfreg);
+-		return err;
++		goto err_mp;
  
- 	return err;
- }
+ 	if (!mlx5_core_mp_enabled(mdev)) {
+ 		for (i = 1; i <= dev->num_ports; i++) {
 
 
