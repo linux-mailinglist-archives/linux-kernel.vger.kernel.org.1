@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512E52FA595
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D066A2FA5A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406413AbhARQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:06:15 -0500
-Received: from mail.cock.li ([37.120.193.124]:38024 "EHLO mail.cock.li"
+        id S2406433AbhARQHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:07:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406409AbhARQGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:06:06 -0500
+        id S2406409AbhARQGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:06:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48AF822472;
+        Mon, 18 Jan 2021 16:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610985942;
+        bh=zRzNpYETySFvElMPmAn1EDRcJKD6ENrHFykLFQlHWBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CbghjvFGnS+lndRsHx9yfTSzUxjSkIGYfBz3gEHkJqA10T8OJFNvKNjDdfB4Z0ccw
+         wSY+ojjfLiAmdAUw2x6z8DG1+8E7ICohycEfOHDUY5/SfO9txHZl8L/fDyNdn1ZmrX
+         BnALXzcF5WCxrTbBHr3xODh0I89YKYRAgdhJlMtTw6CZyqwPIpBGcQxw0dMlPRXQaa
+         42QCQCLq+ct9EvLIhWSd6Ir2DFzw6ykGOZkuI1d2lwwgHMUQK/Pi0SWrJaqNDUDS0G
+         Yx68+Fvixbnpfl2q8w+N76YWhD9udHenjiPqxEksl5Lz5ZaJIQoqk1+pYE5cs4evqd
+         4K+wfih0tvn8g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1B34640CE2; Mon, 18 Jan 2021 13:05:40 -0300 (-03)
+Date:   Mon, 18 Jan 2021 13:05:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 06/22] perf tools: Make perf_config_global gobal
+Message-ID: <20210118160540.GF12699@kernel.org>
+References: <20210102220441.794923-1-jolsa@kernel.org>
+ <20210102220441.794923-7-jolsa@kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
-        t=1610985908; bh=jqUAsJIcf+7bOgA4AuJUqx7RYM3DAcDTD3ywveeWwJU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZWWUMge3Ucy4G9IWpMgu5EATATbaVR4CAlfLhXDzPLGrb2C4ee85/ZwRZSX4hzGhX
-         kxDR5zc6ohiRdU2HZt24lTF/111Vmut/w4L804k1mkLfB/FHCbq3aC3pcpqAa8dAXl
-         cG9mI6qFTujvNa/Hb3SYIHJ6Ob93WBvfbhKpmNYFIOdp2XSatpxhPD3MJtJUmlCdy1
-         POgDAAM5F7u+tKIQQ+l6jVfHzWQX1RKbScNbmV4YottzLQGI5GJ8d1Vmz4nv94wxDL
-         zaQ2dr1zLROYFCTeJjfTub39cZapwD3xJwZ6VBFBLPF/LEAgR7wo4Eizb15vrg238d
-         /YrJ7B48aE73A==
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 18 Jan 2021 16:05:09 +0000
-From:   nipponmail@firemail.cc
-To:     Boris Lukashev <blukashev@sempervictus.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Linksys WRT54G and the GPL - What about GRSECURITY?
-In-Reply-To: <CAFUG7Cd8S+sGRkKB3z1PoPz14ReaNN=unE6E7tTuFYGB8LqdBA@mail.gmail.com>
-References: <018895af6127043324ce34c8faceac42@firemail.cc>
- <CAFUG7Cd8S+sGRkKB3z1PoPz14ReaNN=unE6E7tTuFYGB8LqdBA@mail.gmail.com>
-Message-ID: <f01b3216a3245e25654e4953b5820788@firemail.cc>
-X-Sender: nipponmail@firemail.cc
-User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210102220441.794923-7-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> First off, its no longer even accurate
-Wrong. Grsecurity is violating the Linux Copyright by preventing 
-redistribution, by adding additional terms between it and distributees. 
-It does not matter if Linus, the weak faggot, is "never going to 
-include" it.
+Em Sat, Jan 02, 2021 at 11:04:25PM +0100, Jiri Olsa escreveu:
+> Making perf_config_global global, it will be used
+> outside the config.c object in following patches.
 
-Grsecurity is violating the GCC copyright for the same reason.
+Thanks, applied.
 
-> The whole GPL mess is broken, clearly, and nobody is looking to
-> enforce it - industry is waiting it out till Redox and BSDs become
-It doesn't FUCKING matter what the "INDUSTRY" is doing or wants.
-You techies are FUCKING FAGGOTS. YOU own the COPYRIGHT to whatever you
-"contributed" to Linux (you never signed over your copyrights). It does
-N O T matter what your fucking "bosses" in "DUH INDUSTRY" want you to
-do or do not want you to do. YOU can and HAVE TO SUE.
+- Arnaldo
 
-I hate you fucking people for your inaction. You're like a hive mind of 
-weak castrated scum.
-'DURR OUR 'peer' ARE AGAINST IT SO WE CAN DO NOTHING' - White Tech 
-__FAGGOTS__
-> Apologies to actual homosexuals... using this word "faggot" is an 
-> affront to you:
-> since it compares you to weak white quisling males
-> but english doesn't give many options
-
-I just hate you people.
-You just let it happen.
-Then you cope "well, we weren't going to include it anyway".
-
------
-
-Additionally:Linus, for years, induced others to assist him in his work 
-on his kernel, by claiming that those who violated the share-and-share 
-alike provisions of the license would be sued.
-
-He explained AT LENGHT the "deal": you contribute code, if anyone 
-modifies it they cannot close the code, if they violate that they will 
-be sued. This is what he told his supporters and those who helped him.
-
-A reasonable person would surmise that Linus was making a promise to sue 
-violators of the Linux Kernel License.
-
-INSTEAD: He is paid 1.3 million dollars per year, and does not say a 
-word. (What is he being paid for? We can guess: To forgo the legal right 
-to sue? To NOT encourage suits? To DISCOURAGE suits?)
-
-That is: The linux kernel contributors detrimentally relied on Linus' 
-words: his false promise of action.
-
-Yes: he should be punished. They would not have done the programming 
-work without those false statements of Linus'
-
-
-
-
-On 2021-01-17 21:58, Boris Lukashev wrote:
-> Why do you send this stuff to people?
-> First off, its no longer even accurate - grsec code _changes_ to Linux
-> have been deemed as "never to be adopted" by Linus. Without those
-> changes, their GCC plugins can't work properly, and those plugins are
-> part of the build-toolchain, not the C source. So even if you gave
-> them a billion dollars tomorrow, Linux would still never use the work.
-> The whole GPL mess is broken, clearly, and nobody is looking to
-> enforce it - industry is waiting it out till Redox and BSDs become
-> more viable for production OS.
-> So why send these emails? Venting purposes?
+ 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/util/config.c | 2 +-
+>  tools/perf/util/config.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> On Sun, Jan 17, 2021 at 1:03 PM <nipponmail@firemail.cc> wrote:
+> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
+> index 4e0455a6bb5f..6984c77068a3 100644
+> --- a/tools/perf/util/config.c
+> +++ b/tools/perf/util/config.c
+> @@ -526,7 +526,7 @@ int perf_config_system(void)
+>  	return !perf_env_bool("PERF_CONFIG_NOSYSTEM", 0);
+>  }
+>  
+> -static int perf_config_global(void)
+> +int perf_config_global(void)
+>  {
+>  	return !perf_env_bool("PERF_CONFIG_NOGLOBAL", 0);
+>  }
+> diff --git a/tools/perf/util/config.h b/tools/perf/util/config.h
+> index bf68e4acea73..2fd77aaff4d2 100644
+> --- a/tools/perf/util/config.h
+> +++ b/tools/perf/util/config.h
+> @@ -39,6 +39,7 @@ int config_error_nonbool(const char *);
+>  const char *perf_etc_perfconfig(void);
+>  const char *perf_home_perfconfig(void);
+>  int perf_config_system(void);
+> +int perf_config_global(void);
+>  
+>  struct perf_config_set *perf_config_set__new(void);
+>  struct perf_config_set *perf_config_set__load_file(const char *file);
+> -- 
+> 2.26.2
 > 
->> Linus etc do not give a FUCK that Grsecurity is BLATANTLY violating
->> the
->> GPL. So why do you fucking retards complain about this?
->>> DURR BECUAUSE WE DON'T HAVE 2 DO ANYTHING, CAN JUST COMMISERATE
->> 
->> (
->> 
-> https://perens.com/2017/06/28/warning-grsecurity-potential-contributory-infringement-risk-for-customers/
->> 
->> )
-> 
-> --
-> 
-> Boris Lukashev
-> Systems Architect
-> Semper Victus [1]
-> 
-> 
-> Links:
-> ------
-> [1] https://www.sempervictus.com
+
+-- 
+
+- Arnaldo
