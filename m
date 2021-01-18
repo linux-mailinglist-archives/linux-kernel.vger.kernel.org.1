@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C83B2FA304
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE8C2FA34E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392936AbhARO32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 09:29:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404955AbhARO1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:27:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DD3422472;
-        Mon, 18 Jan 2021 14:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610979991;
-        bh=g4sklMQGQ6n9oGSF+cYtLVY3Cua9Kjntg0r6NouA9a8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wdO4kwz5ZQSlUIHymulFCThfNCQ+T3TG9ZqT+88tlGWoydTqSqQKHPqxMMA2/WTNW
-         Y8avzGkg+6M1NKQwT7B3VB7jn3NGV7s9niGEdnWlmcKS73TmqT3BvYJEp8iSe1Lw++
-         OPyzLKQL6lDKR1Sealaf/Yu6rY8HFKqGrnqwGaUk=
-Date:   Mon, 18 Jan 2021 15:26:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        lennart@poettering.net,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: Multiple MODALIAS= in uevent file confuses userspace
-Message-ID: <YAWalPeMPt44lBgI@kroah.com>
-References: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
- <CAAd53p45q+Jigje0FcWAERiBUGfJhR8nTYNh7SFxBpajAe4=oA@mail.gmail.com>
- <CAJZ5v0iyEq6+OemJNXQv46h0pW=LHxiR2HeFe4+us59_x6Nymg@mail.gmail.com>
- <20210118141238.GQ968855@lahna.fi.intel.com>
+        id S2393027AbhAROkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:40:18 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:53401 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393029AbhAROjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:39:03 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 888D63EED9;
+        Mon, 18 Jan 2021 15:38:16 +0100 (CET)
+Subject: Re: [PATCH v2 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
+ Expander
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20210111182928.587285-1-angelogioacchino.delregno@somainline.org>
+ <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <1e34145b-a04a-1cbb-7fbc-87c69b8dcfd7@somainline.org>
+Date:   Mon, 18 Jan 2021 15:38:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118141238.GQ968855@lahna.fi.intel.com>
+In-Reply-To: <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:12:38PM +0200, Mika Westerberg wrote:
-> Hi,
+Il 18/01/21 14:19, Linus Walleij ha scritto:
+> On Mon, Jan 11, 2021 at 7:29 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> wrote:
 > 
-> On Mon, Jan 18, 2021 at 02:50:33PM +0100, Rafael J. Wysocki wrote:
-> > CC Mika and Andy.
-> > 
-> > On Mon, Jan 18, 2021 at 8:27 AM Kai-Heng Feng
-> > <kai.heng.feng@canonical.com> wrote:
-> > >
-> > > On Sat, Jan 9, 2021 at 12:25 AM Kai-Heng Feng
-> > > <kai.heng.feng@canonical.com> wrote:
-> > > >
-> > > > Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
-> > > > "compatible" is present") creates two modaliases for certain ACPI
-> > > > devices. However userspace (systemd-udevd in this case) assumes uevent
-> > > > file doesn't have duplicated keys, so two "MODALIAS=" breaks the
-> > > > assumption.
-> > > >
-> > > > Based on the assumption, systemd-udevd internally uses hashmap to
-> > > > store each line of uevent file, so the second modalias always replaces
-> > > > the first modalias.
-> > > >
-> > > > My attempt [1] is to add a new key, "MODALIAS1" for the second
-> > > > modalias. This brings up the question of whether each key in uevent
-> > > > file is unique. If it's no unique, this may break may userspace.
-> > >
-> > > Does anyone know if there's any user of the second modalias?
-> > > If there's no user of the second one, can we change it to OF_MODALIAS
-> > > or COMPAT_MODALIAS?
+>> The Awinic AW9523(B) is a multi-function I2C gpio expander in a
+>> TQFN-24L package, featuring PWM (max 37mA per pin, or total max
+>> power 3.2Watts) for LED driving capability.
+>>
+>> It has two ports with 8 pins per port (for a total of 16 pins),
+>> configurable as either PWM with 1/256 stepping or GPIO input/output,
+>> 1.8V logic input; each GPIO can be configured as input or output
+>> independently from each other.
+>>
+>> This IC also has an internal interrupt controller, which is capable
+>> of generating an interrupt for each GPIO, depending on the
+>> configuration, and will raise an interrupt on the INTN pin to
+>> advertise this to an external interrupt controller.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > 
-> The only users I'm aware are udev and the busybox equivalent (udev,
-> mdev) but I'm not sure if they use the second second modalias at all so
-> OF_MODALIAS for the DT compatible string sounds like a good way to solve
-> this.
+> I really like the looks of this new version! :)
+> 
+> Just some minor questions now:
+> 
+>> +static int aw9523_gpio_irq_type(struct irq_data *d, unsigned int type)
+>> +{
+>> +       switch (type) {
+>> +       case IRQ_TYPE_NONE:
+>> +       case IRQ_TYPE_LEVEL_MASK:
+>> +       case IRQ_TYPE_LEVEL_HIGH:
+>> +       case IRQ_TYPE_LEVEL_LOW:
+>> +               return 0;
+> 
+> This still doesn't make sense, I think you can see why.
+> 
+> If level IRQs can fire both when the line is high and low without
+> any configuration in any register whatsoever, then IRQs are
+> *constantly* fireing. Which I suppose they are not.
+> 
+> Something is wrong here. Either you just support one
+> of them or there is a way to configure whether to act as
+> high or low level.
+> 
+> I'm also mildly sceptic because GPIO expanders ... do they
+> really support level IRQs, and does it make sense when you
+> think about it? I would rather expect edge IRQs as these have
+> a natural trigger point and level IRQs may very well be gone
+> by the time you come around to read the status register.
+> I suppose it can be done but the events must be really slow
+> then, slower than the 400kHz of an I2C bus.
+> 
+> Can you please look over the interrupt logic in your specs?
+> 
+> Yours,
+> Linus Walleij
+> 
 
-As udev seems to "break" with this (which is where we got the original
-report from), I don't think you need to worry about that user :)
+Have I misunderstood this part of the API?
 
-Does anyone use mdev anymore, and in any ACPI-supported systems?
+By the way, this is really LEVEL irq, not EDGE... To avoid any
+misunderstanding, I think that the best way to show you what I
+am seeing is to just copy-paste the relevant piece from the
+datasheet for this hardware (it's not a confidential datasheet
+and freely found on the internet).
 
-thanks,
+Check this out:
+" External MCU is required acknowledge by INTN pin. INTN is open-drain
+out-
+put, low-level active, and need external pull-up resistor.
 
-greg k-h
+When AW9523B detect port change, any input state from high-level to
+low-level or from
+  low-level to high-level will generate interrupt after
+8us internal deglitch. "
+
+...but since the datasheet is sometimes unclear about "things" (I am
+mostly sure that they have translated it to english from chinese), I
+have actually checked whether the INTN pin was pushed LOW when one of
+the inputs goes from HIGH to LOW.. and.. it does... and as you imagine
+yeah.. it's slow.. and yes, as slow as you can imagine. :)
+
+So, in short, this chip is raising an interrupt when any input changes
+state, regardless of the change being LOW->HIGH or HIGH->LOW.
+
+Thanks
+- Angelo
+
