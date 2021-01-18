@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E302FA4E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0282FA526
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406034AbhARPgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:36:06 -0500
-Received: from mga02.intel.com ([134.134.136.20]:63972 "EHLO mga02.intel.com"
+        id S2405996AbhARPuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:50:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405947AbhARPdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:33:06 -0500
-IronPort-SDR: qKLvXPzNERWBf1sJYJFKIoxPpHwWWhK2KqeG+GDfS5ma8jrjOK8jHdWbxyPHLu7Iui0cKRJW03
- /v+0mxgX4/zQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="165906259"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="165906259"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:31:20 -0800
-IronPort-SDR: KN74coCIjSJQJohpAoATfBJRz1D5s39ayV45mr7VDhXTMgjcNrAmW2NhN0GSFFsKeMr8Pp3dRd
- kvs8VKtCwqwQ==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="466400206"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:31:15 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1WVu-002I8S-2f; Mon, 18 Jan 2021 17:32:18 +0200
-Date:   Mon, 18 Jan 2021 17:32:18 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] ACPI: scan: Rearrange memory allocation in
- acpi_device_add()
-Message-ID: <20210118153218.GX4077@smile.fi.intel.com>
-References: <3494203.VBaj39JGmp@kreacher>
- <2999734.9HhbEeWEHR@kreacher>
- <8218eff4-6629-ac20-ec3f-a66aad445bb6@redhat.com>
- <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
+        id S2405973AbhARPdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:33:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1689C22C7E;
+        Mon, 18 Jan 2021 15:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610983947;
+        bh=7uZs9pF/t9m+cAWUrEQPaLEWyNNr57zs99L3UB18ecw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IijNMuDuF77zj4RjcHFWz5/wSBg7Y3rHgqLkAecBWlrWY6nJGzyY+p8d2V17wFObr
+         v8QnhLtS3SyUaNcm0PiDMGFCu56DO1D2Wp6kQrkY/A7CqHGVoD0wxB+DvHkwi47tx9
+         dgAbVWqOvzCL5il39pkKf2PJiI8FYet7A4ExxYXpSurphhbyX+6MMPuNU5WFYRc2Kk
+         mGdbdFupq33rur8RaOpQV09C9dy2bRbEo5jHn8jYWCmlaN97VabATT4zgJzm45nGO+
+         pF8DAfEHDG34PN0X8opWBJqhVclNZo+PixRvTP/cD6U5DYCivi1+/mez0SkKHrl0fy
+         hrhpHYVcZEhcQ==
+Date:   Mon, 18 Jan 2021 16:32:22 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/13] mfd: hi6421-spmi-pmic: move driver from
+ staging
+Message-ID: <20210118163222.6161f9a2@coco.lan>
+In-Reply-To: <20210118151227.GF4903@dell>
+References: <cover.1610975633.git.mchehab+huawei@kernel.org>
+        <8a152819ef89c73dd6afb5c2deb5441402fcd2fa.1610975633.git.mchehab+huawei@kernel.org>
+        <20210118151227.GF4903@dell>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hv2FX2wtuwu9Jd1zZiGut9kUzQvCH5vXLMyFpqvvYOkA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:16:16PM +0100, Rafael J. Wysocki wrote:
-> On Sat, Jan 16, 2021 at 1:37 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> > On 1/14/21 7:46 PM, Rafael J. Wysocki wrote:
+Em Mon, 18 Jan 2021 15:12:27 +0000
+Lee Jones <lee.jones@linaro.org> escreveu:
 
-...
+> On Mon, 18 Jan 2021, Mauro Carvalho Chehab wrote:
+> 
+> > This driver is ready for mainstream. So, move it out of staging.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 133 +++++++
+> >  MAINTAINERS                                   |   7 +
+> >  drivers/mfd/Kconfig                           |  15 +
+> >  drivers/mfd/Makefile                          |   1 +
+> >  drivers/mfd/hi6421-spmi-pmic.c                | 342 ++++++++++++++++++
+> >  drivers/staging/hikey9xx/Kconfig              |  16 -
+> >  drivers/staging/hikey9xx/Makefile             |   1 -
+> >  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 342 ------------------
+> >  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 133 -------
+> >  9 files changed, 498 insertions(+), 492 deletions(-)  
+> 
+> Could you please resubmit this will the correct flags.
+> 
+> I believe it's the `git format-patch` -M flag that you want.
 
-> > When I have cases like this, where 2 mallocs are necessary I typically do it like this:
-> >
-> >         const char *bus_id;
-> >
-> >         ...
-> >
-> >         } else {
-> >                 acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
-> >                                              GFP_KERNEL);
-> >                 bus_id = kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
-> >                 if (!acpi_device_bus_id || !bus_id) {
-> >                         kfree(acpi_device_bus_id);
+As explained at patch 00/13, this was intentionally generated with
+--no-merges, in order to allow reviewers to view the entire source
+code at the patch. 
 
+Anyway, I'll re-send the series with -M, as it makes easier to merge,
+if everything is ok.
 
-> >                         kfree(bus_id);
-
-Just to be sure, shouldn't it be kfree_const() ?
-
-> >                         result = -ENOMEM;
-> >                         goto err_unlock;
-> >                 }
-> >                 acpi_device_bus_id->bus_id = bus_id;
-> >                 list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
-> >         }
-> >
-> >         ...
-> >
-> > So that there is only one if / 1 error-handling path for both mallocs.
-> > I personally find this a bit cleaner.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Mauro
