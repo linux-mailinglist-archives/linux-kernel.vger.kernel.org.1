@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD732FA677
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3BA2FA680
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393358AbhARQkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:40:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:39250 "EHLO foss.arm.com"
+        id S2393532AbhARQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:41:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406591AbhARQk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:40:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84EFA31B;
-        Mon, 18 Jan 2021 08:39:39 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CA823F68F;
-        Mon, 18 Jan 2021 08:39:36 -0800 (PST)
-Subject: Re: [PATCH v3 7/7] iommu/mediatek: Remove the tlb-ops for v7s
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
-        kernel-team@android.com
-References: <20201216103607.23050-1-yong.wu@mediatek.com>
- <20201216103607.23050-8-yong.wu@mediatek.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <fb2d59a3-2187-5ae6-e88e-43c1c43e61b0@arm.com>
-Date:   Mon, 18 Jan 2021 16:39:37 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2390380AbhARQk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:40:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC26206F7;
+        Mon, 18 Jan 2021 16:39:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610987989;
+        bh=/XyZZytsXsIiGIMUoHK1SO+Ufo+9X9KY7fkU6YpHpwA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tw83WnlbDVTXWxk7hn9NDqNVAHRTcXQXINm45MJHO+zVdvtg5HQDXdFnyUNrnlaIu
+         QyTbxenJ9dZWdJsbJjDVpGJaTgNaBZLDgeshrm5abzLVYLC20sQoqIqIxBguEsOthM
+         YeUoWr8ZZLyK03Bg3yW4Na7uZjgJHcipLlIy3QGY=
+Date:   Mon, 18 Jan 2021 17:39:46 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Message-ID: <YAW50m8ymp6I9nYp@kroah.com>
+References: <20210118014951.250815-1-sashal@kernel.org>
+ <YAVTDETPaJuaRPfc@kroah.com>
+ <YAVT0XV7uX2NpIRe@kroah.com>
+ <20210118133959.GZ4035784@sasha-vm>
+ <YAWSgjWHCcJt6m0j@kroah.com>
+ <20210118153135.GA4035784@sasha-vm>
 MIME-Version: 1.0
-In-Reply-To: <20201216103607.23050-8-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118153135.GA4035784@sasha-vm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-16 10:36, Yong Wu wrote:
-> Until now, we have already used the tlb operations from iommu framework,
-> then the tlb operations for v7s can be removed.
+On Mon, Jan 18, 2021 at 10:31:35AM -0500, Sasha Levin wrote:
+> On Mon, Jan 18, 2021 at 02:52:02PM +0100, Greg KH wrote:
+> > On Mon, Jan 18, 2021 at 08:39:59AM -0500, Sasha Levin wrote:
+> > > I think it would also affect code that doesn't do things based on
+> > > SBULEVEL. Consider something like:
+> > > 
+> > > 	if (LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0))
+> > > 
+> > > Which will cause 4.4.256 to now change the result of that comparison.
+> > 
+> > Sure, but there are no in-kernel users like this, so my sympathy is
+> > quite low :)
 > 
-> Correspondingly, Switch the paramenter "cookie" to internal structure.
-
-FWIW,
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->   drivers/iommu/mtk_iommu.c | 27 ++++-----------------------
->   1 file changed, 4 insertions(+), 23 deletions(-)
+> Wouldn't it be an issue for the hacky in-kernel users too? For example,
+> right now the USB code does:
 > 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 89cec51405cd..5656819cd4a1 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -206,10 +206,8 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
->   	return container_of(dom, struct mtk_iommu_domain, domain);
->   }
->   
-> -static void mtk_iommu_tlb_flush_all(void *cookie)
-> +static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
->   {
-> -	struct mtk_iommu_data *data = cookie;
-> -
->   	for_each_m4u(data) {
->   		if (!pm_runtime_active(data->dev))
->   			continue;
-> @@ -221,9 +219,9 @@ static void mtk_iommu_tlb_flush_all(void *cookie)
->   }
->   
->   static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
-> -					   size_t granule, void *cookie)
-> +					   size_t granule,
-> +					   struct mtk_iommu_data *data)
->   {
-> -	struct mtk_iommu_data *data = cookie;
->   	unsigned long flags;
->   	int ret;
->   	u32 tmp;
-> @@ -250,7 +248,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   		if (ret) {
->   			dev_warn(data->dev,
->   				 "Partial TLB flush timed out, falling back to full flush\n");
-> -			mtk_iommu_tlb_flush_all(cookie);
-> +			mtk_iommu_tlb_flush_all(data);
->   		}
->   		/* Clear the CPE status */
->   		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
-> @@ -258,22 +256,6 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
->   	}
->   }
->   
-> -static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
-> -					    unsigned long iova, size_t granule,
-> -					    void *cookie)
-> -{
-> -	struct mtk_iommu_data *data = cookie;
-> -	struct iommu_domain *domain = &data->m4u_dom->domain;
-> -
-> -	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
-> -}
-> -
-> -static const struct iommu_flush_ops mtk_iommu_flush_ops = {
-> -	.tlb_flush_all = mtk_iommu_tlb_flush_all,
-> -	.tlb_flush_walk = mtk_iommu_tlb_flush_range_sync,
-> -	.tlb_add_page = mtk_iommu_tlb_flush_page_nosync,
-> -};
-> -
->   static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
->   {
->   	struct mtk_iommu_data *data = dev_id;
-> @@ -380,7 +362,6 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
->   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
->   		.ias = MTK_IOMMU_HAS_FLAG(data->plat_data, IOVA_34_EN) ? 34 : 32,
->   		.oas = 35,
-> -		.tlb = &mtk_iommu_flush_ops,
->   		.iommu_dev = data->dev,
->   	};
->   
+> 	#define KERNEL_REL      bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+> 	#define KERNEL_VER      bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
 > 
+> After 4.4.256, KERNEL_VER will be (5) rather than (4), indicating a
+> version of 4.5.
+
+Which, really, is just fine.  This is an informational string that shows
+up in 'lsusb' for root hubs.  Same for V4L devices, they just want to
+send some string to userspace.  Yes, it might look odd, but nothing is
+going to break, it's just a string :)
+
+thanks,
+
+greg k-h
