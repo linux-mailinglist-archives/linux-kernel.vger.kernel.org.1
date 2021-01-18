@@ -2,421 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383E22FA676
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD732FA677
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406406AbhARQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:40:10 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:33400 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405917AbhARQjt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:39:49 -0500
-Date:   Mon, 18 Jan 2021 16:38:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610987915; bh=2MCt0pQ+rLxV5Y2LqOVu5B2auNoDbQUpH/AK3M3vQjI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=HZI80ZpLzCjI1Y9R+agx6ZXt9nNZyKpE9VCvk1GpR2tdtBrYMABhvdxPwRKCUvp60
-         +DWqyAnekSf7pNDXKBva2kPcqWLiko018vHPUck+y7kNtyRco2lWIs8zoe02R/YOd1
-         IAR6tcglSe+oxhAVq/TQmTW0whXYiUvzl0PKknL6odY+dByhyXS/NZnRdBFutUPWZV
-         jUCZsDei0oucXaXGOGYvIxeC9OhuEgmSEDHE52HT4z2PPhJJ6b4CsgeHmEy0P8RmEW
-         VtrmgSh6KCbTLhpiUaJEM49OOty80Ppcg86TJ8hUNkYgGmJlnoPKbfqWiapB3PVGf3
-         r2vWYyOmJjXpg==
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Meir Lichtinger <meirl@mellanox.com>,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next] xsk: build skb by page
-Message-ID: <20210118163742.10364-1-alobakin@pm.me>
-In-Reply-To: <CAJ8uoz0tZNrB+g0Mw_K4n=VhQ36b6AHyZWM3TkkLBCxo_N1iRg@mail.gmail.com>
-References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com> <4a4b475b-0e79-6cf6-44f5-44d45b5d85b5@huawei.com> <20210118125937.4088-1-alobakin@pm.me> <20210118143948.8706-1-alobakin@pm.me> <CAJ8uoz0tZNrB+g0Mw_K4n=VhQ36b6AHyZWM3TkkLBCxo_N1iRg@mail.gmail.com>
+        id S2393358AbhARQkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:40:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:39250 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406591AbhARQk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:40:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84EFA31B;
+        Mon, 18 Jan 2021 08:39:39 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CA823F68F;
+        Mon, 18 Jan 2021 08:39:36 -0800 (PST)
+Subject: Re: [PATCH v3 7/7] iommu/mediatek: Remove the tlb-ops for v7s
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
+ <20201216103607.23050-8-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <fb2d59a3-2187-5ae6-e88e-43c1c43e61b0@arm.com>
+Date:   Mon, 18 Jan 2021 16:39:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20201216103607.23050-8-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Magnus Karlsson <magnus.karlsson@gmail.com>
-> Date: Mon, 18 Jan 2021 16:10:40 +0100
->=20
-> On Mon, Jan 18, 2021 at 3:47 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> >
-> > From: Alexander Lobakin <alobakin@pm.me>
-> > Date: Mon, 18 Jan 2021 13:00:17 +0000
-> >
-> > > From: Yunsheng Lin <linyunsheng@huawei.com>
-> > > Date: Mon, 18 Jan 2021 20:40:52 +0800
-> > >
-> > >> On 2021/1/16 10:44, Xuan Zhuo wrote:
-> > >>> This patch is used to construct skb based on page to save memory co=
-py
-> > >>> overhead.
-> > >>>
-> > >>> This has one problem:
-> > >>>
-> > >>> We construct the skb by fill the data page as a frag into the skb. =
-In
-> > >>> this way, the linear space is empty, and the header information is =
-also
-> > >>> in the frag, not in the linear space, which is not allowed for some
-> > >>> network cards. For example, Mellanox Technologies MT27710 Family
-> > >>> [ConnectX-4 Lx] will get the following error message:
-> > >>>
-> > >>>     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn=
- 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
-> > >>>     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >>>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >>>     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >>>     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
-> > >>>     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
-> > >>>     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
-> > >>>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >>>     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
-> > >>>     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >>>     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
-> > >>>
-> > >>> I also tried to use build_skb to construct skb, but because of the
-> > >>> existence of skb_shinfo, it must be behind the linear space, so thi=
-s
-> > >>> method is not working. We can't put skb_shinfo on desc->addr, it wi=
-ll be
-> > >>> exposed to users, this is not safe.
-> > >>>
-> > >>> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whethe=
-r the
-> > >>
-> > >> Does it make sense to use ETHTOOL_TX_COPYBREAK tunable in ethtool to
-> > >> configure if the data is copied or not?
-> > >
-> > > As far as I can grep, only mlx4 supports this, and it has a different
-> > > meaning in that driver.
-> > > So I guess a new netdev_feature would be a better solution.
-> > >
-> > >>> network card supports the header information of the packet in the f=
-rag
-> > >>> and not in the linear space.
-> > >>>
-> > >>> ---------------- Performance Testing ------------
-> > >>>
-> > >>> The test environment is Aliyun ECS server.
-> > >>> Test cmd:
-> > >>> ```
-> > >>> xdpsock -i eth0 -t  -S -s <msg size>
-> > >>> ```
-> > >>>
-> > >>> Test result data:
-> > >>>
-> > >>> size    64      512     1024    1500
-> > >>> copy    1916747 1775988 1600203 1440054
-> > >>> page    1974058 1953655 1945463 1904478
-> > >>> percent 3.0%    10.0%   21.58%  32.3%
-> > >>>
-> > >>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > >>> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > >>> ---
-> > >>>  drivers/net/virtio_net.c        |   2 +-
-> > >>>  include/linux/netdev_features.h |   5 +-
-> > >>>  net/ethtool/common.c            |   1 +
-> > >>>  net/xdp/xsk.c                   | 108 ++++++++++++++++++++++++++++=
-+++++-------
-> > >>>  4 files changed, 97 insertions(+), 19 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > >>> index 4ecccb8..841a331 100644
-> > >>> --- a/drivers/net/virtio_net.c
-> > >>> +++ b/drivers/net/virtio_net.c
-> > >>> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device=
- *vdev)
-> > >>>     /* Set up network device as normal. */
-> > >>>     dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
-> > >>>     dev->netdev_ops =3D &virtnet_netdev;
-> > >>> -   dev->features =3D NETIF_F_HIGHDMA;
-> > >>> +   dev->features =3D NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
-> > >>>
-> > >>>     dev->ethtool_ops =3D &virtnet_ethtool_ops;
-> > >>>     SET_NETDEV_DEV(dev, &vdev->dev);
-> > >>> diff --git a/include/linux/netdev_features.h b/include/linux/netdev=
-_features.h
-> > >>> index 934de56..8dd28e2 100644
-> > >>> --- a/include/linux/netdev_features.h
-> > >>> +++ b/include/linux/netdev_features.h
-> > >>> @@ -85,9 +85,11 @@ enum {
-> > >>>
-> > >>>     NETIF_F_HW_MACSEC_BIT,          /* Offload MACsec operations */
-> > >>>
-> > >>> +   NETIF_F_SKB_NO_LINEAR_BIT,      /* Allow skb linear is empty */
-> > >>> +
-> > >>>     /*
-> > >>>      * Add your fresh new feature above and remember to update
-> > >>> -    * netdev_features_strings[] in net/core/ethtool.c and maybe
-> > >>> +    * netdev_features_strings[] in net/ethtool/common.c and maybe
-> > >>>      * some feature mask #defines below. Please also describe it
-> > >>>      * in Documentation/networking/netdev-features.rst.
-> > >>>      */
-> > >>> @@ -157,6 +159,7 @@ enum {
-> > >>>  #define NETIF_F_GRO_FRAGLIST       __NETIF_F(GRO_FRAGLIST)
-> > >>>  #define NETIF_F_GSO_FRAGLIST       __NETIF_F(GSO_FRAGLIST)
-> > >>>  #define NETIF_F_HW_MACSEC  __NETIF_F(HW_MACSEC)
-> > >>> +#define NETIF_F_SKB_NO_LINEAR      __NETIF_F(SKB_NO_LINEAR)
-> > >>>
-> > >>>  /* Finds the next feature with the highest number of the range of =
-start till 0.
-> > >>>   */
-> > >>> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-> > >>> index 24036e3..2f3d309 100644
-> > >>> --- a/net/ethtool/common.c
-> > >>> +++ b/net/ethtool/common.c
-> > >>> @@ -68,6 +68,7 @@
-> > >>>     [NETIF_F_HW_TLS_RX_BIT] =3D        "tls-hw-rx-offload",
-> > >>>     [NETIF_F_GRO_FRAGLIST_BIT] =3D     "rx-gro-list",
-> > >>>     [NETIF_F_HW_MACSEC_BIT] =3D        "macsec-hw-offload",
-> > >>> +   [NETIF_F_SKB_NO_LINEAR_BIT] =3D    "skb-no-linear",
-> > >
-> > > I completely forgot to add that you'd better to mention in both
-> > > enumeration/feature and its Ethtool string that the feature applies
-> > > to Tx path.
-> > > Smth like:
-> > >
-> > > NETIF_F_SKB_TX_NO_LINEAR{,_BIT}, "skb-tx-no-linear"
-> > > or
-> > > NETIF_F_TX_SKB_NO_LINEAR{,_BIT}, "tx-skb-no-linear"
-> > >
-> > > Otherwise, it may be confusing for users and developers.
->=20
-> I prefer one of these names for the property as they clearly describe
-> a feature that the driver supports.
->=20
-> > OR, I think we may tight the feature with the new approach to build
-> > skbs by page as it makes no sense for anything else.
-> > So, if we define something like:
-> >
-> > NETIF_F_XSK_TX_GENERIC_ZC{,_BIT}, "xsk-tx-generic-zerocopy",
->=20
-> This one I misunderstood first. I thought: "this is not zerocopy", but
-> you are right it is. It is zero-copy implemented with skb:s. But in my
-> mind, the NO_LINEAR version that you suggested are clearer.
->=20
-> > then user can toggle your new XSK Tx path on/off via Ethtool for
-> > drivers that will support it (don't forget to add it to hw_features
-> > for virtio_net then).
+On 2020-12-16 10:36, Yong Wu wrote:
+> Until now, we have already used the tlb operations from iommu framework,
+> then the tlb operations for v7s can be removed.
+> 
+> Correspondingly, Switch the paramenter "cookie" to internal structure.
 
-User don't need to enable manually this, drivers usually enable most
-of their features on netdevice creation. This way we just could have
-an option to turn it off.
+FWIW,
 
-If the feature is not about to be exposed to user at all, only to
-indicate if a particular driver supports skbs with skb_headlen =3D=3D 0
-on its .ndo_start_xmit() path, then it might be better to introduce
-a private flag (netdev_priv_flags) instead of netdev_feature. Private
-flags are kernel-only and can't be toggled on/off after netdev is
-registered.
-E.g.
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-IFF_TX_SKB_NO_LINEAR
-
-and test it like
-
-if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-=09/* new generic zerocopy path */
-} else {
-=09/* current code */
-}
-
-> > >>>  };
-> > >>>
-> > >>>  const char
-> > >>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > >>> index 8037b04..94d17dc 100644
-> > >>> --- a/net/xdp/xsk.c
-> > >>> +++ b/net/xdp/xsk.c
-> > >>> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *s=
-kb)
-> > >>>     sock_wfree(skb);
-> > >>>  }
-> > >>>
-> > >>> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> > >>> +                                         struct xdp_desc *desc)
-> > >>> +{
-> > >>> +   u32 len, offset, copy, copied;
-> > >>> +   struct sk_buff *skb;
-> > >>> +   struct page *page;
-> > >>> +   char *buffer;
-> > >>> +   int err, i;
-> > >>> +   u64 addr;
-> > >>> +
-> > >>> +   skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> > >>> +   if (unlikely(!skb))
-> > >>> +           return NULL;
-> > >>> +
-> > >>> +   addr =3D desc->addr;
-> > >>> +   len =3D desc->len;
-> > >>> +
-> > >>> +   buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> > >>> +   offset =3D offset_in_page(buffer);
-> > >>> +   addr =3D buffer - (char *)xs->pool->addrs;
-> > >>> +
-> > >>> +   for (copied =3D 0, i =3D 0; copied < len; ++i) {
-> > >>> +           page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> > >>> +
-> > >>> +           get_page(page);
-> > >>> +
-> > >>> +           copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
-> > >>> +
-> > >>> +           skb_fill_page_desc(skb, i, page, offset, copy);
-> > >>> +
-> > >>> +           copied +=3D copy;
-> > >>> +           addr +=3D copy;
-> > >>> +           offset =3D 0;
-> > >>> +   }
-> > >>> +
-> > >>> +   skb->len +=3D len;
-> > >>> +   skb->data_len +=3D len;
-> > >>> +   skb->truesize +=3D len;
-> > >>> +
-> > >>> +   refcount_add(len, &xs->sk.sk_wmem_alloc);
-> > >>> +
-> > >>> +   return skb;
-> > >>> +}
-> > >>> +
-> > >>> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> > >>> +                                struct xdp_desc *desc, int *err)
-> > >>> +{
-> > >>> +   struct sk_buff *skb;
-> > >>> +
-> > >>> +   if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
-> > >>> +           skb =3D xsk_build_skb_zerocopy(xs, desc);
-> > >>> +           if (unlikely(!skb)) {
-> > >>> +                   *err =3D -ENOMEM;
-> > >>> +                   return NULL;
-> > >>> +           }
-> > >>> +   } else {
-> > >>> +           char *buffer;
-> > >>> +           u64 addr;
-> > >>> +           u32 len;
-> > >>> +           int err;
-> > >>> +
-> > >>> +           len =3D desc->len;
-> > >>> +           skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
-> > >>> +           if (unlikely(!skb)) {
-> > >>> +                   *err =3D -ENOMEM;
-> > >>> +                   return NULL;
-> > >>> +           }
-> > >>> +
-> > >>> +           skb_put(skb, len);
-> > >>> +           addr =3D desc->addr;
-> > >>> +           buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-> > >>> +           err =3D skb_store_bits(skb, 0, buffer, len);
-> > >>> +
-> > >>> +           if (unlikely(err)) {
-> > >>> +                   kfree_skb(skb);
-> > >>> +                   *err =3D -EINVAL;
-> > >>> +                   return NULL;
-> > >>> +           }
-> > >>> +   }
-> > >>> +
-> > >>> +   skb->dev =3D xs->dev;
-> > >>> +   skb->priority =3D xs->sk.sk_priority;
-> > >>> +   skb->mark =3D xs->sk.sk_mark;
-> > >>> +   skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-> > >>> +   skb->destructor =3D xsk_destruct_skb;
-> > >>> +
-> > >>> +   return skb;
-> > >>> +}
-> > >>> +
-> > >>>  static int xsk_generic_xmit(struct sock *sk)
-> > >>>  {
-> > >>>     struct xdp_sock *xs =3D xdp_sk(sk);
-> > >>> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
-> > >>>             goto out;
-> > >>>
-> > >>>     while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> > >>> -           char *buffer;
-> > >>> -           u64 addr;
-> > >>> -           u32 len;
-> > >>> -
-> > >>>             if (max_batch-- =3D=3D 0) {
-> > >>>                     err =3D -EAGAIN;
-> > >>>                     goto out;
-> > >>>             }
-> > >>>
-> > >>> -           len =3D desc.len;
-> > >>> -           skb =3D sock_alloc_send_skb(sk, len, 1, &err);
-> > >>> +           skb =3D xsk_build_skb(xs, &desc, &err);
-> > >>>             if (unlikely(!skb))
-> > >>>                     goto out;
-> > >>>
-> > >>> -           skb_put(skb, len);
-> > >>> -           addr =3D desc.addr;
-> > >>> -           buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> > >>> -           err =3D skb_store_bits(skb, 0, buffer, len);
-> > >>>             /* This is the backpressure mechanism for the Tx path.
-> > >>>              * Reserve space in the completion queue and only proce=
-ed
-> > >>>              * if there is space in it. This avoids having to imple=
-ment
-> > >>>              * any buffering in the Tx path.
-> > >>>              */
-> > >>>             spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> > >>> -           if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> > >>> +           if (xskq_prod_reserve(xs->pool->cq)) {
-> > >>>                     spin_unlock_irqrestore(&xs->pool->cq_lock, flag=
-s);
-> > >>>                     kfree_skb(skb);
-> > >>>                     goto out;
-> > >>>             }
-> > >>>             spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-> > >>>
-> > >>> -           skb->dev =3D xs->dev;
-> > >>> -           skb->priority =3D sk->sk_priority;
-> > >>> -           skb->mark =3D sk->sk_mark;
-> > >>> -           skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.=
-addr;
-> > >>> -           skb->destructor =3D xsk_destruct_skb;
-> > >>> -
-> > >>>             err =3D __dev_direct_xmit(skb, xs->queue_id);
-> > >>>             if  (err =3D=3D NETDEV_TX_BUSY) {
-> > >>>                     /* Tell user-space to retry the send */
-> > >>>
-> > >
-> > > Al
-> >
-> > Al
->
-
-Al
-
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/mtk_iommu.c | 27 ++++-----------------------
+>   1 file changed, 4 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 89cec51405cd..5656819cd4a1 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -206,10 +206,8 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
+>   	return container_of(dom, struct mtk_iommu_domain, domain);
+>   }
+>   
+> -static void mtk_iommu_tlb_flush_all(void *cookie)
+> +static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
+>   {
+> -	struct mtk_iommu_data *data = cookie;
+> -
+>   	for_each_m4u(data) {
+>   		if (!pm_runtime_active(data->dev))
+>   			continue;
+> @@ -221,9 +219,9 @@ static void mtk_iommu_tlb_flush_all(void *cookie)
+>   }
+>   
+>   static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+> -					   size_t granule, void *cookie)
+> +					   size_t granule,
+> +					   struct mtk_iommu_data *data)
+>   {
+> -	struct mtk_iommu_data *data = cookie;
+>   	unsigned long flags;
+>   	int ret;
+>   	u32 tmp;
+> @@ -250,7 +248,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   		if (ret) {
+>   			dev_warn(data->dev,
+>   				 "Partial TLB flush timed out, falling back to full flush\n");
+> -			mtk_iommu_tlb_flush_all(cookie);
+> +			mtk_iommu_tlb_flush_all(data);
+>   		}
+>   		/* Clear the CPE status */
+>   		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
+> @@ -258,22 +256,6 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   	}
+>   }
+>   
+> -static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
+> -					    unsigned long iova, size_t granule,
+> -					    void *cookie)
+> -{
+> -	struct mtk_iommu_data *data = cookie;
+> -	struct iommu_domain *domain = &data->m4u_dom->domain;
+> -
+> -	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
+> -}
+> -
+> -static const struct iommu_flush_ops mtk_iommu_flush_ops = {
+> -	.tlb_flush_all = mtk_iommu_tlb_flush_all,
+> -	.tlb_flush_walk = mtk_iommu_tlb_flush_range_sync,
+> -	.tlb_add_page = mtk_iommu_tlb_flush_page_nosync,
+> -};
+> -
+>   static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
+>   {
+>   	struct mtk_iommu_data *data = dev_id;
+> @@ -380,7 +362,6 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
+>   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
+>   		.ias = MTK_IOMMU_HAS_FLAG(data->plat_data, IOVA_34_EN) ? 34 : 32,
+>   		.oas = 35,
+> -		.tlb = &mtk_iommu_flush_ops,
+>   		.iommu_dev = data->dev,
+>   	};
+>   
+> 
