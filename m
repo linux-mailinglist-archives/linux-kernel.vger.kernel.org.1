@@ -2,173 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD44B2F9AC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA492F9AC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733033AbhARHoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:44:23 -0500
-Received: from mail-bn8nam12on2049.outbound.protection.outlook.com ([40.107.237.49]:37857
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730272AbhARHoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:44:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lXUCevCzK5mE63PzhaJzDOHU3TIeE3RrEEnuxwdMQaH0QEY8LL8xNBBmggusBY20VhmkUa6p1FwVMcLCYvJi7Pj269aRhj7ja/sBeiASL3ha1K2j0l80bfiDYuao9LyCMdwoy8wla8K7Ms4Y4VuKaVQ8sZ/BZEO/ArHEKD/jFXB40Lyw2K96uPpMKzC8xLy56TvAVmZnodjI3Fj9IRpG5kXuVdPi84wSBnm5bD6OTYO/vbjEFf8xU9ShEflwzMb/Tsm47vw40SucRR/3r+DTv06dRZgEgFmYZOZSX04ggv4oUtrvMc7Uwx1NSgd52Lzyf06t+RbqzkblBGo0mfX3/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BbgkFUOIMWXu9p6LpQ+rheQaNJYsoGpx3nF+QKwmrcw=;
- b=H4jgCJiOtm2zlbAljEy7T441yc12JOtC/NZK0EO0TvyvcWbq85E/Aaqlb+OjmoSWEtPAjBrbSsrWqoCIAQNqqqXLRA7MRxTj0IGoIxrkwx4FTlIHoCkX/BnU/gpWI/mulff8ZoCDKMpjAi39xqNV1Xwct8XDv8Y+Du1GqD/CQIV3E1QKrT+BOPL1Sdv4Wx4dgS/AYLsKplO50ZVmbhFIDPzLt76oNUJ/EA7k7y2k4Q/dk3Xbjmr39FfSlIAYwZcdiQhW72KNwG7gCiMbdY4Yht4RyuHgCxgY4XZLjqwTaK6+1xdsaORvTb7dDzlIV5LszJ9ljaKqEKlDsq4Fwq/M1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BbgkFUOIMWXu9p6LpQ+rheQaNJYsoGpx3nF+QKwmrcw=;
- b=bnQbW2skdRO1ym8UYT1Dl/djZ34GE1ERxIH9ovqNfyMg+gi3QbqmDJdMgwvIch96T4Ir3sOlVpW6r8VWjpIusFdehE87WJ2xIkVTvcwKsGE59xXr7egafuiEweGfDtcVBhZpX+bRziKmj4GkLz73nTgfKoHxsj+Wu3CQfTtB0hI=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4109.namprd12.prod.outlook.com (2603:10b6:208:1d9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
- 2021 07:43:21 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
- 07:43:21 +0000
-Subject: Re: Change eats memory on my server
-To:     Eli Cohen <elic@nvidia.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, daniel.vetter@ffwll.ch,
-        sam@ravnborg.org, dri-devel <dri-devel@lists.freedesktop.org>
-References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
- <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
- <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
-Date:   Mon, 18 Jan 2021 08:43:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR07CA0008.eurprd07.prod.outlook.com
- (2603:10a6:208:ac::21) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1733072AbhARHpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726635AbhARHo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 02:44:59 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145F5C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:44:19 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id v19so10391342pgj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tG2ZkIlPRQanLBVIchs0TjT+jl8Xjtc0CE3s1wTefiU=;
+        b=mW1Htp48X2dHMHQjBwIQf+l6sEVMTr0sO+5+Z8pZbwVyf7CW9kcXod08hxGrB0RVeS
+         yMRzZUA9X3LMqs1bz9Pe8JFP8uEB4XcJz+4UZhlNaXUjG1nMg6Aa40B4rVBaoojNGzIX
+         mlQDOvbI2hmyupom4boWX1dmJVd17NHz3q0a+pb0CRl/TwoIVU2X9KVR/c9wS3UfIqR7
+         1x6LpBbnHUEO5iJMgqfnCOyYSxCcFS1U0GvDcazX4uecmVlb1SufgqepG3Kb5vIeDrL7
+         jidHXmx6MEihy/FhIYcxeE0Tf1xcBvpu/a9SyJwgwPK78m28Tr4tS3Sltv149fyELlGw
+         xB/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tG2ZkIlPRQanLBVIchs0TjT+jl8Xjtc0CE3s1wTefiU=;
+        b=ZolbNbU+tx1HxdfVyTDlIN4b1WWkOL8VecBgG34uO/wiyRkJezxJbI3tk6wYn3XIIa
+         4Zlz+WHuqa/2Nk4Psgtmpq2OB82AiZo4O7FkQCSGdFYAOU8DOsHbbodLUC3bujjND8BC
+         y4HKcyU7AOwTaUEs45sYRr/uaBNz6tQsEDcI+RWXrupToImFaiMuD0nMQ2TXu1umw+e3
+         DPmV1hXijf3VF7zJ0wOg7kIAOXFFzVu6XNbdQb7iNHpfvBommVgXujG2eGA4kgyh21S7
+         TGw9MSuSUtRS0emW5glpTIX20C8p6IUZgScfuGuyj7pVmEyouh4AoA/AAkygpq7BUjAY
+         wIfg==
+X-Gm-Message-State: AOAM531ha+RjybvUcNqsEJh2zvZe0lp0IPEH99UFjyPxE9LqGSwR1Ju+
+        BfixtyDx+FQ1X5Riz9QIyva7Ig==
+X-Google-Smtp-Source: ABdhPJyL2i8D1O12pZSTHQR8MFhA8ZuWSJUTdowMZk6y7fHlnukMj1xt9pmoIjLK8L7QYUfwXSbycA==
+X-Received: by 2002:aa7:8701:0:b029:19e:561:d476 with SMTP id b1-20020aa787010000b029019e0561d476mr25136763pfo.2.1610955858651;
+        Sun, 17 Jan 2021 23:44:18 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id q23sm14930878pfg.192.2021.01.17.23.44.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 23:44:17 -0800 (PST)
+Date:   Mon, 18 Jan 2021 13:14:16 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] opp: Fix adding OPP entries in a wrong order if
+ rate is unavailable
+Message-ID: <20210118074416.5mjogew62fjohzlm@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-2-digetx@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR07CA0008.eurprd07.prod.outlook.com (2603:10a6:208:ac::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 07:43:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 29ae74d0-3ad5-4e98-e293-08d8bb84b9ff
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4109:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4109A9257B18B4E5409B18FE83A40@MN2PR12MB4109.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O/C5R18qOsH6X9a6YwOtCIawJK5cHU8JmKu04e3UuIjDPDHGewn12mmur05UJivUIUzblHC+FQWyVf65UQ2QTWLXZ1r0VrgYLa3HL+gyhDIvv9DOqx+ZZn5ENZDSA5CTnK2I8rq/CK8qBWw5oHG4CyUlP9bsdaBSM0+T5k0gXhx3mE78z5cHFU0G9gbka+Wg9nW9BluCun8NxLu0xU8ZLSkE6Mba6WRxap0mDcwO8qJ/6sFXdnecD0CvY2XeOZlHxzZKg1ravIrzBEQ3INHMGLKI/gFv7ccnb6KYHSv84QcdMk7g4n/PSE4dJjNSmSs3kv/t7GGXcDwbEBkyEv5ncw0xyOfGQ7HQGeL08jJhV2xJs951plTFwCND0OrD1Z/CA1K5mEtnHFnsynpJX6EhF4hqxAd3/XGKKx0/9lGzIHnnhRZig3vYsVewlegMu9ykTs8dII0hVng4DBmDAT6T8b3HlYSdqv+C276iTC10LKA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(396003)(39860400002)(36756003)(5660300002)(31686004)(316002)(478600001)(8936002)(186003)(66556008)(8676002)(6486002)(16526019)(2616005)(2906002)(86362001)(66476007)(66946007)(31696002)(4326008)(6666004)(52116002)(83380400001)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eFFFcmRkS2dZTjBsaUFaY1JPenpjalZmdmVqaStuajFIb0tVbit4a2RDRWVN?=
- =?utf-8?B?RTUxdnc1Z1o2dW50QVRxdUpoZ2tDUmJQemhxMGNHbTBPOW5HVFdBTXNFRFNB?=
- =?utf-8?B?L0o2SHpDK09MUmlZWFBHS3R6TnFMdDFQbUdSMkp3aHlNZzJBejQyQ3UwQldr?=
- =?utf-8?B?THp0SkttNWR1WDZ6dWFHYVorZ3BFYllNZVNYc2R1Q01QdlczRWwvVVk3WUU5?=
- =?utf-8?B?N1ZBMlh1TWozOGV2S3JQOGlpWGJUdGZ3WjdKZUNZZlFpRWhJTHB5SWZZaDBD?=
- =?utf-8?B?VzBuYWQ1Ylp5Ym1ySy9oUSsrY1gvOWJXb2w1allGYS9mZHd3Q1R4dW5DR3FF?=
- =?utf-8?B?dEpJb293VThSRXFJaGpXdmVMTnhLUHM3d0k0eVQrR3NId3RTMjlKUUM2cllJ?=
- =?utf-8?B?emlRa3FIYlBFYkRRbTFGMEF0WUt5OHZKbXBSZTdyS3BFV1Yvb0xNYjVCSFlD?=
- =?utf-8?B?YjM1ZzFZMGJvbnB3cHhHSFJINXRERi9tUXpFR3pwSGdCazFIbVNxTFBnWGZJ?=
- =?utf-8?B?cStyenJiM2JPSlhMbE96c1NucHlOTm8xOFhuSFNkNXRYQzA4UjY4bWlhMkZX?=
- =?utf-8?B?NFZUb09EbzVJUEVpUFAvdGlwTTFoNTZYUStwTks4cnA4SDVVaHkrUm0rZldP?=
- =?utf-8?B?NGJ0aHpnb1NEdjNOUi9SbmFWcSswRElBN0Q5cG1qQkJhSEdtcE5iMndIREUx?=
- =?utf-8?B?NGM4V0VhWncwUGV2UWlXRng0ejJNdDI3MWF3NjA1UE5OTENBYmJJQ3ZKN1I3?=
- =?utf-8?B?QmhWSXZaMDJVYURhWkZsYlUxVmtyOHoxTWR3SmRXNXdSUFRIUDVGM1B3eXpU?=
- =?utf-8?B?OVY1R2g2SnZEL0U5NzM5eUpISWhxOHVWcDlIMHo1SVZPaFdSWFpKcloxWlcy?=
- =?utf-8?B?ZWlPZDZndlBTTU9LZFBQTGRZUXFpL3lLQjV1R1h2aFVISUlGdm9ZcUp0VFhr?=
- =?utf-8?B?Mk9XNXNNMjkvbUluaEZwUmdXbXJFSHNGLzJ1TUpZakJBMXUvTG1MM0xjMGwv?=
- =?utf-8?B?RGNEWVhUck9HNUZRU2ZxVHN5Z3VJUUpYSlA2a0oybmI4dm9TdXg4T3l1Zzlp?=
- =?utf-8?B?bTNnc2dBdVNBVHUrWVFhTy9uYmtJRHBBUXhYZW1QZjlNN2kvNTN5N1FFRWpU?=
- =?utf-8?B?b1VCK0NEV01jMG4xdC9nLy93K2ZQOE1HK3J1Y3pYaE1wbk5uNGE0ZFhuZkRq?=
- =?utf-8?B?eDFNTHYyN05KdlNYWE00dmIwRGhLUHh0MEthSVQ4WGNkdXF6Z1NhYmlwUzV2?=
- =?utf-8?B?WVdORU12VFVob2lwNEJUbVlWaW8zWWNpMW8vVVU1VUdncGdlQXRYaElGaGZs?=
- =?utf-8?B?cU1xaE1NeVRFUnZvSHMwMjVGVkN6WGJHclFmQlhDUTV0dTR5K1JmR3RmQmtJ?=
- =?utf-8?B?ZmtZWHZTS292OFJtd3ZJSVNEanJ0NExHWUR2UzBJYXRQU1V1T0g3R0M5dDNs?=
- =?utf-8?Q?zQN6S3au?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29ae74d0-3ad5-4e98-e293-08d8bb84b9ff
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 07:43:21.2821
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cLBsmIe6A/S1u0y28Bt06bjAc4yqb3dbeW7yQ/LIOWRiR3iZI2vER8uhByKdRaR6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4109
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118005524.27787-2-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eli,
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> Fix adding OPP entries in a wrong (opposite) order if OPP rate is
+> unavailable. The OPP comparison was erroneously skipped, thus OPPs
+> were left unsorted.
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/opp/core.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index dfc4208d3f87..48618ff3e99e 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1527,12 +1527,10 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
+>  	mutex_lock(&opp_table->lock);
+>  	head = &opp_table->opp_list;
+>  
+> -	if (likely(!rate_not_available)) {
+> -		ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
+> -		if (ret) {
+> -			mutex_unlock(&opp_table->lock);
+> -			return ret;
+> -		}
+> +	ret = _opp_is_duplicate(dev, new_opp, opp_table, &head);
+> +	if (ret) {
+> +		mutex_unlock(&opp_table->lock);
+> +		return ret;
+>  	}
+>  
+>  	list_add(&new_opp->node, head);
 
-have you already tried using kmemleak?
+Applied. Thanks.
 
-This sounds like a leak of memory allocated using kmalloc(), so kmemleak 
-should be able to catch it.
+I am not sending it for 5.11-rc as there shouldn't be any users which
+are impacted because of this right now, right ?
 
-Regards,
-Christian.
-
-Am 17.01.21 um 06:08 schrieb Eli Cohen:
-> On Fri, Jan 15, 2021 at 10:03:50AM +0100, Thomas Zimmermann wrote:
->> Could you please double-check that 3fb91f56aea4 ("drm/udl: Retrieve USB
->> device from struct drm_device.dev") works correctly
-> Checked again, it does not seem to leak.
->
->> and that 823efa922102
->> ("drm/cma-helper: Remove empty drm_gem_cma_prime_vunmap()") is broken?
->>
-> Yes, this one leaks, as does the one preceding it:
->
-> 1086db71a1db ("drm/vram-helper: Remove invariant parameters from internal kmap function")
->   
->> For one of the broken commits, could you please send us the output of
->>
->>    dmesg | grep -i drm
->>
->> after most of the memory got leaked?
->>
-> I ran the following script in the shell:
->
-> while true; do cat /proc/meminfo | grep MemFree:; sleep 5; done
->
-> and this is what I saw before I got disconnected from the shell:
->
-> MemFree:          148208 kB
-> MemFree:          148304 kB
-> MemFree:          146660 kB
-> Connection to nps-server-24 closed by remote host.
-> Connection to nps-server-24 closed.
->
->
-> I also mointored the output of dmesg | grep -i drm
-> The last output I was able to save on disk is this:
->
-> [   46.140720] ast 0000:03:00.0: [drm] Using P2A bridge for configuration
-> [   46.140737] ast 0000:03:00.0: [drm] AST 2500 detected
-> [   46.140754] ast 0000:03:00.0: [drm] Analog VGA only
-> [   46.140772] ast 0000:03:00.0: [drm] dram MCLK=800 Mhz type=7 bus_width=16
-> [   46.153553] [drm] Initialized ast 0.1.0 20120228 for 0000:03:00.0 on minor 0
-> [   46.165097] fbcon: astdrmfb (fb0) is primary device
-> [   46.391381] ast 0000:03:00.0: [drm] fb0: astdrmfb frame buffer device
-> [   56.097697] systemd[1]: Starting Load Kernel Module drm...
-> [   56.343556] systemd[1]: modprobe@drm.service: Succeeded.
-> [   56.350382] systemd[1]: Finished Load Kernel Module drm.
-> [13319.469462] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
-> [13320.658386] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
-> [13321.800970] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
-
+-- 
+viresh
