@@ -2,101 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B3A2FACFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BD82FAD01
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733026AbhARVzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        id S1733132AbhARV5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727415AbhARVzD (ORCPT
+        with ESMTP id S1730054AbhARV5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:55:03 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD35C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:23 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id e22so11987846iog.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:23 -0800 (PST)
+        Mon, 18 Jan 2021 16:57:33 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD85DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:56:52 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ox12so1417039ejb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:56:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eMq+9Ew1U5NanRfurn/yAwtd0Hdhag4NKEz1bCE+wNU=;
-        b=WlTPuct2SkAWUWeBGcVtznDDFmTeo+2RrkBNA9I2tk5xIAZwRsXHpxrGAbJR6SZWDP
-         n+HlGUMT7lvZUtO+EPL5vdz8/lbgm66fKGWYS/41mo4Qu8/QelZxmzJEID8XWzqHTq/a
-         2CvRt5kbzIZNtwoAPbZhMaMul8lAffnsUCM4U=
+        bh=oatfa8Uxac5y+QfNKWVhpzcqRMF9g7xn6+1Ypo2kSWs=;
+        b=G9OuzfiKkq0Itr91GvGyb6IuOc32itpL5+ewRZfC6Nb2iA8ft7wxwZztrsWj0HGIjk
+         9r44dpP8GQLoJIjc8ckScnATpIyG7Wwo0NyNO5dIowX0yhfAYwZ5aBRAmJzFxL/q6ffT
+         gyhbSu21s3NRgcIaIrnY/Zbojeb4tttsPVADFPyGqmjCnm2Zlzk/9OhMaaYlmlh55+vj
+         uQXshD/S9jx+efobBEnmEAg0k8+Vc9MQ5P39JR1EY9ERQ4joWJJwgSVlKgWCtiHkVRKX
+         LOyD71QPCsUTDBwIBHdndIrPlZ7pNEmOHt+W/DqMxvehJHCvOw6HQnoTzIhXmUa/Uxa2
+         QRlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eMq+9Ew1U5NanRfurn/yAwtd0Hdhag4NKEz1bCE+wNU=;
-        b=Vr+9VkulkuksWVAkiWRKWKFqy8A9BQfODRuMQmdkhO6bOdLMRgHwt/Wo0NLlqb3sC7
-         aiorMDLAQK/LNH1xt1Pgd31y6ucgQugIgyhKhXo2Ml96VioYH1axBjLO2VEAZ6AWkt1P
-         f05GUrpaKaIxgDFsLxN50Wit42LqBiDuvKiWJnwfJCyRM96IXU7/BdNbpMK71HUB5Wvq
-         Q3OH0PqIl9D57Tl5/KVtUNXJV58AKuQu3fvQ74uPdib9vFzgdamtBJm1/n7dGrp7Ou5/
-         IkbKPr8yniCz11ln/uW5RrkEsYC+JsOIWvAfdo4OrEr9I6oUp0Nbx/EgZjDGFuEXvWvQ
-         vEYg==
-X-Gm-Message-State: AOAM5303JAhPbQG0+jmutAh8t4GBkH1tDelQlNCsNLrEpMBiPZDv8i0+
-        CB41jzt+U34Hy+wKD6sEgr3yiIuATp+A6w==
-X-Google-Smtp-Source: ABdhPJx0RI7ByRQTJUe9yA18o4Zlz2NdcxcaLDmkCcXWy4lDo80WW7sww8Kw9GPlgsd843x7gVJs1A==
-X-Received: by 2002:a02:cc54:: with SMTP id i20mr1028812jaq.138.1611006862340;
-        Mon, 18 Jan 2021 13:54:22 -0800 (PST)
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
-        by smtp.gmail.com with ESMTPSA id u9sm1724279iog.16.2021.01.18.13.54.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 13:54:21 -0800 (PST)
-Received: by mail-io1-f48.google.com with SMTP id d81so20529182iof.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:21 -0800 (PST)
-X-Received: by 2002:a02:856d:: with SMTP id g100mr1082893jai.10.1611006861172;
- Mon, 18 Jan 2021 13:54:21 -0800 (PST)
+        bh=oatfa8Uxac5y+QfNKWVhpzcqRMF9g7xn6+1Ypo2kSWs=;
+        b=L4UJq76NzNcugRGM8pJGw43rDQNqP9tUTOMhh6oPuB+8gdUmRXCrE//70ylfQjKUq4
+         0UpfTOUjcKVTQhsZxaTzV0FVCztIjQoDzSCyiWFQ+pVqIOxcKMsAPhBvhO/ncygCsCZM
+         4/xxNbnppPJ0NEPwDeARC6UCvPYc2HmfEqNBNmgtwEYRIlXNS7K7xnscXSsiPlzerder
+         MirAcQIJY0nznMIxAp5fpnjgXFt0m9x6bMHGdu5xBF5xhaLcIRdfmXuW70rUEYLt5XO9
+         ZZiDb18pN1jflIf702dJ8Je33vdSZZtzbtbtmGvxXmkSAleRTTbk6OI8Pgt8fmlZi3md
+         EVwA==
+X-Gm-Message-State: AOAM532zmOzcWRhL86W8byYGUsHvMwJOMdHi7MfUpxz2IGR7rowSFuVA
+        OjDgLoGc4FPHxkIBXTx+Y5JurmugF7aRdiJcPyo8
+X-Google-Smtp-Source: ABdhPJwiTaEsKdexNKIoHB/eUfZQnzukIdscZm/if80Y4LpzPxBkFga14LG96UqrRR257lycf5KwAWK9fvWQ62ucVAY=
+X-Received: by 2002:a17:907:e9e:: with SMTP id ho30mr1073618ejc.529.1611007011377;
+ Mon, 18 Jan 2021 13:56:51 -0800 (PST)
 MIME-Version: 1.0
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
- <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
- <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com> <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 Jan 2021 13:54:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
-Message-ID: <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
-Subject: Re: Splicing to/from a tty
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Oliver Giles <ohw.giles@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+References: <20210113061958.886723-1-morbo@google.com> <20210116094357.3620352-1-morbo@google.com>
+ <CA+icZUUgTuD6fO_AZFs9KoRFS8FUmyhezvYeeoRX2dveG_ifDA@mail.gmail.com>
+ <CAGG=3QXZTR_f9pKzAR=LrALmMzdDqsvWM_zrTXOb2PpiDGB-+A@mail.gmail.com>
+ <CA+icZUWf05ek+DFsJNyBc-4cg0s6cVrn=rNJDyL4RJ6=fMO5NA@mail.gmail.com>
+ <CA+icZUVD1AHaXYu4Ne8JhzmtMR5DReL4C=ZxKfA0hjLtbC79qQ@mail.gmail.com>
+ <CA+icZUUTJbwmTYCDJhyRtif3BdsB_yzQ3bSdLR62EmttJf3Row@mail.gmail.com>
+ <CA+icZUUfWR1v3GStn6t_6MYDmwTdJ_zDwBTe2jmQRg7aOA1Q2A@mail.gmail.com>
+ <CA+icZUU-3i7Of71C6XaNmee7xD4y_DeoWJFvUHnMUyBaMN3Ywg@mail.gmail.com>
+ <CA+icZUXmn15w=kSq2CZzQD5JggJw_9AEam=Sz13M0KpJ68MWZg@mail.gmail.com>
+ <CA+icZUWUPCuLWCo=kuPr9YZ4-NZ3F8Fv1GzDXPbDevyWjaMrJg@mail.gmail.com>
+ <CAGG=3QW+ayBzCxOusLyQ0-y5K5C_3hNXjara_pYOcxK8MseN9g@mail.gmail.com>
+ <CA+icZUU1HihUFaEHzF69+01+Picg8aq6HAqHupxiRqyDGJ=Mpw@mail.gmail.com>
+ <CA+icZUUuzA5JEXyVzKbVX+T3xeOdRAU6-mntbo+VwwTxqmN7LA@mail.gmail.com>
+ <CAGG=3QWmOA+yM2GJF+cHUb7wUq6yiBpHasa-ry9OhAdvciDm6Q@mail.gmail.com>
+ <CA+icZUVwbWDtGUzMEkitxYn2UvbZPnFTxfJyDOY46j6BTK0deQ@mail.gmail.com> <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
+In-Reply-To: <CA+icZUXa9wvSWe=21_gjAapoHpbgBmYzFpQjb=o_WRQgK+O4gA@mail.gmail.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Mon, 18 Jan 2021 13:56:39 -0800
+Message-ID: <CAGG=3QUcaY1wzJhBD4ZGhPSNPik-kL0PuoE1SJqkFJEM_mkGYA@mail.gmail.com>
+Subject: Re: [PATCH v5] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 1:35 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Mon, Jan 18, 2021 at 9:26 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> So here's a slightly updated version of that patch, but apart from
-> slightly better coverage - even if it's a driver that is disabled
-> anyway - I'd like to point out that all my previous caveats still
-> apply.
+> On Mon, Jan 18, 2021 at 1:39 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Mon, Jan 18, 2021 at 3:32 AM Bill Wendling <morbo@google.com> wrote:
+> > >
+> > > On Sun, Jan 17, 2021 at 4:27 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >
+> > > > [ big snip ]
+> > >
+> > > [More snippage.]
+> > >
+> > > > [ CC Fangrui ]
+> > > >
+> > > > With the attached...
+> > > >
+> > > >    [PATCH v3] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for
+> > > > undefined symbols
+> > > >
+> > > > ...I was finally able to boot into a rebuild PGO-optimized Linux-kernel.
+> > > > For details see ClangBuiltLinux issue #1250 "Unknown symbol
+> > > > _GLOBAL_OFFSET_TABLE_ loading kernel modules".
+> > > >
+> > > Thanks for confirming that this works with the above patch.
+> > >
+> > > > @ Bill Nick Sami Nathan
+> > > >
+> > > > 1, Can you say something of the impact passing "LLVM_IAS=1" to make?
+> > >
+> > > The integrated assembler and this option are more-or-less orthogonal
+> > > to each other. One can still use the GNU assembler with PGO. If you're
+> > > having an issue, it may be related to ClangBuiltLinux issue #1250.
+> > >
+> > > > 2. Can you please try Nick's DWARF v5 support patchset v5 and
+> > > > CONFIG_DEBUG_INFO_DWARF5=y (see attachments)?
+> > > >
+> > > I know Nick did several tests with PGO. He may have looked into it
+> > > already, but we can check.
+> > >
+> >
+> > Reproducible.
+> >
+> > LLVM_IAS=1 + DWARF5 = Not bootable
+> >
+> > I will try:
+> >
+> > LLVM_IAS=1 + DWARF4
+> >
+>
+> I was not able to boot into such a built Linux-kernel.
+>
+PGO will have no effect on debugging data. If this is an issue with
+DWARF, then it's likely orthogonal to the PGO patch.
 
-I have now booted that version to see that I didn't make any horribly
-obvious mistakes.
+> For me worked: DWARF2 and LLVM_IAS=1 *not* set.
+>
+> Of course, this could be an issue with my system's LLVM/Clang.
+>
+> Debian clang version
+> 12.0.0-++20210115111113+45ef053bd709-1~exp1~20210115101809.3724
+>
+Please use the official clang 11.0.1 release
+(https://releases.llvm.org/download.html), modifying the
+kernel/pgo/Kconfig as I suggested above. The reason we specify clang
+12 for the minimal version is because of an issue that was recently
+fixed.
 
-And I must have screwed something up. I can actually use the machine
-normally (I'm writing this running that kernel), but when I decided to
-test the actual virtual console (as opposed to the GUI terminal
-windows that use pty's), I can't even log in.
+> Can you give me a LLVM commit-id where you had success with LLVM_IAS=1
+> and especially CONFIG_DEBUG_INFO_DWARF5=y?
+> Success means I was able to boot in QEMU and/or bare metal.
+>
+The DWARF5 patch isn't in yet, so I don't want to rely upon it too much.
 
-That *may* just be due to the inexcusably lazy and stupid "chunk
-things up into 32 byte pieces" I did. Most programs shouldn't care,
-tty's can return partial results anyway, but it's obviously a fairly
-fundamental and silly change.
-
-But it might well be some other conversion bug of mine even if I tried
-to keep it fairly minimal and straight-forward.
-
-So I suggest taking that patch with a lot of salt, and really treating
-it as a very rough starting point (which was the point of it - trying
-to actually boot it as-is was more of a "let's see if it survives at
-all" thing).
-
-                Linus
+-bw
