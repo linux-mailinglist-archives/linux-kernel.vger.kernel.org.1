@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFC52F9D61
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0AB2F9D97
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388388AbhARK7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:59:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:32920 "EHLO foss.arm.com"
+        id S2389293AbhARKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:50:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:60282 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389652AbhARK5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:57:40 -0500
+        id S2389638AbhARKZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:25:40 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 907681FB;
-        Mon, 18 Jan 2021 02:56:53 -0800 (PST)
-Received: from [10.37.8.29] (unknown [10.37.8.29])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF5F33F68F;
-        Mon, 18 Jan 2021 02:56:50 -0800 (PST)
-Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-To:     Mark Rutland <mark.rutland@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 888901FB;
+        Mon, 18 Jan 2021 02:24:54 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.39.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 019A63F66E;
+        Mon, 18 Jan 2021 02:24:51 -0800 (PST)
+Date:   Mon, 18 Jan 2021 10:24:26 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
+        kasan-dev@googlegroups.com, Marco Elver <elver@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v3 1/4] kasan, arm64: Add KASAN light mode
+Message-ID: <20210118102426.GA29688@C02TD0UTHF1T.local>
 References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-5-vincenzo.frascino@arm.com>
- <20210115154520.GD44111@C02TD0UTHF1T.local>
- <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
- <0c1b9a6b-0326-a24f-6418-23a0723adecf@arm.com>
- <20210118104116.GB29688@C02TD0UTHF1T.local>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <ead05a9a-edef-7be9-b173-3a62caf187c3@arm.com>
-Date:   Mon, 18 Jan 2021 11:00:38 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <20210115120043.50023-2-vincenzo.frascino@arm.com>
+ <20210115150811.GA44111@C02TD0UTHF1T.local>
+ <ba23ab9b-8f49-bdb7-87d8-3eb99ddf54b6@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210118104116.GB29688@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba23ab9b-8f49-bdb7-87d8-3eb99ddf54b6@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jan 16, 2021 at 01:47:08PM +0000, Vincenzo Frascino wrote:
+> On 1/15/21 3:08 PM, Mark Rutland wrote:
+> > On Fri, Jan 15, 2021 at 12:00:40PM +0000, Vincenzo Frascino wrote:
+> >>  #ifdef CONFIG_KASAN_HW_TAGS
+> >> -#define arch_enable_tagging()			mte_enable_kernel()
+> >> +#define arch_enable_tagging(mode)		mte_enable_kernel(mode)
+> > 
+> > Rather than passing a mode in, I think it'd be better to have:
+> > 
+> > * arch_enable_tagging_prod()
+> > * arch_enable_tagging_light()
+> > 
+> > ... that we can map in the arch code to separate:
+> > 
+> > * mte_enable_kernel_sync()
+> > * mte_enable_kernel_async()
+> > 
+> > ... as by construction that avoids calls with an unhandled mode, and we
+> > wouldn't need the mode enum kasan_hw_tags_mode...
+> > 
+> >> +static inline int hw_init_mode(enum kasan_arg_mode mode)
+> >> +{
+> >> +	switch (mode) {
+> >> +	case KASAN_ARG_MODE_LIGHT:
+> >> +		return KASAN_HW_TAGS_ASYNC;
+> >> +	default:
+> >> +		return KASAN_HW_TAGS_SYNC;
+> >> +	}
+> >> +}
+> > 
+> > ... and we can just have a wrapper like this to call either of the two functions directly, i.e.
+> > 
+> > static inline void hw_enable_tagging_mode(enum kasan_arg_mode mode)
+> > {
+> > 	if (mode == KASAN_ARG_MODE_LIGHT)
+> > 		arch_enable_tagging_mode_light();
+> > 	else
+> > 		arch_enable_tagging_mode_prod();
+> > }
+> >
+> 
+> Fine by me, this would remove the need of adding a new enumeration as well and
+> reflect on the arch code. I would keep "arch_enable_tagging_mode_sync" and
+> "arch_enable_tagging_mode_async" though to give a clear indication in the KASAN
+> code of the mode we are setting. I will adapt my code accordingly for v4.
 
+Thanks, that sounds great!
 
-On 1/18/21 10:41 AM, Mark Rutland wrote:
-> On Sun, Jan 17, 2021 at 12:27:08PM +0000, Vincenzo Frascino wrote:
->> Hi Mark,
->>
->> On 1/16/21 2:22 PM, Vincenzo Frascino wrote:
->>>> Is there any chance that this can be used for the last bytes of the
->>>> virtual address space? This might need to change to `_addr == _end` if
->>>> that is possible, otherwise it'll terminate early in that case.
->>>>
->>> Theoretically it is a possibility. I will change the condition and add a note
->>> for that.
->>>
->>
->> I was thinking to the end of the virtual address space scenario and I forgot
->> that if I use a condition like `_addr == _end` the tagging operation overflows
->> to the first granule of the next allocation. This disrupts tagging accesses for
->> that memory area hence I think that `_addr < _end` is the way to go.
-> 
-> I think it implies `_addr != _end` is necessary. Otherwise, if `addr` is
-> PAGE_SIZE from the end of memory, and `size` is PAGE_SIZE, `_end` will
-> be 0, so using `_addr < _end` will mean the loop will terminate after a
-> single MTE tag granule rather than the whole page.
-> 
-> Generally, for some addr/increment/size combination (where all are
-> suitably aligned), you need a pattern like:
-> 
-> | do {
-> |       thing(addr);
-> |       addr += increment;
-> | } while (addr != end);
-> 
-> ... or:
-> 
-> | for (addr = start; addr != end; addr += increment) {
-> |       thing(addr);
-> | }
-> 
-> ... to correctly handle working at the very end of the VA space.
-> 
-> We do similar for page tables, e.g. when we use pmd_addr_end().
->
+I completely agree on keeping the '_sync' and '_aync' suffixes in the
+the core code.
 
-Good point! I agree it wraps around otherwise. I will change it accordingly.
-
-Thanks!
-
-> Thanks,
-> Mark.
-> 
-
--- 
-Regards,
-Vincenzo
+Mark.
