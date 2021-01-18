@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E75A2FAA6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E232FAA9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437518AbhARTnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S2437698AbhARTvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390365AbhARTm5 (ORCPT
+        with ESMTP id S2394005AbhARTqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:42:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098D3C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=zEJ22T1F3C1ubeY5/smo9KBx7Q8j3vhMGHt2WDHCSaU=; b=cUK7zXfaMBn25pUSZdxNvgLj0O
-        uBg6xKKhdWyrtkQsCeMm3Kn2EP3pjEcLEaJlRAIQGlRZqIMSlXBjMmiDq24QOgwRdcAixbOQIeRtB
-        JtLV8PvHMSm/mPAOJXRVgeZX6U0Q6qbvFkONMl5WP2fuSOx/lWFaATpxT0mg0x72l5aED38rusqNm
-        PC/v95/FvgmYcdZcV9FeBgB9fGW8ClMfBV3xeztFJtFb3VIaZhB78qb/W5j+cev6r61SnFFs2L8EU
-        NYb/JsL9GsKhYVBmOpAziNtG+Gzi+wus9dZqfq3pWQ5I/RztgB1hrXnEqf13vDoRTdC6gkeIhTt4q
-        Enu8wHBA==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1aPk-0007XE-C8; Mon, 18 Jan 2021 19:42:12 +0000
-Subject: Re: [PATCH] drm/syncobj: make lockdep complain on WAIT_FOR_SUBMIT v2
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        daniel@ffwll.ch, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210118180334.43714-1-christian.koenig@amd.com>
- <20210118180334.43714-2-christian.koenig@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3ebc7345-1b3f-8e7f-dc12-eacfd3a993d9@infradead.org>
-Date:   Mon, 18 Jan 2021 11:42:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 18 Jan 2021 14:46:33 -0500
+X-Greylist: delayed 644 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Jan 2021 11:45:53 PST
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592A8C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:45:53 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1aTB-0036Nk-PE; Mon, 18 Jan 2021 19:45:45 +0000
+Date:   Mon, 18 Jan 2021 19:45:45 +0000
+From:   Al Viro <viro@zeniv-ca>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Splicing to/from a tty
+Message-ID: <20210118194545.GB736435@zeniv-ca>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de>
+ <ece3af8e4512517da220bdd2f43119ca889f6c61.camel@sipsolutions.net>
+ <CAHk-=wiiqjO5c_JK5-jW6=JzxoQ26uNHyKtbJfTW+6Ryw9Sv9w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210118180334.43714-2-christian.koenig@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiiqjO5c_JK5-jW6=JzxoQ26uNHyKtbJfTW+6Ryw9Sv9w@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Just a comment about the comments:
-
-On 1/18/21 10:03 AM, Christian König wrote:
-> DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT can't be used when we hold locks
-> since we are basically waiting for userspace to do something.
+On Mon, Jan 18, 2021 at 11:26:00AM -0800, Linus Torvalds wrote:
+> On Mon, Jan 18, 2021 at 12:58 AM Johannes Berg
+> <johannes@sipsolutions.net> wrote:
+> >
+> > > I think just wiring up iter_file_splice_write would work.  Al?
+> >
+> > Seems to work for the simple test case that I had, at least:
 > 
-> Holding a lock while doing so can trivial deadlock with page faults
-> etc...
+> Mind sending me a signed-off patch for this?
 > 
-> So make lockdep complain when a driver tries to do this.
-> 
-> v2: Add lockdep_assert_none_held() macro.
-> 
-> Signed-off-by: Christian König <christian.koenig@amd.com>
-> ---
->  drivers/gpu/drm/drm_syncobj.c | 7 +++++++
->  include/linux/lockdep.h       | 5 +++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
-> index 6e74e6745eca..f51458615158 100644
-> --- a/drivers/gpu/drm/drm_syncobj.c
-> +++ b/drivers/gpu/drm/drm_syncobj.c
-> @@ -387,6 +387,13 @@ int drm_syncobj_find_fence(struct drm_file *file_private,
->  	if (!syncobj)
->  		return -ENOENT;
->  
-> +	/* Waiting for userspace with locks help is illegal cause that can
+> Yeah, I know it's a trivial one-liner, but I much prefer having an
+> author with a patch and a sign-off to just doing it personally and
+> reaping all that glory for it..
 
-	                                    held            because
+IMO it's a wrong way to handle that.   Look: do_sendfile() calls
+do_splice_direct(), which calls splice_direct_to_actor().  There
+we allocate an internal pipe and go through "feed from source into
+that pipe, then shove what's there into destination".  Which is
+insane for the case when destination (or source, for that matter)
+is a pipe itself.
 
-> +	 * trivial deadlock with page faults for example. Make lockdep complain
+do_splice_direct() does something that do_splice() won't - it
+handles non-pipe to non-pipe case.  Which is how sendfile(2) is
+normally used, of course.
 
-	   trivially
-
-> +	 * about it early on.
-> +	 */
-> +	if (flags & DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT)
-> +		lockdep_assert_none_held_once();
-> +
->  	*fence = drm_syncobj_fence_get(syncobj);
->  	drm_syncobj_put(syncobj);
->  
-
-
-thanks.
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+I'll look into that in more details, but IMO bothering with
+internal pipe is just plain wrong for those cases.
