@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DBE2FA466
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9109A2FA469
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405401AbhARPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S2405691AbhARPTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405414AbhARPJm (ORCPT
+        with ESMTP id S2405455AbhARPKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:09:42 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599E2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:09:01 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id JF8z2400T4C55Sk01F8zQZ; Mon, 18 Jan 2021 16:08:59 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l1W9L-004cql-1j; Mon, 18 Jan 2021 16:08:59 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l1W9K-003LKg-LI; Mon, 18 Jan 2021 16:08:58 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Steve Glendinning <steve.glendinning@shawell.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] net: smsc911x: Make Runtime PM handling more fine-grained
-Date:   Mon, 18 Jan 2021 16:08:57 +0100
-Message-Id: <20210118150857.796943-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 18 Jan 2021 10:10:30 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D789C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:09:50 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c5so16785822wrp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=o0LrDk575sZO8QF6eRJPnKaqFriKwMIEzttJtoJHwP0=;
+        b=DrzJ/q9KyuRRal0Ze0KBbIW7oKNk6JkGd6CVff4gctqjSVajqnVv9fc7l4zSQUtIRt
+         cq+ipbNdcyGi8vKWvy03L6K1Nt4n4vl5tCE7kIZonzCkLKU0T9t4LWz4fXubhR6WZ6b8
+         Rn9Nj+iFhp8F+gjof50KQotABsBOASwT1tIRsCQWUqxHTd6/Wmm4Viynn/1gq0U6iIPU
+         uz7J7AWfvI+lkmOqPc4gG7QFOOQ0z8nJn//TX/yN5S6R1lEi0+z31VyXBmFKhPZdn3nq
+         NsSgEvnUf0l6dMbCFJk1UihF29ReJOisAzC3Rlr7aD7qosJ4Hd8jf18Huw9xBsNG5Gr6
+         VVOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o0LrDk575sZO8QF6eRJPnKaqFriKwMIEzttJtoJHwP0=;
+        b=akgeYNZ+OhaYNgYChCFQ3PW0ZupClJ0+V4uOU1gVEWokFBuIh/rVjVLpb+37rlQSAC
+         6isAAhPLRfRnGPbUeMCEqtryvtgoYcKEuuHI249respidSgffft6j7EPdQ1+iYztr2AP
+         uk6gtRaW4Fbao/AQDfttSv5fgEgWSBLNy4gA+KH2INcf45buAkRDhttYHpWUVAWadovk
+         FQvR+xmmXr4vD3LNI1lCqlkgqAghgBAeI+rFUDJZHDiBFgtF7nA4AxjqF/Px0Emfw0GO
+         vGnuNs9kVm68bkP+PeFQsTZRTVL6vh+YlflrkJofn+dzy6+XCDMjxD9joSp0PPlvoGw/
+         sGCQ==
+X-Gm-Message-State: AOAM530T3MdwYHBTWJkDfktCSvCjgezK3nHmsDTawEVD6hefMUZCjZtC
+        LOSuEve+vGXkU75VCYWQlhKkbQ==
+X-Google-Smtp-Source: ABdhPJyDZ5Oz5+gFChXkRG81oA1CFNwWNCMpwIu5woxmSaXUr+y+QkHfALigdBsXlGhC6+k4fDIdvA==
+X-Received: by 2002:a05:6000:368:: with SMTP id f8mr26201890wrf.150.1610982588871;
+        Mon, 18 Jan 2021 07:09:48 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id n10sm29595126wrx.21.2021.01.18.07.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 07:09:47 -0800 (PST)
+Date:   Mon, 18 Jan 2021 15:09:45 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Zack Rusin <zackr@vmware.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eddie Dong <eddie.dong@intel.com>,
+        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        Jackie Li <yaodong.li@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jan Safrata <jan.nikitenko@gmail.com>,
+        Jesse Barnes <jesse.barnes@intel.com>,
+        jim liu <jim.liu@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Keith Packard <keithp@keithp.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
+        Niu Bing <bing.niu@intel.com>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Pei Zhang <pei.zhang@intel.com>,
+        Ping Gao <ping.a.gao@intel.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhiyuan Lv <zhiyuan.lv@intel.com>
+Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
+Message-ID: <20210118150945.GE4903@dell>
+References: <20210115181601.3432599-1-lee.jones@linaro.org>
+ <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
+ <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the smsc911x driver has mininal power management: during
-driver probe, the device is powered up, and during driver remove, it is
-powered down.
+On Mon, 18 Jan 2021, Daniel Vetter wrote:
 
-Improve power management by making it more fine-grained:
-  1. Power the device down when driver probe is finished,
-  2. Power the device (down) when it is opened (closed),
-  3. Make sure the device is powered during PHY access.
+> On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
+> > 
+> > > On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
+> > > 
+> > > This set is part of a larger effort attempting to clean-up W=1
+> > > kernel builds, which are currently overwhelmingly riddled with
+> > > niggly little warnings.
+> > > 
+> > > Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
+> > 
+> > Thanks! For all the vmwgfx bits:
+> > Reviewed-by: Zack Rusin <zackr@vmware.com>
+> 
+> Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
+> (those generally go through other trees, pls holler if they're stuck).
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Tested on r8a73a4/ape6evm, where the LAN9220 is connected to a
-power-managed bus, and any attempt to access a device register while the
-device is suspended will trigger an asynchronous external abort.
----
- drivers/net/ethernet/smsc/smsc911x.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Thanks Daniel, you're a superstar!
 
-diff --git a/drivers/net/ethernet/smsc/smsc911x.c b/drivers/net/ethernet/smsc/smsc911x.c
-index 823d9a7184fe6aa1..606c79de93a68146 100644
---- a/drivers/net/ethernet/smsc/smsc911x.c
-+++ b/drivers/net/ethernet/smsc/smsc911x.c
-@@ -557,6 +557,7 @@ static int smsc911x_mii_read(struct mii_bus *bus, int phyaddr, int regidx)
- 	unsigned int addr;
- 	int i, reg;
- 
-+	pm_runtime_get_sync(bus->parent);
- 	spin_lock_irqsave(&pdata->mac_lock, flags);
- 
- 	/* Confirm MII not busy */
-@@ -582,6 +583,7 @@ static int smsc911x_mii_read(struct mii_bus *bus, int phyaddr, int regidx)
- 
- out:
- 	spin_unlock_irqrestore(&pdata->mac_lock, flags);
-+	pm_runtime_put(bus->parent);
- 	return reg;
- }
- 
-@@ -594,6 +596,7 @@ static int smsc911x_mii_write(struct mii_bus *bus, int phyaddr, int regidx,
- 	unsigned int addr;
- 	int i, reg;
- 
-+	pm_runtime_get_sync(bus->parent);
- 	spin_lock_irqsave(&pdata->mac_lock, flags);
- 
- 	/* Confirm MII not busy */
-@@ -623,6 +626,7 @@ static int smsc911x_mii_write(struct mii_bus *bus, int phyaddr, int regidx,
- 
- out:
- 	spin_unlock_irqrestore(&pdata->mac_lock, flags);
-+	pm_runtime_put(bus->parent);
- 	return reg;
- }
- 
-@@ -1589,6 +1593,8 @@ static int smsc911x_open(struct net_device *dev)
- 	int retval;
- 	int irq_flags;
- 
-+	pm_runtime_get_sync(dev->dev.parent);
-+
- 	/* find and start the given phy */
- 	if (!dev->phydev) {
- 		retval = smsc911x_mii_probe(dev);
-@@ -1735,6 +1741,7 @@ static int smsc911x_open(struct net_device *dev)
- 	phy_disconnect(dev->phydev);
- 	dev->phydev = NULL;
- out:
-+	pm_runtime_put(dev->dev.parent);
- 	return retval;
- }
- 
-@@ -1766,6 +1773,7 @@ static int smsc911x_stop(struct net_device *dev)
- 		dev->phydev = NULL;
- 	}
- 	netif_carrier_off(dev);
-+	pm_runtime_put(dev->dev.parent);
- 
- 	SMSC_TRACE(pdata, ifdown, "Interface stopped");
- 	return 0;
-@@ -2334,7 +2342,6 @@ static int smsc911x_drv_remove(struct platform_device *pdev)
- 
- 	free_netdev(dev);
- 
--	pm_runtime_put(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
- 	return 0;
-@@ -2540,6 +2547,7 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
- 	}
- 
- 	spin_unlock_irq(&pdata->mac_lock);
-+	pm_runtime_put(&pdev->dev);
- 
- 	netdev_info(dev, "MAC Address: %pM\n", dev->dev_addr);
- 
+So Zack will take the vmwgfx parts?  Despite providing a R-b?
+
+> Note that we have some build issue on some of the configs sfr uses, so drm
+> trees are still stuck on old versions in linux-next. Hopefully should get
+> resolved soon, the bugfix is in some subtree I've heard.
+
+No worries.  Thanks for letting me know.
+
 -- 
-2.25.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
