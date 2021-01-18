@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FDF2F9EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0AF2F9EBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390893AbhARLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:53:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
+        id S2391075AbhARLvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:51:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390678AbhARLlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:41:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEDDF224B0;
-        Mon, 18 Jan 2021 11:40:25 +0000 (UTC)
+        id S2390537AbhARLkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:40:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2493C2223E;
+        Mon, 18 Jan 2021 11:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970026;
-        bh=f96gWCLr5D/LAGhmXh0ZQJcg1Ss+6GC7drgFM0GWmWA=;
+        s=korg; t=1610969991;
+        bh=KKV/3+xerDS256hNnw8+B6mkS7/OTuoWitYAw9FvDIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z6yFonH6srdgWtDVgu2tyHVQmzJzhg0WgAWgAI5o+GP8auVXeW3IRZaLwMqT3DUlU
-         k3i+cY5k8ZMwoV4UZ1Uv+eeeDrUZYNCkWC6kvLLKrADNdVn3BR9yw4ZsxhLf/itaYW
-         zhyLWrVoCBdDp+H59PhWRlCeZkf8DDpr4Z1p9Yno=
+        b=c/Ek4YDYnna6sAUG8O4IhXye7PC95sEeQW1Q9SDhsLi3dxfzBUzU/ViN4mhzHAS8I
+         +ZM81GghGlne9bDn9YqKKJWSROa274pd3GS1BautHqlotN9F94760+8t88BZuvV2mf
+         +MnWolvetq393O0vaVFdEO3pUNM7pJiNbm3gl7Z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yongping Zhang <yongping.zhang@broadcom.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 64/76] bnxt_en: Improve stats context resource accounting with RDMA driver loaded.
-Date:   Mon, 18 Jan 2021 12:35:04 +0100
-Message-Id: <20210118113344.026749359@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 68/76] mm, slub: consider rest of partial list if acquire_slab() fails
+Date:   Mon, 18 Jan 2021 12:35:08 +0100
+Message-Id: <20210118113344.220384656@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
 References: <20210118113340.984217512@linuxfoundation.org>
@@ -42,52 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Jann Horn <jannh@google.com>
 
-commit 869c4d5eb1e6fbda66aa790c48bdb946d71494a0 upstream.
+commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
 
-The function bnxt_get_ulp_stat_ctxs() does not count the stats contexts
-used by the RDMA driver correctly when the RDMA driver is freeing the
-MSIX vectors.  It assumes that if the RDMA driver is registered, the
-additional stats contexts will be needed.  This is not true when the
-RDMA driver is about to unregister and frees the MSIX vectors.
+acquire_slab() fails if there is contention on the freelist of the page
+(probably because some other CPU is concurrently freeing an object from
+the page).  In that case, it might make sense to look for a different page
+(since there might be more remote frees to the page from other CPUs, and
+we don't want contention on struct page).
 
-This slight error leads to over accouting of the stats contexts needed
-after the RDMA driver has unloaded.  This will cause some firmware
-warning and error messages in dmesg during subsequent config. changes
-or ifdown/ifup.
+However, the current code accidentally stops looking at the partial list
+completely in that case.  Especially on kernels without CONFIG_NUMA set,
+this means that get_partial() fails and new_slab_objects() falls back to
+new_slab(), allocating new pages.  This could lead to an unnecessary
+increase in memory fragmentation.
 
-Fix it by properly accouting for extra stats contexts only if the
-RDMA driver is registered and MSIX vectors have been successfully
-requested.
-
-Fixes: c027c6b4e91f ("bnxt_en: get rid of num_stat_ctxs variable")
-Reviewed-by: Yongping Zhang <yongping.zhang@broadcom.com>
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lkml.kernel.org/r/20201228130853.1871516-1-jannh@google.com
+Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -216,8 +216,12 @@ int bnxt_get_ulp_msix_base(struct bnxt *
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1887,7 +1887,7 @@ static void *get_partial_node(struct kme
  
- int bnxt_get_ulp_stat_ctxs(struct bnxt *bp)
- {
--	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP))
--		return BNXT_MIN_ROCE_STAT_CTXS;
-+	if (bnxt_ulp_registered(bp->edev, BNXT_ROCE_ULP)) {
-+		struct bnxt_en_dev *edev = bp->edev;
-+
-+		if (edev->ulp_tbl[BNXT_ROCE_ULP].msix_requested)
-+			return BNXT_MIN_ROCE_STAT_CTXS;
-+	}
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			break;
++			continue; /* cmpxchg raced */
  
- 	return 0;
- }
+ 		available += objects;
+ 		if (!object) {
 
 
