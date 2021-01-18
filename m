@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FE62FA495
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797A72FA49D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393458AbhARPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:24:57 -0500
-Received: from mga02.intel.com ([134.134.136.20]:63424 "EHLO mga02.intel.com"
+        id S2405725AbhARPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393430AbhARPYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:24:22 -0500
-IronPort-SDR: Hv8o6MDNpH3eIOv5DJb4r+7EmlxDHLm/vU0tf2uMYcJbl5q+5PfMVdltcof77mrC/vMDFhQa5E
- 8GDHxS8wujQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="165905457"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="165905457"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:22:28 -0800
-IronPort-SDR: ey9MYaovfO4Cxa0p3PXuW/Ij57ursllGF9zE68jwOIjMt8T1cdZfRTVNo5ok9NGulZeFPoWuG6
- Dj026CjwSatw==
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="350241206"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:22:21 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1WNH-002Hbm-Ex; Mon, 18 Jan 2021 17:23:23 +0200
-Date:   Mon, 18 Jan 2021 17:23:23 +0200
-From:   "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "robert.moore@intel.com" <robert.moore@intel.com>,
-        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <20210118152323.GV4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
- <20210118135121.GM4077@smile.fi.intel.com>
- <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
+        id S2393461AbhARPYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:24:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 164C4223DB;
+        Mon, 18 Jan 2021 15:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610983450;
+        bh=QBruoSABUanWWPthuJQu3hsuFkNo/ecD83CfL8U3YWY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KlKTe71U9p2ZZs3WKNnzYIBshtge89AYQVfO+fACnVDwmmgITXFSXqtPvd/3s9tlX
+         7yzz1wXujeiEY1yWBerErjkGtYgi6D9RiPIaW7/kcpu4uZVVPFfmD4sOVoAs8sCTar
+         f07LzjTPwX6ZGngW7hLdSklMj3276cN8F7/rXpHs=
+Date:   Mon, 18 Jan 2021 16:24:08 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 4.19 00/43] 4.19.169-rc1 review
+Message-ID: <YAWoGJ3j/Bz30SzV@kroah.com>
+References: <20210118113334.966227881@linuxfoundation.org>
+ <CA+G9fYsVb-4L65-YjNxVhGWeQySQAQVyQGudDtbmzfZq4g4vFA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CA+G9fYsVb-4L65-YjNxVhGWeQySQAQVyQGudDtbmzfZq4g4vFA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 02:51:30PM +0000, Barnabás Pőcze wrote:
-> 2021. január 18., hétfő 14:51 keltezéssel, Andy Shevchenko írta:
-> 
-> > On Mon, Jan 18, 2021 at 11:12:34AM +0000, Barnabás Pőcze wrote:
-> > > 2021. január 18., hétfő 1:34 keltezéssel, Daniel Scally írta:
+On Mon, Jan 18, 2021 at 08:10:26PM +0530, Naresh Kamboju wrote:
+> On Mon, 18 Jan 2021 at 17:06, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > > Have you considered putting the source (and header) files into a dedicated
-> > > folder? I think it'd help manageability in the long run, and it'd be immediately
-> > > obvious that these source files form a single "unit".
+> > This is the start of the stable review cycle for the 4.19.169 release.
+> > There are 43 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
 > >
-> > What would be the folder name? Because, for example, intel_cht_int33fe* have no
-> > folder (yet?) and here it's kinda similar case when HID describes something
-> > else than just one IP.
+> > Responses should be made by Wed, 20 Jan 2021 11:33:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.169-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> I think "intel_skl_int3472" would not be a bad name for the folder. And I believe
-> "intel_cht_int33fe" could be given its own folder as well.
+> 
+> MIPS: cavium_octeon_defconfig and nlm_xlp_defconfig builds breaks
+> due to this patch.
+> 
+> > Al Viro <viro@zeniv.linux.org.uk>
+> >     MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-I;m not objecting (at some point in the past I had proposed moving Intel stuff
-to a separate folder, but at that time PDx86 has no folders at all and Darren
-was kinda not in favour of creating ones, but things changed), just let's hear
-Hans on this.
+Thanks, now dropped from here and 5.4.y.  Will push out a -rc2 for both
+of these now...
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
