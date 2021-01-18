@@ -2,107 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CE62F9A01
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 07:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC62C2F9A08
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 07:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732574AbhARGiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 01:38:46 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:36706 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726624AbhARGin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 01:38:43 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id C5993201D5;
-        Mon, 18 Jan 2021 07:38:01 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fTVnJEMH7k3n; Mon, 18 Jan 2021 07:38:00 +0100 (CET)
-Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id EF58C200BC;
-        Mon, 18 Jan 2021 07:38:00 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Mon, 18 Jan 2021 07:38:00 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 18 Jan
- 2021 07:38:00 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id B737C3182E9B;
- Mon, 18 Jan 2021 07:37:59 +0100 (CET)
-Date:   Mon, 18 Jan 2021 07:37:59 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-CC:     Dongseok Yi <dseok.yi@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <namkyu78.kim@samsung.com>, Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "Willem de Bruijn" <willemb@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
- GRO fraglist
-Message-ID: <20210118063759.GK3576117@gauss3.secunet.de>
-References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
- <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
- <20210115171203.175115-1-alobakin@pm.me>
+        id S1732688AbhARGkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 01:40:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732646AbhARGjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 01:39:54 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59137C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 22:39:14 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id q4so8090683plr.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 22:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CpHvZU/WHkbGaD9FSLMeszBMLktHGvhDw07CKXGAXcM=;
+        b=n2447+zLT2BNNoFymdo6Rxu/Seh7vQq4D61F35xbPAcpQH6CxNWNrw7w6yiUKgl9Ro
+         6pKS/BwIhKimVzuBUxM3Q54cZl/yblYhqIuVpVNNBO/RIAl6BfF0LKLFoZfaHDN8sWzW
+         PQy/jevmGeg+rVsfB1r6xWvgU/F+WSZ8UM0Nr9c+MZfG2xedjDiMmaX4r4UWoFh0G7hP
+         lZzHw33cUAYBZJxtf0qE+y5z0dGjZCtuExRxt7qPdw1L/ohCj6SjBrdf9gX5LG37JONn
+         uOkUQPZjroxxjlgj96sKwIFlhiHkmb7EKiPWV2wOWl5QEndTK/FXi2bnRReVaAZYrS5t
+         carg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CpHvZU/WHkbGaD9FSLMeszBMLktHGvhDw07CKXGAXcM=;
+        b=D+duOpuufpF48hgpEnLIUPvFCY2tQlGXoVHJ0sA8nlNXN9qBIOcPCcFX528Yj3ka9y
+         oxMP5BGfxn87p9LKn81CsakuMjd6LosadgopsCInpvGTDytPRGdFReP5PLlFuZEfQeH0
+         yiwBxGFZkPX1/0k+yT2d0xCl+Ybt+yVEa8lDF8HdUTtVflqoSzfQn+Nf1jozVKfT80rW
+         QO7iC2qwgW+iuc8P5Bb03FdLsFY2f74ICcxqS5FeqI4k4/Qt0nPZ2JUBZPNKVPM2VRVI
+         QvHSjszB1lalGVZwvIJSOatvvL7LJX5tN0ult6maO34EpyaByR+QdYX9CFeTQ9xK+9Lp
+         D8yw==
+X-Gm-Message-State: AOAM532gPi1Tto1WupIOWbvQ/aOu/u4drVu9ImBycReNq+MlTxy3MP5s
+        XfJjfOB2J/CdOUgtxZ7unEKSPQ==
+X-Google-Smtp-Source: ABdhPJzfQB0pY61O/yD92LvRQT3eJPpAsD1G0s0K5sAYQL/z6uupIyVPgf0FrCoo524PwWasTUy9qw==
+X-Received: by 2002:a17:90b:80d:: with SMTP id bk13mr24583776pjb.41.1610951953745;
+        Sun, 17 Jan 2021 22:39:13 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id o13sm3235849pfg.124.2021.01.17.22.39.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 22:39:12 -0800 (PST)
+Date:   Mon, 18 Jan 2021 12:09:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J . Wysocki " <rjw@rjwysocki.net>,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] cpufreq: tegra20: Use resource-managed API
+Message-ID: <20210118063910.on4vgbllfmsduezo@vireshk-i7>
+References: <20210117231825.28256-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115171203.175115-1-alobakin@pm.me>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <20210117231825.28256-1-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:12:33PM +0000, Alexander Lobakin wrote:
-> From: Dongseok Yi <dseok.yi@samsung.com>
-> Date: Fri, 15 Jan 2021 22:20:35 +0900
+On 18-01-21, 02:18, Dmitry Osipenko wrote:
+> Switch cpufreq-tegra20 driver to use resource-managed API.
+> This removes the need to get opp_table pointer using
+> dev_pm_opp_get_opp_table() in order to release OPP table that
+> was requested by dev_pm_opp_set_supported_hw(), making the code
+> a bit more straightforward.
 > 
-> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> > skb_gso_segment is updated but following frag_skbs are not updated.
-> > 
-> > A call path skb_mac_gso_segment -> inet_gso_segment ->
-> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> > does not try to update UDP/IP header of the segment list but copy
-> > only the MAC header.
-> > 
-> > Update dport, daddr and checksums of each skb of the segment list
-> > in __udp_gso_segment_list. It covers both SNAT and DNAT.
-> > 
-> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > ---
-> > v1:
-> > Steffen Klassert said, there could be 2 options.
-> > https://lore.kernel.org/patchwork/patch/1362257/
-> > I was trying to write a quick fix, but it was not easy to forward
-> > segmented list. Currently, assuming DNAT only.
-> > 
-> > v2:
-> > Per Steffen Klassert request, move the procedure from
-> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-> > 
-> > To Alexander Lobakin, I've checked your email late. Just use this
-> > patch as a reference. It support SNAT too, but does not support IPv6
-> > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
-> > to the file is in IPv4 directory.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/cpufreq/tegra20-cpufreq.c | 45 +++++++++++++++----------------
+>  1 file changed, 22 insertions(+), 23 deletions(-)
 > 
-> I used another approach, tried to make fraglist GRO closer to plain
-> in terms of checksummming, as it is confusing to me why GSO packet
-> should have CHECKSUM_UNNECESSARY.
+> diff --git a/drivers/cpufreq/tegra20-cpufreq.c b/drivers/cpufreq/tegra20-cpufreq.c
+> index 8c893043953e..e8db3d75be25 100644
+> --- a/drivers/cpufreq/tegra20-cpufreq.c
+> +++ b/drivers/cpufreq/tegra20-cpufreq.c
+> @@ -32,6 +32,16 @@ static bool cpu0_node_has_opp_v2_prop(void)
+>  	return ret;
+>  }
+>  
+> +static void tegra20_cpufreq_put_supported_hw(void *opp_table)
+> +{
+> +	dev_pm_opp_put_supported_hw(opp_table);
+> +}
+> +
+> +static void tegra20_cpufreq_dt_unregister(void *cpufreq_dt)
+> +{
+> +	platform_device_unregister(cpufreq_dt);
+> +}
+> +
+>  static int tegra20_cpufreq_probe(struct platform_device *pdev)
+>  {
+>  	struct platform_device *cpufreq_dt;
+> @@ -68,42 +78,31 @@ static int tegra20_cpufreq_probe(struct platform_device *pdev)
+>  		return err;
+>  	}
+>  
+> +	err = devm_add_action_or_reset(&pdev->dev,
+> +				       tegra20_cpufreq_put_supported_hw,
+> +				       opp_table);
+> +	if (err)
+> +		return err;
+> +
+>  	cpufreq_dt = platform_device_register_simple("cpufreq-dt", -1, NULL, 0);
+>  	err = PTR_ERR_OR_ZERO(cpufreq_dt);
+>  	if (err) {
+>  		dev_err(&pdev->dev,
+>  			"failed to create cpufreq-dt device: %d\n", err);
+> -		goto err_put_supported_hw;
+> +		return err;
+>  	}
+>  
+> -	platform_set_drvdata(pdev, cpufreq_dt);
+> -
+> -	return 0;
+> -
+> -err_put_supported_hw:
+> -	dev_pm_opp_put_supported_hw(opp_table);
+> -
+> -	return err;
+> -}
+> -
+> -static int tegra20_cpufreq_remove(struct platform_device *pdev)
+> -{
+> -	struct platform_device *cpufreq_dt;
+> -	struct opp_table *opp_table;
+> -
+> -	cpufreq_dt = platform_get_drvdata(pdev);
+> -	platform_device_unregister(cpufreq_dt);
+> -
+> -	opp_table = dev_pm_opp_get_opp_table(get_cpu_device(0));
+> -	dev_pm_opp_put_supported_hw(opp_table);
+> -	dev_pm_opp_put_opp_table(opp_table);
+> +	err = devm_add_action_or_reset(&pdev->dev,
+> +				       tegra20_cpufreq_dt_unregister,
+> +				       cpufreq_dt);
+> +	if (err)
+> +		return err;
+>  
+>  	return 0;
+>  }
+>  
+>  static struct platform_driver tegra20_cpufreq_driver = {
+>  	.probe		= tegra20_cpufreq_probe,
+> -	.remove		= tegra20_cpufreq_remove,
+>  	.driver		= {
+>  		.name	= "tegra20-cpufreq",
+>  	},
 
-This is intentional. With fraglist GRO, we don't mangle packets
-in the standard (non NAT) case. So the checksum is still correct
-after segmentation. That is one reason why it has good forwarding
-performance when software segmentation is needed. Checksuming
-touches the whole packet and has a lot of overhead, so it is
-heplfull to avoid it whenever possible.
+Applied. Thanks.
 
-We should find a way to do the checksum only when we really
-need it. I.e. only if the headers of the head skb changed.
+Though please remember to update this to use the devm_ variant when it comes
+out.
 
+-- 
+viresh
