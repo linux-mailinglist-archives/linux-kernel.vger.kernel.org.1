@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985CD2FA836
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E875A2FA861
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436649AbhARSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        id S2436706AbhARSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406376AbhARSAn (ORCPT
+        with ESMTP id S2407505AbhARSBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:00:43 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFD1C061573;
-        Mon, 18 Jan 2021 10:00:02 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id CF5DBC6398; Mon, 18 Jan 2021 17:59:58 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1610992798; bh=dUnol4dNLt4sxGL9jTPjSsDKqZnkTEIQQ+kgAK0Zsa4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k23ozMbBIxCmX0mx16Dztfjapk5c303qZVpO73WYW4utMCqh4h3PRRVfNpxn1e12a
-         YXEFOk3vGxucBQ8mQD4CGjrTpWsKBYxcaikcf5w2aL1wLiKH0KlerboKaIHpan8Yp5
-         SANkCM5DS2S3NOyDuYMou6y4hB5WsUugoPIBwiT2uYv83V+dmuW8PGPz+c+TSqQmfn
-         43AS7QUFymR5bRrzh/qQbH6w4BpGCEwsQW1pcxECP6NpJOT48Y143oYSnq6peKQb4K
-         oEAhXc+4a4dxKULm1hhDZ5IgzNqqIMc8pWrZeQUb4roTxqhmXaUxRFh3vYjd4qxxeM
-         9tbKyXPfR2zZw==
-Date:   Mon, 18 Jan 2021 17:59:58 +0000
-From:   Sean Young <sean@mess.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 0/4] media: sunxi-cir: Cleanup and power management
-Message-ID: <20210118175958.GA3682@gofer.mess.org>
-References: <20210118060048.22267-1-samuel@sholland.org>
+        Mon, 18 Jan 2021 13:01:19 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5AAC061575;
+        Mon, 18 Jan 2021 10:00:21 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 6AC5B3EEC8;
+        Mon, 18 Jan 2021 19:00:20 +0100 (CET)
+Subject: Re: [PATCH v3 1/7] regulator: qcom-labibb: Implement voltage selector
+ ops
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
+ <20210117220830.150948-2-angelogioacchino.delregno@somainline.org>
+ <20210118120453.GC4455@sirena.org.uk>
+ <032d29df-9892-4774-2a61-7b634deafe06@somainline.org>
+ <20210118175710.GR4455@sirena.org.uk>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <35dc7fe1-aff4-4518-b523-d5888636b8cf@somainline.org>
+Date:   Mon, 18 Jan 2021 19:00:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118060048.22267-1-samuel@sholland.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210118175710.GR4455@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:00:44AM -0600, Samuel Holland wrote:
-> This series cleans up some dead code in the sunxi-cir driver and adds
-> system power management hooks.
+Il 18/01/21 18:57, Mark Brown ha scritto:
+> On Mon, Jan 18, 2021 at 06:54:26PM +0100, AngeloGioacchino Del Regno wrote:
+>> Il 18/01/21 13:04, Mark Brown ha scritto:
 > 
-> ---
-> Changes from v1:
->   - Unregister the RC device first thing in sunxi_ir_remove() [3]
+>>> Please do not submit new versions of already applied patches, please
+>>> submit incremental updates to the existing code.  Modifying existing
+>>> commits creates problems for other users building on top of those
+>>> commits so it's best practice to only change pubished git commits if
+>>> absolutely essential.
+> 
+>> Sorry for that. Should I send a v4 to fix that?
+> 
+> If there are any changes in this version then yes, if it's identical no.
 > 
 
-Thanks. I've tested it on my Cubieboard1 and everything looks fine.
+Yes as I wrote in the cover letter, I have changed it to use
+regulator_{list,map}_voltage_linear instead of linear_range, as you
+asked in v1.
 
-I've applied it to my tree.
+I will send a v4 with the aforemenetioned fix as a separated commit!
 
-Sean
-
-> Samuel Holland (4):
->   media: sunxi-cir: Clean up dead register writes
->   media: sunxi-cir: Remove unnecessary spinlock
->   media: sunxi-cir: Factor out hardware initialization
->   media: sunxi-cir: Implement suspend/resume/shutdown callbacks
-> 
->  drivers/media/rc/sunxi-cir.c | 169 ++++++++++++++++++++---------------
->  1 file changed, 95 insertions(+), 74 deletions(-)
-> 
-> -- 
-> 2.26.2
+- Angelo
