@@ -2,418 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681752F9F15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057232F9F16
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403923AbhARMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403933AbhARMBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:01:08 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCACCC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:00:27 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s15so8532050plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 04:00:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C9t16M0rhAwwUEc/H1PLusmgr6OGhsXk+XRbU0LxKps=;
-        b=pgB12yDy8aBb8+gbgBTicOvn5YaVLxjHWQ6bfBM3l7B+kbl9PvXhpec/b+BRrcpmg+
-         kg/zctCk/ywvi+M6NHojc3bseKjbCKRBKjgpU/P1E4YoPZzc4cXIWKrG+g8ZTTS2fQWD
-         2nBdt8v03RNwt4ar97bM6Tfc/HsL7DuAAHjVUbaqVFho70akbWeJSlD7JsOCu5EHY04f
-         I1WlBeg5WZD4uHsQP6YxFuZLxY3aAv6i5yOwTe6owlklrA5HH/liyu1Mdjd1KhX21yje
-         T3yXmPd05BvqCCDYFBmXIVNPEOZIryPRU1hFnZ3k/BJtW0LrBNJTMFd2CK3L/20Slf/Y
-         PJXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C9t16M0rhAwwUEc/H1PLusmgr6OGhsXk+XRbU0LxKps=;
-        b=ifLu54gcz1jNSKRW5Bbu5dcMRUBGDKCdxYkYG1t775Dx5dwXVNroqPlE2LdHtun8yD
-         83jhiIjZPNdLPg5+itAjYQUHv/S6iWKuQ0BRPGPXfGStKbM8yxE8eYm9jBa/vmfiwAW/
-         DWIRx3uiN2Vq7XiEHzeJzOAnJ1ZHKQOMMLOlsw7pY+e3CbxHNc68v9vLV0H/wB+isqJo
-         zO/xN8VDcmLm61KN6vUgg4dtqI6cKpcqCJyjrZmwi58MSIT3iuhQI4U2VyuTqn5BY212
-         lv+H2oVjnOMS6pAWBHUZZBTi6ErvhnsqROXmk47xfUc+n6LJ4JY8/t9yGM6Gu4ubmYmc
-         ScYA==
-X-Gm-Message-State: AOAM533NNc+O4AONyc+p2ZZIvPirBGrApyCZ5U1Dly7egHhmyBgMYJ1s
-        ac3xeoHcvA514YjJZUIRdWmoK3uDymisYub3vRA=
-X-Google-Smtp-Source: ABdhPJxnmoCYkRfPwQwFux3QOBPJ7RyAOx2LT0Y/U1zOLGNR2+2sDUkif9CrCw17/VksA4pWQb+BcN0rrSfVHhFBAAc=
-X-Received: by 2002:a17:90a:4d83:: with SMTP id m3mr26360559pjh.228.1610971227187;
- Mon, 18 Jan 2021 04:00:27 -0800 (PST)
+        id S2403982AbhARMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:06:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:34258 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403824AbhARMCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:02:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E77A31B;
+        Mon, 18 Jan 2021 04:01:37 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39A3F3F719;
+        Mon, 18 Jan 2021 04:01:35 -0800 (PST)
+Date:   Mon, 18 Jan 2021 12:01:32 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "A, Rashmi" <rashmi.a@intel.com>,
+        "Vaidya, Mahesh R" <mahesh.r.vaidya@intel.com>
+Subject: Re: [PATCH v1 5/9] firmware: keembay: Add support for Trusted
+ Firmware Service call
+Message-ID: <20210118120132.GC25035@e120937-lin>
+References: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
+ <20210114152700.21916-6-muhammad.husaini.zulkifli@intel.com>
+ <20210114164811.GG4854@sirena.org.uk>
+ <20210115185803.infufa4thlffagxk@bogus>
+ <DM6PR11MB287679CF20BBC7C81B6E38F5B8A40@DM6PR11MB2876.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210117160555.78376-1-hdegoede@redhat.com> <20210117160555.78376-7-hdegoede@redhat.com>
-In-Reply-To: <20210117160555.78376-7-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 18 Jan 2021 14:01:16 +0200
-Message-ID: <CAHp75VfZ5-2+sRwXyhfQcPhv_Eqm_sot8AXt-M0QfW+15YhqRA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/12] ASoC: arizona-jack: Move jack-detect variables
- to struct arizona_priv
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB287679CF20BBC7C81B6E38F5B8A40@DM6PR11MB2876.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Move all the jack-detect variables from struct arizona_extcon_info to
-> struct arizona_priv.
->
-> This is part of a patch series converting the arizona extcon driver into
-> a helper library for letting the arizona codec-drivers directly report jack
-> state through the standard sound/soc/soc-jack.c functions.
+Hi 
 
-Seems straight forward.
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+sorry I'm a bit late on this.
 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  sound/soc/codecs/arizona-jack.c | 97 ++++++++++-----------------------
->  sound/soc/codecs/arizona.h      | 36 ++++++++++++
->  2 files changed, 65 insertions(+), 68 deletions(-)
->
-> diff --git a/sound/soc/codecs/arizona-jack.c b/sound/soc/codecs/arizona-jack.c
-> index 72d23b15108c..c81c3b20f94e 100644
-> --- a/sound/soc/codecs/arizona-jack.c
-> +++ b/sound/soc/codecs/arizona-jack.c
-> @@ -27,6 +27,8 @@
->  #include <linux/mfd/arizona/registers.h>
->  #include <dt-bindings/mfd/arizona.h>
->
-> +#include "arizona.h"
-> +
->  #define ARIZONA_MAX_MICD_RANGE 8
->
->  #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
-> @@ -61,47 +63,6 @@
->
->  #define MICD_LVL_0_TO_8 (MICD_LVL_0_TO_7 | ARIZONA_MICD_LVL_8)
->
-> -struct arizona_extcon_info {
-> -       struct device *dev;
-> -       struct arizona *arizona;
-> -       struct mutex lock;
-> -       struct regulator *micvdd;
-> -       struct input_dev *input;
-> -
-> -       u16 last_jackdet;
-> -
-> -       int micd_mode;
-> -       const struct arizona_micd_config *micd_modes;
-> -       int micd_num_modes;
-> -
-> -       const struct arizona_micd_range *micd_ranges;
-> -       int num_micd_ranges;
-> -
-> -       bool micd_reva;
-> -       bool micd_clamp;
-> -
-> -       struct delayed_work hpdet_work;
-> -       struct delayed_work micd_detect_work;
-> -       struct delayed_work micd_timeout_work;
-> -
-> -       bool hpdet_active;
-> -       bool hpdet_done;
-> -       bool hpdet_retried;
-> -
-> -       int num_hpdet_res;
-> -       unsigned int hpdet_res[3];
-> -
-> -       bool mic;
-> -       bool detecting;
-> -       int jack_flips;
-> -
-> -       int hpdet_ip_version;
-> -
-> -       struct extcon_dev *edev;
-> -
-> -       struct gpio_desc *micd_pol_gpio;
-> -};
-> -
->  static const struct arizona_micd_config micd_default_modes[] = {
->         { ARIZONA_ACCDET_SRC, 1, 0 },
->         { 0,                  2, 1 },
-> @@ -135,9 +96,9 @@ static const unsigned int arizona_cable[] = {
->         EXTCON_NONE,
->  };
->
-> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info);
-> +static void arizona_start_hpdet_acc_id(struct arizona_priv *info);
->
-> -static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
-> +static void arizona_extcon_hp_clamp(struct arizona_priv *info,
->                                     bool clamp)
->  {
->         struct arizona *arizona = info->arizona;
-> @@ -222,7 +183,7 @@ static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
->         snd_soc_dapm_mutex_unlock(arizona->dapm);
->  }
->
-> -static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
-> +static void arizona_extcon_set_mode(struct arizona_priv *info, int mode)
->  {
->         struct arizona *arizona = info->arizona;
->
-> @@ -243,7 +204,7 @@ static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
->         dev_dbg(arizona->dev, "Set jack polarity to %d\n", mode);
->  }
->
-> -static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
-> +static const char *arizona_extcon_get_micbias(struct arizona_priv *info)
->  {
->         switch (info->micd_modes[0].bias) {
->         case 1:
-> @@ -257,7 +218,7 @@ static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
->         }
->  }
->
-> -static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
-> +static void arizona_extcon_pulse_micbias(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         const char *widget = arizona_extcon_get_micbias(info);
-> @@ -282,7 +243,7 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
->         }
->  }
->
-> -static void arizona_start_mic(struct arizona_extcon_info *info)
-> +static void arizona_start_mic(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         bool change;
-> @@ -339,7 +300,7 @@ static void arizona_start_mic(struct arizona_extcon_info *info)
->         }
->  }
->
-> -static void arizona_stop_mic(struct arizona_extcon_info *info)
-> +static void arizona_stop_mic(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         const char *widget = arizona_extcon_get_micbias(info);
-> @@ -407,7 +368,7 @@ static struct {
->         { 1000, 10000 },
->  };
->
-> -static int arizona_hpdet_read(struct arizona_extcon_info *info)
-> +static int arizona_hpdet_read(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         unsigned int val, range;
-> @@ -527,7 +488,7 @@ static int arizona_hpdet_read(struct arizona_extcon_info *info)
->         return val;
->  }
->
-> -static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
-> +static int arizona_hpdet_do_id(struct arizona_priv *info, int *reading,
->                                bool *mic)
->  {
->         struct arizona *arizona = info->arizona;
-> @@ -597,7 +558,7 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
->
->  static irqreturn_t arizona_hpdet_irq(int irq, void *data)
->  {
-> -       struct arizona_extcon_info *info = data;
-> +       struct arizona_priv *info = data;
->         struct arizona *arizona = info->arizona;
->         int id_gpio = arizona->pdata.hpdet_id_gpio;
->         unsigned int report = EXTCON_JACK_HEADPHONE;
-> @@ -684,7 +645,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
->         return IRQ_HANDLED;
->  }
->
-> -static void arizona_identify_headphone(struct arizona_extcon_info *info)
-> +static void arizona_identify_headphone(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         int ret;
-> @@ -737,7 +698,7 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
->         info->hpdet_active = false;
->  }
->
-> -static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
-> +static void arizona_start_hpdet_acc_id(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         int hp_reading = 32;
-> @@ -790,8 +751,8 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
->
->  static void arizona_micd_timeout_work(struct work_struct *work)
->  {
-> -       struct arizona_extcon_info *info = container_of(work,
-> -                                               struct arizona_extcon_info,
-> +       struct arizona_priv *info = container_of(work,
-> +                                               struct arizona_priv,
->                                                 micd_timeout_work.work);
->
->         mutex_lock(&info->lock);
-> @@ -805,7 +766,7 @@ static void arizona_micd_timeout_work(struct work_struct *work)
->         mutex_unlock(&info->lock);
->  }
->
-> -static int arizona_micd_adc_read(struct arizona_extcon_info *info)
-> +static int arizona_micd_adc_read(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         unsigned int val;
-> @@ -842,7 +803,7 @@ static int arizona_micd_adc_read(struct arizona_extcon_info *info)
->         return val;
->  }
->
-> -static int arizona_micd_read(struct arizona_extcon_info *info)
-> +static int arizona_micd_read(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         unsigned int val = 0;
-> @@ -875,7 +836,7 @@ static int arizona_micd_read(struct arizona_extcon_info *info)
->
->  static int arizona_micdet_reading(void *priv)
->  {
-> -       struct arizona_extcon_info *info = priv;
-> +       struct arizona_priv *info = priv;
->         struct arizona *arizona = info->arizona;
->         int ret, val;
->
-> @@ -969,7 +930,7 @@ static int arizona_micdet_reading(void *priv)
->
->  static int arizona_button_reading(void *priv)
->  {
-> -       struct arizona_extcon_info *info = priv;
-> +       struct arizona_priv *info = priv;
->         struct arizona *arizona = info->arizona;
->         int val, key, lvl, i;
->
-> @@ -1017,8 +978,8 @@ static int arizona_button_reading(void *priv)
->
->  static void arizona_micd_detect(struct work_struct *work)
->  {
-> -       struct arizona_extcon_info *info = container_of(work,
-> -                                               struct arizona_extcon_info,
-> +       struct arizona_priv *info = container_of(work,
-> +                                               struct arizona_priv,
->                                                 micd_detect_work.work);
->         struct arizona *arizona = info->arizona;
->         int ret;
-> @@ -1051,7 +1012,7 @@ static void arizona_micd_detect(struct work_struct *work)
->
->  static irqreturn_t arizona_micdet(int irq, void *data)
->  {
-> -       struct arizona_extcon_info *info = data;
-> +       struct arizona_priv *info = data;
->         struct arizona *arizona = info->arizona;
->         int debounce = arizona->pdata.micd_detect_debounce;
->
-> @@ -1075,8 +1036,8 @@ static irqreturn_t arizona_micdet(int irq, void *data)
->
->  static void arizona_hpdet_work(struct work_struct *work)
->  {
-> -       struct arizona_extcon_info *info = container_of(work,
-> -                                               struct arizona_extcon_info,
-> +       struct arizona_priv *info = container_of(work,
-> +                                               struct arizona_priv,
->                                                 hpdet_work.work);
->
->         mutex_lock(&info->lock);
-> @@ -1084,7 +1045,7 @@ static void arizona_hpdet_work(struct work_struct *work)
->         mutex_unlock(&info->lock);
->  }
->
-> -static int arizona_hpdet_wait(struct arizona_extcon_info *info)
-> +static int arizona_hpdet_wait(struct arizona_priv *info)
->  {
->         struct arizona *arizona = info->arizona;
->         unsigned int val;
-> @@ -1120,7 +1081,7 @@ static int arizona_hpdet_wait(struct arizona_extcon_info *info)
->
->  static irqreturn_t arizona_jackdet(int irq, void *data)
->  {
-> -       struct arizona_extcon_info *info = data;
-> +       struct arizona_priv *info = data;
->         struct arizona *arizona = info->arizona;
->         unsigned int val, present, mask;
->         bool cancelled_hp, cancelled_mic;
-> @@ -1380,7 +1341,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  {
->         struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
->         struct arizona_pdata *pdata = &arizona->pdata;
-> -       struct arizona_extcon_info *info;
-> +       struct arizona_priv *info;
->         unsigned int val;
->         unsigned int clamp_mode;
->         int jack_irq_fall, jack_irq_rise;
-> @@ -1754,7 +1715,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->
->  static int arizona_extcon_remove(struct platform_device *pdev)
->  {
-> -       struct arizona_extcon_info *info = platform_get_drvdata(pdev);
-> +       struct arizona_priv *info = platform_get_drvdata(pdev);
->         struct arizona *arizona = info->arizona;
->         int jack_irq_rise, jack_irq_fall;
->         bool change;
-> diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-> index b893d3e4c97c..d1a263a67bba 100644
-> --- a/sound/soc/codecs/arizona.h
-> +++ b/sound/soc/codecs/arizona.h
-> @@ -91,6 +91,42 @@ struct arizona_priv {
->         unsigned int dvfs_reqs;
->         struct mutex dvfs_lock;
->         bool dvfs_cached;
-> +
-> +       /* Variables used by arizona-jack.c code */
-> +       struct device *dev;
-> +       struct mutex lock;
-> +       struct delayed_work hpdet_work;
-> +       struct delayed_work micd_detect_work;
-> +       struct delayed_work micd_timeout_work;
-> +       struct regulator *micvdd;
-> +       struct input_dev *input;
-> +       struct extcon_dev *edev;
-> +       struct gpio_desc *micd_pol_gpio;
-> +
-> +       u16 last_jackdet;
-> +
-> +       int micd_mode;
-> +       const struct arizona_micd_config *micd_modes;
-> +       int micd_num_modes;
-> +
-> +       const struct arizona_micd_range *micd_ranges;
-> +       int num_micd_ranges;
-> +
-> +       bool micd_reva;
-> +       bool micd_clamp;
-> +
-> +       bool hpdet_active;
-> +       bool hpdet_done;
-> +       bool hpdet_retried;
-> +
-> +       bool mic;
-> +       bool detecting;
-> +
-> +       int num_hpdet_res;
-> +       unsigned int hpdet_res[3];
-> +
-> +       int jack_flips;
-> +       int hpdet_ip_version;
->  };
->
->  struct arizona_voice_trigger_info {
-> --
-> 2.28.0
->
+On Mon, Jan 18, 2021 at 10:28:33AM +0000, Zulkifli, Muhammad Husaini wrote:
+> Hi Sudeep and Mark,
+> 
+> Thanks for the review. I replied inline.
+> 
+> >-----Original Message-----
+> >From: Sudeep Holla <sudeep.holla@arm.com>
+> >Sent: Saturday, January 16, 2021 2:58 AM
+> >To: Mark Brown <broonie@kernel.org>
+> >Cc: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>;
+> >ulf.hansson@linaro.org; lgirdwood@gmail.com; robh+dt@kernel.org;
+> >devicetree@vger.kernel.org; Hunter, Adrian <adrian.hunter@intel.com>;
+> >michal.simek@xilinx.com; linux-mmc@vger.kernel.org; linux-
+> >kernel@vger.kernel.org; Shevchenko, Andriy
+> ><andriy.shevchenko@intel.com>; A, Rashmi <rashmi.a@intel.com>; Vaidya,
+> >Mahesh R <mahesh.r.vaidya@intel.com>; Sudeep Holla
+> ><sudeep.holla@arm.com>
+> >Subject: Re: [PATCH v1 5/9] firmware: keembay: Add support for Trusted
+> >Firmware Service call
+> >
+> >On Thu, Jan 14, 2021 at 04:48:11PM +0000, Mark Brown wrote:
+> >> On Thu, Jan 14, 2021 at 11:26:56PM +0800, Muhammad Husaini Zulkifli
+> >wrote:
+> >> > Export inline function to encapsulate AON_CFG1 for controling the
+> >> > I/O Rail supplied voltage levels which communicate with Trusted Firmware.
+> >>
+> >> Adding Sudeep for the SMCCC bits, not deleting any context for his
+> >> benefit.
+> >>
+> >
+> >Thanks Mark for cc-ing me and joining the dots. I completely forgot about that
+> >fact that this platform was using SCMI using SMC as transport. Sorry for that and
+> >it is my fault. I did review the SCMI/SMC support for this platform sometime in
+> >June/July last year and forgot the fact it is same platform when
+> >voltage/regulator support patches for SD/MMC was posted sometime later last
+> >year. I concentrated on SMCCC conventions and other details.
+> 
+> Yes Sudeep. I redesigned the way I handle the smccc call. Previously it was handled directly in mmc driver.
+> After few discussion, we conclude to create an abstraction using regulator framework to encapsulate this smccc call
+> during set voltage operation. Using standard abstraction will make things easier for the maintainer.
+> 
+> >
+> >[...]
+> >
+> >> > +#define ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE		\
+> >> > +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,		\
+> >> > +			   ARM_SMCCC_SMC_32,		\
+> >> > +			   ARM_SMCCC_OWNER_SIP,		\
+> >> > +			   KEEMBAY_SET_SD_VOLTAGE_ID)
+> >> > +
+> >> > +#define ARM_SMCCC_SIP_KEEMBAY_GET_SD_VOLTAGE		\
+> >> > +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,		\
+> >> > +			   ARM_SMCCC_SMC_32,		\
+> >> > +			   ARM_SMCCC_OWNER_SIP,		\
+> >> > +			   KEEMBAY_GET_SD_VOLTAGE_ID)
+> >> > +
+> >> > +#define KEEMBAY_REG_NUM_CONSUMERS 2
+> >> > +
+> >> > +struct keembay_reg_supply {
+> >> > +	struct regulator *consumer;
+> >> > +};
+> >> > +
+> >> > +#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
+> >> > +/*
+> >> > + * Voltage applied on the IO Rail is controlled from the Always On
+> >> > +Register using specific
+> >> > + * bits in AON_CGF1 register. This is a secure register. Keem Bay
+> >> > +SOC cannot exposed this
+> >> > + * register address to the outside world.
+> >> > + */
+> >> > +static inline int keembay_set_io_rail_supplied_voltage(int volt) {
+> >> > +	struct arm_smccc_res res;
+> >> > +
+> >> > +
+> >	arm_smccc_1_1_invoke(ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTA
+> >GE, volt,
+> >> > +&res);
+> >>
+> >> There is a SCMI voltage domain protocol intended for just this use
+> >> case of controlling regulators managed by the firmware, why are you
+> >> not using that for these systems?  See drivers/firmware/arm_scmi/voltage.c.
+> 
+> From mmc maintainer's perspective, I should use the common modelling either using 
+> regulator framework or pinctrl to perform voltage operation. Not just directly invoke 
+> smccc call in the mmc driver. That is why I came up with this regulator driver to perform 
+> voltage operation. 
+> 
 
+There is an SCMI regulator driver built on top of SCMIv3.0 Voltage Domain
+Protocol, so as long as your SCMI platform firmware support the new VD
+protocol you should be able to wire up a generic SCMI regulator in the DT
+(as described in the arm,scmi.txt bindings) and then just use the usual
+regulator framework ops with such SCMI regulator without the need to add
+a custom regulator using custom SMCCC calls).
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks
+
+Cristian
+
+> >>
+> >
+> >Indeed. Please switch to using the new voltage protocol added for this without
+> >any extra code. You just need to wire up DT for this.
+> 
+> May I know even if I wire up the DT, how should I call this from the mmc driver
+> For set/get voltage operation? Any example?
+> 
+> >
+> >Just for curiosity, where is SCMI platform firmware implemented ? On Cortex-
+> >A, secure side or external processor. Does this platform run TF-A ?
+> 
+> The KMB SCMI framework is implemented in secure runtime firmware (TF-A BL31). 
+> Hopefully I am answering your question.
+> 
+> >
+> >--
+> >Regards,
+> >Sudeep
