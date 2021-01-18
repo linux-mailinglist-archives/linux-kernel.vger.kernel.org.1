@@ -2,350 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C172FAB02
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938A02FAAF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388544AbhARUIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S2394197AbhARUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:07:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727459AbhARKpL (ORCPT
+        with ESMTP id S2389716AbhARLPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:45:11 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F3DC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:44:31 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id h17so12950587wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:44:31 -0800 (PST)
+        Mon, 18 Jan 2021 06:15:17 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C17C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:14:36 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id x12so8461667plr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:14:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D1pAk7xGgVeCRed9BW46rD3wGjZNlE83S5fKikDTrRs=;
-        b=oPO1wSd2myGMZ7dLrKqaMyK1BUOrzdWKFwOg1QR6RwJAsGRLu66DeuJmtpP29/2xHe
-         r+QntBek0c6IoJytOdjwnz0S6pz+M1Sn2SMzu2r4gb9V+8aMgXz5slpN6ga2aY/0d8F1
-         oXRGgXYKVUXuzvxzL6V853FdBI2XLYv5hifSnPePMEt8X1N19dRPh4JqQhB/Cue3WooU
-         uIgOoIZhcG2+QzGSqVUAVMca6B4NNT7gu77e1hhofoEx2YOOxkTTCO7KiVSI725Zi2KG
-         4l8nvE3UsokMmQWr5PoT7rna7rGH9VUhANQOjP5vx0iUYDCvKsvYjpRopwLZCS5Anxq4
-         Xr0A==
+         :content-disposition:in-reply-to:user-agent;
+        bh=f3ptHcRddHo09JrwqOLmYiudCQiAUluKch7z8eba8is=;
+        b=wkPXHPlId40HzO8PZUMzx9aTccRVG2EL/1dSDB7zwRCHCpq9qqVzzeRzhtgjNpNqo5
+         DZcuN7C8k/tMeYfV6jqWNbqc9mU2Jk+S2kdMxxyKuOeKLHKM6EoSs4YFFAxcytPYgbg7
+         u8m8XcB6WHO1MXjC9wtuVpfuMQD3DFQdXGVnH/8CgVkeFgLxCLZG2CCwKzAuHsWF6A1A
+         Xg60cL7VbyXm4RkiE+jqb/c4UYpAkwzPGRYUEgkIOXmA6G+G1bwGqLBqKm8zGAbk2Z6H
+         Pq9wZM/Nng4J1etd9aiUPsPhkRNkTjx72PeDBDcBc/hHAOypMNLJiuxofrqc2Dl635el
+         lC7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D1pAk7xGgVeCRed9BW46rD3wGjZNlE83S5fKikDTrRs=;
-        b=TM4nBn6JiivFs7ezauGvZ7u50WjvAqDfSL7E+3ZCYv58me32iWpFTYR65+saILPmQ9
-         wNfILerCxQhtXcUbkkYG+I60f9rgx3QVvazCxzPHMXGplfjWdJ8bJACxW+cEahc90cPi
-         yVrr8tCbo9ngySzj+I/5j4E3mQeiLkIDTtdWs/XHf+wC90wDzUfd1/h0KwBLfAbbSaZ6
-         CDQo2CiOds7GK6OvWNJeU67HrnUsaqiDG+SclBg+R/A4Xb3R3MWsa9uYYCKErNYla+Be
-         Dqox3BAkNW4HJfzjVhZgpKGCXsaQ7KcnJOLmwhCNMu0b/nIMf6jfILoA5vw/DYbYXQFU
-         y1pQ==
-X-Gm-Message-State: AOAM533ZjOczgxvYVuck7shYMzAomSB6akmaW1YBat4ikJavHy5eQCw1
-        4NcFGa0mpzOHIE0BMIH0lSe1oQ==
-X-Google-Smtp-Source: ABdhPJzhvX8TlnVaw+2C/yjxRN0DtOWgSqI5J01FSOyb9wf07sNKUxbm2Zt2RDH0VonRJP9hh/2HDg==
-X-Received: by 2002:a1c:cc14:: with SMTP id h20mr20335651wmb.180.1610966669862;
-        Mon, 18 Jan 2021 02:44:29 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:3d4d:985d:87b7:4d55])
-        by smtp.gmail.com with ESMTPSA id s4sm23004969wme.38.2021.01.18.02.44.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 02:44:28 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:44:27 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Elena Petrova <lenaptr@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        George-Aurelian Popescu <georgepope@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        George Popescu <george.apopescu97@gmail.com>
-Subject: Re: [PATCH v3 9/9] KVM: arm64: Add UBSan tests for PKVM.
-Message-ID: <20210118104427.lgjt4ndhnntz4bld@google.com>
-References: <20210115171830.3602110-1-lenaptr@google.com>
- <20210115171830.3602110-10-lenaptr@google.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f3ptHcRddHo09JrwqOLmYiudCQiAUluKch7z8eba8is=;
+        b=La5ji13tCQW60I5awUWM5vT5Q1MGJ/anDyPS6HiqcCPfUaOfyjS6rjcSL/QXx+MSql
+         BOdRJ2uQ/nUNLzAIo9SL2PCdT2nBuM4agoi/pHXhqK7iUjf5K6M4ujI7dNqoGEWJT+a/
+         z1tn/FcgtHbv4E1MS9X7pAntRmCXHMg5Jqr/me0M+nZ+2IamdZ8CRVkFcmA2rqqzkLtv
+         IuhsCMrv2mEwXQu1zrhRQb65Q7aYkmIa7ZVmtrqUFH593Raj4nLkGBX58rSRseXjEwzh
+         GXREqPGuR/J4K6h+DHFri5TjkKqf+vR5lNaZJ7UDCuHs7et5uGGJZuxvZOUVLhpqFVuX
+         vX9Q==
+X-Gm-Message-State: AOAM532rczhxX+qNeaFH5HzDfx0irRiCrOh4JGNyw+qmTLspRF5Wpa4i
+        A4IUZ+zEZNhcQss0X/EJbRoRhg==
+X-Google-Smtp-Source: ABdhPJy9rOVxWu9qXQj/5gpR2cxezh7bnttUrCNX41iIej7vmVNd5QEsZpouZRMc8eHDr1/m6VIvpw==
+X-Received: by 2002:a17:90a:4403:: with SMTP id s3mr17503732pjg.216.1610968476162;
+        Mon, 18 Jan 2021 03:14:36 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id k25sm15357509pfi.10.2021.01.18.03.14.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 03:14:36 -0800 (PST)
+Date:   Mon, 18 Jan 2021 16:44:26 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 09/12] opp: Add devm_pm_opp_attach_genpd
+Message-ID: <20210118111426.3nahqv3pjklhxa2t@vireshk-i7>
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118005524.27787-10-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115171830.3602110-10-lenaptr@google.com>
+In-Reply-To: <20210118005524.27787-10-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:18:30PM +0000, Elena Petrova wrote:
-> From: George-Aurelian Popescu <georgepope@google.com>
+On 18-01-21, 03:55, Dmitry Osipenko wrote:
+> Add resource-managed version of dev_pm_opp_attach_genpd().
 > 
-> Test the UBsan functionality inside hyp/nVHE.
-> Because modules are not supported inside of hyp/nVHE code, the default
-> testing module for UBSan can not be used.
-> New functions have to be defined inside of hyp/nVHE.
-> They are called in kvm_get_mdcr_el2, to test UBSAN whenever a VM starts.
-> 
-> Signed-off-by: Elena Petrova <lenaptr@google.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  arch/arm64/include/asm/assembler.h          |  17 ++-
->  arch/arm64/include/asm/kvm_debug_buffer.h   |  10 +-
->  arch/arm64/include/asm/kvm_ubsan.h          |   2 +-
->  arch/arm64/kvm/hyp/include/hyp/test_ubsan.h | 112 ++++++++++++++++++++
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c          |   3 +
->  arch/arm64/kvm/kvm_ubsan_buffer.c           |   1 -
->  6 files changed, 128 insertions(+), 17 deletions(-)
->  create mode 100644 arch/arm64/kvm/hyp/include/hyp/test_ubsan.h
+>  drivers/opp/core.c     | 35 +++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  8 ++++++++
+>  2 files changed, 43 insertions(+)
 > 
-> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> index ebc18a8a0e1f..8422b0d925e8 100644
-> --- a/arch/arm64/include/asm/assembler.h
-> +++ b/arch/arm64/include/asm/assembler.h
-> @@ -259,16 +259,15 @@ alternative_endif
->  	.endm
->  
->  	/*
-> -         * @sym: The name of the per-cpu variable
-> -         * @reg: value to store
-> -         * @tmp1: scratch register
-> -         * @tmp2: scratch register
-> -         */
-> -        .macro str_this_cpu sym, reg, tmp1, tmp2
-> -        adr_this_cpu \tmp1, \sym, \tmp2
-> +	 * @sym: The name of the per-cpu variable
-> +	 * @reg: value to store
-> +	 * @tmp1: scratch register
-> +	 * @tmp2: scratch register
-> +	 */
-> +	.macro str_this_cpu sym, reg, tmp1, tmp2
-> +	adr_this_cpu \tmp1, \sym, \tmp2
->          str \reg, [\tmp1]
-> -        .endm
-> -
-> +	.endm
->  /*
->   * vma_vm_mm - get mm pointer from vma pointer (vma->vm_mm)
->   */
-> diff --git a/arch/arm64/include/asm/kvm_debug_buffer.h b/arch/arm64/include/asm/kvm_debug_buffer.h
-> index e5375c2cff1a..361b473bb004 100644
-> --- a/arch/arm64/include/asm/kvm_debug_buffer.h
-> +++ b/arch/arm64/include/asm/kvm_debug_buffer.h
-> @@ -3,10 +3,8 @@
->   * Copyright 2020 Google LLC
->   * Author: George Popescu <georgepope@google.com>
->   */
-> -
->  #include <linux/percpu-defs.h>
->  
-> -
->  #define KVM_DEBUG_BUFFER_SIZE 1000
->  
->  #ifdef __KVM_NVHE_HYPERVISOR__
-> @@ -20,17 +18,17 @@
->  #else
->  #define DECLARE_KVM_DEBUG_BUFFER(type_name, buffer_name, write_ind, size)\
->  	DECLARE_KVM_NVHE_PER_CPU(type_name, buffer_name)[size]; 	\
-> -        DECLARE_KVM_NVHE_PER_CPU(unsigned long, write_ind);
-> +	DECLARE_KVM_NVHE_PER_CPU(unsigned long, write_ind);
->  #endif //__KVM_NVHE_HYPERVISOR__
->  
->  #ifdef __ASSEMBLY__
->  #include <asm/assembler.h>
->  
->  .macro clear_buffer tmp1, tmp2, tmp3
-> -        mov \tmp1, 0
-> +	mov \tmp1, 0
->  #ifdef CONFIG_UBSAN
-> -        str_this_cpu kvm_ubsan_buff_wr_ind, \tmp1, \tmp2, \tmp3
-> +	str_this_cpu kvm_ubsan_buff_wr_ind, \tmp1, \tmp2, \tmp3
->  #endif //CONFIG_UBSAN
->  .endm
-Are these fixing formatting? If so, move it to the patch that introduced this.
-
->  
-> -#endif
-> \ No newline at end of file
-> +#endif
-> diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-> index da4a3b4e28e0..0b8bed08d48e 100644
-> --- a/arch/arm64/include/asm/kvm_ubsan.h
-> +++ b/arch/arm64/include/asm/kvm_ubsan.h
-> @@ -9,7 +9,6 @@
->  #define UBSAN_MAX_TYPE 6
->  #define KVM_UBSAN_BUFFER_SIZE 1000
->  
-> -
-ditto
-
->  struct ubsan_values {
->  	void *lval;
->  	void *rval;
-> @@ -18,6 +17,7 @@ struct ubsan_values {
->  
->  struct kvm_ubsan_info {
->  	enum {
-> +		UBSAN_NONE,
-
-This also looks like it should have been in a previous patch. The code assumes
-that 'type == 0' means 'empty slot'. So presumably this is fixing a bug?
-
->  		UBSAN_OUT_OF_BOUNDS,
->  		UBSAN_UNREACHABLE_DATA,
->  		UBSAN_SHIFT_OUT_OF_BOUNDS,
-> diff --git a/arch/arm64/kvm/hyp/include/hyp/test_ubsan.h b/arch/arm64/kvm/hyp/include/hyp/test_ubsan.h
-> new file mode 100644
-> index 000000000000..07759c0d1e0e
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/include/hyp/test_ubsan.h
-> @@ -0,0 +1,112 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#include <linux/ctype.h>
-> +
-> +typedef void(*test_ubsan_fp)(void);
-> +
-> +static void test_ubsan_add_overflow(void)
-> +{
-> +	volatile int val = INT_MAX;
-> +
-> +	val += 2;
-> +}
-> +
-> +static void test_ubsan_sub_overflow(void)
-> +{
-> +	volatile int val = INT_MIN;
-> +	volatile int val2 = 2;
-> +
-> +	val -= val2;
-> +}
-> +
-> +static void test_ubsan_mul_overflow(void)
-> +{
-> +	volatile int val = INT_MAX / 2;
-> +
-> +	val *= 3;
-> +}
-> +
-> +static void test_ubsan_negate_overflow(void)
-> +{
-> +	volatile int val = INT_MIN;
-> +
-> +	val = -val;
-> +}
-> +
-> +static void test_ubsan_divrem_overflow(void)
-> +{
-> +	volatile int val = 16;
-> +	volatile int val2 = 0;
-> +
-> +	val /= val2;
-> +}
-> +
-> +static void test_ubsan_shift_out_of_bounds(void)
-> +{
-> +	volatile int val = -1;
-> +	int val2 = 10;
-> +
-> +	val2 <<= val;
-> +}
-> +
-> +static void test_ubsan_out_of_bounds(void)
-> +{
-> +	volatile int i = 4, j = 5;
-> +	volatile int arr[4];
-> +	
-> +	arr[j] = i;
-> +}
-> +
-> +static void test_ubsan_load_invalid_value(void)
-> +{
-> +	volatile char *dst, *src;
-> +	bool val, val2, *ptr;
-> +	char c = 4;
-> +
-> +	dst = (char *)&val;
-> +	src = &c;
-> +	*dst = *src;
-> +
-> +	ptr = &val2;
-> +	val2 = val;
-> +}
-> +
-> +static void test_ubsan_misaligned_access(void)
-> +{
-> +	volatile char arr[5] __aligned(4) = {1, 2, 3, 4, 5};
-> +	volatile int *ptr, val = 6;
-> +
-> +	ptr = (int *)(arr + 1);
-> +	*ptr = val;
-> +}
-> +
-> +static void test_ubsan_object_size_mismatch(void)
-> +{
-> +	/* "((aligned(8)))" helps this not into be misaligned for ptr-access. */
-> +	volatile int val __aligned(8) = 4;
-> +	volatile long long *ptr, val2;
-> +
-> +	ptr = (long long *)&val;
-> +	val2 = *ptr;
-> +}
-> +
-> +static const test_ubsan_fp test_ubsan_array[] = {
-> +	test_ubsan_out_of_bounds,
-> +	test_ubsan_add_overflow,
-> +	test_ubsan_sub_overflow,
-> +	test_ubsan_mul_overflow,
-> +	test_ubsan_negate_overflow,
-> +	test_ubsan_divrem_overflow,
-> +	test_ubsan_shift_out_of_bounds,
-> +	test_ubsan_load_invalid_value,
-> +	test_ubsan_misaligned_access,
-> +	test_ubsan_object_size_mismatch,
-> +};
-> +
-> +static void test_ubsan(void)
-> +{
-> +	unsigned int i;
-> +	
-> +	for (i = 0; i < ARRAY_SIZE(test_ubsan_array); i++)
-> +		test_ubsan_array[i]();
-> +}
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> index a906f9e2ff34..939600e9fdd6 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> @@ -13,6 +13,7 @@
->  #include <asm/kvm_mmu.h>
->  
->  #include <nvhe/trap_handler.h>
-> +#include <hyp/test_ubsan.h>
->  
->  DEFINE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
->  
-> @@ -90,6 +91,8 @@ static void handle___vgic_v3_init_lrs(struct kvm_cpu_context *host_ctxt)
->  static void handle___kvm_get_mdcr_el2(struct kvm_cpu_context *host_ctxt)
->  {
->  	cpu_reg(host_ctxt, 1) = __kvm_get_mdcr_el2();
-> +	if (IS_ENABLED(CONFIG_TEST_UBSAN))
-> +		test_ubsan();
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 8e0d2193fd5f..49419ab9fbb4 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -2891,3 +2891,38 @@ devm_pm_opp_register_set_opp_helper(struct device *dev,
+>  	return opp_table;
 >  }
-
-We cannot keep this in here. It's useful to exercise your code in development
-but not something you should upstream. I would either remove this completely or
-implement it as a separate hypercall.
-
+>  EXPORT_SYMBOL_GPL(devm_pm_opp_register_set_opp_helper);
+> +
+> +static void devm_pm_opp_detach_genpd(void *data)
+> +{
+> +	dev_pm_opp_detach_genpd(data);
+> +}
+> +
+> +/**
+> + * devm_pm_opp_attach_genpd - Attach genpd(s) for the device and save virtual device pointer
+> + * @dev: Consumer device for which the genpd is getting attached.
+> + * @names: Null terminated array of pointers containing names of genpd to attach.
+> + * @virt_devs: Pointer to return the array of virtual devices.
+> + *
+> + * This is a resource-managed version of dev_pm_opp_attach_genpd().
+> + *
+> + * Return: pointer to 'struct opp_table' on success and errorno otherwise.
+> + */
+> +struct opp_table *
+> +devm_pm_opp_attach_genpd(struct device *dev, const char **names,
+> +			 struct device ***virt_devs)
+> +{
+> +	struct opp_table *opp_table;
+> +	int err;
+> +
+> +	opp_table = dev_pm_opp_attach_genpd(dev, names, virt_devs);
+> +	if (IS_ERR(opp_table))
+> +		return opp_table;
+> +
+> +	err = devm_add_action_or_reset(dev, devm_pm_opp_detach_genpd,
+> +				       opp_table);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+> +	return opp_table;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_pm_opp_attach_genpd);
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index 6de5853aaada..eefd0b15890c 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -170,6 +170,7 @@ void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
+>  int dev_pm_opp_sync_regulators(struct device *dev);
+>  int dev_pm_opp_set_voltage(struct device *dev, struct dev_pm_opp *opp);
+>  struct opp_table *devm_pm_opp_register_set_opp_helper(struct device *dev, int (*set_opp)(struct dev_pm_set_opp_data *data));
+> +struct opp_table *devm_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
+>  #else
+>  static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+>  {
+> @@ -436,6 +437,13 @@ devm_pm_opp_register_set_opp_helper(struct device *dev,
+>  	return ERR_PTR(-ENOTSUPP);
+>  }
 >  
->  static void handle___vgic_v3_save_aprs(struct kvm_cpu_context *host_ctxt)
-> diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> index 2c7060cbb48b..49bedc9de139 100644
-> --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
-> +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> @@ -11,7 +11,6 @@
->  #include <asm/kvm_asm.h>
->  #include <kvm/arm_pmu.h>
+> +static inline struct opp_table *
+> +devm_pm_opp_attach_genpd(struct device *dev, const char **names,
+> +			 struct device ***virt_devs)
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+>  #endif		/* CONFIG_PM_OPP */
 >  
-> -#include <ubsan.h>
-ditto
+>  #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
 
->  #include <asm/kvm_ubsan.h>
->  
->  DECLARE_KVM_DEBUG_BUFFER(struct kvm_ubsan_info, kvm_ubsan_buffer,
-> -- 
-> 2.30.0.296.g2bfb1c46d8-goog
-> 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+Manually applied. Thanks.
+
+-- 
+viresh
