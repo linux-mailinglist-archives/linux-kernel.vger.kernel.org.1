@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166E92F9AE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E402E2F9AFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733295AbhARH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:59:48 -0500
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:46492 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733243AbhARH7o (ORCPT
+        id S2387492AbhARIID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:08:03 -0500
+Received: from smtprelay0047.hostedemail.com ([216.40.44.47]:56604 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733285AbhARIHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:59:44 -0500
-Received: by mail-lj1-f169.google.com with SMTP id u11so17176499ljo.13
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:59:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MKOHJ0aLXDSerE5Z+jLbJV+4tHZob15EnyShW6J4TTs=;
-        b=K22vdCD8+XrkBUaRrrtXAjj+bPiqjH4O2rtihh2t0pLyft41WQ3ZmpOVHTRjoL4YJ5
-         sifzf4UQ0nTaHG/WWOx1WfEHEywwb2LQDkSIan5Xqrx+Reujs0KSWaUGTCyLJb8OpcHE
-         2omyLgTslKv+5VfuusR7DwNGo+evchyLMlSxC7AxBKrnybzwlMxQD09j3yufsvgaVWF5
-         Ft2LF+d3XgdRxIuqEMo6332DrA/JiphXyUzCQliytN7sd+To0ji/P7Fqv2sutoPFPY39
-         FmXsCwm+EHO0bZQ+KeTQbAe9m7Y17wII1pPZFQHv4aATOgdSleWhwMr7JPWjB9W+a3Ww
-         6E9Q==
-X-Gm-Message-State: AOAM5300DgDrtgqJnDYgio9A+eOQNUThSkBVN/RSHlW2jK8puutAX/iJ
-        DfOtCF1AlH6YCe1CTVT4m0I=
-X-Google-Smtp-Source: ABdhPJwF6echMsZk8YPjE1xc74Iqgx59a/UB3HpsTUH/F60vNGgu0Y5/O0vGvgr39df+vHI3ymbTYw==
-X-Received: by 2002:a2e:7a07:: with SMTP id v7mr9713744ljc.119.1610956740791;
-        Sun, 17 Jan 2021 23:59:00 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id 29sm1815411lfr.304.2021.01.17.23.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 23:59:00 -0800 (PST)
-Date:   Mon, 18 Jan 2021 09:58:51 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] regulator: bd718x7, bd71828, Fix dvs voltage levels
-Message-ID: <20210118075851.GA1016281@localhost.localdomain>
+        Mon, 18 Jan 2021 03:07:54 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 93B0D1800BC3D;
+        Mon, 18 Jan 2021 08:07:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3873:4321:4385:5007:6119:7652:7903:9010:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12663:12740:12760:12895:13439:13972:14096:14097:14659:14721:21080:21433:21451:21627:21740:21987:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: twig35_0f0e18727547
+X-Filterd-Recvd-Size: 3611
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 18 Jan 2021 08:07:08 +0000 (UTC)
+Message-ID: <5f204c6bde4324cd73ab9b6f6b5bf9d436e30abe.camel@perches.com>
+Subject: Re: [PATCH] mm/memcontrol: Remove unneeded semicolons
+From:   Joe Perches <joe@perches.com>
+To:     Chengyang Fan <cy.fan@huawei.com>, akpm@linux-foundation.org
+Cc:     richard.weiyang@gmail.com, linux-kernel@vger.kernel.org
+In-Reply-To: <0e528801-78ed-e71c-1237-648a86f0791c@huawei.com>
+References: <20210118015229.2599778-1-cy.fan@huawei.com>
+         <0037bf34a326f44585c634d346c8134cf9efc062.camel@perches.com>
+         <0e528801-78ed-e71c-1237-648a86f0791c@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Date:   Sun, 17 Jan 2021 23:03:29 -0800
+User-Agent: Evolution 3.38.1-1 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROHM BD718x7 and BD71828 drivers support setting HW state
-specific voltages from device-tree. This is used also by various
-in-tree DTS files.
+On Mon, 2021-01-18 at 11:18 +0800, Chengyang Fan wrote:
+> I'm doing the work.
 
-These drivers do incorrectly try to compose bit-map using enum
-values. By a chance this works for first two valid levels having
-values 1 and 2 - but setting values for the rest of the levels
-do indicate capbility of setting values for first levels as
-well. Luckily the regulators which support settin values for
-SUSPEND/LPSR do usually also support setting values for RUN
-and IDLE too - thus this has not been such a fatal issue.
-
-Fix this by defining the old enum values as bits and using
-new enum in parsing code. This allows keeping existing IC
-specific drivers intact and only adding the defines and
-slightly changing the rohm-regulator.c
-
-Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-
-Resending after testing the logic with additional prints on
-BD71815 (driver under development) and BD71847.
-
- drivers/regulator/rohm-regulator.c |  9 ++++++---
- include/linux/mfd/rohm-generic.h   | 14 ++++++--------
- 2 files changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
-index 399002383b28..5c558b153d55 100644
---- a/drivers/regulator/rohm-regulator.c
-+++ b/drivers/regulator/rohm-regulator.c
-@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
- 	char *prop;
- 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
+Good, thank you.
  
--	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
--		if (dvs->level_map & (1 << i)) {
--			switch (i + 1) {
-+	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
-+		int bit;
-+
-+		bit = BIT(i);
-+		if (dvs->level_map & bit) {
-+			switch (bit) {
- 			case ROHM_DVS_LEVEL_RUN:
- 				prop = "rohm,dvs-run-voltage";
- 				reg = dvs->run_reg;
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..2b85b9deb03a 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
- 	struct regmap *regmap;
- };
- 
--enum {
--	ROHM_DVS_LEVEL_UNKNOWN,
--	ROHM_DVS_LEVEL_RUN,
--	ROHM_DVS_LEVEL_IDLE,
--	ROHM_DVS_LEVEL_SUSPEND,
--	ROHM_DVS_LEVEL_LPSR,
--	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
--};
-+#define ROHM_DVS_LEVEL_RUN		BIT(0)
-+#define ROHM_DVS_LEVEL_IDLE		BIT(1)
-+#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
-+#define ROHM_DVS_LEVEL_LPSR		BIT(3)
-+#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
-+#define ROHM_DVS_LEVEL_UNKNOWN		0
- 
- /**
-  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
+> Should I submit patches individually or together?
 
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.25.4
+I believe you should submit multiple patches, one for each subsystem.
 
+For instance, a single patch should change all of:
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+> arch/powerpc/include/asm/book3s/32/mmu-hash.h:static inline void cleanup_cpu_mmu_context(void) { };
+> arch/powerpc/include/asm/book3s/64/mmu.h:static inline void radix_init_pseries(void) { };
+> arch/powerpc/include/asm/firmware.h:static inline void pseries_probe_fw_features(void) { };
+> arch/powerpc/include/asm/kvm_ppc.h:static inline void kvmppc_alloc_host_rm_ops(void) {};
+> arch/powerpc/include/asm/kvm_ppc.h:static inline void kvmppc_free_host_rm_ops(void) {};
+> arch/powerpc/include/asm/kvm_ppc.h:static inline void kvmppc_free_pimap(struct kvm *kvm) {};
+> arch/powerpc/include/asm/paca.h:static inline void allocate_paca_ptrs(void) { };
+> arch/powerpc/include/asm/paca.h:static inline void allocate_paca(int cpu) { };
+> arch/powerpc/include/asm/paca.h:static inline void free_unused_pacas(void) { };
+> arch/powerpc/include/asm/rtas.h:static inline void rtas_initialize(void) { };
+> arch/powerpc/include/asm/setup.h:static inline void setup_barrier_nospec(void) { };
+> arch/powerpc/include/asm/setup.h:static inline void do_barrier_nospec_fixups_range(bool enable, void *start, void *end) { };
+> arch/powerpc/include/asm/setup.h:static inline void setup_spectre_v2(void) {};
+> arch/powerpc/include/asm/simple_spinlock.h:static inline void splpar_spin_yield(arch_spinlock_t *lock) {};
+> arch/powerpc/include/asm/simple_spinlock.h:static inline void splpar_rw_yield(arch_rwlock_t *lock) {};
+> arch/powerpc/include/asm/smp.h:static inline void smp_release_cpus(void) { };
+> arch/powerpc/include/asm/xmon.h:static inline void xmon_setup(void) { };
+> arch/powerpc/include/asm/xmon.h:static inline void xmon_register_spus(struct list_head *list) { };
+> arch/powerpc/kernel/prom.c:static inline void save_fscr_to_task(void) {};
+> arch/powerpc/kernel/setup.h:static inline void setup_power_save(void) { };
+> arch/powerpc/kernel/setup.h:static inline void check_smt_enabled(void) { };
+> arch/powerpc/kernel/setup.h:static inline void setup_tlb_core_data(void) { };
+> arch/powerpc/kernel/setup.h:static inline void exc_lvl_early_init(void) { };
+> arch/powerpc/kernel/setup.h:static inline void emergency_stack_init(void) { };
+> arch/powerpc/kernel/setup.h:static inline void kvm_cma_reserve(void) { };
+> arch/powerpc/platforms/powernv/subcore.h:static inline void update_subcore_sibling_mask(void) { };
+> arch/powerpc/platforms/pseries/pseries.h:static inline void smp_init_pseries(void) { };
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
