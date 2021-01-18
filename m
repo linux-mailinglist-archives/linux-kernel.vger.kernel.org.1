@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6C32F9812
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 04:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69712F9815
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 04:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731002AbhARDKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 22:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729621AbhARDKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 22:10:16 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400E1C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 19:09:36 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id w1so8388640pjc.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 19:09:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y7fVUHJpnbiVdDH0WkhU1b1wymkei/DPXiWGa0ITBTE=;
-        b=r6JyUrIQNeHV5o/KTBM5N19gF1uNyoUaCfIspIYK2RDXngjTk+vi7iUtpEWUFyfPmo
-         vZeB4j6NxZsS36VTFjwM1teAazyaEfL60a22OHxZ9BSrzizOJWk8nxQN10qJ8DyZjpz/
-         kkfeCzlu+zv8yCnNdVf9Z5ADMUTtd70+Jh3+mjeefqcJXZUdb5KItrp47Ym8/UpWxEdi
-         +Pon+K6K5XRgi3qixt9RDUzzVD40BJeep9mtzKa+owlCD0bRm8YUAskEe2GVdXKCk8fJ
-         +owi7Q4203+OaOcGTcqMwR0Jve2csxv90KXIRIuF595nQLoJSAi6OURWw3Kdcz8Glsho
-         G2uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y7fVUHJpnbiVdDH0WkhU1b1wymkei/DPXiWGa0ITBTE=;
-        b=EFvPmy3jljP7qFnSn53H1zhtAgfkBmx9X7x2Fbd2g4+C9Gqoqn7T8y50688SCXtlKF
-         dFIkpm2Tu0kKHd33VBRHi9rIog+XfpU/PMVqUwbyTm1nJ+X6qpAtNPgQh3V26bxlPIWr
-         CDRu8dqYGyq1YHFyWvY+SQ94o1Xgw6fTyYuZD0V+/hOMOHrlTv8di2XrPhnLrVAQaBll
-         IDHHlvnZ9/REGbZ2z/YjjpWdt1dTziPYMi9+0dNidH7sPkhXrQFWdfUlAdWNGesEnsNB
-         /MsYEmLksiSBRACpjKjiNbjAJTJJMfTSkhfU+8FVJHF3Q/ZfCiU04TY1dzrKdpZ6tOdM
-         OmFQ==
-X-Gm-Message-State: AOAM533oi3jOMNvyMkQ45ZVcTQV7NeAJF07emXpIInEnk3gteW+ErQvO
-        9jjTo1yMuYEm5J2nE6IFZEQ=
-X-Google-Smtp-Source: ABdhPJyn+h+lOgNKwYk+RTChRWeEBeEGyyiRCdutVdXDyaX6GRNyFRLwab0gU7p6KyCTnSY7nUNDUg==
-X-Received: by 2002:a17:902:e551:b029:de:8dba:84a3 with SMTP id n17-20020a170902e551b02900de8dba84a3mr8430343plf.8.1610939375725;
-        Sun, 17 Jan 2021 19:09:35 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e24sm14594805pjt.16.2021.01.17.19.09.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 19:09:34 -0800 (PST)
-Subject: Re: [PATCH] initramfs: Panic with memory information
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, opendmb@gmail.com,
-        Barret Rhoden <brho@google.com>, Arnd Bergmann <arnd@arndb.de>
-References: <20210114231517.1854379-1-f.fainelli@gmail.com>
- <20210117133355.10fe86c628279161bb3435d4@linux-foundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <36c6065f-0680-4ac0-c480-1382aa13fcb0@gmail.com>
-Date:   Sun, 17 Jan 2021 19:09:32 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        id S1731477AbhARDPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 22:15:40 -0500
+Received: from mga18.intel.com ([134.134.136.126]:34603 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729621AbhARDPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 22:15:36 -0500
+IronPort-SDR: ZJRwwSSMLArl6wx/SczQ+9ZFTuAlaIswDgxfqBeJfwXZsYy1IJBYAwis2caD+1tfnHkWUY8auh
+ rpPRjg+Al0ZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="166419926"
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="166419926"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 19:14:53 -0800
+IronPort-SDR: mqExlmr67IaatKIyEDPpdYgz0d9PxrRx+xZjSKdljhzefdMM2uBPKu0kL0TbhDdaXNWLHYYoo+
+ f5RV9uo/z40Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
+   d="scan'208";a="365205613"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga002.jf.intel.com with ESMTP; 17 Jan 2021 19:14:51 -0800
+Date:   Mon, 18 Jan 2021 11:10:30 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH v6 2/2] Documentation: fpga: dfl: Add description for DFL
+  UIO support
+Message-ID: <20210118031030.GB8153@yilunxu-OptiPlex-7050>
+References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
+ <1610502848-30345-3-git-send-email-yilun.xu@intel.com>
+ <YAO1vA6DWxTdjBOz@epycbox.lan>
 MIME-Version: 1.0
-In-Reply-To: <20210117133355.10fe86c628279161bb3435d4@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAO1vA6DWxTdjBOz@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jan 16, 2021 at 07:57:48PM -0800, Moritz Fischer wrote:
+> Hi Xu,
+> 
+> On Wed, Jan 13, 2021 at 09:54:08AM +0800, Xu Yilun wrote:
+> > This patch adds description for UIO support for dfl devices on DFL
+> > bus.
+> > 
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> > v2: no doc in v1, add it for v2.
+> > v3: some documentation fixes.
+> > v4: documentation change since the driver matching is changed.
+> > v5: no change.
+> > v6: improve the title of the userspace driver support section.
+> >     some word improvement.
+> > ---
+> >  Documentation/fpga/dfl.rst | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> > 
+> > diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+> > index 0404fe6..c33b6d0 100644
+> > --- a/Documentation/fpga/dfl.rst
+> > +++ b/Documentation/fpga/dfl.rst
+> > @@ -7,6 +7,7 @@ Authors:
+> >  - Enno Luebbers <enno.luebbers@intel.com>
+> >  - Xiao Guangrong <guangrong.xiao@linux.intel.com>
+> >  - Wu Hao <hao.wu@intel.com>
+> > +- Xu Yilun <yilun.xu@intel.com>
+> >  
+> >  The Device Feature List (DFL) FPGA framework (and drivers according to
+> >  this framework) hides the very details of low layer hardwares and provides
+> > @@ -502,6 +503,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
+> >  could be a reference.
+> >  
+> >  
+> > +Userspace driver support for DFL devices
+> > +========================================
+> > +The purpose of an FPGA is to be reprogrammed with newly developed hardware
+> > +components. New hardware can instantiate a new private feature in the DFL, and
+> > +then get a DFL device in their system. In some cases users may need a userspace
+> > +driver for the DFL device:
+> > +
+> > +* Users may need to run some diagnostic test for their hardwares.
+> > +* Users may prototype the kernel driver in user space.
+> > +* Some hardware is designed for specific purposes and does not fit into one of
+> > +  the standard kernel subsystems.
+> > +
+> > +This requires direct access to MMIO space and interrupt handling from
+> > +userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
+> > +purpose. It adds the uio_pdrv_genirq platform device with the resources of
+> > +the DFL feature, and lets the generic UIO platform device driver provide UIO
+> > +support to userspace.
+> > +
+> > +FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
+> > +To support a new DFL feature been directly accessed via UIO, its feature id
+> > +should be added to the driver's id_table.
+> > +
+> > +
+> >  Open discussion
+> >  ===============
+> >  FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
+> > -- 
+> > 2.7.4
+> > 
+> 
+> Looks fine to me, can you resend with changes for the other patch?
 
+Yes, I will. I may wait for a while to check more comments from Greg.
 
-On 1/17/2021 1:33 PM, Andrew Morton wrote:
-> On Thu, 14 Jan 2021 15:15:16 -0800 Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 
->> On systems with large amounts of reserved memory we may fail to
->> successfully complete unpack_to_rootfs() and be left with:
->>
->>  Kernel panic - not syncing: write error
->>
->> this is not too helpful to understand what happened, so let's wrap the
->> panic() calls with a surrounding show_mem() such that we have a chance
->> of understanding the memory conditions leading to these allocation
->> failures.
-> 
-> Seems sensible.
-> 
->> @@ -45,6 +46,11 @@ static void __init error(char *x)
->>  		message = x;
->>  }
->>  
->> +#define panic_show_mem(...) {	\
->> +	show_mem(0, NULL);	\
->> +	panic(__VA_ARGS__);	\
->> +}
->> +
-> 
-> But can we replace nasty macro with pleasing C code?
-
-That works for me, would you like to squash this into my patch before
-sending this to Linus?
--- 
-Florian
+Thanks,
+Yilun
