@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA782FAAA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A4B2FAA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390444AbhARTx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:53:27 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47536 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393965AbhART0e (ORCPT
+        id S2437464AbhARTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437323AbhART07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:26:34 -0500
-Received: from 89-64-82-41.dynamic.chello.pl (89.64.82.41) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id 29d09316bb40c20e; Mon, 18 Jan 2021 20:25:37 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] ACPI: scan: Rearrange code related to acpi_get_device_data()
-Date:   Mon, 18 Jan 2021 20:25:37 +0100
-Message-ID: <3445520.6OZ3MRzmT7@kreacher>
+        Mon, 18 Jan 2021 14:26:59 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CB0C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:26:19 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id f11so19400247ljm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:26:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0dUgEF/OwYH5Cy4Vraqpbc5c5GySZK4BL/XBpkfWysE=;
+        b=MZBsVSGABFRi1Faq5ThVU9o9JrzK6AScjQUS2Rt+SYImLjUBefcj3pLy4mMAtLGGLj
+         VcC1UOuzg8Q+ldEIU6l2Pw+XlKitSjEadL/Wl6zXz3vTfuH8XL4osjODrsT/jki3lK/M
+         TPrXjTjXHg3kZrHq4YaZhTrWXaCOhHC5BVtVc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0dUgEF/OwYH5Cy4Vraqpbc5c5GySZK4BL/XBpkfWysE=;
+        b=kD2vun3gLgbj0NowPUabPkSCmH8dQnvdOcT6sm1UHLeB/PNlFecyqtKF4+JuUG/Uma
+         FiBnDni/gYXkvSgfBm8yfXgAMDtldTCF0/as9OhNCP3w43IOPLBptZszeiWF8nT0qW9C
+         8MkS4iv0hnxrqFssQ99PBWodr/rp3P4+GcvThhB7b7+UuWWzFLM/xTFH0yaKZ0jwuG49
+         Mis2Nl4EmmOQqDDbREWu1PG1vWjpIra9vAKsxj/NBKvnvGyGHaAcArRXqEK7PPjtoww5
+         6nCYg0/cwQfmV/Xu4G6JD9PfsxEjnAQ8k+jGlP58J8cUarpgNJL2bFzImXOqryixn8kF
+         87cA==
+X-Gm-Message-State: AOAM531vMQCBGI3I3DFG37zi3+APqiIpXLHAhly5gCZDDiGlBaqIv/NK
+        8QEbWs4gFV6Q9WRVUqRP+N934qNUll4yhw==
+X-Google-Smtp-Source: ABdhPJyZ2zOVBt4qgK21vil1GGqiGYIXWsEV24Y3aimFKtgoMuuSBRnZqaDXxIDaE0RZzaqhpTk0yA==
+X-Received: by 2002:a05:651c:104c:: with SMTP id x12mr448673ljm.266.1610997977626;
+        Mon, 18 Jan 2021 11:26:17 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id j15sm1665532lfb.13.2021.01.18.11.26.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 11:26:16 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id v24so19010912lfr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 11:26:16 -0800 (PST)
+X-Received: by 2002:ac2:420a:: with SMTP id y10mr244283lfh.377.1610997976259;
+ Mon, 18 Jan 2021 11:26:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de> <ece3af8e4512517da220bdd2f43119ca889f6c61.camel@sipsolutions.net>
+In-Reply-To: <ece3af8e4512517da220bdd2f43119ca889f6c61.camel@sipsolutions.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Jan 2021 11:26:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiiqjO5c_JK5-jW6=JzxoQ26uNHyKtbJfTW+6Ryw9Sv9w@mail.gmail.com>
+Message-ID: <CAHk-=wiiqjO5c_JK5-jW6=JzxoQ26uNHyKtbJfTW+6Ryw9Sv9w@mail.gmail.com>
+Subject: Re: Splicing to/from a tty
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Christoph Hellwig <hch@lst.de>, Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Jan 18, 2021 at 12:58 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> > I think just wiring up iter_file_splice_write would work.  Al?
+>
+> Seems to work for the simple test case that I had, at least:
 
-There are two callers of acpi_get_device_data(), acpi_bus_get_device()
-and acpi_bus_get_acpi_device(), but only one of them takes the int
-return value into account.  Moreover, the latter knows that it passes
-a valid return pointer to acpi_get_device_data() and it properly
-clears that pointer upfront, so it doesn't need acpi_get_device_data()
-to do that.
+Mind sending me a signed-off patch for this?
 
-For this reason, rearrange acpi_get_device_data() to return a strct
-acpi_device pointer instead of an int and adapt its callers to that.
+Yeah, I know it's a trivial one-liner, but I much prefer having an
+author with a patch and a sign-off to just doing it personally and
+reaping all that glory for it..
 
-While at it, rename acpi_get_device_data() to handle_to_device(),
-because the old name does not really reflect the functionality
-provided by that function.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-On top of https://patchwork.kernel.org/project/linux-acpi/patch/20210115215752.389656-1-hdegoede@redhat.com/
-
----
- drivers/acpi/scan.c |   35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
-
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -578,29 +578,31 @@ static void acpi_scan_drop_device(acpi_h
- 	mutex_unlock(&acpi_device_del_lock);
- }
- 
--static int acpi_get_device_data(acpi_handle handle, struct acpi_device **device,
--				void (*callback)(void *))
-+static struct acpi_device *handle_to_device(acpi_handle handle,
-+					    void (*callback)(void *))
- {
-+	struct acpi_device *adev = NULL;
- 	acpi_status status;
- 
--	if (!device)
--		return -EINVAL;
--
--	*device = NULL;
--
- 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
--				    (void **)device, callback);
--	if (ACPI_FAILURE(status) || !*device) {
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "No context for object [%p]\n",
--				  handle));
--		return -ENODEV;
-+				    (void **)&adev, callback);
-+	if (ACPI_FAILURE(status) || !adev) {
-+		acpi_handle_debug(handle, "No context!\n");
-+		return NULL;
- 	}
--	return 0;
-+	return adev;
- }
- 
- int acpi_bus_get_device(acpi_handle handle, struct acpi_device **device)
- {
--	return acpi_get_device_data(handle, device, NULL);
-+	if (!device)
-+		return -EINVAL;
-+
-+	*device = handle_to_device(handle, NULL);
-+	if (!*device)
-+		return -ENODEV;
-+
-+	return 0;
- }
- EXPORT_SYMBOL(acpi_bus_get_device);
- 
-@@ -612,10 +614,7 @@ static void get_acpi_device(void *dev)
- 
- struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
- {
--	struct acpi_device *adev = NULL;
--
--	acpi_get_device_data(handle, &adev, get_acpi_device);
--	return adev;
-+	return handle_to_device(handle, get_acpi_device);
- }
- 
- void acpi_bus_put_acpi_device(struct acpi_device *adev)
-
-
-
+           Linus
