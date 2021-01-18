@@ -2,152 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773652F9C77
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD132F9C7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388853AbhARJb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388595AbhARJVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:21:12 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195CCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:20:32 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id u19so16745343edx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:20:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nWwUvnxm6cFMUMsyK2REaR6ASGoMuBGGZ9JavqL//w4=;
-        b=IsxNjrjqUFOd3RJMycZUTd/74CrPYXCA1rwY6o8n9iYZFY3Q79GsF63WDwM4iTo+EK
-         VzQAENcyPtRqLg/POO0/bk4QTOIP0d3L3HR/Epzderpzk8FOi+bC/c34FkJSOnBdVzhv
-         crBG7o1zUUorAfBWER0YTeswXDVMp4tPEzyqH4TacvxamKOQzDsQY9cLG4uDLroPm9Cf
-         e7MN8wgvBBL2eyhTvJHrprtsBZiyoj8QwYnFU7e4zokBXhebSp6+Y7H2OEd4qYFdO+Lv
-         bTZTEv7xMxmdkNpG3QqBR/TqWSx2pZ3oV9TjsVKQ1XCZR6BRwGVH0iFgIP30S+U1wv9Q
-         Q8fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nWwUvnxm6cFMUMsyK2REaR6ASGoMuBGGZ9JavqL//w4=;
-        b=Rv2vjgOQvq2oKknmkRZAyh5olxBeo4Py1WtqBaZbz4HiVs3SPbkOzyW7ts9yy2fRtz
-         nmBCtPK1ME2UdDdSM+3a5NUqtC1guWzTAGyIHrjniQ7H/685FgtBqnFUBDz2wMta0auq
-         k0AYKzifIlbjNxncngC6g65SGp/capy+ZrliL8hZkGkC26vD0jeezXx1auTg+FK15Cep
-         aycgLYxu1eqoX12ckS5y9CJ9HM4TjtMlCuQTJWs05D9nASlV/g8/ARt6rv6/Bw/1yjVm
-         ZiY7iO+X0cxbKI0zxMvuMPNgaFsHzJceNbUY5q/uT/2mxUcC30pQU9ocXsA/U7UdBQNg
-         W/1A==
-X-Gm-Message-State: AOAM5324ZBrGsvvz/zINRNAW0bITiaVAithVQE6mdc5doDNX58YiCmJX
-        hQNzElfyoFRmKp5yE4RjbL0bGQ==
-X-Google-Smtp-Source: ABdhPJwPa49hq9EFj0Fqi4nYmNdK6gmH/6OLEaDLMVGoc/4IVEOjzZY8Bg7rmvldqK0fk7f4A9Vc9w==
-X-Received: by 2002:aa7:d98a:: with SMTP id u10mr469709eds.275.1610961630618;
-        Mon, 18 Jan 2021 01:20:30 -0800 (PST)
-Received: from [192.168.0.3] (hst-221-28.medicom.bg. [84.238.221.28])
-        by smtp.googlemail.com with ESMTPSA id g14sm7476538edm.31.2021.01.18.01.20.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 01:20:30 -0800 (PST)
-Subject: Re: [PATCH v2 1/4] media: v4l2-ctrls: Add intra-refresh period
- control
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>
-References: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
- <20201206102717.19000-2-stanimir.varbanov@linaro.org>
- <6eb7ea37-e460-2884-9e07-6ff6f9a15414@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <38417ba8-02af-8fef-9e28-8605dca41921@linaro.org>
-Date:   Mon, 18 Jan 2021 11:20:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2388884AbhARJch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:32:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388619AbhARJWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:22:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91C6420829;
+        Mon, 18 Jan 2021 09:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610961679;
+        bh=AxtaIOUwBp1fZah3fw/1D/bRwjy4Z75UqBrLW6p6+jM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lUhQKJpuAihyaw+dsZ8nY8IuZKHyajh3Ytr7xKz4+BS0AIo30T9RnsFFp8m4jwpy2
+         NIedQU5z9cEkRIhYo/5bMeziWqCmV66FbWGxAidMUpkpmcsrKC3UXZ2ihQmXNMvzwp
+         UgXh0tNhpg+HabzEnCHoVAsi8pLtMN6c69GFy6TM=
+Date:   Mon, 18 Jan 2021 10:21:16 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        torvalds@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Message-ID: <YAVTDETPaJuaRPfc@kroah.com>
+References: <20210118014951.250815-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6eb7ea37-e460-2884-9e07-6ff6f9a15414@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118014951.250815-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/12/21 12:05 PM, Hans Verkuil wrote:
-> On 06/12/2020 11:27, Stanimir Varbanov wrote:
->> Add a control to set intra-refresh period.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  .../userspace-api/media/v4l/ext-ctrls-codec.rst       | 11 +++++++++++
->>  drivers/media/v4l2-core/v4l2-ctrls.c                  |  2 ++
->>  include/uapi/linux/v4l2-controls.h                    |  1 +
->>  3 files changed, 14 insertions(+)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 454ecd9a0f83..d65d7c1381b7 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -1104,6 +1104,17 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->>      macroblocks is refreshed until the cycle completes and starts from
->>      the top of the frame. Applicable to H264, H263 and MPEG4 encoder.
->>  
->> +``V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD (integer)``
->> +    Intra macroblock refresh period. This sets the period to refresh
->> +    the whole frame. With other words, this defines the number of frames
+On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
+> SUBLEVEL only has 8 bits of space, which means that we'll overflow it
+> once it reaches 256.
 > 
-> With -> In
+> Few of the stable branches will imminently overflow SUBLEVEL while
+> there's no risk of overflowing VERSION.
 > 
->> +    for which the whole frame will be intra-refreshed.  An example:
->> +    setting period to 1 means that the whole frame will be refreshed,
->> +    setting period to 2 means that the half of macroblocks will be
->> +    intra-refreshed on frameX and the other half of macroblocks
->> +    will be refreshed in frameX + 1 and so on. Setting period to zero
->> +    means no period is specified.
->> +    Applicable to H264 and HEVC encoders.
+> Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
+> should create a better balance between the different version numbers we
+> use.
 > 
-> I'm confused. Isn't this the same as V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB?
-> Except that here you don't give the number of macroblocks but instead the number
-> of frames it will take to fully refresh a frame and leave it to the driver to
-> calculate the number of macroblocks?
-
-Yes, correct. The periodic control looks more generic because it doesn't
-limit the type of intra-refresh (cyclic vs random vs adaptive) but
-instead set the number of frames to fully refresh the whole frame and is
-also taken from Android mediacodec [1], where the user doesn't care too
-much what intra-refresh type will be used but instead how much frames
-are needed to fully refresh.
-
+> The downside here is that Linus will have 8 bits less to play with, but
+> given our current release cadence (~10 weeks), the number of Linus's
+> fingers & toes (20), and the current VERSION (5) we can calculate that
+> VERSION will overflow in just over 1,000 years, so I'm kicking this can
+> down the road.
 > 
-> If I am right, then you need to clearly document the relationship between the
-> two controls, and what happens if you set them both.
-
-Yep, I can add such description.
-
-One note here; the CYCLIC_INTRA_REFRESH_MB and INTRA_REFRESH_PERIOD are
-not interchangeable because intra-refresh period could use different
-type of inter-refresh, eg. random vs cyclic.
-
+> Cc: stable@kernel.org
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> It seems the venus driver already supports V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB,
-> so why add this control as well?
+> diff --git a/Makefile b/Makefile
+> index 9e73f82e0d863..dc2bad7a440d8 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1252,8 +1252,8 @@ endef
+>  
+>  define filechk_version.h
+>  	echo \#define LINUX_VERSION_CODE $(shell                         \
+> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
+> +	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
+> +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
 
-The cyclic intra-refresh control in Venus driver is just enumerable but
-ignored when set, in other words it does nothing.
+As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
+that try to suck out the version/patchlevel number of the kernel release
+into their own fields.  Things like USB host controller strings, v4l
+ioctl reports, scsi driver ioctls, and other places do fun bit-movements
+to try to unreverse this bit packing.
 
-> 
-> Regards,
-> 
-> 	Hans
-> 
+So how about we just provide a "real" version/subversion/revision
+#define as well, and clean up all in-kernel users, so we can get this to
+work, and we can change it in the future more easily.
 
-[1]
-https://developer.android.com/reference/android/media/MediaFormat#KEY_INTRA_REFRESH_PERIOD
+thanks,
 
--- 
-regards,
-Stan
+greg k-h
