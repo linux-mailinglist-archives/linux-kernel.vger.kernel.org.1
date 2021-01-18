@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1A32FA14B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC95B2FA149
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392127AbhARNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392151AbhARNWU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:22:20 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7F5C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:21:40 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id h205so23997935lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 05:21:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tEou1N7wdVm8VL4xJuhFCb3lWMy01u8maLSGlBZXEOI=;
-        b=HTRcT6CtcJVN17+sYIhPYbgU4/LWG9PoiLWxR/sps7Y9HJ7nKB5j2nlkExNvWqV8/5
-         1UNmlujMeGWDR3UqxqwhANhGHtgifYNElaU8zTORrLbhBlf1i3LgkyNQuF6FVgQu50ij
-         qTNcYAaTDkgwd074FuVBfwytgJEs0QFuJ60j66ql+n+QwiNPi/8tsOz2OSxZduikTiNO
-         Fjy9a2SRxPmZmY+jArNYnC9rCpcp1X0rD0I+CXWfqDwGH7LS+luYmAjomanjjZ3S0q0v
-         aU+IoXiTmYoH/e2pwcdaEKXRcZeUymUw2DUExizA7BAaHkpSwGwjJF9lAFAnLGeifb02
-         /mtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tEou1N7wdVm8VL4xJuhFCb3lWMy01u8maLSGlBZXEOI=;
-        b=fcSsN2D7eo4qNQi9CIEZxbG6MYA5hKydwJnUfBvRKSkfNnsCbFvF8W62HsR/5ysIH8
-         beUKA9KmYmUvk21f/6zka18ufe7qYuMgQl1oU7A3w3fRktPmxdPiaHT15M+zKGNn9SM2
-         301V5l5dQO7c9yPbppwlDkb4feFnJgEuqAssj1eiJFJco0CKzat1hiMbGZb60R0pVD6J
-         YQVj27067cl+O52KeiSjc2tkT1Gpm/D8lHszAeHaxekyNbzMl4sglP4dTSU/LOnQxR+R
-         X4KHCHUgf493gDlco8R5lTtdcHzOR92EslQGtaBR4MJDIweM6kQg6V6ILgj7RMB5Fw3g
-         5ySw==
-X-Gm-Message-State: AOAM532KJHqn5rMAllyTaQmwx2isFAZ2vgYIj2bMohEMf9XIJZjSzADO
-        tKlJki1nOUyurEkfh53kYtXzxi1Z1loESsboazfQh6K8YPI=
-X-Google-Smtp-Source: ABdhPJxIkGPw4dmBxy53c8JqTCOgnDHrW6itaCphSSBaW2KsW23KuLvcyUZ9smGlxcdVA92M9YspyulctUZPm6ZBjsg=
-X-Received: by 2002:ac2:5597:: with SMTP id v23mr10584386lfg.649.1610976098909;
- Mon, 18 Jan 2021 05:21:38 -0800 (PST)
+        id S2392159AbhARNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:22:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:35950 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392128AbhARNWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 08:22:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5609D31B;
+        Mon, 18 Jan 2021 05:21:17 -0800 (PST)
+Received: from [10.163.89.163] (unknown [10.163.89.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B70BB3F719;
+        Mon, 18 Jan 2021 05:21:09 -0800 (PST)
+Subject: Re: [PATCH RFC] virtio-mem: check against memhp_get_pluggable_range()
+ which memory we can hotplug
+To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        hca@linux.ibm.com, catalin.marinas@arm.com
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+ <1610975582-12646-5-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <a1644ce0-427f-7a5c-b90a-547e61341a75@arm.com>
+Date:   Mon, 18 Jan 2021 18:51:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1610394585-4296-1-git-send-email-jrdr.linux@gmail.com>
-In-Reply-To: <1610394585-4296-1-git-send-email-jrdr.linux@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 18 Jan 2021 14:21:27 +0100
-Message-ID: <CACRpkdaKvyrUvv6DeHB46EwZUkBjw8O00BfUZ8JZz+-ZHYE7WQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ti :iodelay: Fixed inconsistent indenting
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1610975582-12646-5-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:49 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
 
-> Kernel test robot throws below warning ->
->
-> smatch warnings:
-> drivers/pinctrl/ti/pinctrl-ti-iodelay.c:708
-> ti_iodelay_pinconf_group_dbg_show() warn: inconsistent indenting
->
-> Fixed the inconsistent indenting.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-Patch applied.
+On 1/18/21 6:43 PM, Anshuman Khandual wrote:
+> From: David Hildenbrand <david@redhat.com>
+> 
+> Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
+> are more restrictions of which memory we can actually hotplug, especially
+> om arm64 or s390x once we support them: we might receive something like
+> -E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
+> operation.
+> 
+> So, check right when initializing the device which memory we can add,
+> warning the user. Try only adding actually pluggable ranges: in the worst
+> case, no memory provided by our device is pluggable.
+> 
+> In the usual case, we expect all device memory to be pluggable, and in
+> corner cases only some memory at the end of the device-managed memory
+> region to not be pluggable.
+> 
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: catalin.marinas@arm.com
+> Cc: teawater <teawaterz@linux.alibaba.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: hca@linux.ibm.com
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Yours,
-Linus Walleij
+Hello David,
+
+As your original patch was in the RFC state, I have just maintained
+the same here as well. But once you test this patch along with the
+new series, please do let me know if this needs to be converted to
+a normal PATCH instead. Thank you.
+
+- Anshuman
