@@ -2,162 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999F02FA894
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C443D2FA892
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436621AbhARST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S2406799AbhARSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393198AbhARPIm (ORCPT
+        with ESMTP id S2393203AbhARPIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:08:42 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEE9C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:07:03 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id JF6z2400Q4C55Sk01F6z0a; Mon, 18 Jan 2021 16:07:02 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l1W7O-004cpa-RE; Mon, 18 Jan 2021 16:06:58 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l1W7N-003LF3-L3; Mon, 18 Jan 2021 16:06:57 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH net v2 2/2] sh_eth: Make PHY access aware of Runtime PM to fix reboot crash
-Date:   Mon, 18 Jan 2021 16:06:56 +0100
-Message-Id: <20210118150656.796584-3-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118150656.796584-1-geert+renesas@glider.be>
-References: <20210118150656.796584-1-geert+renesas@glider.be>
+        Mon, 18 Jan 2021 10:08:46 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEA4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:08:05 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id o17so24558756lfg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 07:08:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4zCbYZ+Ii0gKy8gsGpTa3Tuf0KUwV6cf+cE8scSt5cg=;
+        b=wYSz9xSmMnsBS+V0YJP4pd1Ravw+EYjYEB08XGS56yApQ2IYJvD2sEwdFI+vexMhMx
+         uJ17aQAcKnq2x/1mTMX/8bp/ml/rWmkuCyT5v4oudmlwEslbqnKayeyHnOyPFnNaUrov
+         cNPNcgolDxtDvRgmNEYzNtnWHrBCWzOFmkvNIPCsGHPzAveFtYqMZZuXBcQNxS1t5e5O
+         jYthnOJOqahDdcYP8FtVAn+tIUSVwM/kA46L1fBNxs0vPUNSxAhCDx99OITNQCiqsEtq
+         VuFTDr7ifX1SA1apalWkLZWM6PCRGP2w6BkleLoPHMI4vCOd5f3tMnSCXBcveSEU5I5V
+         9Wcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4zCbYZ+Ii0gKy8gsGpTa3Tuf0KUwV6cf+cE8scSt5cg=;
+        b=rtZHXkfftrTn5NuucH8FgYok7u5k4E/uff2Wgk3J/axLHkrhKiK3QFpwfwh7abYD9p
+         Pbso4o3hUsmwGiI8SrbvsbCXM3Nn6xrGA7W2jKfzqnO6C3Int+PM78JES15c4fCmsIYu
+         20q4G5qGxpvDcxQE2FMCWVYCEvwtkL5rUgwp828ff5PKicoBheJmXNPtMLVru9BAam1Z
+         OU8Jzaa55Ourm7g5Oy2dZ4rdJNPr7FypYlqqpPhbvxzAJXnK+UwArSO/HFHyNU/JTFAQ
+         IOP+AiISXUsHqsbykBxHH48shBNeMKnOWhTm2i3qwaMKNXSzsQGNb1O2EWVMPXpDnTdL
+         9UdA==
+X-Gm-Message-State: AOAM530iJSZEi+cZ+pul6JCWw0ZpzmpV+1quD5bcE6k+zZLt0Ey5dxWd
+        d95zSmJNQAbloX+TZeIiHU5V6by/gUlxWbFlsiB+LA==
+X-Google-Smtp-Source: ABdhPJzamPmOphzkJBTICVbQQSRmXx8ElaLTJzGCDoClFhiaQeqWsgvskwMSNhP8AGZVgGPD1UXeY3mPErNxHf1Ui+0=
+X-Received: by 2002:a19:6557:: with SMTP id c23mr10847407lfj.157.1610982484247;
+ Mon, 18 Jan 2021 07:08:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210114191601.v7.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+In-Reply-To: <20210114191601.v7.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 Jan 2021 16:07:53 +0100
+Message-ID: <CACRpkdZyEP6GCMW=dqjTtW+sBaLfu5TwX=dNHx=APE3YEHCz-g@mail.gmail.com>
+Subject: Re: [PATCH v7 1/4] pinctrl: qcom: Allow SoCs to specify a GPIO
+ function that's not 0
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wolfram reports that his R-Car H2-based Lager board can no longer be
-rebooted in v5.11-rc1, as it crashes with an imprecise external abort.
-The issue can be reproduced on other boards (e.g. Koelsch with R-Car
-M2-W) too, if CONFIG_IP_PNP is disabled, and the Ethernet interface is
-down at reboot time:
+On Fri, Jan 15, 2021 at 4:16 AM Douglas Anderson <dianders@chromium.org> wrote:
 
-    Unhandled fault: imprecise external abort (0x1406) at 0x00000000
-    pgd = (ptrval)
-    [00000000] *pgd=422b6835, *pte=00000000, *ppte=00000000
-    Internal error: : 1406 [#1] ARM
-    Modules linked in:
-    CPU: 0 PID: 1105 Comm: init Tainted: G        W         5.10.0-rc1-00402-ge2f016cf7751 #1048
-    Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-    PC is at sh_mdio_ctrl+0x44/0x60
-    LR is at sh_mmd_ctrl+0x20/0x24
-    ...
-    Backtrace:
-    [<c0451f30>] (sh_mdio_ctrl) from [<c0451fd4>] (sh_mmd_ctrl+0x20/0x24)
-     r7:0000001f r6:00000020 r5:00000002 r4:c22a1dc4
-    [<c0451fb4>] (sh_mmd_ctrl) from [<c044fc18>] (mdiobb_cmd+0x38/0xa8)
-    [<c044fbe0>] (mdiobb_cmd) from [<c044feb8>] (mdiobb_read+0x58/0xdc)
-     r9:c229f844 r8:c0c329dc r7:c221e000 r6:00000001 r5:c22a1dc4 r4:00000001
-    [<c044fe60>] (mdiobb_read) from [<c044c854>] (__mdiobus_read+0x74/0xe0)
-     r7:0000001f r6:00000001 r5:c221e000 r4:c221e000
-    [<c044c7e0>] (__mdiobus_read) from [<c044c9d8>] (mdiobus_read+0x40/0x54)
-     r7:0000001f r6:00000001 r5:c221e000 r4:c221e458
-    [<c044c998>] (mdiobus_read) from [<c044d678>] (phy_read+0x1c/0x20)
-     r7:ffffe000 r6:c221e470 r5:00000200 r4:c229f800
-    [<c044d65c>] (phy_read) from [<c044d94c>] (kszphy_config_intr+0x44/0x80)
-    [<c044d908>] (kszphy_config_intr) from [<c044694c>] (phy_disable_interrupts+0x44/0x50)
-     r5:c229f800 r4:c229f800
-    [<c0446908>] (phy_disable_interrupts) from [<c0449370>] (phy_shutdown+0x18/0x1c)
-     r5:c229f800 r4:c229f804
-    [<c0449358>] (phy_shutdown) from [<c040066c>] (device_shutdown+0x168/0x1f8)
-    [<c0400504>] (device_shutdown) from [<c013de44>] (kernel_restart_prepare+0x3c/0x48)
-     r9:c22d2000 r8:c0100264 r7:c0b0d034 r6:00000000 r5:4321fedc r4:00000000
-    [<c013de08>] (kernel_restart_prepare) from [<c013dee0>] (kernel_restart+0x1c/0x60)
-    [<c013dec4>] (kernel_restart) from [<c013e1d8>] (__do_sys_reboot+0x168/0x208)
-     r5:4321fedc r4:01234567
-    [<c013e070>] (__do_sys_reboot) from [<c013e2e8>] (sys_reboot+0x18/0x1c)
-     r7:00000058 r6:00000000 r5:00000000 r4:00000000
-    [<c013e2d0>] (sys_reboot) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+> There's currently a comment in the code saying function 0 is GPIO.
+> Instead of hardcoding it, let's add a member where an SoC can specify
+> it.  No known SoCs use a number other than 0, but this just makes the
+> code clearer.  NOTE: no SoC code needs to be updated since we can rely
+> on zero-initialization.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+> Tested-by: Maulik Shah <mkshah@codeaurora.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-As of commit e2f016cf775129c0 ("net: phy: add a shutdown procedure"),
-system reboot calls phy_disable_interrupts() during shutdown.  As this
-happens unconditionally, the PHY registers may be accessed while the
-device is suspended, causing undefined behavior, which may crash the
-system.
+Patches applied for fixes!
 
-Fix this by wrapping the PHY bitbang accessors in the sh_eth driver by
-wrappers that take care of Runtime PM, to resume the device when needed.
-
-Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Call mdiobb_{read,write}() now they are exported,
-  - Use mii_bus.parent to avoid bb_info.dev copy,
-  - Drop RFC state.
----
- drivers/net/ethernet/renesas/sh_eth.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
-index c633046329352601..9b52d350e21a9f2b 100644
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -3034,6 +3034,28 @@ static int sh_mdio_release(struct sh_eth_private *mdp)
- 	return 0;
- }
- 
-+static int sh_mdiobb_read(struct mii_bus *bus, int phy, int reg)
-+{
-+	int res;
-+
-+	pm_runtime_get_sync(bus->parent);
-+	res = mdiobb_read(bus, phy, reg);
-+	pm_runtime_put(bus->parent);
-+
-+	return res;
-+}
-+
-+static int sh_mdiobb_write(struct mii_bus *bus, int phy, int reg, u16 val)
-+{
-+	int res;
-+
-+	pm_runtime_get_sync(bus->parent);
-+	res = mdiobb_write(bus, phy, reg, val);
-+	pm_runtime_put(bus->parent);
-+
-+	return res;
-+}
-+
- /* MDIO bus init function */
- static int sh_mdio_init(struct sh_eth_private *mdp,
- 			struct sh_eth_plat_data *pd)
-@@ -3058,6 +3080,10 @@ static int sh_mdio_init(struct sh_eth_private *mdp,
- 	if (!mdp->mii_bus)
- 		return -ENOMEM;
- 
-+	/* Wrap accessors with Runtime PM-aware ops */
-+	mdp->mii_bus->read = sh_mdiobb_read;
-+	mdp->mii_bus->write = sh_mdiobb_write;
-+
- 	/* Hook up MII support for ethtool */
- 	mdp->mii_bus->name = "sh_mii";
- 	mdp->mii_bus->parent = dev;
--- 
-2.25.1
-
+Yours,
+Linus Walleij
