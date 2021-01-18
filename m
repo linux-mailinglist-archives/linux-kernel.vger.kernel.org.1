@@ -2,180 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E922FA972
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA852FA92F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393782AbhARS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:58:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390463AbhARLk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:40:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0911522227;
-        Mon, 18 Jan 2021 11:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970012;
-        bh=AMf2XduLJZ8mvuOmtjo4BzDeXKEJpnzlU7VH+CZ5sVM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ni41QnSeeBtLk/pJzCjNoPOH7sa83evicJA2cwx/zUA38WQgE4r9fz0XpUaPXFvtb
-         YRY7YsB77TKEolorcNp7IAcB7ukgurXESniTyanif+eyHEwGsTBsXKeJaW1bn7FOIB
-         a1UrBujkbPCVT/2s2N6fVVq1XQ0DUHfua5/EWcs4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 76/76] netfilter: nft_compat: remove flush counter optimization
-Date:   Mon, 18 Jan 2021 12:35:16 +0100
-Message-Id: <20210118113344.604874964@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
-References: <20210118113340.984217512@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2407783AbhARSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393673AbhARS1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:27:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA20C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 10:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=psMEzxEPv5+ylWqc3o687nSgEjIGZMC3XbmoOskqoPc=; b=qoHMpXLGbkzJhTV1+VZMk8+RXs
+        7Ke5qITA1Hy5HqACCa1n4z1+W8k+SajBGXe9VzF+Lyk2/qjTs7/LZVX3JHE3QeeP74Ac2Xmqzjbr0
+        jbYx1f/pFPpk6trnbNqbMEExl9dJAi78lo3wC9SvY45v+cSVGzkcp/yX3EGvYeT2gaiDgdM9b6wB4
+        5PgCIsDFlQ/C4aCFaPFs/AYoJAertBLl1rmO2zYpdyKnu8P3pVjUkWvPLpsB+VUE3fAusUnEDAsjK
+        dxAwKYFR8u5E0HJjIxdxZnOQB9ILdcZH5Z95MSRB7U9PA3FxCqoxZQEaRb8mkAuyEdKaomGU/5Hse
+        KRy2tOcQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1ZEZ-00DDQv-GC; Mon, 18 Jan 2021 18:26:37 +0000
+Date:   Mon, 18 Jan 2021 18:26:35 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        keescook@chromium.org, Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <20210118182635.GD2260413@casper.infradead.org>
+References: <20210116220950.47078-1-timur@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116220950.47078-1-timur@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+On Sat, Jan 16, 2021 at 04:09:48PM -0600, Timur Tabi wrote:
+> First patch updates print_hex_dump() and related functions to
+> allow callers to print hex dumps with unhashed addresses.  It
+> adds a new prefix type, so existing code is unchanged.
+> 
+> Second patch changes a page poising function to use the new
+> address type.  This is just an example of a change.  If it's
+> wrong, it doesn't need to be applied.
+> 
+> IMHO, hashed addresses make very little sense for hex dumps,
+> which print addresses in 16- or 32-byte increments.  Typical
+> use-case is to correlate an addresses in between one of these
+> increments with some other address, but that can't be done
+> if the addresses are hashed.  I expect most developers to
+> want to replace their usage of DUMP_PREFIX_ADDRESS with
+> DUMP_PREFIX_UNHASHED, now that they have the opportunity.
 
-commit 2f941622fd88328ca75806c45c9e9709286a0609 upstream.
+Yes, I'm sure most kernel developers actually do want to leak kernel
+addresses into kernel messages.  The important thing though is that it
+should be hard for them to do that, and it should stick out like a sore
+thumb if they do it.
 
-WARNING: CPU: 1 PID: 16059 at lib/refcount.c:31 refcount_warn_saturate+0xdf/0xf
-[..]
- __nft_mt_tg_destroy+0x42/0x50 [nft_compat]
- nft_target_destroy+0x63/0x80 [nft_compat]
- nf_tables_expr_destroy+0x1b/0x30 [nf_tables]
- nf_tables_rule_destroy+0x3a/0x70 [nf_tables]
- nf_tables_exit_net+0x186/0x3d0 [nf_tables]
-
-Happens when a compat expr is destoyed from abort path.
-There is no functional impact; after this work queue is flushed
-unconditionally if its pending.
-
-This removes the waitcount optimization.  Test of repeated
-iptables-restore of a ~60k kubernetes ruleset doesn't indicate
-a slowdown.  In case the counter is needed after all for some workloads
-we can revert this and increment the refcount for the
-!= NFT_PREPARE_TRANS case to avoid the increment/decrement imbalance.
-
-While at it, also flush for match case, this was an oversight
-in the original patch.
-
-Fixes: ffe8923f109b7e ("netfilter: nft_compat: make sure xtables destructors have run")
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- net/netfilter/nft_compat.c |   37 ++++++++++++++-----------------------
- 1 file changed, 14 insertions(+), 23 deletions(-)
-
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -27,8 +27,6 @@ struct nft_xt_match_priv {
- 	void *info;
- };
- 
--static refcount_t nft_compat_pending_destroy = REFCOUNT_INIT(1);
--
- static int nft_compat_chain_validate_dependency(const struct nft_ctx *ctx,
- 						const char *tablename)
- {
-@@ -215,6 +213,17 @@ static int nft_parse_compat(const struct
- 	return 0;
- }
- 
-+static void nft_compat_wait_for_destructors(void)
-+{
-+	/* xtables matches or targets can have side effects, e.g.
-+	 * creation/destruction of /proc files.
-+	 * The xt ->destroy functions are run asynchronously from
-+	 * work queue.  If we have pending invocations we thus
-+	 * need to wait for those to finish.
-+	 */
-+	nf_tables_trans_destroy_flush_work();
-+}
-+
- static int
- nft_target_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
- 		const struct nlattr * const tb[])
-@@ -238,14 +247,7 @@ nft_target_init(const struct nft_ctx *ct
- 
- 	nft_target_set_tgchk_param(&par, ctx, target, info, &e, proto, inv);
- 
--	/* xtables matches or targets can have side effects, e.g.
--	 * creation/destruction of /proc files.
--	 * The xt ->destroy functions are run asynchronously from
--	 * work queue.  If we have pending invocations we thus
--	 * need to wait for those to finish.
--	 */
--	if (refcount_read(&nft_compat_pending_destroy) > 1)
--		nf_tables_trans_destroy_flush_work();
-+	nft_compat_wait_for_destructors();
- 
- 	ret = xt_check_target(&par, size, proto, inv);
- 	if (ret < 0)
-@@ -260,7 +262,6 @@ nft_target_init(const struct nft_ctx *ct
- 
- static void __nft_mt_tg_destroy(struct module *me, const struct nft_expr *expr)
- {
--	refcount_dec(&nft_compat_pending_destroy);
- 	module_put(me);
- 	kfree(expr->ops);
- }
-@@ -468,6 +469,8 @@ __nft_match_init(const struct nft_ctx *c
- 
- 	nft_match_set_mtchk_param(&par, ctx, match, info, &e, proto, inv);
- 
-+	nft_compat_wait_for_destructors();
-+
- 	return xt_check_match(&par, size, proto, inv);
- }
- 
-@@ -716,14 +719,6 @@ static const struct nfnetlink_subsystem
- 
- static struct nft_expr_type nft_match_type;
- 
--static void nft_mt_tg_deactivate(const struct nft_ctx *ctx,
--				 const struct nft_expr *expr,
--				 enum nft_trans_phase phase)
--{
--	if (phase == NFT_TRANS_COMMIT)
--		refcount_inc(&nft_compat_pending_destroy);
--}
--
- static const struct nft_expr_ops *
- nft_match_select_ops(const struct nft_ctx *ctx,
- 		     const struct nlattr * const tb[])
-@@ -762,7 +757,6 @@ nft_match_select_ops(const struct nft_ct
- 	ops->type = &nft_match_type;
- 	ops->eval = nft_match_eval;
- 	ops->init = nft_match_init;
--	ops->deactivate = nft_mt_tg_deactivate,
- 	ops->destroy = nft_match_destroy;
- 	ops->dump = nft_match_dump;
- 	ops->validate = nft_match_validate;
-@@ -853,7 +847,6 @@ nft_target_select_ops(const struct nft_c
- 	ops->size = NFT_EXPR_SIZE(XT_ALIGN(target->targetsize));
- 	ops->init = nft_target_init;
- 	ops->destroy = nft_target_destroy;
--	ops->deactivate = nft_mt_tg_deactivate,
- 	ops->dump = nft_target_dump;
- 	ops->validate = nft_target_validate;
- 	ops->data = target;
-@@ -917,8 +910,6 @@ static void __exit nft_compat_module_exi
- 	nfnetlink_subsys_unregister(&nfnl_compat_subsys);
- 	nft_unregister_expr(&nft_target_type);
- 	nft_unregister_expr(&nft_match_type);
--
--	WARN_ON_ONCE(refcount_read(&nft_compat_pending_destroy) != 1);
- }
- 
- MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_NFT_COMPAT);
-
-
+Don't make it easy.  And don't make it look like they're doing
+something innocent.  DUMP_PREFIX_SECURITY_HOLE would be OK
+by me.  DUMP_PREFIX_LEAK_INFORMATION would work fine too.
+DUMP_PREFIX_MAKE_ATTACKERS_LIFE_EASY might be a bit too far.
