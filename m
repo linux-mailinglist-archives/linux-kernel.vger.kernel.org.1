@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858752FAB50
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FCB2FAB3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394297AbhARUW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:22:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389149AbhARUNY (ORCPT
+        id S2394287AbhARUSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:18:15 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:45435 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437994AbhARURa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 15:13:24 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DEFC061574;
-        Mon, 18 Jan 2021 12:12:44 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id 6so25400151ejz.5;
-        Mon, 18 Jan 2021 12:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=gH+4Frr0s9M4PbdHZalRxKsdYMgIkqyHipMQ4MN8TGQ=;
-        b=n82MKzZYTlqux0ENwULSnC03Od6KoHbR+sFrRCVvhYKTxSRkSEShhohkhJnq6hzBSP
-         c9jWG6DbhxziIoY4xVq/xHS/6LC+ZwqXOjKv4r9Do4zvfniGCgO+UfUuvimDRQJ9HMqz
-         VG+dn+IcYYWC16L/jtDB+0TQmRon9u7Y5hSDLhhY5Q8PwngG5m2SrAOKaS/ChMTcfiBq
-         3kc2MyYdUkdvzEaNQNnkj96P1zVdsquV7hUlmqn5XpSY+vPzPd67ZX7Ax9/JkF09A2Jc
-         hkmNe8tAm7oA2CfzEzb45U3R/ISXGUzHRVpAobFuFzy2GauPTV0C725igZEqMQKh2bCA
-         mJTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gH+4Frr0s9M4PbdHZalRxKsdYMgIkqyHipMQ4MN8TGQ=;
-        b=Q+gM+YdvQS/ngAGn7EqPwJOaHBAL0QiOboMxH8cmRLUAqM93I94ZnNM4zS/2+3PwUj
-         lUmedCeSV+0txcwuv/uLdHrEtfCr+sM2wxb2ku1UsYUliRbIhOCMQIxVCl3/m80lv4hW
-         4TsN+HsSD2O9dUia+FPM2GuYnJDhgjAQJ5b9ij4uOzjgUuBa8s3//IME+PqlNY28syh/
-         5gz+wQgSsCpOhdJLI8WwiELFXEhJI80t8H+uyuI/l4gdEaWNkLA9i2E8D2bOAOM7FN1A
-         wjCc9seX/JxjObAEaYt7ka0fVh8JwDipMPXXbPjg5AJpmR4673wMBOr1JPxcGXBDw84w
-         fOcA==
-X-Gm-Message-State: AOAM532nXcgUtOH3lhVpQfoORT8o3ZuEXKOJ7TqpaT79bOJzQzh+gl+e
-        6TrivR6m425fdC2ATzyDkXo=
-X-Google-Smtp-Source: ABdhPJzmTvtHPN3ZUm421f9+5SSsCeltpdp+mjww6Z2gVgYMWzt5FMLnRRg9EqUg1Ruuva1QwZiaLw==
-X-Received: by 2002:a17:906:2e04:: with SMTP id n4mr850802eji.289.1611000763080;
-        Mon, 18 Jan 2021 12:12:43 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.gmail.com with ESMTPSA id bm12sm9992081ejb.117.2021.01.18.12.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 12:12:42 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: ufs: delete redundant if statement in ufshcd_intr()
-Date:   Mon, 18 Jan 2021 21:12:33 +0100
-Message-Id: <20210118201233.3043-1-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 18 Jan 2021 15:17:30 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 7680F2EA30D;
+        Mon, 18 Jan 2021 15:16:43 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id Ip4T-viMDDji; Mon, 18 Jan 2021 15:03:07 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id DA1402EA307;
+        Mon, 18 Jan 2021 15:16:42 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH] checkpatch: Improve TYPECAST_INT_CONSTANT test message
+To:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <f11f2ee7-a909-6ab7-f5a8-67a46e11c1e5@interlog.com>
+ <63178794d14d12f28ccf87707f420ba97b90f6fd.camel@perches.com>
+ <b9861410-f23d-62aa-cdc9-9e2918359a86@interlog.com>
+ <ecefe8dcb93fe7028311b69dd297ba52224233d4.camel@perches.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <1afecb44-cc40-c943-8d6e-eb3f50eaa9f9@interlog.com>
+Date:   Mon, 18 Jan 2021 15:16:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <ecefe8dcb93fe7028311b69dd297ba52224233d4.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On 2021-01-18 12:19 p.m., Joe Perches wrote:
+> Improve the TYPECAST_INT_CONSTANT test by showing the suggested
+> conversion for various type of uses like (unsigned int)1 to 1U.
 
-Once going into while-do loop, intr_status is already true,
-this if-statement is redundant, remove it.
+The questionable code snippet was:
+         unsigned int nent, nalloc;
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+         ....
+         if (check_add_overflow(nent, (unsigned int)1, &nalloc))
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 9b387d6a2a25..5c6ee9394af3 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6317,8 +6317,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 	while (intr_status && retries--) {
- 		enabled_intr_status =
- 			intr_status & ufshcd_readl(hba, REG_INTERRUPT_ENABLE);
--		if (intr_status)
--			ufshcd_writel(hba, intr_status, REG_INTERRUPT_STATUS);
-+		ufshcd_writel(hba, intr_status, REG_INTERRUPT_STATUS);
- 		if (enabled_intr_status)
- 			retval |= ufshcd_sl_intr(hba, enabled_intr_status);
- 
--- 
-2.17.1
+where the check_add_overflow() macro [include/linux/overflow.h]
+uses typeid to check its first and second arguments have the
+same type. So it is likely others could meet this issue.
+
+Doug Gilbert
+
+
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> 
+> Douglas Gilbert sent me a private email (and in that email said he
+> 'loves to hate checkpatch' ;) complaining that checkpatch warned on the
+> use of the cast of '(unsigned int)1' so make it more obvious why the
+> message is emitted by always showing the suggested conversion.
+> 
+>   scripts/checkpatch.pl | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 016115a62a9f..4f8494527139 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -6527,18 +6527,18 @@ sub process {
+>   		if ($line =~ /(\(\s*$C90_int_types\s*\)\s*)($Constant)\b/) {
+>   			my $cast = $1;
+>   			my $const = $2;
+> +			my $suffix = "";
+> +			my $newconst = $const;
+> +			$newconst =~ s/${Int_type}$//;
+> +			$suffix .= 'U' if ($cast =~ /\bunsigned\b/);
+> +			if ($cast =~ /\blong\s+long\b/) {
+> +			    $suffix .= 'LL';
+> +			} elsif ($cast =~ /\blong\b/) {
+> +			    $suffix .= 'L';
+> +			}
+>   			if (WARN("TYPECAST_INT_CONSTANT",
+> -				 "Unnecessary typecast of c90 int constant\n" . $herecurr) &&
+> +				 "Unnecessary typecast of c90 int constant - '$cast$const' could be '$const$suffix'\n" . $herecurr) &&
+>   			    $fix) {
+> -				my $suffix = "";
+> -				my $newconst = $const;
+> -				$newconst =~ s/${Int_type}$//;
+> -				$suffix .= 'U' if ($cast =~ /\bunsigned\b/);
+> -				if ($cast =~ /\blong\s+long\b/) {
+> -					$suffix .= 'LL';
+> -				} elsif ($cast =~ /\blong\b/) {
+> -					$suffix .= 'L';
+> -				}
+>   				$fixed[$fixlinenr] =~ s/\Q$cast\E$const\b/$newconst$suffix/;
+>   			}
+>   		}
+> 
+> 
 
