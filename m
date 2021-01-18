@@ -2,165 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213AD2FACD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79AB2FACF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394798AbhARVja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389417AbhARKBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:01:05 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388137AbhARVo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:44:29 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:46832 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388377AbhARJ54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:57:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610963856; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=Dw13t5mqcoj16A09Cz3kq7wmMl1NbIYm6m5GOEhs0TU=; b=pvBvISJeMwMEv2ujRiqm6X4NIHR9Czo+v9Jt8XHS4Wya28VZIJyyBlMcQy3Hy7BiEJLoVcXP
+ BqXrza9T8+bbOJM6lqx37WNG/FX8xOlgr8XKLWC/asPdhVrA1T/Mbixax/YbPlVnLq03IwIL
+ MSBsHLXsO2kuk6UwgXJgSPe/H/g=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60055b6f21210999ed2032e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Jan 2021 09:57:03
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DBEAEC43461; Mon, 18 Jan 2021 09:57:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D80E2251F;
-        Mon, 18 Jan 2021 10:00:20 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l1R77-008RhD-Ok; Mon, 18 Jan 2021 09:46:22 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: [PATCH v4 21/21] arm64: cpufeatures: Allow disabling of Pointer Auth from the command-line
-Date:   Mon, 18 Jan 2021 09:45:33 +0000
-Message-Id: <20210118094533.2874082-22-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210118094533.2874082-1-maz@kernel.org>
-References: <20210118094533.2874082-1-maz@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03F80C433CA;
+        Mon, 18 Jan 2021 09:56:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03F80C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+From:   vjitta@codeaurora.org
+To:     minchan@kernel.org, glider@google.com, akpm@linux-foundation.org,
+        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org
+Cc:     linux-kernel@vger.kernel.org, vjitta@codeaurora.org,
+        ylal@codeaurora.org, vinmenon@codeaurora.org
+Subject: [PATCH v5 2/2] lib: stackdepot: Add support to disable stack depot
+Date:   Mon, 18 Jan 2021 15:26:42 +0530
+Message-Id: <1610963802-11042-2-git-send-email-vjitta@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
+References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to disable Pointer Authentication  at runtime,
-whether it is for testing purposes, or to work around HW issues,
-let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
-fields.
+From: Vijayanand Jitta <vjitta@codeaurora.org>
 
-This is further mapped on the arm64.nopauth command-line alias.
+Add a kernel parameter stack_depot_disable to disable
+stack depot. So that stack hash table doesn't consume
+any memory when stack depot is disabled.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/arm64/include/asm/cpufeature.h             |  2 ++
- arch/arm64/kernel/cpufeature.c                  |  5 ++++-
- arch/arm64/kernel/idreg-override.c              | 17 +++++++++++++++++
- 4 files changed, 26 insertions(+), 1 deletion(-)
+ include/linux/stackdepot.h |  1 +
+ init/main.c                |  2 ++
+ lib/stackdepot.c           | 33 +++++++++++++++++++++++++++++----
+ 3 files changed, 32 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7599fd0f1ad7..f9cb28a39bd0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -376,6 +376,9 @@
- 	arm64.nobti	[ARM64] Unconditionally disable Branch Target
- 			Identification support
+diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+index 24d49c7..eafd9aa 100644
+--- a/include/linux/stackdepot.h
++++ b/include/linux/stackdepot.h
+@@ -21,4 +21,5 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
  
-+	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
-+			support
+ unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
+ 
++int stack_depot_init(void);
+ #endif
+diff --git a/init/main.c b/init/main.c
+index 32b2a8a..8fcf9bb 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -98,6 +98,7 @@
+ #include <linux/mem_encrypt.h>
+ #include <linux/kcsan.h>
+ #include <linux/init_syscalls.h>
++#include <linux/stackdepot.h>
+ 
+ #include <asm/io.h>
+ #include <asm/bugs.h>
+@@ -827,6 +828,7 @@ static void __init mm_init(void)
+ 	page_ext_init_flatmem();
+ 	init_debug_pagealloc();
+ 	report_meminit();
++	stack_depot_init();
+ 	mem_init();
+ 	kmem_cache_init();
+ 	kmemleak_init();
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index dff8521..d20e6fd 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -31,6 +31,8 @@
+ #include <linux/stackdepot.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
++#include <linux/vmalloc.h>
++#include <linux/memblock.h>
+ 
+ #define DEPOT_STACK_BITS (sizeof(depot_stack_handle_t) * 8)
+ 
+@@ -146,9 +148,32 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
+ #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+ #define STACK_HASH_SEED 0x9747b28c
+ 
+-static struct stack_record *stack_table[STACK_HASH_SIZE] = {
+-	[0 ...	STACK_HASH_SIZE - 1] = NULL
+-};
++static bool stack_depot_disable;
++static struct stack_record **stack_table;
 +
- 	ataflop=	[HW,M68k]
- 
- 	atarimouse=	[HW,MOUSE] Atari Mouse
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index d3e0f6dd43c4..9d8dcf380ad5 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -818,6 +818,8 @@ extern u64 id_aa64mmfr1_val;
- extern u64 id_aa64mmfr1_mask;
- extern u64 id_aa64pfr1_val;
- extern u64 id_aa64pfr1_mask;
-+extern u64 id_aa64isar1_val;
-+extern u64 id_aa64isar1_mask;
- 
- u32 get_kvm_ipa_limit(void);
- void dump_cpu_features(void);
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index f223171a7c34..f5ba7fd615b5 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -559,6 +559,8 @@ u64 id_aa64mmfr1_val;
- u64 id_aa64mmfr1_mask;
- u64 id_aa64pfr1_val;
- u64 id_aa64pfr1_mask;
-+u64 id_aa64isar1_val;
-+u64 id_aa64isar1_mask;
- 
- static const struct __ftr_reg_entry {
- 	u32			sys_id;
-@@ -604,7 +606,8 @@ static const struct __ftr_reg_entry {
- 
- 	/* Op1 = 0, CRn = 0, CRm = 6 */
- 	ARM64_FTR_REG(SYS_ID_AA64ISAR0_EL1, ftr_id_aa64isar0),
--	ARM64_FTR_REG(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1),
-+	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1,
-+			       &id_aa64isar1_val, &id_aa64isar1_mask),
- 
- 	/* Op1 = 0, CRn = 0, CRm = 7 */
- 	ARM64_FTR_REG(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0),
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index a9e3ed193fd4..7037c9b214d0 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -43,6 +43,19 @@ static const struct reg_desc pfr1 __initdata = {
- 	},
- };
- 
-+static const struct reg_desc isar1 __initdata = {
-+	.name		= "id_aa64isar1",
-+	.val		= &id_aa64isar1_val,
-+	.mask		= &id_aa64isar1_mask,
-+	.fields		= {
-+	        { "gpi", ID_AA64ISAR1_GPI_SHIFT },
-+	        { "gpa", ID_AA64ISAR1_GPA_SHIFT },
-+	        { "api", ID_AA64ISAR1_API_SHIFT },
-+	        { "apa", ID_AA64ISAR1_APA_SHIFT },
-+		{}
-+	},
-+};
++static int __init is_stack_depot_disabled(char *str)
++{
++	kstrtobool(str, &stack_depot_disable);
++	if (stack_depot_disable) {
++		pr_info("Stack Depot is disabled\n");
++		stack_table = NULL;
++	}
++	return 0;
++}
++early_param("stack_depot_disable", is_stack_depot_disabled);
 +
- extern u64 kaslr_feature_val;
- extern u64 kaslr_feature_mask;
++int __init stack_depot_init(void)
++{
++	if (!stack_depot_disable) {
++		size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
++		int i;
++
++		stack_table = memblock_alloc(size, size);
++		for (i = 0; i < STACK_HASH_SIZE;  i++)
++			stack_table[i] = NULL;
++	}
++	return 0;
++}
  
-@@ -61,6 +74,7 @@ static const struct reg_desc kaslr __initdata = {
- static const struct reg_desc * const regs[] __initdata = {
- 	&mmfr1,
- 	&pfr1,
-+	&isar1,
- 	&kaslr,
- };
+ /* Calculate hash for a stack */
+ static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+@@ -242,7 +267,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ 	unsigned long flags;
+ 	u32 hash;
  
-@@ -71,6 +85,9 @@ static const struct {
- 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
- 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
- 	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
-+	{ "arm64.nopauth",
-+	  "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
-+	  "id_aa64isar1.api=0 id_aa64isar1.apa=0"	   },
- 	{ "nokaslr",			"kaslr.disabled=1" },
- };
+-	if (unlikely(nr_entries == 0))
++	if (unlikely(nr_entries == 0) || stack_depot_disable)
+ 		goto fast_exit;
  
+ 	hash = hash_stack(entries, nr_entries);
 -- 
-2.29.2
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
 
