@@ -2,156 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA9F2FACEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B3A2FACFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394581AbhARVnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S1733026AbhARVzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:55:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389022AbhARVnE (ORCPT
+        with ESMTP id S1727415AbhARVzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:43:04 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1D8C061574;
-        Mon, 18 Jan 2021 13:42:24 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id d11so8207910qvo.11;
-        Mon, 18 Jan 2021 13:42:24 -0800 (PST)
+        Mon, 18 Jan 2021 16:55:03 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD35C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:23 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id e22so11987846iog.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7WHZONqXFgXEk6ISoZzpiq15kU0W8eyDeH2IAM8jdzk=;
-        b=hYi/lsRjquukXojQzQJwLZq7VF5OWZ5OAhY28p2GNWRDhpFvVWB5TsUx5s2KQBgq4y
-         IJghQq7PPfKwSnoJi7rVpbbHAaK19Vrs6ARsjeMht6pgPvsPXnIiCt//x/enj2DxuR00
-         4yV51OKn7ZijY9yYtgkmQO8sqbv+V5qt6Jy9dsIfwKCUBQBYCH+Dj7w8OJ9QDaUj6o10
-         SZSOU9I6v3BqUOr1dM4kodBFCcRzQLcyrI7IkDFT0aHpQsEkdSLHnlML5NTccuqB/q7D
-         OKMJaw9z5pesJeFPxcpxl2iilM5u9MOOa6S/UwyrQOjL77+gXog02WZVh4vTXB/k/Yam
-         ATlw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eMq+9Ew1U5NanRfurn/yAwtd0Hdhag4NKEz1bCE+wNU=;
+        b=WlTPuct2SkAWUWeBGcVtznDDFmTeo+2RrkBNA9I2tk5xIAZwRsXHpxrGAbJR6SZWDP
+         n+HlGUMT7lvZUtO+EPL5vdz8/lbgm66fKGWYS/41mo4Qu8/QelZxmzJEID8XWzqHTq/a
+         2CvRt5kbzIZNtwoAPbZhMaMul8lAffnsUCM4U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7WHZONqXFgXEk6ISoZzpiq15kU0W8eyDeH2IAM8jdzk=;
-        b=JbzoBqksOE4iMbu17rBzzmAXGx3hSBDzyFuDRup/5GkyfOBw2At+/9NomldnQhx6P8
-         zgQc4F7zxv4tJdk4YsMk9g1zhzOHv1ICddOZILZz5HyZcYnsLXPHA3akapcvOaUq8jgZ
-         6wJ8BNpe0icNlRHg2YYuzErsTT7GlDykN52XTMySVg4Y8jkjqn5f4c9Ed7KZ+tuxxARI
-         HOm4I+VbHs26s1LtNnF734kPBG99mBVUf+aWqi4MymGwaR0Xa1anYAtJVzDZOZElqD4Z
-         I1Px/IdCslWe6upl2h3W5emAdG9Cd+B006QcO2K3Lsqh4bKWSgmJMtD3SbwoLiK2uaU1
-         /H+g==
-X-Gm-Message-State: AOAM532K8+UedWOGhwjW5jlH/Ycite4PMeIplE/1h+WI7+48fiCA9aJ+
-        w6KAmh54He6hhOnYwVoFCQw=
-X-Google-Smtp-Source: ABdhPJz8yYg54fLQaQgOsJbMnT4/t60m1mZqZ979bZmxy4q+LDKeOnK5XdZdJkqZzRGo/9/vqz9Yrg==
-X-Received: by 2002:ad4:59d2:: with SMTP id el18mr1664166qvb.35.1611006143640;
-        Mon, 18 Jan 2021 13:42:23 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id h75sm11354276qke.130.2021.01.18.13.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 13:42:22 -0800 (PST)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 18 Jan 2021 16:42:20 -0500
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <YAYAvBARSRSg8z8G@rani.riverdale.lan>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eMq+9Ew1U5NanRfurn/yAwtd0Hdhag4NKEz1bCE+wNU=;
+        b=Vr+9VkulkuksWVAkiWRKWKFqy8A9BQfODRuMQmdkhO6bOdLMRgHwt/Wo0NLlqb3sC7
+         aiorMDLAQK/LNH1xt1Pgd31y6ucgQugIgyhKhXo2Ml96VioYH1axBjLO2VEAZ6AWkt1P
+         f05GUrpaKaIxgDFsLxN50Wit42LqBiDuvKiWJnwfJCyRM96IXU7/BdNbpMK71HUB5Wvq
+         Q3OH0PqIl9D57Tl5/KVtUNXJV58AKuQu3fvQ74uPdib9vFzgdamtBJm1/n7dGrp7Ou5/
+         IkbKPr8yniCz11ln/uW5RrkEsYC+JsOIWvAfdo4OrEr9I6oUp0Nbx/EgZjDGFuEXvWvQ
+         vEYg==
+X-Gm-Message-State: AOAM5303JAhPbQG0+jmutAh8t4GBkH1tDelQlNCsNLrEpMBiPZDv8i0+
+        CB41jzt+U34Hy+wKD6sEgr3yiIuATp+A6w==
+X-Google-Smtp-Source: ABdhPJx0RI7ByRQTJUe9yA18o4Zlz2NdcxcaLDmkCcXWy4lDo80WW7sww8Kw9GPlgsd843x7gVJs1A==
+X-Received: by 2002:a02:cc54:: with SMTP id i20mr1028812jaq.138.1611006862340;
+        Mon, 18 Jan 2021 13:54:22 -0800 (PST)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id u9sm1724279iog.16.2021.01.18.13.54.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 13:54:21 -0800 (PST)
+Received: by mail-io1-f48.google.com with SMTP id d81so20529182iof.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:54:21 -0800 (PST)
+X-Received: by 2002:a02:856d:: with SMTP id g100mr1082893jai.10.1611006861172;
+ Mon, 18 Jan 2021 13:54:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210118202409.GG30090@zn.tnic>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
+ <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
+ <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com> <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Jan 2021 13:54:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+Message-ID: <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+Subject: Re: Splicing to/from a tty
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:24:09PM +0100, Borislav Petkov wrote:
-> > > > As a matter of fact, it seems like the four assertions could be combined
-> > > > into:
-> > > >       BUILD_BUG_ON((EFI_VA_END & P4D_MASK) != (MODULES_END & P4D_MASK));
-> > > >       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
-> > > > instead of separately asserting they're the same PGD entry and the same
-> > > > P4D entry.
-> > > >
-> > > > Thanks.
-> > >
-> > > I actually don't quite get the MODULES_END check -- Ard, do you know
-> > > what that's for?
-> > >
-> > 
-> > Maybe Boris remembers? He wrote the original code for the 'new' EFI
-> > page table layout.
-> 
-> That was added by Kirill for 5-level pgtables:
-> 
->   e981316f5604 ("x86/efi: Add 5-level paging support")
+On Mon, Jan 18, 2021 at 1:35 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> So here's a slightly updated version of that patch, but apart from
+> slightly better coverage - even if it's a driver that is disabled
+> anyway - I'd like to point out that all my previous caveats still
+> apply.
 
-That just duplicates the existing pgd_index() check for the p4d_index()
-as well. It looks like the original commit adding
-efi_sync_low_kernel_mappings() used to copy upto the PGD entry including
-MODULES_END:
-  d2f7cbe7b26a7 ("x86/efi: Runtime services virtual mapping")
-and then Matt changed that when creating efi_mm:
-  67a9108ed4313 ("x86/efi: Build our own page table structures")
-to use EFI_VA_END instead but have a check that EFI_VA_END is in the
-same entry as MODULES_END.
+I have now booted that version to see that I didn't make any horribly
+obvious mistakes.
 
-AFAICT, MODULES_END is only relevant as being something that happens to
-be in the top 512GiB, and -1ul would be clearer.
+And I must have screwed something up. I can actually use the machine
+normally (I'm writing this running that kernel), but when I decided to
+test the actual virtual console (as opposed to the GUI terminal
+windows that use pty's), I can't even log in.
 
-> 
->  Documentation/x86/x86_64/mm.rst should explain the pagetable layout:
-> 
->    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
->    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI region mapping space
->    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
->    ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
->    ffffffff80000000 |-2048    MB |                  |         |
->    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB | module mapping space
->    ffffffffff000000 |  -16    MB |                  |         |
->       FIXADDR_START | ~-11    MB | ffffffffff5fffff | ~0.5 MB | kernel-internal fixmap range, variable size and offset
-> 
-> That thing which starts at -512 GB above is the last PGD on the
-> pagetable. In it, between -4G and -68G there are 64G which are the EFI
-> region mapping space for runtime services.
-> 
-> Frankly I'm not sure what this thing is testing because the EFI VA range
-> is hardcoded and I can't imagine it being somewhere else *except* in the
-> last PGD.
+That *may* just be due to the inexcusably lazy and stupid "chunk
+things up into 32 byte pieces" I did. Most programs shouldn't care,
+tty's can return partial results anyway, but it's obviously a fairly
+fundamental and silly change.
 
-It's just so that someone doesn't just change the #define's for
-EFI_VA_END/START and think that it will work, I guess.
+But it might well be some other conversion bug of mine even if I tried
+to keep it fairly minimal and straight-forward.
 
-Another reasonable option, for example, would be to reserve an entire
-PGD entry, allowing everything but the PGD level to be shared, and
-adding the EFI PGD to the pgd_list and getting rid of
-efi_sync_low_kernel_mappings() altogether. There aren't that many PGD
-entries still unused though, so this is probably not worth it.
+So I suggest taking that patch with a lot of salt, and really treating
+it as a very rough starting point (which was the point of it - trying
+to actually boot it as-is was more of a "let's see if it survives at
+all" thing).
 
-> 
-> Lemme add Kirill for clarification.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+                Linus
