@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044F72FA30A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35192FA39F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 15:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390810AbhARLnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:43:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390429AbhARLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB4DD22D06;
-        Mon, 18 Jan 2021 11:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969843;
-        bh=RWPYeWz3kPOiRzfDjlhXVD3DzEPHKpRO/Y29GmVKYrY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=10Jov74UhImUqAy8+nvsJAaehoDar1IyBrxca5OMHqrnAAE3/H1eOVSlWqyiA5hsZ
-         W5UeDdTPfUI/+790398r86+M98lU5RtayueGsc0hdOx2y5GU4utrtdGp8gj6mJi11e
-         kco8sQn4zn/4DbOw+ZcA1+mKUw4U49ahGdlTWPro=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/43] net: ethernet: fs_enet: Add missing MODULE_LICENSE
-Date:   Mon, 18 Jan 2021 12:34:44 +0100
-Message-Id: <20210118113335.970445886@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2392885AbhAROvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 09:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390805AbhARLm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:42:58 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258DCC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 03:42:18 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l1SvI-0002pS-Fy; Mon, 18 Jan 2021 12:42:16 +0100
+Subject: Re: [PATCH] iio: adc: stm32-adc: fix erroneous handling of spurious
+ IRQs
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        kernel@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Holger Assmann <has@pengutronix.de>, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210112152441.20665-1-a.fatoum@pengutronix.de>
+ <20210116175333.4d8684c5@archlinux>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <47b0905a-4496-2f21-3b17-91988aa88e91@pengutronix.de>
+Date:   Mon, 18 Jan 2021 12:42:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210116175333.4d8684c5@archlinux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+Hello Jonathan,
 
-[ Upstream commit 445c6198fe7be03b7d38e66fe8d4b3187bc251d4 ]
+On 16.01.21 18:53, Jonathan Cameron wrote:
+> On Tue, 12 Jan 2021 16:24:42 +0100
+> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> 
+>> 1c6c69525b40 ("genirq: Reject bogus threaded irq requests") makes sure
+>> that threaded IRQs either
+>>   - have IRQF_ONESHOT set
+>>   - don't have the default just return IRQ_WAKE_THREAD primary handler
+>>
+>> This is necessary because level-triggered interrupts need to be masked,
+>> either at device or irqchip, to avoid an interrupt storm.
+>>
+>> For spurious interrupts, the STM32 ADC driver still does this bogus
+>> request though:
+>>   - It doesn't set IRQF_ONESHOT
+>>   - Its primary handler just returns IRQ_WAKE_THREAD if the interrupt
+>>     is unexpected, i.e. !(status & enabled_mask)
+> 
+> This seems 'unusual'.  If this is a spurious interrupt we should be
+> returning IRQ_NONE and letting the spurious interrupt protection
+> stuff kick in.
+> 
+> The only reason I can see that it does this is print an error message.
+> I'm not sure why we need to go into the thread to do that given
+> it's not supposed to happen. If we need that message at all, I'd
+> suggest doing it in the interrupt handler then return IRQ_NONE;
 
-Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
-into error") the ppc32_allmodconfig build fails with:
+As described, I run into the spurious IRQ case, so I think the message is
+still useful (until that's properly fixed), but yes, it should've returned
+IRQ_NONE in that case.
 
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
+With these changes, IRQF_ONESHOT shouldn't be necessary, but in practice
+the driver doesn't function correctly with the primary IRQ handler threaded.
 
-Add the missing MODULE_LICENSEs to fix the build. Both files include a
-copyright header indicating they are GPL v2.
+Olivier, Fabrice: Are you aware of this problem?
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
- drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
- 2 files changed, 2 insertions(+)
+Cheers,
+Ahmad
 
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-index c8e5d889bd81f..21de56345503f 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-@@ -223,3 +223,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_bb_mdio_driver);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-index 1582d82483eca..4e6a9c5d8af55 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-@@ -224,3 +224,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_fec_mdio_driver);
-+MODULE_LICENSE("GPL");
+> 
+>>   - stm32mp151.dtsi describes the ADC interrupt as level-triggered
+>>
+>> Fix this by setting IRQF_ONESHOT to have the irqchip mask the IRQ
+>> until the IRQ thread has finished.
+>>
+>> IRQF_ONESHOT also has the effect that the primary handler is no longer
+>> forced into a thread. This makes the issue with spurious interrupts
+>> interrupts disappear when reading the ADC on a threadirqs=1 kernel.
+>> This used to result in following kernel error message:
+>>
+>> 	iio iio:device1: Unexpected IRQ: IER=0x00000000, ISR=0x0000100e
+>> or
+>> 	iio iio:device1: Unexpected IRQ: IER=0x00000004, ISR=0x0000100a
+>>
+>> But with this patch applied (or threaded IRQs disabled), this no longer
+>> occurs.
+>>
+>> Cc: Lucas Stach <l.stach@pengutronix.de>
+>> Reported-by: Holger Assmann <has@pengutronix.de>
+>> Fixes: 695e2f5c289b ("iio: adc: stm32-adc: fix a regression when using dma and irq")
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>>  drivers/iio/adc/stm32-adc.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+>> index c067c994dae2..7e0e21c79ac8 100644
+>> --- a/drivers/iio/adc/stm32-adc.c
+>> +++ b/drivers/iio/adc/stm32-adc.c
+>> @@ -1910,7 +1910,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>>  
+>>  	ret = devm_request_threaded_irq(&pdev->dev, adc->irq, stm32_adc_isr,
+>>  					stm32_adc_threaded_isr,
+>> -					0, pdev->name, indio_dev);
+>> +					IRQF_ONESHOT, pdev->name, indio_dev);
+>>  	if (ret) {
+>>  		dev_err(&pdev->dev, "failed to request IRQ\n");
+>>  		return ret;
+> 
+> 
+
 -- 
-2.27.0
-
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
