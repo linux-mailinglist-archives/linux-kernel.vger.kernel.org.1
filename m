@@ -2,274 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15352F9C65
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8902F9C66
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388527AbhARJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:17:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42272 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388309AbhARJHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:07:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 836B9AC6E;
-        Mon, 18 Jan 2021 09:05:41 +0000 (UTC)
-Subject: Re: [PATCH v2] drm/ast: Disable fast reset after DRAM initial
-To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     airlied@linux.ie, tommy_huang@aspeedtech.com,
-        jenmin_yuan@aspeedtech.com, airlied@redhat.com,
-        arc_sung@aspeedtech.com
-References: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
- <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <787f3c79-b6e5-6015-9fb6-feb3d2ae15e0@suse.de>
-Date:   Mon, 18 Jan 2021 10:05:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu"
+        id S2388552AbhARJRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:17:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388359AbhARJIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:08:54 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0658C061573;
+        Mon, 18 Jan 2021 01:08:13 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id l23so9371226pjg.1;
+        Mon, 18 Jan 2021 01:08:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=oQRRXCmQGQuZCQYLuXtxMPDteVSg+sjt+B2CXlJY5uY=;
+        b=mFLSEyB+WhWxpHiQ5SDX8AgkmO6t61ZxQLrGeseRTFKcpVG2KYbZOvC1IcKSb9UB8n
+         FbsEINhEJ6SYW4NHfcFQdk2qC3jwlv9imhbzy+v2yhCaaN8k9lqJ+oxu4M8Y1Xrl9+Nd
+         LAfYKUDdeeqRQ8u9/FIaMuHJBqXBGE79t56lFKYtluKT5RweAdMZHTUxYQedhejjDBnK
+         vk9I8Bie++azRpZ9WBspDKbAcjLmhrabBfJ18dBpsOdmKzRgqdrwlbtoC7wZiWli79rL
+         eC5Y4LuRFjsWKdlE+lTeeREMjoz58xz/D2EP8vc+nqY6Pm9gq5g6Wh8PXC7w8IWmPv5E
+         oNMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oQRRXCmQGQuZCQYLuXtxMPDteVSg+sjt+B2CXlJY5uY=;
+        b=FasCIC4z8+SXxWpaVb4otPe4+DHTIFXtcocfV2q+C71j26iped/0cODaVeUAgddU+e
+         gooz/kDnkE6v8xH0Fz4Z4WcYA7nR1Wb2F6RK6r7411JPlasUcTUFwlsZITLgLauRM5rr
+         8mOVVd/MBTxJjHpVfAkLLAyjgsO5/hLkgsFzXq7kqXndo00huLsu7WnKszESsr/Gb7dl
+         PKTgFdXBygIlHVhX+tmobxjdYild0HMlayDEogQrs0F9+WwqxS8tRgabSag+CzRAkWyM
+         +Y7mB+/3wC88J5e1ZhCGfIB4n5hjM9cxP3FMlLa+cnuvj/9V+l/F5rJ69FmRPtEE1+z1
+         Lmcg==
+X-Gm-Message-State: AOAM531erOsz0yc5RRvdRWUOhicGGA1Kjp8xRSJyu0h12u6rbZy5kLoa
+        l3MQNf5HZ5BnMzICPIrH3pNlmQHUMHk=
+X-Google-Smtp-Source: ABdhPJxJBsHPSINp5FR+JCVHGdC/tIYhE5D4jiNCxl3I8JYQyucDZzbeiNFS3GArZSdv6WjL08yZfA==
+X-Received: by 2002:a17:902:8a8a:b029:db:e003:4044 with SMTP id p10-20020a1709028a8ab02900dbe0034044mr25859233plo.19.1610960892926;
+        Mon, 18 Jan 2021 01:08:12 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id s23sm15186928pgj.29.2021.01.18.01.08.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 01:08:12 -0800 (PST)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH v2] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
+Date:   Mon, 18 Jan 2021 17:07:53 +0800
+Message-Id: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu
-Content-Type: multipart/mixed; boundary="kXR6DXVkPIyEon41C4dActgVuQYMitqSM";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: airlied@linux.ie, tommy_huang@aspeedtech.com, jenmin_yuan@aspeedtech.com,
- airlied@redhat.com, arc_sung@aspeedtech.com
-Message-ID: <787f3c79-b6e5-6015-9fb6-feb3d2ae15e0@suse.de>
-Subject: Re: [PATCH v2] drm/ast: Disable fast reset after DRAM initial
-References: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
- <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
-In-Reply-To: <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
---kXR6DXVkPIyEon41C4dActgVuQYMitqSM
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+The per-cpu vsyscall pvclock data pointer assigns either an element of the 
+static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory 
+hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if 
+kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in 
+kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not 
+assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is not 
+VDSO_CLOCKMODE_PVCLOCK.
 
-Hi
+Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
+Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Tested-by: Haiwei Li <lihaiwei@tencent.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: stable@vger.kernel.org#v4.19-rc5+
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v1 -> v2:
+ * add code comments
 
-Am 12.01.21 um 08:58 schrieb KuoHsiang Chou:
-> [Bug][AST2500]
->=20
-> V1:
-> When AST2500 acts as stand-alone VGA so that DRAM and DVO initializatio=
-n
-> have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
-> However, HW suggests disable Fast reset mode after DRAM initializaton,
-> because fast reset mode is mainly designed for ARM ICE debugger.
-> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be=
+ arch/x86/kernel/kvmclock.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> first enabled to avoid system deadlock before disable fast reset mode.
->=20
-> V2:
-> Use to_pci_dev() to get revision of PCI configuration.
->=20
-> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-> ---
->   drivers/gpu/drm/ast/ast_drv.h  |  1 +
->   drivers/gpu/drm/ast/ast_main.c |  5 +++
->   drivers/gpu/drm/ast/ast_post.c | 71 +++++++++++++++++++++------------=
--
->   3 files changed, 51 insertions(+), 26 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
-v.h
-> index da6dfb677540..a2cf5fef2399 100644
-> --- a/drivers/gpu/drm/ast/ast_drv.h
-> +++ b/drivers/gpu/drm/ast/ast_drv.h
-> @@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
->   void ast_post_gpu(struct drm_device *dev);
->   u32 ast_mindwm(struct ast_private *ast, u32 r);
->   void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
-> +void ast_patch_ahb_2500(struct ast_private *ast);
->   /* ast dp501 */
->   void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
->   bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
-> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
-ain.c
-> index 3775fe26f792..0e4dfcc25623 100644
-> --- a/drivers/gpu/drm/ast/ast_main.c
-> +++ b/drivers/gpu/drm/ast/ast_main.c
-> @@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device =
-*dev, u32 *scu_rev)
->   {
->   	struct device_node *np =3D dev->pdev->dev.of_node;
->   	struct ast_private *ast =3D to_ast_private(dev);
-> +	struct pci_dev *pdev =3D to_pci_dev(dev->dev);
->   	uint32_t data, jregd0, jregd1;
->=20
->   	/* Defaults */
-> @@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device=
- *dev, u32 *scu_rev)
->   	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff)=
-;
->   	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff)=
-;
->   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
-> +		/* Patch AST2500 */
-> +		if (((pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=3D=
- 0))
-> +			ast_patch_ahb_2500(ast);
-> +
->   		/* Double check it's actually working */
->   		data =3D ast_read32(ast, 0xf004);
->   		if (data !=3D 0xFFFFFFFF) {
-> diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_p=
-ost.c
-> index 8902c2f84bf9..1f0007daa005 100644
-> --- a/drivers/gpu/drm/ast/ast_post.c
-> +++ b/drivers/gpu/drm/ast/ast_post.c
-> @@ -2026,6 +2026,33 @@ static bool ast_dram_init_2500(struct ast_privat=
-e *ast)
->   	return true;
->   }
->=20
-> +void ast_patch_ahb_2500(struct ast_private *ast)
-> +{
-> +	u32	data;
-> +
-> +patch_ahb_lock:
-> +	/* Clear bus lock condition */
-> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
-> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
-> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
-> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-> +	data =3D ast_mindwm(ast, 0x1e6e2070);
-> +	if (data & 0x08000000) {					/* check fast reset */
-> +
-> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
-> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
-> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
-> +		udelay(1000);
-> +	}
-> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-> +	do {
-> +		data =3D ast_mindwm(ast, 0x1e6e2000);
-> +		if (data =3D=3D 0xffffffff)
-> +			goto patch_ahb_lock;
-> +	}	while (data !=3D 1);
-> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
-> +}
-> +
->   void ast_post_chip_2500(struct drm_device *dev)
->   {
->   	struct ast_private *ast =3D to_ast_private(dev);
-> @@ -2033,39 +2060,31 @@ void ast_post_chip_2500(struct drm_device *dev)=
+diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+index aa59374..01d4e55c 100644
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -294,9 +294,11 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+ 	/*
+ 	 * The per cpu area setup replicates CPU0 data to all cpu
+ 	 * pointers. So carefully check. CPU0 has been set up in init
+-	 * already.
++	 * already. Assign vsyscall pvclock data pointer iff kvmclock
++	 * vsyscall is enabled.
+ 	 */
+-	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)))
++	if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)) ||
++	    (kvm_clock.vdso_clock_mode != VDSO_CLOCKMODE_PVCLOCK))
+ 		return 0;
+ 
+ 	/* Use the static page for the first CPUs, allocate otherwise */
+-- 
+2.7.4
 
->   	u8 reg;
->=20
->   	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
-> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
-> +	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
->   		/* Clear bus lock condition */
-> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
-> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
-> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
-> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-> -		ast_write32(ast, 0xf004, 0x1e6e0000);
-> -		ast_write32(ast, 0xf000, 0x1);
-> -		ast_write32(ast, 0x12000, 0x1688a8a8);
-> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
-> -			;
-> -
-> -		ast_write32(ast, 0x10000, 0xfc600309);
-> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
-> -			;
-> +		ast_patch_ahb_2500(ast);
-> +
-> +		/* Disable watchdog */
-> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
-> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
-> +		/* Reset USB port */
-> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
-> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
-> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
-> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
-> +			mdelay(100);
-> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
-> +		}
-> +		/* Modify eSPI reset pin */
-> +		temp =3D ast_mindwm(ast, 0x1E6E2070);
-> +		if (temp & 0x02000000)
-> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
-
-Instead of answering my question, you simply deleted the comments. It=20
-doesn't work like that.
-
-Best regards
-Thomas
-
->=20
->   		/* Slow down CPU/AHB CLK in VGA only mode */
->   		temp =3D ast_read32(ast, 0x12008);
->   		temp |=3D 0x73;
->   		ast_write32(ast, 0x12008, temp);
->=20
-> -		/* Reset USB port to patch USB unknown device issue */
-> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
-> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
-> -		temp |=3D 0x00004000;
-> -		ast_moutdwm(ast, 0x1e6e2094, temp);
-> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
-> -		if (temp & 0x00800000) {
-> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
-> -			mdelay(100);
-> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
-> -		}
-> -
->   		if (!ast_dram_init_2500(ast))
->   			drm_err(dev, "DRAM init failed !\n");
->=20
-> --
-> 2.18.4
->=20
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---kXR6DXVkPIyEon41C4dActgVuQYMitqSM--
-
---O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAFT2QFAwAAAAAACgkQlh/E3EQov+BE
-Yg//Zsf21OOH1g8P1WhXigwyJH6+bXjeKymUjVRiRq6Sn7DxH30cF8a4tZVls/7eWYaB6a9us6di
-++TgrIawbyxm4DHPh96n0Qi92zzPUvYFWL1G12znzcW/R1pev13f64oP4c3cD9wIs8YnG1Cad51M
-lSubl5e9PMzqmZg8R2WG2ruVJ0X02kEYtfjHmOhQlYtgxdT/Tn2K8l0qcid2rtKMVn1/VAxVOtvK
-jZQb+Bw8+LttHO8jTaMyI7VdU4Up8qI6eOhHe//m3DlQ/6rNO5BbT/lT6XKdW7Oiaqng494KWbC7
-NdIJMFAJx7O9kiaz96eFq2DgoJkLgmM30wZLI69/NtDhgQWV16tmCcfxwYyvjLTCN+cvCP1T42KE
-6UyKV2Fe0eYk3hrxzO7zz/5NZrtzOtIwJ3O5g+YM3RMkX/E6lYz0KBGNJKYWEEw/5BpV8XVZ4CcT
-OPftd66y/DHhZeSE+dp4RnsT9d6/PTWhG+onxnTgrknAXYTvuHSB5rgRROgZZkWAEny4RhMG5aQp
-JxCXGGV7eLk5jjtyWOpXeDp6SDZeQTcHpc9kgnCGIyLxP5HchmlL8BdUsjnvAHQftEJJ5ZA4nyFU
-pBsksWq7WloDYtDGG5TSUHTQvoAD5eyCtj13PPVUq0Ol8PGehBge0Uscs9/fI0SwJldkkNz42UX8
-MLE=
-=311s
------END PGP SIGNATURE-----
-
---O9Ue0xAhdbqGZUXsufHAGyPSvZn8O60Qu--
