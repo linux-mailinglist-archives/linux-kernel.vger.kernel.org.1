@@ -2,97 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49E02FACB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13172FACB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 22:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394753AbhARVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 16:32:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388244AbhARVam (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 16:30:42 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500F4C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:30:02 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id d26so17782677wrb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 13:30:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WuPK/5FjDs42aFnK7V4pjhtJSYgscy2KuC7MzESUVcs=;
-        b=UB6V/nv/LoEGDzdOqJvcernoxeBmcQ4pa6PhEUQR+AnquadsHy8PxmAH/SIJnhCXfv
-         DbOuIK7khMoBcjvSi9LyY5F3ZdULwAydWbxo7UJ2P6SNDWq4MjtCFNx8P4JLi3V5S3ah
-         8e+ieD+zHQ/KKUEiXX7xFYBUrN2oqUUFlYh7FxAJ8cXiZqfZCnUUq8qEkcZ6deH+tG3l
-         mQ0e8BOztoHT/a0jyV8iHp13F3781f8xHs84FxCzCXydoEHgYW2WXNtp0yZLQdej9qRy
-         SWuAuS+pRYI3Kp1Nb/UCdN07x42juF0JX+XS06GjwRzWoteNOZFqja+zn+HO6wTmt7Yc
-         ifDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WuPK/5FjDs42aFnK7V4pjhtJSYgscy2KuC7MzESUVcs=;
-        b=fK5pfweVyL8jeaqbo/S2S6amIBGRIkfDaGo3ex886cIVj7IC4/N+FZT+EOz0Cn2M+N
-         JuQu1lWNhCA77IOpA1fLB+IxN2CziPZt0QhNt0ViwCcUbVnSDMVTpU2jbw8kPMu7thMC
-         o2k9VGjOHB40RAKgIqwgZwm0Ii8caVOhglDyD2epUSpWfxwfGvT12Ec2gFZls+kXfliA
-         iqd71fLcZ4aZmKDaZGhaFLf1NKz8lhRfodiCRxCZ9hfNYx147GmRCWvEFsNrbbjfgdhj
-         INurtZGG0JE/Mubp/R4Yb/QjOfLeTQtMlJecorDO+DGFwbAgUDHHWa2ZcipFnR9hIwM2
-         yZkw==
-X-Gm-Message-State: AOAM53139E5cmndTphB1gqu28RVYKZNSRfyv474+QxLeQF8DeaQg3Ydc
-        snll+lEBedXFoLc2oL9uJn+K0Q==
-X-Google-Smtp-Source: ABdhPJxQ30rTdpLjfHNzbKFsGb688+buapNYTQqt7sUmkOjdbQZ7gDxOVpGLwfpPBUGBfDvgPMACDg==
-X-Received: by 2002:a5d:4b44:: with SMTP id w4mr1257950wrs.155.1611005400949;
-        Mon, 18 Jan 2021 13:30:00 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:2095:8614:d69:136f? ([2a01:e34:ed2f:f020:2095:8614:d69:136f])
-        by smtp.googlemail.com with ESMTPSA id d7sm1048253wmb.47.2021.01.18.13.29.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 13:30:00 -0800 (PST)
-Subject: Re: [PATCH v2] clocksource: mxs_timer: add missing semicolon when
- DEBUG is defined
-To:     trix@redhat.com, tglx@linutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210118211955.763609-1-trix@redhat.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <3918e9b2-20a5-b2b2-846b-43b3417e4e5f@linaro.org>
-Date:   Mon, 18 Jan 2021 22:29:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2438092AbhARVct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 16:32:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394627AbhARVcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 16:32:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC50822CB1;
+        Mon, 18 Jan 2021 21:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611005511;
+        bh=kTjX1VZm1DWWauWsV+mUEXbzgKqcO9yZ0x/rHJpGZeA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CLdb+2nUgmBA35IQuSRFAAMoVtCsF2TSja834nkhc604qeaLNQNcAoTvf//dWvZAu
+         NVGCa6Sv3hmS4rjG90WHFJfuY7qCnFL+jX9ydbS4KC4W/onDoC3Vu5zZpyxVBXNchZ
+         aSbFQI8lF8B9Z+lH5ZXIBli8vUhBhrFYC8HxPSxK/9BZCHRtanyz/3lWMw59YDj7Oy
+         nASpU3lanZ0y9wBEYnQl8yEaTdKYz2GsBccfcGSjoycdg6U+SNlLOHxrR7QfDm3Ukt
+         N1CFPZx6MYXJtx35Gs4pz0WtP6IdRcG68gwummKdA3kwcabJjXme/6l3EEFyLGVDBP
+         nN+fmU8KA78bA==
+Date:   Mon, 18 Jan 2021 13:31:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net] net: nfc: nci: fix the wrong NCI_CORE_INIT
+ parameters
+Message-ID: <20210118133149.22f2fef1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACwDmQDxa6WKq4UwCfk2sxC8JukV+CcnuSqrCdhSWSjJ9ppwOg@mail.gmail.com>
+References: <20210118205522.317087-1-bongsu.jeon@samsung.com>
+        <20210118130154.256b3851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CACwDmQDxa6WKq4UwCfk2sxC8JukV+CcnuSqrCdhSWSjJ9ppwOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210118211955.763609-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/01/2021 22:19, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> When DEBUG is defined this error occurs
-> 
-> drivers/clocksource/mxs_timer.c:138:1: error:
->   expected ‘;’ before ‘}’ token
-> 
-> The preceding statement needs a semicolon.
-> Replace pr_info() with pr_debug() and remove the unneeded ifdef.
-> 
-> Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> v1: replace pr_info() with pr_debug()
-> ---
+On Tue, 19 Jan 2021 06:19:23 +0900 Bongsu Jeon wrote:
+> On Tue, Jan 19, 2021 at 6:01 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Tue, 19 Jan 2021 05:55:22 +0900 Bongsu Jeon wrote:  
+> > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> > >
+> > > Fix the code because NCI_CORE_INIT_CMD includes two parameters in NCI2.0
+> > > but there is no parameters in NCI1.x.
+> > >
+> > > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>  
+> >
+> > What's the Fixes tag for this change?  
+> Sorry to miss the Fixes tag.
+> This is the Fixes tag ( Fixes: bcd684aace34 ("net/nfc/nci: Support NCI
+> 2.x initial sequence") )
+> Could I resend this patch after adding that tag?
 
-Applied, thanks
+It's fine no need to repost, I can add the tag when applying the patch,
+let's wait for reviews. Let me just place it on a line of its own,
+patchwork is supposed to pick that up automatically:
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Fixes: bcd684aace34 ("net/nfc/nci: Support NCI 2.x initial sequence")
