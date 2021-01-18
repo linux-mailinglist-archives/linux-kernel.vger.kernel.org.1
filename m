@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737792F9D33
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA772F9D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389133AbhARKuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:50:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60577 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390095AbhARKXs (ORCPT
+        id S2389282AbhARKsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390056AbhARKXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:23:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610965342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RpFlhXoCi3L1BBKHKCd/6ZVAAft9GBSKHZM8kwXaep8=;
-        b=bLkAEnp+o4AwvZdotWh4qsbHdu2m426EDxVfUoa9pyZx55+gRnzCCXBS2+Y8hZuG1eX+gS
-        oahTGS0h4d1Z/qpbf1t3cAwOEKOg/4VxF1qGh+ScpZubpgoc1wjK92cXgGc59M7rA5s+AO
-        4o2EmLbHE6fh/cruuWKWmveZIFiwGAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-Me9VOK4bNmKeCSDyuYamrQ-1; Mon, 18 Jan 2021 05:22:20 -0500
-X-MC-Unique: Me9VOK4bNmKeCSDyuYamrQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02687107ACE4;
-        Mon, 18 Jan 2021 10:22:19 +0000 (UTC)
-Received: from [10.40.208.57] (unknown [10.40.208.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 053F060BFA;
-        Mon, 18 Jan 2021 10:22:11 +0000 (UTC)
-Message-ID: <11bb013a6beb7ccb3a5f5d5112fbccbf3eb64705.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address
- space support user-configurable
-From:   Mohammed Gamal <mgamal@redhat.com>
-To:     Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Date:   Mon, 18 Jan 2021 12:18:05 +0200
-In-Reply-To: <CALMp9eT7yDGncP-G9v3fC=9PP3FD=uE1SBy1EPBbqkbrWSAXSg@mail.gmail.com>
-References: <20200903141122.72908-1-mgamal@redhat.com>
-         <CALMp9eT7yDGncP-G9v3fC=9PP3FD=uE1SBy1EPBbqkbrWSAXSg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        Mon, 18 Jan 2021 05:23:20 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0403EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:22:40 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id p5so7235734qvs.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 02:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E7b4WeOHgdYLNAFctjfJGeS6VNWY7pPBdbCgdjKDlQE=;
+        b=BvQ146S7SGydtHihAba7WPhV8kde08dutF5V3Og4H1Hux8g8ukOdUgJM/tAB8hBYP5
+         j/xHzYxgB7yeAJnSrPpZqIxdnX5v6jUtW1XzN+rrz42qYHBJdxc8f3aockmd2VbKXfvX
+         iWtvFTHG8Q/fG0zElt3X2vzC31DMxoOH4+mUyI6ZiEQI8QcAvIXkxiLM/Pfsf5TCyCHc
+         JedNhQM7phW6U0lug3Sv0kgcymER/CsfhACysE+EicDU5O7ITc9cRGx0pVCsfLUs/8DS
+         0HrGko+Osm4qKpbcDUoiuGrsk6yCe2RcK/pTBUFi46G7r9D0GrjKwm5VUkDmTnfWo7+5
+         LNOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E7b4WeOHgdYLNAFctjfJGeS6VNWY7pPBdbCgdjKDlQE=;
+        b=CCp+uyvTeJQfXEjzIsHZymiJlQsNMLjgiw+tVpbg6mhEWLa5W0ARZgsxQiqQ8Mh1XP
+         FFUvCfB5uQDZQbYbtF8I5QuLwjK+xRloRJzGjlX+tR0N5IYRZE3pEHTXftQkl2xKXpPQ
+         nlE5OX4EZfj9iCz4xWTfMsA7WslbPLzv2x9his1PH8IYb18LQKgVkji0Tx0jGZz/vmXt
+         uwaP4eKGYzXo3atwRkxhZ84T6OdUoIy/bcyKGiw9a872cz5XcQAv3Oj4NYdevbeMX4Bz
+         9bGdR9RG7on8ztC1kC+hLqUnWdMJhVHUl7AjS9IOIl8yr+KtuVM452qhGnzh7wSnoy65
+         4t9Q==
+X-Gm-Message-State: AOAM530fy4+wR+X1IUtpCy1niJbSJqSkZS5xCNEr5IrM1dTunWT86GtX
+        XnSvLGW240LhgnbQvg1bWTeUs2nxSFBMceeaUEIO9g==
+X-Google-Smtp-Source: ABdhPJzP4uRKQpGNsBPbV5cTd6x4Rw3Er5hnqwT7R5LyA1UDx04O9mEoFfnYa6c84TKooghfAteR2xPpcxJCqHA1TiY=
+X-Received: by 2002:a0c:e90a:: with SMTP id a10mr23809113qvo.38.1610965359033;
+ Mon, 18 Jan 2021 02:22:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210115130336.2520663-1-glider@google.com> <20210115130336.2520663-4-glider@google.com>
+ <YAGckOeJxqCcHKa+@kroah.com> <CAG_fn=Xen6Nd9qJnW6F4r5vgj7WAUo40BHeN_FXKpJ2jrpT6-g@mail.gmail.com>
+ <20210115115239.1f3693ac@gandalf.local.home>
+In-Reply-To: <20210115115239.1f3693ac@gandalf.local.home>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 18 Jan 2021 11:22:27 +0100
+Message-ID: <CAG_fn=UnMhW4y6y5Tef9xnbB2S8gKozY7SXyk9STFh53rPfW-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] docs: ABI: add /sys/kernel/error_report/ documentation
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Marco Elver <elver@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-15 at 16:08 -0800, Jim Mattson wrote:
-> On Thu, Sep 3, 2020 at 7:12 AM Mohammed Gamal <mgamal@redhat.com>
-> wrote:
-> > 
-> > This patch exposes allow_smaller_maxphyaddr to the user as a module
-> > parameter.
-> > 
-> > Since smaller physical address spaces are only supported on VMX,
-> > the parameter
-> > is only exposed in the kvm_intel module.
-> > Modifications to VMX page fault and EPT violation handling will
-> > depend on whether
-> > that parameter is enabled.
-> > 
-> > Also disable support by default, and let the user decide if they
-> > want to enable
-> > it.
-> > 
-> > Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 15 ++++++---------
-> >  arch/x86/kvm/vmx/vmx.h |  3 +++
-> >  arch/x86/kvm/x86.c     |  2 +-
-> >  3 files changed, 10 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 819c185adf09..dc778c7b5a06 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -129,6 +129,9 @@ static bool __read_mostly
-> > enable_preemption_timer = 1;
-> >  module_param_named(preemption_timer, enable_preemption_timer,
-> > bool, S_IRUGO);
-> >  #endif
-> > 
-> > +extern bool __read_mostly allow_smaller_maxphyaddr;
-> 
-> Since this variable is in the kvm module rather than the kvm_intel
-> module, its current setting is preserved across "rmmod kvm_intel;
-> modprobe kvm_intel." That is, if set to true, it doesn't revert to
-> false after "rmmod kvm_intel." Is that the intended behavior?
-> 
+> If you do use tracefs, add it to the top level tracing directory (no need
+> to have instances of it), and rename it to "kernel_warnings", as
+> "error_report" is too close to the existing "error_log" which holds error
+> messages of syntactic errors done by users entering in commands to some o=
+f
+> the special files.
 
-IIRC, this is because this setting was indeed not intended to be just
-VMX-specific, but since AMD has an issue with PTE accessed-bits being
-set by hardware and thus we can't yet enable this feature on it, it
-might make sense to move the variable to the kvm_intel module for now.
+Will do. Is it conventional to add a new dentry* to struct trace_array for =
+that?
+If not, maybe it's better to create this dir in
+error_report_notify_setup(), like this is done e.g. for
+/sys/kernel/tracing/trace_stat - just to loosen the coupling?
 
-Paolo, what do you think?
+> That is, /sys/kernel/tracing/kernel_warnings/ would be your error_report/
+> directory you have now.
+
+WDYT about "kernel_errors" or "kernel_error_reports"?
+"warnings" suggest we'll be notifying about any occurrence of WARN(),
+which is not what we are planning to do.
+Also, shall I rename the library/config/etc. accordingly (to e.g.
+CONFIG_KERNEL_WARN_NOTIFY)?
+
+> Use the function in kernel/trace/trace.c: tracer_init_tracefs() to add th=
+at
+> directory. That's for files in the tracefs directory that will not be
+> duplicated by instances.
+>
+> -- Steve
 
 
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
