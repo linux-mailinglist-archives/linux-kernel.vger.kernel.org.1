@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66EA2FA7C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D94E2FA7C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436672AbhARRnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407154AbhARRkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:40:39 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE74C061573;
-        Mon, 18 Jan 2021 09:39:58 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id e7so19092354ljg.10;
-        Mon, 18 Jan 2021 09:39:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=rtEV+yO5hUryVrfLNZRshRF3BazYXZlOEOzIhM8uokE=;
-        b=guRYV35XTWl9ld5O144nAB/ZYsmBXhpzubFy8YZfybThYsmCspvbj5MNr8LyolLa2V
-         /+ywk5PzIoM4GIo8GDaeFN+y6yK6pNIoWwrcErfN9p3o4wqR7LBZ5yRjOAmXNf09T4yO
-         IfzJ2/cXyJRrQsykgn35+vZHR+r2PbebhBg8xYChgm8M3w+eYslmYHFuSJHgx7+YkQfn
-         CP6jD9p41btVW45GCZEM/VbFDI+31FhII17Zj94LpFT8JdphP9LFL+kSms2RMLJeEBGD
-         tXsFYWtTuPJzgbl57QUrfbSVFC74Oz81bNaE/78nK1peanmB1jCcrZNf39aWgT8DPcKC
-         dSyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=rtEV+yO5hUryVrfLNZRshRF3BazYXZlOEOzIhM8uokE=;
-        b=YQVrxWKPIlc46G4szKic/0pZ+tlOfrJWdyKQAle4lZZEo5jj+Wz75qAlH0yuI5+k4u
-         pez95dyxnlUEPqsYFZTXZ/3SXfqS/P5hSpXHnm6689mNvGDUiUjBRlmLN/5fObz8qcYX
-         myYKeB06nnTftab1VadKmMjQRRNrlTGQyCb1T/5esrlv0ZbnCe8P7PFpidFLIqk31h8L
-         UMIhMY5f3kblS5z7sLJT0W+ca7sOQv7hz4PzeCAZ1JMXRgszRtI2aVv2QVSfLuJ9GG1g
-         t4dX4OWbv4NFSw7oReSW08qEkpyNJjdGOFujklg7d+03XwLHRNCYb2lXS03qAJ4HNHPx
-         EUbQ==
-X-Gm-Message-State: AOAM533yJ5LAYppxehT63kxuTR0AXFVEI1S7/u8A09OjNsZ76LskJIiU
-        qPaG7r9wUj8jJMLPo7d1EPfO+/DXZWV/erJDkE6yf5SXW0zpAg==
-X-Google-Smtp-Source: ABdhPJyZK9bb5bJkuiSzKhYfsUlMOKgpGAVs019N1eEcHohcFTiaN5VVvF398PZeRQFoR49c3NBwmjGUleu3fZcrBp0=
-X-Received: by 2002:a05:651c:3ca:: with SMTP id f10mr305984ljp.508.1610991597284;
- Mon, 18 Jan 2021 09:39:57 -0800 (PST)
+        id S2436689AbhARRnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:43:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436654AbhARRng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:43:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62B3F22CA0;
+        Mon, 18 Jan 2021 17:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610991772;
+        bh=xbHuN2zsULR9qjDlmKjLayObJYjaJVz+LNHEHTSE/pY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bHT9UmLFXzXWXSMq5t1MVbZmTYilKklSRZpGKSvbCTyAGIcJ9esbV2yvCprqHJm2Y
+         sKk3Ehp1LtQ24mjmASyYxTgjhqxuA2CMAPpbxKGFz7DIvnRgwbpS2S3p5kCjDNH1y9
+         y0LsXzU+9js2wDWuMYw0FhQ9T9QLWNYtMXWAoGUkTADo60W1eGQZvkAePLLI2rnGaH
+         f+BI6Yi54+JBQwS73eCYFF8NrLlsSNQixWveLlv+ZfGYbcqXSe9jsvX/BXjf1EAy2W
+         Y/+B4hYWRzfg9ktfv7wGQ89Vsb2o9VnLe8lv7EtpgPrN5IunRqXLTHp/y+Yc8bOj8n
+         N3gbW10bpMsIw==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-doc@vgert.kernel.org, live-patching@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH v5 0/2] Documentation: livepatch: Document reliable stacktrace and minor cleanup
+Date:   Mon, 18 Jan 2021 17:39:52 +0000
+Message-Id: <20210118173954.36577-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   Paul Thomas <pthomas8589@gmail.com>
-Date:   Mon, 18 Jan 2021 12:39:45 -0500
-Message-ID: <CAD56B7eAZ0hb0kuRbALONMAgvuhHjqrShVRwf1s93ZSbv8xqww@mail.gmail.com>
-Subject: watchdog: watchdog_stop_on_reboot()
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series adds a document, mainly written by Mark Rutland, which makes
+explicit the requirements for implementing reliable stacktrace in order
+to aid architectures adding this feature.  It also updates the other
+livepatching documents to use automatically generated tables of contents
+following review comments on Mark's document.
 
-I'm going through our out-of-tree commits, and was wondering if there
-is anything to be done with this one. Basically we remove both
-watchdog_stop_on_reboot() calls (not sure why there are two to begin
-with):
---- a/drivers/watchdog/cadence_wdt.c
-+++ b/drivers/watchdog/cadence_wdt.c
-@@ -330,7 +330,6 @@ static int cdns_wdt_probe(struct platform_device *pdev)
+v5:
+ - Tweaks to the commit message for the new document.
+ - Convert new and existing documents to autogenerated tables of
+   contents.
+v4:
+ - Renumber table of contents
+v3:
+ - Incorporated objtool section from Mark.
+ - Deleted confusing notes about using annotations.
 
-        watchdog_init_timeout(cdns_wdt_device, wdt_timeout, dev);
-        watchdog_set_nowayout(cdns_wdt_device, nowayout);
--       watchdog_stop_on_reboot(cdns_wdt_device);
-        watchdog_set_drvdata(cdns_wdt_device, wdt);
+Mark Brown (1):
+  Documentation: livepatch: Convert to automatically generated contents
 
-        wdt->clk = devm_clk_get(dev, NULL);
-@@ -359,7 +358,6 @@ static int cdns_wdt_probe(struct platform_device *pdev)
+Mark Rutland (1):
+  Documentation: livepatch: document reliable stacktrace
 
-        spin_lock_init(&wdt->io_lock);
+ Documentation/livepatch/index.rst             |   1 +
+ Documentation/livepatch/livepatch.rst         |  15 +-
+ Documentation/livepatch/module-elf-format.rst |  10 +-
+ .../livepatch/reliable-stacktrace.rst         | 309 ++++++++++++++++++
+ 4 files changed, 313 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/livepatch/reliable-stacktrace.rst
 
--       watchdog_stop_on_reboot(cdns_wdt_device);
-        watchdog_stop_on_unregister(cdns_wdt_device);
-        ret = devm_watchdog_register_device(dev, cdns_wdt_device);
-        if (ret)
 
-This seems to save us in certain conditions where the Software System
-Reset fails[1]. I'm not sure if there's other use cases where you
-really do want the watchdog to stop on reboot?
+base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
+-- 
+2.20.1
 
-This is on an arm64 Zyny Ultrascale+ platform.
-
--Paul
-
-[1] The one reproducible example of the Software System Reset failing
-I have for our system is after a kernel oops from removing the
-xilinx_dma module.
-https://lore.kernel.org/lkml/CAD56B7d_9+0XuOBysxW=CADLTG_7RybBTM8hCYKSigB8ie8E_g@mail.gmail.com/
