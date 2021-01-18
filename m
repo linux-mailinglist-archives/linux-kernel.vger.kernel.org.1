@@ -2,222 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C24F2F97FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63B72F97F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 03:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731285AbhARCxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 21:53:54 -0500
-Received: from mga11.intel.com ([192.55.52.93]:22551 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729794AbhARCxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 21:53:51 -0500
-IronPort-SDR: Tm4jAKlQy6PmkChD9Kwwzii/JR2mKEn1Umpof5H+/f4oeQP12CV3DlOuYCXTSSA/xQNYzVZsdc
- B8osP9Bcys6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="175246521"
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="175246521"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2021 18:53:10 -0800
-IronPort-SDR: zvmiLsMvdgYUkatsrYUCGpjP+uNEHGMfZJ/IufESAwsRkv00vTID0TGorc1gwZ+IUyMPstIDw8
- gTKk8jj85ENQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,355,1602572400"; 
-   d="scan'208";a="355033558"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Jan 2021 18:53:08 -0800
-Date:   Mon, 18 Jan 2021 10:48:46 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH v6 1/2] fpga: dfl: add the userspace I/O device support
-  for DFL devices
-Message-ID: <20210118024846.GA8153@yilunxu-OptiPlex-7050>
-References: <1610502848-30345-1-git-send-email-yilun.xu@intel.com>
- <1610502848-30345-2-git-send-email-yilun.xu@intel.com>
- <YAO1WJGr2EBvF1rd@epycbox.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAO1WJGr2EBvF1rd@epycbox.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1731306AbhARCu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 21:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730270AbhARCuk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 21:50:40 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3313C061573;
+        Sun, 17 Jan 2021 18:49:57 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id be12so7848852plb.4;
+        Sun, 17 Jan 2021 18:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=oyXzGEzTVn5EWmDkOEirveY6pyyWOy/cjy9jZHLDBhA=;
+        b=KifJQoJMSkkF7WXcAEylNnC9/t4DxId/faenhimlV5cXFeazVaBXk0i3oZJ6UU1egz
+         pTAqV7AkQ4OpM9Ona1XSsnZwrjKtnt/IxSCoIk50vehJ0L5Eo6EqVv9d2Vl6zSa2NZF8
+         FQwbmzYRMlj73hBYYa5TF/gC/XDFuGKyhJUvc+bZIvi/noVOZTc6vQYBZleeLkqdNDq1
+         Wq6h91hq5f5zcsc6MquHz3Hnf4mZATQrbm+uHfiAYKg2G83UL06VBaJnPeEOJiMeVXGn
+         04ch8EV1O5Ym8AtvuCnEPH76Gn9VQD9YQYtmuuyNVhTUsMBLu2FuQrYZMlg+lz19fcSm
+         d43w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=oyXzGEzTVn5EWmDkOEirveY6pyyWOy/cjy9jZHLDBhA=;
+        b=nNKguP8BwtfJGj8tgy3JK3d9lDEYyuaq0wq75POMRALrzs5Qw1X1s1aYiZ+YgXz6yl
+         M46cHl0MM9P7clXZ9nwn1dNgipgnsaN9FE1x3lvEAY4BprdaSet8t1M6XBOGQ7tPwVyh
+         nV6Q+Gw9BIQRKwRfGtBgY10UILQGXa6oabOnhD90Xx/8gWE90jeUus7VoINBd1bSQPa8
+         DhL7YLb97aJ+ql+1T0HToIkteWZrDLxPHrdgPyn9EnTy6CZwp1FgTljidf3JWUQFjB9G
+         Fq6C+Zk3+3Q3gfYO+qOE91w08wrIXSFi+qEGt73OwHXoM3EQmtP0NRsEN1FZGco5Q9zd
+         Wqiw==
+X-Gm-Message-State: AOAM532D8x1xcOny0BPhXM1vkDaspJeWLL1VOzkzp7vqaP6PIoKYZV31
+        PubbRJzCNDoOG2cZubv/xzY=
+X-Google-Smtp-Source: ABdhPJy/0yfCh/m/qz03tbvSbW0EkJJWVQLFeNt/sZWm409X5BfXwzgIv6MVeKj2qEn7AHbmX2Tjrg==
+X-Received: by 2002:a17:902:ecca:b029:de:b5bc:c852 with SMTP id a10-20020a170902eccab02900deb5bcc852mr1610645plh.59.1610938197040;
+        Sun, 17 Jan 2021 18:49:57 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id 85sm6223715pfc.39.2021.01.17.18.49.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Jan 2021 18:49:56 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YASPEYs0QVI88xfM@google.com>
+Date:   Sun, 17 Jan 2021 18:49:53 -0800
+Cc:     Will Deacon <will@kernel.org>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com,
+        Mel Gorman <mgorman@suse.de>, cai@lca.pw
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0BB9D243-F527-409D-8A9E-612DFD4EE993@gmail.com>
+References: <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+ <20210112214337.GA10434@willie-the-truck> <YAO/9YVceghRYo4T@google.com>
+ <85DAADF4-2537-40BD-8580-A57C201FF5F3@gmail.com>
+ <YAQAhyOFqEdjTRPJ@google.com>
+ <1A664155-462A-451D-A21E-D749A0ADBD09@gmail.com>
+ <YASPEYs0QVI88xfM@google.com>
+To:     Yu Zhao <yuzhao@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 07:56:08PM -0800, Moritz Fischer wrote:
-> Hi Xu,
-> 
-> On Wed, Jan 13, 2021 at 09:54:07AM +0800, Xu Yilun wrote:
-> > This patch supports the DFL drivers be written in userspace. This is
-> > realized by exposing the userspace I/O device interfaces.
-> > 
-> > The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
-> > platform device with the DFL device's resources, and let the generic UIO
-> > platform device driver provide support to userspace access to kernel
-> > interrupts and memory locations.
-> > 
-> > The driver now supports the ether group feature. To support a new DFL
-> > feature been directly accessed via UIO, its feature id should be added to
-> > the driver's id_table.
-> > 
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > Reviewed-by: Tom Rix <trix@redhat.com>
-> > Acked-by: Wu Hao <hao.wu@intel.com>
-> > ---
-> > v2: switch to the new matching algorithem. It matches DFL devices which
-> >      could not be handled by other DFL drivers.
-> >     refacor the code about device resources filling.
-> >     fix some comments.
-> > v3: split the dfl.c changes out of this patch.
-> >     some minor fixes
-> > v4: drop the idea of a generic matching algorithem, instead we specify
-> >      each matching device in id_table.
-> >     to make clear that only one irq is supported, the irq handling code
-> >      is refactored.
-> > v5: refactor the irq resource code.
-> > v6: fix the res[] zero initialization issue.
-> >     improve the return code for probe().
-> > ---
-> >  drivers/fpga/Kconfig        | 10 +++++
-> >  drivers/fpga/Makefile       |  1 +
-> >  drivers/fpga/dfl-uio-pdev.c | 93 +++++++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 104 insertions(+)
-> >  create mode 100644 drivers/fpga/dfl-uio-pdev.c
-> > 
-> > diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> > index 5ff9438..61445be 100644
-> > --- a/drivers/fpga/Kconfig
-> > +++ b/drivers/fpga/Kconfig
-> > @@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
-> >  	  the card. It also instantiates the SPI master (spi-altera) for
-> >  	  the card's BMC (Board Management Controller).
-> >  
-> > +config FPGA_DFL_UIO_PDEV
-> > +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
-> > +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
-> > +	help
-> > +	  Enable this to allow some DFL drivers be written in userspace. It
-> Nit: Enable this to allow DFL drivers to be written in userspace.
+> On Jan 17, 2021, at 11:25 AM, Yu Zhao <yuzhao@google.com> wrote:
+>=20
+> On Sun, Jan 17, 2021 at 02:13:43AM -0800, Nadav Amit wrote:
+>>> On Jan 17, 2021, at 1:16 AM, Yu Zhao <yuzhao@google.com> wrote:
+>>>=20
+>>> On Sat, Jan 16, 2021 at 11:32:22PM -0800, Nadav Amit wrote:
+>>>>> On Jan 16, 2021, at 8:41 PM, Yu Zhao <yuzhao@google.com> wrote:
+>>>>>=20
+>>>>> On Tue, Jan 12, 2021 at 09:43:38PM +0000, Will Deacon wrote:
+>>>>>> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+>>>>>>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> =
+wrote:
+>>>>>>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+>>>>>>>>> I will send an RFC soon for per-table deferred TLB flushes =
+tracking.
+>>>>>>>>> The basic idea is to save a generation in the page-struct that =
+tracks
+>>>>>>>>> when deferred PTE change took place, and track whenever a TLB =
+flush
+>>>>>>>>> completed. In addition, other users - such as mprotect - would =
+use
+>>>>>>>>> the tlb_gather interface.
+>>>>>>>>>=20
+>>>>>>>>> Unfortunately, due to limited space in page-struct this would =
+only
+>>>>>>>>> be possible for 64-bit (and my implementation is only for =
+x86-64).
+>>>>>>>>=20
+>>>>>>>> I don't want to discourage you but I don't think this would end =
+up
+>>>>>>>> well. PPC doesn't necessarily follow one-page-struct-per-table =
+rule,
+>>>>>>>> and I've run into problems with this before while trying to do
+>>>>>>>> something similar.
+>>>>>>>=20
+>>>>>>> Discourage, discourage. Better now than later.
+>>>>>>>=20
+>>>>>>> It will be relatively easy to extend the scheme to be per-VMA =
+instead of
+>>>>>>> per-table for architectures that prefer it this way. It does =
+require
+>>>>>>> TLB-generation tracking though, which Andy only implemented for =
+x86, so I
+>>>>>>> will focus on x86-64 right now.
+>>>>>>=20
+>>>>>> Can you remind me of what we're missing on arm64 in this area, =
+please? I'm
+>>>>>> happy to help get this up and running once you have something I =
+can build
+>>>>>> on.
+>>>>>=20
+>>>>> I noticed arm/arm64 don't support =
+ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
+>>>>> Would it be something worth pursuing? Arm has been using =
+mm_cpumask,
+>>>>> so it might not be too difficult I guess?
+>>>>=20
+>>>> [ +Mel Gorman who implemented ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH ]
+>>>>=20
+>>>> IIUC, there are at least two bugs in x86 implementation.
+>>>>=20
+>>>> First, there is a missing memory barrier in tlbbatch_add_mm() =
+between
+>>>> inc_mm_tlb_gen() and the read of mm_cpumask().
+>>>=20
+>>> In arch_tlbbatch_add_mm()? inc_mm_tlb_gen() has builtin barrier as =
+its
+>>> comment says -- atomic update ops that return values are also full
+>>> memory barriers.
+>>=20
+>> Yes, you are correct.
+>>=20
+>>>> Second, try_to_unmap_flush() clears flush_required after flushing. =
+Another
+>>>> thread can call set_tlb_ubc_flush_pending() after the flush and =
+before
+>>>> flush_required is cleared, and the indication that a TLB flush is =
+pending
+>>>> can be lost.
+>>>=20
+>>> This isn't a problem either because flush_required is per thread.
+>>=20
+>> Sorry, I meant mm->tlb_flush_batched . It is not per-thread.
+>> flush_tlb_batched_pending() clears it after flush and indications =
+that
+>> set_tlb_ubc_flush_pending() sets in between can be lost.
+>=20
+> Hmm, the PTL argument above flush_tlb_batched_pending() doesn't seem
+> to hold when USE_SPLIT_PTE_PTLOCKS is set. Do you have a reproducer?
+> KCSAN might be able to help in this case.
 
-Yes, will fix it.
+I do not have a reproducer. It is just based on my understanding of this
+code.
 
-> > +	  adds the uio_pdrv_genirq platform device with the DFL feature's
-> > +	  resources, and lets the generic UIO platform device driver provide
-> > +	  support for userspace access to kernel interrupts and memory
-> > +	  locations.
-> > +
-> >  config FPGA_DFL_PCI
-> >  	tristate "FPGA DFL PCIe Device Driver"
-> >  	depends on PCI && FPGA_DFL
-> > diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> > index 18dc9885..8847fe0 100644
-> > --- a/drivers/fpga/Makefile
-> > +++ b/drivers/fpga/Makefile
-> > @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
-> >  dfl-afu-objs += dfl-afu-error.o
-> >  
-> >  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
-> > +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
-> >  
-> >  # Drivers for FPGAs which implement DFL
-> >  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
-> > diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
-> > new file mode 100644
-> > index 0000000..12b47bf
-> > --- /dev/null
-> > +++ b/drivers/fpga/dfl-uio-pdev.c
-> > @@ -0,0 +1,93 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * DFL driver for Userspace I/O platform devices
-> > + *
-> > + * Copyright (C) 2020 Intel Corporation, Inc.
-> > + */
-> > +#include <linux/dfl.h>
-> > +#include <linux/errno.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/uio_driver.h>
-> > +
-> > +#define DRIVER_NAME "dfl-uio-pdev"
-> > +
-> > +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
-> > +{
-> > +	struct platform_device_info pdevinfo = { 0 };
-> > +	struct resource res[2] = { { 0 } };
-> > +	struct uio_info uio_pdata = { 0 };
-> > +	struct platform_device *uio_pdev;
-> > +	struct device *dev = &ddev->dev;
-> > +	unsigned int num_res = 1;
-> > +
-> > +	res[0].parent = &ddev->mmio_res;
-> > +	res[0].flags = IORESOURCE_MEM;
-> > +	res[0].start = ddev->mmio_res.start;
-> > +	res[0].end = ddev->mmio_res.end;
-> > +
-> > +	if (ddev->num_irqs) {
-> > +		if (ddev->num_irqs > 1)
-> > +			dev_warn(&ddev->dev,
-> > +				 "%d irqs for %s, but UIO only supports the first one\n",
-> > +				 ddev->num_irqs, dev_name(&ddev->dev));
-> > +
-> > +		res[1].flags = IORESOURCE_IRQ;
-> > +		res[1].start = ddev->irqs[0];
-> > +		res[1].end = ddev->irqs[0];
-> > +		num_res++;
-> > +	}
-> > +
-> > +	uio_pdata.name = DRIVER_NAME;
-> > +	uio_pdata.version = "0";
-> > +
-> > +	pdevinfo.name = "uio_pdrv_genirq";
-> > +	pdevinfo.res = res;
-> > +	pdevinfo.num_res = num_res;
-> > +	pdevinfo.parent = &ddev->dev;
-> > +	pdevinfo.id = PLATFORM_DEVID_AUTO;
-> > +	pdevinfo.data = &uio_pdata;
-> > +	pdevinfo.size_data = sizeof(uio_pdata);
-> > +
-> > +	uio_pdev = platform_device_register_full(&pdevinfo);
-> It looks like:
-> 	platform_device_register_resndata(&ddev->dev, "uio_pdrv_genirq",
-> 					  PLATFORM_DEVID_AUTO, res, num_res,
-> 					  &uio_pdata, sizeof(uio_pdata))
-> 
-> would work?
+I will give a short try for building a reproducer, although for some =
+reason
+=E2=80=9Cyou guys=E2=80=9D complain that my reproducers do not work for =
+you (is it PTI that
+I disable? idle=3Dpoll? running in a VM?). It is also not likely to be =
+too
+easy to build a reproducer that actually triggers a memory corruption.
 
-It works. I'll change it.
+Anyhow, apparently KCSAN has already shouted about this code, causing =
+Qian
+Cai to add "data_race()" to avoid KCSAN from shouting (9c1177b62a8c
+"mm/rmap: annotate a data race at tlb_flush_batched=E2=80=9D).
 
-> 
-> 
-> > +	if (IS_ERR(uio_pdev))
-> > +		return PTR_ERR(uio_pdev);
-> > +
-> > +	dev_set_drvdata(dev, uio_pdev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
-> > +{
-> > +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
-> > +
-> > +	platform_device_unregister(uio_pdev);
-> > +}
-> > +
-> > +#define FME_FEATURE_ID_ETH_GROUP	0x10
-> > +
-> > +static const struct dfl_device_id dfl_uio_pdev_ids[] = {
-> > +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
-> > +
-> > +	/* Add your new id entries here to support uio for more dfl features */
-> This is fairly common, we can maybe drop this comment?
+Note that Andrea asked me not to hijack this thread and have a different =
+one
+on this issue.
 
-Yes.
-
-Thanks,
-Yilun
