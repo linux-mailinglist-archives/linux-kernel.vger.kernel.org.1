@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92C02F9B03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4929F2F9B07
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387553AbhARIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:10:05 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:45624 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387474AbhARIJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:09:54 -0500
-Received: by mail-io1-f71.google.com with SMTP id x7so28026006ion.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:09:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wEiWUD1KoU2kz++HYBOdztSbeG+sfsDlGM9Lh98rKKM=;
-        b=Q30oCXeWFV73Z4+682yoEWnb6ccvtIjh3YOr1g2GbSC0YFjny9MhkPshGZcjj2YSyz
-         lSzya4+cMqGIoNVDi7MPakFHKhxGiOKZ4fe8s+cXdBWpYae1qwPA3e8vW5U8tfV8R2ZV
-         iZN8g7W11WEkKf1bUBTx9jeh6iVyYOeNwUicZYnOPSjR2S3zRoj+XbSqG5nOuPEUgrys
-         63iIBiil8XBIauijaNb0kjEqvR3l3cWyehq5S462P7mNat0enbleb+gV2V088W2/1S0t
-         YcO0gk1eGe3URMzBkl9MotRSYGRjXze/kXJ9f9OFPQe2tOI/kPzPN3FGANGLtfs1/yDl
-         v3Gg==
-X-Gm-Message-State: AOAM533u5QBnbUUcUKixk3xudQ0CbwAielDeIeJuQlO8ypcma/qTdcxn
-        V8CPujY7nJkzOk+DWMIgu20WwKRIdjJx2xw+rkHvGjZZgFZU
-X-Google-Smtp-Source: ABdhPJy3DgoWHLFvzuYDkJzDwwA1JaPpvsFtlorUiuid/k905n8sJMZK4Xd3jj5HaJiA1RUHc/Jk2/sDAy2KQkj3cP16ie+7PFKI
+        id S2387589AbhARIMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:12:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733285AbhARIM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 03:12:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BAE522525;
+        Mon, 18 Jan 2021 08:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610957505;
+        bh=yNKru1sDuhSyEYa/wM0c0HWM2DKIkqg54IAtfl2K+No=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=rp6Fqj+OPqaI0p5gkxm1wPWbonveHWN5IbTinF88zFmecsVWL/OWi+Pe0WPT9TLl7
+         mdd71YyNzwZ86XrhN7esrOfKKNPueEv33fjAYzw9K4EbCeserKsiERZKJWmx2g2KL7
+         nitSEGEL5KjKJ89P0EreJcOJELEv3ffsf9X6zskEQPwYFzwW27D0Y30gb3uvvkjA9I
+         qFch24gYouJYERTMYZk8U0GXwG4ZyTSptvkdjcZiXK+uv0mGNrx3vvJCUl7tlbVYzj
+         14Y2kqeapwfltMSTzFl+jEl0D41KrWHMhzTYmw69vWZhkyDhnlnnXhSAksoR2kxj6l
+         dXoV0yLn+SksA==
+Date:   Mon, 18 Jan 2021 09:11:33 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Will McVicker <willmcvicker@google.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        security@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Will Coster <willcoster@google.com>
+Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
+In-Reply-To: <20201205004848.2541215-1-willmcvicker@google.com>
+Message-ID: <nycvar.YFH.7.76.2101180911150.5622@cbobk.fhfr.pm>
+References: <20201205004848.2541215-1-willmcvicker@google.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-X-Received: by 2002:a92:cccd:: with SMTP id u13mr20286819ilq.273.1610957353923;
- Mon, 18 Jan 2021 00:09:13 -0800 (PST)
-Date:   Mon, 18 Jan 2021 00:09:13 -0800
-In-Reply-To: <000000000000f054d005b8f87274@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d43c1305b9283c0a@google.com>
-Subject: Re: WARNING in io_disable_sqo_submit
-From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, davem@davemloft.net,
-        hdanton@sina.com, io-uring@vger.kernel.org,
-        johannes.berg@intel.com, johannes@sipsolutions.net,
-        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Sat, 5 Dec 2020, Will McVicker wrote:
 
-commit dcd479e10a0510522a5d88b29b8f79ea3467d501
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Fri Oct 9 12:17:11 2020 +0000
+> The HID subsystem allows an "HID report field" to have a different
+> number of "values" and "usages" when it is allocated. When a field
+> struct is created, the size of the usage array is guaranteed to be at
+> least as large as the values array, but it may be larger. This leads to
+> a potential out-of-bounds write in
+> __hidinput_change_resolution_multipliers() and an out-of-bounds read in
+> hidinput_count_leds().
+> 
+> To fix this, let's make sure that both the usage and value arrays are
+> the same size.
 
-    mac80211: always wind down STA state
+Now applied, sorry for the delay and thanks for the fix.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b8b83b500000
-start commit:   a1339d63 Merge tag 'powerpc-5.11-4' of git://git.kernel.or..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1078b83b500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b8b83b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f207c7500000
+-- 
+Jiri Kosina
+SUSE Labs
 
-Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
