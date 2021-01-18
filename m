@@ -2,225 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0CE2FA593
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F812FA5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406208AbhARQFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:05:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406310AbhARQDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:03:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC4F22B49;
-        Mon, 18 Jan 2021 16:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610985770;
-        bh=3M/vvoFedZclJuVsFaENrRMbkyh6UMmQAfselLSVG6I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FoL/1quOtrqnRQoSL8iO6o9mRWMIvM7bwXmMlI1qAmpIfLun4vjCN0X9mzW5nKW7V
-         Wq7OAcoFW2mkXa8vhCgUL6FDYckb8bMYBD47WOxtvSm+6vhAzL2neE5s6IXGzsJPU2
-         qqf/kyyPjENuCrYHccjYY27O2X6WitYrPbW1GGj+40BPmUVcPhAL2aT6MxOuUV+Drx
-         lhSod1AoaJv623tNQnRU9ypvVtxKa3PjD2Nfwo9bcJ+eaSW1kAEXKWcQPCu/T4eHyH
-         CF4xAwE1upW9CpM2yqjTVH5G68r9IQbeTJcCw2Dt1JdwqOp3Nj4ZLPUUUvHxOBM6OZ
-         SQESl6/mfh9Ug==
-Date:   Mon, 18 Jan 2021 17:02:45 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/13] regulator: hi6421v600-regulator: move it from
- staging
-Message-ID: <20210118170245.1bf5160f@coco.lan>
-In-Reply-To: <20210118135440.GM4455@sirena.org.uk>
-References: <cover.1610975633.git.mchehab+huawei@kernel.org>
-        <d0a7cae3c654d25e01b0c436e00de55a21cd7f64.1610975633.git.mchehab+huawei@kernel.org>
-        <20210118135440.GM4455@sirena.org.uk>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2406463AbhARQK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:10:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40782 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406349AbhARQEm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:04:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610985794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FpH2fvvNBiSH7+LZf4kqHTix8ou/f0zVOc4swnogC40=;
+        b=GIsewwpTIr8WHsnPmFp1Rrp2vdZyt5PMnGMZGXuPqbyebCwqitZDkyQPtdc4bzl8immTn+
+        EVqty+32XUh7tTDkKlb4UMR3c7zNorF0gmFC7RLJGnSkmK9w6a7z0agBwwbIzHMKlVp7nO
+        pTM0gOVXSS3pBC07ZOUNb7orrwwVWHk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-EBP2W0ELNmGbQ3F7jSC1UA-1; Mon, 18 Jan 2021 11:03:12 -0500
+X-MC-Unique: EBP2W0ELNmGbQ3F7jSC1UA-1
+Received: by mail-ej1-f70.google.com with SMTP id ox17so3454146ejb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 08:03:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FpH2fvvNBiSH7+LZf4kqHTix8ou/f0zVOc4swnogC40=;
+        b=bXDM6eqo+t6BQNdyfc35UuHsynTYwMzLeLm/Xxtn9E0XcY+yHleSk7z1D8TQUr4ht2
+         Q34ocugmIe0QEOJdoDCraUDWqXmg11wYShKx/HoTbUrZtF7yQMZ6ZafnVyD6XVzU77dt
+         d22WNDIKaLM8clG/WR0ZjNLqBQTyFAX0Pu5/Nw8LGP/O8TVofQ2kMkOVxOCJFsfGpfob
+         b5+2H0a4GEcZOmO03SmEDE6kAn4xCwGtjtWovaZVJByhQwCoq44+dR7M9oIFC2RkhI5B
+         IsYllRSrcviOEF+qlsYxf1s8Pi2WOprX3aMv8PVwkBOKbdqlW31psv5dLts/WTAGYxX1
+         NXKQ==
+X-Gm-Message-State: AOAM531yX8wsn8JChhOqLSrCIETOoJEZQ76nsDSDQLYCu0pre55boSIz
+        dM7fDUG4dFxs2zFFGlN4ZIq48984u1BDzlmJ2moPiual0Dpp6Zqeh1mwqbGXj66zcBhRziUV12i
+        XGp0bTX5UhGv7PW/Kjjghauy1
+X-Received: by 2002:aa7:c84c:: with SMTP id g12mr104609edt.193.1610985791065;
+        Mon, 18 Jan 2021 08:03:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxoBeWNVgS6qD7oqsR8mLDfnlxDvBu2ufUD/XP0BQo1iXg2+222x2MegLm1INYXknOJLnSSg==
+X-Received: by 2002:aa7:c84c:: with SMTP id g12mr104590edt.193.1610985790944;
+        Mon, 18 Jan 2021 08:03:10 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id hr31sm9312503ejc.125.2021.01.18.08.03.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 08:03:09 -0800 (PST)
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+To:     Daniel Scally <djrscally@gmail.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+Cc:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "robert.moore@intel.com" <robert.moore@intel.com>,
+        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <-GKrxu8GJvGe-PlKkLpblw9N-DtVtS7i87BOCLgJR72yf4hUFpUgiOlGcFero_gqgUxJrX2gxtLOnz_31hJugfam0SXXmXxIzGIhS162mhI=@protonmail.com>
+ <20210118135121.GM4077@smile.fi.intel.com>
+ <w3qrFtorGLZ_wMnr_Mi7cltli9g8jsMtiQ7Z1Usnj2IKfJ1MJz6-wxlIAEQ-ErgU1x6IBxdAIHBHtQ3OOT_FJOuUYheILlUc20ysNL_zroo=@protonmail.com>
+ <20210118152323.GV4077@smile.fi.intel.com>
+ <e1032328-c5e8-0bfa-4b87-64207d283d17@redhat.com>
+ <20210118154852.GY4077@smile.fi.intel.com>
+ <b152aca4-5870-d64b-c709-afb3e940d107@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bc7c49cf-fb72-99f8-402a-a9fd5a5f9a7f@redhat.com>
+Date:   Mon, 18 Jan 2021 17:03:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <b152aca4-5870-d64b-c709-afb3e940d107@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 18 Jan 2021 13:54:40 +0000
-Mark Brown <broonie@kernel.org> escreveu:
+Hi,
 
-> On Mon, Jan 18, 2021 at 02:28:12PM +0100, Mauro Carvalho Chehab wrote:
+On 1/18/21 5:00 PM, Daniel Scally wrote:
 > 
-> > index f385146d2bd1..3b23ad56b31a 100644
-> > --- a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> > @@ -60,6 +60,8 @@ required:
-> >    - reg
-> >    - regulators
-> >  
-> > +additionalProperties: false
-> > +
-> >  examples:
-> >    - |
-> >      /* pmic properties */  
+> On 18/01/2021 15:48, andriy.shevchenko@linux.intel.com wrote:
+>> On Mon, Jan 18, 2021 at 04:32:54PM +0100, Hans de Goede wrote:
+>>> On 1/18/21 4:23 PM, andriy.shevchenko@linux.intel.com wrote:
+>> ...
+>>
+>>> 1. Using a folder is fine, desirable even
+>>> 2. I've some concerns about the name, but I'm not really objecting,
+>>> just giving my 2 cents.
+>> Let's get into compromised summary:
+>>  - create a folder for these driver files
+>>  - name it without _skl_ while leaving this in the file / driver names
+>>
+>> Does everybody agree on this approach?
+>>
 > 
-> Why is this part of this patch?
+> Works for me!
 
-I'll place on a separate one.
+Also works for me.
 
-> 
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +//
-> > +// Device driver for regulators in Hisi IC
-> > +//
-> > +// Copyright (c) 2013 Linaro Ltd.
-> > +// Copyright (c) 2011 Hisilicon.
-> > +//  
-> 
-> This looks like it needs an update.
+Regards,
 
-Ok.
+Hans
 
-> 
-> > +// This program is free software; you can redistribute it and/or modify
-> > +// it under the terms of the GNU General Public License version 2 as
-> > +// published by the Free Software Foundation.
-> > +//
-> > +// This program is distributed in the hope that it will be useful,
-> > +// but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > +// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > +// GNU General Public License for more details.  
-> 
-> This boilerplate can be removed.
-
-Ok.
-
-> 
-> > +static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
-> > +{
-> > +	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-> > +	struct hi6421_spmi_pmic *pmic = sreg->pmic;
-> > +	int ret;
-> > +
-> > +	/* cannot enable more than one regulator at one time */
-> > +	mutex_lock(&sreg->enable_mutex);
-> > +	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
-> > +		     HISI_REGS_ENA_PROTECT_TIME + 1000);
-> > +
-> > +	/* set enable register */
-> > +	ret = hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
-> > +				   rdev->desc->enable_mask,
-> > +				   rdev->desc->enable_mask);  
-> 
-> If for some reason the PMIC is sufficiently fragile to need a delay
-> between enables it's not clear why the driver is doing it before
-> enabling rather than after, presumably there's issues with the regulator
-> ramping up and stabalising its output 
-
-I don't have any datasheets or documentation from this device, except for 
-the Linaro's official driver for Kernel 4.9 (from where this driver
-was originally ported), and a high-level documentation for this 
-hardware at 96boards site, which doesn't cover any details.
-
--
-
-My understanding is that the issue here seems to be different.
-
-This is the original code (which can be seen on changeset 42f24d9d446a,
-already upstream):
-
-	struct timeval last_enabled;
-
-	static void ensured_time_after(struct timeval since, u32 delay_us)
-	{
-	       struct timeval now;
-	       u64 elapsed_ns64, delay_ns64;
-	       u32 actual_us32;
-
-	       delay_ns64 = delay_us * NSEC_PER_USEC;
-	       do_gettimeofday(&now);
-	       elapsed_ns64 = timeval_to_ns(&now) - timeval_to_ns(&since);
-	       if (delay_ns64 > elapsed_ns64) {
-	               actual_us32 = ((u32)(delay_ns64 - elapsed_ns64) /
-	                                                       NSEC_PER_USEC);
-	               if (actual_us32 >= 1000) {
-	                       mdelay(actual_us32 / 1000); /*lint !e647 */
-	                       udelay(actual_us32 % 1000);
-	               } else if (actual_us32 > 0) {
-	                       udelay(actual_us32);
-	               }
-	       }
-	       return;
-	}
-
-	static int hisi_regulator_enable(struct regulator_dev *dev)
-	{
-	       struct hisi_regulator *sreg = rdev_get_drvdata(dev);
-	       struct hisi_pmic *pmic = rdev_to_pmic(dev);
-
-	       /* keep a distance of off_on_delay from last time disabled */
-	       ensured_time_after(sreg->last_off_time, sreg->off_on_delay);
-
-	       BRAND_DEBUG("<[%s]: off_on_delay=%dus>\n", __func__, sreg->off_on_delay);
-
-	       /* cannot enable more than one regulator at one time */
-	       mutex_lock(&enable_mutex);
-	       ensured_time_after(last_enabled, HISI_REGS_ENA_PROTECT_TIME);
-
-	       /* set enable register */
-	       hisi_pmic_rmw(pmic, sreg->register_info.ctrl_reg,
-                               sreg->register_info.enable_mask,
-                               sreg->register_info.enable_mask);
-	       BRAND_DEBUG("<[%s]: ctrl_reg=0x%x,enable_mask=0x%x>\n", __func__, sreg->register_info.ctrl_reg,\
-        	               sreg->register_info.enable_mask);
-
-	       do_gettimeofday(&last_enabled);
-	       mutex_unlock(&enable_mutex);
-
-	       return 0;
-	}
-
-What I did here was to play safe. So, I removed the static var and the 
-call to gettimeofday() and replaced by just a delay.
-
-As, on this device, the power lines don't change too often: only
-the USB power supply changes over time during its reset sequence.
-
-The other power lines are powered during the boot and remain powered
-if the hardware is detected.
-
-> > +	/* set enable register to 0 */
-> > +	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
-> > +				    rdev->desc->enable_mask, 0);  
-> 
-> I'm not sure all these comments are adding anything.
-
-I'll drop on a next version.
-> 
-> > +	if (unlikely(selector >= rdev->desc->n_voltages))
-> > +		return -EINVAL;  
-> 
-> This should not be a hot path that needs an unlikely() annotation.
-
-I'll drop unlikely().
-
-> > +static unsigned int
-> > +hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
-> > +				       int input_uV, int output_uV,
-> > +				       int load_uA)
-> > +{
-> > +	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-> > +
-> > +	if (load_uA || ((unsigned int)load_uA > sreg->eco_uA))
-> > +		return REGULATOR_MODE_NORMAL;  
-> 
-> This means that for *any* load at all we select NORMAL - I'm not
-> convinced this is intentional?
-
-Indeed this seems to be a bug. Thanks for noticing it!
-
-I'll fix that.
-
-Thanks,
-Mauro
