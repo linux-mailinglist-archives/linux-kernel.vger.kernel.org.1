@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5782F9BA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 10:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEB82F9BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 10:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387771AbhARJAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:00:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        id S2388213AbhARJCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388117AbhARJAP (ORCPT
+        with ESMTP id S2388146AbhARJAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:00:15 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE02C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:34 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so9822522pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:34 -0800 (PST)
+        Mon, 18 Jan 2021 04:00:31 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5E2C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:50 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id my11so8043343pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 00:59:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=JIq7RDv9ZduOIf2xDTZK09tmM6htJCuoCrhfyUxsHGw=;
-        b=NISd+UTasi5Sks0nho6Uzscj9Iy0GPN3fEysCVXs1071D6aohYv4/qA6mlB0bepEI8
-         BFo58YJCpmiaoy2SC+ptr2EW52Z8o52k4Zf1UrXBF2V1WhHd118Qkrhn0KXvGHtO2Y+5
-         hm9pDzNlooguBzC8hWZiZPqFrDrxmh4Qf+ygL4EhHiuqWps5rtydfWsE2R3e+Q4EXj1Q
-         5Jqj6XX2zXtkyuL9S2Yjhet/q1LfDy4eRAXvfLyCF/zk6uVJdFKPQRRvf95Lki8EdAPT
-         urA77p8muWnM4/kFmHGIWCeV7ybQcqtpfgE6vX0yzaMdsWNJgJ4Srs8ZyGZTQ7G3QuqQ
-         oDHg==
+        bh=9B2PVOVnOELjLgkcHAdN8FpGUrzQFsXja3st3wEc+Q8=;
+        b=dNqsNvn7Th69ICKOZ4PqclJ4BxS4IlEVc2ELk/8RYSoO0eXr2Z4k87c+XMOTxIXIDo
+         L8BO3vi/zfNo3nbl4XTlk/7cmYIQMcQfjjZwMzUQiy38qh5tAXV9JnNMFLYmBLrNK63B
+         Z1iCWqlmVoNll+jybMK3KAjQdfbFu1fICjeJFVlEDHMxbfGjsCaYPFvqXBeQ7rcKzFvr
+         Oo+Ngl3y+L+9kyYaJ+MOBs8jzJZ58bC/Lz7iX08rJ1ueLK5SllIA/EQ0BbVyUJIYAur8
+         lR93RY9ryBTVLcVqgKVJVBioHSYW61NyUBOkdhcN8MFqgACXjebZrp7C8JhP2GP2MZoX
+         f+NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=JIq7RDv9ZduOIf2xDTZK09tmM6htJCuoCrhfyUxsHGw=;
-        b=gO0wR2mDHyZmWldIt6Y6rUqw/QsxMKAh7Ng2tjsXdU8YJz001S2RxSVmTeRq6qCjAo
-         6LZWi8ziwY/lHv6eQ3VvQRf3IYqymjjVczo8wWZ6qOzrzoTkszASJW3tQXMqvtk2qahl
-         kGmPHNvce/DjgXyLmafDkoGHPXVvVYWdbhtN38NbwaRYIIO/VYP2uBIhaYQXvk1gR8LT
-         wMnw6vlEMNYdTd5houlf0plt04pWr+uHSC8kA2CQ44hqdMM1AeJbGDE5By1z49h0tgRl
-         JYxfHNyoQknFf8H7Z089kDsmxOUnWokbW17dHcjxlHRr2SGOauHUheUcZrt2zUZ46iHd
-         C59Q==
-X-Gm-Message-State: AOAM533mNldfDXOaYXU1JPdsGg/fw2N7Bnpsd+dETkGvy/0yRj/YsKeu
-        fDfKbaHabeXvMgI9dHFZD9XnUA==
-X-Google-Smtp-Source: ABdhPJwop+OvT/bRS6+durGsDdke/jqoVJEIHFu2bEiAb8wLtOLRkNPT1d7Eug7cfXclAG2AUOtuEQ==
-X-Received: by 2002:a62:aa06:0:b029:19d:f4d3:335e with SMTP id e6-20020a62aa060000b029019df4d3335emr25377411pff.60.1610960374472;
-        Mon, 18 Jan 2021 00:59:34 -0800 (PST)
+        bh=9B2PVOVnOELjLgkcHAdN8FpGUrzQFsXja3st3wEc+Q8=;
+        b=An3bkjxb3U9OFy54MNg4nAymPrEv0mx4OeKfvay0V3qKYH3+m97clqovL3Y6ZFouz3
+         u2tlLmDtYkpXj+EmgHwM1D+U1JPlYkimKGlox1lkMd3WdGUiaIDFVwL9iy5A5ZiSe5N2
+         RX2mLJHhQq83S40TW+vv2VtV8Us/K9HXNL7dFkrrEKIxn23AW8/CVWRP9hjOO4JSu0nL
+         20JLJawurqr5Wik6pF7tjmy8CKBUhWFJj60KyKOfWjf02NaYYlz6xLqM9b74HZit5vyb
+         DGfMAgC+NYfr/9eB8vj9K96bNWdH/V/Mp5hUODpgbzWDLUuCTL3xZPgpdLPObmGgcXSs
+         u93Q==
+X-Gm-Message-State: AOAM531hVI14Yxqdjsq323pahQ7msfL0PNEo2EDsVBiAkqQmsVL4TKSq
+        rzKtNRigWBA4ZWoPQ2z7WGFm3Q==
+X-Google-Smtp-Source: ABdhPJxy/I2MeZ2RrVcPkVPENDSR9vOWbGu/M681vhJdvErhPE69foe0FxawlOCapAD4MoARFc4eCQ==
+X-Received: by 2002:a17:90a:4dcd:: with SMTP id r13mr25430175pjl.74.1610960390625;
+        Mon, 18 Jan 2021 00:59:50 -0800 (PST)
 Received: from localhost.localdomain ([240e:362:42c:4800:8459:4fa0:20cc:1141])
-        by smtp.gmail.com with ESMTPSA id c23sm16087162pgc.72.2021.01.18.00.59.19
+        by smtp.gmail.com with ESMTPSA id c23sm16087162pgc.72.2021.01.18.00.59.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Jan 2021 00:59:33 -0800 (PST)
+        Mon, 18 Jan 2021 00:59:50 -0800 (PST)
 From:   Zhangfei Gao <zhangfei.gao@linaro.org>
 To:     Bjorn Helgaas <bhelgaas@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -55,9 +55,9 @@ To:     Bjorn Helgaas <bhelgaas@google.com>,
         kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com
 Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
         Zhangfei Gao <zhangfei.gao@linaro.org>
-Subject: [PATCH v2 1/3] PCI: PASID can be enabled without TLP prefix
-Date:   Mon, 18 Jan 2021 16:58:34 +0800
-Message-Id: <1610960316-28935-2-git-send-email-zhangfei.gao@linaro.org>
+Subject: [PATCH v2 2/3] PCI: Add a quirk to set pasid_no_tlp for HiSilicon chip
+Date:   Mon, 18 Jan 2021 16:58:35 +0800
+Message-Id: <1610960316-28935-3-git-send-email-zhangfei.gao@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1610960316-28935-1-git-send-email-zhangfei.gao@linaro.org>
 References: <1610960316-28935-1-git-send-email-zhangfei.gao@linaro.org>
@@ -65,43 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A PASID-like feature is implemented on AMBA without using TLP prefixes
-and these devices have PASID capability though not supporting TLP.
-Adding a pasid_no_tlp bit for "PASID works without TLP prefixes" and
-pci_enable_pasid() checks pasid_no_tlp as well as eetlp_prefix_path.
+HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+actually on the AMBA bus. These fake PCI devices have PASID capability
+though not supporting TLP.
 
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
+Add a quirk to set pasid_no_tlp for these devices.
+
 Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
- drivers/pci/ats.c   | 2 +-
- include/linux/pci.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-index e36d601..b67b1b1 100644
---- a/drivers/pci/ats.c
-+++ b/drivers/pci/ats.c
-@@ -386,7 +386,7 @@ int pci_enable_pasid(struct pci_dev *pdev, int features)
- 	if (WARN_ON(pdev->pasid_enabled))
- 		return -EBUSY;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e..873d27f 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -1825,6 +1825,20 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL,	PCI_DEVICE_ID_INTEL_E7525_MCH,	quir
  
--	if (!pdev->eetlp_prefix_path)
-+	if (!pdev->eetlp_prefix_path && !pdev->pasid_no_tlp)
- 		return -EINVAL;
+ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI, 8, quirk_pcie_mch);
  
- 	if (!pasid)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index f1f26f8..ac1c735 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -388,6 +388,7 @@ struct pci_dev {
- 					   supported from root to here */
- 	u16		l1ss;		/* L1SS Capability pointer */
- #endif
-+	unsigned int	pasid_no_tlp:1;		/* PASID works without TLP Prefix */
- 	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
- 
- 	pci_channel_state_t error_state;	/* Current connectivity state */
++static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
++{
++	if (pdev->revision != 0x21 && pdev->revision != 0x30)
++		return;
++
++	pdev->pasid_no_tlp = 1;
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa255, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa256, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa258, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa259, quirk_huawei_pcie_sva);
++
+ /*
+  * It's possible for the MSI to get corrupted if SHPC and ACPI are used
+  * together on certain PXH-based systems.
 -- 
 2.7.4
 
