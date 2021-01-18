@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F6C2FAA67
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77702FAA59
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 20:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394094AbhARTmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 14:42:13 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:19702 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437401AbhARTei (ORCPT
+        id S2394009AbhARTiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 14:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437551AbhARTgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:34:38 -0500
-Date:   Mon, 18 Jan 2021 19:33:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610998404; bh=C8ABwwYHkwQARcAAcxQdRAoNdGpuSuZgs01wmbrorcQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Q9N36UStJD0wddnkzstxJ6fT0Gb4cEX/rwY+UVjVcYuz8vBG54JfxmJYWzEEbMy+E
-         mhRwwHj7SZL65Orwdv7xcnTwk9RtwxQMexxDul5fTqxlftFGuwfbA5M+BqS/AKeskV
-         XtyuBbi660cLFXukPjWsPmkZsQXoqAku7ut5IgfYXp8RWZ4OiCWEg8U+FloftNruto
-         ruHlFQ/eiv7SxIjwG1+AJ8LgQxm2RsNIdmLQn20v/27IGzd14l1SAAh+reKITU3alJ
-         k2Io/awU6ndYfbBRPMBLLZB6Rpr2pyvC0c7/IgWFmV0t9F4nkguIe6kUBGwoCV9yzX
-         Md3D77KPBtsoA==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Meir Lichtinger <meirl@mellanox.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 2/2] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
-Message-ID: <20210118193232.87583-2-alobakin@pm.me>
-In-Reply-To: <20210118193232.87583-1-alobakin@pm.me>
-References: <20210118193122.87271-1-alobakin@pm.me> <20210118193232.87583-1-alobakin@pm.me>
+        Mon, 18 Jan 2021 14:36:38 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C14C061573;
+        Mon, 18 Jan 2021 11:35:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DKMTS0nsMz9sWD;
+        Tue, 19 Jan 2021 06:35:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610998556;
+        bh=+c5gKv/Myi+5GsbhoEPbNIsQdqx+Fe87Hkw0OETM7r4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vIbOkIChryhdKS5sBk5/j/uw1/RUE5PIcc7YfwZqjZyCke4F+t/VKu4EEAS1htKqv
+         JwQeDpOZ31YGW57ngqpAut78lFAVGlodksqLjz6MiXouuHovu+mAB0bKuI1vZukuZL
+         MjY2IMiHEhvJwE67F+5+fi3uzNi4XtZ9jTWbRvNr1k/b/wS5rOEAEHJdgdjmY8uwih
+         dxpMy0OTyMSHs2A9wuU8u2JSfppEB7XQnlATMyrCoOfr13/yS2a8aNRQ7/TpJduGs6
+         kYnUY+sUQ8GhBkNhVAgIZNMr/OFEv2MCxImP62Jpd6HBs2bm0xAJVCeIBHlTIMKs+N
+         S4bE8+Xg7fxSQ==
+Date:   Tue, 19 Jan 2021 06:35:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: linux-next: Fixes tag needs some work in the modules tree
+Message-ID: <20210119063555.42227a95@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: multipart/signed; boundary="Sig_/aJS_3ctTE.R1j=itbrOtShE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
-not only added a support for fraglisted UDP GRO, but also tweaked
-some logics the way that non-fraglisted UDP GRO started to work for
-forwarding too.
-Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
-list of software-backed types") added GSO UDP L4 to the list of
-software GSO to allow virtual netdevs to forward them as is up to
-the real drivers.
+--Sig_/aJS_3ctTE.R1j=itbrOtShE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tests showed that currently forwarding and NATing of plain UDP GRO
-packets are performed fully correctly, regardless if the target
-netdevice has a support for hardware/driver GSO UDP L4 or not.
-Plain UDP GRO forwarding even shows better performance than fraglisted
-UDP GRO in some cases due to not wasting one skbuff_head per every
-segment.
+Hi all,
 
-Add the last element and allow to form plain UDP GRO packets if
-there is no socket -> we are on forwarding path, and the new
-NETIF_F_GRO_UDP is enabled on a receiving netdevice.
-Note that fraglisted UDP GRO now also depends on this feature, as
-NETIF_F_GRO_FRAGLIST isn't tied to any particular L4 protocol.
+In commit
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ipv4/udp_offload.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+  46b93cf85455 ("module: harden ELF info handling")
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index ff39e94781bf..781a035de5a9 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -454,13 +454,19 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb,
- =09struct sk_buff *p;
- =09struct udphdr *uh2;
- =09unsigned int off =3D skb_gro_offset(skb);
--=09int flush =3D 1;
-+=09int flist =3D 0, flush =3D 1;
-+=09bool gro_by_feat =3D false;
-=20
--=09NAPI_GRO_CB(skb)->is_flist =3D 0;
--=09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
--=09=09NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_enabled: 1;
-+=09if (skb->dev->features & NETIF_F_GRO_UDP) {
-+=09=09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
-+=09=09=09flist =3D !sk || !udp_sk(sk)->gro_enabled;
-=20
--=09if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
-+=09=09gro_by_feat =3D !sk || flist;
-+=09}
-+
-+=09NAPI_GRO_CB(skb)->is_flist =3D flist;
-+
-+=09if (gro_by_feat || (sk && udp_sk(sk)->gro_enabled)) {
- =09=09pp =3D call_gro_receive(udp_gro_receive_segment, head, skb);
- =09=09return pp;
- =09}
+Fixes tag
+
+  Fixes: 5fdc7db644 ("module: setup load info before module_sig_check()")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+This can be fixed for future commits by setting core.abbrev to 12
+(or more) or (for git v2.11 or later) just making sure it is not set
+(or set to "auto").
+
 --=20
-2.30.0
+Cheers,
+Stephen Rothwell
 
+--Sig_/aJS_3ctTE.R1j=itbrOtShE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAF4xsACgkQAVBC80lX
+0GzViwf+Pauy8QafINqgBrcgx25nKO5j9bxdpwaa6jgItmbylNXQ16AGpf6X6aLc
+2BfJHc3nQRD4IIHdEhNkN1U41fCG0sASIgmRjFvuURDFQZN4+ERXRF5cYnZlEN9X
+sYmRCM1fojrFN+l3uXNlSdwCv7qf7OLzc+ZF+YbeOJRN7jPa8o5o9cToWRyJW5r/
+P0rQHKZ1Do9pMgWoVy3orEN2uV8qm9XIGSckwsK2kXNUMg1tJw0N9OYTAerwsIgH
+J3romTYm/YFT4Idk8Yev0vFWCooeaDArJocbFJ4pgR2CDFnCnAHEFIaqHjKqIyug
+fBZCiUAl/KE6HYkQmEsbTXTdeDXgNQ==
+=7w6B
+-----END PGP SIGNATURE-----
+
+--Sig_/aJS_3ctTE.R1j=itbrOtShE--
