@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E875A2FA861
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9982B2FA83F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436706AbhARSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:09:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407505AbhARSBT (ORCPT
+        id S2436764AbhARSDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:03:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407399AbhARSCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:01:19 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5AAC061575;
-        Mon, 18 Jan 2021 10:00:21 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 18 Jan 2021 13:02:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610992870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cmWI9q0Yv6ws45Gm17M/evkneZf1hih8Ce1di6ywSvo=;
+        b=KKnZagEn0mITr7My22tzrFOBip7DFTpnN0uR6kHijSOK5fre94Zjw03A13OaErPeiLidDS
+        bXlMpkbdv35hFGei5yjMZE06ojdWfqX7KEO1XJGNPdosp5uJGEuxt2RdQHmKaVHj1OxH3r
+        0s69kkiW0bM/wuQrT0uYWz02thvwsB0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-876FNId9MRuKl0FEUpEOUg-1; Mon, 18 Jan 2021 13:01:06 -0500
+X-MC-Unique: 876FNId9MRuKl0FEUpEOUg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 6AC5B3EEC8;
-        Mon, 18 Jan 2021 19:00:20 +0100 (CET)
-Subject: Re: [PATCH v3 1/7] regulator: qcom-labibb: Implement voltage selector
- ops
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C853D8030A2;
+        Mon, 18 Jan 2021 18:01:03 +0000 (UTC)
+Received: from treble (ovpn-116-102.rdu2.redhat.com [10.10.116.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DBC865D9CD;
+        Mon, 18 Jan 2021 18:00:53 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 12:00:46 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-References: <20210117220830.150948-1-angelogioacchino.delregno@somainline.org>
- <20210117220830.150948-2-angelogioacchino.delregno@somainline.org>
- <20210118120453.GC4455@sirena.org.uk>
- <032d29df-9892-4774-2a61-7b634deafe06@somainline.org>
- <20210118175710.GR4455@sirena.org.uk>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <35dc7fe1-aff4-4518-b523-d5888636b8cf@somainline.org>
-Date:   Mon, 18 Jan 2021 19:00:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] Documentation: livepatch: Document reliable
+ stacktrace and minor cleanup
+Message-ID: <20210118175927.jjscqq24jbtqprc7@treble>
+References: <20210118173954.36577-1-broonie@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210118175710.GR4455@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210118173954.36577-1-broonie@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/01/21 18:57, Mark Brown ha scritto:
-> On Mon, Jan 18, 2021 at 06:54:26PM +0100, AngeloGioacchino Del Regno wrote:
->> Il 18/01/21 13:04, Mark Brown ha scritto:
+On Mon, Jan 18, 2021 at 05:39:52PM +0000, Mark Brown wrote:
+> This series adds a document, mainly written by Mark Rutland, which makes
+> explicit the requirements for implementing reliable stacktrace in order
+> to aid architectures adding this feature.  It also updates the other
+> livepatching documents to use automatically generated tables of contents
+> following review comments on Mark's document.
 > 
->>> Please do not submit new versions of already applied patches, please
->>> submit incremental updates to the existing code.  Modifying existing
->>> commits creates problems for other users building on top of those
->>> commits so it's best practice to only change pubished git commits if
->>> absolutely essential.
+> v5:
+>  - Tweaks to the commit message for the new document.
+>  - Convert new and existing documents to autogenerated tables of
+>    contents.
+> v4:
+>  - Renumber table of contents
+> v3:
+>  - Incorporated objtool section from Mark.
+>  - Deleted confusing notes about using annotations.
 > 
->> Sorry for that. Should I send a v4 to fix that?
+> Mark Brown (1):
+>   Documentation: livepatch: Convert to automatically generated contents
 > 
-> If there are any changes in this version then yes, if it's identical no.
-> 
+> Mark Rutland (1):
+>   Documentation: livepatch: document reliable stacktrace
 
-Yes as I wrote in the cover letter, I have changed it to use
-regulator_{list,map}_voltage_linear instead of linear_range, as you
-asked in v1.
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-I will send a v4 with the aforemenetioned fix as a separated commit!
+-- 
+Josh
 
-- Angelo
