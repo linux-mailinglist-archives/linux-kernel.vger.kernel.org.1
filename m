@@ -2,90 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4114D2F9C96
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D602F9C98
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbhARJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:51:20 -0500
-Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:40527 "EHLO
-        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389070AbhARJnM (ORCPT
+        id S2389355AbhARJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:52:43 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2361 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389136AbhARJoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:43:12 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id 76CFFFBF03
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:42:19 +0000 (GMT)
-Received: (qmail 26312 invoked from network); 18 Jan 2021 09:42:19 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 18 Jan 2021 09:42:19 -0000
-Date:   Mon, 18 Jan 2021 09:42:17 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Rokudo Yan <wu-yan@tcl.com>
-Cc:     akpm@linux-foundation.org, aarcange@redhat.com, haiwang.fu@tcl.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rientjes@google.com, tang.ding@tcl.com, vbabka@suse.cz,
-        xiushui.ye@tcl.com
-Subject: Re: [PATCH] mm, compaction: move high_pfn to the for loop scope.
-Message-ID: <20210118094217.GQ3592@techsingularity.net>
-References: <20210112142711.b82cf36abaa7ff04773e212f@linux-foundation.org>
- <20210118074126.1838139-1-wu-yan@tcl.com>
+        Mon, 18 Jan 2021 04:44:21 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DK6Cq72DRz67dBV;
+        Mon, 18 Jan 2021 17:38:15 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 18 Jan 2021 10:43:39 +0100
+Received: from [10.47.11.164] (10.47.11.164) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
+ 2021 09:43:37 +0000
+Subject: Re: [PATCH RFC 0/4] Fix arm64 crash for accessing unmapped IO port
+ regions (reboot)
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <arnd@arndb.de>, <akpm@linux-foundation.org>,
+        <xuwei5@hisilicon.com>, <lorenzo.pieralisi@arm.com>,
+        <helgaas@kernel.org>, <song.bao.hua@hisilicon.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
+ <982ed6eb-6975-aea8-1555-a557633966f5@flygoat.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6c0a2484-2cd6-ea1f-1094-21a7e86d71a2@huawei.com>
+Date:   Mon, 18 Jan 2021 09:42:25 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210118074126.1838139-1-wu-yan@tcl.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <982ed6eb-6975-aea8-1555-a557633966f5@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.11.164]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:41:26PM +0800, Rokudo Yan wrote:
-> In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
-> is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
-> And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
+On 18/01/2021 01:59, Jiaxun Yang wrote:
+> 在 2021/1/16 上午12:58, John Garry 写道:
+>> This is a reboot of my original series to address the problem of drivers
+>> for legacy ISA devices accessing unmapped IO port regions on arm64 
+>> systems
+>> and causing the system to crash.
+>>
+>> There was another recent report of such an issue [0], and some old ones
+>> [1] and [2] for reference.
+>>
+>> The background is that many systems do not include PCI host controllers,
+>> or they do and controller probe may have failed. For these cases, no IO
+>> ports are mapped. However, loading drivers for legacy ISA devices can
+>> crash the system as there is nothing to stop them accessing those IO
+>> ports (which have not been io remap'ed).
+>>
+>> My original solution tried to keep the kernel alive in these 
+>> situations by
+>> rejecting logical PIO access to PCI IO regions until PCI IO port regions
+>> have been mapped.
+>>
+>> This series goes one step further, by just reserving the complete legacy
+>> IO port range in 0x0--0xffff for arm64. The motivation for doing this is
+>> to make the request_region() calls for those drivers fail, like this:
+>>
+>> root@ubuntu:/home/john# insmod mk712.ko
+>>   [ 3415.575800] mk712: unable to get IO region
+>> insmod: ERROR: could not insert module mk712.ko: No such device
+>>
+>> Otherwise, in theory, those drivers could initiate rogue accesses to
+>> mapped IO port regions for other devices and cause corruptions or
+>> side-effects. Indeed, those drivers should not be allowed to access
+>> IO ports at all in such a system.
+>>
+>> As a secondary defence, for broken drivers who do not call
+>> request_region(), IO port accesses in range 0--0xffff will be ignored,
+>> again preserving the system.
+>>
+>> I am sending as an RFC as I am not sure of any problem with reserving
+>> first 0x10000 of IO space like this. There is reserve= commandline
+>> argument, which does allow this already.
 > 
-> Unable to handle kernel paging request at virtual address dead000000000200
-> Mem abort info:
->   ESR = 0x96000044
->   Exception class = DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
-> Data abort info:
->   ISV = 0, ISS = 0x00000044
->   CM = 0, WnR = 1
-> [dead000000000200] address between user and kernel address ranges
-> 
-> -000|list_cut_before(inline)
-> -000|move_freelist_head(inline)
-> -000|fast_isolate_freepages(inline)
-> -000|isolate_freepages(inline)
-> -000|compaction_alloc(?, ?)
-> -001|unmap_and_move(inline)
-> -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
-> -002|__read_once_size(inline)
-> -002|static_key_count(inline)
-> -002|static_key_false(inline)
-> -002|trace_mm_compaction_migratepages(inline)
-> -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
-> -003|kcompactd_do_work(inline)
-> -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
-> -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
-> -005|ret_from_fork(asm)
-> ---|end of frame
-> 
-> The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
-> 
-> This patch fixes the issue by reset high_pfn before searching each free area, which ensure
-> freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
-> 
-> Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
-> 
-> Signed-off-by: Rokudo Yan <wu-yan@tcl.com>
 
-Other than a fixes line, I do not think this changed so my previous Ack
-still applies
+Hi Jiaxun,
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Is it ok with ACPI? I'm not really familiar with ACPI on arm64 but my 
+> impression
+> is ACPI would use legacy I/O ports to communicate with kbd controller, 
+> EC and
+> power management facilities.
 
--- 
-Mel Gorman
-SUSE Labs
+I tested for ACPI. As far as I'm concerned, fixed IO ports should not be 
+used on arm64 systems.
+
+Indeed, ACPI spec says IO port addresses should be CPU addressable, and 
+it is the job of the kernel to io remap those correctly for systems 
+which do not support IO ports natively, i.e. those that define PCI_IOBASE.
+
+> 
+> We'd better have a method to detect if ISA bus is not present on the system
+> instead of reserve them unconditionally.
+> 
+
+For ISA bus or any IO ports region, they would/should be behind PCI host 
+bridge or modeled as INDIRECT IO host and we should allocate logic PIO 
+region for them, and there should be no assumption on the IO port 
+address in drivers, i.e. not fixed.
+
+Thanks,
+John
+
+> 
+>>
+>> For reference, here's how /proc/ioports looks on my arm64 system with
+>> this change:
+>>
+>> root@ubuntu:/home/john# more /proc/ioports
+>> 00010000-0001ffff : PCI Bus 0002:f8
+>>    00010000-00010fff : PCI Bus 0002:f9
+>>      00010000-00010007 : 0002:f9:00.0
+>>        00010000-00010007 : serial
+>>      00010008-0001000f : 0002:f9:00.1
+>>        00010008-0001000f : serial
+>>      00010010-00010017 : 0002:f9:00.2
+>>      00010018-0001001f : 0002:f9:00.2
+>> 00020000-0002ffff : PCI Bus 0004:88
+>> 00030000-0003ffff : PCI Bus 0005:78
+>> 00040000-0004ffff : PCI Bus 0006:c0
+>> 00050000-0005ffff : PCI Bus 0007:90
+>> 00060000-0006ffff : PCI Bus 000a:10
+>> 00070000-0007ffff : PCI Bus 000c:20
+>> 00080000-0008ffff : PCI Bus 000d:30
+>>
+>> [0] 
+>> https://lore.kernel.org/linux-input/20210112055129.7840-1-song.bao.hua@hisilicon.com/T/#mf86445470160c44ac110e9d200b09245169dc5b6 
+>>
+>> [1] https://lore.kernel.org/linux-pci/56F209A9.4040304@huawei.com
+>> [2] 
+>> https://lore.kernel.org/linux-arm-kernel/e6995b4a-184a-d8d4-f4d4-9ce75d8f47c0@huawei.com/ 
+>>
+>>
+>> Difference since v4:
+>> https://lore.kernel.org/linux-pci/1560262374-67875-1-git-send-email-john.garry@huawei.com/ 
+>>
+>> - Reserve legacy ISA region
+>>
+>> John Garry (4):
+>>    arm64: io: Introduce IO_SPACE_BASE
+>>    asm-generic/io.h: Add IO_SPACE_BASE
+>>    kernel/resource: Make ioport_resource.start configurable
+>>    logic_pio: Warn on and discard accesses to addresses below
+>>      IO_SPACE_BASE
+>>
+>>   arch/arm64/include/asm/io.h |  1 +
+>>   include/asm-generic/io.h    |  4 ++++
+>>   include/linux/logic_pio.h   |  5 +++++
+>>   kernel/resource.c           |  2 +-
+>>   lib/logic_pio.c             | 20 ++++++++++++++------
+>>   5 files changed, 25 insertions(+), 7 deletions(-)
+>>
+> 
+> .
+
