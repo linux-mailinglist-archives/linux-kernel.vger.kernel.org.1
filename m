@@ -2,191 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB1E2F9B56
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8462F9B5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 09:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387761AbhARIdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 03:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S2387858AbhARIe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 03:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbhARIci (ORCPT
+        with ESMTP id S1726488AbhARIeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 03:32:38 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A4FC061573;
-        Mon, 18 Jan 2021 00:31:56 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id 6so8254396wri.3;
-        Mon, 18 Jan 2021 00:31:56 -0800 (PST)
+        Mon, 18 Jan 2021 03:34:44 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD621C061573;
+        Mon, 18 Jan 2021 00:34:03 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id x23so17278875lji.7;
+        Mon, 18 Jan 2021 00:34:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=mV6Bo6RnxoD+Wo+WZWXYj5Z/xntqPRjWRdQIckQx4+s=;
-        b=R7Xg4fdNVNvV1pjh0MXgS0lrsw0EbZ82Zr1s7Re2aHAHuSL81ou6Oclr4q6MrsN7G5
-         QB3JI4InchASbmxYjgUrrs+B1QvTBANCqyIFc+5bFKm7jPU+86pHBsYILBY6v8/6GhSP
-         ZehxNKrH84r6p1TYLwx7vjzkP+by56EtxjcUR9EEvdoyMvdAr1a5+HF5R9OFpoxnKKCn
-         VevZleRUpkZ1bY+aOaHvxyrtt20PO2GmqXsFHtZWZeyez9WPgJ6xN0RAmhbeBV5UmYuK
-         kteQbfJrZsZf9QMs4O/QDTS9XtBKxv9w0fC5XFrxTY/6hM4IZ6K5ual0FCMXUnjoGk2q
-         oHlg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NxbXFKF94p6kEsRAtmd8BKyy9JENwa9sivc+ZAodEKA=;
+        b=A2RSX4y2LmMv6mR7pwlrf3u6T3rGFBse1drQ3xjZKsSLH2Wb5CBopN0Tdz9y8eXBQP
+         kAFWmHreQYGoFj+NYj3SHu6ce3tYIQMekoexo1meFdbwptfhfM44+l3RDgA7JQVVFEbd
+         8bm9FjCb8rzH8w6Ew8sijtTEYsfyzOoNBPxcVvAu7mrpZWtqwzqevN5S6qSYBg1m8vSL
+         piLsmxcfauKP/oTrw8wu7xtJD0MddqhyzJ7iqkN/jZNRUm4Y6LM8YY3jEduWM49lnYIg
+         /bsJ++4LJSwhCDav/DwNlIbCiYP3FuEBFqfOiYvEHZqXoJGeItOcb1YzywOHWuhz1nuI
+         d4KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mV6Bo6RnxoD+Wo+WZWXYj5Z/xntqPRjWRdQIckQx4+s=;
-        b=lNTJLtD5CQVi4vCNUKhUJbWQBQiqWOBglvzli17Z8q1U/C4We7Rj8A4UhXR/DL37OD
-         zkdSKp11X12cOpj1T9YXtswXCXQlQXpHo4V8h1B3D4vJP3hIjAcEqJBpWeeGWjdZ0NHy
-         Gf9CKqrM+PkOtTMETJ553we5yFzgc27DoH3CCeKbYS6cUOdWcApi1BeZXEnFcXsmu0WQ
-         R8R7sUPfap1CtVVwyG/rLkNl4aKc/lAb9zb7zSioV74S9iwdMZOzos9PdhRju6DKHZkB
-         BUm4lMrOMlMJWAanZCCLRkLN3fj82qCBdHQfDPv/06nGB3YKSm6GYqaAOKYFrEDG/KNQ
-         P8QA==
-X-Gm-Message-State: AOAM532RcYV+LW3F+CK6mCKx+yl58HCtS6Afr6fBQi6Lad8rmlannncF
-        MCGRpep7WQ1V2joPCeE7VrH1eOZneudt7g==
-X-Google-Smtp-Source: ABdhPJxZBCHKwlIldrumbbeb3NS0Fy5oV5Jm1Q4nPb19wsm+4b4tguqLaJiglYZRuof4GpdxIi48gQ==
-X-Received: by 2002:a05:6000:222:: with SMTP id l2mr24227009wrz.392.1610958715325;
-        Mon, 18 Jan 2021 00:31:55 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id p15sm28555537wrt.15.2021.01.18.00.31.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 00:31:54 -0800 (PST)
-Subject: Re: [PATCH v2 1/7] acpi: utils: move acpi_lpss_dep() to utils
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-2-djrscally@gmail.com>
- <YAU3msXszVZ8CLjs@pendragon.ideasonboard.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <0ac56c5f-7a8b-5bab-13fc-300206d65d13@gmail.com>
-Date:   Mon, 18 Jan 2021 08:31:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NxbXFKF94p6kEsRAtmd8BKyy9JENwa9sivc+ZAodEKA=;
+        b=ema9lq1Tvx5TAG8zNbtYzZ3D2gq3NkXKEV96SoFrUYf8ZJ/FtkZAYKUTjDyW92Tpjf
+         380cN2IsRAj7fhnrrmGtSeF28nMmOXmVErvDtSPg+71lwj7gviKW3aY23QIwjjWy9Zie
+         apbNjc9nUez39/66+NXAo4MUPW/OGVyeSbrLzvVp3ZjGH1U/mjz5CO6+ef+FN1SiB8r/
+         EprgP8q/Y76jm64rF5n/WSlXd7PQA8C7Y9Jyxz0m/TSbkwGt65+aA7e7X2dGDzs33CmS
+         bBdFmqxGm33CMY4zpuvt1vBy9pD+7dpLFXJ+kBhXKeS3tgfsiBmfWNK1lHIKVmhQs6oP
+         Dzog==
+X-Gm-Message-State: AOAM531ZcjDh76hE22t2fZAMh6dQanG/0y+v3QUAXnzV3AoLNgxchQMv
+        kbeR1vVvbTXYtcasPR35vJITwwsRDB7ORprticg=
+X-Google-Smtp-Source: ABdhPJynqi6oTwFjkTNFUl1fP0igBITsisexmUdUKnImyJVj0NHltLH5ZKbkHMkITjIr3opjkpv5LEywTjJJTrhJ9R4=
+X-Received: by 2002:a2e:8e64:: with SMTP id t4mr10154052ljk.141.1610958842168;
+ Mon, 18 Jan 2021 00:34:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAU3msXszVZ8CLjs@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
+ <1610720001-15300-2-git-send-email-u0084500@gmail.com> <1610898357.197444.1730305.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1610898357.197444.1730305.nullmailer@robh.at.kernel.org>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Mon, 18 Jan 2021 16:33:50 +0800
+Message-ID: <CADiBU3_pH3_=Dpi8auWTekBaev-ZF2WNPUZRzJEu8+pA0Lk18w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] usb typec: tcpci: mt6360: Add vbus supply into
+ dt-binding description
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        Rob Herring <robh+dt@kernel.org>, gene_chen@richtek.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux USB List <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8817=E6=97=A5 =
+=E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=8811:46=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri, 15 Jan 2021 22:13:21 +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Add external vbus source into dt-binding description.
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > ---
+> >  Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml | 7 ++=
++++++
+> >  1 file changed, 7 insertions(+)
+> >
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/=
+mediatek,mt6360-tcpc.yaml: properties:vbus-supply: 'maxItems' is not one of=
+ ['description', 'deprecated']
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/=
+mediatek,mt6360-tcpc.yaml: ignoring, error in schema: properties: vbus-supp=
+ly
+> warning: no schema found in file: ./Documentation/devicetree/bindings/usb=
+/mediatek,mt6360-tcpc.yaml
+>
+> See https://patchwork.ozlabs.org/patch/1427073
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
+Thanks, after I re-installed the yamlint, the error can be seen.
+Refer to https://www.kernel.org/doc/Documentation/devicetree/bindings/examp=
+le-schema.yaml
+*-supply is only a phandle
 
-On 18/01/2021 07:24, Laurent Pinchart wrote:
-> Hi Daniel,
->
-> Thank you for the patch.
->
-> On Mon, Jan 18, 2021 at 12:34:22AM +0000, Daniel Scally wrote:
->> I need to be able to identify devices which declare themselves to be
->> dependent on other devices through _DEP; add this function to utils.c
->> and export it to the rest of the ACPI layer.
->>
->> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->> Changes in v2:
->> 	- Introduced
->>
->>  drivers/acpi/acpi_lpss.c | 24 ------------------------
->>  drivers/acpi/internal.h  |  1 +
->>  drivers/acpi/utils.c     | 24 ++++++++++++++++++++++++
->>  3 files changed, 25 insertions(+), 24 deletions(-)
->>
->> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
->> index be73974ce449..70c7d9a3f715 100644
->> --- a/drivers/acpi/acpi_lpss.c
->> +++ b/drivers/acpi/acpi_lpss.c
->> @@ -543,30 +543,6 @@ static struct device *acpi_lpss_find_device(const char *hid, const char *uid)
->>  	return bus_find_device(&pci_bus_type, NULL, &data, match_hid_uid);
->>  }
->>  
->> -static bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
->> -{
->> -	struct acpi_handle_list dep_devices;
->> -	acpi_status status;
->> -	int i;
->> -
->> -	if (!acpi_has_method(adev->handle, "_DEP"))
->> -		return false;
->> -
->> -	status = acpi_evaluate_reference(adev->handle, "_DEP", NULL,
->> -					 &dep_devices);
->> -	if (ACPI_FAILURE(status)) {
->> -		dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
->> -		return false;
->> -	}
->> -
->> -	for (i = 0; i < dep_devices.count; i++) {
->> -		if (dep_devices.handles[i] == handle)
->> -			return true;
->> -	}
->> -
->> -	return false;
->> -}
->> -
->>  static void acpi_lpss_link_consumer(struct device *dev1,
->>  				    const struct lpss_device_links *link)
->>  {
->> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
->> index cb229e24c563..ee62c0973576 100644
->> --- a/drivers/acpi/internal.h
->> +++ b/drivers/acpi/internal.h
->> @@ -79,6 +79,7 @@ static inline void acpi_lpss_init(void) {}
->>  #endif
->>  
->>  void acpi_apd_init(void);
->> +bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle);
-> "lpss" stands for low power subsystem, an Intel device within the PCH
-> that handles I2C, SPI, UART, ... I think the function should be renamed,
-> as it's now generic. acpi_dev_has_dep() is a potential candidate, I'm
-> sure better ones exist. A bit of kerneldoc would also not hurt.
-Okedokey; I shall add kerneldoc and think of an appropriate name, plus
-rename all the uses of it. How about acpi_dev_is_dep()? "has_dep" to me
-implies anything at all in _DEP should return true.
->>  
->>  acpi_status acpi_hotplug_schedule(struct acpi_device *adev, u32 src);
->>  bool acpi_queue_hotplug_work(struct work_struct *work);
->> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
->> index ddca1550cce6..78b38775f18b 100644
->> --- a/drivers/acpi/utils.c
->> +++ b/drivers/acpi/utils.c
->> @@ -807,6 +807,30 @@ static int acpi_dev_match_cb(struct device *dev, const void *data)
->>  	return hrv == match->hrv;
->>  }
->>  
->> +bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
->> +{
->> +	struct acpi_handle_list dep_devices;
->> +	acpi_status status;
->> +	int i;
->> +
->> +	if (!acpi_has_method(adev->handle, "_DEP"))
->> +		return false;
->> +
->> +	status = acpi_evaluate_reference(adev->handle, "_DEP", NULL,
->> +					 &dep_devices);
->> +	if (ACPI_FAILURE(status)) {
->> +		dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
->> +		return false;
->> +	}
->> +
->> +	for (i = 0; i < dep_devices.count; i++) {
->> +		if (dep_devices.handles[i] == handle)
->> +			return true;
->> +	}
->> +
->> +	return false;
->> +}
->> +
->>  /**
->>   * acpi_dev_present - Detect that a given ACPI device is present
->>   * @hid: Hardware ID of the device.
+In next series patch, I'll remove the maxItems in vbus-supply.
+I already checked the below change. make dt_binding_check can be passed
+
+   vbus-supply:
+     description:
+       Vbus source supply regulator.
+-    maxItems: 1
+
+   connector:
+     type: object
