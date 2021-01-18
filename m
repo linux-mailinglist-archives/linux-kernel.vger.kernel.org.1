@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00082FA8E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318D92FA8EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407630AbhARScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:32:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:41910 "EHLO foss.arm.com"
+        id S2407681AbhARSdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:33:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:41926 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393684AbhARSbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:31:37 -0500
+        id S2393691AbhARSbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:31:39 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3F77ED1;
-        Mon, 18 Jan 2021 10:30:51 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3F6C101E;
+        Mon, 18 Jan 2021 10:30:53 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3555E3F719;
-        Mon, 18 Jan 2021 10:30:50 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 152DE3F719;
+        Mon, 18 Jan 2021 10:30:51 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com
@@ -30,9 +30,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v4 2/5] kasan: Add KASAN mode kernel parameter
-Date:   Mon, 18 Jan 2021 18:30:30 +0000
-Message-Id: <20210118183033.41764-3-vincenzo.frascino@arm.com>
+Subject: [PATCH v4 3/5] kasan: Add report for async mode
+Date:   Mon, 18 Jan 2021 18:30:31 +0000
+Message-Id: <20210118183033.41764-4-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118183033.41764-1-vincenzo.frascino@arm.com>
 References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
@@ -42,21 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Architectures supported by KASAN HW can provide a sync or async mode of
-execution. On an MTE enabled arm64 hw for example this can be identified
-with the synchronous or asynchronous tagging mode of execution.
-In synchronous mode, an exception is triggered if a tag check fault occurs.
-In asynchronous mode, if a tag check fault occurs, the TFSR_EL1 register is
-updated asynchronously. The kernel checks the corresponding bits
-periodically.
+KASAN provides an asynchronous mode of execution.
 
-KASAN requires a specific kernel command line parameter to make use of this
-hw features.
-
-Add KASAN HW execution mode kernel command line parameter.
-
-Note: This patch adds the kasan.mode kernel parameter and the
-sync/async kernel command line options to enable the described features.
+Add reporting functionality for this mode.
 
 Cc: Dmitry Vyukov <dvyukov@google.com>
 Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
@@ -64,109 +52,61 @@ Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- Documentation/dev-tools/kasan.rst |  3 +++
- mm/kasan/hw_tags.c                | 31 ++++++++++++++++++++++++++++++-
- mm/kasan/kasan.h                  |  3 ++-
- 3 files changed, 35 insertions(+), 2 deletions(-)
+ include/linux/kasan.h |  3 +++
+ mm/kasan/report.c     | 16 ++++++++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index 1651d961f06a..60ad73c2a33c 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -162,6 +162,9 @@ particular KASAN features.
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index fe1ae73ff8b5..8f43836ccdac 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -336,6 +336,9 @@ static inline void *kasan_reset_tag(const void *addr)
+ bool kasan_report(unsigned long addr, size_t size,
+ 		bool is_write, unsigned long ip);
  
- - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
- 
-+- ``kasan.mode=sync`` or ``=async`` controls whether KASAN is configured in
-+  synchronous or asynchronous mode of execution (default: ``sync``).
++bool kasan_report_async(unsigned long addr, size_t size,
++			bool is_write, unsigned long ip);
 +
- - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
-   traces collection (default: ``on`` for ``CONFIG_DEBUG_KERNEL=y``, otherwise
-   ``off``).
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index e529428e7a11..344aeec05d43 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -25,6 +25,11 @@ enum kasan_arg {
- 	KASAN_ARG_ON,
- };
+ #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
  
-+enum kasan_arg_mode {
-+	KASAN_ARG_MODE_SYNC,
-+	KASAN_ARG_MODE_ASYNC,
-+};
-+
- enum kasan_arg_stacktrace {
- 	KASAN_ARG_STACKTRACE_DEFAULT,
- 	KASAN_ARG_STACKTRACE_OFF,
-@@ -38,6 +43,7 @@ enum kasan_arg_fault {
- };
+ static inline void *kasan_reset_tag(const void *addr)
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index c0fb21797550..946016ead6a9 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -388,11 +388,11 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	start_report(&flags);
  
- static enum kasan_arg kasan_arg __ro_after_init;
-+static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
- static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
- static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+ 	print_error_description(&info);
+-	if (addr_has_metadata(untagged_addr))
++	if (addr_has_metadata(untagged_addr) && (untagged_addr != 0))
+ 		print_tags(get_tag(tagged_addr), info.first_bad_addr);
+ 	pr_err("\n");
  
-@@ -68,6 +74,21 @@ static int __init early_kasan_flag(char *arg)
+-	if (addr_has_metadata(untagged_addr)) {
++	if (addr_has_metadata(untagged_addr) && (untagged_addr != 0)) {
+ 		print_address_description(untagged_addr, get_tag(tagged_addr));
+ 		pr_err("\n");
+ 		print_memory_metadata(info.first_bad_addr);
+@@ -419,6 +419,18 @@ bool kasan_report(unsigned long addr, size_t size, bool is_write,
+ 	return ret;
  }
- early_param("kasan", early_kasan_flag);
  
-+/* kasan.mode=sync/async */
-+static int __init early_kasan_mode(char *arg)
++bool kasan_report_async(unsigned long addr, size_t size,
++			bool is_write, unsigned long ip)
 +{
-+	/* If arg is not set the default mode is sync */
-+	if ((!arg) || !strcmp(arg, "sync"))
-+		kasan_arg_mode = KASAN_ARG_MODE_SYNC;
-+	else if (!strcmp(arg, "async"))
-+		kasan_arg_mode = KASAN_ARG_MODE_ASYNC;
-+	else
-+		return -EINVAL;
++	pr_info("==================================================================\n");
++	pr_info("KASAN: set in asynchronous mode\n");
++	pr_info("KASAN: some information might not be accurate\n");
++	pr_info("KASAN: fault address is ignored\n");
++	pr_info("KASAN: write/read distinction is ignored\n");
 +
-+	return 0;
-+}
-+early_param("kasan.mode", early_kasan_mode);
-+
- /* kasan.stacktrace=off/on */
- static int __init early_kasan_flag_stacktrace(char *arg)
- {
-@@ -102,6 +123,14 @@ static int __init early_kasan_fault(char *arg)
- }
- early_param("kasan.fault", early_kasan_fault);
- 
-+static inline void hw_enable_tagging_mode(void)
-+{
-+	if (kasan_arg_mode == KASAN_ARG_MODE_ASYNC)
-+		hw_enable_tagging_async();
-+	else
-+		hw_enable_tagging_sync();
++	return kasan_report(addr, size, is_write, ip);
 +}
 +
- /* kasan_init_hw_tags_cpu() is called for each CPU. */
- void kasan_init_hw_tags_cpu(void)
- {
-@@ -115,7 +144,7 @@ void kasan_init_hw_tags_cpu(void)
- 		return;
- 
- 	hw_init_tags(KASAN_TAG_MAX);
--	hw_enable_tagging();
-+	hw_enable_tagging_mode();
- }
- 
- /* kasan_init_hw_tags() is called once on boot CPU. */
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index cc4d9e1d49b1..7db7bd42fe97 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -284,7 +284,8 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
- #endif
- 
--#define hw_enable_tagging()			arch_enable_tagging()
-+#define hw_enable_tagging_sync()		arch_enable_tagging_sync()
-+#define hw_enable_tagging_async()		arch_enable_tagging_async()
- #define hw_init_tags(max_tag)			arch_init_tags(max_tag)
- #define hw_get_random_tag()			arch_get_random_tag()
- #define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
+ #ifdef CONFIG_KASAN_INLINE
+ /*
+  * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
 -- 
 2.30.0
 
