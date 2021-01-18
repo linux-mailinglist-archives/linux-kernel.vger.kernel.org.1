@@ -2,256 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DD42F9ABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD44B2F9AC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733028AbhARHnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:43:22 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54976 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732724AbhARHnS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:43:18 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1E4CA2BB;
-        Mon, 18 Jan 2021 08:42:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610955755;
-        bh=Vnby0mwsCmasS2TI5LzaiZyTwN99T+ncYSU29OFGRgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MRImOa7E95Lr11SFTvPZORP2Sje7v1eiGCMqLXkzTQUOFWyWkOXCojNci/WVTDiv/
-         2Rwybse2XO+tIVEheqljj7mJvtqC0W9NzFnSUVsbtcCCDTF3xkCd38u3Krfaakze16
-         iGG/lUeq1XtCAhZUHTEZRfw6uWYA/bD7Mpfpzr24=
-Date:   Mon, 18 Jan 2021 09:42:19 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 7/7] mfd: Remove tps68470 MFD driver
-Message-ID: <YAU726t7zz9k22YT@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-8-djrscally@gmail.com>
+        id S1733033AbhARHoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:44:23 -0500
+Received: from mail-bn8nam12on2049.outbound.protection.outlook.com ([40.107.237.49]:37857
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730272AbhARHoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 02:44:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lXUCevCzK5mE63PzhaJzDOHU3TIeE3RrEEnuxwdMQaH0QEY8LL8xNBBmggusBY20VhmkUa6p1FwVMcLCYvJi7Pj269aRhj7ja/sBeiASL3ha1K2j0l80bfiDYuao9LyCMdwoy8wla8K7Ms4Y4VuKaVQ8sZ/BZEO/ArHEKD/jFXB40Lyw2K96uPpMKzC8xLy56TvAVmZnodjI3Fj9IRpG5kXuVdPi84wSBnm5bD6OTYO/vbjEFf8xU9ShEflwzMb/Tsm47vw40SucRR/3r+DTv06dRZgEgFmYZOZSX04ggv4oUtrvMc7Uwx1NSgd52Lzyf06t+RbqzkblBGo0mfX3/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BbgkFUOIMWXu9p6LpQ+rheQaNJYsoGpx3nF+QKwmrcw=;
+ b=H4jgCJiOtm2zlbAljEy7T441yc12JOtC/NZK0EO0TvyvcWbq85E/Aaqlb+OjmoSWEtPAjBrbSsrWqoCIAQNqqqXLRA7MRxTj0IGoIxrkwx4FTlIHoCkX/BnU/gpWI/mulff8ZoCDKMpjAi39xqNV1Xwct8XDv8Y+Du1GqD/CQIV3E1QKrT+BOPL1Sdv4Wx4dgS/AYLsKplO50ZVmbhFIDPzLt76oNUJ/EA7k7y2k4Q/dk3Xbjmr39FfSlIAYwZcdiQhW72KNwG7gCiMbdY4Yht4RyuHgCxgY4XZLjqwTaK6+1xdsaORvTb7dDzlIV5LszJ9ljaKqEKlDsq4Fwq/M1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BbgkFUOIMWXu9p6LpQ+rheQaNJYsoGpx3nF+QKwmrcw=;
+ b=bnQbW2skdRO1ym8UYT1Dl/djZ34GE1ERxIH9ovqNfyMg+gi3QbqmDJdMgwvIch96T4Ir3sOlVpW6r8VWjpIusFdehE87WJ2xIkVTvcwKsGE59xXr7egafuiEweGfDtcVBhZpX+bRziKmj4GkLz73nTgfKoHxsj+Wu3CQfTtB0hI=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4109.namprd12.prod.outlook.com (2603:10b6:208:1d9::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
+ 2021 07:43:21 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 07:43:21 +0000
+Subject: Re: Change eats memory on my server
+To:     Eli Cohen <elic@nvidia.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, daniel.vetter@ffwll.ch,
+        sam@ravnborg.org, dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+Date:   Mon, 18 Jan 2021 08:43:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR07CA0008.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::21) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210118003428.568892-8-djrscally@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR07CA0008.eurprd07.prod.outlook.com (2603:10a6:208:ac::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 07:43:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 29ae74d0-3ad5-4e98-e293-08d8bb84b9ff
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4109:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4109A9257B18B4E5409B18FE83A40@MN2PR12MB4109.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O/C5R18qOsH6X9a6YwOtCIawJK5cHU8JmKu04e3UuIjDPDHGewn12mmur05UJivUIUzblHC+FQWyVf65UQ2QTWLXZ1r0VrgYLa3HL+gyhDIvv9DOqx+ZZn5ENZDSA5CTnK2I8rq/CK8qBWw5oHG4CyUlP9bsdaBSM0+T5k0gXhx3mE78z5cHFU0G9gbka+Wg9nW9BluCun8NxLu0xU8ZLSkE6Mba6WRxap0mDcwO8qJ/6sFXdnecD0CvY2XeOZlHxzZKg1ravIrzBEQ3INHMGLKI/gFv7ccnb6KYHSv84QcdMk7g4n/PSE4dJjNSmSs3kv/t7GGXcDwbEBkyEv5ncw0xyOfGQ7HQGeL08jJhV2xJs951plTFwCND0OrD1Z/CA1K5mEtnHFnsynpJX6EhF4hqxAd3/XGKKx0/9lGzIHnnhRZig3vYsVewlegMu9ykTs8dII0hVng4DBmDAT6T8b3HlYSdqv+C276iTC10LKA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(396003)(39860400002)(36756003)(5660300002)(31686004)(316002)(478600001)(8936002)(186003)(66556008)(8676002)(6486002)(16526019)(2616005)(2906002)(86362001)(66476007)(66946007)(31696002)(4326008)(6666004)(52116002)(83380400001)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eFFFcmRkS2dZTjBsaUFaY1JPenpjalZmdmVqaStuajFIb0tVbit4a2RDRWVN?=
+ =?utf-8?B?RTUxdnc1Z1o2dW50QVRxdUpoZ2tDUmJQemhxMGNHbTBPOW5HVFdBTXNFRFNB?=
+ =?utf-8?B?L0o2SHpDK09MUmlZWFBHS3R6TnFMdDFQbUdSMkp3aHlNZzJBejQyQ3UwQldr?=
+ =?utf-8?B?THp0SkttNWR1WDZ6dWFHYVorZ3BFYllNZVNYc2R1Q01QdlczRWwvVVk3WUU5?=
+ =?utf-8?B?N1ZBMlh1TWozOGV2S3JQOGlpWGJUdGZ3WjdKZUNZZlFpRWhJTHB5SWZZaDBD?=
+ =?utf-8?B?VzBuYWQ1Ylp5Ym1ySy9oUSsrY1gvOWJXb2w1allGYS9mZHd3Q1R4dW5DR3FF?=
+ =?utf-8?B?dEpJb293VThSRXFJaGpXdmVMTnhLUHM3d0k0eVQrR3NId3RTMjlKUUM2cllJ?=
+ =?utf-8?B?emlRa3FIYlBFYkRRbTFGMEF0WUt5OHZKbXBSZTdyS3BFV1Yvb0xNYjVCSFlD?=
+ =?utf-8?B?YjM1ZzFZMGJvbnB3cHhHSFJINXRERi9tUXpFR3pwSGdCazFIbVNxTFBnWGZJ?=
+ =?utf-8?B?cStyenJiM2JPSlhMbE96c1NucHlOTm8xOFhuSFNkNXRYQzA4UjY4bWlhMkZX?=
+ =?utf-8?B?NFZUb09EbzVJUEVpUFAvdGlwTTFoNTZYUStwTks4cnA4SDVVaHkrUm0rZldP?=
+ =?utf-8?B?NGJ0aHpnb1NEdjNOUi9SbmFWcSswRElBN0Q5cG1qQkJhSEdtcE5iMndIREUx?=
+ =?utf-8?B?NGM4V0VhWncwUGV2UWlXRng0ejJNdDI3MWF3NjA1UE5OTENBYmJJQ3ZKN1I3?=
+ =?utf-8?B?QmhWSXZaMDJVYURhWkZsYlUxVmtyOHoxTWR3SmRXNXdSUFRIUDVGM1B3eXpU?=
+ =?utf-8?B?OVY1R2g2SnZEL0U5NzM5eUpISWhxOHVWcDlIMHo1SVZPaFdSWFpKcloxWlcy?=
+ =?utf-8?B?ZWlPZDZndlBTTU9LZFBQTGRZUXFpL3lLQjV1R1h2aFVISUlGdm9ZcUp0VFhr?=
+ =?utf-8?B?Mk9XNXNNMjkvbUluaEZwUmdXbXJFSHNGLzJ1TUpZakJBMXUvTG1MM0xjMGwv?=
+ =?utf-8?B?RGNEWVhUck9HNUZRU2ZxVHN5Z3VJUUpYSlA2a0oybmI4dm9TdXg4T3l1Zzlp?=
+ =?utf-8?B?bTNnc2dBdVNBVHUrWVFhTy9uYmtJRHBBUXhYZW1QZjlNN2kvNTN5N1FFRWpU?=
+ =?utf-8?B?b1VCK0NEV01jMG4xdC9nLy93K2ZQOE1HK3J1Y3pYaE1wbk5uNGE0ZFhuZkRq?=
+ =?utf-8?B?eDFNTHYyN05KdlNYWE00dmIwRGhLUHh0MEthSVQ4WGNkdXF6Z1NhYmlwUzV2?=
+ =?utf-8?B?WVdORU12VFVob2lwNEJUbVlWaW8zWWNpMW8vVVU1VUdncGdlQXRYaElGaGZs?=
+ =?utf-8?B?cU1xaE1NeVRFUnZvSHMwMjVGVkN6WGJHclFmQlhDUTV0dTR5K1JmR3RmQmtJ?=
+ =?utf-8?B?ZmtZWHZTS292OFJtd3ZJSVNEanJ0NExHWUR2UzBJYXRQU1V1T0g3R0M5dDNs?=
+ =?utf-8?Q?zQN6S3au?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29ae74d0-3ad5-4e98-e293-08d8bb84b9ff
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 07:43:21.2821
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cLBsmIe6A/S1u0y28Bt06bjAc4yqb3dbeW7yQ/LIOWRiR3iZI2vER8uhByKdRaR6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi Eli,
 
-Thank you for the patch.
+have you already tried using kmemleak?
 
-On Mon, Jan 18, 2021 at 12:34:28AM +0000, Daniel Scally wrote:
-> This driver only covered one scenario in which ACPI devices with _HID
-> INT3472 are found, and its functionality has been taken over by the
-> intel-skl-int3472 module, so remove it.
-> 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
-> 
-> 	- Introduced
-> 
->  drivers/acpi/pmic/Kconfig |  1 -
->  drivers/gpio/Kconfig      |  1 -
->  drivers/mfd/Kconfig       | 18 --------
->  drivers/mfd/Makefile      |  1 -
->  drivers/mfd/tps68470.c    | 97 ---------------------------------------
->  5 files changed, 118 deletions(-)
->  delete mode 100644 drivers/mfd/tps68470.c
-> 
-> diff --git a/drivers/acpi/pmic/Kconfig b/drivers/acpi/pmic/Kconfig
-> index 56bbcb2ce61b..e27d8ef3a32c 100644
-> --- a/drivers/acpi/pmic/Kconfig
-> +++ b/drivers/acpi/pmic/Kconfig
-> @@ -52,7 +52,6 @@ endif	# PMIC_OPREGION
->  
->  config TPS68470_PMIC_OPREGION
->  	bool "ACPI operation region support for TPS68470 PMIC"
-> -	depends on MFD_TPS68470
+This sounds like a leak of memory allocated using kmalloc(), so kmemleak 
+should be able to catch it.
 
-Should this now depend on INTEL_SKL_INT3472 ?
-
->  	help
->  	  This config adds ACPI operation region support for TI TPS68470 PMIC.
->  	  TPS68470 device is an advanced power management unit that powers
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index c70f46e80a3b..07ff8f24b0d9 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -1343,7 +1343,6 @@ config GPIO_TPS65912
->  
->  config GPIO_TPS68470
->  	bool "TPS68470 GPIO"
-> -	depends on MFD_TPS68470
-
-Same here.
-
-This won't deal with the case where th TPS68470 is instantiated through
-DT, but that's not supported yet, so it can be dealt with it later when
-the need arises.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->  	help
->  	  Select this option to enable GPIO driver for the TPS68470
->  	  chip family.
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index bdfce7b15621..9a1f648efde0 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1520,24 +1520,6 @@ config MFD_TPS65217
->  	  This driver can also be built as a module.  If so, the module
->  	  will be called tps65217.
->  
-> -config MFD_TPS68470
-> -	bool "TI TPS68470 Power Management / LED chips"
-> -	depends on ACPI && PCI && I2C=y
-> -	depends on I2C_DESIGNWARE_PLATFORM=y
-> -	select MFD_CORE
-> -	select REGMAP_I2C
-> -	help
-> -	  If you say yes here you get support for the TPS68470 series of
-> -	  Power Management / LED chips.
-> -
-> -	  These include voltage regulators, LEDs and other features
-> -	  that are often used in portable devices.
-> -
-> -	  This option is a bool as it provides an ACPI operation
-> -	  region, which must be available before any of the devices
-> -	  using this are probed. This option also configures the
-> -	  designware-i2c driver to be built-in, for the same reason.
-> -
->  config MFD_TI_LP873X
->  	tristate "TI LP873X Power Management IC"
->  	depends on I2C
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 14fdb188af02..5994e812f479 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -105,7 +105,6 @@ obj-$(CONFIG_MFD_TPS65910)	+= tps65910.o
->  obj-$(CONFIG_MFD_TPS65912)	+= tps65912-core.o
->  obj-$(CONFIG_MFD_TPS65912_I2C)	+= tps65912-i2c.o
->  obj-$(CONFIG_MFD_TPS65912_SPI)  += tps65912-spi.o
-> -obj-$(CONFIG_MFD_TPS68470)	+= tps68470.o
->  obj-$(CONFIG_MFD_TPS80031)	+= tps80031.o
->  obj-$(CONFIG_MENELAUS)		+= menelaus.o
->  
-> diff --git a/drivers/mfd/tps68470.c b/drivers/mfd/tps68470.c
-> deleted file mode 100644
-> index 4a4df4ffd18c..000000000000
-> --- a/drivers/mfd/tps68470.c
-> +++ /dev/null
-> @@ -1,97 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * TPS68470 chip Parent driver
-> - *
-> - * Copyright (C) 2017 Intel Corporation
-> - *
-> - * Authors:
-> - *	Rajmohan Mani <rajmohan.mani@intel.com>
-> - *	Tianshu Qiu <tian.shu.qiu@intel.com>
-> - *	Jian Xu Zheng <jian.xu.zheng@intel.com>
-> - *	Yuning Pu <yuning.pu@intel.com>
-> - */
-> -
-> -#include <linux/acpi.h>
-> -#include <linux/delay.h>
-> -#include <linux/i2c.h>
-> -#include <linux/init.h>
-> -#include <linux/mfd/core.h>
-> -#include <linux/mfd/tps68470.h>
-> -#include <linux/regmap.h>
-> -
-> -static const struct mfd_cell tps68470s[] = {
-> -	{ .name = "tps68470-gpio" },
-> -	{ .name = "tps68470_pmic_opregion" },
-> -};
-> -
-> -static const struct regmap_config tps68470_regmap_config = {
-> -	.reg_bits = 8,
-> -	.val_bits = 8,
-> -	.max_register = TPS68470_REG_MAX,
-> -};
-> -
-> -static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
-> -{
-> -	unsigned int version;
-> -	int ret;
-> -
-> -	/* Force software reset */
-> -	ret = regmap_write(regmap, TPS68470_REG_RESET, TPS68470_REG_RESET_MASK);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = regmap_read(regmap, TPS68470_REG_REVID, &version);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to read revision register: %d\n", ret);
-> -		return ret;
-> -	}
-> -
-> -	dev_info(dev, "TPS68470 REVID: 0x%x\n", version);
-> -
-> -	return 0;
-> -}
-> -
-> -static int tps68470_probe(struct i2c_client *client)
-> -{
-> -	struct device *dev = &client->dev;
-> -	struct regmap *regmap;
-> -	int ret;
-> -
-> -	regmap = devm_regmap_init_i2c(client, &tps68470_regmap_config);
-> -	if (IS_ERR(regmap)) {
-> -		dev_err(dev, "devm_regmap_init_i2c Error %ld\n",
-> -			PTR_ERR(regmap));
-> -		return PTR_ERR(regmap);
-> -	}
-> -
-> -	i2c_set_clientdata(client, regmap);
-> -
-> -	ret = tps68470_chip_init(dev, regmap);
-> -	if (ret < 0) {
-> -		dev_err(dev, "TPS68470 Init Error %d\n", ret);
-> -		return ret;
-> -	}
-> -
-> -	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, tps68470s,
-> -			      ARRAY_SIZE(tps68470s), NULL, 0, NULL);
-> -	if (ret < 0) {
-> -		dev_err(dev, "devm_mfd_add_devices failed: %d\n", ret);
-> -		return ret;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct acpi_device_id tps68470_acpi_ids[] = {
-> -	{"INT3472"},
-> -	{},
-> -};
-> -
-> -static struct i2c_driver tps68470_driver = {
-> -	.driver = {
-> -		   .name = "tps68470",
-> -		   .acpi_match_table = tps68470_acpi_ids,
-> -	},
-> -	.probe_new = tps68470_probe,
-> -};
-> -builtin_i2c_driver(tps68470_driver);
-
--- 
 Regards,
+Christian.
 
-Laurent Pinchart
+Am 17.01.21 um 06:08 schrieb Eli Cohen:
+> On Fri, Jan 15, 2021 at 10:03:50AM +0100, Thomas Zimmermann wrote:
+>> Could you please double-check that 3fb91f56aea4 ("drm/udl: Retrieve USB
+>> device from struct drm_device.dev") works correctly
+> Checked again, it does not seem to leak.
+>
+>> and that 823efa922102
+>> ("drm/cma-helper: Remove empty drm_gem_cma_prime_vunmap()") is broken?
+>>
+> Yes, this one leaks, as does the one preceding it:
+>
+> 1086db71a1db ("drm/vram-helper: Remove invariant parameters from internal kmap function")
+>   
+>> For one of the broken commits, could you please send us the output of
+>>
+>>    dmesg | grep -i drm
+>>
+>> after most of the memory got leaked?
+>>
+> I ran the following script in the shell:
+>
+> while true; do cat /proc/meminfo | grep MemFree:; sleep 5; done
+>
+> and this is what I saw before I got disconnected from the shell:
+>
+> MemFree:          148208 kB
+> MemFree:          148304 kB
+> MemFree:          146660 kB
+> Connection to nps-server-24 closed by remote host.
+> Connection to nps-server-24 closed.
+>
+>
+> I also mointored the output of dmesg | grep -i drm
+> The last output I was able to save on disk is this:
+>
+> [   46.140720] ast 0000:03:00.0: [drm] Using P2A bridge for configuration
+> [   46.140737] ast 0000:03:00.0: [drm] AST 2500 detected
+> [   46.140754] ast 0000:03:00.0: [drm] Analog VGA only
+> [   46.140772] ast 0000:03:00.0: [drm] dram MCLK=800 Mhz type=7 bus_width=16
+> [   46.153553] [drm] Initialized ast 0.1.0 20120228 for 0000:03:00.0 on minor 0
+> [   46.165097] fbcon: astdrmfb (fb0) is primary device
+> [   46.391381] ast 0000:03:00.0: [drm] fb0: astdrmfb frame buffer device
+> [   56.097697] systemd[1]: Starting Load Kernel Module drm...
+> [   56.343556] systemd[1]: modprobe@drm.service: Succeeded.
+> [   56.350382] systemd[1]: Finished Load Kernel Module drm.
+> [13319.469462] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
+> [13320.658386] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
+> [13321.800970] [   2683] 70889  2683    55586        0    73728      138             0 tdrm
+
