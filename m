@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2B12FA45D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B88C2FA44A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393393AbhARPQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:16:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36932 "EHLO mail.kernel.org"
+        id S2393284AbhARPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390745AbhARLll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:41:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38F4522227;
-        Mon, 18 Jan 2021 11:41:21 +0000 (UTC)
+        id S2390379AbhARLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:42:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5235A2223E;
+        Mon, 18 Jan 2021 11:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610970081;
-        bh=JuV+s/KeIzEShE7bSGVcyzHh1q02bTBuQmIL20AxEC8=;
+        s=korg; t=1610970086;
+        bh=gFezr+KIW0FwbmW6quW+HsgiqZDNUoNWDftos+HnCcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pmeb3l+c5uyX61AS73tZxEDjp6kPrFjf6gch24FqQnt8WdeU06F6owG+uO+ykQPVx
-         zMfTZy5ziLh1HjobYEBlh6R1aOXarYqhYq7eZd2fv8vTrDSQ7DICIau9hVpwViRkR9
-         WyftytENtcmFPiw8g1ST2/dHAJS9Gy8dICUSMhhY=
+        b=MsjAf+A1BdwGZloSWi+9XOSGgWIkZ/vTaCj7Oib5Or+a3aP6TkK4byb2vUPmwp+GO
+         8kyL0PAk8bqqtL2s64iCS0PtfDG4IN0s2zpTnhlwtnTZZAO2qVJMg3gSC6JWAqbfZ+
+         PGUi0e6stO/iUF+i8789LNzJ9ZjZJi2Im3Br4wdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.10 029/152] mips: fix Section mismatch in reference
-Date:   Mon, 18 Jan 2021 12:33:24 +0100
-Message-Id: <20210118113354.177932943@linuxfoundation.org>
+Subject: [PATCH 5.10 030/152] mips: lib: uncached: fix non-standard usage of variable sp
+Date:   Mon, 18 Jan 2021 12:33:25 +0100
+Message-Id: <20210118113354.223625171@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210118113352.764293297@linuxfoundation.org>
 References: <20210118113352.764293297@linuxfoundation.org>
@@ -42,59 +44,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Anders Roxell <anders.roxell@linaro.org>
 
-commit ad4fddef5f2345aa9214e979febe2f47639c10d9 upstream.
+commit 5b058973d3205578aa6c9a71392e072a11ca44ef upstream.
 
-When building mips tinyconfig with clang the following error show up:
+When building mips tinyconfig with clang the following warning show up:
 
-WARNING: modpost: vmlinux.o(.text+0x1940c): Section mismatch in reference from the function r4k_cache_init() to the function .init.text:loongson3_sc_init()
-The function r4k_cache_init() references
-the function __init loongson3_sc_init().
-This is often because r4k_cache_init lacks a __init
-annotation or the annotation of loongson3_sc_init is wrong.
+arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+        if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+            ^~
+arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+        register long sp __asm__("$sp");
+                        ^
+                         = 0
+1 warning generated.
 
-Remove marked __init from function loongson3_sc_init(),
-mips_sc_probe_cm3(), and mips_sc_probe().
+Rework to make an explicit inline move, instead of the non-standard use
+of specifying registers for local variables. This is what's written
+from the gcc-10 manual [1] about specifying registers for local
+variables:
 
+"6.47.5.2 Specifying Registers for Local Variables
+.................................................
+[...]
+
+"The only supported use for this feature is to specify registers for
+input and output operands when calling Extended 'asm' (*note Extended
+Asm::).  [...]".
+
+[1] https://docs.w3cub.com/gcc~10/local-register-variables
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/mm/c-r4k.c   |    2 +-
- arch/mips/mm/sc-mips.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/lib/uncached.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1609,7 +1609,7 @@ static void __init loongson2_sc_init(voi
- 	c->options |= MIPS_CPU_INCLUSIVE_CACHES;
- }
- 
--static void __init loongson3_sc_init(void)
-+static void loongson3_sc_init(void)
+--- a/arch/mips/lib/uncached.c
++++ b/arch/mips/lib/uncached.c
+@@ -37,10 +37,12 @@
+  */
+ unsigned long run_uncached(void *func)
  {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	unsigned int config2, lsize;
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -146,7 +146,7 @@ static inline int mips_sc_is_activated(s
- 	return 1;
- }
+-	register long sp __asm__("$sp");
+ 	register long ret __asm__("$2");
+ 	long lfunc = (long)func, ufunc;
+ 	long usp;
++	long sp;
++
++	__asm__("move %0, $sp" : "=r" (sp));
  
--static int __init mips_sc_probe_cm3(void)
-+static int mips_sc_probe_cm3(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	unsigned long cfg = read_gcr_l2_config();
-@@ -180,7 +180,7 @@ static int __init mips_sc_probe_cm3(void
- 	return 0;
- }
- 
--static inline int __init mips_sc_probe(void)
-+static inline int mips_sc_probe(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	unsigned int config1, config2;
+ 	if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+ 		usp = CKSEG1ADDR(sp);
 
 
