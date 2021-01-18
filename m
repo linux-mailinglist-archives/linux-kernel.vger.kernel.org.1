@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCE92FA509
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79A2FA56C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405953AbhARPcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:32:36 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:34619 "EHLO
+        id S2404709AbhARP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 10:58:59 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45167 "EHLO
         new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405940AbhARPbU (ORCPT
+        by vger.kernel.org with ESMTP id S2405841AbhARPbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:31:20 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4F979580794;
-        Mon, 18 Jan 2021 10:30:14 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 18 Jan 2021 10:30:14 -0500
+        Mon, 18 Jan 2021 10:31:48 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A16EC58079C;
+        Mon, 18 Jan 2021 10:31:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 18 Jan 2021 10:31:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=PSXtrd2c/tf/6/t7uPfgHtgY6KB
-        UUffDbACWC+Qk0QQ=; b=dlzyie+Eed+c1ZQHiyVjcBZpfY+eL6ouXuKMjkHvx8s
-        H11CG+E7snNGGkxMMWmm0pEWUHrIQ8qt4izNzy+vhGu0BIaLNXnlzqWWixhMzOVS
-        M8PbrarMIbm8QJ+bOz8OR2455p2ujK2SLwGxudDiodu7IQpCEn8nw//AI/9GVmn0
-        u7T1xdCe6FcvZ1swfS2khLSL48EgZdiGcQsLzhJ6IW+WEO2SykB5mVgVAwgMd5E+
-        aLtTLfq3wuLYEmddAFiAEjkNZqvtkJQZvlbZ2/csHznkewq6CUPdGJd0nqiAQLF/
-        xDiPtK7PN2i4T29KJVfkwZLRipS/HCNCdwqxIEpPtCA==
+        :content-type:in-reply-to; s=fm1; bh=NvUEhU6J4Ii+xfqC5c+MJMvRl3f
+        ZuGnBjGBkusrqzHM=; b=LffEcGhWz/vgQpEkk+1xT8K5OwteDK8Bu/awFb9jqeV
+        Z4/x0R/81LdjJNFyD/1HnBDInymthjNkAzixoZepENtnOhA+uauERldOZDNeQSgN
+        ZjYHA7JtF4Rpdaa9OtJMFlMNAMiYEwqFOKZ7nAdFzAHiG+HnmggziU/DKSOd2VNV
+        Ijw7Mrg23ZlnP4cw3IqrpVQB9kvyqfAmHxfcG9Ivg26uNBLN0YWjzxz6+bVwS5dT
+        8Lie+hzWzz8dLifSeRi+YCwjOtMhvBirk45kru9sHP7lC6ryOfoVZx9bAoNaWpre
+        xDtTHdbz64riPO6f7FSWU9OxIccYWdi/NNfLb+b1mbw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PSXtrd
-        2c/tf/6/t7uPfgHtgY6KBUUffDbACWC+Qk0QQ=; b=XgOkqoRugGDVePaN3jg+OR
-        dadDEZy5nkJt/Ls9UqPwstZHRyrdBq8ZAcC6RTLbfdcaCVWosJ07ruktIguUv+W3
-        O2S88yqjXFNWl/xOabiulm2TjtreAd5kAAHbCH8pz6TdPauH0o8je+AnFApeyYBX
-        6Y03JNcv7+pb3WBixm3g6+2eaa/q0CzvZLbOX5THfuSHqZ8hcCqwmbSwR3BVl2Yl
-        rZ/xNxtHbxrC0tJ4jm69/4VlSi0FVOL72L/tx0vuCRAiaMJKy0Pem8u4yvJoFbIe
-        Zwu6rGEVsLCEXaptPBF4VE1lH42gcHpT1F0vBlQl5AoB7OCYa6dkoox6iJelK2UA
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NvUEhU
+        6J4Ii+xfqC5c+MJMvRl3fZuGnBjGBkusrqzHM=; b=IxqPS8Q4n3U57pUQVF2oKF
+        ND0FX0ha1OnILuUsaMXs/7axa+HHVz17qQh0zXhTr5L/bSnTdtbdJpCIYDjHEN5u
+        WMZVD3ycSD9KnAUqVt4Q5d8S0LtHUCIVqKeLW40SrL9I0XK4uBXL+hgozbhy+AcY
+        Pnc6LU4VcpQMA+wMsRgBZ648zTGlM8aU/0JRsRO8LwFGZLNxJ5986gG6uVyAdLEc
+        7/HYuf0PUq3GMj+NqGUz9IZ6wYtx8HekKCE/tMm2J2GSUcPpHt4G4VMLXmOsMUn7
+        pmv+0Be2MUWbAkQ5a4m5nCd846L6H3ZnPoepBS+0ULMHfHkiW+ZYcHCn7g4nu8Ag
         ==
-X-ME-Sender: <xms:hKkFYDkuLT_AbS7QbgNX3gcUv8z1WFyBmFG_TzXhYenquWEWPOIzrg>
-    <xme:hKkFYLLP5yXEaj3iveipirN3ODJVJ_nmMpwUnRVhsfXAQHvsr29yopiUS1m9cj19y
-    aE0cLFJ6pXnjkes9ko>
+X-ME-Sender: <xms:tKkFYPz8kvvS5xqNyVjyA_5i18NYLbV2SFnhSoRSV8Y5kgZPLy53KA>
+    <xme:tKkFYNlnmYAQYasYbOpqQnmdiZoan4yBiOLpld0U5XhZj2r1KFf5Tsn5-s_RYH35M
+    _3QCLPHd02yyZ0apVI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdejkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,14 +48,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdekgdejkecutefuodetggdote
     gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
     udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
     grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:hKkFYIwN-hd02IQO2m4JRazYjlZZ23l-bBApotHWjS74aVkFq8fbDA>
-    <xmx:hKkFYDuEhXTjVuB4qsrOxazaFEcTXCrBcNer6likToud0uURi9t10w>
-    <xmx:hKkFYHtXiNa-Y8JSrMttIzq6T33RozbZJjGh5SkDRpNurCk7kzj1QA>
-    <xmx:hqkFYMTYJMNCqSzenn5jDnuMyeaDV9nPPr7GkAr6XTwMbUhcLl70fw>
+X-ME-Proxy: <xmx:tKkFYPWiNnAqtAhrGPAQB7Up6LWPgNIJfalcrbL_sNoemPIX0tKA4A>
+    <xmx:tKkFYG0hhOwm5XSAq5QQkYbE6LHHui1LXfU-x30ne7elPTPkIDX_xg>
+    <xmx:tKkFYHm-Jv_i_VpQXbmnlVecIDwjOqg_8qe9EGk2aNSLjhUfbM2IBw>
+    <xmx:takFYD7XRgb1QK9kwydtMIyiICj2pyvRKoa462khbELkf4DqlLoSQg>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9DD59108005F;
-        Mon, 18 Jan 2021 10:30:12 -0500 (EST)
-Date:   Mon, 18 Jan 2021 16:30:11 +0100
+        by mail.messagingengine.com (Postfix) with ESMTPA id EF11A240064;
+        Mon, 18 Jan 2021 10:30:59 -0500 (EST)
+Date:   Mon, 18 Jan 2021 16:30:58 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Andre Przywara <andre.przywara@arm.com>
 Cc:     Chen-Yu Tsai <wens@csie.org>,
@@ -71,29 +71,31 @@ Cc:     Chen-Yu Tsai <wens@csie.org>,
         linux-sunxi@googlegroups.com, Stephen Boyd <sboyd@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
         linux-clk@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v3 07/21] clk: sunxi-ng: Add support for the Allwinner
- H616 R-CCU
-Message-ID: <20210118153011.yozwrkqxfemdradu@gilmour>
+Subject: Re: [PATCH v3 08/21] clk: sunxi-ng: Add support for the Allwinner
+ H616 CCU
+Message-ID: <20210118153058.26da4guhglb7s5sc@gilmour>
 References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-8-andre.przywara@arm.com>
+ <20210118020848.11721-9-andre.przywara@arm.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="atpvsytfk2rxubn4"
+        protocol="application/pgp-signature"; boundary="yru5s5mpaath3ljh"
 Content-Disposition: inline
-In-Reply-To: <20210118020848.11721-8-andre.przywara@arm.com>
+In-Reply-To: <20210118020848.11721-9-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---atpvsytfk2rxubn4
+--yru5s5mpaath3ljh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 02:08:34AM +0000, Andre Przywara wrote:
-> The clocks itself are identical to the H6 R-CCU, it's just that the H616
-> has not all of them implemented (or connected).
+On Mon, Jan 18, 2021 at 02:08:35AM +0000, Andre Przywara wrote:
+> While the clocks are fairly similar to the H6, many differ in tiny
+> details, so a separate clock driver seems indicated.
+>=20
+> Derived from the H6 clock driver, and adjusted according to the manual.
 >=20
 > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
@@ -101,15 +103,15 @@ Acked-by: Maxime Ripard <mripard@kernel.org>
 
 Maxime
 
---atpvsytfk2rxubn4
+--yru5s5mpaath3ljh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAWpgwAKCRDj7w1vZxhR
-xY8tAQD4eXu9Cqi6L/5+62I5kbMW15Dhl7gxyon0tJDMLTYuXQEA0XHhrbT4Vcnh
-zZP/QXcWedWdad6lJerMH6FYjLVsIgk=
-=jCyV
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYAWpsgAKCRDj7w1vZxhR
+xYcHAPwO+F7YjxEwkb5SFICrOUsqTS4NibyNY07M8YBgtHcBXQEAlOZdhp/4T3yM
+ESRlpJTvxbKpE6aaMLmK4CzMkguHLAg=
+=QR7V
 -----END PGP SIGNATURE-----
 
---atpvsytfk2rxubn4--
+--yru5s5mpaath3ljh--
