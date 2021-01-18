@@ -2,169 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B752FA3EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506182FA423
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 16:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404179AbhARPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 10:01:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405292AbhAROxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:53:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610981527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bvHYXveaY1fYHKCh/4G0s4Eb72E980+xC2zhbE72Tuc=;
-        b=FyOH29XzDEIYbttk4Mi0bU24VrkOgnqhwoY4qYvj8yO7YxApcqkbbA0QVlDxk7zNjzWvrU
-        nqv6ifYuypBoMYgNR3ftGbVOrDyR7qdSiBberGXBjx4NaX/P+C43D1iCTTPm0F55t9J0Kv
-        N1M2q2qZhMB9LMKBuM8uiCZboe78T/A=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-D-5vz38ZNSiuvY4IWpWGxg-1; Mon, 18 Jan 2021 09:52:03 -0500
-X-MC-Unique: D-5vz38ZNSiuvY4IWpWGxg-1
-Received: by mail-wr1-f69.google.com with SMTP id z8so8410965wrh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 06:52:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bvHYXveaY1fYHKCh/4G0s4Eb72E980+xC2zhbE72Tuc=;
-        b=nTKEFzkBBwoNm5LlpVA92WpJuxYvTjwDfBk/dfVYzPBSxbeCVyZwPGEDFB6WAEI3rQ
-         UzwFsDXZebUo/KkWkUF1zSr5E6MUXYO8vucS8LIek/9kZ/juf+g+emVilci1SIjOBuZU
-         ZK0QNNm1Ur68PAsZ1gFXBW3YWLNE2DuA+t3VfRSbCJXMQbH3232zBX8/j34xngSIZxih
-         ERpq2WqwZCHvQOzF2YrHbWIphpO9Tup/zkJ1cXMFphpNRIsXy5RiFn+JmqDmdZwo5e9R
-         instpSXrLPAOEC0VBDiEuxnKfCrTN78bstGzcS8Z2dhrtn1D2nYatWCcfqgBKLXB28Hi
-         0jtA==
-X-Gm-Message-State: AOAM533cLajxmsWzEnlMjp1n9HgOol+jQyq64viwnisX94UxGebZ9Rlh
-        mTCLIbyCc1IX+L7TkDfzYnBKmLmvebURProSWipj+g/0jfh9huwOHChIpw9DNIr1J89Cdty1rPg
-        BBDJUMOddRVYE2rP3qpxbJbQg
-X-Received: by 2002:a5d:42d0:: with SMTP id t16mr26110645wrr.230.1610981522393;
-        Mon, 18 Jan 2021 06:52:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyLYqyNMVyFEoAlbSpKAd9WKw+ODMCj85rmyuhMgWAf133vbbFpPK94WXLLheaXzynpxdDRUg==
-X-Received: by 2002:a5d:42d0:: with SMTP id t16mr26110629wrr.230.1610981522214;
-        Mon, 18 Jan 2021 06:52:02 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id x25sm1728972wmk.20.2021.01.18.06.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 06:52:01 -0800 (PST)
-Date:   Mon, 18 Jan 2021 15:51:58 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v2 01/13] af_vsock: implement 'vsock_wait_data()'.
-Message-ID: <20210118145158.ufakay5mbezjex4v@steredhat>
-References: <20210115053553.1454517-1-arseny.krasnov@kaspersky.com>
- <20210115054028.1455574-1-arseny.krasnov@kaspersky.com>
+        id S2405553AbhARPH3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 10:07:29 -0500
+Received: from wnbcorp.com ([175.126.38.143]:36200 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405384AbhARPEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:04:31 -0500
+Received: from [100.118.101.189] (188-207-118-161.mobile.kpn.net [188.207.118.161])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10IEuW70008569;
+        Mon, 18 Jan 2021 23:58:47 +0900
+Message-Id: <202101181458.10IEuW70008569@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210115054028.1455574-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Mon, 18 Jan 2021 15:58:46 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:40:25AM +0300, Arseny Krasnov wrote:
->This adds 'vsock_wait_data()' function which is called from user's read
->syscall and waits until new socket data is arrived. It was based on code
->from stream dequeue logic and moved to separate function because it will
->be called both from SOCK_STREAM and SOCK_SEQPACKET receive loops.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 47 ++++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 47 insertions(+)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index b12d3a322242..af716f5a93a4 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1822,6 +1822,53 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	return err;
-> }
->
->+static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
->+			   long timeout,
->+			   struct vsock_transport_recv_notify_data *recv_data,
->+			   size_t target)
->+{
->+	int err = 0;
->+	struct vsock_sock *vsk;
->+	const struct vsock_transport *transport;
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Please be sure that here and in all of the next patches, you follow the 
-"Reverse Christmas tree" rule followed in net/ for the local variable 
-declarations (order variable declaration lines longest to shortest).
+Sir/Madam,
 
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+
->+	if (sk->sk_err != 0 ||
->+	    (sk->sk_shutdown & RCV_SHUTDOWN) ||
->+	    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
->+		finish_wait(sk_sleep(sk), wait);
->+		return -1;
->+	}
->+	/* Don't wait for non-blocking sockets. */
->+	if (timeout == 0) {
->+		err = -EAGAIN;
->+		finish_wait(sk_sleep(sk), wait);
->+		return err;
->+	}
->+
->+	if (recv_data) {
->+		err = transport->notify_recv_pre_block(vsk, target, recv_data);
->+		if (err < 0) {
->+			finish_wait(sk_sleep(sk), wait);
->+			return err;
->+		}
->+	}
->+
->+	release_sock(sk);
->+	timeout = schedule_timeout(timeout);
->+	lock_sock(sk);
->+
->+	if (signal_pending(current)) {
->+		err = sock_intr_errno(timeout);
->+		finish_wait(sk_sleep(sk), wait);
->+	} else if (timeout == 0) {
->+		err = -EAGAIN;
->+		finish_wait(sk_sleep(sk), wait);
->+	}
->+
+CONGRATULATIONS!!!
 
-Since we are calling finish_wait() before return in all path, why not 
-doing somethig like this:
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-out:
-	finish_wait(sk_sleep(sk), wait);
->+	return err;
->+}
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-Then in the error paths you can do:
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-	err = XXX;
-	goto out;
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-Thanks,
-Stefano
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
 
->
-> static int
-> vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->-- 
->2.25.1
->
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
