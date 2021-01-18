@@ -2,38 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEC02FA834
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985CD2FA836
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 19:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407441AbhARSBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 13:01:45 -0500
-Received: from verein.lst.de ([213.95.11.211]:49047 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407410AbhARSAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 13:00:40 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id ADBAC6736F; Mon, 18 Jan 2021 18:59:56 +0100 (CET)
-Date:   Mon, 18 Jan 2021 18:59:56 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Klaus Jensen <its@irrelevant.dk>
-Cc:     linux-nvme@lists.infradead.org, Jens Axboe <axboe@fb.com>,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Klaus Jensen <k.jensen@samsung.com>
-Subject: Re: [PATCH v2] nvme: allow use of cmb on v1.4 controllers
-Message-ID: <20210118175956.GD9901@lst.de>
-References: <20210115063046.274495-1-its@irrelevant.dk>
+        id S2436649AbhARSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 13:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406376AbhARSAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 13:00:43 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFD1C061573;
+        Mon, 18 Jan 2021 10:00:02 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id CF5DBC6398; Mon, 18 Jan 2021 17:59:58 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1610992798; bh=dUnol4dNLt4sxGL9jTPjSsDKqZnkTEIQQ+kgAK0Zsa4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k23ozMbBIxCmX0mx16Dztfjapk5c303qZVpO73WYW4utMCqh4h3PRRVfNpxn1e12a
+         YXEFOk3vGxucBQ8mQD4CGjrTpWsKBYxcaikcf5w2aL1wLiKH0KlerboKaIHpan8Yp5
+         SANkCM5DS2S3NOyDuYMou6y4hB5WsUugoPIBwiT2uYv83V+dmuW8PGPz+c+TSqQmfn
+         43AS7QUFymR5bRrzh/qQbH6w4BpGCEwsQW1pcxECP6NpJOT48Y143oYSnq6peKQb4K
+         oEAhXc+4a4dxKULm1hhDZ5IgzNqqIMc8pWrZeQUb4roTxqhmXaUxRFh3vYjd4qxxeM
+         9tbKyXPfR2zZw==
+Date:   Mon, 18 Jan 2021 17:59:58 +0000
+From:   Sean Young <sean@mess.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2 0/4] media: sunxi-cir: Cleanup and power management
+Message-ID: <20210118175958.GA3682@gofer.mess.org>
+References: <20210118060048.22267-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115063046.274495-1-its@irrelevant.dk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210118060048.22267-1-samuel@sholland.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+On Mon, Jan 18, 2021 at 12:00:44AM -0600, Samuel Holland wrote:
+> This series cleans up some dead code in the sunxi-cir driver and adds
+> system power management hooks.
+> 
+> ---
+> Changes from v1:
+>   - Unregister the RC device first thing in sunxi_ir_remove() [3]
+> 
 
-applied to nvme-5.11 with a little tweak to remove the cmbmsc local
-variable and a comment explaining what is going on.
+Thanks. I've tested it on my Cubieboard1 and everything looks fine.
+
+I've applied it to my tree.
+
+Sean
+
+> Samuel Holland (4):
+>   media: sunxi-cir: Clean up dead register writes
+>   media: sunxi-cir: Remove unnecessary spinlock
+>   media: sunxi-cir: Factor out hardware initialization
+>   media: sunxi-cir: Implement suspend/resume/shutdown callbacks
+> 
+>  drivers/media/rc/sunxi-cir.c | 169 ++++++++++++++++++++---------------
+>  1 file changed, 95 insertions(+), 74 deletions(-)
+> 
+> -- 
+> 2.26.2
