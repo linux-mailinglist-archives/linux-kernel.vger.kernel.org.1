@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DF02FA7F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B032FA809
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407271AbhARRwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:52:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:40148 "EHLO foss.arm.com"
+        id S2436735AbhARRyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:54:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727931AbhARRvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:51:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FAD631B;
-        Mon, 18 Jan 2021 09:50:58 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.39.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC8753F719;
-        Mon, 18 Jan 2021 09:50:56 -0800 (PST)
-Date:   Mon, 18 Jan 2021 17:50:54 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v4] Documentation: livepatch: document reliable stacktrace
-Message-ID: <20210118175054.GB38844@C02TD0UTHF1T.local>
-References: <20210115171617.47273-1-broonie@kernel.org>
- <YAWU0D50KH4mVTgn@alley>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAWU0D50KH4mVTgn@alley>
+        id S2436713AbhARRxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 12:53:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A5320829;
+        Mon, 18 Jan 2021 17:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610992387;
+        bh=0OQWgKZQ6VGf6zu4G8sKJqZ/sYzVV9HDJ8zCK16fQbU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q5bFs066xeFa+TKXr8qDQf+VNQtJ5K0GJM7YsMKAtVElRfaEF3Kp7ZixzKQj9jqHB
+         HCxjziWB494pclOdRf0LSXzlTgOi0fBEf8fodxZoXm9z304Xvn8if5mAd2S/GTXR09
+         IVZxhs2xWys0B57e7KqoXjDjCxe7D/BxSHV2qK9McGFdCGQmbPGi9igJu3xLyMR0Qp
+         xaTB+XneI0/V6p6KtfYtIFkFmq0xcsyfg4mszbmKOW6QtmGyWxlSqSl3uIDikYoHQj
+         36ZVzbO83L3z1/egKnn9qNlzsY0GDCOBsWCvgcyyDHnVgYRtjTHaRoxyuUOsiNZ9zj
+         4OpxwlI1pgZ6w==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.11-rc4
+Date:   Mon, 18 Jan 2021 17:52:20 +0000
+Message-Id: <20210118175307.44A5320829@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-On Mon, Jan 18, 2021 at 03:02:31PM +0100, Petr Mladek wrote:
-> On Fri 2021-01-15 17:16:17, Mark Brown wrote:
-> > I've made a few assumptions about preferred behaviour, notably:
-> > 
-> > * If you can reliably unwind through exceptions, you should (as x86_64
-> >   does).
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
-IIRC this was confirmed as desireable, and the text already reflects
-this.
+are available in the Git repository at:
 
-> > * It's fine to omit ftrace_return_to_handler and other return
-> >   trampolines so long as these are not subject to patching and the
-> >   original return address is reported. Most architectures do this for
-> >   ftrace_return_handler, but not other return trampolines.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc4
 
-Likewise I think we agreed this was fine, given these were not
-themselves subkect to patching.
+for you to fetch changes up to 4d163ad79b155c71bf30366dc38f8d2502f78844:
 
-> > * For cases where link register unreliability could result in duplicate
-> >   entries in the trace or an inverted trace, I've assumed this should be
-> >   treated as unreliable. This specific case shouldn't matter to
-> >   livepatching, but I assume that that we want a reliable trace to have
-> >   the correct order.
+  spi: cadence: cache reference clock rate during probe (2021-01-15 14:14:38 +0000)
 
-I don't think we had any comments either way on this, but I think it's
-sane to say this for now and later relax it if we need to.
+----------------------------------------------------------------
+spi: Fixes for v5.11
 
-... so I reckon we can just delete all this as Josh suggests. Any acks
-for the patch itself tacitly agrees with these points. :)
+A few more bug fixes for SPI, both driver specific ones.  The caching in
+the Cadence driver is to avoid a deadlock trying to retrieve the cached
+value later at runtime.
 
-Thanks,
-Mark.
+----------------------------------------------------------------
+Christophe Leroy (1):
+      spi: fsl: Fix driver breakage when SPI_CS_HIGH is not set in spi->mode
+
+Michael Hennerich (1):
+      spi: cadence: cache reference clock rate during probe
+
+ drivers/spi/spi-cadence.c | 6 ++++--
+ drivers/spi/spi-fsl-spi.c | 5 ++---
+ 2 files changed, 6 insertions(+), 5 deletions(-)
