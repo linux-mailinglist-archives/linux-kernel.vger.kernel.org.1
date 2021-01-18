@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EFC2F9E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6432F9EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 12:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390508AbhARLiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 06:38:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
+        id S2391010AbhARLwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 06:52:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388201AbhARLh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 703612251F;
-        Mon, 18 Jan 2021 11:36:14 +0000 (UTC)
+        id S2390607AbhARLkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:40:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB293229C6;
+        Mon, 18 Jan 2021 11:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610969774;
-        bh=qGiiooRtZk3qfqN35OvNubuPozrU82At09wVnZz/Jc4=;
+        s=korg; t=1610969979;
+        bh=hAoEpwiqPbCT37bbbZ28O2XW8nnm1SUk0LhseHv/JkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N7W9l/CWAIGyXO+1QTbsplzo7Y1VqERCB/uSC8TRi0GUWrGlnibdHgcPPOm/tSGkA
-         GCdps/aFrdaTCwBqotmMvI81ncYDILJ3lzwh9gDMWgbpGGwz4ADLn5oritqK1CDsM/
-         SeesgdQNywwdDtcu8F5eYVUAFj0iqqwGHta8XsQQ=
+        b=jZgqeY3VivkEUQowW72Zd/TdX2UwctCoZ2fwyR1Cbco/bPbt3WzuvJoghfXZg5y/w
+         pxrUPUuGoq9edVN336ZTETfJ9cMQ1+Q6SyCVrqYdtidQ5MQ8w4m52DtlTU6xhGmDb3
+         hpVu3DHo/8/SWCnPXQXMbuWz937dgeKtfnqWfJG4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 08/43] mm/hugetlb: fix potential missing huge page size info
+        stable@vger.kernel.org,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 31/76] regulator: bd718x7: Add enable times
 Date:   Mon, 18 Jan 2021 12:34:31 +0100
-Message-Id: <20210118113335.355722545@linuxfoundation.org>
+Message-Id: <20210118113342.474605221@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210118113334.966227881@linuxfoundation.org>
-References: <20210118113334.966227881@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+References: <20210118113340.984217512@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,287 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Guido Günther <agx@sigxcpu.org>
 
-commit 0eb98f1588c2cc7a79816d84ab18a55d254f481c upstream.
+[ Upstream commit 3b66e4a8e58a85af3212c7117d7a29c9ef6679a2 ]
 
-The huge page size is encoded for VM_FAULT_HWPOISON errors only.  So if
-we return VM_FAULT_HWPOISON, huge page size would just be ignored.
+Use the typical startup times from the data sheet so boards get a
+reasonable default. Not setting any enable time can lead to board hangs
+when e.g. clocks are enabled too soon afterwards.
 
-Link: https://lkml.kernel.org/r/20210107123449.38481-1-linmiaohe@huawei.com
-Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes gpu power domain resume on the Librem 5.
 
+[Moved #defines into driver, seems to be general agreement and avoids any
+cross tree issues -- broonie]
+
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Link: https://lore.kernel.org/r/41fb2ed19f584f138336344e2297ae7301f72b75.1608316658.git.agx@sigxcpu.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/hugetlb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/bd718x7-regulator.c | 57 +++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3852,7 +3852,7 @@ retry:
- 		 * So we need to block hugepage fault by PG_hwpoison bit check.
- 		 */
- 		if (unlikely(PageHWPoison(page))) {
--			ret = VM_FAULT_HWPOISON |
-+			ret = VM_FAULT_HWPOISON_LARGE |
- 				VM_FAULT_SET_HINDEX(hstate_index(h));
- 			goto backout_unlocked;
- 		}
+diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd718x7-regulator.c
+index bdab46a5c4617..6c431456d2983 100644
+--- a/drivers/regulator/bd718x7-regulator.c
++++ b/drivers/regulator/bd718x7-regulator.c
+@@ -15,6 +15,36 @@
+ #include <linux/regulator/of_regulator.h>
+ #include <linux/slab.h>
+ 
++/* Typical regulator startup times as per data sheet in uS */
++#define BD71847_BUCK1_STARTUP_TIME 144
++#define BD71847_BUCK2_STARTUP_TIME 162
++#define BD71847_BUCK3_STARTUP_TIME 162
++#define BD71847_BUCK4_STARTUP_TIME 240
++#define BD71847_BUCK5_STARTUP_TIME 270
++#define BD71847_BUCK6_STARTUP_TIME 200
++#define BD71847_LDO1_STARTUP_TIME  440
++#define BD71847_LDO2_STARTUP_TIME  370
++#define BD71847_LDO3_STARTUP_TIME  310
++#define BD71847_LDO4_STARTUP_TIME  400
++#define BD71847_LDO5_STARTUP_TIME  530
++#define BD71847_LDO6_STARTUP_TIME  400
++
++#define BD71837_BUCK1_STARTUP_TIME 160
++#define BD71837_BUCK2_STARTUP_TIME 180
++#define BD71837_BUCK3_STARTUP_TIME 180
++#define BD71837_BUCK4_STARTUP_TIME 180
++#define BD71837_BUCK5_STARTUP_TIME 160
++#define BD71837_BUCK6_STARTUP_TIME 240
++#define BD71837_BUCK7_STARTUP_TIME 220
++#define BD71837_BUCK8_STARTUP_TIME 200
++#define BD71837_LDO1_STARTUP_TIME  440
++#define BD71837_LDO2_STARTUP_TIME  370
++#define BD71837_LDO3_STARTUP_TIME  310
++#define BD71837_LDO4_STARTUP_TIME  400
++#define BD71837_LDO5_STARTUP_TIME  310
++#define BD71837_LDO6_STARTUP_TIME  400
++#define BD71837_LDO7_STARTUP_TIME  530
++
+ /*
+  * BUCK1/2/3/4
+  * BUCK1RAMPRATE[1:0] BUCK1 DVS ramp rate setting
+@@ -495,6 +525,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck1_set_hw_dvs_levels,
+ 		},
+@@ -519,6 +550,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck2_set_hw_dvs_levels,
+ 		},
+@@ -547,6 +579,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd71847_buck3_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -574,6 +607,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_range_mask = BD71847_BUCK4_RANGE_MASK,
+ 			.linear_range_selectors = bd71847_buck4_volt_range_sel,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -596,6 +630,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -620,6 +655,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -646,6 +682,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO1_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -668,6 +705,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
+ 			.enable_reg = BD718XX_REG_LDO2_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -691,6 +729,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO3_MASK,
+ 			.enable_reg = BD718XX_REG_LDO3_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -714,6 +753,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO4_MASK,
+ 			.enable_reg = BD718XX_REG_LDO4_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -740,6 +780,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd71847_ldo5_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO5_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -765,6 +806,7 @@ static const struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO6_MASK,
+ 			.enable_reg = BD718XX_REG_LDO6_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -791,6 +833,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck1_set_hw_dvs_levels,
+ 		},
+@@ -815,6 +858,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck2_set_hw_dvs_levels,
+ 		},
+@@ -839,6 +883,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD71837_REG_BUCK3_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck3_set_hw_dvs_levels,
+ 		},
+@@ -863,6 +908,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD71837_REG_BUCK4_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck4_set_hw_dvs_levels,
+ 		},
+@@ -891,6 +937,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.linear_range_selectors = bd71837_buck5_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -915,6 +962,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_BUCK6_MASK,
+ 			.enable_reg = BD718XX_REG_2ND_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -937,6 +985,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK7_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -961,6 +1010,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK8_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -987,6 +1037,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO1_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1009,6 +1060,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
+ 			.enable_reg = BD718XX_REG_LDO2_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1032,6 +1084,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO3_MASK,
+ 			.enable_reg = BD718XX_REG_LDO3_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1055,6 +1108,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO4_MASK,
+ 			.enable_reg = BD718XX_REG_LDO4_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1080,6 +1134,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_LDO5_MASK,
+ 			.enable_reg = BD718XX_REG_LDO5_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1107,6 +1162,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO6_MASK,
+ 			.enable_reg = BD718XX_REG_LDO6_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1132,6 +1188,7 @@ static const struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_LDO7_MASK,
+ 			.enable_reg = BD71837_REG_LDO7_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO7_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+-- 
+2.27.0
+
 
 
