@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8A72FA7B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5016E2FA7E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 18:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436636AbhARRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 12:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406948AbhARRjr (ORCPT
+        id S2407259AbhARRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 12:49:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407213AbhARRke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 12:39:47 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28194C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:38:59 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d13so17224295wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=9DsbzojBVFKuQ48xkTo4URNA+UO51ULaaDoVeAXSBBA=;
-        b=P8YxMFky/mImBavbpo7nJwdUt/1ifWSE4KBf/sPnkT27LpA0jX50OVfzcgYE3urnZm
-         /zIzAmTU+AffMrzt0s0DAw+P7SsU2INfZnLvfwmJLOd+Mh8CyyZdXTsXGoZnwuy72WGj
-         cZXqT5I+WLIWRhIXvI6pXoAHV4BIk4byowE5X+6kRfSfrxkO5WYc9xwkQyeDKSJjrVvO
-         60AicgS6UW0FTFUl5rmuHTtkW5iAY+MfSNHdfrsqgIzQa7UcxvPYqahyXujM0CfRceuX
-         bECOxxao6O1vJZJaQOkXpEkHCG7Bo/m2+HidxOw1ZO+nvXEOsllmTf8zpi9D/O+vt2El
-         PwMw==
+        Mon, 18 Jan 2021 12:40:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610991543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZseZIi8yX5S303NGIXXx/ulrgZxg6NH+kedVFwQTEs=;
+        b=BCvol7gP2L6jyJfs1UYC1H16sYOZswcciyF34UobGd43rS5SGU7SvI8bpnufMdIr0u0knk
+        HPL85pKnMFjoTc+YgPzhOiYkueQse1D+EIGYMk0s51jyG2fMrzz7hJxaXGBn0WlYA/9JZ3
+        7OCOkEZy8fDlNxN0jKdT6KpXAOO8fdk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-KuPijVWWPmuZnP5bl4exNw-1; Mon, 18 Jan 2021 12:39:02 -0500
+X-MC-Unique: KuPijVWWPmuZnP5bl4exNw-1
+Received: by mail-wr1-f70.google.com with SMTP id l10so8268924wry.16
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:39:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9DsbzojBVFKuQ48xkTo4URNA+UO51ULaaDoVeAXSBBA=;
-        b=E/qvzA6p7dIWGkuDyG7964b0hajVWzaYplQeSar/YHWIJRpFZC/MReR/eq2/AXt7JM
-         Uxn+tIQOjsaSizf9HZ4nl22UbUfjIRcFjWwXi9C5jdn3L5QJDkzCGwALQi9n2AHuWkbe
-         Kc88V+lAx3HszrvHIz9BX1HuE0cKIzu1UhMW4pKw6e4OyFdc6A/BN2McBnsMCq9RwSz9
-         DO8zGncW/XBxETNqn8ra5zm06PZ+V8gWJTFRrEjTnwfIu4rXhKjMGfBbfn+OrHEuVd6B
-         GPFvkgcdUTpsOsDYrqm2vMtnT8mI7Z7zUv73Qeccl0CTyUxRG7ty0Q5KF+TC3gwDW+vK
-         M1qA==
-X-Gm-Message-State: AOAM531iHMMXbDY0+oSlQ9fAkTGRfEdekv5E3/a2xa1ca8bmWTLoOuxe
-        aTxU6uGk0g1nSjZvC+Zq3lNVOg==
-X-Google-Smtp-Source: ABdhPJyq2aDkR1RLYe+jp7iO6xkLOP6P057ChtKd77qUmfHOQxOSPMkiPb9UzfN72DeGoGnHUzowUg==
-X-Received: by 2002:a5d:4882:: with SMTP id g2mr541856wrq.273.1610991537677;
-        Mon, 18 Jan 2021 09:38:57 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-148-144.adsl.proxad.net. [82.252.148.144])
-        by smtp.gmail.com with ESMTPSA id o8sm30042848wrm.17.2021.01.18.09.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 09:38:56 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     Guenter Roeck <linux@roeck-us.net>, Kamil Debski <kamil@wypas.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-hwmon@vger.kernel.org (open list:PWM FAN DRIVER),
-        linux-kernel@vger.kernel.org (open list),
-        linux-amlogic@lists.infradead.org (open list:KHADAS MCU MFD DRIVER),
-        linux-pm@vger.kernel.org (open list:THERMAL)
-Subject: [PATCH v2] thermal/core: Make cooling device state change private
-Date:   Mon, 18 Jan 2021 18:38:24 +0100
-Message-Id: <20210118173824.9970-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qZseZIi8yX5S303NGIXXx/ulrgZxg6NH+kedVFwQTEs=;
+        b=ROd55b17vUplNv2Qo0jz7Eae9lmjGxP/sDo6ui2mgTxf5c1IBKiq7xUW6boOIi7VfE
+         ez3ZgVwWiiSRiRsyBnqWcbVd2XmCAnnmzBxZwSWB5ZTdGTKa3Nyg+YY05iAVeoHwp2uP
+         MMqrjj2sQliRVR18mQHrLs5sL3GqajRAjak8yGvkBfAwNAVeIvBHUomt8WWpEzoao3Ze
+         yLLA6B0Fr6f2dPb1R4MIHc2jm185WI8HBUsJ/vfMqtDw7b4S2en+NUPUmf0CPNwfAUK3
+         42aWWrMDMm6+1ImUFDvfXkTP26XSSXGoRyG/bmHdfJGZe7h0MaVDgCpUOe0yvQGz7dVe
+         JXpA==
+X-Gm-Message-State: AOAM531PP1kWPuFIZBhRPpBoyoH0P7rk78DCAd/AiQ6uLBHM9naBuJ5l
+        X1xsEbyYMw6Czhj+xLsRm3g/HhBkLcoUc48feab8L0RPTBGoLijsPqQq7z8Bhf8rhAEx2tNgPLL
+        k1vhbY6uGNSIC0vmc1H56Xl5S
+X-Received: by 2002:a5d:51cc:: with SMTP id n12mr524716wrv.375.1610991540879;
+        Mon, 18 Jan 2021 09:39:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzApCklNf3IsEiyOZJobGsxyao7L2kwG6STK5+IwNUs02K7KxFZ5oPtNL0EUhAYdjCSWDJH6A==
+X-Received: by 2002:a5d:51cc:: with SMTP id n12mr524708wrv.375.1610991540752;
+        Mon, 18 Jan 2021 09:39:00 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b132sm29295wmh.21.2021.01.18.09.38.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 09:39:00 -0800 (PST)
+Subject: Re: [PATCH] KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+To:     Will Deacon <will@kernel.org>, Quentin Perret <qperret@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        android-kvm@google.com, kernel-team@android.com
+References: <20210108165349.747359-1-qperret@google.com>
+ <20210115165004.GA14556@willie-the-truck>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bb2cc30f-5a9d-ce7c-61e9-ff62ad90e035@redhat.com>
+Date:   Mon, 18 Jan 2021 18:38:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210115165004.GA14556@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The change of the cooling device state should be used by the governor
-or at least by the core code, not by the drivers themselves.
+On 15/01/21 17:50, Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 04:53:49PM +0000, Quentin Perret wrote:
+>> The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
+>> as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
+>> ioctl.
+>>
+>> Fixes: e5d83c74a580 ("kvm: make KVM_CAP_ENABLE_CAP_VM architecture agnostic")
+>> Signed-off-by: Quentin Perret <qperret@google.com>
+>> ---
+>>   Documentation/virt/kvm/api.rst | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 70254eaa5229..68898b623d86 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -1328,7 +1328,7 @@ documentation when it pops into existence).
+>>   
+>>   :Capability: KVM_CAP_ENABLE_CAP_VM
+>>   :Architectures: all
+>> -:Type: vcpu ioctl
+>> +:Type: vm ioctl
+>>   :Parameters: struct kvm_enable_cap (in)
+>>   :Returns: 0 on success; -1 on error
+> 
+> I tripped over this as well, so:
+> 
+> Acked-by: Will Deacon <will@kernel.org>
+> 
+> Will
+> 
 
-Remove the API usage and move the function declaration to the internal
-headers.
+Queued, thanks.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/hwmon/pwm-fan.c          | 1 -
- drivers/thermal/khadas_mcu_fan.c | 1 -
- drivers/thermal/thermal_core.h   | 2 ++
- include/linux/thermal.h          | 3 ---
- 4 files changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
-index bdba2143021a..0b1159ceac9b 100644
---- a/drivers/hwmon/pwm-fan.c
-+++ b/drivers/hwmon/pwm-fan.c
-@@ -378,7 +378,6 @@ static int pwm_fan_probe(struct platform_device *pdev)
- 			return ret;
- 		}
- 		ctx->cdev = cdev;
--		thermal_cdev_update(cdev);
- 	}
- 
- 	return 0;
-diff --git a/drivers/thermal/khadas_mcu_fan.c b/drivers/thermal/khadas_mcu_fan.c
-index 9eadd2d6413e..d35e5313bea4 100644
---- a/drivers/thermal/khadas_mcu_fan.c
-+++ b/drivers/thermal/khadas_mcu_fan.c
-@@ -100,7 +100,6 @@ static int khadas_mcu_fan_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 	ctx->cdev = cdev;
--	thermal_cdev_update(cdev);
- 
- 	return 0;
- }
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 90f9a80c8b23..86b8cef7310e 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -65,6 +65,8 @@ static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
- 		cdev->ops->power2state;
- }
- 
-+void thermal_cdev_update(struct thermal_cooling_device *);
-+
- /**
-  * struct thermal_trip - representation of a point in temperature domain
-  * @np: pointer to struct device_node that this trip point was created from
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 1e686404951b..6ac7bb1d2b1f 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -390,7 +390,6 @@ int thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
- int thermal_zone_get_slope(struct thermal_zone_device *tz);
- int thermal_zone_get_offset(struct thermal_zone_device *tz);
- 
--void thermal_cdev_update(struct thermal_cooling_device *);
- void thermal_notify_framework(struct thermal_zone_device *, int);
- int thermal_zone_device_enable(struct thermal_zone_device *tz);
- int thermal_zone_device_disable(struct thermal_zone_device *tz);
-@@ -437,8 +436,6 @@ static inline int thermal_zone_get_offset(
- 		struct thermal_zone_device *tz)
- { return -ENODEV; }
- 
--static inline void thermal_cdev_update(struct thermal_cooling_device *cdev)
--{ }
- static inline void thermal_notify_framework(struct thermal_zone_device *tz,
- 	int trip)
- { }
--- 
-2.17.1
+Paolo
 
