@@ -2,261 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6A2F96B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 01:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98622F96C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 01:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbhARAhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Jan 2021 19:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730626AbhARAgF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Jan 2021 19:36:05 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCCCC0613D6;
-        Sun, 17 Jan 2021 16:34:50 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id w5so14830373wrm.11;
-        Sun, 17 Jan 2021 16:34:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I7uHwYNq+oq3Qo4LDfQKxz4Sys/YpiIugxE1gLa7uoM=;
-        b=VrAfmWLT9ljjajymnJ+1h4KnGQfVkpnRpnmRXKy7nEcxcB7fLLYC38/g8BcOGztSPQ
-         MHtgtiyEjFxput1wxQKPCawW5mzr2HZitqm+t/eLLND87xdOgZXAwjIzI4q37M6FeXmI
-         4CDMNIshj59G4heHU3rxKLMYgImi/efUrg41QKHzSgKhMLppd0f/W6/K9ED/EQb/YfP0
-         ZD84gHzRpnD2290+czvSIum1//E+M6g8ZWLyJZC7QSM0KqIHa+3DxpC0Vt/Ok6zxwfjk
-         s72nLDF7zTACYRxa0jJ2aLswnZHbFPtB8C7oQe/Qqm6ZVXCwFtHUhLcqufnIdMKZ6pRF
-         CE0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I7uHwYNq+oq3Qo4LDfQKxz4Sys/YpiIugxE1gLa7uoM=;
-        b=KLjalNa0jmwOjhAdJue8E1IlCc5NcPMTD2aAD03YTyTgPh0HO2b51MRTCZ9R1mIdzu
-         3JZi3FJnG5qMsDLoI6OyKOZK+EHjTegV+VHkZyHB+Mk0bIy9r+B/dkjbuACCip2Z0XDx
-         FAsYNLMzqHlvBRCF23SgYfUTCQBtHBwZ41sHclisbK5AC8JwdGklSR9mgiiyb6h1swFm
-         1ThWDF43M9Bz/5ZK78B2WQDuP9dDCm1B/piancPQK49HbUAMuwDfiMoDOr0qNuMeTCeI
-         CV1MBN3ewHEYNYc9bv4HC0XvhOgZKFbSQ0U7+NKHVf3/FNfyLKDEAcE01EAw9Uw7Ebli
-         QC3Q==
-X-Gm-Message-State: AOAM533WFnKcoSCemk5Cdmic5rSy7FWIhnylrVdTDQEUn6u9TzxhK+xh
-        mrakoLpxk3j/Dpi7fRBGE0H4FPk5YtUE7A==
-X-Google-Smtp-Source: ABdhPJyLd/H27HPqd9sv3qdz0VTNxUsAeofXHAZDj26T+BZkVnMy8WrsCi9zsX8ecrpXqDN1Q0RJcg==
-X-Received: by 2002:adf:fe05:: with SMTP id n5mr23756481wrr.9.1610930089201;
-        Sun, 17 Jan 2021 16:34:49 -0800 (PST)
-Received: from valhalla.home ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id o124sm23642040wmb.5.2021.01.17.16.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jan 2021 16:34:48 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: [PATCH v2 7/7] mfd: Remove tps68470 MFD driver
-Date:   Mon, 18 Jan 2021 00:34:28 +0000
-Message-Id: <20210118003428.568892-8-djrscally@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118003428.568892-1-djrscally@gmail.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
+        id S1729392AbhARApt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Jan 2021 19:45:49 -0500
+Received: from mout.gmx.net ([212.227.17.21]:43933 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726785AbhARApe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Jan 2021 19:45:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610930620;
+        bh=gXU+pmJAx/Srx89sGelD0TBxqNFf3Vqg7Z0WTiZBIZg=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=UuggZ2gSOiq6Q/7q/mFGs6GNGwDdoUEiJGGnx18mVldmWwIkVph8oXuUDnv0eVay0
+         S1NOR7Ko9hxyEDnjMQDxJDhyRDfYfPtEAFRMYxn9AVT+GhILDDTxDdVaUNqLvju1vb
+         O4GSYLnvLYIba7haUm+Tu+s0NLU4DIeuWvN9eDDk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.209]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MA7GM-1lCsPx42DS-00Bd1n; Mon, 18
+ Jan 2021 01:43:40 +0100
+Date:   Mon, 18 Jan 2021 01:43:38 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v8 3/7] mfd: Add base driver for Netronix embedded
+ controller
+Message-ID: <YATZuivr8CzHI5X2@latitude>
+References: <20210116194826.3866540-4-j.neuschaefer@gmx.net>
+ <202101170941.YsXQPP40-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="O7p+jIe6VGt9TJs9"
+Content-Disposition: inline
+In-Reply-To: <202101170941.YsXQPP40-lkp@intel.com>
+X-Provags-ID: V03:K1:vilrVV2DrTSMuMU4gCV0RxBMwhE9ZRDHqGeX8r5tIgBr72m7gTu
+ smZENaWlbVxMkD26Wrcxqj3PKal23mw05wgSvkJBRA1EQRtHNSzQOjfplX80/5BBqnSW1Dk
+ Sre+gNEKF9I5D9/QOxQN5vC5lu/x3Q4KdGTLvkhG009bwsKlLLD7L8bBajEGjcfAZvNBvzA
+ AtP0MCNggJdmhL5IlOIaQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HS8mgoXnaBo=:F8okTTyjBAuWVerAgaEBMa
+ 4GYXoXTAE+ra41Y1iYfOicJthAojKAZ29UuKjIg8Mjol54IEf0T1ddESdve+u9ui9lJJhbZcR
+ reY17eA7gy+AaaiNq07E7Ese5sCF7TOitWMLG80x0X3AZ4MkIZ9eYOYx4BRXEAgT+Fl/qUuRH
+ opyZSIGJtoCaGr+RsKbecThDvjnzB+qYmvETWqQ8IJEk7lrMvMONvSeV8/uKTZsHsuyJHxQGB
+ 2QQ8VxIGfS86rNE+G7u0Z3n+zyWlroRmj4c+EaO9l3p99/1uASIuMUMCdiKWne8zabf6IE8H3
+ +soCLiVMYw7vzhO0at208r0prrCcCMSIoC3OCj1dEPZ7H1QF0dO1w0Hjn2ihJdGU2vni7eUsj
+ hNKSNPDVqifApH7bTP/5+2RVuoc8UyMfq/lL2Zs57aUzgnJj1TI4gPd9KlxsJGlgJTe44W2j+
+ tSuH4tv/Xu+0wZzkrX9UqX6kH/VBO4CzD7mIUoMj9DKAtumak9XjrQZBtS0a8CeurxqpEt9nQ
+ /ZAdDSJmXFBneXAvaDB6WcOkHaJ5oVOlSVMw9lW6S3E4UW7MPRWFe496S1HJBHmYJjN4I9Blz
+ TL1yLtFE9IUJ7YaEJK9/+sLvyKJtHhbBRwWJBeW7lsn0y8vI1RfaADHYFp86JDM4DHezbtrvD
+ W9IDx2Pf8lCJ1lm5frpypr/sZYZ/o1wSkRJcZfXKpMGeoAD7Eyx8Xh9riRFMT1cAAvRzrBPGT
+ co3dzk/Twa6Knt8mVNi9e95yb/sA2OjTvTBYz34MeXrsszP294S5kU0QMgZOquJbdKCiisiDe
+ e9IeJM6Vh0QL2hAJxBPr/QXHvi/EIUEtt5+X6qKx6Xaj3hF9973caEawLdVgZC3YQKjvvN6hA
+ 3FnYnw3fVDANASXW/7ug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver only covered one scenario in which ACPI devices with _HID
-INT3472 are found, and its functionality has been taken over by the
-intel-skl-int3472 module, so remove it.
 
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
----
-Changes in v2:
+--O7p+jIe6VGt9TJs9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	- Introduced
+On Sun, Jan 17, 2021 at 09:22:01AM +0800, kernel test robot wrote:
+[...]
+> >> drivers/mfd/ntxec.c:127:10: warning: variable 'res' is uninitialized w=
+hen used here [-Wuninitialized]
+>                    return res;
+>                           ^~~
+>    drivers/mfd/ntxec.c:116:9: note: initialize the variable 'res' to sile=
+nce this warning
+>            int res;
+>                   ^
+>                    =3D 0
+>    1 warning generated.
+[...]
+>    124		ec->regmap =3D devm_regmap_init_i2c(client, &regmap_config);
+>    125		if (IS_ERR(ec->regmap)) {
+>    126			dev_err(ec->dev, "Failed to set up regmap for device\n");
+>  > 127			return res;
+>    128		}
 
- drivers/acpi/pmic/Kconfig |  1 -
- drivers/gpio/Kconfig      |  1 -
- drivers/mfd/Kconfig       | 18 --------
- drivers/mfd/Makefile      |  1 -
- drivers/mfd/tps68470.c    | 97 ---------------------------------------
- 5 files changed, 118 deletions(-)
- delete mode 100644 drivers/mfd/tps68470.c
+Ah well, that's a bug (present since v2 of the patchset). The return
+statement should be:
 
-diff --git a/drivers/acpi/pmic/Kconfig b/drivers/acpi/pmic/Kconfig
-index 56bbcb2ce61b..e27d8ef3a32c 100644
---- a/drivers/acpi/pmic/Kconfig
-+++ b/drivers/acpi/pmic/Kconfig
-@@ -52,7 +52,6 @@ endif	# PMIC_OPREGION
- 
- config TPS68470_PMIC_OPREGION
- 	bool "ACPI operation region support for TPS68470 PMIC"
--	depends on MFD_TPS68470
- 	help
- 	  This config adds ACPI operation region support for TI TPS68470 PMIC.
- 	  TPS68470 device is an advanced power management unit that powers
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index c70f46e80a3b..07ff8f24b0d9 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1343,7 +1343,6 @@ config GPIO_TPS65912
- 
- config GPIO_TPS68470
- 	bool "TPS68470 GPIO"
--	depends on MFD_TPS68470
- 	help
- 	  Select this option to enable GPIO driver for the TPS68470
- 	  chip family.
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdfce7b15621..9a1f648efde0 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1520,24 +1520,6 @@ config MFD_TPS65217
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called tps65217.
- 
--config MFD_TPS68470
--	bool "TI TPS68470 Power Management / LED chips"
--	depends on ACPI && PCI && I2C=y
--	depends on I2C_DESIGNWARE_PLATFORM=y
--	select MFD_CORE
--	select REGMAP_I2C
--	help
--	  If you say yes here you get support for the TPS68470 series of
--	  Power Management / LED chips.
--
--	  These include voltage regulators, LEDs and other features
--	  that are often used in portable devices.
--
--	  This option is a bool as it provides an ACPI operation
--	  region, which must be available before any of the devices
--	  using this are probed. This option also configures the
--	  designware-i2c driver to be built-in, for the same reason.
--
- config MFD_TI_LP873X
- 	tristate "TI LP873X Power Management IC"
- 	depends on I2C
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 14fdb188af02..5994e812f479 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -105,7 +105,6 @@ obj-$(CONFIG_MFD_TPS65910)	+= tps65910.o
- obj-$(CONFIG_MFD_TPS65912)	+= tps65912-core.o
- obj-$(CONFIG_MFD_TPS65912_I2C)	+= tps65912-i2c.o
- obj-$(CONFIG_MFD_TPS65912_SPI)  += tps65912-spi.o
--obj-$(CONFIG_MFD_TPS68470)	+= tps68470.o
- obj-$(CONFIG_MFD_TPS80031)	+= tps80031.o
- obj-$(CONFIG_MENELAUS)		+= menelaus.o
- 
-diff --git a/drivers/mfd/tps68470.c b/drivers/mfd/tps68470.c
-deleted file mode 100644
-index 4a4df4ffd18c..000000000000
---- a/drivers/mfd/tps68470.c
-+++ /dev/null
-@@ -1,97 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * TPS68470 chip Parent driver
-- *
-- * Copyright (C) 2017 Intel Corporation
-- *
-- * Authors:
-- *	Rajmohan Mani <rajmohan.mani@intel.com>
-- *	Tianshu Qiu <tian.shu.qiu@intel.com>
-- *	Jian Xu Zheng <jian.xu.zheng@intel.com>
-- *	Yuning Pu <yuning.pu@intel.com>
-- */
--
--#include <linux/acpi.h>
--#include <linux/delay.h>
--#include <linux/i2c.h>
--#include <linux/init.h>
--#include <linux/mfd/core.h>
--#include <linux/mfd/tps68470.h>
--#include <linux/regmap.h>
--
--static const struct mfd_cell tps68470s[] = {
--	{ .name = "tps68470-gpio" },
--	{ .name = "tps68470_pmic_opregion" },
--};
--
--static const struct regmap_config tps68470_regmap_config = {
--	.reg_bits = 8,
--	.val_bits = 8,
--	.max_register = TPS68470_REG_MAX,
--};
--
--static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
--{
--	unsigned int version;
--	int ret;
--
--	/* Force software reset */
--	ret = regmap_write(regmap, TPS68470_REG_RESET, TPS68470_REG_RESET_MASK);
--	if (ret)
--		return ret;
--
--	ret = regmap_read(regmap, TPS68470_REG_REVID, &version);
--	if (ret) {
--		dev_err(dev, "Failed to read revision register: %d\n", ret);
--		return ret;
--	}
--
--	dev_info(dev, "TPS68470 REVID: 0x%x\n", version);
--
--	return 0;
--}
--
--static int tps68470_probe(struct i2c_client *client)
--{
--	struct device *dev = &client->dev;
--	struct regmap *regmap;
--	int ret;
--
--	regmap = devm_regmap_init_i2c(client, &tps68470_regmap_config);
--	if (IS_ERR(regmap)) {
--		dev_err(dev, "devm_regmap_init_i2c Error %ld\n",
--			PTR_ERR(regmap));
--		return PTR_ERR(regmap);
--	}
--
--	i2c_set_clientdata(client, regmap);
--
--	ret = tps68470_chip_init(dev, regmap);
--	if (ret < 0) {
--		dev_err(dev, "TPS68470 Init Error %d\n", ret);
--		return ret;
--	}
--
--	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, tps68470s,
--			      ARRAY_SIZE(tps68470s), NULL, 0, NULL);
--	if (ret < 0) {
--		dev_err(dev, "devm_mfd_add_devices failed: %d\n", ret);
--		return ret;
--	}
--
--	return 0;
--}
--
--static const struct acpi_device_id tps68470_acpi_ids[] = {
--	{"INT3472"},
--	{},
--};
--
--static struct i2c_driver tps68470_driver = {
--	.driver = {
--		   .name = "tps68470",
--		   .acpi_match_table = tps68470_acpi_ids,
--	},
--	.probe_new = tps68470_probe,
--};
--builtin_i2c_driver(tps68470_driver);
--- 
-2.25.1
+	return PTR_ERR(ec->regmap);
 
+
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--O7p+jIe6VGt9TJs9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmAE2aEACgkQCDBEmo7z
+X9tqRA/+PqlL45s54xWqOzK8lVtozSM3i1ziUswKwZhNr6vvXJbu8BM3gzZclobB
+Pt0ek354ANgy27t8oxqxmZP4p6szJ86TzBq1fjxIA5vEEgGfYtM+fgNYGpqJ2kVz
+Fixbr7ArXPWMJdINlCB6Bfgu3SU8h+J1ZQTRxX6hwt/+/Y+fGe5vprsLAUWzu599
+Ya3BGXb4oHn/bVkuA5DxHGBi1jqXGvH05KnZts10nRqUuLHRIXu/ly4qY6/3FIWH
+d/Nwk2l0HNuSjyzjgBTrpkQ4m4O/cPYC19iXIjuZE7JDRbPxLHzCjkNTj8ro1Or2
+6U4VekxlBBiXGB71sdGx24loeHRsj8ti5GV9G6gpzl+dCcB6XNnX+cJ3oBtLsILJ
+tB0zGhSajykfBlrQRGVgwabqpq4RePeTaWApACmXIAX5ZKnGqAkOk/dYPZsqdovf
+MGHTs0ZAVoMVLu2PXYSYa//9u3D2RBSwJ6N0pImy63LShJHtWKZFeOkdeD/Pp3if
+HhIp1NlaZpHc4mjJAMBFb3Uc4eYbZ4o2c7s/JNaWlnmI9JIa0IwnZyvJjZzCv/Ap
+MSdh0+8812Vjwxj7VEuQffrPr5TOlYyDsAXcD8G5OHhYES0HeiA6PEOLwmkAzwQq
+JddKIQNyhoWbWXFqbT7U6cA7q3i1pAVrk4EFk74S1SNaWLPLWSQ=
+=c3CB
+-----END PGP SIGNATURE-----
+
+--O7p+jIe6VGt9TJs9--
