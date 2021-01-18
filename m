@@ -2,121 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D692F9AB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DD42F9ABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732975AbhARHme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:42:34 -0500
-Received: from support.corp-email.com ([222.73.234.235]:18710 "EHLO
-        support.corp-email.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730272AbhARHmb (ORCPT
+        id S1733028AbhARHnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:43:22 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54976 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732724AbhARHnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:42:31 -0500
-Received: from ([183.47.25.45])
-        by support.corp-email.com ((LNX1044)) with ASMTP (SSL) id LYH00040;
-        Mon, 18 Jan 2021 15:41:40 +0800
-Received: from GCY-EXS-15.TCL.com (10.74.128.165) by GCY-EXS-07.TCL.com
- (10.74.128.157) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
- 2021 15:41:40 +0800
-Received: from localhost.localdomain (172.16.34.38) by GCY-EXS-15.TCL.com
- (10.74.128.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 18 Jan
- 2021 15:41:39 +0800
-From:   Rokudo Yan <wu-yan@tcl.com>
-To:     <akpm@linux-foundation.org>
-CC:     <aarcange@redhat.com>, <haiwang.fu@tcl.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <mgorman@techsingularity.net>, <rientjes@google.com>,
-        <tang.ding@tcl.com>, <vbabka@suse.cz>, <wu-yan@tcl.com>,
-        <xiushui.ye@tcl.com>
-Subject: [PATCH] mm, compaction: move high_pfn to the for loop scope.
-Date:   Mon, 18 Jan 2021 15:41:26 +0800
-Message-ID: <20210118074126.1838139-1-wu-yan@tcl.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210112142711.b82cf36abaa7ff04773e212f@linux-foundation.org>
-References: <20210112142711.b82cf36abaa7ff04773e212f@linux-foundation.org>
+        Mon, 18 Jan 2021 02:43:18 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1E4CA2BB;
+        Mon, 18 Jan 2021 08:42:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610955755;
+        bh=Vnby0mwsCmasS2TI5LzaiZyTwN99T+ncYSU29OFGRgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MRImOa7E95Lr11SFTvPZORP2Sje7v1eiGCMqLXkzTQUOFWyWkOXCojNci/WVTDiv/
+         2Rwybse2XO+tIVEheqljj7mJvtqC0W9NzFnSUVsbtcCCDTF3xkCd38u3Krfaakze16
+         iGG/lUeq1XtCAhZUHTEZRfw6uWYA/bD7Mpfpzr24=
+Date:   Mon, 18 Jan 2021 09:42:19 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 7/7] mfd: Remove tps68470 MFD driver
+Message-ID: <YAU726t7zz9k22YT@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-8-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.16.34.38]
-X-ClientProxiedBy: GCY-EXS-01.TCL.com (10.74.128.151) To GCY-EXS-15.TCL.com
- (10.74.128.165)
-tUid:   2021118154140b2abbdfb168f8823bfb5153861e0b1ce
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210118003428.568892-8-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
-is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
-And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
+Hi Daniel,
 
-Unable to handle kernel paging request at virtual address dead000000000200
-Mem abort info:
-  ESR = 0x96000044
-  Exception class = DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-Data abort info:
-  ISV = 0, ISS = 0x00000044
-  CM = 0, WnR = 1
-[dead000000000200] address between user and kernel address ranges
+Thank you for the patch.
 
--000|list_cut_before(inline)
--000|move_freelist_head(inline)
--000|fast_isolate_freepages(inline)
--000|isolate_freepages(inline)
--000|compaction_alloc(?, ?)
--001|unmap_and_move(inline)
--001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
--002|__read_once_size(inline)
--002|static_key_count(inline)
--002|static_key_false(inline)
--002|trace_mm_compaction_migratepages(inline)
--002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
--003|kcompactd_do_work(inline)
--003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
--004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
--005|ret_from_fork(asm)
----|end of frame
+On Mon, Jan 18, 2021 at 12:34:28AM +0000, Daniel Scally wrote:
+> This driver only covered one scenario in which ACPI devices with _HID
+> INT3472 are found, and its functionality has been taken over by the
+> intel-skl-int3472 module, so remove it.
+> 
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+> 
+> 	- Introduced
+> 
+>  drivers/acpi/pmic/Kconfig |  1 -
+>  drivers/gpio/Kconfig      |  1 -
+>  drivers/mfd/Kconfig       | 18 --------
+>  drivers/mfd/Makefile      |  1 -
+>  drivers/mfd/tps68470.c    | 97 ---------------------------------------
+>  5 files changed, 118 deletions(-)
+>  delete mode 100644 drivers/mfd/tps68470.c
+> 
+> diff --git a/drivers/acpi/pmic/Kconfig b/drivers/acpi/pmic/Kconfig
+> index 56bbcb2ce61b..e27d8ef3a32c 100644
+> --- a/drivers/acpi/pmic/Kconfig
+> +++ b/drivers/acpi/pmic/Kconfig
+> @@ -52,7 +52,6 @@ endif	# PMIC_OPREGION
+>  
+>  config TPS68470_PMIC_OPREGION
+>  	bool "ACPI operation region support for TPS68470 PMIC"
+> -	depends on MFD_TPS68470
 
-The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
+Should this now depend on INTEL_SKL_INT3472 ?
 
-This patch fixes the issue by reset high_pfn before searching each free area, which ensure
-freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
+>  	help
+>  	  This config adds ACPI operation region support for TI TPS68470 PMIC.
+>  	  TPS68470 device is an advanced power management unit that powers
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index c70f46e80a3b..07ff8f24b0d9 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1343,7 +1343,6 @@ config GPIO_TPS65912
+>  
+>  config GPIO_TPS68470
+>  	bool "TPS68470 GPIO"
+> -	depends on MFD_TPS68470
 
-Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
+Same here.
 
-Signed-off-by: Rokudo Yan <wu-yan@tcl.com>
----
- mm/compaction.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This won't deal with the case where th TPS68470 is instantiated through
+DT, but that's not supported yet, so it can be dealt with it later when
+the need arises.
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index cc1a7f600a86..75f0e550b18f 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1303,7 +1303,7 @@ fast_isolate_freepages(struct compact_control *cc)
- {
- 	unsigned int limit = min(1U, freelist_scan_limit(cc) >> 1);
- 	unsigned int nr_scanned = 0;
--	unsigned long low_pfn, min_pfn, high_pfn = 0, highest = 0;
-+	unsigned long low_pfn, min_pfn, highest = 0;
- 	unsigned long nr_isolated = 0;
- 	unsigned long distance;
- 	struct page *page = NULL;
-@@ -1348,6 +1348,7 @@ fast_isolate_freepages(struct compact_control *cc)
- 		struct page *freepage;
- 		unsigned long flags;
- 		unsigned int order_scanned = 0;
-+		unsigned long high_pfn = 0;
- 
- 		if (!area->nr_free)
- 			continue;
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  	help
+>  	  Select this option to enable GPIO driver for the TPS68470
+>  	  chip family.
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index bdfce7b15621..9a1f648efde0 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1520,24 +1520,6 @@ config MFD_TPS65217
+>  	  This driver can also be built as a module.  If so, the module
+>  	  will be called tps65217.
+>  
+> -config MFD_TPS68470
+> -	bool "TI TPS68470 Power Management / LED chips"
+> -	depends on ACPI && PCI && I2C=y
+> -	depends on I2C_DESIGNWARE_PLATFORM=y
+> -	select MFD_CORE
+> -	select REGMAP_I2C
+> -	help
+> -	  If you say yes here you get support for the TPS68470 series of
+> -	  Power Management / LED chips.
+> -
+> -	  These include voltage regulators, LEDs and other features
+> -	  that are often used in portable devices.
+> -
+> -	  This option is a bool as it provides an ACPI operation
+> -	  region, which must be available before any of the devices
+> -	  using this are probed. This option also configures the
+> -	  designware-i2c driver to be built-in, for the same reason.
+> -
+>  config MFD_TI_LP873X
+>  	tristate "TI LP873X Power Management IC"
+>  	depends on I2C
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 14fdb188af02..5994e812f479 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -105,7 +105,6 @@ obj-$(CONFIG_MFD_TPS65910)	+= tps65910.o
+>  obj-$(CONFIG_MFD_TPS65912)	+= tps65912-core.o
+>  obj-$(CONFIG_MFD_TPS65912_I2C)	+= tps65912-i2c.o
+>  obj-$(CONFIG_MFD_TPS65912_SPI)  += tps65912-spi.o
+> -obj-$(CONFIG_MFD_TPS68470)	+= tps68470.o
+>  obj-$(CONFIG_MFD_TPS80031)	+= tps80031.o
+>  obj-$(CONFIG_MENELAUS)		+= menelaus.o
+>  
+> diff --git a/drivers/mfd/tps68470.c b/drivers/mfd/tps68470.c
+> deleted file mode 100644
+> index 4a4df4ffd18c..000000000000
+> --- a/drivers/mfd/tps68470.c
+> +++ /dev/null
+> @@ -1,97 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * TPS68470 chip Parent driver
+> - *
+> - * Copyright (C) 2017 Intel Corporation
+> - *
+> - * Authors:
+> - *	Rajmohan Mani <rajmohan.mani@intel.com>
+> - *	Tianshu Qiu <tian.shu.qiu@intel.com>
+> - *	Jian Xu Zheng <jian.xu.zheng@intel.com>
+> - *	Yuning Pu <yuning.pu@intel.com>
+> - */
+> -
+> -#include <linux/acpi.h>
+> -#include <linux/delay.h>
+> -#include <linux/i2c.h>
+> -#include <linux/init.h>
+> -#include <linux/mfd/core.h>
+> -#include <linux/mfd/tps68470.h>
+> -#include <linux/regmap.h>
+> -
+> -static const struct mfd_cell tps68470s[] = {
+> -	{ .name = "tps68470-gpio" },
+> -	{ .name = "tps68470_pmic_opregion" },
+> -};
+> -
+> -static const struct regmap_config tps68470_regmap_config = {
+> -	.reg_bits = 8,
+> -	.val_bits = 8,
+> -	.max_register = TPS68470_REG_MAX,
+> -};
+> -
+> -static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
+> -{
+> -	unsigned int version;
+> -	int ret;
+> -
+> -	/* Force software reset */
+> -	ret = regmap_write(regmap, TPS68470_REG_RESET, TPS68470_REG_RESET_MASK);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = regmap_read(regmap, TPS68470_REG_REVID, &version);
+> -	if (ret) {
+> -		dev_err(dev, "Failed to read revision register: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	dev_info(dev, "TPS68470 REVID: 0x%x\n", version);
+> -
+> -	return 0;
+> -}
+> -
+> -static int tps68470_probe(struct i2c_client *client)
+> -{
+> -	struct device *dev = &client->dev;
+> -	struct regmap *regmap;
+> -	int ret;
+> -
+> -	regmap = devm_regmap_init_i2c(client, &tps68470_regmap_config);
+> -	if (IS_ERR(regmap)) {
+> -		dev_err(dev, "devm_regmap_init_i2c Error %ld\n",
+> -			PTR_ERR(regmap));
+> -		return PTR_ERR(regmap);
+> -	}
+> -
+> -	i2c_set_clientdata(client, regmap);
+> -
+> -	ret = tps68470_chip_init(dev, regmap);
+> -	if (ret < 0) {
+> -		dev_err(dev, "TPS68470 Init Error %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, tps68470s,
+> -			      ARRAY_SIZE(tps68470s), NULL, 0, NULL);
+> -	if (ret < 0) {
+> -		dev_err(dev, "devm_mfd_add_devices failed: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct acpi_device_id tps68470_acpi_ids[] = {
+> -	{"INT3472"},
+> -	{},
+> -};
+> -
+> -static struct i2c_driver tps68470_driver = {
+> -	.driver = {
+> -		   .name = "tps68470",
+> -		   .acpi_match_table = tps68470_acpi_ids,
+> -	},
+> -	.probe_new = tps68470_probe,
+> -};
+> -builtin_i2c_driver(tps68470_driver);
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
