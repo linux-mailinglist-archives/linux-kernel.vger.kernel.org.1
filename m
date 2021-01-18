@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B601E2F9C86
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF142F9C84
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389100AbhARJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 04:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388296AbhARJ2L (ORCPT
+        id S2389073AbhARJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 04:43:12 -0500
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:53337 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388312AbhARJ2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:28:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE503C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:27:26 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l1QoY-0001wO-QU; Mon, 18 Jan 2021 10:27:10 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l1QoX-0003Ay-0P; Mon, 18 Jan 2021 10:27:09 +0100
-Date:   Mon, 18 Jan 2021 10:27:08 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        dan.carpenter@oracle.com, biwen.li@nxp.com, lvb@xiphos.com,
-        bruno.thomsen@gmail.com, l.sanfilippo@kunbus.com,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] rtc: pcf2127: Disable Power-On Reset Override
-Message-ID: <20210118092708.gphy6jtlldp3il25@pengutronix.de>
-References: <20210118085752.5759-1-p.rosenberger@kunbus.com>
- <20210118085752.5759-2-p.rosenberger@kunbus.com>
+        Mon, 18 Jan 2021 04:28:44 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 634A3CB2B9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 09:27:45 +0000 (GMT)
+Received: (qmail 2689 invoked from network); 18 Jan 2021 09:27:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 18 Jan 2021 09:27:45 -0000
+Date:   Mon, 18 Jan 2021 09:27:43 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] sched/fair: Make select_idle_cpu() proportional to
+ cores
+Message-ID: <20210118092743.GP3592@techsingularity.net>
+References: <20210115100855.23679-1-mgorman@techsingularity.net>
+ <20210115100855.23679-4-mgorman@techsingularity.net>
+ <f9036411-39d0-2c28-aec5-5e185d01d3f0@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hhph5dpzwlj3fiam"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210118085752.5759-2-p.rosenberger@kunbus.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <f9036411-39d0-2c28-aec5-5e185d01d3f0@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 18, 2021 at 04:14:36PM +0800, Li, Aubrey wrote:
+> > <SNIP>
+> > @@ -6124,6 +6126,8 @@ static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int t
+> >  
+> >  #else /* CONFIG_SCHED_SMT */
+> >  
+> > +#define sched_smt_weight	1
+> > +
+> >  static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
+> >  {
+> >  	return -1;
+> >
+> > <SNIP>
+> >
+> > @@ -6166,10 +6172,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >  		avg_cost = this_sd->avg_scan_cost + 1;
+> >  
+> >  		span_avg = sd->span_weight * avg_idle;
+> > -		if (span_avg > 4*avg_cost)
+> > +		if (span_avg > sis_min_cores*avg_cost)
+> >  			nr = div_u64(span_avg, avg_cost);
+> >  		else
+> > -			nr = 4;
+> > +			nr = sis_min_cores;
+> > +
+> > +		nr *= sched_smt_weight;
+> 
+> Is it better to put this into an inline wrapper to hide sched_smt_weight if !CONFIG_SCHED_SMT?
+> 
 
---hhph5dpzwlj3fiam
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There already is a #define sched_smt_weight for !CONFIG_SCHED_SMT and I
+do not think an inline wrapper would make it more readable or maintainable.
 
-Hello Philipp,
-
-On Mon, Jan 18, 2021 at 09:57:51AM +0100, Philipp Rosenberger wrote:
-> From what I've seen on the PCF2127 and PCF2129 there is not
-> interrupted gernerated at the interrupt pin (INT), as long the PORO bit
-
-Apart from s/not interrupted gernerated/no event generated/ this looks
-good now.
-
-> is set. This behavior is not documented in the manual.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---hhph5dpzwlj3fiam
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAFVGkACgkQwfwUeK3K
-7Ak1yQgAkBAWwmfASiKHUo6Cx3U02EVUkYp58VGmTNi9W2sCKGXcRxviQmmLVbcb
-PyecxvLdmbYpwrOkP1ZszgcG8GsQCzrv1889ugVFE9oODLSuKjEO2w3wg3YVbbhL
-5vIkT3CGEtPgYQ1FxJQ3f6Y4h+TISc1E31vQJgJXdhFw6a87SC+KEQVi/h4zG7GC
-oS/vKgj0IfNdxx2yyPYiba7HQXmbq8EfOfJ/zZHJr9R6x/6o1+b0rwCYQzU7T6b5
-eCCr0Wskx1Y0ihSCVen0OJwqWSBXqZCT7GDEDhL1CGNyh2Uwlp/iyaviLmDAy+eC
-Nsg22zIWCcwci4wj1QPC4VvM72K79Q==
-=mR4+
------END PGP SIGNATURE-----
-
---hhph5dpzwlj3fiam--
+-- 
+Mel Gorman
+SUSE Labs
