@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB752FAB80
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10112FAB82
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 21:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394326AbhARU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 15:29:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:60674 "EHLO foss.arm.com"
+        id S2394340AbhARUa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 15:30:27 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50678 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389071AbhARKmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:42:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3DDD1FB;
-        Mon, 18 Jan 2021 02:41:20 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.39.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D6733F66E;
-        Mon, 18 Jan 2021 02:41:18 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:41:16 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v3 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-Message-ID: <20210118104116.GB29688@C02TD0UTHF1T.local>
-References: <20210115120043.50023-1-vincenzo.frascino@arm.com>
- <20210115120043.50023-5-vincenzo.frascino@arm.com>
- <20210115154520.GD44111@C02TD0UTHF1T.local>
- <4b1a5cdf-e1bf-3a7e-593f-0089cedbbc03@arm.com>
- <0c1b9a6b-0326-a24f-6418-23a0723adecf@arm.com>
+        id S2394211AbhARUaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:30:12 -0500
+Received: from zn.tnic (p200300ec2f069f0062c4736095b963a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9f00:62c4:7360:95b9:63a8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 21BE01EC04F0;
+        Mon, 18 Jan 2021 21:29:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611001771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=cIG/RqO5JFDYb15YAf8/e61/XxXDZVIp5xUGVF2yUvY=;
+        b=MpPyuIfc7DDypx2lEYCKWhuc3Wk1aGegxprSLXycDpMcX2hp6izTV9LoS+clIRpKKsTZLH
+        xyiBE/lnlMo7KFz5WnoblI7J4pbcED0QXrZjZxJZ4p4vNbFbpnfs7/MExXFvnVmcP5p3X8
+        DjotxmnRtecHYy5TcbMfYI1HhFMubAE=
+Date:   Mon, 18 Jan 2021 21:29:31 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
+ SEV-ES support
+Message-ID: <20210118202931.GI30090@zn.tnic>
+References: <20210116002517.548769-1-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0c1b9a6b-0326-a24f-6418-23a0723adecf@arm.com>
+In-Reply-To: <20210116002517.548769-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 12:27:08PM +0000, Vincenzo Frascino wrote:
-> Hi Mark,
-> 
-> On 1/16/21 2:22 PM, Vincenzo Frascino wrote:
-> >> Is there any chance that this can be used for the last bytes of the
-> >> virtual address space? This might need to change to `_addr == _end` if
-> >> that is possible, otherwise it'll terminate early in that case.
-> >>
-> > Theoretically it is a possibility. I will change the condition and add a note
-> > for that.
-> > 
-> 
-> I was thinking to the end of the virtual address space scenario and I forgot
-> that if I use a condition like `_addr == _end` the tagging operation overflows
-> to the first granule of the next allocation. This disrupts tagging accesses for
-> that memory area hence I think that `_addr < _end` is the way to go.
+On Fri, Jan 15, 2021 at 04:25:17PM -0800, Sean Christopherson wrote:
+> Introduce a new Kconfig, AMD_SEV_ES_GUEST, to control the inclusion of
+> support for running as an SEV-ES guest.  Pivoting on AMD_MEM_ENCRYPT for
+> guest SEV-ES support is undesirable for host-only kernel builds as
+> AMD_MEM_ENCRYPT is also required to enable KVM/host support for SEV and
+> SEV-ES.
 
-I think it implies `_addr != _end` is necessary. Otherwise, if `addr` is
-PAGE_SIZE from the end of memory, and `size` is PAGE_SIZE, `_end` will
-be 0, so using `_addr < _end` will mean the loop will terminate after a
-single MTE tag granule rather than the whole page.
+Huh, what?
 
-Generally, for some addr/increment/size combination (where all are
-suitably aligned), you need a pattern like:
+I'm not sure I understand what you're trying to say here and am not
+convinced why yet another Kconfig symbol is needed?
 
-| do {
-|       thing(addr);
-|       addr += increment;
-| } while (addr != end);
+-- 
+Regards/Gruss,
+    Boris.
 
-... or:
-
-| for (addr = start; addr != end; addr += increment) {
-|       thing(addr);
-| }
-
-... to correctly handle working at the very end of the VA space.
-
-We do similar for page tables, e.g. when we use pmd_addr_end().
-
-Thanks,
-Mark.
+https://people.kernel.org/tglx/notes-about-netiquette
