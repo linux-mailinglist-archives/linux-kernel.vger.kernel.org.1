@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7FD2F9CB7
+	by mail.lfdr.de (Postfix) with ESMTP id D8A732F9CB8
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389890AbhARKRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
+        id S2389906AbhARKRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389368AbhARJzu (ORCPT
+        with ESMTP id S2389372AbhARJ4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:55:50 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F9AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:54:51 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id g10so13210322wmh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:54:51 -0800 (PST)
+        Mon, 18 Jan 2021 04:56:06 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23C6C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:55:13 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c124so12981581wma.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 01:55:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cFqP/8RJv1Qo9WGknss0Qphbrf47nZAWivkAs8FjOj0=;
-        b=f7h0sur3QGmAxGDFgywlU7UvH91myHS7u2TDv/WcQX9e+5GdxTPxbM/nCeABQPBsQv
-         DgUhKpfLf9xvXARxdipr0vZ8+NoVofM7hxrXFdNCt0VjzYBciRqunH8xxkF17H1WKqNA
-         aVd0wxudIAG/j/vuiypXoMdGSxdUEvqEnWFzA=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yQySp1I8dFlNRZ6TD27mEdeFa/4xBBrxR4vuqWLafeM=;
+        b=EM3w46xMJCikT6pc8p5LzxRmPXG4HmSnVkSjwPfCOJon/tBwwlsZi2ieazcVLmtHlq
+         EqRb1Dy6VT33nWYEcocTvZX6ZFAaetOYEbz+owufRCsbbviwwQOMXczFnAgIBd73+Qfw
+         3RDX/4VrJ57YGxWS1qq9Ey5DWgPiAwJhzaHGx/86NMIWZJFZwUukekdz7lIFCQQEDHMj
+         jhhwAe7SUmBP0X9Fx9EMS1cvexbx5sG9kQQfLfNZK/TYVeOSoB7UyrEqV8vireMTDydW
+         ty+nCLNeYmuI3ynzLufT7etS1YG14NT1c24MtRd6bPFD5lLVIeB/eOPmZFrG37r0FBzn
+         lBgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=cFqP/8RJv1Qo9WGknss0Qphbrf47nZAWivkAs8FjOj0=;
-        b=H4JHCeQYrMFs7Ve1OD589ymnak2dQnfC1spbPfu8mBej/cULZkkwIY6tHOFqIcFN47
-         I9Pj8vqQE8L7hB1oTh33M0eLDsTsgGyUaJ8/sx6rKxh0dnQYjDsh8ar96c4lGcUHjx/3
-         +fJ8X/twCG2zcYv6/4tJmDaoIiW5wKpVmGlRGARoO1lOpoOjzq+Wro8gzgLagbj1EQAc
-         z4Uxap6oCeHCGMTJhh+BoDmH+hCrDCuIW/B8tFOw3hrrPz6Q9YWbpn6JbNcXh/R5ociG
-         8kd5KQOH1TVG6nS1/Z7x3CDq898ugiK+4cA7CTs5VoI6JMMMsfUkmy4ht6XmQIw8i/8a
-         8ycw==
-X-Gm-Message-State: AOAM5306Z+XElkrrndUtelVOR3PlBmpu1T36JxVo3jIwNEG9+EKHEpTn
-        JNpP/tPkS0NBtiEPLvA25kiToQ==
-X-Google-Smtp-Source: ABdhPJxHj4DMhuWe1Sq4Q8jMTzzNRKQBOelzaSYvh2hz8Lsj3032M4rxfMUJp49dKZulqO+yY3Pglw==
-X-Received: by 2002:a1c:7c06:: with SMTP id x6mr2150339wmc.67.1610963690170;
-        Mon, 18 Jan 2021 01:54:50 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 17sm23730019wmk.48.2021.01.18.01.54.49
+        bh=yQySp1I8dFlNRZ6TD27mEdeFa/4xBBrxR4vuqWLafeM=;
+        b=ufrpDVQaBCpYYM3AYwiZpvMPBLlw3cj8+gB0oeC45N9D1nQUAFeqrWCVd17HovZokG
+         zkNxybiT+BAVubtBt4ksm98MqMuNbt256/lYsrxZkReuD2MA4pPn7OBDvmg95QzgYHQe
+         Voh9UlYRyBNCn0sX8YbwPfslCb27H6yfO8jxGUl99UUCBXtrHo8K0XqvWv8HJ+Yez/jv
+         62WEodlhA/G6b6heGUM31wK5LtkDQnMoo2QgW6IVrBF3qbawGl9aQDWL9Uu6aOunXa6F
+         0McCxpRjD0KQOjk3RkiWNm3bh2HorHeYXMSj3kouVy1d3PjwkqNqUZYSf8XiYBLDyoTE
+         FFsg==
+X-Gm-Message-State: AOAM532bSpMmKkKWT5Px6kVHw7xjPjFE5XT74X/lPDV+cfcKKnfDxRBP
+        UW2HgxcPpQt4z7BnhFDQKxQiiQ==
+X-Google-Smtp-Source: ABdhPJzLhP1CCxFTPbYev6ZBSYyZSUO95R17hQJYKV68+tkak1J7y9dicSOAK6pN4T3m+Clh+pIYng==
+X-Received: by 2002:a1c:4e:: with SMTP id 75mr7199354wma.150.1610963712403;
+        Mon, 18 Jan 2021 01:55:12 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id c2sm24225161wrt.87.2021.01.18.01.55.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 01:54:49 -0800 (PST)
-Date:   Mon, 18 Jan 2021 10:54:47 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Yue Zou <zouyue3@huawei.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vgaarb: Remove unneeded semicolons
-Message-ID: <YAVa54YVVH37ZnXf@phenom.ffwll.local>
-Mail-Followup-To: Yue Zou <zouyue3@huawei.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210118010356.214491-1-zouyue3@huawei.com>
+        Mon, 18 Jan 2021 01:55:11 -0800 (PST)
+Date:   Mon, 18 Jan 2021 09:55:09 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 00/12] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+Message-ID: <20210118095509.GA4903@dell>
+References: <20210117160555.78376-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210118010356.214491-1-zouyue3@huawei.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210117160555.78376-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 01:03:55AM +0000, Yue Zou wrote:
-> Remove superfluous semicolons after function definitions.
-> 
-> Signed-off-by: Yue Zou <zouyue3@huawei.com>
+On Sun, 17 Jan 2021, Hans de Goede wrote:
 
-Thanks for your patch, applied.
--Daniel
+> Hi All,
+> 
+> This series reworks the arizona codec jack-detect support to use
+> the snd_soc_jack helpers instead of direct extcon reporting.
+> 
+> This is done by reworking the extcon driver into an arizona-jackdet
+> library and then modifying the codec drivers to use that directly,
+> replacing the old separate extcon child-devices and extcon-driver.
+> 
+> This brings the arizona-codec jack-detect handling inline with how
+> all other ASoC codec driver do this.
+> 
+> This was developed and tested on a Lenovo Yoga Tablet 1051L with
+> a WM5102 codec.
+> 
+> The MFD, ASoC and extcon parts can be merged independent from each-other
+> although that could lead to a case where both the extcon driver and
+> the new arizona-jackdet library will try to do jack-detection. If we
+> end up with a git tree in that state then one of the 2 will fail to
+> load because the other will already have claimed the IRQs, so this
+> is not a problem really.
+> 
+> Or the entire series could be merged through the MFD tree if people
+> prefer that.
+> 
+> Note that this series also paves the way for some further cleanups,
+> removing some jackdetect related variables like hp_ena and hp_clamp
+> from the arizona data struct shared between all the MFD child devices.
+> I've deliberately not done that cleanup as part of this patch-series,
+> since IMHO the series is big enough as is. These cleanups can be done
+> in a follow-up series once this series has landed.
 
-> ---
->  include/linux/vgaarb.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/vgaarb.h b/include/linux/vgaarb.h
-> index 977caf96c8d2..fc6dfeba04a5 100644
-> --- a/include/linux/vgaarb.h
-> +++ b/include/linux/vgaarb.h
-> @@ -121,9 +121,9 @@ extern struct pci_dev *vga_default_device(void);
->  extern void vga_set_default_device(struct pci_dev *pdev);
->  extern int vga_remove_vgacon(struct pci_dev *pdev);
->  #else
-> -static inline struct pci_dev *vga_default_device(void) { return NULL; };
-> -static inline void vga_set_default_device(struct pci_dev *pdev) { };
-> -static inline int vga_remove_vgacon(struct pci_dev *pdev) { return 0; };
-> +static inline struct pci_dev *vga_default_device(void) { return NULL; }
-> +static inline void vga_set_default_device(struct pci_dev *pdev) { }
-> +static inline int vga_remove_vgacon(struct pci_dev *pdev) { return 0; }
->  #endif
->  
->  /*
-> -- 
-> 2.25.1
-> 
+Would you mind using `git format-patch` to create your cover-letters
+in the future please?  This one is missing useful information such as
+the diff-stat and patch list.
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
