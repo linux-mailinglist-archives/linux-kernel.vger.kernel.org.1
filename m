@@ -2,150 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC862FA07E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1B02FA03A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 13:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391950AbhARMyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 07:54:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40818 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404060AbhARMht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:37:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7CBBCACBA;
-        Mon, 18 Jan 2021 12:37:06 +0000 (UTC)
-Subject: Re: [PATCH V2] mm/compaction: correct deferral logic for proactive
- compaction
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, mhocko@suse.com, khalid.aziz@oracle.com,
-        ngupta@nitingupta.dev, vinmenon@codeaurora.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1610972408-20986-1-git-send-email-charante@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <777bf9c5-82db-041b-55ee-6868ab78ef70@suse.cz>
-Date:   Mon, 18 Jan 2021 13:37:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2404256AbhARMnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 07:43:39 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:20400 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404064AbhARMiK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:38:10 -0500
+Date:   Mon, 18 Jan 2021 12:37:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610973443; bh=0Xcw0aAhmjtsp5cwUHHVIctjC2VS/St8x2ljm1ElZ08=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ZYwW6BVBSXvSTbxxWWc3tWy00U1q4AmGSsBiofpx54va08p1NdoME33vPRXdMM/i/
+         XmsIQXFwzpj6ppGvemwavlNYcHuNIdYgMbnm8j/5VB+R04m7ZQcX6AGRP/GU8DoYRB
+         ObSNvSPQVe4kAihx7vTnq6mALbfXJg6mzHUssgFygsLRZNN/VnhweHBObjRiVIN7kz
+         5XebaYgRimuNlnUlJRTuE/I44jRIUcMKfSh6JUEOG2UOJEJ3Y235zDrO4V0rp6xAsh
+         HgHQEya+7jJiio3oROuxcvIbJMYWUvI2UjIMlMaIvwNPiFbmudG5VAmCgOdSK7LZo8
+         KGSg8ySXY2G2A==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Meir Lichtinger <meirl@mellanox.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next] xsk: build skb by page
+Message-ID: <20210118123645.2635-1-alobakin@pm.me>
+In-Reply-To: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
+References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <1610972408-20986-1-git-send-email-charante@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 1:20 PM, Charan Teja Reddy wrote:
-> should_proactive_compact_node() returns true when sum of the
-> weighted fragmentation score of all the zones in the node is greater
-> than the wmark_high of compaction, which then triggers the proactive
-> compaction that operates on the individual zones of the node. But
-> proactive compaction runs on the zone only when its weighted
-> fragmentation score is greater than wmark_low(=wmark_high - 10).
-> 
-> This means that the sum of the weighted fragmentation scores of all the
-> zones can exceed the wmark_high but individual weighted fragmentation
-> zone scores can still be less than wmark_low which makes the unnecessary
-> trigger of the proactive compaction only to return doing nothing.
-> 
-> Issue with the return of proactive compaction with out even trying is
-> its deferral. It is simply deferred for 1 << COMPACT_MAX_DEFER_SHIFT if
-> the scores across the proactive compaction is same, thinking that
-> compaction didn't make any progress but in reality it didn't even try.
-> With the delay between successive retries for proactive compaction is
-> 500msec, it can result into the deferral for ~30sec with out even trying
-> the proactive compaction.
-> 
-> Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
-> 50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
-> sizes 5GB and 6GB respectively. After opening some apps on the android,
-> the weighted fragmentation scores of these zones are 47 and 49
-> respectively. Since the sum of these fragmentation scores are above the
-> wmark_high which triggers the proactive compaction and there since the
-> individual zones weighted fragmentation scores are below wmark_low, it
-> returns without trying the proactive compaction. As a result the
-> weighted fragmentation scores of the zones are still 47 and 49 which
-> makes the existing logic to defer the compaction thinking that
-> noprogress is made across the compaction.
-> 
-> Fix this by checking just zone fragmentation score, not the weighted, in
-> __compact_finished() and use the zones weighted fragmentation score in
-> fragmentation_score_node(). In the test case above, If the weighted
-> average of is above wmark_high, then individual score (not adjusted) of
-> atleast one zone has to be above wmark_high. Thus it avoids the
-> unnecessary trigger and deferrals of the proactive compaction.
-> 
-> Fix-suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Sat, 16 Jan 2021 10:44:53 +0800
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-But I would move fragmentation_score_zone() above
-fragmentation_score_zone_weighted(), so fragmentation_score_zone_weighted() can
-call fragmentation_score_zone() instead of having two places with
-extfrag_for_order(...).
-
-Thanks.
-
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
+>=20
+> This has one problem:
+>=20
+> We construct the skb by fill the data page as a frag into the skb. In
+> this way, the linear space is empty, and the header information is also
+> in the frag, not in the linear space, which is not allowed for some
+> network cards. For example, Mellanox Technologies MT27710 Family
+> [ConnectX-4 Lx] will get the following error message:
+>=20
+>     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1db=
+b, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+>     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+>     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+>     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+>     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
+>=20
+> I also tried to use build_skb to construct skb, but because of the
+> existence of skb_shinfo, it must be behind the linear space, so this
+> method is not working. We can't put skb_shinfo on desc->addr, it will be
+> exposed to users, this is not safe.
+>=20
+> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+> network card supports the header information of the packet in the frag
+> and not in the linear space.
+>=20
+> ---------------- Performance Testing ------------
+>=20
+> The test environment is Aliyun ECS server.
+> Test cmd:
+> ```
+> xdpsock -i eth0 -t  -S -s <msg size>
+> ```
+>=20
+> Test result data:
+>=20
+> size    64      512     1024    1500
+> copy    1916747 1775988 1600203 1440054
+> page    1974058 1953655 1945463 1904478
+> percent 3.0%    10.0%   21.58%  32.3%
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 > ---
-> 
-> Changes in V2: Addressed comments from vlastimil
-> 
-> Changes in V1: https://lore.kernel.org/patchwork/patch/1364646/
-> 
->  mm/compaction.c | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e5acb97..1b98427 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1924,16 +1924,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->  }
->  
->  /*
-> - * A zone's fragmentation score is the external fragmentation wrt to the
-> - * COMPACTION_HPAGE_ORDER scaled by the zone's size. It returns a value
-> - * in the range [0, 100].
-> + * A weighted zone's fragmentation score is the external fragmentation
-> + * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-> + * returns a value in the range [0, 100].
->   *
->   * The scaling factor ensures that proactive compaction focuses on larger
->   * zones like ZONE_NORMAL, rather than smaller, specialized zones like
->   * ZONE_DMA32. For smaller zones, the score value remains close to zero,
->   * and thus never exceeds the high threshold for proactive compaction.
+>  drivers/net/virtio_net.c        |   2 +-
+>  include/linux/netdev_features.h |   5 +-
+>  net/ethtool/common.c            |   1 +
+>  net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++-=
+------
+>  4 files changed, 97 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 4ecccb8..841a331 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vdev=
+)
+>  =09/* Set up network device as normal. */
+>  =09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+>  =09dev->netdev_ops =3D &virtnet_netdev;
+> -=09dev->features =3D NETIF_F_HIGHDMA;
+> +=09dev->features =3D NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
+> =20
+>  =09dev->ethtool_ops =3D &virtnet_ethtool_ops;
+>  =09SET_NETDEV_DEV(dev, &vdev->dev);
+> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_featu=
+res.h
+> index 934de56..8dd28e2 100644
+> --- a/include/linux/netdev_features.h
+> +++ b/include/linux/netdev_features.h
+> @@ -85,9 +85,11 @@ enum {
+> =20
+>  =09NETIF_F_HW_MACSEC_BIT,=09=09/* Offload MACsec operations */
+> =20
+> +=09NETIF_F_SKB_NO_LINEAR_BIT,=09/* Allow skb linear is empty */
+> +
+>  =09/*
+>  =09 * Add your fresh new feature above and remember to update
+> -=09 * netdev_features_strings[] in net/core/ethtool.c and maybe
+> +=09 * netdev_features_strings[] in net/ethtool/common.c and maybe
+>  =09 * some feature mask #defines below. Please also describe it
+>  =09 * in Documentation/networking/netdev-features.rst.
+>  =09 */
+> @@ -157,6 +159,7 @@ enum {
+>  #define NETIF_F_GRO_FRAGLIST=09__NETIF_F(GRO_FRAGLIST)
+>  #define NETIF_F_GSO_FRAGLIST=09__NETIF_F(GSO_FRAGLIST)
+>  #define NETIF_F_HW_MACSEC=09__NETIF_F(HW_MACSEC)
+> +#define NETIF_F_SKB_NO_LINEAR=09__NETIF_F(SKB_NO_LINEAR)
+> =20
+>  /* Finds the next feature with the highest number of the range of start =
+till 0.
 >   */
-> -static unsigned int fragmentation_score_zone(struct zone *zone)
-> +static unsigned int fragmentation_score_zone_weighted(struct zone *zone)
->  {
->  	unsigned long score;
->  
-> @@ -1943,6 +1943,15 @@ static unsigned int fragmentation_score_zone(struct zone *zone)
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index 24036e3..2f3d309 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -68,6 +68,7 @@
+>  =09[NETIF_F_HW_TLS_RX_BIT] =3D=09 "tls-hw-rx-offload",
+>  =09[NETIF_F_GRO_FRAGLIST_BIT] =3D=09 "rx-gro-list",
+>  =09[NETIF_F_HW_MACSEC_BIT] =3D=09 "macsec-hw-offload",
+> +=09[NETIF_F_SKB_NO_LINEAR_BIT] =3D=09 "skb-no-linear",
+>  };
+> =20
+>  const char
+
+I think the best would be if you will split this patch into three:
+ - the first one will introduce NETI_F_SKB_NO_LINEAR;
+ - the second will add this feature to virtio_net;
+ - the third will do the rest.
+
+Also, it would be nice if you'll mention (in the cover letter or
+in the third patch) that in order to get a nice boost on non-ZC
+XSK xmit developers can add a support for completely non-linear
+skbs and advertise this new feature in their drivers. I think
+there'll be enough folks wanting to do this.
+
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 8037b04..94d17dc 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  =09sock_wfree(skb);
 >  }
->  
->  /*
-> + * A zone's fragmentation score is the external fragmentation wrt to the
-> + * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-> + */
-> +static unsigned int fragmentation_score_zone(struct zone *zone)
+> =20
+> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> +=09=09=09=09=09      struct xdp_desc *desc)
 > +{
-> +	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +=09u32 len, offset, copy, copied;
+> +=09struct sk_buff *skb;
+> +=09struct page *page;
+> +=09char *buffer;
+> +=09int err, i;
+> +=09u64 addr;
+> +
+> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> +=09if (unlikely(!skb))
+> +=09=09return NULL;
+> +
+> +=09addr =3D desc->addr;
+> +=09len =3D desc->len;
+> +
+> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> +=09offset =3D offset_in_page(buffer);
+> +=09addr =3D buffer - (char *)xs->pool->addrs;
+> +
+> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
+> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +=09=09get_page(page);
+> +
+> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
+> +
+> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +=09=09copied +=3D copy;
+> +=09=09addr +=3D copy;
+> +=09=09offset =3D 0;
+> +=09}
+> +
+> +=09skb->len +=3D len;
+> +=09skb->data_len +=3D len;
+> +=09skb->truesize +=3D len;
+> +
+> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +=09return skb;
 > +}
 > +
-> +/*
->   * The per-node proactive (background) compaction process is started by its
->   * corresponding kcompactd thread when the node's fragmentation score
->   * exceeds the high threshold. The compaction process remains active till
-> @@ -1958,7 +1967,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
->  		struct zone *zone;
->  
->  		zone = &pgdat->node_zones[zoneid];
-> -		score += fragmentation_score_zone(zone);
-> +		score += fragmentation_score_zone_weighted(zone);
->  	}
->  
->  	return score;
-> 
+> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> +=09=09=09=09     struct xdp_desc *desc, int *err)
+
+As the others said, just use ERR_PTR() and PTR_ERR().
+You also should have received the letters from kernel test robot
+that the current version is non-compilable at all.
+
+> +=09struct sk_buff *skb;
+> +
+> +=09if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
+> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
+> +=09=09if (unlikely(!skb)) {
+> +=09=09=09*err =3D -ENOMEM;
+> +=09=09=09return NULL;
+> +=09=09}
+> +=09} else {
+> +=09=09char *buffer;
+> +=09=09u64 addr;
+> +=09=09u32 len;
+> +=09=09int err;
+> +
+> +=09=09len =3D desc->len;
+> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
+> +=09=09if (unlikely(!skb)) {
+> +=09=09=09*err =3D -ENOMEM;
+> +=09=09=09return NULL;
+> +=09=09}
+> +
+> +=09=09skb_put(skb, len);
+> +=09=09addr =3D desc->addr;
+> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
+> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+> +
+> +=09=09if (unlikely(err)) {
+> +=09=09=09kfree_skb(skb);
+> +=09=09=09*err =3D -EINVAL;
+> +=09=09=09return NULL;
+> +=09=09}
+> +=09}
+> +
+> +=09skb->dev =3D xs->dev;
+> +=09skb->priority =3D xs->sk.sk_priority;
+> +=09skb->mark =3D xs->sk.sk_mark;
+> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
+> +=09skb->destructor =3D xsk_destruct_skb;
+> +
+> +=09return skb;
+> +}
+> +
+>  static int xsk_generic_xmit(struct sock *sk)
+>  {
+>  =09struct xdp_sock *xs =3D xdp_sk(sk);
+> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
+>  =09=09goto out;
+> =20
+>  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -=09=09char *buffer;
+> -=09=09u64 addr;
+> -=09=09u32 len;
+> -
+>  =09=09if (max_batch-- =3D=3D 0) {
+>  =09=09=09err =3D -EAGAIN;
+>  =09=09=09goto out;
+>  =09=09}
+> =20
+> -=09=09len =3D desc.len;
+> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
+> +=09=09skb =3D xsk_build_skb(xs, &desc, &err);
+>  =09=09if (unlikely(!skb))
+>  =09=09=09goto out;
+> =20
+> -=09=09skb_put(skb, len);
+> -=09=09addr =3D desc.addr;
+> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+>  =09=09/* This is the backpressure mechanism for the Tx path.
+>  =09=09 * Reserve space in the completion queue and only proceed
+>  =09=09 * if there is space in it. This avoids having to implement
+>  =09=09 * any buffering in the Tx path.
+>  =09=09 */
+>  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
+> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
+>  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>  =09=09=09kfree_skb(skb);
+>  =09=09=09goto out;
+>  =09=09}
+>  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+> =20
+> -=09=09skb->dev =3D xs->dev;
+> -=09=09skb->priority =3D sk->sk_priority;
+> -=09=09skb->mark =3D sk->sk_mark;
+> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
+> -=09=09skb->destructor =3D xsk_destruct_skb;
+> -
+>  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
+>  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
+>  =09=09=09/* Tell user-space to retry the send */
+> --=20
+> 1.8.3.1
+
+
 
