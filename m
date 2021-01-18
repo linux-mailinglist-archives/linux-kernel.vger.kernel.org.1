@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DED2F9ADA
+	by mail.lfdr.de (Postfix) with ESMTP id 8F58E2F9ADB
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 08:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733208AbhARH5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 02:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbhARH5O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 02:57:14 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2984C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:56:33 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h205so22674308lfd.5
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Jan 2021 23:56:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DPQajUXvtRVcueISbce8TBlixhDeFvW6dba7FCyPUqk=;
-        b=jeshrjMJfFdpJFed5fh5s8gW9N8Xg9ku38gS4AQMW9OQzeBHprch2kf02YZGJHCEGm
-         4aAlUs77WsiHA+wKE08GjPcYDHpTnXmuuUPcFYpFYnwrDnA+FZ1hG4qi+k127iawZ4yG
-         C8RM1KcCGmgg+6mVwmZs/0+ATVEdtQpkmsPCefGBGyL0bgKPcOFMnaM4hrzN1fAHk+DV
-         TGIDWx4B9WSCZjpLty9ADYGIylOLa04dNQsJ2zXdNc8eN+EnvqNLfEnMzPOG3+nSkFBv
-         QZoXutxXW9A6oSVWp46HXjzlnmqtjomltpj9ttBfRabq2ZlYmnOF02D+4LdLqJtQPBEO
-         kA3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DPQajUXvtRVcueISbce8TBlixhDeFvW6dba7FCyPUqk=;
-        b=clwsFKKR9HA41XnGgqbGG2tI5qxmZvrn8fhizSssSyGTkfRob3OTHfeMaiIf6gh2Kg
-         c+OQnxIzGsDsjcUZdD9lXfBz2el+2A6Ybh4u/jYLvIjt71M8TnAnbtgL9UhENazWEJXV
-         e9BW6QpL02Q+yFlK8zp+mBKC8wn8zTz4bCuup1m2QhgF8aZCSqiw+QyIhFsZhoAVe9oS
-         gRGSnp0sWAWvc8NmPDzisa4x1IqvPCN/PgheCviGNZGNYXnBh2sfM5o58gyPbykD6UnA
-         Epx9uRYxEcYNZLX++iTU5e3iLaQf5TKVys+uHga2RE0cpj/nvmC+LU6oqBnXTrny+/V2
-         s5ow==
-X-Gm-Message-State: AOAM530ReHWQtAx/8+uAnvNbSi5aMEw0vS0qt1JIgYXo7+OHcpk9ceLp
-        wBPd4qUDSoYRjYjNxqpBsOxc8MmWFMNGBmPeuHXOrQ==
-X-Google-Smtp-Source: ABdhPJycTkk5mnBVX8DlKnlf5rDhrhTwX7w1s7qroBNGqsDcXnTfEVVu9Dyy6wVf1DzZL2LcdPHsZ6YIYCEgjx+RneQ=
-X-Received: by 2002:a19:7718:: with SMTP id s24mr10982176lfc.277.1610956591818;
- Sun, 17 Jan 2021 23:56:31 -0800 (PST)
+        id S1733232AbhARH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 02:58:35 -0500
+Received: from mail-bn8nam12on2056.outbound.protection.outlook.com ([40.107.237.56]:25825
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733122AbhARH63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 02:58:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T5WTIzS2XhM+w6qio2FxCgd3wI82KdazuryRirSYvy2veaX0SSmzQIn1BooBGmRklGvoIw0fJZuY1xH6aD+r0RE73x7gficvcz2ehQjQSPoOYD2+rn0NQxu+JrHOX+ICkBTz1VsQuONOFrVO9ZudTAy7Kczps/EPcBbgvD7V+H+QVpITTdWQVPHBhasWLmJ2nD4VJbfVzK6F06gqryxud2SL3CdcofybXqp0ATyZvRyq9sDN6d+Q6+7IxCtS3NfwJ2vAVN7tUdIJsqp9l5yipa9R/mNokXsMt6SjeDc1vj1pGR/09CKoM80pZ3SCUunWonVFkj44zpBjNdBYBXxvew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rb0dO5gjrpnNkbzu5H191bydD6eg8YnDqRBFe7RZ33M=;
+ b=ILKmNbaNdrEis5/bVt4bK+ZqpCyU6f5CFgxn3IJKif+Vs2BudM+Az+SGjW57hb21KHR6t4NSv2Qi/2qADLRSb0edNyv16h/pxFvkoZDp4EBH0xcl+/kBHbu4qapHaB1UyV5rMCWZLHQdcGDMv9jvrsWhBhengUok5iJS6oFvF7g9sfsxaXCDi7il5oxp+BIydGErVqGbumDllfdkGC6rQPGKVbvTC/9sKGDNLXWhVEfe4iE7o8i8Y8jvOT9IqOqSOHwbg5bMrA4vbCNiLiuXdEjMPp2HBR/fQRd6oUsYAAeFM+rgjM5xnQ4hca1BCsneznbfMxd0XH2H0RhkvAO1yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rb0dO5gjrpnNkbzu5H191bydD6eg8YnDqRBFe7RZ33M=;
+ b=x4nM4WQq/ZQLjhIpBVMMQZSprVf+yuWEnyMuxAjNecVTVguKxIKt4iBS5pALsTa6vwERdrj25BrcQs/CEv/bPhzZxfFRcjpB4wdS0NZrRv+xK26PztaeJBMFki/YD/klON6ZO7eBuEubwlxq2R1WXUryH0XGLnAd7OEfpDBwl74=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3966.namprd12.prod.outlook.com (2603:10b6:208:165::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
+ 2021 07:57:35 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 07:57:35 +0000
+Subject: Re: Change eats memory on my server
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, daniel.vetter@ffwll.ch,
+        sam@ravnborg.org, dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210114151529.GA79120@mtl-vdi-166.wap.labs.mlnx>
+ <23cf7712-1daf-23b8-b596-792c9586d6b4@suse.de>
+ <20210117050837.GA225992@mtl-vdi-166.wap.labs.mlnx>
+ <83f74a11-b3c0-db2e-8301-4292d60d803b@amd.com>
+ <20210118074913.GA39161@mtl-vdi-166.wap.labs.mlnx>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <a39c1b62-3e22-2454-d68b-e9eb510891d3@amd.com>
+Date:   Mon, 18 Jan 2021 08:57:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210118074913.GA39161@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR01CA0145.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::14) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210117123104.27589-1-benbjiang@tencent.com>
-In-Reply-To: <20210117123104.27589-1-benbjiang@tencent.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 18 Jan 2021 08:56:20 +0100
-Message-ID: <CAKfTPtCPUnhiNF0SxK-=RTaq+h1D0tK-OfRsubb38V23KFEB_w@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: add protection for delta of wait time
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR01CA0145.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Mon, 18 Jan 2021 07:57:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8e9bc7e3-8b1f-49b2-d2b7-08d8bb86b796
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3966:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3966B95D59EB786FCE563D9983A40@MN2PR12MB3966.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ea7gO+vM45PYPMNgzkMyTTqIExkkSbL7owi5M0j6Q0XqhMYqqI+M/NbfaygsWxhn4c0M03BnfVdEQwTH/ivmVBaGJmvy0Fi5SMYErq9w1YbJnPp2Ck7/tVJVj/HlqwbNrV/hPRXEwpsLeQysHY7fmbnNobQsnlOCgaV16FnKAU9Q8efEERYtGBTBF2aKT+b7p3AS+DwIAC3TdurkH3xWXKmvX6Bl9l1JAF2leJI8COBwfk6nDC4SLcURxiU3ike/kfeA1vXkQmAjIjHL40uH46oXNKC5lbEpOV8b7TSeo6XPeJsxJYgj2ewDfw6opWJrQ/GRM01uVMONsdgJx4IzlcdDTCNuK52kK1Z7iihNBdEm4qrwS1lIqVLBw7oexnZ4jnpJXkOwPjmd3vyN1zTmglWSUNTXSALOwQbE1qKCUA7QzayXAQ7B8phAd8oQEbfq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(16526019)(31686004)(4744005)(5660300002)(4326008)(6916009)(316002)(8936002)(478600001)(6666004)(66946007)(66476007)(66556008)(54906003)(86362001)(8676002)(6486002)(186003)(52116002)(36756003)(2906002)(31696002)(2616005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RnRCVytjNVlqWnVUUnVPZHpwSnVqOGJiNVZvT2ErajZrZzdTZk9aWHpxUFlt?=
+ =?utf-8?B?ZWZaNHdyUUVDOWxUaDZNSkhaSXZMTHp0dlNQU210c1J4Tm1IU0JPNEdUam1R?=
+ =?utf-8?B?alhGUmdycTkxRzdLMDdORElySnlaS0U3Umo2T0dnR0hheU9GRVN4SVpTUU9m?=
+ =?utf-8?B?VHdDN1kzQTBRb3FJSUNaeUJPZnNNNE1nN0VzYWNSVkYwWlNJeGxxUlhrZ3ZM?=
+ =?utf-8?B?RDdYUXZKWUwyc01FVy9xY1RtZlFvRWZCYmNLaEtzbTQ4SWNYd1djVyswQnpO?=
+ =?utf-8?B?dU1QSVE0MDFhR1JVRlVkb1h3WkdCQWQ5RCt5U2pPTGt6UUVXL2dZUkxyZjNT?=
+ =?utf-8?B?cFRuSk4rWWp6TWxjRVNEaXpORUVxT3EzZ1l1M1V1QWZvMmx4NkR2c1pIdEdD?=
+ =?utf-8?B?YW41WmtzeDJhTFBCVDlva3lxQjRhRmd2M3Z3MU5lQUtlWi9RMjM0ZzQ4Vm03?=
+ =?utf-8?B?V05yWVRuV0RQdWVxMnZJWDlXQTBWeTJSMG1SeWVUSmVxRHplZVJ6ZG1aQTRi?=
+ =?utf-8?B?RDZWSktxdjFZRit0cVdxTWgxWFQxbStiWFcreXI4eFdHaStmclprYUJ4MERN?=
+ =?utf-8?B?ZFBBdTltbG9FTWEzQWZVV2trVjIvMXY5anp0elh3UmNOMFhzaFNRQ29YRUFj?=
+ =?utf-8?B?RHNUSHdhR3hFNjFsSXpOclhoaS9lUG9RVDM5WVZHYU5zeWxpS2VvMlZPWllT?=
+ =?utf-8?B?Y01jdndiYStPd2lSSWxSZmp6N2d5OVlmcnNNd2c1OVAwT2E3eHQ5bTZqRy9j?=
+ =?utf-8?B?UG5BMVFpVlYzQ09wdUtPa0VmWnBjWUluWVJXOFBUM0p0SmZPdngwTDNzMThv?=
+ =?utf-8?B?TVNXazE2MWJGbnQ3cnIxMFdkM2wvNVR0c3ZGWFVVVGZQMTJpOHRKMTVHWG0z?=
+ =?utf-8?B?VVpRQTVtQ0tRRW5xellrTlhqU0psWE5CTWpiY2JYUGNGSE8rNE9rNG9oUG5B?=
+ =?utf-8?B?N1hrNmU4VHhheUFZaytWTkVRdUxFV2R2ZnlPRm9VRVl0Z0ppSWNtUWtLa2hn?=
+ =?utf-8?B?aUphdkVXWEtlR24xNGNITFBoUHRaYStxR0VKTUVKV1FJZWdkc3hNUjRxRUY2?=
+ =?utf-8?B?dFJuODlyRlNHVnVLSFZpZHEyMys1eldmaW0xOTFnWjVNU1lqZkdEM0RzdWpv?=
+ =?utf-8?B?a2hxZFRLSGNRTVRXelZoS2JxK0dYbmhJMjhWeTlQZ3BFVHRacWVScnROdGZ5?=
+ =?utf-8?B?T3lPS2pRYXZSY3NESFY2MnptdEdXUWd4a1lwTnhtbFkxRWxLTnJCYzdlMVhu?=
+ =?utf-8?B?NWNudWlmaHRIcUhEaEs5TTdkaTVPSGtMYTBWVEYvU0NIOVdtNzJqVnk5NGtU?=
+ =?utf-8?B?QjZsU2NMZ25SR0d5bHV6QitpODhXS2JrZjJsTGlXc1gzUmVDUG5ZUDZVRmlD?=
+ =?utf-8?B?aW1NbWVYZjM5Mm1vcDdqaVVUNXhTVFBsbFM3U3Rxczc3OVJSTlJwbjR3ZzBM?=
+ =?utf-8?Q?x/Dml8r8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e9bc7e3-8b1f-49b2-d2b7-08d8bb86b796
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 07:57:35.5360
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vDHuRiizjNywB49d14ivOrOQ1/Bre3fBhCIIq/mXHexQ+b9AxNWj9KSEfjDSXAEU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3966
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021 at 13:31, Jiang Biao <benbjiang@gmail.com> wrote:
+Am 18.01.21 um 08:49 schrieb Eli Cohen:
+> On Mon, Jan 18, 2021 at 08:43:12AM +0100, Christian König wrote:
+>> Hi Eli,
+>>
+>> have you already tried using kmemleak?
+>>
+>> This sounds like a leak of memory allocated using kmalloc(), so kmemleak
+>> should be able to catch it.
+>>
+> Hi Christian,
 >
-> From: Jiang Biao <benbjiang@tencent.com>
+> I have the following configured but I did not see any visible complaint
+> in dmesg.
 >
-> delta in update_stats_wait_end() might be negative, which would
-> make following statistics go wrong.
+> CONFIG_HAVE_DEBUG_KMEMLEAK=y
+> CONFIG_DEBUG_KMEMLEAK=y
+> CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=16000
+>
+> Any other configuration that I need to set?
 
-Could you describe the use case that generates a negative delta ?
+As long as you don't have any kernel parameters to enable it I think you 
+need to do "echo scan > /sys/kernel/debug/kmemleak" to start a scan.
 
-rq_clock is always increasing so this should not lead to a negative
-value even if update_stats_wait_end/start are not called in the right
-order,
-This situation could happen after a migration if we forgot to call
-update_stats_wait_start
+The result can then be queried using "cat /sys/kernel/debug/kmemleak".
 
->
-> Add protection for delta of wait time, like what have been done in
-> update_stats_enqueue_sleeper() for deltas of sleep/block time.
->
-> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
-> ---
->  kernel/sched/fair.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index c0374c1152e0..ac950ac950bc 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -917,6 +917,9 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
->
->         delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
->
-> +       if ((s64)delta < 0)
-> +               delta = 0;
-> +
->         if (entity_is_task(se)) {
->                 p = task_of(se);
->                 if (task_on_rq_migrating(p)) {
-> --
-> 2.21.0
->
+Regards,
+Christian.
