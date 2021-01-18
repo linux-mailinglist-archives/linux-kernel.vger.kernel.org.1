@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC18C2FA579
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CFE2FA57A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 17:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406261AbhARQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 11:01:26 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37780 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405901AbhARPrz (ORCPT
+        id S2405949AbhARQBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 11:01:38 -0500
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:46075 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405882AbhARPrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:47:55 -0500
-Received: by mail-ot1-f50.google.com with SMTP id o11so16656713ote.4;
-        Mon, 18 Jan 2021 07:47:38 -0800 (PST)
+        Mon, 18 Jan 2021 10:47:48 -0500
+Received: by mail-oo1-f50.google.com with SMTP id o5so4187067oop.12;
+        Mon, 18 Jan 2021 07:47:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=WHAijgRPzgM6AOFxyA1t0PneGLCP7qF9iSM709PN7no=;
-        b=gSiTDR/yvkXHwlbpvd1f0RUm8x1TJDtM3cnPi9GufhQIKSrfrjzm5ICmHFJd4Bq0bw
-         w7JpYOYMXlh0uTxhlabov4J261Q7WVOcjsyEnnJV0ZNtq/CcvLVWzZcHBUem10xr8q3n
-         UFiwMdvvHrMMNUR9M2l5r4WMyq/A+7ysECfMEt3luw6uy3Af+56XXmtUK48r7dYMKaKT
-         R34b2YDs83H39zOlQ1/Z1EO84cS0bteIONKSKjC2nfSKwMjXpbWRTWYEW9S3FF1UHkgN
-         YwMhJffmjR2y/NKGTK4jYMqj+qz7ERhM8Il5mSth6T2J3hZDGEFHP8qx3H3a/4NKmohY
-         jyNQ==
-X-Gm-Message-State: AOAM531r2C5TD9a84TX36+Pfkln5HiVlQVHWw5cmL79hbK+hk3dgJVy3
-        lfI3Rt6aqYv4t5HZL4ORAA==
-X-Google-Smtp-Source: ABdhPJwMs7UNxARBHzKpWRi3Gfe2AEbExUF2dRMnHv6f7YY4I9jyFTC64qaSblOnLQPi2S5WTivgVg==
-X-Received: by 2002:a9d:6255:: with SMTP id i21mr66114otk.346.1610984832609;
-        Mon, 18 Jan 2021 07:47:12 -0800 (PST)
+        bh=e7KTT/2rC1RRzc/Qgu5mx3fpnxvimSQ9OWkk2KcsVP4=;
+        b=Ew2dzYZfbhbX6OGi0fkAkoDigOYK2+OmrUZp7eRfUSma6+s3IbnrbXhYkY4U6SI2bZ
+         g+iE8y+N3Ck/1r0yKT2qpe/h98kk5k0hj2/ByavxCtwtfMgplxLT3pqz7+uuIHnS7oIR
+         1CwzKWSoelt17nyANSIrrQ9VDncFAinesjsOz/qoKVfaWx97GjK0gNwETopFX5DiCR/A
+         x/nSM1Ix/5LFpN3jVcIHVBFUH4DH8ScmoyX/8kIM4vCO4epoqarQJLD4nd2+C8B4zzMh
+         uwRzwzvJedG/nLthxnRsM/BcMYsaNLpIX46yVCyAG4p37oXMledN+PD6oV78vPZaoctD
+         Jr5A==
+X-Gm-Message-State: AOAM533HFjilQQvWxq/lslySojlqcHGX37XDxT689RismuAiCqPS3oRu
+        Sr+KGtH1CqKvHVE6zNN6mw==
+X-Google-Smtp-Source: ABdhPJzba3cyPuKB+rvnb2yG/uBacWS+30Kp6qTcxg4uH2G1JxykCCxlP4qivbXk1evtMoME/i+SXw==
+X-Received: by 2002:a4a:4ccb:: with SMTP id a194mr17530340oob.14.1610984827493;
+        Mon, 18 Jan 2021 07:47:07 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x31sm3819079otb.4.2021.01.18.07.47.09
+        by smtp.gmail.com with ESMTPSA id f25sm3706325oou.39.2021.01.18.07.47.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 07:47:10 -0800 (PST)
-Received: (nullmailer pid 3984439 invoked by uid 1000);
+        Mon, 18 Jan 2021 07:47:06 -0800 (PST)
+Received: (nullmailer pid 3984437 invoked by uid 1000);
         Mon, 18 Jan 2021 15:47:02 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        linux-kernel@vger.kernel.org, mdf@kernel.org, robh+dt@kernel.org,
-        trix@redhat.com, devicetree@vger.kernel.org, git@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        chinnikishore369@gmail.com, michal.simek@xilinx.com
-In-Reply-To: <20210118024318.9530-2-nava.manne@xilinx.com>
-References: <20210118024318.9530-1-nava.manne@xilinx.com> <20210118024318.9530-2-nava.manne@xilinx.com>
-Subject: Re: [PATCH 2/3] dt-bindings: fpga: Add binding doc for versal fpga manager
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lee.jones@linaro.org, linux-imx@nxp.com, lgirdwood@gmail.com,
+        robh+dt@kernel.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        devicetree@vger.kernel.org, broonie@kernel.org
+In-Reply-To: <20210117042539.1609-3-alistair@alistair23.me>
+References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-3-alistair@alistair23.me>
+Subject: Re: [PATCH 3/6] devicetree/bindings: Initial commit of silergy,sy7636a-regulator.yaml
 Date:   Mon, 18 Jan 2021 09:47:02 -0600
-Message-Id: <1610984822.721524.3984438.nullmailer@robh.at.kernel.org>
+Message-Id: <1610984822.712980.3984436.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 08:13:17 +0530, Nava kishore Manne wrote:
-> From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+On Sat, 16 Jan 2021 20:25:36 -0800, Alistair Francis wrote:
+> Initial support for the Silergy SY7636A-regulator Power Management chip
+> driver.
 > 
-> This patch adds binding doc for versal fpga manager driver.
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 > ---
->  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+>  .../bindings/regulator/silergy,sy7636a.yaml   | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/silergy,sy7636a.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:15:1: [error] syntax error: could not find expected ':' (syntax)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a simple key
-  in "<unicode string>", line 14, column 1
-could not find expected ':'
-  in "<unicode string>", line 15, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:  while scanning a simple key
-  in "<unicode string>", line 14, column 1
-could not find expected ':'
-  in "<unicode string>", line 15, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
-make: *** [Makefile:1370: dt_binding_check] Error 2
+./Documentation/devicetree/bindings/regulator/silergy,sy7636a.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/regulator/silergy,sy7636a.yaml#
+Documentation/devicetree/bindings/regulator/silergy,sy7636a.example.dts:22.26-28.15: Warning (unit_address_vs_reg): /example-0/i2c/regulator@60: node has a unit name, but no reg or ranges property
+Documentation/devicetree/bindings/regulator/silergy,sy7636a.example.dts:22.26-28.15: Warning (i2c_bus_reg): /example-0/i2c/regulator@60: missing or empty reg property
 
-See https://patchwork.ozlabs.org/patch/1427979
+See https://patchwork.ozlabs.org/patch/1427907
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
