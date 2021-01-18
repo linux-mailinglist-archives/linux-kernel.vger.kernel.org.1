@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F362F9D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAA52F9D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 11:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389662AbhARK4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 05:56:00 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:55974 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390204AbhARKee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 05:34:34 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10IAUCCA138808;
-        Mon, 18 Jan 2021 10:32:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=tZYlJDnn2QmRl5Yfk9elZnJhEapTsWClfoJ1BV6RUvA=;
- b=ygFl2F9Zhj+/tPjR1ridU/FK+FxCQv6RMge1N7ssqmQWZ78nMUoMDwhZvToUJA8eAWZR
- QRO4ptitScyizXwhW5Q2bRYfLNz0P8UxGdOwJCzBPcx7NT57f5bHfeuzGc187WNJzjT+
- KDz1mwj2t/2bqmtsThfm3vm55anZOhAaOogwmiB6isczTiKDDL/AhVKpjuYbde6lAMuz
- e3vTgCB5tmL2sCUS6+K1CoARAjGXwtkMrOMqLEqEYjEVDiMdkcJ5cJ+z3oidxxAwcmiq
- C+ECYJrK7YG+Kfu0oDi/tTGWpz+g73zsJ4DGPP9V3uG1G1JV34wQICh9YtXeDiMSeNJE Hw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 363r3kmg23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Jan 2021 10:32:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10IATulA166338;
-        Mon, 18 Jan 2021 10:32:47 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 364a1w8r0t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Jan 2021 10:32:46 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10IAWgoZ024693;
-        Mon, 18 Jan 2021 10:32:42 GMT
-Received: from localhost.localdomain (/1.129.195.2)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 18 Jan 2021 02:32:42 -0800
-From:   Imran Khan <imran.f.khan@oracle.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
-Cc:     juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] Remove redundant sched_numa_balancing check.
-Date:   Mon, 18 Jan 2021 21:32:18 +1100
-Message-Id: <20210118103218.204373-1-imran.f.khan@oracle.com>
-X-Mailer: git-send-email 2.25.1
+        id S2389425AbhARKzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 05:55:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390169AbhARKdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:33:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A031620784;
+        Mon, 18 Jan 2021 10:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610965952;
+        bh=O8rxHjohu5zf7IH0KL94YVasVxp2kmKJRdlQVrIOQwk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ac4oQ0wFZSxiNkrxiliiEGGoz+brl+ws6TptiNTSFKQEOgSLDb7ZsTtybbLLx+6T9
+         awYyW9CVCZNYLILoEpTXfUOU1BC8Uwd+ArVVpeYqdO4JRXu2LM/xRQEbpJ9gfNRjJo
+         H8oENSXZqN9NL6LIBKlD++FrO4lYzQsM7LRykBr4=
+Date:   Mon, 18 Jan 2021 11:32:29 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@kernel.org
+Subject: Re: [PATCH] kbuild: give SUBLEVEL more room in KERNEL_VERSION
+Message-ID: <YAVjvf67ckxwIppN@kroah.com>
+References: <20210118014951.250815-1-sashal@kernel.org>
+ <YAVTDETPaJuaRPfc@kroah.com>
+ <CAK7LNAStfNj0hvotctFonezQKQSbJfxU1HrwzWmyDc0+68fQ4Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101180061
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9867 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101180061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAStfNj0hvotctFonezQKQSbJfxU1HrwzWmyDc0+68fQ4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-task_numa_fault is invoked from do_numa_page/do_huge_pmd_numa_page,
-for task_numa_work induced memory faults. task_numa_work is scheduled
-from task_tick_numa which is invoked only if sched_numa_balancing
-is true.
+On Mon, Jan 18, 2021 at 07:27:51PM +0900, Masahiro Yamada wrote:
+> On Mon, Jan 18, 2021 at 6:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Jan 17, 2021 at 08:49:51PM -0500, Sasha Levin wrote:
+> > > SUBLEVEL only has 8 bits of space, which means that we'll overflow it
+> > > once it reaches 256.
+> > >
+> > > Few of the stable branches will imminently overflow SUBLEVEL while
+> > > there's no risk of overflowing VERSION.
+> > >
+> > > Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
+> > > should create a better balance between the different version numbers we
+> > > use.
+> > >
+> > > The downside here is that Linus will have 8 bits less to play with, but
+> > > given our current release cadence (~10 weeks), the number of Linus's
+> > > fingers & toes (20), and the current VERSION (5) we can calculate that
+> > > VERSION will overflow in just over 1,000 years, so I'm kicking this can
+> > > down the road.
+> > >
+> > > Cc: stable@kernel.org
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  Makefile | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 9e73f82e0d863..dc2bad7a440d8 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -1252,8 +1252,8 @@ endef
+> > >
+> > >  define filechk_version.h
+> > >       echo \#define LINUX_VERSION_CODE $(shell                         \
+> > > -     expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> > > -     echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
+> > > +     expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
+> > > +     echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
+> >
+> > As much as I agree, this will break in-tree users of LINUX_VERSION_CODE
+> > that try to suck out the version/patchlevel number of the kernel release
+> > into their own fields.  Things like USB host controller strings, v4l
+> > ioctl reports, scsi driver ioctls, and other places do fun bit-movements
+> > to try to unreverse this bit packing.
+> 
+> 
+> I can see a checkpatch warning about LINUX_VERSION_CODE.
+> 
+> See line 4528 of scripts/checkpatch.pl
+> 
+> 
+>   WARN("LINUX_VERSION_CODE",
+>        "LINUX_VERSION_CODE should be avoided, code should be for the
+> version to which it is merged\n" . $herecurr);
+> 
+> 
+> 
+> It helps external modules to be compiled for multiple kernel versions.
+> 
+> #if KERNEL_VERSION_CODE < KERNEL_VERSION(5, 4, 0)
+>     code for the kernel versions older than 5.4.0
+> #endif
+> 
+> 
+> The upstream code does not do this.
+> But, LINUX_VERSION_CODE is actually used in many places...
 
-So task_numa_fault will not get invoked if sched_numa_balancing is
-false and hence we can avoid checking it again in task_numa_fault.
+Yes, it is used in a number of user/kernel apis for various reasons.
 
-Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
----
- kernel/sched/fair.c | 3 ---
- 1 file changed, 3 deletions(-)
+And the above patch will break them :(
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce20da67..282ebd6c4197 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -2643,9 +2643,6 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
- 	struct numa_group *ng;
- 	int priv;
- 
--	if (!static_branch_likely(&sched_numa_balancing))
--		return;
--
- 	/* for example, ksmd faulting in a user's mm */
- 	if (!p->mm)
- 		return;
--- 
-2.25.1
+thanks,
 
+greg k-h
