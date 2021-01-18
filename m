@@ -2,59 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C8A2FA0B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5917B2FA0AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Jan 2021 14:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404086AbhARNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 08:06:21 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47584 "EHLO gloria.sntech.de"
+        id S2392083AbhARNCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 08:02:48 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:60732 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391679AbhARM6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 07:58:40 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l1U6F-000424-1T; Mon, 18 Jan 2021 13:57:39 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     richard@nod.at, robh+dt@kernel.org, vigneshr@ti.com,
-        miquel.raynal@bootlin.com, Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: (subset) [PATCH v16 0/8] Add Rockchip NFC drivers for RK3308 and others
-Date:   Mon, 18 Jan 2021 13:57:36 +0100
-Message-Id: <161097370156.287816.7898637730580960045.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
-References: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
+        id S2391719AbhARM7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 07:59:36 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 23CC3201E4;
+        Mon, 18 Jan 2021 13:58:16 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YVpkQoYFr9KA; Mon, 18 Jan 2021 13:58:15 +0100 (CET)
+Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 9D0C4200BC;
+        Mon, 18 Jan 2021 13:58:15 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Mon, 18 Jan 2021 13:58:15 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 18 Jan
+ 2021 13:58:14 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id EF5813182E9B;
+ Mon, 18 Jan 2021 13:58:14 +0100 (CET)
+Date:   Mon, 18 Jan 2021 13:58:14 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+CC:     Dongseok Yi <dseok.yi@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <namkyu78.kim@samsung.com>, Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "Willem de Bruijn" <willemb@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] udp: ipv4: manipulate network header of NATed UDP
+ GRO fraglist
+Message-ID: <20210118125814.GL3576117@gauss3.secunet.de>
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
+ <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
+ <20210115171203.175115-1-alobakin@pm.me>
+ <20210118063759.GK3576117@gauss3.secunet.de>
+ <20210118121707.2130-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210118121707.2130-1-alobakin@pm.me>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 08:21:30 +0800, Yifeng Zhao wrote:
-> Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
-> V900.This series patch can support all four versions.
+On Mon, Jan 18, 2021 at 12:17:34PM +0000, Alexander Lobakin wrote:
+> > From: Steffen Klassert <steffen.klassert@secunet.com>
+> > Date: Mon, 18 Jan 2021 07:37:59 +0100
+> > On Fri, Jan 15, 2021 at 05:12:33PM +0000, Alexander Lobakin wrote:
+> >>
+> >> I used another approach, tried to make fraglist GRO closer to plain
+> >> in terms of checksummming, as it is confusing to me why GSO packet
+> >> should have CHECKSUM_UNNECESSARY.
+> >
+> > This is intentional. With fraglist GRO, we don't mangle packets
+> > in the standard (non NAT) case. So the checksum is still correct
+> > after segmentation. That is one reason why it has good forwarding
+> > performance when software segmentation is needed. Checksuming
+> > touches the whole packet and has a lot of overhead, so it is
+> > heplfull to avoid it whenever possible.
+> >
+> > We should find a way to do the checksum only when we really
+> > need it. I.e. only if the headers of the head skb changed.
 > 
-> 
-> Changes in v16:
-> - Fix some comments about 'ret' variable.
-> 
-> [...]
+> I suggest to do memcmp() between skb_network_header(skb) and
+> skb_network_header(skb->frag_list) with the len of
+> skb->data - skb_network_header(skb). This way we will detect changes
+> in IPv4/IPv6 and UDP headers.
 
-Applied, thanks!
+I thought about that too. Bbut with fraglist GRO, the length of
+the packets can vary. Unlike standard GRO, there is no requirement
+that the packets in the fraglist must be equal in length here. So
+we can't compare the full headers. I think we need to test for
+addresses and ports.
 
-[6/8] arm: dts: rockchip: Add NFC node for RV1108 SoC
-      commit: 2525f194f9dc07c48b0a12697128357068c2e04b
-[7/8] arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
-      commit: 9c2bfe53b2fc4a8a63311f162e80b27978db6c06
-[8/8] arm: dts: rockchip: Add NFC node for RK3036 SoC
-      commit: 4cd9a03435bcd20ce6f524e3826fd263951c22fe
+> If so, copy the full headers and fall back to the standard checksum,
+> recalculation, else use the current path.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+I agree that we should fallback to standard checksum recalculation
+if the addresses or ports changed.
