@@ -2,225 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2022A2FB88D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C262FB89D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391465AbhASNGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:06:48 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:17491 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393603AbhASNAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:00:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611061246; x=1642597246;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=sk1rMyQfSku9eJoVG8ckn+sXbfP9b95FJk80FI5Fcis=;
-  b=REzZye40FhWufgtgAEjygZ/rDC6w11uwyhVi0+7FVxhesW2R/p5uDGBi
-   k5V60HTkWEFuFUKV3fSO0WtX9QTT8MSteoDOXTJ4+ZJKf1Myr4jxNajh9
-   2PfmoTwy7ssss+QJPAhdrKhl3fgjQKD3+M5ZmsLsTf/KQQnP1HMjSkdK2
-   rLTvvCe3Am1Ubw+si67JawGS8P33u//D/L3prCXGzN9fwoOceDrORidmo
-   aKd7Joq1kEQpLez8tC1oesSZJCCoua78nG9bBPQqQQDpDfoy7K0Sxx06k
-   aTwSBCgaKY4pV/tFo82f4zJYF+nGlZgLEXBZqJX39UHk/FidaRI0Cfx6c
-   g==;
-IronPort-SDR: TE6T3MbXWFrTDKDch6BGsUNSFfdzTamPv2Tk50JAwLVcbzQhnALBaU9/Mf94e/di4x7xQGpUcH
- T8b02FvzFTcr68cjqIkPUxG7RwnNEeq/kZOX5Hyjpz1BGQhd2WCbIq71zNSv8HxQ501ysnsKpR
- zY+LwyFhjZOfLqZLGO9/iNLIloMAZz4/atRY3GkAWUwtXSJsnN2rfsbQYrrrurQV6kvUK5ZvFy
- UTJnSCaRrjXA7NW9/hmsqoQTEzef0zOYfQI9AaEE/ApnGiDHVRKxeh7DMs2JULTd1kbnou7ArF
- sfM=
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="111596710"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jan 2021 05:59:30 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 19 Jan 2021 05:59:29 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 19 Jan 2021 05:59:27 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
-CC:     <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [RESEND PATCH] clocksource/drivers/timer-microchip-pit64b: add clocksource suspend/resume
-Date:   Tue, 19 Jan 2021 14:59:25 +0200
-Message-ID: <1611061165-30180-1-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
+        id S2404885AbhASNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:22:06 -0500
+Received: from mail-eopbgr70088.outbound.protection.outlook.com ([40.107.7.88]:15332
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728716AbhASNC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 08:02:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bgmgvos5xcSZ9sV+SaR0v4CsmmR4p8cvnz7vdPK8e3/8YeVMleXrqmT9f4Hx0NJRLaF/Mb1d+H1HsPnOk+ceCLG5KgXXxZ7GssPRFD36yHQ+pwZYZ9qkPAwJeUsk9Z9/XMTR4kuVLMbU6K3//FV9If8p9+fHhL6yFyz6Iwj7ujqLiC/kyZPxveMIk3nS8gJRn4rTDntEU5c35fQqLzN/2vIkQKQLzCMYkMaPt4uJwRwDDVLrvXWSKOchsBPyBLQwsDTaNDj1Nuvw55Csavdmor8xyCFiCO7aXHQcL9OPXjrluwSgK6WGgWDCSGAZZEH98akk2g3VGaUhBlkEZ5BsUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JKqVj/fp4WM3UMFkqjbW8Lbih9Ry8GprkE13tckiM8U=;
+ b=VxZXifRawpD5yrRVKMAFim4ZwKnUN3ysQHDJwRIKIBSiWZXQVdmAcDJnWhmLVXuXE6EauGWjLcmADZY121C/ktNuPqZW4UVY+o5H6n722fP+IT0Ev6ottOiRIWmofbYwKTQVDbJLHQD0p3X1mM31q/C/brBiO1cBSuiKSSsUJhu9lITccB//F7QV1FW4L1LcIEsgV0eAy527FOduQseNuKwnkc1Xv+TmpaWuKUQ6m2Yd7Sv+lEtxQ4rP1/SL04E2iQLxQtSICpNQSyimHeh5YQFyVv5pvys6UxjEXt4sYEfDti/nPebqhwBEmrKMkE0Qmp95EqzwkhN04JTxwH3m8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JKqVj/fp4WM3UMFkqjbW8Lbih9Ry8GprkE13tckiM8U=;
+ b=A7uGSl6E7UHV16hmkoIdN2Lip/gvx3wPOPHEaYXWlxxNpJIPtD5tsvH7ctM6htBk0TNkFWVu0D3NGmUpg41G35rgRfamR2aDkNVFYEbqCQsGHUkuyImjExKgSAPUS5gN9YlwwKOk5ogay7uG8zDTWImC1WlAOBOfWQK7iQETt58=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR0302MB2668.eurprd03.prod.outlook.com (2603:10a6:3:f1::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.13; Tue, 19 Jan 2021 13:01:38 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::cd6c:2eae:c885:c9d]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::cd6c:2eae:c885:c9d%6]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 13:01:38 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>
+CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 10/17] gpio: support ROHM BD71815 GPOs
+Thread-Topic: [PATCH v2 10/17] gpio: support ROHM BD71815 GPOs
+Thread-Index: AQHW7jP1aCOdIjy6aUiaKgV7fuUEzqouyhYAgAAf8oA=
+Date:   Tue, 19 Jan 2021 13:01:37 +0000
+Message-ID: <8bd5d95df1daaee0d7b3fee33e5c5cad679759a6.camel@fi.rohmeurope.com>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <50f72f1f7f28e969a1e0353712fcc530bce9dd06.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <CAMpxmJVjnAMig16qWkjpaHwQ+4Ld9yEc-gg-CGv28QQYBB6gNg@mail.gmail.com>
+In-Reply-To: <CAMpxmJVjnAMig16qWkjpaHwQ+4Ld9yEc-gg-CGv28QQYBB6gNg@mail.gmail.com>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 546ec45e-95e8-44f3-0a86-08d8bc7a5bb4
+x-ms-traffictypediagnostic: HE1PR0302MB2668:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0302MB2668BC326B779F97B9729536ADA30@HE1PR0302MB2668.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nP9aklN01nCJ7c8JXVAFSY9n6JiJWslsVISTvxLCi8QFyHJ0jpWaqVttd7Mrcd1V157zcO29L7xHlXDZqcd46xKa0CXJdmAG2b6/TiqCtV4Im46gWucYcnVqRjsH2e23AULQhIGHHeyiBLJkf73u/vQL1RfGogMKnvKfRyWbqGynJ2/iHEVCfWaibkIDMu9Ds1hycT9fJWiVK9JbBDhf6iMOLU4IKbFMcrPE5a9kUQ1D5dgJxWXasLfbiwR3nprOP9B28pxGuO93uKU/Rwvttlk96QDuybteDoa+uk19o900L9A6wIJGRq8VDZerPUEx0Kw9T2MUCGLEtQ4rv05YRjQq94NTd1kPFeNQMl8WIlj+fTjpXFvNy9jNP9ljdHYCBo6G2znDRDfg8xpZpS3kuQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39850400004)(83380400001)(86362001)(26005)(186003)(6486002)(316002)(4326008)(53546011)(2616005)(6506007)(71200400001)(7416002)(66556008)(3450700001)(64756008)(66476007)(8936002)(66446008)(6512007)(54906003)(66946007)(76116006)(6916009)(478600001)(2906002)(5660300002)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?eDFjWWJaSVI5NEdlUU1CbWtqRjBacEN5eVZDRjVYWEpsdUprTW1YVDM3SUls?=
+ =?utf-8?B?U3RwbDNueVV2TGd5bHQzZGxKQXpiaUVYS2tZVU45R0lNbUZWMHRUdHdyZEZa?=
+ =?utf-8?B?SUw0bG45THlwWVpBNUFUdzMzSTRvNmZDZWlDbTJaMndIY2JkSWgycUgzVU1H?=
+ =?utf-8?B?ei9HQThLSlhNak42YjRpdWJ5NkhaNFhmZEthMG5pQ3dOVERySzljcEtROGFQ?=
+ =?utf-8?B?UUl1YnQ5R3oydXZIRTFlYzZERE9keGQ3RGkzaldJUGxFRXV0aDNZdmtZckZP?=
+ =?utf-8?B?M0xuUXdKSGFvb09hM0ZDTUwvbE5oeHgyVnRzcU15blc3bkJrVExuMWRMVzkv?=
+ =?utf-8?B?a2tFVzBvNEUrQThiNU5kUjY4S1VHek1keW1jZUVmaGprOU9HYWFDSmNwdktk?=
+ =?utf-8?B?cXV0eFV2TEZvV2hudDE4NzAvdUQrenA4V2p6ZmMycVBzbEhvcEVQSUxDQ0JC?=
+ =?utf-8?B?RWhWL1psOVdQbkpSVVp3S1l2YjlYeXZyVnBBQ0R3dE8xeFllWUVJaDZhM2VT?=
+ =?utf-8?B?UXB3emtDazFJQWpXUno3SHVGVW1iWWJLM3BGc3lYRVdHSWo5RHRmdTJUL2JW?=
+ =?utf-8?B?SXpMZnpkaFVrZUNheUxabVBicERoZGpBbitrVVdBRHIvcmdqRVlzZUpxdGVl?=
+ =?utf-8?B?V00rRGxXS29GR1NNbWJvblFLS1JqQUNzZzQ3UFBncjlDdDJTWXFON2hkL1lv?=
+ =?utf-8?B?MVR4dXRKRWdvQzh5cFp5WmxnWnh1Z2RxdzVTRis4S3NLRU0zKy95L1VyaE9Q?=
+ =?utf-8?B?dHNDZDNCTjI1dG1xUElMZER3cVlIU3FOMjkwMHJRaDhVaUdMMzBRSlp4RDZh?=
+ =?utf-8?B?QkZWWG9VQkdrMzdMaEczcXY3NlBIN21hZ29ZUitkWUpvTDFKTlUrMUl0bHlm?=
+ =?utf-8?B?THFiM1NXQ1FvcFowNTJkbjNVVzNuOG5mOUd1VklzTUxvU0ZqVldnd0ZCcDFW?=
+ =?utf-8?B?d2UrazExZTZBcEE3akV1dXhrOUpESHhUOFdNRzFrRFI3cmJlNDR0MFRIaVF6?=
+ =?utf-8?B?NUZEd29CTlFFNHUxSVRHRktpdExibEc4V1FnaTBmL3lVRFM1RGxoNWFabGlx?=
+ =?utf-8?B?YWlReW9wM2I1SmUzN2hWOGE2ck9iVm5EUjUxc1hXTUwwSngzSlE1T3BoOUJ0?=
+ =?utf-8?B?d3lNUXJOYW82Ymd4Z3BSYUdKOHpTM1JEeERCODdXS3hQcWVSbGpVcEZSQ3pp?=
+ =?utf-8?B?SkpuR25xT0VyeWppWDI3cFduRW90YVZoV1E2emhFUnAyZmZGcnJIUE9WUlhT?=
+ =?utf-8?B?S3JzQkJMdVNHTzUzN09zSXQ0UG9sVkFFS2poRmFISVdPZ2REaHp5WmFOc1Qz?=
+ =?utf-8?B?YnJDRXBxRFdTZm5sTStVcUxkN0N6dkZXRld0bzJwRkdQc3IrbVZTem92MUp4?=
+ =?utf-8?B?cGZDUHpIMjB1NFYvaFJ6Q3JFWlNFeW9QZE9NdFBQeDExUU45dlRmL3V2ZU1M?=
+ =?utf-8?B?aERiYlRGN0VVcHloK1FKbHF5cC9aaDN1Nmp5Ym1RPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FEB28E79FDFD0648825D54FE989BAFE0@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 546ec45e-95e8-44f3-0a86-08d8bc7a5bb4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 13:01:38.2153
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A3kbTi+TmNaU2SfEWPoLlKzqcnJrBqDBv7hk04kne4sexhj66/joxn7ahlthVPOOIIaPaKHjNCNd1VeEPKChKKoD2Ca89dtrLcTiuEO0T2UoUwVX9W9Sa3DX9pS5QQia
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0302MB2668
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend/resume support for clocksource timer.
-
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/clocksource/timer-microchip-pit64b.c | 86 +++++++++++++++++++++++-----
- 1 file changed, 71 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/clocksource/timer-microchip-pit64b.c b/drivers/clocksource/timer-microchip-pit64b.c
-index 59e11ca8ee73..ab623b25a47b 100644
---- a/drivers/clocksource/timer-microchip-pit64b.c
-+++ b/drivers/clocksource/timer-microchip-pit64b.c
-@@ -71,10 +71,24 @@ struct mchp_pit64b_clkevt {
- 	struct clock_event_device	clkevt;
- };
- 
--#define to_mchp_pit64b_timer(x) \
-+#define clkevt_to_mchp_pit64b_timer(x) \
- 	((struct mchp_pit64b_timer *)container_of(x,\
- 		struct mchp_pit64b_clkevt, clkevt))
- 
-+/**
-+ * mchp_pit64b_clksrc - PIT64B clocksource data structure
-+ * @timer: PIT64B timer
-+ * @clksrc: clocksource
-+ */
-+struct mchp_pit64b_clksrc {
-+	struct mchp_pit64b_timer	timer;
-+	struct clocksource		clksrc;
-+};
-+
-+#define clksrc_to_mchp_pit64b_timer(x) \
-+	((struct mchp_pit64b_timer *)container_of(x,\
-+		struct mchp_pit64b_clksrc, clksrc))
-+
- /* Base address for clocksource timer. */
- static void __iomem *mchp_pit64b_cs_base;
- /* Default cycles for clockevent timer. */
-@@ -116,6 +130,36 @@ static inline void mchp_pit64b_reset(struct mchp_pit64b_timer *timer,
- 	writel_relaxed(MCHP_PIT64B_CR_START, timer->base + MCHP_PIT64B_CR);
- }
- 
-+static void mchp_pit64b_suspend(struct mchp_pit64b_timer *timer)
-+{
-+	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
-+	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
-+		clk_disable_unprepare(timer->gclk);
-+	clk_disable_unprepare(timer->pclk);
-+}
-+
-+static void mchp_pit64b_resume(struct mchp_pit64b_timer *timer)
-+{
-+	clk_prepare_enable(timer->pclk);
-+	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
-+		clk_prepare_enable(timer->gclk);
-+}
-+
-+static void mchp_pit64b_clksrc_suspend(struct clocksource *cs)
-+{
-+	struct mchp_pit64b_timer *timer = clksrc_to_mchp_pit64b_timer(cs);
-+
-+	mchp_pit64b_suspend(timer);
-+}
-+
-+static void mchp_pit64b_clksrc_resume(struct clocksource *cs)
-+{
-+	struct mchp_pit64b_timer *timer = clksrc_to_mchp_pit64b_timer(cs);
-+
-+	mchp_pit64b_resume(timer);
-+	mchp_pit64b_reset(timer, ULLONG_MAX, MCHP_PIT64B_MR_CONT, 0);
-+}
-+
- static u64 mchp_pit64b_clksrc_read(struct clocksource *cs)
- {
- 	return mchp_pit64b_cnt_read(mchp_pit64b_cs_base);
-@@ -128,7 +172,7 @@ static u64 mchp_pit64b_sched_read_clk(void)
- 
- static int mchp_pit64b_clkevt_shutdown(struct clock_event_device *cedev)
- {
--	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
-+	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
- 
- 	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
- 
-@@ -137,7 +181,7 @@ static int mchp_pit64b_clkevt_shutdown(struct clock_event_device *cedev)
- 
- static int mchp_pit64b_clkevt_set_periodic(struct clock_event_device *cedev)
- {
--	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
-+	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
- 
- 	mchp_pit64b_reset(timer, mchp_pit64b_ce_cycles, MCHP_PIT64B_MR_CONT,
- 			  MCHP_PIT64B_IER_PERIOD);
-@@ -148,7 +192,7 @@ static int mchp_pit64b_clkevt_set_periodic(struct clock_event_device *cedev)
- static int mchp_pit64b_clkevt_set_next_event(unsigned long evt,
- 					     struct clock_event_device *cedev)
- {
--	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
-+	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
- 
- 	mchp_pit64b_reset(timer, evt, MCHP_PIT64B_MR_ONE_SHOT,
- 			  MCHP_PIT64B_IER_PERIOD);
-@@ -158,21 +202,16 @@ static int mchp_pit64b_clkevt_set_next_event(unsigned long evt,
- 
- static void mchp_pit64b_clkevt_suspend(struct clock_event_device *cedev)
- {
--	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
-+	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
- 
--	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
--	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
--		clk_disable_unprepare(timer->gclk);
--	clk_disable_unprepare(timer->pclk);
-+	mchp_pit64b_suspend(timer);
- }
- 
- static void mchp_pit64b_clkevt_resume(struct clock_event_device *cedev)
- {
--	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
-+	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
- 
--	clk_prepare_enable(timer->pclk);
--	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
--		clk_prepare_enable(timer->gclk);
-+	mchp_pit64b_resume(timer);
- }
- 
- static irqreturn_t mchp_pit64b_interrupt(int irq, void *dev_id)
-@@ -296,20 +335,37 @@ static int __init mchp_pit64b_init_mode(struct mchp_pit64b_timer *timer,
- static int __init mchp_pit64b_init_clksrc(struct mchp_pit64b_timer *timer,
- 					  u32 clk_rate)
- {
-+	struct mchp_pit64b_clksrc *cs;
- 	int ret;
- 
-+	cs = kzalloc(sizeof(*cs), GFP_KERNEL);
-+	if (!cs)
-+		return -ENOMEM;
-+
- 	mchp_pit64b_reset(timer, ULLONG_MAX, MCHP_PIT64B_MR_CONT, 0);
- 
- 	mchp_pit64b_cs_base = timer->base;
- 
--	ret = clocksource_mmio_init(timer->base, MCHP_PIT64B_NAME, clk_rate,
--				    210, 64, mchp_pit64b_clksrc_read);
-+	cs->timer.base = timer->base;
-+	cs->timer.pclk = timer->pclk;
-+	cs->timer.gclk = timer->gclk;
-+	cs->timer.mode = timer->mode;
-+	cs->clksrc.name = MCHP_PIT64B_NAME;
-+	cs->clksrc.mask = CLOCKSOURCE_MASK(64);
-+	cs->clksrc.flags = CLOCK_SOURCE_IS_CONTINUOUS;
-+	cs->clksrc.rating = 210;
-+	cs->clksrc.read = mchp_pit64b_clksrc_read;
-+	cs->clksrc.suspend = mchp_pit64b_clksrc_suspend;
-+	cs->clksrc.resume = mchp_pit64b_clksrc_resume;
-+
-+	ret = clocksource_register_hz(&cs->clksrc, clk_rate);
- 	if (ret) {
- 		pr_debug("clksrc: Failed to register PIT64B clocksource!\n");
- 
- 		/* Stop timer. */
- 		writel_relaxed(MCHP_PIT64B_CR_SWRST,
- 			       timer->base + MCHP_PIT64B_CR);
-+		kfree(cs);
- 
- 		return ret;
- 	}
--- 
-2.7.4
-
+SGkgQmFydG9zeiwNCg0KT24gVHVlLCAyMDIxLTAxLTE5IGF0IDEyOjA3ICswMTAwLCBCYXJ0b3N6
+IEdvbGFzemV3c2tpIHdyb3RlOg0KPiBPbiBUdWUsIEphbiAxOSwgMjAyMSBhdCA4OjIzIEFNIE1h
+dHRpIFZhaXR0aW5lbg0KPiA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPiB3cm90
+ZToNCj4gPiBTdXBwb3J0IEdQTyhzKSBmb3VuZCBmcm9tIFJPSE0gQkQ3MTgxNSBwb3dlciBtYW5h
+Z2VtZW50IElDLiBUaGUgSUMNCj4gPiBoYXMgdHdvDQo+ID4gR1BPIHBpbnMgYnV0IG9ubHkgb25l
+IGlzIHByb3Blcmx5IGRvY3VtZW50ZWQgaW4gZGF0YS1zaGVldC4gVGhlDQo+ID4gZHJpdmVyDQo+
+ID4gZXhwb3NlcyBieSBkZWZhdWx0IG9ubHkgdGhlIGRvY3VtZW50ZWQgR1BPLiBUaGUgc2Vjb25k
+IEdQTyBpcw0KPiA+IGNvbm5lY3RlZCB0bw0KPiA+IEU1IHBpbiBhbmQgaXMgbWFya2VkIGFzIEdO
+RCBpbiBkYXRhLXNoZWV0LiBDb250cm9sIGZvciB0aGlzDQo+ID4gdW5kb2N1bWVudGVkDQo+ID4g
+cGluIGNhbiBiZSBlbmFibGVkIHVzaW5nIGEgc3BlY2lhbCBEVCBwcm9wZXJ0eS4NCj4gPiANCj4g
+PiBUaGlzIGRyaXZlciBpcyBkZXJpdmVkIGZyb20gd29yayBieSBQZXRlciBZYW5nIDwNCj4gPiB5
+YW5nbHNoQGVtYmVzdC10ZWNoLmNvbT4NCj4gPiBhbHRob3VnaCBub3Qgc28gbXVjaCBvZiBvcmln
+aW5hbCBpcyBsZWZ0Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRpIFZhaXR0aW5lbiA8
+bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiANCj4gSGkgTWF0dGksDQo+IA0K
+PiBsb29rcyBncmVhdCwganVzdCBhIGNvdXBsZSBuaXRzLg0KPiANCg0KVGhhbmtzIGZvciB0aGUg
+cmV2aWV3ISBJJ2xsIHN0b3JlIHlvdXIgZmluc2luZ3MgYW5kIGZpeCB0aGVtIHdoZW4gSQ0KcmVz
+cGluIHRoaXMuIEkgdGhpbmsgYWxsIG9mIHlvdXIgcG9pbnRzIHdlcmUgdmFsaWQuIEFzIEkga25v
+dyB0aGlzIGlzDQpsYXJnaXNoIHNlcmllcyAoYW5kIGFzIEkga25vdyBJIGFjY2lkZW50YWxseSBz
+ZW50IGZpcnN0IDEwIHYyIHBhdGNoZXMNCnRvIGFsbCByZWNpcGllbnRzIG5vIG1hdHRlciB3aGF0
+IHN1YnN5c3RlbSB3YXMgaW1wYWN0ZWQpIEknbGwgd2FpdCBmb3INCmEgd2hpbGUgYmVmb3JlIHJl
+c2VuZGluZyAoYXQgbGVhc3QgYSB3ZWVrKS4gQmVzaWRlcyBJIGRvbid0IGV4cGVjdCB0aGUNCmRl
+cGVuZGVuY2llcyB0byBiZSBtZXJnZWQgYmVmb3JlIG5leHQga2VybmVsIHJlbGVhc2Ugc28gdGhp
+cyBpcyBub3QNCnVyZ2VudCA6KQ0KDQotIGJ1dCB0aGFua3MhDQoNCkJyLA0KCU1hdHRpDQoNCg==
