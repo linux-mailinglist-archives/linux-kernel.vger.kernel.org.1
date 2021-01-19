@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3AD2FC314
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C20F2FC313
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbhASWM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:12:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
+        id S1729530AbhASWMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729832AbhASWIz (ORCPT
+        with ESMTP id S1730197AbhASWJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 17:08:55 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661EBC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:15 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 11so13160461pfu.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:15 -0800 (PST)
+        Tue, 19 Jan 2021 17:09:18 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AE0C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:16 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 15so13844175pgx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OEjzhBF98dbnk/5sluVZcbU0ionst0PLBmFjjcrt57Y=;
-        b=ifhiFkSVwmYAsIe1NEgU5OALrc/J1v23nOR45sANQBnTdYx1fozTj2YZ15HE9Y0h5n
-         265nWrcPvnLDq0tp9Rsb9uqbjPvnStApYh+UYe073uI4h4sf4MuayxPQHconDOJ2SJyv
-         mG7Dg1hx0g7qmaMdqRcojS7WunD9wEJ5hFRpDaZLGxwrg4ogoHHObswAB6W4pO3sNX4v
-         eQwBDl8UCudP8e6Fi52iq+Wgu0J9uk34V0hecy1BB00mfqlxpn93pQYuYK7HK6S2IYX2
-         yf3H1cl7hQhwoITK5G505Fr3Pt0jfBTfRumNm6R8EPMdJ4VU7vfS/MKT8OnFx5yleor2
-         wV/w==
+        bh=Fzr5ZmyqkA8PO0rKR84r5wnTkX6dyXCN2TjKwSkTcCQ=;
+        b=YqqYzbHq8KUuNlsVV8uwX4a0tFYj85lWPFI48TJfZyr4Zmv8WL6MT/v2KFm08aiB9+
+         ZaTTebjTlB2CZ7O5HN7YO5bGtEn1DxCepQOl/lNmRZpgk6m1ih3VeaKfoayD7MJJ8n/r
+         K+g7jYDBP1uGGTPuNf8MyfTVMGCmZCzq8PjbR9oWO0zuYzaUzAhsGVU/FxPVqXvc3DM2
+         +Z47rau7jLXrmUUlLYytzT6XhCYmi0OtLKewHxHaep4pXTsQhO0SxnkVtN4NVe91EBYW
+         zsbHh7VrR9DP7Oy1hbTc8p/GCDqkUNhsO4d1PPeTzZE5M5ogY46bQrcQcS1ZJMvt7T8b
+         /hrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OEjzhBF98dbnk/5sluVZcbU0ionst0PLBmFjjcrt57Y=;
-        b=MO4bXV7TFxw02Fl7fggIU9kC/DrjnYyM3Vg4gZ+RbXLaRoaz8/ewYYS16mM5FdWJAs
-         zgPsPLPT/+O8ah2ZHiEtsVvloq8Ek8G/a853rGDvnutQMxOULKdPObhQXKk1q1PPWpaP
-         nxB46PSGOm+KCN7eolNmXfBJiF/SfK/I8fO0eaWOnSjIoW31vIsNyfeA/1Sm9xNJ/ELw
-         AlWxTemc7f5AuaORfRrG2fHtmc3hHGk0Y3uKR6nqXdqB3Z4nnDoBAShDotg1cqAb2Z3I
-         furDNwiaTVQwoP+HffJ4S/LhKzsOX/Jbc5q23bwOGnEk6klj6LwKDntIx0AZuIFsrzqQ
-         rc4g==
-X-Gm-Message-State: AOAM533Hcu9QsukUsQ2Oz4o8ePsloLlg/hFWBYreaB1b9YpiAPhrOpbp
-        Z+cQ23chkxY5iknLKEsuDok=
-X-Google-Smtp-Source: ABdhPJx6MCEYaTID6s+WBoU2uXbCUoUXXBLV2f8FF4ky28Djnk9NNEUtda6tRGnAf8LPk7FFWow5dA==
-X-Received: by 2002:a63:e22:: with SMTP id d34mr6305898pgl.142.1611094094931;
-        Tue, 19 Jan 2021 14:08:14 -0800 (PST)
+        bh=Fzr5ZmyqkA8PO0rKR84r5wnTkX6dyXCN2TjKwSkTcCQ=;
+        b=oJV/elqSjXs8e+kbmjE6SJhHB4TubBUCdGa8oYZHVspChBoCuCgzv6n1X9XDKpqM73
+         5LOGTdTqQMp6QlyPVijf38xgiTOSlrPhX2C2k+NiH08kVnybZxhLzUmDURmGrX2VpVS+
+         /gQH4GbUIP+erfflDWVHLUBZOd3mwEsOc5ZurtZC0sDjV1CA54RVVOaybcn7EQX5oYSt
+         TICG45M78RCdzguvBIqIpJ+aHa4yizvmrInvjwWu/qsXV9ufnxJzeIBAzhCAgM/BIe6/
+         ot1Soa0usseQgBn7UmozyzYE5xxffG5vfUaWgH/Iqnf9UAt7aHCsFPRyZFB3b7Hde75K
+         X58w==
+X-Gm-Message-State: AOAM530cUutyu8Ob+EkNyiThhFRP61A1xoJnXVnE8M+RiCHsLbSxafog
+        WW90ISmP041KEDmLB6dGMJU=
+X-Google-Smtp-Source: ABdhPJy28WqsBvPwRH+gTwECasNDKDCvTk+9y/hhs1zMjQCiho52tcSsFNcJidbKFqaA0/ZV4wJE9w==
+X-Received: by 2002:a63:fb54:: with SMTP id w20mr6211413pgj.419.1611094096174;
+        Tue, 19 Jan 2021 14:08:16 -0800 (PST)
 Received: from laptop.hsd1.wa.comcast.net ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id 72sm95196pfw.170.2021.01.19.14.08.13
+        by smtp.gmail.com with ESMTPSA id 72sm95196pfw.170.2021.01.19.14.08.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 14:08:14 -0800 (PST)
+        Tue, 19 Jan 2021 14:08:15 -0800 (PST)
 From:   Andrei Vagin <avagin@gmail.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 2/3] arm64/ptrace: introduce NT_ARM_PRSTATUS to get a full set of registers
-Date:   Tue, 19 Jan 2021 14:06:36 -0800
-Message-Id: <20210119220637.494476-3-avagin@gmail.com>
+Subject: [PATCH 3/3] selftest/arm64/ptrace: add a test for NT_ARM_PRSTATUS
+Date:   Tue, 19 Jan 2021 14:06:37 -0800
+Message-Id: <20210119220637.494476-4-avagin@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210119220637.494476-1-avagin@gmail.com>
 References: <20210119220637.494476-1-avagin@gmail.com>
@@ -66,113 +66,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an alternative to NT_PRSTATUS that clobbers ip/r12 on AArch32,
-x7 on AArch64 when a tracee is stopped in syscall entry or syscall exit
-traps.
+Test output:
+ TAP version 13
+ 1..1
+ # selftests: arm64/ptrace: ptrace_syscall_regs_test
+ # 1..3
+ # ok 1 NT_PRSTATUS: x7 0
+ # ok 2 NT_ARM_PRSTATUS: x7 686920776f726c64
+ # ok 3 The child exited with code 0.
+ # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 1 selftests: arm64/ptrace: ptrace_syscall_regs_test
 
 Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- arch/arm64/kernel/ptrace.c | 39 ++++++++++++++++++++++++++++++++++++++
- include/uapi/linux/elf.h   |  1 +
- 2 files changed, 40 insertions(+)
+ tools/testing/selftests/arm64/Makefile        |   2 +-
+ tools/testing/selftests/arm64/ptrace/Makefile |   6 +
+ .../arm64/ptrace/ptrace_syscall_regs_test.c   | 147 ++++++++++++++++++
+ 3 files changed, 154 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
+ create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 1863f080cb07..b8e4c2ddf636 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -591,6 +591,15 @@ static int gpr_get(struct task_struct *target,
- 	return ret;
- }
+diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
+index 2c9d012797a7..704770a60ece 100644
+--- a/tools/testing/selftests/arm64/Makefile
++++ b/tools/testing/selftests/arm64/Makefile
+@@ -4,7 +4,7 @@
+ ARCH ?= $(shell uname -m 2>/dev/null || echo not)
  
-+static int gpr_get_full(struct task_struct *target,
-+		   const struct user_regset *regset,
-+		   struct membuf to)
+ ifneq (,$(filter $(ARCH),aarch64 arm64))
+-ARM64_SUBTARGETS ?= tags signal pauth fp mte
++ARM64_SUBTARGETS ?= tags signal pauth fp mte ptrace
+ else
+ ARM64_SUBTARGETS :=
+ endif
+diff --git a/tools/testing/selftests/arm64/ptrace/Makefile b/tools/testing/selftests/arm64/ptrace/Makefile
+new file mode 100644
+index 000000000000..ca906ce3a581
+--- /dev/null
++++ b/tools/testing/selftests/arm64/ptrace/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++
++CFLAGS += -g -I../../../../../usr/include/
++TEST_GEN_PROGS := ptrace_syscall_regs_test
++
++include ../../lib.mk
+diff --git a/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
+new file mode 100644
+index 000000000000..601378b7591d
+--- /dev/null
++++ b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <errno.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++
++#include <sys/types.h>
++#include <sys/ptrace.h>
++#include <sys/user.h>
++#include <sys/wait.h>
++#include <sys/uio.h>
++#include <linux/elf.h>
++#include <linux/unistd.h>
++
++#include "../../kselftest.h"
++
++#define TEST_VAL 0x686920776f726c64UL
++
++#define pr_p(func, fmt, ...)	func(fmt ": %m", ##__VA_ARGS__)
++
++#define pr_err(fmt, ...)						\
++	({								\
++		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);		\
++		-1;							\
++	})
++
++#define pr_fail(fmt, ...)					\
++	({							\
++		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
++		-1;						\
++	})
++
++#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
++
++static long loop(void *val)
 +{
-+	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
++	register long x0 __asm__("x0");
++	register void *x1 __asm__("x1") = val;
++	register long x8 __asm__("x8") = 555;
 +
-+	return membuf_write(&to, uregs, sizeof(*uregs));
-+}
-+
- static int gpr_set(struct task_struct *target, const struct user_regset *regset,
- 		   unsigned int pos, unsigned int count,
- 		   const void *kbuf, const void __user *ubuf)
-@@ -1088,6 +1097,7 @@ static int tagged_addr_ctrl_set(struct task_struct *target, const struct
- 
- enum aarch64_regset {
- 	REGSET_GPR,
-+	REGSET_GPR_FULL,
- 	REGSET_FPR,
- 	REGSET_TLS,
- #ifdef CONFIG_HAVE_HW_BREAKPOINT
-@@ -1119,6 +1129,14 @@ static const struct user_regset aarch64_regsets[] = {
- 		.regset_get = gpr_get,
- 		.set = gpr_set
- 	},
-+	[REGSET_GPR_FULL] = {
-+		.core_note_type = NT_ARM_PRSTATUS,
-+		.n = sizeof(struct user_pt_regs) / sizeof(u64),
-+		.size = sizeof(u64),
-+		.align = sizeof(u64),
-+		.regset_get = gpr_get_full,
-+		.set = gpr_set
-+	},
- 	[REGSET_FPR] = {
- 		.core_note_type = NT_PRFPREG,
- 		.n = sizeof(struct user_fpsimd_state) / sizeof(u32),
-@@ -1225,6 +1243,7 @@ static const struct user_regset_view user_aarch64_view = {
- #ifdef CONFIG_COMPAT
- enum compat_regset {
- 	REGSET_COMPAT_GPR,
-+	REGSET_COMPAT_GPR_FULL,
- 	REGSET_COMPAT_VFP,
- };
- 
-@@ -1285,6 +1304,18 @@ static int compat_gpr_get(struct task_struct *target,
- 	return 0;
- }
- 
-+/* compat_gpr_get_full doesn't  overwrite x12 like compat_gpr_get. */
-+static int compat_gpr_get_full(struct task_struct *target,
-+			  const struct user_regset *regset,
-+			  struct membuf to)
-+{
-+	int i = 0;
-+
-+	while (to.left)
-+		membuf_store(&to, compat_get_user_reg(target, i++));
++	__asm__ (
++		"again:\n"
++		"ldr x7, [x1, 0]\n"
++		"svc 0\n"
++		"str x7, [x1, 0]\n"
++			   : "=r"(x0)
++			   : "r"(x1), "r"(x8)
++			   :
++	);
 +	return 0;
 +}
 +
- static int compat_gpr_set(struct task_struct *target,
- 			  const struct user_regset *regset,
- 			  unsigned int pos, unsigned int count,
-@@ -1435,6 +1466,14 @@ static const struct user_regset aarch32_regsets[] = {
- 		.regset_get = compat_gpr_get,
- 		.set = compat_gpr_set
- 	},
-+	[REGSET_COMPAT_GPR_FULL] = {
-+		.core_note_type = NT_ARM_PRSTATUS,
-+		.n = COMPAT_ELF_NGREG,
-+		.size = sizeof(compat_elf_greg_t),
-+		.align = sizeof(compat_elf_greg_t),
-+		.regset_get = compat_gpr_get_full,
-+		.set = compat_gpr_set
-+	},
- 	[REGSET_COMPAT_VFP] = {
- 		.core_note_type = NT_ARM_VFP,
- 		.n = VFP_STATE_SIZE / sizeof(compat_ulong_t),
-diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-index 30f68b42eeb5..a2086d19263a 100644
---- a/include/uapi/linux/elf.h
-+++ b/include/uapi/linux/elf.h
-@@ -426,6 +426,7 @@ typedef struct elf64_shdr {
- #define NT_ARM_PACA_KEYS	0x407	/* ARM pointer authentication address keys */
- #define NT_ARM_PACG_KEYS	0x408	/* ARM pointer authentication generic key */
- #define NT_ARM_TAGGED_ADDR_CTRL	0x409	/* arm64 tagged address control (prctl()) */
-+#define NT_ARM_PRSTATUS		0x410   /* ARM general-purpose registers */
- #define NT_ARC_V2	0x600		/* ARCv2 accumulator/extra registers */
- #define NT_VMCOREDD	0x700		/* Vmcore Device Dump Note */
- #define NT_MIPS_DSP	0x800		/* MIPS DSP ASE registers */
++static int child(void)
++{
++	long  val = TEST_VAL;
++
++	loop(&val);
++	if (val != ~TEST_VAL) {
++		ksft_print_msg("Unexpected x7: %lx\n", val);
++		return 1;
++	}
++
++	return 0;
++}
++
++#ifndef PTRACE_SYSEMU
++#define PTRACE_SYSEMU 31
++#endif
++
++#ifndef NT_ARM_PRSTATUS
++#define NT_ARM_PRSTATUS 0x410
++#endif
++
++int main(int argc, void **argv)
++{
++	struct user_regs_struct regs = {};
++	struct iovec iov = {
++		.iov_base = &regs,
++		.iov_len = sizeof(struct user_regs_struct),
++	};
++	int status;
++	pid_t pid;
++
++	ksft_set_plan(3);
++
++	pid = fork();
++	if (pid == 0) {
++		kill(getpid(), SIGSTOP);
++		child();
++		_exit(0);
++	}
++	if (pid < 0)
++		return 1;
++
++	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
++		return pr_perror("Can't attach to the child %d", pid);
++	if (waitpid(pid, &status, 0) != pid)
++		return pr_perror("Can't wait for the child %d", pid);
++	/* skip SIGSTOP */
++	if (ptrace(PTRACE_CONT, pid, 0, 0))
++		return pr_perror("Can't resume the child %d", pid);
++	if (waitpid(pid, &status, 0) != pid)
++		return pr_perror("Can't wait for the child %d", pid);
++
++	/* Resume the child to the next system call. */
++	if (ptrace(PTRACE_SYSEMU, pid, 0, 0))
++		return pr_perror("Can't resume the child %d", pid);
++	if (waitpid(pid, &status, 0) != pid)
++		return pr_perror("Can't wait for the child %d", pid);
++	if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
++		return pr_err("Unexpected status: %d", status);
++
++	/* Check that x7 is zero in the case of NT_PRSTATUS. */
++	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
++		return pr_perror("Can't get child registers");
++	if (regs.regs[7] != 0)
++		return pr_fail("NT_PRSTATUS: unexpected x7: %lx", regs.regs[7]);
++	ksft_test_result_pass("NT_PRSTATUS: x7 %llx\n", regs.regs[7]);
++
++	/* Check that x7 isnt't clobbered in the case of NT_ARM_PRSTATUS. */
++	if (ptrace(PTRACE_GETREGSET, pid, NT_ARM_PRSTATUS, &iov))
++		return pr_perror("Can't get child registers");
++	if (regs.regs[7] != TEST_VAL)
++		return pr_fail("NT_ARM_PRSTATUS: unexpected x7: %lx", regs.regs[7]);
++	ksft_test_result_pass("NT_ARM_PRSTATUS: x7 %llx\n", regs.regs[7]);
++
++	/* Check that the child will see a new value of x7. */
++	regs.regs[0] = 0;
++	regs.regs[7] = ~TEST_VAL;
++	if (ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov))
++		return pr_perror("Can't set child registers");
++
++	if (ptrace(PTRACE_CONT, pid, 0, 0))
++		return pr_perror("Can't resume the child %d", pid);
++	if (waitpid(pid, &status, 0) != pid)
++		return pr_perror("Can't wait for the child %d", pid);
++
++	if (status != 0)
++		return pr_fail("Child exited with code %d.", status);
++
++	ksft_test_result_pass("The child exited with code 0.\n");
++	ksft_exit_pass();
++	return 0;
++}
++
 -- 
 2.29.2
 
