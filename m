@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E453C2FBC9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5672FBC91
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbhASQgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:36:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S1731461AbhASQeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730158AbhASQc3 (ORCPT
+        with ESMTP id S1730577AbhASQc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:32:29 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB9DC061757;
-        Tue, 19 Jan 2021 08:31:49 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id d22so11260190edy.1;
-        Tue, 19 Jan 2021 08:31:49 -0800 (PST)
+        Tue, 19 Jan 2021 11:32:58 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD723C061573;
+        Tue, 19 Jan 2021 08:32:16 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id l7so9409145qvt.4;
+        Tue, 19 Jan 2021 08:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=C+NDxqcVq/gZ4wgLmYCGjXjhQkRMK4EGpwM/xyan4pU=;
-        b=IXa3p/V0Pkgy7Fe4C9/I4iR2+SgQ/8eNXSJ/7q50BxaE2M5vfhY/0ZrSSlWPOOZy1b
-         Nm+bBTdfXzvS5MlYpL3qgp6bv5vel8al9W7CU3hSIdOlbfaWlgZR3M0nNTAqVtEv4v5o
-         TlHIfnFhQ6vB8dbyALLF10syipIIpfd654oY2nvNoLvJNq6UcUZPggoM2aluiU2i6vWX
-         j5EvwJfTRzcsAG5vBlRPbSwpTOSswqUz6TN06leM6rpxLEOGzGdJEf5JFKsR/lhTK0BN
-         +Xd9tQdDb6HSsYKeMKeUO+lyKEcZFmE1zzaz6KBkRbUYTRtHvM/kkYkkJuigdBXAL3c9
-         syfQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vb/8GQGBmEYoUwaU56KAkeG9p8iEq0+1rXD7yKBnb2s=;
+        b=K3PYestxgUUx2GT5/UjCWcenRn769y7JlN1u9Q6kQ6RWWpu+L2+KaNuKii5kpw1Rv9
+         qh/lrNjgYsiOrtP6kOt08qs3oj1BjbaMC/6zsa4iZCYqBfn4AjlSjQ5QnLnUfLnjImAX
+         VRKMvV9srYPGlrsysdyr92m6TGUxcHhjehyqwVrKFZ7DUpaGb4Dz2kZInJo73dC2Mesc
+         x4INrIOjPPMe77GCO8KME/KQ9USwor8Qy2hI6AOA131AZle2WUtOBKRu2aLVdFkpTVRB
+         cNnTcJC5d9ujEpzfbs1S4GS4GDgUqwcL0itaQZ3T7Sc1nbZmP5tZZLi2X524nH70iaP5
+         /J8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=C+NDxqcVq/gZ4wgLmYCGjXjhQkRMK4EGpwM/xyan4pU=;
-        b=SQ1/iDWka0wL+sQ2nWqfoDccKNKBVhB9qkU20LVQPLFqt7qLexR8FZ8wC8n5JTpQbB
-         sqUACb7mo/fwBLpSDYXg9ArFtLZkI20ctCMexVCozzibaC3z/AeV7HM8CcE7yMc9+HDM
-         OcBYFXd7jRuJ0cRResh/zq8IuO/ziCoohuoETo60ahfC7UDbJG2xvj51wlYsDmssAN6m
-         E3EPtHnkH0sA1kf1asr/CtIhW1+2auvIQ4CQ0vmdIDITSZcE9hIFO1f+PydWBCGzrMvW
-         CuIIxw+orHd8pvB/CGpwWEe14uoyhrNJ6+lNh1f5i5IX/iZw9Ajbmqwyy112OR7H1Ley
-         LDQA==
-X-Gm-Message-State: AOAM530YGdJPvrzzEbTxSVa1v8JtaTC5nyN8DKFcSpE7bd1kEnQoEp0m
-        CoaxXWBqhcyIg5zCP4+jJzI=
-X-Google-Smtp-Source: ABdhPJyM6KC3U2jokYgi070SBgfotc8Gz+xI1KCaXMZBzwekdDp/4y3A11D/gRr1ImosHL7SYKfGSg==
-X-Received: by 2002:a50:8004:: with SMTP id 4mr4041262eda.155.1611073908036;
-        Tue, 19 Jan 2021 08:31:48 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id h12sm11297196ejx.81.2021.01.19.08.31.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Jan 2021 08:31:47 -0800 (PST)
-Message-ID: <0fb16957375cc5916b61aa6ea2c13c64455f1d35.camel@gmail.com>
-Subject: Re: [PATCH v6 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 19 Jan 2021 17:31:45 +0100
-In-Reply-To: <9ad2cf1a-68df-47ef-9fe7-01954d2d6181@intel.com>
-References: <20210118201039.2398-1-huobean@gmail.com>
-         <20210118201039.2398-2-huobean@gmail.com>
-         <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
-         <fabf0e83387f6155efea521a15b00bb1225d35a4.camel@gmail.com>
-         <9ad2cf1a-68df-47ef-9fe7-01954d2d6181@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vb/8GQGBmEYoUwaU56KAkeG9p8iEq0+1rXD7yKBnb2s=;
+        b=kyWa0/u+evNev952gwp/7IIiZDUZFu3shRrz0TmWOkW4SG/0xoOKva3Q3gp3VasDey
+         Nd5FWXjU6c/Ta58/b9LNlixrz/SvGXwac6UmqTHx2LpigJ0HX0c8fvegLEru/H5r+U+Q
+         mPNEI6VEaU2wJFWMhbEM2S0ev1Sllp20YMq0G8aVEHQOrimAijfNp+oBFN9PAUoshkyB
+         +P08mJlo0tPVR+5x+vmWR5Bfo2E0KXD5O69OpWoK4tz36ttNmv/aHp3pRZtZ6rZGv77L
+         PfaLohXgZGP4Sx89xAtrLF1sE6raea3+Et1PRO4Wchn72E5lLZrfRJ3B3wUueTH04nbu
+         guhQ==
+X-Gm-Message-State: AOAM5323i7MTZit5wycnGvlbIXnxxJBXUktC6GSbkC3qRgI5CXzxxBfd
+        mez+sxDqdOCnWez2IPE6pok=
+X-Google-Smtp-Source: ABdhPJz5+Z1Xj8CWizd+LgcyV8YJjUu9uFL9VQfuVC1s9YFZX3S8mqDHfEbize32hrronSvFMwzl/A==
+X-Received: by 2002:a05:6214:1764:: with SMTP id et4mr5346092qvb.2.1611073936197;
+        Tue, 19 Jan 2021 08:32:16 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id v145sm13643072qka.27.2021.01.19.08.32.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 08:32:15 -0800 (PST)
+Subject: Re: [PATCH V4 1/3] scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <cover.1610431620.git.viresh.kumar@linaro.org>
+ <a1587678b2d5e23c4a3e6248825e285a403f3ad1.1610431620.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <93a19789-b060-ea93-f6d5-e52633b854ac@gmail.com>
+Date:   Tue, 19 Jan 2021 10:32:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <a1587678b2d5e23c4a3e6248825e285a403f3ad1.1610431620.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-19 at 12:00 +0200, Adrian Hunter wrote:
-> > > Is it so, that after a full reset, WB is always enabled again? 
-> > > Is
-> > > that
-> > > intended?
-> > 
-> > Hello Adrian
-> > Good questions. yes, after a full reset, the UFS device side by
-> > default
-> > is wb disabled,  then WB will be always enabled agaion in
-> > ufshcd_wb_config(hba). but, for the platform which
-> > supports UFSHCD_CAP_CLK_SCALING, wb will be disabled again while
-> > clk
-> > scaling down and enabled while clk scaling up.
-> > 
-> > Regarding the last question, I think OEM wants to do that. maybe
-> > they
-> > suppose there will be a lot of writing after reset?? From the UFS
-> > device's point of view, the control of WB is up to the user.
+On 1/12/21 2:29 AM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need fdtoverlay tool going forward. Lets start fetching it.
 > 
-> If it is by design enabled after reset, then perhaps it should be
-> mentioned
-> in the sysfs documentation.
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  scripts/dtc/update-dtc-source.sh | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
+> index bc704e2a6a4a..f1c802011e1e 100755
+> --- a/scripts/dtc/update-dtc-source.sh
+> +++ b/scripts/dtc/update-dtc-source.sh
+> @@ -31,9 +31,9 @@ set -ev
+>  DTC_UPSTREAM_PATH=`pwd`/../dtc
+>  DTC_LINUX_PATH=`pwd`/scripts/dtc
+>  
+> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
+> -		srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
+> -		dtc-lexer.l dtc-parser.y"
+> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtoverlay.c flattree.c fstree.c \
+> +		livetree.c srcpos.c srcpos.h treesource.c util.c \
+> +		util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
+>  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
+>  		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
+>  		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
+> 
 
-ok, will add it in the next version.
+I made this comment in the v2 email thread.  Copying it here since v4 is
+the current version of the patch series.
 
-thanks,
-Bean
+DTC_SOURCE is for the dtc program.  Please add a FDTOVERLAY_SOURCE and
+related use for the fdtoverlay program.
 
+-Frank
