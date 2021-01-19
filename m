@@ -2,192 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5102FB1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A162FB1B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbhASGkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:40:52 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:47097 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387629AbhASFih (ORCPT
+        id S1728611AbhASGk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:40:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726624AbhASFi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:38:37 -0500
-Received: by mail-lf1-f51.google.com with SMTP id o10so27323759lfl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 21:38:20 -0800 (PST)
+        Tue, 19 Jan 2021 00:38:57 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB2DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 21:38:12 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id 6so11185126wri.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 21:38:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XX+GcnJWFNmw4pPkSAczCPMjkjBOlKlFbVbcSZZHlMo=;
+        b=e8Azb0b3752U0MGs0NMvksUADjPzjs95CAThdERibGogl72NUxHvz2693VBAgUVWkz
+         nSb+Q2A6pcQhfF5qoHRvH3LkYtfC+v72kS1aYxfDt07HXcoia6xHtC+tFgLmCYetC+xs
+         TAQs2SDH48MX5FdtMrKScjnujdGdUee3xHh5fKtQWnPw4lJNF+OceQaQGOttvAUz7ix6
+         PB8X1T2s5ANiCFzuu//1EtHhwxkVkdiiH4E0bSYhZ4o8JQrnd9dgBIwABAmAusAi6mh1
+         ysFGNXqUjeSeyWRJ46HQ1POdsmvI++Fbu0kJzuJM5R4ZgbJCVoHPjFyfdsHAhKbYqOtO
+         wpQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=URBaQWvo21Po7lHS1Q5G/RCwEYa2F0a4Wp9IVeoO+Eg=;
-        b=Fa1Xm6n/Uh4zVtknc7VhiEzPtAhy74Dw+P3yIPAU3LLhU/ywmR383CUVibhF31adB6
-         E/9hC/5LwAvtWTpFGtmPbqpTJNu33zKR7d+V4tcRXiJOt8rVLmv/8yR3zbsciQVfFCMo
-         9u4eWG7D2NzNAmZ8vq2gcaCQtYOCXO6n4shgp1u232sMKHFqR0Mvq8gMyy3X5woxxvL3
-         kNTw9AyIABI3ei18knj4IpyfFWqfUIhS2BSev10YjuuLCYMMGPyqiS0SKEuZ0xFeztw+
-         oQvEmZhp/wVgAgRmhIVuXuGUb9atsq2A8PovVy6W/Ssg2/TW4oqm+JQGJgLwB68VyY8e
-         rY/A==
-X-Gm-Message-State: AOAM533vnG+remunjWtXReZmbEmqhNqBrDJpkVwxgivmFDlzZ1jtF0+o
-        mM/d680huenRUbUhJx4IqIzZeRTiJo0bjLUjRYc=
-X-Google-Smtp-Source: ABdhPJw2LQNDH0X0sbKs4rmIbQT2cKK8YH8WGcvQPnrdC84rmwGjyVLNIfJul9d/uYNe41R55yNvnesWxwJ/nbqp0PQ=
-X-Received: by 2002:ac2:50d0:: with SMTP id h16mr1100639lfm.300.1611034674236;
- Mon, 18 Jan 2021 21:37:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XX+GcnJWFNmw4pPkSAczCPMjkjBOlKlFbVbcSZZHlMo=;
+        b=DthnGS1oUOnZrPe5v2Q/gt1yIL4tIsmfYTlNaSLRWAAgAKkB9u6iuaGEJ+QZpuON9E
+         P8Emn7dstnXDfaxMM1OcgBZMdn3W9GCGdyI/40cllg5XV2n6mSemTzXQynlKlNrJtSMD
+         O7vZs9z4kjxEIhkdCghBnRmQYWR+vIUrV0M+/SpcAw7G4jm8VGEIGY9bDNk0gzRf+eH/
+         P29Xk/bT2LMX64HS9B9P9gDSOK50468wjx7nHdbMenn3PrN1r1FaC+uHZauTQVZQ50we
+         TMCXtGPo1NAtNTWj/cKJYA5WkBDhmf6bzLV+w8uSlgf/YpnqKDuvzIRYxaF3nfepplOl
+         sM8w==
+X-Gm-Message-State: AOAM530SoY5I/0KBV37cvFBenYLNe7Qgxb1pLKdp9otU2s7xM3gSR6Jt
+        FYSQGOtk/qWPFLUlNT1rq3o=
+X-Google-Smtp-Source: ABdhPJxHj6fbLbORiCd6frpNM6z80UEInPe44op3po+f8X6D4XAuJGqUxLxsZTHV+2XhtPyFnBPqLg==
+X-Received: by 2002:a05:6000:368:: with SMTP id f8mr2533464wrf.150.1611034691277;
+        Mon, 18 Jan 2021 21:38:11 -0800 (PST)
+Received: from localhost.localdomain ([2a01:4f8:222:220b::2])
+        by smtp.gmail.com with ESMTPSA id q9sm2641181wme.18.2021.01.18.21.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 21:38:10 -0800 (PST)
+From:   Isaac Chen <tingyi364@gmail.com>
+To:     TonyWWang-oc@zhaoxin.com
+Cc:     linux-kernel@vger.kernel.org, Isaac Chen <tingyi364@gmail.com>
+Subject: [PATCH] x86/cpu/zhaoxin: Fix wrong lowercase naming
+Date:   Tue, 19 Jan 2021 13:37:53 +0800
+Message-Id: <20210119053753.23937-1-tingyi364@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <a0fe603b-098c-65d7-9d60-f0365b7302ce@zhaoxin.com>
+References: <a0fe603b-098c-65d7-9d60-f0365b7302ce@zhaoxin.com>
 MIME-Version: 1.0
-References: <20210102220441.794923-1-jolsa@kernel.org> <20210102220441.794923-13-jolsa@kernel.org>
-In-Reply-To: <20210102220441.794923-13-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 19 Jan 2021 14:37:42 +0900
-Message-ID: <CAM9d7cj7TaJH3CtkQDjfD9OuV77LzbcY4y_EW7PWi+winu8gcw@mail.gmail.com>
-Subject: Re: [PATCH 12/22] perf daemon: Allow only one daemon over base directory
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 7:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Add 'lock' file under daemon base and flock it, so only one
-> perf daemon can run on top of it.
->
-> Example:
->
->   # cat ~/.perfconfig
->   [daemon]
->   base=/opt/perfdata
->
->   [session-cycles]
->   run = -m 10M -e cycles --overwrite --switch-output -a
->
->   [session-sched]
->   run = -m 20M -e sched:* --overwrite --switch-output -a
->
-> Starting the daemon:
->
->   # perf daemon start
->
-> And try once more:
->
->   # perf daemon start
->   failed: another perf daemon (pid 775594) owns /opt/perfdata
->
-> will end up with an error, because there's already one running
-> on top of /opt/perfdata.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-daemon.c | 49 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index 45748bb471ec..1982eedd3f3f 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -8,6 +8,7 @@
->  #include <string.h>
->  #include <sys/types.h>
->  #include <sys/wait.h>
-> +#include <sys/file.h>
->  #include <signal.h>
->  #include <stdlib.h>
->  #include <time.h>
-> @@ -562,12 +563,18 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
->                         /* output */
->                         csv_sep, daemon->base, SESSION_OUTPUT);
->
-> +               fprintf(out, "%c%s/%s",
-> +                       /* lock */
-> +                       csv_sep, daemon->base, "lock");
-> +
->                 fprintf(out, "\n");
->         } else {
->                 fprintf(out, "[%d:daemon] base: %s\n", getpid(), daemon->base);
->                 if (cmd->list.verbose) {
->                         fprintf(out, "  output:  %s/%s\n",
->                                 daemon->base, SESSION_OUTPUT);
-> +                       fprintf(out, "  lock:    %s/lock\n",
-> +                               daemon->base);
->                 }
->         }
->
-> @@ -761,6 +768,42 @@ static int handle_config_changes(struct daemon *daemon, int conf_fd,
->         return 0;
->  }
->
-> +static int check_lock(struct daemon *daemon)
-> +{
-> +       char path[PATH_MAX];
-> +       char buf[20];
-> +       int fd, pid;
-> +       ssize_t len;
-> +
-> +       scnprintf(path, sizeof(path), "%s/lock", daemon->base);
-> +
-> +       fd = open(path, O_RDWR|O_CREAT|O_CLOEXEC, 0640);
-> +       if (fd < 0)
-> +               return -1;
-> +
-> +       if (lockf(fd, F_TLOCK, 0) < 0) {
-> +               filename__read_int(path, &pid);
-> +               fprintf(stderr, "failed: another perf daemon (pid %d) owns %s\n",
-> +                       pid, daemon->base);
-> +               return -1;
-> +       }
+This is printed during kernel boot, match it with other supported x86 cpus.
+    [    0.000000] KERNEL supported cpus:
+    [    0.000000]   Intel GenuineIntel
+    [    0.000000]   AMD AuthenticAMD
+    [    0.000000]   Hygon HygonGenuine
+    [    0.000000]   Centaur CentaurHauls
+    [    0.000000]   zhaoxin   Shanghai
+Keep identification string match with CPUID.
 
-So the fd is (a kind of) leaked and the lock is released only when
-the daemon is going to die, right?
+Signed-off-by: Isaac Chen <tingyi364@gmail.com>
+---
+ arch/x86/kernel/cpu/zhaoxin.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Namhyung
+diff --git a/arch/x86/kernel/cpu/zhaoxin.c b/arch/x86/kernel/cpu/zhaoxin.c
+index 05fa4ef63490..77c33ed80a67 100644
+--- a/arch/x86/kernel/cpu/zhaoxin.c
++++ b/arch/x86/kernel/cpu/zhaoxin.c
+@@ -120,7 +120,7 @@ zhaoxin_size_cache(struct cpuinfo_x86 *c, unsigned int size)
+ #endif
+ 
+ static const struct cpu_dev zhaoxin_cpu_dev = {
+-	.c_vendor	= "zhaoxin",
++	.c_vendor	= "Zhaoxin",
+ 	.c_ident	= { "  Shanghai  " },
+ 	.c_early_init	= early_init_zhaoxin,
+ 	.c_init		= init_zhaoxin,
+-- 
+2.27.0
 
-> +
-> +       scnprintf(buf, sizeof(buf), "%d", getpid());
-> +       len = strlen(buf);
-> +
-> +       if (write(fd, buf, len) != len) {
-> +               perror("write failed");
-> +               return -1;
-> +       }
-> +
-> +       if (ftruncate(fd, len)) {
-> +               perror("ftruncate failed");
-> +               return -1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int go_background(struct daemon *daemon)
->  {
->         int pid, fd;
-> @@ -775,6 +818,9 @@ static int go_background(struct daemon *daemon)
->         if (setsid() < 0)
->                 return -1;
->
-> +       if (check_lock(daemon))
-> +               return -1;
-> +
->         umask(0);
->
->         if (chdir(daemon->base)) {
-> @@ -861,6 +907,9 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->         if (setup_server_config(daemon))
->                 return -1;
->
-> +       if (foreground && check_lock(daemon))
-> +               return -1;
-> +
->         if (!foreground && go_background(daemon))
->                 return -1;
->
-> --
-> 2.26.2
->
