@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22002FBF6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3CD2FBFA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbhASSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:48:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
+        id S1728459AbhASTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729159AbhASSkK (ORCPT
+        with ESMTP id S2387599AbhASR5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:40:10 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF9FC061573;
-        Tue, 19 Jan 2021 10:39:26 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id rv9so11181901ejb.13;
-        Tue, 19 Jan 2021 10:39:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oPpd0xzESQegPnVY2N4DoOcYulfBZy0CSElYWiJn91o=;
-        b=aft9YB4i5E5pliXL4ZQE13Dzs9PfvtIFzNDto56ylX9Pf/tk9+leQZIREncSo7q10q
-         bTuvk7EYdqNzxfoiew+Wxq8s3fu8uXZcMy8p4tuBWiZgNq570A+FffbuHpa15UUbzwl4
-         OzxO0DK83jB0OnP4dAhNqtUpRrj/mZzpB76y1GlqGsCRmUiyxiR9iwCsHkzu5LRxoxM+
-         2JVfxTxrQcpxhG2wKQCmJEnnB8y2Btohsb47FTSy6YpP3wUvj567xdDlBM6VJjCykyZy
-         7pSDdkpu0/OgL90WNf1SdO7rZfTKtm+xEPMzYlhG8UYX0pdPZilFiFvSOUalaBsVb+p0
-         Y35Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oPpd0xzESQegPnVY2N4DoOcYulfBZy0CSElYWiJn91o=;
-        b=BCOAge8pzDuYWkR2JI6PJ+HLJq4m2RfThhcP/hgBj5NUhhnkZRo8JyJZMDPvT7/IzO
-         6ZbQEQ/lWUUjIyoQUunNeixNG4QkH9GlVNqi7TIEVOAJ45tnLYmphgCk/5Gesdq1a7El
-         kRWT9fC1AuHgDMR9wVpYYeQMWfP9pSm6u2xuZpnnuayQJtMxIC5A9SS3Kufg/Te+BUHo
-         /uRNlb1ca8AaLU8/VEAGmWkjD6dCoMIAikpA8d1TmciXZi/Gh2QEmTwcSL6vstkPEO28
-         +ts9o5ZqeuTJTgnWTxvNupAGzKtXBWkwo/d9hQTlm1mvLUyjik3rCodeLmhsydWv9qNT
-         3oVw==
-X-Gm-Message-State: AOAM531MmYewxFtdkFD5dyVjUpRUzWIkxFQErRZuBhQPR4SkiQRLVBQD
-        KsABiYwkzjDUrTumiZV9oTU=
-X-Google-Smtp-Source: ABdhPJyDaMyA5JaFGa1IcVtwtX3v2ntzPQieWmEe7SnBOyNPDIdZlsJaDkgqSmXkM6E5rzL2b+AIbA==
-X-Received: by 2002:a17:906:11d6:: with SMTP id o22mr3938523eja.106.1611081565179;
-        Tue, 19 Jan 2021 10:39:25 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id s22sm10850372ejd.106.2021.01.19.10.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 10:39:24 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
- <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
- <20210118234818.GP4605@ziepe.ca>
- <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
- <20210119180327.GX4605@ziepe.ca>
- <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
- <20210119181714.GA909645@ziepe.ca>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <05a7b524-aee2-fd1d-e342-b85f355adb82@gmail.com>
-Date:   Tue, 19 Jan 2021 19:39:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 12:57:03 -0500
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F168C06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:44:27 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 805123F114;
+        Tue, 19 Jan 2021 18:44:25 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 7/7] arm64: dts: pmi8998: Add the right interrupts for LAB/IBB SCP and OCP
+Date:   Tue, 19 Jan 2021 18:44:21 +0100
+Message-Id: <20210119174421.226541-8-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210119174421.226541-1-angelogioacchino.delregno@somainline.org>
+References: <20210119174421.226541-1-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <20210119181714.GA909645@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.01.21 19:17, Jason Gunthorpe wrote:
-> On Tue, Jan 19, 2021 at 07:08:32PM +0100, Bodo Stroesser wrote:
->> On 19.01.21 19:03, Jason Gunthorpe wrote:
->>> On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
->>>>
->>>> I had a second look into math.h, but I don't find any reason why round_up
->>>> could overflow. Can you give a hint please?
->>>
->>> #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
->>>                                                       ^^^^^
->>>
->>> That +1 can overflow
->>
->> But that would be a unsigned long long overflow. I considered this to
->> not be relevant.
-> 
-> Why not? It still makes nents 0 and still causes a bad bug
-> 
+In commit 208921bae696 ("arm64: dts: qcom: pmi8998: Add nodes for
+LAB and IBB regulators") bindings for the lab/ibb regulators were
+added to the pmi8998 dt, but the original committer has never
+specified what the interrupts were for.
+LAB and IBB regulators provide two interrupts, SC-ERR (short
+circuit error) and VREG-OK but, in that commit, the regulators
+were provided with two different types of interrupts;
+specifically, IBB had the SC-ERR interrupt, while LAB had the
+VREG-OK one, none of which were (luckily) used, since the driver
+didn't actually use these at all.
+Assuming that the original intention was to have the SC IRQ in
+both LAB and IBB, as per the names appearing in documentation,
+fix the SCP interrupt.
 
-Generally spoken, you of course are right.
+While at it, also add the OCP interrupt in order to be able to
+enable the Over-Current Protection feature, if requested.
 
-OTOH, if someone tries to allocate such big sgls, then we will run into
-trouble during memory allocation even without overrun.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Anyway, if we first calculate nent and nalloc and then check with
-
-	if ((unsigned long long)nalloc << (PAGE_SHIFT + order) < length)
-		return NULL;
-
-I think we would have checked against all kind of overrun in a single
-step. Or am I missing something?
-
-Bodo
-
+diff --git a/arch/arm64/boot/dts/qcom/pmi8998.dtsi b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+index d016b12967eb..d230c510d4b7 100644
+--- a/arch/arm64/boot/dts/qcom/pmi8998.dtsi
++++ b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+@@ -30,11 +30,15 @@ labibb {
+ 			compatible = "qcom,pmi8998-lab-ibb";
+ 
+ 			ibb: ibb {
+-				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>;
++				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>,
++					     <0x3 0xdc 0x0 IRQ_TYPE_LEVEL_HIGH>;
++				interrupt-names = "sc-err", "ocp";
+ 			};
+ 
+ 			lab: lab {
+-				interrupts = <0x3 0xde 0x0 IRQ_TYPE_EDGE_RISING>;
++				interrupts = <0x3 0xde 0x1 IRQ_TYPE_EDGE_RISING>,
++					     <0x3 0xde 0x0 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-names = "sc-err", "ocp";
+ 			};
+ 		};
+ 	};
+-- 
+2.30.0
 
