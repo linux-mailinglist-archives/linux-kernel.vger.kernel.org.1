@@ -2,200 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6088D2FB813
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780322FB811
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391977AbhASLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:55:49 -0500
-Received: from mga05.intel.com ([192.55.52.43]:58374 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732083AbhASLkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:40:33 -0500
-IronPort-SDR: g4/goq39zEqGEyXgnhFNHSGrZDBBOjn4lUTyKKOUCGNx/KqcZF3Ik+LPOgO/Ju4tiUyZ8bN/RH
- zo9jBcMu9ZFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="263721319"
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="263721319"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 03:38:48 -0800
-IronPort-SDR: JJEb8ECW8FBhOoIOkO7dtW/AqWwS5+g4zo2+y0xiF9oBEHm9i3K+FwUSgQgqrITlVdl6QWnlZr
- b6i614DNzCsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="399400548"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Jan 2021 03:38:47 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l1pLS-00051J-RG; Tue, 19 Jan 2021 11:38:46 +0000
-Date:   Tue, 19 Jan 2021 19:38:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/misc] BUILD SUCCESS
- 443121b3ebb9025fd99ff11851d3537cb756d456
-Message-ID: <6006c4ba.7njuMq0fAnzkWycl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2391933AbhASLzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731962AbhASLls (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:41:48 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C6CC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:39:32 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id s24so1438402wmj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qA6i77Zlz4mMSdNqaeglUYnAY+zKEB2RYdwGdqj1Hu8=;
+        b=kTkmB779suE0zVUtNy89lKEksOACmWYww8w/nXhzz5gL3GkmhNcmT0K2196fgCSK15
+         jIGk/fIp1Y4LM/kcwH5ygTdj3UA7fRmjryBNAjwRkCCx6pwr4BfmvPx//SJvyzlrydnR
+         DIoiQYkeXn+j7vdpact8ln2/+BXSIEu1kQq4ZtTEsyOUB3eHDAlLcpmNzTD52+xux9PP
+         PSiuFiOQh8LNgG56RFho91KyamTbtwMnVs4tN2OYCC1KfjWiEK8l8PLNciyaURbtmc8z
+         Hmi+CQPuQgSloUqQtOoQUta1cFNe5I5PtlnlByVlvISQwKE7irqY1QxJLXg4Pf7lxzXr
+         6uqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qA6i77Zlz4mMSdNqaeglUYnAY+zKEB2RYdwGdqj1Hu8=;
+        b=ODfUzfIq31i2Jut7Fc49c5jAugKFv4abrrKG4fAVMVuggOhZZ6gBrk39HJdgyFLhm0
+         GZQ4A1Ic1JTmX7Tbq2NxP8AnmxIOhTbwXLVZI0aR9UAjnsGxbKGqHhn/9Mzs4vZGPDM1
+         uM0u2zizhGxDo2X33b55h7rr6FJzKce9AvB6a1tWK8oHew905V7ferPj5iVWXSCdFJMN
+         yTbf7Gh7RNntdNevoAhohsUd0Eu7HDeHa5dL7tZp9i/f8n73Uyr67bkc3TpUrEbDYHF9
+         NvJitu0z+ERtCFniN3gMeM9BDSRUr8WGHRvwj41kYma87vhhHgNBQLpAV3/H7Q1hoHpD
+         Rrcw==
+X-Gm-Message-State: AOAM531w4NPJd+Q/UUXmX/Klo9rw0kd4lIaSw46cwx0g4cg0KWWZOzqg
+        FShnC0l/vfGoN6zDKcVr8LsiBw==
+X-Google-Smtp-Source: ABdhPJxQpSmKO6gL4URxiQemGdBj51cfDFusBapseewlYboYRHMLywsPzMsuvuYMJeYcBq780DdVFg==
+X-Received: by 2002:a7b:c41a:: with SMTP id k26mr3705989wmi.1.1611056370810;
+        Tue, 19 Jan 2021 03:39:30 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id g192sm4450237wmg.18.2021.01.19.03.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 03:39:30 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     sboyd@kernel.org
+Cc:     mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] clk: qcom: gfm-mux: fix clk mask
+Date:   Tue, 19 Jan 2021 11:38:51 +0000
+Message-Id: <20210119113851.18946-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
-branch HEAD: 443121b3ebb9025fd99ff11851d3537cb756d456  selftests/fpu: Fix debugfs_simple_attr.cocci warning
+For some reason global GFM_MASK ended up with bit 1 instead of bit 0.
+Remove the global GFM_MASK and reuse mux_mask field.
 
-elapsed time: 1430m
-
-configs tested: 138
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     redwood_defconfig
-arm                        spear6xx_defconfig
-arm                       netwinder_defconfig
-mips                            gpr_defconfig
-sh                        dreamcast_defconfig
-sh                            hp6xx_defconfig
-arm                          moxart_defconfig
-m68k                        mvme16x_defconfig
-parisc                generic-32bit_defconfig
-arm                      pxa255-idp_defconfig
-arm                          iop32x_defconfig
-mips                          rb532_defconfig
-xtensa                         virt_defconfig
-m68k                        m5307c3_defconfig
-arm                           h3600_defconfig
-powerpc                 mpc8560_ads_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                  cavium_octeon_defconfig
-arm                           corgi_defconfig
-ia64                        generic_defconfig
-arm                            dove_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                 mpc834x_itx_defconfig
-mips                        jmr3927_defconfig
-arc                           tb10x_defconfig
-powerpc                   motionpro_defconfig
-arm                         at91_dt_defconfig
-c6x                                 defconfig
-arm                            hisi_defconfig
-mips                       bmips_be_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                         hackkit_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                      pmac32_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                 linkstation_defconfig
-m68k                          atari_defconfig
-arm                           omap1_defconfig
-mips                        bcm63xx_defconfig
-arm                     davinci_all_defconfig
-arm                         s3c6400_defconfig
-powerpc                    mvme5100_defconfig
-arm                      integrator_defconfig
-mips                           ip22_defconfig
-mips                           ip28_defconfig
-sh                          urquell_defconfig
-m68k                       m5475evb_defconfig
-xtensa                  audio_kc705_defconfig
-mips                        workpad_defconfig
-powerpc                    amigaone_defconfig
-sh                         apsh4a3a_defconfig
-mips                           ip32_defconfig
-microblaze                      mmu_defconfig
-mips                      bmips_stb_defconfig
-powerpc                        cell_defconfig
-powerpc                     stx_gp3_defconfig
-m68k                         apollo_defconfig
-powerpc                      ppc6xx_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     tqm8560_defconfig
-m68k                        stmark2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210118
-i386                 randconfig-a005-20210118
-i386                 randconfig-a006-20210118
-i386                 randconfig-a001-20210118
-i386                 randconfig-a003-20210118
-i386                 randconfig-a004-20210118
-x86_64               randconfig-a015-20210118
-x86_64               randconfig-a013-20210118
-x86_64               randconfig-a012-20210118
-x86_64               randconfig-a016-20210118
-x86_64               randconfig-a011-20210118
-x86_64               randconfig-a014-20210118
-i386                 randconfig-a011-20210118
-i386                 randconfig-a012-20210118
-i386                 randconfig-a016-20210118
-i386                 randconfig-a015-20210118
-i386                 randconfig-a013-20210118
-i386                 randconfig-a014-20210118
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210118
-x86_64               randconfig-a006-20210118
-x86_64               randconfig-a001-20210118
-x86_64               randconfig-a003-20210118
-x86_64               randconfig-a005-20210118
-x86_64               randconfig-a002-20210118
-
+Fixes: a2d8f507803e ("clk: qcom: Add support to LPASS AUDIO_CC Glitch Free Mux clocks")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/clk/qcom/lpass-gfm-sm8250.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
+index d366c7c2abc7..f5e31e692b9b 100644
+--- a/drivers/clk/qcom/lpass-gfm-sm8250.c
++++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+@@ -33,14 +33,13 @@ struct clk_gfm {
+ 	void __iomem *gfm_mux;
+ };
+ 
+-#define GFM_MASK	BIT(1)
+ #define to_clk_gfm(_hw) container_of(_hw, struct clk_gfm, hw)
+ 
+ static u8 clk_gfm_get_parent(struct clk_hw *hw)
+ {
+ 	struct clk_gfm *clk = to_clk_gfm(hw);
+ 
+-	return readl(clk->gfm_mux) & GFM_MASK;
++	return readl(clk->gfm_mux) & clk->mux_mask;
+ }
+ 
+ static int clk_gfm_set_parent(struct clk_hw *hw, u8 index)
+@@ -51,9 +50,10 @@ static int clk_gfm_set_parent(struct clk_hw *hw, u8 index)
+ 	val = readl(clk->gfm_mux);
+ 
+ 	if (index)
+-		val |= GFM_MASK;
++		val |= clk->mux_mask;
+ 	else
+-		val &= ~GFM_MASK;
++		val &= ~clk->mux_mask;
++
+ 
+ 	writel(val, clk->gfm_mux);
+ 
+-- 
+2.21.0
+
