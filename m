@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1E62FBFF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1597A2FBFDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390835AbhASTYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:24:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
+        id S2391593AbhASTQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:16:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:45962 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404715AbhASTHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:07:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 959F620706;
-        Tue, 19 Jan 2021 19:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611083193;
-        bh=GFMcQd7MCGExxp99LiWFW+po75/fewRWAf29QDD2b68=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sr0IvLwt5KD1z2YKY0WKaQt210uFFKSvdgLdnsDzgUguo6V/qWCcsRSkTtbBJzPQL
-         XGe9OfQlyL4XG0lISytwN9eZxrd8kJCfRsliwuGXBElmMaTZpVLfUtm/a1ezRAQbac
-         x3m1XjlEKCbJNKiEaGTnf8fetUdVTH4J+rUYVijzoEEByS+2YnnVKX13PMELaLacZG
-         esAUOxhCuR+7607vK8qvLIX4nBuPJFyknZ52/Qy8EvBfNj6/KqHoZm16ANo8S1gTdJ
-         6XKHVlcAYbQqLlPkp6A+xzGNBNKCbhxQSI+GggUoDE9LuWPhk/ZyGikAUP5POKfhYs
-         YYsqyYnve9x8A==
-Date:   Tue, 19 Jan 2021 11:06:32 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2] f2fs: fix to keep isolation of atomic write
-Message-ID: <YActuF2es8IGJfGj@google.com>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
- <YAC9a6quO2VOirLi@google.com>
- <3923906d-f208-f6c2-f121-5e77e8fb6b28@huawei.com>
+        id S1727881AbhASTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:04:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F27ADD6E;
+        Tue, 19 Jan 2021 11:03:52 -0800 (PST)
+Received: from [10.37.8.29] (unknown [10.37.8.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76AB83F719;
+        Tue, 19 Jan 2021 11:03:51 -0800 (PST)
+Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Alexander Potapenko <glider@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
+ <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
+ <20210119185206.GA26948@gaia> <e3d67672-1825-894a-db68-5709b33b4991@arm.com>
+ <20210119190219.GC26948@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <6a5600c0-002a-3e80-0229-494d1c9648ac@arm.com>
+Date:   Tue, 19 Jan 2021 19:07:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3923906d-f208-f6c2-f121-5e77e8fb6b28@huawei.com>
+In-Reply-To: <20210119190219.GC26948@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/15, Chao Yu wrote:
-> On 2021/1/15 5:53, Jaegeuk Kim wrote:
-> > On 12/30, Chao Yu wrote:
-> > > ThreadA					ThreadB
-> > > - f2fs_ioc_start_atomic_write
-> > > - write
-> > > - f2fs_ioc_commit_atomic_write
-> > >   - f2fs_commit_inmem_pages
-> > >   - f2fs_drop_inmem_pages
-> > >   - f2fs_drop_inmem_pages
-> > >    - __revoke_inmem_pages
-> > > 					- f2fs_vm_page_mkwrite
-> > > 					 - set_page_dirty
-> > > 					  - tag ATOMIC_WRITTEN_PAGE and add page
-> > > 					    to inmem_pages list
-> > >    - clear_inode_flag(FI_ATOMIC_FILE)
-> > > 					- f2fs_vm_page_mkwrite
-> > > 					  - set_page_dirty
-> > > 					   - f2fs_update_dirty_page
-> > > 					    - f2fs_trace_pid
-> > > 					     - tag inmem page private to pid
-> > 
-> > Hmm, how about removing fs/f2fs/trace.c to make private more complicated
-> > like this? I think we can get IO traces from tracepoints.
-> 
-> Hmm, actually, there is are issues, one is the trace IO, the other is the
-> race issue (atomic_start,commit,drop vs mkwrite) which can make isolation
-> semantics of transaction be broken.
-> 
-> Or can we avoid atomic file racing with file mmap?
 
-No, we can't. We may need to find other way to check the race. :)
 
+On 1/19/21 7:02 PM, Catalin Marinas wrote:
+> On Tue, Jan 19, 2021 at 07:00:57PM +0000, Vincenzo Frascino wrote:
+>> On 1/19/21 6:52 PM, Catalin Marinas wrote:
+>>> On Tue, Jan 19, 2021 at 07:27:43PM +0100, Andrey Konovalov wrote:
+>>>> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
+>>>> <vincenzo.frascino@arm.com> wrote:
+>>>>>
+>>>>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+>>>>> the address passed as a parameter.
+>>>>>
+>>>>> Add a comment to make sure that the preconditions to the function are
+>>>>> explicitly clarified.
+>>>>>
+>>>>> Note: An invalid address (e.g. NULL pointer address) passed to the
+>>>>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
+>>>>>
+>>>>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+>>>>> Cc: Alexander Potapenko <glider@google.com>
+>>>>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>>>>> Cc: Leon Romanovsky <leonro@mellanox.com>
+>>>>> Cc: Andrey Konovalov <andreyknvl@google.com>
+>>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>>>>> ---
+>>>>>  mm/kasan/report.c | 11 +++++++++++
+>>>>>  1 file changed, 11 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+>>>>> index c0fb21797550..2485b585004d 100644
+>>>>> --- a/mm/kasan/report.c
+>>>>> +++ b/mm/kasan/report.c
+>>>>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>>>>>         end_report(&flags);
+>>>>>  }
+>>>>>
+>>>>> +/**
+>>>>> + * kasan_report - report kasan fault details
+>>>>> + * @addr: valid address of the allocation where the tag fault was detected
+>>>>> + * @size: size of the allocation where the tag fault was detected
+>>>>> + * @is_write: the instruction that caused the fault was a read or write?
+>>>>> + * @ip: pointer to the instruction that cause the fault
+>>>>> + *
+>>>>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
+>>>>> + * the address to access the tags, hence it must be valid at this point in
+>>>>> + * order to not cause a kernel panic.
+>>>>> + */
+>>>>
+>>>> It doesn't dereference the address, it just checks the tags, right?
+>>>>
+>>>> Ideally, kasan_report() should survive that with HW_TAGS like with the
+>>>> other modes. The reason it doesn't is probably because of a blank
+>>>> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
+>>>> guess we should somehow check that the memory comes from page_alloc or
+>>>> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
+>>>> instruction to check whether the memory has tags?
+>>>
+>>> There isn't an architected way to probe whether a memory location has a
+>>> VA->PA mapping. The tags are addressed by PA but you can't reach them if
+>>> you get a page fault on the VA. So we either document the kasan_report()
+>>> preconditions or, as you suggest, update addr_has_metadata() for the
+>>> HW_TAGS case. Something like:
+>>>
+>>>         return is_vmalloc_addr(virt) || virt_addr_valid(virt));
+>>
+>> Or we could have both ;)
 > 
-> - atomic_start			- file_mmap
-> 				 - inode_lock
-> 				 - if (FI_ATOMIC_FILE) return
->  - inode_lock
->  - if (FI_MMAP_FILE) return
+> True. Documentation doesn't hurt (well, only when it's wrong ;)).
 > 
-> Thanks,
-> 
-> > 
-> > > 					- truncate
-> > > 					 - f2fs_invalidate_page
-> > > 					 - set page->mapping to NULL
-> > > 					  then it will cause panic once we
-> > > 					  access page->mapping
-> > > 
-> > > The root cause is we missed to keep isolation of atomic write in the case
-> > > of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
-> > > lock to avoid this issue.
-> > > 
-> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > ---
-> > > v2:
-> > > - use i_mmap_sem to avoid mkwrite racing with below flows:
-> > >   * f2fs_ioc_start_atomic_write
-> > >   * f2fs_drop_inmem_pages
-> > >   * f2fs_commit_inmem_pages
-> > > 
-> > >   fs/f2fs/file.c    | 3 +++
-> > >   fs/f2fs/segment.c | 7 +++++++
-> > >   2 files changed, 10 insertions(+)
-> > > 
-> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > index 4e6d4b9120a8..a48ec650d691 100644
-> > > --- a/fs/f2fs/file.c
-> > > +++ b/fs/f2fs/file.c
-> > > @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > >   		goto out;
-> > >   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   	/*
-> > >   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
-> > > @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > >   			  inode->i_ino, get_dirty_pages(inode));
-> > >   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
-> > >   	if (ret) {
-> > > +		up_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > >   		goto out;
-> > >   	}
-> > > @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > >   	/* add inode in inmem_list first and set atomic_file */
-> > >   	set_inode_flag(inode, FI_ATOMIC_FILE);
-> > >   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
-> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > >   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-> > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > index d8570b0359f5..dab870d9faf6 100644
-> > > --- a/fs/f2fs/segment.c
-> > > +++ b/fs/f2fs/segment.c
-> > > @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
-> > >   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > >   	struct f2fs_inode_info *fi = F2FS_I(inode);
-> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > > +
-> > >   	while (!list_empty(&fi->inmem_pages)) {
-> > >   		mutex_lock(&fi->inmem_lock);
-> > >   		__revoke_inmem_pages(inode, &fi->inmem_pages,
-> > > @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
-> > >   		sbi->atomic_files--;
-> > >   	}
-> > >   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
-> > > +
-> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   }
-> > >   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
-> > > @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
-> > >   	f2fs_balance_fs(sbi, true);
-> > >   	down_write(&fi->i_gc_rwsem[WRITE]);
-> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   	f2fs_lock_op(sbi);
-> > >   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
-> > > @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
-> > >   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
-> > >   	f2fs_unlock_op(sbi);
-> > > +
-> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > >   	up_write(&fi->i_gc_rwsem[WRITE]);
-> > >   	return err;
-> > > -- 
-> > > 2.29.2
-> > .
-> > 
+
+Testing the patch now, I will send it in half an hour.
+
+-- 
+Regards,
+Vincenzo
