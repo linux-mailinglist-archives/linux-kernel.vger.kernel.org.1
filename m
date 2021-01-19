@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26FB2FC0A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D602FC0B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392134AbhASTBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391743AbhASR7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:59:39 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DE6C061573;
-        Tue, 19 Jan 2021 09:58:59 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id e15so581563wme.0;
-        Tue, 19 Jan 2021 09:58:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ud39rUOwi9a+eDdinAxLAEakzSkS3TdE+RD/bhNorzQ=;
-        b=VXR7vmWGIj2jjxYIWeOws2Wl7U9SiEVahWjLU/e+0eN82PYKaoRniIiDIRK7msShQ0
-         TBfAjeteW6riRRxAoQrjol1Z6EUC/OjkammyFdgHunOCrZtHA2/S6gDYFPSGopFWjlWD
-         glIrEMHhg+sYx/tZy/MByl3pxJr2XDyca5U6qecQ1fxzE4VbsVInnwY68Cy3NeeBetN/
-         9o4sKysDN9draRqQv1uBTFPEB8XXm+9dllwXobePv0iuIlgVkSFYjY6Ds/ssTN7xfL/U
-         58ts6kr6GPaC4gKFgM5/Li01b/rMBs7Fkqrpp0/rQojH4NAGkbMsjrn9ZPgWSxc4g3yd
-         Rrwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ud39rUOwi9a+eDdinAxLAEakzSkS3TdE+RD/bhNorzQ=;
-        b=BW9amq7I1zUq+i6ZaJzxa6EtekYENN5TFsyYHbsvB0w3VeXHNKvqhBDIVBot9GfGzK
-         6WBwyCVxS6YcBFwsbolgry4SQuy9KUXhguTCFOCc6CeTZu1IoWhKzc4hfSDueNDyMgBH
-         wcaQQ/2mB2W3jdy6FdNnRqDSGGEDE47hgZulMBKz2thOsQg6RHoU5deDILyyW+1Rj5G8
-         22pgJ3Azj7EB28P0qyHoBZ17j3otdiZi8raA4YCuk7/c9cH8TJa4tURNVqAWFNvaksc7
-         9TjzzdKQPXBdY4ljmB9IcBR68duI0xdnXNyqKIeUXIT99W95VwYLE2iUmD1m8HiGP8ai
-         KZcA==
-X-Gm-Message-State: AOAM5336rHo/LXhbzlFLETMeW98zj5bkG1XO5Yxef33EeudffoavmtBn
-        0HYhHFTr36FMhdJtMZNte5hC6VIFA/OTPnva
-X-Google-Smtp-Source: ABdhPJxJX9Y5y3EIyEHi9aNLRaU90KBI2X7LlLhhRsr/PehD6xzCuAqiAzYfgdq2RgPg9LZ6ZsBpSg==
-X-Received: by 2002:a05:600c:3548:: with SMTP id i8mr747653wmq.104.1611079137762;
-        Tue, 19 Jan 2021 09:58:57 -0800 (PST)
-Received: from anparri.mshome.net (host-79-50-177-118.retail.telecomitalia.it. [79.50.177.118])
-        by smtp.gmail.com with ESMTPSA id h125sm5899312wmh.16.2021.01.19.09.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 09:58:57 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, x86@kernel.org,
-        linux-arch@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 0/4] Drivers: hv: vmbus: Restrict devices and configurations on 'isolated' guests
-Date:   Tue, 19 Jan 2021 18:58:37 +0100
-Message-Id: <20210119175841.22248-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S2387890AbhASS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:58:54 -0500
+Received: from verein.lst.de ([213.95.11.211]:52920 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390680AbhASSBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:01:09 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8D84068B02; Tue, 19 Jan 2021 19:00:24 +0100 (CET)
+Date:   Tue, 19 Jan 2021 19:00:24 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Marc Orr <marcorr@google.com>
+Cc:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        jxgao@google.com, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] nvme: fix handling mapping failure
+Message-ID: <20210119180024.GA28024@lst.de>
+References: <20210119175336.4016923-1-marcorr@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119175336.4016923-1-marcorr@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Jan 19, 2021 at 09:53:36AM -0800, Marc Orr wrote:
+> This patch ensures that when `nvme_map_data()` fails to map the
+> addresses in a scatter/gather list:
+> 
+> * The addresses are not incorrectly unmapped. The underlying
+> scatter/gather code unmaps the addresses after detecting a failure.
+> Thus, unmapping them again in the driver is a bug.
+> * The DMA pool allocations are not deallocated when they were never
+> allocated.
+> 
+> The bug that motivated this patch was the following sequence, which
+> occurred within the NVMe driver, with the kernel flag `swiotlb=force`.
+> 
+> * NVMe driver calls dma_direct_map_sg()
+> * dma_direct_map_sg() fails part way through the scatter gather/list
+> * dma_direct_map_sg() calls dma_direct_unmap_sg() to unmap any entries
+>   succeeded.
+> * NVMe driver calls dma_direct_unmap_sg(), redundantly, leading to a
+>   double unmap, which is a bug.
+> 
+> Before this patch, I observed intermittent application- and VM-level
+> failures when running a benchmark, fio, in an AMD SEV guest. This patch
+> resolves the failures.
 
-To reduce the footprint of the code that will be exercised, and hence
-the exposure to bugs and vulnerabilities, restrict configurations and
-devices on 'isolated' VMs.
+I think the right way to fix this is to just do a proper unwind insted
+of calling a catchall function.  Can you try this patch?
 
-Specs of the Isolation Configuration leaf (cf. patch #1) were derived
-from internal discussions with the Hyper-V team and, AFAICT, they are
-not publicly available yet.
-
-The series has some minor/naming conflict with on-going work aimed at
-enabling SNP VMs on Hyper-V[1]; such conflicts can be addressed later
-at the right time.
-
-Applies to hyperv-next.
-
-Thanks,
-  Andrea
-
-[1] https://github.com/lantianyu/linux # cvm
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: x86@kernel.org
-Cc: linux-arch@vger.kernel.org
-Cc: netdev@vger.kernel.org
-
-Andrea Parri (Microsoft) (4):
-  x86/hyperv: Load/save the Isolation Configuration leaf
-  Drivers: hv: vmbus: Restrict vmbus_devices on isolated guests
-  Drivers: hv: vmbus: Enforce 'VMBus version >= 5.2' on isolated guests
-  hv_netvsc: Restrict configurations on isolated guests
-
- arch/x86/hyperv/hv_init.c          | 15 +++++++++++++
- arch/x86/include/asm/hyperv-tlfs.h | 15 +++++++++++++
- arch/x86/kernel/cpu/mshyperv.c     |  9 ++++++++
- drivers/hv/channel_mgmt.c          | 36 ++++++++++++++++++++++++++++++
- drivers/hv/connection.c            | 13 +++++++++++
- drivers/net/hyperv/netvsc.c        | 21 ++++++++++++++---
- include/asm-generic/hyperv-tlfs.h  |  1 +
- include/asm-generic/mshyperv.h     |  5 +++++
- include/linux/hyperv.h             |  1 +
- 9 files changed, 113 insertions(+), 3 deletions(-)
-
--- 
-2.25.1
-
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 25456d02eddb8c..47d7075053b6b2 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -842,7 +842,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 	sg_init_table(iod->sg, blk_rq_nr_phys_segments(req));
+ 	iod->nents = blk_rq_map_sg(req->q, req, iod->sg);
+ 	if (!iod->nents)
+-		goto out;
++		goto out_free_sg;
+ 
+ 	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+ 		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
+@@ -851,16 +851,25 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+ 					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
+ 	if (!nr_mapped)
+-		goto out;
++		goto out_free_sg;
+ 
+ 	iod->use_sgl = nvme_pci_use_sgls(dev, req);
+ 	if (iod->use_sgl)
+ 		ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw, nr_mapped);
+ 	else
+ 		ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
+-out:
+ 	if (ret != BLK_STS_OK)
+-		nvme_unmap_data(dev, req);
++		goto out_dma_unmap;
++	return BLK_STS_OK;
++
++out_dma_unmap:
++	if (is_pci_p2pdma_page(sg_page(iod->sg)))
++		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
++				    rq_dma_dir(req));
++	else
++		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
++out_free_sg:
++	mempool_free(iod->sg, dev->iod_mempool);
+ 	return ret;
+ }
+ 
