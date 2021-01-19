@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4985A2FBF08
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70642FBF0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389412AbhASSbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:31:22 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45170 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729132AbhASS3i (ORCPT
+        id S1726746AbhASScE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbhASSaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:29:38 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 893A01C0B85; Tue, 19 Jan 2021 19:28:37 +0100 (CET)
-Date:   Tue, 19 Jan 2021 19:28:37 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 077/152] kconfig: remove kvmconfig and xenconfig
- shorthands
-Message-ID: <20210119182837.GA18123@duo.ucw.cz>
-References: <20210118113352.764293297@linuxfoundation.org>
- <20210118113356.479183926@linuxfoundation.org>
+        Tue, 19 Jan 2021 13:30:22 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FD5C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:29:41 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id f17so23016139ljg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:29:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JWWYuzWaghP5Q544uqJbXr3wVFNCkeCk1gyHHkDdQ/A=;
+        b=xnRYIRj8nrXC1Xt9zSBJsXJhgrBfjtCh3CpB6YoNFq2VStdTH5p5X55ThbO9d1T1QX
+         W4s3X+eaII0u/7aakfdFOHqfMiUcebQtCqGbU6qrTrTIw/bmaobbAmF5g8xQdlH+JcMm
+         MwOW3qhK6j4IEuDDA9aUNzDZHWOBV902OvyIedTiWvaRgws3zCpOuRkUoF7aUpFxFq3D
+         40LMffLZW2m8ILnF63bEftJER/hfJVcH/wFwzdFaBuEzghmJBC93E7qNrD9P7KluZaeX
+         XSeU0f3WfA72mJTI8MrG5TUXjTsupJjNWOUFcePRC+6ucYsae6rZqQivHGipbnhG0lhg
+         MmZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JWWYuzWaghP5Q544uqJbXr3wVFNCkeCk1gyHHkDdQ/A=;
+        b=SnB7oMP+IvYkuhxUlGH4daGMQZfPMz5v7sBHx+Y9eLYjpVhthSy9E9SHucbJi6deP2
+         GlXsZR0Za6Gfx5b3aEmWm8DSlG7qqsnj9z2X81PRXSI7baLpcVsKxtoZrkskMlhIltPk
+         DktYiVoizdQS3KP378x8+U8SYX9slEyKGr3rPxRpEz05FNUtZIIWwpmvnC6+pGjqcP0t
+         ydXEFYEJ3QI+aWYBThjqIglwzsTZmHjfFJ/WDZs8KqRq9uUYI191mIb/j76bhEBpsBO9
+         4spM8GQnf2fldx5iHaYCE1yD9SNsLJuxsLT6KEGOSEkYjH1NPLGx2T6gO+sRp701hQNS
+         oT/A==
+X-Gm-Message-State: AOAM5326QWFzrRcqiGBxFMaNG8fNmQcTHsrw0c8SA14LumSBLL0+nEXA
+        U8Sy2/m7H2gkybihMFPhtpTNG5m1uiw5sgLgoWvjqA==
+X-Google-Smtp-Source: ABdhPJyoOd3Tzkorx9mIjYO8VVetUnWwDqJgYwdoxP5M9bwFey7dBLq3et+JsaDPEcCzrb4F1+lPqF4gjUDlxQ1XCog=
+X-Received: by 2002:a05:651c:10e:: with SMTP id a14mr2543204ljb.128.1611080980220;
+ Tue, 19 Jan 2021 10:29:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-In-Reply-To: <20210118113356.479183926@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210113012143.1201105-1-minchan@kernel.org> <20210113012143.1201105-5-minchan@kernel.org>
+In-Reply-To: <20210113012143.1201105-5-minchan@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 19 Jan 2021 10:29:29 -0800
+Message-ID: <CALAqxLWPT8PWYue0h1863NjNxKn_FH0DtoRtArpmmxZ1Ve5xCw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hyesoo Yu <hyesoo.yu@samsung.com>, david@redhat.com,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        KyongHo Cho <pullip.cho@samsung.com>,
+        John Dias <joaodias@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 5:22 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> From: Hyesoo Yu <hyesoo.yu@samsung.com>
+>
+> This patch supports chunk heap that allocates the buffers that
+> arranged into a list a fixed size chunks taken from CMA.
+>
+> The chunk heap driver is bound directly to a reserved_memory
+> node by following Rob Herring's suggestion in [1].
+>
+> [1] https://lore.kernel.org/lkml/20191025225009.50305-2-john.stultz@linaro.org/T/#m3dc63acd33fea269a584f43bb799a876f0b2b45d
+>
+> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+...
+> +static int register_chunk_heap(struct chunk_heap *chunk_heap_info)
+> +{
+> +       struct dma_heap_export_info exp_info;
+> +
+> +       exp_info.name = cma_get_name(chunk_heap_info->cma);
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One potential issue here, you're setting the name to the same as the
+CMA name. Since the CMA heap uses the CMA name, if one chunk was
+registered as a chunk heap but also was the default CMA area, it might
+be registered twice. But since both would have the same name it would
+be an initialization race as to which one "wins".
 
-Hi!
+So maybe could you postfix the CMA name with "-chunk" or something?
 
-> From: Masahiro Yamada <masahiroy@kernel.org>
->=20
-> [ Upstream commit 9bba03d4473df0b707224d4d2067b62d1e1e2a77 ]
->=20
-> Linux 5.10 is out. Remove the 'kvmconfig' and 'xenconfig' shorthands
-> as previously announced.
-
-I don't believe this is suitable for stable.
-
-Best regards,
-								Pavel
-
-> +++ b/scripts/kconfig/Makefile
-> @@ -94,16 +94,6 @@ configfiles=3D$(wildcard $(srctree)/kernel/configs/$@ =
-$(srctree)/arch/$(SRCARCH)/c
->  	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .conf=
-ig $(configfiles)
->  	$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> =20
-> -PHONY +=3D kvmconfig
-> -kvmconfig: kvm_guest.config
-> -	@echo >&2 "WARNING: 'make $@' will be removed after Linux 5.10"
-> -	@echo >&2 "         Please use 'make $<' instead."
-> -
-> -PHONY +=3D xenconfig
-> -xenconfig: xen.config
-> -	@echo >&2 "WARNING: 'make $@' will be removed after Linux 5.10"
-> -	@echo >&2 "         Please use 'make $<' instead."
-> -
->  PHONY +=3D tinyconfig
->  tinyconfig:
->  	$(Q)$(MAKE) -f $(srctree)/Makefile allnoconfig tiny.config
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYAck1QAKCRAw5/Bqldv6
-8kZZAJ9kd1RZN+oY4xSW4LAig9y6RHS7jQCfS+XrT3TGlbxzuenBUk3lEdJkGuI=
-=yvyq
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
+thanks
+-john
