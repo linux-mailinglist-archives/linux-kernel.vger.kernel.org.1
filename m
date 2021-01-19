@@ -2,139 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3E42FC489
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 845CD2FC49F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbhASXOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1730411AbhASXRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:17:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729898AbhASXNS (ORCPT
+        with ESMTP id S1727819AbhASXPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:13:18 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3768EC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:12:38 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 190so1266385wmz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:12:38 -0800 (PST)
+        Tue, 19 Jan 2021 18:15:39 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D392EC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:14:58 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id y4so17668727ybn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:14:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kJdfqz839OeseYYkmWz4yh6z5zvAjLz0yxVJ3bu4P2g=;
-        b=smpsCbyHn0NnsknFBhgrLWNcTjBC2cOujZNIGIWjZUwrWZr3wtfLtSfdNEpdyXlrFc
-         bTnGqluXpZ5/C8tyKdBVD8q8yX29bHUL0CJAiinunPPHQIT/VDNVd1npwF1v0r5N6rcn
-         fdS2dswwTfgbBiZbKXJc4TKbqE+RxWFUXpITUA8fARK/B1Nms2Ct0O88BnZtQ6Z6rz0J
-         G/xWFWFvwy4ovmUHlmdAy0LkdYk5hcBUEW+NCq4RtP2I72tbXzc10XJsoV9zzh9Db5QH
-         OAQsUCrcgydDrGNAGLr35SVdRUcfL+AuY3/SxCyx5KaWst19r6ci+s73/8AtGMcZjU0e
-         5O3w==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Marg7pjTRtpl09VyTT0jCfl3UMPAKnBqUunBe2OgC58=;
+        b=TKSYhYiP2tTGQZc9sbRFcM1T3K1NFpIAC+H5XtvnYTzAlPs2J03WjRiDZruXmEkE+I
+         u6Sug9gorg1W5siqZWi/2KTcL+J6q9lSyN9nkXefRpVu1uZg6NMSBnliNQfz0ZVP+Wvv
+         aZE101jRtqJ/iOghJQP7M7Q1TPeZZKcC1K39LdsiUJ3xA2hrMsVMz1G8HN3oBkpf8WPd
+         IXHJExRPEA84RY7rgPv4SWTUlDawwVJhts+JY7G6wl35gSwe4G0lWwR92mBEdRDRHIr0
+         +AHhZRnr5ULX37uqfagyndXyQaKXEfYSfiDFRAWMexiPCV1n73bON6QKXCr8r4/S3tIo
+         dp3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kJdfqz839OeseYYkmWz4yh6z5zvAjLz0yxVJ3bu4P2g=;
-        b=oEeHxgp0d3AX8A+vT2LCf7DjLC+ZI/lNA3K0fSZcOV1KNHqhkyZYeHxrvkneLhAamh
-         2SxggW1E0S/+VAK3pifrTNL10JPBCReRSkTGUlIP15t5xCAgBX7jH2blSVSZXE7V9U37
-         yax76r2lBk4ouqpfUbQeX5O1dgOqv7J+HN4x1ytPeTX+AVxAiZbGcpYjCNQK1UTVTHxe
-         CjoBMSo/6+BRbPoh8bs4gtrmVrpJj+OLNYhPbtLZ8Km8dmJVgfH09dPhp1CduHagEgPP
-         HLCXr78K7DqZ2JyT61Ar53lDhjD0KTh2Yy8L1rOLcR1vubOZrsIbB5QAgA2xIeD7LbDM
-         GCoA==
-X-Gm-Message-State: AOAM531D3HsRUnDPj9D801zV2C+OZDw95Mw912u6o78t8I500dxTraZ9
-        e6iFZDSf1Ekz4HRhT83fxFYaNro6TsQn4uKlMeU8Ww==
-X-Google-Smtp-Source: ABdhPJxTe6K+eqd0wxGdLv0AWWP9UYN9ZNOZKj8crhBvfDwZyzy2FzLxMxXw8Y7IY7riTOkOJecfM8Rcy1ApAJBqhCE=
-X-Received: by 2002:a05:600c:2110:: with SMTP id u16mr1621013wml.65.1611097956708;
- Tue, 19 Jan 2021 15:12:36 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Marg7pjTRtpl09VyTT0jCfl3UMPAKnBqUunBe2OgC58=;
+        b=g3qT2YU/1IIkfuwmbRyFpjuLRPslNb2iV5aBz/1sAjzLOuHGURoDeqdmbYxGjW3EJ0
+         HCXDkk8mnr+4NVyq/z6vQUOwzPVrV2yxcvIg8R9EWOvYWgAOGymqhWcwLRxhB4zHnUQs
+         Y5wNoiA22y1XmwFajUa8LabrTdFklYPY05t7xkTn0GqRhJ0s55V+7hZ2CJqqXEWe5Oa9
+         4wflQgOO/UG1wr69JJB5F0lLZWg0VogE8CDaQWqjcMiZDYGZ3II0nI7NH331lBLJi30G
+         E488f/RIQ1VJPShTP6t968mt5cWAaEuc+gBF2764qBqPyjEzTLCgu6E6Pf6IYmzQvrlU
+         guAQ==
+X-Gm-Message-State: AOAM532Q+w1kcJHVYblLD3cfpVmdAvMabeTe/AcoTUvphUSb/YZtQU9Y
+        MBQwnyVeXDWeu9HThOTXy4s6wNXrPvp6SbQjiug=
+X-Google-Smtp-Source: ABdhPJxbiDRHpwt+9UcYayL+Xg1d2kHHfCHdlAMKlBcunBREdjMEkIMfu7mpbjuGoJX+r4G8g2qsx5q5P/s8H+rfoqE=
+X-Received: by 2002:a25:dac6:: with SMTP id n189mr9637303ybf.85.1611098098022;
+ Tue, 19 Jan 2021 15:14:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119175336.4016923-1-marcorr@google.com> <20210119180024.GA28024@lst.de>
-In-Reply-To: <20210119180024.GA28024@lst.de>
-From:   Marc Orr <marcorr@google.com>
-Date:   Tue, 19 Jan 2021 15:12:25 -0800
-Message-ID: <CAA03e5GeGRLcLzp8d6pOC7UnQq9mZYzgW9rQgV3XHMb5gfsLWQ@mail.gmail.com>
-Subject: Re: [PATCH] nvme: fix handling mapping failure
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kbusch@kernel.org, axboe@fb.com, sagi@grimberg.me,
-        Jianxiong Gao <jxgao@google.com>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
+Received: by 2002:a05:7110:3311:b029:32:43a0:9516 with HTTP; Tue, 19 Jan 2021
+ 15:14:57 -0800 (PST)
+Reply-To: sroomf70@gmail.com
+From:   "Mrs. Nefi Setu" <mrs.nefisetu@gmail.com>
+Date:   Wed, 20 Jan 2021 00:14:57 +0100
+Message-ID: <CANyAxoY7zEgBBp5j--Qx0Yy=+V+=e8bkmGT+wy1B_Qr7jQXkLg@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:00 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Jan 19, 2021 at 09:53:36AM -0800, Marc Orr wrote:
-> > This patch ensures that when `nvme_map_data()` fails to map the
-> > addresses in a scatter/gather list:
-> >
-> > * The addresses are not incorrectly unmapped. The underlying
-> > scatter/gather code unmaps the addresses after detecting a failure.
-> > Thus, unmapping them again in the driver is a bug.
-> > * The DMA pool allocations are not deallocated when they were never
-> > allocated.
-> >
-> > The bug that motivated this patch was the following sequence, which
-> > occurred within the NVMe driver, with the kernel flag `swiotlb=force`.
-> >
-> > * NVMe driver calls dma_direct_map_sg()
-> > * dma_direct_map_sg() fails part way through the scatter gather/list
-> > * dma_direct_map_sg() calls dma_direct_unmap_sg() to unmap any entries
-> >   succeeded.
-> > * NVMe driver calls dma_direct_unmap_sg(), redundantly, leading to a
-> >   double unmap, which is a bug.
-> >
-> > Before this patch, I observed intermittent application- and VM-level
-> > failures when running a benchmark, fio, in an AMD SEV guest. This patch
-> > resolves the failures.
->
-> I think the right way to fix this is to just do a proper unwind insted
-> of calling a catchall function.  Can you try this patch?
+-- 
+I'm Mrs. Nefi Setu, did you Receive the (FUND), that was paid to you?
+please, do not hesitate to Let me know with your full name:.. for
+immediate verification notice,
 
-Done. It works great, thanks! Shall I send out a v2 with what you've proposed?
+Thanks,
 
-> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-> index 25456d02eddb8c..47d7075053b6b2 100644
-> --- a/drivers/nvme/host/pci.c
-> +++ b/drivers/nvme/host/pci.c
-> @@ -842,7 +842,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
->         sg_init_table(iod->sg, blk_rq_nr_phys_segments(req));
->         iod->nents = blk_rq_map_sg(req->q, req, iod->sg);
->         if (!iod->nents)
-> -               goto out;
-> +               goto out_free_sg;
->
->         if (is_pci_p2pdma_page(sg_page(iod->sg)))
->                 nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
-> @@ -851,16 +851,25 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
->                 nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
->                                              rq_dma_dir(req), DMA_ATTR_NO_WARN);
->         if (!nr_mapped)
-> -               goto out;
-> +               goto out_free_sg;
->
->         iod->use_sgl = nvme_pci_use_sgls(dev, req);
->         if (iod->use_sgl)
->                 ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw, nr_mapped);
->         else
->                 ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
-> -out:
->         if (ret != BLK_STS_OK)
-> -               nvme_unmap_data(dev, req);
-> +               goto out_dma_unmap;
-> +       return BLK_STS_OK;
-> +
-> +out_dma_unmap:
-> +       if (is_pci_p2pdma_page(sg_page(iod->sg)))
-> +               pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
-> +                                   rq_dma_dir(req));
-> +       else
-> +               dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
+Mrs. Nefi Setu,
+Foreign Remittance Director
 
-Do you think it's worth hoisting this sg unmap snippet into a helper
-that can be called from both here, as well as nvme_unmap_data()?
+Sincerely Yours, Respectfully,
 
-> +out_free_sg:
-> +       mempool_free(iod->sg, dev->iod_mempool);
->         return ret;
->  }
->
+Mr Bill T Winters,
+Group Chief Executive Officer & Executive Director,
