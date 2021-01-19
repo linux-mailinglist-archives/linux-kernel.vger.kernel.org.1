@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D420F2FBC51
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E1F2FBC71
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbhASQXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730889AbhASQWe (ORCPT
+        id S1731543AbhASQ27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:28:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54314 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731494AbhASQXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:22:34 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5505FC061573;
-        Tue, 19 Jan 2021 08:21:54 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id 22so22357491qkf.9;
-        Tue, 19 Jan 2021 08:21:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8bKO85uYL0TuKxcIkZ/8W11uUZW2LrfduTLto/+NkzI=;
-        b=ED4QgOlPjbdeNh5YfNkolLpSW8IX2bPLuSFg/tr0zbzxHmNRxlcQBXFgPmuRMyPK7u
-         4F4hvIFaQtqE+4q3gyjy5h0o2bUpEoUqg53nbbYo4dqj8iEt/dSi7QxWSwHpiN6VRRMM
-         kk+uUnAvzzsOJWb0oMyBYPLijnnW6nftCOSQEUovCT1X5zfuniTMhy9j0IuIIQ3stLmm
-         iF/Q20rlPiyRElRgruCxPlfHhOdanbSY9oCjTQ+Jfb4jQpluGAIM+VORGJ8EqANDi/lO
-         U8h+IeT2BjMa/fERMEvAITo+PwidWJdiFEytv3Mw9gYCI+pwSxQfrTRNyfxcIF9mkl57
-         2PMw==
+        Tue, 19 Jan 2021 11:23:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611073333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u9Q4y96bo6R543WF3WIb9gh7PSMWrwFibDeVZ11baSM=;
+        b=Z19oeIUHOmAyjYikkAOQkW9tut0rcbmvC9z4MXkj+5iHL1SpvOfT6X0mmTr6A39/BwXP3H
+        OIJVFnmuSBl2HTvLjBFdvZSlMd5ZvNxygl2c3Zce0MD7jXcS76enLocoRHRp76/ZX2EJSr
+        r+eKxhJOAUJFIsT/dVJmSgUI9sDlx4o=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532--nyJ6JRRNJ-W3Npr5fwQ6g-1; Tue, 19 Jan 2021 11:22:09 -0500
+X-MC-Unique: -nyJ6JRRNJ-W3Npr5fwQ6g-1
+Received: by mail-ej1-f72.google.com with SMTP id f1so3101157ejq.20
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:22:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8bKO85uYL0TuKxcIkZ/8W11uUZW2LrfduTLto/+NkzI=;
-        b=LApL7tob42ByrjgRCYXi10R3bC4CfCn9dzrSd5k5JQK3T+YNZi/9AJXZaCAh9T7iqP
-         JVSCEtNoYdcYA9JwYbsrOc8DCT6Nijvc6zo0Xnoss+upz8ry+/EMpk8LMkSmVBzMVeCn
-         Ou/ARZ2EAz6nkUxklKuwUR+R5xxNaRtBRTow520yyrXPkBGjZ4fEjLNn6lN8Wp9PdAKj
-         8hMFdysQToAWUkNcB/h3tbqlL1SySPxRvaD9LFSeGhnbG0VM3owAD5FYyZAORp/13d0L
-         LN/hgrqgxBHBh2YQHKHyvFjkwTfR7SBr+NDaCe599o2QpIq4LEQlFP9uY44Nb6Gzuk1A
-         c+Lg==
-X-Gm-Message-State: AOAM530Bb7HAG4dENvdNxF56T+fDgGZ/yUJPs//ChlC1fC8wyV2DreNO
-        CUGB5PySigNrhsSOjKCAYcc=
-X-Google-Smtp-Source: ABdhPJzORVjV8oYhIUFvxkNrvq9ZcABKnSG69miE7HR5p6O/qB/yiVAy7sqvFvb8VxZ8IKSI6VL+Nw==
-X-Received: by 2002:a37:6611:: with SMTP id a17mr5112101qkc.150.1611073313510;
-        Tue, 19 Jan 2021 08:21:53 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id c28sm12924389qtv.2.2021.01.19.08.21.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 08:21:53 -0800 (PST)
-Subject: Re: [PATCH V2 1/2] scripts: dtc: Add fdtoverlay.c and fdtdump.c to
- DTC_SOURCE
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Frank Rowand <frowand.list@gmail.com>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <eb85b5ba-e2c5-7601-6934-089b5b1370d2@gmail.com>
-Date:   Tue, 19 Jan 2021 10:21:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=u9Q4y96bo6R543WF3WIb9gh7PSMWrwFibDeVZ11baSM=;
+        b=XofGUH1wkuE++/qS+kmbSdgsIkqNjQUSAxTv+owQVTBaaYL8bBa394AnlrPicgMtXf
+         Qj2s3lMPze2NI93jNeHE/7HN3rEsTaiRgNrQJquWTB74pMjSM70lZOVfibnw7jJc91K2
+         eo5DwCK6RXyWRLyGDeLi3hjh0gNkVmJBPD2cGwOgK0YicEaANxm5JiWVEQDtMKc12NOc
+         4mMft2x187PzdXWJg/YRAm+uDJohHBERQGRyverdwojKE2Y6wjH/Au9SF7ThDI9PvZup
+         IxYFRKp3eZiVaOYU3yrMvDHRMXERRUjfQK5O9DoYgV0/H/JYi+LXqEXaldwEw7NxIW+0
+         CZlg==
+X-Gm-Message-State: AOAM531m6d2enDAkwucxmOUNnuDQDVtXHpa9MCLdqT/EIH3JjcZJvvfN
+        2IhY1vd7tN9QAAC4mCq+LuGbcw2uw4FCwYWZW6KbdbPqhPh/zl3N3X6LXtuiIIhRyjwNsLjmczv
+        puPC16zik61UN2h9FJ3fZLDmB
+X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr3576261ejb.355.1611073328353;
+        Tue, 19 Jan 2021 08:22:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzcHzUnJ7YyoKIR+WDesoLPvRjoftwu+C8P2YCi0ehF8psSXAN/K0sAcoG8KXYJcSh2tch14w==
+X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr3576247ejb.355.1611073328141;
+        Tue, 19 Jan 2021 08:22:08 -0800 (PST)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id f22sm2168066eje.34.2021.01.19.08.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 08:22:07 -0800 (PST)
+From:   Miklos Szeredi <mszeredi@redhat.com>
+To:     "Eric W . Biederman" <ebiederm@xmission.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <code@tyhicks.com>
+Subject: [PATCH 0/2] capability conversion fixes
+Date:   Tue, 19 Jan 2021 17:22:02 +0100
+Message-Id: <20210119162204.2081137-1-mszeredi@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 11:15 PM, Viresh Kumar wrote:
-> We will start building overlays for platforms soon in the kernel and
-> would need these tools going forward. Lets start fetching them.
-> 
-> Note that a copy of fdtdump.c was already copied back in the year 2012,
-> but was never updated or built for some reason.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> V2: Separate out this change from Makefile one.
-> 
-> This needs to be followed by invocation of the ./update-dtc-source.sh
-> script so the relevant files can be copied before the Makefile is
-> updated in the next patch.
-> 
->  scripts/dtc/update-dtc-source.sh | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
-> index bc704e2a6a4a..9bc4afb71415 100755
-> --- a/scripts/dtc/update-dtc-source.sh
-> +++ b/scripts/dtc/update-dtc-source.sh
-> @@ -31,9 +31,9 @@ set -ev
->  DTC_UPSTREAM_PATH=`pwd`/../dtc
->  DTC_LINUX_PATH=`pwd`/scripts/dtc
->  
-> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
-> -		srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
-> -		dtc-lexer.l dtc-parser.y"
-> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtdump.c fdtoverlay.c flattree.c \
-> +		fstree.c livetree.c srcpos.c srcpos.h treesource.c util.c \
-> +		util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
->  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
->  		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
->  		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
-> 
+It turns out overlayfs is actually okay wrt. mutliple conversions, because
+it uses the right context for lower operations.  I.e. before calling
+vfs_{set,get}xattr() on underlying fs, it overrides creds with that of the
+mounter, so the current user ns will now match that of
+overlay_sb->s_user_ns, meaning that the caps will be converted to just the
+right format for the next layer
 
-DTC_SOURCE is for the dtc program.  Please add a FDTOVERLAY_SOURCE and
-related use for the fdtoverlay program.
+OTOH ecryptfs, which is the only other one affected by commit 7c03e2cda4a5
+("vfs: move cap_convert_nscap() call into vfs_setxattr()") needs to be
+fixed up, since it doesn't do the cap override thing that overlayfs does.
 
--Frank
+I don't have an ecryptfs setup, so untested, but it's a fairly trivial
+change.
+
+My other observation was that cap_inode_getsecurity() messes up conversion
+of caps in more than one case.  This is independent of the overlayfs user
+ns enablement but affects it as well.
+
+Maybe we can revisit the infrastructure improvements we discussed, but I
+think these fixes are more appropriate for the current cycle.
+
+Thanks,
+Miklos
+
+Miklos Szeredi (2):
+  ecryptfs: fix uid translation for setxattr on security.capability
+  security.capability: fix conversions on getxattr
+
+ fs/ecryptfs/inode.c  | 10 +++++--
+ security/commoncap.c | 67 ++++++++++++++++++++++++++++----------------
+ 2 files changed, 50 insertions(+), 27 deletions(-)
+
+-- 
+2.26.2
+
