@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680BB2FB3F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393AE2FB3FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbhASIYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S1730884AbhASIYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:24:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730884AbhASIXV (ORCPT
+        with ESMTP id S1730917AbhASIYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:23:21 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B626C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:22:36 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id my11so1120852pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:22:36 -0800 (PST)
+        Tue, 19 Jan 2021 03:24:23 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42898C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:23:43 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id a12so18767361wrv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NWqB/GoVkdljpMDCGL3FVT5zZbqPZEOnVZhu+cjokqA=;
-        b=pVXBoUg0EM0/gtnwyxcJZc6u2KLdurCxF5teoMEf/ZP9Xk4o6Luw09oLCWinIQ1m7w
-         48bP0e1rpkg5PE6dzyyKa2ajONBarWT+3WQh1j8VseGWSqzScxZVd55T+73gdz4XFmHr
-         aaLRqaENQ66rHSJJTc0CzBnZYxI4nl0ceDyib9Lo1Jv80KQVNe7mBTOkOtoFj99sfpDt
-         tTb+bmPnyuo8U/5Vr0ARuCw7Txxq3ovfZTcwWwmHr5L1eFJgv7GVOdGk3qvN1ZiYCT6n
-         Txj8DMfGx8E9zjOYev6DyWkh0B72kMGoukk2/JUVuvM89e1poI0ZnQwHJuJWhJtTaIdv
-         qGBQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0o446r/7sfNrNMbiwlFxGJePev96CeNNzqsH+vREsX8=;
+        b=I+pBsb0vAWfUoTHY7RYJ6yNwT7cwg2JIs/IprcYa7Jzjnxdqdpn2CwBtUjTwRo4XM8
+         uyIxI/Ggh9GSR8awn0b5sPWRSJ6KeHwcuc4V3KOQtFbLoo91T/73rswe0bX4MOgtFIIq
+         ZGSHMQaKXk0g37CDxvDds7AOnm+lJVqQiA8kil11Bj3iT+HcRtNi3LkzM+W0rIu2yY5l
+         wYQ2dW8NeBCzjwnly/8/Evir6hbxKdfoTmtw8ACc/5C0nweEREnUNSjhfoxL146bZiLg
+         Aw0Xg9rkmpOGYX/qwx16LkK3/KSXweJF8f1Ja+42rbAaqhrWjHyujQ/j/QaJohd5V6CQ
+         +kbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NWqB/GoVkdljpMDCGL3FVT5zZbqPZEOnVZhu+cjokqA=;
-        b=dToRyujLa4gKsERufNPcNBzLmhvr8Ia6T61cxmQMr+Fwtx8iZrKMKz9Z3pQ9wYVfcj
-         LdO1ED7H+EqiuHRvczHa59K+gMOXT+x7FPYhdjplBMSzFBxvbcWkpsLP8G/2auIIx6gU
-         Kb0N9pOh3vUAf/UTH9z8ToCDS8xajBQr/Wo6REoIY6jDM4A6vrlv2izjQQ/L8Vr9tRY6
-         SHpvHsNTeRzY50xDL+S/+6RgPZ7v7fw+yQxFhURcUJdQFQK1dn0sqRngsq/SEZ9YOAhQ
-         G8MLO1967GcQhP8jfvB0hN68X7fsEqYMT81tvp26DM9DvFSVFVofelJx//Ms0HO1y5/5
-         vpiw==
-X-Gm-Message-State: AOAM533qizu1eXpEu2knPlP4GiQ/uX46IzckPXcga5mmswrk2S5Uon9l
-        jQOtTxxBBnKpY+7vSRGoJZ4tEQ==
-X-Google-Smtp-Source: ABdhPJxXowidB3QV6SfYuccQQERZU3/i23rKOz8wxL9hyQZP9P1g8KIW9bxPHRaRu72azEIyZ4VllQ==
-X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr4002698pjb.113.1611044555937;
-        Tue, 19 Jan 2021 00:22:35 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id g5sm9206465pfb.194.2021.01.19.00.22.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Jan 2021 00:22:35 -0800 (PST)
-Date:   Tue, 19 Jan 2021 16:22:11 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: Re: [PATCH] venus: core: Fix platform driver shutdown
-Message-ID: <20210119082210.GC17701@dragon>
-References: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
- <20210119074044.GB17701@dragon>
- <72d85c1b-ec0b-3cf1-dbbc-6c4924e4beec@linaro.org>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0o446r/7sfNrNMbiwlFxGJePev96CeNNzqsH+vREsX8=;
+        b=HVOEBK1EO0fSEsa2AqNjnP2PCrO1NaURFg2hl6oADd5zQwnr/aEnsURp+0MdkB9zQP
+         zUF9i53ukE1ltPFVTvWJ9vunN4EytHd7/61K6fjhVxunyhaUVV+1mUtgYbwUJQvY/Dx8
+         +l4izoTdAgm9KYnAoPNo0Jy1kY1S5pE5SCoeJOzDPEH+mWOnzNZOmujiN/JmXwRC6VkP
+         8ACsdR2jEezjKwSvHe1aJKlm9wFtjODNI+jdddcwChYPwJXLH0f+1QMJx5S0dikqUVSS
+         LrkwInowUHybsaiBYlULgVgNEs37U5szdnt6YHo4oX2aCqi3LD9ZHsa9f1b5E4szhMPx
+         /QBw==
+X-Gm-Message-State: AOAM533zxYejlr4oaeHfjkfhE0HxWI9zh6x/M8BWx34cqpsS4dj2evko
+        oTOHvLuchqkI28M2bpCdeCY6wg==
+X-Google-Smtp-Source: ABdhPJy40W+PZAbNiUmSORK+HY3by6NS2OcSzoL5kUbSYa1SMUjm7J9uhh20bQCKaiilyG3zYfMTCA==
+X-Received: by 2002:a5d:6289:: with SMTP id k9mr3282521wru.200.1611044621936;
+        Tue, 19 Jan 2021 00:23:41 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id y14sm29847493wru.96.2021.01.19.00.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 00:23:41 -0800 (PST)
+Date:   Tue, 19 Jan 2021 08:23:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     AceLan Kao <chia-lin.kao@canonical.com>
+Cc:     Campion Kang <campion.kang@advantech.com.tw>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] mfd: ahc1ec0: Add support for Advantech embedded
+ controller
+Message-ID: <20210119082339.GI4903@dell>
+References: <20210118123749.4769-1-campion.kang@advantech.com.tw>
+ <20210118123749.4769-4-campion.kang@advantech.com.tw>
+ <CAFv23QngmvuKZb0_pK7RBa=VX=2ypabg5p1+vSqrT36CNdJhgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <72d85c1b-ec0b-3cf1-dbbc-6c4924e4beec@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFv23QngmvuKZb0_pK7RBa=VX=2ypabg5p1+vSqrT36CNdJhgw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 09:59:41AM +0200, Stanimir Varbanov wrote:
-> On 1/19/21 9:40 AM, Shawn Guo wrote:
-> > On Mon, Dec 21, 2020 at 11:58:20AM +0200, Stanimir Varbanov wrote:
-> >> With TZ system reboot cannot finish successfully. To fix that
-> >> enable core clocks by runtime pm before TZ calls and disable
-> >> clocks after that.
-> >>
-> >> Fixes: 7399139be6b2 ("media: venus: core: add shutdown callback for venus")
-> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> > 
-> > Hi Mauro,
-> > 
-> > Could you help pick this fix up?
-> 
-> Shawn, it is part of linux-next already.
+On Tue, 19 Jan 2021, AceLan Kao wrote:
 
-Ha, sorry, I did not check linux-next.  I sent the message because
-I see this fix is still missing after I rebase my Yoga C630 branch
-to 5.11-rc4.  We will get this fix into 5.11, right?
+> Campion Kang <campion.kang@advantech.com.tw> 於 2021年1月18日 週一 下午8:37寫道：
+> >
+> > AHC1EC0 is the embedded controller driver for Advantech industrial
+> > products. This provides sub-devices such as hwmon and watchdog, and also
+> > expose functions for sub-devices to read/write the value to embedded
+> > controller.
+> >
+> > Changed since V5:
+> >         - Kconfig: add "AHC1EC0" string to clearly define the EC name
+> >         - fix the code according to reviewer's suggestion
+> >         - remove unnecessary header files
+> >         - change the structure name to lower case, align with others
+> > naming
+> >
+> > Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
+> > ---
+> >  drivers/mfd/Kconfig         |  10 +
+> >  drivers/mfd/Makefile        |   2 +
+> >  drivers/mfd/ahc1ec0.c       | 808 ++++++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/ahc1ec0.h | 276 ++++++++++++
+> >  4 files changed, 1096 insertions(+)
+> >  create mode 100644 drivers/mfd/ahc1ec0.c
+> >  create mode 100644 include/linux/mfd/ahc1ec0.h
 
-Shawn
+[...]
+
+NB: Snipped 1000 lines.
+
+> Tested-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+
+Would you be kind enough to snip your replies please AceLan?
+
+It would have the benefit of saving a lot of people a little time.
+
+TIA.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
