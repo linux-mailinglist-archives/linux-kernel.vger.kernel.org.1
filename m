@@ -2,103 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B0C2FB77B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEC52FB782
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389740AbhASK7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:59:30 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:56627 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387728AbhASKtj (ORCPT
+        id S2405045AbhASLCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390964AbhASKve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:49:39 -0500
-Received: by mail-io1-f69.google.com with SMTP id m2so34363509iow.23
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:48:43 -0800 (PST)
+        Tue, 19 Jan 2021 05:51:34 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8782C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:50:49 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id b8so10269024plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=MdowI1spYzSZ783aBzUoan8uq2NdmnUHuCZElfPxqfQ=;
+        b=Fx/tzeqor4dkEBrQ0EyMKi5UYinFCZNM+4m2iEiHgFjtaqmVm8MaDD8C4DMfirKXyU
+         H5gAlRfQHzOM/5ghPHjfII8w+BN1O7fXQkhddHMAP/wAde5v1uvn14+cD29IIL+durT4
+         h5pxtZ+oPR5/0Mr2BZONiO4fZ9jVg+B0pmf5QUUeY2K/1IjvhcQ2aTOpG7VCHg4s10kG
+         0f+RczmVuu9aFkP3pYQiQQwxxweG/yhG1p37p+eBX84V6KxuP/o5d6VXVhXBVzkBttTK
+         ACUL6DnJc6+255oBCQNY5VExJpM25oUrD3J+aVy4LCWpjQAKIXh+ndx2OC4S+5W+6ZOr
+         lsrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BNpQVX1O+cyOBMkR/TOJl1Zoq0gO8cOFzbu0wo8ajm0=;
-        b=eOvj8DPcks7Dw1Tjm424ir+ioMwwLT9Ec3JxGafxPxKC8Fk99AWBn2mDvx/Xu6rgzG
-         R5oEFa1FK2fDsp1zAb1P6ZryM4+sAOG4fR3Rgu2bdmWfhTSsECIkq7xoC04UnoAfITxw
-         0/S4Pko7/U9OSJcH1FDleDpukYImJv7Odzis8kevNQL6YjeYCPyNnIAP+E8EmUy9gi6M
-         xjYWU7oiq/Cxur5f7CdMcsjA50F/N81YSk/TEXXqmz9Sun/9VfIThNu9si/hJe5pGBGU
-         3oLzHTdTlMBynsyr/Q/5VXYDOTs6j/NaRVNmhKRiTcQdJopVTxLUMTtho1RyHUenv7Uz
-         //AA==
-X-Gm-Message-State: AOAM533w8QFvaBcei1o5fY5453qQmLAqcUWjPKAGlgVd6bC6RKA6MrjL
-        dwYySngLiA+ZZ0bxFY1//+xWb7yeG3hXO6xungcKos6+7Pyj
-X-Google-Smtp-Source: ABdhPJwRZGICyAc9YguweoA/wKY6u6SOwFq+oTtQJm/1QiI83UN8virOQhf9L37lRF2ihWnI28mucskkdNWBC+/E1HBw5hcBKcrH
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c8d:: with SMTP id w13mr2751807ill.301.1611053297346;
- Tue, 19 Jan 2021 02:48:17 -0800 (PST)
-Date:   Tue, 19 Jan 2021 02:48:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000080aeb405b93e9309@google.com>
-Subject: WARNING in mntput_no_expire
-From:   syzbot <syzbot+c19357b59a4b43938b97@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MdowI1spYzSZ783aBzUoan8uq2NdmnUHuCZElfPxqfQ=;
+        b=lESP9jo+faAUV8qwpSum/SgCx98UFxUM4JeX2PYb30/e6PVQZ4xHJs17MN6GimVnaS
+         LaHl0ow+0EEEVVSpKhGFROVGgDcb64xn9erg8x2YWfdS8OjfxG7C7zyIwE7quPNFQTpb
+         eR08rLAl6ltw3W0n7hzFkvYXM9LFYHJBq8Ttsg584O0gvy8xw0ACIvds5nRcy6aMRcE4
+         DdnWbXC95eywsePKDjnLxEoDeHmROQptFUMZaXfvUu3cKXbb3bIANMmlHTivkTHDaUmm
+         14pKm5GCvWQ+BhE4XCbiGZu++o7fme8G11GZknNx3G4Ks+iUJisytDXkfp+wYb7hE1U+
+         tzGg==
+X-Gm-Message-State: AOAM533FmGJL8VkF6vKgK04GZrq7oF+XeWK5IftoVj0LkipT/9Baj70Q
+        rI6ot2APefZFqLhAsSRQRFnjZUq/bUBV4w==
+X-Google-Smtp-Source: ABdhPJz6EoK9JnwYL1Qcj/o7CwQgRwQsXysqajEDUuSbbCkplLL+gfnG4gJ1U1PgzoWtncHHZFMJcQ==
+X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr4764171pjs.102.1611053449104;
+        Tue, 19 Jan 2021 02:50:49 -0800 (PST)
+Received: from localhost.localdomain ([122.181.110.213])
+        by smtp.gmail.com with ESMTPSA id a136sm19619797pfd.149.2021.01.19.02.50.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 02:50:48 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH] kdb: Simplify kdb commands registration
+Date:   Tue, 19 Jan 2021 16:20:18 +0530
+Message-Id: <1611053418-29283-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Simplify kdb commands registration via using linked list instead of
+static array for commands storage.
 
-syzbot found the following issue on:
-
-HEAD commit:    b3a3cbde Add linux-next specific files for 20210115
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e9fb98d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ea08dae6aab586f
-dashboard link: https://syzkaller.appspot.com/bug?extid=c19357b59a4b43938b97
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c19357b59a4b43938b97@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8486 at fs/namespace.c:1160 mntput_no_expire+0xb47/0xd40 fs/namespace.c:1160
-Modules linked in:
-CPU: 0 PID: 8486 Comm: syz-executor.2 Not tainted 5.11.0-rc3-next-20210115-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:mntput_no_expire+0xb47/0xd40 fs/namespace.c:1160
-Code: ff 48 c7 c2 a0 b5 58 89 be c2 02 00 00 48 c7 c7 60 b5 58 89 c6 05 ef f5 25 0b 01 e8 6b e0 f0 06 e9 3f fd ff ff e8 49 5a a9 ff <0f> 0b e9 fc fc ff ff e8 3d 5a a9 ff e8 98 97 95 ff 31 ff 89 c5 89
-RSP: 0018:ffffc900016cfcf8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff920002d9fa5 RCX: 0000000000000000
-RDX: ffff88801b0e8000 RSI: ffffffff81c9aec7 RDI: 0000000000000003
-RBP: ffff8880136e9000 R08: 0000000000000000 R09: ffffffff8ed3d86f
-R10: ffffffff81c9abc1 R11: 0000000000000001 R12: 0000000000000008
-R13: ffffc900016cfd48 R14: dffffc0000000000 R15: 00000000ffffffff
-FS:  00000000019ec940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fffdd486d7c CR3: 0000000051c48000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- path_umount+0x7c9/0x1240 fs/namespace.c:1739
- ksys_umount fs/namespace.c:1758 [inline]
- __do_sys_umount fs/namespace.c:1763 [inline]
- __se_sys_umount fs/namespace.c:1761 [inline]
- __x64_sys_umount+0x159/0x180 fs/namespace.c:1761
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x460c47
-Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fffdd487488 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000460c47
-RDX: 00000000004033a8 RSI: 0000000000000002 RDI: 00007fffdd487530
-RBP: 00000000000456eb R08: 0000000000000000 R09: 000000000000000b
-R10: 0000000000000005 R11: 0000000000000246 R12: 00007fffdd4885e0
-R13: 00000000019eda60 R14: 0000000000000000 R15: 0000000000045444
-
-
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/debug/kdb/kdb_main.c    | 78 ++++++++++--------------------------------
+ kernel/debug/kdb/kdb_private.h |  1 +
+ 2 files changed, 20 insertions(+), 59 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 930ac1b..93ac0f5 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -33,6 +33,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/kdb.h>
++#include <linux/list.h>
+ #include <linux/notifier.h>
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+@@ -84,15 +85,8 @@ static unsigned int kdb_continue_catastrophic =
+ static unsigned int kdb_continue_catastrophic;
+ #endif
+ 
+-/* kdb_commands describes the available commands. */
+-static kdbtab_t *kdb_commands;
+-#define KDB_BASE_CMD_MAX 50
+-static int kdb_max_commands = KDB_BASE_CMD_MAX;
+-static kdbtab_t kdb_base_commands[KDB_BASE_CMD_MAX];
+-#define for_each_kdbcmd(cmd, num)					\
+-	for ((cmd) = kdb_base_commands, (num) = 0;			\
+-	     num < kdb_max_commands;					\
+-	     num++, num == KDB_BASE_CMD_MAX ? cmd = kdb_commands : cmd++)
++/* kdb_cmds_head describes the available commands. */
++static LIST_HEAD(kdb_cmds_head);
+ 
+ typedef struct _kdbmsg {
+ 	int	km_diag;	/* kdb diagnostic */
+@@ -921,7 +915,7 @@ int kdb_parse(const char *cmdstr)
+ 	char *cp;
+ 	char *cpp, quoted;
+ 	kdbtab_t *tp;
+-	int i, escaped, ignore_errors = 0, check_grep = 0;
++	int escaped, ignore_errors = 0, check_grep = 0;
+ 
+ 	/*
+ 	 * First tokenize the command string.
+@@ -1011,7 +1005,7 @@ int kdb_parse(const char *cmdstr)
+ 		++argv[0];
+ 	}
+ 
+-	for_each_kdbcmd(tp, i) {
++	list_for_each_entry(tp, &kdb_cmds_head, list_node) {
+ 		if (tp->cmd_name) {
+ 			/*
+ 			 * If this command is allowed to be abbreviated,
+@@ -1037,8 +1031,8 @@ int kdb_parse(const char *cmdstr)
+ 	 * few characters of this match any of the known commands.
+ 	 * e.g., md1c20 should match md.
+ 	 */
+-	if (i == kdb_max_commands) {
+-		for_each_kdbcmd(tp, i) {
++	if (list_entry_is_head(tp, &kdb_cmds_head, list_node)) {
++		list_for_each_entry(tp, &kdb_cmds_head, list_node) {
+ 			if (tp->cmd_name) {
+ 				if (strncmp(argv[0],
+ 					    tp->cmd_name,
+@@ -1049,7 +1043,7 @@ int kdb_parse(const char *cmdstr)
+ 		}
+ 	}
+ 
+-	if (i < kdb_max_commands) {
++	if (!list_entry_is_head(tp, &kdb_cmds_head, list_node)) {
+ 		int result;
+ 
+ 		if (!kdb_check_flags(tp->cmd_flags, kdb_cmd_enabled, argc <= 1))
+@@ -2428,12 +2422,11 @@ static int kdb_kgdb(int argc, const char **argv)
+ static int kdb_help(int argc, const char **argv)
+ {
+ 	kdbtab_t *kt;
+-	int i;
+ 
+ 	kdb_printf("%-15.15s %-20.20s %s\n", "Command", "Usage", "Description");
+ 	kdb_printf("-----------------------------"
+ 		   "-----------------------------\n");
+-	for_each_kdbcmd(kt, i) {
++	list_for_each_entry(kt, &kdb_cmds_head, list_node) {
+ 		char *space = "";
+ 		if (KDB_FLAG(CMD_INTERRUPT))
+ 			return 0;
+@@ -2667,13 +2660,9 @@ int kdb_register_flags(char *cmd,
+ 		       short minlen,
+ 		       kdb_cmdflags_t flags)
+ {
+-	int i;
+ 	kdbtab_t *kp;
+ 
+-	/*
+-	 *  Brute force method to determine duplicates
+-	 */
+-	for_each_kdbcmd(kp, i) {
++	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
+ 		if (kp->cmd_name && (strcmp(kp->cmd_name, cmd) == 0)) {
+ 			kdb_printf("Duplicate kdb command registered: "
+ 				"%s, func %px help %s\n", cmd, func, help);
+@@ -2681,35 +2670,10 @@ int kdb_register_flags(char *cmd,
+ 		}
+ 	}
+ 
+-	/*
+-	 * Insert command into first available location in table
+-	 */
+-	for_each_kdbcmd(kp, i) {
+-		if (kp->cmd_name == NULL)
+-			break;
+-	}
+-
+-	if (i >= kdb_max_commands) {
+-		kdbtab_t *new = kmalloc_array(kdb_max_commands -
+-						KDB_BASE_CMD_MAX +
+-						kdb_command_extend,
+-					      sizeof(*new),
+-					      GFP_KDB);
+-		if (!new) {
+-			kdb_printf("Could not allocate new kdb_command "
+-				   "table\n");
+-			return 1;
+-		}
+-		if (kdb_commands) {
+-			memcpy(new, kdb_commands,
+-			  (kdb_max_commands - KDB_BASE_CMD_MAX) * sizeof(*new));
+-			kfree(kdb_commands);
+-		}
+-		memset(new + kdb_max_commands - KDB_BASE_CMD_MAX, 0,
+-		       kdb_command_extend * sizeof(*new));
+-		kdb_commands = new;
+-		kp = kdb_commands + kdb_max_commands - KDB_BASE_CMD_MAX;
+-		kdb_max_commands += kdb_command_extend;
++	kp = kmalloc(sizeof(*kp), GFP_KDB);
++	if (!kp) {
++		kdb_printf("Could not allocate new kdb_command table\n");
++		return 1;
+ 	}
+ 
+ 	kp->cmd_name   = cmd;
+@@ -2719,6 +2683,8 @@ int kdb_register_flags(char *cmd,
+ 	kp->cmd_minlen = minlen;
+ 	kp->cmd_flags  = flags;
+ 
++	list_add_tail(&kp->list_node, &kdb_cmds_head);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(kdb_register_flags);
+@@ -2757,15 +2723,15 @@ EXPORT_SYMBOL_GPL(kdb_register);
+  */
+ int kdb_unregister(char *cmd)
+ {
+-	int i;
+ 	kdbtab_t *kp;
+ 
+ 	/*
+ 	 *  find the command.
+ 	 */
+-	for_each_kdbcmd(kp, i) {
++	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
+ 		if (kp->cmd_name && (strcmp(kp->cmd_name, cmd) == 0)) {
+-			kp->cmd_name = NULL;
++			list_del(&kp->list_node);
++			kfree(kp);
+ 			return 0;
+ 		}
+ 	}
+@@ -2778,12 +2744,6 @@ EXPORT_SYMBOL_GPL(kdb_unregister);
+ /* Initialize the kdb command table. */
+ static void __init kdb_inittab(void)
+ {
+-	int i;
+-	kdbtab_t *kp;
+-
+-	for_each_kdbcmd(kp, i)
+-		kp->cmd_name = NULL;
+-
+ 	kdb_register_flags("md", kdb_md, "<vaddr>",
+ 	  "Display Memory Contents, also mdWcN, e.g. md8c1", 1,
+ 	  KDB_ENABLE_MEM_READ | KDB_REPEAT_NO_ARGS);
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index a4281fb..7a4a181 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -174,6 +174,7 @@ typedef struct _kdbtab {
+ 	short    cmd_minlen;		/* Minimum legal # command
+ 					 * chars required */
+ 	kdb_cmdflags_t cmd_flags;	/* Command behaviour flags */
++	struct list_head list_node;
+ } kdbtab_t;
+ 
+ extern int kdb_bt(int, const char **);	/* KDB display back trace */
+-- 
+2.7.4
+
