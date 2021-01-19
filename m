@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A472FB8A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F762FB8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392748AbhASN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:28:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392732AbhASNSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:18:35 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B72C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:17:42 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id e7so21862906ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V0WyZ0QjeeZxPEOPKkoltDAJRX7zc5vT1YGzpNcNLdg=;
-        b=LOKDOAdbletZJxnT+nSaBkOgX3NZbBgWpZRAbqYlUul6ZCkyKN8zA/ia6Ds6vE5yoj
-         rjts812XBS1aFJraX8QRugBXIJEBGr4LGwdRH+jybZVowZvtW78kbI7rfTy96mMLSrjK
-         W3Y8Ev5DiFpdt/ZkLfMvVp5uAUaXzntEN1Q1i/pJCmp9HjUntST5omCO4tP+jC4hqdG/
-         xCHgoSSBEZu8vp+rszoxN06cH5TsSSI3sTfNeWTZpZcFVz83GQi02J6w6uamqUKyFu+U
-         XlMupOFR8JDQmhHkZxcEo2OyGgaqizv6soDyTUexM9eL7n9wxRl9WWti86pE3KwXvcde
-         8R1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V0WyZ0QjeeZxPEOPKkoltDAJRX7zc5vT1YGzpNcNLdg=;
-        b=UY6xmGwoV+R6VoS1D8AocVSJ47Gf1lgX8uF16mE6Jqotsj5udgengkCgqJKhBjD4Cf
-         s3qNSyjo8va/61Cd2iXH1Qdozyn1dlfxYLzQVji6EaCsvkIfL1XmtPF+wP/LW2A7OzmP
-         ODr+zkDmHRlzL7D2ttD28IpYs/KhjBU9v1BgC+hXuzUFV0E4+ZE/JuVWH1SyVe2V4CSY
-         nreOxTdWwsRKq6504Z3X2RT0xjWEu8FFbGvt5mF91Hky+4CpNSfrLE4QzmGPWWRcqkaF
-         Q96hwz58haO8xTn2aCnAIQg8p+2szIxDvDsDPbM2EOSrdAuUxqffQBYgKOPX4OTHD18S
-         5H4Q==
-X-Gm-Message-State: AOAM533MQiIlO+0Cr7INU22oMPd1B90s5PJM33T1OPv0mB2fmd4ZuFF5
-        Yd/0yhDUpWyyNczFz4psOjtrEQqAUsWWFxLcLhg=
-X-Google-Smtp-Source: ABdhPJxQLFCiId4xaE1FKf4J06dsRKMnZPjV3ri61od/WV6lWyDqFZBH6nkjkiiP7QKazbjZWcJthNp/sVBpsj2S7Fg=
-X-Received: by 2002:a2e:90c8:: with SMTP id o8mr484635ljg.43.1611062260956;
- Tue, 19 Jan 2021 05:17:40 -0800 (PST)
+        id S2392692AbhASN2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:28:09 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:38586 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391542AbhASNS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 08:18:57 -0500
+Received: from zn.tnic (p200300ec2f0bca001beaf3e1446171b7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:1bea:f3e1:4461:71b7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA0741EC05F1;
+        Tue, 19 Jan 2021 14:17:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611062279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=49X+dnnC4B/ABzZM6fYCQbbb7PQaNSr+M45P48fRRVo=;
+        b=gfC4JVAPrd2rAZJy0ufv7U7FyT3q2WPsF7fWGSPqwSHylSY5cHS0PWdNGCWfrHTcpixcGX
+        Xw4WPkYm3w6ND3AMHt+knar/UAOwijkUEBnNn2ANOrQJf8hNHq32QFHPyupYOj83o3Molu
+        aUGwQp4TCwKJ6Og3MvYkAgOVGvWwb18=
+Date:   Tue, 19 Jan 2021 14:17:59 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Jonathan Lemon <bsd@fb.com>, Tony Luck <tony.luck@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [x86/mce]  7bb39313cd:  netperf.Throughput_tps -4.5% regression
+Message-ID: <20210119131759.GL27433@zn.tnic>
+References: <20210112142109.GE30747@xsang-OptiPlex-9020>
+ <20210112141438.GF13086@zn.tnic>
+ <20210116035251.GB29609@shbuild999.sh.intel.com>
+ <20210116153413.GP2743@paulmck-ThinkPad-P72>
+ <20210116160921.GA101665@shbuild999.sh.intel.com>
+ <20210119042721.GA12664@paulmck-ThinkPad-P72>
+ <20210119100255.GC27433@zn.tnic>
+ <20210119121505.GA111354@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-References: <20201109113233.9012-1-dbrazdil@google.com> <20201110101542.GA17572@infradead.org>
- <b174c468e3df6dc7874b9ab886b38009@kernel.org>
-In-Reply-To: <b174c468e3df6dc7874b9ab886b38009@kernel.org>
-From:   Janne Karhunen <janne.karhunen@gmail.com>
-Date:   Tue, 19 Jan 2021 15:17:29 +0200
-Message-ID: <CAE=NcraN8NcnJEneno=U6dPj3esHSjChfqu9XKLNPE49ULhxwQ@mail.gmail.com>
-Subject: Re: [PATCH v1 00/24] Opt-in always-on nVHE hypervisor
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Walbran <qwandor@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210119121505.GA111354@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 1:19 PM Marc Zyngier <maz@kernel.org> wrote:
+On Tue, Jan 19, 2021 at 08:15:05PM +0800, Feng Tang wrote:
+> On Tue, Jan 19, 2021 at 11:02:55AM +0100, Borislav Petkov wrote:
+> > On Mon, Jan 18, 2021 at 08:27:21PM -0800, Paul E. McKenney wrote:
+> > > I bet that the results vary depending on the type of CPU, and also on
+> > > the kernel address-space layout, which of course also varies based on
+> > > the Kconfig options.  Let's see how the maintainers would like to proceed.
+> > 
+> > So I ran the "reproduce" script in the original mail on a KBL box here
+> > with the .config tailored for it:
+> > 
+> > cpu family      : 6
+> > model           : 158
+> > model name      : Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz
+> > stepping        : 12
+> > microcode       : 0xd6
+> 
+> I will also try to find a similar KBL in 0day to run the job. This
+> -4.5% comes from a CascadeLake AP which is 4 nodes, 96C/192T.
+> 
+> > and I get mixed results. But I'd need to know how exactly they generate
+> > the metrics "netperf.Throughput_total_tps" and "netperf.Throughput_tps"
+> > 
+> > Feng?
+> 
+> I have to admit I'm just a dumb user of 0day :) I'll leave this question
+> to Philip/Oliver/Rong who are from 0day team.
+> 
+> I assumed you've cloned the lkp-tests.git, and seems one Ruby file
+> https://github.com/intel/lkp-tests/blob/master/stats/netperf is used to
+> process the output of the netperf.
 
-> > Why?  I thought we were trying to kill nVHE off now that newer CPUs
-> > provide the saner virtualization extensions?
->
-> We can't kill nVHE at all, because that is the only game in town.
-> You can't even buy a decent machine with VHE, no matter how much money
-> you put on the table.
+$ ../lkp-tests/stats/netperf  < rc2.log
+Throughput_tps: 12759.701875000002
+Throughput_total_tps: 204155.23000000004
+workload: 61246569.000000015
 
-As I mentioned it earlier, we did this type of nVHE hypervisor and the
-proof of concept is here:
-https://github.com/jkrh/kvms
+$ ../lkp-tests/stats/netperf  < with-holdout.log
+Throughput_tps: 12863.416875
+Throughput_total_tps: 205814.67
+workload: 61744401.00000001
 
-See the README. It runs successfully on multiple pieces of arm64
-hardware and provides a tiny QEMU based development environment via
-the makefiles for the QEMU 'max' CPU. The code is rough, the amount of
-man hours put to it is not sky high, but it does run. I'll update a
-new kernel patch to patches/ dir for one of the later kernels
-hopefully next week, up to now we have only supported kernels between
-4.9 .... 5.6 as this is what our development hardware(s) run with. It
-requires a handful of hooks in the kvm code, but the actual kvm calls
-are just rerouted back to the kernel symbols. This way the hypervisor
-itself can be kept very tiny.
+So this definitely depends on the .config because in my case, *with* the
+holdout patch it is better vs plain 5.11-rc2.
 
-The s2 page tables are fully owned by the hyp and the guests are
-unmapped from the host memory when configured with the option (we call
-it host blinding). Multiple VMs can be run without pinning them into
-the memory.  It also provides a tiny out of tree driver prototype stub
-to protect the critical sections of the kernel memory beyond the
-kernel's own reach. There are still holes in the implementation such
-as the virtio-mapback handling via whitelisting and paging integrity
-checks, and many things are not quite all the way there yet. One step
-at a time.
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
---
-Janne
+https://people.kernel.org/tglx/notes-about-netiquette
