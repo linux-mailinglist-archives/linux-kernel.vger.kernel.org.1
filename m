@@ -2,144 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338082FBE93
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3CD2FBEA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbhASSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S2392467AbhASSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731968AbhASR6Q (ORCPT
+        with ESMTP id S2392203AbhASSBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:58:16 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C6C061573;
-        Tue, 19 Jan 2021 09:57:35 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a9so17165213wrt.5;
-        Tue, 19 Jan 2021 09:57:35 -0800 (PST)
+        Tue, 19 Jan 2021 13:01:18 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599DCC0613C1;
+        Tue, 19 Jan 2021 09:59:17 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id j18so602974wmi.3;
+        Tue, 19 Jan 2021 09:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cCuyHdaDKNdgvkGiCtIDRjNsTS1QMIkBB5jEcNPOBbc=;
-        b=WbtKuRS1nA02ixu8TOLQZmxeJ3Q3Ib6SmpAjhjsqyxpJP8SpTApAmNuII3RhU59gQT
-         HO1s26/ZYk8hn9946Y7LytYDSybdT3w4hcUKIHb54+I5XO8Gms4KfgmD+PW6x9m5E124
-         eUT4HK24tJWD4isorfUzWr7/XMAvOwNK38iMtNlf6IPczt/zLLIjoj3SqDv8YlfVfhyA
-         +KTnTGFpHmN2uf3JkSP3zdFUKJuT0fwZ/fDQxnFEP/Y0E2z4VER1w0YQsOkWLmdS49Uj
-         izNbb+ZygnZBWH05oGwO2lt9FlKKUcCnC68ONPUbXpWd+sLH70qS4Rb0Ih+6upKcJGLM
-         D7Cg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gKyiOVu1lUGnIzkFzoezEMEbPX1Dmz80P0s5OoHICRo=;
+        b=svE+XgcC9I1FWOwS+48oj5yMbH8l7YvxTqtS7LzgakFOjD1nQ+m8U+m2kL46gsxhC6
+         t9JONxDOaCdaxapUk6VpAu/QB5nV0eghmGcjPeouJFqq6IMFCjA3yYzkLUhFwqOg45Dp
+         V77yIlLlxoEAjC1xy0TMSRDCFhb8nAb9/r7LYx615NbVBn5USGRbXjluakBmicyrXBUl
+         M/k87S2R4u8NmI2dIjswjLAEUWescpGZTEQyHJIeET/2S6u2ByI4jnhnFNrVGO+jk5DO
+         nzqYvmbW89N65ig9FQSCmpE8RDZYB3sxTa+P9MbXWaSFUkMh6oZlO1l41JqY7KKUpsYt
+         6EWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cCuyHdaDKNdgvkGiCtIDRjNsTS1QMIkBB5jEcNPOBbc=;
-        b=YJy756U1C5yM6jTzcWCxWA2edG/7fgUJnfeGDyc6CPRrNWSNgqqWbfeJRWXZmiWimM
-         uuh/B7YPoMn2CgTydTDNu28saNtBageWPLSfntZX55dZ7vESZ234O1X02MSqOzw0GrQm
-         RThUSs0Iq3rE+hQLXEIZ6FzXN1aScpsmanshyq+1I94YWfgepdVpNDdDQfq2TjY0spI+
-         +peeWBfcIQDJh4MpD7zVMZYYduC8OjEFq/GVyRj8EugxTWEZTfQJ7JfV9ome/9H7NCLP
-         Y7Fmqn2W9lL9pIzu8NW5wPYFs11rBkcG/I1kfRlL8Mb3NbC2OSVmB01caNQQp1PvEEwn
-         /o2A==
-X-Gm-Message-State: AOAM532vl2KZYXNW7ltcYXGy0xV4CpOORM/eozzHAo86sJb6z+zV2KGC
-        bdIF8+IisDn+YAVYkkizGT0q161Y130=
-X-Google-Smtp-Source: ABdhPJxgji7Hd60FCvBKG6RsKh9xWB1ix7MRh3EgGDUFQRiug/el9Iqg2O8XkLOQpxAUQ288fVSi7w==
-X-Received: by 2002:adf:d1ce:: with SMTP id b14mr5422477wrd.329.1611079054086;
-        Tue, 19 Jan 2021 09:57:34 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id t25sm5407477wmj.39.2021.01.19.09.57.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gKyiOVu1lUGnIzkFzoezEMEbPX1Dmz80P0s5OoHICRo=;
+        b=nafx3tJZiUEyO/YScaq2yVXAP2Z03xWrO50gUFFSEd1TDZ6sMdwf6ZQmXl6wCdSw+O
+         GB5tJx/8a+Fa7IaK2kqo76bIvA4zpwPT144ijwHObIyAZb/mqFOxJBmAkmMhwvEJrYvx
+         V5TKOlQUnapFsFRt716ohOuZjAIVvY6mS/ixcbceDtPzMUqLdujzJHy57PUvQvGi+TGk
+         yV/Q0AK1p9O6WqYOG/Us/L/d3Ciw8iS8kighsCEN/H0uhTBaAFpUV01gecpMAnUDYiZk
+         68MwTlzqoP52Gqi30lKYXYqJ47YNkehqN/KymDIDVwGPbKrRdFqoXN5PODF7HqXzuEOu
+         VK8A==
+X-Gm-Message-State: AOAM530boB8fq3h7f4t1SDXTmY1zyquy+U0OX1vT1T36GE6X7+2EF9Rx
+        bgx/LZl9D0tOfWlEFaxUATGDeGdCuxUma4LQ
+X-Google-Smtp-Source: ABdhPJxWaMm5DCQ2+tvDCZB3utO9wQOiXzzJoNhHAQnOzn4yRCV1E+u1kvWqoKae8Ai6KiamQi+waQ==
+X-Received: by 2002:a05:600c:3548:: with SMTP id i8mr748559wmq.104.1611079155636;
+        Tue, 19 Jan 2021 09:59:15 -0800 (PST)
+Received: from anparri.mshome.net (host-79-50-177-118.retail.telecomitalia.it. [79.50.177.118])
+        by smtp.gmail.com with ESMTPSA id h125sm5899312wmh.16.2021.01.19.09.59.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 09:57:32 -0800 (PST)
-Date:   Tue, 19 Jan 2021 18:57:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     broonie@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com
-Subject: Re: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for
- Tegra210
-Message-ID: <YAcdi7ARk0imXafQ@ulmo>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
- <1611048496-24650-6-git-send-email-spujar@nvidia.com>
- <YAcTxxyogVgfN1uw@ulmo>
- <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com>
+        Tue, 19 Jan 2021 09:59:15 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH 3/4] Drivers: hv: vmbus: Enforce 'VMBus version >= 5.2' on isolated guests
+Date:   Tue, 19 Jan 2021 18:58:40 +0100
+Message-Id: <20210119175841.22248-4-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210119175841.22248-1-parri.andrea@gmail.com>
+References: <20210119175841.22248-1-parri.andrea@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ef4HD4ePKjEwSwzf"
-Content-Disposition: inline
-In-Reply-To: <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Restrict the protocol version(s) that will be negotiated with the host
+to be 5.2 or greater if the guest is running isolated.  This reduces the
+footprint of the code that will be exercised by Confidential VMs and
+hence the exposure to bugs and vulnerabilities.
 
---ef4HD4ePKjEwSwzf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+---
+ drivers/hv/connection.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-On Tue, Jan 19, 2021 at 11:09:32PM +0530, Sameer Pujar wrote:
->=20
->=20
-> On 1/19/2021 10:45 PM, Thierry Reding wrote:
-> > On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
-> > > Expose a header which describes DT bindings required to use audio-gra=
-ph
-> > > based sound card. All Tegra210 based platforms can include this header
-> > > and add platform specific information. Currently, from SoC point of v=
-iew,
-> > > all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
-> > >=20
-> > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > > Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> > > ---
-> > >   .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 ++++++++++=
-+++++++++++
-> > >   1 file changed, 153 insertions(+)
-> > >   create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.=
-dtsi
-> > I prefer keeping everything in tegra210.dtsi, but I can do that merge
-> > when I apply, after the DT bindings have been acked, so no need to
-> > resend just because of that.
->=20
-> I think this may be fine for Tegra210 based boards. But for Tegra186 and
-> Tegra194, whenever we add support for it, can rely on a common audio-graph
-> dtsi because there is no change w.r.t APE. This can help us to avoid
-> duplication of the bindings. This most likely applies to future chips as
-> well (where Tegra186 audio-graph bindings can be considered as base) when
-> there is no significant change in APE.
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index 11170d9a2e1a5..bcf4d7def6838 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -66,6 +66,13 @@ module_param(max_version, uint, S_IRUGO);
+ MODULE_PARM_DESC(max_version,
+ 		 "Maximal VMBus protocol version which can be negotiated");
+ 
++static bool vmbus_is_valid_version(u32 version)
++{
++	if (hv_is_isolation_supported())
++		return version >= VERSION_WIN10_V5_2;
++	return true;
++}
++
+ int vmbus_negotiate_version(struct vmbus_channel_msginfo *msginfo, u32 version)
+ {
+ 	int ret = 0;
+@@ -233,6 +240,12 @@ int vmbus_connect(void)
+ 			goto cleanup;
+ 
+ 		version = vmbus_versions[i];
++
++		if (!vmbus_is_valid_version(version)) {
++			ret = -EINVAL;
++			goto cleanup;
++		}
++
+ 		if (version > max_version)
+ 			continue;
+ 
+-- 
+2.25.1
 
-Maybe. Although that argument is somewhat extreme because we already
-have some of that same duplication throughout the other .dtsi files. By
-the same argument we could save a bit of duplication by having something
-like tegra-gpio.dtsi and including that in all the SoC .dtsi files and
-only update the compatible string, because that's the only significant
-change.
-
-Duplication isn't a big problem for DTS files because the data is meant
-to be stable anyway. So once it is in place and doesn't have to change,
-it really doesn't matter if it comes from an include or it's duplicated.
-
-Thierry
-
---ef4HD4ePKjEwSwzf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHHYsACgkQ3SOs138+
-s6HzERAApo6U7ZDcY9jQ9XXohES6pX0zS0bRwPETSxyp1JYt4RWMgDn5fnfeYtkP
-InqVfiYYiqSbF46y4yBtVv5CcNJFu8+NRMmXhlgf3BLP7wMOQo1ZA+awS+Q8LX11
-mIs2vuAnbyPZIaaU/+YiCpXjfu6Rb/+yLCZbCDkpy0E9BWh9q15Qo512HcEQTowh
-VrVSZLQfx7mWnAs0gDykKdnMghb/LCTtLsSLrJaS2Uh7LoY84L3sDHDIRqAVLgqu
-LyTPeb6cw+TH9YA9Vb1DbzXQiOl0fmb7ca1Fhglfd4oCoaSAh+Oti0m4TLkOlAwV
-2mJi7iHCOCGZw4EdMKsWBRPSwtAv/jqqnYzF2sozC6+79Kitktf2LalH3HdiwgWr
-bcnPVKIYGNK8nvvllKSxnODb9dwBh5dvVERUTrPScTb+wtVkBJckbDHQ8KhQsmzO
-HrXD6f/DpgSjkacP9We0zwiud1toD0kr0b3BsD4n3CrKeGuJBtK/jDK2WcwIXX4O
-oNxxKIhnSr//KNI+29dxug6BJaBMt55r8gqVg+d/EZeufXFvyiCwQHJKyuNREQgf
-Ne0cj/tDFyHu2l5TG0ivO+fbnmqin7UBFxNnFP7ObwS61l1VuYE3SCNraT2WrDtz
-PX+ONBWVUg6Bc0/HRieI978DI5krbdHZjxOmgNKfeqrT3r+Sfc4=
-=ThIL
------END PGP SIGNATURE-----
-
---ef4HD4ePKjEwSwzf--
