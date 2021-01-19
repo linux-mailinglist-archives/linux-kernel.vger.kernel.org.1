@@ -2,202 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CAA2FB739
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EB92FB744
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390785AbhASKcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:32:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389963AbhASKTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:19:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90A63233CE;
-        Tue, 19 Jan 2021 10:14:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611051267;
-        bh=YH50CiobQgjEKwsDKLeIrIz9J7SfDmzMf4nqV3wo0tI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYg5IE/Wnz899ONC3Q8/8Qtf12zXoZliS3kIoRVFZ9UX5O4fYxBf3P6ajrJgl+hhv
-         Lgud5tGP8CK4A36LhZZQq9sECVd/RXly+vqBG4wmH5XVy5IkNLV9AOP9+iyBHrvEIv
-         dpzOMG4qa+IXwLFDWuXybZpLjg9DTD47fh2msl1ffWs2CHEtUukuqcs+a5kMOEdxFL
-         7g4A+xy5UjPt4pf4adpobaUqCgw2UXj/w/41ASavL6eiyPP1tA+S67wmbKzM2PFC4c
-         TmLv5ZgDdmmOEwhg5NzYeo2xgVp9zZ37DXBC9DlJpCLVyKjSw3URbcuuVSYFHDOe4B
-         Vfkw3YCT7i4PA==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l1o1p-000tPP-5P; Tue, 19 Jan 2021 11:14:25 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 18/18] dts: hisilicon: add support for the PMIC found on Hikey 970
-Date:   Tue, 19 Jan 2021 11:14:23 +0100
-Message-Id: <567f1e31ad5de5baf91e275116f307abf21d700e.1611048785.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1611048785.git.mchehab+huawei@kernel.org>
-References: <cover.1611048785.git.mchehab+huawei@kernel.org>
+        id S2404008AbhASKda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:33:30 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21652 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389775AbhASKQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:16:43 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10JA2efg044144;
+        Tue, 19 Jan 2021 05:16:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type; s=pp1; bh=B2pfOzVPEWvrcHf8yuZvNxs75twumi6cIm3uTetfPxo=;
+ b=anpCZsIvzh/U0xNy88BrxMctEm1epYTZwdD6KKNKNIUD0qVGLei7kvqD3w3/V+4mjy0t
+ jIgSsvv8ERd+ZiI64SjhKoceEEyIZSAPYY+xnTgGY1yiN48NEjzE9G2JLvMr9E+dovO+
+ xnaQAAPmY6Jpy+1JBJ9fg0DwcoCeE1q8w+tX6/ntmVxb6ShaN0w6jLZWiVHMxXJMeDqi
+ d21C00uc86n1oaOKw3viD4PbrTsABHrqChoia7CUQuBlTa3QgZ8tvA5wLpV0jeAd4QR8
+ AyAfBp7j4NrtK1uZGfpyObj/EIZUf5qzKV6OW9PsRVM5Jb9S47G+D1j97VbfSaRhCIIh 2g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365v8wjahd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 05:16:01 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10JA3Gnm046710;
+        Tue, 19 Jan 2021 05:16:00 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365v8wjagj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 05:16:00 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10JACOuV013493;
+        Tue, 19 Jan 2021 10:15:58 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 363t0y9fct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 10:15:58 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10JAFn0u23331170
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 10:15:49 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A187AE045;
+        Tue, 19 Jan 2021 10:15:55 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB94CAE055;
+        Tue, 19 Jan 2021 10:15:54 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.154.17])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Jan 2021 10:15:54 +0000 (GMT)
+Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
+        imbrenda@linux.ibm.com, cohuck@redhat.com,
+        linux-s390@vger.kernel.org, gor@linux.ibm.com,
+        mihajlov@linux.ibm.com
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+ <20210119100402.84734-2-frankja@linux.ibm.com>
+ <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <945319e9-641b-70ea-0e0b-2e71f73cf086@linux.ibm.com>
+Date:   Tue, 19 Jan 2021 11:15:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="JXmkQwHCz3sbY2Fj0qkTT5EXxMRwhLeHS"
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101190060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
-on HiKey970 board.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JXmkQwHCz3sbY2Fj0qkTT5EXxMRwhLeHS
+Content-Type: multipart/mixed; boundary="lz5q6hLeak3dWPor1jJiwzRZnMqWZiCIj";
+ protected-headers="v1"
+From: Janosch Frank <frankja@linux.ibm.com>
+To: Christian Borntraeger <borntraeger@de.ibm.com>,
+ linux-kernel@vger.kernel.org
+Cc: kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
+ imbrenda@linux.ibm.com, cohuck@redhat.com, linux-s390@vger.kernel.org,
+ gor@linux.ibm.com, mihajlov@linux.ibm.com
+Message-ID: <945319e9-641b-70ea-0e0b-2e71f73cf086@linux.ibm.com>
+Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+ <20210119100402.84734-2-frankja@linux.ibm.com>
+ <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
+In-Reply-To: <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
 
-As we now have support for it, change the fixed regulators
-used by the SD I/O to use the proper LDO supplies.
+--lz5q6hLeak3dWPor1jJiwzRZnMqWZiCIj
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
- .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 87 +++++++++++++++++++
- 2 files changed, 90 insertions(+), 19 deletions(-)
- create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+On 1/19/21 11:11 AM, Christian Borntraeger wrote:
+>=20
+>=20
+> On 19.01.21 11:04, Janosch Frank wrote:
+>> The number reported by the query is N-1 and I think people reading the=
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index fe6600dbad61..1f221cb97690 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -12,6 +12,7 @@
- 
- #include "hi3670.dtsi"
- #include "hikey970-pinctrl.dtsi"
-+#include "hikey970-pmic.dtsi"
- 
- / {
- 	model = "HiKey970";
-@@ -39,23 +40,6 @@ memory@0 {
- 		reg = <0x0 0x0 0x0 0x0>;
- 	};
- 
--	sd_1v8: regulator-1v8 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-1.8V";
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
--		regulator-always-on;
--	};
--
--	sd_3v3: regulator-3v3 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-3.3V";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--		regulator-boot-on;
--		regulator-always-on;
--	};
--
- 	wlan_en: wlan-en-1-8v {
- 		compatible = "regulator-fixed";
- 		regulator-name = "wlan-en-regulator";
-@@ -425,8 +409,8 @@ &dwmmc1 {
- 	pinctrl-0 = <&sd_pmx_func
- 		     &sd_clk_cfg_func
- 		     &sd_cfg_func>;
--	vmmc-supply = <&sd_3v3>;
--	vqmmc-supply = <&sd_1v8>;
-+	vmmc-supply = <&ldo16>;
-+	vqmmc-supply = <&ldo9>;
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-new file mode 100644
-index 000000000000..8cf45b962fea
---- /dev/null
-+++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
-+ *
-+ * Copyright (C) 2020, Huawei Tech. Co., Ltd.
-+ */
-+
-+#include <dt-bindings/spmi/spmi.h>
-+
-+/ {
-+	spmi: spmi@fff24000 {
-+		compatible = "hisilicon,kirin970-spmi-controller";
-+		#address-cells = <2>;
-+		#size-cells = <0>;
-+		status = "okay";
-+		reg = <0x0 0xfff24000 0x0 0x1000>;
-+		spmi-channel = <2>;
-+
-+		pmic: pmic@0 {
-+			compatible = "hisilicon,hi6421-spmi";
-+			reg = <0 SPMI_USID>;
-+
-+			#interrupt-cells = <2>;
-+			interrupt-controller;
-+			gpios = <&gpio28 0 0>;
-+
-+			regulators {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				ldo3: LDO3 {
-+					regulator-name = "ldo3";
-+					regulator-min-microvolt = <1500000>;
-+					regulator-max-microvolt = <2000000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo4: LDO4 { /* 40 PIN */
-+					regulator-name = "ldo4";
-+					regulator-min-microvolt = <1725000>;
-+					regulator-max-microvolt = <1900000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo9: LDO9 { /* SDCARD I/O */
-+					regulator-name = "ldo9";
-+					regulator-min-microvolt = <1750000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo15: LDO15 { /* UFS */
-+					regulator-name = "ldo15";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-always-on;
-+				};
-+
-+				ldo16: LDO16 { /* SD */
-+					regulator-name = "ldo16";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo17: LDO17 {
-+					regulator-name = "ldo17";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				ldo33: LDO33 { /* PEX8606 */
-+					regulator-name = "ldo33";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo34: LDO34 { /* GPS AUX IN VDD */
-+					regulator-name = "ldo34";
-+					regulator-min-microvolt = <2600000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+			};
-+		};
-+	};
-+};
--- 
-2.29.2
+>> sysfs file would expect N instead. For users creating VMs there's no
+>> actual difference because KVM's limit is currently below the UV's
+>> limit.
+>>
+>> The naming of the field is a bit misleading. Number in this context is=
+
+>> used like ID and starts at 0. The query field denotes the maximum
+>> number that can be put into the VCPU number field in the "create
+>> secure CPU" UV call.
+>>
+>> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+>> Fixes: a0f60f8431999 ("s390/protvirt: Add sysfs firmware interface for=
+ Ultravisor information")
+>> Cc: stable@vger.kernel.org
+>> ---
+>>  arch/s390/boot/uv.c        | 2 +-
+>>  arch/s390/include/asm/uv.h | 4 ++--
+>>  arch/s390/kernel/uv.c      | 2 +-
+>>  3 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/s390/boot/uv.c b/arch/s390/boot/uv.c
+>> index a15c033f53ca..afb721082989 100644
+>> --- a/arch/s390/boot/uv.c
+>> +++ b/arch/s390/boot/uv.c
+>> @@ -35,7 +35,7 @@ void uv_query_info(void)
+>>  		uv_info.guest_cpu_stor_len =3D uvcb.cpu_stor_len;
+>>  		uv_info.max_sec_stor_addr =3D ALIGN(uvcb.max_guest_stor_addr, PAGE_=
+SIZE);
+>>  		uv_info.max_num_sec_conf =3D uvcb.max_num_sec_conf;
+>> -		uv_info.max_guest_cpus =3D uvcb.max_guest_cpus;
+>> +		uv_info.max_guest_cpu_id =3D uvcb.max_guest_cpu_num;
+>>  	}
+>> =20
+>>  #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
+>> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+>> index 0325fc0469b7..c484c95ea142 100644
+>> --- a/arch/s390/include/asm/uv.h
+>> +++ b/arch/s390/include/asm/uv.h
+>> @@ -96,7 +96,7 @@ struct uv_cb_qui {
+>>  	u32 max_num_sec_conf;
+>>  	u64 max_guest_stor_addr;
+>>  	u8  reserved88[158 - 136];
+>> -	u16 max_guest_cpus;
+>> +	u16 max_guest_cpu_num;
+>=20
+> I think it would read better if we name this also max_guest_cpu_id.
+> Otherwise this looks good.
+>=20
+
+Yes, but I wanted to have the same name as in the specification.
+So, what do we value more?
+
+
+--lz5q6hLeak3dWPor1jJiwzRZnMqWZiCIj--
+
+--JXmkQwHCz3sbY2Fj0qkTT5EXxMRwhLeHS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEwGNS88vfc9+v45Yq41TmuOI4ufgFAmAGsVkFAwAAAAAACgkQ41TmuOI4ufh3
+8RAAvEI3EI9BFL8WyNz+3cZsOMr9YUwTDQ8hH1ZmxYf6Gn2dxY91L1Tq1KENifEOI00d6N3XSyar
+hPt+dZfuumEBMgVgS/7gj68rzf1hMl0aiZzdPAmlCGHbrz/QcwXkcYUyY2Xl5xAyx7AmoI/31JZL
+BzYcxOce3LWBiW//oukm2WUC5iF5QTpDxj0SoOBBhs/F4p2eIxD6PLZ0H1ft5+DDU4sJMZx7t2f+
+yuyKeGZVjtbGheoCambagQIbfsT67hBo1GNlwXF9AYlfC5U9uqorblnEFAqSevdxxjd0aAd0LOJK
+egB+7ERukG4vIcLDXxUEUSfNXlj98I92XLs8sLuZZRmfHLGkMp6hRUuXLXuuATK6lVwtSC22u6ll
+3SG1+pQaB9jGkgsfh3BjKcJyU2YDOurCvhrPOYep4AeI/WQPDhCgRDcQ5YQG+Ts0vaGzaqQjRo9H
+i3lYOsEU1pxGkXMA7ypDDRQoB1+8hj2eeLpxDHnpEm2o8SelCwS/kFxg2+rVusYnnMzG0yoAW9yR
+U01P5kUO6EC0+4rpz2rsI0pNy4pZop36j7ZEqr+RPseXnEk21FOopwOpKArmwb+v394rpvel+Syk
+RZnJSvnYE9nJAxZquBVuS7b338azcFe3tYsbF8YssBV9h9yHdrCEO/MalIYpJGnTZdk0uGEcz/oh
+3os=
+=GVgv
+-----END PGP SIGNATURE-----
+
+--JXmkQwHCz3sbY2Fj0qkTT5EXxMRwhLeHS--
 
