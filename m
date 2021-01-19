@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0642FBE7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19E22FBE84
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404459AbhASSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:03:22 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:34267 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389124AbhASPKG (ORCPT
+        id S2404490AbhASSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:03:48 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:60303 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388318AbhASRkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:10:06 -0500
-Received: by mail-oi1-f173.google.com with SMTP id h192so3782786oib.1;
-        Tue, 19 Jan 2021 07:09:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=++IVvZ2kgMH9GFUIsq1f35VqyxedSb+37MMbjI/pptM=;
-        b=hl/xht3qMp9MY3jCzXV9rW2vBoT9ag3SuiFDexdwFyidky0/AMIp0cfF6EuvVnQHfi
-         l5o5nPiiN1osEkj/MnhvkCfMEZj/L5yXQhXb/M4HjwIVFz27YI8p+9F8vflj/lddxkS0
-         pfRwI74D0CtkUbnm/Gg2r/3J0oINrh8Q1AXiu8XvSDCGfcluhfuMAMrmL0yTsfRolqRX
-         GaLzG0ci+Vi9Hl5lFrBV80MIXVVcBp9GzxXJtfgG2/aWbiE5GIVXTsp3M+rmtO5Sm79r
-         5MBph/H/Gb09Qny9gZspLDqmJah2NEP1eACRuprCdutYomaz39nZb06Homk7jFjSdQxW
-         cg9A==
-X-Gm-Message-State: AOAM532foQSl+SUFRILoFVA0VvQbbcKI9ir1zmibJ7ur/ajLowcg4sv0
-        migMqtxMt0PdmWEcnZxCMEsiY9Tp7FtyEVCcNs0=
-X-Google-Smtp-Source: ABdhPJydK8I08ZXQnAS/dd+fKv2KFZZSvWr0szZww8Tr4PPJ6llRQU50vaBDj10O+1EUD94dAUTmBfJIzxlI7Mioymg=
-X-Received: by 2002:aca:308a:: with SMTP id w132mr51025oiw.69.1611068965134;
- Tue, 19 Jan 2021 07:09:25 -0800 (PST)
+        Tue, 19 Jan 2021 12:40:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611077977; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=L0vFdFdhSXmndQrwYXuvFainDV9NH9XIG05iM/Zdhg8=; b=AAS5PBx7wxkW5+iA7Bv7z7pS2vpJQiapO/wvr/Y/GkaTuriAZZ95bHP6bKRDl09gwMBUhzx+
+ jZAv0BejvdzRaZegzTPeKt4TYxlE9gNGIK8z/FacumVVu93uhZoC0u/cJu7xVeBkKifODmSc
+ 3Z63nf5a8NvPrI8gXoNxF1LDWNE=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6007193502b2f1cb1a797d57 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 17:39:01
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2471C43462; Tue, 19 Jan 2021 17:39:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B93EC433C6;
+        Tue, 19 Jan 2021 17:38:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5B93EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH v3] dt-bindings: usb: qcom,dwc3: Add bindings for SM8150, SM8250, SM8350
+Date:   Tue, 19 Jan 2021 09:37:48 -0800
+Message-Id: <20210119173748.6729-1-jackp@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <17705994.d592GUb2YH@kreacher>
-In-Reply-To: <17705994.d592GUb2YH@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Jan 2021 16:09:14 +0100
-Message-ID: <CAJZ5v0gccJKSVuN-okBnvHPjNYJ_FbkzfOueb=AUDr2xHaL7Xg@mail.gmail.com>
-Subject: Re: [PATCH v2] driver core: Extend device_is_dependent()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 7:31 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> If the device passed as the target (second argument) to
-> device_is_dependent() is not completely registered (that is, it has
-> been initialized, but not added yet), but the parent pointer of it
-> is set, it may be missing from the list of the parent's children
-> and device_for_each_child() called by device_is_dependent() cannot
-> be relied on to catch that dependency.
->
-> For this reason, modify device_is_dependent() to check the ancestors
-> of the target device by following its parent pointer in addition to
-> the device_for_each_child() walk.
->
-> Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> Tested-by: Stephan Gerhold <stephan@gerhold.net>
+Add compatible strings for the USB DWC3 controller on QCOM SM8150,
+SM8250 and SM8350 SoCs.
 
-Greg, are you going to pick up this one or do you want me to take care of it?
+Note the SM8150 & SM8250 compatibles are already being used in the
+dts but was missing from the documentation.
 
-It has been reviewed by Saravana.
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+---
+v3: Resend of #4/4 of https://lore.kernel.org/linux-usb/20210115174723.7424-1-jackp@codeaurora.org
+    added Felipe's Ack & rebased on gregkh/usb-testing
 
-> ---
->
-> -> v2:
->    * Improve the changelog.
->    * Add a comment to explain the reason for the extra check.
->    * Add tags.
->
->    No code changes.
->
-> ---
->  drivers/base/core.c |   17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> Index: linux-pm/drivers/base/core.c
-> ===================================================================
-> --- linux-pm.orig/drivers/base/core.c
-> +++ linux-pm/drivers/base/core.c
-> @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
->  #endif
->  #endif /* !CONFIG_SRCU */
->
-> +static bool device_is_ancestor(struct device *dev, struct device *target)
-> +{
-> +       while (target->parent) {
-> +               target = target->parent;
-> +               if (dev == target)
-> +                       return true;
-> +       }
-> +       return false;
-> +}
-> +
->  /**
->   * device_is_dependent - Check if one device depends on another one
->   * @dev: Device to check dependencies for.
-> @@ -221,7 +231,12 @@ int device_is_dependent(struct device *d
->         struct device_link *link;
->         int ret;
->
-> -       if (dev == target)
-> +       /*
-> +        * The "ancestors" check is needed to catch the case when the target
-> +        * device has not been completely initialized yet and it is still
-> +        * missing from the list of children of its parent device.
-> +        */
-> +       if (dev == target || device_is_ancestor(dev, target))
->                 return 1;
->
->         ret = device_for_each_child(dev, target, device_is_dependent);
->
->
->
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index dd1d8bcd9254..c3cbd1fa9944 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -18,6 +18,9 @@ properties:
+           - qcom,sc7180-dwc3
+           - qcom,sdm845-dwc3
+           - qcom,sdx55-dwc3
++          - qcom,sm8150-dwc3
++          - qcom,sm8250-dwc3
++          - qcom,sm8350-dwc3
+       - const: qcom,dwc3
+ 
+   reg:
+-- 
+2.24.0
+
