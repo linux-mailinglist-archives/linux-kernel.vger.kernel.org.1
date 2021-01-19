@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780162FB118
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947F12FB116
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731635AbhASF4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:56:18 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:43442 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388458AbhASFUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:20:08 -0500
-X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 00:19:53 EST
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611033562; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TsmWni2lFqo/KCTp9v2otaejvUeB6CXmbavuS8alcYo=;
- b=aJd8YwPQ07dp5pXrPp+peV4sduXBFqrTskVPVyOVfRlcn2g6anOE9MWIHV5VGHb6UdZvTkRN
- 2MTHzB5t4caxSaNR+lVwpQmvkftJThCUoX9vtlyZcBb4bvjRrG4dS6GPn4U4OJStbfLEIUB1
- BT65b82c5qwRLU/837n2eACmegw=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60066a51ba7f868506e7285d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 05:12:49
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82D11C43463; Tue, 19 Jan 2021 05:12:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84544C433C6;
-        Tue, 19 Jan 2021 05:12:47 +0000 (UTC)
+        id S1732531AbhASFyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:54:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbhASFPe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:15:34 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFD1C061757;
+        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id g15so7084161pjd.2;
+        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dXrgf1LZzL6eF1i+mvPcch+z/XkMiWVGO2kmOldCnEI=;
+        b=DztL4URkAwRJ2ODVyxeNBZBxz5S+xRS8xuaC46nJWu+D8De10B3gwSKVTYmljiNmEN
+         TuzPjpuC9IaKIFfa/xre01cevViuOpZgb6OtG4CbVR4C05S0NdEY1rqIXzrmYYFDXNtn
+         2GjKpQfoJxg39r1Hn7NCD+OQAAeCGN5NE6Ja8udUSgGGm36tp4mexRj2SkxJ+j9nx0sh
+         ZMwnYPh6qnf/cvxhCBYqTV84Pjziw4DG2HTZVGHMsNo/W/ixLqe9YdIzzD1SdVy3Orpw
+         Wh8GdsE2cY1XQSXg/BqSQfp8hNYbkbLwqiBrGRZss/Rrqhtil5cICRi66GT06jH7OIHf
+         onlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dXrgf1LZzL6eF1i+mvPcch+z/XkMiWVGO2kmOldCnEI=;
+        b=qSWrAoliD/QjUMYPhm8k1BRUzKaLx5f+Af+YZOQFqp3r6gRXKHm5LONlEQ00TEU4l1
+         +BzKRqz0kxG+WSJK7UrxDgMSgaZepdX1SM1aVmQRmvf2PKV/Fm5SUfAYnzUZOvWRMTdn
+         wniswnyOQt9U6x72lxtNjq5RIuhY/q/ZSta9McXAgRtxo44NheUH3DYDXMhfk7y00Ssv
+         a7ipEMAaS4cZRjflj+J3ADje7tmNT2dYZYAjWHd2Ocfpu8Ti0AtKU84RbQAQtblYru9a
+         MzojujntwQWTxgj/qxLyB/eFN+VzcmfKQaJsB0draN08lsDcla3vftmdXlcdq9HkIPVu
+         k7Dw==
+X-Gm-Message-State: AOAM5316+MyaVOXyFQjyBSha8//38RC4mkDE6HxgWMjK7ZS3sdTme3Kg
+        KhEAymwkknLkJD5YzvzwnAA=
+X-Google-Smtp-Source: ABdhPJzSv5y7FgI8sHfaewHW1iOyxsA+jPc2FomGn4TeblnqYWCWFfKU0qY31KFXihgns7xB/8SiDA==
+X-Received: by 2002:a17:90a:5c81:: with SMTP id r1mr3315583pji.175.1611033293232;
+        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id x125sm17687306pgb.35.2021.01.18.21.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 21:14:52 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: test: remove the shutdown function
+Date:   Tue, 19 Jan 2021 13:14:25 +0800
+Message-Id: <20210119051425.305-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 19 Jan 2021 10:42:47 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mattias Nissler <mnissler@chromium.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
-        leo.yan@linaro.org
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-In-Reply-To: <CAKUbbx+ZC9cLvcaJnrDYYsrUhfO3dOXJGoLswL30nRzChjwn-w@mail.gmail.com>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
- <CAKUbbx+ZC9cLvcaJnrDYYsrUhfO3dOXJGoLswL30nRzChjwn-w@mail.gmail.com>
-Message-ID: <6a3a876e9877322cb46c246a86312fbe@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-18 20:17, Mattias Nissler wrote:
-> On Fri, Jan 15, 2021 at 6:46 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> Hello Mathieu, Suzuki
->> 
->> On 2020-10-15 21:32, Mathieu Poirier wrote:
->> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
->> >> On production systems with ETMs enabled, it is preferred to
->> >> exclude kernel mode(NS EL1) tracing for security concerns and
->> >> support only userspace(NS EL0) tracing. So provide an option
->> >> via kconfig to exclude kernel mode tracing if it is required.
->> >> This config is disabled by default and would not affect the
->> >> current configuration which has both kernel and userspace
->> >> tracing enabled by default.
->> >>
->> >
->> > One requires root access (or be part of a special trace group) to be
->> > able to use
->> > the cs_etm PMU.  With this kind of elevated access restricting tracing
->> > at EL1
->> > provides little in terms of security.
->> >
->> 
->> Apart from the VM usecase discussed, I am told there are other
->> security concerns here regarding need to exclude kernel mode tracing
->> even for the privileged users/root. One such case being the ability
->> to analyze cryptographic code execution since ETMs can record all
->> branch instructions including timestamps in the kernel and there may
->> be other cases as well which I may not be aware of and hence have
->> added Denis and Mattias. Please let us know if you have any questions
->> further regarding this not being a security concern.
-> 
-> Well, the idea that root privileges != full control over the kernel
-> isn't new and at the very least since lockdown became part of mainline
-> [1] no longer an esoteric edge case. Regarding the use case Sai hints
-> at (namely protection of secrets in the kernel), Matthew Garret
-> actually has some more thoughts about confidentiality mode for
-> lockdown for secret protection [2]. And thus, unless someone can make
-> a compelling case that instruction-level tracing will not leak secrets
-> held by the kernel, I think an option for the kernel to prevent itself
-> from being traced (even by root) is valuable.
-> 
-> Finally, to sketch a practical use case scenario: Consider a system
-> where disk contents are encrypted and the encryption key is set up by
-> the user when mounting the file system. From that point on the
-> encryption key resides in the kernel. It seems reasonable to expect
-> that the disk encryption key be protected from exfiltration even if
-> the system later suffers a root compromise (or even against insiders
-> that have root access), at least as long as the attacker doesn't
-> manage to compromise the kernel.
-> 
-> [1] https://lwn.net/Articles/796866/
-> [2] https://mjg59.dreamwidth.org/55105.html
-> 
+From: Yue Hu <huyue2@yulong.com>
 
-Thanks for the detailed description, it is way better put than my crude
-explanation.
+Since it's doing nothing for shutdown behavior. And the callback will
+be checked firstly in mmc_bus_shutdown().
 
-Thanks,
-Sai
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/core/mmc_test.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
+diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
+index 152e752..f999b48 100644
+--- a/drivers/mmc/core/mmc_test.c
++++ b/drivers/mmc/core/mmc_test.c
+@@ -3267,17 +3267,12 @@ static void mmc_test_remove(struct mmc_card *card)
+ 	mmc_test_free_dbgfs_file(card);
+ }
+ 
+-static void mmc_test_shutdown(struct mmc_card *card)
+-{
+-}
+-
+ static struct mmc_driver mmc_driver = {
+ 	.drv		= {
+ 		.name	= "mmc_test",
+ 	},
+ 	.probe		= mmc_test_probe,
+ 	.remove		= mmc_test_remove,
+-	.shutdown	= mmc_test_shutdown,
+ };
+ 
+ static int __init mmc_test_init(void)
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.9.1
+
