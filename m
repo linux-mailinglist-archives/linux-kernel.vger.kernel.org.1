@@ -2,304 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BD2FB843
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344562FB850
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391112AbhASMPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387434AbhASMG5 (ORCPT
+        id S2392556AbhASMQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:16:58 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35244 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732409AbhASMIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:06:57 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0E1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 04:06:15 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id a12so19459686wrv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 04:06:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8e/D2faN6CtLGH+7k+u4qfYvc54TqKJTGm6NyieDxDg=;
-        b=GjCDE34Gg9IhslKROIfwXQhzH0RvJZrHAEVbsMdEZJS9kFGMDDV+Pkc/FBC95cNJHu
-         NXmeHeR7sKJ3/Vmkgv4RfRoZ/RjHlQD7p90FlDyEzRvFrCtQtKFN5JyvQ7N/d5XKaLch
-         zbLoUOO5K77hY87xpm3ttxwil7Hx5GdInN6Op7xEo6JEUywCeYNqrv0j2t4H0CZwoLhw
-         V0iyIDFPBCkoO+5UXjidEsLwP6vWd7XygXOQk5CLMwuaEe4BIGrRUaMYgbtczDQKpwsi
-         IEsVWqlI2MoeTgbFH9/BuB5Mo7syqL7hVqAf90EHY+JgSR7G3806XW667BmxM8egpq6D
-         BKRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8e/D2faN6CtLGH+7k+u4qfYvc54TqKJTGm6NyieDxDg=;
-        b=lbOxZCzM5WVCSeuTA9gcoWl7LTKX2VJwhKqMh+7zExVvbd9opZFztURyvFqvhyfFFO
-         spNcCYci8wfRxuLisMh6D2oM/jmTvmL9z/RCrWTypCs1A1RvuO9dYFwtqH9QSl8ZmfVU
-         1aYryZJIeXzmSgEDZgcdFbagvUIQRVXw9guMMZHqRkQCoIGYWSqNoqFC+fTnuxiezkAG
-         6UrCnRvtxafp/0XTKv6bhbaMxnbz3a+OFP90WZbMkl5alYHENAhu1V2Yy3ztnW2Hy6ls
-         hsViDoI5iY9e/o/gM6QzHq3BBeRSWFQrwzVlUx4OJ8I+Q+DlB+Q2b/NzYA2AnV50Ve1z
-         se9A==
-X-Gm-Message-State: AOAM531NfPj/GxYHo8qk3RzhnB3d9W+3pBizQbCLXG/nE6J6lVhgLMzn
-        9WpWCwp2l5oBPy2aLIeAkiL+MA==
-X-Google-Smtp-Source: ABdhPJzqhQ7FAQvj0zxxjmN0Vv3vciyX8X7Lx4xNOPidRNEFxZK2jL+G3FI9AOxJKIn9j9yJfJVjlw==
-X-Received: by 2002:a5d:4712:: with SMTP id y18mr4145624wrq.229.1611057974449;
-        Tue, 19 Jan 2021 04:06:14 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:41d4:8c90:d38:455d])
-        by smtp.gmail.com with ESMTPSA id k16sm4128570wmj.45.2021.01.19.04.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 04:06:13 -0800 (PST)
-Date:   Tue, 19 Jan 2021 12:06:12 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND V11 4/7] fuse: Passthrough initialization and
- release
-Message-ID: <YAbLNAaeOVAfArqD@google.com>
-References: <20210118192748.584213-1-balsini@android.com>
- <20210118192748.584213-5-balsini@android.com>
+        Tue, 19 Jan 2021 07:08:50 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10JC6QJi052188;
+        Tue, 19 Jan 2021 06:06:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611057986;
+        bh=gx/uox2HkSxRJWIW+/oeYtSkbyPUTy3/ZXHFNZSNNKw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DqftxCR6hZnMQ2Pl+ozI5bfYcVORgcjHQWaL7RoxBpG/AG/4RkUO8dF3Wlqnb+udT
+         FNVp/XOrgjtuy0Dt39XYMAKzlBCZAMyST52hPhZ9RmlkGT1GeD2zHBlfF/GsqpJuhy
+         h5bPSGoThLJ640BbX43rNuKeyp6I274Juof8lfyc=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10JC6Qsm034414
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 Jan 2021 06:06:26 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
+ Jan 2021 06:06:25 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 19 Jan 2021 06:06:25 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10JC6MRl004593;
+        Tue, 19 Jan 2021 06:06:23 -0600
+Subject: Re: [PATCH] dt-bindings: usb: j721e: add ranges and dma-coherent
+ props
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-usb@vger.kernel.org>
+References: <20210115193124.5706-1-grygorii.strashko@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <a9a36b3e-d93e-5e23-d040-22da1d65f991@ti.com>
+Date:   Tue, 19 Jan 2021 17:36:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118192748.584213-5-balsini@android.com>
+In-Reply-To: <20210115193124.5706-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 07:27:45PM +0000, Alessio Balsini wrote:
-> Implement the FUSE passthrough ioctl() that associates the lower
-> (passthrough) file system file with the fuse_file.
+On 16/01/21 1:01 am, Grygorii Strashko wrote:
+> Add missed 'ranges' and 'dma-coherent' properties as cdns-usb DT nodes has
+> child node and DMA IO is coherent on TI K3 J721E/J7200 SoCs.
 > 
-> The file descriptor passed to the ioctl() by the FUSE daemon is used to
-> access the relative file pointer, that will be copied to the fuse_file
-> data structure to consolidate the link between the FUSE and lower file
-> system.
+> This also fixes dtbs_check warning:
+>  cdns-usb@4104000: 'dma-coherent', 'ranges' do not match any of the regexes: '^usb@', 'pinctrl-[0-9]+'
 > 
-> To enable the passthrough mode, user space triggers the
-> FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() and, if the call succeeds,
-> receives back an identifier that will be used at open/create response
-> time in the fuse_open_out field to associate the FUSE file to the lower
-> file system file.
-> The value returned by the ioctl() to user space can be:
-> - > 0: success, the identifier can be used as part of an open/create
->   reply.
-> - < 0: an error occurred.
-> The value 0 has been left unused for backward compatibility: the
-> fuse_open_out field that is used to pass the passthrough_fh back to the
-> kernel uses the same bits that were previously as struct padding,
-> zero-initialized in the common libfuse implementation. Removing the 0
-> value fixes the ambiguity between the case in which 0 corresponds to a
-> real passthrough_fh or a missing implementation, simplifying the user
-> space implementation.
-> 
-> For the passthrough mode to be successfully activated, the lower file
-> system file must implement both read_iter and write_iter file
-> operations. This extra check avoids special pseudo files to be targeted
-> for this feature.
-> Passthrough comes with another limitation: if a FUSE file systems
-> enables passthrough, this feature is no more available to other FUSE
-> file systems stacked on top of it. This check is only performed when
-> FUSE passthrough is requested for a specific file and would simply
-> prevent the use of FUSE passthrough for that file, not limiting other
-> file operations.
-> 
-> Signed-off-by: Alessio Balsini <balsini@android.com>
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 > ---
->  fs/fuse/inode.c       |  5 +++
->  fs/fuse/passthrough.c | 87 ++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 90 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index d5c46eafb419..bc327789f25d 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1133,6 +1133,11 @@ EXPORT_SYMBOL_GPL(fuse_send_init);
+> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> index 4423f0a29f54..7ec87a783c5c 100644
+> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> @@ -21,6 +21,8 @@ properties:
+>    reg:
+>      maxItems: 1
 >  
->  static int free_fuse_passthrough(int id, void *p, void *data)
->  {
-> +	struct fuse_passthrough *passthrough = (struct fuse_passthrough *)p;
+> +  ranges: true
 > +
-> +	fuse_passthrough_release(passthrough);
-> +	kfree(p);
-> +
->  	return 0;
->  }
+>    power-domains:
+>      description:
+>        PM domain provider node and an args specifier containing
+> @@ -63,6 +65,8 @@ properties:
+>    '#size-cells':
+>      const: 2
 >  
-> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-> index 594060c654f8..cf720ca14a45 100644
-> --- a/fs/fuse/passthrough.c
-> +++ b/fs/fuse/passthrough.c
-> @@ -3,19 +3,102 @@
->  #include "fuse_i.h"
->  
->  #include <linux/fuse.h>
-> +#include <linux/idr.h>
->  
->  int fuse_passthrough_open(struct fuse_dev *fud,
->  			  struct fuse_passthrough_out *pto)
->  {
-> -	return -EINVAL;
-> +	int res;
-> +	struct file *passthrough_filp;
-> +	struct fuse_conn *fc = fud->fc;
-> +	struct inode *passthrough_inode;
-> +	struct super_block *passthrough_sb;
-> +	struct fuse_passthrough *passthrough;
+> +  dma-coherent: true
 > +
-> +	if (!fc->passthrough)
-> +		return -EPERM;
-> +
-> +	/* This field is reserved for future implementation */
-> +	if (pto->len != 0)
-> +		return -EINVAL;
-> +
-> +	passthrough_filp = fget(pto->fd);
-> +	if (!passthrough_filp) {
-> +		pr_err("FUSE: invalid file descriptor for passthrough.\n");
-> +		return -EBADF;
-> +	}
-> +
-> +	if (!passthrough_filp->f_op->read_iter ||
-> +	    !passthrough_filp->f_op->write_iter) {
-> +		pr_err("FUSE: passthrough file misses file operations.\n");
-> +		res = -EBADF;
-> +		goto err_free_file;
-> +	}
-> +
-> +	passthrough_inode = file_inode(passthrough_filp);
-> +	passthrough_sb = passthrough_inode->i_sb;
-> +	if (passthrough_sb->s_stack_depth > FILESYSTEM_MAX_STACK_DEPTH) {
-> +		pr_err("FUSE: fs stacking depth exceeded for passthrough\n");
-> +		res = -EINVAL;
-> +		goto err_free_file;
-> +	}
-> +
-> +	passthrough = kmalloc(sizeof(struct fuse_passthrough), GFP_KERNEL);
-> +	if (!passthrough) {
-> +		res = -ENOMEM;
-> +		goto err_free_file;
-> +	}
-> +
-> +	passthrough->filp = passthrough_filp;
-> +
-> +	idr_preload(GFP_KERNEL);
-> +	spin_lock(&fc->passthrough_req_lock);
-> +	res = idr_alloc(&fc->passthrough_req, passthrough, 1, 0, GFP_ATOMIC);
-> +	spin_unlock(&fc->passthrough_req_lock);
-> +	idr_preload_end();
-> +
-> +	if (res > 0)
-> +		return res;
-> +
-> +	fuse_passthrough_release(passthrough);
-> +	kfree(passthrough);
-> +
-> +err_free_file:
-> +	fput(passthrough_filp);
-> +
-> +	return res;
->  }
->  
->  int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
->  			   struct fuse_open_out *openarg)
->  {
-> -	return -EINVAL;
-> +	struct fuse_passthrough *passthrough;
-> +	int passthrough_fh = openarg->passthrough_fh;
-> +
-> +	if (!fc->passthrough)
-> +		return -EPERM;
-> +
-> +	/* Default case, passthrough is not requested */
-> +	if (passthrough_fh <= 0)
-> +		return -EINVAL;
-> +
-> +	spin_lock(&fc->passthrough_req_lock);
-> +	passthrough = idr_remove(&fc->passthrough_req, passthrough_fh);
-> +	spin_unlock(&fc->passthrough_req_lock);
-> +
-> +	if (!passthrough)
-> +		return -EINVAL;
-> +
-> +	ff->passthrough = *passthrough;
-> +	kfree(passthrough);
-> +
-> +	return 0;
->  }
->  
->  void fuse_passthrough_release(struct fuse_passthrough *passthrough)
->  {
-> +	if (passthrough->filp) {
-> +		fput(passthrough->filp);
-> +		passthrough->filp = NULL;
-> +	}
->  }
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
+>  patternProperties:
+>    "^usb@":
+>      type: object
 > 
 
-Hi,
-
-As Amir was noticing, the stacking policy proposed in this series (as
-opposed to V10) is not enough to ensure that the same file undergoes
-multiple FUSE passthrough paths, moreover, checking for:
-
-  passthrough_sb->s_stack_depth > FILESYSTEM_MAX_STACK_DEPTH
-
-looks misleading and hacky.
-The simplest solution at this point in time would be to just go back to
-the policy introduced in V10 and, if for some use use cases FUSE
-passthrough is desirable in systems where complex stackings are
-involved, the stacking policy can be revisited.
-
-Before sending out the V12 of this series, I would love to have the
-consensus both from the community and from Miklos on what is the best
-way to go.
-
-Here follows a simple diff that restores the policy as in V10.
-
-Thanks,
-Alessio
-
----8<---
-
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index bc327789f25d..7ebc398fbacb 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1058,7 +1058,7 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
-                                fc->passthrough = 1;
-                                /* Prevent further stacking */
-                                fm->sb->s_stack_depth =
--                                       FILESYSTEM_MAX_STACK_DEPTH + 1;
-+                                       FILESYSTEM_MAX_STACK_DEPTH;
-                        }
-                } else {
-                        ra_pages = fc->max_read / PAGE_SIZE;
-diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-index cf720ca14a45..cf993e83803e 100644
---- a/fs/fuse/passthrough.c
-+++ b/fs/fuse/passthrough.c
-@@ -37,7 +37,7 @@ int fuse_passthrough_open(struct fuse_dev *fud,
-
-        passthrough_inode = file_inode(passthrough_filp);
-        passthrough_sb = passthrough_inode->i_sb;
--       if (passthrough_sb->s_stack_depth > FILESYSTEM_MAX_STACK_DEPTH) {
-+       if (passthrough_sb->s_stack_depth >= FILESYSTEM_MAX_STACK_DEPTH) {
-                pr_err("FUSE: fs stacking depth exceeded for passthrough\n");
-                res = -EINVAL;
-                goto err_free_file;
-
---->8---
+Acked-by: Aswath Govindraju <a-govindraju@ti.com>
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
