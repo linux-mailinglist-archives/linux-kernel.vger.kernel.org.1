@@ -2,151 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BCC2FC1D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F038D2FC1CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387973AbhASVFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S1730665AbhASVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729269AbhASUpA (ORCPT
+        with ESMTP id S1730214AbhASUp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:45:00 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52DDC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:43:26 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d4so11227940plh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:43:26 -0800 (PST)
+        Tue, 19 Jan 2021 15:45:29 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13F8C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:14 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id b3so13053885pft.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wsfZjzlNzJXVW++ya1lrDyULLQkDWoVC/E0GTcKu51k=;
-        b=ee5dAIFBSCWqkpeMwwe2Q5AQnVcdwExjk+0JJ3ZY+5vKlD4PfmYwhdrvPq/3nzGkjR
-         LWEEGlR9t/jobNVnioo1lLPJU0fh4gTUoxxhwIfxlkvGErJrLnnpcNQjkagpKDQ+A9m8
-         HMxNfCi+2xn+EHNLyh2/v80Q0KfGHp1adQqA0=
+        bh=+HPHLTIbnqvyYqZakEN0yW6023R2vX5SvJvHEGRsu88=;
+        b=rVY83dpi8ReoTmjM5P+oExiEZYsinMGkbYee1lkK/ULznES2ZNsQayfBScXWTZxwHT
+         xzR9TWfOeB0CMtADGKZkF8TcwHODZPc1u4AMryo79Zq9NNv2fP2u7rpmstz007F5Nwzb
+         fYc/mdbBQq3n41ctal8AiQZluORE84aHZh48bd34Zb95cR6VzRRKiIQtqtWHSWK5Ql/Z
+         37MtMXfQhlWisjAseq7aB5u02jTDZwCwRQhmEw5cye33lLvuVq6TSjWkKCFJCnRio0sf
+         Jg4mseBZ0ILUNtu46AlrTKRbSYK79YX03tEGKvAoDHj4I2D3x6wz8PcifiCFUrwR00mS
+         hKXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wsfZjzlNzJXVW++ya1lrDyULLQkDWoVC/E0GTcKu51k=;
-        b=Jjf9d77S3YSK1Y7QawhZLkIO9qBQcK/kqX9anacgFhLj56ORMtM4v2DD7fL+gHO75/
-         G2I7sxlpluZenYDwmaFdTZ8RhFv/U69YHYztLvaAOKuP174LPqLDZ4N89CSozokC13dt
-         IrpWtuoM4quyLrBb7V32z7qty2fPPWsR8MojJpjEUxeg/qfhKHEznz3HxSYCYhG0OysK
-         Lj2ZxHdsDoiO2oy3L54yApuCI7KAO5T7mWAmaOS+Jd8CvwFPOglZ0I5skngI2UmY2FKf
-         ytQVdbPDoKJTN57pYdA2DlZ+aqkQOuFgikwGMqow6/vgRYcoZ0CdlfwcBwUyaAFxqqES
-         Dt9g==
-X-Gm-Message-State: AOAM533miDkGrn05YRD2ART6AXqJwZKDMcHzVme4ATQQH2lfJdGp4EDs
-        7hIgHA7uXbmhKtR+SP8NuaEt6nqxZax1gg==
-X-Google-Smtp-Source: ABdhPJydbVhkgkAOI+VFO4e2Os6eSIgJINtaIF/pQjNKUmVP045sHTczGR+2I740dosNO1DABMG8qw==
-X-Received: by 2002:a17:902:ec06:b029:de:67a0:989d with SMTP id l6-20020a170902ec06b02900de67a0989dmr6506516pld.53.1611089006265;
-        Tue, 19 Jan 2021 12:43:26 -0800 (PST)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
-        by smtp.gmail.com with ESMTPSA id x15sm13835pfa.80.2021.01.19.12.43.25
+        bh=+HPHLTIbnqvyYqZakEN0yW6023R2vX5SvJvHEGRsu88=;
+        b=CtnVjnCEhEUDdfEx0TlnrVr3MGGCrpEiCJrH5lhWr/dlOJcZiA0XZGifkILc/vMNg6
+         91aj/Ef9pAq88SySsuXojCethfk79eZ0s9JO0U62yFHGzYv4Znoh87AuSclIHUd8xFgu
+         XyHw+QnQjZ94q3P/SZ2wc8vXrRANFW96x0INmtB2Mrt7uayRRnM0+zM72N7Yvdjy91od
+         sdvtSE/9GMNmyZfETBpKJOMyVHWWFVmw3IwUTf3iHSRqmyVqEu8jodiQ533JPPGi4i1Z
+         bdrF0e+DBis56LpyMvVESrQ2xiAir6HV/YU5mBic/Xw2qgCWShB5kQ1pNuOb11hP9Pw/
+         l5sQ==
+X-Gm-Message-State: AOAM531OC+CRYx9lyeRywWrCD3afXKI0pA9uLFtdsFUC65DC6Q3FFqIT
+        2fnjUOVH7O6AZDcdvJUwPPg0sTkveCWF5w==
+X-Google-Smtp-Source: ABdhPJx7XqKFUvEfxsZUM/yPecJslI2EJghoNxHC6weKaxS/Wdl7E5UFXQpws/ka9g4TjNc2jaAWIA==
+X-Received: by 2002:a62:5b07:0:b029:1ae:177d:69e1 with SMTP id p7-20020a625b070000b02901ae177d69e1mr5644437pfb.25.1611089113811;
+        Tue, 19 Jan 2021 12:45:13 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id md7sm4129838pjb.52.2021.01.19.12.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:43:25 -0800 (PST)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org, mcchou@chromium.org,
-        michaelfsun@google.com, linux-bluetooth@vger.kernel.org,
-        apusaka@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Bluetooth: btusb: Expose reset gpio to debugfs
-Date:   Tue, 19 Jan 2021 12:43:14 -0800
-Message-Id: <20210119124258.3.I7c6ae9b637f9a77f6e6f2e4256c6a0232476be43@changeid>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210119204315.2611811-1-abhishekpandit@chromium.org>
-References: <20210119204315.2611811-1-abhishekpandit@chromium.org>
+        Tue, 19 Jan 2021 12:45:12 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [RESEND][PATCH 2/3] dma-buf: heaps: Add a WARN_ON should the vmap_cnt go negative
+Date:   Tue, 19 Jan 2021 20:45:07 +0000
+Message-Id: <20210119204508.9256-2-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210119204508.9256-1-john.stultz@linaro.org>
+References: <20210119204508.9256-1-john.stultz@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If btusb has a reset gpio, expose it to userspace so we can toggle the
-reset gpio directly. This is useful for testing and error recovery.
+We shouldn't vunmap more then we vmap, but if we do, make
+sure we complain loudly.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Suggested-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
+ drivers/dma-buf/heaps/cma_heap.c    | 1 +
+ drivers/dma-buf/heaps/system_heap.c | 1 +
+ 2 files changed, 2 insertions(+)
 
- drivers/bluetooth/btusb.c | 46 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 880e9cd4ee713..702be1871ed88 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -6,6 +6,7 @@
-  *  Copyright (C) 2005-2008  Marcel Holtmann <marcel@holtmann.org>
-  */
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 364fc2f3e499..0c76cbc3fb11 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -232,6 +232,7 @@ static void cma_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+ 	struct cma_heap_buffer *buffer = dmabuf->priv;
  
-+#include <linux/debugfs.h>
- #include <linux/dmi.h>
- #include <linux/module.h>
- #include <linux/usb.h>
-@@ -574,6 +575,46 @@ static void btusb_toggle_gpio(struct gpio_desc *desc, unsigned int duration)
- 	gpiod_set_value_cansleep(desc, 0);
- }
+ 	mutex_lock(&buffer->lock);
++	WARN_ON(buffer->vmap_cnt == 0);
+ 	if (!--buffer->vmap_cnt) {
+ 		vunmap(buffer->vaddr);
+ 		buffer->vaddr = NULL;
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 405351aad2a8..2321c91891f6 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -273,6 +273,7 @@ static void system_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+ 	struct system_heap_buffer *buffer = dmabuf->priv;
  
-+#ifdef CONFIG_DEBUG_FS
-+static ssize_t btusb_debugfs_has_reset_gpio(struct file *file,
-+					    char __user *user_buf,
-+					    size_t count, loff_t *ppos)
-+{
-+	struct hci_dev *hdev = file->private_data;
-+	struct btusb_data *data = hci_get_drvdata(hdev);
-+	char buf[3];
-+
-+	buf[0] = data->reset_gpio ? 'Y' : 'N';
-+	buf[1] = '\n';
-+	buf[2] = '\0';
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-+}
-+
-+static ssize_t btusb_debugfs_reset_gpio(struct file *file,
-+					const char __user *user_buf,
-+					size_t count, loff_t *ppos)
-+{
-+	struct hci_dev *hdev = file->private_data;
-+	struct btusb_data *data = hci_get_drvdata(hdev);
-+
-+	if (!data->reset_gpio)
-+		return -EOPNOTSUPP;
-+
-+	bt_dev_warn(hdev, "Debugfs triggering HW reset via gpio");
-+	btusb_toggle_gpio(data->reset_gpio, data->reset_duration_ms);
-+
-+	return count;
-+}
-+
-+static const struct file_operations reset_gpio_fops = {
-+	.open		= simple_open,
-+	.read		= btusb_debugfs_has_reset_gpio,
-+	.write		= btusb_debugfs_reset_gpio,
-+	.llseek		= default_llseek,
-+};
-+#endif
-+
- static void btusb_gpio_cmd_timeout(struct hci_dev *hdev)
- {
- 	struct btusb_data *data = hci_get_drvdata(hdev);
-@@ -4625,6 +4666,11 @@ static int btusb_probe(struct usb_interface *intf,
- 	if (err < 0)
- 		goto out_free_dev;
- 
-+#ifdef CONFIG_DEBUG_FS
-+	debugfs_create_file("toggle_hw_reset", 0644, hdev->debugfs, hdev,
-+			    &reset_gpio_fops);
-+#endif
-+
- 	usb_set_intfdata(intf, data);
- 
- 	return 0;
+ 	mutex_lock(&buffer->lock);
++	WARN_ON(buffer->vmap_cnt == 0);
+ 	if (!--buffer->vmap_cnt) {
+ 		vunmap(buffer->vaddr);
+ 		buffer->vaddr = NULL;
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.17.1
 
