@@ -2,147 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994A32FC56C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECA72FC546
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbhATAKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394941AbhASNxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:53:07 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D38C061573;
-        Tue, 19 Jan 2021 05:52:04 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id w5so19788262wrm.11;
-        Tue, 19 Jan 2021 05:52:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Rdm/biE4a+mlahQDle49aMaEn2RSuJRihRF9ov5TZxY=;
-        b=tEPNj6jc4dDBVRN92ctn+19OOJlId09PKo+cbreOHGSTV52nPQG79Iq7VltOLAuL54
-         RwFuw2ciF8ad7tqWu4FoK1X3RSaOxIr7uRyJ7JTT9Wy+mbC9jnNePKXLYj1ndOHvIYG9
-         KTGek18TQo0jLucnu3PHmpoa/jDFw3spAIGr+SXoX8w+rYPuXfE31c74Cqq/l7hpiBuI
-         /N8XnQrFIFGFW2gM7LzWw7wv3AYkg2BXkWOAbdm4mAcEJhDsjZA6dUY5YOcF93CKkhzR
-         rBqxnqEPE90Swfla6YqCWizwq3Te8qkoXvejSA85Y1nyiTG8DNVFwmo26O+0+TUCz8an
-         C9nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rdm/biE4a+mlahQDle49aMaEn2RSuJRihRF9ov5TZxY=;
-        b=URFFUaTSpc/tnO5tJidsjSN/BCmvJP9MXtXC//6VktD9oSFT5+HJOGYd2xBn43hjkF
-         qH9XFzLFgXKmgqPS6Gl37Z4SyJPCGJgw7bvzp2vu8Bva1Rgd44NZAfPFDtQ5uX1VLXHM
-         oRflI2lGLl4vZK8CfZSKpUdQ0dbxGZl4Qsxvtc2rz2cQnc/YMgkDIdv1z1FK8KSGcGwH
-         UPpNgwoqzXrMEV/V2aJASJY9rJ0IEbYQcCEMrNVTGRYhQHmjz8weapGoRynm+Yu3c1Z/
-         ltvZa65ThJ+LBOpdvNj9eMsIa/9Q3RlWK6a520j/GJi9MEyBbZlMcpVoiCMpJGZ81Gkq
-         7NkA==
-X-Gm-Message-State: AOAM530+oRlWG6JD49Jpuv/XffrNjkv7yDJJEEIpvgmwqS1Bvgq7gkWS
-        gW8mKUS0Zu/CebcmIlXTwLo=
-X-Google-Smtp-Source: ABdhPJws7vLn4dGCoaQ8qzPypxg+WVQRz6mwaCJ75KdkEoJ6PUn8D4EnMC/dQmsxJbHyAyppnbaLQw==
-X-Received: by 2002:a5d:4712:: with SMTP id y18mr4595230wrq.229.1611064323159;
-        Tue, 19 Jan 2021 05:52:03 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id b133sm5317905wme.33.2021.01.19.05.52.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 05:52:01 -0800 (PST)
-Date:   Tue, 19 Jan 2021 14:52:00 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v6 04/15] phy: tegra: xusb: tegra210: Do not reset UPHY
- PLL
-Message-ID: <YAbkABc68aMTvIyr@ulmo>
-References: <20210119085546.725005-1-jckuo@nvidia.com>
- <20210119085546.725005-5-jckuo@nvidia.com>
+        id S1730772AbhATAB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:01:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41684 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394964AbhASNx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 08:53:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611064351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=iHKhjDkg2elRSLCRxcs3JrLM+Cwcg+VKeqaH+Rb+H6c=;
+        b=rDTgZ7xM0AN8Ucse2v7mBg8l0Jc0DJBU5I16P+0kPu6Ll3d1MYjww4/OSPhb827NAQfP3a
+        AICZcyHBf6nEypATvwx9kRZbFb+EuDroiPciU7vbGZXpZWf5BQXuaB+OroVtJXg0PBeUIO
+        NBdb1UgiuuGaVIXgCdiitPnNeC32Gk4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5E644B247;
+        Tue, 19 Jan 2021 13:52:31 +0000 (UTC)
+Subject: Re: [RFC PATCH 04/37] btrfs: use bio_init_fields in volumes
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com
+Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
+        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
+        song@kernel.org, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+ <20210119050631.57073-5-chaitanya.kulkarni@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <89feb998-8c60-dbae-92a6-15a9ad4fd594@suse.com>
+Date:   Tue, 19 Jan 2021 15:52:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mjN8PrBnL8xAik0+"
-Content-Disposition: inline
-In-Reply-To: <20210119085546.725005-5-jckuo@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+In-Reply-To: <20210119050631.57073-5-chaitanya.kulkarni@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---mjN8PrBnL8xAik0+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 19, 2021 at 04:55:35PM +0800, JC Kuo wrote:
-> Once UPHY PLL hardware power sequencer is enabled, do not assert
-> reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
-> This commit removes reset_control_assert(pcie->rst) and
-> reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+On 19.01.21 г. 7:05 ч., Chaitanya Kulkarni wrote:
+> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 > ---
-> v6:
->    no change
-> v5:
->    no change
-> v4:
->    no change
-> v3:
->    new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
->=20
->  drivers/phy/tegra/xusb-tegra210.c | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-t=
-egra210.c
-> index 4dc9286ec1b8..9bfecdfecf35 100644
-> --- a/drivers/phy/tegra/xusb-tegra210.c
-> +++ b/drivers/phy/tegra/xusb-tegra210.c
-> @@ -502,7 +502,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xu=
-sb_padctl *padctl)
->  	if (--pcie->enable > 0)
->  		return;
-> =20
-> -	reset_control_assert(pcie->rst);
->  	clk_disable_unprepare(pcie->pll);
->  }
-> =20
-> @@ -739,7 +738,6 @@ static void tegra210_sata_uphy_disable(struct tegra_x=
-usb_padctl *padctl)
->  	if (--sata->enable > 0)
->  		return;
-> =20
-> -	reset_control_assert(sata->rst);
->  	clk_disable_unprepare(sata->pll);
->  }
+>  fs/btrfs/volumes.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index ee086fc56c30..836167212252 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6371,14 +6371,12 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
+>  
+>  	bio->bi_private = bbio;
+This line can be removed as ->private is initialized by bio_init_fields.
 
-Isn't this going to break things between here and patch 5 where the
-hardware sequencer is enabled? If so, it might be better to move this
-into patch 5 so that things stay functional and bisectible.
-
-Thierry
-
---mjN8PrBnL8xAik0+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAG4/0ACgkQ3SOs138+
-s6FRdBAAkdDGGqqOByCqXlI4BlCDvaCGH7gokubynuGUXTo+SPMkd//DHFmwPN6A
-7X081GnqqOEFdpEXJKFwPae6K2VX2JAT/q/wnGJLXDcDI2yw47YSyNbywux/aAo3
-RO0Ws8OkhFtLXzRx7y/ljYEC4rxf+eqtGEyZWjMDVt7HRTvT8cR/DfTyZFW5rB8l
-YGs3rlUqq9gtCKoY2YdrCWYveBDfEzug3IQ7ZYZUppu0r9t+Dmc/vjMkr53wciA6
-pRmkzisoO/3pjDHMv0kTVBtTs2EGCRMGN59LICXQyegLI2HtLloLsqBdAbet+vru
-JaaGFuAnrpD/D8GB83hZJkGuYIrAODd2RYuBJaima+V8VDGp6pwrvplcSSacC+61
-pAD6yy6ZWzoGdlSMp1TlG5mmhSy6Oyo2xWNdasezLOJU8SX3BjfuF0+E7NyRticC
-dL/kwTsO/rbLTx2oNytjPrvaClogBxTUWTOVyhUR6p6MBCYWqC5W08KuUQKvpj8x
-TGMQ5S4DaoDlptvDl92EneA16QLpwOsNalzvu5n+bMepQxlaBIbRcmMQtwXVM/am
-Du2XP/aFHvPfQPUIezFFDF3lRfurC5afAw8r9TNI8ElHfwasPdH2equiVK5Fqn7a
-XxR1qShC3WZUTBBsnOeG9iRJhFrssk3+4hE9PEfUAdN3MGE5iDE=
-=YdRC
------END PGP SIGNATURE-----
-
---mjN8PrBnL8xAik0+--
+>  	btrfs_io_bio(bio)->device = dev;
+> -	bio->bi_end_io = btrfs_end_bio;
+> -	bio->bi_iter.bi_sector = physical >> 9;
+> +	bio_init_fields(bio, dev->bdev, physical >> 9, bbio, btrfs_end_bio, 0, 0);
+>  	btrfs_debug_in_rcu(fs_info,
+>  	"btrfs_map_bio: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
+>  		bio_op(bio), bio->bi_opf, bio->bi_iter.bi_sector,
+>  		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
+>  		dev->devid, bio->bi_iter.bi_size);
+> -	bio_set_dev(bio, dev->bdev);
+>  
+>  	btrfs_bio_counter_inc_noblocked(fs_info);
+>  
+> 
