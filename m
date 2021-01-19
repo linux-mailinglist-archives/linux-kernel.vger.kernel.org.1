@@ -2,266 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACF42FB72C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC79C2FB74B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389354AbhASK2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:28:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47748 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731747AbhASKMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:12:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611051087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JsGTkhtRuxb3Ac4Sx1XpqYNH/VVhKMi8Dm3Oi6h0IzI=;
-        b=lgcWFVcjFOkeKZVmlSfj553CkEvLCYCD0J/1huVT/eXp4/5H20zzyC6u3mxnsvoevbLpAW
-        qsaFdbayRX+hOtvUflhRDpE7Opn1orstZJ41uhTtRBuVqBI6SXrWxZJ9JOQoRkyW+wuC1R
-        YfgF/5P7aQIXp6YDB4j1lGh9Oqho070=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EE9BACAC;
-        Tue, 19 Jan 2021 10:11:27 +0000 (UTC)
-Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Arthur Borsboom <arthurborsboom@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org
-References: <20210118151528.81668-1-roger.pau@citrix.com>
- <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
- <20210119100651.afyccratx6ha52kc@Air-de-Roger>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <20969962-331d-50d9-dc65-772b564ab1c6@suse.com>
-Date:   Tue, 19 Jan 2021 11:11:26 +0100
+        id S2404180AbhASKeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:34:16 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41372 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387682AbhASKND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:13:03 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10JA1XXt151732;
+        Tue, 19 Jan 2021 05:12:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=IHF2oxG8Si6P7YX0CkWlhBKD7mnMBgPLLDeRApyFRIM=;
+ b=PI4QZA9OT87UkSzavR2Wm1ZVYlbexLy2WrAg7JD0VWPBs1zILjhHVYX0dKVV/wdZvFC2
+ 8uiFtcLLh43b5TuNuMVr89Wsnx8YiuZJrVvvHHVegPh6BcALm7pzMdMJpyf/CgQuFu1x
+ 9mCkbPjks+BjQq3vHDWZ4XSLUy69l/VD0aPmWnpExba0r8cyfh/a9Zw74r0RuEKrqrXc
+ btSvB6oi2Q964lz1nS35Yt7ASjf9xFNAmFxV8+HdqHC8y1dsEi/THb1cc/4AfqhPaher
+ ywbhJo0S4Gz0Ip3eyRZvaKhdY6Bvxf/UcASKGJSC9pKFlynTTKL6Lsoql7cXc8p68x8x KA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365vx10x2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 05:12:05 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10JA1hdB152471;
+        Tue, 19 Jan 2021 05:12:04 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365vx10x0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 05:12:03 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10JA45Ow010746;
+        Tue, 19 Jan 2021 10:11:59 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 365s0e83rq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 10:11:59 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10JABuPZ22807030
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 10:11:56 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DDA84C044;
+        Tue, 19 Jan 2021 10:11:56 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A91C74C04A;
+        Tue, 19 Jan 2021 10:11:55 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.35.184])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Jan 2021 10:11:55 +0000 (GMT)
+Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
+To:     Janosch Frank <frankja@linux.ibm.com>, linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
+        imbrenda@linux.ibm.com, cohuck@redhat.com,
+        linux-s390@vger.kernel.org, gor@linux.ibm.com,
+        mihajlov@linux.ibm.com
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+ <20210119100402.84734-2-frankja@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
+Date:   Tue, 19 Jan 2021 11:11:55 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210119100651.afyccratx6ha52kc@Air-de-Roger>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ylEqUBRZNTFs0WBSkCXClikBiPWK8t7Ny"
+In-Reply-To: <20210119100402.84734-2-frankja@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ylEqUBRZNTFs0WBSkCXClikBiPWK8t7Ny
-Content-Type: multipart/mixed; boundary="UgLdTB1bgFg08HjZtFhPNLleFdwEFI4mE";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc: linux-kernel@vger.kernel.org, Arthur Borsboom <arthurborsboom@gmail.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Jens Axboe
- <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
- linux-block@vger.kernel.org
-Message-ID: <20969962-331d-50d9-dc65-772b564ab1c6@suse.com>
-Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
-References: <20210118151528.81668-1-roger.pau@citrix.com>
- <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
- <20210119100651.afyccratx6ha52kc@Air-de-Roger>
-In-Reply-To: <20210119100651.afyccratx6ha52kc@Air-de-Roger>
-
---UgLdTB1bgFg08HjZtFhPNLleFdwEFI4mE
-Content-Type: multipart/mixed;
- boundary="------------D45C3EBEC939FF19C0556E34"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------D45C3EBEC939FF19C0556E34
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 19.01.21 11:06, Roger Pau Monn=C3=A9 wrote:
-> On Tue, Jan 19, 2021 at 08:43:01AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
->> On 18.01.21 16:15, Roger Pau Monne wrote:
->>> Don't require the discard-alignment xenstore node to be present in
->>> order to correctly setup the feature. This can happen with versions o=
-f
->>> QEMU that only write the discard-granularity but not the
->>> discard-alignment node.
->>>
->>> Assume discard-alignment is 0 if not present. While there also fix th=
-e
->>> logic to not enable the discard feature if discard-granularity is not=
-
->>> present.
->>>
->>> Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
->>> Signed-off-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
->>> ---
->>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->>> Cc: Juergen Gross <jgross@suse.com>
->>> Cc: Stefano Stabellini <sstabellini@kernel.org>
->>> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
->>> Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
->>> Cc: Jens Axboe <axboe@kernel.dk>
->>> Cc: xen-devel@lists.xenproject.org
->>> Cc: linux-block@vger.kernel.org
->>> Cc: Arthur Borsboom <arthurborsboom@gmail.com>
->>> ---
->>>    drivers/block/xen-blkfront.c | 25 +++++++++++++------------
->>>    1 file changed, 13 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfron=
-t.c
->>> index 5265975b3fba..5a93f7cc2939 100644
->>> --- a/drivers/block/xen-blkfront.c
->>> +++ b/drivers/block/xen-blkfront.c
->>> @@ -2179,22 +2179,23 @@ static void blkfront_closing(struct blkfront_=
-info *info)
->>>    static void blkfront_setup_discard(struct blkfront_info *info)
->>>    {
->>> -	int err;
->>> -	unsigned int discard_granularity;
->>> -	unsigned int discard_alignment;
->>> +	unsigned int discard_granularity =3D 0;
->>> +	unsigned int discard_alignment =3D 0;
->>> +	unsigned int discard_secure =3D 0;
->>> -	info->feature_discard =3D 1;
->>> -	err =3D xenbus_gather(XBT_NIL, info->xbdev->otherend,
->>> +	xenbus_gather(XBT_NIL, info->xbdev->otherend,
->>>    		"discard-granularity", "%u", &discard_granularity,
->>>    		"discard-alignment", "%u", &discard_alignment,
->>> +		"discard-secure", "%u", &discard_secure,
->>>    		NULL);
->>
->> This would mean that "discard-secure" will be evaluated only if the
->> other two items are set in Xenstore. From blkif.h I can't see this is
->> required, and your patch is modifying today's behavior in this regard.=
-
->>
->> You might want to have three xenbus_read_unsigned() calls instead.
->=20
-> You are right, discard-secure should be fetched regardless of whether
-> discard-alignment exists.
->=20
-> I can fetch discard-granularity and discard-alignment using
-> xenbus_gather and keep discard-secure using xenbus_read_unsigned. Let
-> me send a new version.
-
-I'm still not convinced this is correct. blkif.h doesn't mention that
-discard-alignment will be valid only with discard-granularity being
-present.
 
 
-Juergen
+On 19.01.21 11:04, Janosch Frank wrote:
+> The number reported by the query is N-1 and I think people reading the
+> sysfs file would expect N instead. For users creating VMs there's no
+> actual difference because KVM's limit is currently below the UV's
+> limit.
+> 
+> The naming of the field is a bit misleading. Number in this context is
+> used like ID and starts at 0. The query field denotes the maximum
+> number that can be put into the VCPU number field in the "create
+> secure CPU" UV call.
+> 
+> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+> Fixes: a0f60f8431999 ("s390/protvirt: Add sysfs firmware interface for Ultravisor information")
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/s390/boot/uv.c        | 2 +-
+>  arch/s390/include/asm/uv.h | 4 ++--
+>  arch/s390/kernel/uv.c      | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/s390/boot/uv.c b/arch/s390/boot/uv.c
+> index a15c033f53ca..afb721082989 100644
+> --- a/arch/s390/boot/uv.c
+> +++ b/arch/s390/boot/uv.c
+> @@ -35,7 +35,7 @@ void uv_query_info(void)
+>  		uv_info.guest_cpu_stor_len = uvcb.cpu_stor_len;
+>  		uv_info.max_sec_stor_addr = ALIGN(uvcb.max_guest_stor_addr, PAGE_SIZE);
+>  		uv_info.max_num_sec_conf = uvcb.max_num_sec_conf;
+> -		uv_info.max_guest_cpus = uvcb.max_guest_cpus;
+> +		uv_info.max_guest_cpu_id = uvcb.max_guest_cpu_num;
+>  	}
+>  
+>  #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index 0325fc0469b7..c484c95ea142 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -96,7 +96,7 @@ struct uv_cb_qui {
+>  	u32 max_num_sec_conf;
+>  	u64 max_guest_stor_addr;
+>  	u8  reserved88[158 - 136];
+> -	u16 max_guest_cpus;
+> +	u16 max_guest_cpu_num;
 
---------------D45C3EBEC939FF19C0556E34
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------D45C3EBEC939FF19C0556E34--
-
---UgLdTB1bgFg08HjZtFhPNLleFdwEFI4mE--
-
---ylEqUBRZNTFs0WBSkCXClikBiPWK8t7Ny
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAGsE4FAwAAAAAACgkQsN6d1ii/Ey9X
-WQgAn3h7ka+ShrUvzZW3mMqgiPrityT/EVEPJDkUSQy2LpYg00BrushWv87RwmViwob/VYUZWgZ0
-mBl76Fm5vZVDpuk6ySirpcWgGx3DYHV+C6a25d4c6kstuXC5PNC9kkt7ysr6197lKreTlxjZh0kW
-d9hXrP+ImHVNjU1VO2Re9k5GRPrXhwJ+NWMUFET8dP3D81knFa8rxBhJu9Qsx4FNtvzgLxDqtSED
-tMUbYYQcIKfrm8OtjnO1dsyWxtizwfz9FozuF4JjjMxnTXIjxZiyAFN1Ig45B8bDcVSToNzeaexb
-b/xU5jicMkEnMQ7f/M7J/9uVvS2NTyTyDTfmdp7P1A==
-=+mmK
------END PGP SIGNATURE-----
-
---ylEqUBRZNTFs0WBSkCXClikBiPWK8t7Ny--
+I think it would read better if we name this also max_guest_cpu_id.
+Otherwise this looks good.
