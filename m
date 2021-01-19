@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73222FB812
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD26B2FB814
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391954AbhASLzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:55:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34034 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390178AbhASLpe (ORCPT
+        id S2392001AbhASL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391799AbhASLsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:45:34 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611056687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=utL8UxlPCpk/07YjUgieC46PewvCgHyuan1ont6LOtI=;
-        b=Ac8bzvk56W92wah8bLK27PuYbqb90tbIlmgn17KPvfmQNCmpZ8S3xXPThJps2I7mdNbJmz
-        BBvbcyBIzQgg45T02/reRsdLa3whZOWtkhBpQhkRjWf4l2S9r82THP+hJoeuNEHSaFDx33
-        Hx7pFReT2JUZ/vg+QamjFXwrfnvfehzUyNT/N015Rzy52yTS004UdqkQYrf9gYPHutnsNE
-        8X+hvu45hL9opjsLw8HPq58pzAksM8BH00KyHn/MATTTBRj/eueQgq4zBsQga30zAQAE1a
-        V3Fot4hOqQ+3e861WCqhXlui3cqsv60mmx4pJbPAxwrBjwqQ2Szy65s0aKHWSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611056687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=utL8UxlPCpk/07YjUgieC46PewvCgHyuan1ont6LOtI=;
-        b=iNY7OASrO377LOVNOz5HI32Oivlm8NoMGM8vJHsNHNYV3MUYX17x2m2YjvGInFOS6zUA0t
-        k0Zpc/4sSwGeCMDw==
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-In-Reply-To: <YAa0j9CG/6yrGcs+@jagdpanzerIV.localdomain>
-References: <20210114170412.4819-1-john.ogness@linutronix.de> <YAGE1O/nG57hyRs4@alley> <YAGFebfPNLwjyhcl@alley> <YAYriDiAl7lajty9@jagdpanzerIV.localdomain> <87r1mh5mso.fsf@jogness.linutronix.de> <YAa0j9CG/6yrGcs+@jagdpanzerIV.localdomain>
-Date:   Tue, 19 Jan 2021 12:50:47 +0106
-Message-ID: <87bldl5exc.fsf@jogness.linutronix.de>
+        Tue, 19 Jan 2021 06:48:00 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E6DC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:47:20 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id l23so12026836pjg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:47:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v7yJDey0M+HW/YQk4Qnou/+vJASlcwRgxX1tZO/12uc=;
+        b=XheqXA0hvMXgSeZ/+sY8OuNzqj5RtUqLV7XUp9iDcbrxN4C/H006GSgCdY6pCRZ+6A
+         YP4PN3F2p5Kr7Ty8III6swOElYekyLY5rZkqJSH4FbuFUf2Di0N21HcH2+hAssViFDSC
+         S0EOkeMwd9aQEEzPqMdvZ2SeYdA5F+VvRBMR8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v7yJDey0M+HW/YQk4Qnou/+vJASlcwRgxX1tZO/12uc=;
+        b=R0l8O01Yl669CCoBGu7Y1Qgt+cp7QJJvUH65KS0NX5FXox0v/3QJTbhqQe+vIYfe2m
+         SWumb8l+LXDhyLHj1ImfswH0h+fvUGsfxUVvWkIyu16iCmKxGLmgI6Ix255Lxo1j5Gex
+         vuHZhPjpic5U5Qaf72g0DBwxlXMmpY58LapeABkcomyZX3uVm3LPcV6ppuPVhETyKRqU
+         iZHfF3MP6bnY8X+WZkDOEn2JkLi59YZ/iOZq1Oahnl2ryU35CaBqC9Gdv9PwGnyt8Wrq
+         6MsUSU6HP461x4WKGEjjwFa846+3dURiyyh8xM3VEZzAkNslLlxXsXWz66JNVhSi01Y4
+         bnJg==
+X-Gm-Message-State: AOAM533bdXSOa97hDtBqEpSJ8rv0hyhMwYVc9VNsFAAEBkeFYJ66RB5r
+        bK+5m90nDYhkK/+f+peg8nTrWg==
+X-Google-Smtp-Source: ABdhPJwKkaeHsZKLVvtVi3Idy2+qMHHrfOaNv4MG3cu9uCgasAbEp6he3pKE0HDPzeG7iHBOxS8N0Q==
+X-Received: by 2002:a17:90a:fd0b:: with SMTP id cv11mr5019491pjb.26.1611056840071;
+        Tue, 19 Jan 2021 03:47:20 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:3d01:2769:7769:a4b0])
+        by smtp.gmail.com with ESMTPSA id gx21sm3456732pjb.31.2021.01.19.03.47.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 03:47:19 -0800 (PST)
+From:   Claire Chang <tientzu@chromium.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        max.chou@realtek.com, hildawu@realtek.com,
+        Claire Chang <tientzu@chromium.org>
+Subject: [PATCH] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
+Date:   Tue, 19 Jan 2021 19:47:00 +0800
+Message-Id: <20210119114700.3662156-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-19, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
->>> John, how did you spot these problems?
->> 
->> I am preparing my series to remove the logbuf_lock, which also
->> refactors and consolidates code from syslog_print_all() and
->> kmsg_dump_get_buffer(). While testing/verifying my series, I noticed
->> the these oddities in the semantics and decided I should research
->> where they came from and if they were actually necessary.
->
-> Any chance you can put those tests somewhere public so that we can
-> run them regularly?
+Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry
+at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
 
-I have a collection of hacked-together tools that I use to test most of
-the various interfaces of printk. I would need to clean them up if they
-should be used for any kind of automated regression testing.
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+---
+ drivers/bluetooth/hci_h5.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-And where should I make such things available? I could put them in a
-repo in the Linutronix github account (like I did for the ringbuffer
-stress testing tool). (??)
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index fb9817f97d45..27e96681d583 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -906,6 +906,11 @@ static int h5_btrtl_setup(struct h5 *h5)
+ 	/* Give the device some time before the hci-core sends it a reset */
+ 	usleep_range(10000, 20000);
+ 
++	/* Enable controller to do both LE scan and BR/EDR inquiry
++	 * simultaneously.
++	 */
++	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
++
+ out_free:
+ 	btrtl_free(btrtl_dev);
+ 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-John
