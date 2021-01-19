@@ -2,262 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEC52FB782
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A1A2FB780
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405045AbhASLCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390964AbhASKve (ORCPT
+        id S2404998AbhASLBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:01:35 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1235 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391041AbhASKwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:51:34 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8782C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:50:49 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b8so10269024plh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:50:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=MdowI1spYzSZ783aBzUoan8uq2NdmnUHuCZElfPxqfQ=;
-        b=Fx/tzeqor4dkEBrQ0EyMKi5UYinFCZNM+4m2iEiHgFjtaqmVm8MaDD8C4DMfirKXyU
-         H5gAlRfQHzOM/5ghPHjfII8w+BN1O7fXQkhddHMAP/wAde5v1uvn14+cD29IIL+durT4
-         h5pxtZ+oPR5/0Mr2BZONiO4fZ9jVg+B0pmf5QUUeY2K/1IjvhcQ2aTOpG7VCHg4s10kG
-         0f+RczmVuu9aFkP3pYQiQQwxxweG/yhG1p37p+eBX84V6KxuP/o5d6VXVhXBVzkBttTK
-         ACUL6DnJc6+255oBCQNY5VExJpM25oUrD3J+aVy4LCWpjQAKIXh+ndx2OC4S+5W+6ZOr
-         lsrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MdowI1spYzSZ783aBzUoan8uq2NdmnUHuCZElfPxqfQ=;
-        b=lESP9jo+faAUV8qwpSum/SgCx98UFxUM4JeX2PYb30/e6PVQZ4xHJs17MN6GimVnaS
-         LaHl0ow+0EEEVVSpKhGFROVGgDcb64xn9erg8x2YWfdS8OjfxG7C7zyIwE7quPNFQTpb
-         eR08rLAl6ltw3W0n7hzFkvYXM9LFYHJBq8Ttsg584O0gvy8xw0ACIvds5nRcy6aMRcE4
-         DdnWbXC95eywsePKDjnLxEoDeHmROQptFUMZaXfvUu3cKXbb3bIANMmlHTivkTHDaUmm
-         14pKm5GCvWQ+BhE4XCbiGZu++o7fme8G11GZknNx3G4Ks+iUJisytDXkfp+wYb7hE1U+
-         tzGg==
-X-Gm-Message-State: AOAM533FmGJL8VkF6vKgK04GZrq7oF+XeWK5IftoVj0LkipT/9Baj70Q
-        rI6ot2APefZFqLhAsSRQRFnjZUq/bUBV4w==
-X-Google-Smtp-Source: ABdhPJz6EoK9JnwYL1Qcj/o7CwQgRwQsXysqajEDUuSbbCkplLL+gfnG4gJ1U1PgzoWtncHHZFMJcQ==
-X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr4764171pjs.102.1611053449104;
-        Tue, 19 Jan 2021 02:50:49 -0800 (PST)
-Received: from localhost.localdomain ([122.181.110.213])
-        by smtp.gmail.com with ESMTPSA id a136sm19619797pfd.149.2021.01.19.02.50.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 02:50:48 -0800 (PST)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH] kdb: Simplify kdb commands registration
-Date:   Tue, 19 Jan 2021 16:20:18 +0530
-Message-Id: <1611053418-29283-1-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 19 Jan 2021 05:52:30 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10JAlo8w024026;
+        Tue, 19 Jan 2021 11:51:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=9YMOD6MmU6S+E9nQgamOnACAlveEyKVrfmoJphPUeHU=;
+ b=TBRRBHg6sjVJRAb6kZJ2/Ebv4/CRq3EEuXNvCtjLq4JKisvSqNqd4ZTMRMvD7r22BdQd
+ cMhQfLO98aTKU/6pn/U5C3k8COoorD8AZX3DXauwY91Z0qioIIxl10BUtWdYAI3Xd+Jq
+ gmkALxqJ2wzxjlDx5o2aAt6ctAgZ4OqmOvhRoLLTzezpBt/EDFMJh/99IMWDo+ndVRQ0
+ b7HfXs+cdX/YCIv6sbnPcZ3sOzJo6S2qOBpYnbIO+B29fVEa93xre4KEirOlYYNjiOk4
+ YtWvFUjCcqKc1KZ5hc6a7tkfT8ZN6H8CFdm3ehguGzHSJryXVsROBbtNFYHnTtvry3Ty Zw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 363p5dfdet-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 11:51:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C43F6100034;
+        Tue, 19 Jan 2021 11:51:20 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B341A2296E0;
+        Tue, 19 Jan 2021 11:51:20 +0100 (CET)
+Received: from lmecxl0602.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 11:51:19 +0100
+Subject: Re: [Linux-stm32] [PATCH] ARM: dts: stm32: enable STM32MP1 crypto/CRC
+ accelerators unconditionally
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@pengutronix.de>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210119095241.17888-1-a.fatoum@pengutronix.de>
+From:   Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Message-ID: <d14933ea-2c77-7cca-8e2b-3972ea47d733@foss.st.com>
+Date:   Tue, 19 Jan 2021 11:50:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210119095241.17888-1-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify kdb commands registration via using linked list instead of
-static array for commands storage.
+Hi Ahmad,
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- kernel/debug/kdb/kdb_main.c    | 78 ++++++++++--------------------------------
- kernel/debug/kdb/kdb_private.h |  1 +
- 2 files changed, 20 insertions(+), 59 deletions(-)
+These IPs could be enabled in the secure side. To avoid any concurrency 
+access, I prefer to keep all that crypto IPs status disable.
+For examples, RNG can be managed in OP-TEE, so it will remain disable in 
+Linux.
+BR,
 
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 930ac1b..93ac0f5 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -33,6 +33,7 @@
- #include <linux/kallsyms.h>
- #include <linux/kgdb.h>
- #include <linux/kdb.h>
-+#include <linux/list.h>
- #include <linux/notifier.h>
- #include <linux/interrupt.h>
- #include <linux/delay.h>
-@@ -84,15 +85,8 @@ static unsigned int kdb_continue_catastrophic =
- static unsigned int kdb_continue_catastrophic;
- #endif
- 
--/* kdb_commands describes the available commands. */
--static kdbtab_t *kdb_commands;
--#define KDB_BASE_CMD_MAX 50
--static int kdb_max_commands = KDB_BASE_CMD_MAX;
--static kdbtab_t kdb_base_commands[KDB_BASE_CMD_MAX];
--#define for_each_kdbcmd(cmd, num)					\
--	for ((cmd) = kdb_base_commands, (num) = 0;			\
--	     num < kdb_max_commands;					\
--	     num++, num == KDB_BASE_CMD_MAX ? cmd = kdb_commands : cmd++)
-+/* kdb_cmds_head describes the available commands. */
-+static LIST_HEAD(kdb_cmds_head);
- 
- typedef struct _kdbmsg {
- 	int	km_diag;	/* kdb diagnostic */
-@@ -921,7 +915,7 @@ int kdb_parse(const char *cmdstr)
- 	char *cp;
- 	char *cpp, quoted;
- 	kdbtab_t *tp;
--	int i, escaped, ignore_errors = 0, check_grep = 0;
-+	int escaped, ignore_errors = 0, check_grep = 0;
- 
- 	/*
- 	 * First tokenize the command string.
-@@ -1011,7 +1005,7 @@ int kdb_parse(const char *cmdstr)
- 		++argv[0];
- 	}
- 
--	for_each_kdbcmd(tp, i) {
-+	list_for_each_entry(tp, &kdb_cmds_head, list_node) {
- 		if (tp->cmd_name) {
- 			/*
- 			 * If this command is allowed to be abbreviated,
-@@ -1037,8 +1031,8 @@ int kdb_parse(const char *cmdstr)
- 	 * few characters of this match any of the known commands.
- 	 * e.g., md1c20 should match md.
- 	 */
--	if (i == kdb_max_commands) {
--		for_each_kdbcmd(tp, i) {
-+	if (list_entry_is_head(tp, &kdb_cmds_head, list_node)) {
-+		list_for_each_entry(tp, &kdb_cmds_head, list_node) {
- 			if (tp->cmd_name) {
- 				if (strncmp(argv[0],
- 					    tp->cmd_name,
-@@ -1049,7 +1043,7 @@ int kdb_parse(const char *cmdstr)
- 		}
- 	}
- 
--	if (i < kdb_max_commands) {
-+	if (!list_entry_is_head(tp, &kdb_cmds_head, list_node)) {
- 		int result;
- 
- 		if (!kdb_check_flags(tp->cmd_flags, kdb_cmd_enabled, argc <= 1))
-@@ -2428,12 +2422,11 @@ static int kdb_kgdb(int argc, const char **argv)
- static int kdb_help(int argc, const char **argv)
- {
- 	kdbtab_t *kt;
--	int i;
- 
- 	kdb_printf("%-15.15s %-20.20s %s\n", "Command", "Usage", "Description");
- 	kdb_printf("-----------------------------"
- 		   "-----------------------------\n");
--	for_each_kdbcmd(kt, i) {
-+	list_for_each_entry(kt, &kdb_cmds_head, list_node) {
- 		char *space = "";
- 		if (KDB_FLAG(CMD_INTERRUPT))
- 			return 0;
-@@ -2667,13 +2660,9 @@ int kdb_register_flags(char *cmd,
- 		       short minlen,
- 		       kdb_cmdflags_t flags)
- {
--	int i;
- 	kdbtab_t *kp;
- 
--	/*
--	 *  Brute force method to determine duplicates
--	 */
--	for_each_kdbcmd(kp, i) {
-+	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
- 		if (kp->cmd_name && (strcmp(kp->cmd_name, cmd) == 0)) {
- 			kdb_printf("Duplicate kdb command registered: "
- 				"%s, func %px help %s\n", cmd, func, help);
-@@ -2681,35 +2670,10 @@ int kdb_register_flags(char *cmd,
- 		}
- 	}
- 
--	/*
--	 * Insert command into first available location in table
--	 */
--	for_each_kdbcmd(kp, i) {
--		if (kp->cmd_name == NULL)
--			break;
--	}
--
--	if (i >= kdb_max_commands) {
--		kdbtab_t *new = kmalloc_array(kdb_max_commands -
--						KDB_BASE_CMD_MAX +
--						kdb_command_extend,
--					      sizeof(*new),
--					      GFP_KDB);
--		if (!new) {
--			kdb_printf("Could not allocate new kdb_command "
--				   "table\n");
--			return 1;
--		}
--		if (kdb_commands) {
--			memcpy(new, kdb_commands,
--			  (kdb_max_commands - KDB_BASE_CMD_MAX) * sizeof(*new));
--			kfree(kdb_commands);
--		}
--		memset(new + kdb_max_commands - KDB_BASE_CMD_MAX, 0,
--		       kdb_command_extend * sizeof(*new));
--		kdb_commands = new;
--		kp = kdb_commands + kdb_max_commands - KDB_BASE_CMD_MAX;
--		kdb_max_commands += kdb_command_extend;
-+	kp = kmalloc(sizeof(*kp), GFP_KDB);
-+	if (!kp) {
-+		kdb_printf("Could not allocate new kdb_command table\n");
-+		return 1;
- 	}
- 
- 	kp->cmd_name   = cmd;
-@@ -2719,6 +2683,8 @@ int kdb_register_flags(char *cmd,
- 	kp->cmd_minlen = minlen;
- 	kp->cmd_flags  = flags;
- 
-+	list_add_tail(&kp->list_node, &kdb_cmds_head);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(kdb_register_flags);
-@@ -2757,15 +2723,15 @@ EXPORT_SYMBOL_GPL(kdb_register);
-  */
- int kdb_unregister(char *cmd)
- {
--	int i;
- 	kdbtab_t *kp;
- 
- 	/*
- 	 *  find the command.
- 	 */
--	for_each_kdbcmd(kp, i) {
-+	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
- 		if (kp->cmd_name && (strcmp(kp->cmd_name, cmd) == 0)) {
--			kp->cmd_name = NULL;
-+			list_del(&kp->list_node);
-+			kfree(kp);
- 			return 0;
- 		}
- 	}
-@@ -2778,12 +2744,6 @@ EXPORT_SYMBOL_GPL(kdb_unregister);
- /* Initialize the kdb command table. */
- static void __init kdb_inittab(void)
- {
--	int i;
--	kdbtab_t *kp;
--
--	for_each_kdbcmd(kp, i)
--		kp->cmd_name = NULL;
--
- 	kdb_register_flags("md", kdb_md, "<vaddr>",
- 	  "Display Memory Contents, also mdWcN, e.g. md8c1", 1,
- 	  KDB_ENABLE_MEM_READ | KDB_REPEAT_NO_ARGS);
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index a4281fb..7a4a181 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -174,6 +174,7 @@ typedef struct _kdbtab {
- 	short    cmd_minlen;		/* Minimum legal # command
- 					 * chars required */
- 	kdb_cmdflags_t cmd_flags;	/* Command behaviour flags */
-+	struct list_head list_node;
- } kdbtab_t;
- 
- extern int kdb_bt(int, const char **);	/* KDB display back trace */
--- 
-2.7.4
+Lionel
 
+On 1/19/21 10:52 AM, Ahmad Fatoum wrote:
+> There is no SoC-external hardware support needed for the hash1, rng1,
+> crc1 and cryp1 IP blocks to function. Enable them thus unconditionally
+> instead of replicating their enablement in board device trees.
+>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+>   arch/arm/boot/dts/stm32mp151.dtsi              |  3 ---
+>   arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   |  4 ----
+>   arch/arm/boot/dts/stm32mp157c-dk2.dts          |  4 ----
+>   arch/arm/boot/dts/stm32mp157c-ed1.dts          | 16 ----------------
+>   arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  4 ----
+>   arch/arm/boot/dts/stm32mp15xc.dtsi             |  1 -
+>   arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   |  8 --------
+>   arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi   |  4 ----
+>   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi         | 12 ------------
+>   arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       |  4 ----
+>   10 files changed, 60 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+> index 3c75abacb374..c2d998343b6a 100644
+> --- a/arch/arm/boot/dts/stm32mp151.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
+> @@ -1297,7 +1297,6 @@ hash1: hash@54002000 {
+>   			dmas = <&mdma1 31 0x2 0x1000A02 0x0 0x0>;
+>   			dma-names = "in";
+>   			dma-maxburst = <2>;
+> -			status = "disabled";
+>   		};
+>   
+>   		rng1: rng@54003000 {
+> @@ -1305,7 +1304,6 @@ rng1: rng@54003000 {
+>   			reg = <0x54003000 0x400>;
+>   			clocks = <&rcc RNG1_K>;
+>   			resets = <&rcc RNG1_R>;
+> -			status = "disabled";
+>   		};
+>   
+>   		mdma1: dma-controller@58000000 {
+> @@ -1402,7 +1400,6 @@ crc1: crc@58009000 {
+>   			compatible = "st,stm32f7-crc";
+>   			reg = <0x58009000 0x400>;
+>   			clocks = <&rcc CRC1>;
+> -			status = "disabled";
+>   		};
+>   
+>   		stmmac_axi_config_0: stmmac-axi-config {
+> diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
+> index 58275bcf9e26..268a99291d79 100644
+> --- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
+> @@ -253,10 +253,6 @@ &pwr_regulators {
+>   	vdd_3v3_usbfs-supply = <&vdd_usb>;
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+>   &rtc {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> index 2bc92ef3aeb9..045636555ddd 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> @@ -29,10 +29,6 @@ chosen {
+>   	};
+>   };
+>   
+> -&cryp1 {
+> -	status = "okay";
+> -};
+> -
+>   &dsi {
+>   	status = "okay";
+>   	phy-dsi-supply = <&reg18>;
+> diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
+> index 81a7d5849db4..f69622097e89 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
+> @@ -115,14 +115,6 @@ adc1: adc@0 {
+>   	};
+>   };
+>   
+> -&crc1 {
+> -	status = "okay";
+> -};
+> -
+> -&cryp1 {
+> -	status = "okay";
+> -};
+> -
+>   &dac {
+>   	pinctrl-names = "default";
+>   	pinctrl-0 = <&dac_ch1_pins_a &dac_ch2_pins_a>;
+> @@ -144,10 +136,6 @@ &gpu {
+>   	contiguous-area = <&gpu_reserved>;
+>   };
+>   
+> -&hash1 {
+> -	status = "okay";
+> -};
+> -
+>   &i2c4 {
+>   	pinctrl-names = "default", "sleep";
+>   	pinctrl-0 = <&i2c4_pins_a>;
+> @@ -325,10 +313,6 @@ &pwr_regulators {
+>   	vdd_3v3_usbfs-supply = <&vdd_usb>;
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+>   &rtc {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+> index 6cf49a0a9e69..a2aca1982bf6 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+> @@ -250,10 +250,6 @@ &m4_rproc {
+>   	status = "okay";
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+>   &rtc {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
+> index b06a55a2fa18..86953d7ddde0 100644
+> --- a/arch/arm/boot/dts/stm32mp15xc.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
+> @@ -12,7 +12,6 @@ cryp1: cryp@54001000 {
+>   			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+>   			clocks = <&rcc CRYP1>;
+>   			resets = <&rcc CRYP1_R>;
+> -			status = "disabled";
+>   		};
+>   	};
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+> index ac46ab363e1b..603c14054509 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+> @@ -377,14 +377,6 @@ flash0: mx66l51235l@0 {
+>   	};
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+> -&rtc {
+> -	status = "okay";
+> -};
+> -
+>   &sdmmc1 {
+>   	pinctrl-names = "default", "opendrain", "sleep";
+>   	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+> index 803eb8bc9c85..3f4af430aaf4 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+> @@ -204,10 +204,6 @@ flash0: spi-flash@0 {
+>   	};
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+>   &rtc {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> index 89c0e1ddc387..0cca6c3ff4a0 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> @@ -124,10 +124,6 @@ &cec {
+>   	status = "okay";
+>   };
+>   
+> -&crc1 {
+> -	status = "okay";
+> -};
+> -
+>   &dts {
+>   	status = "okay";
+>   };
+> @@ -155,10 +151,6 @@ &gpu {
+>   	contiguous-area = <&gpu_reserved>;
+>   };
+>   
+> -&hash1 {
+> -	status = "okay";
+> -};
+> -
+>   &i2c1 {
+>   	pinctrl-names = "default", "sleep";
+>   	pinctrl-0 = <&i2c1_pins_a>;
+> @@ -482,10 +474,6 @@ &pwr_regulators {
+>   	vdd_3v3_usbfs-supply = <&vdd_usb>;
+>   };
+>   
+> -&rng1 {
+> -	status = "okay";
+> -};
+> -
+>   &rtc {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
+> index 713485a95795..d03d4d12133c 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
+> @@ -224,7 +224,3 @@ &m4_rproc {
+>   	interrupts = <68 1>;
+>   	status = "okay";
+>   };
+> -
+> -&rng1 {
+> -	status = "okay";
+> -};
