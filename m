@@ -2,145 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3982FB41E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4352FB420
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730775AbhASIaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S1726202AbhASIcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbhASIaM (ORCPT
+        with ESMTP id S1729440AbhASIbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:30:12 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6D0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:29:32 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id 6so11525610wri.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:29:32 -0800 (PST)
+        Tue, 19 Jan 2021 03:31:24 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989D3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:30:44 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 15so12541695pgx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:30:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=d9EPmxgSjplqIloqEd0fjmhaf+3lX7Ca0TE2z4KWzZU=;
-        b=Mc5TIayeKmc7ETz+AffYmEItuFJXlQ+LEXC0DXPZd0CeGOe+I1qOEyFh4REscFCZ9K
-         QBlcRgDo6dPqK01+Ka8woQ4Ce+Tpfm4FNert/g90UtAxCnBuF6LU1jEhogQ+mzzaEXxv
-         DVOpaMrUYFVaILEhToWw1nDQFOPBoeBbLmfVTlycpgZ05pSDTcdv5hEOM/6dSSGRsn7E
-         u8N/93WaR4XjU+lnDH7Ix1nIBRz/1r+gwTh3LStekGLavIWm5gbpGGe8mYxhTbrpBfQd
-         2LQiofEKLbLBHRRgyFy04sunOBK61oZGum2gRLULFFnGY4r2g62QdNAeo2JEuWOMYptT
-         Z8Ew==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=wmCvFS5byHJLxt3GY3B6M4M/AGUYfoVXo3fbSdTsmIU=;
+        b=OmlFwUJ/0EsCOp7aZxWwcFYEFOs2peTHllEnsZfhJTAMh5vODcwl9OIkFCepmgrrvS
+         oviX0lhgx25YqoKqXargcIgLVSuKIpnz+vSlhOzzjRvHv/HmGrlG4sCodrm4PNnXxSka
+         s0g7afBTQACtu5IYSKCYU7OsgnGyA/T190XME=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=d9EPmxgSjplqIloqEd0fjmhaf+3lX7Ca0TE2z4KWzZU=;
-        b=GHdtgLrjwOmQpOZGfRr6dOyGBu1/wLvmGhS3QTRY1YuCkEtk9lSnGdJCqYliULhjhe
-         qGZJHqfk7lvSBZl4HMpA8H3bsR+sEVb2GkPSh65XHbGQSHSRPuPhxevymMARgKc7YRZP
-         //rYZiKLxZkMCyK1QpLqp6uhSyoY+GDRpilNTVLkGCr5pTp0UzPyC8PmjMZz+qdrLWXS
-         hrPCXzuQZkA0iRqJNLfK9PfLpAz5EHWE4PHhtTwF787nmXlcqD+ecCCQuV6Pl3MXSCmt
-         QS/W1eJnY0WfHRJUuLNzL8kuq235YcHyv/OyekBMAc7SR61/kbDo9ItAPU+xAUhh/SQe
-         IytQ==
-X-Gm-Message-State: AOAM530IjXOEhHIp7iV3li0PVeqDOBSVMxzGHU+ApUwUM6qdL5AlOfW0
-        poaNmJqtllNhmhulIsp+zzXqVw==
-X-Google-Smtp-Source: ABdhPJxZgbmI7dqTDYKpsJ4RFJ20zHNFbzEsz8E5NfIQ/ie1dHSOozCsng29cOp98WeoUcI4x2Sbrw==
-X-Received: by 2002:adf:b519:: with SMTP id a25mr3094280wrd.263.1611044971004;
-        Tue, 19 Jan 2021 00:29:31 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id b64sm3307488wmb.26.2021.01.19.00.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 00:29:30 -0800 (PST)
-Date:   Tue, 19 Jan 2021 08:29:27 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zack Rusin <zackr@vmware.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eddie Dong <eddie.dong@intel.com>,
-        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        Jackie Li <yaodong.li@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jan Safrata <jan.nikitenko@gmail.com>,
-        Jesse Barnes <jesse.barnes@intel.com>,
-        jim liu <jim.liu@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Keith Packard <keithp@keithp.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
-        Niu Bing <bing.niu@intel.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Pei Zhang <pei.zhang@intel.com>,
-        Ping Gao <ping.a.gao@intel.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhiyuan Lv <zhiyuan.lv@intel.com>
-Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
-Message-ID: <20210119082927.GJ4903@dell>
-References: <20210115181601.3432599-1-lee.jones@linaro.org>
- <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
- <YAWhDRkSOHbJ+2Le@phenom.ffwll.local>
- <20210118150945.GE4903@dell>
- <YAXDgmWMR9s4OgxN@phenom.ffwll.local>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=wmCvFS5byHJLxt3GY3B6M4M/AGUYfoVXo3fbSdTsmIU=;
+        b=LQ8khKJQXsKnZMh3BnsUB827W1lcvPlAVvJVWkVPU6GBRkAoCc2UK+Q40BLyr1fRAd
+         38uKBRKwx43LbCmuQEMBFQ985cx4H2qyNSAAOE3yCxAPXqCPf94lAvWzrvrWkJtHIoqF
+         oRLSelXyJcBveA7Co21kxddjBwwvQ0Oba9JCP3A8nEjgmuXnCpumagYl+1+iYudvC4PM
+         P+1FMjAVAAFL71BOGcTVRTTTii9yR4NiVKGpcg7LOP71xhQ3hIDmd6Eu32In/D4sLL+t
+         BoXpAN63S3RVLd9XgR+CZA+bpHsAu0gDiAVkbil5zFPX2x/zCztLbGl6N8OC7TvGA1OY
+         0xSA==
+X-Gm-Message-State: AOAM530zMu1mPQUHyS4Qxhm6bUUbEbJhUrdeAfq6aSUyDpH/B3V+C7HO
+        KMVTgwv3dqobQfK289HmE81E1AuVbrhmomazJ2o/A4WxjhVzGajFuhGyfKDBBNVT5+mcLnb6+Dl
+        BocxP2zjIqaF0SF+oL/de8Bk72OtJCoX5kM2dhhtK/T1/vHteTdcQ6auDBEbEkezZO7PMwMbcBt
+        aN9F5ElNY4G4UoPA==
+X-Google-Smtp-Source: ABdhPJzQiIblyjx/CyJ2R/nfQe4kIXabY72O5eoxv+jDDEJR3FnINYt/BfB1wesg8sTcfDWtrq6/LQ==
+X-Received: by 2002:aa7:8813:0:b029:19d:cd3b:6f89 with SMTP id c19-20020aa788130000b029019dcd3b6f89mr3408182pfo.42.1611045043584;
+        Tue, 19 Jan 2021 00:30:43 -0800 (PST)
+Received: from [10.230.32.84] ([192.19.148.250])
+        by smtp.gmail.com with ESMTPSA id bt8sm2803746pjb.0.2021.01.19.00.30.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 00:30:42 -0800 (PST)
+Subject: Re: [PATCH v2] brcmfmac: add support for CQM RSSI notifications
+To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <ALSI@bang-olufsen.dk>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andrew Zaborowski <andrew.zaborowski@intel.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210114163641.2427591-1-alsi@bang-olufsen.dk>
+ <2adec5d6-fbc9-680c-01d6-25f83327bf21@broadcom.com>
+ <3a7de182-b0c7-352c-323b-3e3cebb9ffa3@bang-olufsen.dk>
+From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <2b070521-b995-371f-d853-37cffc1a546a@broadcom.com>
+Date:   Tue, 19 Jan 2021 09:30:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YAXDgmWMR9s4OgxN@phenom.ffwll.local>
+In-Reply-To: <3a7de182-b0c7-352c-323b-3e3cebb9ffa3@bang-olufsen.dk>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000938d6805b93ca717"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Daniel Vetter wrote:
+--000000000000938d6805b93ca717
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, Jan 18, 2021 at 03:09:45PM +0000, Lee Jones wrote:
-> > On Mon, 18 Jan 2021, Daniel Vetter wrote:
-> > 
-> > > On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
-> > > > 
-> > > > > On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
-> > > > > 
-> > > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > > niggly little warnings.
-> > > > > 
-> > > > > Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
-> > > > 
-> > > > Thanks! For all the vmwgfx bits:
-> > > > Reviewed-by: Zack Rusin <zackr@vmware.com>
-> > > 
-> > > Ok I merged everything except vmwgfx (that's for Zack) and i915/nouveau
-> > > (those generally go through other trees, pls holler if they're stuck).
-> > 
-> > Thanks Daniel, you're a superstar!
-> > 
-> > So Zack will take the vmwgfx parts?  Despite providing a R-b?
-> 
-> I only merge stuff that's defacto abandoned already. Everything else I try
-> to offload to whomever actually cares :-)
+On 1/15/2021 3:57 PM, Alvin =C5=A0ipraga wrote:
+> Hi Arend,
+>=20
+> On 1/15/21 3:10 PM, Arend Van Spriel wrote:
+>> + Johannes
+>> - netdevs
+>>
+>> On 1/14/2021 5:36 PM, 'Alvin =C5=A0ipraga' via BRCM80211-DEV-LIST,PDL wr=
+ote:
+>>> Add support for CQM RSSI measurement reporting and advertise the
+>>> NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
+>>> supplicant such as iwd to be notified of changes in the RSSI for roamin=
+g
+>>> and signal monitoring purposes.
+>>
+>> The more I am looking into this API the less I understand it or at least
+>> it raises a couple of questions. Looking into nl80211_set_cqm_rssi() [1]
+>> two behaviors are supported: 1) driver is provisioned with a threshold
+>> and hysteresis, or 2) driver is provisioned with high and low threshold.=
+ >
+>> The second behavior is used when the driver advertises
+>> NL80211_EXT_FEATURE_CQM_RSSI_LIST *and* user-space provides more than
+>> one RSSI threshold. In both cases the same driver callback is being used
+>> so I wonder what is expected from the driver. Seems to me the driver
+>> would need to be able to distinguish between the two behavioral
+>> scenarios. As there is no obvious way I assume the driver should behave
+>> the same for both cases, but again it is unclear to me what that
+>> expected/required behavior is.
+>=20
+> It will only provision the driver according to behaviour (1) if 0 or 1
+> thresholds are being set AND the driver implements
+> set_cqm_rssi_config(). But it says in the documentation for the
+> set_cqm_rssi_range_config() callback[1] that it supersedes
+> set_cqm_rssi_config() (or at least that there is no point in
+> implementing _config if range_config is implemented). In that case, and
+> if just one threshold is supplied (with a hysteresis), then a suitable
+> range is computed by cfg80211_cqm_rssi_update() and provided to
+> set_cqm_rssi_range_config(). I guess the implication here is that the
+> two behaviours are functionally equivalent. I'm not sure I can argue for
+> or against that because I don't really know what the semantics of the
+> original API were supposed to be, but it seems reasonable.
+>=20
+> As a starting point - and since the firmware behaviour is very close
+> already - I implemented only set_cqm_rssi_range(). I have been testing
+> with iwd, which by default sets just a single threshold and hysteresis,
+> and the driver was sending notifications as would be expected.
 
-Understood.  Thanks for the explanation.
+OK. I overlooked that there were two different callbacks involved. So I=20
+will review the patch with that knowledge. What wifi chip did you test=20
+this with and more importantly which firmware version?
 
-Hopefully Zack actually cares. :D
+Regards,
+Arend
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
+
+--000000000000938d6805b93ca717
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQTAYJKoZIhvcNAQcCoIIQPTCCEDkCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2hMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFTjCCBDagAwIBAgIMUd5uz4+i70IloyctMA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTA0MDc1
+NDIyWhcNMjIwOTA1MDc1NDIyWjCBlTELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRkwFwYDVQQDExBBcmVu
+ZCBWYW4gU3ByaWVsMSswKQYJKoZIhvcNAQkBFhxhcmVuZC52YW5zcHJpZWxAYnJvYWRjb20uY29t
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqJ64ukMVTPoACllUoR4YapHXMtf3JP4e
+MniQLw3G3qPYDcmuupakle+cqBUzxXOu9odSBxw7Ww4qooIVjDOuA1VxtYzieKLPmZ0sgvy1RhVR
+obr58d7/2azKP6wecAiglkT6jZ0by1TbLhuXNFByGxm7iF1Hh/sF3nWKCHMxBtEFrmaKhM1MwCDS
+j5+GBWrrZ/SNgVS+XqjaQyRg/h3WB95FxduXpYq5p0kWPJZhV4QeyMGSIRzqPwLbKdqIlRhkGxds
+pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
+53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
+BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
+Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
+bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
+BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
+RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
+bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
+VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
+BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
+kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
+3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
+uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
+WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
+HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
+QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
+IDcgKKypireDtnI8Ar1K2pI5mxEOj7Te0FCIpzf3lbnJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
+BwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDExOTA4MzA0NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
+CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA5Ye/No5fR4qAAzyQo
+XYfiOjNfA2vCNlz7cEEs1y73stzMc/HZL6z72RAW7fIfYunoLlp/8GkAhxMbdP3SBI8v4otVTWi3
+HI/YQB5fDwF9OZtwDZ7qD2mF4K1HU0qM/ixeHNOBeEm8Tg9GB7spIeavB2wvs1S5tjX4pVeiy8lF
+r/+m+cYm/ZJe9O1LoHi/yJubaZKr7UT1TR1iaDlzWcs2jVe0lDzs2CL+g/FrEwe+sV/1LHJBbsW3
+ivsqTZcHUh/3+0/eDbN2jnu/C7+d/QpaiHWwAHHdpCmQAhx8xZ7ZJd9p93YVlcOgyffY9Uzbbj4J
+SwixgW3+zZs8/3GTCeqn
+--000000000000938d6805b93ca717--
