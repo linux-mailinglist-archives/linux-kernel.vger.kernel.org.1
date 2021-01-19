@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7372FBDD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16B82FBDCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391539AbhASRhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:37:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390732AbhASRgR (ORCPT
+        id S2391614AbhASRgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390678AbhASRgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:36:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611077690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l3WQQsn0c0F55IyRwlGbgw2P5nPc25LQ9ou/ENxcllQ=;
-        b=ijUG/MR+KXc238jK18Zzq55gR7rF86hnntSndk2LMS2X9z27ofNQ3bdHRnBj0K7COCDzu2
-        evp+bagmCa/l2OiUOzYa8xlqeRXvFUL2s21kVN12Gh497td/RYzkSeku7ivgsfGWwEX6Xa
-        FUsw7a9RqBCjfXCdzXDyRPy/hRuuOx0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-4qB93kqFMEmALvaVD9YgRA-1; Tue, 19 Jan 2021 12:34:48 -0500
-X-MC-Unique: 4qB93kqFMEmALvaVD9YgRA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF3AE107ACE3;
-        Tue, 19 Jan 2021 17:34:45 +0000 (UTC)
-Received: from krava (unknown [10.40.195.212])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 48C1660C0F;
-        Tue, 19 Jan 2021 17:34:43 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 18:34:42 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 1/4] perf tools: Allow to enable/disable events via
- control file
-Message-ID: <20210119173442.GA1717058@krava>
-References: <20201226232038.390883-1-jolsa@kernel.org>
- <20201226232038.390883-2-jolsa@kernel.org>
- <20210119141637.GH12699@kernel.org>
+        Tue, 19 Jan 2021 12:36:14 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B992C061573;
+        Tue, 19 Jan 2021 09:35:34 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id b26so30250867lff.9;
+        Tue, 19 Jan 2021 09:35:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gMgwlQyoUBPXZTnesEHGejV06vBVQO6z3YHE6lnNlA8=;
+        b=m+odlVeeIwd/iWZY8EUBSSPZ50JljTtjRALJNl0uHJMiKBXYWqjk4lJ6bFvC7AGKpE
+         v0VEwo2A6coM1VA8JK2EHOGtkV3IHKEcS1wn80qXqyPMNdrZ4bE/BVSyLbcxH9StLAfp
+         pvdTLnBHUiIJeXCknyBw7jsOGAI785JXb80ogKdmck8sKGe1//yzh/KxkmYmgxx2fCWN
+         UtaQfCRWmq4fW9RAHebWgJ8cSQjMHJsKNUozQGppsS9vMP6vLtcZwIZ32ou0MBOjfDqk
+         Tnaej0vhE6USsm+HD2b7DKIaECKqr6xMolVX/VKcD94bEq6kKtIyhLMcHPb+fk9XjtUK
+         MJHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gMgwlQyoUBPXZTnesEHGejV06vBVQO6z3YHE6lnNlA8=;
+        b=BrmrovHAMrS8cjXZ8Fh2tUf4vAm8skvZCCGaKAcCCwpp3g8IR44qbpzsgbV8V5tdHa
+         vxTh2Pcn6I0aUMOfBwTjpFcKgodiaQoji/BfFMFzoHP2M73hPLbvNH3zUvGionNX3z4P
+         8HTOlCqkHYVflXMN6CE594basEPofZZMy+JH4rM1M/agKkMT8Vs1nXiuD9xNDXGxyy6g
+         sg2lrHIZHp2CUqaaQCBhc2fuaUbWbSvDeWKceMcAt7SYz7eJaYgDQVhGdTwiqCWhoeBO
+         4siRlVhlRqbPfnVzl+nIwunjKqDTNf1JZ85yGvSKS1HvewAGFbhsK103cl56sC5yVtAn
+         PJfg==
+X-Gm-Message-State: AOAM532nOw19k4VC462to9NpIF8hBPjE+n8TO3+xGMG1MIg4bVO97o4G
+        VQm1n+9g764Z4LrqfU5kPxEN2bsx7Wo=
+X-Google-Smtp-Source: ABdhPJypJleEMjoXlixlan9dKgAjCS8aG2pk0Q8rneBgP9GZa6qxN8L9BOUsK7BSpV2xNESqpMFvUA==
+X-Received: by 2002:a05:6512:368d:: with SMTP id d13mr2162278lfs.414.1611077732803;
+        Tue, 19 Jan 2021 09:35:32 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id f5sm2031874lft.218.2021.01.19.09.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 09:35:32 -0800 (PST)
+Subject: Re: [PATCH v3 00/12] OPP API fixes and improvements
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210118005524.27787-1-digetx@gmail.com>
+ <20210118114613.fzq7nkrdfm53upkr@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1d17901f-6341-d278-f517-33d9c7aadf42@gmail.com>
+Date:   Tue, 19 Jan 2021 20:35:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119141637.GH12699@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210118114613.fzq7nkrdfm53upkr@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:16:37AM -0300, Arnaldo Carvalho de Melo wrote:
+18.01.2021 14:46, Viresh Kumar пишет:
+> On 18-01-21, 03:55, Dmitry Osipenko wrote:
+>> Hi,
+>>
+>> This series fixes problems and adds features to OPP API that are required
+>> for implementation of a power domain driver for NVIDIA Tegra SoCs.
+>>
+>> It is a continuation of [1], where Viresh Kumar asked to factor OPP
+>> patches into a separate series. I factored out the patches into this
+>> series, addressed the previous review comments and re-based patches
+>> on top of [2], which replaced some of my patches that added resource-managed
+>> helpers.
+>>
+>> [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+>> [2] https://lore.kernel.org/linux-pm/20210101165507.19486-1-tiny.windzz@gmail.com/
+> 
+> Hi Dmitry,
+> 
+> I have applied 9 out of 12 patches already. Thanks.
+> 
 
-SNIP
-
-> >   terminal 2:
-> >     bash 33349 [034] 149632.228023: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34059
-> >     bash 33349 [034] 149632.228050:   sched:sched_wakeup_new: bash:34059 [120] success=1 CPU:036
-> >     bash 33349 [034] 149633.950005: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34060
-> >     bash 33349 [034] 149633.950030:   sched:sched_wakeup_new: bash:34060 [120] success=1 CPU:036
-> 
-> 'disable' doesn't seem to be working:
-> 
-> Terminal 3:
-> 
-> [root@five ~]# echo 'enable sched:sched_process_fork' > control
-> [root@five ~]# echo 'disable sched:sched_process_fork' > control
-> [root@five ~]# echo 'disable' > control
-> [root@five ~]# echo 'disable sched:sched_process_fork' > control
-> [root@five ~]# echo 'disable sched:sched_process_fork' > control
-> [root@five ~]# echo 'enable sched:sched_process_fork' > control
-> [root@five ~]# echo 'disable sched:sched_process_fork' > control
-> [root@five ~]# echo 'enable sched:sched_process_fork' > control
-> [root@five ~]# echo 'disable sched:sched_process_fork' > control
-> [root@five ~]# echo 'enable' > control
-> [root@five ~]# echo 'disable' > control
-> [root@five ~]# echo 'disable' > control
-> [root@five ~]# echo 'disable' > control
-> [root@five ~]#
-> 
-> Terminal 1:
-> 
-> [root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' > perf.pipe
-> Events disabled
-> Event sched:sched_process_fork enabled
-> Event sched:sched_process_fork disabled
-> Event sched:sched_process_fork enabled
-> Event sched:sched_process_fork disabled
-> Events enabled
-> 
-> I tried also with '-o -', made no difference and:
-> 
-> [root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
-> Events disabled
-> Event sched:sched_process_fork enabled
-> Event sched:sched_process_fork disabled
-> Event sched:sched_process_fork disabled
-> 
-> The second probably should be more clear stating that that event was
-> already disabled.
-
-ok, I'll make patch for that
-
-> 
-> Probably your example with all the sched tracepoints make 'perf record'
-> just process the stream of events and not look at the commands?
-
-hum, I'm not sure I understand what's the problem apart
-from not printing that the event is already disabled
-some events are not disabed?
-
-> 
-> If I try with:
-> 
-> [root@five ~]# perf list sched:sched_process_* 2> /dev/null
-> 
-> List of pre-defined events (to be used in -e):
-> 
->   sched:sched_process_exec                           [Tracepoint event]
->   sched:sched_process_exit                           [Tracepoint event]
->   sched:sched_process_fork                           [Tracepoint event]
->   sched:sched_process_free                           [Tracepoint event]
->   sched:sched_process_wait                           [Tracepoint event]
-> 
-> [root@five ~]#
-> 
-> [root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:sched_process_*' -o - > perf.pipe
-> Events disabled
-> Events enabled
-> Events disabled
-> 
-> It works.
-> 
-> So it is a pre-existing problem, I'll continue processing your patches
-> and make a note about this...
-
-ok, I'll check the note
-
-thanks,
-jirka
-
+Thanks, I checked that everything is applied properly using today's
+linux-next.
