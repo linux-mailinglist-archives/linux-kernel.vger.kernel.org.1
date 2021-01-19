@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804322FC162
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0CF2FC17E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbhASUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:41:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        id S2387620AbhASUqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727729AbhASUlX (ORCPT
+        with ESMTP id S1733305AbhASUpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:41:23 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A954C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:40:33 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id c128so939785wme.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:40:33 -0800 (PST)
+        Tue, 19 Jan 2021 15:45:54 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D70AC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:13 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id m6so13027574pfm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Hqz5KkIUWAsMMr4Nkw2DHVorD8Rmr14UkHNWJhlYZr4=;
-        b=jnv/+KO6i5GVy+raRH2CktGNmAyPW0kmZGHyjPRMIyNRYpsdPac9XA9MP5fazurmcq
-         uCqt9zVEVQis/S9aVBLK7nY7cIsaz/HC6J+AP7AdKjkftzSD5cygQfazN6CZpkcl2NtD
-         HYatepnZHhxbcuEELJSbkHVlDUDcnxBpnEIQk=
+        bh=/gCsWuNpJqoaKmXUbqD2yoFjbhOP/NQNls4IpQYcF/Q=;
+        b=BOomRctyxyEqp6sAYPFH+XcCAixJ9mdS3M4PS9Y1Hs6E8tPpzPoXFJ7GtEq0ZqmFX/
+         bvhzR+TJgZVMqHH0HGzclpgi6jHb4tp/UtdkQysgd8hBfqUTrR17Y6FjSOhJWQ2F65jI
+         r1SvnCIuGt5FEZtRnmIoXeTeKg9AnfvEJ8THUXkDay1yIct1VropoKQyZoua/576XOuD
+         HIzDN4aSMbE4zlQfV44ERRSILhcgU3FKtUKbczAlrE/k83vWca3WhG+5a8lAddZX2g8Q
+         Z5jTjcfBLXAGwxTXTJE5Rl1C1/t5U+IzOftefmhcvZTXwPrIAFUJ7fNQJ0hP5B+sqD5A
+         ke+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Hqz5KkIUWAsMMr4Nkw2DHVorD8Rmr14UkHNWJhlYZr4=;
-        b=TSkxJqluozQdIrA0S3O1KAN6ix8LT6s3iMMQgSz0By6AJZ9HtGWpyTua053KA07h3R
-         T6TMhaN1DOlEXCywVGj60Qhen5Rq7eOfeTOcocdhVXN3WM4DKZ30Et89NGMXdJEg/OUN
-         SM3Sm/zOT6RMylYSHVqQA2bt1D8VwkhvoCQr8uhgRWwWspQC+goaXQhzqLw9hvt4ZlhR
-         wCKcDZXBmtNvwYkqq3qIzKnELIJJZiV8HX0Refr7DQA8STIxxO568VdGZnGWMVyqHqop
-         wxHsoW9+k7CnynXHsdIDXrPwUsduwMNs9lGMDlJgtIV4IXmXmMuLRJNsczpPOkVoApbT
-         eXtw==
-X-Gm-Message-State: AOAM530HwNcbKiVzduB0ntDXUw/KqlrEc/zPepIfD7saQUkgpXWiiS0E
-        2oG4RVUyYKMD/Gax3LcQnf1EuQ==
-X-Google-Smtp-Source: ABdhPJxhg7dmzxe2FdXAxsUXYiD0FnIa6AXlhUScb/esR/2HsvsfX6Iamf+TH80zY5689pHsjLT1lQ==
-X-Received: by 2002:a7b:cbd5:: with SMTP id n21mr1280568wmi.5.1611088832105;
-        Tue, 19 Jan 2021 12:40:32 -0800 (PST)
-Received: from localhost.localdomain (29.177.200.146.dyn.plus.net. [146.200.177.29])
-        by smtp.gmail.com with ESMTPSA id x128sm6642847wmb.29.2021.01.19.12.40.31
+        bh=/gCsWuNpJqoaKmXUbqD2yoFjbhOP/NQNls4IpQYcF/Q=;
+        b=ojjDFYJHPonsOLdTbj13AKrM7Xih4r64/Uq5nYQzgKvyWkD0wiSL/EYjStSbYlPBT5
+         jkSw+uB4MIZSePSbb2ZHc3SxMfIQVSE+zztu+I0GxRCQQ8pRmJMa1YNz5QUrYmjkg3bJ
+         X+pbKAI4z7UnUHqZc8LBJxs+6bYUBRudQJ1UJoaMn21FA41Oev+ISUj9AHkzDq0N3UzP
+         JVLz3f0IJNkbMNg90E743o3zASZHo+nakruX4dT53tGqc7z9SiT8o9J4f4Kkp1FGwix4
+         3vMfmphrjsN7DuBwKX6sJsVp7cCRVpTcephuk+jV4Pt8rrwIWccOkX/X+REmCcgj8UEd
+         EVLQ==
+X-Gm-Message-State: AOAM533FoFroITa5aUC4O6W1nlff0ABpzWdP804r60ud0aHI0gMR4MDa
+        AayxU4uRzpd6WUsfY5G6BW91jSYAy9TzHg==
+X-Google-Smtp-Source: ABdhPJzu4DX94t/qf1W5DtWbi8rKWJWe4eKwpUf4bPI5rvqgtbBrSK+Jq+SaY8+fAOZRUOFW+e520A==
+X-Received: by 2002:a62:36c3:0:b029:1b9:e110:e126 with SMTP id d186-20020a6236c30000b02901b9e110e126mr3294942pfa.64.1611089112103;
+        Tue, 19 Jan 2021 12:45:12 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id md7sm4129838pjb.52.2021.01.19.12.45.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:40:31 -0800 (PST)
-From:   Ignat Korchagin <ignat@cloudflare.com>
-To:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        dm-crypt@saout.de, linux-kernel@vger.kernel.org
-Cc:     Ignat Korchagin <ignat@cloudflare.com>, kernel-team@cloudflare.com,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH] dm crypt: fix invalid copy paste in crypt_alloc_req_aead
-Date:   Tue, 19 Jan 2021 20:40:15 +0000
-Message-Id: <20210119204015.49516-1-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 19 Jan 2021 12:45:11 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [RESEND][PATCH 1/3] dma-buf: system_heap: Make sure to return an error if we abort
+Date:   Tue, 19 Jan 2021 20:45:06 +0000
+Message-Id: <20210119204508.9256-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit d68b295 ("dm crypt: use GFP_ATOMIC when allocating crypto requests
-from softirq") I wrongly copy pasted crypto request allocation code from
-crypt_alloc_req_skcipher to crypt_alloc_req_aead. It is OK from runtime
-perspective as both simple encryption request pointer and AEAD request pointer
-are part of a union, but may confuse code reviewers.
+If we abort from the allocation due to a fatal_signal_pending(),
+be sure we report an error so any return code paths don't trip
+over the fact that the allocation didn't succeed.
 
-Fixes: d68b295 ("dm crypt: use GFP_ATOMIC when allocating crypto requests from softirq")
-Cc: stable@vger.kernel.org # v5.9+
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Suggested-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
- drivers/md/dm-crypt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/dma-buf/heaps/system_heap.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 8c874710f0bc..5a55617a08e6 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1481,9 +1481,9 @@ static int crypt_alloc_req_skcipher(struct crypt_config *cc,
- static int crypt_alloc_req_aead(struct crypt_config *cc,
- 				 struct convert_context *ctx)
- {
--	if (!ctx->r.req) {
--		ctx->r.req = mempool_alloc(&cc->req_pool, in_interrupt() ? GFP_ATOMIC : GFP_NOIO);
--		if (!ctx->r.req)
-+	if (!ctx->r.req_aead) {
-+		ctx->r.req_aead = mempool_alloc(&cc->req_pool, in_interrupt() ? GFP_ATOMIC : GFP_NOIO);
-+		if (!ctx->r.req_aead)
- 			return -ENOMEM;
- 	}
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 17e0e9a68baf..405351aad2a8 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -363,8 +363,10 @@ static int system_heap_allocate(struct dma_heap *heap,
+ 		 * Avoid trying to allocate memory if the process
+ 		 * has been killed by SIGKILL
+ 		 */
+-		if (fatal_signal_pending(current))
++		if (fatal_signal_pending(current)) {
++			ret = -EINTR;
+ 			goto free_buffer;
++		}
  
+ 		page = alloc_largest_available(size_remaining, max_order);
+ 		if (!page)
 -- 
-2.20.1
+2.17.1
 
