@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71162FB763
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC5B2FB768
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389179AbhASKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:50:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404389AbhASKfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:35:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0CE120867;
-        Tue, 19 Jan 2021 10:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611052493;
-        bh=Ai9OtUYE17P/PsNgazL93C2QuNBAGpf3R4vtI8UU7tU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qFRNSgW3Phy8vew+1a95X5kmhqMA1QVSxeV/v+QNU2W1CjRdJbVoEEFxU+MWUM02h
-         2DbPo1jagUWGtrttWrzJaB8//4Nk1CztWgxvQLBQLDFvD1qhKaf0zFyLJu66ud/02r
-         FYwE1BBXlCiLLU1DbVyIFNnZE0An7DU/psfcJBtw=
-Date:   Tue, 19 Jan 2021 11:34:50 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI / device_sysfs: Use OF_MODALIAS for "compatible"
- modalias
-Message-ID: <YAa1ygjr2L3VxBKF@kroah.com>
-References: <20210119081513.300938-1-kai.heng.feng@canonical.com>
- <YAaXz9Pg5x3DsCs3@kroah.com>
- <CAAd53p7tdFiARtW1RXsjN8+OwRXWzMnok_rfKHDHCh-JSam3cQ@mail.gmail.com>
- <20210119094159.GQ4077@smile.fi.intel.com>
+        id S2391059AbhASKwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731822AbhASKij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:38:39 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C8AC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:37:59 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a10so11158770ejg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LtpYS3fE2cC5QgHZMy5lDBgkuvmbGBZXc8oUExaRobg=;
+        b=AVEAcv6erHpJS5IUR9N16OaW5mbpHSuKwXHB016yFyMXO8JGzwgihACuRmGR47q51n
+         EMHHMxJmnNtY5a3NtfFcauTpTOH0ANADTCmwYaemis6q7sTvHnBYaoHH+uYZswjsuO/B
+         UWmQ4vmYlfJK0lD44U35ZUM03AfHYAonkYRQQlw4bK6zSqGs8zWq+4nx3680wXx+gB9y
+         ekiyqIjewfmdo4Rgteu/klRNDwKVLtaQ4IppW7xFexWFFHzEfY8dyBfRtSUNPcLnN03N
+         vhhLIFqpra1Dp4KxKDyMOyKv6M9BvEJ6CzGh2Fwi9fXrfVZksEs17VACkAEuX3oxFDN2
+         DyFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LtpYS3fE2cC5QgHZMy5lDBgkuvmbGBZXc8oUExaRobg=;
+        b=lCit48CwPgVaHxmW9v6KDZcxX2YszGvkA6Sunv9CoxQ8g1folfaOzcDfyTO5VLjACU
+         iHfl/x72xsUyfQk9S8k+ukVcXeqW9VfwaKLCMmHYKIbZp4P4T32Y/LPyKCiHvMSpeyAM
+         o1TG6PHsut2VYz2mPLGE7rk0V/yQGn915tC5SJ6+9VNx+FJSnEFmUuUAu0Ig9XsPuWY3
+         JD1P1prXyvb+VVd5QE5r5Us7g8wnRPEnOuKQb7U50n6apLrfFYezRIWaE0GdP4+5b849
+         wEnNH9GQ0qaCXo4X7s4si8IojE28KztGXZmWZxAX9Sf/hzCrUd4rpVa5r3yQJ6OrL99t
+         N4AQ==
+X-Gm-Message-State: AOAM532YEJwZkK1fkXAc2lrczCvDbWhi6XYK+gwsng/JSxex7naxfGIE
+        88uRhVdKsY2xPX4rypGke6lsJGOl3/lxrirKVTCQXw==
+X-Google-Smtp-Source: ABdhPJyAozB1lFwLmI79KJn1esgyufm62vTBA3EAVda+QYKmeD4MJINnKWS/8L9U70HoqJJRoGWTHTTlM9s5jgA+QNM=
+X-Received: by 2002:a17:906:19c3:: with SMTP id h3mr2521301ejd.429.1611052676821;
+ Tue, 19 Jan 2021 02:37:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119094159.GQ4077@smile.fi.intel.com>
+References: <20210107025731.226017-1-warthog618@gmail.com> <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
+ <20210119003455.GB5169@sol>
+In-Reply-To: <20210119003455.GB5169@sol>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 19 Jan 2021 11:37:46 +0100
+Message-ID: <CAMpxmJUkFL+w7afS2NKF-xiMR==HVR1Mk8uQm3782DBoG0qneA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:41:59AM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 19, 2021 at 04:41:48PM +0800, Kai-Heng Feng wrote:
-> > On Tue, Jan 19, 2021 at 4:27 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > On Tue, Jan 19, 2021 at 04:15:13PM +0800, Kai-Heng Feng wrote:
-> 
-> ...
-> 
-> > > Who will use OF_MODALIAS and where have you documented it?
-> > 
-> > After this lands in mainline, I'll modify the pull request for systemd
-> > to add a new rule for OF_MODALIAS.
-> > I'll modify the comment on the function to document the change.
-> 
-> I'm wondering why to have two fixes in two places instead of fixing udev to
-> understand multiple MODALIAS= events?
+On Tue, Jan 19, 2021 at 1:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> On Mon, Jan 18, 2021 at 04:04:51PM +0100, Linus Walleij wrote:
+> > On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > >   selftests: gpio: rework and simplify test implementation
+> > >   selftests: gpio: remove obsolete gpio-mockup-chardev.c
+> > >   selftests: remove obsolete build restriction for gpio
+> > >   selftests: remove obsolete gpio references from kselftest_deps.sh
+> > >   tools: gpio: remove uAPI v1 code no longer used by selftests
+> > >   selftests: gpio: port to GPIO uAPI v2
+> > >   selftests: gpio: add CONFIG_GPIO_CDEV to config
+> >
+> > Bartosz I think you can just merge these patches into the GPIO tree, at least
+> > I think that is what I have done in the past.
+> >
+>
+> Could you touch up that Fixes tag in patch 1 if you merge v2?
+>
+> Thanks,
+> Kent.
 
-It's not a matter of multiple events, it's a single event with a
-key/value pair with duplicate keys and different values.
+Kent,
 
-What is this event with different values supposed to be doing in
-userspace?  Do you want multiple invocations of `modprobe` or something
-else?
+This doesn't apply to my for-next branch - there's a conflict in
+tools/testing/selftests/gpio/Makefile, could you take a look?
 
-Usually a "device" only has a single "signature" that modprobe uses to
-look up the correct module for.  Modules can support any number of
-device signatures, but traditionally it is odd to think that a device
-itself can be supported by multiple modules, which is what you are
-saying is happening here.
-
-So what should userspace do with this, and why does a device need to
-have multiple module alias signatures?
-
-thanks,
-
-greg k-h
+Bartosz
