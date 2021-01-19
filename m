@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34122FB709
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB5A2FB70A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389077AbhASJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387645AbhASJgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:36:49 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF362C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=hvDZ+fxryuq539HgDjOUrQrHbe7h9X7Wa0ctGASWN10=; b=OgKqJ+MG9z0OBm+QeKncoVH6nk
-        XENt9FT49QZ7pXyt0d/n9FCFplAji+NLya51furZxTzehV6KnCjtX9ae0RtvONsRPkKSt+o9omq+U
-        FqAOa+4lAGL1GK7J5qRWeOv0HSEmmQhb3jSClOJas3LIDEHty4ow3qb7IiLIhAf7oOx6jOc8Uk42y
-        I3J7opZCXmmgirRPi/bx4/lj0qCTKK5BzVCI49Lves81lga7JsIGfXw8D/nw+cSK1pvJrh4vNGpau
-        26o//HwgrWsjnJfpFQtBxmJY1RfIYA16Ra9tyMh35SuIy3WC6pxRLpjfebbYXgt3c5D6sYUQdzmUf
-        gPDlYEsw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l1nQN-00E7lm-FO; Tue, 19 Jan 2021 09:35:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 84BB7304D28;
-        Tue, 19 Jan 2021 10:35:38 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 392A12023AA22; Tue, 19 Jan 2021 10:35:38 +0100 (CET)
-Date:   Tue, 19 Jan 2021 10:35:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     daniel@ffwll.ch, mingo@redhat.com, will@kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/syncobj: make lockdep complain on WAIT_FOR_SUBMIT v2
-Message-ID: <YAan6haGjnIlNIoJ@hirez.programming.kicks-ass.net>
-References: <20210118180334.43714-1-christian.koenig@amd.com>
- <20210118180334.43714-2-christian.koenig@amd.com>
+        id S2389096AbhASJvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:51:02 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38678 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387635AbhASJg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:36:59 -0500
+IronPort-SDR: +mcbgIGpvgow1F5e6VE5S1GtIOm3FVCYsAKR0tqE12pnJHBfUuRpeL7m0PWgawHfAWO0CPLqPL
+ ZJxi9X79vffA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="179051386"
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="179051386"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 01:34:54 -0800
+IronPort-SDR: ZyqcKiU5pqIaa4jK/y2/kFZdKURQvGqk5xzdXr4GsBSdbnY941/vMnTNW1eh005BqSKScnjNF6
+ GS5fHddU9VVw==
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="426408521"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 01:34:44 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1nQM-003Lep-8a; Tue, 19 Jan 2021 11:35:42 +0200
+Date:   Tue, 19 Jan 2021 11:35:42 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        andy@kernel.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <20210119093542.GP4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+ <20210118144606.GO4077@smile.fi.intel.com>
+ <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
+ <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
+ <YAZ6Y1QDyWwPGE69@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210118180334.43714-2-christian.koenig@amd.com>
+In-Reply-To: <YAZ6Y1QDyWwPGE69@pendragon.ideasonboard.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 07:03:34PM +0100, Christian König wrote:
+On Tue, Jan 19, 2021 at 08:21:23AM +0200, Laurent Pinchart wrote:
+> On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
+> > On 18/01/2021 21:19, Daniel Scally wrote:
 
-> diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
-> index 6e74e6745eca..f51458615158 100644
-> --- a/drivers/gpu/drm/drm_syncobj.c
-> +++ b/drivers/gpu/drm/drm_syncobj.c
-> @@ -387,6 +387,13 @@ int drm_syncobj_find_fence(struct drm_file *file_private,
->  	if (!syncobj)
->  		return -ENOENT;
->  
-> +	/* Waiting for userspace with locks help is illegal cause that can
-> +	 * trivial deadlock with page faults for example. Make lockdep complain
-> +	 * about it early on.
-> +	 */
+...
 
-Egads, the cursed comment style is spreading :/
+> > (also, Laurent, if we did it this way we wouldn't be able to also handle
+> > the led-indicator GPIO here without some fairly major rework)
+> 
+> Given the additional complexity I don't think it's worth it, your
+> implementation is fine and code duplication with clk-gpio is minimal.
 
-> +	if (flags & DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT)
-> +		lockdep_assert_none_held_once();
-> +
+Making clk-gpio.c available as a library is a win in long term and reduces a
+possible duplication by others in the future. I bet we even might find already
+clk-gpio parts in some drivers.
 
-Should this not be part of drm_syncobj_fence_add_wait() instead? Also,
-do you want to sprinkle might_sleep() around ?
+-- 
+With Best Regards,
+Andy Shevchenko
 
->  	*fence = drm_syncobj_fence_get(syncobj);
->  	drm_syncobj_put(syncobj);
->  
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+
