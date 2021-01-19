@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0EE2FBD41
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CA32FBD47
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390922AbhASRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
+        id S2391240AbhASRO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390680AbhASRMy (ORCPT
+        with ESMTP id S2391042AbhASRNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:12:54 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EC9C061573;
-        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id v5so14199831qtv.7;
-        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
+        Tue, 19 Jan 2021 12:13:37 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79CAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:12:56 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id 6so29581200ejz.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:12:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8ZydUd6iysbYazKads1ipIIW9R1NAHfYqDDc67KX+ok=;
-        b=GUDFIcbbkZ0IKIM4c9iEcy1neGW1Am8AUsPJaK5r+I0x8/XC+qJ6nYm3gtQT7I7rTm
-         oLGRvD0Mwza9JzaPlkt+gSugq+ltoro+jO/Q2yMEBAU0Ea8cwM1lPfatTuoW2x40vhFf
-         f17G5DKs6UpamngxVSM02PtXFwA1KrGZN/f847VB29EZIdE1zgOSa5g9skse6P62x60W
-         iceQoQyyFtru7OzdGAzm7sCqJ7/VYs7xi7DR4NRWjZRctUd83LRJadIvFEv+vEHYkhCb
-         /r456Iiat+2ErGvhEjsUVHSGSaebp36nT7hh72DnOxAVZMg9j6INS4YJ795MSUSWZMXa
-         wQqQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=UJPK5CKb0wcUY0ytM1Iv21srZ4iUx0Yma6nHEQVa5Nk=;
+        b=h3j+E4fVWvZlVGfFRLrwMN4TLzWzH0l9C3vPGAnBTk96EoS+ZreRLQfvvbyap2PvFA
+         efDFcP1MQZx6YwPhKcyihjAe7a5Urh0q0CtLSp9SIAjwqYt3SuPt1uMlkrnmhxGDJ+Cg
+         imLzrR7Di6uGNcviJTaKQdgzLRGftRy7P77FiuD2X5OeHhDdeJSFi4nbTpXT4C9IaVmZ
+         a9SrMnkAGScIvLYxB/82cu3JjNu8XbDzMyPB2hUczjooRoVqHvmBqF2pmGDwIkKmpX62
+         FO0HYz+Yfhn8abK7d1N17ZKfoWGnsaTO9FGex1wwWuvKMqTMr871DXeLJFTMWZvCkG79
+         h6jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8ZydUd6iysbYazKads1ipIIW9R1NAHfYqDDc67KX+ok=;
-        b=nUQ+t3rJ8ZZGF5eKMduGbM2gmnZfccks3LoNrUUXquhPkKvCLwBkOG3FyoW3U6s2aJ
-         9WiiLVBOE2A/9RnNroS2yxJKRmlXpjKRKOwitHifWP6+D+uPuCz654V1/puD5TfLVqY3
-         /xTePq5OA/Uk+fmx+ut6iHw5oerEczIVlUnRUREC6S2i1IpYImDF/1iIil3qVYiffL6Q
-         I3rtJpU9jVp3k58VxLqbpq2sZy9RHQYkAb9RGf2PxG4xi9dtDAgiKjryEXatO38m+ggs
-         Go1VfSlAvF2C9GnVySXQv9//JwBsynXksNBaU1aFUWTMqWkLpiaiPZBAW0gznyp7G6mp
-         E4xA==
-X-Gm-Message-State: AOAM531vzu2zvuK0hmlYRBzGtgZYgK3+kzsX5aT63WlNIGxgKOuqpzwS
-        wFKb2B/FWo/ZFgE8onWHnAQ=
-X-Google-Smtp-Source: ABdhPJwtroIpxWtBHKcJeF05ADTjF0q/OCbvAPWrC+faW3VgLBMJHBUy/U1Ri2mRYv4Wi61jkGQBRw==
-X-Received: by 2002:aed:2f67:: with SMTP id l94mr5244724qtd.201.1611076333155;
-        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id j66sm495062qkf.78.2021.01.19.09.12.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 09:12:12 -0800 (PST)
-Subject: Re: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <cover.1610431620.git.viresh.kumar@linaro.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com>
-Date:   Tue, 19 Jan 2021 11:12:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=UJPK5CKb0wcUY0ytM1Iv21srZ4iUx0Yma6nHEQVa5Nk=;
+        b=Coj3hy4g8snaZG4jHN4kUTgY3QDQoW5txomU2uUm1Pfirre2+Qv3rU8DhEbXZSpFbW
+         24FacIqNiBZ7dUQq3CRb2jvNkKlNa/vy7gyS99AXJLhCNakfwCLf2AVi2X2jkc9+EnNh
+         OMRvfGBjc2eW+o0Rm8Zu22qG3c93u6x94a5CG5S9U+IxT1u91MG4NFwQeuIDmTSn5at7
+         bRqKPlm1rGByjQnHkUD+NANKbjFHJmSZ9DVLmS9NMdNCEId1Vh8m+blPdFh7qmQl5wgI
+         EA5JtWXE9gI8aJokdgrDcdNE0methQR7VivDQ4ZsqbCTGNhhNLnNU3AAJda20yKRnQu1
+         JfNg==
+X-Gm-Message-State: AOAM531PUebuoGQkIcsniA9Cd8s1FDGFd3zLjQxs4/15G9cemc7GbbM1
+        ts9X814AEdeIbOXM5tclg9026LX3DUZt/xg8nW1GoA==
+X-Google-Smtp-Source: ABdhPJwlzs3mKH5XCXsK5FB3ODrtX3QjgRCccS62xO+tJGzz36TaQLR4fAUYzxIwg5scnxQvlf7jbpFXYYVNhyAFOIw=
+X-Received: by 2002:a17:907:1b27:: with SMTP id mp39mr3580960ejc.519.1611076375571;
+ Tue, 19 Jan 2021 09:12:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1610431620.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200723211748.13139-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20200723211748.13139-1-pasha.tatashin@soleen.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 19 Jan 2021 12:12:19 -0500
+Message-ID: <CA+CK2bDg-sPzUe2pUsXTxx8+vykyaL+Mr3J2OZELtmU2b_pmBg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/1] scale loop device lock
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 2:28 AM, Viresh Kumar wrote:
-> We will start building overlays for platforms soon in the kernel and
-> would need fdtoverlay tool going forward. Lets start fetching and
-> building it.
-> 
-> While at it, also remove fdtdump.c file, which isn't used by the kernel.
-> 
-> V4:
-> - Don't fetch and build fdtdump.c
-> - Remove fdtdump.c
-> 
-> Viresh Kumar (3):
->   scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
->   scripts: dtc: Build fdtoverlay tool
->   scripts: dtc: Remove the unused fdtdump.c file
-> 
->  scripts/dtc/Makefile             |   6 +-
->  scripts/dtc/fdtdump.c            | 163 -------------------------------
->  scripts/dtc/update-dtc-source.sh |   6 +-
->  3 files changed, 8 insertions(+), 167 deletions(-)
->  delete mode 100644 scripts/dtc/fdtdump.c
-> 
+On Thu, Jul 23, 2020 at 5:17 PM Pavel Tatashin
+<pasha.tatashin@soleen.com> wrote:
 
-My first inclination was to accept fdtoverlay, as is, from the upstream
-project.
+It has been half a year, and no activity on this patch. Can it be applied?
 
-But my experiences debugging use of fdtoverlay against the existing
-unittest overlay files has me very wary of accepting fdtoverlay in
-it's current form.
+Thanks,
+Pasha
 
-As an exmple, adding an overlay that fails to reply results in the
-following build messages:
-
-   linux--5.11-rc> make zImage
-   make[1]: Entering directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
-     GEN     Makefile
-     CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/checksyscalls.sh
-     CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/atomic/check-atomics.sh
-     CHK     include/generated/compile.h
-     FDTOVERLAY drivers/of/unittest-data/static_test.dtb
-
-   Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
-   make[4]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/drivers/of/unittest-data/Makefile:96: drivers/of/unittest-data/static_test.dtb] Error 1
-   make[3]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of/unittest-data] Error 2
-   make[2]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of] Error 2
-   make[1]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/Makefile:1805: drivers] Error 2
-   make[1]: Leaving directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
-   make: *** [Makefile:185: __sub-make] Error 2
-
-
-The specific error message (copied from above) is:
-
-   Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
-
-which is cryptic and does not even point to the location in the overlay that
-is problematic.  If you look at the source of fdtoverlay / libfdt, you will
-find that FDT_ERR_NOTFOUND may be generated in one of many places.
-
-I do _not_ want to do a full review of fdtoverlay, but I think that it is
-reasonable to request enhancing fdtoverlay in the parent project to generate
-usable error messages before enabling fdtoverlay in the Linux kernel tree.
-
-fdtoverlay in it's current form adds a potential maintenance burden to me
-(as the overlay maintainer).  I now have the experience of how difficult it
-was to debug the use of fdtoverlay in the context of the proposed patch to
-use it with the devicetree unittest overlay .dtb files.
-
--Frank
+>
+> Changelog
+> v2: Addressed Tyler Hicks comments
+>         - added mutex_destroy()
+>         - comment in lo_open()
+>         - added lock around lo_disk in
+>
+>
+> ===
+>
+> In our environment we are using systemd portable containers in
+> squashfs formats, convert them into loop device, and mount.
+>
+> NAME                      MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+> loop5                       7:5    0  76.4M  0 loop
+> `-BaseImageM1908          252:3    0  76.4M  1 crypt /BaseImageM1908
+> loop6                       7:6    0    20K  0 loop
+> `-test_launchperf20       252:17   0   1.3M  1 crypt /app/test_launchperf20
+> loop7                       7:7    0    20K  0 loop
+> `-test_launchperf18       252:4    0   1.5M  1 crypt /app/test_launchperf18
+> loop8                       7:8    0     8K  0 loop
+> `-test_launchperf8        252:25   0    28K  1 crypt app/test_launchperf8
+> loop9                       7:9    0   376K  0 loop
+> `-test_launchperf14       252:29   0  45.7M  1 crypt /app/test_launchperf14
+> loop10                      7:10   0    16K  0 loop
+> `-test_launchperf4        252:11   0   968K  1 crypt app/test_launchperf4
+> loop11                      7:11   0   1.2M  0 loop
+> `-test_launchperf17       252:26   0 150.4M  1 crypt /app/test_launchperf17
+> loop12                      7:12   0    36K  0 loop
+> `-test_launchperf19       252:13   0   3.3M  1 crypt /app/test_launchperf19
+> loop13                      7:13   0     8K  0 loop
+> ...
+>
+> We have over 50 loop devices which are mounted  during boot.
+>
+> We observed contentions around loop_ctl_mutex.
+>
+> The sample contentions stacks:
+>
+> Contention 1:
+> __blkdev_get()
+>    bdev->bd_disk->fops->open()
+>       lo_open()
+>          mutex_lock_killable(&loop_ctl_mutex); <- contention
+>
+> Contention 2:
+> __blkdev_put()
+>    disk->fops->release()
+>       lo_release()
+>          mutex_lock(&loop_ctl_mutex); <- contention
+>
+> With total time waiting for loop_ctl_mutex ~18.8s during boot (across 8
+> CPUs) on our machine (69 loop devices): 2.35s per CPU.
+>
+> Scaling this lock eliminates this contention entirely, and improves the boot
+> performance by 2s on our machine.
+>
+> Pavel Tatashin (1):
+>   loop: scale loop device by introducing per device lock
+>
+>  drivers/block/loop.c | 99 ++++++++++++++++++++++++++------------------
+>  drivers/block/loop.h |  1 +
+>  2 files changed, 59 insertions(+), 41 deletions(-)
+>
+> --
+> 2.25.1
+>
