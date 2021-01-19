@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0FC2FB241
+	by mail.lfdr.de (Postfix) with ESMTP id EB35B2FB242
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbhASG6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:58:51 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:38971 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729386AbhASG4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:56:11 -0500
-Received: from [192.168.0.6] (ip5f5aeabb.dynamic.kabel-deutschland.de [95.90.234.187])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 64D2520645D54;
-        Tue, 19 Jan 2021 07:55:20 +0100 (CET)
-Subject: Re: [PATCH 2/2] ethernet: igb: e1000_phy: Check for
- ops.force_speed_duplex existence
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        John W Linville <linville@tuxdriver.com>
-References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
- <20201102231307.13021-3-pmenzel@molgen.mpg.de>
- <20201102161943.343586b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <36ce1f2e-843c-4995-8bb2-2c2676f01b9d@molgen.mpg.de>
- <20201103103940.2ed27fa2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <c1ad26c6-a4a6-d161-1b18-476b380f4e58@molgen.mpg.de>
- <X/ShBVXp32Y+Jeds@kroah.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <19eab284-b7b0-7053-1aa7-5fedcee04263@molgen.mpg.de>
-Date:   Tue, 19 Jan 2021 07:55:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726834AbhASG7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:59:32 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:34826 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729893AbhASG5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 01:57:39 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10J6sehl183902;
+        Tue, 19 Jan 2021 06:56:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=0DjTgPBITUx3Qit6GSaE+pViT+fZ29UMvupzGI/onqk=;
+ b=gsVxJcgsr+bgEE1ofT/a4a+bStxS1lmSIDdpRNewVMXhT7N+Uv2yBcjPTqEzGDy0gSrH
+ tyH0ejMSW1uOfGtKaOFwZCMtQ4c8HshjZA6X5opG2a5TK1P5Eq6npQXB2JjG6unYeylm
+ SBSmP2Z+usYlrAcm80F0wFJrrfrgSL+rjewFDs5lt8y38TLckzCXOV+BiZ8kss4GKXdW
+ 38jSFvpasllpFv+V6KLHR3fU3xaZTJTwX2vHvRRPL03kD+qJqqFbaGlPAttnL/18iVjf
+ gUbEyTWg45iIO/rEHt6mU43FVfM9EOHWuKtxeBA6XjKJtqMAxhy+v2HUu8Shjxh4eBe4 kQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 363nnafv3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 06:56:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10J6tImT048760;
+        Tue, 19 Jan 2021 06:56:42 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3649wr05np-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 06:56:42 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10J6udWm014364;
+        Tue, 19 Jan 2021 06:56:39 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 Jan 2021 22:56:39 -0800
+Date:   Tue, 19 Jan 2021 09:56:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yu Chen <chenyu56@huawei.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] staging: hikey9xx: phy-hi3670-usb3.c:
+ hi3670_is_abbclk_seleted() returns bool
+Message-ID: <20210119065630.GE2696@kadam>
+References: <cover.1610645385.git.mchehab+huawei@kernel.org>
+ <d1e0d94381e214157545d6808835fdfe99448f76.1610645385.git.mchehab+huawei@kernel.org>
+ <d9ebc10ac5c4ba5231ed50ef0d2a15f424547736.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <X/ShBVXp32Y+Jeds@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d9ebc10ac5c4ba5231ed50ef0d2a15f424547736.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 phishscore=0 malwarescore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190041
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jakub, dear Greg,
-
-
-Am 05.01.21 um 18:25 schrieb Greg KH:
-> On Tue, Jan 05, 2021 at 06:16:59PM +0100, Paul Menzel wrote:
-
->> Am 03.11.20 um 19:39 schrieb Jakub Kicinski:
->>> On Tue, 3 Nov 2020 08:35:09 +0100 Paul Menzel wrote:
->>>> According to *Developer's Certificate of Origin 1.1* [3], itâ€™s my
->>>> understanding, that it is *not* required. The items (a), (b), and (c)
->>>> are connected by an *or*.
->>>>
->>>>>           (b) The contribution is based upon previous work that, to the best
->>>>>               of my knowledge, is covered under an appropriate open source
->>>>>               license and I have the right under that license to submit that
->>>>>               work with modifications, whether created in whole or in part
->>>>>               by me, under the same open source license (unless I am
->>>>>               permitted to submit under a different license), as indicated
->>>>>               in the file; or
->>>
->>> Ack, but then you need to put yourself as the author, because it's
->>> you certifying that the code falls under (b).
->>>
->>> At least that's my understanding.
->>
->> Greg, can you please clarify, if itâ€™s fine, if I upstream a patch authored
->> by somebody else and distributed under the GPLv2? I put them as the author
->> and signed it off.
+On Thu, Jan 14, 2021 at 09:56:41AM -0800, Joe Perches wrote:
+> On Thu, 2021-01-14 at 18:35 +0100, Mauro Carvalho Chehab wrote:
+> > Instead of using 1/0 for true/false, change the type to boolean
+> > and change the returned value.
+> []
+> > diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
+> []
+> > @@ -326,24 +326,24 @@ static int hi3670_phy_set_params(struct hi3670_priv *priv)
+> >  	return ret;
+> >  }
+> > 
+> > -static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
+> > +static bool hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
 > 
-> You can't add someone else's signed-off-by, but you can add your own and
-> keep them as the author, has happened lots of time in the past.
+> Presumably this should be "selected" not "seleted"
 > 
-> Or, you can make the From: line be from you if the original author
-> doesn't want their name/email in the changelog, we've done that as well,
-> both are fine.
+> >  {
+> >  	u32 reg;
+> > 
+> >  	if (!priv->sctrl) {
+> >  		dev_err(priv->dev, "priv->sctrl is null!\n");
+> > -		return 1;
+> > +		return true;
+> >  	}
+> > 
+> >  	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
+> >  		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
+> > -		return 1;
+> > +		return true;
+> >  	}
+> > 
+> >  	if ((reg & USB_CLK_SELECTED) == 0)
+> > -		return 1;
+> > +		return true;
+> > 
+> > -	return 0;
+> > +	return false;
+> >  }
+> 
+> 	if (foo)
+> 		return true;
+> 	return false;
+> 
+> should generally be consolidated into a single test.
 
-Greg, thank you for the clarification.
+I quite prefer the original format, but you're right about the return
+looking reversed.  Using "return !!(reg & USB_CLK_SELECTED);" is
+especially problematic.  I like !! but Linus has commented a couple
+times that he doesn't like !!.
 
-Jakub, with that out of the way, can you please take patch 2/2?
+regards,
+dan carpenter
 
 
-Kind regards,
-
-Paul
