@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD912FB7A8
+	by mail.lfdr.de (Postfix) with ESMTP id 82DCA2FB7A7
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405358AbhASLOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:14:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S2405331AbhASLOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405086AbhASLDT (ORCPT
+        with ESMTP id S2405083AbhASLDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:03:19 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18722C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:38 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id o19so10834273vsn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:38 -0800 (PST)
+        Tue, 19 Jan 2021 06:03:05 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F04BC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:25 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id r12so16520502ejb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=51aRHVM9MtmiP0LM6KVSBIfypf8NCoJI3/kkLCUIyQc=;
-        b=cO9pngCqzzQU5+wYm76QgcPi+sSh5wfMsbcSm2rfew1o6UU+XMprqcdkv8Tat7a3sj
-         dZ1uP2iZAQeaaPqA9q3x/D9TRd5FTzLxx9Ujcm/4TCxNZHTRKgnZEYSqRfUV/idaFtUI
-         oLzD/IohWXy5i90tTRAvvJl1rLywYJhSrRpjC91JF1wtZyouUt/RdQE4rGgESI8mp19Z
-         XuETWBfpczg9ESTyyyrb1l0HWs/4hVK8iNjlxaoFSpzUhxUnp5o2zuCyqcmVLs4IdQSG
-         fp73BBTKRzw62HJLaxJ9z/8c5RwdpNy+ViRHrZHpkxe2g1y5yS4VXmvvGLyFRM7UrbEi
-         w3kQ==
+        bh=IZnuFpYCbe19cxJ76+YpreCLRQ8tQhMPYw7R6ZL2WJ4=;
+        b=dVu1QHRn/OV4BOewEbA4LqB3AIVpAdfJEJLBv0uhl0JUfflCX6PZh9qezPrSY1MTUe
+         EFVugQ8DUoKHFvnVKfTunkq7Uu/Tgmg3mhLL5XWZ1e0j1CsYJdEJ1IPCMsXY5NsSr1r8
+         X6nj0wlDdTBpxSSLVxQt0/nk2WMvYwjZlV+8yrgeMSmVA5M+4oQe+4gODTYB6j4r2HgG
+         A5zfX4nOKEBo/CufPTw0ywH/WmG34BemWdLgvQlnC7s1puuZ6JexzrrCEqfg+/AFzyZH
+         BJdACal/KGggSQB7dFfZ99cha2X3ey4VjJqkD0NcljqFfqnJgeUay9wRukRlptxvk6CK
+         scbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=51aRHVM9MtmiP0LM6KVSBIfypf8NCoJI3/kkLCUIyQc=;
-        b=JjlRWDTzfXRvJxRHZ76WPbaPWYYW/l+ar/wRQKJ++CWQ3WfdVaHJAv3K4MRVU9v/E4
-         6tZ7OYhdCfdYNix5c5uDpGr1E7qU3R3rohgxFohRjgbUn9NpiyyhXF8VcVeus6vdqhAa
-         carYIizInEhaEn07hO2QooxIykwfCaPekw2TbL1KnCge0r/bWS4n4644HF8tFpb28cLC
-         QavRRG2g5NWKRqnKzU+joL+vUhe7dhbcg4J8yW0hCQGMdwNuelWNdgeUXtDaQsE4tEXD
-         zsdshoJoUplK5U0/CEK0a/hQJxeu3loK+KiDysNyBX/xpBPdJ5tYNqJc4xl80i2u+Om+
-         tNtA==
-X-Gm-Message-State: AOAM531lBUH2XeOE4q+o2mE2ZBjpWLk8Px8VxEwpBIJ/C0IZ0snHtDjB
-        l1THXPq88Mxupft1TCs4xY8MEKsAEDbIEu6A3qHGyaGIsnUUGNcS
-X-Google-Smtp-Source: ABdhPJzmHhIQqV/usHrcyHk3rDz6//q3bjjAW5H2CFufPw2AHrOrqfaIxGqrbhGDRrsQtReKyxV9CP3hwLdfWdsh4uM=
-X-Received: by 2002:a67:7f41:: with SMTP id a62mr2178224vsd.55.1611054157249;
- Tue, 19 Jan 2021 03:02:37 -0800 (PST)
+        bh=IZnuFpYCbe19cxJ76+YpreCLRQ8tQhMPYw7R6ZL2WJ4=;
+        b=U33gshnLQqxLKKSqaHcEKhY7kU2DHAnoXS3oTDwVCexgsTqPIEHTkhHkMboaIqJqKx
+         FJiEXDiErzDilGRbODdIxUlTUpUjgMB8g+seDcRLhaLF3agwDBQh5WKlKVSnxuQ/eFbB
+         6oT8pPbT8kHzkTbFD34f/xksQq4DCFkvsIGGvYY2vBV2aGN/OJEu8xi1RfrjDclH2WV/
+         rudD+5nCcXIBjjpGO6yNkLCKFXugYruzv7JwJE7j/NuQXYIhWBW1kKHqxN0W2PgAKweB
+         o0j8hh6apAQywI3R/5HH6idSvsSsU+XuzMq7pssQ7wZorTVnSiyK1wU0lo/L3yguxQz6
+         5cMA==
+X-Gm-Message-State: AOAM531CiLGfmzPKJZBUQ2trOAnGAt+Da3tAYUUgj9I9xBTslBpWO7wk
+        XL7+1di8Gi8Q6qKwLWQACW5CKqCr/pScO9PozuUXGg==
+X-Google-Smtp-Source: ABdhPJylYL+wams8p2wrCMy5DerxN+e+CypiMkGgUS49QH9T5mRlqQu3e4Vb0lqDoSie0F/lQn865oEnI2Cd8ScbyT4=
+X-Received: by 2002:a17:906:3146:: with SMTP id e6mr2479848eje.363.1611054143645;
+ Tue, 19 Jan 2021 03:02:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201224111210.1214-1-rojay@codeaurora.org> <20201224111210.1214-4-rojay@codeaurora.org>
- <YAGqKfDfB7EEuZVn@builder.lan> <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
-In-Reply-To: <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 12:02:01 +0100
-Message-ID: <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for 'assigned-performance-states'
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org
+References: <20210107025731.226017-1-warthog618@gmail.com> <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
+ <20210119003455.GB5169@sol> <CAMpxmJUkFL+w7afS2NKF-xiMR==HVR1Mk8uQm3782DBoG0qneA@mail.gmail.com>
+ <20210119105933.GA21741@sol>
+In-Reply-To: <20210119105933.GA21741@sol>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 19 Jan 2021 12:02:13 +0100
+Message-ID: <CAMpxmJWMQ2uVJ77MYPr3dhy0=-P8FtAfz3BSoKbxh33J0Gx=Ug@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 at 06:36, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+On Tue, Jan 19, 2021 at 11:59 AM Kent Gibson <warthog618@gmail.com> wrote:
 >
+> On Tue, Jan 19, 2021 at 11:37:46AM +0100, Bartosz Golaszewski wrote:
+> > On Tue, Jan 19, 2021 at 1:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > >
+> > > On Mon, Jan 18, 2021 at 04:04:51PM +0100, Linus Walleij wrote:
+> > > > On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > > >   selftests: gpio: rework and simplify test implementation
+> > > > >   selftests: gpio: remove obsolete gpio-mockup-chardev.c
+> > > > >   selftests: remove obsolete build restriction for gpio
+> > > > >   selftests: remove obsolete gpio references from kselftest_deps.sh
+> > > > >   tools: gpio: remove uAPI v1 code no longer used by selftests
+> > > > >   selftests: gpio: port to GPIO uAPI v2
+> > > > >   selftests: gpio: add CONFIG_GPIO_CDEV to config
+> > > >
+> > > > Bartosz I think you can just merge these patches into the GPIO tree, at least
+> > > > I think that is what I have done in the past.
+> > > >
+> > >
+> > > Could you touch up that Fixes tag in patch 1 if you merge v2?
+> > >
+> > > Thanks,
+> > > Kent.
+> >
+> > Kent,
+> >
+> > This doesn't apply to my for-next branch - there's a conflict in
+> > tools/testing/selftests/gpio/Makefile, could you take a look?
+> >
 >
-> On 1/15/2021 8:13 PM, Bjorn Andersson wrote:
-> > On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
-> >
-> >> @@ -629,6 +658,16 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
-> >>      struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
-> >>
-> >>      disable_irq(gi2c->irq);
-> >> +
-> >> +    /* Drop the assigned performance state */
-> >> +    if (gi2c->assigned_pstate) {
-> >> +            ret = dev_pm_genpd_set_performance_state(dev, 0);
-> >> +            if (ret) {
-> >> +                    dev_err(dev, "Failed to set performance state\n");
-> >> +                    return ret;
-> >> +            }
-> >> +    }
-> >> +
-> >
-> > Ulf, Viresh, I think we discussed this at the time of introducing the
-> > performance states.
-> >
-> > The client's state does not affect if its performance_state should
-> > be included in the calculation of the aggregated performance_state, so
-> > each driver that needs to keep some minimum performance state needs to
-> > have these two snippets.
-> >
-> > Would it not make sense to on enable/disable re-evaluate the
-> > performance_state and potentially reconfigure the hardware
-> > automatically?
+> Which is your for-next branch?
 >
-> I agree, this will be repeated across multiple drivers which would
-> need some minimal vote while they are active, handling this during
-> genpd enable/disable in genpd core makes sense.
-
-Initially that's what we tried out, but we realized that it was
-difficult to deal with this internally in genpd, but more importantly
-it also removed some flexibility from consumers and providers. See
-commit 68de2fe57a8f ("PM / Domains: Make genpd performance states
-orthogonal to the idlestates").
-
-As a matter of fact this was quite recently discussed [1], which also
-pointed out some issues when using the "required-opps" in combination,
-but perhaps that got resolved? Viresh?
-
-My concern is, if we would make this kind of change to the internals
-of genpd, it would lead to the following limitation: A consumer driver
-can no longer make its vote for its device to stick around, when the
-device becomes runtime suspended - and how do we know that we never
-need to support such a case?
-
+> The patch set is based on and applies cleanly to gpio/for-next 7ac554888233,
+> so I'm not sure which branch you are targetting.
 >
-> >
-> > Regards,
-> > Bjorn
-> >
-> >>      ret = geni_se_resources_off(&gi2c->se);
-> >>      if (ret) {
-> >>              enable_irq(gi2c->irq);
-> >> @@ -654,6 +693,16 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
-> >>      if (ret)
-> >>              return ret;
-> >>
-> >> +    /* Set the assigned performance state */
-> >> +    if (gi2c->assigned_pstate) {
-> >> +            ret = dev_pm_genpd_set_performance_state(dev,
-> >> +                                                     gi2c->assigned_pstate);
-> >> +            if (ret) {
-> >> +                    dev_err(dev, "Failed to set performance state\n");
-> >> +                    return ret;
-> >> +            }
-> >> +    }
-> >> +
-> >>      enable_irq(gi2c->irq);
-> >>      gi2c->suspended = 0;
-> >>      return 0;
+> Cheers,
+> Kent.
 
-Kind regards
-Uffe
+Linus W is not picking up patches this release - everything goes through:
 
-[1]
-https://lkml.org/lkml/2020/9/11/230
+    git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+
+Sorry for the confusion.
+
+Bartosz
