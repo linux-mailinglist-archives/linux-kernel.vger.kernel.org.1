@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C5B2FBF8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5602FBF8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391094AbhASS4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:56:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
+        id S2390660AbhASS4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392398AbhASSKu (ORCPT
+        with ESMTP id S2392477AbhASSLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:10:50 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7495EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:10:10 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id t6so10978018plq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:10:10 -0800 (PST)
+        Tue, 19 Jan 2021 13:11:06 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CC4C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:10:23 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id c22so13403212pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:10:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vFtaJ8H/Mdt6Sr1dyWjnP3+YFNQP6voHmOJMCqsGuZc=;
-        b=iTVqpmbodJAS/fRwVB62yMOqY+/c0mu4CTjbAtwQSfYD7Nxf/AZLVYfyjqQllGlOWP
-         UAfvd1YwBr6bESOa7T7EFjDtucZNwjT683RxHTkg2kjxJusaGxJJ7qD7k5dRxYCwIzoK
-         /yr6xEt/ZstK8Q7lOOYyrqTeIgXA7uSeJVSEACczeci9SjJnKW3xRcKUukqH04pLTS4F
-         XpB53mwPxSXorHzac4kqn5YGbG1YG2Sc15HE37GEPEiO0wmC+T88m11TPP2eUz2Y19FW
-         SPB3ip1NqxRz+w6p07V4+f55c6RYFhur1KXl71XtOnVeEZtxG76V9pqDA3s3bxU1nBfa
-         xG9A==
+        bh=dnrMrldg8mnofkcXZdxW4LOH+ARI4N3c8/lAl3ZaiEY=;
+        b=RPraS7hBjtDF5mjOrr31U578ApkT7gS9aiXusTgV38Ob1+0f93nRNc7k7Xw1C2CeFr
+         iT7ATpakwjX6PTW0DrcOoQzw7lUesfpiQFz1yDh/9MzPzjYfu40ARdud6PAj7qpRUg3Y
+         F79A7o8f8nlwfHKnIfM5KVD+Txue/rBjNXo3CXnA8ndH6Ulvvp3E7vocGL3d5H+CrFLN
+         lh5cThCgF3Uv1YsAREldRqM5yDlU3lhv12dG4kTBR0ajETsSnFUxbdAp/0kzgHQufn78
+         JXyNl3vli3OeGS9KUEjvWOXabzPAyFcXdX4Gyn1/lBFvUFg0NR+hTOiw/c/GBUK0z6+A
+         5m8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vFtaJ8H/Mdt6Sr1dyWjnP3+YFNQP6voHmOJMCqsGuZc=;
-        b=JmmIklDzpOgsRsk1nFrMl8KX84W+ORlQ5UO1TCq/rCnjb8m2Q8L8hpLCUo3xgpSwOd
-         m51xLDSoMtgw1JkBeXu15Fjpst0MVhKjBm79bCYLcY2reTHKCwq3Ifx5yTo7oh5vO76o
-         luaIZzI0FDg3RErndRX5GPAd2DLMbXakSpyBtysVQV2Oyb04DGC+O++v+1Y3lQtg0+8Z
-         SiXcudOP5SWru/SHi4NgQ7jDXiYm1QfZrJIYQE6m1EWZoFCO6753qRUCEIQ0cd5EFfPc
-         nVGKVa1Ki6ca76Jiz+VNNQJDrBMmGvL54F4jsrTivkce6NI0t01EJ+oU4faJ4I1JkmwT
-         Ko/Q==
-X-Gm-Message-State: AOAM530Lhpq4pWSUw3GBaRaB8S4mD4lPmk463FRY38foYy6eyvNYJOSR
-        2x4xtS3CHKR/oDG5fOOEKrjSPevPUlA0Wi1og10onBIVXwQ=
-X-Google-Smtp-Source: ABdhPJw37AqXfJn7ksx2H7kRJlKS/FI1/oUwiEcV0bted0CPYbP2xYgPP8v3Q/2KK3eiPkEi9t+AIxKn5LpEbeAYY1E=
-X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr992416pjb.166.1611079809851;
- Tue, 19 Jan 2021 10:10:09 -0800 (PST)
+        bh=dnrMrldg8mnofkcXZdxW4LOH+ARI4N3c8/lAl3ZaiEY=;
+        b=MfhLCqyW7742RVm00rF6zlnuiaCxR5APfM5vpJKOYYTcL24bPiC5bwVbKTI+PICRL/
+         wrbhroGv2JhH0VTmaIVZM5xpYCd0z3qAT6f5ViK9OzSybAnE3uPPqZu8orBciOrBEwiG
+         jH7BtJFPrImC1Eiz2RlMvjLFCVt75dbyMRSeDf3BQIq8Er22AGIF08K7vFSQ9POYkrO1
+         g+6Tlf5TmplbWsogzrr8HMv9EaBmikOu2azyZraShM4XUeNhS9sRtQAde2UHFVRroZTx
+         7SAD7HNC6dsUKDtjTY8GDXcuW9Gqv8X89udBgFn4V0y9CKm1l6TAksv84gU/SJYoEhtH
+         w1JA==
+X-Gm-Message-State: AOAM5331DvsCUQjL8MrjjsHlHt5uYhRN54hbchLTy3t6A7P7ArhpknIz
+        RQSXGUczLJgqY4eXaEeu+4qE/cuCpd3HCu75K08NwA==
+X-Google-Smtp-Source: ABdhPJz5O/8nG+xL9+eq/liJkYZ+QzJv2tw9EKHY/+vtnzG86Csmxf5bp5m/DtFwVIvXR43zHErnLlf19fNsJ58FHY4=
+X-Received: by 2002:aa7:8597:0:b029:1b9:38bd:d0dc with SMTP id
+ w23-20020aa785970000b02901b938bdd0dcmr5074425pfn.24.1611079822481; Tue, 19
+ Jan 2021 10:10:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20210118183033.41764-1-vincenzo.frascino@arm.com>
+References: <20210118183033.41764-1-vincenzo.frascino@arm.com> <20210118183033.41764-2-vincenzo.frascino@arm.com>
+In-Reply-To: <20210118183033.41764-2-vincenzo.frascino@arm.com>
 From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 19 Jan 2021 19:09:58 +0100
-Message-ID: <CAAeHK+xmmTs+T9WNagj0_f3yxT-juSiCDH+wjS-4J3vUviTFsQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] arm64: ARMv8.5-A: MTE: Add async mode support
+Date:   Tue, 19 Jan 2021 19:10:11 +0100
+Message-ID: <CAAeHK+xMk=7pkOi2UtYZzxOhrnVRe+CYcyjBBHKUW3jmfg64Ww@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] arm64: mte: Add asynchronous mode support
 To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
 Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -71,49 +72,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Jan 18, 2021 at 7:30 PM Vincenzo Frascino
 <vincenzo.frascino@arm.com> wrote:
 >
-> This patchset implements the asynchronous mode support for ARMv8.5-A
-> Memory Tagging Extension (MTE), which is a debugging feature that allows
-> to detect with the help of the architecture the C and C++ programmatic
-> memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> MTE provides an asynchronous mode for detecting tag exceptions. In
+> particular instead of triggering a fault the arm64 core updates a
+> register which is checked by the kernel after the asynchronous tag
+> check fault has occurred.
 >
-> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> subset of its address space that is multiple of a 16 bytes granule. MTE
-> is based on a lock-key mechanism where the lock is the tag associated to
-> the physical memory and the key is the tag associated to the virtual
-> address.
-> When MTE is enabled and tags are set for ranges of address space of a task,
-> the PE will compare the tag related to the physical memory with the tag
-> related to the virtual address (tag check operation). Access to the memory
-> is granted only if the two tags match. In case of mismatch the PE will raise
-> an exception.
+> Add support for MTE asynchronous mode.
 >
-> The exception can be handled synchronously or asynchronously. When the
-> asynchronous mode is enabled:
->   - Upon fault the PE updates the TFSR_EL1 register.
->   - The kernel detects the change during one of the following:
->     - Context switching
->     - Return to user/EL0
->     - Kernel entry from EL1
->     - Kernel exit to EL1
->   - If the register has been updated by the PE the kernel clears it and
->     reports the error.
+> The exception handling mechanism will be added with a future patch.
 >
-> The series contains as well an optimization to mte_assign_mem_tag_range().
+> Note: KASAN HW activates async mode via kasan.mode kernel parameter.
+> The default mode is set to synchronous.
+> The code that verifies the status of TFSR_EL1 will be added with a
+> future patch.
 >
-> The series is based on linux 5.11-rc3.
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/include/asm/memory.h    |  3 ++-
+>  arch/arm64/include/asm/mte-kasan.h |  9 +++++++--
+>  arch/arm64/kernel/mte.c            | 16 ++++++++++++++--
+>  3 files changed, 23 insertions(+), 5 deletions(-)
 >
-> To simplify the testing a tree with the new patches on top has been made
-> available at [1].
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index 18fce223b67b..233d9feec45c 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -231,7 +231,8 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>  }
 >
-> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async
+>  #ifdef CONFIG_KASAN_HW_TAGS
+> -#define arch_enable_tagging()                  mte_enable_kernel()
+> +#define arch_enable_tagging_sync()             mte_enable_kernel_sync()
+> +#define arch_enable_tagging_async()            mte_enable_kernel_async()
+>  #define arch_init_tags(max_tag)                        mte_init_tags(max_tag)
+>  #define arch_get_random_tag()                  mte_get_random_tag()
+>  #define arch_get_mem_tag(addr)                 mte_get_mem_tag(addr)
+> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+> index 26349a4b5e2e..9a5e30dbe12a 100644
+> --- a/arch/arm64/include/asm/mte-kasan.h
+> +++ b/arch/arm64/include/asm/mte-kasan.h
+> @@ -29,7 +29,8 @@ u8 mte_get_mem_tag(void *addr);
+>  u8 mte_get_random_tag(void);
+>  void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+>
+> -void mte_enable_kernel(void);
+> +void mte_enable_kernel_sync(void);
+> +void mte_enable_kernel_async(void);
+>  void mte_init_tags(u64 max_tag);
+>
+>  #else /* CONFIG_ARM64_MTE */
+> @@ -52,7 +53,11 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>         return addr;
+>  }
+>
+> -static inline void mte_enable_kernel(void)
+> +static inline void mte_enable_kernel_sync(void)
+> +{
+> +}
+> +
+> +static inline void mte_enable_kernel_sync(void)
+>  {
+>  }
+>
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index dc9ada64feed..78fc079a3b1e 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -151,11 +151,23 @@ void mte_init_tags(u64 max_tag)
+>         write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
+>  }
+>
+> -void mte_enable_kernel(void)
+> +static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
+>  {
+>         /* Enable MTE Sync Mode for EL1. */
+> -       sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+> +       sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, tcf);
+>         isb();
+> +
+> +       pr_info_once("MTE: enabled in %s mode at EL1\n", mode);
+> +}
+> +
+> +void mte_enable_kernel_sync(void)
+> +{
+> +       __mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
+> +}
+> +
+> +void mte_enable_kernel_async(void)
+> +{
+> +       __mte_enable_kernel("asynchronous", SCTLR_ELx_TCF_ASYNC);
+>  }
+>
+>  static void update_sctlr_el1_tcf0(u64 tcf0)
+> --
+> 2.30.0
+>
 
-Hi Vincenzo,
-
-This change has multiple conflicts with the KASAN testing patches that
-are currently in the mm tree. If Andrew decides to send all of them
-during RC, then this should be good to go through arm64. Otherwise, I
-guess this will need to go through mm as well. So you probably need to
-rebase this on top of those patches in any case.
-
-Thanks!
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
