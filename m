@@ -2,275 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825C02FC2D9
+	by mail.lfdr.de (Postfix) with ESMTP id EE76E2FC2DB
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbhASVz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        id S1727729AbhASV5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbhASVzA (ORCPT
+        with ESMTP id S1728041AbhASVzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:55:00 -0500
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636CAC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:54:16 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D7D363EF47;
-        Tue, 19 Jan 2021 22:54:14 +0100 (CET)
-Subject: Re: [PATCH v4 3/5] clk: qcom: clk-alpha-pll: Add support for Lucid
- 5LPE PLL
-To:     Vinod Koul <vkoul@kernel.org>, Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vivek Aknurwar <viveka@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>
-References: <20210118044321.2571775-1-vkoul@kernel.org>
- <20210118044321.2571775-4-vkoul@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <894afe9b-8534-3a57-efc8-d517aab617fe@somainline.org>
-Date:   Tue, 19 Jan 2021 22:54:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 19 Jan 2021 16:55:19 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF848C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:54:38 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id n142so23539747qkn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:54:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SbyUbNXiGA6Y5PlccSbIv65ItGeI9NDKaJPt5uKU/b0=;
+        b=vZ8APkKlADNNu0l1A8tgRexvdkcpISReIrRKS03w380rYukUeHONcGAwLx78mnjIdf
+         E+dyg2CG8biMvZ7cK6jr9jXL9lqAzWm9KSitkAqdGiabA3kGPTg25eGg5q/C9VwUqotg
+         PZq6l8qbmOYYpvbKZQvgfzOZ6/ENGTXU2ZbonelrqDwlr0kcLCSn50bEYbe5RtV3GGIm
+         NQEJtk8C8XF+sGNOnJ3BhnnC/A4iBR2oLExA5fdp8YfD/GbdleSlzq0P5bKiaa6Qour4
+         gJSzOtJf1VC41FXtcnWgGuUyGKwHiv/vZ6D1aS2gyKpXP9GpqlSt3gTpWerb/jxUmTjf
+         q/pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SbyUbNXiGA6Y5PlccSbIv65ItGeI9NDKaJPt5uKU/b0=;
+        b=XDsPOfG0dLGyhmX7k6V5/yMaTXDPVCYJTcm//d4CLwEZ0mN4MTam18PoKI4SOoXdEA
+         Ntvm3fvi1vfbD0TAbgYAB4vfobSThvR8jAYaP1gR3+vNM6nUb2vOiz/5WsS59QG8tMU2
+         1+BM6ElPfgFieDMjKYz7qGd/eiRBJHTiikitmghdaepF9hU8furh+3SO/LeiYUxpq2DV
+         8TPOjKd8RzOYtghJjLvn8NAYq44S9ojolMCR1p05FYrnsKaifAQY2T3RZ8C3krNph766
+         iTiF2eb/mRjHmWPQpo/akYLhPSBZCismIYXMJTlRfOP3jys7bDMTVYkjhrtjkpJlsJdj
+         N8yQ==
+X-Gm-Message-State: AOAM53179A+hoYA9rNk1fPQeZYxX2lgWos+TGNNXKYQFtxoKA9YtU2uS
+        Ms8IFdAigFvLiz/34wz1DVA=
+X-Google-Smtp-Source: ABdhPJx4YZQZbSq2lmR9phFNAuZOjlfXdyBQHkEwoDheM5/Ez12olq9ToLsM57kiPRNl1cUCwR/klw==
+X-Received: by 2002:a37:a658:: with SMTP id p85mr2515080qke.422.1611093277837;
+        Tue, 19 Jan 2021 13:54:37 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id i13sm21996qkk.83.2021.01.19.13.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 13:54:36 -0800 (PST)
+Date:   Tue, 19 Jan 2021 14:54:35 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kernel@collabora.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6
+ warning
+Message-ID: <20210119215435.GA1727211@ubuntu-m3-large-x86>
+References: <20210119131724.308884-1-adrian.ratiu@collabora.com>
+ <20210119131724.308884-2-adrian.ratiu@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20210118044321.2571775-4-vkoul@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119131724.308884-2-adrian.ratiu@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/01/21 05:43, Vinod Koul ha scritto:
-> From: Vivek Aknurwar <viveka@codeaurora.org>
+On Tue, Jan 19, 2021 at 03:17:23PM +0200, Adrian Ratiu wrote:
+> From: Nathan Chancellor <natechancellor@gmail.com>
 > 
-> Lucid 5LPE is a slightly different Lucid PLL with different offsets and
-> porgramming sequence so add support for these
+> Drop warning because kernel now requires GCC >= v4.9 after
+> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9")
+> and clarify that -ftree-vectorize now always needs enabling
+> for GCC by directly testing the presence of CONFIG_CC_IS_GCC.
 > 
-> Signed-off-by: Vivek Aknurwar <viveka@codeaurora.org>
-> Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
-> [vkoul: rebase and tidy up for upstream]
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Another reason to remove the warning is that Clang exposes
+> itself as GCC < 4.6 so it triggers the warning about GCC
+> which doesn't make much sense and misleads Clang users by
+> telling them to update GCC.
+> 
+> Because Clang is now supported by the kernel print a clear
+> Clang-specific warning.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/496
+> Link: https://github.com/ClangBuiltLinux/linux/issues/503
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+
+The commit message looks like it is written by me but I never added a
+Clang specific warning. I appreciate wanting to give me credit but when
+you change things about my original commit message, please make it
+clear that you did the edits, something like:
+
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+[adrian: Add clang specific warning]
+Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+
 > ---
->   drivers/clk/qcom/clk-alpha-pll.c | 173 +++++++++++++++++++++++++++++++
->   drivers/clk/qcom/clk-alpha-pll.h |   4 +
->   2 files changed, 177 insertions(+)
+>  arch/arm/lib/xor-neon.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index a30ea7b09224..f9c48da21bd1 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -156,6 +156,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->   /* LUCID PLL specific settings and offsets */
->   #define LUCID_PCAL_DONE		BIT(27)
->   
-> +/* LUCID 5LPE PLL specific settings and offsets */
-> +#define LUCID_5LPE_PCAL_DONE		BIT(11)
-> +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
-> +#define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
-> +#define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
-> +
->   #define pll_alpha_width(p)					\
->   		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
->   				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
-> @@ -1604,3 +1610,170 @@ const struct clk_ops clk_alpha_pll_agera_ops = {
->   	.set_rate = clk_alpha_pll_agera_set_rate,
->   };
->   EXPORT_SYMBOL_GPL(clk_alpha_pll_agera_ops);
-> +
-> +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* If in FSM mode, just vote for it */
-> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> +		ret = clk_enable_regmap(hw);
-> +		if (ret)
-> +			return ret;
-> +		return wait_for_pll_enable_lock(pll);
-> +	}
-> +
-> +	/* Check if PLL is already enabled, return if enabled */
-> +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> +	if (ret)
-> +		return ret;
-> +
-> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
-> +
-> +	ret = wait_for_pll_enable_lock(pll);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the PLL outputs */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the global PLL outputs */
-> +	return regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
-> +}
-> +
-> +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return;
-> +
-> +	/* If in FSM mode, just unvote it */
-> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
-> +		clk_disable_regmap(hw);
-> +		return;
-> +	}
-> +
-> +	/* Disable the global PLL output */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Disable the PLL outputs */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Place the PLL mode in STANDBY */
-> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> +}
-> +
+> diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> index b99dd8e1c93f..f9f3601cc2d1 100644
+> --- a/arch/arm/lib/xor-neon.c
+> +++ b/arch/arm/lib/xor-neon.c
+> @@ -14,20 +14,22 @@ MODULE_LICENSE("GPL");
+>  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+>  #endif
+>  
 > +/*
-> + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
-> + * when the PLL comes out of reset. Calibrate in case it is not completed.
+> + * TODO: Even though -ftree-vectorize is enabled by default in Clang, the
+> + * compiler does not produce vectorized code due to its cost model.
+> + * See: https://github.com/ClangBuiltLinux/linux/issues/503
 > + */
-> +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	struct clk_hw *p;
-> +	u32 val;
-> +	int ret;
-> +
-> +	/* Return early if calibration is not needed. */
-> +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
-> +	if (val & LUCID_5LPE_PCAL_DONE)
-> +		return 0;
-> +
-> +	p = clk_hw_get_parent(hw);
-> +	if (!p)
-> +		return -EINVAL;
-> +
-> +	ret = alpha_pll_lucid_5lpe_enable(hw);
-> +	if (ret)
-> +		return ret;
-> +
-> +	alpha_pll_lucid_5lpe_disable(hw);
-> +
-> +	return 0;
-> +}
-> +
-> +static int alpha_pll_lucid_5lpe_set_rate(struct clk_hw *hw, unsigned long rate,
-> +					 unsigned long prate)
-> +{
-> +	return __alpha_pll_trion_set_rate(hw, rate, prate,
-> +					  LUCID_5LPE_PLL_LATCH_INPUT,
-> +					  LUCID_5LPE_ALPHA_PLL_ACK_LATCH);
-> +}
-> +
-> +static int clk_lucid_5lpe_pll_postdiv_set_rate(struct clk_hw *hw, unsigned long rate,
-> +					       unsigned long parent_rate)
-> +{
-> +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
-> +	int i, val = 0, div, ret;
-> +	u32 mask;
-> +
-> +	/*
-> +	 * If the PLL is in FSM mode, then treat set_rate callback as a
-> +	 * no-operation.
-> +	 */
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN)
-> +		return 0;
-> +
-> +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
-> +	for (i = 0; i < pll->num_post_div; i++) {
-> +		if (pll->post_div_table[i].div == div) {
-> +			val = pll->post_div_table[i].val;
-> +			break;
-> +		}
-> +	}
-> +
-> +	mask = GENMASK(pll->width + pll->post_div_shift - 1, pll->post_div_shift);
-> +	return regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
-> +				  mask, val << pll->post_div_shift);
-> +}
-> +
-> +const struct clk_ops clk_alpha_pll_lucid_5lpe_ops = {
-> +	.prepare = alpha_pll_lucid_5lpe_prepare,
-> +	.enable = alpha_pll_lucid_5lpe_enable,
-> +	.disable = alpha_pll_lucid_5lpe_disable,
-> +	.is_enabled = clk_trion_pll_is_enabled,
-> +	.recalc_rate = clk_trion_pll_recalc_rate,
-> +	.round_rate = clk_alpha_pll_round_rate,
-> +	.set_rate = alpha_pll_lucid_5lpe_set_rate,
-> +};
-> +EXPORT_SYMBOL(clk_alpha_pll_lucid_5lpe_ops);
-> +
-> +const struct clk_ops clk_alpha_pll_fixed_lucid_5lpe_ops = {
-> +	.enable = alpha_pll_lucid_5lpe_enable,
-> +	.disable = alpha_pll_lucid_5lpe_disable,
-> +	.is_enabled = clk_trion_pll_is_enabled,
-> +	.recalc_rate = clk_trion_pll_recalc_rate,
-> +	.round_rate = clk_alpha_pll_round_rate,
-> +};
-> +EXPORT_SYMBOL(clk_alpha_pll_fixed_lucid_5lpe_ops);
-> +
-> +const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops = {
-> +	.recalc_rate = clk_alpha_pll_postdiv_fabia_recalc_rate,
-> +	.round_rate = clk_alpha_pll_postdiv_fabia_round_rate,
-> +	.set_rate = clk_lucid_5lpe_pll_postdiv_set_rate,
-> +};
-> +EXPORT_SYMBOL(clk_alpha_pll_postdiv_lucid_5lpe_ops);
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
-> index 0ea30d2f3da1..6943e933be0f 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.h
-> +++ b/drivers/clk/qcom/clk-alpha-pll.h
-> @@ -144,6 +144,10 @@ extern const struct clk_ops clk_alpha_pll_lucid_ops;
->   extern const struct clk_ops clk_alpha_pll_postdiv_lucid_ops;
->   extern const struct clk_ops clk_alpha_pll_agera_ops;
->   
-> +extern const struct clk_ops clk_alpha_pll_lucid_5lpe_ops;
-> +extern const struct clk_ops clk_alpha_pll_fixed_lucid_5lpe_ops;
-> +extern const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops;
-> +
->   void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
->   			     const struct alpha_pll_config *config);
->   void clk_fabia_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+> +#ifdef CONFIG_CC_IS_CLANG
+> +#warning Clang does not vectorize code in this file.
+> +#endif
+
+I really do not like this. With the GCC specific warning, the user could
+just upgrade their GCC. With this warning, it is basically telling them
+don't use clang, in which case, it would just be better to disable this
+code altogether. I would rather see:
+
+1. Just don't build this file with clang altogether, which I believe was
+   v1's 2/2 patch.
+
+OR
+
+2. Use the pragma:
+
+#pragma clang loop vectorize(enable)
+
+as Nick suggests in v1's 2/2 patch.
+
+Alternatively, __restrict__ sounds like it might be beneficial for both
+GCC and clang:
+
+https://lore.kernel.org/lkml/20201112215033.GA438824@rani.riverdale.lan/
+
+>  /*
+>   * Pull in the reference implementations while instructing GCC (through
+>   * -ftree-vectorize) to attempt to exploit implicit parallelism and emit
+>   * NEON instructions.
+>   */
+> -#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+> +#ifdef CONFIG_CC_IS_GCC
+>  #pragma GCC optimize "tree-vectorize"
+> -#else
+> -/*
+> - * While older versions of GCC do not generate incorrect code, they fail to
+> - * recognize the parallel nature of these functions, and emit plain ARM code,
+> - * which is known to be slower than the optimized ARM code in asm-arm/xor.h.
+> - */
+> -#warning This code requires at least version 4.6 of GCC
+>  #endif
+>  
+>  #pragma GCC diagnostic ignored "-Wunused-variable"
+> -- 
+> 2.30.0
 > 
-
-Thanks for following my suggestion!
-
-Reviewed-by: AngeloGioacchino Del Regno 
-<angelogioacchino.delregno@somainline.org>
