@@ -2,249 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F162FBC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D132FBC7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388864AbhASQbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:31:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391649AbhASQMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:12:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C07D7233ED;
-        Tue, 19 Jan 2021 16:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611072652;
-        bh=drXxznDAZw4+Qn2jcRNMxCI/qfjclChr5E1KDxRHero=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HgfQ1G1K/El8DgQxd6Z/bs3eg38Y2247bo7B5h+qMY0GhuPeAVQB5WCLvzJBi9TPT
-         jx+J8wvfj6LfMT1hG+xHaSuw2XMB6DBnvB9+7ZPZ5VddtC7UUHh/1llmlVYt2HF0Ps
-         36FFKhYKYPbo91efN8tdlyrm2R6zJ9PD231YIhSZHFY2a1oQ/S1VQvjJBbXtFC2b/8
-         mQY4SuOs/ZqWU2pzHMt6eIZ4O6swbZO7Pd33iZ+dQjivtMqZpabfU6mFfDYoQWH665
-         Ej7KklXaHivINA0Ekv80nmnbR1T1Xrx4sC+TOcGWUjZzUBQriTrFTVpQNaSdEc8oR/
-         hiy95AHnkFr6g==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l1taj-0012cN-Go; Tue, 19 Jan 2021 17:10:49 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 20/21] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Tue, 19 Jan 2021 17:10:46 +0100
-Message-Id: <da2c73a8e1ed4df06b9966957353063cddabb606.1611072387.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1611072387.git.mchehab+huawei@kernel.org>
-References: <cover.1611072387.git.mchehab+huawei@kernel.org>
+        id S1730625AbhASQcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:32:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727816AbhASQbv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:31:51 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A436C061573;
+        Tue, 19 Jan 2021 08:31:11 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id d15so8665330qtw.12;
+        Tue, 19 Jan 2021 08:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zaa2OrA/pICA+No44HsgGLDx902Nxuz3XBpNLHgzF6Q=;
+        b=aWPPApP8sXGus1LuujhNi9cPpGiNyQQNcfOwIpcXWko9PR6dCOteEqj4CP51wW6QNx
+         /jAtMy6gvGxzxtEpaVoUX6DgceaZ9/WAHwzOJd63HPIlYSMNkCMKawvgmc5v9dBj31o+
+         hESBqAqX4Du4sHmjNeaxD+EldatcKMefAggqOpjrH8jj2SBJ+8vD8xBJAEM9q+EyNaM7
+         LRiUpyzDl1C1r8oO30KI7v2UsFk5o+TlRsHCZEIbB294NZzaOZ0gDYqKeUoAR3+h44X8
+         Q1hSx2E1Kfpqpnxv3eAJ+z615ubkk0PqdX/UXXLbOX1tlhKL+ZGOug7vsSAvj1nkQ3Dh
+         TsUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zaa2OrA/pICA+No44HsgGLDx902Nxuz3XBpNLHgzF6Q=;
+        b=jvc9xje+w4ZqrB3e6nQvr/CMOhdc5u5x24UMt/RiDa+3Jo+xPSDPvk8QjzCW88hpbm
+         Rq8DzOMJuiUoAY3Gghe2t//iWzHvu+R1g9XIHCX43hdAWZddUbtAAoXcsPAmkiSqSNU0
+         KcYfmESidExwcMWaJ7KhOohdxedr5BUF/DpT/ybH6n4jyVy3oDKAXz18nFplym3dkM5d
+         q8YmZz39SYIk2HHTBXUIMzxNOrnZEh8otBGotTgsyOQ5D6aqoqRIJM/qQiuJQXWDSGuu
+         FJFC0V53xzrfl9iaj/P9cpFOsrqJj4gabncPSVcN4/eWE/v4wR/Tpkib7ehcuhnMqhYF
+         OmFA==
+X-Gm-Message-State: AOAM531Qog/sAMLdTdYq9p8uBi+Th1HxHJ4iudxy9ksEynat8T/NqBPN
+        EwW0Y4kqGOD1C8OmDYBYXsQ=
+X-Google-Smtp-Source: ABdhPJz4MXDZ7eo+RUon6CdwDdjZMBza2re/XR+ei/b93emr0uKf3U0pVcCfV+VMDmu1ScwPOpjkRQ==
+X-Received: by 2002:ac8:3954:: with SMTP id t20mr4787829qtb.241.1611073870456;
+        Tue, 19 Jan 2021 08:31:10 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id b67sm12975045qkc.44.2021.01.19.08.31.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 08:31:09 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] scripts: dtc: Add fdtoverlay.c and fdtdump.c to
+ DTC_SOURCE
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <eb85b5ba-e2c5-7601-6934-089b5b1370d2@gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <e272ec7f-fa6e-9c35-142c-9f2dff0115ce@gmail.com>
+Date:   Tue, 19 Jan 2021 10:31:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <eb85b5ba-e2c5-7601-6934-089b5b1370d2@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+On 1/19/21 10:21 AM, Frank Rowand wrote:
+> On 1/6/21 11:15 PM, Viresh Kumar wrote:
+>> We will start building overlays for platforms soon in the kernel and
+>> would need these tools going forward. Lets start fetching them.
+>>
+>> Note that a copy of fdtdump.c was already copied back in the year 2012,
+>> but was never updated or built for some reason.
+>>
+>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>> V2: Separate out this change from Makefile one.
+>>
+>> This needs to be followed by invocation of the ./update-dtc-source.sh
+>> script so the relevant files can be copied before the Makefile is
+>> updated in the next patch.
+>>
+>>  scripts/dtc/update-dtc-source.sh | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
+>> index bc704e2a6a4a..9bc4afb71415 100755
+>> --- a/scripts/dtc/update-dtc-source.sh
+>> +++ b/scripts/dtc/update-dtc-source.sh
+>> @@ -31,9 +31,9 @@ set -ev
+>>  DTC_UPSTREAM_PATH=`pwd`/../dtc
+>>  DTC_LINUX_PATH=`pwd`/scripts/dtc
+>>  
+>> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
+>> -		srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
+>> -		dtc-lexer.l dtc-parser.y"
+>> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtdump.c fdtoverlay.c flattree.c \
+>> +		fstree.c livetree.c srcpos.c srcpos.h treesource.c util.c \
+>> +		util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
+>>  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
+>>  		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
+>>  		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
+>>
+> 
+> DTC_SOURCE is for the dtc program.  Please add a FDTOVERLAY_SOURCE and
+> related use for the fdtoverlay program.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 102 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 ++++++++++
- 2 files changed, 160 insertions(+)
+I see that this patch series is up to v4, so I commented in the wrong place.
+I will repeat this comment in the v4 series.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 7f9f9886c349..fe6600dbad61 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -69,6 +69,29 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -446,3 +469,82 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 36d3ae493c7d..d44af856f90d 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -786,5 +787,62 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+
-+				phy-supply = <&ldo17>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: dwc3@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
--- 
-2.29.2
+-Frank
+
+> 
+> -Frank
+> 
 
