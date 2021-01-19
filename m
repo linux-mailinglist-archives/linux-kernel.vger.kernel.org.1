@@ -2,141 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CCC2FB3EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE792FB3F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbhASIWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:22:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        id S1730835AbhASIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729385AbhASIUB (ORCPT
+        with ESMTP id S1729385AbhASIWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:20:01 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3450C061573;
-        Tue, 19 Jan 2021 00:19:02 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id d81so22751210iof.3;
-        Tue, 19 Jan 2021 00:19:02 -0800 (PST)
+        Tue, 19 Jan 2021 03:22:04 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3DDC061574;
+        Tue, 19 Jan 2021 00:21:21 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id b26so27874063lff.9;
+        Tue, 19 Jan 2021 00:21:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Ep6XAHClFQb77kqS1Nifo4aUTiAKOUGwzILPlIr1hA=;
-        b=Rn7uo4cSY3JpCIEMoejHXTtIjakE7pfu4I7upjctGZz9EXgmHwiFpr96D4oJ2olA+4
-         U50wsb1sW0pXP9tdBNOdpy3BHNXNGdBQOBHeVyGLJsci5ZGVBkWwUvUlYDhnp1Us71vQ
-         7rPEq0rs1F9CYmWMhOThTgeVLIu3FmxDfV0Y9/1PVFtQKpLsWr2quGFswwIoITDtwADA
-         75o0FPk4Vd5uYDDy+Ufa8WJp4luO2p6jKX+Ki1LTqkY4dXylTOHlQ3DjJNdJcpZC6SBx
-         UWtbcgs1GgzTFavl18L3/48whMddlwFFmCp67f7qRk4uCF0gE9FixAf5cZJQAvaEtDSy
-         YZRw==
+         :cc:content-transfer-encoding;
+        bh=NSnwppJM4RBea6rhgGGM4rDbGdYQwq/CEd9KX8c0D8U=;
+        b=KKX43xE7CyF2OAHuoufRljedddmzgKGxjqqoHL0WRNIJh7aY09SxmQA88AnYR2a812
+         hLSEHieWkcK1Qnyq4av0mhU1BT8vD0Voa8VgjhuwHdW3XO6OaPJymUgX5TlGksBxlJKH
+         RfLZMBS8xRUo8/o4tLPTsIrdRI2qYz2odIaI6VLXwEsFi3N+YcGl1tcJdgXKg6LkFqSZ
+         wbnOevLZ/MdE4bLfktG88R1UChwhJCyp+TxWrl/nCTg4rqCwar/PzykpOE8ZvJiaswVp
+         1vDe+CDfuDEpfNdr8/u9Dk2Ff5RrCF0MtXcInHEn0yvJla/Mo/ltmKB0y0YcKXvNtywO
+         7ciQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Ep6XAHClFQb77kqS1Nifo4aUTiAKOUGwzILPlIr1hA=;
-        b=JnILsFI/mbxNIyo1OigjvvfDX15f/cyGOPUYeWRVFdiq0V9UuIxCiEXT8p0WlkSBU3
-         PTal6P5gUixGbVWe4Min+vwWGtBNJpQx+ZD16L8ULPMC98UQGZduyvHWbSyWTX7ooYQr
-         7lZyYO/4Y2ZJS26Robe9YysLPZIZ2jsiqA8KPQrQ5uax4MHE9FjWKhCB1Z5sDAEZs8BA
-         otSJmhzCdmkskrmWKTdDIbG9j/KP3KS2x//NzUmd/nHAwMNc5H2B8DSokeFy8YiQbird
-         g2j49YsctTxE9KMEVYZXgxFUvv+dciaJIXA34ag1e93qtE7BxBXIWI8syQrTyMeaxI1B
-         o+kQ==
-X-Gm-Message-State: AOAM533WWHuoD+zEltbn9DamFM5OIVTUpKcrBp8IjKl417pTrH76QUcH
-        ExBTu6s+kIV1AM2CzDtMwKqP550e4HE6kjjz7oI=
-X-Google-Smtp-Source: ABdhPJyIMMKKNy7bzSz/uP19d5A0u0p/zkwkPfdazyf1maW4tylmjwMcqy6KkwET7wCxA2uTUGBlkbJwWRZaOmKWrSc=
-X-Received: by 2002:a92:5e04:: with SMTP id s4mr2500931ilb.100.1611044342303;
- Tue, 19 Jan 2021 00:19:02 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NSnwppJM4RBea6rhgGGM4rDbGdYQwq/CEd9KX8c0D8U=;
+        b=eooyZEiT1bFLCnec5C8M3dx9x3taUGC0/ZlJGvQsmjqRYnLMniJeMeRZhT0WYI7SJu
+         qyQWbytjYwds5fpmLTdK5zM03USAMID0SxBq3kNphovb9+W4nntoJ11o/mrER8Q+jXQB
+         VrYac65LVe0iceAkkbtwD3zpyT80sxD2iyo89nwKNDXyvczZgXFR+s0IqpDUlawqsF0C
+         9tn8kpE3g5L6NYfLqrYspgAtadZiirSgqXa0ZsuirDcKCOpMCmHcMdwKVM5lgcPvQeSZ
+         CmMYLLlimlzcoOU5WNisCH92KhDvEoOFFbjGuEs/py3vrzo3QFJsgQjQ2ZVp1NRt3C+v
+         Pq+g==
+X-Gm-Message-State: AOAM530wFE/afdA0jZdUBQN4e2vNuA3YZj3vp6Bw2Asm4KpFOpQz2EU/
+        zB/zc2CPxb0ms24jM0bkrFiqMygsqbugYCk1sFEkwmY9sSU=
+X-Google-Smtp-Source: ABdhPJy7lFmGjvnX+2QdulCkZeQ6a/G+bDIiQs0QLBdf5QXWUq0IjnzT13t9tJXYesmgQNMi5ZCyMg4N+moiqesZvqc=
+X-Received: by 2002:a19:ca5a:: with SMTP id h26mr1393081lfj.612.1611044480139;
+ Tue, 19 Jan 2021 00:21:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203095342.73591-1-alexandru.ardelean@analog.com>
- <CAHp75VffjpFyh0G3F6v0j5tXrURA2pCtWsSztC7KejhBFuLTvw@mail.gmail.com>
- <CA+U=DsoNHebsuGDhGnJOwFbkYtGY+1Gs_mhCssH+FYk3Y05eZA@mail.gmail.com>
- <CAHp75VcxZd1xW+ayi_km3zCYKV3aC1VRJ5bwyVpevZkvgg_ipw@mail.gmail.com>
- <CA+U=DspEg=XpOUKqtammKqOoLXoXEDKWQHqSauM1xna_Y+eqjA@mail.gmail.com> <20201213143140.58af94a0@archlinux>
-In-Reply-To: <20201213143140.58af94a0@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 19 Jan 2021 10:18:50 +0200
-Message-ID: <CA+U=Dsr6zT3fQES4V+p_u2fFy5J4uRH1k6Zss6aJebfC=Aa2WA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: core: register chardev only if needed
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Hans de Goede <hdegoede@redhat.com>
+References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
+ <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net> <1611041612.12761.9.camel@mhfsdcap03>
+In-Reply-To: <1611041612.12761.9.camel@mhfsdcap03>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 19 Jan 2021 16:21:08 +0800
+Message-ID: <CADiBU3-2DL9GOBesE6sZmWv_OeFNP5C5-TfrZ9tVkUXKSiV9wQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and
+ external vbus supply control
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        matthias.bgg@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 4:31 PM Jonathan Cameron <jic23@kernel.org> wrote:
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=881=
+9=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> On Wed, 9 Dec 2020 17:55:22 +0200
-> Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
->
-> > On Wed, Dec 9, 2020 at 5:53 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
+> On Sun, 2021-01-17 at 09:43 -0800, Guenter Roeck wrote:
+> > On 1/15/21 6:13 AM, cy_huang wrote:
+> > > From: ChiYuan Huang <cy_huang@richtek.com>
 > > >
-> > > On Wed, Dec 9, 2020 at 5:45 PM Alexandru Ardelean
-> > > <ardeleanalex@gmail.com> wrote:
-> > > > On Wed, Dec 9, 2020 at 5:37 PM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Thu, Dec 3, 2020 at 11:55 AM Alexandru Ardelean
-> > > > > <alexandru.ardelean@analog.com> wrote:
-> > >
-> > > ...
-> > >
-> > > > > Are you sure there is no user space application that doesn't rely on
-> > > > > character device to be always present?
-> > > >
-> > > > Nope.
-> > > > I'm not sure.
-> > > > I'm also not completely sure how Jonathan feels about this patch being
-> > > > added now [so late].
-> > > >
-> > > > Though, technically if the chardev was already there, without all the
-> > > > control in place [to enable IIO buffers and other stuff through the
-> > > > chardev] then it's technically just a "marker" file.
-> > > > Which arguably is a lot to have (i.e. chardev that should be unusable).
-> > > >
-> > > > If it is usable with no control in place for buffers or other stuff
-> > > > (i.e. I missed something), then I also don't know.
-> > > >
-> > > > So, this patch on it's own can still be interpreted as an RFC.
-> > > > See:
-> > > > https://lore.kernel.org/linux-iio/20201121180246.772ad299@archlinux/
-> > >
-> > > Don't take me wrong, I'm not against a good change (I doesn't like
-> > > dangling files), but it might break some use cases.
+> > > MT6360 not support for TCPC command to control source and sink.
 > >
-> > Yeah I know.
-> > But how else do you know if a dangling file might break some use cases?
+> > does not
 > >
-> > The worst that would happen is that we get a report and create a Fixes
-> > tag and we know.
-> > But if we don't try it, we're stuck with it, and will never know.
-> >
-> It's definitely a high risk change.  I'd 'hope' it's not a problem
-> but we should do a bit more due diligence.
->
-> I hope we can assume the ADI software is all fine with dropping this.
-> Bastien can you see any issues with dropping chrdev for IIO devices
-> that don't actually support using it for anything (sysfs interface only).
->
-> What other stacks are people aware of that we should enquire about?
-
-Hey,
-
-Any more thoughts on this?
-
-Thanks
-Alex
-
->
-> Thanks,
->
-> Jonathan
+> > > Uses external 5V vbus regulator as the vbus source control.
 > > >
-> > > --
-> > > With Best Regards,
-> > > Andy Shevchenko
+> > Use
+> >
+> > > Also adds the capability to report vsafe0v.
+> > >
+> > add
+> >
+> > So far this driver works without regulator. Unless I am missing somethi=
+ng,
+> > this patch makes regulator support mandatory, meaning existing code wil=
+l fail.
+> If don't provide vbus-supply in DTS, regulator framework will provide a
+> dummy regulator, so the code will not fail.
+ In the last reply, I will change from regulator_get to
+regulator_get_exclusive, it will return -ENODEV.
+The IS_ERR can catch this situation, no dummy regulator will be returned.
+
+And assume no vbus 5v for source & snk attached, It will cause typec
+state machine repeated from
+drp -> src_attach_wait -> src_attached -> PD_T_PS_SOURCE_on timeout.
+It will be stuck in the loop until snk detached.
+
+> > I am not sure if that is appropriate/acceptable. Can we be sure that th=
+is will
+> > work for existing users of this driver ?
+>
+> >
+> > Thanks,
+> > Guenter
+> >
+> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > > ---
+> > >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++++=
+++++
+> > >  1 file changed, 29 insertions(+)
+> > >
+> > > diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/type=
+c/tcpm/tcpci_mt6360.c
+> > > index f1bd9e0..0edf4b6 100644
+> > > --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> > > +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> > > @@ -11,6 +11,7 @@
+> > >  #include <linux/of.h>
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/regmap.h>
+> > > +#include <linux/regulator/consumer.h>
+> > >  #include <linux/usb/tcpm.h>
+> > >
+> > >  #include "tcpci.h"
+> > > @@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
+> > >     struct tcpci_data tdata;
+> > >     struct tcpci *tcpci;
+> > >     struct device *dev;
+> > > +   struct regulator *vbus;
+> > >     int irq;
+> > >  };
+> > >
+> > > @@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct regma=
+p *regmap,
+> > >     return regmap_raw_write(regmap, reg, &val, sizeof(u16));
+> > >  }
+> > >
+> > > +static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_da=
+ta *data, bool src, bool snk)
+> > > +{
+> > > +   struct mt6360_tcpc_info *mti =3D container_of(data, struct mt6360=
+_tcpc_info, tdata);
+> > > +   int ret;
+> > > +
+> > > +   /* To correctly handle the already enabled vbus and disable its s=
+upply first */
+> > > +   if (regulator_is_enabled(mti->vbus)) {
+> > > +           ret =3D regulator_disable(mti->vbus);
+> > > +           if (ret)
+> > > +                   return ret;
+> > > +   }
+> >
+> > Is it really a good idea to disable vbus if it happens to be already en=
+abled
+> > and there is (another ?) request to enable it ?
+> >
+> > > +
+> > > +   if (src) {
+> > > +           ret =3D regulator_enable(mti->vbus);
+> > > +           if (ret)
+> > > +                   return ret;
+> > > +   }
+> > > +
+> > > +   return 0;
+> > > +}
+> > > +
+> > >  static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *=
+tdata)
+> > >  {
+> > >     struct regmap *regmap =3D tdata->regmap;
+> > > @@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_dev=
+ice *pdev)
+> > >     if (mti->irq < 0)
+> > >             return mti->irq;
+> > >
+> > > +   mti->vbus =3D devm_regulator_get(&pdev->dev, "vbus");
+> > > +   if (IS_ERR(mti->vbus))
+> > > +           return PTR_ERR(mti->vbus);
+> > > +
+> > >     mti->tdata.init =3D mt6360_tcpc_init;
+> > > +   mti->tdata.set_vbus =3D mt6360_tcpc_set_vbus;
+> > > +   mti->tdata.vbus_vsafe0v =3D 1;
+> > >     mti->tcpci =3D tcpci_register_port(&pdev->dev, &mti->tdata);
+> > >     if (IS_ERR(mti->tcpci)) {
+> > >             dev_err(&pdev->dev, "Failed to register tcpci port\n");
+> > >
+> >
 >
