@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931D92FBDB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6132FBDBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731939AbhASRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:32:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36270 "EHLO mail.kernel.org"
+        id S2391349AbhASRc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:32:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390725AbhASQMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:12:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6572B23139;
+        id S2391404AbhASQMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:12:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696392313B;
         Tue, 19 Jan 2021 16:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611072651;
-        bh=x28SiU6l6j7WY3/WuLOb8FaTKIg2knDGi8jFvYYTrbo=;
+        bh=QCx692mEV9EmrBqf9kmDsyhi0piG9+D6dDMN9S7D8lU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gvDWFm8exPgkzziXSZzcKX0jqVDhhLDVSXMhsT0RphUQMbckgYsrGNflBj9PuL5Df
-         YAs6l0sAdrdIrUrrug6LVmdIQprmjuJ0u/ZTQdh/I8LKiGmb0ogvrZWMH29AtvRN2+
-         nlXv0APDb3txnYjMcm9doIJe5D1xJfBcm6K7dmAgSYX+jZeLaBZKdQTZHstTqCsMuH
-         juQsBgFgYMWv/qM02idUXR+z92VOyiKGnb1h78hhhjT9qvhbBVVctyDzjSAhkFml5V
-         23rvoZ4NlPoqD0toKAEDXQQctMgXD4iJ1P1pS5Woch8FXkFYQPQw6QFrmQOnRIthVQ
-         sqJY9iuN0HakA==
+        b=dOnBvQuk6RgwW9YZ1o0IVHyi5XLFg4snkaWq6aP6KM3N1jIqMtWnNx3uyp5ECN3qd
+         G1o7acQM7DbbJNrr9b5FDXU/l6r8WzcSA7SvYHVN0kn+r9x7PcfJDVSrgFKCE+9P2G
+         IONEStEHYHHzv9nT5Nl6EdynO9An7xKpVjeR/pNY1HQ/GIwkgVBHkrFrSXgqtZYdNj
+         uMd0rlhT50+mmBZ4G6VsVB/O0N2EguX2+XEgCEnBjRxB3WCowXhFxodMMiIEqRg2+M
+         iiSCrVMBlbIQKg8brs8KEQupvGSbHTR8iCMRgLPb76wFIoHDIQ+Bi1TnhXfq1hHKKC
+         eVcbVEx9clwNw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l1taj-0012bv-5N; Tue, 19 Jan 2021 17:10:49 +0100
+        id 1l1taj-0012by-6l; Tue, 19 Jan 2021 17:10:49 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 12/21] staging: hikey9xx: hi6421v600-regulator: fix get_optimum_mode
-Date:   Tue, 19 Jan 2021 17:10:38 +0100
-Message-Id: <b2841fe918ba783611552c9e7c63f58fd78a8f20.1611072387.git.mchehab+huawei@kernel.org>
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 13/21] staging: hikey9xx: hisilicon,hi6421-spmi-pmic.yaml: cleanup a warning
+Date:   Tue, 19 Jan 2021 17:10:39 +0100
+Message-Id: <0663e419bdebd2a5603d151f4212a2751e9fc8fd.1611072387.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611072387.git.mchehab+huawei@kernel.org>
 References: <cover.1611072387.git.mchehab+huawei@kernel.org>
@@ -45,33 +44,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the driver refactor, a regression broke the logic inside
-hi6421_spmi_regulator_get_optimum_mode(). Basically, if a LDO
-has eco_uA == 0, it doesn't support economic mode. So, it should
-return REGULATOR_MODE_NORMAL.
-
-If economic mode is supported, it can return either
-REGULATOR_MODE_IDLE or REGULATOR_MODE_NORMAL, depending on the
-load current.
+There's no additionalProperties field at the yaml file, causing
+a warning when checking it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hi6421v600-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index 9f096d4e46db..382a0b21643e 100644
---- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
-+++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -206,7 +206,7 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
- {
- 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+diff --git a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml b/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+index f385146d2bd1..3b23ad56b31a 100644
+--- a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
++++ b/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+@@ -60,6 +60,8 @@ required:
+   - reg
+   - regulators
  
--	if (load_uA || ((unsigned int)load_uA > sreg->eco_uA))
-+	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
- 		return REGULATOR_MODE_NORMAL;
- 
- 	return REGULATOR_MODE_IDLE;
++additionalProperties: false
++
+ examples:
+   - |
+     /* pmic properties */
 -- 
 2.29.2
 
