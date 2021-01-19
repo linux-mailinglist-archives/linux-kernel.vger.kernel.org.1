@@ -2,100 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB732FC502
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E062FC505
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbhASXp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:45:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
+        id S1727747AbhASXq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730629AbhASXoo (ORCPT
+        with ESMTP id S1730959AbhASXqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:44:44 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31329C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:43:56 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h7so2372655lfc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:43:56 -0800 (PST)
+        Tue, 19 Jan 2021 18:46:19 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297ECC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:45:39 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id p15so974610pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:45:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/G1m8PE0YTql3WtklqLcJoolwHbP1jsFDu8kUqAsjk=;
-        b=ElJArjScwx6VrNY8cu9sHOG+hiNtxsnqba7p4lx6dFH6orCd9GDBiEhH96Aq6cEBM3
-         o6gAA8i9eDCDdI1OYb9wrfKSIU6eP28xBrlScg4CYzkYpIzqGMV6kIsOT/VPoZZa9D04
-         Plw2hA6RvBQbDqA+6AlNWDro5DYmxEdSHG97Y=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dV/5VOT7tyIqPDG6JNcIPQ9CGyn+MA2Lx+QvsRY3jAU=;
+        b=FrYR48URBI/1jNNfAzj8C8qVNfgeg51O8r9wkp+5nDBYR1FAxyOwmZnsWemLTOzj4A
+         mHUpqvetCMRjgJ5chG8IZosODMUoDDyaRiRk6sRXg+ohIbk4EH/RGccFZHxGogm3Mo1+
+         ds7bktBM1SUW9y0rStdW1uHgJxHGRtUWehHb3j+HjRRPuWYNC4u5naAKmM9UN5fS3DQ8
+         E9FiajeOn1Ij5qn2v64LrcjCzzCIRppz9oJJnmIpU1LEMLk/vlVV4tjjXOJG/kOoOwRb
+         Zt8/Z0MQEhzLdvuCn5AAZinKksIf9QIK3M7Q3dgaLMDSYhW7+tENz0cOwaKJsehIwPGO
+         ORfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/G1m8PE0YTql3WtklqLcJoolwHbP1jsFDu8kUqAsjk=;
-        b=PhXVADwsCHbGaId697JkNA3lh1QilrHTMTximuIIqLuJVhubshHm54rN85o9lyN133
-         lGYhjkaVRrS83Khet54ylXVnQeBIm/ejbfvxgD2yQD3Z8epOxM5mAfkyCYWEUvqLBF7V
-         UYt6d6ywfm9jKm3by5HWmIxhN3sHdYurzlu06g25teSskK7Nt4cC7AVE1aLMO63QyjAy
-         KxzuoXk8fVl7ohtWAuZUdwf5ejfy7g5wj1zUCtb1lQGCG4l0DlgkQfIRZK9PloUI413e
-         c5/of7SgupoxzrwQebBuv3Jvb5LuwqICu3c05d5oHGwiKRAA4LRTeLrDe/Uw2X80mOy5
-         rfFA==
-X-Gm-Message-State: AOAM531Vn9EfpOlTBpIxQ52cxNhl8K0bpmo7O383KyTQXRp5YZSEzB0s
-        QpNtOkTObK90TSIaRQVIAPlmW/UgO4M8ME4OKkKA1MyEVhJLXA==
-X-Google-Smtp-Source: ABdhPJxBqqb+KLSnajsT/DbeOl0sTZlet887nfewnnGWNGEGILFOn3Maz+HeHkgfvTYPc3HetkFys+AElxbiEqKvY5k=
-X-Received: by 2002:a19:670f:: with SMTP id b15mr2808464lfc.340.1611099834522;
- Tue, 19 Jan 2021 15:43:54 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dV/5VOT7tyIqPDG6JNcIPQ9CGyn+MA2Lx+QvsRY3jAU=;
+        b=f6j+U3GIc6FhDbuS8rDPiATOmhar2L5VGjf5c3Celv+idkDLUrbJ41DiwpkgZ4BmI+
+         b1k+dPUBQ8qRo+lPstwIssUwOkSQ+DiOikjsl+rfANL95wICK72nhDiivfq3ygJ+YXfu
+         GsnhwYZQ1S0pC+BWv0LdTaouMpKGL1e8ya6HBM4v0Z6qQMGxNUDhcOlKqKNO3xgoYR0I
+         6Hd/aF7mT0epwAash2XWtIkd4neYK3e80XUUg9sr2XinpzX3T0/35i6Q2x/pdr4qLhJy
+         ZxdhcO4PAl39peg9iS7/tI6InNjF76DRvg3ilOYdbXDJQm3hWCDMxJVSW4D1VLhHgWod
+         JilA==
+X-Gm-Message-State: AOAM531KAW4aSjgx5NPoQvJb3Ws96kM+7auLp7Y/0zdbKYSMUYbuwp3I
+        47xlWDn9RZb/YvPBHwHs2oYgGw==
+X-Google-Smtp-Source: ABdhPJxCaGRsnlKFaHYeNlT9jQJVFg4OxLA4bp3oL3oX0QowYLBtbFUTs9aaTXnICJaF92ZcUZJi5Q==
+X-Received: by 2002:a17:90a:5802:: with SMTP id h2mr2430282pji.68.1611099938467;
+        Tue, 19 Jan 2021 15:45:38 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id m62sm196779pfm.135.2021.01.19.15.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 15:45:37 -0800 (PST)
+Date:   Tue, 19 Jan 2021 15:45:30 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        wanpengli@tencent.com, kvm@vger.kernel.org,
+        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
+        x86@kernel.org, kyung.min.park@intel.com,
+        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
+        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
+        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
+Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+Message-ID: <YAdvGkwtJf3CDxo6@google.com>
+References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
+ <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
+ <YAclaWCL20at/0n+@google.com>
+ <c3a81da0-4b6a-1854-1b67-31df5fbf30f6@amd.com>
 MIME-Version: 1.0
-References: <20201215012907.3062-1-ivan@cloudflare.com> <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Tue, 19 Jan 2021 15:43:43 -0800
-Message-ID: <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev queues
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c3a81da0-4b6a-1854-1b67-31df5fbf30f6@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 14 Dec 2020 17:29:06 -0800 Ivan Babrou wrote:
-> > Without this change the driver tries to allocate too many queues,
-> > breaching the number of available msi-x interrupts on machines
-> > with many logical cpus and default adapter settings:
-> >
-> > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
-> >
-> > Which in turn triggers EINVAL on XDP processing:
-> >
-> > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
-> >
-> > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
->
-> Looks like the discussion may have concluded, but we don't take -next
-> patches during the merge window, so please repost when net-next reopens.
->
-> Thanks!
-> --
-> # Form letter - net-next is closed
->
-> We have already sent the networking pull request for 5.11 and therefore
-> net-next is closed for new drivers, features, code refactoring and
-> optimizations. We are currently accepting bug fixes only.
->
-> Please repost when net-next reopens after 5.11-rc1 is cut.
+On Tue, Jan 19, 2021, Babu Moger wrote:
+> 
+> On 1/19/21 12:31 PM, Sean Christopherson wrote:
+> > On Fri, Jan 15, 2021, Babu Moger wrote:
+> >> @@ -3789,7 +3792,10 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+> >>  	 * is no need to worry about the conditional branch over the wrmsr
+> >>  	 * being speculatively taken.
+> >>  	 */
+> >> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> >> +	if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> >> +		svm->vmcb->save.spec_ctrl = svm->spec_ctrl;
+> >> +	else
+> >> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> > 
+> > Can't we avoid functional code in svm_vcpu_run() entirely when V_SPEC_CTRL is
+> > supported?  Make this code a nop, disable interception from time zero, and
+> 
+> Sean, I thought you mentioned earlier about not changing the interception
+> mechanism.
 
-Should I resend my patch now that the window is open or is bumping
-this thread enough?
+I assume you're referring to this comment?
 
-> Look out for the announcement on the mailing list or check:
-> http://vger.kernel.org/~davem/net-next.html
->
-> RFC patches sent for review only are obviously welcome at any time.
+  On Mon, Dec 7, 2020 at 3:13 PM Sean Christopherson <seanjc@google.com> wrote:
+  >
+  > On Mon, Dec 07, 2020, Babu Moger wrote:
+  > > When this feature is enabled, the hypervisor no longer has to
+  > > intercept the usage of the SPEC_CTRL MSR and no longer is required to
+  > > save and restore the guest SPEC_CTRL setting when switching
+  > > hypervisor/guest modes.
+  >
+  > Well, it's still required if the hypervisor wanted to allow the guest to turn
+  > off mitigations that are enabled in the host.  I'd omit this entirely and focus
+  > on what hardware does and how Linux/KVM utilize the new feature.
+
+I wasn't suggesting that KVM should intercept SPEC_CTRL, I was pointing out that
+there exists a scenario where a hypervisor would need/want to intercept
+SPEC_CTRL, and that stating that a hypervisor is/isn't required to do something
+isn't helpful in a KVM/Linux changelog because it doesn't describe the actual
+change, nor does it help understand _why_ the change is correct.
+
+> Do you think we should disable the interception right away if V_SPEC_CTRL is
+> supported?
+
+Yes, unless I'm missing an interaction somewhere, that will simplify the get/set
+flows as they won't need to handle the case where the MSR is intercepted when
+V_SPEC_CTRL is supported.  If the MSR is conditionally passed through, the get
+flow would need to check if the MSR is intercepted to determine whether
+svm->spec_ctrl or svm->vmcb->save.spec_ctrl holds the guest's value.
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index cce0143a6f80..40f1bd449cfa 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2678,7 +2678,10 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+                    !guest_has_spec_ctrl_msr(vcpu))
+                        return 1;
+ 
+-               msr_info->data = svm->spec_ctrl;
++               if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
++                       msr_info->data = svm->vmcb->save.spec_ctrl;
++               else
++                       msr_info->data = svm->spec_ctrl;
+                break;
+        case MSR_AMD64_VIRT_SPEC_CTRL:
+                if (!msr_info->host_initiated &&
+@@ -2779,6 +2782,11 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+                if (kvm_spec_ctrl_test_value(data))
+                        return 1;
+ 
++               if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL)) {
++                       svm->vmcb->save.spec_ctrl = data;
++                       break;
++               }
++
+                svm->spec_ctrl = data;
+                if (!data)
+                        break;
+
+> > read/write the VMBC field in svm_{get,set}_msr().  I.e. don't touch
+> > svm->spec_ctrl if V_SPEC_CTRL is supported.  
+
+Potentially harebrained alternative...
+
+From an architectural SVM perspective, what are the rules for VMCB fields that
+don't exist (on the current hardware)?  E.g. are they reserved MBZ?  If not,
+does the SVM architecture guarantee that reserved fields will not be modified?
+I couldn't (quickly) find anything in the APM that explicitly states what
+happens with defined-but-not-existent fields.
+
+Specifically in the context of this change, ignoring nested correctness, what
+would happen if KVM used the VMCB field even on CPUs without V_SPEC_CTRL?  Would
+this explode on VMRUN?  Risk silent corruption?  Just Work (TM)?
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index cce0143a6f80..22a6a7c35d0a 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1285,7 +1285,6 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+        u32 dummy;
+        u32 eax = 1;
+
+-       svm->spec_ctrl = 0;
+        svm->virt_spec_ctrl = 0;
+
+        if (!init_event) {
+@@ -2678,7 +2677,7 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+                    !guest_has_spec_ctrl_msr(vcpu))
+                        return 1;
+
+-               msr_info->data = svm->spec_ctrl;
++               msr_info->data = svm->vmcb->save.spec_ctrl;
+                break;
+        case MSR_AMD64_VIRT_SPEC_CTRL:
+                if (!msr_info->host_initiated &&
+@@ -2779,7 +2778,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+                if (kvm_spec_ctrl_test_value(data))
+                        return 1;
+
+-               svm->spec_ctrl = data;
++               svm->vmcb->save.spec_ctrl = data;
+                if (!data)
+                        break;
+
+@@ -3791,7 +3790,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+         * is no need to worry about the conditional branch over the wrmsr
+         * being speculatively taken.
+         */
+-       x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
++       x86_spec_ctrl_set_guest(svm->vmcb->save.spec_ctrl, svm->virt_spec_ctrl);
+
+        svm_vcpu_enter_exit(vcpu, svm);
+
+@@ -3811,12 +3810,12 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+         * save it.
+         */
+        if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+-               svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
++               svm->vmcb->save.spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+
+        if (!sev_es_guest(svm->vcpu.kvm))
+                reload_tss(vcpu);
+
+-       x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
++       x86_spec_ctrl_restore_host(svm->vmcb->save.spec_ctrl, svm->virt_spec_ctrl);
+
+        if (!sev_es_guest(svm->vcpu.kvm)) {
+                vcpu->arch.cr2 = svm->vmcb->save.cr2;
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 5431e6335e2e..a4f9417e3b7e 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -137,7 +137,6 @@ struct vcpu_svm {
+                u64 gs_base;
+        } host;
+
+-       u64 spec_ctrl;
+        /*
+         * Contains guest-controlled bits of VIRT_SPEC_CTRL, which will be
+         * translated into the appropriate L2_CFG bits on the host to
+
