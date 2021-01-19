@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947F12FB116
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3322FB11B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732531AbhASFyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbhASFPe (ORCPT
+        id S1729825AbhASFzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:55:52 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:33491 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726991AbhASFRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:15:34 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFD1C061757;
-        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id g15so7084161pjd.2;
-        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dXrgf1LZzL6eF1i+mvPcch+z/XkMiWVGO2kmOldCnEI=;
-        b=DztL4URkAwRJ2ODVyxeNBZBxz5S+xRS8xuaC46nJWu+D8De10B3gwSKVTYmljiNmEN
-         TuzPjpuC9IaKIFfa/xre01cevViuOpZgb6OtG4CbVR4C05S0NdEY1rqIXzrmYYFDXNtn
-         2GjKpQfoJxg39r1Hn7NCD+OQAAeCGN5NE6Ja8udUSgGGm36tp4mexRj2SkxJ+j9nx0sh
-         ZMwnYPh6qnf/cvxhCBYqTV84Pjziw4DG2HTZVGHMsNo/W/ixLqe9YdIzzD1SdVy3Orpw
-         Wh8GdsE2cY1XQSXg/BqSQfp8hNYbkbLwqiBrGRZss/Rrqhtil5cICRi66GT06jH7OIHf
-         onlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dXrgf1LZzL6eF1i+mvPcch+z/XkMiWVGO2kmOldCnEI=;
-        b=qSWrAoliD/QjUMYPhm8k1BRUzKaLx5f+Af+YZOQFqp3r6gRXKHm5LONlEQ00TEU4l1
-         +BzKRqz0kxG+WSJK7UrxDgMSgaZepdX1SM1aVmQRmvf2PKV/Fm5SUfAYnzUZOvWRMTdn
-         wniswnyOQt9U6x72lxtNjq5RIuhY/q/ZSta9McXAgRtxo44NheUH3DYDXMhfk7y00Ssv
-         a7ipEMAaS4cZRjflj+J3ADje7tmNT2dYZYAjWHd2Ocfpu8Ti0AtKU84RbQAQtblYru9a
-         MzojujntwQWTxgj/qxLyB/eFN+VzcmfKQaJsB0draN08lsDcla3vftmdXlcdq9HkIPVu
-         k7Dw==
-X-Gm-Message-State: AOAM5316+MyaVOXyFQjyBSha8//38RC4mkDE6HxgWMjK7ZS3sdTme3Kg
-        KhEAymwkknLkJD5YzvzwnAA=
-X-Google-Smtp-Source: ABdhPJzSv5y7FgI8sHfaewHW1iOyxsA+jPc2FomGn4TeblnqYWCWFfKU0qY31KFXihgns7xB/8SiDA==
-X-Received: by 2002:a17:90a:5c81:: with SMTP id r1mr3315583pji.175.1611033293232;
-        Mon, 18 Jan 2021 21:14:53 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id x125sm17687306pgb.35.2021.01.18.21.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 21:14:52 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: test: remove the shutdown function
-Date:   Tue, 19 Jan 2021 13:14:25 +0800
-Message-Id: <20210119051425.305-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 19 Jan 2021 00:17:54 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 7482C1208;
+        Tue, 19 Jan 2021 00:16:34 -0500 (EST)
+Received: from imap5 ([10.202.2.55])
+  by compute2.internal (MEProxy); Tue, 19 Jan 2021 00:16:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mxxn.io; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm1; bh=YDAKd
+        F+AcV0IOYUFAl7UZNcNA1Tj/4JTP0p+Ir8b2cI=; b=KyenI5Z9EOV6MU2bX/LAY
+        72TWS8wH+xOQdwmizKtzF1TGQ3hDRuQVJqZ/H9KCv2XY1LD7GTKk02rpd0uPZZRC
+        sbLiHsmNm3rAZximIWq0aILsQMX3vpgopoh1+ewtJCrK8zO4wu9i63Kde5m6Hvj+
+        FmKBiQTc/7q7oCmPBve+HLxR2uDC+TYqjBRRFuZCyB+u3c685efzzUGxOphgI500
+        Hx8Jw3BcWtzQ2sd/jpjrUa77TKmAFQIO01qrTkZHURW1hvU3SihCSNrXBaLtXUzA
+        WfDnE5LUmdQPBt29tw/IJqLGVG2KVS/JNdGmkt/osBldvCjGKmyPHb0PB5wWAGkE
+        g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=YDAKdF+AcV0IOYUFAl7UZNcNA1Tj/4JTP0p+Ir8b2
+        cI=; b=EjzOaPNGFlXNxVRpIHMZco6LNPt/pz+0eNp/ED+96YF9dpH/0/54jYWi8
+        uq9ISg6T4oZqsLc536ra6RMp6W2fZvnM4BMMvROmTBhkB05OBCE9M0mqx81gg34N
+        w5J0Ca97Zv8WU5KbANilo8jM0YO9KY/SykVrmUHgOCBNRVqp7Q/EaekJ2U+EvTjK
+        gvezJfwnutIM4hk3Xy3xYSSw/YBWAOyNurZLfqsoSUKzNv1eqhPgBCyzVotCQWnu
+        H6/jTFuUa2gsDmiFlMAhXv2bozWIVWaaL0rk2bsH2LJqrhpgnBXj56Mry9RgIePU
+        9oow767GPjs1BL9vxbEDpZBuEUnLg==
+X-ME-Sender: <xms:MWsGYCZv9KTBdSqsCylgsXj08EQBo46MMBFbCPcV4JSgusfmkEbgrw>
+    <xme:MWsGYFaT7YqgLLlywcVJjjcU00RbJVz5U_D5RfBkflgpWU8hrnnNg5RmcNxI3_mEc
+    bDNQuMpu08f6huKMA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdelgdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepuehlrgkk
+    pgfjrhgrshhtnhhikhcuoegslhgriiesmhiggihnrdhioheqnecuggftrfgrthhtvghrnh
+    epueetveelffduheefgeeftdfgvedttefhgfekhfekgfdtvdffvefhieetvdefudevnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghlrgiise
+    hmgiignhdrihho
+X-ME-Proxy: <xmx:MWsGYM9XL_gzpMkTHKF9M34xNvq2iU8tnzNHz12NluNP9w7WpBikpQ>
+    <xmx:MWsGYErJw-6qEkXFYPQ_C_9aEFyDpwExyoQQiyRDNEJ5_wIKiN0PZw>
+    <xmx:MWsGYNr0sIhSi9gRqALqPaYjjnqfAtDt23Q1_RmOGGVk0Ys4PiwvmA>
+    <xmx:MmsGYOltsk2PDjvLhxCGR__AZr33vbQ9xtsFQFxpMK2zbl05QJ3njQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B6CF25C0099; Tue, 19 Jan 2021 00:16:33 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-45-g4839256-fm-20210104.001-g48392560
+Mime-Version: 1.0
+Message-Id: <d5630b5e-52ec-4fc7-b8f3-ac219d0bfbbb@www.fastmail.com>
+In-Reply-To: <b08d641c-3fb5-4845-85f7-e1753149cd7d@www.fastmail.com>
+References: <b08d641c-3fb5-4845-85f7-e1753149cd7d@www.fastmail.com>
+Date:   Tue, 19 Jan 2021 14:15:58 +0900
+From:   =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>
+To:     "Jean Delvare" <jdelvare@suse.com>,
+        "Guenter Roeck" <linux@roeck-us.net>,
+        "Jonathan Corbet" <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Cc:     "David Bartley" <andareed@gmail.com>
+Subject: Re: hwmon: (nct6683) Support ASRock boards.
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+(cc-ing David Bartley, who wrote the MSI patch)
 
-Since it's doing nothing for shutdown behavior. And the callback will
-be checked firstly in mmc_bus_shutdown().
+I had a follow-up question: I noticed that support for MSI was added in
+December, but there's this conditional that wasn't changed:
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/mmc/core/mmc_test.c | 5 -----
- 1 file changed, 5 deletions(-)
+	/* Only update pwm values for Mitac boards */
+	if (data->customer_id =3D=3D NCT6683_CUSTOMER_ID_MITAC)
+		return attr->mode | S_IWUSR;
 
-diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
-index 152e752..f999b48 100644
---- a/drivers/mmc/core/mmc_test.c
-+++ b/drivers/mmc/core/mmc_test.c
-@@ -3267,17 +3267,12 @@ static void mmc_test_remove(struct mmc_card *card)
- 	mmc_test_free_dbgfs_file(card);
- }
- 
--static void mmc_test_shutdown(struct mmc_card *card)
--{
--}
--
- static struct mmc_driver mmc_driver = {
- 	.drv		= {
- 		.name	= "mmc_test",
- 	},
- 	.probe		= mmc_test_probe,
- 	.remove		= mmc_test_remove,
--	.shutdown	= mmc_test_shutdown,
- };
- 
- static int __init mmc_test_init(void)
--- 
-1.9.1
+Should this continue to only apply for Mitac boards, or should it be cha=
+nged to
+!=3D NCT6683_CUSTOMER_ID_INTEL?
+
+Bla=C5=BE
 
