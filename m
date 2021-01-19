@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1BA2FBCC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF52FBCD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388983AbhASQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:44:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:39494 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389388AbhASQlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:41:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B736D6E;
-        Tue, 19 Jan 2021 08:40:31 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 754583F66E;
-        Tue, 19 Jan 2021 08:40:30 -0800 (PST)
-Date:   Tue, 19 Jan 2021 16:40:27 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH] sched/eas: Don't update misfit status if the task is
- pinned
-Message-ID: <20210119164027.drfpmrol3xhf4ckc@e107158-lin>
-References: <20210119120755.2425264-1-qais.yousef@arm.com>
- <YAb8XGyp3NtrHl+U@google.com>
+        id S1730822AbhASQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389476AbhASQmd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:42:33 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA92C061574;
+        Tue, 19 Jan 2021 08:41:50 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0bca005ed5ab9a356b3c50.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:5ed5:ab9a:356b:3c50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3D9BF1EC0622;
+        Tue, 19 Jan 2021 17:41:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611074509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=Nv5jEc80G7wIwGUWg/8u6iDRcfP4GOU2xU+S4vSqdhM=;
+        b=cDZk3NDXmtZkGgYH3An5E3NgTLjk31sxorcy0zuCXX7FUml2fHLNT97eMj0yxlSiSMKj3R
+        NI5K9ONgS+23GMpQeqdDWtdWCoYjMqdhDTfP1kSRBJcWzhOht1uQY36j49IlJc8rlH4/Ol
+        HyugGkJpiTqiL4msbKrfCuRfW4kZjrw=
+From:   Borislav Petkov <bp@alien8.de>
+To:     linux-edac <linux-edac@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] EDAC/amd64: Issue probing messages only on properly detected hardware
+Date:   Tue, 19 Jan 2021 17:41:41 +0100
+Message-Id: <20210119164141.17417-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YAb8XGyp3NtrHl+U@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/19/21 15:35, Quentin Perret wrote:
-> On Tuesday 19 Jan 2021 at 12:07:55 (+0000), Qais Yousef wrote:
-> > If the task is pinned to a cpu, setting the misfit status means that
-> > we'll unnecessarily continuously attempt to migrate the task but fail.
-> > 
-> > This continuous failure will cause the balance_interval to increase to
-> > a high value, and eventually cause unnecessary significant delays in
-> > balancing the system when real imbalance happens.
-> > 
-> > Caught while testing uclamp where rt-app calibration loop was pinned to
-> > cpu 0, shortly after which we spawn another task with high util_clamp
-> > value. The task was failing to migrate after over 40ms of runtime due to
-> > balance_interval unnecessary expanded to a very high value from the
-> > calibration loop.
-> > 
-> > Not done here, but it could be useful to extend the check for pinning to
-> > verify that the affinity of the task has a cpu that fits. We could end
-> > up in a similar situation otherwise.
-> 
-> Do you mean failing the sched_setaffinity syscall if e.g. the task
-> has a min clamp that is higher than the capacity of the CPUs to which it
-> will be pinned? If so, I'm not sure if we really want that.
+From: Borislav Petkov <bp@suse.de>
 
-No. In Android for instance, I'm worried a background task affined to little
-cores that has a utilization > capacity_of(little) will trigger the same
-problem. It'll be affined to more than just 1 cpu, but none of the little cpus
-will actually fit.
+amd64_edac was converted to CPU family autoprobing (from PCI device IDs)
+to not have to add a new PCI device ID a new platform is shipped but to
+support the whole family directly.
 
-Makes sense?
+However, this caused a lot of noise in dmesg even when the machine
+doesn't have ECC DIMMs or ECC has been disabled in the BIOS:
 
-> But this patch makes sense on its own for sure, so:
-> 
-> Reviewed-by: Quentin Perret <qperret@google.com>
+  EDAC MC: Ver: 3.0.0
+  EDAC amd64: F17h detected (node 0).
+  EDAC amd64: Node 0: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 1).
+  EDAC amd64: Node 1: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 2).
+  EDAC amd64: Node 2: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 3).
+  EDAC amd64: Node 3: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 4).
+  EDAC amd64: Node 4: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 5).
+  EDAC amd64: Node 5: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 6).
+  EDAC amd64: Node 6: DRAM ECC disabled.
+  EDAC amd64: F17h detected (node 7).
+  EDAC amd64: Node 7: DRAM ECC disabled.
 
-Thanks
+or even
 
---
-Qais Yousef
+$ grep EDAC dmesg.log | sed 's/\[.*\] //' | sort | uniq -c
+    128 EDAC amd64: F17h detected (node 0).
+    128 EDAC amd64: Node 0: DRAM ECC disabled.
+      1 EDAC MC: Ver: 3.0.0
+
+on a big machine. Yap, that's once per CPU for 128 of them.
+
+So move the init messages after all probing has succeeded to avoid
+unnecessary spew in dmesg.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ drivers/edac/amd64_edac.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index 9868f95a5622..9fa4dfc6ebee 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -3528,8 +3528,7 @@ static bool ecc_enabled(struct amd64_pvt *pvt)
+ 				     MSR_IA32_MCG_CTL, nid);
+ 	}
+ 
+-	amd64_info("Node %d: DRAM ECC %s.\n",
+-		   nid, (ecc_en ? "enabled" : "disabled"));
++	edac_dbg(3, "Node %d: DRAM ECC %s.\n", nid, (ecc_en ? "enabled" : "disabled"));
+ 
+ 	if (!ecc_en || !nb_mce_en)
+ 		return false;
+@@ -3689,11 +3688,6 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
+ 		return NULL;
+ 	}
+ 
+-	amd64_info("%s %sdetected (node %d).\n", fam_type->ctl_name,
+-		     (pvt->fam == 0xf ?
+-				(pvt->ext_model >= K8_REV_F  ? "revF or later "
+-							     : "revE or earlier ")
+-				 : ""), pvt->mc_node_id);
+ 	return fam_type;
+ }
+ 
+@@ -3865,6 +3859,12 @@ static int probe_one_instance(unsigned int nid)
+ 		goto err_enable;
+ 	}
+ 
++	amd64_info("%s %sdetected (node %d).\n", fam_type->ctl_name,
++		     (pvt->fam == 0xf ?
++				(pvt->ext_model >= K8_REV_F  ? "revF or later "
++							     : "revE or earlier ")
++				 : ""), pvt->mc_node_id);
++
+ 	dump_misc_regs(pvt);
+ 
+ 	return ret;
+-- 
+2.29.2
+
