@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608832FB7F9
+	by mail.lfdr.de (Postfix) with ESMTP id CD7CE2FB7FA
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391450AbhASLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:34:25 -0500
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:36659 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389830AbhASLXI (ORCPT
+        id S2391471AbhASLfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:35:09 -0500
+Received: from outbound-smtp54.blacknight.com ([46.22.136.238]:53965 "EHLO
+        outbound-smtp54.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389823AbhASLXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:23:08 -0500
+        Tue, 19 Jan 2021 06:23:06 -0500
 Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 03FAB2DCD
+        by outbound-smtp54.blacknight.com (Postfix) with ESMTPS id 2A7A3FB9F8
         for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:22:12 +0000 (GMT)
-Received: (qmail 4565 invoked from network); 19 Jan 2021 11:22:11 -0000
+Received: (qmail 4584 invoked from network); 19 Jan 2021 11:22:12 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
   by 81.17.254.9 with ESMTPA; 19 Jan 2021 11:22:11 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
@@ -26,55 +26,89 @@ Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         Qais Yousef <qais.yousef@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH v3 0/5] Scan for an idle sibling in a single pass
-Date:   Tue, 19 Jan 2021 11:22:06 +0000
-Message-Id: <20210119112211.3196-1-mgorman@techsingularity.net>
+Subject: [PATCH 1/5] sched/fair: Remove SIS_AVG_CPU
+Date:   Tue, 19 Jan 2021 11:22:07 +0000
+Message-Id: <20210119112211.3196-2-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210119112211.3196-1-mgorman@techsingularity.net>
+References: <20210119112211.3196-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog since v2
-o Remove unnecessary parameters
-o Update nr during scan only when scanning for cpus
+SIS_AVG_CPU was introduced as a means of avoiding a search when the
+average search cost indicated that the search would likely fail. It was
+a blunt instrument and disabled by commit 4c77b18cf8b7 ("sched/fair: Make
+select_idle_cpu() more aggressive") and later replaced with a proportional
+search depth by commit 1ad3aaf3fcd2 ("sched/core: Implement new approach
+to scale select_idle_cpu()").
 
-Changlog since v1
-o Move extern declaration to header for coding style
-o Remove unnecessary parameter from __select_idle_cpu
+While there are corner cases where SIS_AVG_CPU is better, it has now been
+disabled for almost three years. As the intent of SIS_PROP is to reduce
+the time complexity of select_idle_cpu(), lets drop SIS_AVG_CPU and focus
+on SIS_PROP as a throttling mechanism.
 
-This series of 5 patches reposts three patches from Peter entitled
-"select_idle_sibling() wreckage". It only scans the runqueues in a single
-pass when searching for an idle sibling.
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/fair.c     | 20 +++++++++-----------
+ kernel/sched/features.h |  1 -
+ 2 files changed, 9 insertions(+), 12 deletions(-)
 
-Two patches from Peter were dropped. The first patch altered how scan
-depth was calculated. Scan depth deletion is a random number generator
-with two major limitations. The avg_idle time is based on the time
-between a CPU going idle and being woken up clamped approximately by
-2*sysctl_sched_migration_cost.  This is difficult to compare in a sensible
-fashion to avg_scan_cost. The second issue is that only the avg_scan_cost
-of scan failures is recorded and it does not decay.  This requires deeper
-surgery that would justify a patch on its own although Peter notes that
-https://lkml.kernel.org/r/20180530143105.977759909@infradead.org is
-potentially useful for an alternative avg_idle metric.
-
-The second patch dropped converted the idle core scan throttling
-mechanism to SIS_PROP. While this would unify the throttling of core
-and CPU scanning, it was not free of regressions and has_idle_cores is
-a fairly effective throttling mechanism with the caveat that it can have
-a lot of false positives for workloads like hackbench.
-
-Peter's series tried to solve three problems at once, this subset addresses
-one problem. As with anything select_idle_sibling, it's a mix of wins and
-losses but won more than it lost across a range of workloads and machines.
-
- kernel/sched/core.c     |  18 +++--
- kernel/sched/fair.c     | 161 ++++++++++++++++++++--------------------
- kernel/sched/features.h |   1 -
- kernel/sched/sched.h    |   2 +
- 4 files changed, 95 insertions(+), 87 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce20da67..9f5682aeda2e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6145,7 +6145,6 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+ 	struct sched_domain *this_sd;
+-	u64 avg_cost, avg_idle;
+ 	u64 time;
+ 	int this = smp_processor_id();
+ 	int cpu, nr = INT_MAX;
+@@ -6154,18 +6153,17 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	if (!this_sd)
+ 		return -1;
+ 
+-	/*
+-	 * Due to large variance we need a large fuzz factor; hackbench in
+-	 * particularly is sensitive here.
+-	 */
+-	avg_idle = this_rq()->avg_idle / 512;
+-	avg_cost = this_sd->avg_scan_cost + 1;
++	if (sched_feat(SIS_PROP)) {
++		u64 avg_cost, avg_idle, span_avg;
+ 
+-	if (sched_feat(SIS_AVG_CPU) && avg_idle < avg_cost)
+-		return -1;
++		/*
++		 * Due to large variance we need a large fuzz factor;
++		 * hackbench in particularly is sensitive here.
++		 */
++		avg_idle = this_rq()->avg_idle / 512;
++		avg_cost = this_sd->avg_scan_cost + 1;
+ 
+-	if (sched_feat(SIS_PROP)) {
+-		u64 span_avg = sd->span_weight * avg_idle;
++		span_avg = sd->span_weight * avg_idle;
+ 		if (span_avg > 4*avg_cost)
+ 			nr = div_u64(span_avg, avg_cost);
+ 		else
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 68d369cba9e4..e875eabb6600 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -54,7 +54,6 @@ SCHED_FEAT(TTWU_QUEUE, true)
+ /*
+  * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
+  */
+-SCHED_FEAT(SIS_AVG_CPU, false)
+ SCHED_FEAT(SIS_PROP, true)
+ 
+ /*
 -- 
 2.26.2
 
