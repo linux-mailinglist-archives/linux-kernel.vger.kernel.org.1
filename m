@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3C52FBEC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581CA2FBEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732825AbhASSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        id S2392430AbhASSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392528AbhASSR5 (ORCPT
+        with ESMTP id S2392403AbhASST4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:17:57 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22FFC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id s6so9590223qvn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
+        Tue, 19 Jan 2021 13:19:56 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5AAC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:15 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id y128so16856297ybf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
-        b=Cu9pQdgkuPmGsFfK1Bhot2GEDj34YX1UgywSUTlAnfjohEWUJcdw+iydHBAK385oP1
-         Aon6yUBiuqKBJyOIdmjXm9R9+pwFK1YM6ancISnFbej5qVTRjaAbtoXHhnSCihZ0idpY
-         SKse4iqkAvOCevShsndb3tq/GBo/VVzIj06N5mXpU32g2HE0TAwRq/I1cpBZ8fPleUsa
-         LtFWoa9cvTJigy1WSHjsTCqUP1WXBPp/oFQ1FmgktRV7Y3nwsRJIaT/QLxF3dAIRsx/H
-         dnBrbBD3QVcioOWh2VJck5oLCvv8jfJ/t5toQlSIr58Wlgkksz0jcLXApcGe9Am4Bjkx
-         aaTw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mHK63mNEb6W4AaDercWEjXkLeIiYVU3MkZRoAzxz/mw=;
+        b=TIKhKTRiWi86JaBOFJSF4irAc52V20kHLuNqvziTTpBjGp3nKdshbwFVlPqC5MQiSd
+         iuJl1Kioq0DuEj4Ij/cpA3HZALUgN1HS/TA5uG2KrYah/3L9lpuktzLLoiA365+IWEHf
+         d8iCmmDNoFSWNDuq/1zYACTbZNPeSSiMa/H28opAMGaxfB1dutjMLQ/Z32aF+wP+rWBC
+         zBTi/wLEuNcg/kVVduAO045TnKU1GD6+fDtWxuNWScZBSc+d2jwNrQV4B+00nOS0cBhU
+         02Oki33NxIM339vFFJbj/pkY4t6smCaD+O37PWEw5vD8+tAi1Edp9oQOctWwi3Xr6Ylf
+         Hxmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
-        b=WwJuLRHJykkufBEpELYJScm/FcUakdjMReuGEhP9FD1Zdm2MKfS1/56oDX4rXIPv0p
-         +dVSgkPPPeznLviyzC9zcG9J4RpMI3MYdxHDds5oea6yYVJctb1XL16NFN+MokIL2M6H
-         8tBn/p+pIlHRTOK4PeipaieUCVYNu2wtkVnrBJdP5zADlQUOI6Tu4Xxdppa1sUKw4QsN
-         hYomT5BBWhfno9Kdn+q1Ijn1i4Yof4bzaD9dDX2v8AalvnhuxZ2gcX/hpqMpqXvc50BL
-         wsZZTREUWsLZmPvGTAc54nnxeFBC3gVBSdyO1eSfaX8Upckg7XlPi0+PRMUYnDYUgMlZ
-         eEAg==
-X-Gm-Message-State: AOAM530Dn6CHKJqaAKNQSDXIz1bGt2Mrh0e2Q2oifad/wK/MPPGciDjZ
-        ATG9KzcgBkfA+O7mmgAIRnKObA==
-X-Google-Smtp-Source: ABdhPJyeOj0cdYmfZSjIN+M4tTaXUXGkK5bEWqkePXdbU3A+6DIKwM6G35J8cfVSNYvzxhuLPBTc/w==
-X-Received: by 2002:a0c:a525:: with SMTP id y34mr5711355qvy.37.1611080235780;
-        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id f134sm13257161qke.23.2021.01.19.10.17.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1vZ4-003pQw-MM; Tue, 19 Jan 2021 14:17:14 -0400
-Date:   Tue, 19 Jan 2021 14:17:14 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bodo Stroesser <bostroesser@gmail.com>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-Message-ID: <20210119181714.GA909645@ziepe.ca>
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
- <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
- <20210118234818.GP4605@ziepe.ca>
- <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
- <20210119180327.GX4605@ziepe.ca>
- <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mHK63mNEb6W4AaDercWEjXkLeIiYVU3MkZRoAzxz/mw=;
+        b=ZOfrJ3L4bBkv/fMUCBHmmqfU9NEBAbgenDApHN2zXhg+AxAt2rf/t+lw3bXiUYw4tr
+         VQiDOYQqB1XuOKexp9y+9SD8JLt1YwHJiBt7kVk4eJnFh/q6WPoJRpkn6zprB6MsflhM
+         3kii3ykPagtV2QXGvXj7az6hYDUW+7bncp/rl11p5RtVzVtxWkkVh1VeOjuS/UIi0Hue
+         A0c8s8Juh0wsJOP2fUKYX8sgRAcXf6mZT+0pedOlJo1R9Z4dpx+lsQ1ByOgVpw+Z69x0
+         l7iZBhEiDuWvuoVvkn6wedLq5DVm69v9lLlyVvYd0FfZGC1dZgMjLzkscUbc89BvRM1x
+         rAgw==
+X-Gm-Message-State: AOAM530unwA7VV4SfRUEsfA4PHZQTqqpkAmjgfNP74gqF9rXKL1bEq3r
+        il1gXoqLL9K469EsAF6sd56CWOY2SEbt0CLVZoQzvg==
+X-Google-Smtp-Source: ABdhPJyLm5a7tvFOQ9GLnScwek6wKmCIHJ18QWGEYTshZYKHDn18Z57uCs9I6lcgQx2VH3iG7/oNB3pahuCum8iP7M8=
+X-Received: by 2002:a25:77d4:: with SMTP id s203mr8612886ybc.32.1611080355041;
+ Tue, 19 Jan 2021 10:19:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
+References: <20210115210159.3090203-1-saravanak@google.com>
+ <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
+ <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
+ <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
+ <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com>
+ <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com> <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 19 Jan 2021 10:18:38 -0800
+Message-ID: <CAGETcx_Ud+UJcdWkCH-WzEGjH4voRBoO++np7ARSi5Gnh51jYg@mail.gmail.com>
+Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
+ "gpios" binding
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:08:32PM +0100, Bodo Stroesser wrote:
-> On 19.01.21 19:03, Jason Gunthorpe wrote:
-> > On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
-> > > 
-> > > I had a second look into math.h, but I don't find any reason why round_up
-> > > could overflow. Can you give a hint please?
-> > 
-> > #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
-> >                                                      ^^^^^
-> > 
-> > That +1 can overflow
-> 
-> But that would be a unsigned long long overflow. I considered this to
-> not be relevant.
+On Tue, Jan 19, 2021 at 10:10 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > Can we pull this into driver-core-next please? It fixes issues on some
+> > > > > boards with fw_devlink=on.
+> > > >
+> > > > On r8a77951-salvator-xs.dts, it introduces one more failure:
+> > > >
+> > > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
+> > > > #gpio-cells for /cpus/cpu@102
+> >
+> > Geert,
+> >
+> > One good thing is that it's noticing this being weird and ignoring it
+> > in your particular board. I *think* it interprets the "7" as a phandle
+> > and that's cpu@102 and realizes it's not a gpio-controller. For at
+> > least in your case, it's a safe failure.
+>
+> While 7 is the GPIO index, relative to the current GPIO controller,
+> represented by the parent device node.
+>
+> > > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
+> > >
+> > > Could it be that the code assumes no self-referencing phandles?
+> > > (Just guessing...)
+> >
+> > Ok I tried to understand what gpio-hogs means. It's not fully clear to
+> > me. But it looks like if a gpio-controller has a gpio-hog, then it
+> > doesn't have/need gpio-cells? Is that right?
+>
+> A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
+> Usually this is done to enable a piece of hardware on a board, or
+> control a mux.
+>
+> The controller still needs gpio-cells.
+>
+> > So if a gpio-controller has a gpio-hog, can it ever be referred to by
+> > another consumer in DT using blah-gpios = ...? If so, I don't see any
+> > obvious code that's handling the missing gpio-cells in this case.
+>
+> Yes it can.
+>
+> > Long story short, please help me understand gpio-hog in the context of
+> > finding dependencies in DT.
+>
+> The hog references a GPIO on the current controller.  As this is always
+> the parent device node, the hog's gpios properties lack the phandle.
+>
+> E.g. a normal reference to the first GPIO of gpio5 looks like:
+>
+>     gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+>
+> A hog on the first GPIO of gpio5 would be a subnode of gpio5,
+> and would just use:
+>
+>     gpios = <0 GPIO_ACTIVE_LOW>;
+>
+> instead.
+>
+> Hope this helps.
 
-Why not? It still makes nents 0 and still causes a bad bug
+I'm still not sure if I've understood this fully, but does this just
+boil down to:
+Don't parse [name-]gpio[s] to find dependencies if the node has
+gpio-hog property?
 
-Jason
+-Saravana
