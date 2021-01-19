@@ -2,82 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C1A2FBF85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86FB2FBF72
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbhASSxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:53:20 -0500
+        id S2389378AbhASSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:50:01 -0500
 Received: from mail.kernel.org ([198.145.29.99]:49884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729307AbhASS2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:28:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2DFA23138;
-        Tue, 19 Jan 2021 16:20:28 +0000 (UTC)
+        id S1731665AbhASS2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:28:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4413D2313B;
+        Tue, 19 Jan 2021 16:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611073229;
-        bh=64AjEifXMNBvzlHCnURQuhMqMBw4Vwtflqm/WmV7xqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lQnKmZmHTzUoU3y0IQQczbLSgD41b/i4VaQAl0Q7EADTORfEpLNVAAZnJlK5XXbGJ
-         5ZytsC9pjcsoeQC4WbX9PjjXgcHx2DBnt6zE4xXwEk8GWrukCpcMPLlVw02ljRfGaz
-         cM8uoD0qwGAfr1TOs8Vnf7sdHi2cWruKJTM6ZKPaFI5kjmve+9wIQl498QeB0C0Di0
-         xs/+QdGyxtLIbVppucqHdqZXEmcWXvLf3A/aVhqj2QiA1pLoV+x4BCbS5b5NCb3NDT
-         qPcDxw9WD1qWYghoUeT5OdMGXfRCZwn4PumH6KZAI7GloHNN4Su2lWD7wYsXcwNcUr
-         amSST/on2GxTQ==
-Date:   Tue, 19 Jan 2021 16:19:50 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 19/21] regulator: hi6421v600-regulator: move it from
- staging
-Message-ID: <20210119161950.GC4478@sirena.org.uk>
-References: <cover.1611072387.git.mchehab+huawei@kernel.org>
- <8000252dfd10677c5eb52d498e68de9c65304cf4.1611072387.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1611073759;
+        bh=SfeSASVW8/KWXAYN1yW5qD/GYBJROiziCmmTFhnHgvI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hv4dSBDxQRuxQm0w114ZrgY1bAWjj9uhe43PEgIql2ViufQztH6llliuqFt3U412a
+         rhPszQqWuamK1+8t1w9PvkG6xxO7IOLe/N3awX+7ehjeP/eGX8jZZUNZKkgLw6+RIJ
+         cjmnm82ql6TyRX5pE3R6nYe2Q96MHfs2cOwnSguUVUzumw/fcvFqgHA1jm1lwYPllY
+         2d8cstzO+9ylIDzDhLn2a25s8Mngy7p+Kad4MMI0n33W26V2M2mZop/LqOv/JOljOz
+         KuWELzI8zUo9QcVjan3YtINumjlCm1OicM30VBOP91IxLXWvq/DmZEMwAlwHKCJU/3
+         lYWt6AADQ4new==
+Received: by mail-oi1-f170.google.com with SMTP id n186so13858542oia.5;
+        Tue, 19 Jan 2021 08:29:19 -0800 (PST)
+X-Gm-Message-State: AOAM531Vp2Mv1A6+4hyt5vofTbLbe935CjHq4pKOhdAI/dcvzw9p8k8W
+        K9RcI67XMWkKFmhVmec4bc806oj7UDaM9/ZhEbw=
+X-Google-Smtp-Source: ABdhPJzJ1qS0ASQS1ggdTR4k+h9gor173zz47tzc5skRp14g18SdXh2TEJNNIX6QUS9RQEzl8tDfdBjA6og9DiIbLks=
+X-Received: by 2002:aca:d98a:: with SMTP id q132mr304111oig.33.1611073756236;
+ Tue, 19 Jan 2021 08:29:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sHrvAb52M6C8blB9"
-Content-Disposition: inline
-In-Reply-To: <8000252dfd10677c5eb52d498e68de9c65304cf4.1611072387.git.mchehab+huawei@kernel.org>
-X-Cookie: Yow!  Am I in Milwaukee?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201218170106.23280-1-ardb@kernel.org> <20201218170106.23280-5-ardb@kernel.org>
+ <20210119160045.GA1684@arm.com>
+In-Reply-To: <20210119160045.GA1684@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 19 Jan 2021 17:29:05 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
+Message-ID: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with softirqs disabled
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
+> > Kernel mode NEON can be used in task or softirq context, but only in
+> > a non-nesting manner, i.e., softirq context is only permitted if the
+> > interrupt was not taken at a point where the kernel was using the NEON
+> > in task context.
+> >
+> > This means all users of kernel mode NEON have to be aware of this
+> > limitation, and either need to provide scalar fallbacks that may be much
+> > slower (up to 20x for AES instructions) and potentially less safe, or
+> > use an asynchronous interface that defers processing to a later time
+> > when the NEON is guaranteed to be available.
+> >
+> > Given that grabbing and releasing the NEON is cheap, we can relax this
+> > restriction, by increasing the granularity of kernel mode NEON code, and
+> > always disabling softirq processing while the NEON is being used in task
+> > context.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Sorry for the slow reply on this...  it looks reasonable, but I have a
+> few comments below.
+>
 
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No worries - thanks for taking a look.
 
-On Tue, Jan 19, 2021 at 05:10:45PM +0100, Mauro Carvalho Chehab wrote:
+> > ---
+> >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
+> >  arch/arm64/kernel/asm-offsets.c    |  2 ++
+> >  arch/arm64/kernel/fpsimd.c         |  4 ++--
+> >  3 files changed, 17 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> > index ddbe6bf00e33..74ce46ed55ac 100644
+> > --- a/arch/arm64/include/asm/assembler.h
+> > +++ b/arch/arm64/include/asm/assembler.h
+> > @@ -15,6 +15,7 @@
+> >  #include <asm-generic/export.h>
+> >
+> >  #include <asm/asm-offsets.h>
+> > +#include <asm/alternative.h>
+> >  #include <asm/cpufeature.h>
+> >  #include <asm/cputype.h>
+> >  #include <asm/debug-monitors.h>
+> > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
+> >       .endm
+> >
+> >       .macro          if_will_cond_yield_neon
+> > -#ifdef CONFIG_PREEMPTION
+> >       get_current_task        x0
+> >       ldr             x0, [x0, #TSK_TI_PREEMPT]
+> > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
+> > -     cbz             x0, .Lyield_\@
+> > +#ifdef CONFIG_PREEMPTION
+> > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
+> > +     beq             .Lyield_\@      // yield on need_resched in task context
+> > +#endif
+> > +     /* never yield while serving a softirq */
+> > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
+>
+> Can you explain the rationale here?
+>
+> Using if_will_cond_yield_neon suggests the algo thinks it may run for
+> too long the stall preemption until completion, but we happily stall
+> preemption _and_ softirqs here.
+>
+> Is it actually a bug to use the NEON conditional yield helpers in
+> softirq context?
+>
 
-> +static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
-> +{
+No, it is not. But calling kernel_neon_end() from softirq context will
+not cause it to finish any faster, so there is really no point in
+doing so.
 
-> +static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
-> +						 unsigned int selector)
+> Ideally, if processing in softirq context takes an unreasonable about of
+> time, the work would be handed off to an asynchronous worker, but that
+> does seem to conflict rather with the purpose of this series...
+>
 
-Now that the driver has been converted to regmap these are just
-duplicates of the regmap helpers.  You may also be able to use them for
-the disable() and is_enabled() operations, I didn't confirm that that's
-OK with the device using multi-bit enable controls for some reason IIRC.
+Agreed, but this is not something we can police at this level. If the
+caller does an unreasonable amount of work from a softirq, no amount
+of yielding is going to make a difference.
 
---sHrvAb52M6C8blB9
-Content-Type: application/pgp-signature; name="signature.asc"
+> > +
+> > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
+> > +     this_cpu_offset x1
+> > +     ldr             w0, [x0, x1]
+> > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
+> > +.Lnoyield_\@:
+> >       /* fall through to endif_yield_neon */
+> >       .subsection     1
+> >  .Lyield_\@ :
+> > -#else
+> > -     .section        ".discard.cond_yield_neon", "ax"
+> > -#endif
+> >       .endm
+> >
+> >       .macro          do_cond_yield_neon
+> > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> > index 7d32fc959b1a..34ef70877de4 100644
+> > --- a/arch/arm64/kernel/asm-offsets.c
+> > +++ b/arch/arm64/kernel/asm-offsets.c
+> > @@ -93,6 +93,8 @@ int main(void)
+> >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
+> >    BLANK();
+> >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
+> > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
+> > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
+> >    BLANK();
+> >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
+> >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
+> > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> > index 062b21f30f94..823e3a8a8871 100644
+> > --- a/arch/arm64/kernel/fpsimd.c
+> > +++ b/arch/arm64/kernel/fpsimd.c
+> > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
+> >   */
+> >  static void get_cpu_fpsimd_context(void)
+> >  {
+> > -     preempt_disable();
+> > +     local_bh_disable();
+> >       __get_cpu_fpsimd_context();
+> >  }
+> >
+> > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
+> >  static void put_cpu_fpsimd_context(void)
+> >  {
+> >       __put_cpu_fpsimd_context();
+> > -     preempt_enable();
+> > +     local_bh_enable();
+> >  }
+> >
+> >  static bool have_cpu_fpsimd_context(void)
+>
+> I was concerned about catching all the relevant preempt_disable()s, but
+> it had slipped my memory that Julien had factored these into one place.
+>
+> I can't see off the top of my head any reason why this shouldn't work.
+>
 
------BEGIN PGP SIGNATURE-----
+Thanks.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAHBqUACgkQJNaLcl1U
-h9D3Owf/cbGWiEnDSCjUCkOceFn1nPslHI9p0GCP6typnAUlLJ5ncPcclNGCVhiE
-dO8v80ZBl17ZHecxXkObmnjtpTMM0m12onuk+Ack8o/5r+MM8kdl3funGXhgASzc
-Ep7bY17fo4a2xUb6l3/usDfK/FTmKXuyKc3ac2Jj1efxgjbMR3qAIBEBvPOyMQRn
-UioGpSk2fCnM3Rth6Ds+0Ao5IKHiHQaek5cxcypOpRmjUOCqBZ4Zg3qXMEXgIM4a
-OlN3PQFPRG2SfdZgPwUpGJ1VuvVP2PC3PkTTvntwMu08N0m4QFjy/laEfvREc0Nv
-U4+mfeyAsATetiwCfC0CPaWqgCF+9w==
-=gGRY
------END PGP SIGNATURE-----
+>
+> In threory, switching to local_bh_enable() here will add a check for
+> pending softirqs onto context handling fast paths.  I haven't dug into
+> how that works, so perhaps this is trivial on top of the preemption
+> check in preempt_enable().  Do you see any difference in hackbench or
+> similar benchmarks?
+>
 
---sHrvAb52M6C8blB9--
+I haven't tried, tbh. But by context handling fast paths, you mean
+managing the FP/SIMD state at context switch time, right? Checking for
+pending softirqs amounts to a single per-CPU load plus compare, so
+that should be negligible AFAICT. Obviously, actually handling the
+softirq may take additional time, but that penalty has to be taken
+somewhere - I don't see how that would create extra work that we
+wouldn't have to do otherwise.
+
+I'll do some experiments with hackbench once I get back to this series.
