@@ -2,80 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1637C2FBC4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D420F2FBC51
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbhASQW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:22:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26793 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729360AbhASQU6 (ORCPT
+        id S1731432AbhASQXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730889AbhASQWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:20:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611073167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BH8ph4x6tbslCUU39Kg1nnfczx3x5anbI8SBaxkZVBo=;
-        b=bSWYUDiKRR1BUZxZftFiKJl0EVEMSGZNJLBE2MMXq9brPdoY4fOC8l+Lpy8M3BYKbwTNiO
-        vMuV7N/UuSvFqjFKYlLP4staiUm1IJ+xeA859PlYEMWT4YP4N9Kkw6W3kHEH9In/L3qZAn
-        Y+7z8l6sKrySsBYaiQ3fBQUP5FWIFzw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-l5EMvfv2MhK1e8-RZb0Ofw-1; Tue, 19 Jan 2021 11:19:22 -0500
-X-MC-Unique: l5EMvfv2MhK1e8-RZb0Ofw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 047851800D41;
-        Tue, 19 Jan 2021 16:19:21 +0000 (UTC)
-Received: from gondolin (ovpn-113-246.ams2.redhat.com [10.36.113.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 05FD519CB0;
-        Tue, 19 Jan 2021 16:19:15 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 17:19:13 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Janosch Frank <frankja@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        thuth@redhat.com, david@redhat.com, borntraeger@de.ibm.com,
-        imbrenda@linux.ibm.com, linux-s390@vger.kernel.org,
-        gor@linux.ibm.com, mihajlov@linux.ibm.com
-Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
-Message-ID: <20210119171913.29cc4a0d.cohuck@redhat.com>
-In-Reply-To: <20210119100402.84734-2-frankja@linux.ibm.com>
-References: <20210119100402.84734-1-frankja@linux.ibm.com>
-        <20210119100402.84734-2-frankja@linux.ibm.com>
-Organization: Red Hat GmbH
+        Tue, 19 Jan 2021 11:22:34 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5505FC061573;
+        Tue, 19 Jan 2021 08:21:54 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 22so22357491qkf.9;
+        Tue, 19 Jan 2021 08:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8bKO85uYL0TuKxcIkZ/8W11uUZW2LrfduTLto/+NkzI=;
+        b=ED4QgOlPjbdeNh5YfNkolLpSW8IX2bPLuSFg/tr0zbzxHmNRxlcQBXFgPmuRMyPK7u
+         4F4hvIFaQtqE+4q3gyjy5h0o2bUpEoUqg53nbbYo4dqj8iEt/dSi7QxWSwHpiN6VRRMM
+         kk+uUnAvzzsOJWb0oMyBYPLijnnW6nftCOSQEUovCT1X5zfuniTMhy9j0IuIIQ3stLmm
+         iF/Q20rlPiyRElRgruCxPlfHhOdanbSY9oCjTQ+Jfb4jQpluGAIM+VORGJ8EqANDi/lO
+         U8h+IeT2BjMa/fERMEvAITo+PwidWJdiFEytv3Mw9gYCI+pwSxQfrTRNyfxcIF9mkl57
+         2PMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8bKO85uYL0TuKxcIkZ/8W11uUZW2LrfduTLto/+NkzI=;
+        b=LApL7tob42ByrjgRCYXi10R3bC4CfCn9dzrSd5k5JQK3T+YNZi/9AJXZaCAh9T7iqP
+         JVSCEtNoYdcYA9JwYbsrOc8DCT6Nijvc6zo0Xnoss+upz8ry+/EMpk8LMkSmVBzMVeCn
+         Ou/ARZ2EAz6nkUxklKuwUR+R5xxNaRtBRTow520yyrXPkBGjZ4fEjLNn6lN8Wp9PdAKj
+         8hMFdysQToAWUkNcB/h3tbqlL1SySPxRvaD9LFSeGhnbG0VM3owAD5FYyZAORp/13d0L
+         LN/hgrqgxBHBh2YQHKHyvFjkwTfR7SBr+NDaCe599o2QpIq4LEQlFP9uY44Nb6Gzuk1A
+         c+Lg==
+X-Gm-Message-State: AOAM530Bb7HAG4dENvdNxF56T+fDgGZ/yUJPs//ChlC1fC8wyV2DreNO
+        CUGB5PySigNrhsSOjKCAYcc=
+X-Google-Smtp-Source: ABdhPJzORVjV8oYhIUFvxkNrvq9ZcABKnSG69miE7HR5p6O/qB/yiVAy7sqvFvb8VxZ8IKSI6VL+Nw==
+X-Received: by 2002:a37:6611:: with SMTP id a17mr5112101qkc.150.1611073313510;
+        Tue, 19 Jan 2021 08:21:53 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id c28sm12924389qtv.2.2021.01.19.08.21.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 08:21:53 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] scripts: dtc: Add fdtoverlay.c and fdtdump.c to
+ DTC_SOURCE
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Frank Rowand <frowand.list@gmail.com>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <eb85b5ba-e2c5-7601-6934-089b5b1370d2@gmail.com>
+Date:   Tue, 19 Jan 2021 10:21:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 05:04:01 -0500
-Janosch Frank <frankja@linux.ibm.com> wrote:
-
-> The number reported by the query is N-1 and I think people reading the
-> sysfs file would expect N instead. For users creating VMs there's no
-> actual difference because KVM's limit is currently below the UV's
-> limit.
+On 1/6/21 11:15 PM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need these tools going forward. Lets start fetching them.
 > 
-> The naming of the field is a bit misleading. Number in this context is
-> used like ID and starts at 0. The query field denotes the maximum
-> number that can be put into the VCPU number field in the "create
-> secure CPU" UV call.
+> Note that a copy of fdtdump.c was already copied back in the year 2012,
+> but was never updated or built for some reason.
 > 
-> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-> Fixes: a0f60f8431999 ("s390/protvirt: Add sysfs firmware interface for Ultravisor information")
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/s390/boot/uv.c        | 2 +-
->  arch/s390/include/asm/uv.h | 4 ++--
->  arch/s390/kernel/uv.c      | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+> V2: Separate out this change from Makefile one.
+> 
+> This needs to be followed by invocation of the ./update-dtc-source.sh
+> script so the relevant files can be copied before the Makefile is
+> updated in the next patch.
+> 
+>  scripts/dtc/update-dtc-source.sh | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
+> index bc704e2a6a4a..9bc4afb71415 100755
+> --- a/scripts/dtc/update-dtc-source.sh
+> +++ b/scripts/dtc/update-dtc-source.sh
+> @@ -31,9 +31,9 @@ set -ev
+>  DTC_UPSTREAM_PATH=`pwd`/../dtc
+>  DTC_LINUX_PATH=`pwd`/scripts/dtc
+>  
+> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
+> -		srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
+> -		dtc-lexer.l dtc-parser.y"
+> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtdump.c fdtoverlay.c flattree.c \
+> +		fstree.c livetree.c srcpos.c srcpos.h treesource.c util.c \
+> +		util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
+>  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
+>  		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
+>  		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
+> 
 
-Acked-by: Cornelia Huck <cohuck@redhat.com>
+DTC_SOURCE is for the dtc program.  Please add a FDTOVERLAY_SOURCE and
+related use for the fdtoverlay program.
 
+-Frank
