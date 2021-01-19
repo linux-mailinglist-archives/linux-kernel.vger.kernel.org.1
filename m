@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBDE2FC12C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFAC2FC12F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392117AbhASUgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:36:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730238AbhASUf2 (ORCPT
+        id S1729052AbhASUg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:36:57 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:42595 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391495AbhASUgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:35:28 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C8BC061573;
-        Tue, 19 Jan 2021 12:34:47 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id v24so24346382lfr.7;
-        Tue, 19 Jan 2021 12:34:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oGyeQId7ghuiubDiteHOq99u7bCiW9P86xlgrtBuPx0=;
-        b=ptoZk/WdXfRsTKZwQ/J1ogvUQcEJs0Bqc8KV5FSG1R53TtpZZGpl0xldd5lU4FK54g
-         fqvDz2igNb0eBNZWQnIX1doIRYsK0IbvN+NlEVzXJMIg4b066h5FCltE9iEgMjY4sgIo
-         7vBTUALabI7sCL9p1UYjK57H24yE8IyUpbOTUqtaOaZyNeqZJJMz8Cb7uF3YPjdyDRNG
-         I0qfNoplfJx7ofCcoH2Fv5y1SdwXmL7RSo5xv/x44xe9mpvKOBRG/Be18qBdQIrSBtv5
-         +8mvR+wDyBjDtWOJJLKQyn4Fpn/5O94lsK46H0ZdMrnutMhYbxUqlIjQMQehNOJz7Tba
-         mWtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oGyeQId7ghuiubDiteHOq99u7bCiW9P86xlgrtBuPx0=;
-        b=nUBq3/EQXlPrNr7OW4oNaEICWNfItAoCUEwa27WjHRXrKwolU3mq/ySQl2oYLOqePF
-         hmrAgor/rIyTReRtbt8Qp6yqcNe5kPcxlfk7BDk9q303Dkj4cX4rrfxQbZS5UI/yIBjg
-         H3lWS9jsefU84OkExMAj3M96KHCuh9UrG1xJrnexNJcN12Ll/DsaHPagjAx77q+PppB2
-         VprEYG5pWroE5g8PUBGS+kWFInzjvZIVWkzIRVZHKuf/pSiwwYCUIG9BZowqaJd38fO4
-         68VSAJHx0kGyQThH0exCPQoBOs4ECAcQptkKC3rPKdt8W5YoIqDCIHy4DoWG3ytQcxQL
-         mCjQ==
-X-Gm-Message-State: AOAM5333/4ptvbbx4PlxJJ8gVLYWdfIMJciqmX9q1MBMWTh6HLM91DZ+
-        LTgEU85zPEpbWrft0fo2vHY=
-X-Google-Smtp-Source: ABdhPJyZLECKkiiifagCkcTDcdstvBbQwLIeZMHqCpHWXAxvJ1OI4a3UyiJnO4JWjsb4gz0a1SR3aw==
-X-Received: by 2002:a05:6512:338e:: with SMTP id h14mr2618345lfg.324.1611088485999;
-        Tue, 19 Jan 2021 12:34:45 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id f18sm2375871lfh.137.2021.01.19.12.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:34:45 -0800 (PST)
-Date:   Tue, 19 Jan 2021 22:34:42 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com, hch@lst.de,
-        ebiggers@kernel.org, andy.lavr@gmail.com
-Subject: Re: [PATCH v17 01/10] fs/ntfs3: Add headers and misc files
-Message-ID: <20210119203442.ricoppwmw662bjkd@kari-VirtualBox>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
- <20210103231755.bcmyalz3maq4ama2@kari-VirtualBox>
- <20210119104339.GA2674@kadam>
+        Tue, 19 Jan 2021 15:36:02 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 3617C40004;
+        Tue, 19 Jan 2021 20:35:00 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 21:35:00 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: reset: microchip sparx5 reset driver
+ bindings
+Message-ID: <20210119203500.GO3666@piout.net>
+References: <20210114162432.3039657-1-steen.hegelund@microchip.com>
+ <20210114162432.3039657-2-steen.hegelund@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119104339.GA2674@kadam>
+In-Reply-To: <20210114162432.3039657-2-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 01:43:39PM +0300, Dan Carpenter wrote:
-> On Mon, Jan 04, 2021 at 01:17:55AM +0200, Kari Argillander wrote:
-> > On Thu, Dec 31, 2020 at 06:23:52PM +0300, Konstantin Komarov wrote:
-> > 
-> > > +int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-> > > +		   const u16 *upcase)
-> > > +{
-> > > +	int diff;
-> > > +	size_t len = l1 < l2 ? l1 : l2;
-> > 
-> > I notice that these functions might call both ignore case and upcase in a row.
-> > record.c - compare_attr()
-> > index.c - cmp_fnames()
-> > 
-> > So maybe we can add bool bothcases.
-> > 
-> > int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-> > 		   const u16 *upcase, bool bothcase)
-> > {
-> > 	int diff1 = 0;
-> > 	int diff2;
-> > 	size_t len = l1 < l2 ? l1 : l2;
+Hi,
+
+Every patches need a commit message, even if in this case it will be
+very small.
+
+On 14/01/2021 17:24:30+0100, Steen Hegelund wrote:
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> ---
+>  .../bindings/reset/microchip,rst.yaml         | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reset/microchip,rst.yaml
 > 
-> size_t len = min(l1, l2);
+> diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> new file mode 100644
+> index 000000000000..af01016e246f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/reset/microchip,rst.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Microchip Sparx5 Switch Reset Controller
+> +
+> +maintainers:
+> +  - Steen Hegelund <steen.hegelund@microchip.com>
+> +  - Lars Povlsen <lars.povlsen@microchip.com>
+> +
+> +description: |
+> +  The Microchip Sparx5 Switch provides reset control and implements the following
+> +  functions
+> +    - One Time Switch Core Reset (Soft Reset)
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^reset-controller@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: microchip,sparx5-switch-reset
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#reset-cells":
+> +    const: 1
+> +
+> +  cpu-syscon:
+> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> +    description: syscon used to access CPU reset
+> +    maxItems: 1
+> +
+> +  gcb-syscon:
+> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> +    description: syscon used to access Global Control Block
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#reset-cells"
+> +  - cpu-syscon
+> +  - gcb-syscon
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    reset: reset-controller@0 {
+> +        compatible = "microchip,sparx5-switch-reset";
+> +        reg = <0x0 0x0>;
+> +        #reset-cells = <1>;
+> +        cpu-syscon = <&cpu_ctrl>;
+> +        gcb-syscon = <&gcb_ctrl>;
+> +    };
+> +
+> -- 
+> 2.29.2
 > 
-> I wonder if this could be a Coccinelle script?
 
-Yeah I have to also confess that I just copy paste that. Didn't use
-brain yet. Atleast to me it wasn't crystal clear right away what that
-does. So Coccinelle script would definetly be good idea.
-
-Someone has atleast made it https://github.com/bhumikagoyal/coccinelle_scripts
-I wonder if we need to add cases also in "backwards". Haven't test these.
-If patch is prefered from me then I can send it but someone else can
-also send it.
-
-@@
-type T;
-T x;
-T y;
-@@
-(
-- x < y ? x : y
-+ min(x,y)
-|
-- x > y ? x : y
-+ max(x,y)
-|
-- x < y ? y : x
-+ max(x,y)
-|
-- x > y ? y : x
-+ min(x,y)
-) 
-
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
