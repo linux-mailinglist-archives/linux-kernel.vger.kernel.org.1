@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F762FBD09
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B872FBD12
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389414AbhASQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:57:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391123AbhASQ4D (ORCPT
+        id S2389424AbhASQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:58:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57668 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731493AbhASQ5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:56:03 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CA8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:55:20 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id j18so410471wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M1s/++mXdMLvNe4dZQ7XRaGkTkWJbV1fdaKKOWF5MxU=;
-        b=jRjZENiS0Iv14+JXtBpPK7jm3rowqG23vo+Q5o9q2+RTDGdVS6iyH1ehkZh8OMn49S
-         o+N/c7in+6FOaFhN24NuRlbzZHFdF/OEIdkP+E3Virz7ry6DhLm7c2AwUdGWjbwGJD+b
-         1uf8bJDy68fshA63n4Q8psN8CCP18zbvzJMEIRvc2P8u5wudsBUDaolEGNnFnZhfHW1t
-         vUOdnqDKP/0a5Ne2ooLsGo+6x0DBXkQNLGdN7w/MRjtHPaPwcONuXJ8QlJm6KxCxNxRa
-         wYjvQF8Tr8qMl4vJxVUw+bGSN5RqiHxLOPN4Vkd2vQjRU9/wG+fNFfoissmsAt/zdt7V
-         v7Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M1s/++mXdMLvNe4dZQ7XRaGkTkWJbV1fdaKKOWF5MxU=;
-        b=M3dRTGuEcTJQpPP4foCnMFka2DukAYiSFOFBaRIROwSK4uFyI89bZAKPcqPlVPMM4j
-         ZzqNinLxN5V5tRUz+O3ifbPp8pgoBkCimsRqWtDGNCnAZ630WvabPAq+6G+lKxWFvL+R
-         01Xq5M2xopIR7psef5rW+LGwCFshRvIZ9FLJxcpq9f91UxHnNovgJ0gsU+Fg7OYFJudm
-         WKHnet4rU1pXyc1NQZaP75HahMkCIFn9W9xawHzoFSyMf2l9zvu56o1H52rUG4vNGsZl
-         Q82mQvRbkshh+MwZ0Jn9HGX1c7sSqkriALLt0Y/GFU1Pw5CMvvhX1zGCb6cBDG7thNwf
-         PQGA==
-X-Gm-Message-State: AOAM5314B8oMIrWbJti6Lwqqyi518gt6/gKo4IG28YoP96WPXNT8ws1Y
-        LV+fs7dHLkJ09JxRRIFDrjSqKQ==
-X-Google-Smtp-Source: ABdhPJyiX9CbGDRV+ypQ878lBxhRymKF2dIL9gS/39sPat84wAwCi9YqT+lmDbua2YB6A8lVe4+NMg==
-X-Received: by 2002:a1c:a501:: with SMTP id o1mr500863wme.21.1611075319349;
-        Tue, 19 Jan 2021 08:55:19 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id g194sm5338792wme.39.2021.01.19.08.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:55:18 -0800 (PST)
-Date:   Tue, 19 Jan 2021 16:55:16 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Tue, 19 Jan 2021 11:57:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611075355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ErRId2H/Y8Igg3kzuUPOmRrNY/gkTy6jxLMCX7KXGGA=;
+        b=EEZifaIOrlTghGCkk6XGvat2+dVj/IJr0znI8/Z4abeS6M3B36Buh4Dp/cNBZcfWDrFyr5
+        2SwIK/U1b6HVXZWVDr43lMs94AswEQ/bDat+IDq9IQP/fqy/KvWQ0d65o6c8lxIc7cUBWJ
+        ghlkm7E5W5XxCaqSFykhX7zv/fVzE1M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-Z3Pdj501P02dJlolzm2Dxw-1; Tue, 19 Jan 2021 11:55:53 -0500
+X-MC-Unique: Z3Pdj501P02dJlolzm2Dxw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 539E0100C670;
+        Tue, 19 Jan 2021 16:55:52 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-129.rdu2.redhat.com [10.10.118.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36D2110023BE;
+        Tue, 19 Jan 2021 16:55:43 +0000 (UTC)
+Subject: Re: BUG: sleeping function called from invalid context at
+ kernel/stop_machine.c:135
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH] sched/eas: Don't update misfit status if the task is
- pinned
-Message-ID: <YAcO9HHHVBx7oBG/@google.com>
-References: <20210119120755.2425264-1-qais.yousef@arm.com>
- <YAb8XGyp3NtrHl+U@google.com>
- <20210119164027.drfpmrol3xhf4ckc@e107158-lin>
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <ffe8b460-4bc5-4a6b-bd66-4bb56e0f33d3@redhat.com>
+ <328c6389-9944-ba7d-6ec6-44009bac4f0b@redhat.com>
+ <YAcNqqn3JRnZ1PmZ@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <fcb3b450-a59b-fb9f-d262-04d34c9856a6@redhat.com>
+Date:   Tue, 19 Jan 2021 11:55:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119164027.drfpmrol3xhf4ckc@e107158-lin>
+In-Reply-To: <YAcNqqn3JRnZ1PmZ@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 19 Jan 2021 at 16:40:27 (+0000), Qais Yousef wrote:
-> On 01/19/21 15:35, Quentin Perret wrote:
-> > Do you mean failing the sched_setaffinity syscall if e.g. the task
-> > has a min clamp that is higher than the capacity of the CPUs to which it
-> > will be pinned? If so, I'm not sure if we really want that.
-> 
-> No. In Android for instance, I'm worried a background task affined to little
-> cores that has a utilization > capacity_of(little) will trigger the same
-> problem. It'll be affined to more than just 1 cpu, but none of the little cpus
-> will actually fit.
-> 
-> Makes sense?
+On 1/19/21 11:49 AM, Peter Zijlstra wrote:
+> On Tue, Jan 19, 2021 at 11:45:02AM -0500, Waiman Long wrote:
+>> On 1/19/21 6:13 AM, Daniel Bristot de Oliveira wrote:
+>>> Hi Waiman,
+>>>
+>>> Are you aware of this issue:
+>>> ----- %< -----
+>>> [   88.307857] BUG: sleeping function called from invalid context at kernel/stop_machine.c:135
+>>> [   88.308796] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 801, name: sh
+>>> [   88.309785] 6 locks held by sh/801:
+>>> [   88.310265]  #0: ffff9f008c575460 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0x58/0xd0
+>>> [   88.310906]  #1: ffff9f008e9dd088 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write+0xa5/0x1c0
+>>> [   88.311672]  #2: ffff9f0092164a88 (kn->active#195){.+.+}-{0:0}, at: kernfs_fop_write+0xad/0x1c0
+>>> [   88.312456]  #3: ffffffffbac68310 (cpu_hotplug_lock){++++}-{0:0}, at: sched_partition_write+0x72/0x2f0
+>>> [   88.313280]  #4: ffffffffbae37090 (&cpuset_rwsem){++++}-{0:0}, at: sched_partition_write+0x7e/0x2f0
+>>> [   88.314095]  #5: ffffffffbad89140 (rcu_read_lock){....}-{1:3}, at: update_sibling_cpumasks+0x5/0x140
+>>> [   88.314806] Preemption disabled at:
+>>> [   88.314810] [<ffffffffb900454d>] preempt_schedule_thunk+0x16/0x18
+>>> [   88.315815] CPU: 1 PID: 801 Comm: sh Not tainted 5.10.0-rc5+ #10
+>>> [   88.316203] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+>>> [   88.316714] Call Trace:
+>>> [   88.316875]  dump_stack+0x8b/0xb0
+>>> [   88.317087]  ___might_sleep.cold+0x102/0x116
+>>> [   88.317354]  stop_one_cpu+0x82/0xa0
+>>> [   88.317578]  ? set_cpus_allowed_ptr+0x10/0x10
+>>> [   88.317858]  __set_cpus_allowed_ptr+0x1e6/0x1f0
+>>> [   88.318144]  update_tasks_cpumask+0x25/0x50
+>>> [   88.318415]  update_cpumasks_hier+0x257/0x840
+>>> [   88.318687]  update_sibling_cpumasks+0x96/0x140
+>>> [   88.318968]  update_prstate+0x1a0/0x1f0
+>>> [   88.319210]  sched_partition_write+0x9f/0x2f0
+>>> [   88.319482]  kernfs_fop_write+0xdc/0x1c0
+>>> [   88.319730]  vfs_write+0xea/0x3b0
+>>> [   88.319943]  ksys_write+0x58/0xd0
+>>> [   88.320156]  do_syscall_64+0x33/0x40
+>>> [   88.320382]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>> [   88.320692] RIP: 0033:0x7fbbd79be537
+>>> [   88.320915] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04
+>>> 		     25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3
+>>> 		     48 83 ec 28 48 89 54 24 18 48 89 74 24
+>>> [   88.322028] RSP: 002b:00007ffd44cc8398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>>> [   88.322479] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fbbd79be537
+>>> [   88.322910] RDX: 0000000000000005 RSI: 0000558ae69200a0 RDI: 0000000000000001
+>>> [   88.323342] RBP: 0000558ae69200a0 R08: 000000000000000a R09: 0000000000000004
+>>> [   88.323775] R10: 0000558ae6921ba0 R11: 0000000000000246 R12: 0000000000000005
+>>> [   88.325046] R13: 00007fbbd7a90500 R14: 0000000000000005 R15: 00007fbbd7a90700
+>>> ----- >% -----
+>> I am not aware of that.
+>>
+>> void ___might_sleep(const char *file, int line, int preempt_offset)
+>> Â  :
+>> Â Â Â Â Â Â Â  if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
+>> Â Â Â Â Â Â Â Â Â Â Â Â  !is_idle_task(current) && !current->non_block_count) ||
+>> Â Â Â Â Â Â Â Â Â Â Â  system_state == SYSTEM_BOOTING || system_state > SYSTEM_RUNNING
+>> ||
+>> Â Â Â Â Â Â Â Â Â Â Â  oops_in_progress)
+>> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return;
+>>
+>> I think the failing test was preempt_count_equals(preempt_offset).
+>>
+>> static inline int preempt_count_equals(int preempt_offset)
+>> {
+>> Â Â Â Â Â Â Â  int nested = preempt_count() + rcu_preempt_depth();
+>>
+>> Â Â Â Â Â Â Â  return (nested == preempt_offset);
+>> }
+>>
+>> preempt_count() is 0 (in_atomic() == 0) and preempt_offset is 0, but
+>> rcu_preempt_depth() should be at least 1 as a rcu_read_lock was held. I
+>> don't think we should prevent sleeping if a rcu_read_lock is held. We need
+>> to look at the reason why rcu_preempt_depth() is included in this test.
+> You're not allowed to sleep with rcu_read_lock() held. With config
+> PREEMPT=y you're allowed to get preempted with rcu_read_lock() held, but
+> never to explicitly block.
 
-Now yes.
+You are right. Sleep shouldn't be allowed with rcu_read_lock() held in 
+non-preempt kernel.
 
-I agree this may be a real problem, but capacity_of() very much is a
-per-CPU thing, because of RT pressure and such, and that is not a static
-thing by any mean. So, even if the task doesn't fit on any CPU _now_ we
-might still want to mark it misfit, just so it can be picked up by a
-potential idle balance on another CPU later on. Maybe capacity_orig_of
-would be preferable?
+However, the kernel that Daniel tested did have CONFIG_PREEMPT=y set. So 
+perhaps we shouldn't do the rcu_preempt_depth() check in this particular 
+case.
 
-Thanks,
-Quentin
+Cheers,
+Longman
+
+
