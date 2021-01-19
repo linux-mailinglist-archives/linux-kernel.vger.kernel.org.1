@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2222FB1E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3AF2FB1CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388292AbhASFhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:37:34 -0500
-Received: from mga12.intel.com ([192.55.52.136]:9527 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732905AbhASEpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 23:45:21 -0500
-IronPort-SDR: uKoKUC0xO/FgoooBsQV+DWhwkw9xUkTHNAAB8T5RcJJEeL1khE50oGz/xZLZ3foqKlKkF33Ygh
- BPxWCpJBYPgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158057140"
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="158057140"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:43:27 -0800
-IronPort-SDR: NW9dqf6KtdlALryM0MREyu/mJ7SYUtBJxtasRoqhXw9ue89C2l7l4gnor2eIDlzEsaHTQNqIiE
- dq+vV6SPnIDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="466555975"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Jan 2021 20:43:24 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Correctly check addr alignment in qi_flush_dev_iotlb_pasid()
-Date:   Tue, 19 Jan 2021 12:35:00 +0800
-Message-Id: <20210119043500.1539596-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S2389773AbhASFiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:38:00 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:51811 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389834AbhASFH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:07:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611032876; x=1642568876;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZpEdbwVtPI0wVPLoSXxNauBL5CtIsv1pRUC3n0RI/T8=;
+  b=RQ08hgtgbjsaEc/NjIqdiz+HXgZyCES5X29TOkQCoOtMdpU3OGNR+ZXq
+   owpIEhX9i5TG/PujPBmIl4HioeOCUY9ZJxiIM9G4iUedYHqoRU4i8xD7r
+   R47ESZvAyr/qGqW41V55myWI2oOj551s3Rvdwt8Z76+yS4mIw4d8t/bGu
+   t75OGek8s90L7x9HrJmD8TPnvvZsQXTUr2+Mt/Nb85i3zrXLrQhUHrp2v
+   7qjBWLKT7LrwRR6xvfxz140fQflG5Mj2ZCxa+nlI/E4WQ9bnqAscJGAnW
+   l0e2nMfDvY1kIdyYV07+J1b1qNJi9ZSRf90LERkYC/mSb+dFYaafI7o86
+   A==;
+IronPort-SDR: 7b250JfhUMmv07RyLN/n/+VSCSNzF7O9pHe6QqDNllClPx/HsmrdWDQX826O9RlqR1t+o0FeU2
+ 3nNFZSceZBxc+aDMcwdP+dqFkMCj5kQPJYv1fzOumgTYkODSh19iDZlTgzXzIkIl4EXn+H85xz
+ gDFMkA/Ic5uGB4YjCCWD8MdAfX+JR90Ngoxx17kM8pieDOeCh2XmQhzKTAODhzycVqg5moMAQL
+ 78vzF77Oy3BNccc/JvDu8CE40KVv1iE2giVQmFYdO/4t9SjS5FPbO3dI5Yaz8AkTk94l3Htsmd
+ wck=
+X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
+   d="scan'208";a="157763755"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:06:49 +0800
+IronPort-SDR: PnLGHmRPjPv6mVfmbEJTDrsqOIAqCK5GE42P8oM4jZlpKaoSdYM+TtBl67mehGcYNisyA19sgS
+ yLwLCTScdhlnnkHND2lvQFzDCcnbqO5oHieP/2DhU0SfGiHR2VSi5UBNo8L5qtweDt6D+VePPZ
+ pPNMxR6viaOuZURe4jB076VeJLcyQpX+8pSZ9P1TaSQIc3p8YBehcDrmaTPMXbRArxJfcRdjPN
+ w+ZRAQSYb5s6fq6Sn6wRcGzFeWcgq5QGP2XOGDsnAAmFRlkU6L8HW/TO5YqJ86+Jq4wC5wG0XV
+ 85gjqPbui5TRiNpxdNbbC8OF
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:51:27 -0800
+IronPort-SDR: XoCPpBnEyAS0C26NACpPNr6hc2mgCkBhR/slXc8vz6d3NBxAPkngsmR+924mOBWvaQi6WZHAP1
+ e4hIrlRuqs07ngks51wLmgnhqz6gvPVZzt6c/xtYGHpktVNv4G+tlyQwdXjSld+DKB31WM3e0X
+ o4xJZXi1ZVzEGxYUOHxoYuaGW27b5AhyEnbnJEWPqSGnvSmb4YAK4r55aDWz+qouFqxTNJ1Ve4
+ MmaSi236cQpo5ubtxkwfTjN+hUw7qXvWgQEEinw8kPT9rlOQYeg6qJM9v7qJDF5MBv1NXcWrD2
+ OOA=
+WDCIronportException: Internal
+Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:06:49 -0800
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com
+Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
+        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
+        song@kernel.org, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 02/37] fs: use bio_init_fields in block_dev
+Date:   Mon, 18 Jan 2021 21:05:56 -0800
+Message-Id: <20210119050631.57073-3-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.1
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An incorrect address mask is being used in the qi_flush_dev_iotlb_pasid()
-to check the address alignment. This leads to a lot of spurious kernel
-warnings:
-
-[  485.837093] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
-[  485.837098] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
-[  492.494145] qi_flush_dev_iotlb_pasid: 5734 callbacks suppressed
-[  492.494147] DMAR: Invalidate non-aligned address 7f7728800000, order 11
-[  492.508965] DMAR: Invalidate non-aligned address 7f7728800000, order 11
-
-Fix it by checking the alignment in right way.
-
-Fixes: 288d08e780088 ("iommu/vt-d: Handle non-page aligned address")
-Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Liu Yi L <yi.l.liu@intel.com>
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 ---
- drivers/iommu/intel/dmar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/block_dev.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 004feaed3c72..02e7c10a4224 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1496,7 +1496,7 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
- 	 * Max Invs Pending (MIP) is set to 0 for now until we have DIT in
- 	 * ECAP.
- 	 */
--	if (addr & GENMASK_ULL(size_order + VTD_PAGE_SHIFT, 0))
-+	if (!IS_ALIGNED(addr, VTD_PAGE_SIZE << size_order))
- 		pr_warn_ratelimited("Invalidate non-aligned address %llx, order %d\n",
- 				    addr, size_order);
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 3e5b02f6606c..44b992976ee5 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -239,12 +239,9 @@ __blkdev_direct_IO_simple(struct kiocb *iocb, struct iov_iter *iter,
+ 	}
  
+ 	bio_init(&bio, vecs, nr_pages);
+-	bio_set_dev(&bio, bdev);
+-	bio.bi_iter.bi_sector = pos >> 9;
+-	bio.bi_write_hint = iocb->ki_hint;
+-	bio.bi_private = current;
+-	bio.bi_end_io = blkdev_bio_end_io_simple;
+-	bio.bi_ioprio = iocb->ki_ioprio;
++	bio_init_fields(&bio, bdev, pos >> 9, current, blkdev_bio_end_io_simple,
++			iocb->ki_ioprio, iocb->ki_hint);
++
+ 
+ 	ret = bio_iov_iter_get_pages(&bio, iter);
+ 	if (unlikely(ret))
+@@ -390,12 +387,8 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
+ 		blk_start_plug(&plug);
+ 
+ 	for (;;) {
+-		bio_set_dev(bio, bdev);
+-		bio->bi_iter.bi_sector = pos >> 9;
+-		bio->bi_write_hint = iocb->ki_hint;
+-		bio->bi_private = dio;
+-		bio->bi_end_io = blkdev_bio_end_io;
+-		bio->bi_ioprio = iocb->ki_ioprio;
++		bio_init_fields(bio, bdev, pos >> 9, dio, blkdev_bio_end_io,
++				iocb->ki_ioprio, iocb->ki_hint);
+ 
+ 		ret = bio_iov_iter_get_pages(bio, iter);
+ 		if (unlikely(ret)) {
 -- 
-2.25.1
+2.22.1
 
