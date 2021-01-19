@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044462FB11C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780162FB118
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404003AbhASFut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:50:49 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:51933 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389808AbhASFOY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:14:24 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 654B711E8;
-        Tue, 19 Jan 2021 00:13:02 -0500 (EST)
-Received: from imap5 ([10.202.2.55])
-  by compute2.internal (MEProxy); Tue, 19 Jan 2021 00:13:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mxxn.io; h=
-        mime-version:message-id:date:from:to:subject:content-type
-        :content-transfer-encoding; s=fm1; bh=0spCGCoqY7KSGH8CarOZcNA+Cq
-        9FEwb8V5as/niMdZs=; b=UFRKbJKYisucCyLX1gesl+FUldemdrorrD0TscO67A
-        SxcAdG1vw9SdXswvyZCwE/EaHHFLonCXTv6chqe53uHfXsClmecN4XeNe/z0m5Xa
-        xLsZn9vOjtaYZZA7318fdvkQyIruEsjahUfY3l806pTzDsv5Aeo7MEJYxEpEh6go
-        S0sr2Ijoe+Ym1MrQNT7IoT/FW2v5qi2mCl5z2Lt0uns/mn9HT0t26NTJ8O4uNPLq
-        D8cKMMpFm5sp8vhiOHHibwpPY63wx4b5GyME1IpNN1yU9fyNDa1MagNiYR+/xapb
-        BsMAKcP2C0WGm6Pv4W9IRGZShyXVEpG07aXOtKf72HFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0spCGC
-        oqY7KSGH8CarOZcNA+Cq9FEwb8V5as/niMdZs=; b=icJ7eWaGv656IdHEAV8AA/
-        oyN7tUyJURpiCK3FjucdGEvjbPKrILvxo9fusRPSOaMwhlBKc4VuAbOZ575qKbbi
-        udKRL8uVjedGruffUGwvMQHb6uM1PPoLCL0SoBR2q3EEtHMc0+NBPE+uOAhWkoM9
-        Qcbr2mibvQRo+ewzNm8GUfgOFLu/T6QmpOKhz3JnUIq/DVXpOTWBuSa3p4ChUNbb
-        qR6FeDB+zajIoA++P4D5Gtmf7bOm5yWFNMgdvLIf+yttPBxO2csZLMFSzLKjclNa
-        J7NppR+6YyTYshTZEedib1g6GERbrOh3dS32OnQVH9ROTamZ5W3dHIxlH54dGe4w
-        ==
-X-ME-Sender: <xms:XWoGYIwK8c_g9sl9lJq1odeclKSPyDiZQ2GjyAyyiT7_qhMlxyMzYA>
-    <xme:XWoGYMRhIYKjQDVqtB62-sC5As8zh5DDGL0RdcbKF0RFWx2OmK-SFIZ2_qJwYck_E
-    1BZf_-F5yGi7aq7Zg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrtdelgdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfffhffvufgtgfesthhqredtreerjeenucfhrhhomhepuehlrgkkpgfj
-    rhgrshhtnhhikhcuoegslhgriiesmhiggihnrdhioheqnecuggftrfgrthhtvghrnhepvd
-    etkeeludeiudduvdeijedvheevfffhveejveektdefieduudeffeevveelhfdvnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghlrgiisehmgi
-    ignhdrihho
-X-ME-Proxy: <xmx:XWoGYKUQHXa0LOfEYSC5Uk3p1l8R-TWqYI6GIl5BtUt-LijmMnT-9g>
-    <xmx:XWoGYGjAUxrQHTPuBtb5lMmncr46Sru0BuupPAPBlUslj6HUJ_ZWNQ>
-    <xmx:XWoGYKAgqkDewB3hx41QZkHOAWu5XZwmquf1pHDGtjph8oEaXD95UA>
-    <xmx:XmoGYFOCF0HrG7CQey2qedB3nVguKnJDKc8xQj-MW8Pvm2z2L6eNnQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 71F765C0099; Tue, 19 Jan 2021 00:13:01 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-45-g4839256-fm-20210104.001-g48392560
-Mime-Version: 1.0
-Message-Id: <b08d641c-3fb5-4845-85f7-e1753149cd7d@www.fastmail.com>
-Date:   Tue, 19 Jan 2021 14:12:41 +0900
-From:   =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>
-To:     "Jean Delvare" <jdelvare@suse.com>,
-        "Guenter Roeck" <linux@roeck-us.net>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: hwmon: (nct6683) Support ASRock boards.
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1731635AbhASF4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:56:18 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:43442 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388458AbhASFUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:20:08 -0500
+X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 00:19:53 EST
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611033562; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TsmWni2lFqo/KCTp9v2otaejvUeB6CXmbavuS8alcYo=;
+ b=aJd8YwPQ07dp5pXrPp+peV4sduXBFqrTskVPVyOVfRlcn2g6anOE9MWIHV5VGHb6UdZvTkRN
+ 2MTHzB5t4caxSaNR+lVwpQmvkftJThCUoX9vtlyZcBb4bvjRrG4dS6GPn4U4OJStbfLEIUB1
+ BT65b82c5qwRLU/837n2eACmegw=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60066a51ba7f868506e7285d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 05:12:49
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 82D11C43463; Tue, 19 Jan 2021 05:12:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84544C433C6;
+        Tue, 19 Jan 2021 05:12:47 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 19 Jan 2021 10:42:47 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mattias Nissler <mnissler@chromium.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Al Grant <al.grant@arm.com>,
+        leo.yan@linaro.org
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+In-Reply-To: <CAKUbbx+ZC9cLvcaJnrDYYsrUhfO3dOXJGoLswL30nRzChjwn-w@mail.gmail.com>
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
+ <CAKUbbx+ZC9cLvcaJnrDYYsrUhfO3dOXJGoLswL30nRzChjwn-w@mail.gmail.com>
+Message-ID: <6a3a876e9877322cb46c246a86312fbe@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested with ASRock X570 Phantom Gaming-ITX/TB3. It also appears
-on other ASRock boards.
+On 2021-01-18 20:17, Mattias Nissler wrote:
+> On Fri, Jan 15, 2021 at 6:46 AM Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> Hello Mathieu, Suzuki
+>> 
+>> On 2020-10-15 21:32, Mathieu Poirier wrote:
+>> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+>> >> On production systems with ETMs enabled, it is preferred to
+>> >> exclude kernel mode(NS EL1) tracing for security concerns and
+>> >> support only userspace(NS EL0) tracing. So provide an option
+>> >> via kconfig to exclude kernel mode tracing if it is required.
+>> >> This config is disabled by default and would not affect the
+>> >> current configuration which has both kernel and userspace
+>> >> tracing enabled by default.
+>> >>
+>> >
+>> > One requires root access (or be part of a special trace group) to be
+>> > able to use
+>> > the cs_etm PMU.  With this kind of elevated access restricting tracing
+>> > at EL1
+>> > provides little in terms of security.
+>> >
+>> 
+>> Apart from the VM usecase discussed, I am told there are other
+>> security concerns here regarding need to exclude kernel mode tracing
+>> even for the privileged users/root. One such case being the ability
+>> to analyze cryptographic code execution since ETMs can record all
+>> branch instructions including timestamps in the kernel and there may
+>> be other cases as well which I may not be aware of and hence have
+>> added Denis and Mattias. Please let us know if you have any questions
+>> further regarding this not being a security concern.
+> 
+> Well, the idea that root privileges != full control over the kernel
+> isn't new and at the very least since lockdown became part of mainline
+> [1] no longer an esoteric edge case. Regarding the use case Sai hints
+> at (namely protection of secrets in the kernel), Matthew Garret
+> actually has some more thoughts about confidentiality mode for
+> lockdown for secret protection [2]. And thus, unless someone can make
+> a compelling case that instruction-level tracing will not leak secrets
+> held by the kernel, I think an option for the kernel to prevent itself
+> from being traced (even by root) is valuable.
+> 
+> Finally, to sketch a practical use case scenario: Consider a system
+> where disk contents are encrypted and the encryption key is set up by
+> the user when mounting the file system. From that point on the
+> encryption key resides in the kernel. It seems reasonable to expect
+> that the disk encryption key be protected from exfiltration even if
+> the system later suffers a root compromise (or even against insiders
+> that have root access), at least as long as the attacker doesn't
+> manage to compromise the kernel.
+> 
+> [1] https://lwn.net/Articles/796866/
+> [2] https://mjg59.dreamwidth.org/55105.html
+> 
 
-Signed-off-by: Bla=C5=BE Hrastnik <blaz@mxxn.io>
----
- Documentation/hwmon/nct6683.rst | 1 +
- drivers/hwmon/nct6683.c         | 3 +++
- 2 files changed, 4 insertions(+)
+Thanks for the detailed description, it is way better put than my crude
+explanation.
 
-diff --git a/Documentation/hwmon/nct6683.rst b/Documentation/hwmon/nct66=
-83.rst
-index 8646ad519..2e1408d17 100644
---- a/Documentation/hwmon/nct6683.rst
-+++ b/Documentation/hwmon/nct6683.rst
-@@ -61,5 +61,6 @@ Board		Firmware version
- Intel DH87RL	NCT6683D EC firmware version 1.0 build 04/03/13
- Intel DH87MC	NCT6683D EC firmware version 1.0 build 04/03/13
- Intel DB85FL	NCT6683D EC firmware version 1.0 build 04/03/13
-+ASRock X570	NCT6683D EC firmware version 1.0 build 06/28/19
- MSI B550	NCT6687D EC firmware version 1.0 build 05/07/20
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-index 7f7e30f0d..a23047a3b 100644
---- a/drivers/hwmon/nct6683.c
-+++ b/drivers/hwmon/nct6683.c
-@@ -169,6 +169,7 @@ superio_exit(int ioreg)
- #define NCT6683_CUSTOMER_ID_INTEL	0x805
- #define NCT6683_CUSTOMER_ID_MITAC	0xa0e
- #define NCT6683_CUSTOMER_ID_MSI		0x201
-+#define NCT6683_CUSTOMER_ID_ASROCK		0xe2c
-=20
- #define NCT6683_REG_BUILD_YEAR		0x604
- #define NCT6683_REG_BUILD_MONTH		0x605
-@@ -1225,6 +1226,8 @@ static int nct6683_probe(struct platform_device *p=
-dev)
- 		break;
- 	case NCT6683_CUSTOMER_ID_MSI:
- 		break;
-+	case NCT6683_CUSTOMER_ID_ASROCK:
-+		break;
- 	default:
- 		if (!force)
- 			return -ENODEV;
---=20
-2.29.2
+Thanks,
+Sai
 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
