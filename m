@@ -2,725 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76AA2FBFAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FA32FBFA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbhASTCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S2392058AbhASTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392228AbhASR4j (ORCPT
+        with ESMTP id S2392122AbhASSA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:56:39 -0500
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5509FC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:01 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 129271F895;
-        Tue, 19 Jan 2021 18:44:59 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v4 1/3] cpuidle: qcom_spm: Detach state machine from main SPM handling
-Date:   Tue, 19 Jan 2021 18:44:52 +0100
-Message-Id: <20210119174454.226808-2-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210119174454.226808-1-angelogioacchino.delregno@somainline.org>
-References: <20210119174454.226808-1-angelogioacchino.delregno@somainline.org>
+        Tue, 19 Jan 2021 13:00:28 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4503C0617BA
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id e7so22907014ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
+        b=HgxRSY1UqbS9/rhXLTNfxHXeBBzedejKfHX0k4UFydcfqonYyGAaZOkwTPWns4jkPQ
+         esF/GfzCdXeprMZcR0ldlHasvbgdLzQUQKuoonWfyg/1PJiYiAQCs6nEFq4JCNR8UoZ6
+         L6PyL622kWecWT47tVu+mk1cmbD2RTPlWjumHdsO+G0rhUhQvmeVflWNxLMaEi1TcrFh
+         VEoIk82Z1RZibJHkxhJoWvXlijEayutV5Qeas5v5D4ueg87Fq9K4GiUyA/cnWqroNvz9
+         QaepTABYH2v3/iunQHx1HEYEiJL77LViNqhc0EsnX8b1A80s0ELoGjKZWBLJngIbcwTJ
+         w/cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
+        b=oQKmwW/Ewz/1UbsGWEv03ZUBI3EM1BU0bsDrIHXQfNfO1cRMjycSUG3fxGCWmJHTZ6
+         MxzZNC1CGpNkweV+95tRfifaaF4jrf63w3OjWxT1CZ0aqBO7DDmCOPVjucfI4+IPJf7q
+         if7rzU0/NZLGctp1LJ2Lzex0GbdrnGyqsD+o3aUfKWUD4HbglGBDy2zV8iC4rozxllXR
+         9fghODGU/ky90ZswCHq5taLkq7qFylpoAveWO/uJHpZtHKTBxIWd8JTTEFeA4dXT8z0e
+         Oy0R0IMwrHInGO8cRnm0bO6xHf/hqJrVe3U3v15sn4PC1VgS43ZwAMN7fbKyBbwZK5I4
+         39IA==
+X-Gm-Message-State: AOAM533oNS99U0mJJYBpamf5qE3ZhaircKJowmqh9b6QYkiYzcOD4dCz
+        2DUvzy4vGqvLmPf+7yDNMb8aDGpIEKXZiiALRfOW9Q==
+X-Google-Smtp-Source: ABdhPJyFFZcinaflCgiwdNd0xiMlKWjdDzL/Xpr4jPiXhnakZJ5AdohtfJ+lzfhFR9TjjIv+fAWjCZ2NgSAW2C3XYtE=
+X-Received: by 2002:a05:651c:328:: with SMTP id b8mr2402570ljp.106.1611078328902;
+ Tue, 19 Jan 2021 09:45:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210116023204.670834-1-vipinsh@google.com> <20210116023204.670834-3-vipinsh@google.com>
+ <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
+In-Reply-To: <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Tue, 19 Jan 2021 09:45:12 -0800
+Message-ID: <CAHVum0e8qY7Nt23wSXU7KON8qZ5c6gnNWf=i5BeYji2+735COw@mail.gmail.com>
+Subject: Re: [Patch v5 2/2] cgroup: svm: Encryption IDs cgroup documentation.
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
+        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        Sean Christopherson <seanjc@google.com>,
+        Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>, corbet@lwn.net,
+        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        Jim Mattson <jmattson@google.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Matt Gingell <gingell@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
-CPUidle driver") the SPM driver has been converted to a
-generic CPUidle driver: that was mainly made to simplify the
-driver and that was a great accomplishment;
-Though, it was ignored that the SPM driver is not used only
-on the ARM architecture.
+On Mon, Jan 18, 2021 at 9:55 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 1/15/21 6:32 PM, Vipin Sharma wrote:
+> > Documentation of Encryption IDs controller. This new controller is used
+> > to track and limit usage of hardware memory encryption capabilities on
+> > the CPUs.
+> >
+> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
+> > Reviewed-by: David Rientjes <rientjes@google.com>
+> > Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
+> > ---
+> >  .../admin-guide/cgroup-v1/encryption_ids.rst  |  1 +
+> >  Documentation/admin-guide/cgroup-v2.rst       | 78 ++++++++++++++++++-
+> >  2 files changed, 77 insertions(+), 2 deletions(-)
+> >  create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+> >
+> > diff --git a/Documentation/admin-guide/cgroup-v1/encryption_ids.rst b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+> > new file mode 100644
+> > index 000000000000..8e9e9311daeb
+> > --- /dev/null
+> > +++ b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+> > @@ -0,0 +1 @@
+> > +/Documentation/admin-guide/cgroup-v2.rst
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> > index 63521cd36ce5..72993571de2e 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
+> >         5-7-1. RDMA Interface Files
+> >       5-8. HugeTLB
+> >         5.8-1. HugeTLB Interface Files
+> > -     5-8. Misc
+> > -       5-8-1. perf_event
+> > +     5-9. Encryption IDs
+> > +       5.9-1 Encryption IDs Interface Files
+> > +       5.9-2 Migration and Ownership
+> > +     5-10. Misc
+> > +       5-10-1. perf_event
+> >       5-N. Non-normative information
+> >         5-N-1. CPU controller root cgroup process behaviour
+> >         5-N-2. IO controller root cgroup process behaviour
+> > @@ -2160,6 +2163,77 @@ HugeTLB Interface Files
+> >       are local to the cgroup i.e. not hierarchical. The file modified event
+> >       generated on this file reflects only the local events.
+> >
+> > +Encryption IDs
+> > +--------------
+> > +
+> > +There are multiple hardware memory encryption capabilities provided by the
+> > +hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
+> > +State (SEV-ES) from AMD.
+> > +
+> > +These features are being used in encrypting virtual machines (VMs) and user
+> > +space programs. However, only a small number of keys/IDs can be used
+> > +simultaneously.
+> > +
+> > +This limited availability of these IDs requires system admin to optimize
+>
+>                                                           admins
+>
+> > +allocation, control, and track the usage of the resources in the cloud
+> > +infrastructure. This resource also needs to be protected from getting exhausted
+> > +by some malicious program and causing starvation for other programs.
+> > +
+> > +Encryption IDs controller provides capability to register the resource for
+>
+>    The Encryption IDs controller provides the capability to register the resource for
+>
+> > +controlling and tracking through the cgroups.
+>
+>                             through cgroups.
+>
+> > +
+> > +Encryption IDs Interface Files
+> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +Each encryption ID type have their own interface files,
+>
+>                            has its own
+>
+> > +encids.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
+>
+>                                                                      or
+>
+> > +sev-es.
+> > +
+> > +  encids.[ID TYPE].stat
+> > +        A read-only flat-keyed single value file. This file exists only in the
+> > +        root cgroup.
+> > +
+> > +        It shows the total number of encryption IDs available and currently in
+> > +        use on the platform::
+> > +          # cat encids.sev.stat
+> > +          total 509
+> > +          used 0
+>
+> This is described above as a single-value file...
+>
+> Is the max value a hardware limit or a software (flexible) limit?
+>
+>
+> > +
+> > +  encids.[ID TYPE].max
+> > +        A read-write file which exists on the non-root cgroups. File is used to
+> > +        set maximum count of "[ID TYPE]" which can be used in the cgroup.
+> > +
+> > +        Limit can be set to max by::
+> > +          # echo max > encids.sev.max
+> > +
+> > +        Limit can be set by::
+> > +          # echo 100 > encids.sev.max
+> > +
+> > +        This file shows the max limit of the encryption ID in the cgroup::
+> > +          # cat encids.sev.max
+> > +          max
+> > +
+> > +        OR::
+> > +          # cat encids.sev.max
+> > +          100
+> > +
+> > +        Limits can be set more than the "total" capacity value in the
+> > +        encids.[ID TYPE].stat file, however, the controller ensures
+> > +        that the usage never exceeds the "total" and the max limit.
+> > +
+> > +  encids.[ID TYPE].current
+> > +        A read-only single value file which exists on non-root cgroups.
+> > +
+> > +        Shows the total number of encrypted IDs being used in the cgroup.
+> > +
+> > +Migration and Ownership
+> > +~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +An encryption ID is charged to the cgroup in which it is used first, and
+> > +stays charged to that cgroup until that ID is freed. Migrating a process
+> > +to a different cgroup do not move the charge to the destination cgroup
+>
+>                          does
+>
+> > +where the process has moved.
+> > +
+> >  Misc
+> >  ----
+> >
+> >
+>
+>
+> --
+> ~Randy
+> You can't do anything without having to do something else first.
+> -- Belefant's Law
 
-In preparation for the enablement of SPM features on AArch64/ARM64,
-split the cpuidle-qcom-spm driver in two: the CPUIdle related
-state machine (currently used only on ARM SoCs) stays there, while
-the SPM communication handling lands back in soc/qcom/spm.c and
-also making sure to not discard the simplifications that were
-introduced in the aforementioned commit.
-
-Since now the "two drivers" are split, the SCM dependency in the
-main SPM handling is gone and for this reason it was also possible
-to move the SPM initialization early: this will also make sure that
-whenever the SAW CPUIdle driver is getting initialized, the SPM
-driver will be ready to do the job.
-
-Please note that the anticipation of the SPM initialization was
-also done to optimize the boot times on platforms that have their
-CPU/L2 idle states managed by other means (such as PSCI), while
-needing SAW initialization for other purposes, like AVS control.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/cpuidle/Kconfig.arm        |   1 +
- drivers/cpuidle/cpuidle-qcom-spm.c | 294 ++++++-----------------------
- drivers/soc/qcom/Kconfig           |   9 +
- drivers/soc/qcom/Makefile          |   1 +
- drivers/soc/qcom/spm.c             | 198 +++++++++++++++++++
- include/soc/qcom/spm.h             |  45 +++++
- 6 files changed, 312 insertions(+), 236 deletions(-)
- create mode 100644 drivers/soc/qcom/spm.c
- create mode 100644 include/soc/qcom/spm.h
-
-diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
-index 0844fadc4be8..c5e2f4d0df04 100644
---- a/drivers/cpuidle/Kconfig.arm
-+++ b/drivers/cpuidle/Kconfig.arm
-@@ -112,6 +112,7 @@ config ARM_QCOM_SPM_CPUIDLE
- 	select CPU_IDLE_MULTIPLE_DRIVERS
- 	select DT_IDLE_STATES
- 	select QCOM_SCM
-+	select QCOM_SPM
- 	help
- 	  Select this to enable cpuidle for Qualcomm processors.
- 	  The Subsystem Power Manager (SPM) controls low power modes for the
-diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
-index adf91a6e4d7d..3dd7bb10b82d 100644
---- a/drivers/cpuidle/cpuidle-qcom-spm.c
-+++ b/drivers/cpuidle/cpuidle-qcom-spm.c
-@@ -18,146 +18,13 @@
- #include <linux/cpuidle.h>
- #include <linux/cpu_pm.h>
- #include <linux/qcom_scm.h>
-+#include <soc/qcom/spm.h>
- 
- #include <asm/proc-fns.h>
- #include <asm/suspend.h>
- 
- #include "dt_idle_states.h"
- 
--#define MAX_PMIC_DATA		2
--#define MAX_SEQ_DATA		64
--#define SPM_CTL_INDEX		0x7f
--#define SPM_CTL_INDEX_SHIFT	4
--#define SPM_CTL_EN		BIT(0)
--
--enum pm_sleep_mode {
--	PM_SLEEP_MODE_STBY,
--	PM_SLEEP_MODE_RET,
--	PM_SLEEP_MODE_SPC,
--	PM_SLEEP_MODE_PC,
--	PM_SLEEP_MODE_NR,
--};
--
--enum spm_reg {
--	SPM_REG_CFG,
--	SPM_REG_SPM_CTL,
--	SPM_REG_DLY,
--	SPM_REG_PMIC_DLY,
--	SPM_REG_PMIC_DATA_0,
--	SPM_REG_PMIC_DATA_1,
--	SPM_REG_VCTL,
--	SPM_REG_SEQ_ENTRY,
--	SPM_REG_SPM_STS,
--	SPM_REG_PMIC_STS,
--	SPM_REG_NR,
--};
--
--struct spm_reg_data {
--	const u8 *reg_offset;
--	u32 spm_cfg;
--	u32 spm_dly;
--	u32 pmic_dly;
--	u32 pmic_data[MAX_PMIC_DATA];
--	u8 seq[MAX_SEQ_DATA];
--	u8 start_index[PM_SLEEP_MODE_NR];
--};
--
--struct spm_driver_data {
--	struct cpuidle_driver cpuidle_driver;
--	void __iomem *reg_base;
--	const struct spm_reg_data *reg_data;
--};
--
--static const u8 spm_reg_offset_v2_1[SPM_REG_NR] = {
--	[SPM_REG_CFG]		= 0x08,
--	[SPM_REG_SPM_CTL]	= 0x30,
--	[SPM_REG_DLY]		= 0x34,
--	[SPM_REG_SEQ_ENTRY]	= 0x80,
--};
--
--/* SPM register data for 8974, 8084 */
--static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
--	.reg_offset = spm_reg_offset_v2_1,
--	.spm_cfg = 0x1,
--	.spm_dly = 0x3C102800,
--	.seq = { 0x03, 0x0B, 0x0F, 0x00, 0x20, 0x80, 0x10, 0xE8, 0x5B, 0x03,
--		0x3B, 0xE8, 0x5B, 0x82, 0x10, 0x0B, 0x30, 0x06, 0x26, 0x30,
--		0x0F },
--	.start_index[PM_SLEEP_MODE_STBY] = 0,
--	.start_index[PM_SLEEP_MODE_SPC] = 3,
--};
--
--static const u8 spm_reg_offset_v1_1[SPM_REG_NR] = {
--	[SPM_REG_CFG]		= 0x08,
--	[SPM_REG_SPM_CTL]	= 0x20,
--	[SPM_REG_PMIC_DLY]	= 0x24,
--	[SPM_REG_PMIC_DATA_0]	= 0x28,
--	[SPM_REG_PMIC_DATA_1]	= 0x2C,
--	[SPM_REG_SEQ_ENTRY]	= 0x80,
--};
--
--/* SPM register data for 8064 */
--static const struct spm_reg_data spm_reg_8064_cpu = {
--	.reg_offset = spm_reg_offset_v1_1,
--	.spm_cfg = 0x1F,
--	.pmic_dly = 0x02020004,
--	.pmic_data[0] = 0x0084009C,
--	.pmic_data[1] = 0x00A4001C,
--	.seq = { 0x03, 0x0F, 0x00, 0x24, 0x54, 0x10, 0x09, 0x03, 0x01,
--		0x10, 0x54, 0x30, 0x0C, 0x24, 0x30, 0x0F },
--	.start_index[PM_SLEEP_MODE_STBY] = 0,
--	.start_index[PM_SLEEP_MODE_SPC] = 2,
--};
--
--static inline void spm_register_write(struct spm_driver_data *drv,
--					enum spm_reg reg, u32 val)
--{
--	if (drv->reg_data->reg_offset[reg])
--		writel_relaxed(val, drv->reg_base +
--				drv->reg_data->reg_offset[reg]);
--}
--
--/* Ensure a guaranteed write, before return */
--static inline void spm_register_write_sync(struct spm_driver_data *drv,
--					enum spm_reg reg, u32 val)
--{
--	u32 ret;
--
--	if (!drv->reg_data->reg_offset[reg])
--		return;
--
--	do {
--		writel_relaxed(val, drv->reg_base +
--				drv->reg_data->reg_offset[reg]);
--		ret = readl_relaxed(drv->reg_base +
--				drv->reg_data->reg_offset[reg]);
--		if (ret == val)
--			break;
--		cpu_relax();
--	} while (1);
--}
--
--static inline u32 spm_register_read(struct spm_driver_data *drv,
--					enum spm_reg reg)
--{
--	return readl_relaxed(drv->reg_base + drv->reg_data->reg_offset[reg]);
--}
--
--static void spm_set_low_power_mode(struct spm_driver_data *drv,
--					enum pm_sleep_mode mode)
--{
--	u32 start_index;
--	u32 ctl_val;
--
--	start_index = drv->reg_data->start_index[mode];
--
--	ctl_val = spm_register_read(drv, SPM_REG_SPM_CTL);
--	ctl_val &= ~(SPM_CTL_INDEX << SPM_CTL_INDEX_SHIFT);
--	ctl_val |= start_index << SPM_CTL_INDEX_SHIFT;
--	ctl_val |= SPM_CTL_EN;
--	spm_register_write_sync(drv, SPM_REG_SPM_CTL, ctl_val);
--}
--
- static int qcom_pm_collapse(unsigned long int unused)
- {
- 	qcom_scm_cpu_power_down(QCOM_SCM_CPU_PWR_DOWN_L2_ON);
-@@ -213,132 +80,87 @@ static const struct of_device_id qcom_idle_state_match[] = {
- 	{ },
- };
- 
--static int spm_cpuidle_init(struct cpuidle_driver *drv, int cpu)
-+static int spm_cpuidle_register(int cpu)
- {
-+	struct platform_device *pdev = NULL;
-+	struct spm_driver_data *spm = NULL;
-+	struct device_node *cpu_node, *saw_node;
- 	int ret;
- 
--	memcpy(drv, &qcom_spm_idle_driver, sizeof(*drv));
--	drv->cpumask = (struct cpumask *)cpumask_of(cpu);
-+	cpu_node = of_cpu_device_node_get(cpu);
-+	if (!cpu_node)
-+		return -ENODEV;
- 
--	/* Parse idle states from device tree */
--	ret = dt_init_idle_driver(drv, qcom_idle_state_match, 1);
--	if (ret <= 0)
--		return ret ? : -ENODEV;
-+	saw_node = of_parse_phandle(cpu_node, "qcom,saw", 0);
-+	if (!saw_node)
-+		return -ENODEV;
- 
--	/* We have atleast one power down mode */
--	return qcom_scm_set_warm_boot_addr(cpu_resume_arm, drv->cpumask);
--}
-+	pdev = of_find_device_by_node(saw_node);
-+	of_node_put(saw_node);
-+	of_node_put(cpu_node);
-+	if (!pdev)
-+		return -ENODEV;
- 
--static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
--		int *spm_cpu)
--{
--	struct spm_driver_data *drv = NULL;
--	struct device_node *cpu_node, *saw_node;
--	int cpu;
--	bool found = 0;
-+	spm = dev_get_drvdata(&pdev->dev);
-+	if (!spm)
-+		return -EINVAL;
- 
--	for_each_possible_cpu(cpu) {
--		cpu_node = of_cpu_device_node_get(cpu);
--		if (!cpu_node)
--			continue;
--		saw_node = of_parse_phandle(cpu_node, "qcom,saw", 0);
--		found = (saw_node == pdev->dev.of_node);
--		of_node_put(saw_node);
--		of_node_put(cpu_node);
--		if (found)
--			break;
--	}
-+	spm->cpuidle_driver = qcom_spm_idle_driver;
- 
--	if (found) {
--		drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
--		if (drv)
--			*spm_cpu = cpu;
--	}
-+	ret = dt_init_idle_driver(&spm->cpuidle_driver,
-+				  qcom_idle_state_match, 1);
-+	if (ret <= 0)
-+		return ret ? : -ENODEV;
- 
--	return drv;
--}
-+	ret = qcom_scm_set_warm_boot_addr(cpu_resume_arm, cpumask_of(cpu));
-+	if (ret)
-+		return ret;
- 
--static const struct of_device_id spm_match_table[] = {
--	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
--	  .data = &spm_reg_8974_8084_cpu },
--	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
--	  .data = &spm_reg_8974_8084_cpu },
--	{ .compatible = "qcom,apq8064-saw2-v1.1-cpu",
--	  .data = &spm_reg_8064_cpu },
--	{ },
--};
-+	return cpuidle_register(&spm->cpuidle_driver, NULL);
-+}
- 
--static int spm_dev_probe(struct platform_device *pdev)
-+static int spm_cpuidle_drv_probe(struct platform_device *pdev)
- {
--	struct spm_driver_data *drv;
--	struct resource *res;
--	const struct of_device_id *match_id;
--	void __iomem *addr;
- 	int cpu, ret;
- 
- 	if (!qcom_scm_is_available())
- 		return -EPROBE_DEFER;
- 
--	drv = spm_get_drv(pdev, &cpu);
--	if (!drv)
--		return -EINVAL;
--	platform_set_drvdata(pdev, drv);
-+	for_each_possible_cpu(cpu) {
-+		ret = spm_cpuidle_register(cpu);
-+		if (ret != -ENODEV) {
-+			dev_err(&pdev->dev,
-+				"Cannot register for CPU%d: %d\n", cpu, ret);
-+			break;
-+		}
-+	}
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	drv->reg_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(drv->reg_base))
--		return PTR_ERR(drv->reg_base);
-+	return ret;
-+}
- 
--	match_id = of_match_node(spm_match_table, pdev->dev.of_node);
--	if (!match_id)
--		return -ENODEV;
-+static struct platform_driver spm_cpuidle_driver = {
-+	.probe = spm_cpuidle_drv_probe,
-+	.driver = {
-+		.name = "qcom-spm-cpuidle",
-+	},
-+};
- 
--	drv->reg_data = match_id->data;
-+static int __init qcom_spm_cpuidle_init(void)
-+{
-+	struct platform_device *pdev;
-+	int ret;
- 
--	ret = spm_cpuidle_init(&drv->cpuidle_driver, cpu);
-+	ret = platform_driver_register(&spm_cpuidle_driver);
- 	if (ret)
- 		return ret;
- 
--	/* Write the SPM sequences first.. */
--	addr = drv->reg_base + drv->reg_data->reg_offset[SPM_REG_SEQ_ENTRY];
--	__iowrite32_copy(addr, drv->reg_data->seq,
--			ARRAY_SIZE(drv->reg_data->seq) / 4);
--
--	/*
--	 * ..and then the control registers.
--	 * On some SoC if the control registers are written first and if the
--	 * CPU was held in reset, the reset signal could trigger the SPM state
--	 * machine, before the sequences are completely written.
--	 */
--	spm_register_write(drv, SPM_REG_CFG, drv->reg_data->spm_cfg);
--	spm_register_write(drv, SPM_REG_DLY, drv->reg_data->spm_dly);
--	spm_register_write(drv, SPM_REG_PMIC_DLY, drv->reg_data->pmic_dly);
--	spm_register_write(drv, SPM_REG_PMIC_DATA_0,
--				drv->reg_data->pmic_data[0]);
--	spm_register_write(drv, SPM_REG_PMIC_DATA_1,
--				drv->reg_data->pmic_data[1]);
--
--	/* Set up Standby as the default low power mode */
--	spm_set_low_power_mode(drv, PM_SLEEP_MODE_STBY);
--
--	return cpuidle_register(&drv->cpuidle_driver, NULL);
--}
--
--static int spm_dev_remove(struct platform_device *pdev)
--{
--	struct spm_driver_data *drv = platform_get_drvdata(pdev);
-+	pdev = platform_device_register_simple("qcom-spm-cpuidle",
-+					       -1, NULL, 0);
-+	if (IS_ERR(pdev)) {
-+		platform_driver_unregister(&spm_cpuidle_driver);
-+		return PTR_ERR(pdev);
-+	}
- 
--	cpuidle_unregister(&drv->cpuidle_driver);
- 	return 0;
- }
--
--static struct platform_driver spm_driver = {
--	.probe = spm_dev_probe,
--	.remove = spm_dev_remove,
--	.driver = {
--		.name = "saw",
--		.of_match_table = spm_match_table,
--	},
--};
--
--builtin_platform_driver(spm_driver);
-+device_initcall(qcom_spm_cpuidle_init);
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 79b568f82a1c..fe3c486ae32d 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -190,6 +190,15 @@ config QCOM_SOCINFO
- 	 Say yes here to support the Qualcomm socinfo driver, providing
- 	 information about the SoC to user space.
- 
-+config QCOM_SPM
-+	tristate "Qualcomm Subsystem Power Manager (SPM)"
-+	depends on ARCH_QCOM
-+	select QCOM_SCM
-+	help
-+	  Enable the support for the Qualcomm Subsystem Power Manager, used
-+	  to manage cores, L2 low power modes and to configure the internal
-+	  Adaptive Voltage Scaler parameters, where supported.
-+
- config QCOM_WCNSS_CTRL
- 	tristate "Qualcomm WCNSS control driver"
- 	depends on ARCH_QCOM || COMPILE_TEST
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index ad675a6593d0..24514c722832 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
- obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
- obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
- obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
-+obj-$(CONFIG_QCOM_SPM)		+= spm.o
- obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
- obj-$(CONFIG_QCOM_APR) += apr.o
- obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
-diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
-new file mode 100644
-index 000000000000..0c8aa9240c41
---- /dev/null
-+++ b/drivers/soc/qcom/spm.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2014,2015, Linaro Ltd.
-+ *
-+ * SAW power controller driver
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/err.h>
-+#include <linux/platform_device.h>
-+#include <soc/qcom/spm.h>
-+
-+#define SPM_CTL_INDEX		0x7f
-+#define SPM_CTL_INDEX_SHIFT	4
-+#define SPM_CTL_EN		BIT(0)
-+
-+enum spm_reg {
-+	SPM_REG_CFG,
-+	SPM_REG_SPM_CTL,
-+	SPM_REG_DLY,
-+	SPM_REG_PMIC_DLY,
-+	SPM_REG_PMIC_DATA_0,
-+	SPM_REG_PMIC_DATA_1,
-+	SPM_REG_VCTL,
-+	SPM_REG_SEQ_ENTRY,
-+	SPM_REG_SPM_STS,
-+	SPM_REG_PMIC_STS,
-+	SPM_REG_NR,
-+};
-+
-+static const u16 spm_reg_offset_v2_1[SPM_REG_NR] = {
-+	[SPM_REG_CFG]		= 0x08,
-+	[SPM_REG_SPM_CTL]	= 0x30,
-+	[SPM_REG_DLY]		= 0x34,
-+	[SPM_REG_SEQ_ENTRY]	= 0x80,
-+};
-+
-+/* SPM register data for 8974, 8084 */
-+static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
-+	.reg_offset = spm_reg_offset_v2_1,
-+	.spm_cfg = 0x1,
-+	.spm_dly = 0x3C102800,
-+	.seq = { 0x03, 0x0B, 0x0F, 0x00, 0x20, 0x80, 0x10, 0xE8, 0x5B, 0x03,
-+		0x3B, 0xE8, 0x5B, 0x82, 0x10, 0x0B, 0x30, 0x06, 0x26, 0x30,
-+		0x0F },
-+	.start_index[PM_SLEEP_MODE_STBY] = 0,
-+	.start_index[PM_SLEEP_MODE_SPC] = 3,
-+};
-+
-+static const u16 spm_reg_offset_v1_1[SPM_REG_NR] = {
-+	[SPM_REG_CFG]		= 0x08,
-+	[SPM_REG_SPM_CTL]	= 0x20,
-+	[SPM_REG_PMIC_DLY]	= 0x24,
-+	[SPM_REG_PMIC_DATA_0]	= 0x28,
-+	[SPM_REG_PMIC_DATA_1]	= 0x2C,
-+	[SPM_REG_SEQ_ENTRY]	= 0x80,
-+};
-+
-+/* SPM register data for 8064 */
-+static const struct spm_reg_data spm_reg_8064_cpu = {
-+	.reg_offset = spm_reg_offset_v1_1,
-+	.spm_cfg = 0x1F,
-+	.pmic_dly = 0x02020004,
-+	.pmic_data[0] = 0x0084009C,
-+	.pmic_data[1] = 0x00A4001C,
-+	.seq = { 0x03, 0x0F, 0x00, 0x24, 0x54, 0x10, 0x09, 0x03, 0x01,
-+		0x10, 0x54, 0x30, 0x0C, 0x24, 0x30, 0x0F },
-+	.start_index[PM_SLEEP_MODE_STBY] = 0,
-+	.start_index[PM_SLEEP_MODE_SPC] = 2,
-+};
-+
-+static inline void spm_register_write(struct spm_driver_data *drv,
-+					enum spm_reg reg, u32 val)
-+{
-+	if (drv->reg_data->reg_offset[reg])
-+		writel_relaxed(val, drv->reg_base +
-+				drv->reg_data->reg_offset[reg]);
-+}
-+
-+/* Ensure a guaranteed write, before return */
-+static inline void spm_register_write_sync(struct spm_driver_data *drv,
-+					enum spm_reg reg, u32 val)
-+{
-+	u32 ret;
-+
-+	if (!drv->reg_data->reg_offset[reg])
-+		return;
-+
-+	do {
-+		writel_relaxed(val, drv->reg_base +
-+				drv->reg_data->reg_offset[reg]);
-+		ret = readl_relaxed(drv->reg_base +
-+				drv->reg_data->reg_offset[reg]);
-+		if (ret == val)
-+			break;
-+		cpu_relax();
-+	} while (1);
-+}
-+
-+static inline u32 spm_register_read(struct spm_driver_data *drv,
-+					enum spm_reg reg)
-+{
-+	return readl_relaxed(drv->reg_base + drv->reg_data->reg_offset[reg]);
-+}
-+
-+void spm_set_low_power_mode(struct spm_driver_data *drv,
-+					enum pm_sleep_mode mode)
-+{
-+	u32 start_index;
-+	u32 ctl_val;
-+
-+	start_index = drv->reg_data->start_index[mode];
-+
-+	ctl_val = spm_register_read(drv, SPM_REG_SPM_CTL);
-+	ctl_val &= ~(SPM_CTL_INDEX << SPM_CTL_INDEX_SHIFT);
-+	ctl_val |= start_index << SPM_CTL_INDEX_SHIFT;
-+	ctl_val |= SPM_CTL_EN;
-+	spm_register_write_sync(drv, SPM_REG_SPM_CTL, ctl_val);
-+}
-+
-+static const struct of_device_id spm_match_table[] = {
-+	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
-+	  .data = &spm_reg_8974_8084_cpu },
-+	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
-+	  .data = &spm_reg_8974_8084_cpu },
-+	{ .compatible = "qcom,apq8064-saw2-v1.1-cpu",
-+	  .data = &spm_reg_8064_cpu },
-+	{ },
-+};
-+
-+static int spm_dev_probe(struct platform_device *pdev)
-+{
-+	const struct of_device_id *match_id;
-+	struct spm_driver_data *drv;
-+	struct resource *res;
-+	void __iomem *addr;
-+
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
-+	if (!drv)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	drv->reg_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(drv->reg_base))
-+		return PTR_ERR(drv->reg_base);
-+
-+	match_id = of_match_node(spm_match_table, pdev->dev.of_node);
-+	if (!match_id)
-+		return -ENODEV;
-+
-+	drv->reg_data = match_id->data;
-+	platform_set_drvdata(pdev, drv);
-+
-+	/* Write the SPM sequences first.. */
-+	addr = drv->reg_base + drv->reg_data->reg_offset[SPM_REG_SEQ_ENTRY];
-+	__iowrite32_copy(addr, drv->reg_data->seq,
-+			ARRAY_SIZE(drv->reg_data->seq) / 4);
-+
-+	/*
-+	 * ..and then the control registers.
-+	 * On some SoC if the control registers are written first and if the
-+	 * CPU was held in reset, the reset signal could trigger the SPM state
-+	 * machine, before the sequences are completely written.
-+	 */
-+	spm_register_write(drv, SPM_REG_CFG, drv->reg_data->spm_cfg);
-+	spm_register_write(drv, SPM_REG_DLY, drv->reg_data->spm_dly);
-+	spm_register_write(drv, SPM_REG_PMIC_DLY, drv->reg_data->pmic_dly);
-+	spm_register_write(drv, SPM_REG_PMIC_DATA_0,
-+				drv->reg_data->pmic_data[0]);
-+	spm_register_write(drv, SPM_REG_PMIC_DATA_1,
-+				drv->reg_data->pmic_data[1]);
-+
-+	/* Set up Standby as the default low power mode */
-+	spm_set_low_power_mode(drv, PM_SLEEP_MODE_STBY);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver spm_driver = {
-+	.probe = spm_dev_probe,
-+	.driver = {
-+		.name = "qcom_spm",
-+		.of_match_table = spm_match_table,
-+	},
-+};
-+
-+static int __init qcom_spm_init(void)
-+{
-+	return platform_driver_register(&spm_driver);
-+}
-+arch_initcall(qcom_spm_init);
-diff --git a/include/soc/qcom/spm.h b/include/soc/qcom/spm.h
-new file mode 100644
-index 000000000000..604eca2c4d4a
---- /dev/null
-+++ b/include/soc/qcom/spm.h
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2014,2015, Linaro Ltd.
-+ * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
-+ */
-+
-+#ifndef __SPM_H__
-+#define __SPM_H__
-+
-+#include <linux/cpuidle.h>
-+
-+#define MAX_PMIC_DATA		2
-+#define MAX_SEQ_DATA		64
-+
-+enum pm_sleep_mode {
-+	PM_SLEEP_MODE_STBY,
-+	PM_SLEEP_MODE_RET,
-+	PM_SLEEP_MODE_SPC,
-+	PM_SLEEP_MODE_PC,
-+	PM_SLEEP_MODE_NR,
-+};
-+
-+struct spm_reg_data {
-+	const u16 *reg_offset;
-+	u32 spm_cfg;
-+	u32 spm_dly;
-+	u32 pmic_dly;
-+	u32 pmic_data[MAX_PMIC_DATA];
-+	u32 avs_ctl;
-+	u32 avs_limit;
-+	u8 seq[MAX_SEQ_DATA];
-+	u8 start_index[PM_SLEEP_MODE_NR];
-+};
-+
-+struct spm_driver_data {
-+	struct cpuidle_driver cpuidle_driver;
-+	void __iomem *reg_base;
-+	const struct spm_reg_data *reg_data;
-+};
-+
-+void spm_set_low_power_mode(struct spm_driver_data *drv,
-+					enum pm_sleep_mode mode);
-+
-+#endif /* __SPM_H__ */
--- 
-2.30.0
-
+Thank you, I will fix them in the next patch.
