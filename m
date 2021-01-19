@@ -2,181 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D386C2FBB85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966D32FBB87
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389801AbhASPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:44:55 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:58882 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731777AbhASPnw (ORCPT
+        id S2391636AbhASPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:45:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389575AbhASPow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:43:52 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFYQgD167515;
-        Tue, 19 Jan 2021 15:42:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=V0kYueDXaWXyJ8p6jGIvd/ZZmVFBk9tzIl0RIlBMXz4=;
- b=Fe6L9aNGbGre4ZHPT0wFFQAHGk3Fr8PkkMllbhyFC0kFac8Cll/wUUX6/HICCZV5A4gi
- /HNuqke/RUTpZ2i+gAQlP8oukzDOUpZGt4Ftm4hXPZFGWmvYKHdXf/frkRaie6Pf++ch
- 3mcqtWeZd9GrgagTDL0m97P4ZAeGDYVFYGr3koIZkzfuql/Ly5YW9zEMCp9oEylduJ3Z
- reEnQbXjKVwIAe0WDFjfFfMEGC97t5T9qC0C2wMPUpC7jKAatmYvNm3AmtcZQjWRvZjB
- kN0zc9orkwofQioSOEkNvPRMJDJuRP/q0/wGHHsgmIyCoQVy0/tXmsrbty4U7dIbBYAg 5g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 363nnahuch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 15:42:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFZi2F083638;
-        Tue, 19 Jan 2021 15:42:58 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3661equj83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 15:42:58 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10JFgunt013377;
-        Tue, 19 Jan 2021 15:42:56 GMT
-Received: from [10.65.183.184] (/10.65.183.184)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Jan 2021 07:42:56 -0800
-Subject: Re: [PATCH V3] mm/compaction: correct deferral logic for proactive
- compaction
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        ngupta@nitingupta.dev, vinmenon@codeaurora.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1610989938-31374-1-git-send-email-charante@codeaurora.org>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <5343d1b9-a9b1-9967-1f88-5d37ec93274c@oracle.com>
-Date:   Tue, 19 Jan 2021 08:42:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 19 Jan 2021 10:44:52 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C87DC061573;
+        Tue, 19 Jan 2021 07:44:12 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id v126so22177852qkd.11;
+        Tue, 19 Jan 2021 07:44:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LpYod6/yIeHu0blY8X3TaII+yGQK9blo73/oSXeWqc0=;
+        b=XidkRvDUr8AzD1SbQb5YrM207F8xmWX03kCIKOmE6BWpfFPlqFN3LFQakzpmu+FPd4
+         z0EwSreX1aAZVgu7uVLmO/dy+1fqcpCupn83rp0V0SYotnBSPj3HkIL5LjZGZgu2w5zZ
+         OLLyUlRtJZyWwp12kBax6Jvmkvphr27q6qzGah5Ufh1kXhXcYASo8hg2Hcn4rt1eYovd
+         6OMymwgVkvNxeUQz6gVTco8ND2laBBnsKAC9Kaf2vG+vcrXKIVMvf5XIAgyq7FpU5FX0
+         1qS01oTaYe1T8/0GoZ3+O/IEkaKxkU5mLmc3sFL9WR5DIxeD0Kd/ThpHW11k4iK7UaX/
+         7Ktw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LpYod6/yIeHu0blY8X3TaII+yGQK9blo73/oSXeWqc0=;
+        b=mnGi3yk0B79818lUiuoMHzLW52pig6hKt3aeiykezd2NDxbaLF4vCKZnCuTEgyXXlC
+         LqJscl6UzvTsRMGaPy6k/NfthWUD7E6E6NEGje/Lm6rnyJpNB6Ju6gm6xxisBFmJ3tfp
+         YzZsS5ZToYytLYCdvRUP7Asjv/TmFE5lMjxH4XPqqk6CZCs+9Nb0YE0wdaH9644ZWpe6
+         jXybSbfeZj8dtzl1dgvOVZrqacbbwNwyF8rTDYFAI7h0cAQzy6IbkbgsbCSpJq/08ubp
+         EtyQn4SulsbQX23poYg+jpDYQdLK49tgyrL0PvQTeFCvwd+hbTljNkdfJ+c0zZauxkxA
+         lisQ==
+X-Gm-Message-State: AOAM530xPKQ9+Wvzd2p9DOmbeLmGODC1YdWiiiHVLswaPE1wvbW8I/bK
+        dBiBN+KFQd7LIJOJd6KpP3g=
+X-Google-Smtp-Source: ABdhPJyVLM2KcEzfMhxUZNQNVAA0NejB+xsMo11skQKbPBXDERoGmdRLU1yjk/3ToS+VYZK/b0d5Qw==
+X-Received: by 2002:a37:a5ca:: with SMTP id o193mr4916359qke.394.1611071051311;
+        Tue, 19 Jan 2021 07:44:11 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id 190sm13325277qkf.61.2021.01.19.07.44.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 07:44:10 -0800 (PST)
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <20210119022154.2338781-1-frowand.list@gmail.com>
+ <20210119080546.dzec3jatsz2662qs@vireshk-i7>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
+Date:   Tue, 19 Jan 2021 09:44:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1610989938-31374-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210119080546.dzec3jatsz2662qs@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
- mlxlogscore=999 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 10:12 AM, Charan Teja Reddy wrote:
-> should_proactive_compact_node() returns true when sum of the
-> weighted fragmentation score of all the zones in the node is greater
-> than the wmark_high of compaction, which then triggers the proactive
-> compaction that operates on the individual zones of the node. But
-> proactive compaction runs on the zone only when its weighted
-> fragmentation score is greater than wmark_low(=wmark_high - 10).
+On 1/19/21 2:05 AM, Viresh Kumar wrote:
+> On 18-01-21, 20:21, frowand.list@gmail.com wrote:
+>> From: Frank Rowand <frank.rowand@sony.com>
+>>
+>> These changes apply on top of the patches in:
+>>
+>>   [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+>>   Message-Id: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+>>
+>> There are still some issues to be cleaned up, so not ready for acceptance.
 > 
-> This means that the sum of the weighted fragmentation scores of all the
-> zones can exceed the wmark_high but individual weighted fragmentation
-> zone scores can still be less than wmark_low which makes the unnecessary
-> trigger of the proactive compaction only to return doing nothing.
+> Are you talking about the missing __overlay__ thing ? (more below)
+
+No.  I am referencing my comments below (I'll copy them up here):
+
+   I have not used the construct "always-$(CONFIG_OF_OVERLAY)" before, and
+   have not looked into the proper usage of it.
+
+   [Tested using my own fdtoverlay instead of the one supplied by your patches
+   that added fdtoverlay and fdtdump to the kernel tree.]
+
+   I have not run this through checkpatch, or my checks for build warnings.
+   I have not run unittests on my target with these patches applied.
+
+I will have to get the updated patch, test it more fully, and fill in a gap
+in my knowledge (use of "always-$(CONFIG_xxx)".
+
+
 > 
-> Issue with the return of proactive compaction with out even trying is
-> its deferral. It is simply deferred for 1 << COMPACT_MAX_DEFER_SHIFT if
-> the scores across the proactive compaction is same, thinking that
-> compaction didn't make any progress but in reality it didn't even try.
-> With the delay between successive retries for proactive compaction is
-> 500msec, it can result into the deferral for ~30sec with out even trying
-> the proactive compaction.
+>> I have not used the construct "always-$(CONFIG_OF_OVERLAY)" before, and
+>> have not looked into the proper usage of it.
 > 
-> Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
-> 50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
-> sizes 5GB and 6GB respectively. After opening some apps on the android,
-> the weighted fragmentation scores of these zones are 47 and 49
-> respectively. Since the sum of these fragmentation scores are above the
-> wmark_high which triggers the proactive compaction and there since the
-> individual zones weighted fragmentation scores are below wmark_low, it
-> returns without trying the proactive compaction. As a result the
-> weighted fragmentation scores of the zones are still 47 and 49 which
-> makes the existing logic to defer the compaction thinking that
-> noprogress is made across the compaction.
+> I wasn't sure either, maybe Masahiro can suggest the best fit.
 > 
-> Fix this by checking just zone fragmentation score, not the weighted, in
-> __compact_finished() and use the zones weighted fragmentation score in
-> fragmentation_score_node(). In the test case above, If the weighted
-> average of is above wmark_high, then individual score (not adjusted) of
-> atleast one zone has to be above wmark_high. Thus it avoids the
-> unnecessary trigger and deferrals of the proactive compaction.
+>> I tested this using a hand build libfdt and fdtoverlay from the dtc-compiler
+>> upstream project.  For my testing I added LD_LIBRARY_PATH to the body of
+>> "cmd_fdtoverlay" to reference my hand built libfdt.  The kernel build
+>> system will have to instead use a libfdt that is built in the kernel
+>> tree.
 > 
-> Fix-suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
+> I tested it with this patchset:
 > 
-> Changes in V3: Addressed suggestions from Vlastimil
+> https://lore.kernel.org/lkml/cover.1610431620.git.viresh.kumar@linaro.org/
 > 
-> Changes in V2: https://lore.kernel.org/patchwork/patch/1366862/
+>> I have not run this through checkpatch, or my checks for build warnings.
+>> I have not run unittests on my target with these patches applied.
+>>
+>> ---
+>>  drivers/of/unittest-data/Makefile | 67 ++++++++++++++++++++++---------
+>>  1 file changed, 48 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+>> index f17bce85f65f..28614a123d1e 100644
+>> --- a/drivers/of/unittest-data/Makefile
+>> +++ b/drivers/of/unittest-data/Makefile
+>> @@ -39,25 +39,54 @@ DTC_FLAGS_testcases += -@
+>>  # suppress warnings about intentional errors
+>>  DTC_FLAGS_testcases += -Wno-interrupts_property
+>>  
+>> -# Apply overlays statically with fdtoverlay
+>> -intermediate-overlay	:= overlay.dtb
+>> -master			:= overlay_0.dtb overlay_1.dtb overlay_2.dtb \
+>> -			   overlay_3.dtb overlay_4.dtb overlay_5.dtb \
+>> -			   overlay_6.dtb overlay_7.dtb overlay_8.dtb \
+>> -			   overlay_9.dtb overlay_10.dtb overlay_11.dtb \
+>> -			   overlay_12.dtb overlay_13.dtb overlay_15.dtb \
+>> -			   overlay_gpio_01.dtb overlay_gpio_02a.dtb \
+>> -			   overlay_gpio_02b.dtb overlay_gpio_03.dtb \
+>> -			   overlay_gpio_04a.dtb overlay_gpio_04b.dtb \
+>> -			   intermediate-overlay.dtb
+>> -
+>> -quiet_cmd_fdtoverlay = fdtoverlay $@
+>> -      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
+>> -
+>> -$(obj)/intermediate-overlay.dtb: $(obj)/overlay_base.dtb $(addprefix $(obj)/,$(intermediate-overlay))
+>> -	$(call if_changed,fdtoverlay)
+>> +# Apply overlays statically with fdtoverlay.  This is a build time test that
+>> +# the overlays can be applied successfully by fdtoverlay.  This does not
+>> +# guarantee that the overlays can be applied successfully at run time by
+>> +# unittest, but it provides a bit of build time test coverage for those
+>> +# who do not execute unittest.
+>> +#
+>> +# The overlays are applied on top of testcases.dtb to create static_test.dtb
+>> +# If fdtoverlay detects an error than the kernel build will fail.
+>> +# static_test.dtb is not consumed by unittest.
+>> +#
+>> +# Some unittest overlays deliberately contain errors that unittest checks for.
+>> +# These overlays will cause fdtoverlay to fail, and are thus not included
+>> +# in the static test:
+>> +#			overlay.dtb \
+>> +#			overlay_bad_add_dup_node.dtb \
+>> +#			overlay_bad_add_dup_prop.dtb \
+>> +#			overlay_bad_phandle.dtb \
+>> +#			overlay_bad_symbol.dtb \
+>> +
+>> +apply_static_overlay := overlay_base.dtb \
 > 
-> Changes in V1: https://lore.kernel.org/patchwork/patch/1364646/
+> This won't work because of the issues I mentioned earlier. This file
+> doesn't have __overlay__. One way to fix that is to do this:
 > 
->   mm/compaction.c | 20 ++++++++++++++------
->   1 file changed, 14 insertions(+), 6 deletions(-)
+> diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
+> index 99ab9d12d00b..59172c4c9e5a 100644
+> --- a/drivers/of/unittest-data/overlay_base.dts
+> +++ b/drivers/of/unittest-data/overlay_base.dts
+> @@ -11,8 +11,7 @@
+>   * dtc will create nodes "/__symbols__" and "/__local_fixups__".
+>   */
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e5acb97..ccddb3a 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1925,20 +1925,28 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->   
->   /*
->    * A zone's fragmentation score is the external fragmentation wrt to the
-> - * COMPACTION_HPAGE_ORDER scaled by the zone's size. It returns a value
-> - * in the range [0, 100].
-> + * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-> + */
-> +static unsigned int fragmentation_score_zone(struct zone *zone)
-> +{
-> +	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-> +}
+> -/ {
+> -       testcase-data-2 {
+> +       &overlay_base {
+>                 #address-cells = <1>;
+>                 #size-cells = <1>;
+> 
+> @@ -89,5 +88,3 @@ retail_1: vending@50000 {
+>                 };
+> 
+>         };
+> -};
+> -
+
+No.  overlay_base.dts is intentionally compiled into a base FDT, not
+an overlay.  Unittest intentionally unflattens this FDT in early boot,
+in association with unflattening the system FDT.  One key intent
+behind this is to use the same memory allocation method that is
+used for the system FDT.
+
+Do not try to convert overlay_base.dts into an overlay.
+
+
+> diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
+> index a85b5e1c381a..539dc7d9eddc 100644
+> --- a/drivers/of/unittest-data/testcases.dts
+> +++ b/drivers/of/unittest-data/testcases.dts
+> @@ -11,6 +11,11 @@ node-remove {
+>                         };
+>                 };
+>         };
 > +
-> +/*
-> + * A weighted zone's fragmentation score is the external fragmentation
-> + * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-> + * returns a value in the range [0, 100].
->    *
->    * The scaling factor ensures that proactive compaction focuses on larger
->    * zones like ZONE_NORMAL, rather than smaller, specialized zones like
->    * ZONE_DMA32. For smaller zones, the score value remains close to zero,
->    * and thus never exceeds the high threshold for proactive compaction.
->    */
-> -static unsigned int fragmentation_score_zone(struct zone *zone)
-> +static unsigned int fragmentation_score_zone_weighted(struct zone *zone)
->   {
->   	unsigned long score;
->   
-> -	score = zone->present_pages *
-> -			extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-> +	score = zone->present_pages * fragmentation_score_zone(zone);
->   	return div64_ul(score, zone->zone_pgdat->node_present_pages + 1);
->   }
->   
-> @@ -1958,7 +1966,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
->   		struct zone *zone;
->   
->   		zone = &pgdat->node_zones[zoneid];
-> -		score += fragmentation_score_zone(zone);
-> +		score += fragmentation_score_zone_weighted(zone);
->   	}
->   
->   	return score;
+> +       overlay_base: testcase-data-2 {
+> +               #address-cells = <1>;
+> +               #size-cells = <1>;
+> +       };
+> 
+>> -always-$(CONFIG_OF_OVERLAY) += intermediate-overlay.dtb master.dtb
+>> +always-$(CONFIG_OF_OVERLAY) += static_test.dtb
+> 
+> This is how static_test.dtb looks now with fdtdump
 > 
 
-Looks good.
+< snip >
 
-Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
-
+-Frank
