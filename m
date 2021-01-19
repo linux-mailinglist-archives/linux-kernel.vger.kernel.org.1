@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20F82FC387
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADD22FC37B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728744AbhASWdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:33:36 -0500
-Received: from mga18.intel.com ([134.134.136.126]:24755 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727669AbhASRoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:44:18 -0500
-IronPort-SDR: dJV84DJ/vSSJ+Hn8A+Wxhhtm3za3Zz/j8Sqwl21dBj00sBMoTG3/iIJ32hKObH1S0bMA52ZeqM
- W5dm7lHYx3mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="166632754"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="166632754"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 09:42:19 -0800
-IronPort-SDR: EL58UZk+sJ19P4ixy5WWw7RUj9/Yx+9c2hUyTbYVWS2dSrkQoe04HMeVAzYEqHzQNh6FuH/9zD
- F+SVCiy3PhJQ==
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="501005745"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 09:42:13 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1v2B-004oA2-Fm; Tue, 19 Jan 2021 19:43:15 +0200
-Date:   Tue, 19 Jan 2021 19:43:15 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        andy@kernel.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAcaM9Tcif1rS3V/@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
- <20210119093358.GO4077@smile.fi.intel.com>
- <YAcKj9fyNZY8QETd@pendragon.ideasonboard.com>
+        id S1728697AbhASWah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbhASRpB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:45:01 -0500
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A93C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:44:26 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 442803F115;
+        Tue, 19 Jan 2021 18:44:24 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 4/7] dt-bindings: regulator: qcom-labibb: Document soft start properties
+Date:   Tue, 19 Jan 2021 18:44:18 +0100
+Message-Id: <20210119174421.226541-5-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210119174421.226541-1-angelogioacchino.delregno@somainline.org>
+References: <20210119174421.226541-1-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAcKj9fyNZY8QETd@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 06:36:31PM +0200, Laurent Pinchart wrote:
-> On Tue, Jan 19, 2021 at 11:33:58AM +0200, Andy Shevchenko wrote:
-> > On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
-> > > On 18/01/2021 21:19, Daniel Scally wrote:
+Document properties to configure soft start and discharge resistor
+for LAB and IBB respectively.
 
-...
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ .../bindings/regulator/qcom-labibb-regulator.yaml      | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-> > See my previous reply. TL;DR: you have to modify clk-gpio.c to export couple of
-> > methods to be able to use it as a library.
-> 
-> That seems really overkill given the very simple implementation of the
-> clock provided here.
-
-Less code in the end is called an overkill? Hmm...
-I think since we in Linux it's better to utilize what it provides. Do you want
-me to prepare a patch to show that there is no overkill at all?
-
-...
-
-> > > (also, Laurent, if we did it this way we wouldn't be able to also handle
-> > > the led-indicator GPIO here without some fairly major rework)
-> > 
-> > LED indicators are done as LED class devices (see plenty of examples in PDx86
-> > drivers: drivers/platform/x86/)
-> 
-> How do you expose the link between the sensor and its indicator LED to
-> userspace ? Isn't it better to handle it in the kernel to avoid rogue
-> userspace turning the camera on without notifying the user ?
-
-I didn't get this. It's completely a LED handling driver business. We may
-expose it to user space or not, but it's orthogonal to the usage of LED class
-IIUC. Am I mistaken here?
-
+diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+index 53853ec20fe2..7a507692f1ba 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+@@ -22,6 +22,11 @@ properties:
+     type: object
+ 
+     properties:
++      qcom,soft-start-us:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: Regulator soft start time in microseconds.
++        enum: [200, 400, 600, 800]
++        default: 200
+ 
+       interrupts:
+         maxItems: 1
+@@ -35,6 +40,11 @@ properties:
+     type: object
+ 
+     properties:
++      qcom,discharge-resistor-kohms:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: Discharge resistor value in KiloOhms.
++        enum: [300, 64, 32, 16]
++        default: 300
+ 
+       interrupts:
+         maxItems: 1
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.0
 
