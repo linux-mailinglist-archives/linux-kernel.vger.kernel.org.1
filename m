@@ -2,91 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D3F2FAEAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AD72FAEB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405485AbhASCTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 21:19:55 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:43994 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbhASCTs (ORCPT
+        id S2405735AbhASCVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 21:21:20 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22502 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405608AbhASCVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 21:19:48 -0500
-Received: by mail-ot1-f41.google.com with SMTP id v1so289547ott.10;
-        Mon, 18 Jan 2021 18:19:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NviAxCG66kR6tYWTdCuPd+dNP54yI4/tOkv+tahqOUA=;
-        b=nZVfMhRmns3bnZdTVCLe7d8gJP1vhKuVNKIgVqSdnyzu6SWDO0H+tcJ1zoAhf3mR+y
-         lccIR+IOAA0JC8hnWUtrXbUCYimTsgUmSPXwfXEtirI4pUd/Mm4Z/AfPK4WnzaUY3qya
-         DTOZg1r8UCHzi+lM1fyEL9gYpMcvNYPe3sXygxu0toX3sE6WzFnSPI3+0uGO1VAJdRj7
-         nm3LXEYXzafGx6BfRQcAJv3n4fSiucdIuTZvy02M4oyVvSc7Vgj0r6L1QKzhnV4y/DCj
-         dJTjZI22Vgvzc6YLGvmQuOWUSS0b+rqBwC1KTATWCWE4eAWeaICjg+AmDSYBOKe7D3Ku
-         2IZw==
-X-Gm-Message-State: AOAM533VQuVlhkbWiPwUH2fXK4f9qVCtGofgnVlCiHEe8sLCrN1FEgLR
-        m0Cd2be+9McX6v9XRb/Cug==
-X-Google-Smtp-Source: ABdhPJzDm2rmL6h7O0jHEuErkbcy+xrPlvp2HhvCJUiGszCs8xqlmaPNesxTDKjxdtHo3XEXliA7zw==
-X-Received: by 2002:a05:6830:1dc8:: with SMTP id a8mr1903693otj.26.1611022747382;
-        Mon, 18 Jan 2021 18:19:07 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 33sm544177ota.69.2021.01.18.18.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 18:19:06 -0800 (PST)
-Received: (nullmailer pid 760112 invoked by uid 1000);
-        Tue, 19 Jan 2021 02:19:05 -0000
-Date:   Mon, 18 Jan 2021 20:19:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org
-Subject: Re: [PATCH] leds: lp50xx: add setting of default intensity from DT
-Message-ID: <20210119021905.GA759930@robh.at.kernel.org>
-References: <20210118140947.3887-1-schuchmann@schleissheimer.de>
+        Mon, 18 Jan 2021 21:21:10 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J2BJYW001170;
+        Mon, 18 Jan 2021 21:20:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=+ijC5B9LGHCd59fCrivuX0XsD/MFsM/npCAcNaKHsr8=;
+ b=EEqO02eZ2Fo2d1IuacCQTY4GQI+RhPVZ6NUfbVd5sBlW5lxuVlgZWEsu7pPL06ag3zHm
+ //s7crA6C2IhnwCgQ4xBp2xZVD4fhJGa4H9RrivCOEcNpEiRt3jBJzO0VSXnGA1O9b6h
+ AMqeJjhlc7upgAXvcfdHM9CpS9P0TMC+x+tGtRXkDDT/26LIfNGCpqoErWLfitY2B9yB
+ C/SaAK1ncupY2FbFiw8JraSXyfKdXhg4vlS3tE53shYEcEps/lpRfAAxSoCpcclVWU9d
+ 7iHoCNZGjnDqxA/P77z+nCGWfw391J7ZNRmWbp7D+dTj71cmtO+BxrFWAb7vX1zX9Eqr Dw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365p2dge29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Jan 2021 21:20:16 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J2D2dW022784;
+        Tue, 19 Jan 2021 02:20:14 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 36454vs2v5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 02:20:14 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J2KBjw18743652
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 02:20:11 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC320A4040;
+        Tue, 19 Jan 2021 02:20:11 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFC88A405B;
+        Tue, 19 Jan 2021 02:20:07 +0000 (GMT)
+Received: from [9.81.211.54] (unknown [9.81.211.54])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Jan 2021 02:20:07 +0000 (GMT)
+Message-ID: <02b792c847ea1841603629ba0377cfdfff479882.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] clk: aspeed: Fix APLL calculate formula for
+ ast2600-A2
+From:   Joel Stanley <joel@linux.ibm.com>
+To:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrewrj@au1.ibm.com,
+        BMC-SW@aspeedtech.com
+Cc:     joel@jms.id.au, Andrew Jeffery <andrew@aj.id.au>
+Date:   Tue, 19 Jan 2021 12:50:05 +1030
+In-Reply-To: <20210118100813.30821-2-ryan_chen@aspeedtech.com>
+References: <20210118100813.30821-1-ryan_chen@aspeedtech.com>
+         <20210118100813.30821-2-ryan_chen@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118140947.3887-1-schuchmann@schleissheimer.de>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-18_15:2021-01-18,2021-01-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 14:09:47 +0000, Sven Schuchmann wrote:
-> In order to use a multicolor-led together with a trigger
-> the led needs to have an intensity set to see something.
-> The trigger changes the brightness of the led but if there
-> is no intensity we actually see nothing.
+On Mon, 2021-01-18 at 18:08 +0800, Ryan Chen wrote:
+> AST2600A1/A2 have different pll calculate formula.
+
+To clarify, only the A0 has the old calculation, and all subsequent
+revisions use the new calculation?
+
+If this is the case, do we need to support A0 in mainline linux, or
+should we drop support for A0 and only support A1, A2 and onwards?
+
+You should add a line to indicate this is a fix:
+
+Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
+
+Also, when sending single patches you do not need to include the cover
+letter. You should include all of the relevant information in the
+patch's commit message.
+
 > 
-> This patch adds the ability to set the default intensity
-> of each led so that it is turned on from DT.
-> 
-> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
+> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 > ---
->  Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 6 +++++-
->  drivers/leds/leds-lp50xx.c                              | 4 ++++
->  2 files changed, 9 insertions(+), 1 deletion(-)
+>  drivers/clk/clk-ast2600.c | 37 +++++++++++++++++++++++++++----------
+>  1 file changed, 27 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
+> index bbacaccad554..8933bd1506b3 100644
+> --- a/drivers/clk/clk-ast2600.c
+> +++ b/drivers/clk/clk-ast2600.c
+> @@ -17,7 +17,8 @@
+>  
+>  #define ASPEED_G6_NUM_CLKS             71
+>  
+> -#define ASPEED_G6_SILICON_REV          0x004
+> +#define ASPEED_G6_SILICON_REV          0x014
+> +#define CHIP_REVISION_ID                       GENMASK(23, 16)
+>  
+>  #define ASPEED_G6_RESET_CTRL           0x040
+>  #define ASPEED_G6_RESET_CTRL2          0x050
+> @@ -190,18 +191,34 @@ static struct clk_hw *ast2600_calc_pll(const
+> char *name, u32 val)
+>  static struct clk_hw *ast2600_calc_apll(const char *name, u32 val)
+>  {
+>         unsigned int mult, div;
+> +       u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
+>  
+> -       if (val & BIT(20)) {
+> -               /* Pass through mode */
+> -               mult = div = 1;
+> +       if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
+> +               if (val & BIT(24)) {
+> +                       /* Pass through mode */
+> +                       mult = div = 1;
+> +               } else {
+> +                       /* F = 25Mhz * [(m + 1) / (n + 1)] / (p + 1)
+> */
+> +                       u32 m = val & 0x1fff;
+> +                       u32 n = (val >> 13) & 0x3f;
+> +                       u32 p = (val >> 19) & 0xf;
+> +
+> +                       mult = (m + 1);
+> +                       div = (n + 1) * (p + 1);
+> +               }
+>         } else {
+> -               /* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)] */
+> -               u32 m = (val >> 5) & 0x3f;
+> -               u32 od = (val >> 4) & 0x1;
+> -               u32 n = val & 0xf;
+> +               if (val & BIT(20)) {
+> +                       /* Pass through mode */
+> +                       mult = div = 1;
+> +               } else {
+> +                       /* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)]
+> */
+> +                       u32 m = (val >> 5) & 0x3f;
+> +                       u32 od = (val >> 4) & 0x1;
+> +                       u32 n = val & 0xf;
+>  
+> -               mult = (2 - od) * (m + 2);
+> -               div = n + 1;
+> +                       mult = (2 - od) * (m + 2);
+> +                       div = n + 1;
+> +               }
+>         }
+>         return clk_hw_register_fixed_factor(NULL, name, "clkin", 0,
+>                         mult, div);
 
-My bot found errors running 'make dt_binding_check' on your patch:
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml: patternProperties:^multi-led@[0-9a-f]$:patternProperties:(^led-[0-9a-f]$|led):properties:default-intensity: 'The intensity the LED get initialised with.' is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml: ignoring, error in schema: patternProperties: ^multi-led@[0-9a-f]$: patternProperties: (^led-[0-9a-f]$|led): properties: default-intensity
-warning: no schema found in file: ./Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-
-See https://patchwork.ozlabs.org/patch/1428176
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
