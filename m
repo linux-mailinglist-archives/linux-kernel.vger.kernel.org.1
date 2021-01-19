@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9BF2FB887
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F0D2FB882
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392273AbhASM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:58:35 -0500
-Received: from www.zeus03.de ([194.117.254.33]:47496 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389992AbhASMq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:46:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=B/tgnQe++TiNEzjAeZeldBhlj6A3
-        T8pYiGEsSUAtogQ=; b=uwbZfWInaxQBHij4qU8TlH4HF9hXI++CYIPEGHusGwls
-        V/xh7/4GL/Ben2yejWMuewPQWYN/FNF0ZKI5OLHJjhEuBKAZnSzOB56nJjdPk3vR
-        Ra4gFMfdnHcq02cZ6C56ryNmviQeZMWrcpEJfzUFlho/pM09Gvs3kJwoKRMttD4=
-Received: (qmail 1070386 invoked from network); 19 Jan 2021 13:46:11 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Jan 2021 13:46:11 +0100
-X-UD-Smtp-Session: l3s3148p1@rYodOUC5uNsgAwDPXyX1ACWcscxtZ2TX
-Date:   Tue, 19 Jan 2021 13:46:10 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Takeshi Saito <takeshi.saito.xv@renesas.com>,
-        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/6] arm64: dts: renesas: falcon: Enable MMC
-Message-ID: <20210119124610.GB1259@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Takeshi Saito <takeshi.saito.xv@renesas.com>,
-        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201227174202.40834-1-wsa+renesas@sang-engineering.com>
- <20201227174202.40834-7-wsa+renesas@sang-engineering.com>
- <CAMuHMdWs5SWUpDkcX4m9MqVKa4KJvAfXSsRt=Fq3c9=2JtdwHQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWs5SWUpDkcX4m9MqVKa4KJvAfXSsRt=Fq3c9=2JtdwHQ@mail.gmail.com>
+        id S2391025AbhASM41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:56:27 -0500
+Received: from jax4mhob15.registeredsite.com ([64.69.218.103]:49612 "EHLO
+        jax4mhob15.registeredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389750AbhASMrU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:47:20 -0500
+Received: from mailpod.hostingplatform.com ([10.30.71.205])
+        by jax4mhob15.registeredsite.com (8.14.4/8.14.4) with ESMTP id 10JCkRDJ110432
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:46:28 -0500
+Received: (qmail 17343 invoked by uid 0); 19 Jan 2021 12:46:27 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 19 Jan 2021 12:46:27 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     linux-iio@vger.kernel.org
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
+Date:   Tue, 19 Jan 2021 13:46:21 +0100
+Message-Id: <20210119124622.9490-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+the accelerometer part.
 
---eAbsdosE1cNLO4uF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
 
+---
 
-> > +       reg_1p8v: regulator0 {
->=20
-> Please use a better node name, to avoid accidental duplicates, cfr. commit
-> 45f5d5a9e34d3fe4 ("arm64: dts: renesas: r8a77995: draak: Fix backlight
-> regulator name")
+Changes in v6:
+I't been almost a year since the last commit, sorry...
+Fixed the yaml errors
+Add interrupt, vdd and vddio properties
 
-Done.
+Changes in v5:
+submit together with driver code as patch series
 
-> > +       no-sd;
-> > +       no-sdio;
->=20
-> I'm no expert on the no-sd{,io} properties.
-> Just wondering if we need them on other R-Car gen3 boards with eMMC, too/
+Changes in v2:
+convert to yaml format
 
-Won't hurt. I'll prepare something...
+ .../bindings/iio/accel/bosch,bmi088.yaml      | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
 
-Thanks!
+diff --git a/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+new file mode 100644
+index 000000000000..459b9969fd12
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/accel/bosch,bmi088.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bosch BMI088 IMU accelerometer part
++
++maintainers:
++  - Mike Looijmans <mike.looijmans@topic.nl>
++
++description: |
++  Acceleration part of the IMU sensor with an SPI interface
++  Specifications about the sensor can be found at:
++    https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf
++
++properties:
++  compatible:
++    enum:
++      - bosch,bmi088_accel
++
++  reg:
++    maxItems: 1
++
++  vdd-supply: true
++
++  vddio-supply: true
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++    description: |
++      Type should be either IRQ_TYPE_LEVEL_HIGH or IRQ_TYPE_LEVEL_LOW.
++      The first interrupt listed must be the one connected to the INT1 pin, the
++      second must be the one connected to the INT2 pin.
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      bmi088_accel@1 {
++        compatible = "bosch,bmi088_accel";
++        reg = <1>;
++        spi-max-frequency = <10000000>;
++        interrupt-parent = <&gpio6>;
++        interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
++      };
++    };
++...
+-- 
+2.17.1
 
-
---eAbsdosE1cNLO4uF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAG1I8ACgkQFA3kzBSg
-KbYiyw//bwI1CJ3F9ockT6j55WLc1MDFnVukvB0oA6xUzfVbQ4s//6IGFKz7yNIg
-ZESpSiagu7xD9dF6l4rxeaTHF0jRRENIJcyZLniTG5CCX0EirFLSCwtZZVuWuQ6k
-6a+gbiLPcuCs5XAZLQzARpOMVkW1GevPDHqEm0jj/D7+W8yMxAkpRbrSyHOVr3kx
-VnXaJ4ycTSakJHSc3uzzAOqxDP+9z9cGpQT0nmRgoVyqtTUwy8vFzzFwDqVuHujv
-fonmCgr8mZQR1aV2b3XYdQjgPhI040BzNKfjR/PD09qw9znV7Qi7W9ThLSwLrmdT
-TqVk9Rvzm+bO4AQtiLm9lcBhOOf+z3DBLnPr+wkMxrEWQs9iqQCWZU6daeOxtNFQ
-P6KqhG+zW0Y8JdDPi7/6s8fhwUSOW/NUezI5a9fKSZGEmoL+gVpG4F4DZTZUmokz
-iTGqQhSCzYXHnCWepUEwx4V1Ht8hnqwkcLcxIhxIRoNFDzcByZgnZv4ME7dCjQKU
-J0wJxRJqerWxjjbJhJHFxjSTCnN22p4/IFlZUn9c2hfrikwK3WFbhLdcMSYEpTr1
-6tb+qADtqIbFvElVfON2Nvy0uUWo2h58yryzBbvFkYgoF04V0F3HV3WmafIIINL9
-BRej6bYYX4UDuc94u+ophtpUCJVGpaumicacb9l3F0+bKwIEpI4=
-=kVoD
------END PGP SIGNATURE-----
-
---eAbsdosE1cNLO4uF--
