@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8CB2FC178
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508232FC18E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbhASUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:44:40 -0500
+        id S2403844AbhASUtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:49:14 -0500
 Received: from mga07.intel.com ([134.134.136.100]:26409 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729608AbhASUny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:43:54 -0500
-IronPort-SDR: T3SnCmlH3T60lNgp25PJdZo4dX3nSQb0pdkNslXyuXxr9YdcUopm92PTZhUJapwB/2Ylv1yqe+
- YZW3zddUhaLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243064930"
+        id S2392020AbhASUrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 15:47:10 -0500
+IronPort-SDR: L3yZxD8n5h6IRY1eA+4NKoM2cMDI3+HZnomqqjIui88M6F3V6Av6gqoKBmVaJucRLNbxq32eTA
+ jeFmtyNdXpnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243064933"
 X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="243064930"
+   d="scan'208";a="243064933"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 12:42:05 -0800
-IronPort-SDR: L0U/eJtbu7cJG42uCPZUFw105ujnye8qYl+CBluNkpuz5XcmVU0tk/pniuLbWtaufM1tAvxpyV
- ohZqHfOY2PpQ==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 12:42:06 -0800
+IronPort-SDR: IFEzzs7QnlGg43d0nWBSpRY+vQyxLPykJ7kapMWjQ3ekj2JPvPG5GUk7skiiMO8fP2CCI9kRSs
+ V5S5KBtxjOQw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="365990797"
+   d="scan'208";a="365990802"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 19 Jan 2021 12:42:05 -0800
+  by orsmga002.jf.intel.com with ESMTP; 19 Jan 2021 12:42:06 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
         ak@linux.intel.com, yao.jin@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 04/12] perf/x86/intel: Support CPUID 10.ECX to disable fixed counters
-Date:   Tue, 19 Jan 2021 12:38:23 -0800
-Message-Id: <1611088711-17177-5-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 05/12] tools headers uapi: Update tools's copy of linux/perf_event.h
+Date:   Tue, 19 Jan 2021 12:38:24 -0800
+Message-Id: <1611088711-17177-6-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
 References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
@@ -43,166 +43,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-With Architectural Performance Monitoring Version 5, CPUID 10.ECX cpu
-leaf indicates the fixed counter enumeration. This extends the previous
-count to a bitmap which allows disabling even lower fixed counters.
-It could be used by a Hypervisor.
+To get the changes in:
 
-The existing intel_ctrl variable is used to remember the bitmask of the
-counters. All code that reads all counters is fixed to check this extra
-bitmask.
+    ("perf/core: Add PERF_SAMPLE_WEIGHT_EXT")
 
-Originally-by: Andi Kleen <ak@linux.intel.com>
+This cures the following warning during perf's build:
+
+        Warning: Kernel ABI header at
+'tools/include/uapi/linux/perf_event.h' differs from latest version at
+'include/uapi/linux/perf_event.h'
+        diff -u tools/include/uapi/linux/perf_event.h
+include/uapi/linux/perf_event.h
+
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c       |  8 +++++++-
- arch/x86/events/intel/core.c | 43 +++++++++++++++++++++++++++++++++----------
- arch/x86/events/perf_event.h |  5 +++++
- 3 files changed, 45 insertions(+), 11 deletions(-)
+ tools/include/uapi/linux/perf_event.h | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index e37de29..3d6fdcf 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -253,6 +253,8 @@ static bool check_hw_exists(void)
- 		if (ret)
- 			goto msr_fail;
- 		for (i = 0; i < x86_pmu.num_counters_fixed; i++) {
-+			if (fixed_counter_disabled(i))
-+				continue;
- 			if (val & (0x03 << i*4)) {
- 				bios_fail = 1;
- 				val_fail = val;
-@@ -1523,6 +1525,8 @@ void perf_event_print_debug(void)
- 			cpu, idx, prev_left);
- 	}
- 	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++) {
-+		if (fixed_counter_disabled(idx))
-+			continue;
- 		rdmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + idx, pmc_count);
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index b15e344..17f19cc 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -145,8 +145,9 @@ enum perf_event_sample_format {
+ 	PERF_SAMPLE_CGROUP			= 1U << 21,
+ 	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+ 	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
++	PERF_SAMPLE_WEIGHT_EXT			= 1U << 24,
  
- 		pr_info("CPU#%d: fixed-PMC%d count: %016llx\n",
-@@ -1995,7 +1999,9 @@ static int __init init_hw_perf_events(void)
- 	pr_info("... generic registers:      %d\n",     x86_pmu.num_counters);
- 	pr_info("... value mask:             %016Lx\n", x86_pmu.cntval_mask);
- 	pr_info("... max period:             %016Lx\n", x86_pmu.max_period);
--	pr_info("... fixed-purpose events:   %d\n",     x86_pmu.num_counters_fixed);
-+	pr_info("... fixed-purpose events:   %lu\n",
-+			hweight64((((1ULL << x86_pmu.num_counters_fixed) - 1)
-+					<< INTEL_PMC_IDX_FIXED) & x86_pmu.intel_ctrl));
- 	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
+-	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
++	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
  
- 	if (!x86_pmu.read)
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index a54d4a9..21267dc 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2750,8 +2750,11 @@ static void intel_pmu_reset(void)
- 		wrmsrl_safe(x86_pmu_config_addr(idx), 0ull);
- 		wrmsrl_safe(x86_pmu_event_addr(idx),  0ull);
- 	}
--	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++)
-+	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++) {
-+		if (fixed_counter_disabled(idx))
-+			continue;
- 		wrmsrl_safe(MSR_ARCH_PERFMON_FIXED_CTR0 + idx, 0ull);
-+	}
- 
- 	if (ds)
- 		ds->bts_index = ds->bts_buffer_base;
-@@ -5206,7 +5209,7 @@ __init int intel_pmu_init(void)
- 	union cpuid10_eax eax;
- 	union cpuid10_ebx ebx;
- 	struct event_constraint *c;
--	unsigned int unused;
-+	unsigned int fixed_mask;
- 	struct extra_reg *er;
- 	bool pmem = false;
- 	int version, i;
-@@ -5228,7 +5231,7 @@ __init int intel_pmu_init(void)
- 	 * Check whether the Architectural PerfMon supports
- 	 * Branch Misses Retired hw_event or not.
+ 	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+ };
+@@ -900,6 +901,13 @@ enum perf_event_type {
+ 	 *	  char			data[size]; } && PERF_SAMPLE_AUX
+ 	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
+ 	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
++	 *	{ union {
++	 *		u64		weight_ext;
++	 *		struct {
++	 *			u64	instr_latency:16,
++	 *				reserved:48;
++	 *		};
++	 *	} && PERF_SAMPLE_WEIGHT_EXT
+ 	 * };
  	 */
--	cpuid(10, &eax.full, &ebx.full, &unused, &edx.full);
-+	cpuid(10, &eax.full, &ebx.full, &fixed_mask, &edx.full);
- 	if (eax.split.mask_length < ARCH_PERFMON_EVENTS_COUNT)
- 		return -ENODEV;
+ 	PERF_RECORD_SAMPLE			= 9,
+@@ -1127,14 +1135,16 @@ union perf_mem_data_src {
+ 			mem_lvl_num:4,	/* memory hierarchy level number */
+ 			mem_remote:1,   /* remote */
+ 			mem_snoopx:2,	/* snoop mode, ext */
+-			mem_rsvd:24;
++			mem_blk:3,	/* access blocked */
++			mem_rsvd:21;
+ 	};
+ };
+ #elif defined(__BIG_ENDIAN_BITFIELD)
+ union perf_mem_data_src {
+ 	__u64 val;
+ 	struct {
+-		__u64	mem_rsvd:24,
++		__u64	mem_rsvd:21,
++			mem_blk:3,	/* access blocked */
+ 			mem_snoopx:2,	/* snoop mode, ext */
+ 			mem_remote:1,   /* remote */
+ 			mem_lvl_num:4,	/* memory hierarchy level number */
+@@ -1217,6 +1227,12 @@ union perf_mem_data_src {
+ #define PERF_MEM_TLB_OS		0x40 /* OS fault handler */
+ #define PERF_MEM_TLB_SHIFT	26
  
-@@ -5255,8 +5258,16 @@ __init int intel_pmu_init(void)
- 	if (version > 1) {
- 		int assume = 3 * !boot_cpu_has(X86_FEATURE_HYPERVISOR);
- 
--		x86_pmu.num_counters_fixed =
--			max((int)edx.split.num_counters_fixed, assume);
-+		if (!fixed_mask) {
-+			x86_pmu.num_counters_fixed =
-+				max((int)edx.split.num_counters_fixed, assume);
-+		} else {
-+			/*
-+			 * The fixed-purpose counters are enumerated in the ECX
-+			 * since V5 perfmon.
-+			 */
-+			x86_pmu.num_counters_fixed = fls(fixed_mask);
-+		}
- 	}
- 
- 	if (version >= 4)
-@@ -5847,8 +5858,11 @@ __init int intel_pmu_init(void)
- 		x86_pmu.num_counters_fixed = INTEL_PMC_MAX_FIXED;
- 	}
- 
--	x86_pmu.intel_ctrl |=
--		((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
-+	if (!fixed_mask) {
-+		x86_pmu.intel_ctrl |=
-+			((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
-+	} else
-+		x86_pmu.intel_ctrl |= (u64)fixed_mask << INTEL_PMC_IDX_FIXED;
- 
- 	/* AnyThread may be deprecated on arch perfmon v5 or later */
- 	if (x86_pmu.intel_cap.anythread_deprecated)
-@@ -5865,13 +5879,22 @@ __init int intel_pmu_init(void)
- 			 * events to the generic counters.
- 			 */
- 			if (c->idxmsk64 & INTEL_PMC_MSK_TOPDOWN) {
-+				/*
-+				 * Disable topdown slots and metrics events,
-+				 * if slots event is not in CPUID.
-+				 */
-+				if (!(INTEL_PMC_MSK_FIXED_SLOTS & x86_pmu.intel_ctrl))
-+					c->idxmsk64 = 0;
- 				c->weight = hweight64(c->idxmsk64);
- 				continue;
- 			}
- 
--			if (c->cmask == FIXED_EVENT_FLAGS
--			    && c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES) {
--				c->idxmsk64 |= (1ULL << x86_pmu.num_counters) - 1;
-+			if (c->cmask == FIXED_EVENT_FLAGS) {
-+				/* Disabled fixed counters which are not in CPUID */
-+				c->idxmsk64 &= x86_pmu.intel_ctrl;
++/* Access blocked */
++#define PERF_MEM_BLK_NA		0x01 /* not available */
++#define PERF_MEM_BLK_DATA	0x02 /* data could not be forwarded */
++#define PERF_MEM_BLK_ADDR	0x04 /* address conflict */
++#define PERF_MEM_BLK_SHIFT	40
 +
-+				if (c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES)
-+					c->idxmsk64 |= (1ULL << x86_pmu.num_counters) - 1;
- 			}
- 			c->idxmsk64 &=
- 				~(~0ULL << (INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed));
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 0ae4e50..ffa598c 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1068,6 +1068,11 @@ ssize_t events_sysfs_show(struct device *dev, struct device_attribute *attr,
- ssize_t events_ht_sysfs_show(struct device *dev, struct device_attribute *attr,
- 			  char *page);
+ #define PERF_MEM_S(a, s) \
+ 	(((__u64)PERF_MEM_##a##_##s) << PERF_MEM_##a##_SHIFT)
  
-+static inline bool fixed_counter_disabled(int i)
-+{
-+	return !(x86_pmu.intel_ctrl >> (i + INTEL_PMC_IDX_FIXED));
-+}
+@@ -1248,4 +1264,12 @@ struct perf_branch_entry {
+ 		reserved:40;
+ };
+ 
++union perf_weight_ext {
++	__u64		val;
++	struct {
++		__u64	instr_latency:16,
++			reserved:48;
++	};
++};
 +
- #ifdef CONFIG_CPU_SUP_AMD
- 
- int amd_pmu_init(void);
+ #endif /* _UAPI_LINUX_PERF_EVENT_H */
 -- 
 2.7.4
 
