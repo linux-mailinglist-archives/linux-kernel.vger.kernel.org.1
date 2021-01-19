@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F8E2FC1BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 018842FC1C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbhASVAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:00:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390364AbhASUvC (ORCPT
+        id S2389622AbhASVCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:02:00 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:43127 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731893AbhASVA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:51:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611089376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C2zkZ60nc0oYz+Jw0v4vLWfZnUOJXoKUEdPKsKZO6hc=;
-        b=LX3FqauqG9dOQaTjtRVt36xmUn5SPbsNdinTHfXJzrDgstIq3axuntoihACTijC/XH4FtU
-        /7625S1+wzX6dDg9/dGDwzmANwSWnriNPkNrY5Tc/0x5yMk1A8AWT4RzCAtMxhUIaX0Dmr
-        xUOR371U1nEJ3nb5VKWAGolrJrxvN64=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-eGqSDM2FMru6TYFp7UNk5A-1; Tue, 19 Jan 2021 15:49:32 -0500
-X-MC-Unique: eGqSDM2FMru6TYFp7UNk5A-1
-Received: by mail-qv1-f71.google.com with SMTP id h1so20808555qvr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:49:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=C2zkZ60nc0oYz+Jw0v4vLWfZnUOJXoKUEdPKsKZO6hc=;
-        b=WTte1qcXCrYF/YEJJeRnhFxEQyun+Nt6CLhVuoC5wbNEZbE/Nsq1LSKHdZfOKx/UFX
-         N7f1f9vNIXDehn+SzqjGO7XHBsQYcStrXqP8d8Fflu8oRbg44eZ5s3fJvbI/czmTuMv5
-         0ELG92SMt2E2oigFwUs6z0U8oKPlN8I3YExNyo2AKcYkaz9joiuhMXn0y3LlQwbrvADn
-         /1tT2K3PLSublW7XXOJPmYbvhdzhwUtpZJz+T4v+SwovM6iMK306W62CaZJ+nf4PSg/r
-         u6XzahqoLzYGZO/9xXK4k91c/5726yeWJ1tC9SoJtyuXJQoW1DQRzFCmAL9xFPQ8w5+h
-         Soww==
-X-Gm-Message-State: AOAM532hPjC31iqv0CvFZ1p4Zdp4ZAAbKuLCTUJKLr1+1f/4QlmJWgJN
-        WJDc9ho8ferexW9+PW6kDcaxJKUKv6Vc/YZiZzi1GyH6Tb+fl8qQw5r6X/GRg8Cc0Ib/XiZFkUR
-        4LzPZcqV37w/a6rDmT+gPZOS9
-X-Received: by 2002:ac8:564e:: with SMTP id 14mr6045340qtt.286.1611089371704;
-        Tue, 19 Jan 2021 12:49:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy7yWKQXou9HBpzcYqZ8RsXxZxxAaFbMWaMbqqtjcbkVrqtnKwMsT4xtWYjmXVeEV11IyPkcQ==
-X-Received: by 2002:ac8:564e:: with SMTP id 14mr6045326qtt.286.1611089371485;
-        Tue, 19 Jan 2021 12:49:31 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 38sm11016784qtb.67.2021.01.19.12.49.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 12:49:30 -0800 (PST)
-Subject: Re: [PATCH v7 0/6] Intel MAX10 BMC Secure Update Driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20210105230855.15019-1-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <b13a487f-7437-0278-6a9e-f10a5273065b@redhat.com>
-Date:   Tue, 19 Jan 2021 12:49:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 19 Jan 2021 16:00:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611090058; x=1642626058;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mwYgYrzxMbxsnnfaYbK7dQXBmCyRJjxIkznIATJAT00=;
+  b=aEZ/Ktv1iz51BuqAYUL3ExFdJVjjUn86Xm9PQOcDVvJ0Nwf6cVx8WmWj
+   LPfm3BSIP9K11PBgsxZgDqPTKX/JMSa75G4ZY17J6jlGlFLYAA91L4J3E
+   XG0L7n/TXskf7NXhTXzyp35PI/MtdNOlRi6zQ7wjTMf4AEQyQMtmJmTl6
+   OXrhsA8rsOnULC2SCt1ipE74zHpD5hyWrxj+l35dQSR5IKTa1DycusrTP
+   8I8DdKp/ieW1BafzsSz9rsD6gd/2ofN/2sWda+UlzKNfOKGas3D6vNW8b
+   YeU0tOHuDHPoxtl8p+qBuEyMdQ9CzZGZokyHF2IPM8zmhqsISRW2sGxs3
+   g==;
+IronPort-SDR: IPQs4+9uoVaysBHS2pyMPeetTZmdcdMgptCbbWBOGHs2tU2bVXqs6Y9rz+bdUkZIsV5x/OFgVv
+ 9QvZ06ry35boY5iq7DrvHgJayOLZKNhwZoLnnXD5sd21ry/npnOINiGJLkbF+efm0ccShs9ICl
+ 5UX86tGYnd5tYTYMXsO9ZKZT+oRNIyjcGuNjMZTcOGb7flIT1CE0xaYrbOGhv1BWDqMb7SVrc9
+ qM9dZFaP1vuZNOi2SMdehYGpgQ56HaZc0eV1ApoPrYBY5p4+qT2RDhb8exod1ZwWC+pPjax41z
+ zNo=
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="100678276"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jan 2021 13:59:42 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 19 Jan 2021 13:59:42 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 19 Jan 2021 13:59:41 -0700
+Date:   Tue, 19 Jan 2021 21:59:39 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: mrp: use stp state as substitute for
+ unimplemented mrp state
+Message-ID: <20210119205939.x3dxkbgjyuzzcxnk@soft-dev3.localdomain>
+References: <20210118181319.25419-1-rasmus.villemoes@prevas.dk>
+ <20210118185618.75h45rjf6qqberic@soft-dev3.localdomain>
+ <20210118194632.zn5yucjfibguemjq@skbuf>
+ <20210118202036.wk2fuwa3hysg4dmj@soft-dev3.localdomain>
+ <20210118212735.okoov5ndybszd6m5@skbuf>
+ <20210119083240.37cxv3lxi25hwduj@soft-dev3.localdomain>
+ <YAcAIcwfp8za9JUo@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210105230855.15019-1-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YAcAIcwfp8za9JUo@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 01/19/2021 16:52, Andrew Lunn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Tue, Jan 19, 2021 at 09:32:40AM +0100, Horatiu Vultur wrote:
+> > The 01/18/2021 21:27, Vladimir Oltean wrote:
+> > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > >
+> > > On Mon, Jan 18, 2021 at 09:20:36PM +0100, Horatiu Vultur wrote:
+> > > > The 01/18/2021 19:46, Vladimir Oltean wrote:
+> > > > >
+> > > > > On Mon, Jan 18, 2021 at 07:56:18PM +0100, Horatiu Vultur wrote:
+> > > > > > The reason was to stay away from STP, because you can't run these two
+> > > > > > protocols at the same time. Even though in SW, we reuse port's state.
+> > > > > > In our driver(which is not upstreamed), we currently implement
+> > > > > > SWITCHDEV_ATTR_ID_MRP_PORT_STATE and just call the
+> > > > > > SWITCHDEV_ATTR_ID_PORT_STP_STATE.
+> > > > >
+> > > > > And isn't Rasmus's approach reasonable, in that it allows unmodified
+> > > > > switchdev drivers to offload MRP port states without creating
+> > > > > unnecessary code churn?
+> > > >
+> > > > I am sorry but I don't see this as the correct solution. In my opinion,
+> > > > I would prefer to have 3 extra lines in the driver and have a better
+> > > > view of what is happening. Than having 2 calls in the driver for
+> > > > different protocols.
+> > >
+> > > I think the question boils down to: is a MRP-unaware driver expected to
+> > > work with the current bridge MRP code?
+> >
+> > If the driver has switchdev support, then is not expected to work with
+> > the current bridge MRP code.
+> 
+> >
+> > For example, the Ocelot driver, it has switchdev support but no MRP
+> > support so this is not expected to work.
+> 
+> Then ideally, we need switchdev core to be testing for the needed ops
+> and returning an error which prevents MRP being configured when it
+> cannot work.
 
-On 1/5/21 3:08 PM, Russ Weight wrote:
+Yes, that would be great, I had a look at the handled attribute of the
+switchdev_notifier_port_attr_info but I am not sure.
 
-...
+But what about adding some 'if (IS_ENBABLED(NET_SWITCHDEV))' in br_mrp.c
+and then calling the functions br_mrp_switchdev_ only if this is
+enabled.  Then whenever the switchdev call returns an error then is
+cleared that MRP can't be configured.
 
->  .../testing/sysfs-driver-intel-m10-bmc-secure |  61 ++
->  MAINTAINERS                                   |   2 +
->  drivers/fpga/Kconfig                          |  11 +
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/intel-m10-bmc-secure.c           | 543 ++++++++++++++++++
->  include/linux/mfd/intel-m10-bmc.h             |  85 +++
+> 
+>        Andrew
 
-I am having trouble pulling this into my testing branch where i am tracking some other changes to intel-m10-bmc.h
-
-https://lore.kernel.org/lkml/20210114231648.199685-1-russell.h.weight@intel.com/
-
-https://lore.kernel.org/lkml/1609999628-12748-3-git-send-email-yilun.xu@intel.com/
-
-so I am wondering if it makes sense to split the intel-m10-bmc.h change out of this patchset and sent as a single patch to mfd subsystem ?  The change is a bunch of #defines that don't do anything on their own, but will conflict with other similar additions to the h file.
-
-Tom
-
->  6 files changed, 705 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
->  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
->
-
+-- 
+/Horatiu
