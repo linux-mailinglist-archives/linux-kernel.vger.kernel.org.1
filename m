@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F32E2FBC38
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDD92FBC37
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392216AbhASQP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:15:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36740 "EHLO mail.kernel.org"
+        id S2391644AbhASQPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:15:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391818AbhASQNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2391815AbhASQNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 11:13:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF0B3233CE;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C25D0233F6;
         Tue, 19 Jan 2021 16:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611072652;
-        bh=vQxekNjvZk65Y6XZ8rH1ft9p//kEfgKJNdUAIX5RkxI=;
+        bh=sW1F6/IwIAXpiBU9ATN+LzVHfZjvOlKIN6ECBDUEzFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NWwrviAR9hMB2y246Vq+Ip6Qcry2RSjfL1bTauCvwZP69D8SSUicKUQZbJWqgEY7V
-         PVW3sagdOOuR2S8CbktD31QC8FNyBfKb9zHv1evq/VuPchLRGPW8HDBnXncc/8gqJg
-         BnC39ZXi60JChuhH/K61fIAefLNwoJzOMBIuXcrr68IhNpW2Y0b+2XgxUU6DljEfKz
-         hPeDQjPGFe9egSLPHW0e4TyqBgVLFnCdntoTKXeZgZocFcpz+1dainwBb8RzlI3E3I
-         zBF3C8Jmmk7WSAe0CG57kQ5dHXsHMah6GxO9LiNlv2urovbkjo48ggy8bu/whAIvgI
-         lMVJkCw/CQzgQ==
+        b=tUSFec9heCRcp8tEQSX99vJabgu/Fg24oh636RslQum4VBXIZCv8waEnyorgNHu/C
+         zftrP7N/SYIxSK9L4LZ5Y1S18DwAdkufwIXHs7yGY0C6DgZ7CKuiqRziIki9gZRG1z
+         i6r9znG+EZuuohWLA8UzCLSWgrkMgMk+GzwmtTH9mBklhkYeqScZqmf9e0JX0vTDGJ
+         NdD0DJ6B/k0G0HhgDulPobryfSxH9ZcHHoqwFTPZX0lsOKmvEzdkf+9+nYSnzlTvIN
+         GmmO9nAeaiLxiqWPQ7hyaXqooKDSBSvTCCdHrWwSF/+mAkSygglhqNRsz6Gp6j7I6A
+         bmGiPdt4Fx5eA==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l1taj-0012cD-C3; Tue, 19 Jan 2021 17:10:49 +0100
+        id 1l1taj-0012cK-FT; Tue, 19 Jan 2021 17:10:49 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 17/21] spmi: hisi-spmi-controller: move driver from staging
-Date:   Tue, 19 Jan 2021 17:10:43 +0100
-Message-Id: <b74098493891d0e7386c3cdb4e466aed9450b1d9.1611072387.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 19/21] regulator: hi6421v600-regulator: move it from staging
+Date:   Tue, 19 Jan 2021 17:10:45 +0100
+Message-Id: <8000252dfd10677c5eb52d498e68de9c65304cf4.1611072387.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611072387.git.mchehab+huawei@kernel.org>
 References: <cover.1611072387.git.mchehab+huawei@kernel.org>
@@ -51,996 +46,821 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Hisilicon 6421v600 SPMI driver is ready for mainstream.
-
-So, move it from staging.
+This driver is ready for mainstream. Move it out of staging.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../spmi/hisilicon,hisi-spmi-controller.yaml  |  75 ++++
- MAINTAINERS                                   |   7 +
- drivers/spmi/Kconfig                          |   9 +
- drivers/spmi/Makefile                         |   1 +
- drivers/spmi/hisi-spmi-controller.c           | 358 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +-
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/hi6421v600-regulator.c      | 338 ++++++++++++++++++
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
  drivers/staging/hikey9xx/Kconfig              |  11 -
- drivers/staging/hikey9xx/Makefile             |   1 -
- .../staging/hikey9xx/hisi-spmi-controller.c   | 358 ------------------
- .../hisilicon,hisi-spmi-controller.yaml       |  75 ----
- 9 files changed, 450 insertions(+), 445 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
- create mode 100644 drivers/spmi/hisi-spmi-controller.c
- delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
- delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+ drivers/staging/hikey9xx/Makefile             |   3 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ .../staging/hikey9xx/hi6421v600-regulator.c   | 338 ------------------
+ 10 files changed, 348 insertions(+), 366 deletions(-)
+ create mode 100644 drivers/regulator/hi6421v600-regulator.c
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421v600-regulator.c
 
-diff --git a/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-new file mode 100644
-index 000000000000..21f68a9c2df1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon SPMI controller
-+
-+maintainers:
-+  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+
-+description: |
-+  The HiSilicon SPMI BUS controller is found on some Kirin-based designs.
-+  It is a MIPI System Power Management (SPMI) controller.
-+
-+  The PMIC part is provided by
-+  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
-+
-+properties:
-+  $nodename:
-+    pattern: "spmi@[0-9a-f]"
-+
-+  compatible:
-+    const: hisilicon,kirin970-spmi-controller
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 2
-+
-+  "#size-cells":
-+    const: 0
-+
-+  spmi-channel:
-+    description: |
-+      number of the Kirin 970 SPMI channel where the SPMI devices are connected.
-+
-+required:
-+  - compatible
-+  - reg
-+  - spmi-channel
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+patternProperties:
-+  "^pmic@[0-9a-f]$":
-+    description: |
-+      PMIC properties, which are specific to the used SPMI PMIC device(s).
-+      When used in combination with HiSilicon 6421v600, the properties
-+      are documented at
-+      drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bus {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      spmi: spmi@fff24000 {
-+        compatible = "hisilicon,kirin970-spmi-controller";
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+        status = "ok";
-+        reg = <0x0 0xfff24000 0x0 0x1000>;
-+        spmi-channel = <2>;
-+
-+        pmic@0 {
-+          reg = <0 0>;
-+          /* pmic properties */
-+        };
-+      };
-+    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d858e8d5a52..85e5b6ab57ca 100644
+index c5b36a58ede5..138798bbb32e 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -7999,6 +7999,13 @@ F:	drivers/crypto/hisilicon/sec2/sec_crypto.c
- F:	drivers/crypto/hisilicon/sec2/sec_crypto.h
- F:	drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -8012,12 +8012,7 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ F:	drivers/mfd/hi6421-spmi-pmic.c
+-
+-HISILICON STAGING DRIVERS FOR HIKEY 960/970
+-M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+-L:	devel@driverdev.osuosl.org
+-S:	Maintained
+-F:	drivers/staging/hikey9xx/
++F:	drivers/regulator/hi6421v600-regulator.c
  
-+HISILICON SPMI CONTROLLER DRIVER FOR HIKEY 970
-+M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-+F:	drivers/spmi/hisi-spmi-controller.c
-+
- HISILICON STAGING DRIVERS FOR HIKEY 960/970
- M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
- L:	devel@driverdev.osuosl.org
-diff --git a/drivers/spmi/Kconfig b/drivers/spmi/Kconfig
-index a53bad541f1a..2874b6c26028 100644
---- a/drivers/spmi/Kconfig
-+++ b/drivers/spmi/Kconfig
-@@ -11,6 +11,15 @@ menuconfig SPMI
+ HISILICON TRUE RANDOM NUMBER GENERATOR V2 SUPPORT
+ M:	Zaibo Xu <xuzaibo@huawei.com>
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 020a00d6696b..ca983e5a7a4d 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -394,6 +394,14 @@ config REGULATOR_HI655X
+ 	  This driver provides support for the voltage regulators of the
+ 	  Hisilicon Hi655x PMIC device.
  
- if SPMI
- 
-+config SPMI_HISI3670
-+	tristate "Hisilicon 3670 SPMI Controller"
-+	select IRQ_DOMAIN_HIERARCHY
-+	depends on HAS_IOMEM
++config REGULATOR_HI6421V600
++	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
++	depends on MFD_HI6421_SPMI && OF
 +	help
-+	  If you say yes to this option, support will be included for the
-+	  built-in SPMI PMIC Arbiter interface on Hisilicon 3670
-+	  processors.
++	  This driver provides support for the voltage regulators on
++	  HiSilicon Hi6421v600 PMU / Codec IC.
++	  This is used on Kirin 3670 boards, like HiKey 970.
 +
- config SPMI_MSM_PMIC_ARB
- 	tristate "Qualcomm MSM SPMI Controller (PMIC Arbiter)"
- 	select IRQ_DOMAIN_HIERARCHY
-diff --git a/drivers/spmi/Makefile b/drivers/spmi/Makefile
-index 55a94cadeffe..6e092e6f290c 100644
---- a/drivers/spmi/Makefile
-+++ b/drivers/spmi/Makefile
-@@ -4,4 +4,5 @@
- #
- obj-$(CONFIG_SPMI)	+= spmi.o
- 
-+obj-$(CONFIG_SPMI_HISI3670)	+= hisi-spmi-controller.o
- obj-$(CONFIG_SPMI_MSM_PMIC_ARB)	+= spmi-pmic-arb.o
-diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-spmi-controller.c
+ config REGULATOR_ISL9305
+ 	tristate "Intersil ISL9305 regulator"
+ 	depends on I2C
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 6ebae516258e..45d1883de54b 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_REGULATOR_FAN53880) += fan53880.o
+ obj-$(CONFIG_REGULATOR_GPIO) += gpio-regulator.o
+ obj-$(CONFIG_REGULATOR_HI6421) += hi6421-regulator.o
+ obj-$(CONFIG_REGULATOR_HI6421V530) += hi6421v530-regulator.o
++obj-$(CONFIG_REGULATOR_HI6421V600) += hi6421v600-regulator.o
+ obj-$(CONFIG_REGULATOR_HI655X) += hi655x-regulator.o
+ obj-$(CONFIG_REGULATOR_ISL6271A) += isl6271a-regulator.o
+ obj-$(CONFIG_REGULATOR_ISL9305) += isl9305.o
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
 new file mode 100644
-index 000000000000..4be2344ad7b5
+index 000000000000..9e319fa11137
 --- /dev/null
-+++ b/drivers/spmi/hisi-spmi-controller.c
-@@ -0,0 +1,358 @@
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -0,0 +1,338 @@
 +// SPDX-License-Identifier: GPL-2.0
++//
++// Device driver for regulators in Hisi IC
++//
++// Copyright (c) 2013 Linaro Ltd.
++// Copyright (c) 2011 Hisilicon.
++// Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
++//
++// Guodong Xu <guodong.xu@linaro.org>
 +
 +#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
++#include <linux/mfd/hi6421-spmi-pmic.h>
 +#include <linux/module.h>
-+#include <linux/of.h>
 +#include <linux/platform_device.h>
-+#include <linux/seq_file.h>
-+#include <linux/slab.h>
++#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
 +#include <linux/spmi.h>
 +
-+/*
-+ * SPMI register addr
-+ */
-+#define SPMI_CHANNEL_OFFSET				0x0300
-+#define SPMI_SLAVE_OFFSET				0x20
++struct hi6421_spmi_reg_info {
++	struct regulator_desc	desc;
++	struct hi6421_spmi_pmic *pmic;
++	u8			eco_mode_mask;
++	u32			eco_uA;
 +
-+#define SPMI_APB_SPMI_CMD_BASE_ADDR			0x0100
-+
-+#define SPMI_APB_SPMI_WDATA0_BASE_ADDR			0x0104
-+#define SPMI_APB_SPMI_WDATA1_BASE_ADDR			0x0108
-+#define SPMI_APB_SPMI_WDATA2_BASE_ADDR			0x010c
-+#define SPMI_APB_SPMI_WDATA3_BASE_ADDR			0x0110
-+
-+#define SPMI_APB_SPMI_STATUS_BASE_ADDR			0x0200
-+
-+#define SPMI_APB_SPMI_RDATA0_BASE_ADDR			0x0204
-+#define SPMI_APB_SPMI_RDATA1_BASE_ADDR			0x0208
-+#define SPMI_APB_SPMI_RDATA2_BASE_ADDR			0x020c
-+#define SPMI_APB_SPMI_RDATA3_BASE_ADDR			0x0210
-+
-+#define SPMI_PER_DATAREG_BYTE				4
-+/*
-+ * SPMI cmd register
-+ */
-+#define SPMI_APB_SPMI_CMD_EN				BIT(31)
-+#define SPMI_APB_SPMI_CMD_TYPE_OFFSET			24
-+#define SPMI_APB_SPMI_CMD_LENGTH_OFFSET			20
-+#define SPMI_APB_SPMI_CMD_SLAVEID_OFFSET		16
-+#define SPMI_APB_SPMI_CMD_ADDR_OFFSET			0
-+
-+/* Command Opcodes */
-+
-+enum spmi_controller_cmd_op_code {
-+	SPMI_CMD_REG_ZERO_WRITE = 0,
-+	SPMI_CMD_REG_WRITE = 1,
-+	SPMI_CMD_REG_READ = 2,
-+	SPMI_CMD_EXT_REG_WRITE = 3,
-+	SPMI_CMD_EXT_REG_READ = 4,
-+	SPMI_CMD_EXT_REG_WRITE_L = 5,
-+	SPMI_CMD_EXT_REG_READ_L = 6,
-+	SPMI_CMD_REG_RESET = 7,
-+	SPMI_CMD_REG_SLEEP = 8,
-+	SPMI_CMD_REG_SHUTDOWN = 9,
-+	SPMI_CMD_REG_WAKEUP = 10,
++	/* Serialize regulator enable logic */
++	struct mutex enable_mutex;
 +};
 +
-+/*
-+ * SPMI status register
-+ */
-+#define SPMI_APB_TRANS_DONE			BIT(0)
-+#define SPMI_APB_TRANS_FAIL			BIT(2)
-+
-+/* Command register fields */
-+#define SPMI_CONTROLLER_CMD_MAX_BYTE_COUNT	16
-+
-+/* Maximum number of support PMIC peripherals */
-+#define SPMI_CONTROLLER_TIMEOUT_US		1000
-+#define SPMI_CONTROLLER_MAX_TRANS_BYTES		16
-+
-+struct spmi_controller_dev {
-+	struct spmi_controller	*controller;
-+	struct device		*dev;
-+	void __iomem		*base;
-+	spinlock_t		lock;
-+	u32			channel;
++static const unsigned int ldo3_voltages[] = {
++	1500000, 1550000, 1600000, 1650000,
++	1700000, 1725000, 1750000, 1775000,
++	1800000, 1825000, 1850000, 1875000,
++	1900000, 1925000, 1950000, 2000000
 +};
 +
-+static int spmi_controller_wait_for_done(struct device *dev,
-+					 struct spmi_controller_dev *ctrl_dev,
-+					 void __iomem *base, u8 sid, u16 addr)
++static const unsigned int ldo4_voltages[] = {
++	1725000, 1750000, 1775000, 1800000,
++	1825000, 1850000, 1875000, 1900000
++};
++
++static const unsigned int ldo9_voltages[] = {
++	1750000, 1800000, 1825000, 2800000,
++	2850000, 2950000, 3000000, 3300000
++};
++
++static const unsigned int ldo15_voltages[] = {
++	1800000, 1850000, 2400000, 2600000,
++	2700000, 2850000, 2950000, 3000000
++};
++
++static const unsigned int ldo17_voltages[] = {
++	2500000, 2600000, 2700000, 2800000,
++	3000000, 3100000, 3200000, 3300000
++};
++
++static const unsigned int ldo34_voltages[] = {
++	2600000, 2700000, 2800000, 2900000,
++	3000000, 3100000, 3200000, 3300000
++};
++
++/**
++ * HI6421V600_LDO() - specify a LDO power line
++ * @_id: LDO id name string
++ * @vtable: voltage table
++ * @ereg: enable register
++ * @emask: enable mask
++ * @vreg: voltage select register
++ * @odelay: off/on delay time in uS
++ * @etime: enable time in uS
++ * @ecomask: eco mode mask
++ * @ecoamp: eco mode load uppler limit in uA
++ */
++#define HI6421V600_LDO(_id, vtable, ereg, emask, vreg,			       \
++		       odelay, etime, ecomask, ecoamp)			       \
++	[HI6421V600_##_id] = {						       \
++		.desc = {						       \
++			.name		= #_id,				       \
++			.of_match        = of_match_ptr(#_id),		       \
++			.regulators_node = of_match_ptr("regulators"),	       \
++			.ops		= &hi6421_spmi_ldo_rops,	       \
++			.type		= REGULATOR_VOLTAGE,		       \
++			.id		= HI6421V600_##_id,		       \
++			.owner		= THIS_MODULE,			       \
++			.volt_table	= vtable,			       \
++			.n_voltages	= ARRAY_SIZE(vtable),		       \
++			.vsel_mask	= (1 << (ARRAY_SIZE(vtable) - 1)) - 1, \
++			.vsel_reg	= vreg,				       \
++			.enable_reg	= ereg,				       \
++			.enable_mask	= emask,			       \
++			.enable_time	= etime,			       \
++			.ramp_delay	= etime,			       \
++			.off_on_delay	= odelay,			       \
++		},							       \
++		.eco_mode_mask		= ecomask,			       \
++		.eco_uA			= ecoamp,			       \
++	}
++
++static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)
 +{
-+	u32 timeout = SPMI_CONTROLLER_TIMEOUT_US;
-+	u32 status, offset;
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
++	u32 reg_val;
 +
-+	offset  = SPMI_APB_SPMI_STATUS_BASE_ADDR;
-+	offset += SPMI_CHANNEL_OFFSET * ctrl_dev->channel + SPMI_SLAVE_OFFSET * sid;
++	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
 +
-+	do {
-+		status = readl(base + offset);
-+
-+		if (status & SPMI_APB_TRANS_DONE) {
-+			if (status & SPMI_APB_TRANS_FAIL) {
-+				dev_err(dev, "%s: transaction failed (0x%x)\n",
-+					__func__, status);
-+				return -EIO;
-+			}
-+			dev_dbg(dev, "%s: status 0x%x\n", __func__, status);
-+			return 0;
-+		}
-+		udelay(1);
-+	} while (timeout--);
-+
-+	dev_err(dev, "%s: timeout, status 0x%x\n", __func__, status);
-+	return -ETIMEDOUT;
++	return ((reg_val & rdev->desc->enable_mask) != 0);
 +}
 +
-+static int spmi_read_cmd(struct spmi_controller *ctrl,
-+			 u8 opc, u8 slave_id, u16 slave_addr, u8 *__buf, size_t bc)
++static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
 +{
-+	struct spmi_controller_dev *spmi_controller = dev_get_drvdata(&ctrl->dev);
-+	u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
-+	unsigned long flags;
-+	u8 *buf = __buf;
-+	u32 cmd, data;
-+	int rc;
-+	u8 op_code, i;
-+
-+	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
-+		dev_err(&ctrl->dev,
-+			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
-+			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
-+		return  -EINVAL;
-+	}
-+
-+	switch (opc) {
-+	case SPMI_CMD_READ:
-+		op_code = SPMI_CMD_REG_READ;
-+		break;
-+	case SPMI_CMD_EXT_READ:
-+		op_code = SPMI_CMD_EXT_REG_READ;
-+		break;
-+	case SPMI_CMD_EXT_READL:
-+		op_code = SPMI_CMD_EXT_REG_READ_L;
-+		break;
-+	default:
-+		dev_err(&ctrl->dev, "invalid read cmd 0x%x\n", opc);
-+		return -EINVAL;
-+	}
-+
-+	cmd = SPMI_APB_SPMI_CMD_EN |
-+	     (op_code << SPMI_APB_SPMI_CMD_TYPE_OFFSET) |
-+	     ((bc - 1) << SPMI_APB_SPMI_CMD_LENGTH_OFFSET) |
-+	     ((slave_id & 0xf) << SPMI_APB_SPMI_CMD_SLAVEID_OFFSET) |  /* slvid */
-+	     ((slave_addr & 0xffff)  << SPMI_APB_SPMI_CMD_ADDR_OFFSET); /* slave_addr */
-+
-+	spin_lock_irqsave(&spmi_controller->lock, flags);
-+
-+	writel(cmd, spmi_controller->base + chnl_ofst + SPMI_APB_SPMI_CMD_BASE_ADDR);
-+
-+	rc = spmi_controller_wait_for_done(&ctrl->dev, spmi_controller,
-+					   spmi_controller->base, slave_id, slave_addr);
-+	if (rc)
-+		goto done;
-+
-+	for (i = 0; bc > i * SPMI_PER_DATAREG_BYTE; i++) {
-+		data = readl(spmi_controller->base + chnl_ofst +
-+			     SPMI_SLAVE_OFFSET * slave_id +
-+			     SPMI_APB_SPMI_RDATA0_BASE_ADDR +
-+			     i * SPMI_PER_DATAREG_BYTE);
-+		data = be32_to_cpu((__force __be32)data);
-+		if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
-+			memcpy(buf, &data, sizeof(data));
-+			buf += sizeof(data);
-+		} else {
-+			memcpy(buf, &data, bc % SPMI_PER_DATAREG_BYTE);
-+			buf += (bc % SPMI_PER_DATAREG_BYTE);
-+		}
-+	}
-+
-+done:
-+	spin_unlock_irqrestore(&spmi_controller->lock, flags);
-+	if (rc)
-+		dev_err(&ctrl->dev,
-+			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
-+			opc, slave_id, slave_addr, bc + 1);
-+	else
-+		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, read value: %*ph\n",
-+			__func__, slave_id, slave_addr, (int)bc, __buf);
-+
-+	return rc;
-+}
-+
-+static int spmi_write_cmd(struct spmi_controller *ctrl,
-+			  u8 opc, u8 slave_id, u16 slave_addr, const u8 *__buf, size_t bc)
-+{
-+	struct spmi_controller_dev *spmi_controller = dev_get_drvdata(&ctrl->dev);
-+	u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
-+	const u8 *buf = __buf;
-+	unsigned long flags;
-+	u32 cmd, data;
-+	int rc;
-+	u8 op_code, i;
-+
-+	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
-+		dev_err(&ctrl->dev,
-+			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
-+			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
-+		return  -EINVAL;
-+	}
-+
-+	switch (opc) {
-+	case SPMI_CMD_WRITE:
-+		op_code = SPMI_CMD_REG_WRITE;
-+		break;
-+	case SPMI_CMD_EXT_WRITE:
-+		op_code = SPMI_CMD_EXT_REG_WRITE;
-+		break;
-+	case SPMI_CMD_EXT_WRITEL:
-+		op_code = SPMI_CMD_EXT_REG_WRITE_L;
-+		break;
-+	default:
-+		dev_err(&ctrl->dev, "invalid write cmd 0x%x\n", opc);
-+		return -EINVAL;
-+	}
-+
-+	cmd = SPMI_APB_SPMI_CMD_EN |
-+	      (op_code << SPMI_APB_SPMI_CMD_TYPE_OFFSET) |
-+	      ((bc - 1) << SPMI_APB_SPMI_CMD_LENGTH_OFFSET) |
-+	      ((slave_id & 0xf) << SPMI_APB_SPMI_CMD_SLAVEID_OFFSET) |
-+	      ((slave_addr & 0xffff)  << SPMI_APB_SPMI_CMD_ADDR_OFFSET);
-+
-+	/* Write data to FIFOs */
-+	spin_lock_irqsave(&spmi_controller->lock, flags);
-+
-+	for (i = 0; bc > i * SPMI_PER_DATAREG_BYTE; i++) {
-+		data = 0;
-+		if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
-+			memcpy(&data, buf, sizeof(data));
-+			buf += sizeof(data);
-+		} else {
-+			memcpy(&data, buf, bc % SPMI_PER_DATAREG_BYTE);
-+			buf += (bc % SPMI_PER_DATAREG_BYTE);
-+		}
-+
-+		writel((__force u32)cpu_to_be32(data),
-+		       spmi_controller->base + chnl_ofst +
-+		       SPMI_APB_SPMI_WDATA0_BASE_ADDR +
-+		       SPMI_PER_DATAREG_BYTE * i);
-+	}
-+
-+	/* Start the transaction */
-+	writel(cmd, spmi_controller->base + chnl_ofst + SPMI_APB_SPMI_CMD_BASE_ADDR);
-+
-+	rc = spmi_controller_wait_for_done(&ctrl->dev, spmi_controller,
-+					   spmi_controller->base, slave_id,
-+					   slave_addr);
-+	spin_unlock_irqrestore(&spmi_controller->lock, flags);
-+
-+	if (rc)
-+		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
-+			opc, slave_id, slave_addr, bc);
-+	else
-+		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, wrote value: %*ph\n",
-+			__func__, slave_id, slave_addr, (int)bc, __buf);
-+
-+	return rc;
-+}
-+
-+static int spmi_controller_probe(struct platform_device *pdev)
-+{
-+	struct spmi_controller_dev *spmi_controller;
-+	struct spmi_controller *ctrl;
-+	struct resource *iores;
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
 +	int ret;
 +
-+	ctrl = spmi_controller_alloc(&pdev->dev, sizeof(*spmi_controller));
-+	if (!ctrl) {
-+		dev_err(&pdev->dev, "can not allocate spmi_controller data\n");
-+		return -ENOMEM;
-+	}
-+	spmi_controller = spmi_controller_get_drvdata(ctrl);
-+	spmi_controller->controller = ctrl;
++	/* cannot enable more than one regulator at one time */
++	mutex_lock(&sreg->enable_mutex);
 +
-+	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!iores) {
-+		dev_err(&pdev->dev, "can not get resource!\n");
-+		return -EINVAL;
-+	}
++	ret = regmap_update_bits(pmic->map, rdev->desc->enable_reg,
++				 rdev->desc->enable_mask,
++			         rdev->desc->enable_mask);
 +
-+	spmi_controller->base = devm_ioremap(&pdev->dev, iores->start,
-+					     resource_size(iores));
-+	if (!spmi_controller->base) {
-+		dev_err(&pdev->dev, "can not remap base addr!\n");
-+		return -EADDRNOTAVAIL;
-+	}
++	/* Avoid powering up multiple devices at the same time */
++	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 60);
 +
-+	ret = of_property_read_u32(pdev->dev.of_node, "spmi-channel",
-+				   &spmi_controller->channel);
-+	if (ret) {
-+		dev_err(&pdev->dev, "can not get channel\n");
-+		return -ENODEV;
-+	}
-+
-+	platform_set_drvdata(pdev, spmi_controller);
-+	dev_set_drvdata(&ctrl->dev, spmi_controller);
-+
-+	spin_lock_init(&spmi_controller->lock);
-+
-+	ctrl->nr = spmi_controller->channel;
-+	ctrl->dev.parent = pdev->dev.parent;
-+	ctrl->dev.of_node = of_node_get(pdev->dev.of_node);
-+
-+	/* Callbacks */
-+	ctrl->read_cmd = spmi_read_cmd;
-+	ctrl->write_cmd = spmi_write_cmd;
-+
-+	ret = spmi_controller_add(ctrl);
-+	if (ret)
-+		dev_err(&pdev->dev, "spmi_add_controller failed with error %d!\n", ret);
++	mutex_unlock(&sreg->enable_mutex);
 +
 +	return ret;
 +}
 +
-+static int spmi_del_controller(struct platform_device *pdev)
++static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
 +{
-+	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
 +
-+	spmi_controller_remove(ctrl);
-+	kfree(ctrl);
++	return regmap_update_bits(pmic->map, rdev->desc->enable_reg,
++				  rdev->desc->enable_mask, 0);
++}
++
++static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
++{
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
++	u32 reg_val;
++
++	regmap_read(pmic->map, rdev->desc->vsel_reg, &reg_val);
++
++	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
++}
++
++static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
++						 unsigned int selector)
++{
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
++	u32 reg_val;
++
++	if (selector >= rdev->desc->n_voltages)
++		return -EINVAL;
++
++	reg_val = selector << (ffs(rdev->desc->vsel_mask) - 1);
++
++	/* set voltage selector */
++	return regmap_update_bits(pmic->map, rdev->desc->vsel_reg,
++				  rdev->desc->vsel_mask, reg_val);
++}
++
++static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
++{
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
++	u32 reg_val;
++
++	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
++
++	if (reg_val & sreg->eco_mode_mask)
++		return REGULATOR_MODE_IDLE;
++
++	return REGULATOR_MODE_NORMAL;
++}
++
++static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
++					  unsigned int mode)
++{
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_pmic *pmic = sreg->pmic;
++	u32 val;
++
++	switch (mode) {
++	case REGULATOR_MODE_NORMAL:
++		val = 0;
++		break;
++	case REGULATOR_MODE_IDLE:
++		val = sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return regmap_update_bits(pmic->map, rdev->desc->enable_reg,
++				  sreg->eco_mode_mask, val);
++}
++
++static unsigned int
++hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
++				       int input_uV, int output_uV,
++				       int load_uA)
++{
++	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++
++	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
++		return REGULATOR_MODE_NORMAL;
++
++	return REGULATOR_MODE_IDLE;
++}
++
++static const struct regulator_ops hi6421_spmi_ldo_rops = {
++	.is_enabled = hi6421_spmi_regulator_is_enabled,
++	.enable = hi6421_spmi_regulator_enable,
++	.disable = hi6421_spmi_regulator_disable,
++	.list_voltage = regulator_list_voltage_table,
++	.map_voltage = regulator_map_voltage_iterate,
++	.get_voltage_sel = hi6421_spmi_regulator_get_voltage_sel,
++	.set_voltage_sel = hi6421_spmi_regulator_set_voltage_sel,
++	.get_mode = hi6421_spmi_regulator_get_mode,
++	.set_mode = hi6421_spmi_regulator_set_mode,
++	.get_optimum_mode = hi6421_spmi_regulator_get_optimum_mode,
++};
++
++/* HI6421v600 regulators with known registers */
++enum hi6421_spmi_regulator_id {
++	HI6421V600_LDO3,
++	HI6421V600_LDO4,
++	HI6421V600_LDO9,
++	HI6421V600_LDO15,
++	HI6421V600_LDO16,
++	HI6421V600_LDO17,
++	HI6421V600_LDO33,
++	HI6421V600_LDO34,
++};
++
++static struct hi6421_spmi_reg_info regulator_info[] = {
++	HI6421V600_LDO(LDO3, ldo3_voltages,
++		       0x16, 0x01, 0x51,
++		       20000, 120,
++		       0, 0),
++	HI6421V600_LDO(LDO4, ldo4_voltages,
++		       0x17, 0x01, 0x52,
++		       20000, 120,
++		       0x10, 10000),
++	HI6421V600_LDO(LDO9, ldo9_voltages,
++		       0x1c, 0x01, 0x57,
++		       20000, 360,
++		       0x10, 10000),
++	HI6421V600_LDO(LDO15, ldo15_voltages,
++		       0x21, 0x01, 0x5c,
++		       20000, 360,
++		       0x10, 10000),
++	HI6421V600_LDO(LDO16, ldo15_voltages,
++		       0x22, 0x01, 0x5d,
++		       20000, 360,
++		       0x10, 10000),
++	HI6421V600_LDO(LDO17, ldo17_voltages,
++		       0x23, 0x01, 0x5e,
++		       20000, 120,
++		       0x10, 10000),
++	HI6421V600_LDO(LDO33, ldo17_voltages,
++		       0x32, 0x01, 0x6d,
++		       20000, 120,
++		       0, 0),
++	HI6421V600_LDO(LDO34, ldo34_voltages,
++		       0x33, 0x01, 0x6e,
++		       20000, 120,
++		       0, 0),
++};
++
++static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
++{
++	struct device *pmic_dev = pdev->dev.parent;
++	struct regulator_config config = { };
++	struct hi6421_spmi_reg_info *sreg;
++	struct hi6421_spmi_reg_info *info;
++	struct device *dev = &pdev->dev;
++	struct hi6421_spmi_pmic *pmic;
++	struct regulator_dev *rdev;
++	int i;
++
++	/*
++	 * This driver is meant to be called by hi6421-spmi-core,
++	 * which should first set drvdata. If this doesn't happen, hit
++	 * a warn on and return.
++	 */
++	pmic = dev_get_drvdata(pmic_dev);
++	if (WARN_ON(!pmic))
++		return -ENODEV;
++
++	sreg = devm_kzalloc(dev, sizeof(*sreg), GFP_KERNEL);
++	if (!sreg)
++		return -ENOMEM;
++
++	sreg->pmic = pmic;
++	mutex_init(&sreg->enable_mutex);
++
++	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
++		info = &regulator_info[i];
++
++		config.dev = pdev->dev.parent;
++		config.driver_data = sreg;
++		config.regmap = pmic->map;
++
++		rdev = devm_regulator_register(dev, &info->desc, &config);
++		if (IS_ERR(rdev)) {
++			dev_err(dev, "failed to register %s\n",
++				info->desc.name);
++			return PTR_ERR(rdev);
++		}
++	}
++
 +	return 0;
 +}
 +
-+static const struct of_device_id spmi_controller_match_table[] = {
-+	{
-+		.compatible = "hisilicon,kirin970-spmi-controller",
-+	},
-+	{}
++static const struct platform_device_id hi6421_spmi_regulator_table[] = {
++	{ .name = "hi6421v600-regulator" },
++	{},
 +};
-+MODULE_DEVICE_TABLE(of, spmi_controller_match_table);
++MODULE_DEVICE_TABLE(platform, hi6421_spmi_regulator_table);
 +
-+static struct platform_driver spmi_controller_driver = {
-+	.probe		= spmi_controller_probe,
-+	.remove		= spmi_del_controller,
-+	.driver		= {
-+		.name	= "hisi_spmi_controller",
-+		.of_match_table = spmi_controller_match_table,
++static struct platform_driver hi6421_spmi_regulator_driver = {
++	.id_table = hi6421_spmi_regulator_table,
++	.driver = {
++		.name = "hi6421v600-regulator",
 +	},
++	.probe	= hi6421_spmi_regulator_probe,
 +};
++module_platform_driver(hi6421_spmi_regulator_driver);
 +
-+static int __init spmi_controller_init(void)
-+{
-+	return platform_driver_register(&spmi_controller_driver);
-+}
-+postcore_initcall(spmi_controller_init);
-+
-+static void __exit spmi_controller_exit(void)
-+{
-+	platform_driver_unregister(&spmi_controller_driver);
-+}
-+module_exit(spmi_controller_exit);
-+
++MODULE_DESCRIPTION("Hi6421v600 SPMI regulator driver");
 +MODULE_LICENSE("GPL v2");
-+MODULE_VERSION("1.0");
-+MODULE_ALIAS("platform:spmi_controller");
-diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
-index 0e97b5b9a56a..69392e42cd0d 100644
---- a/drivers/staging/hikey9xx/Kconfig
-+++ b/drivers/staging/hikey9xx/Kconfig
-@@ -1,16 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
++
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index 2d0310448eba..e6c831c6cccc 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -116,6 +116,4 @@ source "drivers/staging/qlge/Kconfig"
  
--# to be placed at drivers/spmi
--config SPMI_HISI3670
--	tristate "Hisilicon 3670 SPMI Controller"
--	select IRQ_DOMAIN_HIERARCHY
--	depends on HAS_IOMEM
--	depends on SPMI
--	help
--	  If you say yes to this option, support will be included for the
--	  built-in SPMI PMIC Arbiter interface on Hisilicon 3670
--	  processors.
+ source "drivers/staging/wfx/Kconfig"
+ 
+-source "drivers/staging/hikey9xx/Kconfig"
 -
- # to be placed at drivers/mfd
- config MFD_HI6421_SPMI
- 	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
-diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
-index 9371dcc3d35b..347880fd378f 100644
---- a/drivers/staging/hikey9xx/Makefile
-+++ b/drivers/staging/hikey9xx/Makefile
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-$(CONFIG_SPMI_HISI3670)		+= hisi-spmi-controller.o
- obj-$(CONFIG_MFD_HI6421_SPMI)		+= hi6421-spmi-pmic.o
- obj-$(CONFIG_REGULATOR_HI6421V600)	+= hi6421v600-regulator.o
-diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+ endif # STAGING
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 757a892ab5b9..a3b1fd0622f9 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -48,4 +48,3 @@ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
+ obj-$(CONFIG_KPC2000)		+= kpc2000/
+ obj-$(CONFIG_QLGE)		+= qlge/
+ obj-$(CONFIG_WFX)		+= wfx/
+-obj-y				+= hikey9xx/
+diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
 deleted file mode 100644
-index 4be2344ad7b5..000000000000
---- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
+index 1afb8648a2c4..000000000000
+--- a/drivers/staging/hikey9xx/Kconfig
 +++ /dev/null
-@@ -1,358 +0,0 @@
+@@ -1,11 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-
+-# to be placed at drivers/regulator
+-config REGULATOR_HI6421V600
+-	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
+-	depends on MFD_HI6421_SPMI && OF
+-	depends on REGULATOR
+-	help
+-	  This driver provides support for the voltage regulators on
+-	  HiSilicon Hi6421v600 PMU / Codec IC.
+-	  This is used on Kirin 3670 boards, like HiKey 970.
+diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
+deleted file mode 100644
+index 4d63184e6086..000000000000
+--- a/drivers/staging/hikey9xx/Makefile
++++ /dev/null
+@@ -1,3 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-
+-obj-$(CONFIG_REGULATOR_HI6421V600)	+= hi6421v600-regulator.o
+diff --git a/drivers/staging/hikey9xx/TODO b/drivers/staging/hikey9xx/TODO
+deleted file mode 100644
+index 65e7996a3066..000000000000
+--- a/drivers/staging/hikey9xx/TODO
++++ /dev/null
+@@ -1,5 +0,0 @@
+-ToDo list:
+-
+-- Port other drivers needed by Hikey 960/970;
+-- Test drivers on Hikey 960;
+-- Validate device tree bindings.
+diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
+deleted file mode 100644
+index 9e319fa11137..000000000000
+--- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
++++ /dev/null
+@@ -1,338 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0
+-//
+-// Device driver for regulators in Hisi IC
+-//
+-// Copyright (c) 2013 Linaro Ltd.
+-// Copyright (c) 2011 Hisilicon.
+-// Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
+-//
+-// Guodong Xu <guodong.xu@linaro.org>
 -
 -#include <linux/delay.h>
--#include <linux/err.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/kernel.h>
+-#include <linux/mfd/hi6421-spmi-pmic.h>
 -#include <linux/module.h>
--#include <linux/of.h>
 -#include <linux/platform_device.h>
--#include <linux/seq_file.h>
--#include <linux/slab.h>
+-#include <linux/regmap.h>
+-#include <linux/regulator/driver.h>
 -#include <linux/spmi.h>
 -
--/*
-- * SPMI register addr
-- */
--#define SPMI_CHANNEL_OFFSET				0x0300
--#define SPMI_SLAVE_OFFSET				0x20
+-struct hi6421_spmi_reg_info {
+-	struct regulator_desc	desc;
+-	struct hi6421_spmi_pmic *pmic;
+-	u8			eco_mode_mask;
+-	u32			eco_uA;
 -
--#define SPMI_APB_SPMI_CMD_BASE_ADDR			0x0100
--
--#define SPMI_APB_SPMI_WDATA0_BASE_ADDR			0x0104
--#define SPMI_APB_SPMI_WDATA1_BASE_ADDR			0x0108
--#define SPMI_APB_SPMI_WDATA2_BASE_ADDR			0x010c
--#define SPMI_APB_SPMI_WDATA3_BASE_ADDR			0x0110
--
--#define SPMI_APB_SPMI_STATUS_BASE_ADDR			0x0200
--
--#define SPMI_APB_SPMI_RDATA0_BASE_ADDR			0x0204
--#define SPMI_APB_SPMI_RDATA1_BASE_ADDR			0x0208
--#define SPMI_APB_SPMI_RDATA2_BASE_ADDR			0x020c
--#define SPMI_APB_SPMI_RDATA3_BASE_ADDR			0x0210
--
--#define SPMI_PER_DATAREG_BYTE				4
--/*
-- * SPMI cmd register
-- */
--#define SPMI_APB_SPMI_CMD_EN				BIT(31)
--#define SPMI_APB_SPMI_CMD_TYPE_OFFSET			24
--#define SPMI_APB_SPMI_CMD_LENGTH_OFFSET			20
--#define SPMI_APB_SPMI_CMD_SLAVEID_OFFSET		16
--#define SPMI_APB_SPMI_CMD_ADDR_OFFSET			0
--
--/* Command Opcodes */
--
--enum spmi_controller_cmd_op_code {
--	SPMI_CMD_REG_ZERO_WRITE = 0,
--	SPMI_CMD_REG_WRITE = 1,
--	SPMI_CMD_REG_READ = 2,
--	SPMI_CMD_EXT_REG_WRITE = 3,
--	SPMI_CMD_EXT_REG_READ = 4,
--	SPMI_CMD_EXT_REG_WRITE_L = 5,
--	SPMI_CMD_EXT_REG_READ_L = 6,
--	SPMI_CMD_REG_RESET = 7,
--	SPMI_CMD_REG_SLEEP = 8,
--	SPMI_CMD_REG_SHUTDOWN = 9,
--	SPMI_CMD_REG_WAKEUP = 10,
+-	/* Serialize regulator enable logic */
+-	struct mutex enable_mutex;
 -};
 -
--/*
-- * SPMI status register
-- */
--#define SPMI_APB_TRANS_DONE			BIT(0)
--#define SPMI_APB_TRANS_FAIL			BIT(2)
--
--/* Command register fields */
--#define SPMI_CONTROLLER_CMD_MAX_BYTE_COUNT	16
--
--/* Maximum number of support PMIC peripherals */
--#define SPMI_CONTROLLER_TIMEOUT_US		1000
--#define SPMI_CONTROLLER_MAX_TRANS_BYTES		16
--
--struct spmi_controller_dev {
--	struct spmi_controller	*controller;
--	struct device		*dev;
--	void __iomem		*base;
--	spinlock_t		lock;
--	u32			channel;
+-static const unsigned int ldo3_voltages[] = {
+-	1500000, 1550000, 1600000, 1650000,
+-	1700000, 1725000, 1750000, 1775000,
+-	1800000, 1825000, 1850000, 1875000,
+-	1900000, 1925000, 1950000, 2000000
 -};
 -
--static int spmi_controller_wait_for_done(struct device *dev,
--					 struct spmi_controller_dev *ctrl_dev,
--					 void __iomem *base, u8 sid, u16 addr)
+-static const unsigned int ldo4_voltages[] = {
+-	1725000, 1750000, 1775000, 1800000,
+-	1825000, 1850000, 1875000, 1900000
+-};
+-
+-static const unsigned int ldo9_voltages[] = {
+-	1750000, 1800000, 1825000, 2800000,
+-	2850000, 2950000, 3000000, 3300000
+-};
+-
+-static const unsigned int ldo15_voltages[] = {
+-	1800000, 1850000, 2400000, 2600000,
+-	2700000, 2850000, 2950000, 3000000
+-};
+-
+-static const unsigned int ldo17_voltages[] = {
+-	2500000, 2600000, 2700000, 2800000,
+-	3000000, 3100000, 3200000, 3300000
+-};
+-
+-static const unsigned int ldo34_voltages[] = {
+-	2600000, 2700000, 2800000, 2900000,
+-	3000000, 3100000, 3200000, 3300000
+-};
+-
+-/**
+- * HI6421V600_LDO() - specify a LDO power line
+- * @_id: LDO id name string
+- * @vtable: voltage table
+- * @ereg: enable register
+- * @emask: enable mask
+- * @vreg: voltage select register
+- * @odelay: off/on delay time in uS
+- * @etime: enable time in uS
+- * @ecomask: eco mode mask
+- * @ecoamp: eco mode load uppler limit in uA
+- */
+-#define HI6421V600_LDO(_id, vtable, ereg, emask, vreg,			       \
+-		       odelay, etime, ecomask, ecoamp)			       \
+-	[HI6421V600_##_id] = {						       \
+-		.desc = {						       \
+-			.name		= #_id,				       \
+-			.of_match        = of_match_ptr(#_id),		       \
+-			.regulators_node = of_match_ptr("regulators"),	       \
+-			.ops		= &hi6421_spmi_ldo_rops,	       \
+-			.type		= REGULATOR_VOLTAGE,		       \
+-			.id		= HI6421V600_##_id,		       \
+-			.owner		= THIS_MODULE,			       \
+-			.volt_table	= vtable,			       \
+-			.n_voltages	= ARRAY_SIZE(vtable),		       \
+-			.vsel_mask	= (1 << (ARRAY_SIZE(vtable) - 1)) - 1, \
+-			.vsel_reg	= vreg,				       \
+-			.enable_reg	= ereg,				       \
+-			.enable_mask	= emask,			       \
+-			.enable_time	= etime,			       \
+-			.ramp_delay	= etime,			       \
+-			.off_on_delay	= odelay,			       \
+-		},							       \
+-		.eco_mode_mask		= ecomask,			       \
+-		.eco_uA			= ecoamp,			       \
+-	}
+-
+-static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)
 -{
--	u32 timeout = SPMI_CONTROLLER_TIMEOUT_US;
--	u32 status, offset;
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
 -
--	offset  = SPMI_APB_SPMI_STATUS_BASE_ADDR;
--	offset += SPMI_CHANNEL_OFFSET * ctrl_dev->channel + SPMI_SLAVE_OFFSET * sid;
+-	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
 -
--	do {
--		status = readl(base + offset);
--
--		if (status & SPMI_APB_TRANS_DONE) {
--			if (status & SPMI_APB_TRANS_FAIL) {
--				dev_err(dev, "%s: transaction failed (0x%x)\n",
--					__func__, status);
--				return -EIO;
--			}
--			dev_dbg(dev, "%s: status 0x%x\n", __func__, status);
--			return 0;
--		}
--		udelay(1);
--	} while (timeout--);
--
--	dev_err(dev, "%s: timeout, status 0x%x\n", __func__, status);
--	return -ETIMEDOUT;
+-	return ((reg_val & rdev->desc->enable_mask) != 0);
 -}
 -
--static int spmi_read_cmd(struct spmi_controller *ctrl,
--			 u8 opc, u8 slave_id, u16 slave_addr, u8 *__buf, size_t bc)
+-static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
 -{
--	struct spmi_controller_dev *spmi_controller = dev_get_drvdata(&ctrl->dev);
--	u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
--	unsigned long flags;
--	u8 *buf = __buf;
--	u32 cmd, data;
--	int rc;
--	u8 op_code, i;
--
--	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
--		dev_err(&ctrl->dev,
--			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
--			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
--		return  -EINVAL;
--	}
--
--	switch (opc) {
--	case SPMI_CMD_READ:
--		op_code = SPMI_CMD_REG_READ;
--		break;
--	case SPMI_CMD_EXT_READ:
--		op_code = SPMI_CMD_EXT_REG_READ;
--		break;
--	case SPMI_CMD_EXT_READL:
--		op_code = SPMI_CMD_EXT_REG_READ_L;
--		break;
--	default:
--		dev_err(&ctrl->dev, "invalid read cmd 0x%x\n", opc);
--		return -EINVAL;
--	}
--
--	cmd = SPMI_APB_SPMI_CMD_EN |
--	     (op_code << SPMI_APB_SPMI_CMD_TYPE_OFFSET) |
--	     ((bc - 1) << SPMI_APB_SPMI_CMD_LENGTH_OFFSET) |
--	     ((slave_id & 0xf) << SPMI_APB_SPMI_CMD_SLAVEID_OFFSET) |  /* slvid */
--	     ((slave_addr & 0xffff)  << SPMI_APB_SPMI_CMD_ADDR_OFFSET); /* slave_addr */
--
--	spin_lock_irqsave(&spmi_controller->lock, flags);
--
--	writel(cmd, spmi_controller->base + chnl_ofst + SPMI_APB_SPMI_CMD_BASE_ADDR);
--
--	rc = spmi_controller_wait_for_done(&ctrl->dev, spmi_controller,
--					   spmi_controller->base, slave_id, slave_addr);
--	if (rc)
--		goto done;
--
--	for (i = 0; bc > i * SPMI_PER_DATAREG_BYTE; i++) {
--		data = readl(spmi_controller->base + chnl_ofst +
--			     SPMI_SLAVE_OFFSET * slave_id +
--			     SPMI_APB_SPMI_RDATA0_BASE_ADDR +
--			     i * SPMI_PER_DATAREG_BYTE);
--		data = be32_to_cpu((__force __be32)data);
--		if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
--			memcpy(buf, &data, sizeof(data));
--			buf += sizeof(data);
--		} else {
--			memcpy(buf, &data, bc % SPMI_PER_DATAREG_BYTE);
--			buf += (bc % SPMI_PER_DATAREG_BYTE);
--		}
--	}
--
--done:
--	spin_unlock_irqrestore(&spmi_controller->lock, flags);
--	if (rc)
--		dev_err(&ctrl->dev,
--			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
--			opc, slave_id, slave_addr, bc + 1);
--	else
--		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, read value: %*ph\n",
--			__func__, slave_id, slave_addr, (int)bc, __buf);
--
--	return rc;
--}
--
--static int spmi_write_cmd(struct spmi_controller *ctrl,
--			  u8 opc, u8 slave_id, u16 slave_addr, const u8 *__buf, size_t bc)
--{
--	struct spmi_controller_dev *spmi_controller = dev_get_drvdata(&ctrl->dev);
--	u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
--	const u8 *buf = __buf;
--	unsigned long flags;
--	u32 cmd, data;
--	int rc;
--	u8 op_code, i;
--
--	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
--		dev_err(&ctrl->dev,
--			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
--			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
--		return  -EINVAL;
--	}
--
--	switch (opc) {
--	case SPMI_CMD_WRITE:
--		op_code = SPMI_CMD_REG_WRITE;
--		break;
--	case SPMI_CMD_EXT_WRITE:
--		op_code = SPMI_CMD_EXT_REG_WRITE;
--		break;
--	case SPMI_CMD_EXT_WRITEL:
--		op_code = SPMI_CMD_EXT_REG_WRITE_L;
--		break;
--	default:
--		dev_err(&ctrl->dev, "invalid write cmd 0x%x\n", opc);
--		return -EINVAL;
--	}
--
--	cmd = SPMI_APB_SPMI_CMD_EN |
--	      (op_code << SPMI_APB_SPMI_CMD_TYPE_OFFSET) |
--	      ((bc - 1) << SPMI_APB_SPMI_CMD_LENGTH_OFFSET) |
--	      ((slave_id & 0xf) << SPMI_APB_SPMI_CMD_SLAVEID_OFFSET) |
--	      ((slave_addr & 0xffff)  << SPMI_APB_SPMI_CMD_ADDR_OFFSET);
--
--	/* Write data to FIFOs */
--	spin_lock_irqsave(&spmi_controller->lock, flags);
--
--	for (i = 0; bc > i * SPMI_PER_DATAREG_BYTE; i++) {
--		data = 0;
--		if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
--			memcpy(&data, buf, sizeof(data));
--			buf += sizeof(data);
--		} else {
--			memcpy(&data, buf, bc % SPMI_PER_DATAREG_BYTE);
--			buf += (bc % SPMI_PER_DATAREG_BYTE);
--		}
--
--		writel((__force u32)cpu_to_be32(data),
--		       spmi_controller->base + chnl_ofst +
--		       SPMI_APB_SPMI_WDATA0_BASE_ADDR +
--		       SPMI_PER_DATAREG_BYTE * i);
--	}
--
--	/* Start the transaction */
--	writel(cmd, spmi_controller->base + chnl_ofst + SPMI_APB_SPMI_CMD_BASE_ADDR);
--
--	rc = spmi_controller_wait_for_done(&ctrl->dev, spmi_controller,
--					   spmi_controller->base, slave_id,
--					   slave_addr);
--	spin_unlock_irqrestore(&spmi_controller->lock, flags);
--
--	if (rc)
--		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
--			opc, slave_id, slave_addr, bc);
--	else
--		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, wrote value: %*ph\n",
--			__func__, slave_id, slave_addr, (int)bc, __buf);
--
--	return rc;
--}
--
--static int spmi_controller_probe(struct platform_device *pdev)
--{
--	struct spmi_controller_dev *spmi_controller;
--	struct spmi_controller *ctrl;
--	struct resource *iores;
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
 -	int ret;
 -
--	ctrl = spmi_controller_alloc(&pdev->dev, sizeof(*spmi_controller));
--	if (!ctrl) {
--		dev_err(&pdev->dev, "can not allocate spmi_controller data\n");
--		return -ENOMEM;
--	}
--	spmi_controller = spmi_controller_get_drvdata(ctrl);
--	spmi_controller->controller = ctrl;
+-	/* cannot enable more than one regulator at one time */
+-	mutex_lock(&sreg->enable_mutex);
 -
--	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores) {
--		dev_err(&pdev->dev, "can not get resource!\n");
--		return -EINVAL;
--	}
+-	ret = regmap_update_bits(pmic->map, rdev->desc->enable_reg,
+-				 rdev->desc->enable_mask,
+-			         rdev->desc->enable_mask);
 -
--	spmi_controller->base = devm_ioremap(&pdev->dev, iores->start,
--					     resource_size(iores));
--	if (!spmi_controller->base) {
--		dev_err(&pdev->dev, "can not remap base addr!\n");
--		return -EADDRNOTAVAIL;
--	}
+-	/* Avoid powering up multiple devices at the same time */
+-	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 60);
 -
--	ret = of_property_read_u32(pdev->dev.of_node, "spmi-channel",
--				   &spmi_controller->channel);
--	if (ret) {
--		dev_err(&pdev->dev, "can not get channel\n");
--		return -ENODEV;
--	}
--
--	platform_set_drvdata(pdev, spmi_controller);
--	dev_set_drvdata(&ctrl->dev, spmi_controller);
--
--	spin_lock_init(&spmi_controller->lock);
--
--	ctrl->nr = spmi_controller->channel;
--	ctrl->dev.parent = pdev->dev.parent;
--	ctrl->dev.of_node = of_node_get(pdev->dev.of_node);
--
--	/* Callbacks */
--	ctrl->read_cmd = spmi_read_cmd;
--	ctrl->write_cmd = spmi_write_cmd;
--
--	ret = spmi_controller_add(ctrl);
--	if (ret)
--		dev_err(&pdev->dev, "spmi_add_controller failed with error %d!\n", ret);
+-	mutex_unlock(&sreg->enable_mutex);
 -
 -	return ret;
 -}
 -
--static int spmi_del_controller(struct platform_device *pdev)
+-static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
 -{
--	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
 -
--	spmi_controller_remove(ctrl);
--	kfree(ctrl);
+-	return regmap_update_bits(pmic->map, rdev->desc->enable_reg,
+-				  rdev->desc->enable_mask, 0);
+-}
+-
+-static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	regmap_read(pmic->map, rdev->desc->vsel_reg, &reg_val);
+-
+-	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
+-}
+-
+-static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
+-						 unsigned int selector)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	if (selector >= rdev->desc->n_voltages)
+-		return -EINVAL;
+-
+-	reg_val = selector << (ffs(rdev->desc->vsel_mask) - 1);
+-
+-	/* set voltage selector */
+-	return regmap_update_bits(pmic->map, rdev->desc->vsel_reg,
+-				  rdev->desc->vsel_mask, reg_val);
+-}
+-
+-static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
+-
+-	if (reg_val & sreg->eco_mode_mask)
+-		return REGULATOR_MODE_IDLE;
+-
+-	return REGULATOR_MODE_NORMAL;
+-}
+-
+-static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+-					  unsigned int mode)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 val;
+-
+-	switch (mode) {
+-	case REGULATOR_MODE_NORMAL:
+-		val = 0;
+-		break;
+-	case REGULATOR_MODE_IDLE:
+-		val = sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1);
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return regmap_update_bits(pmic->map, rdev->desc->enable_reg,
+-				  sreg->eco_mode_mask, val);
+-}
+-
+-static unsigned int
+-hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
+-				       int input_uV, int output_uV,
+-				       int load_uA)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-
+-	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
+-		return REGULATOR_MODE_NORMAL;
+-
+-	return REGULATOR_MODE_IDLE;
+-}
+-
+-static const struct regulator_ops hi6421_spmi_ldo_rops = {
+-	.is_enabled = hi6421_spmi_regulator_is_enabled,
+-	.enable = hi6421_spmi_regulator_enable,
+-	.disable = hi6421_spmi_regulator_disable,
+-	.list_voltage = regulator_list_voltage_table,
+-	.map_voltage = regulator_map_voltage_iterate,
+-	.get_voltage_sel = hi6421_spmi_regulator_get_voltage_sel,
+-	.set_voltage_sel = hi6421_spmi_regulator_set_voltage_sel,
+-	.get_mode = hi6421_spmi_regulator_get_mode,
+-	.set_mode = hi6421_spmi_regulator_set_mode,
+-	.get_optimum_mode = hi6421_spmi_regulator_get_optimum_mode,
+-};
+-
+-/* HI6421v600 regulators with known registers */
+-enum hi6421_spmi_regulator_id {
+-	HI6421V600_LDO3,
+-	HI6421V600_LDO4,
+-	HI6421V600_LDO9,
+-	HI6421V600_LDO15,
+-	HI6421V600_LDO16,
+-	HI6421V600_LDO17,
+-	HI6421V600_LDO33,
+-	HI6421V600_LDO34,
+-};
+-
+-static struct hi6421_spmi_reg_info regulator_info[] = {
+-	HI6421V600_LDO(LDO3, ldo3_voltages,
+-		       0x16, 0x01, 0x51,
+-		       20000, 120,
+-		       0, 0),
+-	HI6421V600_LDO(LDO4, ldo4_voltages,
+-		       0x17, 0x01, 0x52,
+-		       20000, 120,
+-		       0x10, 10000),
+-	HI6421V600_LDO(LDO9, ldo9_voltages,
+-		       0x1c, 0x01, 0x57,
+-		       20000, 360,
+-		       0x10, 10000),
+-	HI6421V600_LDO(LDO15, ldo15_voltages,
+-		       0x21, 0x01, 0x5c,
+-		       20000, 360,
+-		       0x10, 10000),
+-	HI6421V600_LDO(LDO16, ldo15_voltages,
+-		       0x22, 0x01, 0x5d,
+-		       20000, 360,
+-		       0x10, 10000),
+-	HI6421V600_LDO(LDO17, ldo17_voltages,
+-		       0x23, 0x01, 0x5e,
+-		       20000, 120,
+-		       0x10, 10000),
+-	HI6421V600_LDO(LDO33, ldo17_voltages,
+-		       0x32, 0x01, 0x6d,
+-		       20000, 120,
+-		       0, 0),
+-	HI6421V600_LDO(LDO34, ldo34_voltages,
+-		       0x33, 0x01, 0x6e,
+-		       20000, 120,
+-		       0, 0),
+-};
+-
+-static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+-{
+-	struct device *pmic_dev = pdev->dev.parent;
+-	struct regulator_config config = { };
+-	struct hi6421_spmi_reg_info *sreg;
+-	struct hi6421_spmi_reg_info *info;
+-	struct device *dev = &pdev->dev;
+-	struct hi6421_spmi_pmic *pmic;
+-	struct regulator_dev *rdev;
+-	int i;
+-
+-	/*
+-	 * This driver is meant to be called by hi6421-spmi-core,
+-	 * which should first set drvdata. If this doesn't happen, hit
+-	 * a warn on and return.
+-	 */
+-	pmic = dev_get_drvdata(pmic_dev);
+-	if (WARN_ON(!pmic))
+-		return -ENODEV;
+-
+-	sreg = devm_kzalloc(dev, sizeof(*sreg), GFP_KERNEL);
+-	if (!sreg)
+-		return -ENOMEM;
+-
+-	sreg->pmic = pmic;
+-	mutex_init(&sreg->enable_mutex);
+-
+-	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
+-		info = &regulator_info[i];
+-
+-		config.dev = pdev->dev.parent;
+-		config.driver_data = sreg;
+-		config.regmap = pmic->map;
+-
+-		rdev = devm_regulator_register(dev, &info->desc, &config);
+-		if (IS_ERR(rdev)) {
+-			dev_err(dev, "failed to register %s\n",
+-				info->desc.name);
+-			return PTR_ERR(rdev);
+-		}
+-	}
+-
 -	return 0;
 -}
 -
--static const struct of_device_id spmi_controller_match_table[] = {
--	{
--		.compatible = "hisilicon,kirin970-spmi-controller",
--	},
--	{}
+-static const struct platform_device_id hi6421_spmi_regulator_table[] = {
+-	{ .name = "hi6421v600-regulator" },
+-	{},
 -};
--MODULE_DEVICE_TABLE(of, spmi_controller_match_table);
+-MODULE_DEVICE_TABLE(platform, hi6421_spmi_regulator_table);
 -
--static struct platform_driver spmi_controller_driver = {
--	.probe		= spmi_controller_probe,
--	.remove		= spmi_del_controller,
--	.driver		= {
--		.name	= "hisi_spmi_controller",
--		.of_match_table = spmi_controller_match_table,
+-static struct platform_driver hi6421_spmi_regulator_driver = {
+-	.id_table = hi6421_spmi_regulator_table,
+-	.driver = {
+-		.name = "hi6421v600-regulator",
 -	},
+-	.probe	= hi6421_spmi_regulator_probe,
 -};
+-module_platform_driver(hi6421_spmi_regulator_driver);
 -
--static int __init spmi_controller_init(void)
--{
--	return platform_driver_register(&spmi_controller_driver);
--}
--postcore_initcall(spmi_controller_init);
--
--static void __exit spmi_controller_exit(void)
--{
--	platform_driver_unregister(&spmi_controller_driver);
--}
--module_exit(spmi_controller_exit);
--
+-MODULE_DESCRIPTION("Hi6421v600 SPMI regulator driver");
 -MODULE_LICENSE("GPL v2");
--MODULE_VERSION("1.0");
--MODULE_ALIAS("platform:spmi_controller");
-diff --git a/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml b/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
-deleted file mode 100644
-index 21f68a9c2df1..000000000000
---- a/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
-+++ /dev/null
-@@ -1,75 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
 -
--title: HiSilicon SPMI controller
--
--maintainers:
--  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
--
--description: |
--  The HiSilicon SPMI BUS controller is found on some Kirin-based designs.
--  It is a MIPI System Power Management (SPMI) controller.
--
--  The PMIC part is provided by
--  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
--
--properties:
--  $nodename:
--    pattern: "spmi@[0-9a-f]"
--
--  compatible:
--    const: hisilicon,kirin970-spmi-controller
--
--  reg:
--    maxItems: 1
--
--  "#address-cells":
--    const: 2
--
--  "#size-cells":
--    const: 0
--
--  spmi-channel:
--    description: |
--      number of the Kirin 970 SPMI channel where the SPMI devices are connected.
--
--required:
--  - compatible
--  - reg
--  - spmi-channel
--  - "#address-cells"
--  - "#size-cells"
--
--patternProperties:
--  "^pmic@[0-9a-f]$":
--    description: |
--      PMIC properties, which are specific to the used SPMI PMIC device(s).
--      When used in combination with HiSilicon 6421v600, the properties
--      are documented at
--      drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
--
--additionalProperties: false
--
--examples:
--  - |
--    bus {
--      #address-cells = <2>;
--      #size-cells = <2>;
--
--      spmi: spmi@fff24000 {
--        compatible = "hisilicon,kirin970-spmi-controller";
--        #address-cells = <2>;
--        #size-cells = <0>;
--        status = "ok";
--        reg = <0x0 0xfff24000 0x0 0x1000>;
--        spmi-channel = <2>;
--
--        pmic@0 {
--          reg = <0 0>;
--          /* pmic properties */
--        };
--      };
--    };
 -- 
 2.29.2
 
