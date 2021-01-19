@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C899E2FBED6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FFB2FBF3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392548AbhASSXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S2404187AbhASSAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392435AbhASSWm (ORCPT
+        with ESMTP id S1732590AbhASPFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:22:42 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A789C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:22:02 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id j26so14391781qtq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:22:02 -0800 (PST)
+        Tue, 19 Jan 2021 10:05:00 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE721C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:01:05 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id e15so13829371qte.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:01:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QB+qlyJrpIAY9PAVjnSSlEibl/VpzXPECBF8avvNf9g=;
-        b=ZpCwWJLwCV0bgOoVL6z7GNeJGgm4Ux+Pn0E59lHo+mYjHp2i9ibyDroLAo18CedooT
-         kFWXI2RiwNofDz7OzfpMir+6mOPzVoHJJk5PdgdsJ5ei66lQrPeyFvwv+QcS3UNtCO0t
-         2RFP05K/6+STlM5/b8Io3A+L3xuYA3g5q+gZAcQaSSDYMULQdlR85NzMPmd8ACUgE7RM
-         qsH98a4Sx8cX+CQpht1G3I6dzGiflHirrC61n6MhKJhhRwsk7UNDQ6DHfb7k8P9K/v3+
-         /KuKoV7IcO2i9d+7lQ8fiZxcxncF9vukjcoB36n4Z31WWTU9gMtM5Y295JWeXSWruOUx
-         ic0Q==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vn5Y0TrG3Ui6LBbbxvYnxl2nn5t3OepGIypDVq8V4YM=;
+        b=pVUDC5WiZM6Lp8yH89xT1k/YpP/3TyrwAZ15/iuWX8RBRpjlf+jFHDFgLTMtLU49SW
+         kEgj71/8gTx8uUrcUqv22pjWXvmAkk4+JJZsk/LNpOAvMGyURf5ntpntikem4UAdkJmG
+         qDOyNrfgyoTi6CRDwvwFDajSm8kWtjdnUlLRIqDQEpqlUC7OINwQ6kVz/aldXxJjQoP5
+         MYUKt/PXULwtUE7UtG7pCk3dYIcLp50Gn7OBfoEA7a8X+HS5qin3yAo+UQVY1bXrt2Uf
+         4/dAwPqazua4LeUKIitWS+j1v7XvAyJz/3HiR12eJJa0QTCjoU3WExHuF4czyxSiqnRH
+         2paQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QB+qlyJrpIAY9PAVjnSSlEibl/VpzXPECBF8avvNf9g=;
-        b=cnhK6KtSs080CQQTKFJcVLceXskuJyBMHWauBXe02Ix8scN/jv417fuomqkxINsD2G
-         KPfUU9wrHOBauZLDmCqXAX+oHQ4dtO9ORE6+83ZbUrc2Wlr9FgLW8k7RrdMTs68+Zr1H
-         nvyBTjYHPTKbHQb108mYpccWHuOVqUVnnsaReCR5IX0MOQoCTA+KDCZ1bXhB0Dac6wHC
-         VVoyLi/9j+LU0yaElachsdz2WQO19Kvhlct/R6AR97L2XyBwAf+xBbktDu33PfQDcwLk
-         asjPB7hafKTpSrXAh7xwm4a5BItur6Fuywb8M4LhqhTfnbkvPIw/yuUmenmMLaWXa5Lm
-         U8Vw==
-X-Gm-Message-State: AOAM530YMUXi/ZQYeztzf1y5qVsFVsGpKIPqM56XjHjOJQpLBaCzmcp4
-        VNbmUclxpcVOvrmbcqos1pzmOA==
-X-Google-Smtp-Source: ABdhPJz2ZDCDvyVyZdPuux/jcDhvN+advwUUSodu2d8iZEb7w0r1BPV9yWMXcNjrYJ+DwwIBy9Vyyg==
-X-Received: by 2002:ac8:7394:: with SMTP id t20mr5567220qtp.72.1611080521652;
-        Tue, 19 Jan 2021 10:22:01 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id i3sm12711419qtd.95.2021.01.19.10.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:22:01 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1vdg-003pV4-Mu; Tue, 19 Jan 2021 14:22:00 -0400
-Date:   Tue, 19 Jan 2021 14:22:00 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 04/14] mm/gup: check for isolation errors
-Message-ID: <20210119182200.GZ4605@ziepe.ca>
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
- <20210119043920.155044-5-pasha.tatashin@soleen.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vn5Y0TrG3Ui6LBbbxvYnxl2nn5t3OepGIypDVq8V4YM=;
+        b=QNolqDVbSJHWhxLHgf8ijPSz6JT2S+V9vBUhS8xXHVpjji/eTUu+pUUNKRnk9aTXN+
+         frfczr+4Uq2ckYVOuBmjvu8ybIXSn2CpR7nFXgdJuJDRxqLDiKKztBD/9cYH2f3O7SqD
+         x6IvKpFIAn0knyjErUF9R2ZbLrWKTrwzHv0hpx4JuD4ZrfzWkg8fLP4Ae3nY8TDGHkfn
+         tXEUjNxjKejABgmmmnKYfeqHRGOYHAaLiQOXKEttm7tstL3DnpuXwbwS2CxUGV5mhj3K
+         8CiaQS4T9TcalJ/HOvLCYPd3J+B/m0KlgioCgZzz/6/T17xrPxZ1SuiaHASkXJ/e+qat
+         uW2g==
+X-Gm-Message-State: AOAM531ADuIT7+4TBSztVStGeiMq6VDJ2eXak74qWHmt0GuaLw9bgLA3
+        ArK10UPI+LU9LpziNaFE1FqI+g==
+X-Google-Smtp-Source: ABdhPJw9hzTjA0HJ6VQUPwDH9drSNqii0WFZZyVd4uYqJRq1euvOSRi+J16/swjVIXriRDU/RjWmOQ==
+X-Received: by 2002:ac8:6f07:: with SMTP id g7mr4493450qtv.308.1611068464463;
+        Tue, 19 Jan 2021 07:01:04 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11d1::117a? ([2620:10d:c091:480::1:150f])
+        by smtp.gmail.com with ESMTPSA id w91sm6339412qte.83.2021.01.19.07.01.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 07:01:03 -0800 (PST)
+Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com
+Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
+        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
+        song@kernel.org, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
+        dsterba@suse.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        rpeterso@redhat.com, agruenba@redhat.com, darrick.wong@oracle.com,
+        shaggy@kernel.org, damien.lemoal@wdc.com, naohiro.aota@wdc.com,
+        jth@kernel.org, tj@kernel.org, osandov@fb.com, bvanassche@acm.org,
+        gustavo@embeddedor.com, asml.silence@gmail.com,
+        jefflexu@linux.alibaba.com
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6eab7373-3c7f-fccf-8a6f-b02519258d23@toxicpanda.com>
+Date:   Tue, 19 Jan 2021 10:00:59 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119043920.155044-5-pasha.tatashin@soleen.com>
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:39:10PM -0500, Pavel Tatashin wrote:
-> It is still possible that we pin movable CMA pages if there are isolation
-> errors and cma_page_list stays empty when we check again.
+On 1/19/21 12:05 AM, Chaitanya Kulkarni wrote:
+> Hi,
 > 
-> Check for isolation errors, and return success only when there are no
-> isolation errors, and cma_page_list is empty after checking.
+> This is a *compile only RFC* which adds a generic helper to initialize
+> the various fields of the bio that is repeated all the places in
+> file-systems, block layer, and drivers.
 > 
-> Because isolation errors are transient, we retry indefinitely.
+> The new helper allows callers to initialize various members such as
+> bdev, sector, private, end io callback, io priority, and write hints.
 > 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> ---
->  mm/gup.c | 60 ++++++++++++++++++++++++++++++++------------------------
->  1 file changed, 34 insertions(+), 26 deletions(-)
+> The objective of this RFC is to only start a discussion, this it not
+> completely tested at all.
 
-This should have a fixme too, this is a bug.
+It would help to know what you're trying to accomplish here.  I'd echo Mike's 
+comments about how it makes it annoying to update things in the future.  In 
+addition, there's so many fields that I'm not going to remember what each one is 
+without having to look it up, which makes it annoying to use and to review.  If 
+it's simply to make sure fields are initialized then you could add debug sanity 
+checks to submit_bio().  If it's to clean up duplication, well I'd argue that 
+the duplication is much clearer than positional arguments in a giant function 
+call.  If you are wanting to change a particular part of the bio to be 
+initialized properly, like Dennis's work to make sure the bi_blkg was 
+initialized at bi_bdev set time, then a more targeted patch series with a 
+specific intent will be more useful and more successful.  Thanks,
 
-The patch looks OK, but I keep feeling this logic is all really
-overcomplicated...
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+Josef
