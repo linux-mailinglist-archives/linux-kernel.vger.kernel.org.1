@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CCE2FB6E6
+	by mail.lfdr.de (Postfix) with ESMTP id DE1B62FB6E7
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732937AbhASJ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:26:08 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:53038 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731838AbhASJMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:12:01 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l1n2U-0004qx-Qk; Tue, 19 Jan 2021 10:11:02 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chen-Yu Tsai <wens@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-Date:   Tue, 19 Jan 2021 10:11:01 +0100
-Message-ID: <12687142.y0N7aAr316@diego>
-In-Reply-To: <20210106134617.391-2-wens@kernel.org>
-References: <20210106134617.391-1-wens@kernel.org> <20210106134617.391-2-wens@kernel.org>
+        id S1732982AbhASJ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731893AbhASJMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:12:06 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1755C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:11:25 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0bca00060d4a1f80a80a6a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:60d:4a1f:80a8:a6a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6BC731EC0595;
+        Tue, 19 Jan 2021 10:11:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611047483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=xG66aDFJtNpW4iGBKuUs8rPliTKzmq7slPAVAkozqBU=;
+        b=qaOXaQk5XuvxJ0/Krw4SPaY5ZHZ4Yrp1YpVvvKCeac2uw31pf8IZcHg2ACyJiDLAgXwwd/
+        s8CBFH2IFxm259uMALmtHpIrLvIXb9Pvu0pscNktF28vhjwQEKbZMxk0WdXcJNWMvSSDIV
+        K7Y2W6/WE1YSZw8PBBLwld/xlPygSg8=
+Date:   Tue, 19 Jan 2021 10:11:16 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, nivedita@alum.mit.edu,
+        thomas.lendacky@amd.com, yazen.ghannam@amd.com, wei.huang2@amd.com
+Subject: Re: [PATCH v4] tools/x86: Add a kcpuid tool to show raw CPU features
+Message-ID: <20210119091116.GA27433@zn.tnic>
+References: <1610955311-77910-1-git-send-email-feng.tang@intel.com>
+ <20210119051942.GA87207@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210119051942.GA87207@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 6. Januar 2021, 14:46:14 CET schrieb Chen-Yu Tsai:
-> From: Chen-Yu Tsai <wens@csie.org>
+On Tue, Jan 19, 2021 at 01:19:42PM +0800, Feng Tang wrote:
+> Sorry, after testing on more platforms, the following is needed to fix
+> a potential array overflow ((a full patch with fix is also attached)
 > 
-> The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
-> an optional property. And indeed there are boards that don't require it.
-> 
-> Make the driver follow the binding by using devm_gpiod_get_optional()
-> instead of devm_gpiod_get().
-> 
-> Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
-> Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
-> Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
-> Heiko, I dropped you reviewed-by due to the error message change
-> 
-> Changes since v2:
->   - Fix error message for failed GPIO
-> 
-> Changes since v1:
->   - Rewrite subject to match existing convention and reference
->     'ep-gpios' DT property instead of the 'ep_gpio' field
-> ---
->  drivers/pci/controller/pcie-rockchip.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
-> index 904dec0d3a88..90c957e3bc73 100644
-> --- a/drivers/pci/controller/pcie-rockchip.c
-> +++ b/drivers/pci/controller/pcie-rockchip.c
-> @@ -118,9 +118,10 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
->  	}
+> diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
+> index 3ea607b..bf68335 100644
+> --- a/tools/arch/x86/kcpuid/kcpuid.c
+> +++ b/tools/arch/x86/kcpuid/kcpuid.c
+> @@ -329,7 +329,8 @@ static int parse_line(char *line)
+>  		range = leafs_basic;
 >  
->  	if (rockchip->is_rc) {
-> -		rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
-> +		rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
->  		if (IS_ERR(rockchip->ep_gpio)) {
-> -			dev_err(dev, "missing ep-gpios property in node\n");
-> +			dev_err_probe(dev, PTR_ERR(rockchip->ep_gpio),
-> +				      "failed to get ep GPIO\n");
->  			return PTR_ERR(rockchip->ep_gpio);
+>  	index &= 0x7FFFFFFF;
+> -	if ((int)index > range->nr)
+> +	/* range->nr equals to max index plus 1 */
+> +	if ((int)index >= range->nr)
 
-looking at [0] shouldn't that be just
-	return dev_err_probe(dev, PTR_ERR(.....)...);
-instead of dev_err_probe + additional return?
+That comment is basically repeating the code. What it should do is
+explain *why* that test is being done or not be there at all.
 
-Heiko
+-- 
+Regards/Gruss,
+    Boris.
 
-[0] https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4223
-
->  		}
->  	}
-> 
-
-
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
