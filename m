@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120E72FBB90
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B232FBB3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389852AbhASPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:49:16 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:52036 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389189AbhASPrn (ORCPT
+        id S2390624AbhASPcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:32:10 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36984 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391398AbhASPW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:47:43 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFYIJk150996;
-        Tue, 19 Jan 2021 15:46:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=5Uy+Pa/jD4jlnqQSrCyAWcYlvoNXAtFz5RTUmGI3lNY=;
- b=fdd5S2oxBaDpccPX7bb01SE6BFi6TegWpLjD5KeXvBVXiJLJ9nEi3w7amYNcqq0kltU1
- /a9mJUpkxrINyRp+xSoq2e+95tmHWV9K5x0j2eRrOmT2MV2pm3EFkYwWLawObyrsJCQN
- 87oQGQrf2U9xe3fx1hLHF2wzdQHqoJSKRWnjStNH/1lNofx0oSUYguZe8+PkGISITPRX
- 8PL89TuJLrAlq2xHHwlFXDQ1fQX5TmUL9eQ2W3eGftGiJZOL0ZA7crhITCkD1fRxwLtf
- i1G9R7OIMP59vz62V3eMR8Hjk5zX7bCHbO2ZevtFDfmGpjr6ayAA4oqnoz/MGCMz1rDa /w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 363r3ksp0u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 15:46:51 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFZj3D083877;
-        Tue, 19 Jan 2021 15:46:50 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3661equw6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 15:46:50 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10JFknfr020344;
-        Tue, 19 Jan 2021 15:46:49 GMT
-Received: from dhcp-10-154-146-132.vpn.oracle.com (/10.154.146.132)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Jan 2021 07:16:25 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] scsi: qla2xxx: fix description for parameter
- ql2xenforce_iocb_limit
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-In-Reply-To: <20210118184922.23793-1-ematsumiya@suse.de>
-Date:   Tue, 19 Jan 2021 09:16:25 -0600
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arun Easi <aeasi@marvell.com>, Quinn Tran <qutran@marvell.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <9228BCF5-EFDE-4A23-96DB-674554979D44@oracle.com>
-References: <20210118184922.23793-1-ematsumiya@suse.de>
-To:     Enzo Matsumiya <ematsumiya@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190094
+        Tue, 19 Jan 2021 10:22:58 -0500
+Received: from 1-171-232-235.dynamic-ip.hinet.net ([1.171.232.235] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l1spS-0000wH-K5; Tue, 19 Jan 2021 15:21:59 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Kenneth R . Crudup" <kenny@panix.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Harsha Priya <harshapriya.n@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] ALSA: hda: Balance runtime/system PM if direct-complete is disabled
+Date:   Tue, 19 Jan 2021 23:21:43 +0800
+Message-Id: <20210119152145.346558-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After hibernation, HDA controller can't be runtime-suspended after
+commit 215a22ed31a1 ("ALSA: hda: Refactor codjc PM to use
+direct-complete optimization"), which enables direct-complete for HDA
+codec.
+
+The HDA codec driver didn't expect direct-complete will be disabled
+after it returns a positive value from prepare() callback. However,
+there are some places that PM core can disable direct-complete. For
+instance, system hibernation or when codec has subordinates like LEDs.
+
+So if the codec is prepared for direct-complete but PM core still calls
+codec's suspend or freeze callback, partially revert the commit and take
+the original approach, which uses pm_runtime_force_*() helpers to
+ensure PM refcount are balanced. Meanwhile, still keep prepare() and
+complete() callbacks to enable direct-complete and request a resume for
+jack detection, respectively.
+
+Reported-by: Kenneth R. Crudup <kenny@panix.com>
+Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Use pm_runtime_force_*() helpers to avoid suspend/resume ping pong.
+
+ sound/pci/hda/hda_codec.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
 
-> On Jan 18, 2021, at 12:49 PM, Enzo Matsumiya <ematsumiya@suse.de> wrote:
-> 
-> Parameter ql2xenforce_iocb_limit is enabled by default.
-> 
-> Fixes: 89c72f4245a8 ("scsi: qla2xxx: Add IOCB resource tracking")
-> Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
-> ---
-> drivers/scsi/qla2xxx/qla_os.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-> index f80abe28f35a..0e0fe5b09496 100644
-> --- a/drivers/scsi/qla2xxx/qla_os.c
-> +++ b/drivers/scsi/qla2xxx/qla_os.c
-> @@ -42,7 +42,7 @@ MODULE_PARM_DESC(ql2xfulldump_on_mpifail,
-> int ql2xenforce_iocb_limit = 1;
-> module_param(ql2xenforce_iocb_limit, int, S_IRUGO | S_IWUSR);
-> MODULE_PARM_DESC(ql2xenforce_iocb_limit,
-> -		 "Enforce IOCB throttling, to avoid FW congestion. (default: 0)");
-> +		 "Enforce IOCB throttling, to avoid FW congestion. (default: 1)");
-> 
-> /*
->  * CT6 CTX allocation cache
-> -- 
-> 2.29.2
-> 
-
-Good Catch. 
-
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-
---
-Himanshu Madhani	 Oracle Linux Engineering
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 687216e74526..eec1775dfffe 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2934,7 +2934,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 	snd_hdac_leave_pm(&codec->core);
+ }
+ 
+-static int hda_codec_suspend(struct device *dev)
++static int hda_codec_runtime_suspend(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 	unsigned int state;
+@@ -2953,7 +2953,7 @@ static int hda_codec_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int hda_codec_resume(struct device *dev)
++static int hda_codec_runtime_resume(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 
+@@ -2968,16 +2968,6 @@ static int hda_codec_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int hda_codec_runtime_suspend(struct device *dev)
+-{
+-	return hda_codec_suspend(dev);
+-}
+-
+-static int hda_codec_runtime_resume(struct device *dev)
+-{
+-	return hda_codec_resume(dev);
+-}
+-
+ #endif /* CONFIG_PM */
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -2998,31 +2988,31 @@ static void hda_codec_pm_complete(struct device *dev)
+ static int hda_codec_pm_suspend(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_SUSPEND;
+-	return hda_codec_suspend(dev);
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_resume(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESUME;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ 
+ static int hda_codec_pm_freeze(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_FREEZE;
+-	return hda_codec_suspend(dev);
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_thaw(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_THAW;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ 
+ static int hda_codec_pm_restore(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESTORE;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ #endif /* CONFIG_PM_SLEEP */
+ 
+-- 
+2.29.2
 
