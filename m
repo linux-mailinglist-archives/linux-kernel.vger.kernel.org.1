@@ -2,458 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280A12FBEAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DB02FBEB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392219AbhASSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:14:16 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35654 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389833AbhASSMi (ORCPT
+        id S2392483AbhASSQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392569AbhASSNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:12:38 -0500
-Date:   Tue, 19 Jan 2021 19:11:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611079913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=25Fn7FcUuTGCUmy2t3FQrxcXJTuctqBxaXUt5HwOxm4=;
-        b=aDaHC661KtsYC3fxiUf1CLePT9v8jvicdeQVKxCPQkzG2KyFkjNpi5+h4LllG7K6OvvdGE
-        /JHiuhLwCGwbPavB2c6fVC1yY96yjMIevIPgVjU1QzQxVc1JKBnMXzwvN31es4Fc1HZ/gH
-        E0JBpW64rItVKTjYPystqZ0yfjhdhYG0pohXO55qr4MajC3puX37MdRUcWaVtSAtmr6FT1
-        klTdgT6z7GY5towMZAPNvs362i+m+VN1tJ0xYvlZnsaJLlztzxDu25b0lCRtnz+vU05i3s
-        UGfZhiZZozDHLekvkuM4fF6nlEbxAcBZxLWDgRFpKOpPbGJKjhZXotbZ7clD0Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611079913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=25Fn7FcUuTGCUmy2t3FQrxcXJTuctqBxaXUt5HwOxm4=;
-        b=hITE7nq40rJpOvtWQZi8OUfyt6P1FW7i0XI91xAhx4H1hizhRZtTH6aBqOfBZFAW7rI3sH
-        Sg3iVFIHa+AyE0CA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.10.8-rt24
-Message-ID: <20210119181153.i7j2hzdtiqdaa7nv@linutronix.de>
+        Tue, 19 Jan 2021 13:13:21 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8914FC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:12:23 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b8so10958999plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:12:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JGbRgtl+Xd7NnNyvzbFz33TQ6zZwYmuEBrx6vdWmM7w=;
+        b=uTCh6cTUQ3XE47LM0eMIuoE/GdPoJeTZ45hU0Bpqt8WbI8TJkaMX+XFhiGPVV/gE5Q
+         bGnBAI2ROPIZ58VKuh+c0xvYKjQZ53sB8OzLoqhag/9inhgyOo0NVB8vOzweiYB9p+4J
+         W6whNIGREJDN6AcX03G09m3vXbE4JK0edcSCWXD+rco9zWJpolWlNg/ZoTYn+xilq2as
+         gho4LGra0Z2+J1Fv8GUM4bJ/gRDZGbCQxWiT9cwkzRI5QnINnDh+XoEWFNlp6e5nbviU
+         NcgqVh5ivwErJGv8xs8ekw0bcKBacl0iaZ70qTcw9IEfT+h8a18Flix0rL4ZslVyX/p4
+         ef6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGbRgtl+Xd7NnNyvzbFz33TQ6zZwYmuEBrx6vdWmM7w=;
+        b=K3I5HnJ+UgTnBcMOoXhQi4j0EXG472vz3uQ7yxj520fSsNM7OM2Bves5pmm7dJyeR7
+         aaOk91PK2d0UC518tYZ01C0oQvCbfdrbQWeUkNENerVkZ/BuSoNzwFJxwJl+c0+KY7NY
+         UUqL8X1s1LkdEX15SONz4LUdg9eEcEjUs5IYsbhcJW/m+ekbJ1Mc+pz38/+UJLkfAmPa
+         8bVRFV7oJ8hD4bdmTTW+WwTOs1rQwEXvNfz14kZwF1I0aWG3pY59IdDn+W31dqZI++Ou
+         mNahX3tIFzywizGTRs28DZaw5LOLa8DmkZ4NEdqTsYm1yga7yKeAF68x7kWSufYQ6xVI
+         mrmw==
+X-Gm-Message-State: AOAM533WYoWI+ToVeYX5SIXCsW0NlD/jErVmR8MKDVzoGNFXexfD132T
+        SPUFSDS4I/lk7PxY2fbCLpj3i+6KbZyV8DFpCERGHA==
+X-Google-Smtp-Source: ABdhPJzBasDVEG6vdysTxWNctZueWMzAYRygGHyEkpY748jJPjW7ukdkNgObxdsRFxvPhYSz1R4jbuYeShW3H3ks1V0=
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id
+ v17-20020a17090331d1b02900de8361739bmr6013728ple.85.1611079942969; Tue, 19
+ Jan 2021 10:12:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
+ <20210118183033.41764-4-vincenzo.frascino@arm.com> <20210119130440.GC17369@gaia>
+ <813f907f-0de8-6b96-c67a-af9aecf31a70@arm.com> <20210119144625.GB2338@C02TD0UTHF1T.local>
+In-Reply-To: <20210119144625.GB2338@C02TD0UTHF1T.local>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 19 Jan 2021 19:12:11 +0100
+Message-ID: <CAAeHK+wcWk_URtGROUc1VLR4PjVQChCUpSLFya9DNTytQP2mVg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] kasan: Add report for async mode
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Alexander Potapenko <glider@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Tue, Jan 19, 2021 at 3:46 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Given there's no information available, I think it's simpler and
+> preferable to handle the logging separately, as is done for
+> kasan_report_invalid_free(). For example, we could do something roughly
+> like:
+>
+> void kasan_report_async(void)
+> {
+>         unsigned long flags;
+>
+>         start_report(&flags);
+>         pr_err("BUG: KASAN: Tag mismatch detected asynchronously\n");
 
-I'm pleased to announce the v5.10.8-rt24 patch set. 
+"BUG: KASAN: invalid-access"
 
-Changes since v5.10.8-rt23:
+It also might make sense to pass the ip, even though it's not exactly
+related to the access:
 
-  - Added RT's version of __down_read_interruptible() which is used by
-    stable tree since v5.10.6.
+pr_err("BUG: KASAN: invalid-access in %pS\n", (void *)ip);
 
-  - Updated the "tracing: Merge irqflags + preempt counter." patch to
-    the latest version posted for upstream.
+Up to you.
 
-[ The issues listed below were accidentally lost in the last announcement. ]
+>         pr_err("KASAN: no fault information available\n");
 
-Known issues
-     - kdb/kgdb can easily deadlock.
-     - kmsg dumpers expecting not to be called in parallel can clobber
-       their temp buffer.
-     - netconsole triggers WARN.
+pr_err("Asynchronous mode enabled: no access details available\n");
 
-The delta patch against v5.10.8-rt23 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10.8-rt23-rt24.patch.xz
+>         dump_stack();
+>         end_report(&flags);
+> }
 
-You can get this release via the git tree at:
+This approach with a dedicated function is better. Thanks, Mark!
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10.8-rt24
-
-The RT patch against v5.10.8 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.8-rt24.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.8-rt24.tar.xz
-
-Sebastian
-
-diff --git a/include/linux/rwsem-rt.h b/include/linux/rwsem-rt.h
-index 7f7e748ef5222..0ba8aae9a1983 100644
---- a/include/linux/rwsem-rt.h
-+++ b/include/linux/rwsem-rt.h
-@@ -57,6 +57,7 @@ static inline int rwsem_is_contended(struct rw_semaphore *sem)
- }
- 
- extern void __down_read(struct rw_semaphore *sem);
-+extern int __down_read_interruptible(struct rw_semaphore *sem);
- extern int __down_read_killable(struct rw_semaphore *sem);
- extern int __down_read_trylock(struct rw_semaphore *sem);
- extern void __down_write(struct rw_semaphore *sem);
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 79b680067e646..5d08fb467f69a 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -154,14 +154,12 @@ static inline void tracing_generic_entry_update(struct trace_entry *entry,
- 						unsigned short type,
- 						unsigned int trace_ctx)
- {
--	struct task_struct *tsk = current;
--
- 	entry->preempt_count		= trace_ctx & 0xff;
- 	entry->migrate_disable		= (trace_ctx >> 8) & 0xff;
- 	entry->preempt_lazy_count	= (trace_ctx >> 16) & 0xff;
--	entry->pid			= (tsk) ? tsk->pid : 0;
-+	entry->pid			= current->pid;
- 	entry->type			= type;
--	entry->flags =			trace_ctx >> 24;
-+	entry->flags			= trace_ctx >> 24;
- }
- 
- unsigned int _tracing_gen_ctx_flags(unsigned long irqflags);
-@@ -256,7 +254,7 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
- 				  struct trace_event_file *trace_file,
- 				  unsigned long len);
- 
--void trace_event_buffer_commit__(struct trace_event_buffer *fbuffer);
-+void trace_event_buffer_commit(struct trace_event_buffer *fbuffer);
- 
- enum {
- 	TRACE_EVENT_FL_FILTERED_BIT,
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index ec5a7ff786717..7785961d82bae 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -694,7 +694,7 @@ trace_event_raw_event_##call(void *__data, proto)			\
- 									\
- 	{ assign; }							\
- 									\
--	trace_event_buffer_commit__(&fbuffer);				\
-+	trace_event_buffer_commit(&fbuffer);				\
- }
- /*
-  * The ftrace_test_probe is compiled out, it is only here as a build time check
-diff --git a/kernel/locking/rwsem-rt.c b/kernel/locking/rwsem-rt.c
-index ab05ce0903537..274172d5bb3a5 100644
---- a/kernel/locking/rwsem-rt.c
-+++ b/kernel/locking/rwsem-rt.c
-@@ -164,6 +164,17 @@ void __down_read(struct rw_semaphore *sem)
- 	WARN_ON_ONCE(ret);
- }
- 
-+int __down_read_interruptible(struct rw_semaphore *sem)
-+{
-+	int ret;
-+
-+	ret = __down_read_common(sem, TASK_INTERRUPTIBLE);
-+	if (likely(!ret))
-+		return ret;
-+	WARN_ONCE(ret != -EINTR, "Unexpected state: %d\n", ret);
-+	return -EINTR;
-+}
-+
- int __down_read_killable(struct rw_semaphore *sem)
- {
- 	int ret;
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2ed294e2c8863..0f9162f0c02a3 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2587,7 +2587,7 @@ static unsigned short migration_disable_value(void)
- #endif
- }
- 
--static unsigned int __tracing_gen_ctx_flags(unsigned long irqflags)
-+unsigned int _tracing_gen_ctx_flags(unsigned long irqflags)
- {
- 	unsigned int trace_flags = 0;
- 	unsigned int pc;
-@@ -2598,21 +2598,16 @@ static unsigned int __tracing_gen_ctx_flags(unsigned long irqflags)
- 	if (irqs_disabled_flags(irqflags))
- 		trace_flags |= TRACE_FLAG_IRQS_OFF;
- #else
--		trace_flags |= TRACE_FLAG_IRQS_NOSUPPORT;
-+	trace_flags |= TRACE_FLAG_IRQS_NOSUPPORT;
- #endif
- 
- 	if (pc & NMI_MASK)
- 		trace_flags |= TRACE_FLAG_NMI;
- 	if (pc & HARDIRQ_MASK)
- 		trace_flags |= TRACE_FLAG_HARDIRQ;
-+	if (in_serving_softirq())
-+		trace_flags |= TRACE_FLAG_SOFTIRQ;
- 
--	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
--		if (in_serving_softirq())
--			trace_flags |= TRACE_FLAG_SOFTIRQ;
--	} else {
--		if (pc & SOFTIRQ_OFFSET)
--			trace_flags |= TRACE_FLAG_SOFTIRQ;
--	}
- 	if (tif_need_resched())
- 		trace_flags |= TRACE_FLAG_NEED_RESCHED;
- 	if (test_preempt_need_resched())
-@@ -2624,11 +2619,6 @@ static unsigned int __tracing_gen_ctx_flags(unsigned long irqflags)
- 		(trace_flags << 24);
- }
- 
--unsigned int _tracing_gen_ctx_flags(unsigned long irqflags)
--{
--	return __tracing_gen_ctx_flags(irqflags);
--}
--
- unsigned int tracing_gen_ctx_flags(void)
- {
- 	unsigned long irqflags;
-@@ -2890,7 +2880,7 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
- 	return ret;
- }
- 
--void trace_event_buffer_commit__(struct trace_event_buffer *fbuffer)
-+void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
- {
- 	if (static_key_false(&tracepoint_printk_key.key))
- 		output_printk(fbuffer);
-@@ -2901,7 +2891,7 @@ void trace_event_buffer_commit__(struct trace_event_buffer *fbuffer)
- 				    fbuffer->event, fbuffer->entry,
- 				    fbuffer->trace_ctx, fbuffer->regs);
- }
--EXPORT_SYMBOL_GPL(trace_event_buffer_commit__);
-+EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
- 
- /*
-  * Skip 3:
-@@ -3092,13 +3082,9 @@ void __trace_stack(struct trace_array *tr, unsigned int trace_ctx,
-  */
- void trace_dump_stack(int skip)
- {
--	unsigned long flags;
--
- 	if (tracing_disabled || tracing_selftest_running)
- 		return;
- 
--	local_save_flags(flags);
--
- #ifndef CONFIG_UNWINDER_ORC
- 	/* Skip 1 to skip this function. */
- 	skip++;
-diff --git a/kernel/trace/trace_branch.c b/kernel/trace/trace_branch.c
-index 0de1e9c4d381b..a95b7f1fa351c 100644
---- a/kernel/trace/trace_branch.c
-+++ b/kernel/trace/trace_branch.c
-@@ -37,7 +37,7 @@ probe_likely_condition(struct ftrace_likely_data *f, int val, int expect)
- 	struct ring_buffer_event *event;
- 	struct trace_branch *entry;
- 	unsigned long flags;
--	unsigned int pc;
-+	unsigned int trace_ctx;
- 	const char *p;
- 
- 	if (current->trace_recursion & TRACE_BRANCH_BIT)
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 257c11f98b786..a38d7edb2fe03 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -3677,7 +3677,6 @@ function_test_events_call(unsigned long ip, unsigned long parent_ip,
- 	struct trace_buffer *buffer;
- 	struct ring_buffer_event *event;
- 	struct ftrace_entry *entry;
--	unsigned long flags;
- 	unsigned int trace_ctx;
- 	long disabled;
- 	int cpu;
-@@ -3690,8 +3689,6 @@ function_test_events_call(unsigned long ip, unsigned long parent_ip,
- 	if (disabled != 1)
- 		goto out;
- 
--	local_save_flags(flags);
--
- 	event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
- 						TRACE_FN, sizeof(*entry),
- 						trace_ctx);
-diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
-index a5465a93fc149..65150c0a5e7af 100644
---- a/kernel/trace/trace_events_inject.c
-+++ b/kernel/trace/trace_events_inject.c
-@@ -25,7 +25,7 @@ trace_inject_entry(struct trace_event_file *file, void *rec, int len)
- 	if (entry) {
- 		memcpy(entry, rec, len);
- 		written = len;
--		trace_event_buffer_commit__(&fbuffer);
-+		trace_event_buffer_commit(&fbuffer);
- 	}
- 	rcu_read_unlock_sched();
- 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 2fc59be73a288..881df991742ab 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -504,7 +504,7 @@ static notrace void trace_event_raw_event_synth(void *__data,
- 		}
- 	}
- 
--	trace_event_buffer_commit__(&fbuffer);
-+	trace_event_buffer_commit(&fbuffer);
- out:
- 	ring_buffer_nest_end(buffer);
- }
-@@ -1494,7 +1494,7 @@ __synth_event_trace_start(struct trace_event_file *file,
- static inline void
- __synth_event_trace_end(struct synth_event_trace_state *trace_state)
- {
--	trace_event_buffer_commit__(&trace_state->fbuffer);
-+	trace_event_buffer_commit(&trace_state->fbuffer);
- 
- 	ring_buffer_nest_end(trace_state->buffer);
- }
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 7066faab29e7a..52ab6cf49d767 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -185,7 +185,7 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
- 	unsigned long flags;
- 	long disabled;
- 	int cpu;
--	int trace_ctx;
-+	unsigned int trace_ctx;
- 
- 	if (unlikely(!tr->function_enabled))
- 		return;
-@@ -200,7 +200,7 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
- 	disabled = atomic_inc_return(&data->disabled);
- 
- 	if (likely(disabled == 1)) {
--		trace_ctx = tracing_gen_ctx_flags();
-+		trace_ctx = _tracing_gen_ctx_flags(flags);
- 		trace_function(tr, ip, parent_ip, trace_ctx);
- 		__trace_stack(tr, trace_ctx, STACK_SKIP);
- 	}
-@@ -405,10 +405,8 @@ ftrace_traceoff(unsigned long ip, unsigned long parent_ip,
- 
- static __always_inline void trace_stack(struct trace_array *tr)
- {
--	unsigned long flags;
- 	unsigned int trace_ctx;
- 
--	local_save_flags(flags);
- 	trace_ctx = tracing_gen_ctx_flags();
- 
- 	__trace_stack(tr, trace_ctx, FTRACE_STACK_SKIP);
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 966b1a16fe6ae..7bf4d63c02206 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1402,7 +1402,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
- 	entry->ip = (unsigned long)tk->rp.kp.addr;
- 	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
- 
--	trace_event_buffer_commit__(&fbuffer);
-+	trace_event_buffer_commit(&fbuffer);
- }
- 
- static void
-@@ -1449,7 +1449,7 @@ __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	entry->ret_ip = (unsigned long)ri->ret_addr;
- 	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
- 
--	trace_event_buffer_commit__(&fbuffer);
-+	trace_event_buffer_commit(&fbuffer);
- }
- 
- static void
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 795935a669f97..e8bb2d8149e63 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -116,7 +116,6 @@ static int wakeup_graph_entry(struct ftrace_graph_ent *trace)
- {
- 	struct trace_array *tr = wakeup_trace;
- 	struct trace_array_cpu *data;
--	unsigned long flags;
- 	unsigned int trace_ctx;
- 	int ret = 0;
- 
-@@ -135,7 +134,6 @@ static int wakeup_graph_entry(struct ftrace_graph_ent *trace)
- 	if (!func_prolog_preempt_disable(tr, &data, &trace_ctx))
- 		return 0;
- 
--	local_save_flags(flags);
- 	ret = __trace_graph_entry(tr, trace, trace_ctx);
- 	atomic_dec(&data->disabled);
- 	preempt_enable_notrace();
-@@ -147,7 +145,6 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace)
- {
- 	struct trace_array *tr = wakeup_trace;
- 	struct trace_array_cpu *data;
--	unsigned long flags;
- 	unsigned int trace_ctx;
- 
- 	ftrace_graph_addr_finish(trace);
-@@ -155,7 +152,6 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace)
- 	if (!func_prolog_preempt_disable(tr, &data, &trace_ctx))
- 		return;
- 
--	local_save_flags(flags);
- 	__trace_graph_return(tr, trace, trace_ctx);
- 	atomic_dec(&data->disabled);
- 
-@@ -456,8 +452,6 @@ probe_wakeup_sched_switch(void *ignore, bool preempt,
- 	if (next != wakeup_task)
- 		return;
- 
--	trace_ctx = tracing_gen_ctx_flags();
--
- 	/* disable local data, not wakeup_cpu data */
- 	cpu = raw_smp_processor_id();
- 	disabled = atomic_inc_return(&per_cpu_ptr(wakeup_trace->array_buffer.data, cpu)->disabled);
-@@ -465,6 +459,8 @@ probe_wakeup_sched_switch(void *ignore, bool preempt,
- 		goto out;
- 
- 	local_irq_save(flags);
-+	trace_ctx = _tracing_gen_ctx_flags(flags);
-+
- 	arch_spin_lock(&wakeup_lock);
- 
- 	/* We could race with grabbing wakeup_lock */
-@@ -528,7 +524,6 @@ probe_wakeup(void *ignore, struct task_struct *p)
- {
- 	struct trace_array_cpu *data;
- 	int cpu = smp_processor_id();
--	unsigned long flags;
- 	long disabled;
- 	unsigned int trace_ctx;
- 
-@@ -551,11 +546,12 @@ probe_wakeup(void *ignore, struct task_struct *p)
- 	    (!dl_task(p) && (p->prio >= wakeup_prio || p->prio >= current->prio)))
- 		return;
- 
--	trace_ctx = tracing_gen_ctx_flags();
- 	disabled = atomic_inc_return(&per_cpu_ptr(wakeup_trace->array_buffer.data, cpu)->disabled);
- 	if (unlikely(disabled != 1))
- 		goto out;
- 
-+	trace_ctx = tracing_gen_ctx_flags();
-+
- 	/* interrupts should be off from try_to_wake_up */
- 	arch_spin_lock(&wakeup_lock);
- 
-@@ -582,8 +578,6 @@ probe_wakeup(void *ignore, struct task_struct *p)
- 
- 	wakeup_task = get_task_struct(p);
- 
--	local_save_flags(flags);
--
- 	data = per_cpu_ptr(wakeup_trace->array_buffer.data, wakeup_cpu);
- 	data->preempt_timestamp = ftrace_now(cpu);
- 	tracing_sched_wakeup_trace(wakeup_trace, p, current, trace_ctx);
-diff --git a/localversion-rt b/localversion-rt
-index 9a218ca230534..b2111a212663a 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt23
-+-rt24
+Please put it next to kasan_report_invalid_free().
