@@ -2,196 +2,558 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055D62FBFDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC392FBFE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404691AbhASTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730676AbhASTJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:09:28 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBA0C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:08:24 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 19so22967806qkm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3UvSSj7FihiEFVi0RGPwt1INmt76yzIjTycQHPLRAfM=;
-        b=ZMtqNibv8mF11Vx2yC6cc6h8bkhNBMC4+hjLOJX2JbTYFfxgJfZz5nYhVAzGp6A1Xj
-         z0+qyRYZW7ROj1Cg5sW+UQVmT+SnIc2USYejRzCJnTjtKYE8J3WQbzqVMZ5FiJFG97UG
-         Ebp4OWPoetgrzq3ohwTgViRaiFNN089B4jIzhoYDgDQj9MpaAp4c7SrU+sDFAQ4fIZzM
-         nsKREWlUBZ97nW4Lt0wyfKhKsyoqjALt6Fa2UgX9Wpmu1fZWjvoFhswoufeGIco9BJQy
-         0xJq8ByhLV5IkW/MsFOYNTEvK7H52f1a9nFgVeJLPNrGfV5f5bNIW+xQXIsJDVToxzRc
-         Gv9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3UvSSj7FihiEFVi0RGPwt1INmt76yzIjTycQHPLRAfM=;
-        b=gpTm2R8VMzE7TmRXjWBzQeG2gfKJjiU2gFdJO0x45L+0smJQWRZlOd0ZHyIYvyl1MX
-         R1F0Tqsxb2gu6B9dYPfsH0fxEIjZYWUQzahXYO+vDCYUK3LS9Gv31zVG0D2affZAEBwU
-         xYtWWbS8bKnfnVGXShkEV+jVi+DQRuwn8u48If8EkQ6HMlh0Is7aNGYldTz/kPcBUclE
-         oQxUZ0oUaJsolu60ZWj98BEKtSKvQ1q9k1CmKeYBRyK0bzyWmK3+6yBDBr4ZWLRP4utz
-         yTDYYcWm3Mh2ifIh8+LuOgRG/Xl/QR8e8zG7eX3TbXpWqawoHW7fcioKsazlFwJHUwf5
-         6Wbw==
-X-Gm-Message-State: AOAM531N/oSjQeR8LjSWy0mIfT3/bqnciYMCPD+NOJzpEkxwRporTEgD
-        mvOrnFzuwktKqoxd+Z6kycbzhKh3fuHAFah9bZ32LSOkybcl1C22
-X-Google-Smtp-Source: ABdhPJzuVOPoCj0aRbqV9LR8ha00BJ3589ff8a3Agw9tVpcuBaHbMvOz/1fsBmo5ODDdaDbnxDLmXvEav/ZmTtLOKsc=
-X-Received: by 2002:a37:afc2:: with SMTP id y185mr5930151qke.499.1611083302926;
- Tue, 19 Jan 2021 11:08:22 -0800 (PST)
+        id S2404647AbhASTVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:21:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389910AbhASTJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:09:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD6A20706;
+        Tue, 19 Jan 2021 19:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611083337;
+        bh=qdLXsDrzNDOXxY5oWv0vGtMYPY/gzk+ieEqvL52lnOk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2RR4wBvvA49xAm97NAb5Lc0LpajPWnP0AmQfhC858wYyySUqqn8iDG7VY5/0AN4/
+         hQGx6Wk/ZHj7bqEzENfL2R/yYR2iV/E0CmcDaRtdbIMjA+7741spCrk8jBMMk9sOWP
+         bl6x0raeoxb+26GRABFGxLKhVWbIqTvuy2sLYr0V9Y/EhjrrKxJm+XIm9Mrg/XDJdY
+         JnJo5qmkDy0zXgHU4WAR5T3jDnsbR5tfNk/aEwdD7pHg/a4HeSJKMdaL33qrudjcIc
+         DSHph+VACHcM7K4xJ/KmqR3naitaOcjzIZbu97289txfyhSyrpCCVzrWKodshw/UNu
+         wQQ+IJuPeaDbg==
+Date:   Tue, 19 Jan 2021 11:08:55 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v4 1/2] f2fs: introduce checkpoint=merge mount
+ option
+Message-ID: <YAcuR5UMsj9MTtvg@google.com>
+References: <20210119000043.1206345-1-daeho43@gmail.com>
 MIME-Version: 1.0
-References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
- <20210118234057.270930-1-zzyiwei@android.com> <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
-In-Reply-To: <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
-From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
-Date:   Tue, 19 Jan 2021 11:08:12 -0800
-Message-ID: <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119000043.1206345-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> wrote:
-> >
-> > On the success of virtio_gpu_object_create, add size of newly allocated
-> > bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
-> > bo lost its last refcount, subtract the bo size from the tracked
-> > total_mem if the original underlying memory allocation is successful.
-> >
-> > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
->
-> Isn't this something that ideally we'd for everyone? Also tracepoint
-> for showing the total feels like tracepoint abuse, usually we show
-> totals somewhere in debugfs or similar, and tracepoint just for what's
-> happening (i.e. which object got deleted/created).
->
-> What is this for exactly?
-> -Daniel
->
-> > ---
-> >  drivers/gpu/drm/virtio/Kconfig          |  1 +
-> >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
-> >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
-> >  3 files changed, 24 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
-> > index b925b8b1da16..e103b7e883b1 100644
-> > --- a/drivers/gpu/drm/virtio/Kconfig
-> > +++ b/drivers/gpu/drm/virtio/Kconfig
-> > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
-> >         select DRM_KMS_HELPER
-> >         select DRM_GEM_SHMEM_HELPER
-> >         select VIRTIO_DMA_SHARED_BUFFER
-> > +       select TRACE_GPU_MEM
-> >         help
-> >            This is the virtual GPU driver for virtio.  It can be used with
-> >            QEMU based VMMs (like KVM or Xen).
-> > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > index 6a232553c99b..7c60e7486bc4 100644
-> > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
-> >         spinlock_t resource_export_lock;
-> >         /* protects map state and host_visible_mm */
-> >         spinlock_t host_visible_lock;
-> > +
-> > +#ifdef CONFIG_TRACE_GPU_MEM
-> > +       atomic64_t total_mem;
-> > +#endif
-> >  };
-> >
-> >  struct virtio_gpu_fpriv {
-> > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
-> > index d69a5b6da553..1e16226cebbe 100644
-> > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
-> > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-> > @@ -25,12 +25,29 @@
-> >
-> >  #include <linux/dma-mapping.h>
-> >  #include <linux/moduleparam.h>
-> > +#ifdef CONFIG_TRACE_GPU_MEM
-> > +#include <trace/events/gpu_mem.h>
-> > +#endif
-> >
-> >  #include "virtgpu_drv.h"
-> >
-> >  static int virtio_gpu_virglrenderer_workaround = 1;
-> >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
-> >
-> > +#ifdef CONFIG_TRACE_GPU_MEM
-> > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
-> > +                                             s64 delta)
-> > +{
-> > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
-> > +
-> > +       trace_gpu_mem_total(0, 0, total_mem);
-> > +}
-> > +#else
-> > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
-> > +{
-> > +}
-> > +#endif
-> > +
-> >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
-> >  {
-> >         if (virtio_gpu_virglrenderer_workaround) {
-> > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
-> >         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
-> >
-> >         if (bo->created) {
-> > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
-> >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
-> >                 virtio_gpu_notify(vgdev);
-> >                 /* completion handler calls virtio_gpu_cleanup_object() */
-> > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
-> >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
-> >         }
-> >
-> > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
-> >         *bo_ptr = bo;
-> >         return 0;
-> >
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Is there v4 2/2?
 
-Thanks for your reply! Android Cuttlefish virtual platform is using
-the virtio-gpu driver, and we currently are carrying this small patch
-at the downstream side. This is essential for us because:
-(1) Android has deprecated debugfs on production devices already
-(2) Android GPU drivers are not DRM based, and this won't change in a
-short term.
-
-Android relies on this tracepoint + eBPF to make the GPU memory totals
-available at runtime on production devices, which has been enforced
-already. Not only game developers can have a reliable kernel total GPU
-memory to look at, but also Android leverages this to take GPU memory
-usage out from the system lost ram.
-
-I'm not sure whether the other DRM drivers would like to integrate
-this tracepoint(maybe upstream drivers will move away from debugfs
-later as well?), but at least we hope virtio-gpu can take this.
-
-Many thanks!
-Yiwei
+On 01/19, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> We've added a new mount option "checkpoint=merge", which creates a
+> kernel daemon and makes it to merge concurrent checkpoint requests as
+> much as possible to eliminate redundant checkpoint issues. Plus, we
+> can eliminate the sluggish issue caused by slow checkpoint operation
+> when the checkpoint is done in a process context in a cgroup having
+> low i/o budget and cpu shares. To make this do better, we set the
+> default i/o priority of the kernel daemon to "3", to give one higher
+> priority than other kernel threads. The below verification result
+> explains this.
+> The basic idea has come from https://opensource.samsung.com.
+> 
+> [Verification]
+> Android Pixel Device(ARM64, 7GB RAM, 256GB UFS)
+> Create two I/O cgroups (fg w/ weight 100, bg w/ wight 20)
+> Set "strict_guarantees" to "1" in BFQ tunables
+> 
+> In "fg" cgroup,
+> - thread A => trigger 1000 checkpoint operations
+>   "for i in `seq 1 1000`; do touch test_dir1/file; fsync test_dir1;
+>    done"
+> - thread B => gererating async. I/O
+>   "fio --rw=write --numjobs=1 --bs=128k --runtime=3600 --time_based=1
+>        --filename=test_img --name=test"
+> 
+> In "bg" cgroup,
+> - thread C => trigger repeated checkpoint operations
+>   "echo $$ > /dev/blkio/bg/tasks; while true; do touch test_dir2/file;
+>    fsync test_dir2; done"
+> 
+> We've measured thread A's execution time.
+> 
+> [ w/o patch ]
+> Elapsed Time: Avg. 68 seconds
+> [ w/  patch ]
+> Elapsed Time: Avg. 48 seconds
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+> ---
+> v2:
+> - inlined ckpt_req_control into f2fs_sb_info and collected stastics
+>   of checkpoint merge operations
+> v3:
+> - fixed some minor errors and cleaned up f2fs_sync_fs()
+> v4:
+> - added an explanation to raise the default i/o priority of the
+>   checkpoint daemon
+> ---
+>  Documentation/filesystems/f2fs.rst |  10 ++
+>  fs/f2fs/checkpoint.c               | 177 +++++++++++++++++++++++++++++
+>  fs/f2fs/debug.c                    |  12 ++
+>  fs/f2fs/f2fs.h                     |  27 +++++
+>  fs/f2fs/super.c                    |  55 +++++++--
+>  5 files changed, 273 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index dae15c96e659..9624a0be0364 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -247,6 +247,16 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+>  			 hide up to all remaining free space. The actual space that
+>  			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+>  			 This space is reclaimed once checkpoint=enable.
+> +			 Here is another option "merge", which creates a kernel daemon
+> +			 and makes it to merge concurrent checkpoint requests as much
+> +			 as possible to eliminate redundant checkpoint issues. Plus,
+> +			 we can eliminate the sluggish issue caused by slow checkpoint
+> +			 operation when the checkpoint is done in a process context in
+> +			 a cgroup having low i/o budget and cpu shares. To make this
+> +			 do better, we set the default i/o priority of the kernel daemon
+> +			 to "3", to give one higher priority than other kernel threads.
+> +			 This is the same way to give a I/O priority to the jbd2
+> +			 journaling thread of ext4 filesystem.
+>  compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+>  			 "lz4", "zstd" and "lzo-rle" algorithm.
+>  compress_log_size=%u	 Support configuring compress cluster size, the size will
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index 897edb7c951a..ef6ad3d1957d 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/f2fs_fs.h>
+>  #include <linux/pagevec.h>
+>  #include <linux/swap.h>
+> +#include <linux/kthread.h>
+>  
+>  #include "f2fs.h"
+>  #include "node.h"
+> @@ -20,6 +21,8 @@
+>  #include "trace.h"
+>  #include <trace/events/f2fs.h>
+>  
+> +#define DEFAULT_CHECKPOINT_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+> +
+>  static struct kmem_cache *ino_entry_slab;
+>  struct kmem_cache *f2fs_inode_entry_slab;
+>  
+> @@ -1707,3 +1710,177 @@ void f2fs_destroy_checkpoint_caches(void)
+>  	kmem_cache_destroy(ino_entry_slab);
+>  	kmem_cache_destroy(f2fs_inode_entry_slab);
+>  }
+> +
+> +static int __write_checkpoint_sync(struct f2fs_sb_info *sbi)
+> +{
+> +	struct cp_control cpc = { .reason = CP_SYNC, };
+> +	int err;
+> +
+> +	down_write(&sbi->gc_lock);
+> +	err = f2fs_write_checkpoint(sbi, &cpc);
+> +	up_write(&sbi->gc_lock);
+> +
+> +	return err;
+> +}
+> +
+> +static void __checkpoint_and_complete_reqs(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +	struct ckpt_req *req, *next;
+> +	struct llist_node *dispatch_list;
+> +	u64 sum_diff = 0, diff, count = 0;
+> +	int ret;
+> +
+> +	dispatch_list = llist_del_all(&cprc->issue_list);
+> +	if (!dispatch_list)
+> +		return;
+> +	dispatch_list = llist_reverse_order(dispatch_list);
+> +
+> +	ret = __write_checkpoint_sync(sbi);
+> +	atomic_inc(&cprc->issued_ckpt);
+> +
+> +	llist_for_each_entry_safe(req, next, dispatch_list, llnode) {
+> +		diff = (u64)ktime_ms_delta(ktime_get(), req->queue_time);
+> +		req->ret = ret;
+> +		complete(&req->wait);
+> +
+> +		sum_diff += diff;
+> +		count++;
+> +	}
+> +	atomic_sub(count, &cprc->queued_ckpt);
+> +	atomic_add(count, &cprc->total_ckpt);
+> +
+> +	spin_lock(&cprc->stat_lock);
+> +	cprc->cur_time = (unsigned int)div64_u64(sum_diff, count);
+> +	if (cprc->peak_time < cprc->cur_time)
+> +		cprc->peak_time = cprc->cur_time;
+> +	spin_unlock(&cprc->stat_lock);
+> +}
+> +
+> +static int issue_checkpoint_thread(void *data)
+> +{
+> +	struct f2fs_sb_info *sbi = data;
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +	wait_queue_head_t *q = &cprc->ckpt_wait_queue;
+> +repeat:
+> +	if (kthread_should_stop())
+> +		return 0;
+> +
+> +	sb_start_intwrite(sbi->sb);
+> +
+> +	if (!llist_empty(&cprc->issue_list))
+> +		__checkpoint_and_complete_reqs(sbi);
+> +
+> +	sb_end_intwrite(sbi->sb);
+> +
+> +	wait_event_interruptible(*q,
+> +		kthread_should_stop() || !llist_empty(&cprc->issue_list));
+> +	goto repeat;
+> +}
+> +
+> +static void flush_remained_ckpt_reqs(struct f2fs_sb_info *sbi,
+> +		struct ckpt_req *wait_req)
+> +{
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +
+> +	if (!llist_empty(&cprc->issue_list)) {
+> +		__checkpoint_and_complete_reqs(sbi);
+> +	} else {
+> +		/* already dispatched by issue_checkpoint_thread */
+> +		if (wait_req)
+> +			wait_for_completion(&wait_req->wait);
+> +	}
+> +}
+> +
+> +static void init_ckpt_req(struct ckpt_req *req)
+> +{
+> +	memset(req, 0, sizeof(struct ckpt_req));
+> +
+> +	init_completion(&req->wait);
+> +	req->queue_time = ktime_get();
+> +}
+> +
+> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +	struct ckpt_req req;
+> +	struct cp_control cpc;
+> +
+> +	cpc.reason = __get_cp_reason(sbi);
+> +	if (!test_opt(sbi, MERGE_CHECKPOINT) || cpc.reason != CP_SYNC) {
+> +		int ret;
+> +
+> +		down_write(&sbi->gc_lock);
+> +		ret = f2fs_write_checkpoint(sbi, &cpc);
+> +		up_write(&sbi->gc_lock);
+> +
+> +		return ret;
+> +	}
+> +
+> +	if (!cprc->f2fs_issue_ckpt)
+> +		return __write_checkpoint_sync(sbi);
+> +
+> +	init_ckpt_req(&req);
+> +
+> +	llist_add(&req.llnode, &cprc->issue_list);
+> +	atomic_inc(&cprc->queued_ckpt);
+> +
+> +	/* update issue_list before we wake up issue_checkpoint thread */
+> +	smp_mb();
+> +
+> +	if (waitqueue_active(&cprc->ckpt_wait_queue))
+> +		wake_up(&cprc->ckpt_wait_queue);
+> +
+> +	if (cprc->f2fs_issue_ckpt)
+> +		wait_for_completion(&req.wait);
+> +	else
+> +		flush_remained_ckpt_reqs(sbi, &req);
+> +
+> +	return req.ret;
+> +}
+> +
+> +int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
+> +{
+> +	dev_t dev = sbi->sb->s_bdev->bd_dev;
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +
+> +	if (cprc->f2fs_issue_ckpt)
+> +		return 0;
+> +
+> +	cprc->f2fs_issue_ckpt = kthread_run(issue_checkpoint_thread, sbi,
+> +			"f2fs_ckpt-%u:%u", MAJOR(dev), MINOR(dev));
+> +	if (IS_ERR(cprc->f2fs_issue_ckpt)) {
+> +		cprc->f2fs_issue_ckpt = NULL;
+> +		return PTR_ERR(cprc->f2fs_issue_ckpt);
+> +	}
+> +
+> +	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
+> +
+> +	return 0;
+> +}
+> +
+> +void f2fs_stop_ckpt_thread(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +
+> +	if (cprc->f2fs_issue_ckpt) {
+> +		struct task_struct *ckpt_task = cprc->f2fs_issue_ckpt;
+> +
+> +		cprc->f2fs_issue_ckpt = NULL;
+> +		kthread_stop(ckpt_task);
+> +
+> +		flush_remained_ckpt_reqs(sbi, NULL);
+> +	}
+> +}
+> +
+> +void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = &sbi->cprc_info;
+> +
+> +	atomic_set(&cprc->issued_ckpt, 0);
+> +	atomic_set(&cprc->total_ckpt, 0);
+> +	atomic_set(&cprc->queued_ckpt, 0);
+> +	init_waitqueue_head(&cprc->ckpt_wait_queue);
+> +	init_llist_head(&cprc->issue_list);
+> +	spin_lock_init(&cprc->stat_lock);
+> +}
+> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+> index 197c914119da..91855d5721cd 100644
+> --- a/fs/f2fs/debug.c
+> +++ b/fs/f2fs/debug.c
+> @@ -120,6 +120,13 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+>  			atomic_read(&SM_I(sbi)->dcc_info->discard_cmd_cnt);
+>  		si->undiscard_blks = SM_I(sbi)->dcc_info->undiscard_blks;
+>  	}
+> +	si->nr_issued_ckpt = atomic_read(&sbi->cprc_info.issued_ckpt);
+> +	si->nr_total_ckpt = atomic_read(&sbi->cprc_info.total_ckpt);
+> +	si->nr_queued_ckpt = atomic_read(&sbi->cprc_info.queued_ckpt);
+> +	spin_lock(&sbi->cprc_info.stat_lock);
+> +	si->cur_ckpt_time = sbi->cprc_info.cur_time;
+> +	si->peak_ckpt_time = sbi->cprc_info.peak_time;
+> +	spin_unlock(&sbi->cprc_info.stat_lock);
+>  	si->total_count = (int)sbi->user_block_count / sbi->blocks_per_seg;
+>  	si->rsvd_segs = reserved_segments(sbi);
+>  	si->overp_segs = overprovision_segments(sbi);
+> @@ -417,6 +424,11 @@ static int stat_show(struct seq_file *s, void *v)
+>  				si->meta_count[META_NAT]);
+>  		seq_printf(s, "  - ssa blocks : %u\n",
+>  				si->meta_count[META_SSA]);
+> +		seq_printf(s, "CP merge (Queued: %4d, Issued: %4d, Total: %4d, "
+> +				"Cur time: %4d(ms), Peak time: %4d(ms))\n",
+> +				si->nr_queued_ckpt, si->nr_issued_ckpt,
+> +				si->nr_total_ckpt, si->cur_ckpt_time,
+> +				si->peak_ckpt_time);
+>  		seq_printf(s, "GC calls: %d (BG: %d)\n",
+>  			   si->call_count, si->bg_gc);
+>  		seq_printf(s, "  - data segments : %d (%d)\n",
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index bb11759191dc..f2ae075aa723 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -97,6 +97,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+>  #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
+>  #define F2FS_MOUNT_NORECOVERY		0x04000000
+>  #define F2FS_MOUNT_ATGC			0x08000000
+> +#define F2FS_MOUNT_MERGE_CHECKPOINT	0x10000000
+>  
+>  #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+>  #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+> @@ -266,6 +267,25 @@ struct fsync_node_entry {
+>  	unsigned int seq_id;	/* sequence id */
+>  };
+>  
+> +struct ckpt_req {
+> +	struct completion wait;		/* completion for checkpoint done */
+> +	struct llist_node llnode;	/* llist_node to be linked in wait queue */
+> +	int ret;			/* return code of checkpoint */
+> +	ktime_t queue_time;		/* request queued time */
+> +};
+> +
+> +struct ckpt_req_control {
+> +	struct task_struct *f2fs_issue_ckpt;	/* checkpoint task */
+> +	wait_queue_head_t ckpt_wait_queue;	/* waiting queue for wake-up */
+> +	atomic_t issued_ckpt;		/* # of actually issued ckpts */
+> +	atomic_t total_ckpt;		/* # of total ckpts */
+> +	atomic_t queued_ckpt;		/* # of queued ckpts */
+> +	struct llist_head issue_list;	/* list for command issue */
+> +	spinlock_t stat_lock;		/* lock for below checkpoint time stats */
+> +	unsigned int cur_time;		/* cur wait time in msec for currently issued checkpoint */
+> +	unsigned int peak_time;		/* peak wait time in msec until now */
+> +};
+> +
+>  /* for the bitmap indicate blocks to be discarded */
+>  struct discard_entry {
+>  	struct list_head list;	/* list head */
+> @@ -1404,6 +1424,7 @@ struct f2fs_sb_info {
+>  	wait_queue_head_t cp_wait;
+>  	unsigned long last_time[MAX_TIME];	/* to store time in jiffies */
+>  	long interval_time[MAX_TIME];		/* to store thresholds */
+> +	struct ckpt_req_control cprc_info;	/* for checkpoint request control */
+>  
+>  	struct inode_management im[MAX_INO_ENTRY];	/* manage inode cache */
+>  
+> @@ -3418,6 +3439,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc);
+>  void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi);
+>  int __init f2fs_create_checkpoint_caches(void);
+>  void f2fs_destroy_checkpoint_caches(void);
+> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi);
+> +int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi);
+> +void f2fs_stop_ckpt_thread(struct f2fs_sb_info *sbi);
+> +void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+>  
+>  /*
+>   * data.c
+> @@ -3530,6 +3555,8 @@ struct f2fs_stat_info {
+>  	int nr_discarding, nr_discarded;
+>  	int nr_discard_cmd;
+>  	unsigned int undiscard_blks;
+> +	int nr_issued_ckpt, nr_total_ckpt, nr_queued_ckpt;
+> +	unsigned int cur_ckpt_time, peak_ckpt_time;
+>  	int inline_xattr, inline_inode, inline_dir, append, update, orphans;
+>  	int compr_inode;
+>  	unsigned long long compr_blocks;
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index b4a07fe62d1a..4bf5e889f2f8 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -143,6 +143,7 @@ enum {
+>  	Opt_checkpoint_disable_cap,
+>  	Opt_checkpoint_disable_cap_perc,
+>  	Opt_checkpoint_enable,
+> +	Opt_checkpoint_merge,
+>  	Opt_compress_algorithm,
+>  	Opt_compress_log_size,
+>  	Opt_compress_extension,
+> @@ -213,6 +214,7 @@ static match_table_t f2fs_tokens = {
+>  	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+>  	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+>  	{Opt_checkpoint_enable, "checkpoint=enable"},
+> +	{Opt_checkpoint_merge, "checkpoint=merge"},
+>  	{Opt_compress_algorithm, "compress_algorithm=%s"},
+>  	{Opt_compress_log_size, "compress_log_size=%u"},
+>  	{Opt_compress_extension, "compress_extension=%s"},
+> @@ -872,6 +874,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  		case Opt_checkpoint_enable:
+>  			clear_opt(sbi, DISABLE_CHECKPOINT);
+>  			break;
+> +		case Opt_checkpoint_merge:
+> +			set_opt(sbi, MERGE_CHECKPOINT);
+> +			break;
+>  #ifdef CONFIG_F2FS_FS_COMPRESSION
+>  		case Opt_compress_algorithm:
+>  			if (!f2fs_sb_has_compression(sbi)) {
+> @@ -1040,6 +1045,12 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+> +			test_opt(sbi, MERGE_CHECKPOINT)) {
+> +		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* Not pass down write hints if the number of active logs is lesser
+>  	 * than NR_CURSEG_PERSIST_TYPE.
+>  	 */
+> @@ -1245,6 +1256,12 @@ static void f2fs_put_super(struct super_block *sb)
+>  	/* prevent remaining shrinker jobs */
+>  	mutex_lock(&sbi->umount_mutex);
+>  
+> +	/*
+> +	 * flush all issued checkpoints and stop checkpoint issue thread.
+> +	 * after then, all checkpoints should be done by each process context.
+> +	 */
+> +	f2fs_stop_ckpt_thread(sbi);
+> +
+>  	/*
+>  	 * We don't need to do checkpoint when superblock is clean.
+>  	 * But, the previous checkpoint was not done by umount, it needs to do
+> @@ -1343,15 +1360,9 @@ int f2fs_sync_fs(struct super_block *sb, int sync)
+>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+>  		return -EAGAIN;
+>  
+> -	if (sync) {
+> -		struct cp_control cpc;
+> -
+> -		cpc.reason = __get_cp_reason(sbi);
+> +	if (sync)
+> +		err = f2fs_issue_checkpoint(sbi);
+>  
+> -		down_write(&sbi->gc_lock);
+> -		err = f2fs_write_checkpoint(sbi, &cpc);
+> -		up_write(&sbi->gc_lock);
+> -	}
+>  	f2fs_trace_ios(NULL, 1);
+>  
+>  	return err;
+> @@ -1674,6 +1685,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>  	if (test_opt(sbi, DISABLE_CHECKPOINT))
+>  		seq_printf(seq, ",checkpoint=disable:%u",
+>  				F2FS_OPTION(sbi).unusable_cap);
+> +	if (test_opt(sbi, MERGE_CHECKPOINT))
+> +		seq_puts(seq, ",checkpoint=merge");
+>  	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+>  		seq_printf(seq, ",fsync_mode=%s", "posix");
+>  	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+> @@ -1954,6 +1967,18 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>  		}
+>  	}
+>  
+> +	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+> +		f2fs_stop_ckpt_thread(sbi);
+> +	} else {
+> +		err = f2fs_start_ckpt_thread(sbi);
+> +		if (err) {
+> +			f2fs_err(sbi,
+> +			    "Failed to start F2FS issue_checkpoint_thread (%d)",
+> +			    err);
+> +			goto restore_gc;
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * We stop issue flush thread if FS is mounted as RO
+>  	 * or if flush_merge is not passed in mount option.
+> @@ -3701,6 +3726,18 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	f2fs_init_fsync_node_info(sbi);
+>  
+> +	/* setup checkpoint request control and start checkpoint issue thread */
+> +	f2fs_init_ckpt_req_control(sbi);
+> +	if (test_opt(sbi, MERGE_CHECKPOINT)) {
+> +		err = f2fs_start_ckpt_thread(sbi);
+> +		if (err) {
+> +			f2fs_err(sbi,
+> +			    "Failed to start F2FS issue_checkpoint_thread (%d)",
+> +			    err);
+> +			goto stop_ckpt_thread;
+> +		}
+> +	}
+> +
+>  	/* setup f2fs internal modules */
+>  	err = f2fs_build_segment_manager(sbi);
+>  	if (err) {
+> @@ -3910,6 +3947,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>  free_sm:
+>  	f2fs_destroy_segment_manager(sbi);
+>  	f2fs_destroy_post_read_wq(sbi);
+> +stop_ckpt_thread:
+> +	f2fs_stop_ckpt_thread(sbi);
+>  free_devices:
+>  	destroy_device_list(sbi);
+>  	kvfree(sbi->ckpt);
+> -- 
+> 2.30.0.296.g2bfb1c46d8-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
