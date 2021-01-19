@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EB92FB17E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BDC2FB190
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbhASGbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:31:51 -0500
-Received: from out28-148.mail.aliyun.com ([115.124.28.148]:48368 "EHLO
-        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbhASG37 (ORCPT
+        id S1729452AbhASGeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:34:21 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:59595 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727860AbhASGdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:29:59 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1089962|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00400365-0.000545466-0.995451;FP=11637145905088366247|1|1|1|0|-1|-1|-1;HT=ay29a033018047203;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.JMd8d.7_1611037752;
-Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.JMd8d.7_1611037752)
-          by smtp.aliyun-inc.com(10.194.97.246);
-          Tue, 19 Jan 2021 14:29:12 +0800
-From:   Liu Xiang <liu.xiang@zlingsmart.com>
-To:     linux-gpio@vger.kernel.org
-Cc:     linus.walleij@linaro.org, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
-        Liu Xiang <liu.xiang@zlingsmart.com>
-Subject: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
-Date:   Tue, 19 Jan 2021 14:29:08 +0800
-Message-Id: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 19 Jan 2021 01:33:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UMDPCxf_1611037957;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMDPCxf_1611037957)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Jan 2021 14:32:41 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     pkshih@realtek.com
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        Larry.Finger@lwfinger.net, chiu@endlessos.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH v2] rtlwifi: rtl8192se: Simplify bool comparison.
+Date:   Tue, 19 Jan 2021 14:32:35 +0800
+Message-Id: <1611037955-105333-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_REGULATOR is not set, sunxi_pmx_request() always return
-success. Even a group of pins call sunxi_pmx_request(), the refcount
-is only 1. This can cause a use-after-free warning in sunxi_pmx_free().
-To solve this problem, go to err path if regulator_get() return NULL
-or error.
+Fix the follow coccicheck warnings:
 
-Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:2305:6-27:
+WARNING: Comparison of 0/1 to bool variable.
+
+./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:1376:5-26:
+WARNING: Comparison of 0/1 to bool variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 ---
- drivers/pinctrl/sunxi/pinctrl-sunxi.c | 4 ++--
+Changes in v2:
+  -Modified subject.
+
+ drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-index dc8d39ae0..d1a8974eb 100644
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -777,7 +777,7 @@ static int sunxi_pmx_request(struct pinctrl_dev *pctldev, unsigned offset)
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+index 47fabce..aff8ab0 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+@@ -1373,7 +1373,7 @@ static void _rtl92se_gen_refreshledstate(struct ieee80211_hw *hw)
+ 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+ 	struct rtl_led *pled0 = &rtlpriv->ledctl.sw_led0;
  
- 	snprintf(supply, sizeof(supply), "vcc-p%c", 'a' + bank);
- 	reg = regulator_get(pctl->dev, supply);
--	if (IS_ERR(reg)) {
-+	if (IS_ERR_OR_NULL(reg)) {
- 		dev_err(pctl->dev, "Couldn't get bank P%c regulator\n",
- 			'A' + bank);
- 		return PTR_ERR(reg);
-@@ -811,7 +811,7 @@ static int sunxi_pmx_free(struct pinctrl_dev *pctldev, unsigned offset)
- 					    PINS_PER_BANK;
- 	struct sunxi_pinctrl_regulator *s_reg = &pctl->regulators[bank_offset];
+-	if (rtlpci->up_first_time == 1)
++	if (rtlpci->up_first_time)
+ 		return;
  
--	if (!refcount_dec_and_test(&s_reg->refcount))
-+	if (!s_reg->regulator || !refcount_dec_and_test(&s_reg->refcount))
- 		return 0;
+ 	if (rtlpriv->psc.rfoff_reason == RF_CHANGE_BY_IPS)
+@@ -2302,7 +2302,7 @@ bool rtl92se_gpio_radio_on_off_checking(struct ieee80211_hw *hw, u8 *valid)
+ 	bool turnonbypowerdomain = false;
  
- 	regulator_disable(s_reg->regulator);
+ 	/* just 8191se can check gpio before firstup, 92c/92d have fixed it */
+-	if ((rtlpci->up_first_time == 1) || (rtlpci->being_init_adapter))
++	if (rtlpci->up_first_time || rtlpci->being_init_adapter)
+ 		return false;
+ 
+ 	if (ppsc->swrf_processing)
 -- 
-2.17.1
+1.8.3.1
 
