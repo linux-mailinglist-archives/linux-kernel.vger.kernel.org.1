@@ -2,218 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86FB2FBF72
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25682FBF09
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389378AbhASSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:50:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49884 "EHLO mail.kernel.org"
+        id S2389825AbhASSbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:31:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731665AbhASS2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:28:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4413D2313B;
-        Tue, 19 Jan 2021 16:29:19 +0000 (UTC)
+        id S2388210AbhASS3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:29:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1F832335A;
+        Tue, 19 Jan 2021 16:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611073759;
-        bh=SfeSASVW8/KWXAYN1yW5qD/GYBJROiziCmmTFhnHgvI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hv4dSBDxQRuxQm0w114ZrgY1bAWjj9uhe43PEgIql2ViufQztH6llliuqFt3U412a
-         rhPszQqWuamK1+8t1w9PvkG6xxO7IOLe/N3awX+7ehjeP/eGX8jZZUNZKkgLw6+RIJ
-         cjmnm82ql6TyRX5pE3R6nYe2Q96MHfs2cOwnSguUVUzumw/fcvFqgHA1jm1lwYPllY
-         2d8cstzO+9ylIDzDhLn2a25s8Mngy7p+Kad4MMI0n33W26V2M2mZop/LqOv/JOljOz
-         KuWELzI8zUo9QcVjan3YtINumjlCm1OicM30VBOP91IxLXWvq/DmZEMwAlwHKCJU/3
-         lYWt6AADQ4new==
-Received: by mail-oi1-f170.google.com with SMTP id n186so13858542oia.5;
-        Tue, 19 Jan 2021 08:29:19 -0800 (PST)
-X-Gm-Message-State: AOAM531Vp2Mv1A6+4hyt5vofTbLbe935CjHq4pKOhdAI/dcvzw9p8k8W
-        K9RcI67XMWkKFmhVmec4bc806oj7UDaM9/ZhEbw=
-X-Google-Smtp-Source: ABdhPJzJ1qS0ASQS1ggdTR4k+h9gor173zz47tzc5skRp14g18SdXh2TEJNNIX6QUS9RQEzl8tDfdBjA6og9DiIbLks=
-X-Received: by 2002:aca:d98a:: with SMTP id q132mr304111oig.33.1611073756236;
- Tue, 19 Jan 2021 08:29:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20201218170106.23280-1-ardb@kernel.org> <20201218170106.23280-5-ardb@kernel.org>
- <20210119160045.GA1684@arm.com>
-In-Reply-To: <20210119160045.GA1684@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 19 Jan 2021 17:29:05 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
-Message-ID: <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with softirqs disabled
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        s=k20201202; t=1611073890;
+        bh=Amm6At+gBPWk+6rIvssw9sQzzoecSicdVjUQv8Qy/Es=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vDYHN5Q396DUh4Fryvtfh/XZ+vthySOaUDZCAeDJMDomaBFTLTjKiuZF1Bh4tfr7V
+         KXaeCPo80sMl5n4LnexK2FUJ7uRbPgyDq2rU8BuJHf8YSwQTZjmT7sjqViKWcTpQdU
+         doD9aH9TqIFfnFtWL1pbpij3xVVR4JNSHZxjUlj/VK56+sJVf0Kuot3galkqmIbqKq
+         pM3nEJXVdlMP1M9KuMJET6rikknLKsjJabPFcX+p/oM5WlpmoDbnMJYr7UlXSsKS5z
+         rIgI24I6hIp5yXAJY226sWFpsKZgSwsJ4YnBQCENja1jAbv1Ua8ryNQSq6vKmY1VLb
+         QQd66CoXvY5CQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EB3F140CE2; Tue, 19 Jan 2021 13:31:23 -0300 (-03)
+Date:   Tue, 19 Jan 2021 13:31:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
+Message-ID: <20210119163123.GM12699@kernel.org>
+References: <20201229214214.3413833-1-songliubraving@fb.com>
+ <20201229214214.3413833-4-songliubraving@fb.com>
+ <20210118193817.GG12699@kernel.org>
+ <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
+ <20210119143143.GJ12699@kernel.org>
+ <20210119144249.GK12699@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119144249.GK12699@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
->
-> On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
-> > Kernel mode NEON can be used in task or softirq context, but only in
-> > a non-nesting manner, i.e., softirq context is only permitted if the
-> > interrupt was not taken at a point where the kernel was using the NEON
-> > in task context.
-> >
-> > This means all users of kernel mode NEON have to be aware of this
-> > limitation, and either need to provide scalar fallbacks that may be much
-> > slower (up to 20x for AES instructions) and potentially less safe, or
-> > use an asynchronous interface that defers processing to a later time
-> > when the NEON is guaranteed to be available.
-> >
-> > Given that grabbing and releasing the NEON is cheap, we can relax this
-> > restriction, by increasing the granularity of kernel mode NEON code, and
-> > always disabling softirq processing while the NEON is being used in task
-> > context.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Sorry for the slow reply on this...  it looks reasonable, but I have a
-> few comments below.
->
+Em Tue, Jan 19, 2021 at 11:42:49AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Jan 19, 2021 at 11:31:44AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Tue, Jan 19, 2021 at 12:48:19AM +0000, Song Liu escreveu:
+> > > > On Jan 18, 2021, at 11:38 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > We are looking at two issues:
+> > > 1. Cannot recursively attach;
+> > > 2. prog FD 3 doesn't have valid btf. 
+>   
+> > > #1 was caused by the verifier disallowing attaching fentry/fexit program 
+> > > to program with type BPF_PROG_TYPE_TRACING (in bpf_check_attach_target). 
+> > > This constraint was added when we only had fentry/fexit in the TRACING
+> > > type. We have extended the TRACING type to many other use cases, like 
+> > > "tp_btf/", "fmod_ret" and "iter/". Therefore, it is good time to revisit 
+> > > this constraint. I will work on this. 
+>   
+> > > For #2, we require the target program to have BTF. I guess we won't remove
+> > > this requirement.
+>   
+> > > While I work on improving #1, could you please test with some kprobe 
+> > > programs? For example, we can use fileslower.py from bcc. 
+>  
+> > Sure, and please consider improving the error messages to state what you
+> > described above.
+> 
+> Terminal 1:
+> 
+> [root@five perf]# perf trace -e 5sec.c
+> ^C
+> [root@five perf]# cat 5sec.c
+> #include <bpf.h>
+> 
+> #define NSEC_PER_SEC	1000000000L
+> 
+> int probe(hrtimer_nanosleep, rqtp)(void *ctx, int err, long long sec)
+> {
+> 	return sec / NSEC_PER_SEC == 5;
+> }
+> 
+> license(GPL);
+> [root@five perf]# perf trace -e 5sec.c/max-stack=16/
+>      0.000 sleep/3739435 perf_bpf_probe:hrtimer_nanosleep(__probe_ip: -1743337312, rqtp: 5000000000)
+>                                        hrtimer_nanosleep ([kernel.kallsyms])
+>                                        common_nsleep ([kernel.kallsyms])
+>                                        __x64_sys_clock_nanosleep ([kernel.kallsyms])
+>                                        do_syscall_64 ([kernel.kallsyms])
+>                                        entry_SYSCALL_64_after_hwframe ([kernel.kallsyms])
+>                                        __clock_nanosleep_2 (/usr/lib64/libc-2.32.so)
+> 
+> 
+> Terminal 2:
+> 
+> [root@five ~]# perf stat -e cycles -b 180 -I 1000
+> libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+> perf: util/bpf_counter.c:227: bpf_program_profiler__read: Assertion `skel != NULL' failed.
+> Aborted (core dumped)
 
-No worries - thanks for taking a look.
+Out to lunch, will continue later, but this may help you figure this out
+till then :)
 
-> > ---
-> >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
-> >  arch/arm64/kernel/asm-offsets.c    |  2 ++
-> >  arch/arm64/kernel/fpsimd.c         |  4 ++--
-> >  3 files changed, 17 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> > index ddbe6bf00e33..74ce46ed55ac 100644
-> > --- a/arch/arm64/include/asm/assembler.h
-> > +++ b/arch/arm64/include/asm/assembler.h
-> > @@ -15,6 +15,7 @@
-> >  #include <asm-generic/export.h>
-> >
-> >  #include <asm/asm-offsets.h>
-> > +#include <asm/alternative.h>
-> >  #include <asm/cpufeature.h>
-> >  #include <asm/cputype.h>
-> >  #include <asm/debug-monitors.h>
-> > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
-> >       .endm
-> >
-> >       .macro          if_will_cond_yield_neon
-> > -#ifdef CONFIG_PREEMPTION
-> >       get_current_task        x0
-> >       ldr             x0, [x0, #TSK_TI_PREEMPT]
-> > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
-> > -     cbz             x0, .Lyield_\@
-> > +#ifdef CONFIG_PREEMPTION
-> > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
-> > +     beq             .Lyield_\@      // yield on need_resched in task context
-> > +#endif
-> > +     /* never yield while serving a softirq */
-> > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
->
-> Can you explain the rationale here?
->
-> Using if_will_cond_yield_neon suggests the algo thinks it may run for
-> too long the stall preemption until completion, but we happily stall
-> preemption _and_ softirqs here.
->
-> Is it actually a bug to use the NEON conditional yield helpers in
-> softirq context?
->
+Starting program: /root/bin/perf stat -e cycles -b 244 -I 1000
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib64/libthread_db.so.1".
 
-No, it is not. But calling kernel_neon_end() from softirq context will
-not cause it to finish any faster, so there is really no point in
-doing so.
+Breakpoint 1, bpf_program_profiler_load_one (evsel=0xce02c0, prog_id=244) at util/bpf_counter.c:96
+96	{
+(gdb) n
+104		prog_fd = bpf_prog_get_fd_by_id(prog_id);
+(gdb) 
+105		if (prog_fd < 0) {
+(gdb) 
+109		counter = bpf_counter_alloc();
+(gdb) 
+110		if (!counter) {
+(gdb) n
+115		skel = bpf_prog_profiler_bpf__open();
+(gdb) p counter
+$9 = (struct bpf_counter *) 0xce09e0
+(gdb) p *counter
+$10 = {skel = 0x0, list = {next = 0xce09e8, prev = 0xce09e8}}
+(gdb) p *counter
+$11 = {skel = 0x0, list = {next = 0xce09e8, prev = 0xce09e8}}
+(gdb) n
+libbpf: elf: skipping unrecognized data section(9) .eh_frame
+libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+116		if (!skel) {
+(gdb) 
+121		skel->rodata->num_cpu = evsel__nr_cpus(evsel);
+(gdb) 
+123		bpf_map__resize(skel->maps.events, evsel__nr_cpus(evsel));
+(gdb) 
+124		bpf_map__resize(skel->maps.fentry_readings, 1);
+(gdb) 
+125		bpf_map__resize(skel->maps.accum_readings, 1);
+(gdb) 
+127		prog_name = bpf_target_prog_name(prog_fd);
+(gdb) 
+128		if (!prog_name) {
+(gdb) 
+133		bpf_object__for_each_program(prog, skel->obj) {
+(gdb) 
+134			err = bpf_program__set_attach_target(prog, prog_fd, prog_name);
+(gdb) 
+135			if (err) {
+(gdb) 
+133		bpf_object__for_each_program(prog, skel->obj) {
+(gdb) p evsel
+$12 = (struct evsel *) 0xce02c0
+(gdb) p evsel->name
+$13 = 0xce04e0 "cycles"
+(gdb) n
+134			err = bpf_program__set_attach_target(prog, prog_fd, prog_name);
+(gdb) 
+135			if (err) {
+(gdb) 
+133		bpf_object__for_each_program(prog, skel->obj) {
+(gdb) 
+141		set_max_rlimit();
+(gdb) 
+142		err = bpf_prog_profiler_bpf__load(skel);
+(gdb) 
+143		if (err) {
+(gdb) 
+148		assert(skel != NULL);
+(gdb) 
+149		counter->skel = skel;
+(gdb) 
+150		list_add(&counter->list, &evsel->bpf_counter_list);
+(gdb) c
+Continuing.
 
-> Ideally, if processing in softirq context takes an unreasonable about of
-> time, the work would be handed off to an asynchronous worker, but that
-> does seem to conflict rather with the purpose of this series...
->
+Breakpoint 4, bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:247
+247	{
+(gdb) n
+252		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
+(gdb) 
+253			skel = counter->skel;
+(gdb) watch counter->skel
+Hardware watchpoint 6: counter->skel
+(gdb) p counter->skel
+$14 = (void *) 0xce0a00
+(gdb) n
+254			assert(skel != NULL);
+(gdb) p skel
+$15 = (struct bpf_prog_profiler_bpf *) 0xce0a00
+(gdb) c
+Continuing.
 
-Agreed, but this is not something we can police at this level. If the
-caller does an unreasonable amount of work from a softirq, no amount
-of yielding is going to make a difference.
+Hardware watchpoint 6: counter->skel
 
-> > +
-> > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
-> > +     this_cpu_offset x1
-> > +     ldr             w0, [x0, x1]
-> > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
-> > +.Lnoyield_\@:
-> >       /* fall through to endif_yield_neon */
-> >       .subsection     1
-> >  .Lyield_\@ :
-> > -#else
-> > -     .section        ".discard.cond_yield_neon", "ax"
-> > -#endif
-> >       .endm
-> >
-> >       .macro          do_cond_yield_neon
-> > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> > index 7d32fc959b1a..34ef70877de4 100644
-> > --- a/arch/arm64/kernel/asm-offsets.c
-> > +++ b/arch/arm64/kernel/asm-offsets.c
-> > @@ -93,6 +93,8 @@ int main(void)
-> >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
-> >    BLANK();
-> >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
-> > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
-> > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
-> >    BLANK();
-> >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
-> >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
-> > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-> > index 062b21f30f94..823e3a8a8871 100644
-> > --- a/arch/arm64/kernel/fpsimd.c
-> > +++ b/arch/arm64/kernel/fpsimd.c
-> > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
-> >   */
-> >  static void get_cpu_fpsimd_context(void)
-> >  {
-> > -     preempt_disable();
-> > +     local_bh_disable();
-> >       __get_cpu_fpsimd_context();
-> >  }
-> >
-> > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
-> >  static void put_cpu_fpsimd_context(void)
-> >  {
-> >       __put_cpu_fpsimd_context();
-> > -     preempt_enable();
-> > +     local_bh_enable();
-> >  }
-> >
-> >  static bool have_cpu_fpsimd_context(void)
->
-> I was concerned about catching all the relevant preempt_disable()s, but
-> it had slipped my memory that Julien had factored these into one place.
->
-> I can't see off the top of my head any reason why this shouldn't work.
->
+Old value = (void *) 0xce0a00
+New value = (void *) 0x0
+0x00000000005cf45e in bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:252
+252		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x00000000005ceb44 in bpf_program_profiler_load_one at util/bpf_counter.c:96
+	breakpoint already hit 1 time
+2       breakpoint     keep y   0x00000000005cef2e in bpf_program_profiler__enable at util/bpf_counter.c:192
+3       breakpoint     keep y   0x00000000005cf00a in bpf_program_profiler__read at util/bpf_counter.c:208
+4       breakpoint     keep y   0x00000000005cf3ba in bpf_program_profiler__install_pe at util/bpf_counter.c:247
+	breakpoint already hit 1 time
+5       breakpoint     keep y   0x00000000005ce8d4 in bpf_program_profiler__destroy at util/bpf_counter.c:47
+6       hw watchpoint  keep y                      counter->skel
+	breakpoint already hit 1 time
+(gdb) p evsel
+$16 = (struct evsel *) 0xce02c0
+(gdb) bt
+#0  0x00000000005cf45e in bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:252
+#1  0x00000000005cf4f3 in bpf_counter__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:276
+#2  0x00000000004f3ef1 in evsel__open_cpu (evsel=0xce02c0, cpus=0xce0500, threads=0xce75c0, start_cpu=0, end_cpu=1) at util/evsel.c:1792
+#3  0x00000000004f4aa7 in evsel__open_per_cpu (evsel=0xce02c0, cpus=0xce0500, cpu=0) at util/evsel.c:1996
+#4  0x000000000057f6f2 in create_perf_stat_counter (evsel=0xce02c0, config=0xa97860 <stat_config>, target=0xa97660 <target>, cpu=0) at util/stat.c:568
+#5  0x0000000000435d96 in __run_perf_stat (argc=0, argv=0x7fffffffdb60, run_idx=0) at builtin-stat.c:790
+#6  0x00000000004367e3 in run_perf_stat (argc=0, argv=0x7fffffffdb60, run_idx=0) at builtin-stat.c:1001
+#7  0x0000000000439e35 in cmd_stat (argc=0, argv=0x7fffffffdb60) at builtin-stat.c:2415
+#8  0x00000000004cf058 in run_builtin (p=0xaabe00 <commands+288>, argc=7, argv=0x7fffffffdb60) at perf.c:312
+#9  0x00000000004cf2c5 in handle_internal_command (argc=7, argv=0x7fffffffdb60) at perf.c:364
+#10 0x00000000004cf40c in run_argv (argcp=0x7fffffffd9ac, argv=0x7fffffffd9a0) at perf.c:408
+#11 0x00000000004cf7d8 in main (argc=7, argv=0x7fffffffdb60) at perf.c:538
+(gdb) n
+261		return 0;
 
-Thanks.
-
->
-> In threory, switching to local_bh_enable() here will add a check for
-> pending softirqs onto context handling fast paths.  I haven't dug into
-> how that works, so perhaps this is trivial on top of the preemption
-> check in preempt_enable().  Do you see any difference in hackbench or
-> similar benchmarks?
->
-
-I haven't tried, tbh. But by context handling fast paths, you mean
-managing the FP/SIMD state at context switch time, right? Checking for
-pending softirqs amounts to a single per-CPU load plus compare, so
-that should be negligible AFAICT. Obviously, actually handling the
-softirq may take additional time, but that penalty has to be taken
-somewhere - I don't see how that would create extra work that we
-wouldn't have to do otherwise.
-
-I'll do some experiments with hackbench once I get back to this series.
