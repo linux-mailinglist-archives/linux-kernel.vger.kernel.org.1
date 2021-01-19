@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FB62FB832
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C03C2FB830
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392339AbhASMEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:04:42 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:9248 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392007AbhASL4X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:56:23 -0500
-IronPort-SDR: ZZoBz4pTtpQGVytKQ3DHRANApILwpfC4UkRPbn5u5bv5+HQhn0D+CC/k6a1cdnEjAXmtUGaDjI
- qkONwsi+Ef8DDZ1hb4NmrKfpZi168SI4jyFWAmHuB1N2Q8GZBcPk50i/ehk+hHl918NzqNYNF3
- lo0VYKPE8MgYPKm1QmC8rZ8LB5qSonsoXK7m33rmLR4k6o//r7osss1fO3X2m/ad4en5SsikQH
- KULvscJVKIVb+58RTjlwuXlq1ZaOPhMaO/OO2D17nJZbwNg6TMC6odm5pmmUQ63+XnYBMkLoNs
- 1t4=
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="29552957"
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by labrats.qualcomm.com with ESMTP; 19 Jan 2021 03:53:35 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 19 Jan 2021 03:53:35 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 7166B218E7; Tue, 19 Jan 2021 03:53:35 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH v10 3/3] scsi: ufs: Revert "Make sure clk scaling happens only when HBA is runtime ACTIVE"
-Date:   Tue, 19 Jan 2021 03:53:01 -0800
-Message-Id: <1611057183-6925-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611057183-6925-1-git-send-email-cang@codeaurora.org>
-References: <1611057183-6925-1-git-send-email-cang@codeaurora.org>
+        id S2392303AbhASMEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:04:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391386AbhASLzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:55:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A55FD23119;
+        Tue, 19 Jan 2021 11:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611057241;
+        bh=wvq4C/3v9L4iyBq8nK9CMBpB2psXlVLWdxYI1r7PMNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xnYTiamp7E6WFxI16nLBJw4b72lHRzH+ai+2ApJZ0efgIdvfTjVdDbBGxA56IytGL
+         ZuYyK6Vq68nzYyHCkS5J17bYc9g+K5xv/CngZ627ksX6wsOgTzvLt0zGc2FsQNYrMY
+         06Egi1USOX+cutVf31hMcil0VQ738OigBKC2Nyng=
+Date:   Tue, 19 Jan 2021 12:53:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: Splicing to/from a tty
+Message-ID: <YAbIVgGt1Qz8ItMh@kroah.com>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <20210118081615.GA1397@lst.de>
+ <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
+ <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com>
+ <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
+ <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+ <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
+ <CAHk-=wjgufiORSuAb270XpGn45jexRjP9SCmcc7AAAZsVrAaPw@mail.gmail.com>
+ <CAHk-=whW7t=3B=iCwYkJ3W-FH08wZNCFO7EJ5qQSqD9Z_tBxrQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whW7t=3B=iCwYkJ3W-FH08wZNCFO7EJ5qQSqD9Z_tBxrQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 73cc291c27024 ("Make sure clk scaling happens only when HBA is
-runtime ACTIVE") is no longer needed since commit f7a42540928a8 ("scsi:
-ufs: Protect some contexts from unexpected clock scaling") is a more
-mature fix to protect UFS LLD stability from clock scaling invoked through
-sysfs nodes by users.
+On Mon, Jan 18, 2021 at 05:38:55PM -0800, Linus Torvalds wrote:
+> On Mon, Jan 18, 2021 at 2:20 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > So it's not a "real" patch, but with improved buffer handling in
+> > tty_read(), I think this is actually quite close.
+> 
+> Hmm.
+> 
+> I somehow ended up working on this all because it's a Monday, and I
+> don't see a lot of pull requests early in the week.
+> 
+> And I think I have a solution for the HDLC "we may need to copy a
+> packet that might be up to 64kB" issue, that isn't really all that
+> ugly.
+> 
+> We can just iterate over a random "cookie" that the line discipline
+> can use any way it wants to. In the case of n_hdlc, it can just put
+> the 'rbuf' thing it has into that cookie, and then it can copy it all
+> piece-meal until it is all used up. And if it runs out of space in the
+> middle, it will return -EOVERFLOW, and we're all good.
+> 
+> The only other thing such a line discipline needs is the offset into
+> the cookie, but the iterator has to maintain that anyway, so that's
+> simple enough.
+> 
+> So here's a fourth patch for this thing today, this time with what I
+> think is actually a working model for the buffer handling.
+> 
+> Other line disciplines *could* use the cookie if they want to. I
+> didn't do any of that, though.
+> 
+> The normal n_tty line discipline, for example, could easily just loop
+> over the data. It doesn't need an offset or that 'rbuf' pointer, but
+> it still needs to know whether the call is the first one or not,
+> because the first time the n_tty line discipline is called it may need
+> to wait for a minimum number of characters or whatever the termios
+> settings say - but obviously once it has waited for it once, it
+> shouldn't wait for it again the next time around (only on the next
+> actual full read()). IOW, it would be wrong if the termios said "wait
+> for 5 characters", and then it saw 68 characters, copied the first 64,
+> in the first iteration, and than saw "oh, now there are only 4
+> characters left so now I have to wait for a fifth".
+> 
+> So n_tty could use the cookie purely to see whether it's the first
+> iteration or not, and it could just set the cookie to a random value
+> (it always starts out as NULL) to just show what state it is in.
+> 
+> I did *NOT* do that, because it's not technically necessary - unlike
+> the hdlc packet case, n_tty returning a partial result is not wrong
+> per se even if we might have reasons to improve on it later.
+> 
+> What do people think about this?
+> 
+> Also, does anybody have any test-code for the HDLC case? I did find an
+> interesting comment when doing a Debian code search:
+> 
+>   /* Bloody hell... readv doesn't work with N_HDLC line discipline... GRR! */
+> 
+> and yes, this model would allow us to handle readv() properly for hdlc
+> (and no, the old one did not, because it really wanted to see the
+> whole packet in *one* user buffer).
+> 
+> But I have no idea if hdlc is even relevant any more, and if anybody
+> really cares.
+> 
+> Anybody?
 
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 7 -------
- 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index df046bd..8ec41ea 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1355,15 +1355,8 @@ static int ufshcd_devfreq_target(struct device *dev,
- 	}
- 	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
- 
--	pm_runtime_get_noresume(hba->dev);
--	if (!pm_runtime_active(hba->dev)) {
--		pm_runtime_put_noidle(hba->dev);
--		ret = -EAGAIN;
--		goto out;
--	}
- 	start = ktime_get();
- 	ret = ufshcd_devfreq_scale(hba, scale_up);
--	pm_runtime_put(hba->dev);
- 
- 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
- 		(scale_up ? "up" : "down"),
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+This looks sane, but I'm still missing what the goal of this is here.
+It's nice from a "don't make the ldisc do the userspace copy", point of
+view, but what is the next step in order to tie that into splice?
 
+I ask as I also have reports that sysfs binary files are now failing for
+this same reason, so I need to make the same change for them and it's
+not excatly obvious what to do:
+	https://lore.kernel.org/r/1adf9aa4-ed7e-8f05-a354-57419d61ec18@codeaurora.org
+
+thanks,
+
+greg k-h
