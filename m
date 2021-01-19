@@ -2,186 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14C2FC027
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B832FC029
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390170AbhASTiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728418AbhASThN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:37:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F007C061573;
-        Tue, 19 Jan 2021 11:36:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=YNhE+cN1HDNHiTG0YGUXKVf0JQrAZVOCh35c86m/5cA=; b=CzYp77BXE7NHi60dkiyhl0+WrD
-        yD91/VbfFP8iTrN369SQPlFRf7ra+rGj0RdJD/l7FcvNkKqYiWKR8dWAqHrQYHeFDmRX5A3Kn3PWj
-        kBXiOnFLukMFCbe+uKLs+Wazp8lLqc4S0ciLM+pPWVbt+cVCkTqirMGBPy/bdZbPk8dTKPEJg8QCm
-        K7EW3mZiHMtXVYQTuNh1uRXeCupwRbIJCjOFc56NJL64nEMpsj8Bxoc32aiS+yufBrz3FUyKpP2Un
-        gSMbXCcVlQ7fDMfLGCHixM5kCdGDg7WboUo9XTDJL9Eb5MPajmJxmESc5p2T9M+b6c+oWWgxSgCBG
-        JkChFA5g==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1wnl-0004fp-IO; Tue, 19 Jan 2021 19:36:29 +0000
-Subject: Re: [PATCH v2 08/34] misc: xlink-pcie: Add documentation for XLink
- PCIe driver
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        Srikanth Thokala <srikanth.thokala@intel.com>,
-        linux-doc@vger.kernel.org
-References: <20210108212600.36850-1-mgross@linux.intel.com>
- <20210108212600.36850-9-mgross@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0e68a2f9-f02d-c777-d9b8-b1ad13555ab3@infradead.org>
-Date:   Tue, 19 Jan 2021 11:36:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728523AbhASTir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:38:47 -0500
+Received: from mga06.intel.com ([134.134.136.31]:26308 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729697AbhASThP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:37:15 -0500
+IronPort-SDR: 0+4H1OMbq+Z3k3dNpg8TMaQ1vi7Vf67YJi4WVAtnLlhUNA0oBllE1cqyLmxczgLDudxOuUD88t
+ xPN7QhvFlcQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240525703"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="240525703"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 11:36:34 -0800
+IronPort-SDR: fm0aLemlT7MG5HKCe9xsp1Ifq+9Zp6/U4cGc0toMhg5UJPQKq6ePMCdEJXKxy7GxDh5YS8dhzE
+ eRpoNdU525fw==
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="501042644"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.139.183]) ([10.209.139.183])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 11:36:32 -0800
+Subject: Re: [PATCH v17 06/26] x86/cet: Add control-protection fault handler
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-7-yu-cheng.yu@intel.com>
+ <20210119120425.GI27433@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a6b18663-a53d-60bc-57e8-8b327a169bc4@intel.com>
+Date:   Tue, 19 Jan 2021 11:36:31 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210108212600.36850-9-mgross@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210119120425.GI27433@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Here are a few doc comments for you:
-
-On 1/8/21 1:25 PM, mgross@linux.intel.com wrote:
-> From: Srikanth Thokala <srikanth.thokala@intel.com>
+On 1/19/2021 4:04 AM, Borislav Petkov wrote:
+> On Tue, Dec 29, 2020 at 01:30:33PM -0800, Yu-cheng Yu wrote:
+[...]
+>> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+>> +{
+>> +	struct task_struct *tsk;
+>> +
+>> +	if (!user_mode(regs)) {
+>> +		if (notify_die(DIE_TRAP, "control protection fault", regs,
+>> +			       error_code, X86_TRAP_CP, SIGSEGV) == NOTIFY_STOP)
+>> +			return;
+>> +		die("Upexpected/unsupported kernel control protection fault", regs, error_code);
 > 
-> Provide overview of XLink PCIe driver implementation
+> Isn't the machine supposed to panic() here and do no further progress?
+
+Ok, make it panic().
+
+>> +	}
+>> +
+>> +	cond_local_irq_enable(regs);
+>> +
+>> +	if (!boot_cpu_has(X86_FEATURE_CET))
+>> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
+>> +
+>> +	tsk = current;
+>> +	tsk->thread.error_code = error_code;
+>> +	tsk->thread.trap_nr = X86_TRAP_CP;
+>> +
+>> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+>> +	    printk_ratelimit()) {
 > 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
-> ---
->  Documentation/vpu/index.rst      |  1 +
->  Documentation/vpu/xlink-pcie.rst | 90 ++++++++++++++++++++++++++++++++
->  2 files changed, 91 insertions(+)
->  create mode 100644 Documentation/vpu/xlink-pcie.rst
+> WARNING: Prefer printk_ratelimited or pr_<level>_ratelimited to printk_ratelimit
+> #136: FILE: arch/x86/kernel/traps.c:645:
+> +	    printk_ratelimit()) {
 > 
+> Still not using checkpatch?
 
-> diff --git a/Documentation/vpu/xlink-pcie.rst b/Documentation/vpu/xlink-pcie.rst
-> new file mode 100644
-> index 000000000000..2d877c966b1e
-> --- /dev/null
-> +++ b/Documentation/vpu/xlink-pcie.rst
-> @@ -0,0 +1,90 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +================================
-> +Kernel driver: Xlink-pcie driver
-> +================================
-> +Supported chips:
-> +  * Intel Edge.AI Computer Vision platforms: Keem Bay
-> +    Suffix: Bay
-> +    Slave address: 6240
-> +    Datasheet: Publicly available at Intel
-> +
-> +Author: Srikanth Thokala Srikanth.Thokala@intel.com
-> +
-> +Introduction
-> +============
-> +The Xlink-pcie driver provides transport layer implementation for
-> +the data transfers to support Xlink protocol subsystem communication with the
-> +peer device. i.e, between remote host system and Keem Bay device.
+Most places in arch/x86 still use printk_ratelimit().  I should have 
+trusted checkpatch.  I will fix it.
 
-        device, i.e.,
-
-> +
-> +The Keem Bay device is an ARM-based SOC that includes a vision processing
-> +unit (VPU) and deep learning, neural network core in the hardware.
-> +The Xlink-pcie driver exports a functional device endpoint to the Keem Bay
-> +device and supports two-way communication with the peer device.
-> +
-> +High-level architecture
-> +=======================
-> +Remote Host: IA CPU
-> +Local Host: ARM CPU (Keem Bay)::
-> +
-> +        +------------------------------------------------------------------------+
-> +        |  Remote Host IA CPU              | | Local Host ARM CPU (Keem Bay) |   |
-> +        +==================================+=+===============================+===+
-> +        |  User App                        | | User App                      |   |
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |   XLink UAPI                     | | XLink UAPI                    |   |
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |   XLink Core                     | | XLink Core                    |   |
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |   XLink PCIe                     | | XLink PCIe                    |   |
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |   XLink-PCIe Remote Host driver  | | XLink-PCIe Local Host driver  |   |
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|:|:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|
-> +        +----------------------------------+-+-------------------------------+---+
-> +        |     PCIe Host Controller         | | PCIe Device Controller        | HW|
-> +        +----------------------------------+-+-------------------------------+---+
-> +               ^                                             ^
-> +               |                                             |
-> +               |------------- PCIe x2 Link  -----------------|
-> +
-> +This XLink PCIe driver comprises of two variants:
-> +* Local Host driver
-> +
-> +  * Intended for ARM CPU
-> +  * It is based on PCI Endpoint Framework
-> +  * Driver path: {tree}/drivers/misc/Xlink-pcie/local_host
-> +
-> +* Remote Host driver
-> +
-> +       * Intended for IA CPU
-> +       * It is a PCIe endpoint driver
-> +       * Driver path: {tree}/drivers/misc/Xlink-pcie/remote_host
-> +
-> +XLink PCIe communication between local host and remote host is achieved through
-> +ring buffer management and MSI/Doorbell interrupts.
-> +
-> +The Xlink-pcie driver subsystem registers the Keem Bay device as an endpoint
-> +driver and provides standard linux PCIe sysfs interface, #
-
-                                Linux
-What is the '#' sign for above?
-
-> +/sys/bus/pci/devices/xxxx:xx:xx.0/
-> +
-> +
-> +XLink protocol subsystem
-> +========================
-> +Xlink is an abstracted control and communication subsystem based on channel
-> +identification. It is intended to support VPU technology both at SoC level as
-> +well as at IP level, over multiple interfaces.
-> +
-> +- The Xlink subsystem abstracts several types of communication channels
-> +  underneath, allowing the usage of different interfaces with the
-> +  same function call interface.
-> +- The Communication channels are full-duplex protocol channels allowing
-> +  concurrent bidirectional communication.
-> +- The Xlink subsystem also supports control operations to VPU either
-> +  from standalone local system or from remote system based on communication
-> +  interface underneath.
-> +- The Xlink subsystem supports the following communication interfaces:
-> +    * USB CDC
-> +    * Gigabit Ethernet
-> +    * PCIe
-> +    * IPC
+>> +		unsigned int max_err;
+>> +		unsigned long ssp;
+>> +
+>> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
+>> +		if ((error_code < 0) || (error_code > max_err))
+>> +			error_code = 0;
+>> +
+>> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+>> +		pr_info("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
 > 
+> If anything, all this stuff should be pr_emerg().
 
+I will fix it.
 
--- 
-~Randy
-"He closes his eyes and drops the goggles.  You can't get hurt
-by looking at a bitmap.  Or can you?"
-(Neal Stephenson: Snow Crash)
+--
+Yu-cheng
