@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1DB2FBF3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC55E2FBF78
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731946AbhASS12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:27:28 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:45291 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392507AbhASSLi (ORCPT
+        id S2403879AbhASSvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:51:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728366AbhASS2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:11:38 -0500
-Received: by mail-ot1-f48.google.com with SMTP id n42so20653427ota.12;
-        Tue, 19 Jan 2021 10:11:19 -0800 (PST)
+        Tue, 19 Jan 2021 13:28:38 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE18C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:27:55 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g15so13469690pgu.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xFLxK6nMCFTrJXHPH6YcjllJugTgrT1zJQopVJstuMw=;
+        b=Uiq65l8VHQUUomniFnXPyFjN2j9uJBxFm3ZdVt1sXfZuoZj2yZq1xHskyAuYBDn6wL
+         8QMx2WjBZNZ/LWJbx1fbewgHMJTbphNmfkdYDNdvsQhB50qOxHSpxOrPM/MeNfwGxP3k
+         HzT4u+xORbBlFrjoXvxSlJO5andEd4Bl9qjpO/t0oX52Jz/BFhDLDYWPjieHvXhmIIdv
+         BpD/PPbwJnyLNc8F12xc2YhRfgK6frU5lymR51QuCZMMnwAfipI44kDccim1+CKWjr2f
+         Q4jmbWq5TCYbpCGol42RZQWR4lPGo2b8V2PmgfspbssW9au3Xe+xcuoFEoe3VprcI7D/
+         ldtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ECmOo+b/Ycy8oSdsflKY56kBQ2KKW+k6NlOgYJAU6mg=;
-        b=pEdzMbDk0b+osb7hnN8l1TSaU2OEIiDdG8VkkF2CjjAfGTHeY8ofy/CcCAP4WRxQRP
-         GNHl/2GrlPo0ifZNAi2s5vNqW6XadwVKzTk1MvlN+nno2emSgtLSk9DXG6Q+WI4LRjps
-         QXIsn01uqgbGoCG9/HeHPD2/LQ6iqGKTZ2ulKaBRzaVkIqhIAj+cBAu5T5GzbL59AhOj
-         xYSVojc+1A3x6BA6n8+eFXqTn+QvscARL4JLPIxVaW5TFUpCBP1BrtjiMu8Nbl4WAohG
-         vong1WG0Q4SizfHzogSAWQZirXQo1F3y4rUwgEUk1FYAEoKLb5U4PCu1aB7rfZ8gaaZR
-         FE4w==
-X-Gm-Message-State: AOAM530slDjoDtogiHsGd8QFJLqI49DyOcWFqClSb4hnpCSf9ZMPqPhR
-        4k4JXWSfU1rZgZUo6Rr2D0Z2t4L0okXR63ZHRHE=
-X-Google-Smtp-Source: ABdhPJyROuH3pURiKJ6vM2XKihWlMn+WAXH/KDLEv+d8UpaWsrLEDusb3fix67/t7LnhX6sLXEwS45m4zrrGlHVYG9E=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr4353589otc.145.1611079854461;
- Tue, 19 Jan 2021 10:10:54 -0800 (PST)
+        bh=xFLxK6nMCFTrJXHPH6YcjllJugTgrT1zJQopVJstuMw=;
+        b=QfOwCg3nj58inxYcQ/j5+vHzTbHLRBlgcS5b7BXC8zNOcajlmfYUmL3o0dukaHLU6x
+         e/vuK3WGVq5sxZGUf/LEy83aKlyOqiS7FVA4tu7ZEQbWIxNk/w1AZOvkpHWv6mzzbnJK
+         oWtoyN91leHXemaMToBwKlAWyUBAGI52RU3Plv9xHx6yu3/2ZsgBrdPTp8TNjeuQTS0F
+         jrSBJZfOn49t7+X1fJUdP2B0SPKJhz++/I1J0c7sNkQLZDZ3PmJS4YbETvhp2W9eG4Xu
+         EDGILIlbgCyWST7xokoQmEivRjaPOXUc0oB4R+VFWYedGyuerUydvlrE3+fZxKRqUM56
+         YamQ==
+X-Gm-Message-State: AOAM530vp+7Jbc3d4RPk1y8ywm+HCUC7ih6+n4w9BZhFVAw6UT5OPj48
+        TxjQB4fCDVLh6gc7fp3dpyM5DHEpcps6283BsDHLr/sUG+k=
+X-Google-Smtp-Source: ABdhPJwvNeGH0oay9ckCTVbGBsbmjByax/oA/v8pejdFcZV3pWkrCsH/aS8XcOrIMxDT4JlNDjeohmFYwxPXVMOoeXg=
+X-Received: by 2002:a63:5d3:: with SMTP id 202mr5563083pgf.286.1611080874934;
+ Tue, 19 Jan 2021 10:27:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115210159.3090203-1-saravanak@google.com>
- <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
- <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
- <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
- <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com> <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
-In-Reply-To: <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 19 Jan 2021 19:10:43 +0100
-Message-ID: <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
-Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
- "gpios" binding
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
+In-Reply-To: <20210119172607.18400-1-vincenzo.frascino@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 19 Jan 2021 19:27:43 +0100
+Message-ID: <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > Can we pull this into driver-core-next please? It fixes issues on some
-> > > > boards with fw_devlink=on.
-> > >
-> > > On r8a77951-salvator-xs.dts, it introduces one more failure:
-> > >
-> > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
-> > > #gpio-cells for /cpus/cpu@102
+On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
 >
-> Geert,
+> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+> the address passed as a parameter.
 >
-> One good thing is that it's noticing this being weird and ignoring it
-> in your particular board. I *think* it interprets the "7" as a phandle
-> and that's cpu@102 and realizes it's not a gpio-controller. For at
-> least in your case, it's a safe failure.
-
-While 7 is the GPIO index, relative to the current GPIO controller,
-represented by the parent device node.
-
-> > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
-> >
-> > Could it be that the code assumes no self-referencing phandles?
-> > (Just guessing...)
+> Add a comment to make sure that the preconditions to the function are
+> explicitly clarified.
 >
-> Ok I tried to understand what gpio-hogs means. It's not fully clear to
-> me. But it looks like if a gpio-controller has a gpio-hog, then it
-> doesn't have/need gpio-cells? Is that right?
+> Note: An invalid address (e.g. NULL pointer address) passed to the
+> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
+>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Leon Romanovsky <leonro@mellanox.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  mm/kasan/report.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index c0fb21797550..2485b585004d 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>         end_report(&flags);
+>  }
+>
+> +/**
+> + * kasan_report - report kasan fault details
+> + * @addr: valid address of the allocation where the tag fault was detected
+> + * @size: size of the allocation where the tag fault was detected
+> + * @is_write: the instruction that caused the fault was a read or write?
+> + * @ip: pointer to the instruction that cause the fault
+> + *
+> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
+> + * the address to access the tags, hence it must be valid at this point in
+> + * order to not cause a kernel panic.
+> + */
 
-A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
-Usually this is done to enable a piece of hardware on a board, or
-control a mux.
+It doesn't dereference the address, it just checks the tags, right?
 
-The controller still needs gpio-cells.
-
-> So if a gpio-controller has a gpio-hog, can it ever be referred to by
-> another consumer in DT using blah-gpios = ...? If so, I don't see any
-> obvious code that's handling the missing gpio-cells in this case.
-
-Yes it can.
-
-> Long story short, please help me understand gpio-hog in the context of
-> finding dependencies in DT.
-
-The hog references a GPIO on the current controller.  As this is always
-the parent device node, the hog's gpios properties lack the phandle.
-
-E.g. a normal reference to the first GPIO of gpio5 looks like:
-
-    gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-
-A hog on the first GPIO of gpio5 would be a subnode of gpio5,
-and would just use:
-
-    gpios = <0 GPIO_ACTIVE_LOW>;
-
-instead.
-
-Hope this helps.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Ideally, kasan_report() should survive that with HW_TAGS like with the
+other modes. The reason it doesn't is probably because of a blank
+addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
+guess we should somehow check that the memory comes from page_alloc or
+kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
+instruction to check whether the memory has tags?
