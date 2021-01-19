@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AF32FAEEC
+	by mail.lfdr.de (Postfix) with ESMTP id A4C432FAEED
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394620AbhASCzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 21:55:49 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:58610 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387973AbhASCzn (ORCPT
+        id S2394717AbhASC4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 21:56:39 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:58000 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387973AbhASC4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 21:55:43 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10J2ndZfB028686, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs02.realtek.com.tw[172.21.6.95])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10J2ndZfB028686
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 19 Jan 2021 10:49:40 +0800
-Received: from RTEXMB06.realtek.com.tw (172.21.6.99) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 19 Jan 2021 10:49:39 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 19 Jan 2021 10:49:39 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
- RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
- 15.01.2106.006; Tue, 19 Jan 2021 10:49:39 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "abaci-bugfix@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>
-CC:     "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chiu@endlessos.org" <chiu@endlessos.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH] rtlwifi/rtl8192se: Simplify bool comparison.
-Thread-Topic: [PATCH] rtlwifi/rtl8192se: Simplify bool comparison.
-Thread-Index: AQHW6yYrXCXV5MKbPkiauKRwxxOMyaotvt4A
-Date:   Tue, 19 Jan 2021 02:49:39 +0000
-Message-ID: <1611024540.7826.1.camel@realtek.com>
-References: <1610705211-22865-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610705211-22865-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.213]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F522E4DD82B3AC4FA1FB9B384752CE80@realtek.com>
-Content-Transfer-Encoding: base64
+        Mon, 18 Jan 2021 21:56:13 -0500
+X-UUID: ec5ee7bd1c6342a3ab926683d9160553-20210119
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CiMAZ2leCHm8XOrAzh8HVdtQ7ukYUItVC28TwVzwG88=;
+        b=NQ+unI0gWjZuxm0cELn1dN3ZUjRuXtFZ/IrXraGOHGnh40HtMHRlxt9gXBYCCyWMo4wF1SwC157tm6OA7YxfGMlC5x3QszL+k+njQZafGWCt8fYmpqi+qd93zIy3x1cBSO4jXYP+zwzezj4kbaaDiEFY6AaYcI9JetTL/m2xMj8=;
+X-UUID: ec5ee7bd1c6342a3ab926683d9160553-20210119
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 432909497; Tue, 19 Jan 2021 10:55:24 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 19 Jan
+ 2021 10:55:23 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 19 Jan 2021 10:55:22 +0800
+Message-ID: <1611024922.11995.18.camel@mhfsdcap03>
+Subject: Re: [PATCH next 12/15] arm64: dts: mediatek: mt8183: fix dtbs_check
+ warning
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+CC:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Min Guo <min.guo@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+Date:   Tue, 19 Jan 2021 10:55:22 +0800
+In-Reply-To: <8973d175-441d-0b03-6763-6eeed8595b17@gmail.com>
+References: <20210116090656.11752-1-chunfeng.yun@mediatek.com>
+         <20210116090656.11752-12-chunfeng.yun@mediatek.com>
+         <8973d175-441d-0b03-6763-6eeed8595b17@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
+X-TM-SNTS-SMTP: 95197C9BA3827A74B5B4DCC86214B786907A7F334A130892260E4361115999232000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAxLTE1IGF0IDEwOjA2ICswMDAwLCBKaWFwZW5nIFpob25nIHdyb3RlOg0K
-PiBGaXggdGhlIGZvbGxvdyBjb2NjaWNoZWNrIHdhcm5pbmdzOg0KPiANCj4gLi9kcml2ZXJzL25l
-dC93aXJlbGVzcy9yZWFsdGVrL3J0bHdpZmkvcnRsODE5MnNlL2h3LmM6MjMwNTo2LTI3Og0KPiBX
-QVJOSU5HOiBDb21wYXJpc29uIG9mIDAvMSB0byBib29sIHZhcmlhYmxlLg0KPiANCj4gLi9kcml2
-ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0bHdpZmkvcnRsODE5MnNlL2h3LmM6MTM3Njo1LTI2
-Og0KPiBXQVJOSU5HOiBDb21wYXJpc29uIG9mIDAvMSB0byBib29sIHZhcmlhYmxlLg0KPiANCj4g
-UmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBsaW51eC5hbGliYWJhLmNvbT4NCj4gU2ln
-bmVkLW9mZi1ieTogSmlhcGVuZyBaaG9uZyA8YWJhY2ktYnVnZml4QGxpbnV4LmFsaWJhYmEuY29t
-Pg0KPiANCg0KW3NuaXBdDQoNClRoZSBzdWJqZWN0IHNob3VsZCBiZSAicnRsd2lmaTogcnRsODE5
-MnNlOiBTaW1wbGlmeSBib29sIGNvbXBhcmlzb24iLg0KKE5vIHBlcmlvZCBhdCB0aGUgZW5kIG9m
-IHN1YmplY3QpDQoNCk90aGVycyBsb29rIGdvb2QgdG8gbWUuDQoNCi0tLQ0KUGluZy1LZQ0KDQo=
+T24gU2F0LCAyMDIxLTAxLTE2IGF0IDEyOjQzICswMzAwLCBTZXJnZWkgU2h0eWx5b3Ygd3JvdGU6
+DQo+IE9uIDE2LjAxLjIwMjEgMTI6MDYsIENodW5mZW5nIFl1biB3cm90ZToNCj4gDQo+ID4gSGFy
+bW9uaXplIG5vZGUgbmFtZXMsIGNvbXBhdGlibGVzIGFuZCBwcm9wZXJ0aWVzLg0KPiA+IA0KPiA+
+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4N
+Cj4gPiAtLS0NCj4gPiAgIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTgzLmR0c2kg
+fCA5ICsrKystLS0tLQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNSBk
+ZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9t
+ZWRpYXRlay9tdDgxODMuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTgz
+LmR0c2kNCj4gPiBpbmRleCA1Yjc4MmE0NzY5ZTcuLmE2OWEwMzNhNjhhYyAxMDA2NDQNCj4gPiAt
+LS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE4My5kdHNpDQo+ID4gKysrIGIv
+YXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMuZHRzaQ0KPiBbLi4uXQ0KPiA+IEBA
+IC05MDgsMTEgKzkwOCwxMSBAQA0KPiA+ICAgCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCj4gPiAg
+IAkJfTsNCj4gPiAgIA0KPiA+IC0JCW1pcGlfdHgwOiBtaXBpLWRwaHlAMTFlNTAwMDAgew0KPiA+
+ICsJCW1pcGlfdHgwOiBkc2ktcGh5QDExZTUwMDAwIHsNCj4gDQo+ICAgICBBZ2Fpbiwgd2h5IG5v
+dCBqdXN0ICJwaHlALi4uIj8NClRoaXMgZm9sbG93aW5nIHRoZSBzdHlsZSBhcyB1c2ItcGh5LCBw
+Y2llLXBoeSBldGMuDQpidXQgaXMgbm90IHlldCBhIHN0YW5kYXJkIHByZWZpeCBmb3IgRGlzcGxh
+eSBzZXJpYWwgaW50ZXJmYWNlIFBIWQ0KDQo+IA0KPiBbLi4uXQ0KPiA+IEBAIC05MzEsMTEgKzkz
+MSwxMCBAQA0KPiA+ICAgCQkJfTsNCj4gPiAgIAkJfTsNCj4gPiAgIA0KPiA+IC0JCXUzcGh5OiB1
+c2ItcGh5QDExZjQwMDAwIHsNCj4gPiArCQl1M3BoeTogdC1waHlAMTFmNDAwMDAgew0KPiANCj4g
+ICAgIEhlcmUgYXMgd2VsbC4uLg0KQWxyZWFkeSBleHBsYWluIGl0IGluIFsxMS8xNV0NCj4gDQo+
+IFsuLi5dDQo+IA0KPiBNQlIsIFNlcmdlaQ0KDQo=
+
