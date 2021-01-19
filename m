@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2AC2FC4EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135B72FC4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730482AbhASXjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        id S1727505AbhASXjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:39:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395056AbhASOFD (ORCPT
+        with ESMTP id S2395107AbhASOGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:05:03 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC21C061574;
-        Tue, 19 Jan 2021 06:04:20 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id e15so13678885qte.9;
-        Tue, 19 Jan 2021 06:04:20 -0800 (PST)
+        Tue, 19 Jan 2021 09:06:30 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22796C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:44 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id h4so21888877qkk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TH6tIa7KmmTBxKCeREOLdZWW+HlzUZd6P/Dq1uJJcvo=;
-        b=VGhLZsyv+gpGddxVKxIkOaWu3PVVMK8hpdjXJLLlA4F81h1k0YkPSiEnQAd4bVv6pA
-         JgRtf+bhPCzcUdd4sqblBP/PyDjQApDKodflTiZblp036j001pZm9Alho8iS2tbT1Q8/
-         QNfPnykbPuA0b6XZ576Qnd9SMZqKKnKAWAaRnkJbbPsWv7651gHbAh28Ux0GhBiF0TgW
-         Su5atvXpCaAczl3eSAFErJsOJo07stP2icTwHW/KLsF5mq0XiZu0Z/SFLrfLLdTccYhW
-         lPG/+rmgZs4h3P1Aqj7PuIRE0aRIOnAV5CzIF/sY/D9I07KZ38x47Xbgey18jILnNadU
-         FLdw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WRH1U9XGgfqWEUznDbBjK+ln/wIg4FAs6AUuAcYpjiM=;
+        b=DkPzlGL8rpnYUhr0x+ghT+YFzXkOJ7sTyBFKUJGFq8VcsE8h4Sln2lwXqVBHI7Lks4
+         xh/4BFR8MqvCwkLi4Q4KsWMPlOCkJH9sfYTbFT68N3+6EfCHlIzkRDwv1hOHGJFGVZDm
+         cHu89JimX1mqMVYoGT+644GjIgt9E4B7cnbvChs+RCzqiakB6vsuPv3oJpS2skHBUvSh
+         p/BDiaR1LSkvGJuANlc+pvGVEpVgaNXii+Oc9YkOnRPUdY4KgCBBPRZVS8VGvVtBNRDy
+         YytAWVFyQ9UpK6+vyh0Rbp+iSLsR/0FlmO5P9UiGEciBE5GqVkbIYlzcwdrIi4b3lBa5
+         qHZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TH6tIa7KmmTBxKCeREOLdZWW+HlzUZd6P/Dq1uJJcvo=;
-        b=KBoHpUvhWb1pK4+BwCKiEkTE9Yn47FisVdu8Ys00jokLUu3GcbZ7Wz8D2O4tyU/Bx9
-         Pq+uoI2U/k8MWqokGawPqoW0eS3SMezJPuHKNXG02oHvaz4iVfy8Jrir/Ck7p3fc5A62
-         M6rJAY3lPAtKdQ1ksIyGPi6skB5/yZRG1v7/ICdbWhEFhKmR+TZNZq57dCjklx6VaL4K
-         Dl9WKPPt37XuroEsqSoQR26Vn3KKvFYK++OxZ8iGsGW8Or9XErJyDoCU+df0gnyNELGU
-         u83OyYZC+n11Lz8+Iqpxbtig8dSWHT0oB0hx8yP2hHPeCqozCMi25cHPGdsvwwUIf5lW
-         wGKg==
-X-Gm-Message-State: AOAM530fQWjoPEtmBKvPcWZRmqAsmMYQL0gBFNKUWJa114YBUIQbhAPX
-        YFQFFtH4qZqmpI307G05QJE=
-X-Google-Smtp-Source: ABdhPJzMe8jbW50g1iVGM3lGWpJV0ziRnIiiTGPcykrnoO8Tj71NQBBD2B/hMWGfGZj5U2douqQ5KA==
-X-Received: by 2002:ac8:742:: with SMTP id k2mr4228578qth.46.1611065059735;
-        Tue, 19 Jan 2021 06:04:19 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id b16sm5234059qtx.85.2021.01.19.06.04.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WRH1U9XGgfqWEUznDbBjK+ln/wIg4FAs6AUuAcYpjiM=;
+        b=sVShGz5z3UxM+jMS29jxITqBxHUNAfkMhI8kOcAe7hQPF+F+t/0EDanh6OFQHx8Ffg
+         Ml/DYgSV0e8kYH/CIWhwsw3obIhtUQOjZUZ6NLfGrEg78MppvKeuCmV0L0QIObvkLX2h
+         mLrFY4uDuh+MxOetPgUDCP5NGquuAGvXYjl7XL5+3jqRI57qbEUlpnP0dimhyg6xaACi
+         c6zq+VrIVNqjN47f592snnpc9SvPcl8DyHH9+k90uyB18Qn6uwvOwUj+2aec5mGRMgCt
+         36gQ/xgw2+hqPcfJYQ7xAfPYj+RpJsqtTyKdhiU5H41bT+SlM+T+grOl8pg7KOeIxuNQ
+         5vsw==
+X-Gm-Message-State: AOAM5308v7kjhCJBgc91A6L/xuNqIE0pVq3/ifQ9q5Aqw3/QIgCGgdP9
+        oft7vi+5LkPc4WpK22miWB7l4w==
+X-Google-Smtp-Source: ABdhPJyJW/SKWMo//tsJYkLob0dolrZzCo67MSuqy0v+ITqmyMiKwgdxgev8K215pVK2IvL7oX3pHg==
+X-Received: by 2002:ae9:f819:: with SMTP id x25mr4369008qkh.429.1611065143335;
+        Tue, 19 Jan 2021 06:05:43 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id f134sm12910308qke.85.2021.01.19.06.05.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 06:04:17 -0800 (PST)
-Date:   Tue, 19 Jan 2021 15:04:15 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v6 15/15] xhci: tegra: Enable ELPG for runtime/system PM
-Message-ID: <YAbm39gww7F3okLP@ulmo>
-References: <20210119085546.725005-1-jckuo@nvidia.com>
- <20210119085546.725005-16-jckuo@nvidia.com>
+        Tue, 19 Jan 2021 06:05:42 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        luciano.coelho@intel.com
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pm@vger.kernel.org, amitk@kernel.org,
+        nathan.errera@intel.com
+Subject: [PATCH 0/2] thermal: Replace thermal_notify_framework with thermal_zone_device_update
+Date:   Tue, 19 Jan 2021 09:05:39 -0500
+Message-Id: <20210119140541.2453490-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="m4cIgoQOaH3JJzUk"
-Content-Disposition: inline
-In-Reply-To: <20210119085546.725005-16-jckuo@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+thermal_notify_framework just updates for a single trip point where as
+thermal_zone_device_update does other bookkeeping like updating the
+temperature of the thermal zone, running through the list of trip points
+and setting the next trip point etc. Since  the later is a more thorough
+version of former, replace thermal_notify_framework with
+thermal_zone_device_update. 
 
---m4cIgoQOaH3JJzUk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thara Gopinath (2):
+  net: wireless: intel: iwlwifi: mvm: tt: Replace
+    thermal_notify_framework
+  drivers: thermal: Remove thermal_notify_framework
 
-On Tue, Jan 19, 2021 at 04:55:46PM +0800, JC Kuo wrote:
-> This commit implements the complete programming sequence for ELPG
-> entry and exit.
->=20
->  1. At ELPG entry, invokes tegra_xusb_padctl_enable_phy_sleepwalk()
->     and tegra_xusb_padctl_enable_phy_wake() to configure XUSB PADCTL
->     sleepwalk and wake detection circuits to maintain USB lines level
->     and respond to wake events (wake-on-connect, wake-on-disconnect,
->     device-initiated-wake).
->=20
->  2. At ELPG exit, invokes tegra_xusb_padctl_disable_phy_sleepwalk()
->     and tegra_xusb_padctl_disable_phy_wake() to disarm sleepwalk and
->     wake detection circuits.
->=20
-> At runtime suspend, XUSB host controller can enter ELPG to reduce
-> power consumption. When XUSB PADCTL wake detection circuit detects
-> a wake event, an interrupt will be raised. xhci-tegra driver then
-> will invoke pm_runtime_resume() for xhci-tegra.
->=20
-> Runtime resume could also be triggered by protocol drivers, this is
-> the host-initiated-wake event. At runtime resume, xhci-tegra driver
-> brings XUSB host controller out of ELPG to handle the wake events.
->=20
-> The same ELPG enter/exit procedure will be performed for system
-> suspend/resume path so USB devices can remain connected across SC7.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> ---
-> v6:
->    fix compiling warning: extra tokens at end of #ifdef directive
-> v5:
->    avoid using xhci_get_rhub()
->    protect ELPG routines with (CONFIG_PM || CONFIG_PM_SLEEP)
-> v4:
->    reshuffle the code to avoid these pre-declarations
-> v3:
->    use 'unsigned int' for PHY index
->    remove unnecessary 'else'
->    drop IRQF_TRIGGER_HIGH when invokes devm_request_threaded_irq()
->=20
->  drivers/usb/host/xhci-tegra.c | 407 ++++++++++++++++++++++++++++++----
->  1 file changed, 370 insertions(+), 37 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/tt.c |  4 ++--
+ drivers/thermal/thermal_core.c              | 18 ------------------
+ include/linux/thermal.h                     |  4 ----
+ 3 files changed, 2 insertions(+), 24 deletions(-)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+-- 
+2.25.1
 
---m4cIgoQOaH3JJzUk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAG5t8ACgkQ3SOs138+
-s6FiRA/+JzS85x8wlzd3wVtXLr/NrOGVX+ABlM+gzXd5MCguuF81Ih/SXmYHBc3Z
-99OFwL708T0qXOS0/DM7Wq/VUmFM8mlbyjSujsrG3Daa69CrEbH9pboUMBihc6ki
-I1TNQe+SWlnrMxaS9YjuMtM8bSIWIiVmSDUlpOuzFFjm37CESKGCTx3u3T4+jO9D
-IsVDgcwkX63kIb25yeIyVkfS9mYwD4NlMkBdIo4NIULSscGQB2fKX9gZX2HCBA7u
-qQvxc2+1jdnp5mV4wZGmQ2iXZ55ErmCh315kLI5jIE3KYGsilwvcvJAYAsZDN1rL
-wyp9Bq0pkT41f/xQqe7OYKYUxKBHdD5LgbSpXf7CvqyMG930rCgHDDooERfnQNAN
-8cly6toEj/ugUhknxB7TU7mt1FO3c2BNjSYc7xPHlLXGaKEqa5reYYGoufP+SEuL
-uAY/4tqxWroI+8afW4BVYCrDevQNjDH7FniUePgX5xd6ejhvjfFPU0YnyszM7dE9
-egmqzDp9bpkM4ddIwHXZYYITL8AdM0n9FsgYvFu6/evzy2oUDC4caQTZwoiU2s6r
-4Imn6H/rxR5zShSi6zZKTrDdnFQIUwfPHPLbNHuiqzcucaaLIXFSMVHZYiBPhX6M
-yh1hWi2U4b1gPfPb8Rpy3ZWvWKfkYOrwg5l4GTIPphIWJ9MKnBg=
-=B9a4
------END PGP SIGNATURE-----
-
---m4cIgoQOaH3JJzUk--
