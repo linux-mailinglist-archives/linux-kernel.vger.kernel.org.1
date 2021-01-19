@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0AE2FC295
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672AA2FC293
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbhASVhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbhASVf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:35:28 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E54C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:34:48 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id m5so761785pjv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2tJFhFmEki0cmEwMWsS+zMP0KdbFiK5Gaw2t/H2Lbiw=;
-        b=TD0v0a79x0XHb4dVqFE7RvlyuQIwC35CHmRKXf/R0J0ZziICD9BHGu4Z1ABmY3SISV
-         UUVhQyqxBXsc82gKuMb5lKlBJkKM5YGfR4DAfXJnBj95ty3Sk5r87KFcHpaB6RMyEfjv
-         PJfH7jcmsKuWV8QS6gukq3vl46o7ldKWVB39JlpFsjiODa+CHyJrOOrY7/N/jyWcYPMw
-         r6lC7/RpUMhjiopYg8FZ7pLi1gWEkYjxwnbn+xrcCVe+TV0sI7pVZnd4Q20ctCy0UM+Z
-         wjFHu6+3dsrv2FoeVavM1/AaFZacuza7YZHh1cOnUihTi1b2LwqLquyPA/km5w0ZV5OU
-         Qkng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2tJFhFmEki0cmEwMWsS+zMP0KdbFiK5Gaw2t/H2Lbiw=;
-        b=pLe0pKhmO4505CScDkGLF2h6g6oqLZECcD420go28HFte1J/jYGwPhAtFSnu48tlSB
-         jyE7T2Iwr+zA+WngAL4MuZLtj9umHtbm/ouBmqC+Cujt9W8KO4rLyqZLzeC0hh1AV4ag
-         cxNHuLnkUTLjrgiM9JQCGPIUhlqkTU5+eyhG06VS9ARSD0zm6viKh68eiAnuD3orvX3u
-         LJ9iOTDP2mJhrIXZ+xO5RkV9JHqYwqHy0go2pTPwUi11MMRlFa29vGL8MmT8A2dG/YAL
-         E9C4Si6XFgGqeUPvILvQEhY3iBh/+oA07VGcuZXomGm18FRPSoGLq1G2H+p/cWJpcmE1
-         bbHQ==
-X-Gm-Message-State: AOAM532p66kAkut4VWQLVN1BqQxuHR4JC0d4PMJRgvT+09v250utCYtP
-        jpXfxykCSQkerzpcqvpfyWM2gzaqg5Da4Q==
-X-Google-Smtp-Source: ABdhPJx9l1hC3buN+HCmBXCFnwRv5xOWWVkLkGZhPH4WWBjq1jpLOdkXoQE2qZqEgEkc1fq3hp2fRw==
-X-Received: by 2002:a17:902:9686:b029:dc:3372:6e14 with SMTP id n6-20020a1709029686b02900dc33726e14mr6697310plp.24.1611092087633;
-        Tue, 19 Jan 2021 13:34:47 -0800 (PST)
-Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
-        by smtp.gmail.com with ESMTPSA id d19sm4069630pjw.37.2021.01.19.13.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 13:34:46 -0800 (PST)
-Date:   Wed, 20 Jan 2021 06:34:44 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] drivers/soc/litex: Add restart handler
-Message-ID: <20210119213444.GL2002709@lianli.shorne-pla.net>
-References: <20210119080938.1832733-1-geert@linux-m68k.org>
+        id S1729374AbhASVhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:37:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728534AbhASVfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 16:35:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C1EB23108
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 21:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611092102;
+        bh=keqlKtOQD4XedOyHnagcNlojhAjx8I81gQvxO1o/NBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lvGlPC0JWcNJCPwvWTZ4IBXuN3ILNAun90WbALBbkbgjUQCJUD8kiILj3Vw60iKMT
+         xeAg4f4kMox2t/yp0okEnSfLCyWqO1CURvgRWypZY7j7UuvDDOYVcuEQWlPJyKmy4Y
+         Pz7ihHKwLTdULmcazSNbJUP/I3SIr7ZJQkBNEWreuIF7wry4dXD6IDKw04nl7qfPf1
+         RQ4cKrOlGX/NtPZxUWgOC7QWylnG5BQloCQd3K0Eq1bFLHszjz9yEaaV7I5jvggl7q
+         NrX9cA/I0ArPasWsYWYqK5SxCFsbveHYNA1pPIJRlAklkqrQohxLAsoFx7+IyyvKx3
+         0IGYS+vbX3sfQ==
+Received: by mail-ot1-f44.google.com with SMTP id b24so21340846otj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:35:02 -0800 (PST)
+X-Gm-Message-State: AOAM530H2uWScJNFYSgFuVJU4s1/guVXG8M91QV4ORAM6A1//tZayLKB
+        yjxE/Z1tNj8WIyRspBJxHYRE4WuoE3AEAUJufnE=
+X-Google-Smtp-Source: ABdhPJw0ENVDjB/znaas4uhePniF7Y+ibmCXWojYKtwjd3FZdbeHG5Sxq+Qvg44w5EvXekS6S+t98cpXgn8NExbJuTg=
+X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr5017892otc.251.1611092101555;
+ Tue, 19 Jan 2021 13:35:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119080938.1832733-1-geert@linux-m68k.org>
+References: <20210119131724.308884-1-adrian.ratiu@collabora.com>
+ <20210119131724.308884-2-adrian.ratiu@collabora.com> <CAKwvOdkNZ09kkzi+A8diaxViqSufxrHizuBu-7quG6an3Z8iDA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkNZ09kkzi+A8diaxViqSufxrHizuBu-7quG6an3Z8iDA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 19 Jan 2021 22:34:45 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
+Message-ID: <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 09:09:38AM +0100, Geert Uytterhoeven wrote:
-> Let the LiteX SoC Controller register a restart handler, which resets
-> the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Tue, Jan 19, 2021 at 10:18 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Tue, Jan 19, 2021 at 5:17 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+> > diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> > index b99dd8e1c93f..f9f3601cc2d1 100644
+> > --- a/arch/arm/lib/xor-neon.c
+> > +++ b/arch/arm/lib/xor-neon.c
+> > @@ -14,20 +14,22 @@ MODULE_LICENSE("GPL");
+> >  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+> >  #endif
+> >
+> > +/*
+> > + * TODO: Even though -ftree-vectorize is enabled by default in Clang, the
+> > + * compiler does not produce vectorized code due to its cost model.
+> > + * See: https://github.com/ClangBuiltLinux/linux/issues/503
+> > + */
+> > +#ifdef CONFIG_CC_IS_CLANG
+> > +#warning Clang does not vectorize code in this file.
+> > +#endif
+>
+> Arnd, remind me again why it's a bug that the compiler's cost model
+> says it's faster to not produce a vectorized version of these loops?
+> I stand by my previous comment: https://bugs.llvm.org/show_bug.cgi?id=40976#c8
 
-Thanks, this looks good to me, queued to my linux-next branch.
+The point is that without vectorizing the code, there is no point in building
+both the default xor code and a "neon" version that has to save/restore
+the neon registers but doesn't actually use them.
 
--Stafford
-
-> @@ -66,8 +71,19 @@ static int litex_check_csr_access(void __iomem *reg_addr)
->  
->  struct litex_soc_ctrl_device {
->  	void __iomem *base;
-> +	struct notifier_block reset_nb;
->  };
->  
-> +static int litex_reset_handler(struct notifier_block *this, unsigned long mode,
-> +			       void *cmd)
-> +{
-> +	struct litex_soc_ctrl_device *soc_ctrl_dev =
-> +		container_of(this, struct litex_soc_ctrl_device, reset_nb);
-
-Nice.
-
-> +	litex_write32(soc_ctrl_dev->base + RESET_REG_OFF, RESET_REG_VALUE);
-> +	return NOTIFY_DONE;
-> +}
-> +
-
+          Arnd
