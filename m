@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30522FC58E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF7D2FC599
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbhATAS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        id S1730441AbhATATg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391691AbhASNpo (ORCPT
+        with ESMTP id S2391831AbhASNpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 08:45:44 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E250CC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:36 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id f22so2601226vsk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:36 -0800 (PST)
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1B1C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:40 -0800 (PST)
+Received: by mail-ua1-x931.google.com with SMTP id u27so3201709uaa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m1Svz7kp8jlLrAJvTmsrrPfMT8ipdqa9EnIKhQhhtpo=;
-        b=k8uXt/4O7KzeCtNH8ezUhflLZ1LhPd4rPFC/yawcZKsRGqEzWDDh5OstLqllLpAQGq
-         3ZO0bjzw/Sp0DOCfJiL0JKmLxKGNXllJbaJJjFAbVNnfs7Yo2SAlDUo+n1iNrjZF8OnZ
-         WQ0zQDh4BlWO5pW3BDXCNsfAimj6nox2ll+ZjeYbdYODiSwz6IM5uDN0Z5SJazWrjZMS
-         46FoaVR6gVtOdqO49x1iRd+QeNmqr4hlD87DmzcaG70UvWv0H85V6UxgGm1v6NCe/nmV
-         XPRm5OcplFfCgtMU+A3mqA4I5YS3Zh6QI6UUwYfv914RujRoggdcfhJ+xMfU1XTtj253
-         76wA==
+        bh=tNvEq5am+ikTvDsBrW7I06pSqyQwukR3vU3Lj1BRMZY=;
+        b=SphubxSJTVl0TE0jAYvw8W8A2f9P9Mi5GZALEkVjbxipuCEaJJO53riF85DbU3rdL9
+         LpNZQrLAsNSuebeng43zG7UM1hic6+NQ9gU+MTOYYARS80T+KdOjdIFIBjE8VE0zCEua
+         bW2Pvf0Fa+Mo2mZMiMuHPCE6udwFMqiwjLf62PqwWVElt3ZNkYSND4twFP4dLdEUriAH
+         Z4rRhq67ev1ZkcXUNYVfems6a109dchqMDFU3eejhu5xqhDNLIcU2uNhtkTV5pFotmrf
+         aNQ7rhBiFMLAmc1cHEi+ITYc5WUw7A5fS7tmwdK1Dg7bLkvEkBtu6AKUzdlbt3yDtCnj
+         HEGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m1Svz7kp8jlLrAJvTmsrrPfMT8ipdqa9EnIKhQhhtpo=;
-        b=H8dHl6Jj2xpvEMosp/GqgOOGx8rxX0yYV6Su6v5VLwhxccaei41OSXIfJDdqYSwNsR
-         3ivEgW3X2jSw/NvSBTsseTBV/DF9K5rtj7PHvE6eQbR4qMehYnTQ8H+foYJARgnDhhkk
-         JedBtEqJdNKyxM6ILagTNFbHwyXdnzAOjQSPwJKFYmxqAsuAqJjFNafS4Zok4rpo8+y8
-         S3uhJReBn/f6XQgqAHJtX1RjNmoPz4092ePehtAKvHYgynBh6H+6dhTVSi45n8+UZ3zc
-         G12hB9BrbyxuXKjTeZhUtajBmoLWuuaTF3CZH22fvnLhR9ibKtdPsXdV+7qJeeZF+78G
-         qYNA==
-X-Gm-Message-State: AOAM533gitjAjevTAWtTof81SPYpY4mejeL85GAJSFSjQb6U8bVhmrkH
-        gAyCM7HCEGUEPc34BPQjtREQcG2FwltO1Rs17z29qw==
-X-Google-Smtp-Source: ABdhPJwUZVBgWO1YWE/z9a1WcXivFGotjG+hr0MF+DebfEnUqWSrYWOQm2jKUHfkxpvHn4qBntPjwm1cbnN6Xd+PwTU=
-X-Received: by 2002:a67:facb:: with SMTP id g11mr2655226vsq.19.1611063816141;
- Tue, 19 Jan 2021 05:43:36 -0800 (PST)
+        bh=tNvEq5am+ikTvDsBrW7I06pSqyQwukR3vU3Lj1BRMZY=;
+        b=OESd8J93AVBtuSxNSF8/CdtGYvc2WD7IK5kmckKpJrSB8F8d9P49mxzRFtc/jcKcVa
+         ZoUrrtvIdEDsWxrW21skNRc0GZscxn1/Okz/9uE/kRr7/fKfPj9FxazmK5k93pfcKdH1
+         xEPP1wmp3yGuonYTX+8ZE8mecEMjqZNF+oc6u8HhnWGmEzK5Hqd6JEQypJD6wXFvAiMw
+         JtyoFN66xNgS+5Pk5vURmnj1BxQ82ZV2XiG8UDSKV342aKB8WT9kGlicydciV3wQGFYn
+         1IisoF+WfLYfNCqeQd4iRWBUZHvlGUVTPKFBnxPGKn7GP+p2atLlRt63HzYqteJdCRy0
+         SRQw==
+X-Gm-Message-State: AOAM531iDYAGTCAi45DNOJGTX30FwYLV28MqRPSYrQHtdYono2ZoWVv2
+        7QpxHfdskj6I79F9D0MgIW9xC0GMYGbXUyMS24Rw3whx4vNZ0Q==
+X-Google-Smtp-Source: ABdhPJx1sJ4xEgc4HsCtvWM79eqIKYNMrMBIhqmEXfnsfu1Ih9nGPi9MRPZTKWZwDPPcFTUk4CrGjvf2AzBXz2uxEvU=
+X-Received: by 2002:ab0:768:: with SMTP id h95mr2267466uah.104.1611063819438;
+ Tue, 19 Jan 2021 05:43:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201216131737.14883-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201216131737.14883-1-zhengyongjun3@huawei.com>
+References: <1610704281-11036-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1610704281-11036-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 14:42:59 +0100
-Message-ID: <CAPDyKFo_eaTpjFZ6zPw8dLOtzT1nyZY=c7=KuoWMER=ZPvD32A@mail.gmail.com>
-Subject: Re: [PATCH -next] mmc: core: convert comma to semicolon
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+Date:   Tue, 19 Jan 2021 14:43:03 +0100
+Message-ID: <CAPDyKFpwF6gX3YhKGMF=YUGP1UQD=JSuNgvSxuJHG+Ochzv5Bg@mail.gmail.com>
+Subject: Re: [PATCH v2] host: omap_hsmmc: style: Simplify bool comparison and conversion
+To:     Yang Li <abaci-bugfix@linux.alibaba.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 at 14:17, Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+On Fri, 15 Jan 2021 at 10:51, Yang Li <abaci-bugfix@linux.alibaba.com> wrote:
 >
-> Replace a comma between expression statements by a semicolon.
+> Fix the following coccicheck warning:
+> ./drivers/mmc/host/omap_hsmmc.c:297:6-25: WARNING: Comparison of 0/1 to
+> bool variable
 >
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> According to the context, vqmmc_enabled is more suitable for bool
+> type.
+>
+> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
 
 Applied for next, thanks!
 
@@ -72,36 +81,82 @@ Uffe
 
 
 > ---
->  drivers/mmc/core/core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Changes in v2:
+>  -clean up all use of "pbias_enabled", and do the same clean up for
+> "vqmmc_enabled".
 >
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index d42037f0f10d..07c5f242f28a 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -547,10 +547,10 @@ int mmc_cqe_recovery(struct mmc_host *host)
->         host->cqe_ops->cqe_recovery_start(host);
+>  drivers/mmc/host/omap_hsmmc.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
->         memset(&cmd, 0, sizeof(cmd));
-> -       cmd.opcode       = MMC_STOP_TRANSMISSION,
-> -       cmd.flags        = MMC_RSP_R1B | MMC_CMD_AC,
-> +       cmd.opcode       = MMC_STOP_TRANSMISSION;
-> +       cmd.flags        = MMC_RSP_R1B | MMC_CMD_AC;
->         cmd.flags       &= ~MMC_RSP_CRC; /* Ignore CRC */
-> -       cmd.busy_timeout = MMC_CQE_RECOVERY_TIMEOUT,
-> +       cmd.busy_timeout = MMC_CQE_RECOVERY_TIMEOUT;
->         mmc_wait_for_cmd(host, &cmd, 0);
+> diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+> index aa9cc49..2f8038d 100644
+> --- a/drivers/mmc/host/omap_hsmmc.c
+> +++ b/drivers/mmc/host/omap_hsmmc.c
+> @@ -177,7 +177,7 @@ struct omap_hsmmc_host {
+>         struct  regulator       *pbias;
+>         bool                    pbias_enabled;
+>         void    __iomem         *base;
+> -       int                     vqmmc_enabled;
+> +       bool                    vqmmc_enabled;
+>         resource_size_t         mapbase;
+>         spinlock_t              irq_lock; /* Prevent races with irq handler */
+>         unsigned int            dma_len;
+> @@ -232,7 +232,7 @@ static int omap_hsmmc_enable_supply(struct mmc_host *mmc)
+>                         dev_err(mmc_dev(mmc), "vmmc_aux reg enable failed\n");
+>                         goto err_vqmmc;
+>                 }
+> -               host->vqmmc_enabled = 1;
+> +               host->vqmmc_enabled = true;
+>         }
 >
->         memset(&cmd, 0, sizeof(cmd));
-> @@ -558,7 +558,7 @@ int mmc_cqe_recovery(struct mmc_host *host)
->         cmd.arg          = 1; /* Discard entire queue */
->         cmd.flags        = MMC_RSP_R1B | MMC_CMD_AC;
->         cmd.flags       &= ~MMC_RSP_CRC; /* Ignore CRC */
-> -       cmd.busy_timeout = MMC_CQE_RECOVERY_TIMEOUT,
-> +       cmd.busy_timeout = MMC_CQE_RECOVERY_TIMEOUT;
->         err = mmc_wait_for_cmd(host, &cmd, 0);
+>         return 0;
+> @@ -256,7 +256,7 @@ static int omap_hsmmc_disable_supply(struct mmc_host *mmc)
+>                         dev_err(mmc_dev(mmc), "vmmc_aux reg disable failed\n");
+>                         return ret;
+>                 }
+> -               host->vqmmc_enabled = 0;
+> +               host->vqmmc_enabled = false;
+>         }
 >
->         host->cqe_ops->cqe_recovery_finish(host);
+>         if (!IS_ERR(mmc->supply.vmmc)) {
+> @@ -285,22 +285,22 @@ static int omap_hsmmc_set_pbias(struct omap_hsmmc_host *host, bool power_on)
+>                 return 0;
+>
+>         if (power_on) {
+> -               if (host->pbias_enabled == 0) {
+> +               if (!host->pbias_enabled) {
+>                         ret = regulator_enable(host->pbias);
+>                         if (ret) {
+>                                 dev_err(host->dev, "pbias reg enable fail\n");
+>                                 return ret;
+>                         }
+> -                       host->pbias_enabled = 1;
+> +                       host->pbias_enabled = true;
+>                 }
+>         } else {
+> -               if (host->pbias_enabled == 1) {
+> +               if (host->pbias_enabled) {
+>                         ret = regulator_disable(host->pbias);
+>                         if (ret) {
+>                                 dev_err(host->dev, "pbias reg disable fail\n");
+>                                 return ret;
+>                         }
+> -                       host->pbias_enabled = 0;
+> +                       host->pbias_enabled = false;
+>                 }
+>         }
+>
+> @@ -1861,8 +1861,8 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+>         host->base      = base + pdata->reg_offset;
+>         host->power_mode = MMC_POWER_OFF;
+>         host->next_data.cookie = 1;
+> -       host->pbias_enabled = 0;
+> -       host->vqmmc_enabled = 0;
+> +       host->pbias_enabled = false;
+> +       host->vqmmc_enabled = false;
+>
+>         platform_set_drvdata(pdev, host);
+>
 > --
-> 2.22.0
+> 1.8.3.1
 >
