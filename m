@@ -2,185 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3872FB6EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37F42FB6E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733200AbhASJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:27:12 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35082 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732138AbhASJOV (ORCPT
+        id S1733117AbhASJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:27:08 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:33029 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732083AbhASJN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:14:21 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J9AjxY134957;
-        Tue, 19 Jan 2021 04:12:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=B9fPVhsYHZ9MUgvx5shkeAk+LRY3aHnUMBspjKAb654=;
- b=WmnH56xcFfo4qr+gZAKshSPC/i9jp69EncdX3atomCknagdx8SQ7J4S+ijX77Y/g6uVP
- i/QxsX36YAePLFsaa3rrjwHnSGkU1kIKDY6qGlxU9LAWDChYtojnSSVMXr3dLv6Te40N
- lDWqQ2jwg0oRU7cz1MkhwPtKSgOzvig2qTE+fy5a88cpzN/BjviPWoAX7dVQ2VgH5ae3
- 75ztiDJ5BirGzS+X6zpIsRIFmMwnUPN2SllZhjYTNwkMnVSBTTpPqRb5ZRVcYJossxbw
- 4l2UhVyVu0ET2LCQMI2Va1ZMavsm6jbtghF/M8JoQK7EKCZAE74UB391e44UdWLLZL7Z Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 365v9a89sw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 04:12:51 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10J9Cpb4139548;
-        Tue, 19 Jan 2021 04:12:51 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 365v9a89sj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 04:12:51 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J9BLQB030385;
-        Tue, 19 Jan 2021 09:12:49 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 363qs7jvq4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 09:12:49 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J9Ck6f41484590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 09:12:46 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6450A4054;
-        Tue, 19 Jan 2021 09:12:46 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0605A405C;
-        Tue, 19 Jan 2021 09:12:44 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.45.223])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jan 2021 09:12:44 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au
-Cc:     ravi.bangoria@linux.ibm.com, oleg@redhat.com, rostedt@goodmis.org,
-        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc/uprobes: Don't allow probe on suffix of prefixed instruction
-Date:   Tue, 19 Jan 2021 14:42:34 +0530
-Message-Id: <20210119091234.76317-1-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 19 Jan 2021 04:13:58 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 702B24001D;
+        Tue, 19 Jan 2021 09:13:11 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 10:13:10 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh@kernel.org>,
+        youlin.pei@mediatek.com, devicetree@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        anan.sun@mediatek.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 06/33] of/device: Move dma_range_map before
+ of_iommu_configure
+Message-ID: <YAaipp7Srf6uUdFZ@aptenodytes>
+References: <20210111111914.22211-1-yong.wu@mediatek.com>
+ <20210111111914.22211-7-yong.wu@mediatek.com>
+ <20210114192732.GA3401278@robh.at.kernel.org>
+ <1610688626.4578.1.camel@mhfsdcap03>
+ <1853732d-0efd-171e-9e1f-7ee7ed72a98f@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_01:2021-01-18,2021-01-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 malwarescore=0 mlxscore=0 suspectscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190052
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9JUkddB3RODiIlTw"
+Content-Disposition: inline
+In-Reply-To: <1853732d-0efd-171e-9e1f-7ee7ed72a98f@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probe on 2nd word of a prefixed instruction is invalid scenario and
-should be restricted.
 
-There are two ways probed instruction is changed in mapped pages.
-First, when Uprobe is activated, it searches for all the relevant
-pages and replace instruction in them. In this case, if we notice
-that probe is on the 2nd word of prefixed instruction, error out
-directly. Second, when Uprobe is already active and user maps a
-relevant page via mmap(), instruction is replaced via mmap() code
-path. But because Uprobe is invalid, entire mmap() operation can
-not be stopped. In this case just print an error and continue.
+--9JUkddB3RODiIlTw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/powerpc/kernel/uprobes.c | 28 ++++++++++++++++++++++++++++
- include/linux/uprobes.h       |  1 +
- kernel/events/uprobes.c       |  8 ++++++++
- 3 files changed, 37 insertions(+)
+Hi,
 
-diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
-index e8a63713e655..c73d5a397164 100644
---- a/arch/powerpc/kernel/uprobes.c
-+++ b/arch/powerpc/kernel/uprobes.c
-@@ -7,6 +7,7 @@
-  * Adapted from the x86 port by Ananth N Mavinakayanahalli <ananth@in.ibm.com>
-  */
- #include <linux/kernel.h>
-+#include <linux/highmem.h>
- #include <linux/sched.h>
- #include <linux/ptrace.h>
- #include <linux/uprobes.h>
-@@ -44,6 +45,33 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
- 	return 0;
- }
- 
-+#ifdef CONFIG_PPC64
-+int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
-+			      uprobe_opcode_t opcode)
-+{
-+	uprobe_opcode_t prefix;
-+	void *kaddr;
-+	struct ppc_inst inst;
-+
-+	/* Don't check if vaddr is pointing to the beginning of page */
-+	if (!(vaddr & ~PAGE_MASK))
-+		return 0;
-+
-+	kaddr = kmap_atomic(page);
-+	memcpy(&prefix, kaddr + ((vaddr - 4) & ~PAGE_MASK), UPROBE_SWBP_INSN_SIZE);
-+	kunmap_atomic(kaddr);
-+
-+	inst = ppc_inst_prefix(prefix, opcode);
-+
-+	if (ppc_inst_prefixed(inst)) {
-+		printk_ratelimited("Cannot register a uprobe on the second "
-+				   "word of prefixed instruction\n");
-+		return -1;
-+	}
-+	return 0;
-+}
-+#endif
-+
- /*
-  * arch_uprobe_pre_xol - prepare to execute out of line.
-  * @auprobe: the probepoint information.
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index f46e0ca0169c..5a3b45878e13 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -128,6 +128,7 @@ extern bool uprobe_deny_signal(void);
- extern bool arch_uprobe_skip_sstep(struct arch_uprobe *aup, struct pt_regs *regs);
- extern void uprobe_clear_state(struct mm_struct *mm);
- extern int  arch_uprobe_analyze_insn(struct arch_uprobe *aup, struct mm_struct *mm, unsigned long addr);
-+int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t opcode);
- extern int  arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs);
- extern int  arch_uprobe_post_xol(struct arch_uprobe *aup, struct pt_regs *regs);
- extern bool arch_uprobe_xol_was_trapped(struct task_struct *tsk);
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index bf9edd8d75be..be02e6c26e3f 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -255,6 +255,12 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
- 	kunmap_atomic(kaddr);
- }
- 
-+int __weak arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
-+				     uprobe_opcode_t opcode)
-+{
-+	return 0;
-+}
-+
- static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
- {
- 	uprobe_opcode_t old_opcode;
-@@ -275,6 +281,8 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
- 	if (is_swbp_insn(new_opcode)) {
- 		if (is_swbp)		/* register: already installed? */
- 			return 0;
-+		if (arch_uprobe_verify_opcode(page, vaddr, old_opcode))
-+			return -EINVAL;
- 	} else {
- 		if (!is_swbp)		/* unregister: was it changed by us? */
- 			return 0;
--- 
-2.26.2
+On Mon 18 Jan 21, 15:49, Robin Murphy wrote:
+> On 2021-01-15 05:30, Yong Wu wrote:
+> > On Thu, 2021-01-14 at 13:27 -0600, Rob Herring wrote:
+> > > On Mon, Jan 11, 2021 at 07:18:47PM +0800, Yong Wu wrote:
+> > > > "dev->dma_range_map" contains the devices' dma_ranges information,
+> > > > This patch moves dma_range_map before of_iommu_configure. The iommu
+> > > > driver may need to know the dma_address requirements of its iommu
+> > > > consumer devices.
+> > > >=20
+> > > > CC: Rob Herring <robh+dt@kernel.org>
+> > > > CC: Frank Rowand <frowand.list@gmail.com>
+> > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > > > ---
+> > > >   drivers/of/device.c | 3 ++-
+> > > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > > >=20
+> > > > diff --git a/drivers/of/device.c b/drivers/of/device.c
+> > > > index aedfaaafd3e7..1d84636149df 100644
+> > > > --- a/drivers/of/device.c
+> > > > +++ b/drivers/of/device.c
+> > > > @@ -170,9 +170,11 @@ int of_dma_configure_id(struct device *dev, st=
+ruct device_node *np,
+> > > >   	dev_dbg(dev, "device is%sdma coherent\n",
+> > > >   		coherent ? " " : " not ");
+> > > > +	dev->dma_range_map =3D map;
+> > > >   	iommu =3D of_iommu_configure(dev, np, id);
+> > > >   	if (PTR_ERR(iommu) =3D=3D -EPROBE_DEFER) {
+> > > >   		kfree(map);
+> > > > +		dev->dma_range_map =3D NULL;
+> > >=20
+> > > Not really going to matter, but you should probably clear dma_range_m=
+ap
+> > > before what it points to is freed.
+> > >=20
+> > > With that,
+> > >=20
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> >=20
+> > Thanks for the review. I will move it before "kfree(map)" in next
+> > version.
+>=20
+> Paul noticed that we already have a bug in assigning to this
+> unconditionally[1] - I'd totally forgotten about this series when I
+> theorised about IOMMU drivers wanting the information earlier, but sweepi=
+ng
+> my inbox now only goes to show I was right to think of it :)
+>=20
+> We should really get something in as a fix independent of this series,
+> taking both angles into account.
 
+Okay, I can also fix this while fixing my case. So we'd go for setting
+dev->dma_range_map =3D map; under the if (!ret).
+
+Then I think the error case for of_iommu_configure should be to set
+dev->dma_range_map =3D NULL; only if map !=3D NULL (otherwise we'd be overw=
+riting
+and leaking the previously-set map).
+
+I think a comment to remind that dev->dma_range_map can be set prior to this
+function would be useful too.
+
+What do you think?
+
+Cheers,
+
+Paul
+
+> Robin.
+>=20
+> [1] https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be09=
+7c7ceb32@arm.com/
+>=20
+> > >=20
+> > > >   		return -EPROBE_DEFER;
+> > > >   	}
+> > > > @@ -181,7 +183,6 @@ int of_dma_configure_id(struct device *dev, str=
+uct device_node *np,
+> > > >   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+> > > > -	dev->dma_range_map =3D map;
+> > > >   	return 0;
+> > > >   }
+> > > >   EXPORT_SYMBOL_GPL(of_dma_configure_id);
+> > > > --=20
+> > > > 2.18.0
+> > > >=20
+> >=20
+> > _______________________________________________
+> > iommu mailing list
+> > iommu@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> >=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--9JUkddB3RODiIlTw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmAGoqYACgkQ3cLmz3+f
+v9GonQf/efUk6Macghd2ipStYZpoRfxYwHOuemUNFudMoUEZ3WfF8oq65Qp+I6jx
+5f0iHYTgcPXsTDkMgyPINgSmcuagEYEDUH+IkPoJBvZZ8T2/oI5E0y4xGbbpLtfK
+hGfAg1spG4E0akpjq/2wNSYkiUiVIdXsFHPXrMNez3j0Z8VJKTBoETeb88QoAOaJ
+KtcJHmcIW3Gi2fYp/EMBbe+oMbairUCcnnqXZLZjYRSfHl+4EpH9T/FmaI2rtgoE
+xXedTQFz7axYSXPqHR0WWkg0P876yNO+jkd387VvBvC9AxZYMyFngHVDYM4e4Edx
+eE2MYAMyuHp/V4AlneqACADHWyS/oQ==
+=2EGZ
+-----END PGP SIGNATURE-----
+
+--9JUkddB3RODiIlTw--
