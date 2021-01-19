@@ -2,162 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFEC2FC0C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C7A2FC0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbhASURZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404498AbhASUIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:08:22 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AE9C061757;
-        Tue, 19 Jan 2021 12:07:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=qH9+bSG9rldlwp1A7DpxVLC8Lk4DArwmSI8u9Y2/wRo=; b=zZEqB+N+PwjS44QIyd9rjx4bof
-        oAewXwE/xA/GnLniegGNLlzGe9JqKM4bPY4RoIa9JsFxzoGBo2J1vPNdkUxnggDM8ItznVoEGkXEP
-        rGlsCdky9z9HeGESISYAT2kBtVqaqwkxHHPxzHBUJUjhXqT4kiqpa4fIzLFJdNvTRBRkuCXdDS8T+
-        Ut//TIrieZ0Y9gYovWwGZ5mLpnk7G/J5rA66q5lGdgdWBeoPrXHP1F9I7oelCOYoGGXp5XcGJWtcy
-        57NMLS3MLBq6o7QATx1vdgjgZUn5kDiMxDScSqFaBq67WEzSoOwD4COaxg63JxAlVN2vk7UH0KAPa
-        yzSgWBbQ==;
-Received: from [2601:1c0:6280:3f0::9abc] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1xHr-00073y-Ld; Tue, 19 Jan 2021 20:07:36 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: [PATCH 2/2 v2] HID: correct kernel-doc notation in hid-quirks.c
-Date:   Tue, 19 Jan 2021 12:07:23 -0800
-Message-Id: <20210119200723.12092-3-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210119200723.12092-1-rdunlap@infradead.org>
-References: <20210119200723.12092-1-rdunlap@infradead.org>
+        id S2392077AbhASUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:12:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391385AbhASUL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 15:11:28 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C211B23107;
+        Tue, 19 Jan 2021 20:10:46 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 15:10:45 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <20210119151045.15c1fee3@gandalf.local.home>
+In-Reply-To: <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
+References: <20210116220950.47078-1-timur@kernel.org>
+        <20210118182635.GD2260413@casper.infradead.org>
+        <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
+        <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+        <20210119014725.GH2260413@casper.infradead.org>
+        <202101191135.A78A570@keescook>
+        <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use correct kernel-doc notation for functions.
-Add notation (comments) where it is missing.
-Use the documented "Return:" notation for function return values.
+On Tue, 19 Jan 2021 13:55:29 -0600
+Timur Tabi <timur@kernel.org> wrote:
+> >   		case DUMP_PREFIX_ADDRESS:
+> >   			printk("%s%s%p: %s\n",
+> > -			       level, prefix_str, ptr + i, linebuf);
+> > +			       level, prefix_str, addr + i, linebuf);  
+> 
+> Well, this is better than nothing, but not by much.  Again, as long as 
+> %px exists for printk(), I just cannot understand any resistance to 
+> allowing it in print_hex_dump().
+> 
+> Frankly, I think this patch and my patch should both be added.  During 
+> debugging, it's very difficult if not impossible to work with hashed 
+> addresses.  I use print_hex_dump() with an unhashed address all the 
+> time, either by applying my patch to my own kernel or just replacing the 
+> %p with %px.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: linux-input@vger.kernel.org
----
-v2: rebase & resend
+I'm curious, what is the result if you replaced %p with %pS?
 
- drivers/hid/hid-quirks.c |   25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+That way you get a kallsyms offset version of the output, which could still
+be very useful depending on what you are dumping.
 
---- linux-next-20210119.orig/drivers/hid/hid-quirks.c
-+++ linux-next-20210119/drivers/hid/hid-quirks.c
-@@ -1028,7 +1028,7 @@ static DEFINE_MUTEX(dquirks_lock);
- /* Runtime ("dynamic") quirks manipulation functions */
- 
- /**
-- * hid_exists_dquirk: find any dynamic quirks for a HID device
-+ * hid_exists_dquirk - find any dynamic quirks for a HID device
-  * @hdev: the HID device to match
-  *
-  * Description:
-@@ -1036,7 +1036,7 @@ static DEFINE_MUTEX(dquirks_lock);
-  *         the pointer to the relevant struct hid_device_id if found.
-  *         Must be called with a read lock held on dquirks_lock.
-  *
-- * Returns: NULL if no quirk found, struct hid_device_id * if found.
-+ * Return: NULL if no quirk found, struct hid_device_id * if found.
-  */
- static struct hid_device_id *hid_exists_dquirk(const struct hid_device *hdev)
- {
-@@ -1060,7 +1060,7 @@ static struct hid_device_id *hid_exists_
- 
- 
- /**
-- * hid_modify_dquirk: add/replace a HID quirk
-+ * hid_modify_dquirk - add/replace a HID quirk
-  * @id: the HID device to match
-  * @quirks: the unsigned long quirks value to add/replace
-  *
-@@ -1069,7 +1069,7 @@ static struct hid_device_id *hid_exists_
-  *         quirks value with what was provided.  Otherwise, add the quirk
-  *         to the dynamic quirks list.
-  *
-- * Returns: 0 OK, -error on failure.
-+ * Return: 0 OK, -error on failure.
-  */
- static int hid_modify_dquirk(const struct hid_device_id *id,
- 			     const unsigned long quirks)
-@@ -1121,7 +1121,7 @@ static int hid_modify_dquirk(const struc
- }
- 
- /**
-- * hid_remove_all_dquirks: remove all runtime HID quirks from memory
-+ * hid_remove_all_dquirks - remove all runtime HID quirks from memory
-  * @bus: bus to match against. Use HID_BUS_ANY if all need to be removed.
-  *
-  * Description:
-@@ -1145,7 +1145,10 @@ static void hid_remove_all_dquirks(__u16
- }
- 
- /**
-- * hid_quirks_init: apply HID quirks specified at module load time
-+ * hid_quirks_init - apply HID quirks specified at module load time
-+ * @quirks_param: array of quirks strings (vendor:product:quirks)
-+ * @bus: bus type
-+ * @count: number of quirks to check
-  */
- int hid_quirks_init(char **quirks_param, __u16 bus, int count)
- {
-@@ -1176,7 +1179,7 @@ int hid_quirks_init(char **quirks_param,
- EXPORT_SYMBOL_GPL(hid_quirks_init);
- 
- /**
-- * hid_quirks_exit: release memory associated with dynamic_quirks
-+ * hid_quirks_exit - release memory associated with dynamic_quirks
-  * @bus: a bus to match against
-  *
-  * Description:
-@@ -1193,14 +1196,14 @@ void hid_quirks_exit(__u16 bus)
- EXPORT_SYMBOL_GPL(hid_quirks_exit);
- 
- /**
-- * hid_gets_squirk: return any static quirks for a HID device
-+ * hid_gets_squirk - return any static quirks for a HID device
-  * @hdev: the HID device to match
-  *
-  * Description:
-  *     Given a HID device, return a pointer to the quirked hid_device_id entry
-  *     associated with that device.
-  *
-- * Returns: the quirks.
-+ * Return: the quirks.
-  */
- static unsigned long hid_gets_squirk(const struct hid_device *hdev)
- {
-@@ -1224,13 +1227,13 @@ static unsigned long hid_gets_squirk(con
- }
- 
- /**
-- * hid_lookup_quirk: return any quirks associated with a HID device
-+ * hid_lookup_quirk - return any quirks associated with a HID device
-  * @hdev: the HID device to look for
-  *
-  * Description:
-  *     Given a HID device, return any quirks associated with that device.
-  *
-- * Returns: an unsigned long quirks value.
-+ * Return: an unsigned long quirks value.
-  */
- unsigned long hid_lookup_quirk(const struct hid_device *hdev)
- {
+-- Steve
