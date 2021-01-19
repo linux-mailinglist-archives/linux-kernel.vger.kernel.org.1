@@ -2,278 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65432FC183
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990222FC186
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387440AbhASUqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        id S1730438AbhASUr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389864AbhASUp4 (ORCPT
+        with ESMTP id S1729064AbhASUrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:45:56 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867D0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:16 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id x20so683143pjh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:16 -0800 (PST)
+        Tue, 19 Jan 2021 15:47:01 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A120AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:46:21 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id g15so13705917pgu.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:46:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=njrcSIJAkGY2OvZcMcUOB/aiSRsE8gSP15fU7c5jB6I=;
-        b=D4Tiif4UHDgXE0lEl4K0r5he4Lv75bV6HrswkUdJtOBDALOY20/c4H2BSvtnyOb/TI
-         lUvOJdmQt0XsbtCcgTlnkqqpAJQNX09TzBmy5RJFv/agoix5egESsaXy3Nveu5r9N10z
-         fNuTeUbV3nBdadsnb+AbFgi8g+pyo8yGfsg6cOewdwkf78efJVxidklQClROooreN6BY
-         4Awgdijgf5MJ1bxffI2A7/j/1T07ikg94dEgS8D0bY9No74cF+y6jibT4Ne9hGHwHwRa
-         IX/mVVnT24EmSAISdSkb4YSF2D9+3eN6ND0QDmXLnQZmVdO6m6rILjT+jOvuB8NqiI1K
-         uABQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iVHb643PwDFlofq8s/dHziMEEHQYbNdqvRh+4/Hot4U=;
+        b=rbGn08ZsGPZ1g2+KJMh7UvzpuWhxqUe8k+Cfah3ZW5zm7Xc68WepvKeaF3+kqelkiY
+         oEtZeXsXQJMtGl3u1lIiMYEXoMMIkfG8Mm8c8WUzSJd86fyrt8YE+m5jAPaflgO1Barg
+         yFYrN9AF2Jd1rDI7E4Nt5Tx1cJ0qsUaNNI1mfIjk9clAYae9FD8y8jsmMFZftYxx9yJO
+         89brRJ23bmL1s252JC98dnKd8xif0OCIdt25Wdwdxfv4zcaM6XpuiByXor4+IwJtFP7f
+         oUaFLRnKEzwJKjHGRDJzoHnls/4XL1B64ArVtAswOXICDuBQsljWnU8FeaX37FPt7iN2
+         8jtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=njrcSIJAkGY2OvZcMcUOB/aiSRsE8gSP15fU7c5jB6I=;
-        b=IYcZaklG/fvqiXtmdfN8MS2BuNiJ0Jll2xF5leZh1TOQ0FR5AWgW/dPaGwS7UTd8IY
-         awZe6LceCzdWm/lITDFMHrtAavoddjzUduFzf7BYbDb4EMUAdZqJijp/nJ4ASOg5Wtm6
-         3iLxW+G2/peezlpqB3zP55PASmWpI7KLVAWOU6jGTFD01STGV7dBJ4KsU3BVp03cJuEB
-         LXZYk6cLS7mPNEccWmOVGGk7knH2VKZ4ce+L2B2p8g75Wx5Y6fzbjz3rNYC4t3kms2eL
-         aK01O3RjqL9OWyvRuyRyAGJNEFnxee2kGyNnVYZrtHepMAeeHNTickOTuLDFpLuF2VpJ
-         3RKQ==
-X-Gm-Message-State: AOAM532DoAkyQJ7kCDv6L7Xo/Nt8p8KVPjfOFpH9E56Bee/bIxOQJEsV
-        K7YjJ6Ekxc8zdTPwxIFv4ZsuCTTKL+MP3Q==
-X-Google-Smtp-Source: ABdhPJxNNMADX9CbUQovzjYXc9TxCQoBpybpXFayDx9hPArekpnWGmkjCQtFXmhn9Lpe14eQ01u5eg==
-X-Received: by 2002:a17:90a:7e18:: with SMTP id i24mr1669643pjl.72.1611089115609;
-        Tue, 19 Jan 2021 12:45:15 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id md7sm4129838pjb.52.2021.01.19.12.45.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iVHb643PwDFlofq8s/dHziMEEHQYbNdqvRh+4/Hot4U=;
+        b=dfV3dp4Xt9OggTrQKv1AMhilsQQ6nlx+RgiVeLcG8UyH5RGdln4RKcYAKq40Z6IUmP
+         0da0lAgnUdjki42/Cg+ehzb9qJ6lQheroTuzQGCsLOuZs8gY0PmHg2IFxW/U2t8FkEkU
+         xqb73Hp31sWFM83AQYLFf0ZkkoXZ4V5z1PGMVuXPJF/mmaeBItKP22HjKze73ORoOqLQ
+         lLgMHEykbj0Mi8BOeJCeWKTTW3pVMx2TMtlcqmz/bVlL3TSGZT/+t/Wf9FMeQmL/l8Bz
+         ExHQBplG+1IImylXaXZtYTz9LVduHDRw0J/jSPyqUWDwQQIYgaBy769mdSABKnMKe0Nh
+         x73g==
+X-Gm-Message-State: AOAM532cvrh/zfLO0Btvs83Bu5NU8sI5ZgZjnsY5IXLqqzC1r9VOhejn
+        gqZauhM7XiBl59/m1TkCVveNSw==
+X-Google-Smtp-Source: ABdhPJwWvSVvaoZkDa1qqRtpM2kSMBHHOM3tSYS8tomDckDnTz1Hnf69mnXzBhKRBWnPfRSiqc1jlw==
+X-Received: by 2002:a63:1a44:: with SMTP id a4mr6014377pgm.41.1611089181130;
+        Tue, 19 Jan 2021 12:46:21 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id t5sm4258770pjr.22.2021.01.19.12.46.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:45:14 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RESEND][PATCH 3/3] dma-buf: heaps: Rework heep allocation hooks to return struct dma_buf instead of fd
-Date:   Tue, 19 Jan 2021 20:45:08 +0000
-Message-Id: <20210119204508.9256-3-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210119204508.9256-1-john.stultz@linaro.org>
-References: <20210119204508.9256-1-john.stultz@linaro.org>
+        Tue, 19 Jan 2021 12:46:20 -0800 (PST)
+Date:   Tue, 19 Jan 2021 12:46:13 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Cun Li <cun.jia.li@gmail.com>
+Cc:     vkuznets@redhat.com, pbonzini@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: update depracated and inappropriate jump label API
+Message-ID: <YAdFFdyMZrTe0SFa@google.com>
+References: <87h7nn8ke8.fsf@vitty.brq.redhat.com>
+ <20210116055009.118377-1-cun.jia.li@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116055009.118377-1-cun.jia.li@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every heap needs to create a dmabuf and then export it to a fd
-via dma_buf_fd(), so to consolidate things a bit, have the heaps
-just return a struct dmabuf * and let the top level
-dma_heap_buffer_alloc() call handle creating the fd via
-dma_buf_fd().
+s/depracated/deprecated
 
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/dma-buf/dma-heap.c          | 14 +++++++++++++-
- drivers/dma-buf/heaps/cma_heap.c    | 22 +++++++---------------
- drivers/dma-buf/heaps/system_heap.c | 21 +++++++--------------
- include/linux/dma-heap.h            | 12 ++++++------
- 4 files changed, 33 insertions(+), 36 deletions(-)
+And maybe reword the shortlog to be more explicit?  E.g.
 
-diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-index afd22c9dbdcf..6b5db954569f 100644
---- a/drivers/dma-buf/dma-heap.c
-+++ b/drivers/dma-buf/dma-heap.c
-@@ -52,6 +52,9 @@ static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
- 				 unsigned int fd_flags,
- 				 unsigned int heap_flags)
- {
-+	struct dma_buf *dmabuf;
-+	int fd;
-+
- 	/*
- 	 * Allocations from all heaps have to begin
- 	 * and end on page boundaries.
-@@ -60,7 +63,16 @@ static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
- 	if (!len)
- 		return -EINVAL;
- 
--	return heap->ops->allocate(heap, len, fd_flags, heap_flags);
-+	dmabuf = heap->ops->allocate(heap, len, fd_flags, heap_flags);
-+	if (IS_ERR(dmabuf))
-+		return PTR_ERR(dmabuf);
-+
-+	fd = dma_buf_fd(dmabuf, fd_flags);
-+	if (fd < 0) {
-+		dma_buf_put(dmabuf);
-+		/* just return, as put will call release and that will free */
-+	}
-+	return fd;
- }
- 
- static int dma_heap_open(struct inode *inode, struct file *file)
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 0c76cbc3fb11..985c41ffd85b 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -272,10 +272,10 @@ static const struct dma_buf_ops cma_heap_buf_ops = {
- 	.release = cma_heap_dma_buf_release,
- };
- 
--static int cma_heap_allocate(struct dma_heap *heap,
--				  unsigned long len,
--				  unsigned long fd_flags,
--				  unsigned long heap_flags)
-+static struct dma_buf *cma_heap_allocate(struct dma_heap *heap,
-+					 unsigned long len,
-+					 unsigned long fd_flags,
-+					 unsigned long heap_flags)
- {
- 	struct cma_heap *cma_heap = dma_heap_get_drvdata(heap);
- 	struct cma_heap_buffer *buffer;
-@@ -290,7 +290,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
- 
- 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
- 	if (!buffer)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	INIT_LIST_HEAD(&buffer->attachments);
- 	mutex_init(&buffer->lock);
-@@ -349,15 +349,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
- 		ret = PTR_ERR(dmabuf);
- 		goto free_pages;
- 	}
--
--	ret = dma_buf_fd(dmabuf, fd_flags);
--	if (ret < 0) {
--		dma_buf_put(dmabuf);
--		/* just return, as put will call release and that will free */
--		return ret;
--	}
--
--	return ret;
-+	return dmabuf;
- 
- free_pages:
- 	kfree(buffer->pages);
-@@ -366,7 +358,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
- free_buffer:
- 	kfree(buffer);
- 
--	return ret;
-+	return ERR_PTR(ret);
- }
- 
- static const struct dma_heap_ops cma_heap_ops = {
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 2321c91891f6..7b154424aeb3 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -332,10 +332,10 @@ static struct page *alloc_largest_available(unsigned long size,
- 	return NULL;
- }
- 
--static int system_heap_allocate(struct dma_heap *heap,
--				unsigned long len,
--				unsigned long fd_flags,
--				unsigned long heap_flags)
-+static struct dma_buf *system_heap_allocate(struct dma_heap *heap,
-+					    unsigned long len,
-+					    unsigned long fd_flags,
-+					    unsigned long heap_flags)
- {
- 	struct system_heap_buffer *buffer;
- 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-@@ -350,7 +350,7 @@ static int system_heap_allocate(struct dma_heap *heap,
- 
- 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
- 	if (!buffer)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	INIT_LIST_HEAD(&buffer->attachments);
- 	mutex_init(&buffer->lock);
-@@ -400,14 +400,7 @@ static int system_heap_allocate(struct dma_heap *heap,
- 		ret = PTR_ERR(dmabuf);
- 		goto free_pages;
- 	}
--
--	ret = dma_buf_fd(dmabuf, fd_flags);
--	if (ret < 0) {
--		dma_buf_put(dmabuf);
--		/* just return, as put will call release and that will free */
--		return ret;
--	}
--	return ret;
-+	return dmabuf;
- 
- free_pages:
- 	for_each_sgtable_sg(table, sg, i) {
-@@ -421,7 +414,7 @@ static int system_heap_allocate(struct dma_heap *heap,
- 		__free_pages(page, compound_order(page));
- 	kfree(buffer);
- 
--	return ret;
-+	return ERR_PTR(ret);
- }
- 
- static const struct dma_heap_ops system_heap_ops = {
-diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
-index 454e354d1ffb..5bc5c946af58 100644
---- a/include/linux/dma-heap.h
-+++ b/include/linux/dma-heap.h
-@@ -16,15 +16,15 @@ struct dma_heap;
- 
- /**
-  * struct dma_heap_ops - ops to operate on a given heap
-- * @allocate:		allocate dmabuf and return fd
-+ * @allocate:		allocate dmabuf and return struct dma_buf ptr
-  *
-- * allocate returns dmabuf fd  on success, -errno on error.
-+ * allocate returns dmabuf on success, ERR_PTR(-errno) on error.
-  */
- struct dma_heap_ops {
--	int (*allocate)(struct dma_heap *heap,
--			unsigned long len,
--			unsigned long fd_flags,
--			unsigned long heap_flags);
-+	struct dma_buf *(*allocate)(struct dma_heap *heap,
-+				    unsigned long len,
-+				    unsigned long fd_flags,
-+				    unsigned long heap_flags);
- };
- 
- /**
--- 
-2.17.1
+  KVM: Stop using deprecated jump label APIs
 
+On Sat, Jan 16, 2021, Cun Li wrote:
+> The use of 'struct static_key' and 'static_key_false' is
+> deprecated. Use the new API.
+> 
+> mmu_audit_key can only be true or false so it would be nice to use
+> static_branch_enable()/static_branch_disable() for it and not
+> static_key_slow_inc()/static_key_slow_dec().
+
+Does anyone even build with CONFIG_KVM_MMU_AUDIT=y, let alone actually use the
+auditing capabilities?
