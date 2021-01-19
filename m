@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF712FAE68
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4392FAE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392679AbhASBtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 20:49:05 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:41065 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392592AbhASBtC (ORCPT
+        id S2392880AbhASBv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 20:51:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30489 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392748AbhASBvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 20:49:02 -0500
-Received: by mail-io1-f70.google.com with SMTP id x189so13872786iof.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 17:48:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wIzbteXJHCU2iudd6X2oaALg36vL5d6tV7GtrAi4VRQ=;
-        b=b8lpNix4qyXiEv+blhD3+un9LBDFlYS5Pw40cDUTK/c9aeSk87LV52P60K6l7KT1ek
-         H2DFNk2/O0Ht4RtkjXOQ8EKAQMCD/SJaMnoo/pYOPfssk1lF9zJHq8wm0RlQA/nKVBbm
-         StlUXRkQQRRJbS55y4c0Jcebft7TeK6NWFB5saYx22mgXBe88xOdWlIVhPxCQKahBTBW
-         0pcZCMSYMVLtalz9SFM7sjwolFAXpwzpNNt0PJT/d96VgZVMqkZfYcQxALAAWPc/FocF
-         4Vb5aK2v/GVDIqdzDGnGNkwlXdQsCcJduVakAJm6ljoJ1PnvV6aB54MzCw8WARjngH4q
-         08Yw==
-X-Gm-Message-State: AOAM532oTjR7s/8ijaCohcYXXqEhqcv+n2rMJWeAXECTM96Nns66HAJK
-        a8aHYznMLiFX5YgwQJZErKzrj+SRqYQxK2VTAElHWUQZYtP4
-X-Google-Smtp-Source: ABdhPJzF1fiuBv20/rZQCDqNNW7EQUYc6PYpvDOa1nGPlpePk+smiYbLJqH2zDCNaQSWm2Ds2UlfnVXJIIRHePxiK5E/rTgRrWO+
+        Mon, 18 Jan 2021 20:51:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611021021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+UAgEF7q3tVgarE49rL6lz5qDhc929cOctxQXBBYdNI=;
+        b=ZNFKSulYssNxUSJxQZmxj/Rd/WrmUOwaC2F40stYF9ttgWUBruZHiOnIvi/Jwc4Fbul+Wd
+        H4hnOgeBNixQoaVpqfWlZPqr3yiSO77AwEu3S6Vdcd6+4lWJCfiufOtcCWgL8nNC9W0unc
+        yd89TkPlimD/jh60MO7PZH1kpV+xBh8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-D5ZLNPQhPSy8QmHC89Ymtg-1; Mon, 18 Jan 2021 20:50:16 -0500
+X-MC-Unique: D5ZLNPQhPSy8QmHC89Ymtg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AF0A801817;
+        Tue, 19 Jan 2021 01:50:15 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-113-206.rdu2.redhat.com [10.10.113.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 422591F471;
+        Tue, 19 Jan 2021 01:50:13 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     Martin Peres <martin.peres@free.fr>,
+        Jeremy Cline <jcline@redhat.com>,
+        Simon Ser <contact@emersion.fr>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/5] drm/nouveau/kms/nv50-: Use drm_dbg_kms() in crc.c
+Date:   Mon, 18 Jan 2021 20:48:45 -0500
+Message-Id: <20210119014849.2509965-2-lyude@redhat.com>
+In-Reply-To: <20210119014849.2509965-1-lyude@redhat.com>
+References: <20210119014849.2509965-1-lyude@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:650b:: with SMTP id z11mr1589797ilb.84.1611020900910;
- Mon, 18 Jan 2021 17:48:20 -0800 (PST)
-Date:   Mon, 18 Jan 2021 17:48:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000864e7305b93708e7@google.com>
-Subject: WARNING in qp_broker_alloc
-From:   syzbot <syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com>
-To:     alex.dewar90@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    65f0d241 Merge tag 'sound-5.11-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e21acf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=15ec7391f3d6a1a7cc7d
-compiler:       clang version 11.0.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17626e3f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=140d2c20d00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b656f7500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b656f7500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b656f7500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8466 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Modules linked in:
-CPU: 0 PID: 8466 Comm: syz-executor022 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5020
-Code: aa 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 54 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc900011ff5e0 EFLAGS: 00010246
-RAX: ffffc900011ff660 RBX: ffffc900011ff660 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc900011ff688
-RBP: ffffc900011ff708 R08: dffffc0000000000 R09: ffffc900011ff660
-R10: fffff5200023fed1 R11: 0000000000000000 R12: dffffc0000000000
-R13: 000000000000000c R14: 1ffff9200023fec8 R15: 0000000000040dc0
-FS:  0000000000a3c880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1d268a66c0 CR3: 000000001283c000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc+0x257/0x330 mm/slub.c:3959
- kmalloc include/linux/slab.h:557 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- qp_host_alloc_queue drivers/misc/vmw_vmci/vmci_queue_pair.c:540 [inline]
- qp_broker_create drivers/misc/vmw_vmci/vmci_queue_pair.c:1351 [inline]
- qp_broker_alloc+0x936/0x2740 drivers/misc/vmw_vmci/vmci_queue_pair.c:1739
- vmci_qp_broker_alloc+0x46/0x60 drivers/misc/vmw_vmci/vmci_queue_pair.c:1932
- vmci_host_do_alloc_queuepair drivers/misc/vmw_vmci/vmci_host.c:463 [inline]
- vmci_host_unlocked_ioctl+0x114f/0x30f0 drivers/misc/vmw_vmci/vmci_host.c:927
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4402f9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe87f270c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402f9
-RDX: 0000000020000140 RSI: 00000000000007a8 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401b00
-R13: 0000000000401b90 R14: 0000000000000000 R15: 0000000000000000
-
-
+Cc: Martin Peres <martin.peres@free.fr>
+Cc: Jeremy Cline <jcline@redhat.com>
+Cc: Simon Ser <contact@emersion.fr>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/gpu/drm/nouveau/dispnv50/crc.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/crc.c b/drivers/gpu/drm/nouveau/dispnv50/crc.c
+index b8c31b697797..3c50b29a37ff 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/crc.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/crc.c
+@@ -84,7 +84,8 @@ static void nv50_crc_ctx_flip_work(struct kthread_work *base)
+ 	struct nv50_crc *crc = container_of(work, struct nv50_crc, flip_work);
+ 	struct nv50_head *head = container_of(crc, struct nv50_head, crc);
+ 	struct drm_crtc *crtc = &head->base.base;
+-	struct nv50_disp *disp = nv50_disp(crtc->dev);
++	struct drm_device *dev = crtc->dev;
++	struct nv50_disp *disp = nv50_disp(dev);
+ 	u8 new_idx = crc->ctx_idx ^ 1;
+ 
+ 	/*
+@@ -92,18 +93,15 @@ static void nv50_crc_ctx_flip_work(struct kthread_work *base)
+ 	 * try again for the next vblank if we don't grab the lock
+ 	 */
+ 	if (!mutex_trylock(&disp->mutex)) {
+-		DRM_DEV_DEBUG_KMS(crtc->dev->dev,
+-				  "Lock contended, delaying CRC ctx flip for head-%d\n",
+-				  head->base.index);
++		drm_dbg_kms(dev, "Lock contended, delaying CRC ctx flip for %s\n", crtc->name);
+ 		drm_vblank_work_schedule(work,
+ 					 drm_crtc_vblank_count(crtc) + 1,
+ 					 true);
+ 		return;
+ 	}
+ 
+-	DRM_DEV_DEBUG_KMS(crtc->dev->dev,
+-			  "Flipping notifier ctx for head %d (%d -> %d)\n",
+-			  drm_crtc_index(crtc), crc->ctx_idx, new_idx);
++	drm_dbg_kms(dev, "Flipping notifier ctx for %s (%d -> %d)\n",
++		    crtc->name, crc->ctx_idx, new_idx);
+ 
+ 	nv50_crc_program_ctx(head, NULL);
+ 	nv50_crc_program_ctx(head, &crc->ctx[new_idx]);
+@@ -189,9 +187,9 @@ void nv50_crc_handle_vblank(struct nv50_head *head)
+ 		 * updates back-to-back without waiting, we'll just be
+ 		 * optimistic and assume we always miss exactly one frame.
+ 		 */
+-		DRM_DEV_DEBUG_KMS(head->base.base.dev->dev,
+-				  "Notifier ctx flip for head-%d finished, lost CRC for frame %llu\n",
+-				  head->base.index, crc->frame);
++		drm_dbg_kms(head->base.base.dev,
++			    "Notifier ctx flip for head-%d finished, lost CRC for frame %llu\n",
++			    head->base.index, crc->frame);
+ 		crc->frame++;
+ 
+ 		nv50_crc_reset_ctx(ctx);
+-- 
+2.29.2
+
