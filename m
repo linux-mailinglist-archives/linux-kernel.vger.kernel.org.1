@@ -2,134 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC79C2FB74B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB292FB76B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404180AbhASKeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:34:16 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41372 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387682AbhASKND (ORCPT
+        id S2391144AbhASKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:53:28 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:21851 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389206AbhASKlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:13:03 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10JA1XXt151732;
-        Tue, 19 Jan 2021 05:12:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IHF2oxG8Si6P7YX0CkWlhBKD7mnMBgPLLDeRApyFRIM=;
- b=PI4QZA9OT87UkSzavR2Wm1ZVYlbexLy2WrAg7JD0VWPBs1zILjhHVYX0dKVV/wdZvFC2
- 8uiFtcLLh43b5TuNuMVr89Wsnx8YiuZJrVvvHHVegPh6BcALm7pzMdMJpyf/CgQuFu1x
- 9mCkbPjks+BjQq3vHDWZ4XSLUy69l/VD0aPmWnpExba0r8cyfh/a9Zw74r0RuEKrqrXc
- btSvB6oi2Q964lz1nS35Yt7ASjf9xFNAmFxV8+HdqHC8y1dsEi/THb1cc/4AfqhPaher
- ywbhJo0S4Gz0Ip3eyRZvaKhdY6Bvxf/UcASKGJSC9pKFlynTTKL6Lsoql7cXc8p68x8x KA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 365vx10x2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 05:12:05 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10JA1hdB152471;
-        Tue, 19 Jan 2021 05:12:04 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 365vx10x0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 05:12:03 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10JA45Ow010746;
-        Tue, 19 Jan 2021 10:11:59 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 365s0e83rq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 10:11:59 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10JABuPZ22807030
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 10:11:56 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DDA84C044;
-        Tue, 19 Jan 2021 10:11:56 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A91C74C04A;
-        Tue, 19 Jan 2021 10:11:55 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.35.184])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jan 2021 10:11:55 +0000 (GMT)
-Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
-To:     Janosch Frank <frankja@linux.ibm.com>, linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
-        imbrenda@linux.ibm.com, cohuck@redhat.com,
-        linux-s390@vger.kernel.org, gor@linux.ibm.com,
-        mihajlov@linux.ibm.com
-References: <20210119100402.84734-1-frankja@linux.ibm.com>
- <20210119100402.84734-2-frankja@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <d72e2823-f30f-02be-1ee5-445496ca9dbc@de.ibm.com>
-Date:   Tue, 19 Jan 2021 11:11:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 19 Jan 2021 05:41:10 -0500
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210119104000epoutp028904ef8235276bd9cfe1279d849699c6~bm-yKvbbb0782207822epoutp02U
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:40:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210119104000epoutp028904ef8235276bd9cfe1279d849699c6~bm-yKvbbb0782207822epoutp02U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611052800;
+        bh=UWEbuKD0Gjjm/J0hkgTFmlztBXn6nGW8Y4VqcJOGw1M=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=pSSNHiaWE3oPSNDfM9DdXrgAZihQoo8MrHfFAWUA1LkuaQLcPptjRZ23SLZCkEj6U
+         lPc/wCjEhY0FouO3GGml3kDHKE3z+KBuE7D/hZV0IfVeKSiyJFPQ69m0OLFrn0HzkF
+         HtrmuOC4gEzJHQnQeQDn9ZBP1QrnAlmhmqncQiVU=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210119104000epcas5p4038247cdf198234fe84ae0b977f5b8b6~bm-xoGvM92063220632epcas5p4X;
+        Tue, 19 Jan 2021 10:40:00 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        76.34.33964.FF6B6006; Tue, 19 Jan 2021 19:39:59 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210119101206epcas5p2b31e6de44bfdda7d7819b17b11ad69bb~bmnbA_e151167611676epcas5p2O;
+        Tue, 19 Jan 2021 10:12:06 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210119101206epsmtrp1fe56d64dc8c78463c94da3dfc42a8e95~bmna-6NdJ0268502685epsmtrp1h;
+        Tue, 19 Jan 2021 10:12:06 +0000 (GMT)
+X-AuditID: b6c32a4b-ea1ff700000184ac-71-6006b6ffa640
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1D.E5.13470.670B6006; Tue, 19 Jan 2021 19:12:06 +0900 (KST)
+Received: from shradhat02 (unknown [107.122.8.248]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210119101204epsmtip28499023aad8571cd774d03773fd3d2fb~bmnZFEtKu3005730057epsmtip2j;
+        Tue, 19 Jan 2021 10:12:04 +0000 (GMT)
+From:   "Shradha Todi" <shradha.t@samsung.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+Cc:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <robh@kernel.org>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>, <pankaj.dubey@samsung.com>,
+        <sriram.dash@samsung.com>, <niyas.ahmed@samsung.com>,
+        <p.rajanbabu@samsung.com>, <l.mehra@samsung.com>,
+        <hari.tv@samsung.com>
+In-Reply-To: <1609929900-19082-1-git-send-email-shradha.t@samsung.com>
+Subject: RE: [PATCH v2] PCI: dwc: Change size to u64 for EP outbound iATU
+Date:   Tue, 19 Jan 2021 15:42:03 +0530
+Message-ID: <147901d6ee4b$8a39f3e0$9eaddba0$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119100402.84734-2-frankja@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190058
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIugMS81mxWyVxXUcStsAlB72BGxQKGN/EDqWtjM7A=
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMKsWRmVeSWpSXmKPExsWy7bCmlu7/bWwJBj1/LCyWNGVY7LrbwW7x
+        cdpKJosVX2ayW9x5foPR4vKuOWwWZ+cdZ7N48/sFu8WTKY9YLY5uDLZYtPULu8X/PTvYLW6s
+        Z3fg9Vgzbw2jx85Zd9k9Fmwq9di0qpPNo2/LKkaPLfs/M3p83iQXwB7FZZOSmpNZllqkb5fA
+        lbHp/mTmgl6BikffT7M2MDbydjFyckgImEjMfLGJrYuRi0NIYDejxI01z1ghnE+MEp3357GB
+        VAkJfGOUOHC9HKbj0I2JUEV7GSU+3fjFCOG8YJT417ifHaSKTUBH4smVP8xdjBwcIgL2Ek0/
+        EkFqmAWWMklc/3SNEaSGU8BN4nTnPDBbWMBT4v+zpWA2i4CqxKevM8Dm8ApYSvxfsJEZwhaU
+        ODnzCQuIzSwgL7H97RxmiIsUJH4+XcYKYosIWEk0zLzAClEjLvHy6BF2kMUSAmc4JPqWPmaH
+        aHCR2D2jEapZWOLV8S1QcSmJl/1tUHa+xNQLT1lAHpAQqJBY3lMHEbaXOHBlDliYWUBTYv0u
+        fYiwrMTUU+uYINbySfT+fsIEEeeV2DEPxlaW+PJ3DwuELSkx79hl1gmMSrOQfDYLyWezkHww
+        C2HbAkaWVYySqQXFuempxaYFxnmp5XrFibnFpXnpesn5uZsYwelMy3sH46MHH/QOMTJxMB5i
+        lOBgVhLhLV3HlCDEm5JYWZValB9fVJqTWnyIUZqDRUmcd4fBg3ghgfTEktTs1NSC1CKYLBMH
+        p1QD0yZp8TPppdL5/lWf52ce/cromn9Y9zD7RZmV2QEWz1vOFFgw7VG+/7EjL+fU0vPbrT3e
+        pa49+ku48gm39P6fjGV/nnyYGMngPre1Y+Na4XK7Ry+e/PHsjZJYEz1fOkLRbR9XpC/XzB7P
+        M08SD4jMvXNRd9LOne77Hx+RC895dDewvnTCcx87/1Pbfty02ibVG/rbSvHM6XMO50U1MmR5
+        T8nfkysv3MzT+ezV53O1PlMSpuwTXXJ0c5XlKu0Am8roH+e+Btm275se8JrJtiqjb9+/3YJL
+        nvP7uK2rbhUpznpttV6J60tp97SULw1OlrsZyj2CHnRznb+87NWzX8/8zqqrf/W7cGnO0mO8
+        f0786lNiKc5INNRiLipOBABl1xOV1gMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsWy7bCSvG7ZBrYEgz2vpS2WNGVY7LrbwW7x
+        cdpKJosVX2ayW9x5foPR4vKuOWwWZ+cdZ7N48/sFu8WTKY9YLY5uDLZYtPULu8X/PTvYLW6s
+        Z3fg9Vgzbw2jx85Zd9k9Fmwq9di0qpPNo2/LKkaPLfs/M3p83iQXwB7FZZOSmpNZllqkb5fA
+        lbHp/mTmgl6BikffT7M2MDbydjFyckgImEgcujGRtYuRi0NIYDejxNJJT9ghEpISny+uY4Kw
+        hSVW/nvODlH0jFFi8qxDbCAJNgEdiSdX/jCD2CICjhKz97YygRQxC2xkkug7/B1q7HRGiYO3
+        74GN4hRwkzjdOY8RxBYW8JT4/2wpmM0ioCrx6esMsNW8ApYS/xdsZIawBSVOznzCAmIzC2hL
+        PL35FMqWl9j+dg4zxHkKEj+fLmOFuMJKomHmBVaIGnGJl0ePsE9gFJ6FZNQsJKNmIRk1C0nL
+        AkaWVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwbGppbmDcfuqD3qHGJk4GA8xSnAw
+        K4nwlq5jShDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qB
+        qcr9QGrKmrtLzZ6kxr7PnXxUwaf6O2v2xMfCQgZn13SHmOpZvHp/mLO9277eLbXjFx/T2dn/
+        b6RdvvNS1kTCliVjzwab6X9S5r5TtakQKlLYfI7p4A656VYX/A7tb9p9rd52wdpmw0tiByKv
+        hJ9SWBccdt401m63s13j0QURF8I2iBznCLXk2zljirSx7epPRiyXU3O3vFd12tS/0zmhoO32
+        rO9aV+ew3DM70e4uk/fp+KZXUelGNbsE2OVPHX1d/4u36k+4usnb+bqzGjMdzP7qvP3QydQs
+        6c57lTWttSb50vsrux5r/s10Pr6m9r7jJ/X0v/sNlx15nsymU1Nx9vi+Pb2vnjEe0r3Fnlcs
+        qcRSnJFoqMVcVJwIAOR8u/E8AwAA
+X-CMS-MailID: 20210119101206epcas5p2b31e6de44bfdda7d7819b17b11ad69bb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a
+References: <CGME20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a@epcas5p3.samsung.com>
+        <1609929900-19082-1-git-send-email-shradha.t@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Gentle Ping.
+Thanks.
 
-
-On 19.01.21 11:04, Janosch Frank wrote:
-> The number reported by the query is N-1 and I think people reading the
-> sysfs file would expect N instead. For users creating VMs there's no
-> actual difference because KVM's limit is currently below the UV's
-> limit.
+> -----Original Message-----
+> From: Shradha Todi <shradha.t@samsung.com>
+> Subject: [PATCH v2] PCI: dwc: Change size to u64 for EP outbound iATU
 > 
-> The naming of the field is a bit misleading. Number in this context is
-> used like ID and starts at 0. The query field denotes the maximum
-> number that can be put into the VCPU number field in the "create
-> secure CPU" UV call.
+> Since outbound iATU permits size to be greater than 4GB for which the
+> support is also available, allow EP function to send u64 size instead of
+> truncating to u32.
 > 
-> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-> Fixes: a0f60f8431999 ("s390/protvirt: Add sysfs firmware interface for Ultravisor information")
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
 > ---
->  arch/s390/boot/uv.c        | 2 +-
->  arch/s390/include/asm/uv.h | 4 ++--
->  arch/s390/kernel/uv.c      | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+> v1: https://lkml.org/lkml/2020/12/18/690
+> v2:
+>    Addressed Bjorn's review on to keep commit message length limit to 75
 > 
-> diff --git a/arch/s390/boot/uv.c b/arch/s390/boot/uv.c
-> index a15c033f53ca..afb721082989 100644
-> --- a/arch/s390/boot/uv.c
-> +++ b/arch/s390/boot/uv.c
-> @@ -35,7 +35,7 @@ void uv_query_info(void)
->  		uv_info.guest_cpu_stor_len = uvcb.cpu_stor_len;
->  		uv_info.max_sec_stor_addr = ALIGN(uvcb.max_guest_stor_addr, PAGE_SIZE);
->  		uv_info.max_num_sec_conf = uvcb.max_num_sec_conf;
-> -		uv_info.max_guest_cpus = uvcb.max_guest_cpus;
-> +		uv_info.max_guest_cpu_id = uvcb.max_guest_cpu_num;
->  	}
->  
->  #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
-> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
-> index 0325fc0469b7..c484c95ea142 100644
-> --- a/arch/s390/include/asm/uv.h
-> +++ b/arch/s390/include/asm/uv.h
-> @@ -96,7 +96,7 @@ struct uv_cb_qui {
->  	u32 max_num_sec_conf;
->  	u64 max_guest_stor_addr;
->  	u8  reserved88[158 - 136];
-> -	u16 max_guest_cpus;
-> +	u16 max_guest_cpu_num;
+>  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
+>  drivers/pci/controller/dwc/pcie-designware.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c
+> b/drivers/pci/controller/dwc/pcie-designware.c
+> index 1d62ca9..db407ed 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -326,7 +326,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci,
+> int index, int type,
+> 
+>  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int
+> index,
+>  				  int type, u64 cpu_addr, u64 pci_addr,
+> -				  u32 size)
+> +				  u64 size)
+>  {
+>  	__dw_pcie_prog_outbound_atu(pci, func_no, index, type,
+>  				    cpu_addr, pci_addr, size);
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h
+> b/drivers/pci/controller/dwc/pcie-designware.h
+> index 7da79eb..359151f 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -302,7 +302,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci,
+> int index,
+>  			       u64 size);
+>  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int
+> index,
+>  				  int type, u64 cpu_addr, u64 pci_addr,
+> -				  u32 size);
+> +				  u64 size);
+>  int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+>  			     int bar, u64 cpu_addr,
+>  			     enum dw_pcie_as_type as_type);
+> --
+> 2.7.4
 
-I think it would read better if we name this also max_guest_cpu_id.
-Otherwise this looks good.
