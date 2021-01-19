@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B872FBD12
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6AB2FBD14
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389424AbhASQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:58:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731493AbhASQ5W (ORCPT
+        id S2390311AbhASQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390786AbhASQ5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:57:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611075355;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ErRId2H/Y8Igg3kzuUPOmRrNY/gkTy6jxLMCX7KXGGA=;
-        b=EEZifaIOrlTghGCkk6XGvat2+dVj/IJr0znI8/Z4abeS6M3B36Buh4Dp/cNBZcfWDrFyr5
-        2SwIK/U1b6HVXZWVDr43lMs94AswEQ/bDat+IDq9IQP/fqy/KvWQ0d65o6c8lxIc7cUBWJ
-        ghlkm7E5W5XxCaqSFykhX7zv/fVzE1M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-Z3Pdj501P02dJlolzm2Dxw-1; Tue, 19 Jan 2021 11:55:53 -0500
-X-MC-Unique: Z3Pdj501P02dJlolzm2Dxw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 539E0100C670;
-        Tue, 19 Jan 2021 16:55:52 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-129.rdu2.redhat.com [10.10.118.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36D2110023BE;
-        Tue, 19 Jan 2021 16:55:43 +0000 (UTC)
-Subject: Re: BUG: sleeping function called from invalid context at
- kernel/stop_machine.c:135
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <ffe8b460-4bc5-4a6b-bd66-4bb56e0f33d3@redhat.com>
- <328c6389-9944-ba7d-6ec6-44009bac4f0b@redhat.com>
- <YAcNqqn3JRnZ1PmZ@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <fcb3b450-a59b-fb9f-d262-04d34c9856a6@redhat.com>
-Date:   Tue, 19 Jan 2021 11:55:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 19 Jan 2021 11:57:14 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B71C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:56:21 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id k193so1377320qke.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:56:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sZTa1e704AQTw+PA3+InMjpu4zvF9XQf/ysLpHwUHcU=;
+        b=R+13BIlUYlJXhmZNL640hNlcxlCK/mz4E7yBIiR4htjWXaoPhuig0r+qwQBLWUGBpn
+         cCIgnGt9JsYOkwwOzJHQ6LVCfPP46U5UjUFiKz8OoSEBFzVdPvnszAO/xrZ2HxLmaZ4u
+         m7rgmUL6+l9w3MXBvK8/FyuWlbRIp1HxP9nTh93Fryowg9RhjdDnQ+ATKo2iqlhbcuAz
+         em8PW3JSYOgeeloQZXqsLJGnLGn8JuGhSFzyDGqZIvlhnVj1HFNTVwSVB6t9D3bdsrmp
+         h6Spn8Duch3qGBAYlOLOLrYinfYFom1kHkna9i6qhL16UV3OuEhhZ3R/GEE/ufTB3Idv
+         nbtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sZTa1e704AQTw+PA3+InMjpu4zvF9XQf/ysLpHwUHcU=;
+        b=JdaC6Uey6lotxJ4D3ORAZ8MzOmaEorOOlUofHDPUYgVF/hYAq9iS/vd+P0LPTEpOmd
+         RWmwKtuGgNUSa00/WpgZoDwRa2rBCiFfVR+ZiyK4al2yWwWrMkbQE7yk979PWX862Eji
+         mc89NoKnJ41fdDSwgCK2LkRMN4v8kAAFlqYmq/nOlsT5eJBdBE+dQIBjBenL/junIe5/
+         spXEhQ2ZTpXgHdH+SyS+8Wy74Wrqb45vJ6iiaYoOGKSuIzUJd5f0C3CP7eSXQwBKjvjK
+         QjHvlAfZLrRMoyn5RFNsKg2jMPGxPurI3eHZZZHNv3B2ICCzcqK7O4NSgDvQSA8PgyiQ
+         tqUw==
+X-Gm-Message-State: AOAM5303s707jXNilQqbklISKkxBgQoJ7LcJkgyA0k5ZNOEckggspzM3
+        6/kUIvwXVKZkLZtxqPIY4qqTFA==
+X-Google-Smtp-Source: ABdhPJwdnPCTti6ZVVa9sqSMEkTDfTsWgXUU+2lkFHHmjHVVYwrZFcLcm/MGXBxz3PP+q7nvTKmA5w==
+X-Received: by 2002:a05:620a:4d1:: with SMTP id 17mr2178131qks.385.1611075380551;
+        Tue, 19 Jan 2021 08:56:20 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id g3sm12986921qtc.3.2021.01.19.08.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 08:56:19 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:56:18 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dschatzberg@fb.com, surenb@google.com
+Subject: Re: [PATCH v2 2/2] cgroup: update PSI file description in docs
+Message-ID: <YAcPMlxXVSuKgbvn@cmpxchg.org>
+References: <20210116173634.1615875-1-odin@uged.al>
+ <20210116173634.1615875-3-odin@uged.al>
 MIME-Version: 1.0
-In-Reply-To: <YAcNqqn3JRnZ1PmZ@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116173634.1615875-3-odin@uged.al>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 11:49 AM, Peter Zijlstra wrote:
-> On Tue, Jan 19, 2021 at 11:45:02AM -0500, Waiman Long wrote:
->> On 1/19/21 6:13 AM, Daniel Bristot de Oliveira wrote:
->>> Hi Waiman,
->>>
->>> Are you aware of this issue:
->>> ----- %< -----
->>> [   88.307857] BUG: sleeping function called from invalid context at kernel/stop_machine.c:135
->>> [   88.308796] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 801, name: sh
->>> [   88.309785] 6 locks held by sh/801:
->>> [   88.310265]  #0: ffff9f008c575460 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0x58/0xd0
->>> [   88.310906]  #1: ffff9f008e9dd088 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write+0xa5/0x1c0
->>> [   88.311672]  #2: ffff9f0092164a88 (kn->active#195){.+.+}-{0:0}, at: kernfs_fop_write+0xad/0x1c0
->>> [   88.312456]  #3: ffffffffbac68310 (cpu_hotplug_lock){++++}-{0:0}, at: sched_partition_write+0x72/0x2f0
->>> [   88.313280]  #4: ffffffffbae37090 (&cpuset_rwsem){++++}-{0:0}, at: sched_partition_write+0x7e/0x2f0
->>> [   88.314095]  #5: ffffffffbad89140 (rcu_read_lock){....}-{1:3}, at: update_sibling_cpumasks+0x5/0x140
->>> [   88.314806] Preemption disabled at:
->>> [   88.314810] [<ffffffffb900454d>] preempt_schedule_thunk+0x16/0x18
->>> [   88.315815] CPU: 1 PID: 801 Comm: sh Not tainted 5.10.0-rc5+ #10
->>> [   88.316203] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
->>> [   88.316714] Call Trace:
->>> [   88.316875]  dump_stack+0x8b/0xb0
->>> [   88.317087]  ___might_sleep.cold+0x102/0x116
->>> [   88.317354]  stop_one_cpu+0x82/0xa0
->>> [   88.317578]  ? set_cpus_allowed_ptr+0x10/0x10
->>> [   88.317858]  __set_cpus_allowed_ptr+0x1e6/0x1f0
->>> [   88.318144]  update_tasks_cpumask+0x25/0x50
->>> [   88.318415]  update_cpumasks_hier+0x257/0x840
->>> [   88.318687]  update_sibling_cpumasks+0x96/0x140
->>> [   88.318968]  update_prstate+0x1a0/0x1f0
->>> [   88.319210]  sched_partition_write+0x9f/0x2f0
->>> [   88.319482]  kernfs_fop_write+0xdc/0x1c0
->>> [   88.319730]  vfs_write+0xea/0x3b0
->>> [   88.319943]  ksys_write+0x58/0xd0
->>> [   88.320156]  do_syscall_64+0x33/0x40
->>> [   88.320382]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>> [   88.320692] RIP: 0033:0x7fbbd79be537
->>> [   88.320915] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04
->>> 		     25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3
->>> 		     48 83 ec 28 48 89 54 24 18 48 89 74 24
->>> [   88.322028] RSP: 002b:00007ffd44cc8398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->>> [   88.322479] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fbbd79be537
->>> [   88.322910] RDX: 0000000000000005 RSI: 0000558ae69200a0 RDI: 0000000000000001
->>> [   88.323342] RBP: 0000558ae69200a0 R08: 000000000000000a R09: 0000000000000004
->>> [   88.323775] R10: 0000558ae6921ba0 R11: 0000000000000246 R12: 0000000000000005
->>> [   88.325046] R13: 00007fbbd7a90500 R14: 0000000000000005 R15: 00007fbbd7a90700
->>> ----- >% -----
->> I am not aware of that.
->>
->> void ___might_sleep(const char *file, int line, int preempt_offset)
->> Â  :
->> Â Â Â Â Â Â Â  if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
->> Â Â Â Â Â Â Â Â Â Â Â Â  !is_idle_task(current) && !current->non_block_count) ||
->> Â Â Â Â Â Â Â Â Â Â Â  system_state == SYSTEM_BOOTING || system_state > SYSTEM_RUNNING
->> ||
->> Â Â Â Â Â Â Â Â Â Â Â  oops_in_progress)
->> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return;
->>
->> I think the failing test was preempt_count_equals(preempt_offset).
->>
->> static inline int preempt_count_equals(int preempt_offset)
->> {
->> Â Â Â Â Â Â Â  int nested = preempt_count() + rcu_preempt_depth();
->>
->> Â Â Â Â Â Â Â  return (nested == preempt_offset);
->> }
->>
->> preempt_count() is 0 (in_atomic() == 0) and preempt_offset is 0, but
->> rcu_preempt_depth() should be at least 1 as a rcu_read_lock was held. I
->> don't think we should prevent sleeping if a rcu_read_lock is held. We need
->> to look at the reason why rcu_preempt_depth() is included in this test.
-> You're not allowed to sleep with rcu_read_lock() held. With config
-> PREEMPT=y you're allowed to get preempted with rcu_read_lock() held, but
-> never to explicitly block.
+On Sat, Jan 16, 2021 at 06:36:34PM +0100, Odin Ugedal wrote:
+> Update PSI file description in cgroup-v2 docs to reflect the current
+> implementation.
+> 
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 63521cd36ce5..f638c9d3d9f2 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1029,7 +1029,7 @@ All time durations are in microseconds.
+>  	one number is written, $MAX is updated.
+>  
+>    cpu.pressure
+> -	A read-only nested-key file which exists on non-root cgroups.
+> +	A read-only nested-keyed file.
 
-You are right. Sleep shouldn't be allowed with rcu_read_lock() held in 
-non-preempt kernel.
+Could you please also change the 'read-only' to 'read-write'?
 
-However, the kernel that Daniel tested did have CONFIG_PREEMPT=y set. So 
-perhaps we shouldn't do the rcu_preempt_depth() check in this particular 
-case.
-
-Cheers,
-Longman
-
-
+With that, please feel free to add:
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
