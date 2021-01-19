@@ -2,212 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625472FB34C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382D32FB352
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbhASHiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:38:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11628 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730725AbhASHhY (ORCPT
+        id S1728825AbhASHjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730713AbhASHih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:37:24 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J7Y64N050168;
-        Tue, 19 Jan 2021 02:36:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=cjUj6ZQ7xttD9or/tZBsGAZYHXa//N6DVWt3L+kbweU=;
- b=Fw0KAC5nFNRRlnms3mQwD5DwQHHnutHRIQdKFLWPKrv7HZeCgGT5ic1Eu5y/BQu/x4Ve
- R3JzND4Bda8G50euSQNBC8x4jbNuBmsKO/SQb41xo72fWpU5D+9XK1W4f/nhssE59Shc
- 6e6x1ekI9AHn7Wt36PjJh/QR+y7/aLvZuVFq+Wjur8F+apuki89dN5Z5ePKLWO4RRyFx
- /dDf7hc998++IPAIkJINJ0ycTs7GFnZ+hjEVvpPkiz16mY07hY6E9QXS6HLuNybhVD7B
- QmxA4eLemrhrVygaWWA+f5akqjQuPPO5P1tSzJRxIU7lejKRup6OV8Ncola5ja3tsCSt yQ== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 365tebs3j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 02:36:35 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J7WOPI027224;
-        Tue, 19 Jan 2021 07:36:34 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma02dal.us.ibm.com with ESMTP id 363qs91kyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 07:36:34 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J7aXcq12845728
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 07:36:33 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59DB66A047;
-        Tue, 19 Jan 2021 07:36:33 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 78CBC6A04D;
-        Tue, 19 Jan 2021 07:36:32 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.79.213.81])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jan 2021 07:36:32 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 110BF2E2F1A; Tue, 19 Jan 2021 13:06:28 +0530 (IST)
-From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Subject: [PATCH 2/2] powerpc/cacheinfo: Remove the redundant get_shared_cpu_map()
-Date:   Tue, 19 Jan 2021 13:06:20 +0530
-Message-Id: <1611041780-8640-3-git-send-email-ego@linux.vnet.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1611041780-8640-1-git-send-email-ego@linux.vnet.ibm.com>
-References: <1611041780-8640-1-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_01:2021-01-18,2021-01-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 spamscore=0 bulkscore=0 phishscore=0 adultscore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101190044
+        Tue, 19 Jan 2021 02:38:37 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D393C061573;
+        Mon, 18 Jan 2021 23:37:57 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 30so12471357pgr.6;
+        Mon, 18 Jan 2021 23:37:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TqdVhjuNY9HRhck/delB4RKqtQGRHkMOXaQGCBlJKgE=;
+        b=ebf5V31pP3GbUuALPCdazFeYHfhHD3NE5k0Yp0kgkM4gPNcFuxj3i5h58SLmgX2KXZ
+         DzLq7IXr4OK6oXxyh8k5ODpm7w5gsJHToWdkz/duEv5MKoRjx0D1QeQ2CCzDzhlJUJsw
+         j3gV3iypE8J85nfSFt+KVdeNmt2fn95eIoe6lZFUce7URyQfN1NSjFH5I7tpBEKU8pWM
+         PBOukGWLi0dTcXsztJ34cTH7tkSo+/sdOhSo9Cy91SHdriKKDAz2zWgRqPukQYADj3Uc
+         eMXJ+u+2AtV5zYKUSWvHMCPlXmHql4IFlmOOZu/mo4drc2dMu4NAOwdGMDlPgy2LPkAY
+         gNMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TqdVhjuNY9HRhck/delB4RKqtQGRHkMOXaQGCBlJKgE=;
+        b=YaF2dbve5YPHkJAXQkJ5kLHY97NgGZICYQxN+p2/L62RUlL3i3AUi85beXeO7rnaGB
+         wqMyHeSgJxWHbVj5KndR6Qb8YXbEejWPWoNLYoecn9EAJha0QjoRneZomWAopY3OH0Gl
+         LQnDmdF7/zA3OmdLcbBGNu8DDZGBOXCH7sJzILu2T8oMjBJoWFMpuxUiO79y9JKSv7Oh
+         HjGnHyTmL1CA6qFTW4fxJshfyTNZouhr/+FyoXZol6pObmV8hKmjq1xThmnABigoNDeR
+         N2nzcqZrIfCt0nhf/quO+lmqcRDhxZLKyM+t40u4lVM+3Y4b1yY8jFlry/nHo/JbJOep
+         zseQ==
+X-Gm-Message-State: AOAM53384ZvdLWWoZObEGE6ZnhdMw05KlAEXuAakJcsm80cEwva9wh7R
+        pM4dKeFzx6Gs3Toj6xhiv0M=
+X-Google-Smtp-Source: ABdhPJw+Euyv24yOdnB32PO0aMRWM60iLsWK2dxUAJB0YjBWo0UppR4Rb5ETZ/+fJI5kAGoTBmlSCg==
+X-Received: by 2002:a63:ac19:: with SMTP id v25mr3331438pge.258.1611041877042;
+        Mon, 18 Jan 2021 23:37:57 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id t6sm1834159pjg.49.2021.01.18.23.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 23:37:56 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: test: clean up mmc_test_cleanup()
+Date:   Tue, 19 Jan 2021 15:37:05 +0800
+Message-Id: <20210119073705.375-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+From: Yue Hu <huyue2@yulong.com>
 
-The helper function get_shared_cpu_map() was added in
+mmc_test_cleanup() has same body as __mmc_test_prepare() with write
+except the character to memset().
 
-'commit 500fe5f550ec ("powerpc/cacheinfo: Report the correct
-shared_cpu_map on big-cores")'
-
-and subsequently expanded upon in
-
-'commit 0be47634db0b ("powerpc/cacheinfo: Print correct cache-sibling
-map/list for L2 cache")'
-
-in order to help report the correct groups of threads sharing these caches
-on big-core systems where groups of threads within a core can share
-different sets of caches.
-
-Now that powerpc/cacheinfo is aware of "ibm,thread-groups" property,
-cache->shared_cpu_map contains the correct set of thread-siblings
-sharing the cache. Hence we no longer need the functions
-get_shared_cpu_map(). This patch removes this function. We also remove
-the helper function index_dir_to_cpu() which was only called by
-get_shared_cpu_map().
-
-With these functions removed, we can still see the correct
-cache-sibling map/list for L1 and L2 caches on systems with L1 and L2
-caches distributed among groups of threads in a core.
-
-With this patch, on a SMT8 POWER10 system where the L1 and L2 caches
-are split between the two groups of threads in a core, for CPUs 8,9,
-the L1-Data, L1-Instruction, L2, L3 cache CPU sibling list is as
-follows:
-
-$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
-/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8,10,12,14
-/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8,10,12,14
-/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8,10,12,14
-/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-15
-/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9,11,13,15
-/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9,11,13,15
-/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9,11,13,15
-/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-15
-
-$ ppc64_cpu --smt=4
-$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
-/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8,10
-/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8,10
-/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8,10
-/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-11
-/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9,11
-/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9,11
-/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9,11
-/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-11
-
-$ ppc64_cpu --smt=2
-$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
-/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-9
-/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9
-/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9
-/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9
-/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-9
-
-$ ppc64_cpu --smt=1
-$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
-/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8
-/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8
-
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Yue Hu <huyue2@yulong.com>
 ---
- arch/powerpc/kernel/cacheinfo.c | 41 +----------------------------------------
- 1 file changed, 1 insertion(+), 40 deletions(-)
+ drivers/mmc/core/mmc_test.c | 24 +++++-------------------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
-diff --git a/arch/powerpc/kernel/cacheinfo.c b/arch/powerpc/kernel/cacheinfo.c
-index 5a6925d..20d9169 100644
---- a/arch/powerpc/kernel/cacheinfo.c
-+++ b/arch/powerpc/kernel/cacheinfo.c
-@@ -675,45 +675,6 @@ static ssize_t level_show(struct kobject *k, struct kobj_attribute *attr, char *
- static struct kobj_attribute cache_level_attr =
- 	__ATTR(level, 0444, level_show, NULL);
+diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
+index f999b48..39a4788 100644
+--- a/drivers/mmc/core/mmc_test.c
++++ b/drivers/mmc/core/mmc_test.c
+@@ -624,7 +624,7 @@ static unsigned int mmc_test_capacity(struct mmc_card *card)
+  * Fill the first couple of sectors of the card with known data
+  * so that bad reads/writes can be detected
+  */
+-static int __mmc_test_prepare(struct mmc_test_card *test, int write)
++static int __mmc_test_prepare(struct mmc_test_card *test, int write, int val)
+ {
+ 	int ret, i;
  
--static unsigned int index_dir_to_cpu(struct cache_index_dir *index)
--{
--	struct kobject *index_dir_kobj = &index->kobj;
--	struct kobject *cache_dir_kobj = index_dir_kobj->parent;
--	struct kobject *cpu_dev_kobj = cache_dir_kobj->parent;
--	struct device *dev = kobj_to_dev(cpu_dev_kobj);
+@@ -633,7 +633,7 @@ static int __mmc_test_prepare(struct mmc_test_card *test, int write)
+ 		return ret;
+ 
+ 	if (write)
+-		memset(test->buffer, 0xDF, 512);
++		memset(test->buffer, val, 512);
+ 	else {
+ 		for (i = 0; i < 512; i++)
+ 			test->buffer[i] = i;
+@@ -650,31 +650,17 @@ static int __mmc_test_prepare(struct mmc_test_card *test, int write)
+ 
+ static int mmc_test_prepare_write(struct mmc_test_card *test)
+ {
+-	return __mmc_test_prepare(test, 1);
++	return __mmc_test_prepare(test, 1, 0xDF);
+ }
+ 
+ static int mmc_test_prepare_read(struct mmc_test_card *test)
+ {
+-	return __mmc_test_prepare(test, 0);
++	return __mmc_test_prepare(test, 0, 0);
+ }
+ 
+ static int mmc_test_cleanup(struct mmc_test_card *test)
+ {
+-	int ret, i;
 -
--	return dev->id;
--}
+-	ret = mmc_test_set_blksize(test, 512);
+-	if (ret)
+-		return ret;
 -
--/*
-- * On big-core systems, each core has two groups of CPUs each of which
-- * has its own L1-cache. The thread-siblings which share l1-cache with
-- * @cpu can be obtained via cpu_smallcore_mask().
-- *
-- * On some big-core systems, the L2 cache is shared only between some
-- * groups of siblings. This is already parsed and encoded in
-- * cpu_l2_cache_mask().
-- *
-- * TODO: cache_lookup_or_instantiate() needs to be made aware of the
-- *       "ibm,thread-groups" property so that cache->shared_cpu_map
-- *       reflects the correct siblings on platforms that have this
-- *       device-tree property. This helper function is only a stop-gap
-- *       solution so that we report the correct siblings to the
-- *       userspace via sysfs.
-- */
--static const struct cpumask *get_shared_cpu_map(struct cache_index_dir *index, struct cache *cache)
--{
--	if (has_big_cores) {
--		int cpu = index_dir_to_cpu(index);
--		if (cache->level == 1)
--			return cpu_smallcore_mask(cpu);
--		if (cache->level == 2 && thread_group_shares_l2)
--			return cpu_l2_cache_mask(cpu);
+-	memset(test->buffer, 0, 512);
+-
+-	for (i = 0; i < BUFFER_SIZE / 512; i++) {
+-		ret = mmc_test_buffer_transfer(test, test->buffer, i, 512, 1);
+-		if (ret)
+-			return ret;
 -	}
 -
--	return &cache->shared_cpu_map;
--}
--
- static ssize_t
- show_shared_cpumap(struct kobject *k, struct kobj_attribute *attr, char *buf, bool list)
- {
-@@ -724,7 +685,7 @@ static const struct cpumask *get_shared_cpu_map(struct cache_index_dir *index, s
- 	index = kobj_to_cache_index_dir(k);
- 	cache = index->cache;
- 
--	mask = get_shared_cpu_map(index, cache);
-+	mask = &cache->shared_cpu_map;
- 
- 	return cpumap_print_to_pagebuf(list, buf, mask);
+-	return 0;
++	return __mmc_test_prepare(test, 1, 0);
  }
+ 
+ /*******************************************************************/
 -- 
-1.9.4
+1.9.1
 
