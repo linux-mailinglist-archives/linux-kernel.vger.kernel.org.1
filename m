@@ -2,96 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9A82FC2F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62562FC2E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbhASWFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:05:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389055AbhASRqe (ORCPT
+        id S1728924AbhASWAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728414AbhASV7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:46:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611078281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oTjNMHeboundc5h9sRP2B5BdgMsx/d+tmyfkTkd8wsU=;
-        b=exfatGQ7XvfeE28IeVjuie48ot+X6omSQzq3HkbL+RO9sSMA/DUwyxaKW5MIFbseclq5Mf
-        XWMS02Adi4aPIpCUnyy68AH8K0dugAdxyOuRUCaPkLPggZsQRFalWaVLE7hrdOUqVCog6x
-        DIFkK3N8MM5l+7vpiRBold34ZLqxzCw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-tX1BP-R4NNOvL8narF7lng-1; Tue, 19 Jan 2021 12:44:37 -0500
-X-MC-Unique: tX1BP-R4NNOvL8narF7lng-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B042801817;
-        Tue, 19 Jan 2021 17:44:35 +0000 (UTC)
-Received: from krava (unknown [10.40.195.212])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F02065C8A7;
-        Tue, 19 Jan 2021 17:44:32 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 18:44:32 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 12/22] perf daemon: Allow only one daemon over base
- directory
-Message-ID: <20210119174432.GC1717058@krava>
-References: <20210102220441.794923-1-jolsa@kernel.org>
- <20210102220441.794923-13-jolsa@kernel.org>
- <CAM9d7cj7TaJH3CtkQDjfD9OuV77LzbcY4y_EW7PWi+winu8gcw@mail.gmail.com>
+        Tue, 19 Jan 2021 16:59:02 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EBBC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 30so13828031pgr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
+        b=byWAnMtOBUGykkl0kVkQ6CQf0S8r8iH9Dmayu8mQxBp+45awWTtaLWZK+sCctNvNi6
+         OQcM7YzgvoQP7vFoUOPAdHcq0Exc8A5qIltWrORr5GlbQu7OpEUlsRIIsRjOPMNEu8MM
+         KJkJ9h2pBNSl3gpKFS1mHwd4Yh8pSmhLhQ+xsdSRbNG79hRNaoSkn4x7kFpQa70zpOTD
+         2baF8bh7XZpGPB+vYEpB3YYp5CA8M37nZpiDjsHG2HM5Q0fM//zJbXVyQcJhoGFY2/US
+         z2kIqi+reocUHP+UQdZF0D/NV28zsna2hcDSgpI8gW4EXq2SmBmeLi6f+WraBCQVK6ZK
+         87OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
+        b=PyzOgopfhSbx2YYiAax3BGJAuBpIAhQdIknWQzQ34qlIybw5L4WpScqhJADPe34Y6M
+         EnIYXUDkd+sDnXVoyc/0Z7lrsSTZyZPyusKeVu75huVBYrUF/wEH6ErCXB7nirc7vM6B
+         AatJGiFq+PFolX60k/foM/rKIqpFa9ZgWWJk0xkRWPR0RBvJLdoc8bLE2aHw+y77HCcj
+         G+12+TREzYZGio97jWgFLUf3emThyXLXNObTpybFAmZCrORUn3boZp5zB62Q6Xr2KtJ3
+         r52Hd+FBvYshcBLorstm4nO3UiRB9PyRZTJ6yrU3NE7NCrB6qb2qsQiGiAzYhYe/kzlj
+         o8pA==
+X-Gm-Message-State: AOAM533pIuee2Vdf8ViGYYCd4niUZVVvjbgr0/du81+xABG0QnEfubkQ
+        BFENG7DbUZWGzRnMwh0iCgf39g==
+X-Google-Smtp-Source: ABdhPJzExoHgzCqXecb1f0EjKl//W+yhWbxdATLzYoDeYSbylPsBXmpqSv8BG01cnkxtHt/nHoKAEw==
+X-Received: by 2002:a63:1f18:: with SMTP id f24mr6316123pgf.133.1611093499079;
+        Tue, 19 Jan 2021 13:58:19 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id z29sm91002pfk.67.2021.01.19.13.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 13:58:18 -0800 (PST)
+Date:   Tue, 19 Jan 2021 13:58:15 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile
+ for manually compiling LLVM and clang
+Message-ID: <20210119215815.efyerbwwq5x2o26q@google.com>
+References: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cj7TaJH3CtkQDjfD9OuV77LzbcY4y_EW7PWi+winu8gcw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 02:37:42PM +0900, Namhyung Kim wrote:
+On 2021-01-19, Tiezhu Yang wrote:
+>The current llvm/clang build procedure in samples/bpf/README.rst is
+>out of date. See below that the links are not accessible any more.
+>
+>$ git clone http://llvm.org/git/llvm.git
+>Cloning into 'llvm'...
+>fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
+>$ git clone --depth 1 http://llvm.org/git/clang.git
+>Cloning into 'clang'...
+>fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+>
+>The llvm community has adopted new ways to build the compiler. There are
+>different ways to build llvm/clang, the Clang Getting Started page [1] has
+>one way. As Yonghong said, it is better to just copy the build procedure
+>in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+>
+>I verified the procedure and it is proved to be feasible, so we should
+>update README.rst to reflect the reality. At the same time, update the
+>related comment in Makefile.
+>
+>[1] https://clang.llvm.org/get_started.html
+>
+>Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>Acked-by: Yonghong Song <yhs@fb.com>
+>---
+>
+>v2: Update the commit message suggested by Yonghong,
+>    thank you very much.
+>
+> samples/bpf/Makefile   |  2 +-
+> samples/bpf/README.rst | 17 ++++++++++-------
+> 2 files changed, 11 insertions(+), 8 deletions(-)
+>
+>diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>index 26fc96c..d061446 100644
+>--- a/samples/bpf/Makefile
+>+++ b/samples/bpf/Makefile
+>@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
+> TPROGLDLIBS_xsk_fwd		+= -pthread
+>
+> # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+>-#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+>+# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+> LLC ?= llc
+> CLANG ?= clang
+> OPT ?= opt
+>diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+>index dd34b2d..d1be438 100644
+>--- a/samples/bpf/README.rst
+>+++ b/samples/bpf/README.rst
+>@@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
+> Quick sniplet for manually compiling LLVM and clang
+> (build dependencies are cmake and gcc-c++)::
+>
+>- $ git clone http://llvm.org/git/llvm.git
+>- $ cd llvm/tools
+>- $ git clone --depth 1 http://llvm.org/git/clang.git
+>- $ cd ..; mkdir build; cd build
+>- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+>- $ make -j $(getconf _NPROCESSORS_ONLN)
+>+ $ git clone https://github.com/llvm/llvm-project.git
+>+ $ mkdir -p llvm-project/llvm/build/install
 
-SNIP
+llvm-project/llvm/build/install is not used.
 
-> >
-> > +static int check_lock(struct daemon *daemon)
-> > +{
-> > +       char path[PATH_MAX];
-> > +       char buf[20];
-> > +       int fd, pid;
-> > +       ssize_t len;
-> > +
-> > +       scnprintf(path, sizeof(path), "%s/lock", daemon->base);
-> > +
-> > +       fd = open(path, O_RDWR|O_CREAT|O_CLOEXEC, 0640);
-> > +       if (fd < 0)
-> > +               return -1;
-> > +
-> > +       if (lockf(fd, F_TLOCK, 0) < 0) {
-> > +               filename__read_int(path, &pid);
-> > +               fprintf(stderr, "failed: another perf daemon (pid %d) owns %s\n",
-> > +                       pid, daemon->base);
-> > +               return -1;
-> > +       }
-> 
-> So the fd is (a kind of) leaked and the lock is released only when
-> the daemon is going to die, right?
+>+ $ cd llvm-project/llvm/build
+>+ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+>+            -DLLVM_ENABLE_PROJECTS="clang"    \
+>+            -DBUILD_SHARED_LIBS=OFF           \
 
-yes, that's the idea, I'll put it in some comment
+-DBUILD_SHARED_LIBS=OFF is the default. It can be omitted.
 
-thanks,
-jirka
+>+            -DCMAKE_BUILD_TYPE=Release        \
+>+            -DLLVM_BUILD_RUNTIME=OFF
 
+-DLLVM_BUILD_RUNTIME=OFF can be omitted if none of
+compiler-rt/libc++/libc++abi is built.
+
+>+ $ ninja
+>
+> It is also possible to point make to the newly compiled 'llc' or
+> 'clang' command via redefining LLC or CLANG on the make command line::
+>
+>- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+>+ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+>
+> Cross compiling samples
+> -----------------------
+>-- 
+>2.1.0
+>
+>-- 
+>You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1611042978-21473-1-git-send-email-yangtiezhu%40loongson.cn.
