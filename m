@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688412FC5B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8B12FC58C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbhATAWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
+        id S1729503AbhATASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389221AbhASNoN (ORCPT
+        with ESMTP id S2391549AbhASNpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:44:13 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F0CC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:29 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id v23so2388141uam.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:29 -0800 (PST)
+        Tue, 19 Jan 2021 08:45:44 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E95C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:31 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id o19so11078739vsn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iN6LdNddtCPvRlGXitGPbToLS1CEl0fCsvQKN0BpriY=;
-        b=m785Q8QxruIQgi3wqou/VxiBLJ/MVprrsoEl26S11OjFrdkVNeBiBSQzbWq5wc3Bnk
-         WebjUhGaBZup0HmRhG1iHJWgPSiFnLZyBzGWNI20XYsn0k5hKcZiKhImt7Ma53urQp36
-         Ks0JtGiJq+9ofbOLlSzc0kEaziHNjCAEr7Sz5mI5NogFbrmG7T7P87zGcBBsxFuKgqRL
-         UkP3EvyYE72XCvWqmms377Treyd3hnNcDperSD7wzNJ6RWRciyYfh7wdpACYJEJSpEs9
-         Xt1aHHTKD5GTRaT1mnwWEyAqr2PoRhM3/wJJgFlU3SZldkU0vszqgdYfJurQCU0hPcoJ
-         2VRQ==
+        bh=zTHQHqU0qhkolN2noyYVvQIfnQqsAqX/OkxGDVnDczg=;
+        b=lMvP3hmORoGjFki5Mw/c9iRVt/gnrkbeBh3g9xc5AQZvG2FAgINcNJI9kyI/ucWXyf
+         ZyzqgU0jSE5ffpLHsONVgjZ/9q9umFtsixU1wJbkI3S5XOmcWyMkZ77rFp8Gx395GpIi
+         E1urx3oQLAoyBWHivI0ZqAmQ290EdVW0ZKNvI/NbPXDrqvDv5O+iBpw/mm3x3yvZ87sN
+         ZkxPUaIkB2tBNpgYbMRPH8V2Jmr4GiIXuxzcdco/Eku+PkZ+9HPPgCAvU8UVNWxGT+dl
+         I/QKhGZHlkS+cR1OALZlE6xUP8AhG60nEfAC6HQBqP28wIj0zD+ifI+XpiMAM3tLyHCr
+         42Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iN6LdNddtCPvRlGXitGPbToLS1CEl0fCsvQKN0BpriY=;
-        b=dKBoaW77oSFVET6+PHLm86ZNajhaXSAfDp6WGxZgODydkMejF5+WyIuNPlYcKij8+Z
-         gcPcu7uA35MbP5YIZ2Mtzqn+Q5+FJgItmg4IBxFL+0/k9wBzxNIkCPg4BId4y/a/g12Z
-         ScmQ1gnUDHgv48MJukkEn7hEquE1Jru2+kXKJhXLt22wnmnXPD7tjhX8RV6f5JHvuPCY
-         wTLKtzlfWsF2YPF63o4nHLJ8aT3PKUXuH12iHLQbDpap6K6RrpLM4mlM3ygol6mtVXSz
-         Ktm5i9XbK67xuTIttlXXyXV84DgvruZhVuzSXLcCq118Ma+uUydkveSmZDIDJKibT9th
-         b2/A==
-X-Gm-Message-State: AOAM530MH6OxhvFG6sIXaXBm+vgyUHJRq1dVw4+oktRDd1Kx7gyKUDs+
-        9ihHyOhF1u3sjCWItGdxkuHBq3N0BBBllVEel7SAPw==
-X-Google-Smtp-Source: ABdhPJy8YfW3TY12bJa5OWZwiU4SCjJkJNpC1EcV4z3zof+egZ29HsMFioSINO1T9lcPwSbYO0VGk61l1zVyHuRcmlQ=
-X-Received: by 2002:a9f:204e:: with SMTP id 72mr2102277uam.19.1611063808290;
- Tue, 19 Jan 2021 05:43:28 -0800 (PST)
+        bh=zTHQHqU0qhkolN2noyYVvQIfnQqsAqX/OkxGDVnDczg=;
+        b=Tkwn01dLQN8Hu2feqzB7gPqLpgu2JhXMlt4dbNPua4N4UD8L3GXxNKu4BPaJTIYkUq
+         EpLRNVM2JMuPkkOjKucwtRsFVyJ4PMbUFfbW2V1ma8su4N1YWdkhf8O6clDQ9S1lKMrf
+         naIAKmBVrR06BjWU7Pt3fHmhxBGkuNmoN3/8n2R8EZHBT7K2Fo6fdGcjCntjaAJ9qoSi
+         Pv1W8mm6ReFEuylh57DgBGp2g9Gjc2JMkN9zrZCNcqKMu3KweKmNlx81SHhvguhVhosM
+         VXB6HUiQUBvKb8joOx+HjeZvGf+AtNCJStd1ZNHTnv3/vmepL65lcs9W+MexX8mdHnwF
+         mOkQ==
+X-Gm-Message-State: AOAM533bwSVUn8WSu+mhdJczTQN4VQJJAJLMQOe5la4A0a5/A+YxeHfq
+        M5Sl4WS0DoFRlGZBUUACjDivYiWcgx2mdBI93FopRg==
+X-Google-Smtp-Source: ABdhPJxdfo5M6JQMC8opiCITaK/YZ64HskqUZ4WcV5+m2ZOkH2PxqKWWebmRR9gP5qzaZ6XUz4pArh9lHym4ct2B+rA=
+X-Received: by 2002:a67:7f41:: with SMTP id a62mr2544313vsd.55.1611063811106;
+ Tue, 19 Jan 2021 05:43:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
-In-Reply-To: <20210114152700.21916-1-muhammad.husaini.zulkifli@intel.com>
+References: <20210111082249.17092-1-reniuschengl@gmail.com>
+In-Reply-To: <20210111082249.17092-1-reniuschengl@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 14:42:52 +0100
-Message-ID: <CAPDyKFrzg-mXTEQUd2oZiiSvbn29O+AGDC0VVDjbSQo6YOji8A@mail.gmail.com>
-Subject: Re: [PATCH v1 0/9] mmc: sdhci-of-arasan: Add UHS-1 support for Keem
- Bay SOC
-To:     Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
+Date:   Tue, 19 Jan 2021 14:42:55 +0100
+Message-ID: <CAPDyKFqnLTas50enA32MoKyx6ivZiJ5H+X5HJLPzS=nQ_b-UFw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Finetune HS400 RX delay for GL9763E
+To:     Renius Chen <reniuschengl@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        Rashmi.A@intel.com, mahesh.r.vaidya@intel.com
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 at 16:28, Muhammad Husaini Zulkifli
-<muhammad.husaini.zulkifli@intel.com> wrote:
+On Mon, 11 Jan 2021 at 09:22, Renius Chen <reniuschengl@gmail.com> wrote:
 >
-> Hi,
+> To improve the compatibility of GL9763E with HS400 eMMC cards,
+> finetune the RX delay of HS400 mode.
 >
-> This patch series adds Ultra High Speed(UHS-1) Bus Speed Mode Support for Keem Bay SoC SD Card.
-> Summary of each patches as per below:
->
-> Patch 1: Use of_device_get_match_data() helper to get the match-data.
-> Patch 2: Convert to use np pointer instead of using pdev->dev.of_node.
-> Patch 3: Add struct device *dev in probe func(), so that dev pointer can be widely use in probe to make code more readable.
-> Patch 4: Change from dev_err to dev_err_probe() to avoid spamming logs when probe is deferred.
-> Patch 5: Export function to be use by device driver to configure i/o voltage rail output which communicate with Trusted Firmware.
-> Patch 6: Update phy and regulator supply for Keem Bay SoC.
-> Patch 7: Add DT Binding for Keem Bay SoC SD Regulator.
-> Patch 8: Add SD Regulator driver to support Keem Bay SoC. This is to model using standard regulator abstraction during voltage operation
-> as for Keem Bay SoC, i/o voltage rail need to be configure by setting specific bit in the AON_CFG1 Register.
-> AON_CFG1 Register is a secure register. Direct access to AON_CFG1 register will cause firewall violation in secure system.
-> Patch 9: Add Ultra High Speed (UHS-1) Support for Keem Bay SOC. For Keem Bay hardware, two regulators are been used to change the I/O bus line voltage which are "vqmmc-supply" and "sdvrail-supply".
->
-> All of these patches was tested with Keem Bay evaluation module board.
->
-> Kindly help to review this patch set.
->
-> Muhammad Husaini Zulkifli (9):
->   mmc: sdhci-of-arasan: use of_device_get_match_data()
->   mmc: sdhci-of-arasan: Convert to use np instead of pdev->dev.of_node
->   mmc: sdhci-of-arasan: Add structure device pointer in probe function
->   mmc: sdhci-of-arasan: Use dev_err_probe() to avoid spamming logs
->   firmware: keembay: Add support for Trusted Firmware Service call
->   dt-bindings: mmc: Update phy and regulator supply for Keem Bay SOC
->   dt-bindings: regulator: keembay: Add DT binding documentation
->   regulator: keembay: Add regulator for Keem Bay SoC
->   mmc: sdhci-of-arasan: Add UHS-1 support for Keem Bay SOC
->
->  .../devicetree/bindings/mmc/arasan,sdhci.yaml |   7 +-
->  .../bindings/regulator/keembay-regulator.yaml |  36 ++
->  drivers/mmc/host/sdhci-of-arasan.c            | 313 ++++++++++++++++--
->  drivers/regulator/Kconfig                     |  10 +
->  drivers/regulator/Makefile                    |   1 +
->  drivers/regulator/keembay-sd-regulator.c      | 112 +++++++
->  include/linux/firmware/intel/keembay.h        |  82 +++++
->  7 files changed, 532 insertions(+), 29 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/regulator/keembay-regulator.yaml
->  create mode 100644 drivers/regulator/keembay-sd-regulator.c
->  create mode 100644 include/linux/firmware/intel/keembay.h
->
-> --
-> 2.17.1
->
+> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
 
-Applied patch 1 to patch 4. I assume you will be respinning the rest?
+Applied for next, thanks!
 
-Thanks and kind regards
+Kind regards
 Uffe
+
+
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index 2d13bfcbcacf..14d9154f3af1 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -95,6 +95,10 @@
+>  #define PCIE_GLI_9763E_MMC_CTRL  0x960
+>  #define   GLI_9763E_HS400_SLOW     BIT(3)
+>
+> +#define PCIE_GLI_9763E_CLKRXDLY  0x934
+> +#define   GLI_9763E_HS400_RXDLY    GENMASK(31, 28)
+> +#define   GLI_9763E_HS400_RXDLY_5  0x5
+> +
+>  #define SDHCI_GLI_9763E_CQE_BASE_ADDR   0x200
+>  #define GLI_9763E_CQE_TRNS_MODE           (SDHCI_TRNS_MULTI | \
+>                                     SDHCI_TRNS_BLK_CNT_EN | \
+> @@ -801,6 +805,11 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+>         value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MAX);
+>         pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
+>
+> +       pci_read_config_dword(pdev, PCIE_GLI_9763E_CLKRXDLY, &value);
+> +       value &= ~GLI_9763E_HS400_RXDLY;
+> +       value |= FIELD_PREP(GLI_9763E_HS400_RXDLY, GLI_9763E_HS400_RXDLY_5);
+> +       pci_write_config_dword(pdev, PCIE_GLI_9763E_CLKRXDLY, value);
+> +
+>         pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+>         value &= ~GLI_9763E_VHS_REV;
+>         value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+> --
+> 2.27.0
+>
