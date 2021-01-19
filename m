@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433432FBBC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3292FBBBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391479AbhASPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:55:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:37278 "EHLO foss.arm.com"
+        id S2390123AbhASPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:54:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728824AbhASPxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:53:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79CDDD6E;
-        Tue, 19 Jan 2021 07:52:43 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CA143F66E;
-        Tue, 19 Jan 2021 07:52:42 -0800 (PST)
-Subject: Re: [PATCH 1/2 v2] dma-iommu: use static-key to minimize the impact
- in the fast-path
-To:     Christoph Hellwig <hch@infradead.org>,
-        Lianbo Jiang <lijiang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        will@kernel.org, iommu@lists.linux-foundation.org
-References: <20210119111616.12761-1-lijiang@redhat.com>
- <20210119111616.12761-2-lijiang@redhat.com>
- <20210119152641.GA3453587@infradead.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c961822e-e768-9d20-87cf-85db95b6aab6@arm.com>
-Date:   Tue, 19 Jan 2021 15:52:41 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2391626AbhASPyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:54:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B90E20780;
+        Tue, 19 Jan 2021 15:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611071612;
+        bh=Iur7PMN12GFuotDbIDuqkaf5UvK7lDumrhI+4zfetYU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=AHpmAeWH1iRfEAre195nrrwKW2FWRvOUYavb2LdUrJeOVydXT2dlzWLitC8B9OTtr
+         Hq1/usVFKSxPStEojtv1ZZ2TeWp1HlwZCMSOu7us9yjnprUH87/DdY7TMH8urRy7hv
+         ns8gAKX9oRpRYLHt/xurKoxLbLmbxaf1AYx7BpUQSLqVkMIWe8nPLGI4A6kVNEvcDr
+         hAmbcBI/WtffU1qZ8FCqEKEos8ahWvYDQjsgeo6oYqlaB57gxdwD7Kna/2zkszJFvQ
+         ZWJKoDle1JMvJbU4WwD2YkxlB8tr0/PH8jIOZPpSJQ/DQNMPF16Q9Vtf5+RlB4Vgx2
+         DHGT/L5AmKisg==
+Date:   Tue, 19 Jan 2021 16:53:29 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Wim Osterholt <wim@djo.tudelft.nl>,
+        Denis Efremov <efremov@linux.com>
+Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
+In-Reply-To: <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
+Message-ID: <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
+References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
+ <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210119152641.GA3453587@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-19 15:26, Christoph Hellwig wrote:
-> On Tue, Jan 19, 2021 at 07:16:15PM +0800, Lianbo Jiang wrote:
->> +static DEFINE_STATIC_KEY_FALSE(__deferred_attach);
-> 
-> Why the strange underscores?  Wouldn't iommu_deferred_attach_enabled
-> be a better name?
-> 
->> -	if (unlikely(iommu_dma_deferred_attach(dev, domain)))
->> +	if (static_branch_unlikely(&__deferred_attach) &&
->> +	    iommu_dma_deferred_attach(dev, domain))
-> 
-> Also insted of duplicating this logic in three places, maybe rename
-> iommu_dma_deferred_attach to __iommu_dma_deferred_attach and create
-> a small inline wrapper for it?
+On Mon, 25 Jul 2016, Jens Axboe wrote:
 
-Once patch #2 is in place, I really don't see any point. The "helper" 
-would add a minimum of 5 lines to save at most 3, and would have to be 
-annotated as always_inline - which a whole other camp of people would 
-probably object to - in order for the static branch to be properly useful.
+> > From: Jiri Kosina <jkosina@suse.cz>
+> >
+> > Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
+> > side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
+> > this is being used setfdprm userspace for ioctl-only open().
+> >
+> > Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
+> > modes, while still keeping the original O_NDELAY bug fixed.
+> >
+> > Cc: stable@vger.kernel.org # v4.5+
+> > Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
+> > Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
+> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+> 
+> Added for this series, thanks.
 
-It's not as if this is a complex or hard-to-read expression, so IMO 
-having 3 lines repeated 3 times is objectively better than having 2 
-lines necessarily repeated 3 times plus having to scroll up and find 
-several more lines to follow what it's doing.
+[ CCing Denis too ]
 
-Robin.
+Let me revive this 4 years old thread.
+
+I've just now noticed that instead of my patch above being merged, what 
+happened instead was
+
+	commit f2791e7eadf437633f30faa51b30878cf15650be
+	Author: Jens Axboe <axboe@fb.com>
+	Date:   Thu Aug 25 08:56:51 2016 -0600
+
+	    Revert "floppy: refactor open() flags handling"
+    
+	    This reverts commit 09954bad448791ef01202351d437abdd9497a804.
+
+
+which was plain revert of 09954bad4 (without any further explanation), 
+which in turn reintroduced the O_NDELAY issue, and I've just been hit by 
+it again.
+
+I am not able to find any e-mail thread that'd indicate why ultimately 
+revert happened, instead of mergin my fix.
+Jens, do you have any idea?
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
