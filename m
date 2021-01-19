@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EFC2FBD1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E313D2FBD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388704AbhASQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S2389525AbhASRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731971AbhASQha (ORCPT
+        with ESMTP id S1729921AbhASQjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:37:30 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CB5C061574;
-        Tue, 19 Jan 2021 08:36:50 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AFCA79E6;
-        Tue, 19 Jan 2021 17:36:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611074208;
-        bh=+zbQWmDKsSuLwgfCOGGU5TKBFm1b+IFeZCmaszyxcrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xby+M+itq5vOCb8Lx0i9VeXiZ9Rw6+BIgVQheFCCDdz3dgFKXDnQ6Pcj5D6K7DNkx
-         UXhbYOgDk9HlHyUk3pMdv33mmUBtMkKTt/oTYZ4yqh+3upTS7jqxcWXn73i8aUpPYK
-         0TjdkmBLwDMeCU3QNz/mUNfdt3NHCIpF38qdWAYo=
-Date:   Tue, 19 Jan 2021 18:36:31 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        andy@kernel.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAcKj9fyNZY8QETd@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
- <20210119093358.GO4077@smile.fi.intel.com>
+        Tue, 19 Jan 2021 11:39:41 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2714C061573;
+        Tue, 19 Jan 2021 08:39:00 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id ke15so21718319ejc.12;
+        Tue, 19 Jan 2021 08:39:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ucsJ2R0Qc3ilotuSyCarYzA2swB00TrKAEr7q7JMHN4=;
+        b=mmdbVYi2HwyQ4tIqxxLvcaRKcU+g36mvoXU3UY2Podd8I1U87Gr0HR5o3ogjf22qz6
+         SWsjtasH+k/nj9uTDPlcdD+tfqde8LdkImW1uq/UBT6Yev24cruxMMnsXv2GLhKAJ/C8
+         Wlda/MqyoUjPaEpEpMdxAc92VTuWEC6U7eXo5qBA0r2cvBz1iU5AsvYaoXLM2OJLypEf
+         yOOslc6ALykBqNuiVLK31j6G4UvbUGzUaciVVCgJSDw0YPO2mZ9bRjjwuhWTzzk5gpi+
+         BaO2tpHxmsTNm2FWi2i4DRJi9rm2AXpRU3U7GJjaIJFIoxWKE/rEHgjj+l1EmB454VzO
+         ZhnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ucsJ2R0Qc3ilotuSyCarYzA2swB00TrKAEr7q7JMHN4=;
+        b=lfvgpdeie0B7gQdqh7Fo/sNyzOfEsYu53Xr5hG3bVBWmUCEzqJmXKU/2nKVLToVGLh
+         6489cCkiiwUnl49fXbrmTGfI6cxgYlI2alp/HAwyqgz0xPM0FvdbT0wnr2TRq3VteIFg
+         tlioP3bA16mvst3vKsNJ4zl59B86pG+bFLUUolnUiEdNLnW8r+1hrTU8sptvrE2Prjng
+         qMnZkDLQLiaGZRTrBKINwd7VmmbCRtgY/grQ341up4H4ZnaR2Nb2ByrwhLNMNIuV6cn0
+         sEf4YxXiEcvnIpldvVMonVUgdukPNHV8mEha/Z3EGRhIxvNc9pdks7NpXw322Fv3gESn
+         0g+g==
+X-Gm-Message-State: AOAM532Jtz49RClWpi27Nr91yRmtNvPA2YWKzC/DfyeXvobBKMmR85V/
+        8kxTEnwxzhg/JEc+jEOdmac=
+X-Google-Smtp-Source: ABdhPJwz23xr0dlUxRjCf+BDTWI4R6JyuTpPt2DdQjNmQMnpFPJLTRH8vtmhYrN3n0yjwkQUzOJM9Q==
+X-Received: by 2002:a17:906:1f03:: with SMTP id w3mr3572034ejj.463.1611074339411;
+        Tue, 19 Jan 2021 08:38:59 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
+        by smtp.gmail.com with ESMTPSA id k22sm9589993eji.101.2021.01.19.08.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 08:38:58 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/6] Several changes for UFS WriteBooster
+Date:   Tue, 19 Jan 2021 17:38:41 +0100
+Message-Id: <20210119163847.20165-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210119093358.GO4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+From: Bean Huo <beanhuo@micron.com>
 
-On Tue, Jan 19, 2021 at 11:33:58AM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
-> > On 18/01/2021 21:19, Daniel Scally wrote:
-> >
-> > I'm more and more confident that this will work, but it has some
-> > knock-on effects:
-> > 
-> > The both clk and regulator gpio driver expects to be able to fetch the
-> > GPIO using devm_gpiod_get(&pdev->dev, "enable", ...). That won't work of
-> > course, so we need to add another GPIO lookup table so those drivers can
-> > see the GPIOs. For that, we need to know what dev_name(&pdev->dev) will
-> > be so we can set the .dev_id member of a gpiod_lookup_table to that
-> > value, but that isn't set until _after_ the pdev is registered (because
-> > it has to figure out the id, we can't manually set the IDs because there
-> > could be more than one instance of int3472-discrete bound to multiple
-> > PMIC devices, and we don't know which id the current one should have).
-> > Finally, we can't wait until the device is registered because it
-> > immediately probes, can't find the GPIO and then fails probe.
-> > 
-> > It's similar problem that causes us to need the i2c-acpi name format
-> > macros, but complicated by the dynamic ID part of dev_name(&pdev->dev)
-> > 
-> > Solving it is a bit of a sticky one; perhaps something like moving the
-> > dev_set_name() part of platform_device_add() [1] to its own function,
-> > that's called in both platform_device_alloc() and
-> > platform_device_register(). That way it would be available before the
-> > device itself was registered, meaning we could create the lookup table
-> > before it probes the driver.
-> 
-> See my previous reply. TL;DR: you have to modify clk-gpio.c to export couple of
-> methods to be able to use it as a library.
+Changelog:
 
-That seems really overkill given the very simple implementation of the
-clock provided here.
+v6--v7:
+ 1. Change wb_on sysfs documentation and add information that WriteBooster
+ is already enabled after power-on/reset(Incorporate Adrian Hunter's suggestion)
 
-> > (also, Laurent, if we did it this way we wouldn't be able to also handle
-> > the led-indicator GPIO here without some fairly major rework)
-> 
-> LED indicators are done as LED class devices (see plenty of examples in PDx86
-> drivers: drivers/platform/x86/)
+v5--v6:
+ 1. Remove original patch 7/7:
+ "scsi: ufs: Keep device active mode only fWriteBoosterBufferFlushDuringHibernate == 1"
+ 2. Rebased patch onto 5.12/scsi-staging
+ 3. Add protection of PM ops and err_handler for the wb_on entry access
 
-How do you expose the link between the sensor and its indicator LED to
-userspace ? Isn't it better to handle it in the kernel to avoid rogue
-userspace turning the camera on without notifying the user ?
+V4--V5:
+  1. Add patch "docs: ABI: Add wb_on documentation for UFS sysfs"
+  2. Unify WB related flags with wb_* prefix (Stanley Chu)
+  3. Delete d_ext_ufs_feature_sup (Stanley Chu)
+  4. Incorporate Stanley's suggestion to patch 6/7
+  5. Replace scnprintf() with sysfs_emit() in 1/7 (Greg KH)
+
+v3--v4:
+  1. Rebase patch on 5.11/scsi-staging
+  2. Add WB cleanup patches 3/6, 4/6 adn 5/6
+
+v2--v3:
+  1. Change multi-line comments style in patch 1/3 (Can Guo)
+
+v1--v2:
+  1. Take is_hibern8_wb_flush checkup out from function
+     ufshcd_wb_need_flush() in patch 2/3
+  2. Add UFSHCD_CAP_CLK_SCALING checkup in patch 1/3. that means
+     only for the platform, which doesn't support UFSHCD_CAP_CLK_SCALING,
+     can control WB through "wb_on".
+
+Bean Huo (6):
+  scsi: ufs: Add "wb_on" sysfs node to control WB on/off
+  docs: ABI: Add wb_on documentation for new entry wb_on
+  scsi: ufs: Changes comment in the function ufshcd_wb_probe()
+  scsi: ufs: Remove two WB related fields from struct ufs_dev_info
+  scsi: ufs: Group UFS WB related flags to struct ufs_dev_info
+  scsi: ufs: Cleanup WB buffer flush toggle implementation
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  11 +++
+ drivers/scsi/ufs/ufs-sysfs.c               |  46 +++++++++
+ drivers/scsi/ufs/ufs.h                     |  29 +++---
+ drivers/scsi/ufs/ufshcd.c                  | 103 ++++++++-------------
+ drivers/scsi/ufs/ufshcd.h                  |   6 +-
+ 5 files changed, 113 insertions(+), 82 deletions(-)
 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
