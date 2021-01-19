@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFBE2FAE9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E292FAE9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393811AbhASCHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 21:07:17 -0500
-Received: from m12-18.163.com ([220.181.12.18]:60624 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387895AbhASCHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 21:07:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=vHix2
-        +n2QGovG//SAmKczG/2f6L1TM+9VB0Ed1N3GGs=; b=QNSjB7oGulC5j4n2SKI2T
-        dg6MelHn97ZuEtGJrWCoWrslsgYH8IVuAzIU6xkPtiMDrLBGgxmW1Yo3Lb86wp26
-        ymO9wOsX7ivSkd/7Z7H6B3+am/f5Cpc5a3MfsmYMjB66AuY7N8GX2EkSEyizAMro
-        xCg5FL2LbX5knJk5kt5Qrk=
-Received: from yangjunlin.ccdomain.com (unknown [119.137.52.160])
-        by smtp14 (Coremail) with SMTP id EsCowAAn7tYzPgZg4b59Pw--.4219S2;
-        Tue, 19 Jan 2021 10:04:37 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     mkl@pengutronix.de, manivannan.sadhasivam@linaro.org,
-        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] can: mcp251xfd: mcp251xfd_handle_ivmif(): fix wrong NULL pointer check
-Date:   Tue, 19 Jan 2021 10:02:21 +0800
-Message-Id: <20210119020221.3713-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S2393943AbhASCJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 21:09:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393686AbhASCJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 21:09:20 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A833C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 18:08:40 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id z22so9998236ioh.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 18:08:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MVKJevWzueCVAkcyRkI1o5hoDMIGCjKtPdus7P5QKvc=;
+        b=ZY2lBCQwCM1jTC64rZC634Tef5GP9NUExZtzi1rSEBcQ/GC5Gobbj9Z1sLpdBKWyd7
+         Jn+AQLyEzcMZXq2ZTIW8YvdrEXyY4oexkb0KlZb438EUO58UJEAO8p45W7t9wDvMepKP
+         3/UzGKIvTnshrqsfHEWndH/tvm5NrkSxYfXV/4nRMp0CjxZV5OeX6jIY2Sv8QmjyMw4c
+         UzvdmE5q9tegAkmpJZrpUuDoqz4p2zBJsxk1xKMmySV/8D2kPOCG9CJ4eGckb+BZD62v
+         d/LFnLCRxeTZ6aAU7p+GCDIvogJZAPS4CVTaWMSN3ObDBSvG/nxhQRCjZDrRReB59J0k
+         YRrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MVKJevWzueCVAkcyRkI1o5hoDMIGCjKtPdus7P5QKvc=;
+        b=QbEjH6/xhUCPqJ2ni1UvC8NdPZ6dOKoYk52iYdBBftf1/kPvMenX0Z1c+C0XEdKv3Y
+         iwEURaSm+3lxD/b/v9V6RC+ewnR2ry34Ax4BdSNT7Fj1Hi7XbVEblDsfqQqmEgFAG+5J
+         H6vndqYF5yBfJxSTtKnRWlD6coEunF8nRpMh0BTZRu4l0lNZkau+/10VOu8O8sZ8coDq
+         H1wgGnwBdGhyhA5FNWoKYg1pKQJawkwoUK2EKuWrE6NCGQS4J70/Y3M6BoCRG2fkM6En
+         rh/Fy5PhPDktkY3CJ36u9AN6o37zh+ckRLM3WRhAd573VVcmi55wX/+Xvnlm06/e0tSA
+         RfQg==
+X-Gm-Message-State: AOAM530rthNs9vxn1wHqrNd1ap3+MQ1qhcnhN998bTrgcK8Kf/N5LNWO
+        MCvwmxqidV9KQbtIPvymzYXdpRVqMhQkknahffs=
+X-Google-Smtp-Source: ABdhPJxSFOJ1j8MRnzxzeXGhyxA6sM45HDq+vG86AtrG6/5p/zvrsWbe/GBdQutBpkeBb4jm+/3yvy0jQlpDBKbkMbA=
+X-Received: by 2002:a05:6638:b16:: with SMTP id a22mr1637083jab.56.1611022119466;
+ Mon, 18 Jan 2021 18:08:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAAn7tYzPgZg4b59Pw--.4219S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1ktr4rtr4DuFWxKFy3urg_yoW3Krb_Cw
-        nxAw17Wr18Aw1vk34IkF1avryYv3ZrXFs5ur9Fvry3JFWayr17GFZavry3G34UWry8ZF9x
-        Xay7Jwn2q34FqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeEPfDUUUUU==
-X-Originating-IP: [119.137.52.160]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbCBg0fI13I0cYuQwAAsY
+References: <20210118080455.33499-1-dong.menglong@zte.com.cn>
+In-Reply-To: <20210118080455.33499-1-dong.menglong@zte.com.cn>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 19 Jan 2021 10:08:28 +0800
+Message-ID: <CAJhGHyBVvdpSoXgVdkTiq1LTS-VSiNjwLJh5TTX1_gk==hWCfA@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: fix annotation for WQ_SYSFS
+To:     menglong8.dong@gmail.com
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On Mon, Jan 18, 2021 at 4:05 PM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+>
+> 'wq_sysfs_register()' in annotation for 'WQ_SYSFS' is unavailable,
+> change it to 'workqueue_sysfs_register()'.
+>
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-if alloc_can_err_skb() returns NULL, we should check skb instead of cf.
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f07e8b7..0af131c 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1755,7 +1755,7 @@ static int mcp251xfd_handle_ivmif(struct mcp251xfd_priv *priv)
- 			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT0;
- 	}
- 
--	if (!cf)
-+	if (!skb)
- 		return 0;
- 
- 	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
--- 
-1.9.1
-
-
+> ---
+>  include/linux/workqueue.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+> index 26de0cae2a0a..d15a7730ee18 100644
+> --- a/include/linux/workqueue.h
+> +++ b/include/linux/workqueue.h
+> @@ -311,7 +311,7 @@ enum {
+>         WQ_MEM_RECLAIM          = 1 << 3, /* may be used for memory reclaim */
+>         WQ_HIGHPRI              = 1 << 4, /* high priority */
+>         WQ_CPU_INTENSIVE        = 1 << 5, /* cpu intensive workqueue */
+> -       WQ_SYSFS                = 1 << 6, /* visible in sysfs, see wq_sysfs_register() */
+> +       WQ_SYSFS                = 1 << 6, /* visible in sysfs, see workqueue_sysfs_register() */
+>
+>         /*
+>          * Per-cpu workqueues are generally preferred because they tend to
+> --
+> 2.25.1
+>
