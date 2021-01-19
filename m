@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3512FBBFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569E22FBBF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389809AbhASQIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        id S2391506AbhASQHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:07:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391333AbhASQD4 (ORCPT
+        with ESMTP id S2391385AbhASQD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 11:03:56 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76055C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:03:04 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id d11so9339777qvo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:03:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TM2UANy2tYSfS16CNFNtc6ZYmSBMwIhfN2bmoRAQy/E=;
-        b=vUnaP/HV/ZyFrQEmjEKRV/SW5rXzpeBW+ixj2OQ8dArHacVI6FcyWUWkJPrT/C6mb4
-         G7EWjhdJFweBHhKmkyx39vxB2vEdVBvahpplSE0aUvNbtYPMaQ6QXuxnSCO/pivj6ujd
-         rg/BinKkRiWJcU7jRfzeoCmGqfmPpRoXVjoG85HTKQ7xnQwz3eirCrhFGdxF7sROGHsD
-         Os8kg4/mMrJYG8zptgY5v5IoRZqsLQY+VfBKKdmWLDxBh5XwgXx9W6UORnLi96Dh++l/
-         l4RMzVJW2MAqriEGqiqcspnG4cQeWYXnDAxMHLv/ygQz23WK7AT7ygMHBLmlxmv15sHP
-         Pp5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=TM2UANy2tYSfS16CNFNtc6ZYmSBMwIhfN2bmoRAQy/E=;
-        b=P+5JO5LvTEgRBn5iRuCETbGD3a7J5m+u0BeYjVP7ir4ea30fI/Qf9wVm/vR0WTsdUz
-         hQC/lpYVxGzRETqHefPJrlkMSKs1JrOTbkUshsUIejvLM+kMB4HwAFm7VJ/bKWWRHov3
-         QSSfoycWvJz7s7KcVUdqRlIEkG6v1tFTda/vBEU2RP60eidWyk0CRcU3cVuwqF3BEbN8
-         /bil4UgbbQG0NGbf63ZKK5FLUPoNjqXKaFmFg0MnbwsjAXWKyH5eLDm1UU0ylkLpU7bq
-         RhBklzP+AYElsfbJV8BRBzsvv+3+LQlvos+zl2zVG3EWzuFXniwa8dmUYwo564JmjP4D
-         ykUA==
-X-Gm-Message-State: AOAM531YNsk1PJrPYPyOaWMjQ6v2Ge+7yBJv3bnYu+Q44hlsqztRityp
-        kDvof4a5U11aJw9C157BoEI=
-X-Google-Smtp-Source: ABdhPJzTt8aUyrRZnN4qJSpxhpvdPv18uNq/nvvHAB6Ah2ACdDugLXEzTqQUIbIvipef6v/RhJ2I5w==
-X-Received: by 2002:a0c:80ca:: with SMTP id 68mr5127186qvb.28.1611072183602;
-        Tue, 19 Jan 2021 08:03:03 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:4cbf])
-        by smtp.gmail.com with ESMTPSA id v67sm182519qkd.94.2021.01.19.08.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:03:02 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 19 Jan 2021 11:02:18 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lai Jiangshan <laijs@linux.alibaba.com>
-Subject: Re: [PATCH] workqueue: keep unbound rescuer's cpumask to be default
- cpumask
-Message-ID: <YAcCivvOTpgWsie+@mtj.duckdns.org>
-References: <20210116065753.2163-1-jiangshanlai@gmail.com>
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A50DC061575;
+        Tue, 19 Jan 2021 08:03:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EhVNN5w31+BoStuV5p83fjIjrTbho1tnvewJve+/h9Q=; b=UWCs2GbaEiVNzA19wKWlr9c/PQ
+        UMAZuyoJbhGdlV8lgXLhfgFbaPPe7Lpsa68jxwobKbaLIK+P95bRELv5UA3iWDav8I5VDBfvkedFS
+        L655rampQgJNMFtqTyNpv4zhDBCk/jYsuzhSepx26gdFHNwfX1Uc1s17Q8QY/zMfurFb/78c8Y0we
+        MDdUdDeZ+qlSShuLda/IkktpDC0tDiIidFBkainB86N45fT63FFku/gyzrJFqNzf7dmi9FK1xiQOb
+        CPyBMTYfs8OAwFR4XgeYhEW+k1h+t85peDC+ohOBO0BCTXoWjFUiCPrp3agxiORyWrL6fKJt+QkvY
+        IKD6dfBg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l1tTE-0007Eu-LV; Tue, 19 Jan 2021 16:03:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 104D53059DD;
+        Tue, 19 Jan 2021 17:03:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 02B0A202638D9; Tue, 19 Jan 2021 17:03:02 +0100 (CET)
+Date:   Tue, 19 Jan 2021 17:03:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        x86 Maintainers <x86@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: Re: [PATCH] x86: PM: Register syscore_ops for scale invariance
+Message-ID: <YAcCtnYbhasv+ENi@hirez.programming.kicks-ass.net>
+References: <1803209.Mvru99baaF@kreacher>
+ <X/25ssA2scFSu+3/@hirez.programming.kicks-ass.net>
+ <CAJZ5v0gHHPcBbL-EnCYJieMV-pRJWsjb5qC-iqHYznYjzrkitw@mail.gmail.com>
+ <CAJZ5v0gY+WjB2q=wnRYxpwFmLzOcLMKewrCgKdpC0oNPFgoDww@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210116065753.2163-1-jiangshanlai@gmail.com>
+In-Reply-To: <CAJZ5v0gY+WjB2q=wnRYxpwFmLzOcLMKewrCgKdpC0oNPFgoDww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 02:57:53PM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Tue, Jan 19, 2021 at 04:12:20PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 12, 2021 at 4:10 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 4:02 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Fri, Jan 08, 2021 at 07:05:59PM +0100, Rafael J. Wysocki wrote:
+> > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > >
+> > > > On x86 scale invariace tends to be disabled during resume from
+> > > > suspend-to-RAM, because the MPERF or APERF MSR values are not as
+> > > > expected then due to updates taking place after the platform
+> > > > firmware has been invoked to complete the suspend transition.
+> > > >
+> > > > That, of course, is not desirable, especially if the schedutil
+> > > > scaling governor is in use, because the lack of scale invariance
+> > > > causes it to be less reliable.
+> > > >
+> > > > To counter that effect, modify init_freq_invariance() to register
+> > > > a syscore_ops object for scale invariance with the ->resume callback
+> > > > pointing to init_counter_refs() which will run on the CPU starting
+> > > > the resume transition (the other CPUs will be taken care of the
+> > > > "online" operations taking place later).
+> > > >
+> > > > Fixes: e2b0d619b400 ("x86, sched: check for counters overflow in frequency invariant accounting")
+> > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Thanks!, I'll take it through the sched/urgent tree?
+> >
+> > That works, thanks!
 > 
-> When we attach a rescuer to a pool, we will set the rescuer's cpumask
-> to the pool's cpumask.  If there is hotplug ongoing, it may cause
-> the rescuer running on the dying CPU and cause bug or it may cause
-> warning of setting online&!active cpumask.
-> 
-> So we have to find a reliable way to set cpumask when attaching
-> rescuer.
-> 
-> When the pool is percpu pool, we have easy way to reliably
-> set cpumask with the help of %POOL_DISASSOCIATED.
-> 
-> But when it is unbound rescuer, the problem becomes harder, because
-> we can't neither use get_online_cpus() here nor test cpu_active_mask
-> without synchronization.
-> 
-> Atfer investigation, and noticing the unbound nature of the unbound
-> rescuer, we decide to make it use the wq's default pwq's cpumask so
-> that we don't need to set the rescuer's cpumask when attaching.
-> 
-> To implement it, we have to set unbound rescuer's cpumask to the
-> default pwq's cpumask when creation and maintain it when hotplug
-> or the default pwq is changed.
+> Any news on this front?  It's been a few days ...
 
-Yeah, this approach makes sense to me. It doesn't look like all problems are
-resolved but for the rescuer behavior part, please feel free to add
-
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+My bad, it's been held up behind me trying to fix another sched
+regression. Lemme push out just this one so it doesn't go walk-about.
