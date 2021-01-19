@@ -2,209 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245522FB838
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496CE2FB83A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392441AbhASMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:10:24 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:25387 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392175AbhASMC1 (ORCPT
+        id S2392465AbhASMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392181AbhASMC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 07:02:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611057709; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=T3sxeKkhmH8yFA4smvGRqtMhL0615rN/nOGoqsVelOY=;
- b=CYckzdLwRFZu4DAPGTzmsiDBiIR0ZzIpOppnmlWPz9rt4oet6rnRDzTcX89i3R2DLXeP1jtG
- yFQr5qPc/ylBHUICqq8dvel0RiZJLrheTt3z57GIMXd6tB3ejRPm9HzpbSnhHkTIIzNwJ3j/
- sHLWjkcwniave/qadk3TnLQzC2Y=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6006c9d721210999ed939b71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 12:00:23
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D6372C43469; Tue, 19 Jan 2021 12:00:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C8E8C433ED;
-        Tue, 19 Jan 2021 12:00:21 +0000 (UTC)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7967C061573;
+        Tue, 19 Jan 2021 04:01:33 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u11so21561340ljo.13;
+        Tue, 19 Jan 2021 04:01:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PHK3uW1ehoTt4Ezk23WVaqtB8sRn9EScRJCT+I2CDCg=;
+        b=j5KqUqdaxR5ds1qdQVSY21HmVLFqNWRHpQ93h1dIOSZlq95DUifWcfuq9qqM1wrW51
+         0dswE0xJIfEuYVWY3S5jmuboGxjqgmnnSU3NhCroWi7BL+5g38y2VQy1ASCuR26Xh9Zt
+         44q0m1mjvgmJ/DnPlZYZLvuhRXIT3How3HlPzTsaRWQJUfduocSdifIDr1GPj5DhjTjo
+         2GfLcCYJQPu9mejiozKRrjSV20IBzT4WAsiwiWOkcGxYa2e2Tncmv8lGKyB2VZICeqKa
+         508KCFpC715BvpCTuWbkBdqVCdZQjjxXDSZvf1K1S6dmG3AZkK4CF/r4UcBmZbcz413x
+         otAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PHK3uW1ehoTt4Ezk23WVaqtB8sRn9EScRJCT+I2CDCg=;
+        b=X5TTDQ9PyGYrJ+7BkBOb2TfSjgm8X9QIocvZbEF68gLAmpYlaQU8ko725jVFe6I5t4
+         dObHUXzt1PChtR12PHW9I4RUM55UvgE5rXQVEMH/WQOAHsz2JbWPo+gO+V1sSr1E+g0m
+         s6xiZy/4VyszfnhEvShn1YR1cAaEcbHtfVB5xC3MSaTBrtU/bjlMENge0h04k/ZLGZXQ
+         exacdMNovbJ1P7+u7vAw1GIPLgb/G/XbvxlEJlHMMM9GYjuOcx4xF1lJck3hhYUxMspX
+         pstc+T8Ax92IGzhsb5/XxKWnF+O2J8nV//HmJyvIypbRLM3t7Xd+S+2Dr8ayvczCNFOo
+         S4FA==
+X-Gm-Message-State: AOAM533HP0zvo3DF38ywd8zq7Tr7QNcVk+h69V8NwOQvIIqDs8vbrxWE
+        hF2BWS1LbEqZmndXpaBkn+I=
+X-Google-Smtp-Source: ABdhPJx2J6wH0qJd7AmGy+0XlynS4++mSwLDH6+MryViSsRT/ZFjo+B8XgtScYFBqiKY+wAf5Pd2Qw==
+X-Received: by 2002:a2e:720f:: with SMTP id n15mr1793803ljc.405.1611057691988;
+        Tue, 19 Jan 2021 04:01:31 -0800 (PST)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id k6sm168481ljj.130.2021.01.19.04.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 04:01:31 -0800 (PST)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 10JC1RNx015506;
+        Tue, 19 Jan 2021 15:01:28 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 10JC1QUN015505;
+        Tue, 19 Jan 2021 15:01:26 +0300
+Date:   Tue, 19 Jan 2021 15:01:26 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Ernesto Corona <ernesto.corona@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Steven Filary <steven.a.filary@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        Amithash Prasad <amithash@fb.com>,
+        Jiri Pirko <jiri@mellanox.com>, Rgrs <rgrs@protonmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Patrick Williams <patrickw3@fb.com>,
+        Oleksandr Shamray <oleksandrs@mellanox.com>
+Subject: Re: [PATCH v29 4/6] Documentation: jtag: Add ABI documentation
+Message-ID: <20210119120125.GD2971@home.paul.comp>
+References: <20200413222920.4722-1-ernesto.corona@intel.com>
+ <20200413222920.4722-5-ernesto.corona@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 19 Jan 2021 17:30:21 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Al Grant <Al.Grant@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, leo.yan@linaro.org,
-        mnissler@google.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-In-Reply-To: <de2487eb-ddb9-589a-8093-fae31235c884@arm.com>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
- <20210118202354.GC464579@xps15>
- <32216e9fa5c9ffb9df1123792d40eafb@codeaurora.org>
- <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
- <03b893801841f732a25072b4e62f8e0b@codeaurora.org>
- <de2487eb-ddb9-589a-8093-fae31235c884@arm.com>
-Message-ID: <58bb6cfbfc9c30246fa8e2aba0964dc6@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413222920.4722-5-ernesto.corona@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+Hello,
 
-On 2021-01-19 16:03, Suzuki K Poulose wrote:
-> On 1/19/21 9:51 AM, Sai Prakash Ranjan wrote:
->> Hi Al,
->> 
->> On 2021-01-19 14:06, Al Grant wrote:
->>> Hi Sai,
->>> 
->>>> From: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
->>>> Hi Mathieu,
->>>> 
->>>> On 2021-01-19 01:53, Mathieu Poirier wrote:
->>>> > On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
->>>> >> Hello Mathieu, Suzuki
->>>> >>
->>>> >> On 2020-10-15 21:32, Mathieu Poirier wrote:
->>>> >> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
->>>> >> > > On production systems with ETMs enabled, it is preferred to
->>>> >> > > exclude kernel mode(NS EL1) tracing for security concerns and
->>>> >> > > support only userspace(NS EL0) tracing. So provide an option via
->>>> >> > > kconfig to exclude kernel mode tracing if it is required.
->>>> >> > > This config is disabled by default and would not affect the
->>>> >> > > current configuration which has both kernel and userspace tracing
->>>> >> > > enabled by default.
->>>> >> > >
->>>> >> >
->>>> >> > One requires root access (or be part of a special trace group) to
->>>> >> > be able to use the cs_etm PMU.  With this kind of elevated access
->>>> >> > restricting tracing at EL1 provides little in terms of security.
->>>> >> >
->>>> >>
->>>> >> Apart from the VM usecase discussed, I am told there are other
->>>> >> security concerns here regarding need to exclude kernel mode tracing
->>>> >> even for the privileged users/root. One such case being the ability
->>>> >> to analyze cryptographic code execution since ETMs can record all
->>>> >> branch instructions including timestamps in the kernel and there may
->>>> >> be other cases as well which I may not be aware of and hence have
->>>> >> added Denis and Mattias. Please let us know if you have any questions
->>>> >> further regarding this not being a security concern.
->>>> >
->>>> > Even if we were to apply this patch there are many ways to compromise
->>>> > a system or get the kernel to reveal important information using the
->>>> > perf subsystem.  I would perfer to tackle the problem at that level
->>>> > rather than concentrating on coresight.
->>>> >
->>>> 
->>>> Sorry but I did not understand your point. We are talking about the 
->>>> capabilities
->>>> of coresight etm tracing which has the instruction level tracing and 
->>>> a lot more.
->>>> Perf subsystem is just the framework used for it.
->>>> In other words, its not the perf subsystem which does instruction 
->>>> level tracing,
->>>> its the coresight etm. Why the perf subsystem should be modified to 
->>>> lockdown
->>>> kernel mode? If we were to let perf handle all the trace filtering 
->>>> for different
->>>> exception levels, then why do we need the register settings in 
->>>> coresight etm
->>>> driver to filter out NS EL* tracing? And more importantly, how do 
->>>> you suppose
->>>> we handle sysfs mode of coresight tracing with perf subsystem?
->>> 
->>> You both have good points. Mathieu is right that this is not a 
->>> CoreSight
->>> issue specifically, it is a matter of kernel security policy, and 
->>> other hardware
->>> tracing mechanisms ought to be within its scope. There should be a 
->>> general
->>> "anti kernel exfiltration" config that applies to all mechanisms 
->>> within
->>> its scope, and we'd definitely expect that to include Intel PT as 
->>> well as ETM.
->>> 
->> 
->> I agree with this part where there should be a generic config for all
->> hardware tracing families(atleast for Intel PT and ARM Coresight),
->> Suzuki suggested that as well. I am under the impression that Mathieu
->> didn't like adding such a config and wanted perf subsystem to handle
->> it since initial discussion was around whether root compromise meant
->> everything is lost already and such a kconfig would not help, but
->> Mattias already gave some good examples where that is not true.
->> 
->>> A kernel config that forced exclude_kernel on all perf events would 
->>> deal with
->>> ETM and PT in one place, but miss the sysfs interface to ETM.
->>> 
->>> On the other hand, doing it in the ETM drivers would cover the perf 
->>> and sysfs
->>> interfaces to ETM, but would miss Intel PT.
->>> 
->>> So I think what is needed is a general config option that is both 
->>> implemented
->>> in perf (excluding all kernel tracing events) and by any drivers that 
->>> provide
->>> an alternative interface to hardware tracing events.
->>> 
->> 
->> I am good with this approach, once Mathieu confirms, I can add a 
->> kernel
->> wide kconfig as Suzuki suggested earlier and make ETM{3,4}x as the
->> initial users. Someone more familiar with Intel PTs can then make use
->> of this kconfig.
-> 
-> Instead of adding the support for individual drivers, you could handle 
-> this
-> in the generic perf layer. e.g, Fail perf_event create with an 
-> attribute
-> which allows kernel tracing ?
-> 
-> if (!attr.exclude_kernel)
-> 	return -EINVAL;
-> 
-> Or even exclude the kernel silently always.
-> 
-> This could also be limited to PMUs with PERF_PMU_CAP_ITRACE, if you
-> want to limit this to PMUs that instruction level tracing.
-> 
+This review of the proposed API was written after independently
+developing and testing on hardware (only SVF playback to configure a
+CPLD) support for OpenOCD[0]. I also include points that come to mind
+from my prior experience using wide range of JTAG adapters with
+different targets.
 
-Ah nice, wasn't aware of such a flag for instruction level tracing.
-This sounds really good to me, I will use this in generic perf layer
-and will have a config EXCLUDE_KERNEL_HW_ITRACE as you suggested
-earlier.
+On Mon, Apr 13, 2020 at 03:29:18PM -0700, Ernesto Corona wrote:
+> --- /dev/null
+> +++ b/Documentation/jtag/jtag-summary.rst
+> +A JTAG interface is a special interface added to a chip.
+> +Depending on the version of JTAG, two, four, or five pins are added.
+> +
+> +The connector pins are:
+> + * TDI (Test Data In)
+> + * TDO (Test Data Out)
+> + * TCK (Test Clock)
+> + * TMS (Test Mode Select)
+> + * TRST (Test Reset) optional
 
-Thanks,
-Sai
+Generic JTAG API should also include SRST (system reset), it's
+essential when JTAG is used as a transport for different On-Chip-Debug
+protocols.
+
+> +Call flow example:
+> +::
+> +
+> +	User: open  -> /dev/jatgX -> JTAG core driver -> JTAG hardware specific driver
+> +	User: ioctl -> /dev/jtagX -> JTAG core driver -> JTAG hardware specific driver
+> +	User: close -> /dev/jatgX -> JTAG core driver -> JTAG hardware specific driver
+
+s/jatg/jtag/
+
+Not sure about the semantics here, as open needs a filesystem path
+while the other two operations take a file descriptor.
+
+> --- /dev/null
+> +++ b/Documentation/jtag/jtagdev.rst
+> @@ -0,0 +1,194 @@
+> +==================
+> +JTAG userspace API
+> +==================
+> +JTAG master devices can be accessed through a character misc-device.
+> +
+> +Each JTAG master interface can be accessed by using /dev/jtagN.
+> +
+> +JTAG system calls set:
+> + * SIR (Scan Instruction Register, IEEE 1149.1 Instruction Register scan);
+> + * SDR (Scan Data Register, IEEE 1149.1 Data Register scan);
+
+These two are handled with JTAG_IOCXFER ioctl.
+
+> + * RUNTEST (Forces the IEEE 1149.1 bus to a run state for a specified number of clocks.
+
+This should be handled by JTAG_SIOCSTATE ioctl, apparently.
+
+ioctl itself is a system call here, the items mentioned are just
+different arguments to it, AFAICT.
+
+> +JTAG_SIOCFREQ
+> +~~~~~~~~~~~~~
+> +Set JTAG clock speed:
+> +::
+> +
+> +	unsigned int jtag_fd;
+> +	ioctl(jtag_fd, JTAG_SIOCFREQ, &frq);
+
+The example defining jtag_fd looks confusing. Not only it is usually a
+bad idea to use unsigned int for a file descriptor (as open() returns
+a signed one that should be checked for errors), but in this example
+it's not assigned anything. And "frq" is not specified at all, so it's
+unclear what type it really should be, and what measurement units are
+supposed to be used. And I'm still not sure it needs to be a
+pointer. It's also unclear how a userspace should tell if the
+frequency was successfully set or if it was probably out of range for
+the specific adapter (the ioctl should return a documented error in
+this case).
+
+> +JTAG_SIOCSTATE
+> +~~~~~~~~~~~~~~
+> +Force JTAG state machine to go into a TAPC state
+> +::
+> +
+> +	struct jtag_end_tap_state {
+> +		__u8	reset;
+> +		__u8	endstate;
+> +		__u8	tck;
+
+Limiting tck to 255 maximum is unreasonable.
+
+> +	};
+> +
+> +reset: one of below options
+> +::
+> +
+> +	JTAG_NO_RESET - go through selected endstate from current state
+> +	JTAG_FORCE_RESET - go through TEST_LOGIC/RESET state before selected endstate
+> +
+> +endstate: any state listed in jtag_endstate enum
+> +::
+> +
+> +	enum jtag_endstate {
+> +		JTAG_STATE_TLRESET,
+> +		JTAG_STATE_IDLE,
+> +		JTAG_STATE_SELECTDR,
+> +		JTAG_STATE_CAPTUREDR,
+> +		JTAG_STATE_SHIFTDR,
+> +		JTAG_STATE_EXIT1DR,
+> +		JTAG_STATE_PAUSEDR,
+> +		JTAG_STATE_EXIT2DR,
+> +		JTAG_STATE_UPDATEDR,
+> +		JTAG_STATE_SELECTIR,
+> +		JTAG_STATE_CAPTUREIR,
+> +		JTAG_STATE_SHIFTIR,
+> +		JTAG_STATE_EXIT1IR,
+> +		JTAG_STATE_PAUSEIR,
+> +		JTAG_STATE_EXIT2IR,
+> +		JTAG_STATE_UPDATEIR
+> +	};
+
+Even though there's no standard mapping between JTAG states and
+numbers, I would suggest to use the one documented by ARM[1] for their
+TAPSM register as was found in ARM7, ARM9 and other cores. Chances are
+that a userspace utility might have easier time converting between
+different encodings, at least it's the case for OpenOCD.
+
+> +tck: clock counter
+
+This is not nearly enough documentation for the parameter, IMHO. It
+doesn't work anyway in the current version so I had to add some
+bitbanging for CPLD configuration to work...
+
+> +Example:
+> +::
+> +
+> +	struct jtag_end_tap_state end_state;
+> +
+> +	end_state.endstate = JTAG_STATE_IDLE;
+> +	end_state.reset = 0;
+> +	end_state.tck = data_p->tck;
+> +	usleep(25 * 1000);
+> +	ioctl(jtag_fd, JTAG_SIOCSTATE, &end_state);
+
+usleep doesn't seem to be doing anything useful at all here.
+
+> +JTAG_GIOCSTATUS
+> +~~~~~~~~~~~~~~~
+> +Get JTAG TAPC current machine state
+> +::
+> +
+> +	unsigned int jtag_fd;
+> +	jtag_endstate endstate;
+> +	ioctl(jtag_fd, JTAG_GIOCSTATUS, &endstate);
+
+This should probably also include information about TRST and SRST states.
+
+> +JTAG_IOCXFER
+> +~~~~~~~~~~~~
+> +Send SDR/SIR transaction
+> +::
+> +
+> +	struct jtag_xfer {
+> +		__u8	type;
+> +		__u8	direction;
+> +		__u8	endstate;
+> +		__u8	padding;
+
+padding is both undocumented and unused.
+
+> +		__u32	length;
+> +		__u64	tdio;
+> +	};
+> +
+> +type: transfer type - JTAG_SIR_XFER/JTAG_SDR_XFER
+> +
+> +direction: xfer direction - JTAG_READ_XFER/JTAG_WRITE_XFER/JTAG_READ_WRITE_XFER
+> +
+> +length: xfer data length in bits
+
+I'm not sure if calling it just "length" is clear enough. Probably a
+better name would be "bitcount"?
+
+> +tdio : xfer data array
+
+It's not exactly obvious that this is a pointer to user buffer
+containing data to be shifted out. Bit and byte order are not
+specified.
+
+I also do not like the idea to reuse input buffer for output. It might
+be const in the user app, it might be used after the JTAG operation
+for logging or verification purposes etc. Are there other popular APIs
+that do not split input and output into their own buffers?
+
+> +JTAG_SIOCMODE
+> +~~~~~~~~~~~~~
+> +If hardware driver can support different running modes you can change it.
+> +
+> +Example:
+> +::
+> +
+> +	struct jtag_mode mode;
+> +	mode.feature = JTAG_XFER_MODE;
+> +	mode.mode = JTAG_XFER_HW_MODE;
+> +	ioctl(jtag_fd, JTAG_SIOCMODE, &mode);
+
+This is absolutely not generic enough, and struct jtag_mode is just
+odd. And not documented here, the example is not extensive.
+
+Please consider providing instead a generic function to pass arbitrary
+data to the adapter driver _and_ to get some information back from it.
+
+> +JTAG_IOCBITBANG
+> +~~~~~~~~~~~~~~~
+> +JTAG Bitbang low level operation.
+> +
+> +Example:
+> +::
+> +
+> +	struct tck_bitbang bitbang
+
+missing semicolon, missing declaration/documentation of the struct
+fields.
+
+> +	bitbang.tms = 1;
+> +	bitbang.tdi = 0;
+> +	ioctl(jtag_fd, JTAG_IOCBITBANG, &bitbang);
+> +	tdo = bitbang.tdo;
+
+This is ok, used it for implementing RUNTEST/STABLECLOCKS.
+
+
+Now follows the list of what I consider to be missing in this API if
+it's supposed to be generic enough to cover all regular JTAG devices:
+
+1. Multiple devices might be used at the same time, including
+hotplugging. This requires methods to somehow enumerate them, read
+serial numbers, probably allow matching on VID:PID for USB adapters;
+some people also want to be able to match based on "location"
+(e.g. USB bus topology, full path leading to the device).
+
+2. Bitbang-style control is often needed for SRST and TRST lines.
+
+3. Many adapters have LED(s) that host software is supposed to
+control.
+
+4. It'd be useful to have a way to emit a TMS sequence, e.g. modern
+ARM devices support both SWD and JTAG transports and a special
+sequence is needed to switch between them.
+
+[0] http://openocd.zylin.com/#/c/5975/
+[1] https://documentation-service.arm.com/static/5e8e27fcfd977155116a637f
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
