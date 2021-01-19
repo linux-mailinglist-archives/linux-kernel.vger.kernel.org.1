@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CF02FBD29
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C212FBD22
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732481AbhASREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387787AbhASQjs (ORCPT
+        id S2391073AbhASRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:02:32 -0500
+Received: from esa7.hc324-48.eu.iphmx.com ([207.54.71.126]:40724 "EHLO
+        esa7.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389743AbhASQwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:39:48 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B856BC0613C1;
-        Tue, 19 Jan 2021 08:39:07 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id rv9so10625283ejb.13;
-        Tue, 19 Jan 2021 08:39:07 -0800 (PST)
+        Tue, 19 Jan 2021 11:52:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=x3iaktssMsx35re+ePjSYuuphi63Sg/vQJuTVNRQ1PI=;
-        b=A1Fvc8QyZgmYnW0bcJy9kLzd/JdI4l9U3e0n3usU66uClwx5bGsif+K7Ud9gRpXxRk
-         KNgYGL/z3dEa51WSIcmYoe+CFLQXqUDyO7S2uR3tw5rIXnMu0UbhtZCGnHAI7d7gnt37
-         6uwVLJhTUw8wF3QDfCyHGfvC7/JHH018NZlLr1PJ21q42PihmTvcgHvhB094eiLdkVFf
-         Q7CHUykZZtTA8dIvHFbPgDiaQmY5KJVkMKqfDFnGtyZhT4CO5//4oAVtu3DLvt6pq4RQ
-         mgObN/GwkajethESdblctExRQj5/5fDAgqLoUzcuqRW/P9vSZ9L3k2RYPonoxeFH4Agi
-         ZETA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=x3iaktssMsx35re+ePjSYuuphi63Sg/vQJuTVNRQ1PI=;
-        b=JwPZW2YDKrNiYM2WCMFvW7rtGae1AUTBvs0icYfw5zUMAEMwAxGIX0sDavmWBThj08
-         17U7McjBXr8XxfNEOEtrwdff7qwLAHcrQNTYJrb38LaojtLiyel5BjyyFpqiaBk78Vyp
-         bg1AtcW6AOuw4jMKpy515uIFPA2laxULTzJXfIbeO9O+jdJ/XFhykWmmKZ5kKoAMIjIO
-         ILeTHZEwuDppNqGJ1JOqU3AJWD6Fz9WKGqR4Fneoce5DTCgxO9O5uhYDrFANlwyng2un
-         /fjQXXAuRZ3o4F+ZJ4oynvU8qLXZdRlSVgVM5Xcj3tmLakrgvcIzb4VT5KxjrrAHVhlo
-         8z4Q==
-X-Gm-Message-State: AOAM531hwLdCnyA5mM9HoklpI52oC50ZMfWKBH+asnWLcBatw0p8BRiT
-        TFAp+behA592EwILhwh91K4=
-X-Google-Smtp-Source: ABdhPJyVWfv2S9QFX/OxCCnsapHy5tUlnzFkOFyn5I2/qGJZZ3Mf1NVS16GJtgYFWIkUP+Ia3rlUwQ==
-X-Received: by 2002:a17:907:16a2:: with SMTP id hc34mr3616256ejc.9.1611074346477;
-        Tue, 19 Jan 2021 08:39:06 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.gmail.com with ESMTPSA id k22sm9589993eji.101.2021.01.19.08.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:39:06 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 4/6] scsi: ufs: Remove two WB related fields from struct ufs_dev_info
-Date:   Tue, 19 Jan 2021 17:38:45 +0100
-Message-Id: <20210119163847.20165-5-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210119163847.20165-1-huobean@gmail.com>
-References: <20210119163847.20165-1-huobean@gmail.com>
+  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
+  t=1611075170; x=1642611170;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JtbhU+MEjxnH0ndi81FLN6q3gxthENEMNOMd1VdQ7F8=;
+  b=HWeF2TwMzE1D/lJ4Ku7B+hm3tHPgRKbqWXg6ZNTZx9lbD2AnAqSewBkk
+   4hr9thZ7FpFQcKWNqZy0QBYkHXOG9RxO9pnrPwBfHuhTpY7sUNlSrFXek
+   x+GNpZpTc2buTDnNZMJjUaPJK1OUVphQmCMn6Rni/Y2yFitw/vtD2bW0c
+   g=;
+Received: from esagw6.bmwgroup.com (HELO esagw6.muc) ([160.46.252.49]) by
+ esa7.hc324-48.eu.iphmx.com with ESMTP/TLS; 19 Jan 2021 17:43:53 +0100
+Received: from esabb2.muc ([160.50.100.34])  by esagw6.muc with ESMTP/TLS;
+ 19 Jan 2021 17:43:53 +0100
+Received: from smucm10m.bmwgroup.net (HELO smucm10m.europe.bmw.corp) ([160.48.96.49])
+ by esabb2.muc with ESMTP/TLS; 19 Jan 2021 17:43:53 +0100
+Received: from greenhouse.bmw-carit.intra (192.168.221.38) by smucm10m.europe.bmw.corp
+ (160.48.96.49) with Microsoft SMTP Server (TLS;
+ Tue, 19 Jan 2021 17:43:52 +0100
+From:   Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: [RFC PATCH 1/2] Use pause-on-trace with the latency tracers
+Date:   Tue, 19 Jan 2021 17:43:43 +0100
+Message-ID: <20210119164344.37500-2-Viktor.Rosendahl@bmw.de>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210119164344.37500-1-Viktor.Rosendahl@bmw.de>
+References: <20210119164344.37500-1-Viktor.Rosendahl@bmw.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SMUCM30K.europe.bmw.corp (160.46.167.47) To
+ smucm10m.europe.bmw.corp (160.48.96.49)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Eaerlier, tracing was disabled when reading the trace file. This behavior
+was changed with:
 
-d_wb_alloc_units and d_ext_ufs_feature_sup only be used while WB probe.
-They are just used to confirm the condition that "if bWriteBoosterBufferType
-is set to 01h but dNumSharedWriteBoosterBufferAllocUnits is set to zero,
-the WriteBooster feature is disabled", and if UFS device supports WB.
-After that, no user uses them any more. So, don't need to keep time in
-runtime.
+commit 06e0a548bad0 ("tracing: Do not disable tracing when reading the
+trace file").
 
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
+This doesn't seem to work with the latency tracers.
+
+The above mentioned commit dit not only change the behavior but also added
+an option to emulate the old behavior. The idea with this patch is to
+enable this pause-on-trace option when the latency tracers are used.
+
+This is a workaround, perhaps it would be better to make the latency
+tracers work without pausing but I am not sure how to do that, or even
+how feasible it is without significant rework.
+
+Signed-off-by: Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
 ---
- drivers/scsi/ufs/ufs.h    |  2 --
- drivers/scsi/ufs/ufshcd.c | 14 ++++++--------
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ kernel/trace/trace_irqsoff.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index 09c7cc8a678d..a8000ed0017e 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -538,9 +538,7 @@ struct ufs_dev_info {
- 	u8 *model;
- 	u16 wspecversion;
- 	u32 clk_gating_wait_us;
--	u32 d_ext_ufs_feature_sup;
- 	u8 b_wb_buffer_type;
--	u32 d_wb_alloc_units;
- 	bool b_rpm_dev_flush_capable;
- 	u8 b_presrv_uspc_en;
- };
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index d13c6eb2efcd..f6fe14b60eff 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7270,6 +7270,7 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- 	struct ufs_dev_info *dev_info = &hba->dev_info;
- 	u8 lun;
- 	u32 d_lu_wb_buf_alloc;
-+	u32 ext_ufs_feature;
+diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
+index d06aab4dcbb8..6756379b661f 100644
+--- a/kernel/trace/trace_irqsoff.c
++++ b/kernel/trace/trace_irqsoff.c
+@@ -562,6 +562,8 @@ static int __irqsoff_tracer_init(struct trace_array *tr)
+ 	/* non overwrite screws up the latency tracers */
+ 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
+ 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
++	/* without pause, we will produce garbage if another latency occurs */
++	set_tracer_flag(tr, TRACE_ITER_PAUSE_ON_TRACE, 1);
  
- 	if (!ufshcd_is_wb_allowed(hba))
- 		return;
-@@ -7287,11 +7288,10 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- 	    DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP + 4)
- 		goto wb_disabled;
+ 	tr->max_latency = 0;
+ 	irqsoff_trace = tr;
+@@ -583,11 +585,13 @@ static void __irqsoff_tracer_reset(struct trace_array *tr)
+ {
+ 	int lat_flag = save_flags & TRACE_ITER_LATENCY_FMT;
+ 	int overwrite_flag = save_flags & TRACE_ITER_OVERWRITE;
++	int pause_flag = save_flags & TRACE_ITER_PAUSE_ON_TRACE;
  
--	dev_info->d_ext_ufs_feature_sup =
--		get_unaligned_be32(desc_buf +
--				   DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP);
-+	ext_ufs_feature = get_unaligned_be32(desc_buf +
-+					DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP);
+ 	stop_irqsoff_tracer(tr, is_graph(tr));
  
--	if (!(dev_info->d_ext_ufs_feature_sup & UFS_DEV_WRITE_BOOSTER_SUP))
-+	if (!(ext_ufs_feature & UFS_DEV_WRITE_BOOSTER_SUP))
- 		goto wb_disabled;
+ 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
+ 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
++	set_tracer_flag(tr, TRACE_ITER_PAUSE_ON_TRACE, pause_flag);
+ 	ftrace_reset_array_ops(tr);
  
- 	/*
-@@ -7306,10 +7306,8 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- 		desc_buf[DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN];
- 
- 	if (dev_info->b_wb_buffer_type == WB_BUF_MODE_SHARED) {
--		dev_info->d_wb_alloc_units =
--		get_unaligned_be32(desc_buf +
--				   DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS);
--		if (!dev_info->d_wb_alloc_units)
-+		if (!get_unaligned_be32(desc_buf +
-+				   DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS))
- 			goto wb_disabled;
- 	} else {
- 		for (lun = 0; lun < UFS_UPIU_MAX_WB_LUN_ID; lun++) {
+ 	irqsoff_busy = false;
 -- 
-2.17.1
+2.25.1
 
