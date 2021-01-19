@@ -2,58 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DD22FB174
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EB92FB17E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbhASGbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:31:04 -0500
-Received: from verein.lst.de ([213.95.11.211]:50786 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730092AbhASG2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:28:36 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C863B6736F; Tue, 19 Jan 2021 07:27:53 +0100 (CET)
-Date:   Tue, 19 Jan 2021 07:27:53 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC PATCH 01/37] block: introduce bio_init_fields() helper
-Message-ID: <20210119062753.GA21413@lst.de>
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com> <20210119050631.57073-2-chaitanya.kulkarni@wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119050631.57073-2-chaitanya.kulkarni@wdc.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1729995AbhASGbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:31:51 -0500
+Received: from out28-148.mail.aliyun.com ([115.124.28.148]:48368 "EHLO
+        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729463AbhASG37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 01:29:59 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1089962|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00400365-0.000545466-0.995451;FP=11637145905088366247|1|1|1|0|-1|-1|-1;HT=ay29a033018047203;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.JMd8d.7_1611037752;
+Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.JMd8d.7_1611037752)
+          by smtp.aliyun-inc.com(10.194.97.246);
+          Tue, 19 Jan 2021 14:29:12 +0800
+From:   Liu Xiang <liu.xiang@zlingsmart.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     linus.walleij@linaro.org, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
+        Liu Xiang <liu.xiang@zlingsmart.com>
+Subject: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
+Date:   Tue, 19 Jan 2021 14:29:08 +0800
+Message-Id: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't think a helper just to initialize a few fields is very useful.
-But there is something in this area I've wanted to do for a while:
+When CONFIG_REGULATOR is not set, sunxi_pmx_request() always return
+success. Even a group of pins call sunxi_pmx_request(), the refcount
+is only 1. This can cause a use-after-free warning in sunxi_pmx_free().
+To solve this problem, go to err path if regulator_get() return NULL
+or error.
 
-> +static inline void bio_init_fields(struct bio *bio, struct block_device *bdev,
-> +				   sector_t sect, void *priv,
-> +				   bio_end_io_t *end_io,
-> +				   unsigned short prio, unsigned short whint)
-> +{
-> +	bio_set_dev(bio, bdev);
-> +	bio->bi_iter.bi_sector = sect;
-> +	bio->bi_private = priv;
-> +	bio->bi_end_io = end_io;
-> +	bio->bi_ioprio = prio;
-> +	bio->bi_write_hint = whint;
+Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+---
+ drivers/pinctrl/sunxi/pinctrl-sunxi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ensuring that the device, sector and op are always initialized would
-really helper some of the bio mapping helpers, so I'd rather
-add a new
+diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+index dc8d39ae0..d1a8974eb 100644
+--- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
++++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+@@ -777,7 +777,7 @@ static int sunxi_pmx_request(struct pinctrl_dev *pctldev, unsigned offset)
+ 
+ 	snprintf(supply, sizeof(supply), "vcc-p%c", 'a' + bank);
+ 	reg = regulator_get(pctl->dev, supply);
+-	if (IS_ERR(reg)) {
++	if (IS_ERR_OR_NULL(reg)) {
+ 		dev_err(pctl->dev, "Couldn't get bank P%c regulator\n",
+ 			'A' + bank);
+ 		return PTR_ERR(reg);
+@@ -811,7 +811,7 @@ static int sunxi_pmx_free(struct pinctrl_dev *pctldev, unsigned offset)
+ 					    PINS_PER_BANK;
+ 	struct sunxi_pinctrl_regulator *s_reg = &pctl->regulators[bank_offset];
+ 
+-	if (!refcount_dec_and_test(&s_reg->refcount))
++	if (!s_reg->regulator || !refcount_dec_and_test(&s_reg->refcount))
+ 		return 0;
+ 
+ 	regulator_disable(s_reg->regulator);
+-- 
+2.17.1
 
-struct bio *bio_new(struct block_device *bdev, sector_t sector,
-		unsigned int op, unsigned int max_bvecs, gfp_t gfp_mask)
-
-helper, where max_bvecs is clamped to BIO_MAX_PAGES.
-
-bi_private, bi_end_io, bi_ioprio and bi_write_hint on the other hand
-are purely optional and can be easily set just by the users that care.
