@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34E12FB8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054682FB8AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391244AbhASNcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:32:03 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35991 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389267AbhASNZT (ORCPT
+        id S2391997AbhASNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393747AbhASN2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:25:19 -0500
-Received: by mail-oi1-f176.google.com with SMTP id 9so21130460oiq.3;
-        Tue, 19 Jan 2021 05:24:22 -0800 (PST)
+        Tue, 19 Jan 2021 08:28:53 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3B9C061573;
+        Tue, 19 Jan 2021 05:28:11 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c127so1260089wmf.5;
+        Tue, 19 Jan 2021 05:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5y8Ro1ypuMwid9mJ+5yTb8j+eAM7KPlRMembrO9vocc=;
+        b=lx6zvICzjPPHETERikm0s4RqzxKqjLCL/yTU4tYQDIumZZt4FI6Zr0zXmBGkJ4xtSg
+         Tpev99JjWdgHUg0pnM/bgFnJ1naDMnmNS+C4GOAxcA6U9nR7HAHbyT668vglCwGfXn7k
+         mQrTwoyW3LrjUlLHMqNTTBDb5o8sw8NWZSuvNybzvMkicpDX10QKTtp5Eu5f8acMamf+
+         kF9QqGU/8CINxLPv+UGKla0AoMuD0DXTAB4hbRfqV/SMTPm9/862zcSP7K+cAKuw/0U9
+         YT6AEHteHr8n+n7FkZQslMfQdIogjDB/Lh1c2nanAh+bQzmIe2ezQ9LuuMGIlSbtXLbO
+         id0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Idlx9RREqweSUD8lcoD8wW/tGcOzRTqi7qMTCAE3Qko=;
-        b=LP0j9td4/h/qiWWMUW/rQuu6r90kvreGW2E4JPLasy23bl2IWJyl8pYtzLBXHgvSKm
-         7kyuNVSacByAgw4WeoAPGxnW6RVqo5TvF/2RHxaToiXUoNZRZILwNsc8YQjbtgOu7zXb
-         QLVmhAbkq85HFOEDd2Vc9JOPg31tQWGg/XvjyMxA792wG4hxwjekxF7H8/bMzjcu764S
-         oMGhupjSpMFhIQKtnVg4Dlq4s2A/thPNZ0zqUMdRDTc2C3MTCY8WSi1DThZlROIXEP0f
-         jrDKyKPWjlyxhcsBypuealUpDeDRDzdF8fbuCHuiJ3O+9+C9O88Y2T0YKr0ZwTaWewoK
-         ezrw==
-X-Gm-Message-State: AOAM5312FMEw4TCLhZsTbz32jkv8KrN+zYWlEo4Y7QS9hbVZt6xY5rzy
-        NTnxabb+SlHnMz9xseJOyE6p3TCLhd71CW2EaJ8=
-X-Google-Smtp-Source: ABdhPJxZKTE21Z1XKEJRaORsKkBXwppVd0J7GH8X1+iaPGmeyQUSVxwzJG3dhbhqhxFD9wSDdc17wENeX3UpaLU8vd8=
-X-Received: by 2002:aca:5c05:: with SMTP id q5mr2566295oib.157.1611062636064;
- Tue, 19 Jan 2021 05:23:56 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5y8Ro1ypuMwid9mJ+5yTb8j+eAM7KPlRMembrO9vocc=;
+        b=swUAc9o7nu6HWCv0ZiH0jmVg9uGGm5wU6OGmwiSclCNFZgkxIa18x4ZAEfNEqEPHMu
+         Z9gfU3WJOmHPELuFyatHfCoAQa211GRxWc6uj2Qf9SmjDYiJCz47cMXLk3QwNh5MtGZU
+         8Sh1tDtElzNydm3iu6Ce/9JfWntHxaM0SI6ytYEeTemai5TUWrBWVaXDIidmP0xuBv3L
+         smzYcf744SFToYLod6etYOJTTc2mHKVKmNzWvX4HzDmNllfJxcj9jQpYz31BQDw0/eBK
+         Ij+geNHkP9AUGFEpSnAsyHFNYW7Tw1mqr/8vJW2VfqdUxcpOYDyYcmFn4qgqrd6UVyn4
+         hSWA==
+X-Gm-Message-State: AOAM531CuP+sQsD4wLA5mamFJUYOWF4jzH1UOlvJLbNgRiRjR9nkglD5
+        WRj1bNbfIlDestSCSSWqQ8I=
+X-Google-Smtp-Source: ABdhPJyqV3r5lugb4G4AUkJpM01DH9xMik3Jbf10xwwURpVgVJLd2eqD2bWAvX85ZopBoeYJj6Z5Rg==
+X-Received: by 2002:a7b:c08b:: with SMTP id r11mr2514749wmh.11.1611062890337;
+        Tue, 19 Jan 2021 05:28:10 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id b64sm4518824wmb.26.2021.01.19.05.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 05:28:09 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+ <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <29f82122-8059-c9dc-15af-a6812e5509f7@gmail.com>
+Date:   Tue, 19 Jan 2021 13:28:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <17705994.d592GUb2YH@kreacher> <CAGETcx9Bk0-nF+wnNXyLpgx7Ny-EchdUpXOYeBmhxTNF+mCR2A@mail.gmail.com>
-In-Reply-To: <CAGETcx9Bk0-nF+wnNXyLpgx7Ny-EchdUpXOYeBmhxTNF+mCR2A@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Jan 2021 14:23:44 +0100
-Message-ID: <CAJZ5v0iJeZYDMoub1u4CMs8ciZkAPkZKVYg6+OS4XxPRaPYhjQ@mail.gmail.com>
-Subject: Re: [PATCH v2] driver core: Extend device_is_dependent()
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:03 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Fri, Jan 15, 2021 at 10:30 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > If the device passed as the target (second argument) to
-> > device_is_dependent() is not completely registered (that is, it has
-> > been initialized, but not added yet), but the parent pointer of it
-> > is set, it may be missing from the list of the parent's children
-> > and device_for_each_child() called by device_is_dependent() cannot
-> > be relied on to catch that dependency.
-> >
-> > For this reason, modify device_is_dependent() to check the ancestors
-> > of the target device by following its parent pointer in addition to
-> > the device_for_each_child() walk.
-> >
-> > Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> > Tested-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> >
-> > -> v2:
-> >    * Improve the changelog.
-> >    * Add a comment to explain the reason for the extra check.
-> >    * Add tags.
-> >
-> >    No code changes.
-> >
-> > ---
-> >  drivers/base/core.c |   17 ++++++++++++++++-
-> >  1 file changed, 16 insertions(+), 1 deletion(-)
-> >
-> > Index: linux-pm/drivers/base/core.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/base/core.c
-> > +++ linux-pm/drivers/base/core.c
-> > @@ -208,6 +208,16 @@ int device_links_read_lock_held(void)
-> >  #endif
-> >  #endif /* !CONFIG_SRCU */
-> >
-> > +static bool device_is_ancestor(struct device *dev, struct device *target)
-> > +{
-> > +       while (target->parent) {
-> > +               target = target->parent;
-> > +               if (dev == target)
-> > +                       return true;
-> > +       }
-> > +       return false;
-> > +}
-> > +
-> >  /**
-> >   * device_is_dependent - Check if one device depends on another one
-> >   * @dev: Device to check dependencies for.
-> > @@ -221,7 +231,12 @@ int device_is_dependent(struct device *d
-> >         struct device_link *link;
-> >         int ret;
-> >
-> > -       if (dev == target)
-> > +       /*
-> > +        * The "ancestors" check is needed to catch the case when the target
-> > +        * device has not been completely initialized yet and it is still
-> > +        * missing from the list of children of its parent device.
-> > +        */
-> > +       if (dev == target || device_is_ancestor(dev, target))
-> >                 return 1;
-> >
-> >         ret = device_for_each_child(dev, target, device_is_dependent);
-> >
->
-> Reviewed-by: Saravana Kannan <saravanak@google.com>
->
-> fw_devlink_relax_cycle() needs a similar fix. Want me to handle that
-> as a separate patch to driver-core-next? Or do you want to combine
-> that in this patch?
 
-I would prefer that to be a different patch because of the Fixes: tag.
+On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+>>>> specification intends. We need to be able to find those devices "from"
+>>>> the dependee, so add a function to parse all ACPI Devices and check if
+>>>> the include the handle of the dependee device in their _DEP buffer.
+>>> What exactly do you need this for?
+>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+>> refer to those INT3472's in their _DEP method. The driver binds to the
+>> INT3472 device, we need to find the sensors dependent on them.
+>>
+> Well, this is an interesting concept. :-)
+>
+> Why does _DEP need to be used for that?  Isn't there any other way to
+> look up the dependent sensors?
 
-Also fw_devlink_relax_cycle() is in linux-next only for now, so it is
-better to avoid mixing a mainline fix with updating that one.
+
+If there is, I'm not aware of it, I don't see a reference to the sensor
+in the INT3472 device (named "PMI0", with the corresponding sensor being
+"CAM0") in DSDT  [1]
+
+>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+>>>
+>>> Note that supplier drivers may remove entries from there, but does
+>>> that matter for your use case?
+>> Ah - that may work, yes. Thank you, let me test that.
+> Even if that doesn't work right away, but it can be made work, I would
+> very much prefer that to the driver parsing _DEP for every device in
+> the namespace by itself.
+
+
+Alright; I haven't looked too closely yet, but I think an iterator over
+acpi_dep_list exported from the ACPI subsystem would also work in a
+pretty similar way to the function introduced in this patch does,
+without much work
+
+
+[1]
+https://gist.githubusercontent.com/djrscally/e64d112180517352fa3392878b0f4a7d/raw/88b90b3ea4204fd7845257b6666fdade47cc2981/dsdt.dsl
+
