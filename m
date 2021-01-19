@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C523E2FB781
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065BD2FB77D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405025AbhASLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391069AbhASKwo (ORCPT
+        id S2404931AbhASLBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:01:15 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:45776 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2391122AbhASKxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:52:44 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280C7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:52:02 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id n6so5857077edt.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 02:52:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S5vcWLYKoGwyM8t/8S/E9AoWHkff5piFNbt11pwE+L4=;
-        b=OYNL7Mmt90KQttNu8O6EHRPz5gOXvj4jjK26OTEkQyAIdkbb3CaAZLJ/fjlvehiHDt
-         04W6iTXTXisPI2DB1+3MVgnjCmzCL8H1S/2u9tNewftXOUjpEYamX3kHCzDeYOvLjZHc
-         yRLV30F9RQsz7tLFFqL1mVQC9TUmaxG/SJk0qcxZMhQM4o6uNVuL6uf49rriGVZbxL49
-         ENHNohylxEmqORe94erBKgn4OI/3yNyZKcXkEM2mxzLbC4QPb4tBOb3p80Xc2QM0VM7T
-         LZAxtcITNI29oCCWjJiFLOq+hulglwVJR1AgopBDac1b2Sb3cDeRlC1u7zv83pntoz+j
-         zN+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S5vcWLYKoGwyM8t/8S/E9AoWHkff5piFNbt11pwE+L4=;
-        b=NA8fANo1uvGKB/hKx/j5SjcELmq/ZCTv7mvV/pirOH2M6urcI3xy9XfLK2Mtt53Q4C
-         DG9nEnQ+SfyAuBZJdmDSK7qzG1ZWX7KiJasQKMrRpEJOSI46k/7melyzj+1sy/UF7wf3
-         CFo1VFC5MUJnAXtbFARA0rNON+P/8868rePw7lmPw1e8jpDY6NexJ9/eYa0yavwDrKIZ
-         ROfmiQpDGcivx97/6jMpuVhF9SUQ/CWalGtghocoYUtnHZfYMh8hL66TID+ncLsDDBr7
-         rUFZKi8m6xVO66GqFgu0/wNZDmkAQATZ5r4rSEIkK2JVQOzKp/ioA1R6Pyiht+ODwrK0
-         JnKQ==
-X-Gm-Message-State: AOAM5323LTtXHEIcX6nHBmiEx2v0sUWp6IRnYIBDtftGMsHiEpcmlARN
-        ibjOs1ODmz6DMaHf5EHi+lFqnRvUtlr/KQSI7aSi8A==
-X-Google-Smtp-Source: ABdhPJxOZhnu32XzKOnT4zurXFOW0ag856sfqQAup+T3PYxZupUS6s1eH8MU80S2ZdVx6TdwG9mQZKiOmEqlueTrCxA=
-X-Received: by 2002:aa7:ca13:: with SMTP id y19mr2817438eds.59.1611053520922;
- Tue, 19 Jan 2021 02:52:00 -0800 (PST)
+        Tue, 19 Jan 2021 05:53:17 -0500
+X-UUID: 1c0459e7f3e74769ab96e65bd18a00f9-20210119
+X-UUID: 1c0459e7f3e74769ab96e65bd18a00f9-20210119
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 168070190; Tue, 19 Jan 2021 18:52:15 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 19 Jan 2021 18:52:13 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 19 Jan 2021 18:52:13 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH v2] of/device: Update dma_range_map only when dev has valid dma-ranges
+Date:   Tue, 19 Jan 2021 18:52:03 +0800
+Message-ID: <20210119105203.15530-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me> <20210118090508.21686-1-nikita.shubin@maquefel.me>
-In-Reply-To: <20210118090508.21686-1-nikita.shubin@maquefel.me>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 19 Jan 2021 11:51:50 +0100
-Message-ID: <CAMpxmJVrYS1FT0DUdY40D0AZFtjRqrSihj6CO-Z+RCLpZ82t3Q@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: warning on gpiochip->to_irq defined
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:05 AM Nikita Shubin
-<nikita.shubin@maquefel.me> wrote:
->
-> gpiochip->to_irq method is redefined in gpiochip_add_irqchip.
->
-> A lot of gpiod driver's still define ->to_irq method, let's give
-> a gentle warning that they can no longer rely on it, so they can remove
-> it on ocassion.
->
-> Fixes: e0d8972898139 ("gpio: Implement tighter IRQ chip integration")
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
-> v1->v2:
-> - Change chip_err to chip_warn
-> ---
->  drivers/gpio/gpiolib.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 5ce0c14c637b..5a9410c2537d 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -1489,6 +1489,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
->                 type = IRQ_TYPE_NONE;
->         }
->
-> +       if (gc->to_irq)
-> +               chip_warn(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
-> +
->         gc->to_irq = gpiochip_to_irq;
->         gc->irq.default_type = type;
->         gc->irq.lock_key = lock_key;
-> --
-> 2.29.2
->
+The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
+supplanting dma_pfn_offset") always update dma_range_map even though it was
+already set, like in the sunxi_mbus driver. the issue is reported at [1].
+This patch avoid this(Updating it only when dev has valid dma-ranges).
 
-Applied to fixes, thanks!
+Meanwhile, dma_range_map contains the devices' dma_ranges information,
+This patch moves dma_range_map before of_iommu_configure. The iommu
+driver may need to know the dma_address requirements of its iommu
+consumer devices.
 
-Bartosz
+[1] https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com/
+
+CC: Rob Herring <robh+dt@kernel.org>
+CC: Frank Rowand <frowand.list@gmail.com>
+Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset"),
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ drivers/of/device.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/of/device.c b/drivers/of/device.c
+index aedfaaafd3e7..1122daa8e273 100644
+--- a/drivers/of/device.c
++++ b/drivers/of/device.c
+@@ -162,9 +162,11 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 	mask = DMA_BIT_MASK(ilog2(end) + 1);
+ 	dev->coherent_dma_mask &= mask;
+ 	*dev->dma_mask &= mask;
+-	/* ...but only set bus limit if we found valid dma-ranges earlier */
+-	if (!ret)
++	/* ...but only set bus limit and range map if we found valid dma-ranges earlier */
++	if (!ret) {
+ 		dev->bus_dma_limit = end;
++		dev->dma_range_map = map;
++	}
+ 
+ 	coherent = of_dma_is_coherent(np);
+ 	dev_dbg(dev, "device is%sdma coherent\n",
+@@ -172,6 +174,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 
+ 	iommu = of_iommu_configure(dev, np, id);
+ 	if (PTR_ERR(iommu) == -EPROBE_DEFER) {
++		/* Don't touch range map if it wasn't set from a valid dma-ranges */
++		if (!ret)
++			dev->dma_range_map = NULL;
+ 		kfree(map);
+ 		return -EPROBE_DEFER;
+ 	}
+@@ -181,7 +186,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 
+ 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+ 
+-	dev->dma_range_map = map;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(of_dma_configure_id);
+-- 
+2.18.0
+
