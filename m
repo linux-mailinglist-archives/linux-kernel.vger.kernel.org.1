@@ -2,197 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A719C2FBAE0
+	by mail.lfdr.de (Postfix) with ESMTP id 3B44A2FBADF
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390649AbhASPQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:16:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58282 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392003AbhASO40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:56:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611068091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmCmuSOhm/IEyEtAJZi780idCmd1/jX8N6bP920KOR8=;
-        b=hkc0siRb+HozRCLM4tFKfa26Breloyu0UcXslZ67L+62d9bhAmavUT3Q4Q+wWXHRPgyyJK
-        rYI5LXjYN5oOSQI5MK1Nl8nFmwdM4o1erS7vLbpsec2nfJuOb7RvgaPZGeI8DsyvBcw6kX
-        ro9ACeerhqZAGuoW+KMnmdAFRgjhqUw=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-y3ZHr_ifM2OIc5-vd3fZVQ-1; Tue, 19 Jan 2021 09:54:49 -0500
-X-MC-Unique: y3ZHr_ifM2OIc5-vd3fZVQ-1
-Received: by mail-qt1-f199.google.com with SMTP id d10so475674qtx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:54:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VmCmuSOhm/IEyEtAJZi780idCmd1/jX8N6bP920KOR8=;
-        b=U+D2QOsqdSBpKREeR+QzYgCIjWzAI0LvqR/eyFXXUUF6kc/O6/JsG0ItgKnDoehJLX
-         L+ymuBy0j5gjyq1HfA7IcNV4LKQuNLilYsLl7YIT9dyGn9sLZIJUBt6im7kv2z4VDxJw
-         QTMz4JKY308I2fv40z3lZiefs3k/XlKMaXPRx0fNQprsPULUmBWvIQ7GBP4xCru3+2Co
-         L+tiYMHEXfo8DC+A89KlM16BuUi3klPxHgLj5Dic29XbpPpcBRPrugCPnUOH5dKoEHL/
-         ju4J9eQRxeh/ol++LTMTYqu7X4gsm0pW8XreSedKe2RUK7dV0M3hJakFVMPOX7svwupi
-         lMZg==
-X-Gm-Message-State: AOAM530BSa9qeIe1aFKdQHR4h7uDYuQ4Yhp5vRl5YvqbhB6WeRBcUEqa
-        sFnexHLgdG0i4QHSJvE3dmVIBUwpE2i4zbQV6oJVYJYmPgudflx3rLJ9cQ1ko5WqXOaGMQx+Q4o
-        lp4DNX4lvK2adtDbNxJzy5zre
-X-Received: by 2002:ac8:6f4c:: with SMTP id n12mr4393263qtv.277.1611068088347;
-        Tue, 19 Jan 2021 06:54:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQpQNRGFVXD2hF+GPhLmBlHPlvEfnmjjEidDijfF0kSjpbj8B5DErnaJyeG3nl9cG5Yobt6w==
-X-Received: by 2002:ac8:6f4c:: with SMTP id n12mr4393235qtv.277.1611068088083;
-        Tue, 19 Jan 2021 06:54:48 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q3sm13028444qkb.73.2021.01.19.06.54.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 06:54:47 -0800 (PST)
-Subject: Re: [PATCH v2] iio: imu: bmi160: add mutex_lock for avoiding race
-To:     Guoqing Chi <chi962464zy@163.com>
-Cc:     martin.blumenstingl@googlemail.com, linux-kernel@vger.kernel.org,
-        chiguoqing@yulong.com, huyue@yulong.com, zhangwen@yulong.com,
-        linux-iio@vger.kernel.org
-References: <20210119112211.26404-1-chi962464zy@163.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <c93224b5-008c-fc80-f466-88c387d5b08f@redhat.com>
-Date:   Tue, 19 Jan 2021 06:54:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2389194AbhASPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:15:43 -0500
+Received: from gofer.mess.org ([88.97.38.141]:49185 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391099AbhASOze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:55:34 -0500
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 9EEECC63BE; Tue, 19 Jan 2021 14:54:52 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1611068092; bh=4FCk/3hL7LqfDUDV5R8M7KZf2iejU6Dbcp6DcL4aT20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kKZyK9lq5hsZgQzh7Tovpf+G4vnPVDMm5wJKKJuxnu9PgrYuZg7D3CPPq7a8qEF80
+         17r66RM07SfWNVGbK3dWVjWAtWOC8Q/9C5SclRZDJKs21NyfFYeyF0kOHd9OU+JC64
+         Ixrtp7xV5MhcA7m0yYlOQEtsyHxPQFw4FSmDEUMYPRyG7a8latL35lKahBywtfYWxs
+         EEGQvpV8a8FGkhqpN8PpmVYLRWkEPhf9tdCj/tnEUE2yiBILPotCrjcq6T39UE9L3b
+         E9PR+BneTYHTrX39gRe3TOM6AEAM3Vh7eU9JOEmJJiWFFF8aHrt/uSkxKy6tESbP86
+         WRXafBiJ5hqvA==
+Date:   Tue, 19 Jan 2021 14:54:52 +0000
+From:   Sean Young <sean@mess.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rc: select CONFIG_BITREVERSE where needed
+Message-ID: <20210119145452.GA19746@gofer.mess.org>
+References: <20201203231714.1484408-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210119112211.26404-1-chi962464zy@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203231714.1484408-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 04, 2020 at 12:17:03AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A number of remote control drivers require the bitreverse
+> helper, and run into a link error when it is disabled:
+> 
+> arm-linux-gnueabi-ld: drivers/media/rc/img-ir/img-ir-nec.o: in function `img_ir_nec_scancode':
+> img-ir-nec.c:(.text+0x10c): undefined reference to `byte_rev_table'
+> arm-linux-gnueabi-ld: drivers/media/rc/img-ir/img-ir-nec.o: in function `img_ir_nec_filter':
+> img-ir-nec.c:(.text+0x2dc): undefined reference to `byte_rev_table'
+> arm-linux-gnueabi-ld: drivers/media/usb/cx231xx/cx231xx-input.o: in function `get_key_isdbt':
+> cx231xx-input.c:(.text+0x38c): undefined reference to `byte_rev_table'
+> arm-linux-gnueabi-ld: drivers/media/usb/em28xx/em28xx-input.o: in function `em28xx_get_key_em_haup':
+> em28xx-input.c:(.text+0x1704): undefined reference to `byte_rev_table'
+> 
+Acked-by: Sean Young <sean@mess.org>
 
-On 1/19/21 3:22 AM, Guoqing Chi wrote:
-> From: chiguoqing <chi962464zy@163.com>
->
-> Adding mutex_lock, when read and write reg need to use this lock to
-> avoid race.
->
-> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
+Thanks
+
+Sean
+
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> v2:Follow write function to fix read function.
-> Adding mutex init in core probe function.
-> Adding break in switch case at read and write function.
->
->  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
->  drivers/iio/imu/bmi160/bmi160_core.c | 34 +++++++++++++++++++---------
->  2 files changed, 25 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/iio/imu/bmi160/bmi160.h b/drivers/iio/imu/bmi160/bmi160.h
-> index 32c2ea2d7112..0c189a8b5b53 100644
-> --- a/drivers/iio/imu/bmi160/bmi160.h
-> +++ b/drivers/iio/imu/bmi160/bmi160.h
-> @@ -3,9 +3,11 @@
->  #define BMI160_H_
+>  drivers/media/rc/Kconfig          | 2 ++
+>  drivers/media/rc/img-ir/Kconfig   | 1 +
+>  drivers/media/usb/cx231xx/Kconfig | 1 +
+>  drivers/media/usb/em28xx/Kconfig  | 1 +
+>  4 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
+> index 2c0ee2e5b446..8a4b4040be45 100644
+> --- a/drivers/media/rc/Kconfig
+> +++ b/drivers/media/rc/Kconfig
+> @@ -92,6 +92,7 @@ config IR_SONY_DECODER
+>  config IR_SANYO_DECODER
+>  	tristate "Enable IR raw decoder for the Sanyo protocol"
+>  	depends on RC_CORE
+> +	select BITREVERSE
 >  
->  #include <linux/iio/iio.h>
-> +#include <linux/mutex.h>
->  #include <linux/regulator/consumer.h>
+>  	help
+>  	   Enable this option if you have an infrared remote control which
+> @@ -101,6 +102,7 @@ config IR_SANYO_DECODER
+>  config IR_SHARP_DECODER
+>  	tristate "Enable IR raw decoder for the Sharp protocol"
+>  	depends on RC_CORE
+> +	select BITREVERSE
 >  
->  struct bmi160_data {
-> +	struct mutex lock;
->  	struct regmap *regmap;
->  	struct iio_trigger *trig;
->  	struct regulator_bulk_data supplies[2];
-> diff --git a/drivers/iio/imu/bmi160/bmi160_core.c b/drivers/iio/imu/bmi160/bmi160_core.c
-> index 290b5ef83f77..e303378f4841 100644
-> --- a/drivers/iio/imu/bmi160/bmi160_core.c
-> +++ b/drivers/iio/imu/bmi160/bmi160_core.c
-> @@ -452,26 +452,32 @@ static int bmi160_read_raw(struct iio_dev *indio_dev,
->  	int ret;
->  	struct bmi160_data *data = iio_priv(indio_dev);
->  
-> +	mutex_lock(&data->lock);
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
->  		ret = bmi160_get_data(data, chan->type, chan->channel2, val);
-> -		if (ret)
-> -			return ret;
-> -		return IIO_VAL_INT;
-> +		if (!ret)
-> +			ret = IIO_VAL_INT;
-> +		break;
->  	case IIO_CHAN_INFO_SCALE:
->  		*val = 0;
->  		ret = bmi160_get_scale(data,
->  				       bmi160_to_sensor(chan->type), val2);
-> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> +		if (!ret)
-> +			ret = IIO_VAL_INT_PLUS_MICRO;
-
-Looking better, another question..
-
-Why does the write() function return the results directly while the read() function
-
-translates them to other values ?
-
-Tom
-
-> +		break;
->  	case IIO_CHAN_INFO_SAMP_FREQ:
->  		ret = bmi160_get_odr(data, bmi160_to_sensor(chan->type),
->  				     val, val2);
-> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> +		if (!ret)
-> +			ret = IIO_VAL_INT_PLUS_MICRO;
-> +		break;
->  	default:
-> -		return -EINVAL;
-> +		ret = -EINVAL;
->  	}
-> +	mutex_unlock(&data->lock);
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static int bmi160_write_raw(struct iio_dev *indio_dev,
-> @@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev *indio_dev,
->  			    int val, int val2, long mask)
->  {
->  	struct bmi160_data *data = iio_priv(indio_dev);
-> +	int result;
->  
-> +	mutex_lock(&data->lock);
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SCALE:
-> -		return bmi160_set_scale(data,
-> +		result = bmi160_set_scale(data,
->  					bmi160_to_sensor(chan->type), val2);
-> +		break;
->  	case IIO_CHAN_INFO_SAMP_FREQ:
-> -		return bmi160_set_odr(data, bmi160_to_sensor(chan->type),
-> +		result = bmi160_set_odr(data, bmi160_to_sensor(chan->type),
->  				      val, val2);
-> +		break;
->  	default:
-> -		return -EINVAL;
-> +		result = -EINVAL;
->  	}
-> +	mutex_unlock(&data->lock);
->  
-> -	return 0;
-> +	return result;
->  }
->  
->  static
-> @@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev, struct regmap *regmap,
->  		return -ENOMEM;
->  
->  	data = iio_priv(indio_dev);
-> +	mutex_init(&data->lock);
->  	dev_set_drvdata(dev, indio_dev);
->  	data->regmap = regmap;
->  
-
+>  	help
+>  	   Enable this option if you have an infrared remote control which
+> diff --git a/drivers/media/rc/img-ir/Kconfig b/drivers/media/rc/img-ir/Kconfig
+> index 5c0508f2719f..a80cfcd87a95 100644
+> --- a/drivers/media/rc/img-ir/Kconfig
+> +++ b/drivers/media/rc/img-ir/Kconfig
+> @@ -30,6 +30,7 @@ config IR_IMG_HW
+>  config IR_IMG_NEC
+>  	bool "NEC protocol support"
+>  	depends on IR_IMG_HW
+> +	select BITREVERSE
+>  	help
+>  	   Say Y here to enable support for the NEC, extended NEC, and 32-bit
+>  	   NEC protocols in the ImgTec infrared decoder block.
+> diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
+> index 2fe2b2d335ba..b80661b8375f 100644
+> --- a/drivers/media/usb/cx231xx/Kconfig
+> +++ b/drivers/media/usb/cx231xx/Kconfig
+> @@ -18,6 +18,7 @@ config VIDEO_CX231XX_RC
+>  	bool "Conexant cx231xx Remote Controller additional support"
+>  	depends on RC_CORE=y || RC_CORE=VIDEO_CX231XX
+>  	depends on VIDEO_CX231XX
+> +	select BITREVERSE
+>  	default y
+>  	help
+>  	  cx231xx hardware has a builtin RX/TX support. However, a few
+> diff --git a/drivers/media/usb/em28xx/Kconfig b/drivers/media/usb/em28xx/Kconfig
+> index f2031a933e54..8a24731b373a 100644
+> --- a/drivers/media/usb/em28xx/Kconfig
+> +++ b/drivers/media/usb/em28xx/Kconfig
+> @@ -77,5 +77,6 @@ config VIDEO_EM28XX_RC
+>  	depends on VIDEO_EM28XX
+>  	depends on !(RC_CORE=m && VIDEO_EM28XX=y)
+>  	default VIDEO_EM28XX
+> +	select BITREVERSE
+>  	help
+>  	  Enables Remote Controller support on em28xx driver.
+> -- 
+> 2.27.0
