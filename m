@@ -2,195 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58772FB74F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE922FB750
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404307AbhASKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:34:49 -0500
-Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:20132 "EHLO
-        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390432AbhASKWz (ORCPT
+        id S2404336AbhASKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:34:52 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:62109 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390430AbhASKXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:22:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1611051774;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=UFn2COXuBHxblLRGoZBsxxh6zIy1E1Z4KkjjEeYPCRs=;
-  b=cCImYnxNrb/au5p9qn4nTJkDtxXUdFkO2fta++FAThR59T+rDN9p8AzI
-   gD9iF3b5z/u9vcBFb5In/KQZDOm40WQt3ZBqqWyt9qzUy566uim05fiAw
-   Mjt9vJk9JJW2pXk4/KX0qDWsZKewFKxU90QPBD3W1r4U0q/Jxt699n4nr
-   4=;
-Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: UF7WhgJgjWLU9lGOyA3tr2U4FskkHg1LRT2LTcBI2t8idR4pP4NOOu74oP8M8ZqwGlGYxFXXLK
- 9LpwqsILAKrivRJyQdM+z+E2aYd4JSd5LQtUZ7GT6N5kU6zQ0++iUGTbGhHq9lXphEW+6CY2/e
- akixllOzaaE2GYV2iDNO3uXvx5Mn8rr+TzqpXlbp9ZxSXYhNuedGixSLaZGSD5JYTx3sigQD0H
- O+5HRwH5jq6YhDhI15RWTDK50G9quYjnbzwFBzpcIAJZQax9/Tgyl+x1czgk8aaYI3tlcaHRBy
- ffQ=
-X-SBRS: 5.2
-X-MesageID: 36650108
-X-Ironport-Server: esa4.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.79,358,1602561600"; 
-   d="scan'208";a="36650108"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rx2qv89ObsXUVHxHuCpF06QAbyTzkNzxZcZGD5Lnw854gm+PaVHkuHKntc3aQR0J2fGzpsYB8+/SkfliPKh1s5Mvv9KRv9bh7VtPXf0T1og/OljE3hCakCulUkjVuv8AkhnaUeywOWJv7k1Vc0D3mQR8/2hYsvaVTc7HHhFTqMJYLyXfcD0hzu9gnlWTencZcskzJWPgLuPNGUftbxE+hry8irqAZOeZW9PPK1O2hOeUU0HAGsOLUnp0tZwBzFSWWw55mkf3fN1I9B9Ygz/DkgE9T450WyfGmCusVLRBo1pZkI+4oSFlf/1R5DcmnD161B0FOCvQO75a/G7qTEnmOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HFDSjVH+Td1ailRqBHdNwccecEOujYQNjO/T5gnFcuA=;
- b=FBFYmTkcqC76WPyz1HbSGlGTICeONN8o5QXoH/eckczuCZK0pEt5FXvRZS4aaKrA3H1TUlycNWf069diPf6gbxxSYr+COtrhUoibF3r1B/39LXDboaRE+pAlBJhln6e+1kFAWzt4fv03l+pGenuMT9YoOovpvcNxZBZeH6MxmDsVwjHtA2zX841BROMhxSrXNf4V+1w4UV3nS9KraXRZkKQ60uu8VxyH7dmJrL0em8z+EiG0+sJJvGTB7CuNWzu+3FWejIiaZTa4Iz1mkszJsPRQO/NrKb+sKGG8Ra2vbOKmYDO6GTr8jSPKyHzQrINQUfyb6/0K4guIFko34Wm5DA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HFDSjVH+Td1ailRqBHdNwccecEOujYQNjO/T5gnFcuA=;
- b=LcqvNk7YtJBlO6YDEx3oCPrOSUIIxVqUxXmjfdj5C6gd93yMVusUzIrXZAivzn5S96KrOi1LNdMPvmt729TMl/hozlhK07Z7zjfI9efBAAgmyEAMOPURd0Srbj4N9+71DoGhWUFP8l3ByCkmUXDpH/CYwk91hWKv/0z3C/5+syE=
-Date:   Tue, 19 Jan 2021 11:21:39 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Arthur Borsboom <arthurborsboom@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, <xen-devel@lists.xenproject.org>,
-        <linux-block@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
-Message-ID: <20210119102139.4zzfb2heytfsetmg@Air-de-Roger>
-References: <20210118151528.81668-1-roger.pau@citrix.com>
- <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
- <20210119100651.afyccratx6ha52kc@Air-de-Roger>
- <20969962-331d-50d9-dc65-772b564ab1c6@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20969962-331d-50d9-dc65-772b564ab1c6@suse.com>
-X-ClientProxiedBy: AM5PR0502CA0005.eurprd05.prod.outlook.com
- (2603:10a6:203:91::15) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+        Tue, 19 Jan 2021 05:23:08 -0500
+Date:   Tue, 19 Jan 2021 10:22:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1611051746;
+        bh=vtNRLA5CE3I6wcgKrfTHuSBUc+uTmwDqtUGt5ElNsPU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=fCKI5HfShsUoM4GF9DEiDYOMlZ/uRKpa98tcc4F3MwCi5CAGkUrK3Q2lsKW/HyolT
+         DOF8mTyfFwjtWD/Pl+P7U2SIZbp5Z3d5avlBC1ys6SNWhOluCVb+Q3SHhM3g361gBm
+         xc1AkQwNuMa1ELxxffG3eZ9oN7LdqZuR9dq1/0gydrrCLPXMQgJHwZxU8TVplS+9VA
+         U6UCoO6izgl5Rt4Hb4rweU8cbOXfdzP2ljcem/VV9ajDuwSRrX+hxMax1UIgGr08Y5
+         xBVM56MRCWj+OGAZ/cxm2/4BCRVgowBiaxmYgMaRI0ZAbnT6SYAolFVhvCSxd0IZkF
+         g9rPT9hQzAq3Q==
+To:     Lyude Paul <lyude@redhat.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     nouveau@lists.freedesktop.org, Martin Peres <martin.peres@free.fr>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to userspace
+Message-ID: <iyiRYoTlFNd1Crgc673rDXnfqahsfhKFP89rA0kKYEFUpLGwsFtYL-x-Jwh1ZAo7vJerbikydEDSUFtAoewsGkh3WSYeykScJdKC2PVrKQs=@emersion.fr>
+In-Reply-To: <20210119015415.2511028-2-lyude@redhat.com>
+References: <20210119015415.2511028-1-lyude@redhat.com> <20210119015415.2511028-2-lyude@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe5124b2-3780-43b4-6d17-08d8bc64053d
-X-MS-TrafficTypeDiagnostic: DM5PR03MB2556:
-X-Microsoft-Antispam-PRVS: <DM5PR03MB2556C192659398F86176CE838FA30@DM5PR03MB2556.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C4mAq4zmzSLZ9qjAv3eZdlGG2pPLq5I4rosWhzIzjbXJ3sB28IsHvJsy7BHOfrCtVcO32WW52nJGbpk+xAEU66Uf5HGWpD1F3KTm5fGQ7Ae2bC78A4IoO5ZxY6niSjCP/Y8hCua3PHN5rRkHdTF3unV7P2eSY/6t+ZbF37PfQuT1K6OWmBjbbAYgWCwAC3ci2qDYV77czwH9oe/NeTMEaDM3DCmFrgmuq1VKk5JHRgJH0zNRwPkTAH7gK5sAN8wrcQ0d1lYE7um/P58u5sfqKNB7XgG/FWQUr0gUzEHsemQroQkl2IOHIP0WoJKCjCoCnnltVpS5YFAfUoEPPYBsonbxeWb/QLAMJwk+X8k9fTJGmG9tLTM7lxbEWfQqIOiMR6vjFsg7xjpV/pS1IFHAfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(376002)(136003)(366004)(39860400002)(396003)(9686003)(5660300002)(1076003)(66574015)(66946007)(2906002)(6916009)(86362001)(6486002)(316002)(54906003)(83380400001)(478600001)(85182001)(53546011)(6496006)(26005)(8936002)(33716001)(66556008)(16526019)(956004)(186003)(8676002)(6666004)(4326008)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NTVla2NiQWxnYmZiY0VNbWhQYXpUR3h6SHZnN0J2QjhPTGs1dVNqNkxoY0x4?=
- =?utf-8?B?ckhaTTIzdUxIbWtPVUVlMktGcW0zS0JYWVJubFhZb2MyeUxIVHprRWpNaW1U?=
- =?utf-8?B?TnFaL1NkbjVKdUp4T0hvZ01VWnVSanJOUEFZV2JSd1VIYzN3OVpRSkw1Nzg3?=
- =?utf-8?B?QmFkdFNBOVIwVU1pVnZjcjZnVVBHd09TNzB3Rll0MHM2U1RtdC9Ya01EYTFV?=
- =?utf-8?B?U0V0SThLQ3lPSE5mbzRnWjhrM1kzd2NEbHBNeDVnM0Y0WFhvTGV0U0JYNEZl?=
- =?utf-8?B?M3c5WVM0dldJcnpuSnVKWDdMWXl3WVNXR0U0Sm5CWHQvY0RINVVvRHlyQ2FV?=
- =?utf-8?B?SzVOYmxjYjBZb2pKczF0VFhmNTZjSkdWc2RCZ2M4aUFlU2swL0RUcUttdVhV?=
- =?utf-8?B?NnBub2RZOS9MK2FmbnR6aTBHbUE3L28rY3VnY1RZdWIraWw0Z2NLUGdsZ1px?=
- =?utf-8?B?S2kwWk1Kb1FocTMvbzVQdFBmYjRKZ1NqQUYwbi9SQndnK1kwNzZsWHh0MWo1?=
- =?utf-8?B?ZVVLemVKc3pONlVBMzJrSndMY0poQnNUaHRNSXgzbFRhVkd3WWlxTUpOclpC?=
- =?utf-8?B?N1ZGRDI3ZDU4UjRjZ0poUUVXSUh4Z3h2QjZFcVU5ME16NUtJMzNkSEhjOEFt?=
- =?utf-8?B?Y2tuYlJiRm5OUDRiWHdTYkppZjFOVm5NYXprNmhzTkp4ZHZmM2gxSFc0bi8w?=
- =?utf-8?B?bVZPeWJWQkRJRVAzUHA3NVNJMSs2Y3VtZWZSN0NtTjFJeXNMNURUOE92WXRZ?=
- =?utf-8?B?bkxES3lDRG13ME90Ylk2QWpFNkZtVldBTjk2Vk4yWTlFc2pqMFB0eS8rWUF6?=
- =?utf-8?B?N2ZKQysreEkrRGRpWGNYTVE1Vy9uaDVtRnVDeGlaM0RKNXdaNlRVeG41Z3RF?=
- =?utf-8?B?UXVCVUR6a0J0VXd6ZWpVaVFMa3ZmUmNEUlVsZ0VXZk1kWnp5NHBYdUhIcVZr?=
- =?utf-8?B?ekZVL3QwbEJlTEd3bjJPaGpDTGFwdkdRT2FDa1NIdm5VOEFqUll4VEhxUDls?=
- =?utf-8?B?Tk9WSGdvOEluR0M1bVlzSXV2eGRjanhaOTdTZloyNXYrVG1sYzdsNnJJbWsy?=
- =?utf-8?B?TmRwdWVKcUQ3QUphcm5zcXZhZDZxb2lSS1ViaVNaRXVDU3k5MS9SaTBZNS9S?=
- =?utf-8?B?bDlMT1U2Y0pBUzdMb3NFcmNzZzhycE5jdzhHNGZmZ1VoWjVwcnVnNXAxaVI1?=
- =?utf-8?B?TzkyK2hHd0JUMnZEMkx1Q2M3SnZzdGx3UStZQUZXRFhIKzJUMkdBd0FseVZq?=
- =?utf-8?B?eEdUcytKVXM5NTliMm9BY3dpNUpMNDJCMm5hQTZzS3JNWDNqV3Q4Q2s4cU51?=
- =?utf-8?Q?yB/oMm4jzN06h2ckLlmMoHQlo9g/UkmbeR?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe5124b2-3780-43b4-6d17-08d8bc64053d
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 10:21:44.5131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1z/0kPgFywujPE9eeO7psHJUYh27LQiKKp79zaKRvfdmRvMEdI5nT5sv9GM/7w9iaKElBhfM4DLupKryRK6Guw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB2556
-X-OriginatorOrg: citrix.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:11:26AM +0100, Jürgen Groß wrote:
-> On 19.01.21 11:06, Roger Pau Monné wrote:
-> > On Tue, Jan 19, 2021 at 08:43:01AM +0100, Jürgen Groß wrote:
-> > > On 18.01.21 16:15, Roger Pau Monne wrote:
-> > > > Don't require the discard-alignment xenstore node to be present in
-> > > > order to correctly setup the feature. This can happen with versions of
-> > > > QEMU that only write the discard-granularity but not the
-> > > > discard-alignment node.
-> > > > 
-> > > > Assume discard-alignment is 0 if not present. While there also fix the
-> > > > logic to not enable the discard feature if discard-granularity is not
-> > > > present.
-> > > > 
-> > > > Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
-> > > > Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> > > > ---
-> > > > Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> > > > Cc: Juergen Gross <jgross@suse.com>
-> > > > Cc: Stefano Stabellini <sstabellini@kernel.org>
-> > > > Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> > > > Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-> > > > Cc: Jens Axboe <axboe@kernel.dk>
-> > > > Cc: xen-devel@lists.xenproject.org
-> > > > Cc: linux-block@vger.kernel.org
-> > > > Cc: Arthur Borsboom <arthurborsboom@gmail.com>
-> > > > ---
-> > > >    drivers/block/xen-blkfront.c | 25 +++++++++++++------------
-> > > >    1 file changed, 13 insertions(+), 12 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> > > > index 5265975b3fba..5a93f7cc2939 100644
-> > > > --- a/drivers/block/xen-blkfront.c
-> > > > +++ b/drivers/block/xen-blkfront.c
-> > > > @@ -2179,22 +2179,23 @@ static void blkfront_closing(struct blkfront_info *info)
-> > > >    static void blkfront_setup_discard(struct blkfront_info *info)
-> > > >    {
-> > > > -	int err;
-> > > > -	unsigned int discard_granularity;
-> > > > -	unsigned int discard_alignment;
-> > > > +	unsigned int discard_granularity = 0;
-> > > > +	unsigned int discard_alignment = 0;
-> > > > +	unsigned int discard_secure = 0;
-> > > > -	info->feature_discard = 1;
-> > > > -	err = xenbus_gather(XBT_NIL, info->xbdev->otherend,
-> > > > +	xenbus_gather(XBT_NIL, info->xbdev->otherend,
-> > > >    		"discard-granularity", "%u", &discard_granularity,
-> > > >    		"discard-alignment", "%u", &discard_alignment,
-> > > > +		"discard-secure", "%u", &discard_secure,
-> > > >    		NULL);
-> > > 
-> > > This would mean that "discard-secure" will be evaluated only if the
-> > > other two items are set in Xenstore. From blkif.h I can't see this is
-> > > required, and your patch is modifying today's behavior in this regard.
-> > > 
-> > > You might want to have three xenbus_read_unsigned() calls instead.
-> > 
-> > You are right, discard-secure should be fetched regardless of whether
-> > discard-alignment exists.
-> > 
-> > I can fetch discard-granularity and discard-alignment using
-> > xenbus_gather and keep discard-secure using xenbus_read_unsigned. Let
-> > me send a new version.
-> 
-> I'm still not convinced this is correct. blkif.h doesn't mention that
-> discard-alignment will be valid only with discard-granularity being
-> present.
+On Tuesday, January 19th, 2021 at 2:54 AM, Lyude Paul <lyude@redhat.com> wr=
+ote:
 
-No, in fact I think I need to rework this a little further. Just
-having feature-discard = 1 should enable the discard functionality, by
-setting discard-granularity = physical block size and
-discard-alignment = 0.
+> Cc: Martin Peres <martin.peres@free.fr>
+> Cc: Jeremy Cline <jcline@redhat.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/no=
+uveau/dispnv50/disp.c
+> index c6367035970e..5f4f09a601d4 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -2663,6 +2663,14 @@ nv50_display_create(struct drm_device *dev)
+>  =09else
+>  =09=09nouveau_display(dev)->format_modifiers =3D disp50xx_modifiers;
+>
+> +=09if (disp->disp->object.oclass >=3D GK104_DISP) {
 
-Roger.
+I can confirm this works fine on GK208B. Tested with wlroots. I don't
+have older cards to test, though.
+
+Tested-by: Simon Ser <contact@emersion.fr>
+
+> +=09=09dev->mode_config.cursor_width =3D 256;
+> +=09=09dev->mode_config.cursor_height =3D 256;
+> +=09} else {
+> +=09=09dev->mode_config.cursor_width =3D 64;
+> +=09=09dev->mode_config.cursor_height =3D 64;
+> +=09}
+> +
+>  =09/* create crtc objects to represent the hw heads */
+>  =09if (disp->disp->object.oclass >=3D GV100_DISP)
+>  =09=09crtcs =3D nvif_rd32(&device->object, 0x610060) & 0xff;
+> --
+> 2.29.2
+
