@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696C72FB806
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EFC2FB802
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391040AbhASLqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:46:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:52144 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389029AbhASLbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:31:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F01DE1042;
-        Tue, 19 Jan 2021 03:30:05 -0800 (PST)
-Received: from e123427-lin.arm.com (unknown [10.57.35.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E06263F719;
-        Tue, 19 Jan 2021 03:30:03 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>,
-        Jon Mason <jdmason@kudzu.us>, Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tom Joseph <tjoseph@cadence.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-ntb@googlegroups.com, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v9 00/17] Implement NTB Controller using multiple PCI EP
-Date:   Tue, 19 Jan 2021 11:29:55 +0000
-Message-Id: <161105563975.29969.4677344444174224884.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210104152909.22038-1-kishon@ti.com>
-References: <20210104152909.22038-1-kishon@ti.com>
+        id S2389830AbhASLoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:44:38 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:42269 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389574AbhASLbb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:31:31 -0500
+Received: by mail-wr1-f51.google.com with SMTP id m4so19356270wrx.9;
+        Tue, 19 Jan 2021 03:31:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=UhfaWmZsXLaTMQjB6+oOVMMKsehL/8ca0yWncg5/3jA=;
+        b=RM/H9IZttvi3H33Q+iZjRy40MID+oTS3K4tPLh1GfYp82a8mAMhpPIxoriSk27kNup
+         +ZckK3h1wWWPLvqP6iTQX7utdV/t//GFoOtGtsaXktJc9gzpWaRZcBSJltMTod08llFT
+         3jwidtCt7+dyodXhYJEjQK++poSLb1Pf7r9eS1PCbI2c0R4fZuBfhsH/041v4a/3zS/I
+         PysiKYe6P+fr9IGkGW0r3e8PURQnKjgIOfrNc9bIgmyT9rV3gW96yMRmo/XAVBtSiBa2
+         PmkQTrrABvv4djo1RMYG5othcbJZRXPPfhvO/QbP9vl75PfS8wHUHoOp4G5HNnrkGIud
+         f3vQ==
+X-Gm-Message-State: AOAM532pIi3QmFVxFb2MRLjkt2NexpiI3aoV/4NTzxlpvnj+mVJS+WqW
+        08rvSLiJVZHQNSooSYQ8qJtb1psfvME=
+X-Google-Smtp-Source: ABdhPJxrOKni4Y6K6MGLHpA1iOon4Cbuoh6zaaZY2zXekxfmar9HgSq0aQDNj7p4uw/ecFO0guFXvw==
+X-Received: by 2002:a5d:510f:: with SMTP id s15mr3864700wrt.21.1611055842269;
+        Tue, 19 Jan 2021 03:30:42 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id l1sm36079237wrq.64.2021.01.19.03.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 03:30:41 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:30:40 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Hyper-V fixes for 5.11-rc5
+Message-ID: <20210119113040.cy7x6hilvts56xan@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021 20:58:52 +0530, Kishon Vijay Abraham I wrote:
-> This series is about implementing SW defined Non-Transparent Bridge (NTB)
-> using multiple endpoint (EP) instances. This series has been tested using
-> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
-> on the other end. However there is nothing platform specific for the NTB
-> functionality.
-> 
-> This was presented in Linux Plumbers Conference. Link to presentation
-> and video can be found @ [1]
-> Created a video demo @ [9]
-> 
-> [...]
+Hi Linus,
 
-Applied to pci/ntb to give it more visibility and testing, aiming
-for v5.12.
+The following changes since commit ad0a6bad44758afa3b440c254a24999a0c7e35d5:
 
-[01/17] Documentation: PCI: Add specification for the *PCI NTB* function device
-        https://git.kernel.org/lpieralisi/pci/c/75e6ac86ca
-[02/17] PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit BAR
-        https://git.kernel.org/lpieralisi/pci/c/b6c7a2a2b5
-[03/17] PCI: endpoint: Add helper API to get the 'next' unreserved BAR
-        https://git.kernel.org/lpieralisi/pci/c/43e293914d
-[04/17] PCI: endpoint: Make *_free_bar() to return error codes on failure
-        https://git.kernel.org/lpieralisi/pci/c/293e2c258c
-[05/17] PCI: endpoint: Remove unused pci_epf_match_device()
-        https://git.kernel.org/lpieralisi/pci/c/9a25bdab98
-[06/17] PCI: endpoint: Add support to associate secondary EPC with EPF
-        https://git.kernel.org/lpieralisi/pci/c/868fe90ea4
-[07/17] PCI: endpoint: Add support in configfs to associate two EPCs with EPF
-        https://git.kernel.org/lpieralisi/pci/c/632c92ec12
-[08/17] PCI: endpoint: Add pci_epc_ops to map MSI irq
-        https://git.kernel.org/lpieralisi/pci/c/310511a301
-[09/17] PCI: endpoint: Add pci_epf_ops for epf drivers to expose function specific attrs
-        https://git.kernel.org/lpieralisi/pci/c/34fb8ab2e3
-[10/17] PCI: endpoint: Allow user to create sub-directory of 'EPF Device' directory
-        https://git.kernel.org/lpieralisi/pci/c/3a5c112c7a
-[11/17] PCI: cadence: Implement ->msi_map_irq() ops
-        https://git.kernel.org/lpieralisi/pci/c/d5c3d2ae7c
-[12/17] PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
-        https://git.kernel.org/lpieralisi/pci/c/d3f4973104
-[13/17] PCI: endpoint: Add EP function driver to provide NTB functionality
-        https://git.kernel.org/lpieralisi/pci/c/7dc64244f9
-[14/17] PCI: Add TI J721E device to pci ids
-        https://git.kernel.org/lpieralisi/pci/c/17d49876c3
-[15/17] NTB: Add support for EPF PCI-Express Non-Transparent Bridge
-        https://git.kernel.org/lpieralisi/pci/c/5d0db3f429
-[16/17] Documentation: PCI: Add configfs binding documentation for pci-ntb endpoint function
-        https://git.kernel.org/lpieralisi/pci/c/099f07051e
-[17/17] Documentation: PCI: Add userguide for PCI endpoint NTB function
-        https://git.kernel.org/lpieralisi/pci/c/27f22f76c3
+  x86/hyperv: check cpu mask after interrupt has been disabled (2021-01-06 11:03:16 +0000)
 
-Thanks,
-Lorenzo
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210119
+
+for you to fetch changes up to fff7b5e6ee63c5d20406a131b260c619cdd24fd1:
+
+  x86/hyperv: Initialize clockevents after LAPIC is initialized (2021-01-17 15:20:50 +0000)
+
+----------------------------------------------------------------
+hyperv-fixes for 5.11-rc5
+  - One patch from Dexuan to fix clockevent initialization
+----------------------------------------------------------------
+Dexuan Cui (1):
+      x86/hyperv: Initialize clockevents after LAPIC is initialized
+
+ arch/x86/hyperv/hv_init.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
