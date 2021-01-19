@@ -2,253 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02672FB6F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8DE2FB6FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387923AbhASJpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:45:03 -0500
-Received: from mga14.intel.com ([192.55.52.115]:53291 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732905AbhASJ0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:26:08 -0500
-IronPort-SDR: yzdCDtBwq/+mi8eOFSqsfskx3ZG6xw11n0a36+IuoO3KYTadCogrNbpyFfFtSBjGFvKkH4xhdB
- 3G8yRoIxvY8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="178121666"
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="178121666"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 01:23:53 -0800
-IronPort-SDR: fYt+TwSxnqP24B6kl7d2nh0cJr09mHy0C1J1P/Qytt9UO+g+k4EOGUs6oJi25/lwBBzKbgw85E
- ZQrfueVFWWzQ==
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="350454613"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 01:23:46 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l1nFo-003L1D-9R; Tue, 19 Jan 2021 11:24:48 +0200
-Date:   Tue, 19 Jan 2021 11:24:48 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <20210119092448.GN4077@smile.fi.intel.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
+        id S2388657AbhASJtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:49:15 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4306 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387434AbhASJ3S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:29:18 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6006a6450000>; Tue, 19 Jan 2021 01:28:37 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 09:28:36 +0000
+Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 19 Jan 2021 09:28:31 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>
+CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
+Subject: [RESEND PATCH v6 0/6] Tegra210 audio graph card
+Date:   Tue, 19 Jan 2021 14:58:10 +0530
+Message-ID: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611048517; bh=JB+pbi8V5uiKMDgXgRh4ZQ3768t6OhoKieOBXUWBOiw=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Type;
+        b=S8FRw5AefzdifBsOVHhhb4c4i1du72qUqgNaWLtoLreU0xPlw7WUkBqvcd/PtAFyv
+         KEcii0T53PWJe7dpe3q1TXantmcYbKzeKv0HUIYIakecU6fHMHJB7F0g0McbIMsJDl
+         Tm8eyATo+dC54WSCY/NN1ORbYx9CWPPXpWDsAitqbd0sHp3HrIhSrmp6rx3ODOHH4D
+         3xs4NKW4NJiGMBBnXfNhTYeXTTGIfE0KCwHt/GQpXbskmd/fdaj5DcAjp5DEeZc5rO
+         85TNR15jkyzm2gRfEPyM6SuiO6sMvOpGESWzqqCj11D72UDT8P/1vgdWxp4nkJzCkM
+         YV73a5cu5uzjA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:19:52PM +0000, Daniel Scally wrote:
-> On 18/01/2021 14:46, Andy Shevchenko wrote:
-> > On Mon, Jan 18, 2021 at 11:15:21AM +0200, Laurent Pinchart wrote:
-> >> On Mon, Jan 18, 2021 at 12:34:27AM +0000, Daniel Scally wrote:
+This series adds audio graph based sound card support for Tegra210
+platforms like Jetson-TX1 an Jetson-Nano. The following preparatory
+audio graph enhancement series is already merged.
+ * https://patchwork.kernel.org/project/alsa-devel/list/?series=375629&state=*
 
-...
+Following are the summary of changes:
+ * Add graph/audio-graph based schemas or schema updates for Tegra210
+   component and machine drivers.
+ * Add Tegra audio graph machine driver.
+ * Add required DT support for Jetson-TX1/Nano.
 
-> >>> +static struct i2c_driver int3472_tps68470 = {
-> >>> +	.driver = {
-> >>> +		.name = "int3472-tps68470",
-> >>> +		.acpi_match_table = int3472_device_id,
-> >>> +	},
-> >>> +	.probe_new = skl_int3472_tps68470_probe,
-> >>> +};
-> > I'm not sure we want to have like this. If I'm not mistaken the I²C driver can
-> > be separated without ACPI IDs (just having I²C IDs) and you may instantiate it
-> > via i2c_new_client_device() or i2c_acpi_new_device() whichever suits better...
-> 
-> Sorry, I'm a bit confused by this. The i2c device is already
-> present...we just want the driver to bind to them, so what role do those
-> functions have there?
+This work is based on earlier discussion of DPCM usage for Tegra
+and simple card driver updates.
+ * https://lkml.org/lkml/2020/4/30/519
+ * https://lkml.org/lkml/2020/6/27/4
 
-What I meant is something like
 
- *_i2c.c
-	real I²C driver for the TPS chip, but solely with I²C ID table, no ACPI
-	involved (and it sounds like it should be mfd/tps one, in which you
-	just cut out ACPI IDs and convert to pure I²C one, that what I had
-	suggested in the first place)
+Original v6 series was sent about 6-7 weeks back. The dependency commit,
+https://lore.kernel.org/alsa-devel/1610948585-16286-1-git-send-email-spujar@nvidia.com/
+is now merged. Resending this now to appear in the top of the mail list.
 
- *_proxy.c
-	GPIO proxy as library
+Changelog
+=========
 
- *.c
-	platform driver with ACPI ID, in which ->probe() we actually instantiate
-	above via calling i2c_acpi_new_device(), *if needed*, along with GPIO
-	proxy
+v5 -> v6
+--------
+ * Added ports or port description in YAML docs for Tegra AHUB
+   devices and graph card in patch 1/6 and 2/6. Reference of
+   audio-graph-port.yaml is used for AHUB devices.
+ * Dropped redundant NULL check return for of_device_get_match_data()
+   in patch 3/6.
+ * Added 'Reviewed-by' tag from Jon Hunter.
+ * No changes in remaining patches.
 
-...
+v4 -> v5
+--------
+ * Audio graph related changes were sent in separate v5 series as
+   mentioned above and are dropped from current series.
+ * Graph and audio graph doc patches are dropped from this series
+   and are sent separately as mentioned above.
+ * Minor change with phandle label for TX1 and Nano platform DT files.
+ * No changes in other patches.
 
-> >>> +struct int3472_gpio_clock {
-> >>> +	struct clk *clk;
-> >>> +	struct clk_hw clk_hw;
-> >>> +	struct clk_lookup *cl;
-> >>> +	struct gpio_desc *gpio;
-> >>> +};
+v3 -> v4
+--------
+ * Added new patches to convert graph.txt and audio-graph-card.txt
+   to corresponding json-schema files. Later these references
+   are used in Tegra audio graph schema.
 
-> >>> +static const struct clk_ops skl_int3472_clock_ops = {
-> >>> +	.prepare = skl_int3472_clk_prepare,
-> >>> +	.unprepare = skl_int3472_clk_unprepare,
-> >>> +	.enable = skl_int3472_clk_enable,
-> >>> +	.disable = skl_int3472_clk_disable,
-> >>> +};
+ * AHUB component binding docs are updated to reflect the usage
+   of ports/port/endpoint
 
-> > Wondering if this has some similarities with and actually can utilize clk-gpio
-> > driver.
-> > Yeah, sounds like reinventing clk-gpio.c.
-> >
-> > static const struct clk_ops clk_gpio_gate_ops = {
-> > 	.enable = clk_gpio_gate_enable,
-> > 	.disable = clk_gpio_gate_disable,
-> > 	.is_enabled = clk_gpio_gate_is_enabled,
-> > };
-> >
-> > Or is it mux? It has support there as well.
-> >
-> Hmm, yeah, this looks like it would work actually. So I think I'd need to:
-> 
-> 
-> 1. Make enabling INTEL_SKL_INT3472 also enable the clk-gpio driver
-> 
-> 2. Register a platform device to bind to the clk-gpio driver
-> 
-> 3. Register a gpio lookup table so that the clk-gpio driver can find the
-> gpio in question using gpiod_get()
-> 
-> And that looks like it will work; I'll try it.
+ * More common stuff is moved into graph_parse_of() and this is
+   used by both generic and Tegra audio graph.
 
-You need to modify clk-gpio.c to export
+ * DT binding for Tegra audio graph is updated to included "ports { }"
 
-clk_hw_register_gpio_gate()
-clk_hw_register_gpio_mux()
+ * As per the suggestion 'void *data' member is dropped from
+   'asoc_simple_priv' and instead container method is used to
+   maintain required custom data internal to Tegra audio graph. 
 
-(perhaps it will require to add *_unregister() counterparts) and call it from
-your code.
+v2 -> v3
+--------
+ * Dropped new compatible addition in generic graph driver
+   after reviewing it with Morimoto-san. Instead added Tegra
+   audio graph driver and new compatibles are added in the same.
+ * Added new patches to expose new members for customization
+   in audio graph driver.
+ * Added new patch for Tegra audio graph driver and related
+   documentation.
+ * Minor change in below commit where mutex version of helper is used
+   "ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM"
+ * DT binding is updated to use the newly exposed compatibles
+ * No changes in other patches
 
-See, for example, how clk_hw_unregister_fixed_rate() is being used. Another
-case is to add a helper directly into clk-gpio and call it instead of
-clk_hw_*() one, see how clk_register_fractional_divider() is implemented and
-used.
+v1 -> v2
+--------
+ * Re-organized ports/endpoints description for ADMAIF and XBAR.
+   Updated DT patches accordingly.
+ * After above change, multiple Codec endpoint support is not
+   required and hence dropped for now. This will be considered
+   separately if at all required in future.
+ * Re-ordered patches in the series.
 
-...
+Sameer Pujar (6):
+  ASoC: dt-bindings: tegra: Add graph bindings
+  ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
+  ASoC: tegra: Add audio graph based card driver
+  arm64: defconfig: Enable Tegra audio graph card driver
+  arm64: tegra: Audio graph header for Tegra210
+  arm64: tegra: Audio graph sound card for Jetson Nano and TX1
 
-> >>> +	/* Lenovo Miix 510-12ISK - OV5648, Rear */
-> >>> +	{ "GEFF150023R", REGULATOR_SUPPLY("avdd", "i2c-OVTI5648:00"), NULL},
-> >>> +	/* Surface Go 1&2 - OV5693, Front */
-> >>> +	{ "YHCU", REGULATOR_SUPPLY("avdd", "i2c-INT33BE:00"), NULL},
-> > I'm wondering if you should use same I2C format macro and create this
-> > dynamically? Or rather find a corresponding ACPI device instance and
-> > copy it's name? ...
-> 
-> The supply name needs hard-coding really, but the device name I suppose
-> can come from int3472->sensor_name.
-
-To be strict in terms you are using "device instance name" in the
-REGULATOR_SUPPLY() second parameter. Because "device name" is generic and
-doesn't point to the actual *instance* of the device in the system.
-
-So, and "device name instance" we may get only by traversing through the (ACPI)
-bus and find corresponding struct device and derive name from it. Same way like
-you have done in previous patch series.
-
-Because there is no guarantee that, e.g., i2c-INT33BE:00 will be present on
-the system and moreover there is no guarantee that if two INT33BE or more
-devices are present you will get :00 always for the one you need!
-
-...
-
-> >>> +	ret = ERR_PTR(-ENODEV);
-> > This seems redundant. Or are you expecting ARRAY_SIZE() to be 0?
-> > If no, you may add static_assert() near to the array definition.
-> 
-> It **could** become 0, if the entries I've added are removed in future
-> because the sensors are no longer supported or something. There might be
-> no sensor_module_config for a given device. We only need to supply one if
-> 
-> a) The platform has a 0x0b type GPIO, which means we need to define a
-> supply name the driver is expecting
-> 
-> b) The GPIO functions deviate from documented purpose, which means we
-> need to supply a remapping struct
-> 
-> Otherwise, there's no need for it.
-
-I see. So, up to you then.
-
-> 
-> 
-> >>> +
-> >>> +	int3472->regulator.rdev = regulator_register(&int3472->regulator.rdesc,
-> >>> +						     &cfg);
-> >>> +	if (IS_ERR(int3472->regulator.rdev)) {
-> >>> +		ret = PTR_ERR(int3472->regulator.rdev);
-> >>> +		goto err_free_gpio;
-> >>> +	}
-> > Similar here, can we utilize gpio-regulator.c?
-> >
-> 
-> Also yes probably, with the same steps as for the clocks. Again, I'll
-> try that out, thanks very much.
-
-You may look at arch/x86/platform/intel-mid/device_libs/platform_bcm43xx.c
-(but in your case you probably don't need a GPIO lookup table, just check).
-
-...
-
-> >>> +		dev_warn(&int3472->pdev->dev,
-> >>> +			 "GPIO type 0x%llx unknown; the sensor may not work\n",
-> >>> +			 (obj->integer.value & 0xff));
-> >> No need for parentheses.
-> > And instead of "%llx" with " & 0xff" you may use "%x" with "(u8)" cast.
-> > However, I don't think we need to show only last byte, because it may give
-> > wrong impression on values like "0x100".
-> 
-> But in this case only the last byte holds the type information, second
-> lowest byte is the pin number. So as we understand it, 0x100 would be
-> invalid anyway.
-
-Ah, indeed. So, I think the best is to have %hhx and see if you can supply just
-obj->integer.value and compiler won't warn about type mismatch.
-
-...
-
-> >>> +	} else {
-> >>> +		opregion_dev = skl_int3472_register_pdev("tps68470_pmic_opregion",
-> >>> +							 &client->dev);
-> >>> +		if (IS_ERR(opregion_dev)) {
-> >>> +			ret = PTR_ERR(opregion_dev);
-> >>> +			goto err_free_gpio;
-> >>> +		}
-> >>> +	}
-> >> I wonder if this could be simplified by using devm_mfd_add_devices. You
-> >> could have two arrays of mfd_cell, one for each case.
-> > Yeah, which effectively means that we should have some kind of mfd/tps68470 in
-> > place.
-> 
-> Can you expand on what you mean by that a little, please?
-
-The very first comment in this reply should hopefully shed a light on my idea.
+ .../sound/nvidia,tegra-audio-graph-card.yaml       | 187 +++++++++++++++
+ .../bindings/sound/nvidia,tegra186-dspk.yaml       |  18 +-
+ .../bindings/sound/nvidia,tegra210-admaif.yaml     |  13 +-
+ .../bindings/sound/nvidia,tegra210-ahub.yaml       |  13 +-
+ .../bindings/sound/nvidia,tegra210-dmic.yaml       |  18 +-
+ .../bindings/sound/nvidia,tegra210-i2s.yaml        |  18 +-
+ .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 ++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 262 +++++++++++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 146 ++++++++++++
+ arch/arm64/configs/defconfig                       |   1 +
+ sound/soc/tegra/Kconfig                            |   9 +
+ sound/soc/tegra/Makefile                           |   2 +
+ sound/soc/tegra/tegra_audio_graph_card.c           | 251 ++++++++++++++++++++
+ 13 files changed, 1085 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
+ create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+ create mode 100644 sound/soc/tegra/tegra_audio_graph_card.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.7.4
 
