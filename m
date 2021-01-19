@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9D2FADEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AF32FADF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391045AbhASAKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 19:10:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47356 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731557AbhASAKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 19:10:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12CF9AAAE;
-        Tue, 19 Jan 2021 00:09:41 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     gregkh@linuxfoundation.org
-Cc:     mathias.nyman@intel.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] usb: xhci: Replace tasklet with work
-Date:   Mon, 18 Jan 2021 16:09:30 -0800
-Message-Id: <20210119000930.127469-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S2391215AbhASAMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 19:12:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391085AbhASAMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 19:12:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611015039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=k8uZwZ9l9/9GHM34N72Urrm3zDwDS5163gHM9WUjrbg=;
+        b=N1PXWVKhMMIDMIXDYOaS3HL03n/rXd/p4AKvs/5dQxHBGNYCbJNwuaEIcX+PpnOvQVR3NS
+        rrqFE6Q7ppa7LrJeTRuwx52SiwVCeQ9P1Q7qctdfGUcXOygbPPV/G96v+5iokaGD3hIcLh
+        ZOz4BYVcDU7nYcohlBwai8i6tPwrgiM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-32ViLy7wPfmqPoRVTwRs-A-1; Mon, 18 Jan 2021 19:10:37 -0500
+X-MC-Unique: 32ViLy7wPfmqPoRVTwRs-A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA7118C89C4;
+        Tue, 19 Jan 2021 00:10:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A20370464;
+        Tue, 19 Jan 2021 00:10:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Tobias Markus <tobias@markus-regensburg.de>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 19 Jan 2021 00:10:33 +0000
+Message-ID: <163546.1611015033@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tasklets have long been deprecated as being too heavy on the system
-by running in irq context - and this is not a performance critical
-path. If a higher priority process wants to run, it must wait for
-the tasklet to finish before doing so.
 
-dbc_rx_push() will now run in process context and have further
-concurrency - tasklets being serialized among themselves, but this
-is done holding the port_lock, so it should be fine.
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+On the following call path, `sig->pkey_algo` is not assigned
+in asymmetric_key_verify_signature(), which causes runtime
+crash in public_key_verify_signature().
+
+  keyctl_pkey_verify
+    asymmetric_key_verify_signature
+      verify_signature
+        public_key_verify_signature
+
+This patch simply check this situation and fixes the crash
+caused by NULL pointer.
+
+Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verific=
+ation")
+Reported-by: Tobias Markus <tobias@markus-regensburg.de>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-and-tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Tested-by: Jo=C3=A3o Fonseca <jpedrofonseca@ua.pt>
+Cc: stable@vger.kernel.org # v5.10+
 ---
- drivers/usb/host/xhci-dbgcap.h |  2 +-
- drivers/usb/host/xhci-dbgtty.c | 19 +++++++++++--------
- 2 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-dbgcap.h b/drivers/usb/host/xhci-dbgcap.h
-index c70b78d504eb..aec66009af51 100644
---- a/drivers/usb/host/xhci-dbgcap.h
-+++ b/drivers/usb/host/xhci-dbgcap.h
-@@ -104,7 +104,7 @@ struct dbc_port {
- 	struct list_head		read_pool;
- 	struct list_head		read_queue;
- 	unsigned int			n_read;
--	struct tasklet_struct		push;
-+	struct work_struct		push;
- 
- 	struct list_head		write_pool;
- 	struct kfifo			write_fifo;
-diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
-index ae4e4ab638b5..50da77d92cf6 100644
---- a/drivers/usb/host/xhci-dbgtty.c
-+++ b/drivers/usb/host/xhci-dbgtty.c
-@@ -108,7 +108,7 @@ dbc_read_complete(struct xhci_dbc *dbc, struct dbc_request *req)
- 
- 	spin_lock_irqsave(&port->port_lock, flags);
- 	list_add_tail(&req->list_pool, &port->read_queue);
--	tasklet_schedule(&port->push);
-+	schedule_work(&port->push);
- 	spin_unlock_irqrestore(&port->port_lock, flags);
- }
- 
-@@ -272,7 +272,7 @@ static void dbc_tty_unthrottle(struct tty_struct *tty)
- 	unsigned long		flags;
- 
- 	spin_lock_irqsave(&port->port_lock, flags);
--	tasklet_schedule(&port->push);
-+	schedule_work(&port->push);
- 	spin_unlock_irqrestore(&port->port_lock, flags);
- }
- 
-@@ -288,15 +288,18 @@ static const struct tty_operations dbc_tty_ops = {
- 	.unthrottle		= dbc_tty_unthrottle,
- };
- 
--static void dbc_rx_push(struct tasklet_struct *t)
-+static void dbc_rx_push(struct work_struct *work)
- {
- 	struct dbc_request	*req;
- 	struct tty_struct	*tty;
- 	unsigned long		flags;
- 	bool			do_push = false;
- 	bool			disconnect = false;
--	struct dbc_port		*port = from_tasklet(port, t, push);
--	struct list_head	*queue = &port->read_queue;
-+	struct dbc_port		*port;
-+	struct list_head	*queue;
-+
-+	port = container_of(work, struct dbc_port, push);
-+	queue = &port->read_queue;
- 
- 	spin_lock_irqsave(&port->port_lock, flags);
- 	tty = port->port.tty;
-@@ -349,7 +352,7 @@ static void dbc_rx_push(struct tasklet_struct *t)
- 	if (!list_empty(queue) && tty) {
- 		if (!tty_throttled(tty)) {
- 			if (do_push)
--				tasklet_schedule(&port->push);
-+				schedule_work(&port->push);
- 			else
- 				pr_warn("ttyDBC0: RX not scheduled?\n");
- 		}
-@@ -382,7 +385,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
- {
- 	tty_port_init(&port->port);
- 	spin_lock_init(&port->port_lock);
--	tasklet_setup(&port->push, dbc_rx_push);
-+	INIT_WORK(&port->push, dbc_rx_push);
- 	INIT_LIST_HEAD(&port->read_pool);
- 	INIT_LIST_HEAD(&port->read_queue);
- 	INIT_LIST_HEAD(&port->write_pool);
-@@ -394,7 +397,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
- static void
- xhci_dbc_tty_exit_port(struct dbc_port *port)
- {
--	tasklet_kill(&port->push);
-+	cancel_work_sync(&port->push);
- 	tty_port_destroy(&port->port);
- }
- 
--- 
-2.26.2
+ crypto/asymmetric_keys/public_key.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/p=
+ublic_key.c
+index 8892908ad58c..788a4ba1e2e7 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key=
+ *pkey,
+ 	if (ret)
+ 		goto error_free_key;
+=20
+-	if (strcmp(sig->pkey_algo, "sm2") =3D=3D 0 && sig->data_size) {
++	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") =3D=3D 0 &&
++	    sig->data_size) {
+ 		ret =3D cert_sig_digest_update(sig, tfm);
+ 		if (ret)
+ 			goto error_free_key;
 
