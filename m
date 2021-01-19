@@ -2,121 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1597A2FBFDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055D62FBFDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391593AbhASTQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:16:56 -0500
-Received: from foss.arm.com ([217.140.110.172]:45962 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727881AbhASTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:04:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F27ADD6E;
-        Tue, 19 Jan 2021 11:03:52 -0800 (PST)
-Received: from [10.37.8.29] (unknown [10.37.8.29])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76AB83F719;
-        Tue, 19 Jan 2021 11:03:51 -0800 (PST)
-Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
- <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
- <20210119185206.GA26948@gaia> <e3d67672-1825-894a-db68-5709b33b4991@arm.com>
- <20210119190219.GC26948@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <6a5600c0-002a-3e80-0229-494d1c9648ac@arm.com>
-Date:   Tue, 19 Jan 2021 19:07:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2404691AbhASTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730676AbhASTJ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:09:28 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBA0C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:08:24 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id 19so22967806qkm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:08:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3UvSSj7FihiEFVi0RGPwt1INmt76yzIjTycQHPLRAfM=;
+        b=ZMtqNibv8mF11Vx2yC6cc6h8bkhNBMC4+hjLOJX2JbTYFfxgJfZz5nYhVAzGp6A1Xj
+         z0+qyRYZW7ROj1Cg5sW+UQVmT+SnIc2USYejRzCJnTjtKYE8J3WQbzqVMZ5FiJFG97UG
+         Ebp4OWPoetgrzq3ohwTgViRaiFNN089B4jIzhoYDgDQj9MpaAp4c7SrU+sDFAQ4fIZzM
+         nsKREWlUBZ97nW4Lt0wyfKhKsyoqjALt6Fa2UgX9Wpmu1fZWjvoFhswoufeGIco9BJQy
+         0xJq8ByhLV5IkW/MsFOYNTEvK7H52f1a9nFgVeJLPNrGfV5f5bNIW+xQXIsJDVToxzRc
+         Gv9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3UvSSj7FihiEFVi0RGPwt1INmt76yzIjTycQHPLRAfM=;
+        b=gpTm2R8VMzE7TmRXjWBzQeG2gfKJjiU2gFdJO0x45L+0smJQWRZlOd0ZHyIYvyl1MX
+         R1F0Tqsxb2gu6B9dYPfsH0fxEIjZYWUQzahXYO+vDCYUK3LS9Gv31zVG0D2affZAEBwU
+         xYtWWbS8bKnfnVGXShkEV+jVi+DQRuwn8u48If8EkQ6HMlh0Is7aNGYldTz/kPcBUclE
+         oQxUZ0oUaJsolu60ZWj98BEKtSKvQ1q9k1CmKeYBRyK0bzyWmK3+6yBDBr4ZWLRP4utz
+         yTDYYcWm3Mh2ifIh8+LuOgRG/Xl/QR8e8zG7eX3TbXpWqawoHW7fcioKsazlFwJHUwf5
+         6Wbw==
+X-Gm-Message-State: AOAM531N/oSjQeR8LjSWy0mIfT3/bqnciYMCPD+NOJzpEkxwRporTEgD
+        mvOrnFzuwktKqoxd+Z6kycbzhKh3fuHAFah9bZ32LSOkybcl1C22
+X-Google-Smtp-Source: ABdhPJzuVOPoCj0aRbqV9LR8ha00BJ3589ff8a3Agw9tVpcuBaHbMvOz/1fsBmo5ODDdaDbnxDLmXvEav/ZmTtLOKsc=
+X-Received: by 2002:a37:afc2:: with SMTP id y185mr5930151qke.499.1611083302926;
+ Tue, 19 Jan 2021 11:08:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119190219.GC26948@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
+ <20210118234057.270930-1-zzyiwei@android.com> <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
+In-Reply-To: <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Tue, 19 Jan 2021 11:08:12 -0800
+Message-ID: <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> wrote:
+> >
+> > On the success of virtio_gpu_object_create, add size of newly allocated
+> > bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
+> > bo lost its last refcount, subtract the bo size from the tracked
+> > total_mem if the original underlying memory allocation is successful.
+> >
+> > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+>
+> Isn't this something that ideally we'd for everyone? Also tracepoint
+> for showing the total feels like tracepoint abuse, usually we show
+> totals somewhere in debugfs or similar, and tracepoint just for what's
+> happening (i.e. which object got deleted/created).
+>
+> What is this for exactly?
+> -Daniel
+>
+> > ---
+> >  drivers/gpu/drm/virtio/Kconfig          |  1 +
+> >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
+> >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
+> >  3 files changed, 24 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+> > index b925b8b1da16..e103b7e883b1 100644
+> > --- a/drivers/gpu/drm/virtio/Kconfig
+> > +++ b/drivers/gpu/drm/virtio/Kconfig
+> > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+> >         select DRM_KMS_HELPER
+> >         select DRM_GEM_SHMEM_HELPER
+> >         select VIRTIO_DMA_SHARED_BUFFER
+> > +       select TRACE_GPU_MEM
+> >         help
+> >            This is the virtual GPU driver for virtio.  It can be used with
+> >            QEMU based VMMs (like KVM or Xen).
+> > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > index 6a232553c99b..7c60e7486bc4 100644
+> > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
+> >         spinlock_t resource_export_lock;
+> >         /* protects map state and host_visible_mm */
+> >         spinlock_t host_visible_lock;
+> > +
+> > +#ifdef CONFIG_TRACE_GPU_MEM
+> > +       atomic64_t total_mem;
+> > +#endif
+> >  };
+> >
+> >  struct virtio_gpu_fpriv {
+> > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > index d69a5b6da553..1e16226cebbe 100644
+> > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > @@ -25,12 +25,29 @@
+> >
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/moduleparam.h>
+> > +#ifdef CONFIG_TRACE_GPU_MEM
+> > +#include <trace/events/gpu_mem.h>
+> > +#endif
+> >
+> >  #include "virtgpu_drv.h"
+> >
+> >  static int virtio_gpu_virglrenderer_workaround = 1;
+> >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+> >
+> > +#ifdef CONFIG_TRACE_GPU_MEM
+> > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
+> > +                                             s64 delta)
+> > +{
+> > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
+> > +
+> > +       trace_gpu_mem_total(0, 0, total_mem);
+> > +}
+> > +#else
+> > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
+> > +{
+> > +}
+> > +#endif
+> > +
+> >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+> >  {
+> >         if (virtio_gpu_virglrenderer_workaround) {
+> > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+> >         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+> >
+> >         if (bo->created) {
+> > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+> >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+> >                 virtio_gpu_notify(vgdev);
+> >                 /* completion handler calls virtio_gpu_cleanup_object() */
+> > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+> >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+> >         }
+> >
+> > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+> >         *bo_ptr = bo;
+> >         return 0;
+> >
+> > --
+> > 2.30.0.284.gd98b1dd5eaa7-goog
+> >
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
+Thanks for your reply! Android Cuttlefish virtual platform is using
+the virtio-gpu driver, and we currently are carrying this small patch
+at the downstream side. This is essential for us because:
+(1) Android has deprecated debugfs on production devices already
+(2) Android GPU drivers are not DRM based, and this won't change in a
+short term.
 
-On 1/19/21 7:02 PM, Catalin Marinas wrote:
-> On Tue, Jan 19, 2021 at 07:00:57PM +0000, Vincenzo Frascino wrote:
->> On 1/19/21 6:52 PM, Catalin Marinas wrote:
->>> On Tue, Jan 19, 2021 at 07:27:43PM +0100, Andrey Konovalov wrote:
->>>> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
->>>> <vincenzo.frascino@arm.com> wrote:
->>>>>
->>>>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
->>>>> the address passed as a parameter.
->>>>>
->>>>> Add a comment to make sure that the preconditions to the function are
->>>>> explicitly clarified.
->>>>>
->>>>> Note: An invalid address (e.g. NULL pointer address) passed to the
->>>>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
->>>>>
->>>>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
->>>>> Cc: Alexander Potapenko <glider@google.com>
->>>>> Cc: Dmitry Vyukov <dvyukov@google.com>
->>>>> Cc: Leon Romanovsky <leonro@mellanox.com>
->>>>> Cc: Andrey Konovalov <andreyknvl@google.com>
->>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
->>>>> ---
->>>>>  mm/kasan/report.c | 11 +++++++++++
->>>>>  1 file changed, 11 insertions(+)
->>>>>
->>>>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
->>>>> index c0fb21797550..2485b585004d 100644
->>>>> --- a/mm/kasan/report.c
->>>>> +++ b/mm/kasan/report.c
->>>>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->>>>>         end_report(&flags);
->>>>>  }
->>>>>
->>>>> +/**
->>>>> + * kasan_report - report kasan fault details
->>>>> + * @addr: valid address of the allocation where the tag fault was detected
->>>>> + * @size: size of the allocation where the tag fault was detected
->>>>> + * @is_write: the instruction that caused the fault was a read or write?
->>>>> + * @ip: pointer to the instruction that cause the fault
->>>>> + *
->>>>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
->>>>> + * the address to access the tags, hence it must be valid at this point in
->>>>> + * order to not cause a kernel panic.
->>>>> + */
->>>>
->>>> It doesn't dereference the address, it just checks the tags, right?
->>>>
->>>> Ideally, kasan_report() should survive that with HW_TAGS like with the
->>>> other modes. The reason it doesn't is probably because of a blank
->>>> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
->>>> guess we should somehow check that the memory comes from page_alloc or
->>>> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
->>>> instruction to check whether the memory has tags?
->>>
->>> There isn't an architected way to probe whether a memory location has a
->>> VA->PA mapping. The tags are addressed by PA but you can't reach them if
->>> you get a page fault on the VA. So we either document the kasan_report()
->>> preconditions or, as you suggest, update addr_has_metadata() for the
->>> HW_TAGS case. Something like:
->>>
->>>         return is_vmalloc_addr(virt) || virt_addr_valid(virt));
->>
->> Or we could have both ;)
-> 
-> True. Documentation doesn't hurt (well, only when it's wrong ;)).
-> 
+Android relies on this tracepoint + eBPF to make the GPU memory totals
+available at runtime on production devices, which has been enforced
+already. Not only game developers can have a reliable kernel total GPU
+memory to look at, but also Android leverages this to take GPU memory
+usage out from the system lost ram.
 
-Testing the patch now, I will send it in half an hour.
+I'm not sure whether the other DRM drivers would like to integrate
+this tracepoint(maybe upstream drivers will move away from debugfs
+later as well?), but at least we hope virtio-gpu can take this.
 
--- 
-Regards,
-Vincenzo
+Many thanks!
+Yiwei
