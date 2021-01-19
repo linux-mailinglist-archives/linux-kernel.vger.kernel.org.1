@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8B12FC58C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9622FC5BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbhATASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
+        id S1730810AbhATAWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391549AbhASNpo (ORCPT
+        with ESMTP id S2387683AbhASNnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:45:44 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E95C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:31 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id o19so11078739vsn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:31 -0800 (PST)
+        Tue, 19 Jan 2021 08:43:51 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9B7C061574;
+        Tue, 19 Jan 2021 05:43:08 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id x21so21368721iog.10;
+        Tue, 19 Jan 2021 05:43:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zTHQHqU0qhkolN2noyYVvQIfnQqsAqX/OkxGDVnDczg=;
-        b=lMvP3hmORoGjFki5Mw/c9iRVt/gnrkbeBh3g9xc5AQZvG2FAgINcNJI9kyI/ucWXyf
-         ZyzqgU0jSE5ffpLHsONVgjZ/9q9umFtsixU1wJbkI3S5XOmcWyMkZ77rFp8Gx395GpIi
-         E1urx3oQLAoyBWHivI0ZqAmQ290EdVW0ZKNvI/NbPXDrqvDv5O+iBpw/mm3x3yvZ87sN
-         ZkxPUaIkB2tBNpgYbMRPH8V2Jmr4GiIXuxzcdco/Eku+PkZ+9HPPgCAvU8UVNWxGT+dl
-         I/QKhGZHlkS+cR1OALZlE6xUP8AhG60nEfAC6HQBqP28wIj0zD+ifI+XpiMAM3tLyHCr
-         42Iw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XvhxARzPFutdg81T930cbyQKfkMbVSUeQ1+BndRwFnQ=;
+        b=aEkdXNXA7u+6R0tmTB5TEzHGH/YPncnqWAADUYnAzEkOgAiRFQ5dsYKdY31pRYPeZG
+         5Q2KYd9W2nH+k1TEW2PbbBUO25RqFzfqE2ti3pm5DKdDwL0xwb7f/7jsK4ueGn8LR7MQ
+         Z/9umkcqB+nNGpZ4BMKKRi2nHMVhCd+vTE2Yye0+iMTT4wlyWW/ePXueDZRGxWs2CYbI
+         p6cm3ExSAF4X7Cw0I2nxlWThv0UkhN1dd2G2uU/cKFw/k2kJ5qspOsuaULL34nBYNcp0
+         yOj/34tYw1ym0Fk+NVdv6DgLoKhU/XB5RERhUfzTdr2VongHOfv21axuMSaV9eVbLgEf
+         2Byw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zTHQHqU0qhkolN2noyYVvQIfnQqsAqX/OkxGDVnDczg=;
-        b=Tkwn01dLQN8Hu2feqzB7gPqLpgu2JhXMlt4dbNPua4N4UD8L3GXxNKu4BPaJTIYkUq
-         EpLRNVM2JMuPkkOjKucwtRsFVyJ4PMbUFfbW2V1ma8su4N1YWdkhf8O6clDQ9S1lKMrf
-         naIAKmBVrR06BjWU7Pt3fHmhxBGkuNmoN3/8n2R8EZHBT7K2Fo6fdGcjCntjaAJ9qoSi
-         Pv1W8mm6ReFEuylh57DgBGp2g9Gjc2JMkN9zrZCNcqKMu3KweKmNlx81SHhvguhVhosM
-         VXB6HUiQUBvKb8joOx+HjeZvGf+AtNCJStd1ZNHTnv3/vmepL65lcs9W+MexX8mdHnwF
-         mOkQ==
-X-Gm-Message-State: AOAM533bwSVUn8WSu+mhdJczTQN4VQJJAJLMQOe5la4A0a5/A+YxeHfq
-        M5Sl4WS0DoFRlGZBUUACjDivYiWcgx2mdBI93FopRg==
-X-Google-Smtp-Source: ABdhPJxdfo5M6JQMC8opiCITaK/YZ64HskqUZ4WcV5+m2ZOkH2PxqKWWebmRR9gP5qzaZ6XUz4pArh9lHym4ct2B+rA=
-X-Received: by 2002:a67:7f41:: with SMTP id a62mr2544313vsd.55.1611063811106;
- Tue, 19 Jan 2021 05:43:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XvhxARzPFutdg81T930cbyQKfkMbVSUeQ1+BndRwFnQ=;
+        b=SuQq/2Ew9Mrr56MxHBJhfzV8c+FA14J+ruBQxJDOA/Nl1fwiabyNvmPg58Vzg9WFyA
+         gstzShkckoK7m8epjGGtiUOqJdme7do9IQ/xc7nhHW7kWU5dPaQUJyDZ7r1yaQ8oRDFb
+         BdCzjED7puk8rq6YoCjGXsWjq4pmN3Hfq3CjyBqkssP9E4rs2FcrlQpJh1PYqte+x3+g
+         Ptede7tQ1GxTH6qvQaVM3ugcM1fCiJY7KzrRVZuCIllwMcld7hxxrUrvCFz6aAoeqo0S
+         qawZNTGSJiRZi0fsfY54S1yuOTgY5XVNiEwU4Z4GmGEH4h6cpU6rHnqg0HwcraAowaS/
+         wzoA==
+X-Gm-Message-State: AOAM531HXEn80pfRCWNEfb2qfHWfRA1ElYccknBDPVfj/XOf+PvsXhyW
+        QMtV9py3BTDf0KSa2hoU58k=
+X-Google-Smtp-Source: ABdhPJy4pjcts2A1oVS2TaVpQShOhvaywh1DfDHODNyq18hD1bAkwk0YEK4Wuh4EFbRGeEY6teQBrg==
+X-Received: by 2002:a02:969a:: with SMTP id w26mr3480063jai.96.1611063787372;
+        Tue, 19 Jan 2021 05:43:07 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:2386:3a11:421c:65a9])
+        by smtp.gmail.com with ESMTPSA id h14sm1795829ilh.63.2021.01.19.05.43.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 05:43:06 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: imx8mn: Add fspi node
+Date:   Tue, 19 Jan 2021 07:42:57 -0600
+Message-Id: <20210119134258.774480-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210111082249.17092-1-reniuschengl@gmail.com>
-In-Reply-To: <20210111082249.17092-1-reniuschengl@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 14:42:55 +0100
-Message-ID: <CAPDyKFqnLTas50enA32MoKyx6ivZiJ5H+X5HJLPzS=nQ_b-UFw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Finetune HS400 RX delay for GL9763E
-To:     Renius Chen <reniuschengl@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 09:22, Renius Chen <reniuschengl@gmail.com> wrote:
->
-> To improve the compatibility of GL9763E with HS400 eMMC cards,
-> finetune the RX delay of HS400 mode.
->
-> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+The i.MX8M Nano has the same Flexspi controller used in the i.MX8M
+Mini.  Add the node and disable it by default.
 
-Applied for next, thanks!
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Kind regards
-Uffe
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 3fac73779fdd..16ea50089567 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -889,6 +889,19 @@ usdhc3: mmc@30b60000 {
+ 				status = "disabled";
+ 			};
+ 
++			flexspi: spi@30bb0000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "nxp,imx8mm-fspi";
++				reg = <0x30bb0000 0x10000>, <0x8000000 0x10000000>;
++				reg-names = "fspi_base", "fspi_mmap";
++				interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX8MN_CLK_QSPI_ROOT>,
++					 <&clk IMX8MN_CLK_QSPI_ROOT>;
++				clock-names = "fspi", "fspi_en";
++				status = "disabled";
++			};
++
+ 			sdma1: dma-controller@30bd0000 {
+ 				compatible = "fsl,imx8mn-sdma", "fsl,imx8mq-sdma";
+ 				reg = <0x30bd0000 0x10000>;
+-- 
+2.25.1
 
-
-> ---
->  drivers/mmc/host/sdhci-pci-gli.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index 2d13bfcbcacf..14d9154f3af1 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -95,6 +95,10 @@
->  #define PCIE_GLI_9763E_MMC_CTRL  0x960
->  #define   GLI_9763E_HS400_SLOW     BIT(3)
->
-> +#define PCIE_GLI_9763E_CLKRXDLY  0x934
-> +#define   GLI_9763E_HS400_RXDLY    GENMASK(31, 28)
-> +#define   GLI_9763E_HS400_RXDLY_5  0x5
-> +
->  #define SDHCI_GLI_9763E_CQE_BASE_ADDR   0x200
->  #define GLI_9763E_CQE_TRNS_MODE           (SDHCI_TRNS_MULTI | \
->                                     SDHCI_TRNS_BLK_CNT_EN | \
-> @@ -801,6 +805,11 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
->         value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MAX);
->         pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
->
-> +       pci_read_config_dword(pdev, PCIE_GLI_9763E_CLKRXDLY, &value);
-> +       value &= ~GLI_9763E_HS400_RXDLY;
-> +       value |= FIELD_PREP(GLI_9763E_HS400_RXDLY, GLI_9763E_HS400_RXDLY_5);
-> +       pci_write_config_dword(pdev, PCIE_GLI_9763E_CLKRXDLY, value);
-> +
->         pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->         value &= ~GLI_9763E_VHS_REV;
->         value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-> --
-> 2.27.0
->
