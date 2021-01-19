@@ -2,69 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C422FB7A6
+	by mail.lfdr.de (Postfix) with ESMTP id EFD912FB7A8
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405306AbhASLNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:13:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405059AbhASLCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:02:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D5A32075F;
-        Tue, 19 Jan 2021 11:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611054097;
-        bh=tJqgnp4OxGV364DlbJ5Sda9VDJ/ZKg3Jw5QRNd0Sv2o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RCyW40xHeAT0nw1vEgT7YIgtn6sPL5CGXrZtBn+JAkph4OKidCA1ILfYh0Qie2bPj
-         zjCcOrm45mn51shGhamdF1HjC5HOP/sp6fSmDv8SkBXIwc2go2Z+lLUJRk90Ui3i+b
-         yhXEd4Q0bcs3KAy/3cX0x+x/xGYcvSWkS6ZGAdJkYzrhqurE86PPMK6pvMGaZIH4/D
-         LB8JVKDvWepN5MB/pHLNBQLzyBtX1ACRarLWPtjTGPXgzY2NHMocjwyW/LMX6POwbi
-         HEHtDYW/Sj/4MI6PKAFNMejw+89ssRf0OlTt5rSrfI69Bx3uD2w+W1cctUyV3Fe/2A
-         YkSOEvuCaCq7g==
-Date:   Tue, 19 Jan 2021 11:01:31 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Liguang Zhang <zhangliguang@linux.alibaba.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>, gustavoars@kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/cpuinfo: Show right CPU architecture information
-Message-ID: <20210119110131.GA18433@willie-the-truck>
-References: <20210119105510.27836-1-zhangliguang@linux.alibaba.com>
+        id S2405358AbhASLOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405086AbhASLDT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:03:19 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18722C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:38 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id o19so10834273vsn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=51aRHVM9MtmiP0LM6KVSBIfypf8NCoJI3/kkLCUIyQc=;
+        b=cO9pngCqzzQU5+wYm76QgcPi+sSh5wfMsbcSm2rfew1o6UU+XMprqcdkv8Tat7a3sj
+         dZ1uP2iZAQeaaPqA9q3x/D9TRd5FTzLxx9Ujcm/4TCxNZHTRKgnZEYSqRfUV/idaFtUI
+         oLzD/IohWXy5i90tTRAvvJl1rLywYJhSrRpjC91JF1wtZyouUt/RdQE4rGgESI8mp19Z
+         XuETWBfpczg9ESTyyyrb1l0HWs/4hVK8iNjlxaoFSpzUhxUnp5o2zuCyqcmVLs4IdQSG
+         fp73BBTKRzw62HJLaxJ9z/8c5RwdpNy+ViRHrZHpkxe2g1y5yS4VXmvvGLyFRM7UrbEi
+         w3kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=51aRHVM9MtmiP0LM6KVSBIfypf8NCoJI3/kkLCUIyQc=;
+        b=JjlRWDTzfXRvJxRHZ76WPbaPWYYW/l+ar/wRQKJ++CWQ3WfdVaHJAv3K4MRVU9v/E4
+         6tZ7OYhdCfdYNix5c5uDpGr1E7qU3R3rohgxFohRjgbUn9NpiyyhXF8VcVeus6vdqhAa
+         carYIizInEhaEn07hO2QooxIykwfCaPekw2TbL1KnCge0r/bWS4n4644HF8tFpb28cLC
+         QavRRG2g5NWKRqnKzU+joL+vUhe7dhbcg4J8yW0hCQGMdwNuelWNdgeUXtDaQsE4tEXD
+         zsdshoJoUplK5U0/CEK0a/hQJxeu3loK+KiDysNyBX/xpBPdJ5tYNqJc4xl80i2u+Om+
+         tNtA==
+X-Gm-Message-State: AOAM531lBUH2XeOE4q+o2mE2ZBjpWLk8Px8VxEwpBIJ/C0IZ0snHtDjB
+        l1THXPq88Mxupft1TCs4xY8MEKsAEDbIEu6A3qHGyaGIsnUUGNcS
+X-Google-Smtp-Source: ABdhPJzmHhIQqV/usHrcyHk3rDz6//q3bjjAW5H2CFufPw2AHrOrqfaIxGqrbhGDRrsQtReKyxV9CP3hwLdfWdsh4uM=
+X-Received: by 2002:a67:7f41:: with SMTP id a62mr2178224vsd.55.1611054157249;
+ Tue, 19 Jan 2021 03:02:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119105510.27836-1-zhangliguang@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201224111210.1214-1-rojay@codeaurora.org> <20201224111210.1214-4-rojay@codeaurora.org>
+ <YAGqKfDfB7EEuZVn@builder.lan> <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
+In-Reply-To: <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 19 Jan 2021 12:02:01 +0100
+Message-ID: <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for 'assigned-performance-states'
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 06:55:10PM +0800, Liguang Zhang wrote:
-> CPU architecture is assigned to be a fixed value, it should be obtained
-> from midr register.
-> 
-> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> ---
->  arch/arm64/kernel/cpuinfo.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
-> index 77605aec25fe..0bd11e0fe9f2 100644
-> --- a/arch/arm64/kernel/cpuinfo.c
-> +++ b/arch/arm64/kernel/cpuinfo.c
-> @@ -191,7 +191,7 @@ static int c_show(struct seq_file *m, void *v)
->  
->  		seq_printf(m, "CPU implementer\t: 0x%02x\n",
->  			   MIDR_IMPLEMENTOR(midr));
-> -		seq_printf(m, "CPU architecture: 8\n");
-> +		seq_printf(m, "CPU architecture: %d\n", MIDR_ARCHITECTURE(midr));
+On Mon, 18 Jan 2021 at 06:36, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+>
+> On 1/15/2021 8:13 PM, Bjorn Andersson wrote:
+> > On Thu 24 Dec 05:12 CST 2020, Roja Rani Yarubandi wrote:
+> >
+> >> @@ -629,6 +658,16 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+> >>      struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
+> >>
+> >>      disable_irq(gi2c->irq);
+> >> +
+> >> +    /* Drop the assigned performance state */
+> >> +    if (gi2c->assigned_pstate) {
+> >> +            ret = dev_pm_genpd_set_performance_state(dev, 0);
+> >> +            if (ret) {
+> >> +                    dev_err(dev, "Failed to set performance state\n");
+> >> +                    return ret;
+> >> +            }
+> >> +    }
+> >> +
+> >
+> > Ulf, Viresh, I think we discussed this at the time of introducing the
+> > performance states.
+> >
+> > The client's state does not affect if its performance_state should
+> > be included in the calculation of the aggregated performance_state, so
+> > each driver that needs to keep some minimum performance state needs to
+> > have these two snippets.
+> >
+> > Would it not make sense to on enable/disable re-evaluate the
+> > performance_state and potentially reconfigure the hardware
+> > automatically?
+>
+> I agree, this will be repeated across multiple drivers which would
+> need some minimal vote while they are active, handling this during
+> genpd enable/disable in genpd core makes sense.
 
-Huh? Won't this always return 0xf?
+Initially that's what we tried out, but we realized that it was
+difficult to deal with this internally in genpd, but more importantly
+it also removed some flexibility from consumers and providers. See
+commit 68de2fe57a8f ("PM / Domains: Make genpd performance states
+orthogonal to the idlestates").
 
-Will
+As a matter of fact this was quite recently discussed [1], which also
+pointed out some issues when using the "required-opps" in combination,
+but perhaps that got resolved? Viresh?
+
+My concern is, if we would make this kind of change to the internals
+of genpd, it would lead to the following limitation: A consumer driver
+can no longer make its vote for its device to stick around, when the
+device becomes runtime suspended - and how do we know that we never
+need to support such a case?
+
+>
+> >
+> > Regards,
+> > Bjorn
+> >
+> >>      ret = geni_se_resources_off(&gi2c->se);
+> >>      if (ret) {
+> >>              enable_irq(gi2c->irq);
+> >> @@ -654,6 +693,16 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
+> >>      if (ret)
+> >>              return ret;
+> >>
+> >> +    /* Set the assigned performance state */
+> >> +    if (gi2c->assigned_pstate) {
+> >> +            ret = dev_pm_genpd_set_performance_state(dev,
+> >> +                                                     gi2c->assigned_pstate);
+> >> +            if (ret) {
+> >> +                    dev_err(dev, "Failed to set performance state\n");
+> >> +                    return ret;
+> >> +            }
+> >> +    }
+> >> +
+> >>      enable_irq(gi2c->irq);
+> >>      gi2c->suspended = 0;
+> >>      return 0;
+
+Kind regards
+Uffe
+
+[1]
+https://lkml.org/lkml/2020/9/11/230
