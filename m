@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB1A2FB2D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295E12FB2C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729504AbhASHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:19:49 -0500
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:35814 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbhASHSp (ORCPT
+        id S1728713AbhASHTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:19:31 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48578 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbhASHSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:18:45 -0500
-Received: by mail-lj1-f169.google.com with SMTP id p13so20799454ljg.2;
-        Mon, 18 Jan 2021 23:16:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=njM+r5739maNvAMaKSZAfi4YYRGmoIe8sXQDSd2vGS4=;
-        b=uKga2ZXxqkalWeNW4vbpGBGz75EaZrsj9aMHOCIVmLivGzeIGAMtIE95nGKuk3QVJV
-         4YjBohuyBNxNX9KGoqkA19AEeT0Ghza4ZFJVFrvv2dcNP0Q7n5lV4skLMwM8er2Qmt/1
-         bI+90KLeveUc50BoLnPjjYMvhS7mT8IRoYGcby9POGPzTu7YQjaW/T8lYNXtqi2ACtzg
-         JVciD9IUs+KlTf/McKa8LwtZUJq8YJ32ddGntZLvkHNm41HiQaJ8cWQGdutD5tpgHxaK
-         qpN94Wac2vZk2eJHD/6CfBwK8DuUfCJBhzxvEcEUdY8cY8hy7kPqwm2jdgzPRv1LvJV6
-         nWXg==
-X-Gm-Message-State: AOAM530e3ESplm8UYEjiBAZVLUbyxkPwbIoV0T6nVgKVF3DvllGM352T
-        aD3NNwoLMnmlxTeBol2+a1AAvh7PCDRZcA==
-X-Google-Smtp-Source: ABdhPJy6dq3rM1KjpzibXsd4DeX1TwQyRyHiDjzLDbSr+zMoko/U/s74yXSrbXaNAeNc12+r18vy5g==
-X-Received: by 2002:a2e:9f52:: with SMTP id v18mr1344525ljk.510.1611040591332;
-        Mon, 18 Jan 2021 23:16:31 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id s20sm2193138lfc.26.2021.01.18.23.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 23:16:30 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:16:23 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH v2 05/17] dt_bindings: bd71828: Add clock output mode
-Message-ID: <1b6077ad08f7eacdac6604439d0921778d6046db.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 19 Jan 2021 02:18:44 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10J7Gd8u075236;
+        Tue, 19 Jan 2021 01:16:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611040599;
+        bh=UkrwWJka5SdhZJ0eXzGUAHW7z2WtA1NhNTWfJiOYt4w=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ki6SkQg6UuRzVNGJSdjFjIhUDGbPWMpgFsHDA7B/abrNoCMeUdPg7vnhq+28Fbsww
+         E+HrMS80To6kmnd8bZxQHPkIXknBqKHzlNBiS2EJ5isP09xeyqxhrv8hD+fnXNqIem
+         0hQFJFDnxv2jr3tmtqP3V7n+8q9s38U0unHNxvr0=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10J7GdvA021048
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 Jan 2021 01:16:39 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
+ Jan 2021 01:16:39 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 19 Jan 2021 01:16:39 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10J7GaBK077234;
+        Tue, 19 Jan 2021 01:16:37 -0600
+Subject: Re: [PATCH] PCI: functions/pci-epf-test: fix missing
+ destroy_workqueue() on error in pci_epf_test_init
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201028091549.136349-1-miaoqinglang@huawei.com>
+ <20210118124744.GA13109@e121166-lin.cambridge.arm.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <644f6522-f22d-adf6-16ba-dcdf329df7d0@ti.com>
+Date:   Tue, 19 Jan 2021 12:46:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210118124744.GA13109@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BD71828 allows configuring the clk32kout pin mode to CMOS or
-open-drain. Add device-tree property for specifying the preferred mode.
+Hi Qinglang,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+On 18/01/21 6:17 pm, Lorenzo Pieralisi wrote:
+> On Wed, Oct 28, 2020 at 05:15:49PM +0800, Qinglang Miao wrote:
+>> Add the missing destroy_workqueue() before return from
+>> pci_epf_test_init() in the error handling case.
+>>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>> ---
+>>  drivers/pci/endpoint/functions/pci-epf-test.c | 1 +
+>>  1 file changed, 1 insertion(+)
+> 
+> Need Kishon's ack.
+> 
+> Lorenzo
 
-Changes from v1:
-switched clk-mode property from string type to tristated one as
-suggested by Rob.
+Can you also add destroy_workqueue() in pci_epf_test_exit()?
 
- .../devicetree/bindings/mfd/rohm,bd71828-pmic.yaml          | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thank You,
+Kishon
 
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-index 3a6a1a26e2b3..8380166d176c 100644
---- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
-@@ -44,6 +44,12 @@ properties:
-   clock-output-names:
-     const: bd71828-32k-out
- 
-+  rohm,clkout-open-drain:
-+    description: clk32kout mode. Set to 1 for "open-drain" or 0 for "cmos".
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 1
-+
-   rohm,charger-sense-resistor-ohms:
-     minimum: 10000000
-     maximum: 50000000
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> 
+>> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+>> index e4e51d884..6854f2525 100644
+>> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+>> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+>> @@ -918,6 +918,7 @@ static int __init pci_epf_test_init(void)
+>>  	ret = pci_epf_register_driver(&test_driver);
+>>  	if (ret) {
+>>  		pr_err("Failed to register pci epf test driver --> %d\n", ret);
+>> +		destroy_workqueue(kpcitest_workqueue);
+>>  		return ret;
+>>  	}
+>>  
+>> -- 
+>> 2.23.0
+>>
