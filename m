@@ -2,85 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB40C2FBD3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0EE2FBD41
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731235AbhASRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:13:02 -0500
-Received: from mickerik.phytec.de ([195.145.39.210]:59974 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390524AbhASRLa (ORCPT
+        id S2390922AbhASRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390680AbhASRMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:11:30 -0500
-X-Greylist: delayed 829 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 12:11:30 EST
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1611076239; x=1613668239;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=eoordXUw6KUWMAixMtC80v8Vu9Qg/xm8FcYRY6dgC2E=;
-        b=B7uhBaTcPwT0kcwDmd9C6Sjx19sd/LkFqPCa1Cv186VmJXY5Pa0SAm8PI1ZU8mvv
-        Lg08XQ3gYuveB+oqzDjA0aVeKZSNrQP8NKqWQuZVv47VFZDHHg5Wg2rD62qMeRJs
-        6u3+grQKLMWhA0nyHu61xBxVBkOmBbiZlx1Ayxzj70g=;
-X-AuditID: c39127d2-0d3b770000001c86-9f-6007128f5d18
-Received: from Florix.phytec.de (florix.phytec.de [172.16.0.118])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 95.B0.07302.F8217006; Tue, 19 Jan 2021 18:10:39 +0100 (CET)
-Received: from [172.16.21.73] (172.16.0.116) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 19 Jan
- 2021 18:10:39 +0100
-Subject: Re: Splicing to/from a tty
-From:   Robert Karszniewicz <r.karszniewicz@phytec.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Christoph Hellwig <hch@lst.de>, Oliver Giles <ohw.giles@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
- <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
- <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com>
- <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
- <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
- <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
- <CAHk-=wjgufiORSuAb270XpGn45jexRjP9SCmcc7AAAZsVrAaPw@mail.gmail.com>
- <CAHk-=whW7t=3B=iCwYkJ3W-FH08wZNCFO7EJ5qQSqD9Z_tBxrQ@mail.gmail.com>
- <YAbIVgGt1Qz8ItMh@kroah.com> <9d3baff9-5d4a-4308-9556-8dd037c2fe4b@phytec.de>
-Message-ID: <4c96301e-f2a1-3343-8927-c2567ad179eb@phytec.de>
-Date:   Tue, 19 Jan 2021 18:10:38 +0100
+        Tue, 19 Jan 2021 12:12:54 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EC9C061573;
+        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id v5so14199831qtv.7;
+        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8ZydUd6iysbYazKads1ipIIW9R1NAHfYqDDc67KX+ok=;
+        b=GUDFIcbbkZ0IKIM4c9iEcy1neGW1Am8AUsPJaK5r+I0x8/XC+qJ6nYm3gtQT7I7rTm
+         oLGRvD0Mwza9JzaPlkt+gSugq+ltoro+jO/Q2yMEBAU0Ea8cwM1lPfatTuoW2x40vhFf
+         f17G5DKs6UpamngxVSM02PtXFwA1KrGZN/f847VB29EZIdE1zgOSa5g9skse6P62x60W
+         iceQoQyyFtru7OzdGAzm7sCqJ7/VYs7xi7DR4NRWjZRctUd83LRJadIvFEv+vEHYkhCb
+         /r456Iiat+2ErGvhEjsUVHSGSaebp36nT7hh72DnOxAVZMg9j6INS4YJ795MSUSWZMXa
+         wQqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8ZydUd6iysbYazKads1ipIIW9R1NAHfYqDDc67KX+ok=;
+        b=nUQ+t3rJ8ZZGF5eKMduGbM2gmnZfccks3LoNrUUXquhPkKvCLwBkOG3FyoW3U6s2aJ
+         9WiiLVBOE2A/9RnNroS2yxJKRmlXpjKRKOwitHifWP6+D+uPuCz654V1/puD5TfLVqY3
+         /xTePq5OA/Uk+fmx+ut6iHw5oerEczIVlUnRUREC6S2i1IpYImDF/1iIil3qVYiffL6Q
+         I3rtJpU9jVp3k58VxLqbpq2sZy9RHQYkAb9RGf2PxG4xi9dtDAgiKjryEXatO38m+ggs
+         Go1VfSlAvF2C9GnVySXQv9//JwBsynXksNBaU1aFUWTMqWkLpiaiPZBAW0gznyp7G6mp
+         E4xA==
+X-Gm-Message-State: AOAM531vzu2zvuK0hmlYRBzGtgZYgK3+kzsX5aT63WlNIGxgKOuqpzwS
+        wFKb2B/FWo/ZFgE8onWHnAQ=
+X-Google-Smtp-Source: ABdhPJwtroIpxWtBHKcJeF05ADTjF0q/OCbvAPWrC+faW3VgLBMJHBUy/U1Ri2mRYv4Wi61jkGQBRw==
+X-Received: by 2002:aed:2f67:: with SMTP id l94mr5244724qtd.201.1611076333155;
+        Tue, 19 Jan 2021 09:12:13 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id j66sm495062qkf.78.2021.01.19.09.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 09:12:12 -0800 (PST)
+Subject: Re: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <cover.1610431620.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com>
+Date:   Tue, 19 Jan 2021 11:12:11 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9d3baff9-5d4a-4308-9556-8dd037c2fe4b@phytec.de>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <cover.1610431620.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.0.116]
-X-ClientProxiedBy: Florix.phytec.de (172.16.0.118) To Florix.phytec.de
- (172.16.0.118)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42JZI8BQptsvxJ5gsPeNrkXz4vVsFitXH2Wy
-        eDdXxuLyrjlsFr2rNrJaPOp7y25x/u9xVgd2j52z7rJ7bFrVyeZxYsZvFo/9c9ewe+y+2cDm
-        8XmTnMemJ2+ZAtijuGxSUnMyy1KL9O0SuDL6j29mLpjJVPHqwVz2Bsb7jF2MnBwSAiYSt3fe
-        YOti5OIQEljGJLFu2zoWCOc+o8S62zuYQKqEBZQlJnbPYwGx2YA6djffYu5i5OAQEUiV2L+z
-        GqSeWeAUo8T9pjnMIDVCAr2sEotuaIHYvAI2EvtXrGMHsVkEVCWuP3kDNlNUIEKita+TGaJG
-        UOLkzCdg8zkFbCV2zP3KDjKfWUBTYv0ufZAws4C4xK0n85kgbHmJ7W9hVqlKnG57zQTxjILE
-        3N8TmSHscIl5v2exT2AUnoVkwyyEqbOQTJ2FZOoCRpZVjEK5mcnZqUWZ2XoFGZUlqcl6Kamb
-        GIHxdHii+qUdjH1zPA4xMnEwHmKU4GBWEuFt+suWIMSbklhZlVqUH19UmpNafIhRmoNFSZx3
-        A29JmJBAemJJanZqakFqEUyWiYNTqoFR/lTK8ScBr7bHL1p03WUS7/otSv8dmZmklqw5xcO0
-        eHaaTsTdeslL5hMezBDcV7+IbV+HTsWlu4Hn/RXOyEdFLPNhfNLVHmYt87HYpCNNRnD9Kb5p
-        P+Xyp3q/1wn37480XqebXmB8QsJ5yl611p3tJWmHZ+oarJjJaWgtEP7+bU1vo6fcyiYlluKM
-        REMt5qLiRACQ4KT9lQIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 5:56 PM, Robert Karszniewicz wrote:
-> Another case I've also noticed is writing to a serial connection:
-> kernel write not supported for file /ttymxc0 (pid: 252 comm: cat)
+On 1/12/21 2:28 AM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need fdtoverlay tool going forward. Lets start fetching and
+> building it.
+> 
+> While at it, also remove fdtdump.c file, which isn't used by the kernel.
+> 
+> V4:
+> - Don't fetch and build fdtdump.c
+> - Remove fdtdump.c
+> 
+> Viresh Kumar (3):
+>   scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
+>   scripts: dtc: Build fdtoverlay tool
+>   scripts: dtc: Remove the unused fdtdump.c file
+> 
+>  scripts/dtc/Makefile             |   6 +-
+>  scripts/dtc/fdtdump.c            | 163 -------------------------------
+>  scripts/dtc/update-dtc-source.sh |   6 +-
+>  3 files changed, 8 insertions(+), 167 deletions(-)
+>  delete mode 100644 scripts/dtc/fdtdump.c
+> 
 
-Which is actually a TTY and I just failed to see the forest for all the trees...
+My first inclination was to accept fdtoverlay, as is, from the upstream
+project.
 
-Cheers.
+But my experiences debugging use of fdtoverlay against the existing
+unittest overlay files has me very wary of accepting fdtoverlay in
+it's current form.
+
+As an exmple, adding an overlay that fails to reply results in the
+following build messages:
+
+   linux--5.11-rc> make zImage
+   make[1]: Entering directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
+     GEN     Makefile
+     CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/checksyscalls.sh
+     CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/atomic/check-atomics.sh
+     CHK     include/generated/compile.h
+     FDTOVERLAY drivers/of/unittest-data/static_test.dtb
+
+   Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
+   make[4]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/drivers/of/unittest-data/Makefile:96: drivers/of/unittest-data/static_test.dtb] Error 1
+   make[3]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of/unittest-data] Error 2
+   make[2]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of] Error 2
+   make[1]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/Makefile:1805: drivers] Error 2
+   make[1]: Leaving directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
+   make: *** [Makefile:185: __sub-make] Error 2
+
+
+The specific error message (copied from above) is:
+
+   Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
+
+which is cryptic and does not even point to the location in the overlay that
+is problematic.  If you look at the source of fdtoverlay / libfdt, you will
+find that FDT_ERR_NOTFOUND may be generated in one of many places.
+
+I do _not_ want to do a full review of fdtoverlay, but I think that it is
+reasonable to request enhancing fdtoverlay in the parent project to generate
+usable error messages before enabling fdtoverlay in the Linux kernel tree.
+
+fdtoverlay in it's current form adds a potential maintenance burden to me
+(as the overlay maintainer).  I now have the experience of how difficult it
+was to debug the use of fdtoverlay in the context of the proposed patch to
+use it with the devicetree unittest overlay .dtb files.
+
+-Frank
