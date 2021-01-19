@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156252FB856
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFB82FB855
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392638AbhASMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:17:47 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:11508 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389319AbhASMIu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:08:50 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 19 Jan 2021 04:07:27 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 19 Jan 2021 04:07:25 -0800
-X-QCInternal: smtphost
-Received: from maggarwa.ap.qualcomm.com (HELO nitirawa-linux.qualcomm.com) ([10.206.25.176])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 19 Jan 2021 17:37:02 +0530
-Received: by nitirawa-linux.qualcomm.com (Postfix, from userid 2342877)
-        id C03482C52; Tue, 19 Jan 2021 17:37:02 +0530 (IST)
-From:   Nitin Rawat <nitirawa@codeaurora.org>
-To:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nitin Rawat <nitirawa@codeaurora.org>
-Subject: [PATCH V2] scsi: ufs: Add UFS3.0 in ufs HCI version check
-Date:   Tue, 19 Jan 2021 17:37:01 +0530
-Message-Id: <1611058021-18611-1-git-send-email-nitirawa@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S2392600AbhASMRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:17:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:53906 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389776AbhASMI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:08:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14E96113E;
+        Tue, 19 Jan 2021 04:08:13 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 148A13F719;
+        Tue, 19 Jan 2021 04:08:11 -0800 (PST)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH] sched/eas: Don't update misfit status if the task is pinned
+Date:   Tue, 19 Jan 2021 12:07:55 +0000
+Message-Id: <20210119120755.2425264-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per JESD223D UFS HCI v3.0 spec, HCI version 3.0
-is also supported. Hence Adding UFS3.0 in UFS HCI
-version check to avoid logging of the error message.
+If the task is pinned to a cpu, setting the misfit status means that
+we'll unnecessarily continuously attempt to migrate the task but fail.
 
-Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+This continuous failure will cause the balance_interval to increase to
+a high value, and eventually cause unnecessary significant delays in
+balancing the system when real imbalance happens.
+
+Caught while testing uclamp where rt-app calibration loop was pinned to
+cpu 0, shortly after which we spawn another task with high util_clamp
+value. The task was failing to migrate after over 40ms of runtime due to
+balance_interval unnecessary expanded to a very high value from the
+calibration loop.
+
+Not done here, but it could be useful to extend the check for pinning to
+verify that the affinity of the task has a cpu that fits. We could end
+up in a similar situation otherwise.
+
+Fixes: 3b1baa6496e6 ("sched/fair: Add 'group_misfit_task' load-balance type")
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
 ---
- drivers/scsi/ufs/ufshcd.c | 5 +++--
- drivers/scsi/ufs/ufshci.h | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 82ad317..54ca765 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9255,8 +9255,9 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	if ((hba->ufs_version != UFSHCI_VERSION_10) &&
- 	    (hba->ufs_version != UFSHCI_VERSION_11) &&
- 	    (hba->ufs_version != UFSHCI_VERSION_20) &&
--	    (hba->ufs_version != UFSHCI_VERSION_21))
--		dev_err(hba->dev, "invalid UFS version 0x%x\n",
-+	    (hba->ufs_version != UFSHCI_VERSION_21) &&
-+	    (hba->ufs_version != UFSHCI_VERSION_30))
-+		dev_err(hba->dev, "invalid UFS HCI version 0x%x\n",
- 			hba->ufs_version);
-
- 	/* Get Interrupt bit mask per version */
-diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
-index 6795e1f..48f6c19 100644
---- a/drivers/scsi/ufs/ufshci.h
-+++ b/drivers/scsi/ufs/ufshci.h
-@@ -80,6 +80,7 @@ enum {
- 	UFSHCI_VERSION_11 = 0x00010100, /* 1.1 */
- 	UFSHCI_VERSION_20 = 0x00000200, /* 2.0 */
- 	UFSHCI_VERSION_21 = 0x00000210, /* 2.1 */
-+	UFSHCI_VERSION_30 = 0x00000300, /* 3.0 */
- };
-
- /*
---
-2.7.4
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 197a51473e0c..9379a481dd8c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4060,7 +4060,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+ 	if (!static_branch_unlikely(&sched_asym_cpucapacity))
+ 		return;
+ 
+-	if (!p) {
++	if (!p || p->nr_cpus_allowed == 1) {
+ 		rq->misfit_task_load = 0;
+ 		return;
+ 	}
+-- 
+2.25.1
 
