@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161642FB24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0FC2FB241
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730181AbhASHCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729244AbhASGzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:55:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CDBC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 22:55:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=xT1tYpudDlazNJPJKolNWPqeNHhb50HWMulfMYYqrPE=; b=mNCbksAUU5L9gZDfdp+KiOGCLm
-        dW4IPRz5jJJTx1UmUoFK238jERdr8au9KK0VsH9LUFDZkSmxQDv7PwZeWvLrz9XjX7gmPLx/IB/pX
-        tkeY733aow0Yh5gp1aQNvfuKZ7K3wfrr5ESxq4IV52FCBTyeQCLuE/KqG88phkY7B2L5VTbcuOeVP
-        bVJ1R2zQXPRjsOKdrUh8gCe5s80ScvSgLQH3awRLBH5+Xq62VIwBJ8f79+fq3vfNcmSz2Gh2qCAXM
-        dXDE1td3Q3Lr6zcqvlocchltr4SgS26hY/vPE6VlXxS1ZDyv1fzjLCPwzR6ke9Cl2MID+pbJfsrJk
-        3+Shx06A==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1kuw-0007Pn-Md; Tue, 19 Jan 2021 06:55:07 +0000
-Subject: Re: [PATCH v5 1/2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-To:     Vijayanand Jitta <vjitta@codeaurora.org>, minchan@kernel.org,
-        glider@google.com, akpm@linux-foundation.org,
-        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org, Vineet Gupta <vgupta@synopsys.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>
-References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
- <2f12a84c-132b-7141-a89e-9e19de0e4b90@infradead.org>
- <678c5d5f-3cd4-74ad-aebc-51cbc4c9ee4b@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <647943d6-9a8c-e5f7-a608-0892edfed2ff@infradead.org>
-Date:   Mon, 18 Jan 2021 22:54:58 -0800
+        id S1727007AbhASG6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:58:51 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:38971 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729386AbhASG4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 01:56:11 -0500
+Received: from [192.168.0.6] (ip5f5aeabb.dynamic.kabel-deutschland.de [95.90.234.187])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 64D2520645D54;
+        Tue, 19 Jan 2021 07:55:20 +0100 (CET)
+Subject: Re: [PATCH 2/2] ethernet: igb: e1000_phy: Check for
+ ops.force_speed_duplex existence
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John W Linville <linville@tuxdriver.com>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+ <20201102231307.13021-3-pmenzel@molgen.mpg.de>
+ <20201102161943.343586b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <36ce1f2e-843c-4995-8bb2-2c2676f01b9d@molgen.mpg.de>
+ <20201103103940.2ed27fa2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <c1ad26c6-a4a6-d161-1b18-476b380f4e58@molgen.mpg.de>
+ <X/ShBVXp32Y+Jeds@kroah.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <19eab284-b7b0-7053-1aa7-5fedcee04263@molgen.mpg.de>
+Date:   Tue, 19 Jan 2021 07:55:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <678c5d5f-3cd4-74ad-aebc-51cbc4c9ee4b@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <X/ShBVXp32Y+Jeds@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 10:52 PM, Vijayanand Jitta wrote:
-> 
-> 
-> On 1/19/2021 4:23 AM, Randy Dunlap wrote:
->> On 1/18/21 1:56 AM, vjitta@codeaurora.org wrote:
->>> From: Yogesh Lal <ylal@codeaurora.org>
->>>
->>> Use CONFIG_STACK_HASH_ORDER to configure STACK_HASH_SIZE.
->>>
->>> Aim is to have configurable value for  STACK_HASH_SIZE,
->>> so depend on use case one can configure it.
->>>
->>> One example is of Page Owner, default value of
->>> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
->>> Making it configurable and use lower value helps to enable features like
->>> CONFIG_PAGE_OWNER without any significant overhead.
->>>
->>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
->>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
->>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->>
->> Hi,
->>
->> Did you see
->> https://lore.kernel.org/lkml/202101050729.cwTd47Yw-lkp@intel.com/
->>
->> It seems that arch/arc/ does not have:
->>    arc-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
->>    (.text+0x6): undefined reference to `__irqentry_text_start'
->>>> arc-elf-ld: (.text+0x6): undefined reference to `__irqentry_text_start'
->>>> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
->>>> arc-elf-ld: (.text+0x26): undefined reference to `__irqentry_text_end'
->>>> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
->>>> arc-elf-ld: (.text+0x34): undefined reference to `__softirqentry_text_start'
->>>> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
->>>> arc-elf-ld: (.text+0x3c): undefined reference to `__softirqentry_text_end'
->>
->>
->>
->>
-> 
-> The above issue seems to be because of a different patch.
-> This one
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=505a0ef15f96c6c43ec719c9fc1833d98957bb39
-> 
-> I didn't really get why you referred that here.
+Dear Jakub, dear Greg,
 
-Yes, I noticed that later. Sorry about that.
 
-Maybe Alexander P. can look into it...
+Am 05.01.21 um 18:25 schrieb Greg KH:
+> On Tue, Jan 05, 2021 at 06:16:59PM +0100, Paul Menzel wrote:
 
-thanks.
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+>> Am 03.11.20 um 19:39 schrieb Jakub Kicinski:
+>>> On Tue, 3 Nov 2020 08:35:09 +0100 Paul Menzel wrote:
+>>>> According to *Developer's Certificate of Origin 1.1* [3], it’s my
+>>>> understanding, that it is *not* required. The items (a), (b), and (c)
+>>>> are connected by an *or*.
+>>>>
+>>>>>           (b) The contribution is based upon previous work that, to the best
+>>>>>               of my knowledge, is covered under an appropriate open source
+>>>>>               license and I have the right under that license to submit that
+>>>>>               work with modifications, whether created in whole or in part
+>>>>>               by me, under the same open source license (unless I am
+>>>>>               permitted to submit under a different license), as indicated
+>>>>>               in the file; or
+>>>
+>>> Ack, but then you need to put yourself as the author, because it's
+>>> you certifying that the code falls under (b).
+>>>
+>>> At least that's my understanding.
+>>
+>> Greg, can you please clarify, if it’s fine, if I upstream a patch authored
+>> by somebody else and distributed under the GPLv2? I put them as the author
+>> and signed it off.
+> 
+> You can't add someone else's signed-off-by, but you can add your own and
+> keep them as the author, has happened lots of time in the past.
+> 
+> Or, you can make the From: line be from you if the original author
+> doesn't want their name/email in the changelog, we've done that as well,
+> both are fine.
+
+Greg, thank you for the clarification.
+
+Jakub, with that out of the way, can you please take patch 2/2?
+
+
+Kind regards,
+
+Paul
