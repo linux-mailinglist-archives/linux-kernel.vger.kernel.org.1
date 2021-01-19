@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4F02FB77C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054762FB775
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391185AbhASLAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:00:22 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35038 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389682AbhASKuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:50:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JAiBXR005465;
-        Tue, 19 Jan 2021 10:44:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=k3Dmdvh68sp1sk7X+0gAHVikUR/XG2dKfI+/GpsLTbI=;
- b=KyhPoH6pvMukddNKhg9cIaZ6+9hdBXdTAeNS9dR+RL8prNKzVVMyjBuGp16bnryLLbvG
- UC4s/2+5oRzgaAxfa+8lHdRrwnm24ow0Dvj7FzwaU3A143ZlapvkbBdW/5PhVCjbS5Yg
- AHVlqIEre5yVRg0/HYVwriB+NvSlbKO/acaiBs+OI2JcEgSxSFlJITZ/lG/5BPKvsYGd
- O9UTyZa//2ZqQUhd2hWcIJ202XF4PX/KXrH//FJ3XJlJvzutCSshA57glXNrkhSpD9oZ
- i11dueZQw13TdUxc6yJAJ+Vyd1ibF7AbpLl55N/35UV38Y09fgsIfg6RH9SCgDBarv5O 4A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 363r3krfvp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 10:44:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JAZeaD150113;
-        Tue, 19 Jan 2021 10:44:03 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 364a2wf0a4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 10:44:03 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10JAhuXQ009341;
-        Tue, 19 Jan 2021 10:43:56 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Jan 2021 02:43:56 -0800
-Date:   Tue, 19 Jan 2021 13:43:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com, hch@lst.de,
-        ebiggers@kernel.org, andy.lavr@gmail.com
-Subject: Re: [PATCH v17 01/10] fs/ntfs3: Add headers and misc files
-Message-ID: <20210119104339.GA2674@kadam>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
- <20210103231755.bcmyalz3maq4ama2@kari-VirtualBox>
+        id S2404760AbhASKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:54:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404494AbhASKp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:45:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBC623133;
+        Tue, 19 Jan 2021 10:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611053086;
+        bh=rjcTlAC/ryp0e09HlnT0QF/xECvHei8ZjA0QvbaxLI4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u9NBfYuKtP60Phebz8NRNodkxGaG8wIyIW/E1TTdRqgB1Lr5jpbxY0THwAbeqvR1d
+         amGecAkD0IvE5dxxaKW+JYh5XALCL13qLbzl1mMh+VaPNgxzoeip3aN1q8/lr9wUqr
+         wyZf6hC3PtiJZgTUDWQRmMCP4KZI31ngcSevAwht9aDs1e4CkYQYilHiIwlpMnOG5y
+         jEp7p8Iyp8zHfuayxfUtqB7Y+ghp7O7K8J/5wkdI5vL6nX1H5l9hw0FX4WYbfGRbt3
+         2KcSU1587oBSi1B1WXMLIb/yKh7pBaYTkhaGzPBh2DfL8duXyaS3kVsJ6sFDJ61j8F
+         kQzyJAqvEovrQ==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l1oVA-000u2D-2h; Tue, 19 Jan 2021 11:44:44 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Promote Hikey 970 USB phy out of staging
+Date:   Tue, 19 Jan 2021 11:44:38 +0100
+Message-Id: <cover.1611052729.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210103231755.bcmyalz3maq4ama2@kari-VirtualBox>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190065
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 01:17:55AM +0200, Kari Argillander wrote:
-> On Thu, Dec 31, 2020 at 06:23:52PM +0300, Konstantin Komarov wrote:
-> 
-> > +int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-> > +		   const u16 *upcase)
-> > +{
-> > +	int diff;
-> > +	size_t len = l1 < l2 ? l1 : l2;
-> > +
-> > +	if (upcase) {
-> > +		while (len--) {
-> > +			diff = upcase_unicode_char(upcase, le16_to_cpu(*s1++)) -
-> > +			       upcase_unicode_char(upcase, le16_to_cpu(*s2++));
-> > +			if (diff)
-> > +				return diff;
-> > +		}
-> > +	} else {
-> > +		while (len--) {
-> > +			diff = le16_to_cpu(*s1++) - le16_to_cpu(*s2++);
-> > +			if (diff)
-> > +				return diff;
-> > +		}
-> > +	}
-> > +
-> > +	return (int)(l1 - l2);
-> > +}
-> 
-> I notice that these functions might call both ignore case and upcase in a row.
-> record.c - compare_attr()
-> index.c - cmp_fnames()
-> 
-> So maybe we can add bool bothcases.
-> 
-> int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-> 		   const u16 *upcase, bool bothcase)
-> {
-> 	int diff1 = 0;
-> 	int diff2;
-> 	size_t len = l1 < l2 ? l1 : l2;
+Hi Vinod/Rob,
 
-size_t len = min(l1, l2);
+This series moves  the Hikey 970 USB PHY driver out of staging.
 
-I wonder if this could be a Coccinelle script?
+Patches 1 to 4 contain the fixes from staging. Patch 5 moves the
+driver from staging:
 
-regards,
-dan carpenter
+	$ git show 82ce73ac9a38 --summary
+	...
+	 rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
+	 rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
+
+I opted to use --no-renames on this series in order to make easier to
+review via e-mail, as the entire driver and DT bindings will be seen
+at the last patch on this series.
+
+
+v4:
+- do additional changes at the hi3670_is_abbclk_seleted() function,
+  fixing the typo on its name and reversing the bool return code;
+- the yaml fix is now on a separate patch.
+
+v3: 
+- no changes on patches 1-2 nor at phy-hi3670-usb3.c;
+- yaml renamed to: hisilicon,hi3670-usb3.yaml 
+- Added a blank line after maintainers at hisilicon,hi3670-usb3.yaml 
+
+
+
+Mauro Carvalho Chehab (5):
+  staging: hikey9xx: phy-hi3670-usb3: use bitfield macros
+  staging: hikey9xx: phy-hi3670-usb3: adjust retry logic
+  staging: hikey9xx: phy-hi3670-usb3: hi3670_is_abbclk_seleted() returns
+    bool
+  staging: hikey9xx: phy-hi3670-usb3.yaml: add a blank line
+  phy: phy-hi3670-usb3: move driver from staging into phy
+
+ .../bindings/phy/hisilicon,hi3670-usb3.yaml   |  73 ++
+ MAINTAINERS                                   |   9 +-
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ drivers/phy/hisilicon/phy-hi3670-usb3.c       | 668 +++++++++++++++++
+ drivers/staging/hikey9xx/Kconfig              |  11 -
+ drivers/staging/hikey9xx/Makefile             |   2 -
+ drivers/staging/hikey9xx/phy-hi3670-usb3.c    | 671 ------------------
+ drivers/staging/hikey9xx/phy-hi3670-usb3.yaml |  72 --
+ 9 files changed, 760 insertions(+), 757 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
+ delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.c
+ delete mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
+
+-- 
+2.29.2
+
+
