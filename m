@@ -2,200 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F8D2FB3E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7452FB3EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbhASITf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
+        id S1730819AbhASIVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727860AbhASISn (ORCPT
+        with ESMTP id S1728349AbhASISs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:18:43 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8BCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:18:02 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o13so27856285lfr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:18:02 -0800 (PST)
+        Tue, 19 Jan 2021 03:18:48 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B459C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:18:07 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id v1so932790ott.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:18:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bex7COrdJ/07+iU2EYVxWE5mtZ00AfCIkhn7mqzRkwQ=;
-        b=Sgy4vEIxGxOZvbB0AyDKeuqwfz/6V6aXNblu7uZ5cg7SaUuH8ICezC0KLXM1Q5kLr/
-         NiIc4bRWnjBbprMMa8osrRXVoebxfEO2rSliTgXU6ct47WpOnO/VAn8Vj6xTwVwKiYJO
-         sOQzNAidTzRAb4jQ5ksO6JvwbjlHIgerkFd/mAr8eFocesTIa6rJO2AXlST/aMJPSTgW
-         3rvob0OQvjDg5JTCYjJpgpafHGFyVclpCOa1mzGJbydEuuMeqyBbeFiANi7TvT8FgZyl
-         urVA0VXipjl+FKLtGefVHCiAQB03hhgugYHH5Fnn5GfFEjyVFlSxNzpV1ASfECgIIQKe
-         zbaA==
+         :cc:content-transfer-encoding;
+        bh=WfFJuLm0JWFKIZSr35gVwj0xg2AYZzNEcuLqFUXW2+8=;
+        b=PbkKRo7SNg95R94SiZevOw2BEtiFlTjvdHUYcZPMAnSrGIckYOkeHga/KY6+b/RNEu
+         RQKckLdL5MSMzGFd7lJcRzJqnGxbYjtG1EOrlYplFzb90mxOoz3o6SCb0Xws/78s2/JW
+         OCW0F7fS42A6taX0chOn4gczjDBvyZIQbF25k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bex7COrdJ/07+iU2EYVxWE5mtZ00AfCIkhn7mqzRkwQ=;
-        b=irZH4hiVYB+ihLKNDkAVn6GAE9oVg9Up9TK60pZenpZd/v2b08qmXQfB21dM5kBYwX
-         GQtFI0v/9ERoYTOuPQwK/+6Q1NupRmlB+fHRjrqJUQBfYPpgKJWKq9zzI/+jOpH2q14Q
-         1pDGnPU0p4tAoUo07jngjgGucevVSqDEHGv/W7x0uVgGgumTIP9SCCuszaxvUnOouaJL
-         EaAFJRKqmoUfWOuBPLuyvMFJnuhicHjwSpNFTtdq0Troi0XQyVJaSq3YJ4gVOkLKFrGO
-         83dHcm7JdzvCQlXhvYs4X+hG2ugA1VmGnNjf8vk/fJLyIAL/TEhyc9JA8a2OGdIHoJIl
-         SYAw==
-X-Gm-Message-State: AOAM530yMtpSd2Li9qyQp28TXsAPmRsYQ8LnCwz8c4VzxVGxk3SJHieh
-        aDqDK+myZpfHp5+Dzp8GsSGowkYFBdoGFDvDGDmUDQaZzekQlc+7
-X-Google-Smtp-Source: ABdhPJwMoFMQkXJv8+k3HuexsPpIdE6JBDv/cvZETT+bzC6wWwKKKfJL1Y27gtSD+KcJe4tpj3GeOHICWb8qtoxWEeI=
-X-Received: by 2002:a05:6512:3222:: with SMTP id f2mr1404944lfe.25.1611044280842;
- Tue, 19 Jan 2021 00:18:00 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WfFJuLm0JWFKIZSr35gVwj0xg2AYZzNEcuLqFUXW2+8=;
+        b=m0RjjA50vL4ohTFCthMt2V+GhHwYjeeUaj1NsMAe3QTpCq7PxHtsirVrly9ecTcYci
+         OADEMdA0v/jWEqp10Upcz3wETFVaasQQoRS7dlSJT3CGWVw5+JPQsZizhQqWNWJXtD9W
+         Ewtqd7XOOa9JzNqKi0/ZQI43ZLeDGVBChmketxhwG1SqRJTHxAcMclRS/vWjqrmSdIKu
+         icx2juuJbJU3ua7cqrSoeqRYf/khC7tYgLGmwcJuNU/W3ItldwcC71C/iVqYbU0oHdPg
+         6U/OKbwB7hA13qLoCHvZUVWU+vPb/6crA/VqjXRCPR9eno4efhj91/u6/qs//Xg9hiag
+         Qlkg==
+X-Gm-Message-State: AOAM530jbxrJSxk+LTTyDkIocaTvrRV3Waqr1pwEvzS3Ota+NnJV7PMm
+        fvHjmpyyjThgdU15OFQBf5KVHa82HauCNyrdZ3/ymA==
+X-Google-Smtp-Source: ABdhPJzaeODA4sJQGtFnmlEJhEIejHm5tUfJ6WBUJaaM4JSKW7UsD8q5H1JPOzhq7vW/xPspCH7j/ySdSzg97qcaAUI=
+X-Received: by 2002:a9d:23ca:: with SMTP id t68mr2659337otb.281.1611044286607;
+ Tue, 19 Jan 2021 00:18:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119080938.1832733-1-geert@linux-m68k.org>
-In-Reply-To: <20210119080938.1832733-1-geert@linux-m68k.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 19 Jan 2021 13:47:49 +0530
-Message-ID: <CAAhSdy3woKdo1=sZRO3ua=hK6M8NM7dp3nMFX99dKoUOC6+W5Q@mail.gmail.com>
-Subject: Re: [PATCH v4] drivers/soc/litex: Add restart handler
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch> <20201127164131.2244124-13-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201127164131.2244124-13-daniel.vetter@ffwll.ch>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 19 Jan 2021 09:17:55 +0100
+Message-ID: <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
+Subject: Re: [PATCH v7 12/17] PCI: Revoke mappings like devmem
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Jan 19, 2021 at 1:40 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, Nov 27, 2020 at 5:42 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrot=
+e:
 >
-> Let the LiteX SoC Controller register a restart handler, which resets
-> the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
+> Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> the default for all driver uses.
 >
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-We have SBI System Reset Extension (SRST) in upcoming
-SBI v0.3 spec. Using this SBI extension, you will not require a
-dedicated reboot driver for various projects such as Linux kernel,
-U-Boot, EDK2, FreeBSD kernel, etc.
-
-The OpenSBI v0.9 (released yesterday) already has SBI SRST
-extension implemented so we will just need platform hooks for
-LiteX.
-
-The Linux support for SRST extension is already available on
-LKML so far no comments: https://lkml.org/lkml/2020/11/25/6
-
-Regards,
-Anup
-
-
-> ---
-> v4:
->   - Drop bogus "a" from description,
->   - Get rid of static litex_soc_ctrl_device and litex_reset_nb
->     instances,
->   - Unregister handler on driver unbind,
+> Except there's two more ways to access PCI BARs: sysfs and proc mmap
+> support. Let's plug that hole.
 >
-> v3:
->   - Rebase on top of openrisc/for-next,
+> For revoke_devmem() to work we need to link our vma into the same
+> address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> adjusted, because that's how (io_)remap_pfn_range works, but for the
+> mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
+> to adjust this at at ->open time:
 >
-> v2:
->   - Rebase on top of v5.11-rc1,
->   - Change reset handler priority to recommended default value of 128
->     (was 192).
+> - for sysfs this is easy, now that binary attributes support this. We
+>   just set bin_attr->mapping when mmap is supported
+> - for procfs it's a bit more tricky, since procfs pci access has only
+>   one file per device, and access to a specific resources first needs
+>   to be set up with some ioctl calls. But mmap is only supported for
+>   the same resources as sysfs exposes with mmap support, and otherwise
+>   rejected, so we can set the mapping unconditionally at open time
+>   without harm.
 >
-> (v1 was not sent to a mailing list)
-> ---
->  drivers/soc/litex/litex_soc_ctrl.c | 42 +++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
+> A special consideration is for arch_can_pci_mmap_io() - we need to
+> make sure that the ->f_mapping doesn't alias between ioport and iomem
+> space. There's only 2 ways in-tree to support mmap of ioports: generic
+> pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
+> architecture hand-rolling. Both approach support ioport mmap through a
+> special pfn range and not through magic pte attributes. Aliasing is
+> therefore not a problem.
 >
-> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-> index da17ba56b7956c84..a7dd5be9fd5bd8ad 100644
-> --- a/drivers/soc/litex/litex_soc_ctrl.c
-> +++ b/drivers/soc/litex/litex_soc_ctrl.c
-> @@ -15,6 +15,11 @@
->  #include <linux/module.h>
->  #include <linux/errno.h>
->  #include <linux/io.h>
-> +#include <linux/reboot.h>
-> +
-> +/* reset register located at the base address */
-> +#define RESET_REG_OFF           0x00
-> +#define RESET_REG_VALUE         0x00000001
+> The only difference in access checks left is that sysfs PCI mmap does
+> not check for CAP_RAWIO. I'm not really sure whether that should be
+> added or not.
 >
->  #define SCRATCH_REG_OFF         0x04
->  #define SCRATCH_REG_VALUE       0x12345678
-> @@ -66,8 +71,19 @@ static int litex_check_csr_access(void __iomem *reg_addr)
->
->  struct litex_soc_ctrl_device {
->         void __iomem *base;
-> +       struct notifier_block reset_nb;
->  };
->
-> +static int litex_reset_handler(struct notifier_block *this, unsigned long mode,
-> +                              void *cmd)
-> +{
-> +       struct litex_soc_ctrl_device *soc_ctrl_dev =
-> +               container_of(this, struct litex_soc_ctrl_device, reset_nb);
-> +
-> +       litex_write32(soc_ctrl_dev->base + RESET_REG_OFF, RESET_REG_VALUE);
-> +       return NOTIFY_DONE;
-> +}
-> +
->  static const struct of_device_id litex_soc_ctrl_of_match[] = {
->         {.compatible = "litex,soc-controller"},
->         {},
-> @@ -78,6 +94,7 @@ MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
->  static int litex_soc_ctrl_probe(struct platform_device *pdev)
->  {
->         struct litex_soc_ctrl_device *soc_ctrl_dev;
-> +       int error;
->
->         soc_ctrl_dev = devm_kzalloc(&pdev->dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
->         if (!soc_ctrl_dev)
-> @@ -87,7 +104,29 @@ static int litex_soc_ctrl_probe(struct platform_device *pdev)
->         if (IS_ERR(soc_ctrl_dev->base))
->                 return PTR_ERR(soc_ctrl_dev->base);
->
-> -       return litex_check_csr_access(soc_ctrl_dev->base);
-> +       error = litex_check_csr_access(soc_ctrl_dev->base);
-> +       if (error)
-> +               return error;
-> +
-> +       platform_set_drvdata(pdev, soc_ctrl_dev);
-> +
-> +       soc_ctrl_dev->reset_nb.notifier_call = litex_reset_handler;
-> +       soc_ctrl_dev->reset_nb.priority = 128;
-> +       error = register_restart_handler(&soc_ctrl_dev->reset_nb);
-> +       if (error) {
-> +               dev_warn(&pdev->dev, "cannot register restart handler: %d\n",
-> +                        error);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int litex_soc_ctrl_remove(struct platform_device *pdev)
-> +{
-> +       struct litex_soc_ctrl_device *soc_ctrl_dev = platform_get_drvdata(pdev);
-> +
-> +       unregister_restart_handler(&soc_ctrl_dev->reset_nb);
-> +       return 0;
->  }
->
->  static struct platform_driver litex_soc_ctrl_driver = {
-> @@ -96,6 +135,7 @@ static struct platform_driver litex_soc_ctrl_driver = {
->                 .of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
->         },
->         .probe = litex_soc_ctrl_probe,
-> +       .remove = litex_soc_ctrl_remove,
->  };
->
->  module_platform_driver(litex_soc_ctrl_driver);
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 > --
-> 2.25.1
+> v2:
+> - Totally new approach: Adjust filp->f_mapping at open time. Note that
+>   this now works on all architectures, not just those support
+>   ARCH_GENERIC_PCI_MMAP_RESOURCE
+> ---
+>  drivers/pci/pci-sysfs.c | 4 ++++
+>  drivers/pci/proc.c      | 1 +
+>  2 files changed, 5 insertions(+)
 >
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index d15c881e2e7e..3f1c31bc0b7c 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -929,6 +929,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+>         b->legacy_io->read =3D pci_read_legacy_io;
+>         b->legacy_io->write =3D pci_write_legacy_io;
+>         b->legacy_io->mmap =3D pci_mmap_legacy_io;
+> +       b->legacy_io->mapping =3D iomem_get_mapping();
+>         pci_adjust_legacy_attr(b, pci_mmap_io);
+>         error =3D device_create_bin_file(&b->dev, b->legacy_io);
+>         if (error)
+> @@ -941,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+>         b->legacy_mem->size =3D 1024*1024;
+>         b->legacy_mem->attr.mode =3D 0600;
+>         b->legacy_mem->mmap =3D pci_mmap_legacy_mem;
+> +       b->legacy_io->mapping =3D iomem_get_mapping();
+
+Unlike the normal pci stuff below, the legacy files here go boom
+because they're set up much earlier in the boot sequence. This only
+affects HAVE_PCI_LEGACY architectures, which aren't that many. So what
+should we do here now:
+- drop the devmem revoke for these
+- rework the init sequence somehow to set up these files a lot later
+- redo the sysfs patch so that it doesn't take an address_space
+pointer, but instead a callback to get at that (since at open time
+everything is set up). Imo rather ugly
+- ditch this part of the series (since there's not really any takers
+for the latter parts it might just not make sense to push for this)
+- something else?
+
+Bjorn, Greg, thoughts?
+
+Issuge got reported by Stephen on a powerpc when trying to build
+linux-next with this patch included.
+
+Thanks, Daniel
+
+>         pci_adjust_legacy_attr(b, pci_mmap_mem);
+>         error =3D device_create_bin_file(&b->dev, b->legacy_mem);
+>         if (error)
+> @@ -1156,6 +1158,8 @@ static int pci_create_attr(struct pci_dev *pdev, in=
+t num, int write_combine)
+>                         res_attr->mmap =3D pci_mmap_resource_uc;
+>                 }
+>         }
+> +       if (res_attr->mmap)
+> +               res_attr->mapping =3D iomem_get_mapping();
+>         res_attr->attr.name =3D res_attr_name;
+>         res_attr->attr.mode =3D 0600;
+>         res_attr->size =3D pci_resource_len(pdev, num);
+> diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+> index 3a2f90beb4cb..9bab07302bbf 100644
+> --- a/drivers/pci/proc.c
+> +++ b/drivers/pci/proc.c
+> @@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, str=
+uct file *file)
+>         fpriv->write_combine =3D 0;
 >
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>         file->private_data =3D fpriv;
+> +       file->f_mapping =3D iomem_get_mapping();
+>
+>         return 0;
+>  }
+> --
+> 2.29.2
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
