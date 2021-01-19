@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CC12FB7B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827812FB7B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391299AbhASLYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:24:46 -0500
-Received: from support.corp-email.com ([222.73.234.235]:9498 "EHLO
-        support.corp-email.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389130AbhASLJ1 (ORCPT
+        id S2391372AbhASL0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:26:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731946AbhASLJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:09:27 -0500
-Received: from ([183.47.25.45])
-        by support.corp-email.com ((LNX1044)) with ASMTP (SSL) id NEB00015;
-        Tue, 19 Jan 2021 19:07:15 +0800
-Received: from GCY-EXS-15.TCL.com (10.74.128.165) by GCY-EXS-06.TCL.com
- (10.74.128.156) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
- 2021 19:07:16 +0800
-Received: from localhost.localdomain (172.16.34.38) by GCY-EXS-15.TCL.com
- (10.74.128.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
- 2021 19:07:14 +0800
-From:   Rokudo Yan <wu-yan@tcl.com>
-To:     <balsini@android.com>
-CC:     <akailash@google.com>, <amir73il@gmail.com>, <axboe@kernel.dk>,
-        <bergwolf@gmail.com>, <duostefano93@gmail.com>,
-        <dvander@google.com>, <fuse-devel@lists.sourceforge.net>,
-        <gscrivan@redhat.com>, <jannh@google.com>,
-        <kernel-team@android.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <maco@android.com>,
-        <miklos@szeredi.hu>, <palmer@dabbelt.com>,
-        <paullawrence@google.com>, <trapexit@spawn.link>, <wu-yan@tcl.com>,
-        <zezeozue@google.com>
-Subject: Re: [PATCH RESEND V11 0/7] fuse: Add support for passthrough read/write
-Date:   Tue, 19 Jan 2021 19:06:54 +0800
-Message-ID: <20210119110654.11817-1-wu-yan@tcl.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210118192748.584213-1-balsini@android.com>
-References: <20210118192748.584213-1-balsini@android.com>
+        Tue, 19 Jan 2021 06:09:14 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E915BC061573;
+        Tue, 19 Jan 2021 03:07:06 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0bca00c2aa0e949335efb7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:c2aa:e94:9335:efb7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5CD181EC05DE;
+        Tue, 19 Jan 2021 12:07:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611054425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CRGl/u4vxGN+WxlP0KAC1sbS3k8pNEXivCxE9nwD1Kg=;
+        b=FJmtEc/Bd8pzj81PNmZ8TxlCmQrZgNxGipGb9Q3em4Qa7ig24RPVseKjNGTSr0ayHmvp7e
+        6I4isDyPVd9MafYg6by2PO7hqhPsedzYpEHmyTPzmWB+6JTdqLnxxavrBbFqh0/jqC8eNN
+        e0w3yWpF+O83k6Wx68Y19M1XZzwAFDQ=
+Date:   Tue, 19 Jan 2021 12:06:59 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 02/26] x86/cet/shstk: Add Kconfig option for
+ user-mode control-flow protection
+Message-ID: <20210119110659.GG27433@zn.tnic>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-3-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.16.34.38]
-X-ClientProxiedBy: GCY-EXS-01.TCL.com (10.74.128.151) To GCY-EXS-15.TCL.com
- (10.74.128.165)
-tUid:   2021119190715f9f4f0275f6c87c21aaa38b5cbe9b56e
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201229213053.16395-3-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-on Mon, Jan 18, 2021 at 5:27 PM Alessio Balsini <balsini@android.com> wrote:
->
-> This is the 11th version of the series, rebased on top of v5.11-rc4.
-> Please find the changelog at the bottom of this cover letter.
+On Tue, Dec 29, 2020 at 01:30:29PM -0800, Yu-cheng Yu wrote:
+> Shadow Stack provides protection against function return address
+> corruption.  It is active when the processor supports it, the kernel has
+> CONFIG_X86_CET_USER enabled, and the application is built for the feature.
+> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
+> non-Shadow Stack applications continue to work, but without protection.
 > 
-> Add support for file system passthrough read/write of files when enabled
-> in userspace through the option FUSE_PASSTHROUGH.
-[...]
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> ---
+>  arch/x86/Kconfig           | 22 ++++++++++++++++++++++
+>  arch/x86/Kconfig.assembler |  5 +++++
+>  2 files changed, 27 insertions(+)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 7b6dd10b162a..72cff400b9ae 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1950,6 +1950,28 @@ config X86_SGX
+>  
+>  	  If unsure, say N.
+>  
+> +config ARCH_HAS_SHADOW_STACK
+> +	def_bool n
+> +
+> +config X86_CET_USER
 
+That thing needs to be X86_CET. How many times do I need to type this
+before you do it?
 
-Hi Allesio,
+-- 
+Regards/Gruss,
+    Boris.
 
-Could you please add support for passthrough mmap too ?
-If the fuse file opened with passthrough actived, and then map (shared) to (another) process
-address space using mmap interface. As access the file with mmap will pass the vfs cache of fuse,
-but access the file with read/write will bypass the vfs cache of fuse, this may cause inconsistency.
-eg. the reader read the fuse file with mmap() and the writer modify the file with write(), the reader
-may not see the modification immediately since the writer bypass the vfs cache of fuse.
-Actually we have already meet an issue caused by the inconsistency after applying fuse passthrough
-scheme to our product.
-
-Thanks,
-yanwu.
+https://people.kernel.org/tglx/notes-about-netiquette
