@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639C22FB878
+	by mail.lfdr.de (Postfix) with ESMTP id E16542FB879
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393339AbhASMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404937AbhASMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:34:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A52D2310E;
-        Tue, 19 Jan 2021 12:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611059632;
-        bh=nhLuurJSrgADMg3lBfOTeTfYMIf5bFMG7UNgaXRHqZ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XMFySzbpHGeNgMMesjH9tuaLgO7p7bI6r5Eg9KF5YH4R+v+FeIvF8htdqA9C2hk2z
-         cZjZWaTyWQz+PWPcYgAX5FxSUAUWHtx8YqgpkkHPXhTgJonIU8FKqtiPzqPIIGRgc4
-         GEfcF2bkYGSR4csEKZpOTayWgH0Mz+4RHeu7OT/w=
-Date:   Tue, 19 Jan 2021 13:33:49 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Al Cooper <al.cooper@broadcom.com>
-Cc:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 2/2] serial: 8250: Add new 8250-core based Broadcom
- STB driver
-Message-ID: <YAbRrSSNkzcvGSL3@kroah.com>
-References: <20210115211543.33563-1-alcooperx@gmail.com>
- <20210115211543.33563-3-alcooperx@gmail.com>
- <YAXJRDhS1HXeYaZz@kroah.com>
- <CAGh=XABU=jdLWo8AfSBZPwn+_gDfCNN07cg9a58nxknjjyEfxg@mail.gmail.com>
+        id S2393361AbhASMlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405042AbhASMfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:35:10 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C50BC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 04:34:27 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id 6so12289928wri.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 04:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dy3egPV1ka/EkZOaPATc7EsNx/78Zw3FYs2vUZuq9OU=;
+        b=evsZNBcduUb7qJp65mS6n4i2QPR+xQy4POZWrTwxPx77Y6MwQKoj/e/V8dpgSrQkKf
+         pnDA5+cIudYS6Id24AKDGGnBLZArqWXyf4SpAvDO8ihFDSjmi5S8OS0IXsdeSgEfQhVC
+         dZMyTqT8W3OtlFHmN/j93o2mUX/eBtQObonmgz+5ne8jDjN8gQMebwkmePLHxZrFbXVX
+         LA2rabkrQxfIG2aPLngyRY6T3k4T9zGraCI39n7CokXsRaw2g+L/8mlEHMSR1w7Qnb8U
+         CIWB6r3Znl9bmzXvyI6STcehT80Dga5yGhuJo8zimw+AQGK7+x30Tp88mE3chkhUebPZ
+         BtYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dy3egPV1ka/EkZOaPATc7EsNx/78Zw3FYs2vUZuq9OU=;
+        b=m8+ZWqjUnvbaiVl9hUWFmweWzwLxNrpBKom3wLXtj3kAi5i0njJ9//J1n924NyNWD0
+         mVm4BwXlcBsmdsvX5W2IgdrTFNsmPAu/OmfRYZL95+7CA+QjLxb+zvGjNdH6CGjLGEna
+         Arf89lQqR/mHhwPEZwuPKPEAKts/EVODHqqSCal18hLDhPxD3YQHaBLzst2KuNuMFsG4
+         AtYPQlV7e0xUVRhWI+Nol5DcSSQ1RIzDRU3Q/EmMbFC91TIwPHGHyfNNyJbX3C5SwLr9
+         fn582ouQDtXVq8VxukMCVIpk6tsD/Lr6NX0f3mQhLKOmAkKxz7Uzdk9ZOZeN6ujzOjRs
+         YyAQ==
+X-Gm-Message-State: AOAM5302Lx1qI5U90vCiBdlbE4NPEMJqpFx+hmnx7ESQT1tU7ghTDVgl
+        /AKyU8BzMYXt75SOCn1sDqAuhw==
+X-Google-Smtp-Source: ABdhPJzuytrtz4oMI/FP+lXgZR8nD44MAhG4BGEMGEvMmaJq/MlcxUctQ8Sg7K6AdXbtI15642DvVg==
+X-Received: by 2002:a5d:44c8:: with SMTP id z8mr4160714wrr.366.1611059665813;
+        Tue, 19 Jan 2021 04:34:25 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:41d4:8c90:d38:455d])
+        by smtp.gmail.com with ESMTPSA id a17sm36904463wrs.20.2021.01.19.04.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 04:34:25 -0800 (PST)
+Date:   Tue, 19 Jan 2021 12:34:23 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Rokudo Yan <wu-yan@tcl.com>
+Cc:     balsini@android.com, akailash@google.com, amir73il@gmail.com,
+        axboe@kernel.dk, bergwolf@gmail.com, duostefano93@gmail.com,
+        dvander@google.com, fuse-devel@lists.sourceforge.net,
+        gscrivan@redhat.com, jannh@google.com, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, miklos@szeredi.hu, palmer@dabbelt.com,
+        paullawrence@google.com, trapexit@spawn.link, zezeozue@google.com
+Subject: Re: [PATCH RESEND V11 0/7] fuse: Add support for passthrough
+ read/write
+Message-ID: <YAbRz83CV2TyU3wT@google.com>
+References: <20210118192748.584213-1-balsini@android.com>
+ <20210119110654.11817-1-wu-yan@tcl.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGh=XABU=jdLWo8AfSBZPwn+_gDfCNN07cg9a58nxknjjyEfxg@mail.gmail.com>
+In-Reply-To: <20210119110654.11817-1-wu-yan@tcl.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:32:57PM -0500, Al Cooper wrote:
-> On Mon, Jan 18, 2021 at 12:45 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Tue, Jan 19, 2021 at 07:06:54PM +0800, Rokudo Yan wrote:
+> on Mon, Jan 18, 2021 at 5:27 PM Alessio Balsini <balsini@android.com> wrote:
 > >
-> > On Fri, Jan 15, 2021 at 04:15:43PM -0500, Al Cooper wrote:
-> > > Add a UART driver for the new Broadcom 8250 based STB UART. The new
-> > > UART is backward compatible with the standard 8250, but has some
-> > > additional features. The new features include a high accuracy baud
-> > > rate clock system and DMA support.
-> > >
-> > > The driver will use the new optional BAUD MUX clock to select the best
-> > > one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
-> > > the baud rate selection logic for any requested baud rate.  This allows
-> > > for more accurate BAUD rates when high speed baud rates are selected.
-> > >
-> > > The driver will use the new UART DMA hardware if the UART DMA registers
-> > > are specified in Device Tree "reg" property. The DMA functionality can
-> > > be disabled on kernel boot with the argument:
-> > > "8250_bcm7271.disable_dma=Y".
-> >
-> > Shouldn't that be on a per-device basis, and not a per-driver basis?
+> > This is the 11th version of the series, rebased on top of v5.11-rc4.
+> > Please find the changelog at the bottom of this cover letter.
+> > 
+> > Add support for file system passthrough read/write of files when enabled
+> > in userspace through the option FUSE_PASSTHROUGH.
+> [...]
 > 
-> There is only one instance of the UART DMA hardware and it gets muxed
-> to just one of the possible UARTS.
-
-But the driver doesn't know/care about that, it binds to any device that
-matches it.  per-module/driver flags are not a good idea.
-
-> > And why would you want to disable this, if you have support for this in
-> > the DT?  Why not just rely on the DT setting?
 > 
-> The DMA feature is used when the UART is connected to a Bluetooth
-> controller and the BAUD rate is typically 2-3Mbs. The ability to
-> easily disable DMA is very useful when debugging BT communication
-> problems in the field. DT settings could also be used to disable DMA,
-> but knowing the correct modifications to the "reg" and "reg-names"
-> properties is a lot more complicated.
+> Hi Allesio,
+> 
+> Could you please add support for passthrough mmap too ?
+> If the fuse file opened with passthrough actived, and then map (shared) to (another) process
+> address space using mmap interface. As access the file with mmap will pass the vfs cache of fuse,
+> but access the file with read/write will bypass the vfs cache of fuse, this may cause inconsistency.
+> eg. the reader read the fuse file with mmap() and the writer modify the file with write(), the reader
+> may not see the modification immediately since the writer bypass the vfs cache of fuse.
+> Actually we have already meet an issue caused by the inconsistency after applying fuse passthrough
+> scheme to our product.
+> 
+> Thanks,
+> yanwu.
 
-So this is a debug-only option?  If so, why not just make it a debugfs
-file then?  No need to clutter up a module parameter for this mess.
+Hi yanwu,
 
-thanks,
+Thank you for your interest in this change.
 
-greg k-h
+FUSE passthrough for mmap is an extension that is already in my TODO
+list, together with passthrough for directories.
+For now I would prefer to keep this series minimal to make the review
+process leaner and simpler.
+I will start working on extending this series with new features and
+addressing more corner cases as soon as these changes get merged, what
+do you think?
+
+Thanks,
+Alessio
