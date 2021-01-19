@@ -2,138 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B372FB6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F892FB6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733268AbhASJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:27:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732149AbhASJQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:16:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF18623139;
-        Tue, 19 Jan 2021 09:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611047759;
-        bh=b4Cf+wcAxaeMO0xd+RigZ7MJ8HZVYfOhWxJaBWs7WvM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Aq0084h9/Uccjg5CXUGB4RCgPArQsWrOYebgPiDSxJHpWp1+mU+8aWXHfHThHEQ8f
-         A7ms7bqN+3jJWIthcfpeYhHCagIBHEsK/Pau6kwWubLLAIWAY0mDpN2hi2wqHSszBr
-         IqIQYoBCyF4DuFlP/seAev0fagLUsTUzqTYUwpUsQ3IkJSn8O+HR399TWKcO9UGd8q
-         Fugvl/mK6d6ZM6qvwDbeSGjAMc+wU797GbSBQ6OQ5fvsWct//qBsL6JAt+2LLD7w9X
-         OCDM+c+twgMHOknYTi3Y27h5D+VxkCqu4pWsXOS1Imy/FVFOUaP1ZocgpOVaX7T/Ye
-         IfLGZMXxlZWuw==
-Received: by mail-lj1-f169.google.com with SMTP id f11so21079364ljm.8;
-        Tue, 19 Jan 2021 01:15:58 -0800 (PST)
-X-Gm-Message-State: AOAM531cPqsYLDJ4eZeR8ArWGAhnUDyq0xFhfZj/ftW18Zgbw5Bq94/n
-        tQWbP/msEES2kPKwCX2lSW1rxqxOGG5lvMVx9ww=
-X-Google-Smtp-Source: ABdhPJxJw2lsSdR7flCVVMsk1gJDngPvsMkcb4tyQaAdRbQn4c0NHfz8kj4UCwHmvZb8kLehVQpFq3arCeY7Dh6sAWI=
-X-Received: by 2002:a2e:8852:: with SMTP id z18mr1618577ljj.94.1611047757110;
- Tue, 19 Jan 2021 01:15:57 -0800 (PST)
+        id S1733310AbhASJ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732160AbhASJRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:17:54 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9195FC061573;
+        Tue, 19 Jan 2021 01:17:14 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id p15so11310119pjv.3;
+        Tue, 19 Jan 2021 01:17:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jJh+2k9wCDrNKQ27JuyEj9qy86OS5Hwk4wsaFrJtzic=;
+        b=Cmboxatui+9cUmf1/xiEy/4AwcVEUktmXTUMp1fKBPvsx2Gjk972Y/w+1j0yI1mhAj
+         7Fhgc9//+9Wq+k5kDdyQkkoGWynNwgpyNqVNU0z2zarwkv+V2oy7HXxyTDjDMoWZNFrS
+         h7NQoDJ0jHcgZmmZatFVaVlkaoaqyR5i/wD+IKCe6Gm+0TeY+SgizLta5g/CGM48fozh
+         dlM3ZRWB5TL7qHpMmJTEhWdVUyAsfhWkhsnCyhaERxR+wVDgXr57dMQhCJak/NQOtD7S
+         uIF9wmue0I3Xvlex7ivViXMGevjWPWnOeD7QzJHJlXZowl7XPI0uXUtTt0slU1tvF05I
+         IeaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jJh+2k9wCDrNKQ27JuyEj9qy86OS5Hwk4wsaFrJtzic=;
+        b=uNvh/SdkcDEX2Bp7aakzdSunFchvi7K1F8af0XNa8x4OPU3Rgd63qdqJPno7sZ/OtL
+         wxtZYVSBi+fRuUYIe9VoGEtsu92LDDcFogS0qYRpOxitmAR/PdxWEBDePeTjdaZaPhiO
+         PHW+CWuED831+nqHVGB4xYp4uILc2SzBhL7MNmVh5d1LrF3nRLS0jWz1oh6qt0qwjIcA
+         nj7WDCYT5/0L2IIiNzzSPtir11xkRVHAub9wdJS9kqC9wOQ5lL8ltYVidn2NSj3Ha5LL
+         RhpH7LbUa5f547vtgzCfdFlsVNkTp2Rt3jxNTQpju5QoNh9t6dBZAcijG+JyLCkwwHeb
+         MD3g==
+X-Gm-Message-State: AOAM533QGXaPo/3kikvHVSwsJp+v2PHbMFT0IXgBxNvwDDmOk1U3cuWV
+        g+nujlZTg99JSlKZynEc6TFTl0ChXM0EbQ==
+X-Google-Smtp-Source: ABdhPJzq0TwhjZZlKdHr2uue5umJmtD1SkoAajfyzxPQRjB2VcIeqaKSdtzr7RRh/Lrz8Hlq2Uvt9w==
+X-Received: by 2002:a17:902:d4d1:b029:de:30a4:360f with SMTP id o17-20020a170902d4d1b02900de30a4360fmr3681601plg.83.1611047833953;
+        Tue, 19 Jan 2021 01:17:13 -0800 (PST)
+Received: from shinobu (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
+        by smtp.gmail.com with ESMTPSA id m62sm3857601pfm.135.2021.01.19.01.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 01:17:12 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:17:05 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: Re: [PATCH 00/10] Fix documentation warnings at linux-next
+Message-ID: <YAajkfaXPqkZUB/2@shinobu>
+References: <CAKXUXMziQ2H7_oiVSxbt1=bDFkjLQYOiOgd00YGyDnCTVDhbqA@mail.gmail.com>
+ <20210115104947.71d99e87@coco.lan>
+ <20210115134720.000011f9@Huawei.com>
+ <20210117154218.634dd5fa@archlinux>
 MIME-Version: 1.0
-References: <20210106134617.391-1-wens@kernel.org> <20210106134617.391-2-wens@kernel.org>
- <12687142.y0N7aAr316@diego>
-In-Reply-To: <12687142.y0N7aAr316@diego>
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Tue, 19 Jan 2021 17:15:45 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67qN9wQW9ddYu6VpGm+nid7Bws5i94mjkKqVncG28TYxA@mail.gmail.com>
-Message-ID: <CAGb2v67qN9wQW9ddYu6VpGm+nid7Bws5i94mjkKqVncG28TYxA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MjKgfLFDy3EUHZT3"
+Content-Disposition: inline
+In-Reply-To: <20210117154218.634dd5fa@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 5:11 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Am Mittwoch, 6. Januar 2021, 14:46:14 CET schrieb Chen-Yu Tsai:
-> > From: Chen-Yu Tsai <wens@csie.org>
-> >
-> > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' =
-is
-> > an optional property. And indeed there are boards that don't require it=
-.
-> >
-> > Make the driver follow the binding by using devm_gpiod_get_optional()
-> > instead of devm_gpiod_get().
-> >
-> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller suppo=
-rt")
-> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC drive=
-r")
-> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt()=
- to parse DT")
-> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> > ---
-> > Heiko, I dropped you reviewed-by due to the error message change
-> >
-> > Changes since v2:
-> >   - Fix error message for failed GPIO
-> >
-> > Changes since v1:
-> >   - Rewrite subject to match existing convention and reference
-> >     'ep-gpios' DT property instead of the 'ep_gpio' field
-> > ---
-> >  drivers/pci/controller/pcie-rockchip.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/contr=
-oller/pcie-rockchip.c
-> > index 904dec0d3a88..90c957e3bc73 100644
-> > --- a/drivers/pci/controller/pcie-rockchip.c
-> > +++ b/drivers/pci/controller/pcie-rockchip.c
-> > @@ -118,9 +118,10 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *r=
-ockchip)
-> >       }
-> >
-> >       if (rockchip->is_rc) {
-> > -             rockchip->ep_gpio =3D devm_gpiod_get(dev, "ep", GPIOD_OUT=
-_HIGH);
-> > +             rockchip->ep_gpio =3D devm_gpiod_get_optional(dev, "ep", =
-GPIOD_OUT_HIGH);
-> >               if (IS_ERR(rockchip->ep_gpio)) {
-> > -                     dev_err(dev, "missing ep-gpios property in node\n=
-");
-> > +                     dev_err_probe(dev, PTR_ERR(rockchip->ep_gpio),
-> > +                                   "failed to get ep GPIO\n");
-> >                       return PTR_ERR(rockchip->ep_gpio);
->
-> looking at [0] shouldn't that be just
->         return dev_err_probe(dev, PTR_ERR(.....)...);
-> instead of dev_err_probe + additional return?
 
-You're right. I was only expecting dev_err_probe() to deal with -EPROBE_DEF=
-ER.
-I believe there won't be any future changes that would add any code here,
-so I'll respin with the proper changes you mentioned.
+--MjKgfLFDy3EUHZT3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Sun, Jan 17, 2021 at 03:42:18PM +0000, Jonathan Cameron wrote:
+> On Fri, 15 Jan 2021 13:47:20 +0000
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+>=20
+> > On Fri, 15 Jan 2021 10:49:47 +0100
+> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> >=20
+> > > Hi Lukas,
+> > >=20
+> > > Em Fri, 15 Jan 2021 07:12:38 +0100
+> > > Lukas Bulwahn <lukas.bulwahn@gmail.com> escreveu:
+> > >  =20
+> > > > [reduced the recipient list to the main responsible ones and list]
+> > > >=20
+> > > > Hi Mauro, hi Jonathan,
+> > > >=20
+> > > > We both, Mauro and I, have been submitting patches to address the
+> > > > documentation warnings on linux-next. If it is okay with you, Mauro=
+, I
+> > > > would like to take responsibility for the task to send out the patc=
+hes
+> > > > to address all warnings on linux-next in make htmldocs and follow up
+> > > > with all the discussions. I can also provide a short weekly summary
+> > > > (probably always on Friday) on what is pending where and what I cou=
+ld
+> > > > not resolve by myself.
+> > > >=20
+> > > > Is that okay for you?
+> > > >=20
+> > > > If at some point I do not have the time to take care anymore, I will
+> > > > let you know.   =20
+> > >=20
+> > > Yeah, sure!
+> > >=20
+> > > Anyway, after applying the patches I sent this week, the warnings
+> > > I'm getting are all due to the validation scripts I wrote. So, if=20
+> > > everything gets merged (either yours or my version), we'll have zero
+> > > Sphinx/kernel-doc warnings again.
+> > >=20
+> > > The script-validation warnings are:
+> > >=20
+> > > 1. Broken cross references
+> > > --------------------------
+> > >=20
+> > > $ scripts/documentation-file-ref-check
+> > > Warning: Documentation/arm/booting.rst references a file that doesn't=
+ exist: Documentation/devicetree/booting-without-of.rst
+> > > Warning: Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt r=
+eferences a file that doesn't exist: Documentation/devicetree/bindings/iio/=
+iio-bindings.txt
+> > > Warning: Documentation/devicetree/bindings/input/adc-joystick.yaml re=
+ferences a file that doesn't exist: Documentation/devicetree/bindings/iio/i=
+io-bindings.txt
+> > > Warning: Documentation/devicetree/bindings/power/supply/da9150-charge=
+r.txt references a file that doesn't exist: Documentation/devicetree/bindin=
+gs/iio/iio-bindings.txt
+> > > Warning: Documentation/devicetree/bindings/regulator/rohm,bd9576-regu=
+lator.yaml references a file that doesn't exist: Documentation/devicetree/b=
+indings/mfd/rohm,bd9576-pmic.yaml
+> > > Warning: Documentation/translations/zh_CN/arm/Booting references a fi=
+le that doesn't exist: Documentation/devicetree/booting-without-of.rst
+> > > Warning: Documentation/virt/kvm/vcpu-requests.rst references a file t=
+hat doesn't exist: Documentation/core-api/atomic_ops.rst
+> > > Warning: MAINTAINERS references a file that doesn't exist: Documentat=
+ion/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
+> > > Warning: MAINTAINERS references a file that doesn't exist: Documentat=
+ion/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
+> > > Warning: MAINTAINERS references a file that doesn't exist: Documentat=
+ion/devicetree/bindings/display/intel,kmb_display.yaml
+> > > Warning: MAINTAINERS references a file that doesn't exist: Documentat=
+ion/devicetree/bindings/media/i2c/ov2680.yaml
+> > > Warning: include/linux/rculist_nulls.h references a file that doesn't=
+ exist: Documentation/core-api/atomic_ops.rst
+> > > Warning: tools/memory-model/Documentation/simple.txt references a fil=
+e that doesn't exist: Documentation/core-api/atomic_ops.rst
+> > >=20
+> > > It sounds that part of the above is due to DT patches that weren't
+> > > merged yet, but there are a few others that can be solved, but may
+> > > require discussions with some Kernel developers/maintainers.
+> > >=20
+> > > 2. Duplicated ABI definitions
+> > > -----------------------------
+> > >=20
+> > > $ scripts/get_abi.pl validate
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_x_calibbias is def=
+ined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:0  ./Docu=
+mentation/ABI/testing/sysfs-bus-iio:394
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_y_calibbias is def=
+ined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:1  ./Docu=
+mentation/ABI/testing/sysfs-bus-iio:395
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_z_calibbias is def=
+ined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:2  ./Docu=
+mentation/ABI/testing/sysfs-bus-iio:396
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_x_calibbias is d=
+efined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:3  ./Do=
+cumentation/ABI/testing/sysfs-bus-iio:397
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_y_calibbias is d=
+efined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:4  ./Do=
+cumentation/ABI/testing/sysfs-bus-iio:398
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_z_calibbias is d=
+efined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-icm42600:5  ./Do=
+cumentation/ABI/testing/sysfs-bus-iio:399
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined=
+ 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:100  ./Doc=
+umentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:0
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_av=
+ailable is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-coun=
+ter-104-quad-8:2  ./Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:8
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency i=
+s defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-frequency-adf=
+4371:0  ./Documentation/ABI/testing/sysfs-bus-iio:599
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_powerdown i=
+s defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-frequency-adf=
+4371:36  ./Documentation/ABI/testing/sysfs-bus-iio:588
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/out_currentY_raw is defined=
+ 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-light-lm3533-als:43  .=
+/Documentation/ABI/testing/sysfs-bus-iio-health-afe440x:38
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw is d=
+efined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010=
+:0  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:0
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw_avai=
+lable is defined 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-humidi=
+ty-hdc2010:1  ./Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:1
+> > > Warning: /sys/bus/iio/devices/iio:deviceX/sensor_sensitivity is defin=
+ed 2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-distance-srf08:0  ./=
+Documentation/ABI/testing/sysfs-bus-iio-proximity-as3935:8
+> > > Warning: /sys/bus/iio/devices/triggerX/sampling_frequency is defined =
+2 times:  ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:92  ./Docum=
+entation/ABI/testing/sysfs-bus-iio:45
+> > > Warning: /sys/class/backlight/<backlight>/l1_daylight_max is defined =
+2 times:  ./Documentation/ABI/testing/sysfs-class-backlight-adp8860:12  ./D=
+ocumentation/ABI/testing/sysfs-class-backlight-driver-adp8870:4
+> > > Warning: /sys/class/leds/<led>/repeat is defined 2 times:  ./Document=
+ation/ABI/testing/sysfs-class-led-trigger-pattern:28  ./Documentation/ABI/t=
+esting/sysfs-class-led-driver-el15203000:0
+> > > Warning: /sys/kernel/iommu_groups/reserved_regions is defined 2 times=
+:  ./Documentation/ABI/testing/sysfs-kernel-iommu_groups:15  ./Documentatio=
+n/ABI/testing/sysfs-kernel-iommu_groups:27
+> > >=20
+> > > Perhaps you could check with Jonathan Cameron some strategy to address
+> > > the IIO warnings. =20
+> >=20
+> > I'm being a bit rubbish on those ones. All need a bit of thought...
+> >=20
+> > I'll try to kill off a few of them this weekend as *touch wood* my
+> > review queue is looking fairly short.
+>=20
+> As I mentioned in the cover letter for the series I've just sent out, I r=
+an into
+> a bit of an understanding gap around the two counter cases.  This isn't h=
+elped
+> by the fact it is at least partly deprecated ABI given the counter subsys=
+tem
+> has much richer ABI for these types of devices.
+>=20
+> @Fabrice, Benjamin and William.
+> What do we do about that one?
+>=20
+> Thanks,
+>=20
+> Jonathan
 
-ChenYu
+I'd consider the IIO counter ABI as entirely deprecated -- the Counter
+subsystem supports all the functionality that's provided by the IIO
+counter ABI, as well as additional functionality that is missing.=20
 
-> Heiko
->
-> [0] https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4=
-223
->
-> >               }
-> >       }
-> >
->
->
->
->
+Regarding the iio:deviceX/in_count_quadrature_mode_available attribute:
+superseded by the Counter subsystem counterX/countY/function attribute.
+The IIO counter ABI allows users to select between a quadrature counting
+mode or a non-quadrature counting mode; unfortunately, it does not
+specify what kind of quadrature or what kind of non-quadrature counting
+is actually being performed by the device.
+
+Because the 104-quad-8 and stm32-lptimer-cnt drivers were the only ones
+to use this attribute, they are luckily in sync -- both define the same
+possible modes available: "quadrature" and "non-quadrature". You could
+simply consolidate this attribute to the main sys-bus-iio file in order
+to resolve this warning.
+
+Given that it has already been superceded by the Counter subsystem, I'd
+also be all right with just removing the IIO Counter ABI entirely from
+the codebase, or alternatively setting a future date for removal.
+
+William Breathitt Gray
+
+> >=20
+> > Jonathan
+> >=20
+> > >=20
+> > > Thanks,
+> > > Mauro =20
+> >=20
+>=20
+
+--MjKgfLFDy3EUHZT3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAGo4YACgkQhvpINdm7
+VJIZxA/9H7SZZN2VLQOm+wRMOdsAFk+N+mS5eYaod2XmO5DkJxJjV6JSyOoglH9U
+KYDZBG2otHyEe4YdBGFkgzUE58NEzSDKqmruuE1VlcCvBB1AfzU+0l+7wtmbxywJ
+Ye+fbpX8WJYiTiI3kDPibIqgNMMo3xKTIitNsCMHlgRS+Fm8ph2Xlt6wZU2830tf
+WGut29VTI/D1hYf6a1woaoHg6G6sWUkhdviszi9pnDZD2bngVsXqxUdrRb3v/Ssn
+gVwvXBC9TYwTQQue5/Ah29lW4KBFrVEI2Lw+8HJ8srpaBwZlKbRdGw6k/nAkrWgx
+9KVGFTs12hNhHXFThcAjSDq1nwY7Ss8L9Jk6WNTVekiie9b0LY0fmH/sCU/2UlQ2
+LHwtmkG41UiRvJ+NE6d5K860oEShCPsVW5n+esKDGN2welc+0d/7kCITgtzH0Kvt
+EbDqmXKx/bls02Tg2b3NxtSQz+W6hsqWCFrLNioZEMoowW1LaES1nSsfAxnyRL62
+ELw2h9bsPamXUm4AvK244WDTU40Lt1Utzu1vQ+scX4L9goiZim4+Tyx01qkRq6+2
+RML3c+05F/oQ3xe9rKKG0mbb8Dun1QdoObYEbLKLI3vkrZDzwXdL/hDH2xwmbuYn
+eWhku4AEcq0GZfofSocGzJh0l2jQKa8TGNd3ZZIqd9z2E5dRKPg=
+=npAt
+-----END PGP SIGNATURE-----
+
+--MjKgfLFDy3EUHZT3--
