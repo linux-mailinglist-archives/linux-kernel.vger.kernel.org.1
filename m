@@ -2,226 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FA32FBFA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510762FBFA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392058AbhASTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:01:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
+        id S2391416AbhASTAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392122AbhASSA2 (ORCPT
+        with ESMTP id S2392211AbhASSAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:00:28 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4503C0617BA
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id e7so22907014ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
-        b=HgxRSY1UqbS9/rhXLTNfxHXeBBzedejKfHX0k4UFydcfqonYyGAaZOkwTPWns4jkPQ
-         esF/GfzCdXeprMZcR0ldlHasvbgdLzQUQKuoonWfyg/1PJiYiAQCs6nEFq4JCNR8UoZ6
-         L6PyL622kWecWT47tVu+mk1cmbD2RTPlWjumHdsO+G0rhUhQvmeVflWNxLMaEi1TcrFh
-         VEoIk82Z1RZibJHkxhJoWvXlijEayutV5Qeas5v5D4ueg87Fq9K4GiUyA/cnWqroNvz9
-         QaepTABYH2v3/iunQHx1HEYEiJL77LViNqhc0EsnX8b1A80s0ELoGjKZWBLJngIbcwTJ
-         w/cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
-        b=oQKmwW/Ewz/1UbsGWEv03ZUBI3EM1BU0bsDrIHXQfNfO1cRMjycSUG3fxGCWmJHTZ6
-         MxzZNC1CGpNkweV+95tRfifaaF4jrf63w3OjWxT1CZ0aqBO7DDmCOPVjucfI4+IPJf7q
-         if7rzU0/NZLGctp1LJ2Lzex0GbdrnGyqsD+o3aUfKWUD4HbglGBDy2zV8iC4rozxllXR
-         9fghODGU/ky90ZswCHq5taLkq7qFylpoAveWO/uJHpZtHKTBxIWd8JTTEFeA4dXT8z0e
-         Oy0R0IMwrHInGO8cRnm0bO6xHf/hqJrVe3U3v15sn4PC1VgS43ZwAMN7fbKyBbwZK5I4
-         39IA==
-X-Gm-Message-State: AOAM533oNS99U0mJJYBpamf5qE3ZhaircKJowmqh9b6QYkiYzcOD4dCz
-        2DUvzy4vGqvLmPf+7yDNMb8aDGpIEKXZiiALRfOW9Q==
-X-Google-Smtp-Source: ABdhPJyFFZcinaflCgiwdNd0xiMlKWjdDzL/Xpr4jPiXhnakZJ5AdohtfJ+lzfhFR9TjjIv+fAWjCZ2NgSAW2C3XYtE=
-X-Received: by 2002:a05:651c:328:: with SMTP id b8mr2402570ljp.106.1611078328902;
- Tue, 19 Jan 2021 09:45:28 -0800 (PST)
+        Tue, 19 Jan 2021 13:00:44 -0500
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E08C0617BF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:45:31 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 57B5E3F17F;
+        Tue, 19 Jan 2021 18:45:30 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     nks@flawful.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        jeffrey.l.hugo@gmail.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 0/3] CPR commonization in preparation for CPR3 driver
+Date:   Tue, 19 Jan 2021 18:45:26 +0100
+Message-Id: <20210119174529.227074-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210116023204.670834-1-vipinsh@google.com> <20210116023204.670834-3-vipinsh@google.com>
- <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
-In-Reply-To: <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Tue, 19 Jan 2021 09:45:12 -0800
-Message-ID: <CAHVum0e8qY7Nt23wSXU7KON8qZ5c6gnNWf=i5BeYji2+735COw@mail.gmail.com>
-Subject: Re: [Patch v5 2/2] cgroup: svm: Encryption IDs cgroup documentation.
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
-        Sean Christopherson <seanjc@google.com>,
-        Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>, corbet@lwn.net,
-        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        Jim Mattson <jmattson@google.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Matt Gingell <gingell@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 9:55 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 1/15/21 6:32 PM, Vipin Sharma wrote:
-> > Documentation of Encryption IDs controller. This new controller is used
-> > to track and limit usage of hardware memory encryption capabilities on
-> > the CPUs.
-> >
-> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> > Reviewed-by: David Rientjes <rientjes@google.com>
-> > Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
-> > ---
-> >  .../admin-guide/cgroup-v1/encryption_ids.rst  |  1 +
-> >  Documentation/admin-guide/cgroup-v2.rst       | 78 ++++++++++++++++++-
-> >  2 files changed, 77 insertions(+), 2 deletions(-)
-> >  create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v1/encryption_ids.rst b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> > new file mode 100644
-> > index 000000000000..8e9e9311daeb
-> > --- /dev/null
-> > +++ b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> > @@ -0,0 +1 @@
-> > +/Documentation/admin-guide/cgroup-v2.rst
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > index 63521cd36ce5..72993571de2e 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-> >         5-7-1. RDMA Interface Files
-> >       5-8. HugeTLB
-> >         5.8-1. HugeTLB Interface Files
-> > -     5-8. Misc
-> > -       5-8-1. perf_event
-> > +     5-9. Encryption IDs
-> > +       5.9-1 Encryption IDs Interface Files
-> > +       5.9-2 Migration and Ownership
-> > +     5-10. Misc
-> > +       5-10-1. perf_event
-> >       5-N. Non-normative information
-> >         5-N-1. CPU controller root cgroup process behaviour
-> >         5-N-2. IO controller root cgroup process behaviour
-> > @@ -2160,6 +2163,77 @@ HugeTLB Interface Files
-> >       are local to the cgroup i.e. not hierarchical. The file modified event
-> >       generated on this file reflects only the local events.
-> >
-> > +Encryption IDs
-> > +--------------
-> > +
-> > +There are multiple hardware memory encryption capabilities provided by the
-> > +hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-> > +State (SEV-ES) from AMD.
-> > +
-> > +These features are being used in encrypting virtual machines (VMs) and user
-> > +space programs. However, only a small number of keys/IDs can be used
-> > +simultaneously.
-> > +
-> > +This limited availability of these IDs requires system admin to optimize
->
->                                                           admins
->
-> > +allocation, control, and track the usage of the resources in the cloud
-> > +infrastructure. This resource also needs to be protected from getting exhausted
-> > +by some malicious program and causing starvation for other programs.
-> > +
-> > +Encryption IDs controller provides capability to register the resource for
->
->    The Encryption IDs controller provides the capability to register the resource for
->
-> > +controlling and tracking through the cgroups.
->
->                             through cgroups.
->
-> > +
-> > +Encryption IDs Interface Files
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +Each encryption ID type have their own interface files,
->
->                            has its own
->
-> > +encids.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
->
->                                                                      or
->
-> > +sev-es.
-> > +
-> > +  encids.[ID TYPE].stat
-> > +        A read-only flat-keyed single value file. This file exists only in the
-> > +        root cgroup.
-> > +
-> > +        It shows the total number of encryption IDs available and currently in
-> > +        use on the platform::
-> > +          # cat encids.sev.stat
-> > +          total 509
-> > +          used 0
->
-> This is described above as a single-value file...
->
-> Is the max value a hardware limit or a software (flexible) limit?
->
->
-> > +
-> > +  encids.[ID TYPE].max
-> > +        A read-write file which exists on the non-root cgroups. File is used to
-> > +        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-> > +
-> > +        Limit can be set to max by::
-> > +          # echo max > encids.sev.max
-> > +
-> > +        Limit can be set by::
-> > +          # echo 100 > encids.sev.max
-> > +
-> > +        This file shows the max limit of the encryption ID in the cgroup::
-> > +          # cat encids.sev.max
-> > +          max
-> > +
-> > +        OR::
-> > +          # cat encids.sev.max
-> > +          100
-> > +
-> > +        Limits can be set more than the "total" capacity value in the
-> > +        encids.[ID TYPE].stat file, however, the controller ensures
-> > +        that the usage never exceeds the "total" and the max limit.
-> > +
-> > +  encids.[ID TYPE].current
-> > +        A read-only single value file which exists on non-root cgroups.
-> > +
-> > +        Shows the total number of encrypted IDs being used in the cgroup.
-> > +
-> > +Migration and Ownership
-> > +~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +An encryption ID is charged to the cgroup in which it is used first, and
-> > +stays charged to that cgroup until that ID is freed. Migrating a process
-> > +to a different cgroup do not move the charge to the destination cgroup
->
->                          does
->
-> > +where the process has moved.
-> > +
-> >  Misc
-> >  ----
-> >
-> >
->
->
-> --
-> ~Randy
-> You can't do anything without having to do something else first.
-> -- Belefant's Law
+  **
+  ** NOTE: To "view the full picture", please look at the following
+  ** patch series:
+  ** https://patchwork.kernel.org/project/linux-arm-msm/list/?series=413355
+  **              This is a subset of that series.
+  **
 
-Thank you, I will fix them in the next patch.
+In preparation for adding a driver for CPR3, CPR4 and CPR4-Hardened,
+commonize some functions in the CPR driver, as they will be used by
+both drivers, drastically reducing code duplication.
+
+Changes in v4:
+- Huge patch series has been split for better reviewability,
+  as suggested by Bjorn
+
+Changes in v3:
+- Fixed YAML doc issues
+
+Changes in v2:
+- Minor Cleanups
+
+Tested on the following smartphones:
+- Sony Xperia XA2        (SDM630)
+- Sony Xperia XA2 Ultra  (SDM630)
+- Sony Xperia 10         (SDM630)
+- Sony Xperia XZ Premium (MSM8998)
+- F(x)Tec Pro 1          (MSM8998)
+
+AngeloGioacchino Del Regno (3):
+  soc: qcom: cpr: Move common functions to new file
+  dt-bindings: avs: cpr: Convert binding to YAML schema
+  arm64: qcom: qcs404: Change CPR nvmem-names
+
+ .../bindings/power/avs/qcom,cpr.txt           | 131 +-----
+ .../bindings/soc/qcom/qcom,cpr.yaml           | 167 +++++++
+ MAINTAINERS                                   |   2 +-
+ arch/arm64/boot/dts/qcom/qcs404.dtsi          |  26 +-
+ drivers/soc/qcom/Makefile                     |   2 +-
+ drivers/soc/qcom/cpr-common.c                 | 382 +++++++++++++++
+ drivers/soc/qcom/cpr-common.h                 | 113 +++++
+ drivers/soc/qcom/cpr.c                        | 441 ++----------------
+ 8 files changed, 705 insertions(+), 559 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+ create mode 100644 drivers/soc/qcom/cpr-common.c
+ create mode 100644 drivers/soc/qcom/cpr-common.h
+
+-- 
+2.30.0
+
