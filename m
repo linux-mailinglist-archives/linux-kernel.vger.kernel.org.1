@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748282FBECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977A82FBEBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392439AbhASSUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
+        id S2392604AbhASSSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392430AbhASSQs (ORCPT
+        with ESMTP id S2392438AbhASSQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:16:48 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E8AC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:15:56 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id kx7so428528pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:15:56 -0800 (PST)
+        Tue, 19 Jan 2021 13:16:52 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2379BC0617A0;
+        Tue, 19 Jan 2021 10:16:20 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id q4so10974493plr.7;
+        Tue, 19 Jan 2021 10:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=13C+aDMWdR7G+9z6gG9CJgTmkaWg21aJx2K27CvN4no=;
-        b=U3VsmjPK7+3aOXhJjs7v729bvyo003RHm2LylUqo2zf7oclXO+ARtJpA4GaTpMh/OF
-         HZnAuI0jPb4G5QE1tP+wuk4PYCVe+yMDrEQOlhsxuqqWJXg/M4EUywBkhsh/1nIIKZSI
-         AajTsmQCXeFve1pbjRLZjuVNYDKty/JW02Aw80IhU054Vj3i1bgfxODMbvRAMj8xO3iY
-         nkfE0ifT/3dtCjO20TbYDE2SyPpfTNrm+L5vt+/VSn7pGzxafz6DwtePTHBSO9Lni6pr
-         UeeSYFrRR3dSUqm79aDV49MGNbJHTPZXXoEO+yYx/QnRnSfen80CS3XbdMxVMqFn0vwu
-         Gn3A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yO2k+wmEJJ8xH/LdKcVR5jElonjFD3LzbOdCVG89a24=;
+        b=JuAp4fE1Om8r2jXXlMjO5EQi5ELsiLrAOz/7Zy1G6MLGJZu8BbcFwCxCtNHSUrn1jj
+         MmAgtIXKIPipjExj1ugO237PHHtr7KE34SawUz5NB/gwppYKIcabT5jjH6rEn489hG83
+         Twr9iCkqfYBF6/5myQHtdrcFuDYyeMk+PZEoL1SnFS7OzMNVmYArnSDx6s+tCQlvDqCN
+         6xQVc4dtO2sI24n/ZN3pbXuADpSQFPslbOAnByTeZLqLeijMXFupmKD0uTal0iwxDJsM
+         DGSJKnbxDZGnib4SEKELE+G0FY2R3UdBGwyAV22p7zhKnNuggW5IsRdFUN4vGoctgcKS
+         TMQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=13C+aDMWdR7G+9z6gG9CJgTmkaWg21aJx2K27CvN4no=;
-        b=qY8CShyUayUQo3vIy63fllvKWde+CYtflCGiw0S8G/HABfDI41oIRlqH6+/hsYm7Q0
-         JMNU2lCe0mMrqsxdWeYdc8ZJ1f/fhUWRddSiwQDWMgi9cZ50SEFKggU1GEY8a/xLnyCE
-         TsEUQ8Yxmgt2oVhpMtj9DL0hBJXYQxaIAaUOPkZD06O6qwCdiroLf4AnREagL4UufCrR
-         zEIvjU226f2zVZhq3btBwDXcEewrJr/0msTEw0XmJEWmW5o2HIipUdRTZOA1ThljGQpw
-         YZPY6kBnCleamy1s/gGuRS3teWQYsv/lwj48LbFnHzLXYNn7xdd3PrGhLus/TKU0EaA5
-         S5GA==
-X-Gm-Message-State: AOAM531G2pjajWTYF4V5wAptodj+KggLZ5ODGCxNgA6wL7C3lJPp12Hx
-        Y96lPJSe3m3rSHNL316kycXGEWEQ8uxktw==
-X-Google-Smtp-Source: ABdhPJwQFdOk3/JhnkYAJ7+4UxWeSODdgmrzXc6v6ZZNNVodaufosO8lzD8MEq5dMApJxPrN8j9fHQ==
-X-Received: by 2002:a17:90a:7e2:: with SMTP id m89mr1061075pjm.2.1611080156359;
-        Tue, 19 Jan 2021 10:15:56 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id r14sm20043775pgi.27.2021.01.19.10.15.55
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yO2k+wmEJJ8xH/LdKcVR5jElonjFD3LzbOdCVG89a24=;
+        b=tvVZ+XiEXpmPnk5Xv6+ARucPt2VssILU20tFcZnxgztVo8YnyrJgTTJium7SNiPUvv
+         cpQXA94wI2FKsjWeH+AI2HXEIA13EAh/zj0v1aohnTn14OXv5euGo/ERDdwqNY2kexx+
+         Nb4UMA/dE9bmCUNkB8IraVHsADkjALmQXPHsVRSJC9Ohhi6a+VkNactrieV0sf6muj/c
+         YPJ23quoq5nRiaEwPUzSNAq+kLiRJtP1FkPYhXjtdRmk2r+ZY+x2aTZlXUJWyhk0yRpg
+         /MzrfI354q3zujLa3YoTsqgyoibehQeitReyZA5FXaUy0p7GyzbHZPO3NqTn7g6cY3Hd
+         a+Vg==
+X-Gm-Message-State: AOAM531mlBd/ZobnFJoqllNfH9i9Xs0QWK6CuxF0fQIY+20IxmNSoQni
+        wp3TEJHQYQki4vkbpQFKb+80kjJcOZE=
+X-Google-Smtp-Source: ABdhPJzcggUh79T/vPrFJplztZOgRtqaMxMfiR3jkAw2gStudADC7DJRMqW/nK/e4Tb6fVJmNFZXqw==
+X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr990860pjb.199.1611080179615;
+        Tue, 19 Jan 2021 10:16:19 -0800 (PST)
+Received: from [10.230.29.29] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id k128sm8187958pfd.137.2021.01.19.10.16.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 10:15:55 -0800 (PST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] task_work fix for 5.11
-Message-ID: <87a18f00-8f32-edcc-4595-da70e623febc@kernel.dk>
-Date:   Tue, 19 Jan 2021 11:15:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 10:16:18 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] serial: 8250: Add new 8250-core based Broadcom STB
+ driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Al Cooper <alcooperx@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210115211543.33563-1-alcooperx@gmail.com>
+ <20210115211543.33563-3-alcooperx@gmail.com>
+ <CAHp75VdQPQK8jTF3QDKx6mF1QzOg-qiuHrTiojnWn7GskokfoA@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <71d58a3e-2707-69d7-8074-c67235912e06@gmail.com>
+Date:   Tue, 19 Jan 2021 10:16:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <CAHp75VdQPQK8jTF3QDKx6mF1QzOg-qiuHrTiojnWn7GskokfoA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-The TIF_NOTIFY_SIGNAL change inadvertently removed the unconditional
-task_work run we had in get_signal(). This caused a regression for some
-setups, since we're relying on eg ____fput() being run to close and
-release, for example, a pipe and wake the other end. For 5.11, I prefer
-the simple solution of just reinstating the unconditional run, even if
-it conceptually doesn't make much sense - if you need that kind of
-guarantee, you should be using TWA_SIGNAL instead of TWA_NOTIFY. But
-it's the trivial fix for 5.11, and would ensure that other potential
-gotchas/assumptions for task_work don't regress for 5.11.
-
-we're looking into further simplifying the task_work notifications for
-5.12 which would resolve that too.
-
-Please pull!
 
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+On 1/19/2021 7:21 AM, Andy Shevchenko wrote:
+> On Fri, Jan 15, 2021 at 11:19 PM Al Cooper <alcooperx@gmail.com> wrote:
+>>
+>> Add a UART driver for the new Broadcom 8250 based STB UART. The new
+>> UART is backward compatible with the standard 8250, but has some
+>> additional features. The new features include a high accuracy baud
+>> rate clock system and DMA support.
+>>
+>> The driver will use the new optional BAUD MUX clock to select the best
+>> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+>> the baud rate selection logic for any requested baud rate.  This allows
+>> for more accurate BAUD rates when high speed baud rates are selected.
+>>
+>> The driver will use the new UART DMA hardware if the UART DMA registers
+>> are specified in Device Tree "reg" property. The DMA functionality can
+>> be disabled on kernel boot with the argument:
+>> "8250_bcm7271.disable_dma=Y".
+>>
+>> The driver also set the UPSTAT_AUTOCTS flag when hardware flow control
+>> is enabled. This flag is needed for UARTs that don't assert a CTS
+>> changed interrupt when CTS changes and AFE (Hardware Flow Control) is
+>> enabled.
+>>
+>> The driver also contains a workaround for a bug in the Synopsis 8250
+>> core. The problem is that at high baud rates, the RX partial FIFO
+>> timeout interrupt can occur but there is no RX data (DR not set in
+>> the LSR register). In this case the driver will not read the Receive
+>> Buffer Register, which clears the interrupt, and the system will get
+>> continuous UART interrupts until the next RX character arrives. The
+>> fix originally suggested by Synopsis was to read the Receive Buffer
+>> Register and discard the character when the DR bit in the LSR was
+>> not set, to clear the interrupt. The problem was that occasionally
+>> a character would arrive just after the DR bit check and a valid
+>> character would be discarded. The fix that was added will clear
+>> receive interrupts to stop the interrupt, deassert RTS to insure
+>> that no new data can arrive, wait for 1.5 character times for the
+>> sender to react to RTS and then check for data and either do a dummy
+>> read or a valid read. Sysfs error counters were also added and were
+>> used to help create test software that would cause the error condition.
+>> The counters can be found at:
+>> /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
+>> /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
+> 
+> Brief looking into the code raises several questions:
+>  - is it driver from the last decade?
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+Work on this driver started back in 2018, that was indeed the last decade.
 
-are available in the Git repository at:
+>  - why it's not using what kernel provides?
+>  - we have a lot of nice helpers:
+>    - DMA Engine API
 
-  git://git.kernel.dk/linux-block.git tags/task_work-2021-01-19
+Not sure this makes sense, given that the DMA hardware that was added to
+this UART block is only used by the UART block and no other pieces of HW
+in the system, nor will they ever be. Not sure it makes sense to pay the
+cost of an extra indirection and subsystem unless there are at least two
+consumers of that DMA hardware to warrant modeling it after a dmaengine
+driver. I also remember that Al researched before whether 8250_dma.c
+could work, and came to the conclusion that it would not, but I will let
+him comment on the specifics.
 
-for you to fetch changes up to 35d0b389f3b23439ad15b610d6e43fc72fc75779:
 
-  task_work: unconditionally run task_work from get_signal() (2021-01-08 09:14:21 -0700)
+>    - BIT() and GENMASK() macros
+>    - tons of different helpers like regmap API (if you wish to dump
+> registers via debugfs)
+> 
+> Can you shrink this driver by 20-30% (I truly believe it's possible)
+> and split DMA driver to drivers/dma (which may already have something
+> similar there)?
 
-----------------------------------------------------------------
-task_work-2021-01-19
-
-----------------------------------------------------------------
-Jens Axboe (1):
-      task_work: unconditionally run task_work from get_signal()
-
- kernel/signal.c | 3 +++
- 1 file changed, 3 insertions(+)
-
+See previous response.
 -- 
-Jens Axboe
-
+Florian
