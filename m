@@ -2,70 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EEA2FC031
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FEB2FC02B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404666AbhASTG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391994AbhASRyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:54:54 -0500
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2352CC0612FF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:47:58 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id F11193F203;
-        Tue, 19 Jan 2021 18:45:58 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     viresh.kumar@linaro.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v4 1/7] cpufreq: blacklist SDM630/636/660 in cpufreq-dt-platdev
-Date:   Tue, 19 Jan 2021 18:45:51 +0100
-Message-Id: <20210119174557.227318-2-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
-References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
+        id S1731703AbhASTc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:32:29 -0500
+Received: from mail-dm6nam11on2062.outbound.protection.outlook.com ([40.107.223.62]:57441
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729678AbhAST23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:28:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TCBcsMMLyDSyXYYk1WTLMky1KSaE9GbN9S6/KnPJ+vMnnQEQ4kxSgZK9m//ju7gbZO0C5izOIDHFN6ENPEIko0hfT9XpYGynShOcLhGfqIdj+0s4xkirzq0m2wIGlVwkbKRUUY1cedMXJ2MuaXq9wh6t8QxzujU7ctvve7iFwUHJccrNgRWMtTLEGm97xznTQz+1bFYTQhhtmol7mXbUMg7ufvsJC/l1U2NAe5wnark5wdoFQh7LB/rsN9vzEJnL/lU2oOFnfej/sh78bgc01ZeTDg0LBo/ZOH3DF+Qm1eXfqGFXdwqThxragPkvIHZO69EANRtGGeaS8/gHP4SBew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tDnrtRR9j27LvMFwPIOT5Za1n2bgcmBcOE5FS0gLY2s=;
+ b=TtTZqCZFuM8WS5B8hhKnU5dOovhLocoUVWPOH388ZSKwpD+FGihvVhhAyBInAvFtROq5PTnptbWlxW8VnoDVrgSfjY9HSuWuI0jH0EsNSsycwedC+Efrzf4ee0KI1U3mQulA8faZ4NfzDlgqg0JBkW+677IgwB7+4U8bOxwD4xJb6HFBONpOnl9QTvVoG7NKiEXDzEl9GCHNUHqGyIkbpZ9rArqTibDf3x1Bza30QV8QUwOU3zaq9FVphcu+V48eK/aHdhQqCHKCfjrbxlL48FTnzpyTbhJV8cI+WkLX/fsUkgVJfj9GJWlo1pt5ugCBareFfobLEIZowFQlszRo8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tDnrtRR9j27LvMFwPIOT5Za1n2bgcmBcOE5FS0gLY2s=;
+ b=ZAl4+sQt0zar5jn5EA6g8by/J7FrZipIPisqFG9p5mZjm+7mX7PLPcskxeFoTGf3uEUFyg8GkZ0lUNF6D/YDiKiiSS0vdCq11OarVIAvbMk1TF5QL2TrlIOMXMWDrRrl1eog0aTvAo0xpl090GHHsK1YsG3swgb1aS6e1yHvZE0=
+Received: from (2603:10b6:208:8f::18) by
+ BLAPR05MB7378.namprd05.prod.outlook.com (2603:10b6:208:298::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.5; Tue, 19 Jan
+ 2021 19:27:20 +0000
+Received: from BL0PR05MB5186.namprd05.prod.outlook.com
+ ([fe80::856b:10f9:d35c:cde1]) by BL0PR05MB5186.namprd05.prod.outlook.com
+ ([fe80::856b:10f9:d35c:cde1%4]) with mapi id 15.20.3784.010; Tue, 19 Jan 2021
+ 19:27:20 +0000
+From:   Zack Rusin <zackr@vmware.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eddie Dong <eddie.dong@intel.com>,
+        Eric Anholt <eric@anholt.net>, Faith <faith@valinux.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        Jackie Li <yaodong.li@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jan Safrata <jan.nikitenko@gmail.com>,
+        Jesse Barnes <jesse.barnes@intel.com>,
+        jim liu <jim.liu@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Keith Packard <keithp@keithp.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, Min He <min.he@intel.com>,
+        Niu Bing <bing.niu@intel.com>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Pei Zhang <pei.zhang@intel.com>,
+        Ping Gao <ping.a.gao@intel.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhiyuan Lv <zhiyuan.lv@intel.com>
+Subject: Re: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
+Thread-Topic: [PATCH 00/29] [Set 15] Finally rid W=1 warnings from GPU!
+Thread-Index: AQHW62p+Afh7eg9MAECAFEwSMWQpd6opAUIAgAR7cYCAAARggIAAJLMAgAD9y4CAALfKAA==
+Date:   Tue, 19 Jan 2021 19:27:20 +0000
+Message-ID: <8DE96253-47A3-4A16-9331-62F547A2CC44@vmware.com>
+References: <20210115181601.3432599-1-lee.jones@linaro.org>
+ <F914D9B9-6DD4-4383-9F7C-8D09FBFE96CE@vmware.com>
+ <YAWhDRkSOHbJ+2Le@phenom.ffwll.local> <20210118150945.GE4903@dell>
+ <YAXDgmWMR9s4OgxN@phenom.ffwll.local> <20210119082927.GJ4903@dell>
+In-Reply-To: <20210119082927.GJ4903@dell>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.40.0.2.32)
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [71.175.59.246]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e9ced637-eb95-498c-2bd3-08d8bcb03d9a
+x-ms-traffictypediagnostic: BLAPR05MB7378:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BLAPR05MB73788F177B49E0955637FB78CEA39@BLAPR05MB7378.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bRYJYhpc5DJU0PAvR/CYJc/A3Z44dZLyfiEWEwnq6/NSU9EBSZ+woGgB57CEs0LDKtR92/e5MHo+jIo9YnUlFwvl2w13m2tV05Y79mfOMHfvSSm/sCWr1M88edkwzmGXai8+byUsDfDgnkvFCgBXMB5ednJOzolf9cVI268x5GXR54A6oB9rO+mNoZfrDbMe9Hu8ewIagCoPyuZa4l1FigoMBYtkIkWI1Ap2Hyd6ngXy/4eSqZf0XXZTccpNtWdNFjA7uxDWTL9xe6XOysbQ/RnSy4/V8h9DC0a/LLCZ7L0JUKqCKS7FXzGCrIWtTeejZWl89FjiQWDpJM2mcYCiEJ7T+xECObkUxFKgyaNVvQ7gNKn04Js9SKUuG5iOe4Ba0kYBJMT/ez7nkjqCA0vvtsTPni5iwG8GMQfBArdTNQ1tC3rqGPr6v5/PtH5pGC+r
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR05MB5186.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(366004)(396003)(346002)(83380400001)(76116006)(36756003)(2906002)(186003)(8936002)(4326008)(33656002)(316002)(54906003)(66476007)(64756008)(5660300002)(86362001)(66556008)(66446008)(53546011)(71200400001)(6916009)(6486002)(6512007)(66946007)(7416002)(478600001)(7406005)(8676002)(2616005)(26005)(6506007)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?TCu+QFTEdaiUDOfB2J449+fIzZVCLxcC1gW7TEWnnI96nC+wAK8CBvfSrn?=
+ =?iso-8859-1?Q?YghDRMZDhqpaTnMyzBaFahz4R8ecjYJlIB1wrYu+5Una6qdeD+aaJpeq2O?=
+ =?iso-8859-1?Q?T4NKbb7pvVYkfcITQlXStEdtl3TcA1dIFzbCfIyECs/bXQmDwDDlbWrhcP?=
+ =?iso-8859-1?Q?RM49Zz/8pCv2EJM2lJRveOf0dM+3k5eVOa79X+9QBMTFp8cR3unQdFKcg3?=
+ =?iso-8859-1?Q?SiZ2OOi9iBTSjayrIrfq5EVgtZPwQWoNQPExcnFA58qqq9gVq0QW66gH5G?=
+ =?iso-8859-1?Q?QYC5KKTknKcY1ZpdKRrAlvpv4vycllYqHxrOCGh6pXP2OSM8Y0lpIZgCV/?=
+ =?iso-8859-1?Q?n3bpdoeo5WCLR2lA2ZBbsKL5yXhK4N7dkUAzMNfL+vas4jqgvSCGcp53Xh?=
+ =?iso-8859-1?Q?8RWc7ROTC8C6Xp9tVcD4Bs6NhC6GsYwM+bOPSlS2pYIM/wAy9cIBYF6RaG?=
+ =?iso-8859-1?Q?6BSuEM1FZopsbiov2UDwDm+lwc6xkwhvj2pXbZjQZ6uGOzOlCwmPWDmEt/?=
+ =?iso-8859-1?Q?QIomay5ENR5VbaSmswwUUvZ28/1ZXqppCj5Npf0reEn4XoXADF0BvhchC9?=
+ =?iso-8859-1?Q?9qd2LQdnC9qeyete3tkKd7qLkAO71Xhnt2rJPo4M8iREwRdqYCSfRmCXw3?=
+ =?iso-8859-1?Q?GiVbiOWieH3ySMGrVLGBeDGnYeoxjygHWa2h+ZmqEW/wOdp2+8cQjqJDhK?=
+ =?iso-8859-1?Q?hEVb0BBWBZtUZrcN0XMKhsLFfwXV/DzGenUzdYPuwp3gV3ZRx1ZQGaowyW?=
+ =?iso-8859-1?Q?J7NZxq03OAmyo0xlDnm7wxMg8y3MqO4/3J8u4zt7CPmQ0vO7nbxNzZhyCN?=
+ =?iso-8859-1?Q?Kodkp07tLOmxjLOKurE+IUQPn1msAp6usoesmErCxKm5BW04FklrA7jinQ?=
+ =?iso-8859-1?Q?4/PQnhQGYzpvQUeiWz/bMLFVKlR99FC/yGP0Cb++tPOPbAPsyLunqYDCUt?=
+ =?iso-8859-1?Q?kJ5de+Vx3U6aPiUmbrsp4RumlgEwZ8tDFehpdIKVKkNR+jEA8O6aa8n6Pv?=
+ =?iso-8859-1?Q?bpWZ/hS/nwG07/7S/prnXXCjvfBPf1emVnQOWc?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <F0912769F7D8344F9F5AB490350D9FA0@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB5186.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9ced637-eb95-498c-2bd3-08d8bcb03d9a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 19:27:20.5425
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Cd3qOwYBlOAK2YzeeoHw+69w0XoGXNBx38ABzKkrIGqdoa4rnHnJzE8OioYLYnvlv40+D6zj8M77tyZTLftYVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR05MB7378
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SDM630, SDM636 and SDM660 to the blacklist since the CPU
-scaling is handled out of this.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index bd2db0188cbb..f82f4ec17ff2 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -135,6 +135,9 @@ static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "qcom,msm8996", },
- 	{ .compatible = "qcom,qcs404", },
- 	{ .compatible = "qcom,sc7180", },
-+	{ .compatible = "qcom,sdm630", },
-+	{ .compatible = "qcom,sdm636", },
-+	{ .compatible = "qcom,sdm660", },
- 	{ .compatible = "qcom,sdm845", },
- 
- 	{ .compatible = "st,stih407", },
--- 
-2.30.0
+> On Jan 19, 2021, at 03:29, Lee Jones <lee.jones@linaro.org> wrote:
+>=20
+> On Mon, 18 Jan 2021, Daniel Vetter wrote:
+>=20
+>> On Mon, Jan 18, 2021 at 03:09:45PM +0000, Lee Jones wrote:
+>>> On Mon, 18 Jan 2021, Daniel Vetter wrote:
+>>>=20
+>>>> On Fri, Jan 15, 2021 at 06:27:15PM +0000, Zack Rusin wrote:
+>>>>>=20
+>>>>>> On Jan 15, 2021, at 13:15, Lee Jones <lee.jones@linaro.org> wrote:
+>>>>>>=20
+>>>>>> This set is part of a larger effort attempting to clean-up W=3D1
+>>>>>> kernel builds, which are currently overwhelmingly riddled with
+>>>>>> niggly little warnings.
+>>>>>>=20
+>>>>>> Last set!  All clean after this for; Arm, Arm64, PPC, MIPS and x86.
+>>>>>=20
+>>>>> Thanks! For all the vmwgfx bits:
+>>>>> Reviewed-by: Zack Rusin <zackr@vmware.com>
+>>>>=20
+>>>> Ok I merged everything except vmwgfx (that's for Zack) and i915/nouvea=
+u
+>>>> (those generally go through other trees, pls holler if they're stuck).
+>>>=20
+>>> Thanks Daniel, you're a superstar!
+>>>=20
+>>> So Zack will take the vmwgfx parts?  Despite providing a R-b?
+>>=20
+>> I only merge stuff that's defacto abandoned already. Everything else I t=
+ry
+>> to offload to whomever actually cares :-)
+>=20
+> Understood.  Thanks for the explanation.
+>=20
+> Hopefully Zack actually cares. :D
+
+hah, I do. I just pushed all of the changes to drm-misc-next. Let me know i=
+f I missed anything. Thanks!
+
+z
+
 
