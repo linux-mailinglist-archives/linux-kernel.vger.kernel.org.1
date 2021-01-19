@@ -2,93 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BC32FB6E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3872FB6EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733039AbhASJ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732056AbhASJNM (ORCPT
+        id S1733200AbhASJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:27:12 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35082 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732138AbhASJOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:13:12 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D12C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:12:32 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id kx7so2137077pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:12:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mhq6+MsHUQV7TIzepvt+9lxlFxVhKFu6Vfs/P5sqRA0=;
-        b=zCNu3jZhy89x1DZ/SxSwSTwFiPtHKNPAM/fzd0bmr/HBP7y5vEiDKUduu29kraQ7ob
-         3d3JtdoM8LAQ7q1Vqnz2kJTn9niMpZUVvbUbzdwaLlPmP2VAem2f5wu4eLTL8DtgYZ+G
-         rho12iYSe1+zuxbrnqngdJq5bA0mpZUufwYcSy1eVOII1K/owe6N75/GzP/Z6p0BM2Le
-         yvHnO+8FBM2Ycj/6WFsbj9OXI5e8x5RxUFMP70Zkxt5UG+FhTgiD2GL7WtuQYCLb2gaK
-         +cemfsR9773GOrgq9qP28AourpqbCeA9JKjajeLC/Db1DNPwPD9xTzP4Ca741yohJsHA
-         xJkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mhq6+MsHUQV7TIzepvt+9lxlFxVhKFu6Vfs/P5sqRA0=;
-        b=WP2CYeLTGls9NZX3IsAFVWQla2Sa0szth7qvcvONk0WbLx4S8kQw2LP9joA21TturA
-         p5EFekvkf6Oy4wJFd06w12msTM1fUafeo/oHBgOwksa7YLAYiAzmWZm+wEmz0xAY4oyx
-         o7pB1mM006nTzFQP6wQ2GvhrFdZSQj+WkJtl8CsAFf3DFF5v/ZHqzC7DkUBP9cuPWPSM
-         DCO2KVM+GJt3b3qkNJRaQDuVMNASZfwytCZJlSY/FyMWXvmt9+FPowk9AytyoGAlK6xV
-         rFpxf9V84ztUhkE8FzwoJslMd1TX05+F6libfGTOui5tQf2PnZ1ewplz1pEoxA187Gsv
-         wlVw==
-X-Gm-Message-State: AOAM5333yQaWxeH3R+qzCI8Wm4GPt3WIdD0rQi7hPO0hiSOn7q+f/Bwk
-        p1CFCq4kKgeDJSmRZCWi2z2Y4ASk1lmBXQ==
-X-Google-Smtp-Source: ABdhPJyZ/4rdEg6QuISCj6DWNWBZsbWDsCCApjNRz8TnyF+D9beBWAYgwRYxLLloaPYO/6j2UeTHEw==
-X-Received: by 2002:a17:90a:4096:: with SMTP id l22mr4279450pjg.114.1611047552114;
-        Tue, 19 Jan 2021 01:12:32 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id hs21sm2237380pjb.6.2021.01.19.01.12.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 01:12:30 -0800 (PST)
-Date:   Tue, 19 Jan 2021 14:42:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 0/3] arm64: topology: improvements
-Message-ID: <20210119091228.zkshnk37mxtiabir@vireshk-i7>
-References: <cover.1610104461.git.viresh.kumar@linaro.org>
+        Tue, 19 Jan 2021 04:14:21 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J9AjxY134957;
+        Tue, 19 Jan 2021 04:12:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=B9fPVhsYHZ9MUgvx5shkeAk+LRY3aHnUMBspjKAb654=;
+ b=WmnH56xcFfo4qr+gZAKshSPC/i9jp69EncdX3atomCknagdx8SQ7J4S+ijX77Y/g6uVP
+ i/QxsX36YAePLFsaa3rrjwHnSGkU1kIKDY6qGlxU9LAWDChYtojnSSVMXr3dLv6Te40N
+ lDWqQ2jwg0oRU7cz1MkhwPtKSgOzvig2qTE+fy5a88cpzN/BjviPWoAX7dVQ2VgH5ae3
+ 75ztiDJ5BirGzS+X6zpIsRIFmMwnUPN2SllZhjYTNwkMnVSBTTpPqRb5ZRVcYJossxbw
+ 4l2UhVyVu0ET2LCQMI2Va1ZMavsm6jbtghF/M8JoQK7EKCZAE74UB391e44UdWLLZL7Z Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 365v9a89sw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 04:12:51 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10J9Cpb4139548;
+        Tue, 19 Jan 2021 04:12:51 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 365v9a89sj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 04:12:51 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J9BLQB030385;
+        Tue, 19 Jan 2021 09:12:49 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 363qs7jvq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 09:12:49 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J9Ck6f41484590
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 09:12:46 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6450A4054;
+        Tue, 19 Jan 2021 09:12:46 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A0605A405C;
+        Tue, 19 Jan 2021 09:12:44 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.45.223])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Jan 2021 09:12:44 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     ravi.bangoria@linux.ibm.com, oleg@redhat.com, rostedt@goodmis.org,
+        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc/uprobes: Don't allow probe on suffix of prefixed instruction
+Date:   Tue, 19 Jan 2021 14:42:34 +0530
+Message-Id: <20210119091234.76317-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610104461.git.viresh.kumar@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_01:2021-01-18,2021-01-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-01-21, 16:46, Viresh Kumar wrote:
-> Hi,
-> 
-> Here is the V4 with the general improvements for topology stuff. This
-> cleans up the code and makes it work with cpufreq modules.
-> 
-> V4:
-> - Added Rby from Ionela.
-> - In 3/3, Print cpus instead of amu_fie_cpus and make it pr_debug
->   instead.
-> 
-> Viresh Kumar (3):
->   arm64: topology: Avoid the have_policy check
->   arm64: topology: Reorder init_amu_fie() a bit
->   arm64: topology: Make AMUs work with modular cpufreq drivers
-> 
->  arch/arm64/kernel/topology.c | 115 +++++++++++++++++------------------
->  1 file changed, 56 insertions(+), 59 deletions(-)
+Probe on 2nd word of a prefixed instruction is invalid scenario and
+should be restricted.
 
-Catalin,
+There are two ways probed instruction is changed in mapped pages.
+First, when Uprobe is activated, it searches for all the relevant
+pages and replace instruction in them. In this case, if we notice
+that probe is on the 2nd word of prefixed instruction, error out
+directly. Second, when Uprobe is already active and user maps a
+relevant page via mmap(), instruction is replaced via mmap() code
+path. But because Uprobe is invalid, entire mmap() operation can
+not be stopped. In this case just print an error and continue.
 
-Can you please push this series for 5.12? Thanks.
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ arch/powerpc/kernel/uprobes.c | 28 ++++++++++++++++++++++++++++
+ include/linux/uprobes.h       |  1 +
+ kernel/events/uprobes.c       |  8 ++++++++
+ 3 files changed, 37 insertions(+)
 
+diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+index e8a63713e655..c73d5a397164 100644
+--- a/arch/powerpc/kernel/uprobes.c
++++ b/arch/powerpc/kernel/uprobes.c
+@@ -7,6 +7,7 @@
+  * Adapted from the x86 port by Ananth N Mavinakayanahalli <ananth@in.ibm.com>
+  */
+ #include <linux/kernel.h>
++#include <linux/highmem.h>
+ #include <linux/sched.h>
+ #include <linux/ptrace.h>
+ #include <linux/uprobes.h>
+@@ -44,6 +45,33 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PPC64
++int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
++			      uprobe_opcode_t opcode)
++{
++	uprobe_opcode_t prefix;
++	void *kaddr;
++	struct ppc_inst inst;
++
++	/* Don't check if vaddr is pointing to the beginning of page */
++	if (!(vaddr & ~PAGE_MASK))
++		return 0;
++
++	kaddr = kmap_atomic(page);
++	memcpy(&prefix, kaddr + ((vaddr - 4) & ~PAGE_MASK), UPROBE_SWBP_INSN_SIZE);
++	kunmap_atomic(kaddr);
++
++	inst = ppc_inst_prefix(prefix, opcode);
++
++	if (ppc_inst_prefixed(inst)) {
++		printk_ratelimited("Cannot register a uprobe on the second "
++				   "word of prefixed instruction\n");
++		return -1;
++	}
++	return 0;
++}
++#endif
++
+ /*
+  * arch_uprobe_pre_xol - prepare to execute out of line.
+  * @auprobe: the probepoint information.
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index f46e0ca0169c..5a3b45878e13 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -128,6 +128,7 @@ extern bool uprobe_deny_signal(void);
+ extern bool arch_uprobe_skip_sstep(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern void uprobe_clear_state(struct mm_struct *mm);
+ extern int  arch_uprobe_analyze_insn(struct arch_uprobe *aup, struct mm_struct *mm, unsigned long addr);
++int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t opcode);
+ extern int  arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern int  arch_uprobe_post_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern bool arch_uprobe_xol_was_trapped(struct task_struct *tsk);
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index bf9edd8d75be..be02e6c26e3f 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -255,6 +255,12 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
+ 	kunmap_atomic(kaddr);
+ }
+ 
++int __weak arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
++				     uprobe_opcode_t opcode)
++{
++	return 0;
++}
++
+ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
+ {
+ 	uprobe_opcode_t old_opcode;
+@@ -275,6 +281,8 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
+ 	if (is_swbp_insn(new_opcode)) {
+ 		if (is_swbp)		/* register: already installed? */
+ 			return 0;
++		if (arch_uprobe_verify_opcode(page, vaddr, old_opcode))
++			return -EINVAL;
+ 	} else {
+ 		if (!is_swbp)		/* unregister: was it changed by us? */
+ 			return 0;
 -- 
-viresh
+2.26.2
+
