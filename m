@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC07E2FB724
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E4E2FB729
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390244AbhASKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:20:37 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62166 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389551AbhASKFs (ORCPT
+        id S2390400AbhASKVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:21:15 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11417 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389653AbhASKJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:05:48 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10JA1l50010572;
-        Tue, 19 Jan 2021 05:05:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=moOU28gvvMta6uWMdNJk6EeImI3fQmyyyTwDtyprFDY=;
- b=SWwLGAPUJ9Muz4W82v6pk5dFnLded0DcWW6lq+Gzwt73PX59XTfThAzlPXg4Af/EDExC
- YPaRcX8Uo/JiE/c05LrPZB5atbZTrlx91KSGkuYNUtc7eA5l4tM+T6SQIMMa3FRDq9qi
- BLuPkwxgWvualcgg8BIrzpP6Bx55Yxsk003u47vy55Ygekhs2S5hIL74vevOWvwfdqgR
- HkejhMq9ipKupusED+pnRK2+rizMRBa4B4UdaNMG6mjXPgEa5w7HSIKU0TY+6lE4P4yd
- FX4ww07hqVlANv+wBgeLeohk/sg4X7aWHmq64SBt6d3VvM2/YUBC7IO/rUWqa+ZT4/9h Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 365w8wg6tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 05:05:06 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10JA2tDJ015937;
-        Tue, 19 Jan 2021 05:05:06 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 365w8wg6s9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 05:05:06 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10JA3MSq009050;
-        Tue, 19 Jan 2021 10:05:04 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 363qs7jx2h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 10:05:04 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10JA516M33620394
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 10:05:01 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C67BE4C040;
-        Tue, 19 Jan 2021 10:05:01 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA0814C059;
-        Tue, 19 Jan 2021 10:05:00 +0000 (GMT)
-Received: from linux01.pok.stglabs.ibm.com (unknown [9.114.17.81])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jan 2021 10:05:00 +0000 (GMT)
-From:   Janosch Frank <frankja@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, thuth@redhat.com, david@redhat.com,
-        borntraeger@de.ibm.com, imbrenda@linux.ibm.com, cohuck@redhat.com,
-        linux-s390@vger.kernel.org, gor@linux.ibm.com,
-        mihajlov@linux.ibm.com
-Subject: [PATCH 2/2] s390: mm: Fix secure storage access exception handling
-Date:   Tue, 19 Jan 2021 05:04:02 -0500
-Message-Id: <20210119100402.84734-3-frankja@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119100402.84734-1-frankja@linux.ibm.com>
-References: <20210119100402.84734-1-frankja@linux.ibm.com>
+        Tue, 19 Jan 2021 05:09:01 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DKkq13K2Mzj8Y0;
+        Tue, 19 Jan 2021 18:07:25 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 19 Jan 2021 18:08:08 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <kjain@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <qiangqing.zhang@nxp.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] perf metricgroup: Fix system PMU metrics
+Date:   Tue, 19 Jan 2021 18:04:15 +0800
+Message-ID: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 clxscore=1011 spamscore=0 impostorscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190058
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turns out that the bit 61 in the TEID is not always 1 and if that's
-the case the address space ID and the address are
-unpredictable. Without an address and it's address space ID we can't
-export memory and hence we can only send a SIGSEGV to the process or
-panic the kernel depending on who caused the exception.
+Joakim reports that getting "perf stat" for multiple system PMU metrics
+segfaults:
+./perf stat -a -I 1000 -M imx8mm_ddr_write.all,imx8mm_ddr_write.all
+Segmentation fault
 
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Fixes: 084ea4d611a3d ("s390/mm: add (non)secure page access exceptions handlers")
-Cc: stable@vger.kernel.org
----
- arch/s390/mm/fault.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+While the same works without issue for a single metric.
 
-diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-index e30c7c781172..5442937e5b4b 100644
---- a/arch/s390/mm/fault.c
-+++ b/arch/s390/mm/fault.c
-@@ -791,6 +791,20 @@ void do_secure_storage_access(struct pt_regs *regs)
- 	struct page *page;
- 	int rc;
+The logic in metricgroup__add_metric_sys_event_iter() is broken, in that
+add_metric() @m argument should be NULL for each new metric. Fix by not
+passing a holder for that, and rather make local in
+metricgroup__add_metric_sys_event_iter().
+
+Fixes: be335ec28efa ("perf metricgroup: Support adding metrics for system PMUs")
+Reported-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index ee94d3e8dd65..2e60ee170abc 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -766,7 +766,6 @@ int __weak arch_get_runtimeparam(struct pmu_event *pe __maybe_unused)
+ struct metricgroup_add_iter_data {
+ 	struct list_head *metric_list;
+ 	const char *metric;
+-	struct metric **m;
+ 	struct expr_ids *ids;
+ 	int *ret;
+ 	bool *has_match;
+@@ -1058,12 +1057,13 @@ static int metricgroup__add_metric_sys_event_iter(struct pmu_event *pe,
+ 						  void *data)
+ {
+ 	struct metricgroup_add_iter_data *d = data;
++	struct metric *m = NULL;
+ 	int ret;
  
-+	/* There are cases where we don't have a TEID. */
-+	if (!(regs->int_parm_long & 0x4)) {
-+		/*
-+		 * Userspace could for example try to execute secure
-+		 * storage and trigger this. We should tell it that it
-+		 * shouldn't do that.
-+		 */
-+		if (user_mode(regs)) {
-+			send_sig(SIGSEGV, current, 0);
-+			return;
-+		} else
-+			panic("Unexpected PGM 0x3d with TEID bit 61=0");
-+	}
-+
- 	switch (get_fault_type(regs)) {
- 	case USER_FAULT:
- 		mm = current->mm;
+ 	if (!match_pe_metric(pe, d->metric))
+ 		return 0;
+ 
+-	ret = add_metric(d->metric_list, pe, d->metric_no_group, d->m, NULL, d->ids);
++	ret = add_metric(d->metric_list, pe, d->metric_no_group, &m, NULL, d->ids);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1114,7 +1114,6 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 				.metric_list = &list,
+ 				.metric = metric,
+ 				.metric_no_group = metric_no_group,
+-				.m = &m,
+ 				.ids = &ids,
+ 				.has_match = &has_match,
+ 				.ret = &ret,
 -- 
-2.25.1
+2.26.2
 
