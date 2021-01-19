@@ -2,159 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88A72FC3F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510D22FC3FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbhASWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:44:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33384 "EHLO mail.kernel.org"
+        id S1727356AbhASWqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:46:03 -0500
+Received: from mga18.intel.com ([134.134.136.126]:8054 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405480AbhASOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:32:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2014F206E9;
-        Tue, 19 Jan 2021 14:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611066726;
-        bh=Tduvv18LK/LCkLs3ZnFGc8LwDL80UuULmc4HIuM8pAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=prM3R5m3uo3uXxwz5GeHrVafgNEbazb911/CI5WpXB7mO0+x4TdgpD/xfl7vPnlJZ
-         RQsVqKJuk3PN4R4txzMSyCZaE72+c4UfnjcSxVefqnxyckuXd2lD6+sVDOm9sB3/vH
-         hju2ZT4LQV1lPp7LQu8FKl+QWHFfDJWRhHidhWT8=
-Date:   Tue, 19 Jan 2021 15:32:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v7 12/17] PCI: Revoke mappings like devmem
-Message-ID: <YAbtZBU5PMr68q9E@kroah.com>
-References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch>
- <20201127164131.2244124-13-daniel.vetter@ffwll.ch>
- <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
+        id S2405541AbhASOdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:33:15 -0500
+IronPort-SDR: Opw20w8fLNn1crMFmPD+xJk3olpe4Yy2n02RQERabu1ASZR4OrWgErPdoE3xoMCiRy0Zb8hPd5
+ Ky7MtFP8xGeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="166600215"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="166600215"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 06:32:34 -0800
+IronPort-SDR: LohtyT3WLxV3mabovbKBQX1ophKWHTt1F1o1U4wi4yFNqs9Os+NUV6r/tkc09ptfEc39Gn4x0d
+ YbHOfO5M5Kug==
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="383956662"
+Received: from lfrymark-mobl.ger.corp.intel.com (HELO [10.249.128.122]) ([10.249.128.122])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 06:32:33 -0800
+Subject: Re: [PATCH] resource: Remove unneeded semicolon
+To:     Chengyang Fan <cy.fan@huawei.com>
+Cc:     guohanjun@huawei.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210118015000.2599677-1-cy.fan@huawei.com>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <c0bc7da5-feec-dbcd-6fdd-e0bea359572d@intel.com>
+Date:   Tue, 19 Jan 2021 15:32:32 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
+In-Reply-To: <20210118015000.2599677-1-cy.fan@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 09:17:55AM +0100, Daniel Vetter wrote:
-> On Fri, Nov 27, 2020 at 5:42 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> >
-> > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-> > the region") /dev/kmem zaps ptes when the kernel requests exclusive
-> > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-> > the default for all driver uses.
-> >
-> > Except there's two more ways to access PCI BARs: sysfs and proc mmap
-> > support. Let's plug that hole.
-> >
-> > For revoke_devmem() to work we need to link our vma into the same
-> > address_space, with consistent vma->vm_pgoff. ->pgoff is already
-> > adjusted, because that's how (io_)remap_pfn_range works, but for the
-> > mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
-> > to adjust this at at ->open time:
-> >
-> > - for sysfs this is easy, now that binary attributes support this. We
-> >   just set bin_attr->mapping when mmap is supported
-> > - for procfs it's a bit more tricky, since procfs pci access has only
-> >   one file per device, and access to a specific resources first needs
-> >   to be set up with some ioctl calls. But mmap is only supported for
-> >   the same resources as sysfs exposes with mmap support, and otherwise
-> >   rejected, so we can set the mapping unconditionally at open time
-> >   without harm.
-> >
-> > A special consideration is for arch_can_pci_mmap_io() - we need to
-> > make sure that the ->f_mapping doesn't alias between ioport and iomem
-> > space. There's only 2 ways in-tree to support mmap of ioports: generic
-> > pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
-> > architecture hand-rolling. Both approach support ioport mmap through a
-> > special pfn range and not through magic pte attributes. Aliasing is
-> > therefore not a problem.
-> >
-> > The only difference in access checks left is that sysfs PCI mmap does
-> > not check for CAP_RAWIO. I'm not really sure whether that should be
-> > added or not.
-> >
-> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: John Hubbard <jhubbard@nvidia.com>
-> > Cc: Jérôme Glisse <jglisse@redhat.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: linux-pci@vger.kernel.org
-> > Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > --
-> > v2:
-> > - Totally new approach: Adjust filp->f_mapping at open time. Note that
-> >   this now works on all architectures, not just those support
-> >   ARCH_GENERIC_PCI_MMAP_RESOURCE
-> > ---
-> >  drivers/pci/pci-sysfs.c | 4 ++++
-> >  drivers/pci/proc.c      | 1 +
-> >  2 files changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > index d15c881e2e7e..3f1c31bc0b7c 100644
-> > --- a/drivers/pci/pci-sysfs.c
-> > +++ b/drivers/pci/pci-sysfs.c
-> > @@ -929,6 +929,7 @@ void pci_create_legacy_files(struct pci_bus *b)
-> >         b->legacy_io->read = pci_read_legacy_io;
-> >         b->legacy_io->write = pci_write_legacy_io;
-> >         b->legacy_io->mmap = pci_mmap_legacy_io;
-> > +       b->legacy_io->mapping = iomem_get_mapping();
-> >         pci_adjust_legacy_attr(b, pci_mmap_io);
-> >         error = device_create_bin_file(&b->dev, b->legacy_io);
-> >         if (error)
-> > @@ -941,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
-> >         b->legacy_mem->size = 1024*1024;
-> >         b->legacy_mem->attr.mode = 0600;
-> >         b->legacy_mem->mmap = pci_mmap_legacy_mem;
-> > +       b->legacy_io->mapping = iomem_get_mapping();
-> 
-> Unlike the normal pci stuff below, the legacy files here go boom
-> because they're set up much earlier in the boot sequence. This only
-> affects HAVE_PCI_LEGACY architectures, which aren't that many. So what
-> should we do here now:
-> - drop the devmem revoke for these
-> - rework the init sequence somehow to set up these files a lot later
-> - redo the sysfs patch so that it doesn't take an address_space
-> pointer, but instead a callback to get at that (since at open time
-> everything is set up). Imo rather ugly
-> - ditch this part of the series (since there's not really any takers
-> for the latter parts it might just not make sense to push for this)
-> - something else?
-> 
-> Bjorn, Greg, thoughts?
+On 1/18/2021 2:50 AM, Chengyang Fan wrote:
+> Remove a superfluous semicolon after function definition.
+>
+> Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
+> ---
+>   include/linux/ioport.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+> index fe48b7840665..803c10f6a6df 100644
+> --- a/include/linux/ioport.h
+> +++ b/include/linux/ioport.h
+> @@ -337,7 +337,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
+>   #ifdef CONFIG_IO_STRICT_DEVMEM
+>   void revoke_devmem(struct resource *res);
+>   #else
+> -static inline void revoke_devmem(struct resource *res) { };
+> +static inline void revoke_devmem(struct resource *res) { }
+>   #endif
+>   
+>   #endif /* __ASSEMBLY__ */
 
-What sysfs patch are you referring to here?
+The patch is fine AFAICS, so
 
-thanks,
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-greg k-h
+but I'm not sure why it has been sent to me.
+
+It would be better to send it to Greg instead.
+
+Thanks!
+
+
