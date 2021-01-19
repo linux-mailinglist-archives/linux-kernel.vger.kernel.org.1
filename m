@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1035C2FC4FC
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2532FC4FD
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbhASXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729023AbhASXgE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:36:04 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32F6C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:35:23 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id h21so1080715qvb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:35:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EhvAcZQ5rgh2MmfIZWPPX4/VupxkzFvw5zJjAClJRLQ=;
-        b=KQP2/ghi3PyecmFsYOcygO6glPIdjbt4QD0Oum2Udyc5jCV+RO9CfcMEO5jRHIWdb1
-         KR55jJyCsWyHYwxbKA9AcPiyYGZhBiCRMjnz54xXKdAetGI1VBJB5ezLM1Bl452RWANG
-         3b35Xwdkv6mh/3cSZhpyxWCK+FayHVR6jl3HAzXsNrXEKL4ts2/9O+t+bA1DkprppOZU
-         ny4NEb98PxfewGNh+D+qXTvBHfK5J7sWwEUvODoc+nD8BQmER8+WQHiC4nwzmBsOQTKf
-         QAoPCzaIEKHaEiyQc9B2NrL2RGHihp7CFfbxTljqOuGbtv1hpxryOBfR/utcLZkwkrO9
-         Oo7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EhvAcZQ5rgh2MmfIZWPPX4/VupxkzFvw5zJjAClJRLQ=;
-        b=Gnn3KzOzoZleAVULUKKwxDIZ8+eJ4Or4Srj+e3PlTYj3ZnZ52SkozjI4fQagQZ8rdZ
-         fK7JVcnOB3dXo5GjzhdxzrWe00ePTo8w60s7I1OGXQSo48Eg9yKrjlfPdqWPCHePlmCD
-         urXsor5fEnD5iVjt5N9zb4qUvFId6s6N7tVNe6tAtTSDjG4GarfUuRXwi6+1yV9Bm+NZ
-         ymuVymfB3mVOu53SRQy7LnTGAoLQUlndgNbhlEqslVeP+vyyX8dKYSeC1w0OshGixZD5
-         LyfaR1wo/XQMXwU56nddI89H9xIXUeNZvEP36l/5Aol4g5CyRNahJ9LbYS89TzfV7ApX
-         t8Cw==
-X-Gm-Message-State: AOAM533whoaO8fUqxTFj9lmG6Pdefy4swUI/qLUUSVUXUAss1Xi/qSOS
-        znv6JfQXvIQ+RH+nI6RjaJh1Tw==
-X-Google-Smtp-Source: ABdhPJwQ5+FkffXGjNDuxxs8agNNaUF0vD5Ucc+XPCpjUzppX5ueLh25sKxSCYmaiwfTZk67Q0KfAw==
-X-Received: by 2002:a05:6214:1904:: with SMTP id er4mr6763558qvb.49.1611099323173;
-        Tue, 19 Jan 2021 15:35:23 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id 2sm121866qtt.24.2021.01.19.15.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 15:35:22 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l20Wv-003v6u-K8; Tue, 19 Jan 2021 19:35:21 -0400
-Date:   Tue, 19 Jan 2021 19:35:21 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
-Message-ID: <20210119233521.GE4605@ziepe.ca>
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
- <20210119043920.155044-9-pasha.tatashin@soleen.com>
- <20210119183013.GB4605@ziepe.ca>
- <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com>
- <20210119184751.GD4605@ziepe.ca>
- <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
+        id S1730860AbhASXnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:43:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730678AbhASXnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 18:43:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 630D723109
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:42:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611099764;
+        bh=vfWq8ORmisMymcb7jEgSy/+PLX1UbYJNGh+DIqiVZ3c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cYz2SiA7iMr/9YcqooJQXawqQMzYzYTU3o97XUGd//h1JT+reDI5GVwdi8mDqCnB9
+         871S2NE8UrbERiInElunFQYPil6LVsNZEatFEYXrLZWRH6OtHMVUpq9r86iX3PIIoG
+         Q0Fq7sExupofbMKTPeBCpLwHGhalDrNDVv2iiWMP/IcIgCqalcet3yh5YmX/X1b2Qy
+         IeIKEADLH+L5ezQuqMyVlJ/BxVXNTVLTb7XmbVnSxX39Y1xYfN41ThRbZbYUbRnMb6
+         9vdfg4G9kPSGeJbLpfycTgh8ox85Tc2msxKaVD4OLuNxQL+t8rsquKQc309aYB183N
+         /6V8hKOsw50qQ==
+Received: by mail-ej1-f47.google.com with SMTP id by1so24582263ejc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:42:44 -0800 (PST)
+X-Gm-Message-State: AOAM532iIjBE+NXxd3AFjZmmYG8Z0QyDa6VZIljFfVx3Ibk28JdxjFXp
+        Hyd1dm9Na2UskgetttstDAz7Y8jXmRhsoMnXew==
+X-Google-Smtp-Source: ABdhPJy5pH3VJgW9xcAFQp76ROjf3pDBkBxpmVLZMF92SXietZmMe2rKOGmeI13Kif0jfu6KtXkSobYRfIp0pn/TCb8=
+X-Received: by 2002:a17:907:d8b:: with SMTP id go11mr4451807ejc.303.1611099762927;
+ Tue, 19 Jan 2021 15:42:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
+References: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+In-Reply-To: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 20 Jan 2021 07:42:31 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__OmMnXL5gvso4meUfQS-xnKA6EErhM3bL3HE4zh6JMcQ@mail.gmail.com>
+Message-ID: <CAAOTY__OmMnXL5gvso4meUfQS-xnKA6EErhM3bL3HE4zh6JMcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Share mtk mutex driver for both DRM and MDP
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 03:14:04PM -0500, Pavel Tatashin wrote:
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=887:17=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> mtk mutex is a driver used by DRM and MDP [1], so this series move
+> mtk mutex driver from DRM folder to soc folder, so it could be used
+> by DRM and MDP.
 
-> I was thinking about a use case where userland would pin an address
-> without FOLL_WRITE, because the PTE for that address is not going to
-> be writable, but some device via DMA will write to it.
+Applied [1/5] ~ [4/5] to mediatek-drm-next [1].
 
-That would be a serious bug in the get_user_pages caller to write to a
-page without using FOLL_WRITE
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
-Jason
+Regards,
+Chun-Kuang.
+
+>
+> Changes in v2:
+> 1. Rebase onto mediatek-drm-next [2].
+> 2. Export symbol for mtk-mutex API.
+>
+> [1] https://patchwork.kernel.org/patch/11140751/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.gi=
+t/log/?h=3Dmediatek-drm-next
+>
+> CK Hu (5):
+>   drm/mediatek: Remove redundant file including
+>   drm/mediatek: Rename file mtk_drm_ddp to mtk_mutex
+>   drm/mediatek: Change disp/ddp term to mutex in mtk mutex driver
+>   drm/mediatek: Automatically search unclaimed mtk mutex in
+>     mtk_mutex_get()
+>   soc / drm: mediatek: Move mtk mutex driver to soc folder
+>
+>  drivers/gpu/drm/mediatek/Makefile             |   1 -
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  32 +-
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp.h        |  28 --
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   3 -
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   1 -
+>  drivers/soc/mediatek/Makefile                 |   1 +
+>  .../mediatek/mtk-mutex.c}                     | 328 +++++++++---------
+>  include/linux/soc/mediatek/mtk-mutex.h        |  26 ++
+>  8 files changed, 212 insertions(+), 208 deletions(-)
+>  delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_ddp.h
+>  rename drivers/{gpu/drm/mediatek/mtk_drm_ddp.c =3D> soc/mediatek/mtk-mut=
+ex.c} (53%)
+>  create mode 100644 include/linux/soc/mediatek/mtk-mutex.h
+>
+> --
+> 2.17.1
+>
