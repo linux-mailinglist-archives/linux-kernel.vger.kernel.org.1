@@ -2,174 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE46301FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 00:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB0A301FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbhAXX4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 18:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbhAXX4U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 18:56:20 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A077C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 15:55:40 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id z21so7761447pgj.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 15:55:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=mo+UVHt1CoQmQvrUMCO6S1rlAhtZtR0L+ZEK+84Qw8g=;
-        b=sG3T12ydF9lYKTPIyKnfP8cAFtU6F8Rb54+tzW47qzbjz/JsrkcBk8Y2Saq6h8aQ5v
-         R6r8EfKV1LReR+UgZqBb+pM20/pUfsExGCi9RECg9n6VrYm6xJlf7qCNH0NShwsBvPAl
-         1o5Fdui1KKtB923kQe+mvd1gGKONAOSMpGR2OIa4rFG6MzF0PPn1riM+bJUhBA2yvQH7
-         ZMqfp3v3zTYUeEeoHrY50nD/Uc/Dt/rqeIcwJpRglxHQNStis+M+j5TcLxuEJgRs1U6x
-         Zc0mJxMrRjPYyRUgH7e0uUsG1YLeMcEKf9gXMtbiYnOMXQNMAGPZCxFFkx8+D0gNLGcG
-         v3+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=mo+UVHt1CoQmQvrUMCO6S1rlAhtZtR0L+ZEK+84Qw8g=;
-        b=o4YM9fc2EQcZLlsK8WUrWiTLLdEb3vd9QHuWhE9XbbTqMOmqt2WSchOat8IF2c16JE
-         LLMn6Ldd1zD8OLjHvORTua1AagLkQxD6y4LBF/YabdoI3yHuzXWukYOgOqNVBw9HFBWB
-         fXwhvWxZULWz8/Ysl9VaqhDwdZdt4x0mNkviR2BPNLPpmWUBzwFEejYjLT/sRZXUEgpp
-         SgRqq4NevdQPld3kT7BxHhPXUT1+9OHC0N1GmuisJabZ9d4R1NLmjdtX0of7bjs2KKsy
-         Wp9wYFA8DKseW72m7h5+Wvglc/yfIRT8ZP3fpwNJFbjmrAcRA9c5Z7BExSTjo5pftqLN
-         yTbQ==
-X-Gm-Message-State: AOAM533GBa29d/wp3pa9kndYjYXHYSidJ7T7Sne2oWhIctx/Z/88EWq+
-        uP2pnF8Pf8DqGL/ZmuqadGhCKg==
-X-Google-Smtp-Source: ABdhPJy01xwkRYoN2vQlGT34vrtjfTkepwmGbGZ0Vrtg4HGs/lSk+F1g2X2CoUQDM9hFN8Xi8SBx0w==
-X-Received: by 2002:a63:e109:: with SMTP id z9mr2465934pgh.5.1611532539670;
-        Sun, 24 Jan 2021 15:55:39 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id x1sm15377868pgj.37.2021.01.24.15.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 15:55:38 -0800 (PST)
-Date:   Sun, 24 Jan 2021 15:55:37 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com,
-        Matthew Wilcox <willy@infradead.org>, osalvador@suse.de,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v13 04/12] mm: hugetlb: defer freeing of HugeTLB pages
-In-Reply-To: <20210117151053.24600-5-songmuchun@bytedance.com>
-Message-ID: <59d18082-248a-7014-b917-625d759c572@google.com>
-References: <20210117151053.24600-1-songmuchun@bytedance.com> <20210117151053.24600-5-songmuchun@bytedance.com>
+        id S1726370AbhAYALk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 Jan 2021 19:11:40 -0500
+Received: from wnbcorp.com ([175.126.38.143]:58232 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726619AbhAYAJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 19:09:39 -0500
+Received: from [10.54.228.138] (89-200-36-78.mobile.kpn.net [89.200.36.78])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10JDxZbN030227;
+        Tue, 19 Jan 2021 23:09:38 +0900
+Message-Id: <202101191409.10JDxZbN030227@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Tue, 19 Jan 2021 15:09:08 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021, Muchun Song wrote:
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-> In the subsequent patch, we should allocate the vmemmap pages when
-> freeing HugeTLB pages. But update_and_free_page() is always called
-> with holding hugetlb_lock, so we cannot use GFP_KERNEL to allocate
-> vmemmap pages. However, we can defer the actual freeing in a kworker
-> to prevent from using GFP_ATOMIC to allocate the vmemmap pages.
-> 
-> The update_hpage_vmemmap_workfn() is where the call to allocate
-> vmemmmap pages will be inserted.
-> 
+Sir/Madam,
 
-I think it's reasonable to assume that userspace can release free hugetlb 
-pages from the pool on oom conditions when reclaim has become too 
-expensive.  This approach now requires that we can allocate vmemmap pages 
-in a potential oom condition as a prerequisite for freeing memory, which 
-seems less than ideal.
+CONGRATULATIONS!!!
 
-And, by doing this through a kworker, we can presumably get queued behind 
-another work item that requires memory to make forward progress in this 
-oom condition.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-Two thoughts:
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-- We're going to be freeing the hugetlb page after we can allocate the 
-  vmemmap pages, so why do we need to allocate with GFP_KERNEL?  Can't we
-  simply dip into memory reserves using GFP_ATOMIC (and thus can be 
-  holding hugetlb_lock) because we know we'll be freeing more memory than
-  we'll be allocating?  I think requiring a GFP_KERNEL allocation to block
-  to free memory for vmemmap when we'll be freeing memory ourselves is
-  dubious.  This simplifies all of this.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-- If the answer is that we actually have to use GFP_KERNEL for other 
-  reasons, what are your thoughts on pre-allocating the vmemmap as opposed
-  to deferring to a kworker?  In other words, preallocate the necessary
-  memory with GFP_KERNEL and put it on a linked list in struct hstate 
-  before acquiring hugetlb_lock.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  mm/hugetlb.c         | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++--
->  mm/hugetlb_vmemmap.c | 12 ---------
->  mm/hugetlb_vmemmap.h | 17 ++++++++++++
->  3 files changed, 89 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 140135fc8113..c165186ec2cf 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1292,15 +1292,85 @@ static inline void destroy_compound_gigantic_page(struct page *page,
->  						unsigned int order) { }
->  #endif
->  
-> -static void update_and_free_page(struct hstate *h, struct page *page)
-> +static void __free_hugepage(struct hstate *h, struct page *page);
-> +
-> +/*
-> + * As update_and_free_page() is always called with holding hugetlb_lock, so we
-> + * cannot use GFP_KERNEL to allocate vmemmap pages. However, we can defer the
-> + * actual freeing in a workqueue to prevent from using GFP_ATOMIC to allocate
-> + * the vmemmap pages.
-> + *
-> + * The update_hpage_vmemmap_workfn() is where the call to allocate vmemmmap
-> + * pages will be inserted.
-> + *
-> + * update_hpage_vmemmap_workfn() locklessly retrieves the linked list of pages
-> + * to be freed and frees them one-by-one. As the page->mapping pointer is going
-> + * to be cleared in update_hpage_vmemmap_workfn() anyway, it is reused as the
-> + * llist_node structure of a lockless linked list of huge pages to be freed.
-> + */
-> +static LLIST_HEAD(hpage_update_freelist);
-> +
-> +static void update_hpage_vmemmap_workfn(struct work_struct *work)
->  {
-> -	int i;
-> +	struct llist_node *node;
-> +
-> +	node = llist_del_all(&hpage_update_freelist);
-> +
-> +	while (node) {
-> +		struct page *page;
-> +		struct hstate *h;
-> +
-> +		page = container_of((struct address_space **)node,
-> +				     struct page, mapping);
-> +		node = node->next;
-> +		page->mapping = NULL;
-> +		h = page_hstate(page);
-> +
-> +		spin_lock(&hugetlb_lock);
-> +		__free_hugepage(h, page);
-> +		spin_unlock(&hugetlb_lock);
->  
-> +		cond_resched();
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
 
-Wouldn't it be better to hold hugetlb_lock for the iteration rather than 
-constantly dropping it and reacquiring it?  Use 
-cond_resched_lock(&hugetlb_lock) instead?
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
