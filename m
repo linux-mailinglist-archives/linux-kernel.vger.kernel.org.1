@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635912FC0D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D632FC0E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729892AbhASUUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730297AbhASUUC (ORCPT
+        id S1731665AbhASUXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:23:14 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:38624 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730467AbhASUWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:20:02 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA0AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=9BB3e4UOa89CNZRt/E7K2g+oaXMqtqe9Q/oLhFogx1k=; b=Azet/fAOXpIaVhDt6xN2dW+n2b
-        NqMosDlyUbMALkIWccg5H4tO1SDLbdeyIVM5AdM9OtPzmvA3XePUeKGzWrepgk/tmv+aGF6znJZ9D
-        36XmkLRTjQHdPIX40wi3+39a8WSp643iUpwqH3Svd7MP/wyEQuOuIxDazdaaotTjyW/xMQA1dtxrD
-        3svt36BGHaPhChAjiiKrS91usls3C1NkhsPGWa3KbUtNc6ouevTCrcw2ZG9uZkr6EyUNAYtaAPquY
-        PerdJlcTffwEAcnLExsPPh+5o1yGOehI5i65UQSspDcSqZiAPQ/8u0HeDGOrSb/CE/p7xz7QxqCtD
-        gIav+2Lg==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l1xSK-0007gM-Vw; Tue, 19 Jan 2021 20:18:25 +0000
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-To:     Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Timur Tabi <timur@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-References: <20210116220950.47078-1-timur@kernel.org>
- <20210118182635.GD2260413@casper.infradead.org>
- <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
- <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <202101191135.A78A570@keescook>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <82e1f2f3-77c3-ffb4-34b2-0e6f23e6195d@infradead.org>
-Date:   Tue, 19 Jan 2021 12:18:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 19 Jan 2021 15:22:37 -0500
+Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id AA0E030E76;
+        Tue, 19 Jan 2021 12:21:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AA0E030E76
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1611087694;
+        bh=lZ/JMNpu6rfS9YeYxhVgrk4nqkhdY79CK6WmTClAM/k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=aYbUj63BQSZKC++091Gzm4uOa8RxHIw8yV5j512+pssyyW2NQroamUFHuh4N5lLYI
+         KZrGhbgJBBMKEGyz0D2lnBykecfjWvy2mF2NhQLWOehUz3DgQSh0zFfybRUL4Gadxo
+         sS9AC8etDvdzqprb/p75sw+vz2dkrPeca6Q4TJFs=
+Subject: Re: [PATCH v8 00/13] Add Broadcom VK driver
+To:     Olof Johansson <olof@lixom.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Desmond Yan <desmond.yan@broadcom.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>
+References: <20201130184200.5095-1-scott.branden@broadcom.com>
+ <CAOesGMjzUfNOEd4U20sAiyEFkYPai8asAC=kaWHG-PR0XE3pEQ@mail.gmail.com>
+ <YAU2HnpwqGSNi3zF@kroah.com>
+ <CAOesGMjmFPPmH6deqEwifdchpiN_xaCC362NSaJk3Tv=n-7b+g@mail.gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <09b6e829-75b8-4f16-3e01-c7193640d9c6@broadcom.com>
+Date:   Tue, 19 Jan 2021 12:21:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <202101191135.A78A570@keescook>
+In-Reply-To: <CAOesGMjmFPPmH6deqEwifdchpiN_xaCC362NSaJk3Tv=n-7b+g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 11:45 AM, Kees Cook wrote:
-> 
-> How about this so the base address is hashed once, with the offset added
-> to it for each line instead of each line having a "new" hash that makes
-> no sense:
+Hi Greg,
 
-Yes, good patch. Should have been like this to begin with IMO.
+On 2021-01-18 3:06 p.m., Olof Johansson wrote:
+> On Sun, Jan 17, 2021 at 11:17 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>> On Sun, Jan 17, 2021 at 10:47:59AM -0800, Olof Johansson wrote:
+>>> Hi,
+>>>
+>>> On Mon, Nov 30, 2020 at 10:42 AM Scott Branden
+>>> <scott.branden@broadcom.com> wrote:
+>>>> This patch series drops previous patches in [1]
+>>>> that were incorporated by Kees Cook into patch series
+>>>> "Introduce partial kernel_read_file() support" [2].
+>>>>
+>>>> Remaining patches are contained in this series to add Broadcom VK driver.
+>>>> (which depends on request_firmware_into_buf API addition which has
+>>>> now been accepted into the upstream kernel as of v5.10-rc1).
+>>>>
+>>>> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
+>>>> [2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
+>>>
+>>> I've been following this series for some time, and I think the code is
+>>> ready to go in.
+>>>
+>>> Greg, mind queuing this up in the misc tree?
+>> I will need a new version, this is long gone from my queue.
+> I'll let Scott repost then (with acks applied etc)
+I can send another patch version with Olof's acks applied to each patch.
+Please let me know if that is what you are looking for?
+>
+>> And hopefully the tty layer abuse is gone... :)
+> There's a simple tty driver as the final patch in the series, but it's
+> pretty straightforward.
+>
+> If you've still got concerns with it, the rest of the series should
+> stand on its own and should be mergeable without that piece.
+Yes, I placed the patch at the end of the series so it can be dropped
+if that is what is required to accept the rest of the patches.
 
-> diff --git a/lib/hexdump.c b/lib/hexdump.c
-> index 9301578f98e8..20264828752d 100644
-> --- a/lib/hexdump.c
-> +++ b/lib/hexdump.c
-> @@ -242,12 +242,17 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->  		    const void *buf, size_t len, bool ascii)
->  {
->  	const u8 *ptr = buf;
-> +	const u8 *addr;
->  	int i, linelen, remaining = len;
->  	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
->  
->  	if (rowsize != 16 && rowsize != 32)
->  		rowsize = 16;
->  
-> +	if (prefix_type == DUMP_PREFIX_ADDRESS &&
-> +	    ptr_to_hashval(ptr, &addr))
-> +		addr = 0;
-> +
->  	for (i = 0; i < len; i += rowsize) {
->  		linelen = min(remaining, rowsize);
->  		remaining -= rowsize;
-> @@ -258,7 +263,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->  		switch (prefix_type) {
->  		case DUMP_PREFIX_ADDRESS:
->  			printk("%s%s%p: %s\n",
-> -			       level, prefix_str, ptr + i, linebuf);
-> +			       level, prefix_str, addr + i, linebuf);
+There has been no viable solution suggested for replacing this functionality.
+We need a tty-like interface that works via access to the circular buffers
+in PCIe BAR space and interrupts.
 
-Is 'addr' always set here?
-It is only conditionally set above.
+The vk tty devices are a direct replacement to attaching serial cables.
+In real production environment it is not possible to attach such cables.
 
->  			break;
->  		case DUMP_PREFIX_OFFSET:
->  			printk("%s%s%.8x: %s\n", level, prefix_str, i, linebuf);
-> 
-> -Kees
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#p-format-specifier
-> 
-
-
--- 
-~Randy
-"He closes his eyes and drops the goggles.  You can't get hurt
-by looking at a bitmap.  Or can you?"
-(Neal Stephenson: Snow Crash)
+I can work on an alternative tty solution and send such patch later
+but I don't know what is going to prevent the tty "abuse".
+>
+>
+> -Olof
+Regards,
+Scott
