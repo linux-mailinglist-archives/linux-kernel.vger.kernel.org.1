@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD7D2FB3AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23BB2FB3AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbhASIDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:03:17 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:59551 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730806AbhASIAE (ORCPT
+        id S1731316AbhASIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731011AbhASIAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:00:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UMDlRSu_1611043152;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMDlRSu_1611043152)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Jan 2021 15:59:16 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     pkshih@realtek.com
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        Larry.Finger@lwfinger.net, chiu@endlessos.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Tue, 19 Jan 2021 03:00:25 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0A6C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:59:44 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id f1so6255121edr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:59:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N3oQVFDD2OO6IL6zbge+VvrfxMcHQq0KNtK/qBzCFsc=;
+        b=ztMy3qngkDrMUnpW5LjO0RrtrW1+iO2EdZShwfH9OGMSMH1DvX8DQl+t01HMwzpJcd
+         zaDeTr+WAOP4d18I1QDsXKWPfXYmE1iXnTUigTuVREC3O0M4ZwB7Rih1hCaWxHh5eG6f
+         702D3bKFvM9Ra+N7y0Ya6uiUKMCrE30Bvq7m0Kf5hS9JkuoV5kN6QUBqB9krrrKcqEoE
+         CYjklsphNbYBh4OvltSurGJ+9aJY1P2R2flzdNtQlXXee958kkQZjDGQTnZI8XGV4gCS
+         7BNaN8FOGIhMFLch9amf/WCo5vQ32KXDkNtLk8Nj5vZvB0ljyaNXyECurpaBjbxWfAhx
+         NaCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N3oQVFDD2OO6IL6zbge+VvrfxMcHQq0KNtK/qBzCFsc=;
+        b=AqBoQd/R40B32N/U6Z6bHCBcDMcW/JxtjRIiLGi8PtiJFkL7/Tj8cNt4niRD3GEhkK
+         T5oMQ2WYM+X8HgWPuiqE1yEPgf7FqeSVuWNLOrAKCpayYrTyIHZiarCT9nIkJQTYpw8n
+         lopiTznPami8QacL6bVOJFZWClub+Vxcmi8cFo2h7nMDlLXFSzY/Lh1gShjGeyXsF1r9
+         afhb06Tf8Udk4nebopCKbgdbwxjTv8GjYXhFlmSAutoidoHTTe2R+Gv8ZQ2TaVtv1HwQ
+         2cgd1D46TCW0kjSqUCI2zGpSuteGPglTzqHwjxB6T/s9iv/wropocdnCjciR63i1YwZ4
+         GC6w==
+X-Gm-Message-State: AOAM532aw2x37jzLwdCj5hvM7vPV4y+Am7EKe+u8CQhXrIz102oW1RkX
+        9DSkxYQ+Z86qfEVCsQSY6UBzVw==
+X-Google-Smtp-Source: ABdhPJymbSINexw7sN7HVMR/EmLkqH7Fm1TbDnwinCyGkk+du1UwghGE9kwKZnF2KerIX/MbQe9ceQ==
+X-Received: by 2002:aa7:d5d5:: with SMTP id d21mr2445194eds.252.1611043182809;
+        Mon, 18 Jan 2021 23:59:42 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-113.medicom.bg. [84.238.221.113])
+        by smtp.googlemail.com with ESMTPSA id p3sm11731346edh.50.2021.01.18.23.59.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 23:59:42 -0800 (PST)
+Subject: Re: [PATCH] venus: core: Fix platform driver shutdown
+To:     Shawn Guo <shawn.guo@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH v3] rtlwifi: rtl8192se: Simplify bool comparison
-Date:   Tue, 19 Jan 2021 15:59:10 +0800
-Message-Id: <1611043150-78723-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+References: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
+ <20210119074044.GB17701@dragon>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <72d85c1b-ec0b-3cf1-dbbc-6c4924e4beec@linaro.org>
+Date:   Tue, 19 Jan 2021 09:59:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210119074044.GB17701@dragon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the follow coccicheck warnings:
 
-./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:2305:6-27:
-WARNING: Comparison of 0/1 to bool variable.
 
-./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:1376:5-26:
-WARNING: Comparison of 0/1 to bool variable.
+On 1/19/21 9:40 AM, Shawn Guo wrote:
+> On Mon, Dec 21, 2020 at 11:58:20AM +0200, Stanimir Varbanov wrote:
+>> With TZ system reboot cannot finish successfully. To fix that
+>> enable core clocks by runtime pm before TZ calls and disable
+>> clocks after that.
+>>
+>> Fixes: 7399139be6b2 ("media: venus: core: add shutdown callback for venus")
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> 
+> Hi Mauro,
+> 
+> Could you help pick this fix up?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
-Changes in v3:
-  - Modified subject.
+Shawn, it is part of linux-next already.
 
- drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Shawn
+> 
+>> ---
+>>  drivers/media/platform/qcom/venus/core.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+>> index bdd293faaad0..7233a7311757 100644
+>> --- a/drivers/media/platform/qcom/venus/core.c
+>> +++ b/drivers/media/platform/qcom/venus/core.c
+>> @@ -349,8 +349,10 @@ static void venus_core_shutdown(struct platform_device *pdev)
+>>  {
+>>  	struct venus_core *core = platform_get_drvdata(pdev);
+>>  
+>> +	pm_runtime_get_sync(core->dev);
+>>  	venus_shutdown(core);
+>>  	venus_firmware_deinit(core);
+>> +	pm_runtime_put_sync(core->dev);
+>>  }
+>>  
+>>  static __maybe_unused int venus_runtime_suspend(struct device *dev)
+>> -- 
+>> 2.17.1
+>>
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-index 47fabce..aff8ab0 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
-@@ -1373,7 +1373,7 @@ static void _rtl92se_gen_refreshledstate(struct ieee80211_hw *hw)
- 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
- 	struct rtl_led *pled0 = &rtlpriv->ledctl.sw_led0;
- 
--	if (rtlpci->up_first_time == 1)
-+	if (rtlpci->up_first_time)
- 		return;
- 
- 	if (rtlpriv->psc.rfoff_reason == RF_CHANGE_BY_IPS)
-@@ -2302,7 +2302,7 @@ bool rtl92se_gpio_radio_on_off_checking(struct ieee80211_hw *hw, u8 *valid)
- 	bool turnonbypowerdomain = false;
- 
- 	/* just 8191se can check gpio before firstup, 92c/92d have fixed it */
--	if ((rtlpci->up_first_time == 1) || (rtlpci->being_init_adapter))
-+	if (rtlpci->up_first_time || rtlpci->being_init_adapter)
- 		return false;
- 
- 	if (ppsc->swrf_processing)
 -- 
-1.8.3.1
-
+regards,
+Stan
