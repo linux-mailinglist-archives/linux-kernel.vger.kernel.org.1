@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B64C2FC311
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3AD2FC314
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732018AbhASWLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        id S2388027AbhASWM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729778AbhASWIy (ORCPT
+        with ESMTP id S1729832AbhASWIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 17:08:54 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95D3C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:13 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id s15so11337958plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:13 -0800 (PST)
+        Tue, 19 Jan 2021 17:08:55 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661EBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:15 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id 11so13160461pfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:08:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZtvWiGPK2eweAPRjtJhZb7309sm3REWVBB+tfD69F30=;
-        b=UUp1Z0eBKhUHBfdI83AvJ0436gY4K8mRwO4+iCyC1cdjEpBkDz0fEtQqNWLOo1RLyJ
-         edyTCAwWw1jmaG8rElV8Jo6kHnmFMkjpiXb+Hy4vZDXwlm9AruyVqDrLFb0fP8m/5noE
-         rnyw0qvkd9sRrRwzR3Xl6IMRkMfCqyK8PR+K8rnQ560jK0NU8P3pTkzqluJpu88YVx3d
-         7uIts3SNc/HOqQRQlIYYWnVAvdfgM7lrI+LLjj/k9CKE8kUMX6wvO/LTS1NSqaFGCI2B
-         iDEZWwZmRPt541vMUH7DyH5z+MWOJwQBIxaiwrBHvzJf/9Tyie4AOlRKGYobM6PBZAXz
-         3+RA==
+        bh=OEjzhBF98dbnk/5sluVZcbU0ionst0PLBmFjjcrt57Y=;
+        b=ifhiFkSVwmYAsIe1NEgU5OALrc/J1v23nOR45sANQBnTdYx1fozTj2YZ15HE9Y0h5n
+         265nWrcPvnLDq0tp9Rsb9uqbjPvnStApYh+UYe073uI4h4sf4MuayxPQHconDOJ2SJyv
+         mG7Dg1hx0g7qmaMdqRcojS7WunD9wEJ5hFRpDaZLGxwrg4ogoHHObswAB6W4pO3sNX4v
+         eQwBDl8UCudP8e6Fi52iq+Wgu0J9uk34V0hecy1BB00mfqlxpn93pQYuYK7HK6S2IYX2
+         yf3H1cl7hQhwoITK5G505Fr3Pt0jfBTfRumNm6R8EPMdJ4VU7vfS/MKT8OnFx5yleor2
+         wV/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZtvWiGPK2eweAPRjtJhZb7309sm3REWVBB+tfD69F30=;
-        b=dFz2elcOpfTwzmnWp60AnbB28X9Y+yDt7zY2AfBg8iK32Nfa/2LFMKEo00sDHdYzl2
-         MAT5Vo3NIOsbuIFMqYr7Ag/gph+C/A0z0GvQBZS1SD9dimiYAMHgw8ZG2NzgHHAViDyQ
-         Octl3F+SQPOW2uAby0VDxy0x98ZYXGC0iYIgJIWz3KO8mwNdDH6fw3dZCvlbmatS117O
-         KBcZTSv5aYGzFowicbkQzQ+mdTleW0P9JMX5meVwHc4YLJsXITIE49rfE8y/S5m8zpFK
-         M3dKfgCPV0ucDv49Sz2cO84JP+H23Il8JRK/KWMpMAHKK2ms5POvPJNsIN6LjFOt8vTV
-         iCfA==
-X-Gm-Message-State: AOAM530xPcMm3es+JknyRZCJJwIzaASr70We8UEnQaF02aIvngqqH0vA
-        wotH9jMW/22H6AynpXu/2PHgENE7HWOpKQ==
-X-Google-Smtp-Source: ABdhPJwVEJjtlAzTiLDNsWz7WVQ+ZoNp8rnM4n36DrBPJbku6zgklznseRI6dyryA7b5X3MK2hJnZg==
-X-Received: by 2002:a17:902:d48a:b029:de:ae4d:2c7b with SMTP id c10-20020a170902d48ab02900deae4d2c7bmr6838343plg.62.1611094093364;
-        Tue, 19 Jan 2021 14:08:13 -0800 (PST)
+        bh=OEjzhBF98dbnk/5sluVZcbU0ionst0PLBmFjjcrt57Y=;
+        b=MO4bXV7TFxw02Fl7fggIU9kC/DrjnYyM3Vg4gZ+RbXLaRoaz8/ewYYS16mM5FdWJAs
+         zgPsPLPT/+O8ah2ZHiEtsVvloq8Ek8G/a853rGDvnutQMxOULKdPObhQXKk1q1PPWpaP
+         nxB46PSGOm+KCN7eolNmXfBJiF/SfK/I8fO0eaWOnSjIoW31vIsNyfeA/1Sm9xNJ/ELw
+         AlWxTemc7f5AuaORfRrG2fHtmc3hHGk0Y3uKR6nqXdqB3Z4nnDoBAShDotg1cqAb2Z3I
+         furDNwiaTVQwoP+HffJ4S/LhKzsOX/Jbc5q23bwOGnEk6klj6LwKDntIx0AZuIFsrzqQ
+         rc4g==
+X-Gm-Message-State: AOAM533Hcu9QsukUsQ2Oz4o8ePsloLlg/hFWBYreaB1b9YpiAPhrOpbp
+        Z+cQ23chkxY5iknLKEsuDok=
+X-Google-Smtp-Source: ABdhPJx6MCEYaTID6s+WBoU2uXbCUoUXXBLV2f8FF4ky28Djnk9NNEUtda6tRGnAf8LPk7FFWow5dA==
+X-Received: by 2002:a63:e22:: with SMTP id d34mr6305898pgl.142.1611094094931;
+        Tue, 19 Jan 2021 14:08:14 -0800 (PST)
 Received: from laptop.hsd1.wa.comcast.net ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id 72sm95196pfw.170.2021.01.19.14.08.12
+        by smtp.gmail.com with ESMTPSA id 72sm95196pfw.170.2021.01.19.14.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 14:08:12 -0800 (PST)
+        Tue, 19 Jan 2021 14:08:14 -0800 (PST)
 From:   Andrei Vagin <avagin@gmail.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 1/3] arm64/ptrace: don't clobber task registers on syscall entry/exit traps
-Date:   Tue, 19 Jan 2021 14:06:35 -0800
-Message-Id: <20210119220637.494476-2-avagin@gmail.com>
+Subject: [PATCH 2/3] arm64/ptrace: introduce NT_ARM_PRSTATUS to get a full set of registers
+Date:   Tue, 19 Jan 2021 14:06:36 -0800
+Message-Id: <20210119220637.494476-3-avagin@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210119220637.494476-1-avagin@gmail.com>
 References: <20210119220637.494476-1-avagin@gmail.com>
@@ -66,191 +66,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ip/r12 for AArch32 and x7 for AArch64 is used to indicate whether or not
-the stop has been signalled from syscall entry or syscall exit. This
-means that:
-
-- Any writes by the tracer to this register during the stop are
-  ignored/discarded.
-
-- The actual value of the register is not available during the stop,
-  so the tracer cannot save it and restore it later.
-
-Right now, these registers are clobbered in tracehook_report_syscall.
-This change moves this logic to gpr_get and compat_gpr_get where
-registers are copied into a user-space buffer.
-
-This will allow to change these registers and to introduce a new
-NT_ARM_PRSTATUS command to get the full set of registers.
+This is an alternative to NT_PRSTATUS that clobbers ip/r12 on AArch32,
+x7 on AArch64 when a tracee is stopped in syscall entry or syscall exit
+traps.
 
 Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- arch/arm64/include/asm/ptrace.h |   5 ++
- arch/arm64/kernel/ptrace.c      | 104 +++++++++++++++++++-------------
- 2 files changed, 67 insertions(+), 42 deletions(-)
+ arch/arm64/kernel/ptrace.c | 39 ++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/elf.h   |  1 +
+ 2 files changed, 40 insertions(+)
 
-diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-index e58bca832dff..0a9552b4f61e 100644
---- a/arch/arm64/include/asm/ptrace.h
-+++ b/arch/arm64/include/asm/ptrace.h
-@@ -170,6 +170,11 @@ static inline unsigned long pstate_to_compat_psr(const unsigned long pstate)
- 	return psr;
- }
- 
-+enum ptrace_syscall_dir {
-+	PTRACE_SYSCALL_ENTER = 0,
-+	PTRACE_SYSCALL_EXIT,
-+};
-+
- /*
-  * This struct defines the way the registers are stored on the stack during an
-  * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
 diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 8ac487c84e37..1863f080cb07 100644
+index 1863f080cb07..b8e4c2ddf636 100644
 --- a/arch/arm64/kernel/ptrace.c
 +++ b/arch/arm64/kernel/ptrace.c
-@@ -40,6 +40,7 @@
- #include <asm/syscall.h>
- #include <asm/traps.h>
- #include <asm/system_misc.h>
-+#include <asm/ptrace.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/syscalls.h>
-@@ -561,7 +562,33 @@ static int gpr_get(struct task_struct *target,
- 		   struct membuf to)
- {
- 	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
--	return membuf_write(&to, uregs, sizeof(*uregs));
-+	unsigned long saved_reg;
-+	int ret;
-+
-+	/*
-+	 * We have some ABI weirdness here in the way that we handle syscall
-+	 * exit stops because we indicate whether or not the stop has been
-+	 * signalled from syscall entry or syscall exit by clobbering the general
-+	 * purpose register x7.
-+	 */
-+	switch (target->ptrace_message) {
-+	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-+		saved_reg = uregs->regs[7];
-+		uregs->regs[7] = PTRACE_SYSCALL_ENTER;
-+		break;
-+	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-+		saved_reg = uregs->regs[7];
-+		uregs->regs[7] = PTRACE_SYSCALL_EXIT;
-+		break;
-+	}
-+
-+	ret =  membuf_write(&to, uregs, sizeof(*uregs));
-+
-+	if (target->ptrace_message == PTRACE_EVENTMSG_SYSCALL_ENTRY ||
-+	    target->ptrace_message == PTRACE_EVENTMSG_SYSCALL_EXIT)
-+		uregs->regs[7] = saved_reg;
-+
-+	return ret;
+@@ -591,6 +591,15 @@ static int gpr_get(struct task_struct *target,
+ 	return ret;
  }
  
++static int gpr_get_full(struct task_struct *target,
++		   const struct user_regset *regset,
++		   struct membuf to)
++{
++	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
++
++	return membuf_write(&to, uregs, sizeof(*uregs));
++}
++
  static int gpr_set(struct task_struct *target, const struct user_regset *regset,
-@@ -1221,10 +1248,40 @@ static int compat_gpr_get(struct task_struct *target,
- 			  const struct user_regset *regset,
- 			  struct membuf to)
- {
-+	compat_ulong_t r12;
-+	bool overwrite_r12;
- 	int i = 0;
+ 		   unsigned int pos, unsigned int count,
+ 		   const void *kbuf, const void __user *ubuf)
+@@ -1088,6 +1097,7 @@ static int tagged_addr_ctrl_set(struct task_struct *target, const struct
  
--	while (to.left)
--		membuf_store(&to, compat_get_user_reg(target, i++));
-+	/*
-+	 * We have some ABI weirdness here in the way that we handle syscall
-+	 * exit stops because we indicate whether or not the stop has been
-+	 * signalled from syscall entry or syscall exit by clobbering the
-+	 * general purpose register r12.
-+	 */
-+	switch (target->ptrace_message) {
-+	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-+		r12 = PTRACE_SYSCALL_ENTER;
-+		overwrite_r12 = true;
-+		break;
-+	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-+		r12 = PTRACE_SYSCALL_EXIT;
-+		overwrite_r12 = true;
-+		break;
-+	default:
-+		overwrite_r12 = false;
-+		break;
-+	}
-+
-+	while (to.left) {
-+		compat_ulong_t val;
-+
-+		if (!overwrite_r12 || i != 12)
-+			val = compat_get_user_reg(target, i++);
-+		else
-+			val = r12;
-+		membuf_store(&to, val);
-+	}
-+
+ enum aarch64_regset {
+ 	REGSET_GPR,
++	REGSET_GPR_FULL,
+ 	REGSET_FPR,
+ 	REGSET_TLS,
+ #ifdef CONFIG_HAVE_HW_BREAKPOINT
+@@ -1119,6 +1129,14 @@ static const struct user_regset aarch64_regsets[] = {
+ 		.regset_get = gpr_get,
+ 		.set = gpr_set
+ 	},
++	[REGSET_GPR_FULL] = {
++		.core_note_type = NT_ARM_PRSTATUS,
++		.n = sizeof(struct user_pt_regs) / sizeof(u64),
++		.size = sizeof(u64),
++		.align = sizeof(u64),
++		.regset_get = gpr_get_full,
++		.set = gpr_set
++	},
+ 	[REGSET_FPR] = {
+ 		.core_note_type = NT_PRFPREG,
+ 		.n = sizeof(struct user_fpsimd_state) / sizeof(u32),
+@@ -1225,6 +1243,7 @@ static const struct user_regset_view user_aarch64_view = {
+ #ifdef CONFIG_COMPAT
+ enum compat_regset {
+ 	REGSET_COMPAT_GPR,
++	REGSET_COMPAT_GPR_FULL,
+ 	REGSET_COMPAT_VFP,
+ };
+ 
+@@ -1285,6 +1304,18 @@ static int compat_gpr_get(struct task_struct *target,
  	return 0;
  }
  
-@@ -1740,53 +1797,16 @@ long arch_ptrace(struct task_struct *child, long request,
- 	return ptrace_request(child, request, addr, data);
- }
- 
--enum ptrace_syscall_dir {
--	PTRACE_SYSCALL_ENTER = 0,
--	PTRACE_SYSCALL_EXIT,
--};
--
- static void tracehook_report_syscall(struct pt_regs *regs,
- 				     enum ptrace_syscall_dir dir)
- {
--	int regno;
--	unsigned long saved_reg;
--
--	/*
--	 * We have some ABI weirdness here in the way that we handle syscall
--	 * exit stops because we indicate whether or not the stop has been
--	 * signalled from syscall entry or syscall exit by clobbering a general
--	 * purpose register (ip/r12 for AArch32, x7 for AArch64) in the tracee
--	 * and restoring its old value after the stop. This means that:
--	 *
--	 * - Any writes by the tracer to this register during the stop are
--	 *   ignored/discarded.
--	 *
--	 * - The actual value of the register is not available during the stop,
--	 *   so the tracer cannot save it and restore it later.
--	 *
--	 * - Syscall stops behave differently to seccomp and pseudo-step traps
--	 *   (the latter do not nobble any registers).
--	 */
--	regno = (is_compat_task() ? 12 : 7);
--	saved_reg = regs->regs[regno];
--	regs->regs[regno] = dir;
--
- 	if (dir == PTRACE_SYSCALL_ENTER) {
- 		if (tracehook_report_syscall_entry(regs))
- 			forget_syscall(regs);
--		regs->regs[regno] = saved_reg;
--	} else if (!test_thread_flag(TIF_SINGLESTEP)) {
--		tracehook_report_syscall_exit(regs, 0);
--		regs->regs[regno] = saved_reg;
- 	} else {
--		regs->regs[regno] = saved_reg;
-+		int singlestep = test_thread_flag(TIF_SINGLESTEP);
- 
--		/*
--		 * Signal a pseudo-step exception since we are stepping but
--		 * tracer modifications to the registers may have rewound the
--		 * state machine.
--		 */
--		tracehook_report_syscall_exit(regs, 1);
-+		tracehook_report_syscall_exit(regs, singlestep);
- 	}
- }
- 
++/* compat_gpr_get_full doesn't  overwrite x12 like compat_gpr_get. */
++static int compat_gpr_get_full(struct task_struct *target,
++			  const struct user_regset *regset,
++			  struct membuf to)
++{
++	int i = 0;
++
++	while (to.left)
++		membuf_store(&to, compat_get_user_reg(target, i++));
++	return 0;
++}
++
+ static int compat_gpr_set(struct task_struct *target,
+ 			  const struct user_regset *regset,
+ 			  unsigned int pos, unsigned int count,
+@@ -1435,6 +1466,14 @@ static const struct user_regset aarch32_regsets[] = {
+ 		.regset_get = compat_gpr_get,
+ 		.set = compat_gpr_set
+ 	},
++	[REGSET_COMPAT_GPR_FULL] = {
++		.core_note_type = NT_ARM_PRSTATUS,
++		.n = COMPAT_ELF_NGREG,
++		.size = sizeof(compat_elf_greg_t),
++		.align = sizeof(compat_elf_greg_t),
++		.regset_get = compat_gpr_get_full,
++		.set = compat_gpr_set
++	},
+ 	[REGSET_COMPAT_VFP] = {
+ 		.core_note_type = NT_ARM_VFP,
+ 		.n = VFP_STATE_SIZE / sizeof(compat_ulong_t),
+diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
+index 30f68b42eeb5..a2086d19263a 100644
+--- a/include/uapi/linux/elf.h
++++ b/include/uapi/linux/elf.h
+@@ -426,6 +426,7 @@ typedef struct elf64_shdr {
+ #define NT_ARM_PACA_KEYS	0x407	/* ARM pointer authentication address keys */
+ #define NT_ARM_PACG_KEYS	0x408	/* ARM pointer authentication generic key */
+ #define NT_ARM_TAGGED_ADDR_CTRL	0x409	/* arm64 tagged address control (prctl()) */
++#define NT_ARM_PRSTATUS		0x410   /* ARM general-purpose registers */
+ #define NT_ARC_V2	0x600		/* ARCv2 accumulator/extra registers */
+ #define NT_VMCOREDD	0x700		/* Vmcore Device Dump Note */
+ #define NT_MIPS_DSP	0x800		/* MIPS DSP ASE registers */
 -- 
 2.29.2
 
