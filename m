@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F038D2FC1CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE50F2FC1C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbhASVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
+        id S2391390AbhASVDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730214AbhASUp3 (ORCPT
+        with ESMTP id S2404165AbhASUta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:45:29 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13F8C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:14 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id b3so13053885pft.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:45:14 -0800 (PST)
+        Tue, 19 Jan 2021 15:49:30 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDDDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:48:48 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id c6so16064443ede.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+HPHLTIbnqvyYqZakEN0yW6023R2vX5SvJvHEGRsu88=;
-        b=rVY83dpi8ReoTmjM5P+oExiEZYsinMGkbYee1lkK/ULznES2ZNsQayfBScXWTZxwHT
-         xzR9TWfOeB0CMtADGKZkF8TcwHODZPc1u4AMryo79Zq9NNv2fP2u7rpmstz007F5Nwzb
-         fYc/mdbBQq3n41ctal8AiQZluORE84aHZh48bd34Zb95cR6VzRRKiIQtqtWHSWK5Ql/Z
-         37MtMXfQhlWisjAseq7aB5u02jTDZwCwRQhmEw5cye33lLvuVq6TSjWkKCFJCnRio0sf
-         Jg4mseBZ0ILUNtu46AlrTKRbSYK79YX03tEGKvAoDHj4I2D3x6wz8PcifiCFUrwR00mS
-         hKXA==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pkvwNS+El3HA8WD1wRriEqmYtWWjP+w29biUdXgRxJU=;
+        b=dSjBpa02JgglRGcx2/84mL0OXTCylHCQoDPgRwYBgrdb1HeoN9e0E5ozaqSaHQmRJQ
+         JEDFtdNYkjnRNQeiNWezHyCjWUGH/2rg0nNXA2QnrjGwXXd025IdsoTLQdA1uxQjS26+
+         cPfLfAiBXrj9cUDr24KbI0YvsYJLrKTOlLQ32ydg1HKyynrHQjQKJJ0mAgh3hNwrLJOz
+         zOStGtE9m+tRTCJAg3iZb5yyW4gCYRrXrq1RR6n6A1p7VVWXhf5XUvE71xzvcQbzG3+/
+         E8PEOsIclx3toavM02OCpAK44+Zx/5/MsgZKKBWQUOVOYE8kOLdYwf9kSTkRErEiWDiw
+         FCKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+HPHLTIbnqvyYqZakEN0yW6023R2vX5SvJvHEGRsu88=;
-        b=CtnVjnCEhEUDdfEx0TlnrVr3MGGCrpEiCJrH5lhWr/dlOJcZiA0XZGifkILc/vMNg6
-         91aj/Ef9pAq88SySsuXojCethfk79eZ0s9JO0U62yFHGzYv4Znoh87AuSclIHUd8xFgu
-         XyHw+QnQjZ94q3P/SZ2wc8vXrRANFW96x0INmtB2Mrt7uayRRnM0+zM72N7Yvdjy91od
-         sdvtSE/9GMNmyZfETBpKJOMyVHWWFVmw3IwUTf3iHSRqmyVqEu8jodiQ533JPPGi4i1Z
-         bdrF0e+DBis56LpyMvVESrQ2xiAir6HV/YU5mBic/Xw2qgCWShB5kQ1pNuOb11hP9Pw/
-         l5sQ==
-X-Gm-Message-State: AOAM531OC+CRYx9lyeRywWrCD3afXKI0pA9uLFtdsFUC65DC6Q3FFqIT
-        2fnjUOVH7O6AZDcdvJUwPPg0sTkveCWF5w==
-X-Google-Smtp-Source: ABdhPJx7XqKFUvEfxsZUM/yPecJslI2EJghoNxHC6weKaxS/Wdl7E5UFXQpws/ka9g4TjNc2jaAWIA==
-X-Received: by 2002:a62:5b07:0:b029:1ae:177d:69e1 with SMTP id p7-20020a625b070000b02901ae177d69e1mr5644437pfb.25.1611089113811;
-        Tue, 19 Jan 2021 12:45:13 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id md7sm4129838pjb.52.2021.01.19.12.45.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:45:12 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RESEND][PATCH 2/3] dma-buf: heaps: Add a WARN_ON should the vmap_cnt go negative
-Date:   Tue, 19 Jan 2021 20:45:07 +0000
-Message-Id: <20210119204508.9256-2-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210119204508.9256-1-john.stultz@linaro.org>
-References: <20210119204508.9256-1-john.stultz@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pkvwNS+El3HA8WD1wRriEqmYtWWjP+w29biUdXgRxJU=;
+        b=jVtCfZ2nfWW28ZR1C2+w2Lor239Th//a+BI7yJYjOgDd1WRb7WcH7ZXZlN88VX6Phc
+         XPTTqfY4pWWjGTrdojenRNK1IczEgDIu9UeNsMNHyfIHEgE+iBU3F6bpYP69vlWAkLxV
+         2e4w1Oh8SyaqyX6tpTAC7bPyUntWuzr5yMqW/o19qhijJ1gLWiz8XUUP/b5unEbguk33
+         mmC82yRMpBRzG88Tuk8/ue1EICReqhUGR+bBnhOwHbbRN7m/TibtlAODHNOlJKmhAaqM
+         ZzzBvWYOBfFtcZT3cDCjNKbC93UhB9V02L2mDVwXRa2Hdok0E/8rUgECT+NVz6DgadLA
+         7aEA==
+X-Gm-Message-State: AOAM532FpbCP299wqyoRZucqSDHc9KgnHPd7vD3IzeTCovaon66mjr2w
+        CB0XNdV8R4CvCB+5v2/boXIuhnl39bYqsQ23tBEA3w==
+X-Google-Smtp-Source: ABdhPJwV9Ku3qyoq2kBTxOz6KgfvN81wwX3pQbkfxuQ92kJTO4QXY1Tul7nDV11Bbxd6oY64UzZ7b7Hp4cw5mc6tznY=
+X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr4912140edd.341.1611089327572;
+ Tue, 19 Jan 2021 12:48:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
+ <20210119043920.155044-9-pasha.tatashin@soleen.com> <20210119183013.GB4605@ziepe.ca>
+ <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com>
+ <20210119184751.GD4605@ziepe.ca> <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 19 Jan 2021 15:48:11 -0500
+Message-ID: <CA+CK2bDo-9dP4JZeVscE65dhkJ9jPKk+0_6v0vQXTCM3m0J1DQ@mail.gmail.com>
+Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We shouldn't vunmap more then we vmap, but if we do, make
-sure we complain loudly.
+> I was thinking about a use case where userland would pin an address
+> without FOLL_WRITE, because the PTE for that address is not going to
+> be writable, but some device via DMA will write to it. Now, if we got
+> a zero page we have a problem... If this usecase is not valid then the
+> fix for movable zero page is make the zero page always come from a
+> non-movable zone so we do not need to isolate it during migration, and
+> so the memory can be offlined later.
 
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Suggested-by: Suren Baghdasaryan <surenb@google.com>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/dma-buf/heaps/cma_heap.c    | 1 +
- drivers/dma-buf/heaps/system_heap.c | 1 +
- 2 files changed, 2 insertions(+)
+I looked into making zero_page non-movable, and I am confused here.
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 364fc2f3e499..0c76cbc3fb11 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -232,6 +232,7 @@ static void cma_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
- 	struct cma_heap_buffer *buffer = dmabuf->priv;
- 
- 	mutex_lock(&buffer->lock);
-+	WARN_ON(buffer->vmap_cnt == 0);
- 	if (!--buffer->vmap_cnt) {
- 		vunmap(buffer->vaddr);
- 		buffer->vaddr = NULL;
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 405351aad2a8..2321c91891f6 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -273,6 +273,7 @@ static void system_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
- 	struct system_heap_buffer *buffer = dmabuf->priv;
- 
- 	mutex_lock(&buffer->lock);
-+	WARN_ON(buffer->vmap_cnt == 0);
- 	if (!--buffer->vmap_cnt) {
- 		vunmap(buffer->vaddr);
- 		buffer->vaddr = NULL;
--- 
-2.17.1
+huge zero page is already not movable:
+get_huge_zero_page()
+   zero_page = alloc_pages((GFP_TRANSHUGE | __GFP_ZERO) & ~__GFP_MOVABLE, ...
 
+Base zero page can be in a movable zone, which is a bug: if there are
+references to zero page, that page cannot be migrated, and we won't be
+hot-remove memory area where that page is located. On x86, zero page
+should always come from the bottom 4G of physical memory / DMA32 ZONE.
+
+However, I see that sometimes it is not (I reproduce in QEMU emulator):
+QEMU instance with 16G of memory and kernelcore=5G
+
+Boot#1:
+zero_pfn 48a8d
+zero_pfn zone: ZONE_DMA32
+
+Boot#2:
+zero_pfn 20168d
+zero_pfn zone: ZONE_MOVABLE (???)
+
+The problem is that the x86 zero page comes from the .bss segment:
+https://soleen.com/source/xref/linux/arch/x86/kernel/head_64.S?r=31d85460#583
+
+Which, I thought would always be set within the first 4G of physical
+memory. What is going on here?
+
+Pasha
