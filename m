@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF7D2FC599
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D9B2FC568
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbhATATg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:19:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        id S2392887AbhASNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391831AbhASNpo (ORCPT
+        with ESMTP id S2392501AbhASNpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:45:44 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1B1C061793
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:40 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id u27so3201709uaa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:40 -0800 (PST)
+        Tue, 19 Jan 2021 08:45:55 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0753C061796
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:43 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id r24so11059669vsg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tNvEq5am+ikTvDsBrW7I06pSqyQwukR3vU3Lj1BRMZY=;
-        b=SphubxSJTVl0TE0jAYvw8W8A2f9P9Mi5GZALEkVjbxipuCEaJJO53riF85DbU3rdL9
-         LpNZQrLAsNSuebeng43zG7UM1hic6+NQ9gU+MTOYYARS80T+KdOjdIFIBjE8VE0zCEua
-         bW2Pvf0Fa+Mo2mZMiMuHPCE6udwFMqiwjLf62PqwWVElt3ZNkYSND4twFP4dLdEUriAH
-         Z4rRhq67ev1ZkcXUNYVfems6a109dchqMDFU3eejhu5xqhDNLIcU2uNhtkTV5pFotmrf
-         aNQ7rhBiFMLAmc1cHEi+ITYc5WUw7A5fS7tmwdK1Dg7bLkvEkBtu6AKUzdlbt3yDtCnj
-         HEGQ==
+        bh=ZwifCSX45KhsvY2iJTL0WhKEp/VAHjvt7PynTrJUsDk=;
+        b=gXiQ9xYsNg2rnEMj13umiSHP/tkUj27IExlmJW/qZx9JksExVXRsHUCGfoxnZWGyJJ
+         SKWAYjFK9DPjcoXXlgUEs9WTuRdGa/03tT/483PmfSPDxQJ6dbN225oN1DNdAsKB4uVH
+         /k4QpdhAfSSJQD8AYQSXb4pAQ5AY/AttZgTO5QjFveSHjxZ/B5NE8/kqGaMUNJuhjUso
+         UVVEF6SGqB27rWUHyjL+go4wPes6yO13Jlix6AX3TxAcQZ1ygsyq8wN3TPS6FHceaYle
+         pc4Kou13auHkqOan07St4EEvFaNXTJ0vIIPjfYz00ZFryUzmj1jtISPyqDlyxslZdlVU
+         SQSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tNvEq5am+ikTvDsBrW7I06pSqyQwukR3vU3Lj1BRMZY=;
-        b=OESd8J93AVBtuSxNSF8/CdtGYvc2WD7IK5kmckKpJrSB8F8d9P49mxzRFtc/jcKcVa
-         ZoUrrtvIdEDsWxrW21skNRc0GZscxn1/Okz/9uE/kRr7/fKfPj9FxazmK5k93pfcKdH1
-         xEPP1wmp3yGuonYTX+8ZE8mecEMjqZNF+oc6u8HhnWGmEzK5Hqd6JEQypJD6wXFvAiMw
-         JtyoFN66xNgS+5Pk5vURmnj1BxQ82ZV2XiG8UDSKV342aKB8WT9kGlicydciV3wQGFYn
-         1IisoF+WfLYfNCqeQd4iRWBUZHvlGUVTPKFBnxPGKn7GP+p2atLlRt63HzYqteJdCRy0
-         SRQw==
-X-Gm-Message-State: AOAM531iDYAGTCAi45DNOJGTX30FwYLV28MqRPSYrQHtdYono2ZoWVv2
-        7QpxHfdskj6I79F9D0MgIW9xC0GMYGbXUyMS24Rw3whx4vNZ0Q==
-X-Google-Smtp-Source: ABdhPJx1sJ4xEgc4HsCtvWM79eqIKYNMrMBIhqmEXfnsfu1Ih9nGPi9MRPZTKWZwDPPcFTUk4CrGjvf2AzBXz2uxEvU=
-X-Received: by 2002:ab0:768:: with SMTP id h95mr2267466uah.104.1611063819438;
- Tue, 19 Jan 2021 05:43:39 -0800 (PST)
+        bh=ZwifCSX45KhsvY2iJTL0WhKEp/VAHjvt7PynTrJUsDk=;
+        b=iguz85oRtpaXl/y3JzdqCb8lOH9cMVNMC+HKfdj98bec3fMhyYGqe/VwQ8P67/Nwxz
+         BzCm0j/V3QeoOwWrvMM3SYnOkXxNY2bbGSC2sQtuC+UBGEJxHt45ZoiMWN5RvJ+72OxA
+         HjTmWDri3JppXF0G+nu5H4gkoO7NLPQ/MlsKJLgm53dvcOTWHBekhtQLlgtVdFsO3WAA
+         mPiEcAGFJTqJHOfnJhqIFI6AFz6dhywzsnVXsfvXYmkoCpR0Kj4yYEknYRGQaCWxssMA
+         UvSdtA9kWZd+gQfRRKUumxdM29vbn46L8a8/hFycwonmbBQdRO+FKpSYw5Tk0SiLlv/R
+         T/4w==
+X-Gm-Message-State: AOAM533o6k/6MNMOfWbIpqz6gRFdYEilZxK2tqsPzn6GDr9t7f2zxdxD
+        6pOyhZxD+NGqjcU1T6241kxcQi8yVm2VfPzCSz+l4g==
+X-Google-Smtp-Source: ABdhPJyNZwiCneblhx3D9rnVa5WXxr7vgezCM4SQABvJl8PA3qInPMT4IDEoPvGCeZB1In3tRQZbqkcIIA+453oN+aY=
+X-Received: by 2002:a67:f997:: with SMTP id b23mr2484759vsq.34.1611063823059;
+ Tue, 19 Jan 2021 05:43:43 -0800 (PST)
 MIME-Version: 1.0
-References: <1610704281-11036-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610704281-11036-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <20210115193218.5809-1-grygorii.strashko@ti.com>
+In-Reply-To: <20210115193218.5809-1-grygorii.strashko@ti.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 14:43:03 +0100
-Message-ID: <CAPDyKFpwF6gX3YhKGMF=YUGP1UQD=JSuNgvSxuJHG+Ochzv5Bg@mail.gmail.com>
-Subject: Re: [PATCH v2] host: omap_hsmmc: style: Simplify bool comparison and conversion
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 19 Jan 2021 14:43:06 +0100
+Message-ID: <CAPDyKFp3K7G_36vB5BrMjhLgCD99xi4tL9sHGaunTGm+AqYeNw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mmc: sdhci-am654: fix compatible for j7200
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Faiz Abbas <faiz_abbas@ti.com>, Nishanth Menon <nm@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 at 10:51, Yang Li <abaci-bugfix@linux.alibaba.com> wrote:
+On Fri, 15 Jan 2021 at 20:32, Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
 >
-> Fix the following coccicheck warning:
-> ./drivers/mmc/host/omap_hsmmc.c:297:6-25: WARNING: Comparison of 0/1 to
-> bool variable
+> On TI J7200 SoC the SDHCI controller compatible defined as
+>  "ti,j7200-sdhci-8bit", "ti,j721e-sdhci-8bit"
+>  or
+>  "ti,j7200-sdhci-4bit", "ti,j721e-sdhci-4bit"
+> which causes dtbs_check warnings:
+> mmc@4f80000: compatible: ['ti,j7200-sdhci-8bit', 'ti,j721e-sdhci-8bit'] is too long
+> mmc@4f80000: compatible: Additional items are not allowed ('ti,j721e-sdhci-8bit' was unexpected)
+> mmc@4fb0000: compatible:0: 'ti,j7200-sdhci-4bit' is not one of ['ti,am654-sdhci-5.1', 'ti,j721e-sdhci-8bit',
+>  'ti,j721e-sdhci-4bit', 'ti,j7200-sdhci-8bit', 'ti,j721e-sdhci-4bit', 'ti,am64-sdhci-8bit', 'ti,am64-sdhci-4bit']
+> mmc@4fb0000: compatible: ['ti,j7200-sdhci-4bit', 'ti,j721e-sdhci-4bit'] is too long
+> mmc@4fb0000: compatible: Additional items are not allowed ('ti,j721e-sdhci-4bit' was unexpected)
 >
-> According to the context, vqmmc_enabled is more suitable for bool
-> type.
+> Fix it by adding missing compatible strings and their combinations.
 >
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+> Fixes: 407d0c2cdd12 ("dt-bindings: mmc: sdhci-am654: Convert sdhci-am654 controller documentation to json schema")
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
 Applied for next, thanks!
 
@@ -81,82 +90,41 @@ Uffe
 
 
 > ---
-> Changes in v2:
->  -clean up all use of "pbias_enabled", and do the same clean up for
-> "vqmmc_enabled".
+>  .../devicetree/bindings/mmc/sdhci-am654.yaml  | 21 ++++++++++++-------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
 >
->  drivers/mmc/host/omap_hsmmc.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> index 34e53db29428..3a79e39253d2 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> @@ -15,14 +15,19 @@ allOf:
 >
-> diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-> index aa9cc49..2f8038d 100644
-> --- a/drivers/mmc/host/omap_hsmmc.c
-> +++ b/drivers/mmc/host/omap_hsmmc.c
-> @@ -177,7 +177,7 @@ struct omap_hsmmc_host {
->         struct  regulator       *pbias;
->         bool                    pbias_enabled;
->         void    __iomem         *base;
-> -       int                     vqmmc_enabled;
-> +       bool                    vqmmc_enabled;
->         resource_size_t         mapbase;
->         spinlock_t              irq_lock; /* Prevent races with irq handler */
->         unsigned int            dma_len;
-> @@ -232,7 +232,7 @@ static int omap_hsmmc_enable_supply(struct mmc_host *mmc)
->                         dev_err(mmc_dev(mmc), "vmmc_aux reg enable failed\n");
->                         goto err_vqmmc;
->                 }
-> -               host->vqmmc_enabled = 1;
-> +               host->vqmmc_enabled = true;
->         }
+>  properties:
+>    compatible:
+> -    enum:
+> -      - ti,am654-sdhci-5.1
+> -      - ti,j721e-sdhci-8bit
+> -      - ti,j721e-sdhci-4bit
+> -      - ti,j7200-sdhci-8bit
+> -      - ti,j721e-sdhci-4bit
+> -      - ti,am64-sdhci-8bit
+> -      - ti,am64-sdhci-4bit
+> +    oneOf:
+> +      - const: ti,am654-sdhci-5.1
+> +      - const: ti,j721e-sdhci-8bit
+> +      - const: ti,j721e-sdhci-4bit
+> +      - const: ti,j721e-sdhci-4bit
+> +      - const: ti,am64-sdhci-8bit
+> +      - const: ti,am64-sdhci-4bit
+> +      - items:
+> +          - const: ti,j7200-sdhci-8bit
+> +          - const: ti,j721e-sdhci-8bit
+> +      - items:
+> +          - const: ti,j7200-sdhci-4bit
+> +          - const: ti,j721e-sdhci-4bit
 >
->         return 0;
-> @@ -256,7 +256,7 @@ static int omap_hsmmc_disable_supply(struct mmc_host *mmc)
->                         dev_err(mmc_dev(mmc), "vmmc_aux reg disable failed\n");
->                         return ret;
->                 }
-> -               host->vqmmc_enabled = 0;
-> +               host->vqmmc_enabled = false;
->         }
->
->         if (!IS_ERR(mmc->supply.vmmc)) {
-> @@ -285,22 +285,22 @@ static int omap_hsmmc_set_pbias(struct omap_hsmmc_host *host, bool power_on)
->                 return 0;
->
->         if (power_on) {
-> -               if (host->pbias_enabled == 0) {
-> +               if (!host->pbias_enabled) {
->                         ret = regulator_enable(host->pbias);
->                         if (ret) {
->                                 dev_err(host->dev, "pbias reg enable fail\n");
->                                 return ret;
->                         }
-> -                       host->pbias_enabled = 1;
-> +                       host->pbias_enabled = true;
->                 }
->         } else {
-> -               if (host->pbias_enabled == 1) {
-> +               if (host->pbias_enabled) {
->                         ret = regulator_disable(host->pbias);
->                         if (ret) {
->                                 dev_err(host->dev, "pbias reg disable fail\n");
->                                 return ret;
->                         }
-> -                       host->pbias_enabled = 0;
-> +                       host->pbias_enabled = false;
->                 }
->         }
->
-> @@ -1861,8 +1861,8 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
->         host->base      = base + pdata->reg_offset;
->         host->power_mode = MMC_POWER_OFF;
->         host->next_data.cookie = 1;
-> -       host->pbias_enabled = 0;
-> -       host->vqmmc_enabled = 0;
-> +       host->pbias_enabled = false;
-> +       host->vqmmc_enabled = false;
->
->         platform_set_drvdata(pdev, host);
->
+>    reg:
+>      maxItems: 2
 > --
-> 1.8.3.1
+> 2.17.1
 >
