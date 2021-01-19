@@ -2,122 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE55B2FBBB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12F42FBBCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391656AbhASPyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        id S2389991AbhASP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391503AbhASPxV (ORCPT
+        with ESMTP id S2390750AbhASPww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:53:21 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3352DC0613C1;
-        Tue, 19 Jan 2021 07:52:41 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id f11so22452469ljm.8;
-        Tue, 19 Jan 2021 07:52:41 -0800 (PST)
+        Tue, 19 Jan 2021 10:52:52 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E98CC061575;
+        Tue, 19 Jan 2021 07:52:11 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id et9so9318405qvb.10;
+        Tue, 19 Jan 2021 07:52:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iJc26kqK3lGiggOL8r2k0b8rqu0j1HSR3SxkGPEs1EY=;
-        b=KYeJOrYr4NiWht8sbmC/Lsf0oX1RjPVSxie4XQt3heuBHRyENk1dc26UYOgG7BiLv4
-         Gkf7GCfhHbXwi3tVVJ1cpN+9puCxX6QQExS/U/vVHjAJKrvSar98RXEWJRsoS9mv2Yd1
-         TBLzKmbj3VeOywQqBR9K4VXLGXTyfw/f58ucV59glj13oonZez0cKb1Lme19AcRBNp5I
-         2A7SI+JV3wA0hmaDitV6gTrRr1k0ediqvRDAndoefSWJmI5/jsLwpw5HnxFqgnzNw0Pk
-         Ahj8v17c42Ccw0FjxSy/I9pxiQIle8K1jsEu26B6q7XFK2CPo4IxC3EkNaedc1OI/veU
-         6M2Q==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QcyMDDVr7CULOAn4Y79GHadhfUa6Q0T6oHNJlZ8GjWw=;
+        b=Yer91Bx8c4Zuf1jc7YE1BhjV1iCXJqwpcbRE/LVgACcNIm3xYd/qExI++Vi5WEHKWn
+         h4Q3B9iNjHGBstOD7f7waSofR3i2l0oNGDU9laQHLyX+/zYYktlFoV0ZTe7fjLqqo7fd
+         sIiq82ij96CVIZIpR+mIPzExMbuBALZCMme1Nrmb0DboFYLMIBQLK05OPJO+ZyqTc05a
+         daKfvHLmry82KJR9/iqFcLQOQFZLGjLOmSspQyJ7tY0LKKjX5aiZ107DAR/NlIGF3PiX
+         XfTgFPaVwKS6MVwb49o+BNhXvKTxY4pd+TrVD35ssENsLzTINILsfmIxnI6Y8se5xAeu
+         vmQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iJc26kqK3lGiggOL8r2k0b8rqu0j1HSR3SxkGPEs1EY=;
-        b=L6Nccxf1Sqs8qPI6DV6J5i3mt2S2VHQuBOXIGtXU1e7M5TsC5Sk3964q/QvdKQ1wUn
-         BIwR7XI3pP2Gyx3cKEN+2qqPoDmVog1CIKbWHUFnrRRTgtjGYdmysghfSO3TvgHI341y
-         kAqrnYSsWYAZ0lF+p9rfovQ/wGEDeLPmueR6V0hW94QopvqQZVGfIv6A1Nyqz2DtiXdF
-         goG77hqX9UVIyYveupXeQPuYufZiOLBpGC3gehd6ps52ANnbIG8a4s999gHpMfv7lL6j
-         V0Bfz2EgSsOQtfmHNzf0L4pn5UoymU9GGa/nyXKcB3aiJ0W28Js2dUuPx8RrdlOnTE48
-         cflA==
-X-Gm-Message-State: AOAM531z5SUtbR8XhkVIJS63lkZRmS82rVpPK+NF9MauxcAuF201pRzj
-        tiRBaDIjnby7W7OW78CxuXOHrDXGR8N38A==
-X-Google-Smtp-Source: ABdhPJzIAOAwZS7Lprc/tcLmL4dMSTFDAD+TRc74Ry67mioOpAxj0Y4Dc8RTokKqX9mSCTlfNdJ94w==
-X-Received: by 2002:a2e:3317:: with SMTP id d23mr403130ljc.199.1611071559679;
-        Tue, 19 Jan 2021 07:52:39 -0800 (PST)
-Received: from localhost.localdomain ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id t196sm2309286lff.195.2021.01.19.07.52.38
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QcyMDDVr7CULOAn4Y79GHadhfUa6Q0T6oHNJlZ8GjWw=;
+        b=VDj7R91xJZSC8nABJ+VsSQYOEKILcSxhnMVbnOxk3xudlRnIRVzqkHdtC98td7Vx9l
+         08Qx2WaCQM2yHAs8kxCYA25ZDPCrZLNBnrJYMVbYAcrGSDcM7zVx6ow2jvua02ICF+fe
+         /h4cPZfmwxxGebpzQYpD2poWrsFp+sCC49cOGJkI52aH6YHl4afL1wCAu1TNhLFqJbVe
+         E5EDVTShxrvNF2EGnZdnV8wsKZJEEuET95GLAFCOS/FNU27YYeJaoMsvB1DbS7PmRXVs
+         EpianYAGXnTUU7uQyhLpnAdwTh60VyIndblOwWG/9Z/AKT83bi1OgVilrljYLANfFMzh
+         cRRA==
+X-Gm-Message-State: AOAM531iViPnMHGwtXdjBnzzwQwetzkH/CKYHhth4vRZB7JwY1aZFY8M
+        U3KEMjcMoiE+d7v/vbZLSNU=
+X-Google-Smtp-Source: ABdhPJz4PPSSVhf5I0deb91RGl3FbA/YHzb6yFRs2tv9zKL0ZEo+6Q0S21fXAdtf2SgRXv1OWNTsMg==
+X-Received: by 2002:ad4:5901:: with SMTP id ez1mr4795454qvb.6.1611071530224;
+        Tue, 19 Jan 2021 07:52:10 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:4cbf])
+        by smtp.gmail.com with ESMTPSA id e7sm5571073qto.46.2021.01.19.07.52.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 07:52:39 -0800 (PST)
-From:   Pawel Dembicki <paweldembicki@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Yangbo Lu <yangbo.lu@nxp.com>,
-        Pawel Dembicki <paweldembicki@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: fsl-ls1012a-frdm: add spi-uart device
-Date:   Tue, 19 Jan 2021 16:51:06 +0100
-Message-Id: <20210119155106.1833610-2-paweldembicki@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119155106.1833610-1-paweldembicki@gmail.com>
-References: <20210119155106.1833610-1-paweldembicki@gmail.com>
+        Tue, 19 Jan 2021 07:52:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Jan 2021 10:51:24 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAJsUyH2zspZxF2S@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds spi-uart controller  to LS1012A-FRDM board dts.
-Device is equipped in SC16IS740 from NXP.
+Hello,
 
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
----
-Changes in v2:
-- reordered property list
-- change clock name to "clock-sc16is7xx"
+On Fri, Jan 15, 2021 at 08:32:19PM -0800, Vipin Sharma wrote:
+> SEV-ES has stronger memory encryption gurantees compared to SEV, apart
+> from encrypting the application memory it also encrypts register state
+> among other things. In a single host ASIDs can be distributed between
+> these two types by BIOS settings.
+> 
+> Currently, Google Cloud has Confidential VM machines offering using SEV.
+> ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
+> cannot run on SEV-ES and vice versa
+> 
+> There are use cases for both types of VMs getting used in future.
 
- .../boot/dts/freescale/fsl-ls1012a-frdm.dts   | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Can you please elaborate? I skimmed through the amd manual and it seemed to
+say that SEV-ES ASIDs are superset of SEV but !SEV-ES ASIDs. What's the use
+case for mixing those two?
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
-index 67702667ed8a..2517528f684f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
-@@ -7,6 +7,7 @@
-  */
- /dts-v1/;
- 
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include "fsl-ls1012a.dtsi"
- 
- / {
-@@ -57,6 +58,26 @@ simple-audio-card,codec {
- 	};
- };
- 
-+&dspi {
-+	bus-num = <0>;
-+	status = "okay";
-+
-+	serial@0 {
-+		compatible = "nxp,sc16is740";
-+		reg = <0>;
-+		spi-max-frequency = <4000000>;
-+		clocks = <&sc16is7xx_clk>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
-+
-+		sc16is7xx_clk: clock-sc16is7xx {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <24000000>;
-+		};
-+	};
-+};
-+
- &duart0 {
- 	status = "okay";
- };
+> > > > > Other ID types can be easily added in the controller in the same way.
+> > > > 
+> > > > I'm not sure this is necessarily a good thing.
+> > > 
+> > > This is to just say that when Intel and PowerPC changes are ready it
+> > > won't be difficult for them to add their controller.
+> > 
+> > I'm not really enthused about having per-hardware-type control knobs. None
+> > of other controllers behave that way. Unless it can be abstracted into
+> > something common, I'm likely to object.
+> 
+> There was a discussion in Patch v1 and consensus was to have individual
+> files because it makes kernel implementation extremely simple.
+> 
+> https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
+
+I'm very reluctant to ack vendor specific interfaces for a few reasons but
+most importantly because they usually indicate abstraction and/or the
+underlying feature not being sufficiently developed and they tend to become
+baggages after a while. So, here are my suggestions:
+
+* If there can be a shared abstraction which hopefully makes intuitive
+  sense, that'd be ideal. It doesn't have to be one knob but it shouldn't be
+  something arbitrary to specific vendors.
+
+* If we aren't there yet and vendor-specific interface is a must, attach
+  that part to an interface which is already vendor-aware.
+
+> This information is not available anywhere else in the system. Only
+> other way to get this value is to use CPUID instruction (0x8000001F) of
+> the processor. Which also has disdvantage if sev module in kernel
+> doesn't use all of the available ASIDs for its work (right now it uses
+> all) then there will be a mismatch between what user get through their
+> code and what is actually getting used in the kernel by sev.
+> 
+> In cgroup v2, I didn't see current files for other cgroups in root
+> folder that is why I didn't show that file in root folder.
+> 
+> Will you be fine if I show two files in the root, something like:
+> 
+> encids.sev.capacity
+> encids.sev.current
+> 
+> In non root folder, it will be:
+> encids.sev.max
+> encids.sev.current
+> 
+> I still prefer encids.sev.stat, as it won't repeat same information in
+> each cgroup but let me know what you think.
+
+Yeah, this will be a first and I was mostly wondering about the same number
+appearing under different files / names on root and !root cgroups. I'm
+leaning more towards capacity/current but let me think about it a bit more.
+
+Thank you.
+
 -- 
-2.25.1
-
+tejun
