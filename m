@@ -2,176 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBE82FAEB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2512FAEBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394140AbhASCWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 21:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393946AbhASCWp (ORCPT
+        id S2405860AbhASCYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 21:24:41 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18788 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393946AbhASCYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 21:22:45 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03135C061573;
-        Mon, 18 Jan 2021 18:22:05 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id e17so3624368qto.3;
-        Mon, 18 Jan 2021 18:22:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uvVQDxYFvYqoF+K8ci4qn05sk1l1BTuSg44ft2MDtH4=;
-        b=HhgxnwqY6uDcFQ+5x2NAJSxS+o0DYUVGshktNgxa0/nmN9Ba3kNfESPag6zMFT5/bf
-         ZPXDJjuAU/xXq0rB/qLMMen6XDzxDfP/bQggDclv64JMkkbBy2w2OAE1M/s1VRQKtdb8
-         F1SROHq+eYyKSGXlxk9W56ql3qnntLyE0RRTlEbUvL0vimjLtO2L1VXEIe+nX8LDIsaZ
-         jXDZ0ntt7VNY8aUc5/zMynH8NAmatSAUTVr3s6WTVoEKZ20s4/M7P5JUNKUlQkTKdiif
-         /evy0bFQAjsN7IJbRBwHycfV1o4CH7aSb4HXIcOkvKHX8HJvweOCAIx+9YH19N/q4QZM
-         jA4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uvVQDxYFvYqoF+K8ci4qn05sk1l1BTuSg44ft2MDtH4=;
-        b=Lp6o80cRAt9d0jlbpyWTEEx6g9yuvbRk/7afAqkqjc1WBTCtUy0R0EvNsgPviv4Xnj
-         G0nojEyU3CZAQRU5fOHWOae+YrVfXY7KTF6KwarjPRy7eSfbgV6C6lDpwn73tssRl1mt
-         WDp3erJfwVktVSLgQzD2uCjDOnQFvLaphxoPhCzFZk/E2Uq3sxpl1+vPbVGZ+/SIr42o
-         Se0ybxO75FDRs+dpHs5aU+VACkLCwjUbnzFdp89j2piIeTG4KtrWZyo6ZvX9r7F8Zue0
-         GY2a6OmJvymQhgObbubDlhp0rWgNb9GV0pwzP0D5kVMBcZV/nJE0zmTM0j5v0zIzI9FJ
-         6Q6A==
-X-Gm-Message-State: AOAM530LpBHbW0yUvMHqPYADNBqF5+wFM9kez0OtrB8qBw1bH+UvHVC6
-        /o/g2Ib05ZSi1pmpGCN7fH0=
-X-Google-Smtp-Source: ABdhPJy+bgCIazljR4BqFCPgcP9YA7HwXsTvCuYFjYtbZfrEBjq6gUYEDUO6b9l9pzjCzGNITu31rQ==
-X-Received: by 2002:ac8:370b:: with SMTP id o11mr2465925qtb.314.1611022923564;
-        Mon, 18 Jan 2021 18:22:03 -0800 (PST)
-Received: from localhost.localdomain (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id s14sm12212194qke.45.2021.01.18.18.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 18:22:02 -0800 (PST)
-From:   frowand.list@gmail.com
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        pantelis.antoniou@konsulko.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-Date:   Mon, 18 Jan 2021 20:21:54 -0600
-Message-Id: <20210119022154.2338781-1-frowand.list@gmail.com>
+        Mon, 18 Jan 2021 21:24:38 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600642bd0001>; Mon, 18 Jan 2021 18:23:57 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 02:23:57 +0000
+Received: from jckuo-lt.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 19 Jan 2021 02:23:54 +0000
+From:   JC Kuo <jckuo@nvidia.com>
+To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>,
+        JC Kuo <jckuo@nvidia.com>
+Subject: [PATCH] arm64: tegra: Enable Jetson-Xavier J512 USB host
+Date:   Tue, 19 Jan 2021 10:23:49 +0800
+Message-ID: <20210119022349.136453-1-jckuo@nvidia.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
-References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611023037; bh=I8KRuadsSP9ujBg3UCBPF0M40+TaUrMhBkFLROVrMRg=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=FhRzl9GjjnVHtGUWO+0ZqgYMw4uhh836WGq3OigXe4h1hyBraea41i2HPWp2jZsoV
+         Ma1gUgv3+tEvM8nOT0zwxosRuN32z28uggyckYwOagmubzXBINvkZmlPMtIRi48Ico
+         s+FQwfiHvB+7O5hH8TD2n/Ytd0sMd5K6uxbNIgJA67AKroADKAbplU+XafaeUN5xtO
+         vt907F9tDPypdAgkfOiKnXnrewmKnGvEJyUAjqTw33VnlNmvj9QMZf28ORWjoE/tHn
+         aRTr2Y6lGF/TxFf6XC9/qltt03wwmvnPMQpWgq7dvInc+Lyt8OQ1lFySXgWqHD/KEP
+         SnMGk9PfNITXA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+This commit enables USB host mode at J512 type-C port of Jetson-Xavier.
 
-These changes apply on top of the patches in:
-
-  [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-  Message-Id: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
-
-There are still some issues to be cleaned up, so not ready for acceptance.
-
-I have not used the construct "always-$(CONFIG_OF_OVERLAY)" before, and
-have not looked into the proper usage of it.
-
-I tested this using a hand build libfdt and fdtoverlay from the dtc-compiler
-upstream project.  For my testing I added LD_LIBRARY_PATH to the body of
-"cmd_fdtoverlay" to reference my hand built libfdt.  The kernel build
-system will have to instead use a libfdt that is built in the kernel
-tree.
-
-I have not run this through checkpatch, or my checks for build warnings.
-I have not run unittests on my target with these patches applied.
-
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
 ---
- drivers/of/unittest-data/Makefile | 67 ++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 19 deletions(-)
+ .../arm64/boot/dts/nvidia/tegra194-p2888.dtsi |  8 +++++++
+ .../boot/dts/nvidia/tegra194-p2972-0000.dts   | 24 +++++++++++++++++--
+ 2 files changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-index f17bce85f65f..28614a123d1e 100644
---- a/drivers/of/unittest-data/Makefile
-+++ b/drivers/of/unittest-data/Makefile
-@@ -39,25 +39,54 @@ DTC_FLAGS_testcases += -@
- # suppress warnings about intentional errors
- DTC_FLAGS_testcases += -Wno-interrupts_property
- 
--# Apply overlays statically with fdtoverlay
--intermediate-overlay	:= overlay.dtb
--master			:= overlay_0.dtb overlay_1.dtb overlay_2.dtb \
--			   overlay_3.dtb overlay_4.dtb overlay_5.dtb \
--			   overlay_6.dtb overlay_7.dtb overlay_8.dtb \
--			   overlay_9.dtb overlay_10.dtb overlay_11.dtb \
--			   overlay_12.dtb overlay_13.dtb overlay_15.dtb \
--			   overlay_gpio_01.dtb overlay_gpio_02a.dtb \
--			   overlay_gpio_02b.dtb overlay_gpio_03.dtb \
--			   overlay_gpio_04a.dtb overlay_gpio_04b.dtb \
--			   intermediate-overlay.dtb
--
--quiet_cmd_fdtoverlay = fdtoverlay $@
--      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
--
--$(obj)/intermediate-overlay.dtb: $(obj)/overlay_base.dtb $(addprefix $(obj)/,$(intermediate-overlay))
--	$(call if_changed,fdtoverlay)
-+# Apply overlays statically with fdtoverlay.  This is a build time test that
-+# the overlays can be applied successfully by fdtoverlay.  This does not
-+# guarantee that the overlays can be applied successfully at run time by
-+# unittest, but it provides a bit of build time test coverage for those
-+# who do not execute unittest.
-+#
-+# The overlays are applied on top of testcases.dtb to create static_test.dtb
-+# If fdtoverlay detects an error than the kernel build will fail.
-+# static_test.dtb is not consumed by unittest.
-+#
-+# Some unittest overlays deliberately contain errors that unittest checks for.
-+# These overlays will cause fdtoverlay to fail, and are thus not included
-+# in the static test:
-+#			overlay.dtb \
-+#			overlay_bad_add_dup_node.dtb \
-+#			overlay_bad_add_dup_prop.dtb \
-+#			overlay_bad_phandle.dtb \
-+#			overlay_bad_symbol.dtb \
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi b/arch/arm64/bo=
+ot/dts/nvidia/tegra194-p2888.dtsi
+index d71b7a1140fe..7e7b0eb90c80 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
+@@ -93,6 +93,10 @@ padctl@3520000 {
+ 			vclamp-usb-supply =3D <&vdd_1v8ao>;
+=20
+ 			ports {
++				usb2-0 {
++					vbus-supply =3D <&vdd_5v0_sys>;
++				};
 +
-+apply_static_overlay := overlay_base.dtb \
-+			overlay_0.dtb \
-+			overlay_1.dtb \
-+			overlay_2.dtb \
-+			overlay_3.dtb \
-+			overlay_4.dtb \
-+			overlay_5.dtb \
-+			overlay_6.dtb \
-+			overlay_7.dtb \
-+			overlay_8.dtb \
-+			overlay_9.dtb \
-+			overlay_10.dtb \
-+			overlay_11.dtb \
-+			overlay_12.dtb \
-+			overlay_13.dtb \
-+			overlay_15.dtb \
-+			overlay_gpio_01.dtb \
-+			overlay_gpio_02a.dtb \
-+			overlay_gpio_02b.dtb \
-+			overlay_gpio_03.dtb \
-+			overlay_gpio_04a.dtb \
-+			overlay_gpio_04b.dtb \
+ 				usb2-1 {
+ 					vbus-supply =3D <&vdd_5v0_sys>;
+ 				};
+@@ -105,6 +109,10 @@ usb3-0 {
+ 					vbus-supply =3D <&vdd_5v0_sys>;
+ 				};
+=20
++				usb3-2 {
++					vbus-supply =3D <&vdd_5v0_sys>;
++				};
 +
-+quiet_cmd_fdtoverlay = FDTOVERLAY $@
+ 				usb3-3 {
+ 					vbus-supply =3D <&vdd_5v0_sys>;
+ 				};
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts b/arch/arm6=
+4/boot/dts/nvidia/tegra194-p2972-0000.dts
+index 54d057beec59..8697927b1fe7 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
+@@ -57,6 +57,10 @@ padctl@3520000 {
+ 			pads {
+ 				usb2 {
+ 					lanes {
++						usb2-0 {
++							status =3D "okay";
++						};
 +
-+## This is not correct, need to use libfdt from the kernel tree:
-+cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
- 
--$(obj)/master.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(master))
-+$(obj)/static_test.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(apply_static_overlay))
- 	$(call if_changed,fdtoverlay)
- 
--always-$(CONFIG_OF_OVERLAY) += intermediate-overlay.dtb master.dtb
-+always-$(CONFIG_OF_OVERLAY) += static_test.dtb
--- 
-Frank Rowand <frank.rowand@sony.com>
+ 						usb2-1 {
+ 							status =3D "okay";
+ 						};
+@@ -73,6 +77,10 @@ usb3-0 {
+ 							status =3D "okay";
+ 						};
+=20
++						usb3-2 {
++							status =3D "okay";
++						};
++
+ 						usb3-3 {
+ 							status =3D "okay";
+ 						};
+@@ -81,6 +89,11 @@ usb3-3 {
+ 			};
+=20
+ 			ports {
++				usb2-0 {
++					mode =3D "host";
++					status =3D "okay";
++				};
++
+ 				usb2-1 {
+ 					mode =3D "host";
+ 					status =3D "okay";
+@@ -96,6 +109,11 @@ usb3-0 {
+ 					status =3D "okay";
+ 				};
+=20
++				usb3-2 {
++					nvidia,usb2-companion =3D <0>;
++					status =3D "okay";
++				};
++
+ 				usb3-3 {
+ 					nvidia,usb2-companion =3D <3>;
+ 					maximum-speed =3D "super-speed";
+@@ -107,11 +125,13 @@ usb3-3 {
+ 		usb@3610000 {
+ 			status =3D "okay";
+=20
+-			phys =3D	<&{/bus@0/padctl@3520000/pads/usb2/lanes/usb2-1}>,
++			phys =3D	<&{/bus@0/padctl@3520000/pads/usb2/lanes/usb2-0}>,
++				<&{/bus@0/padctl@3520000/pads/usb2/lanes/usb2-1}>,
+ 				<&{/bus@0/padctl@3520000/pads/usb2/lanes/usb2-3}>,
+ 				<&{/bus@0/padctl@3520000/pads/usb3/lanes/usb3-0}>,
++				<&{/bus@0/padctl@3520000/pads/usb3/lanes/usb3-2}>,
+ 				<&{/bus@0/padctl@3520000/pads/usb3/lanes/usb3-3}>;
+-			phy-names =3D "usb2-1", "usb2-3", "usb3-0", "usb3-3";
++			phy-names =3D "usb2-0", "usb2-1", "usb2-3", "usb3-0", "usb3-2", "usb3-3=
+";
+ 		};
+=20
+ 		pwm@c340000 {
+--=20
+2.25.1
 
