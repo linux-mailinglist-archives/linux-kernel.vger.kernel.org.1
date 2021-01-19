@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612EF2FBF3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E925C2FBF3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404524AbhASSGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:06:09 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4778 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391584AbhASRkW (ORCPT
+        id S2404593AbhASSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:06:14 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:34506 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391640AbhASRk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:40:22 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6007195c0000>; Tue, 19 Jan 2021 09:39:40 -0800
-Received: from [10.25.99.10] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 17:39:36 +0000
-Subject: Re: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for
- Tegra210
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <broonie@kernel.org>, <robh+dt@kernel.org>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
- <1611048496-24650-6-git-send-email-spujar@nvidia.com> <YAcTxxyogVgfN1uw@ulmo>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com>
-Date:   Tue, 19 Jan 2021 23:09:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 19 Jan 2021 12:40:56 -0500
+Received: by mail-io1-f70.google.com with SMTP id r16so36782880ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:40:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cz+TyUAdSvRaaR7wt0B3euj1+FtE/JPqehIJ2K4wFxI=;
+        b=V5Cs+I9TWWG8s29vKbD9Chpka7HdC2ckF3k5QTFn1tkVO+npzZZjuh7UDHkqKjZIk/
+         hEvRdcDxXnFZEZEEYHzVhAm2rW1WwYIp/7N+5yePrjStZmd4llL7SovHkCdoXw0G7y9f
+         y+OckGPqxuv6Y7uwDbZcAMvD4KR5U2H9REf4pwg5BuOSRJ+BmtXJ0iwFOfPOVebBw73j
+         S+OIU5jD5quVWifAqKcniUNuCWH2maxsmZz3JzLclBPXQMdiSlbfAHsKBtNtk+g2Zx5i
+         S+chiJvB3ra40DfmVY/uF7CFaf1/f4W4NwYL/mWGSTx4gj2ynai9vFkHjjtE4g0M8B4/
+         +hCw==
+X-Gm-Message-State: AOAM531QK0YsrYxOwLZJq1FeMGHunqZ+gJi/Mh1llIQgMwGxFcHSn5ut
+        wpEeHgKdJ4oNweb0czUr+sUC/FFnh1YYAuWKMODbUwImfxpX
+X-Google-Smtp-Source: ABdhPJwlc+pZ9ZKO5apRJCpOHaEETxebGPE+1ywptP03q7TAFkDD2MsfFXq3OJiJKgmCn346FiZgeNF7pFQ6Mw8wNF7tnjaJ8vul
 MIME-Version: 1.0
-In-Reply-To: <YAcTxxyogVgfN1uw@ulmo>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611077980; bh=NYSuQvptGwglsg6hwhbeZo+P6a5iRvHlv/Ac5X3wq0E=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=BkfBjCUirmEPSHaImywpIfpgV7kphUGUianmqeHjkbZ0ygzEmqlRasO7Hwd/L4VPy
-         KOO2kYKtrdPTiV4eFWv2p4PUvcSY07KI0LiQ2CZaQQtGpJXn8EjBnfOmzwobA1RVdZ
-         MSxH3StnoqYMehpSI9CqmNvITcT7VpsxCqSErtSmKkGgyaqQL90TXladEbNVJGOybg
-         PLS6JMYhVbDNvmgjUEg2rAaCoqv08+3EKa/mlMh+SnOTuWQP1v06KTpRg6mHxSlIgK
-         uvz8RO5GxtqnZGHBIbwoekZLCd/ajzehQG7HgxkAZy5fj5SXzTAaaFR0QZ9pBUlM7S
-         8VOFBzSnarVhQ==
+X-Received: by 2002:a92:b503:: with SMTP id f3mr4214202ile.123.1611078015449;
+ Tue, 19 Jan 2021 09:40:15 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:40:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d1018c05b944543e@google.com>
+Subject: WARNING in cfg80211_bss_update
+From:   syzbot <syzbot+95c52e652a2fac1fcdf5@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    66c55602 skbuff: back tiny skbs with kmalloc() in __netdev..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=121bf89f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=95c52e652a2fac1fcdf5
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+95c52e652a2fac1fcdf5@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 25700 at net/wireless/scan.c:1565 cfg80211_combine_bsses net/wireless/scan.c:1565 [inline]
+WARNING: CPU: 1 PID: 25700 at net/wireless/scan.c:1565 cfg80211_bss_update+0x16cd/0x1c60 net/wireless/scan.c:1746
+Modules linked in:
+CPU: 1 PID: 25700 Comm: kworker/u4:15 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy12 ieee80211_iface_work
+RIP: 0010:cfg80211_combine_bsses net/wireless/scan.c:1565 [inline]
+RIP: 0010:cfg80211_bss_update+0x16cd/0x1c60 net/wireless/scan.c:1746
+Code: 00 48 c7 c7 20 8c 61 8a c6 05 88 7d b9 04 01 e8 a7 15 83 00 e9 27 ff ff ff e8 8f f0 3c f9 0f 0b e9 c2 f4 ff ff e8 83 f0 3c f9 <0f> 0b 4c 89 f7 e8 89 be 8c fb 31 ff 89 c6 88 44 24 70 e8 ec f6 3c
+RSP: 0000:ffffc90002e46f50 EFLAGS: 00010212
+RAX: 00000000000026ce RBX: 0000000000000001 RCX: ffffc90015d60000
+RDX: 0000000000040000 RSI: ffffffff8835d93d RDI: 0000000000000003
+RBP: ffff88802f58fc00 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8835d08d R11: 0000000000000000 R12: ffff888022182c68
+R13: 0000000000000005 R14: ffff88802f58fc10 R15: ffff888022182c00
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ee27000 CR3: 00000000144e2000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ cfg80211_inform_single_bss_frame_data+0x6e2/0xe90 net/wireless/scan.c:2400
+ cfg80211_inform_bss_frame_data+0xa7/0xb10 net/wireless/scan.c:2433
+ ieee80211_bss_info_update+0x3ce/0xb20 net/mac80211/scan.c:190
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1126 [inline]
+ ieee80211_rx_mgmt_probe_beacon+0xccd/0x16b0 net/mac80211/ibss.c:1615
+ ieee80211_ibss_rx_queued_mgmt+0xe3e/0x1870 net/mac80211/ibss.c:1642
+ ieee80211_iface_work+0x761/0x9e0 net/mac80211/iface.c:1423
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
 
-On 1/19/2021 10:45 PM, Thierry Reding wrote:
-> On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
->> Expose a header which describes DT bindings required to use audio-graph
->> based sound card. All Tegra210 based platforms can include this header
->> and add platform specific information. Currently, from SoC point of view,
->> all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
->> ---
->>   .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++++++++
->>   1 file changed, 153 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
-> I prefer keeping everything in tegra210.dtsi, but I can do that merge
-> when I apply, after the DT bindings have been acked, so no need to
-> resend just because of that.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I think this may be fine for Tegra210 based boards. But for Tegra186 and 
-Tegra194, whenever we add support for it, can rely on a common 
-audio-graph dtsi because there is no change w.r.t APE. This can help us 
-to avoid duplication of the bindings. This most likely applies to future 
-chips as well (where Tegra186 audio-graph bindings can be considered as 
-base) when there is no significant change in APE.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
