@@ -2,207 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294332FBAC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3697E2FBACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390586AbhASPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:11:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404703AbhASOnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:43:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4DE6208E4;
-        Tue, 19 Jan 2021 14:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611067374;
-        bh=srkjutQOp0Nz78YjpuXe5nSxBl9hz3J3Sb3YlG3GWIA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YmqfQT+QnqRYGUcZ8Q9ZyuytCCGC6ajd1FktORK1pg0SOnsCRx8NtAv4wAn84d9pu
-         v/0Wllndhwwwr4N7PQEXt9kfSfpy3/n2bG5o0j1Gp5OaHU6LWQFpMOVJ44oldOaQTh
-         jb35xe1nZdNTSJjjNEYRrO9BFybuLPMR5p+ziVknzrXIX6lvwV6aCA/IXUS+L7m9Vq
-         cnypTTPBDb49kyccS+UoT2A0WZmLURuW3NiI826GKoBAU5ozIu7JnPv6SmvLGjo6Ti
-         /5KGgNH4tZpkxBUmzkV14HFmqFV2xVSgQgAQV6edGmjfviN6sOamYeBUo4tSvwJcXu
-         VYWLMq5jT6vCw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B31BE40CE2; Tue, 19 Jan 2021 11:42:49 -0300 (-03)
-Date:   Tue, 19 Jan 2021 11:42:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
-Message-ID: <20210119144249.GK12699@kernel.org>
-References: <20201229214214.3413833-1-songliubraving@fb.com>
- <20201229214214.3413833-4-songliubraving@fb.com>
- <20210118193817.GG12699@kernel.org>
- <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
- <20210119143143.GJ12699@kernel.org>
+        id S2391146AbhASPMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:12:09 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:12798 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389212AbhASOoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:44:24 -0500
+Date:   Tue, 19 Jan 2021 14:43:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611067412; bh=hJU3t7jpshkUt0/KD2VNuTu6lnWUQ57cTz2pVJlktr8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=mmLUNun8OGpBm2R1gKPlGEENYpsNtND6YHumIdxf8Pf+X7Yjvv8PWzUXE9pS0Uu88
+         3kUJ9m1SK64g8zYQarxsP1j5mUswWl2qH8/RoBcpjaw7gb71I3G0d0FbLIyjanseiZ
+         TmA4ky5lrUeLEdP8DBm4BlPZLn4Ul87F8ETSFdtZlEbSM+EyHk0Unj3oRRWcXNpWAR
+         mWhztHtIX9KnuLx+VPMVMjt90ro0egINtFD1xV4LK9ovzISPQcgYa+fdahu2niG5Q1
+         Ngfskb1u+uVDM2PXxi9Ymh4RHrWTMBgHpkDocgac6NRc5rH53/YFjRklSZpVCRwECy
+         q0x2iENCQQfSw==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v2 3/3] xsk: build skb by page
+Message-ID: <20210119144253.5321-1-alobakin@pm.me>
+In-Reply-To: <017fdff4e061a7e0e779b7bc96ed3b45e07aa006.1611048724.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com> <017fdff4e061a7e0e779b7bc96ed3b45e07aa006.1611048724.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210119143143.GJ12699@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 19, 2021 at 11:31:44AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Jan 19, 2021 at 12:48:19AM +0000, Song Liu escreveu:
-> > > On Jan 18, 2021, at 11:38 AM, Arnaldo Carvalho de Melo <acme@kernel.o=
-rg> wrote:
-> > We are looking at two issues:
-> > 1. Cannot recursively attach;
-> > 2. prog FD 3 doesn't have valid btf.=20
- =20
-> > #1 was caused by the verifier disallowing attaching fentry/fexit progra=
-m=20
-> > to program with type BPF_PROG_TYPE_TRACING (in bpf_check_attach_target)=
-=2E=20
-> > This constraint was added when we only had fentry/fexit in the TRACING
-> > type. We have extended the TRACING type to many other use cases, like=
-=20
-> > "tp_btf/", "fmod_ret" and "iter/". Therefore, it is good time to revisi=
-t=20
-> > this constraint. I will work on this.=20
- =20
-> > For #2, we require the target program to have BTF. I guess we won't rem=
-ove
-> > this requirement.
- =20
-> > While I work on improving #1, could you please test with some kprobe=20
-> > programs? For example, we can use fileslower.py from bcc.=20
-=20
-> Sure, and please consider improving the error messages to state what you
-> described above.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Tue, 19 Jan 2021 17:45:12 +0800
 
-Terminal 1:
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
+>=20
+> This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+> network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+> directly construct skb. If this feature is not supported, it is still
+> necessary to copy data to construct skb.
+>=20
+> ---------------- Performance Testing ------------
+>=20
+> The test environment is Aliyun ECS server.
+> Test cmd:
+> ```
+> xdpsock -i eth0 -t  -S -s <msg size>
+> ```
+>=20
+> Test result data:
+>=20
+> size    64      512     1024    1500
+> copy    1916747 1775988 1600203 1440054
+> page    1974058 1953655 1945463 1904478
+> percent 3.0%    10.0%   21.58%  32.3%
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c | 112 ++++++++++++++++++++++++++++++++++++++++++++++++----=
+------
+>  1 file changed, 94 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 8037b04..8c291f8 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  =09sock_wfree(skb);
+>  }
+> =20
+> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> +=09=09=09=09=09      struct xdp_desc *desc)
+> +{
+> +=09u32 len, offset, copy, copied;
+> +=09struct sk_buff *skb;
+> +=09struct page *page;
+> +=09char *buffer;
+> +=09int err =3D 0, i;
+> +=09u64 addr;
+> +
+> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> +=09if (unlikely(!skb))
+> +=09=09return NULL;
 
-[root@five perf]# perf trace -e 5sec.c
-^C
-[root@five perf]# cat 5sec.c
-#include <bpf.h>
+You can propagate err from here to the outer function:
 
-#define NSEC_PER_SEC	1000000000L
+=09if (unlikely(!skb))
+=09=09return ERR_PTR(err);
 
-int probe(hrtimer_nanosleep, rqtp)(void *ctx, int err, long long sec)
-{
-	return sec / NSEC_PER_SEC =3D=3D 5;
-}
+> +=09addr =3D desc->addr;
+> +=09len =3D desc->len;
+> +
+> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> +=09offset =3D offset_in_page(buffer);
+> +=09addr =3D buffer - (char *)xs->pool->addrs;
+> +
+> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
 
-license(GPL);
-[root@five perf]# perf trace -e 5sec.c/max-stack=3D16/
-     0.000 sleep/3739435 perf_bpf_probe:hrtimer_nanosleep(__probe_ip: -1743=
-337312, rqtp: 5000000000)
-                                       hrtimer_nanosleep ([kernel.kallsyms])
-                                       common_nsleep ([kernel.kallsyms])
-                                       __x64_sys_clock_nanosleep ([kernel.k=
-allsyms])
-                                       do_syscall_64 ([kernel.kallsyms])
-                                       entry_SYSCALL_64_after_hwframe ([ker=
-nel.kallsyms])
-                                       __clock_nanosleep_2 (/usr/lib64/libc=
--2.32.so)
+i++ would be less confusing here. You build skb frags from frag 0
+anyway.
 
+> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +=09=09get_page(page);
+> +
+> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
 
-Terminal 2:
+It's better to use min_t(u32, ...) instead of manual casting.
 
-[root@five ~]# perf stat -e cycles -b 180 -I 1000
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_fra=
-me
-perf: util/bpf_counter.c:227: bpf_program_profiler__read: Assertion `skel !=
-=3D NULL' failed.
-Aborted (core dumped)
-[root@five ~]# gdb perf
-GNU gdb (GDB) Fedora 10.1-2.fc33
-<SNIP>
-Reading symbols from perf...
-(gdb) run stat -e cycles -b 180 -I 1000
-Starting program: /root/bin/perf stat -e cycles -b 180 -I 1000
-Missing separate debuginfos, use: dnf debuginfo-install glibc-2.32-2.fc33.x=
-86_64
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib64/libthread_db.so.1".
-libbpf: elf: skipping unrecognized data section(9) .eh_frame
-libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_fra=
-me
-perf: util/bpf_counter.c:227: bpf_program_profiler__read: Assertion `skel !=
-=3D NULL' failed.
+> +
+> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +=09=09copied +=3D copy;
+> +=09=09addr +=3D copy;
+> +=09=09offset =3D 0;
+> +=09}
+> +
+> +=09skb->len +=3D len;
+> +=09skb->data_len +=3D len;
+> +=09skb->truesize +=3D len;
+> +
+> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +=09return skb;
+> +}
+> +
+> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> +=09=09=09=09     struct xdp_desc *desc)
+> +{
+> +=09struct sk_buff *skb =3D NULL;
+> +=09int err =3D -ENOMEM;
+> +
+> +=09if (xs->dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
+> +=09=09if (unlikely(!skb))
+> +=09=09=09goto err;
 
-Program received signal SIGABRT, Aborted.
-0x00007ffff75149d5 in raise () from /lib64/libc.so.6
-Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.0.8-4.=
-fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod-client-=
-0.182-1.fc33.x86_64 elfutils-libelf-0.182-1.fc33.x86_64 elfutils-libs-0.182=
--1.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-29.fc33.x=
-86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_64 libca=
-p-2.26-8.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libcurl-7.71.1-8.fc33.=
-x86_64 libgcc-10.2.1-9.fc33.x86_64 libidn2-2.3.0-4.fc33.x86_64 libnghttp2-1=
-=2E41.0-3.fc33.x86_64 libpsl-0.21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86=
-_64 libssh-0.9.5-1.fc33.x86_64 libunistring-0.9.10-9.fc33.x86_64 libunwind-=
-1.4.0-4.fc33.x86_64 libuuid-2.36.1-1.fc33.x86_64 libxcrypt-4.4.17-1.fc33.x8=
-6_64 libzstd-1.4.7-1.fc33.x86_64 numactl-libs-2.0.14-1.fc33.x86_64 openldap=
--2.4.50-5.fc33.x86_64 openssl-libs-1.1.1i-1.fc33.x86_64 pcre-8.44-2.fc33.x8=
-6_64 pcre2-10.36-1.fc33.x86_64 perl-libs-5.32.0-465.fc33.x86_64 popt-1.18-2=
-=2Efc33.x86_64 python3-libs-3.9.1-1.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 x=
-z-libs-5.2.5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
-(gdb) bt
-#0  0x00007ffff75149d5 in raise () from /lib64/libc.so.6
-#1  0x00007ffff74fd8a4 in abort () from /lib64/libc.so.6
-#2  0x00007ffff74fd789 in __assert_fail_base.cold () from /lib64/libc.so.6
-#3  0x00007ffff750d026 in __assert_fail () from /lib64/libc.so.6
-#4  0x00000000005661c3 in bpf_program_profiler__read (evsel=3D0xc3a2c0) at =
-util/bpf_counter.c:227
-#5  0x0000000000000000 in ?? ()
-(gdb)
+1. You should'n use goto err here, as skb =3D=3D NULL, so kfree_skb(skb)
+   is redundant.
+2. If you would use ERR_PTR() in xsk_build_skb_zerocopy(),
+   the condition should look like:
 
-207 static int bpf_program_profiler__read(struct evsel *evsel)
-208 {
-209         int num_cpu =3D evsel__nr_cpus(evsel);
-210         struct bpf_perf_event_value values[num_cpu];
-211         struct bpf_counter *counter;
-212         int reading_map_fd;
-213         __u32 key =3D 0;
-214         int err, cpu;
-215=20
-216         if (list_empty(&evsel->bpf_counter_list))
-217                 return -EAGAIN;
-218=20
-219         for (cpu =3D 0; cpu < num_cpu; cpu++) {
-220                 perf_counts(evsel->counts, cpu, 0)->val =3D 0;
-221                 perf_counts(evsel->counts, cpu, 0)->ena =3D 0;
-222                 perf_counts(evsel->counts, cpu, 0)->run =3D 0;
-223         }
-224         list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-225                 struct bpf_prog_profiler_bpf *skel =3D counter->skel;
-226=20
-227                 assert(skel !=3D NULL);
-228                 reading_map_fd =3D bpf_map__fd(skel->maps.accum_reading=
-s);
-229=20
-230                 err =3D bpf_map_lookup_elem(reading_map_fd, &key, value=
-s);
-231                 if (err) {
-232                         pr_err("failed to read value\n");
-233                         return err;
-234                 }
-235=20
-236                 for (cpu =3D 0; cpu < num_cpu; cpu++) {
-237                         perf_counts(evsel->counts, cpu, 0)->val +=3D va=
-lues[cpu].counter;
-238                         perf_counts(evsel->counts, cpu, 0)->ena +=3D va=
-lues[cpu].enabled;
-239                         perf_counts(evsel->counts, cpu, 0)->run +=3D va=
-lues[cpu].running;
-240                 }
-241         }
-242         return 0;
-243 }
+=09=09if (IS_ERR(skb))
+=09=09=09return PTR_ERR(skb);
 
-- Arnaldo
+> +=09} else {
+> +=09=09char *buffer;
+> +=09=09u64 addr;
+> +=09=09u32 len;
+> +=09=09int err;
+> +
+> +=09=09len =3D desc->len;
+> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
+> +=09=09if (unlikely(!skb))
+> +=09=09=09goto err;
+
+Same here, if skb =3D=3D NULL, just return without calling kfree_skb().
+
+> +=09=09skb_put(skb, len);
+> +=09=09addr =3D desc->addr;
+> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
+> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+> +
+> +=09=09if (unlikely(err)) {
+> +=09=09=09err =3D -EINVAL;
+
+You already have errno in err, no need to override it.
+
+> +=09=09=09goto err;
+> +=09=09}
+> +=09}
+> +
+> +=09skb->dev =3D xs->dev;
+> +=09skb->priority =3D xs->sk.sk_priority;
+> +=09skb->mark =3D xs->sk.sk_mark;
+> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
+> +=09skb->destructor =3D xsk_destruct_skb;
+> +
+> +=09return skb;
+> +
+> +err:
+> +=09kfree_skb(skb);
+> +=09return ERR_PTR(err);
+> +}
+> +
+>  static int xsk_generic_xmit(struct sock *sk)
+>  {
+>  =09struct xdp_sock *xs =3D xdp_sk(sk);
+> @@ -446,43 +535,30 @@ static int xsk_generic_xmit(struct sock *sk)
+>  =09=09goto out;
+> =20
+>  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -=09=09char *buffer;
+> -=09=09u64 addr;
+> -=09=09u32 len;
+> -
+>  =09=09if (max_batch-- =3D=3D 0) {
+>  =09=09=09err =3D -EAGAIN;
+>  =09=09=09goto out;
+>  =09=09}
+> =20
+> -=09=09len =3D desc.len;
+> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
+> -=09=09if (unlikely(!skb))
+> +=09=09skb =3D xsk_build_skb(xs, &desc);
+> +=09=09if (IS_ERR(skb)) {
+> +=09=09=09err =3D PTR_ERR(skb);
+>  =09=09=09goto out;
+> +=09=09}
+> =20
+> -=09=09skb_put(skb, len);
+> -=09=09addr =3D desc.addr;
+> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+>  =09=09/* This is the backpressure mechanism for the Tx path.
+>  =09=09 * Reserve space in the completion queue and only proceed
+>  =09=09 * if there is space in it. This avoids having to implement
+>  =09=09 * any buffering in the Tx path.
+>  =09=09 */
+>  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
+> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
+>  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>  =09=09=09kfree_skb(skb);
+>  =09=09=09goto out;
+>  =09=09}
+>  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+> =20
+> -=09=09skb->dev =3D xs->dev;
+> -=09=09skb->priority =3D sk->sk_priority;
+> -=09=09skb->mark =3D sk->sk_mark;
+> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
+> -=09=09skb->destructor =3D xsk_destruct_skb;
+> -
+>  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
+>  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
+>  =09=09=09/* Tell user-space to retry the send */
+
+So please recheck the code and then retest it, especially error
+paths (you can inject errors manually here to ensure they work).
+
+Thanks,
+Al
+
