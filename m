@@ -2,196 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C652FBE50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC902FBE51
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403907AbhASRvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:51:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:34516 "EHLO foss.arm.com"
+        id S2404089AbhASRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:51:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391230AbhASOuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:50:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE798147A;
-        Tue, 19 Jan 2021 06:47:42 -0800 (PST)
-Received: from e121896.arm.com (unknown [10.57.56.227])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 37BAD3F66E;
-        Tue, 19 Jan 2021 06:47:38 -0800 (PST)
-From:   James Clark <james.clark@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 8/8] perf arm-spe: Set thread TID
-Date:   Tue, 19 Jan 2021 16:46:58 +0200
-Message-Id: <20210119144658.793-8-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210119144658.793-1-james.clark@arm.com>
-References: <20210119144658.793-1-james.clark@arm.com>
+        id S2405012AbhASOv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:51:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D8C320DD4;
+        Tue, 19 Jan 2021 14:51:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611067874;
+        bh=qOALRYpx8VGwwp5SoEb+UBz0tWOmyG8pglZmxBoikVE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m7Rm+D4I2y7BtzNch/jc6E/zBCBw/RA5fx5YRY4HqpOxgYIatEi91igNNZKlmUmu8
+         X3Lio+WuAAhYLIflvAgUn2GQgB7K5uMpqfL/JEvLLycdMZq7bEJU8Bb47J2dyskSS0
+         /ozQP1/8937fGg93pZSb1TABODB1iOa/9v7leF7VICKhA+zOpKvXU4GvH43uUdCxEb
+         oj8B+03Ngi6MbMiujtVvdGnCxboKbnyREEWNGnAyN67ptzwyJQhSIJNUrQmu90Quip
+         RTOYFcLhowalPAIahNqb9JFni4mh74/G6OXNcskFgdScMWsibylfZ+uhLLJGdR35Nn
+         RSx6c3Iws7a0A==
+Received: by mail-ej1-f50.google.com with SMTP id l9so23166076ejx.3;
+        Tue, 19 Jan 2021 06:51:14 -0800 (PST)
+X-Gm-Message-State: AOAM532PER8EDGTKuIS5NcqxuMxV311KKyzTTb0yOo+KVmXkG1D7trsJ
+        b7PLY7JuKCKIMS45FmCO3rGVRc+IsxGg/GO7Bg==
+X-Google-Smtp-Source: ABdhPJwrYsjRqRbp8W7L7RNsRzd0evjxpOTm49EMHHsM+d5m4OoM4vtdOIpMtlbNj9xIX15UkOfWeW2OVJ+CD82IXC8=
+X-Received: by 2002:a17:906:d87:: with SMTP id m7mr3166012eji.108.1611067872941;
+ Tue, 19 Jan 2021 06:51:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210118073340.62141-1-tony@atomide.com> <CAK8P3a1Eec1cAOdxNQ=8LORop+ESqx_=dg1uhJwpXhknxOydsg@mail.gmail.com>
+ <YAVJyjmrbLCFjqVA@atomide.com>
+In-Reply-To: <YAVJyjmrbLCFjqVA@atomide.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 19 Jan 2021 08:51:01 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJWPc4rt0NiaF=zS0XOy4b8pZKDCEaxCjp8rW+joMjvjQ@mail.gmail.com>
+Message-ID: <CAL_JsqJWPc4rt0NiaF=zS0XOy4b8pZKDCEaxCjp8rW+joMjvjQ@mail.gmail.com>
+Subject: Re: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with
+ simple-bus for auxdata
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+On Mon, Jan 18, 2021 at 2:41 AM Tony Lindgren <tony@atomide.com> wrote:
+>
+> * Arnd Bergmann <arnd@kernel.org> [210118 08:30]:
+> > On Mon, Jan 18, 2021 at 8:33 AM Tony Lindgren <tony@atomide.com> wrote:
+> > >
+> > > After converting am335x to probe devices with simple-pm-bus I noticed
+> > > that we are not passing auxdata for of_platform_populate() like we do
+> > > with simple-bus.
+> > >
+> > > While device tree using SoCs should no longer need platform data, there
+> > > are still quite a few drivers that still need it as can be seen with
+> > > git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
+> > > replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
+> > > needed.
+> > >
+> > > Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
+> > > That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
+> > > And let's pass the auxdata for omaps to fix the issue for am335x.
+> > >
+> > > As an alternative solution, adding simple-pm-bus handling directly to
+> > > drivers/of/platform.c was considered, but we would still need simple-pm-bus
+> > > device driver. So passing auxdata as platform data seems like the simplest
+> > > solution.
+> > >
+> > > Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
+> > > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > > ---
+> > > Changes since v1: Updated description, added devicetree list to Cc
+> >
+> > This looks fine to me for now
+> >
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Thanks for the review.
+>
+> > But I think we should take the time to discuss how to phase out auxdata
+> > over time. There are still a number of users, but it's not that many in the
+> > end. For some of them I see a clear solution, for other ones I do not:
+>
+> Yes agreed we should remove the auxdata use.
+>
+> > omap2: I'll leave these for Tony to comment
+>
+> The three hardest ones to update (because of PM dependencies):
+>
+> - PRM power managment interrupts that also pinctrl driver uses
 
-Set thread TID for SPE samples. Now that the context ID is saved
-in each record it can be used to set the TID for a sample.
+I haven't looked at it, but can't one driver go find the other node
+and the interrupts it needs? There's nothing wrong with a driver
+looking outside 'its node' for information.
 
-The context ID is only present in SPE data if the kernel is
-compiled with CONFIG_PID_IN_CONTEXTIDR and perf record is
-run as root. Otherwise the PID of the first process is assigned
-to each SPE sample.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Signed-off-by: James Clark <james.clark@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Al Grant <al.grant@arm.com>
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: Wei Li <liwei391@huawei.com>
-Cc: Tan Xiaojun <tanxiaojun@huawei.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/util/arm-spe.c | 75 ++++++++++++++++++++++++++-------------
- 1 file changed, 50 insertions(+), 25 deletions(-)
-
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 27a0b9dfe22d..9828fad7e516 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -223,6 +223,46 @@ static inline u8 arm_spe_cpumode(struct arm_spe *spe, u64 ip)
- 		PERF_RECORD_MISC_USER;
- }
- 
-+static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
-+				    struct auxtrace_queue *queue)
-+{
-+	struct arm_spe_queue *speq = queue->priv;
-+	pid_t tid;
-+
-+	tid = machine__get_current_tid(spe->machine, speq->cpu);
-+	if (tid != -1) {
-+		speq->tid = tid;
-+		thread__zput(speq->thread);
-+	} else
-+		speq->tid = queue->tid;
-+
-+	if ((!speq->thread) && (speq->tid != -1)) {
-+		speq->thread = machine__find_thread(spe->machine, -1,
-+						    speq->tid);
-+	}
-+
-+	if (speq->thread) {
-+		speq->pid = speq->thread->pid_;
-+		if (queue->cpu == -1)
-+			speq->cpu = speq->thread->cpu;
-+	}
-+}
-+
-+static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
-+{
-+	int err;
-+	struct arm_spe *spe = speq->spe;
-+	struct auxtrace_queue *queue;
-+
-+	err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
-+	if (err)
-+		return err;
-+
-+	queue = &speq->spe->queues.queue_array[speq->queue_nr];
-+	arm_spe_set_pid_tid_cpu(speq->spe, queue);
-+	return 0;
-+}
-+
- static void arm_spe_prep_sample(struct arm_spe *spe,
- 				struct arm_spe_queue *speq,
- 				union perf_event *event,
-@@ -431,6 +471,7 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
- static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
- {
- 	struct arm_spe *spe = speq->spe;
-+	const struct arm_spe_record *record;
- 	int ret;
- 
- 	if (!spe->kernel_start)
-@@ -450,6 +491,11 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
- 		if (ret < 0)
- 			continue;
- 
-+		record = &speq->decoder->record;
-+		ret = arm_spe_set_tid(speq, record->context_id);
-+		if (ret)
-+			return ret;
-+
- 		ret = arm_spe_sample(speq);
- 		if (ret)
- 			return ret;
-@@ -500,6 +546,10 @@ static int arm_spe__setup_queue(struct arm_spe *spe,
- 
- 		record = &speq->decoder->record;
- 
-+		ret = arm_spe_set_tid(speq, record->context_id);
-+		if (ret)
-+			return ret;
-+
- 		speq->timestamp = record->timestamp;
- 		ret = auxtrace_heap__add(&spe->heap, queue_nr, speq->timestamp);
- 		if (ret)
-@@ -552,31 +602,6 @@ static bool arm_spe__is_timeless_decoding(struct arm_spe *spe)
- 	return timeless_decoding;
- }
- 
--static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
--				    struct auxtrace_queue *queue)
--{
--	struct arm_spe_queue *speq = queue->priv;
--	pid_t tid;
--
--	tid = machine__get_current_tid(spe->machine, speq->cpu);
--	if (tid != -1) {
--		speq->tid = tid;
--		thread__zput(speq->thread);
--	} else
--		speq->tid = queue->tid;
--
--	if ((!speq->thread) && (speq->tid != -1)) {
--		speq->thread = machine__find_thread(spe->machine, -1,
--						    speq->tid);
--	}
--
--	if (speq->thread) {
--		speq->pid = speq->thread->pid_;
--		if (queue->cpu == -1)
--			speq->cpu = speq->thread->cpu;
--	}
--}
--
- static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
- {
- 	unsigned int queue_nr;
--- 
-2.28.0
-
+Rob
