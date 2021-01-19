@@ -2,155 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977A82FBEBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C52FBEC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392604AbhASSSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        id S1732825AbhASSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392438AbhASSQw (ORCPT
+        with ESMTP id S2392528AbhASSR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:16:52 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2379BC0617A0;
-        Tue, 19 Jan 2021 10:16:20 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id q4so10974493plr.7;
-        Tue, 19 Jan 2021 10:16:20 -0800 (PST)
+        Tue, 19 Jan 2021 13:17:57 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22FFC061796
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id s6so9590223qvn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yO2k+wmEJJ8xH/LdKcVR5jElonjFD3LzbOdCVG89a24=;
-        b=JuAp4fE1Om8r2jXXlMjO5EQi5ELsiLrAOz/7Zy1G6MLGJZu8BbcFwCxCtNHSUrn1jj
-         MmAgtIXKIPipjExj1ugO237PHHtr7KE34SawUz5NB/gwppYKIcabT5jjH6rEn489hG83
-         Twr9iCkqfYBF6/5myQHtdrcFuDYyeMk+PZEoL1SnFS7OzMNVmYArnSDx6s+tCQlvDqCN
-         6xQVc4dtO2sI24n/ZN3pbXuADpSQFPslbOAnByTeZLqLeijMXFupmKD0uTal0iwxDJsM
-         DGSJKnbxDZGnib4SEKELE+G0FY2R3UdBGwyAV22p7zhKnNuggW5IsRdFUN4vGoctgcKS
-         TMQw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
+        b=Cu9pQdgkuPmGsFfK1Bhot2GEDj34YX1UgywSUTlAnfjohEWUJcdw+iydHBAK385oP1
+         Aon6yUBiuqKBJyOIdmjXm9R9+pwFK1YM6ancISnFbej5qVTRjaAbtoXHhnSCihZ0idpY
+         SKse4iqkAvOCevShsndb3tq/GBo/VVzIj06N5mXpU32g2HE0TAwRq/I1cpBZ8fPleUsa
+         LtFWoa9cvTJigy1WSHjsTCqUP1WXBPp/oFQ1FmgktRV7Y3nwsRJIaT/QLxF3dAIRsx/H
+         dnBrbBD3QVcioOWh2VJck5oLCvv8jfJ/t5toQlSIr58Wlgkksz0jcLXApcGe9Am4Bjkx
+         aaTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yO2k+wmEJJ8xH/LdKcVR5jElonjFD3LzbOdCVG89a24=;
-        b=tvVZ+XiEXpmPnk5Xv6+ARucPt2VssILU20tFcZnxgztVo8YnyrJgTTJium7SNiPUvv
-         cpQXA94wI2FKsjWeH+AI2HXEIA13EAh/zj0v1aohnTn14OXv5euGo/ERDdwqNY2kexx+
-         Nb4UMA/dE9bmCUNkB8IraVHsADkjALmQXPHsVRSJC9Ohhi6a+VkNactrieV0sf6muj/c
-         YPJ23quoq5nRiaEwPUzSNAq+kLiRJtP1FkPYhXjtdRmk2r+ZY+x2aTZlXUJWyhk0yRpg
-         /MzrfI354q3zujLa3YoTsqgyoibehQeitReyZA5FXaUy0p7GyzbHZPO3NqTn7g6cY3Hd
-         a+Vg==
-X-Gm-Message-State: AOAM531mlBd/ZobnFJoqllNfH9i9Xs0QWK6CuxF0fQIY+20IxmNSoQni
-        wp3TEJHQYQki4vkbpQFKb+80kjJcOZE=
-X-Google-Smtp-Source: ABdhPJzcggUh79T/vPrFJplztZOgRtqaMxMfiR3jkAw2gStudADC7DJRMqW/nK/e4Tb6fVJmNFZXqw==
-X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr990860pjb.199.1611080179615;
-        Tue, 19 Jan 2021 10:16:19 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k128sm8187958pfd.137.2021.01.19.10.16.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 10:16:18 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] serial: 8250: Add new 8250-core based Broadcom STB
- driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210115211543.33563-1-alcooperx@gmail.com>
- <20210115211543.33563-3-alcooperx@gmail.com>
- <CAHp75VdQPQK8jTF3QDKx6mF1QzOg-qiuHrTiojnWn7GskokfoA@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <71d58a3e-2707-69d7-8074-c67235912e06@gmail.com>
-Date:   Tue, 19 Jan 2021 10:16:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
+        b=WwJuLRHJykkufBEpELYJScm/FcUakdjMReuGEhP9FD1Zdm2MKfS1/56oDX4rXIPv0p
+         +dVSgkPPPeznLviyzC9zcG9J4RpMI3MYdxHDds5oea6yYVJctb1XL16NFN+MokIL2M6H
+         8tBn/p+pIlHRTOK4PeipaieUCVYNu2wtkVnrBJdP5zADlQUOI6Tu4Xxdppa1sUKw4QsN
+         hYomT5BBWhfno9Kdn+q1Ijn1i4Yof4bzaD9dDX2v8AalvnhuxZ2gcX/hpqMpqXvc50BL
+         wsZZTREUWsLZmPvGTAc54nnxeFBC3gVBSdyO1eSfaX8Upckg7XlPi0+PRMUYnDYUgMlZ
+         eEAg==
+X-Gm-Message-State: AOAM530Dn6CHKJqaAKNQSDXIz1bGt2Mrh0e2Q2oifad/wK/MPPGciDjZ
+        ATG9KzcgBkfA+O7mmgAIRnKObA==
+X-Google-Smtp-Source: ABdhPJyeOj0cdYmfZSjIN+M4tTaXUXGkK5bEWqkePXdbU3A+6DIKwM6G35J8cfVSNYvzxhuLPBTc/w==
+X-Received: by 2002:a0c:a525:: with SMTP id y34mr5711355qvy.37.1611080235780;
+        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id f134sm13257161qke.23.2021.01.19.10.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1vZ4-003pQw-MM; Tue, 19 Jan 2021 14:17:14 -0400
+Date:   Tue, 19 Jan 2021 14:17:14 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+Message-ID: <20210119181714.GA909645@ziepe.ca>
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+ <20210118234818.GP4605@ziepe.ca>
+ <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
+ <20210119180327.GX4605@ziepe.ca>
+ <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdQPQK8jTF3QDKx6mF1QzOg-qiuHrTiojnWn7GskokfoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/19/2021 7:21 AM, Andy Shevchenko wrote:
-> On Fri, Jan 15, 2021 at 11:19 PM Al Cooper <alcooperx@gmail.com> wrote:
->>
->> Add a UART driver for the new Broadcom 8250 based STB UART. The new
->> UART is backward compatible with the standard 8250, but has some
->> additional features. The new features include a high accuracy baud
->> rate clock system and DMA support.
->>
->> The driver will use the new optional BAUD MUX clock to select the best
->> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
->> the baud rate selection logic for any requested baud rate.  This allows
->> for more accurate BAUD rates when high speed baud rates are selected.
->>
->> The driver will use the new UART DMA hardware if the UART DMA registers
->> are specified in Device Tree "reg" property. The DMA functionality can
->> be disabled on kernel boot with the argument:
->> "8250_bcm7271.disable_dma=Y".
->>
->> The driver also set the UPSTAT_AUTOCTS flag when hardware flow control
->> is enabled. This flag is needed for UARTs that don't assert a CTS
->> changed interrupt when CTS changes and AFE (Hardware Flow Control) is
->> enabled.
->>
->> The driver also contains a workaround for a bug in the Synopsis 8250
->> core. The problem is that at high baud rates, the RX partial FIFO
->> timeout interrupt can occur but there is no RX data (DR not set in
->> the LSR register). In this case the driver will not read the Receive
->> Buffer Register, which clears the interrupt, and the system will get
->> continuous UART interrupts until the next RX character arrives. The
->> fix originally suggested by Synopsis was to read the Receive Buffer
->> Register and discard the character when the DR bit in the LSR was
->> not set, to clear the interrupt. The problem was that occasionally
->> a character would arrive just after the DR bit check and a valid
->> character would be discarded. The fix that was added will clear
->> receive interrupts to stop the interrupt, deassert RTS to insure
->> that no new data can arrive, wait for 1.5 character times for the
->> sender to react to RTS and then check for data and either do a dummy
->> read or a valid read. Sysfs error counters were also added and were
->> used to help create test software that would cause the error condition.
->> The counters can be found at:
->> /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
->> /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
+On Tue, Jan 19, 2021 at 07:08:32PM +0100, Bodo Stroesser wrote:
+> On 19.01.21 19:03, Jason Gunthorpe wrote:
+> > On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
+> > > 
+> > > I had a second look into math.h, but I don't find any reason why round_up
+> > > could overflow. Can you give a hint please?
+> > 
+> > #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+> >                                                      ^^^^^
+> > 
+> > That +1 can overflow
 > 
-> Brief looking into the code raises several questions:
->  - is it driver from the last decade?
+> But that would be a unsigned long long overflow. I considered this to
+> not be relevant.
 
-Work on this driver started back in 2018, that was indeed the last decade.
+Why not? It still makes nents 0 and still causes a bad bug
 
->  - why it's not using what kernel provides?
->  - we have a lot of nice helpers:
->    - DMA Engine API
-
-Not sure this makes sense, given that the DMA hardware that was added to
-this UART block is only used by the UART block and no other pieces of HW
-in the system, nor will they ever be. Not sure it makes sense to pay the
-cost of an extra indirection and subsystem unless there are at least two
-consumers of that DMA hardware to warrant modeling it after a dmaengine
-driver. I also remember that Al researched before whether 8250_dma.c
-could work, and came to the conclusion that it would not, but I will let
-him comment on the specifics.
-
-
->    - BIT() and GENMASK() macros
->    - tons of different helpers like regmap API (if you wish to dump
-> registers via debugfs)
-> 
-> Can you shrink this driver by 20-30% (I truly believe it's possible)
-> and split DMA driver to drivers/dma (which may already have something
-> similar there)?
-
-See previous response.
--- 
-Florian
+Jason
