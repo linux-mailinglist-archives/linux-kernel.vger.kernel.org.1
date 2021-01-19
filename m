@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135B72FC4EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656982FC4F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbhASXjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S1730851AbhASXk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395107AbhASOGa (ORCPT
+        with ESMTP id S2391354AbhASOI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:06:30 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22796C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:44 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id h4so21888877qkk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:44 -0800 (PST)
+        Tue, 19 Jan 2021 09:08:57 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F13C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:45 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id v5so13686645qtv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:05:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WRH1U9XGgfqWEUznDbBjK+ln/wIg4FAs6AUuAcYpjiM=;
-        b=DkPzlGL8rpnYUhr0x+ghT+YFzXkOJ7sTyBFKUJGFq8VcsE8h4Sln2lwXqVBHI7Lks4
-         xh/4BFR8MqvCwkLi4Q4KsWMPlOCkJH9sfYTbFT68N3+6EfCHlIzkRDwv1hOHGJFGVZDm
-         cHu89JimX1mqMVYoGT+644GjIgt9E4B7cnbvChs+RCzqiakB6vsuPv3oJpS2skHBUvSh
-         p/BDiaR1LSkvGJuANlc+pvGVEpVgaNXii+Oc9YkOnRPUdY4KgCBBPRZVS8VGvVtBNRDy
-         YytAWVFyQ9UpK6+vyh0Rbp+iSLsR/0FlmO5P9UiGEciBE5GqVkbIYlzcwdrIi4b3lBa5
-         qHZA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=K6Vqc+23VASYsYGFP+qO4Y3EIsmnhbqAWUtWDpTUg5U=;
+        b=aoBbgWW+1jyixAOrGCq8jS4cB5lnojmj9EUiBVefvGrNFKnsPv53QoXk63zgdS5qAe
+         URGwCTa/dAK9xSDwGdna0fivCB2IS90ZvxfHS7qrFvU9lEHFPEkGjmntFbRZFgcrpWRY
+         wGvFC5Be6CbYFw4gXVuH/9GSwygjS5aue/fjWzYZvWkU3R8srXVhFQKB+WJzi10oMuWf
+         Mbul/Ca1tPg18oGr4oI+TQbHP3JMuRdK1v5P28+qmmfEnSkrvQNutwdpiRagj010gu7i
+         SEj44zseOJcDBI+rL4Y9uRs8rROCF7iFLrGNwS6Vs/jacPsfadVMjuMKcG90sSzg9WBY
+         QihQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WRH1U9XGgfqWEUznDbBjK+ln/wIg4FAs6AUuAcYpjiM=;
-        b=sVShGz5z3UxM+jMS29jxITqBxHUNAfkMhI8kOcAe7hQPF+F+t/0EDanh6OFQHx8Ffg
-         Ml/DYgSV0e8kYH/CIWhwsw3obIhtUQOjZUZ6NLfGrEg78MppvKeuCmV0L0QIObvkLX2h
-         mLrFY4uDuh+MxOetPgUDCP5NGquuAGvXYjl7XL5+3jqRI57qbEUlpnP0dimhyg6xaACi
-         c6zq+VrIVNqjN47f592snnpc9SvPcl8DyHH9+k90uyB18Qn6uwvOwUj+2aec5mGRMgCt
-         36gQ/xgw2+hqPcfJYQ7xAfPYj+RpJsqtTyKdhiU5H41bT+SlM+T+grOl8pg7KOeIxuNQ
-         5vsw==
-X-Gm-Message-State: AOAM5308v7kjhCJBgc91A6L/xuNqIE0pVq3/ifQ9q5Aqw3/QIgCGgdP9
-        oft7vi+5LkPc4WpK22miWB7l4w==
-X-Google-Smtp-Source: ABdhPJyJW/SKWMo//tsJYkLob0dolrZzCo67MSuqy0v+ITqmyMiKwgdxgev8K215pVK2IvL7oX3pHg==
-X-Received: by 2002:ae9:f819:: with SMTP id x25mr4369008qkh.429.1611065143335;
-        Tue, 19 Jan 2021 06:05:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=K6Vqc+23VASYsYGFP+qO4Y3EIsmnhbqAWUtWDpTUg5U=;
+        b=kLqX7u16O/L1sUHaaCIpSnb/Qi9bgAwizbaDaWqKUqbX6vWZfa44FSTiQfpqCkqnLB
+         bEbpY6z6Fmbexg/A8/j3Pv2hXPfikL5tc+JpkYJBnaIF7rPCHoF0wM6RcLiJhefpFzcO
+         czC+4kpA1OwB9PRcT1/0mmg5eJ+daXM7lZ91rrOkFcDlPteXz2cZl6c3v6MIZEyrEh/s
+         wtBP6XY51P337/7umlDinXIVzQtyv0fHtzXVV00ZOePamhxXpk4EyhEbdKLEgQR0FJvo
+         8MVZig/xdPf0ytiSWpBoT3IYaMEkrFcgIO3KCSI0c3Wudn1XVe2FSLAHGXEADVPxer5e
+         wDTA==
+X-Gm-Message-State: AOAM530lBPnM2FXbHHLL1jPhk+7JyiRxX0sovODocgLp9sGNwmXCBfTv
+        C9JDwqdpjCUzVaC00Ejmr4lpig==
+X-Google-Smtp-Source: ABdhPJwo6oA6QD2i4L3dX6pk5dPtyn5nSwGwlebGrIfIWPShQk6upexxNl8NkiF3jBNdlEw6/NQM2Q==
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr4195712qta.309.1611065144384;
+        Tue, 19 Jan 2021 06:05:44 -0800 (PST)
 Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id f134sm12910308qke.85.2021.01.19.06.05.42
+        by smtp.googlemail.com with ESMTPSA id f134sm12910308qke.85.2021.01.19.06.05.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 06:05:42 -0800 (PST)
+        Tue, 19 Jan 2021 06:05:43 -0800 (PST)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
 To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
         kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
@@ -55,10 +55,12 @@ To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
 Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, linux-pm@vger.kernel.org, amitk@kernel.org,
         nathan.errera@intel.com
-Subject: [PATCH 0/2] thermal: Replace thermal_notify_framework with thermal_zone_device_update
-Date:   Tue, 19 Jan 2021 09:05:39 -0500
-Message-Id: <20210119140541.2453490-1-thara.gopinath@linaro.org>
+Subject: [PATCH 1/2] net: wireless: intel: iwlwifi: mvm: tt: Replace thermal_notify_framework
+Date:   Tue, 19 Jan 2021 09:05:40 -0500
+Message-Id: <20210119140541.2453490-2-thara.gopinath@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210119140541.2453490-1-thara.gopinath@linaro.org>
+References: <20210119140541.2453490-1-thara.gopinath@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -67,21 +69,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 thermal_notify_framework just updates for a single trip point where as
 thermal_zone_device_update does other bookkeeping like updating the
-temperature of the thermal zone, running through the list of trip points
-and setting the next trip point etc. Since  the later is a more thorough
-version of former, replace thermal_notify_framework with
-thermal_zone_device_update. 
+temperature of the thermal zone and setting the next trip point etc.
+Replace thermal_notify_framework with thermal_zone_device_update as the
+later is more thorough.
 
-Thara Gopinath (2):
-  net: wireless: intel: iwlwifi: mvm: tt: Replace
-    thermal_notify_framework
-  drivers: thermal: Remove thermal_notify_framework
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+---
+ drivers/net/wireless/intel/iwlwifi/mvm/tt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/net/wireless/intel/iwlwifi/mvm/tt.c |  4 ++--
- drivers/thermal/thermal_core.c              | 18 ------------------
- include/linux/thermal.h                     |  4 ----
- 3 files changed, 2 insertions(+), 24 deletions(-)
-
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/tt.c b/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
+index 507625f96dd7..a0c6be03903a 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
+@@ -146,8 +146,8 @@ void iwl_mvm_temp_notif(struct iwl_mvm *mvm, struct iwl_rx_cmd_buffer *rxb)
+ 	if (mvm->tz_device.tzone) {
+ 		struct iwl_mvm_thermal_device *tz_dev = &mvm->tz_device;
+ 
+-		thermal_notify_framework(tz_dev->tzone,
+-					 tz_dev->fw_trips_index[ths_crossed]);
++		thermal_zone_device_update(tz_dev->tzone,
++					   THERMAL_TRIP_VIOLATED);
+ 	}
+ #endif /* CONFIG_THERMAL */
+ }
 -- 
 2.25.1
 
