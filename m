@@ -2,182 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863AC2FB728
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F242FB72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390377AbhASKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:21:11 -0500
-Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:17185 "EHLO
-        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389656AbhASKIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:08:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1611050891;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=/bjQxp8HUntoGdxdqO1JnJG/djS2EtEng8HELIQA1cw=;
-  b=aN4x+0LHZBdY3ur+fNYHmNdaXTttLuW/YAA78EduZamTfxOU1nRr4yhY
-   Vy1ebiua5ZVIhZWzfYk3FEZPJvXuSxQxuLQU1O74Hde+qQQgeNbpjGFmc
-   wCR+LABNpP5Rq4wMsfMVXeQGwn3DYaGUuYYMjWokyW/2QmVf1RYMmJ32C
-   Y=;
-Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: C22xdEYPtmlMTywRWCzJWkbz4H34HboZFqMQZaLRBHJU6B7XaruOD7Pm60y4S+1oNspAVig0y6
- 4MJvJ520QTu85q9CcpmDZEn61DPRyYV6QEQ9kl9r/AdnokSiP0Ezv+GKLvKF/p8k4f+1Uj2429
- wvQn/3YspDHrG8U+AP1GeqWYvezAOJt4EKbptRwESiPn24yDG2PndQjtvUK14tlLssweM58yuy
- uHcJQeHsdsb/s1Ua/41cFU+nwxMRXwJgBWBHi2t0kgwQQ4EsaLf6kMB1mww/W4LVm8LjXBIo8g
- lH8=
-X-SBRS: 5.2
-X-MesageID: 35341747
-X-Ironport-Server: esa5.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.79,358,1602561600"; 
-   d="scan'208";a="35341747"
+        id S2390425AbhASKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:21:19 -0500
+Received: from mail-mw2nam10on2075.outbound.protection.outlook.com ([40.107.94.75]:27873
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389665AbhASKJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:09:56 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JI0XUotUQaEZValQfSFcb7Pn0oDqqMixD51pQEdPNBKF+XTimHLUqfd8V0KyN6iVp+f7JBBtToTh9o19wCgs2IWVO3xm4HaWa9MqHAfW4pirSFEljHWmyHA+bEGi8qPEecOENrIkAF4fACwvRKXGV7gAsnGvoC3auLNt4GUI4vdcQmUiQthEdTHUqyY1+KA6fT+haAGv45XJbrI3bwItuV4e/C6gP2ke7SerFTRr4Ywz1tfJE339kmYsnFyaOYklyq3rKi+iAnOjn0vMwABiu9gMR2khuowr9jvpYvxC2EVwk9U5hXgqicxdY/igATjhQYpqMuDqh2AoGYjWK5KIaA==
+ b=EuaCUDOTvZA7qBAdGkwN7pFPkBexNvOdxXiXtA9E2hG11M/nx/Sun6f9J3BpBGwtwT5DHex1640CJOf5w9a71qxd11nDFXAhZL4KP+IxkUFZYXmmwdVtB5rH2sNBvE0vaHy/bVA5lusv+uWx7qR7rLLCgr3nxyFgVX9zKXXS3hQOaupkqhyMu/lxb7NFKke508da2Dxj1bDiKtEcr+VC9wZJTJObEkGkBSg1wl7n1y9YHvmlXh+++mYHfRuWOc4I/UAJwPBi4hN3CKSmjDTE1bHLI+s88iWZ9imHxuKLo1SczwUPzObC7SegS4BZ6CAyNP+IUX/MXBP1J3iYESu9Rg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lc8cFj7Eh/9trtedhQvRmKRka4ZR+13SpzisBpzDx6g=;
- b=eA1mhZfzWE7o1o3NHmurcOJWH2WeXXG7d5n6LyH3ZpGM2WDll2x9DqQX+Yu/nupsvmVAVZVof2xNwRC9W4dH6Mb0svDh7L3VsP86nu6u2SPb2f79f/mwOwAVgYmzG+pU7e6WgMj5hZnuFWG4wEFVDktS3+hUBjUPIAPm7xkm9Bs+Tyy83vTO8Ol7N1fGHUsgFsjjiHFZ4plaQ+e/U6RXsjlY/C/AB9ZBGzdmMC7O3kWHmRzpBG37oIjqu+6x40cbyFpoZlMhyJffzRNGUJ5X9xb1s1xPwXfT51UkE7IOeQcs+QoXvj8bYQtn/DZ0oro28dYHvEUhzQg4W4Xsci1ZzQ==
+ bh=y7adigLItf66vIfP62vEeEZp/QNW0eGW4H4AaOqJIuI=;
+ b=kXQGWehwO+SkT02lLSPUvPStN5O/E5azwj/57hwhby2jA9Mhl9naKdm9F+zWpszDFAQxJWFcwg8XBZhiDexC+e+qJ6BWmlWq7IKlayM7q0jPbYBZpf0esNGsZRAI0NdsdYN4R0RP1Y30N5E8t1KDNc3hPhQA3L/uSOJixOMtWr0OAwTyL09CaiQleyEkjfQHrWrkXvLnmidHHgzSr03skOcputC5KeH682NYTP0wR2VOk88wetAMo2aqVAYQ1h11f12pip/G1q8LF+s18OztNe+0/C502OTWwdSehBB4BllUeD+OxzItvHyb3E/xkcUhXybeN1GghhOZv7ZsZB0vCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lc8cFj7Eh/9trtedhQvRmKRka4ZR+13SpzisBpzDx6g=;
- b=iWiaRucQYYKQ8iONu+Ww4h5bq2rrjQmjJsNIoREKszM3g8ddBkv6xRohECn2jjETxf80QdHoqFJ/2Wa0A/+Dp59T8s6qxJDV8aKJQGUXS7hnM0KYEE2nfYtASYtfXLRMBwWJkWipGIIu3Jc6dgJoihDnJ57tN96p28i6waOScM8=
-Date:   Tue, 19 Jan 2021 11:06:51 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Arthur Borsboom <arthurborsboom@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, <xen-devel@lists.xenproject.org>,
-        <linux-block@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
-Message-ID: <20210119100651.afyccratx6ha52kc@Air-de-Roger>
-References: <20210118151528.81668-1-roger.pau@citrix.com>
- <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ bh=y7adigLItf66vIfP62vEeEZp/QNW0eGW4H4AaOqJIuI=;
+ b=bpAeo5NSaf7ZZFpvDrgz8KNLJ3dywFwDN0s4Ggpgmx/aWAnk4qdodwJInFGxaW0WlnyptGB13fxE/xAwFGs6RhW5FeNtmek1+uM+hcT++XR7DGpkwCrz0yf0yrPebuTxeprRTNRnt8pXzIoxbiJo/kBxitTcuEAUPWzE/cVvqAM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB4706.namprd12.prod.outlook.com (2603:10b6:208:82::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Tue, 19 Jan
+ 2021 10:09:00 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 10:09:00 +0000
+Subject: Re: [PATCH] drm/syncobj: make lockdep complain on WAIT_FOR_SUBMIT v2
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     daniel@ffwll.ch, mingo@redhat.com, will@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210118180334.43714-1-christian.koenig@amd.com>
+ <20210118180334.43714-2-christian.koenig@amd.com>
+ <YAan6haGjnIlNIoJ@hirez.programming.kicks-ass.net>
+ <019f2342-9d64-f6c6-d03d-0ab8ddce101d@gmail.com>
+ <YAau1CBmMNPM5KqV@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <ebf6940b-223c-9b92-3220-a79063723373@amd.com>
+Date:   Tue, 19 Jan 2021 11:08:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <YAau1CBmMNPM5KqV@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
-X-ClientProxiedBy: AM6P194CA0083.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:8f::24) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM8P190CA0017.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:219::22) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM8P190CA0017.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:219::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 19 Jan 2021 10:08:59 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0d9fe86e-2153-4dab-5323-08d8bc61f596
-X-MS-TrafficTypeDiagnostic: DM6PR03MB3481:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB3481398789CAF19A303019478FA30@DM6PR03MB3481.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 56d71303-a445-477d-a467-08d8bc623ded
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4706:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB4706F0C66ABBB3E1E767DD6B83A30@BL0PR12MB4706.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:41;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tJqjiTTFz2G0fHOM331E2sz92CaSn0KOqmYR7mHRZVSwNp7baqZhNObdvWnSZnioDVWi7vy6pIE2T+QYufPfGSKSzT/zeB+F/MCdln7Jlc8LxWjj4G8GcsEUpt4PtDt8IuzyX+9Vj5Q79FcUxkJy/45i5Bq5oqYS3uIinkMnun3LPelyo1BzDKQ8vLuYNYegahXrPd25VCFv9edmalAZBXydbnyp6WLT6BGT6vYQ1+EJIYDHEj/G/7O8RGk0pFMnwI0ZNrjTS0/DGuUV2Ev9aH5DDW3csu5foUn6Oj8FOqleWygI71QVm7PPX8lVSsFO7LB3RkTaOT8yAs6UIeimX/jYwfDoUns/c/00Xc7VkUeb5FwB4kH7XDcP6D1/hUItS17efeQ62UfOE99HJCLC4DU/bgVpzbl00lF447F3kH1Gi4pyWCLgbxqDzikqWXpp5D7QgW1q+AHq/9jC1g1PWbzKAH4J2v8YpsvZ9MWhkOk5o0NQG5zPCYvTFQV7MP6v/YlFEx3j8bg+CSyRoDLLrg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(396003)(136003)(39860400002)(366004)(346002)(8936002)(66574015)(26005)(6666004)(6486002)(956004)(9686003)(33716001)(66476007)(66556008)(186003)(16526019)(66946007)(85182001)(4326008)(53546011)(316002)(54906003)(1076003)(83380400001)(86362001)(478600001)(2906002)(5660300002)(6496006)(6916009)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?elhpREVUS1NyMUZEQnJRVGVvT0FBNUZLSlRnd2RNSjV5ZW5GaGVrdWQvWG9t?=
- =?utf-8?B?aGU3WW5OREhUSGh5VVhUL2tSUWhXSzc4TzMyd0EzczdOZ1VoYmNXSVVCNGdG?=
- =?utf-8?B?SjJtNnQ2endKaHc4TExYTmpsU3J4Ri9GOHR2M2phU01EV1JKU3BWODZVVDh5?=
- =?utf-8?B?T1Q4N1l1emo4VG1tckNObEsza0Jwc0ZCL3lDemhpYWxoODNFS2RONW1oM1RE?=
- =?utf-8?B?blJVVEtmVmV0VmZYcE5kcnM2QjBYQ1RnTEJWY0tEdFd1MnBQS0M0UHEzRk1U?=
- =?utf-8?B?QVo0V3MwY20zR2JzeElUOGN2c0lwcjhKQ29NZHlFR09Wckc3QThYbVJ4cWxB?=
- =?utf-8?B?bHRyU25rbTl5QVRRUHluRTJYMkovc0RwVU93V2sxNWRmeVIzUDBVLzFQQ09w?=
- =?utf-8?B?VjYzWEtLRTQxUGdlS0pzdVFHd0hySkVVOExVVzhhMHkrdTIxdXA5alhSdEZR?=
- =?utf-8?B?ODBpVlAybXI1Qm1WMEJIblBnRTBlK0ZDTDVaamNGQWtMMW4wUjVsUnBhTUVr?=
- =?utf-8?B?c0lyZkdXeitOaCs1WUFhcGI2Ukk1ZVhRc2RnQTNWQkR6b1FncG9GSWlBOTls?=
- =?utf-8?B?YjNZUFJWSHZnKzNDMWN6aWR5em9JdktEYjg5SWtJRElXc2txcEJhTTJFV3Fw?=
- =?utf-8?B?UzVzNXVqQmFvMllzUlBkdGpHWEwvL0l5T1B2S01WYVkvS3lLUXZkaWZzNlpM?=
- =?utf-8?B?amRGQXpWZXJVa2pIOUlTZnZUY0txeFRqblUyYi9OK1A3MU1HNXJ5TVNreEJZ?=
- =?utf-8?B?emhCM1A5Wk1abHI3TmlKMVNKMUQ2S2RhUHhzaG9tYy9ZM1N6eTRtMk5XSzZI?=
- =?utf-8?B?TWdTUEFyUG1zaXRKVDR1UTBmUnhDeURHRjIzdnh3VkpPVEUwQVJRZFo5VXIw?=
- =?utf-8?B?QkhBYURZUnFjUUZHOUE1WjFWVlIrdDFvWU0xRU0xdnlFMVRWK29UNmErcSti?=
- =?utf-8?B?YXRIVXdNa0VMQmlpcXNnY0ZmNTVId2QzaTM0WWI0WUNGZHhQaVoxNEFtRTdU?=
- =?utf-8?B?VE1udllEQldxVHJiZk1RSFFCR1BaYXdHMTNScVh3VjVSalpMclh4ZGwvL1B2?=
- =?utf-8?B?ZEhqeGRURVdPTEtjT0V4bk9TUnRMWHE4eTEvUWtrcEZNTWNoV2phRTd3YlA1?=
- =?utf-8?B?aFNlWEE2SVdwVFpLcXQ1ZjVPODNtKzFZdmtPMGhpVkJlSk45SUYwRjF2c2Jm?=
- =?utf-8?B?UDhBSXNNb1g3bmpPNWxzanJyS3ZIZXhrRGlmYmVQVSt2Ky9lSmdUZy9UOW9y?=
- =?utf-8?B?QzQ5TzNqTThYamVRcXVaV2lOSTZGTEdOamR0V2dpTmlpS0cwa1JiSEtpY2lS?=
- =?utf-8?Q?wG2Awy1W0yUG+WIAEgaPdOu40dEpyaFILN?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d9fe86e-2153-4dab-5323-08d8bc61f596
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: M74RmmDa8/xTMC9V/xcEOASS5owmU1Uag2bv3PivE0sOnlKj23hkZtkUznQa4ri0oe+hPmd52xT1qwtCt1YmCcCADHgfveplAhP/D5StH5P86OVZ6XdPi4wKKUrGsL3/NZVVfw8avFIXCtbv98WfGBn8OoZSqwtQZLPl6iXllRi70Ah1Oxw6fKqIYCC7azjGyims7ZjFpusn3NzSdIGaMtndhBFWxajBHu9A7QlkwIs1FPou/CvvaIKd0JfTivbwEsxa3WWmhsUbb+ILs90QsbPzS5YcO2EPYW/2rKaxTXBuDUB4tao1lxWNdVIdGTU24SnwH97OF32dkRVWi2laJR2910y90m50iOgnjh0vFNUxTmSM45Y/2Bn7arPJ7lFk9hrV0nkF5z7yt6RbZpkukD53xN3n7Gj+BCAT+uz+TpCG/B4ZACoeUOXzrnj6zU2aHcigTPXSBPbA2I1DLiEgo93Tx/NDl37pR4SpjM1VnP9Qifw+rspSgs0l+iEdJo8qKKuUZGgeRrDn3j0QO9CUBV2u0k+YXAlE6gcG6GjxV1JBTBgd74Ag2l09ViLxQVpTQhmoFGUWdQtMP11HeyMINWx4p48my+/v+kORT6npbfE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(366004)(136003)(8936002)(83380400001)(31696002)(6486002)(316002)(4744005)(8676002)(66556008)(186003)(66946007)(36756003)(86362001)(31686004)(6916009)(5660300002)(2616005)(16526019)(52116002)(66476007)(478600001)(6666004)(4326008)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MyszUlJVMHJrUXZMTy9Qck5tNmNQbi95THErdUZwVWQxMUpmL3FxTXRhZHZa?=
+ =?utf-8?B?UVhLWGlNOWphazlxdG9Zc3lUUGpWRCtaVHNKbWRSZDhsbFlZRUhXSVRlQ3VZ?=
+ =?utf-8?B?VkttMFc2bzU2VEZwR3E4a1Q2UTF0Q2ZFTFkvL1RVOHZHSWRsbTJkcWQzM08x?=
+ =?utf-8?B?TXFNVzJuYkNwZzFBanR0U3llYmF0RXE1R2w5d3R1YjcwQUt5ZUJZSWdWajYv?=
+ =?utf-8?B?WU56ejM4d09BTHJLazJJM0o3TkRqSXVSZ1FaL3pqMFhZUG83UEgrdWt0VEVO?=
+ =?utf-8?B?S1FRS3laMEZIUHl4OXNqK0txeUdXV3gwS01JSEl1eWt2QlBVT1pwZUdRdzRw?=
+ =?utf-8?B?aWhPRUtuUlBITkg1ZVFsRDJJT2tiSVJXOENVbmtyeDZYL294WmpvbFR0UmNC?=
+ =?utf-8?B?Q29tR3E2bWtTL3ZtN0xoK3lQcUZJVFVnU251TTBQNmRkMERMaGtzOUgvaDJT?=
+ =?utf-8?B?Z3RURFBPcDAxMmRteU9qL0pRcjhKbkdiR2hIa3hQN0Z3cGpDY1lzdmZlaGhz?=
+ =?utf-8?B?T1lSdzBKUXRPUXpwbTFzOUNxaDU5R3hBZ3FtU05XN2kyWjZEVmJkaUlUZmlN?=
+ =?utf-8?B?S3cwN2xXOGNrQVAvSnJnWm5CR0dWWUpkR2NabUkzbzI4YVIvRjAzTFlxK1dW?=
+ =?utf-8?B?VkcyT3FmNmY3cTJMNFYrTzE1NC84cWJHb25xK0cvZi8xUzVoS1BjbHdNRUdV?=
+ =?utf-8?B?djltL1ZqMUsvQjI2WFBCakVaN2dYSW03N0dVV3BZNkRZblp3M0pNaDhWQ2VD?=
+ =?utf-8?B?b0J2eWNsWkFweEZkdXVETnhOd2Riamk4U0F4N2I4TGp1VFV3VDN1WlNvbGY4?=
+ =?utf-8?B?RHhleE4rNnRsOEY5eGFZc01sUGdRazltem8xSDhTUytNMmxHRWkvbGZLRU1n?=
+ =?utf-8?B?d25HWnRIakcxajBGTkxNOFhlNFlIUUlSWGxNRUtkY0dCNnRxVFY4SkMxdDNs?=
+ =?utf-8?B?bVRmeVY3ekN3R0tkcTZZZDVlUDMxa3hpQWdDdUxyZmZxWXFCUkk1MWI3by94?=
+ =?utf-8?B?OSs4SVJuRU9jVVBKV1FRRWk0UW02VVdVN2NsVTVrd09Td0NtVzhRcGRCRHRO?=
+ =?utf-8?B?MXRGN2pIOGx3R1d3Mm1hSXRlSjBtbXpuVno5dTIyMGtCSnQzbHVnZjl4MEhJ?=
+ =?utf-8?B?RlE1UjlUcEpad1p5TjFpZEJJemJ0cGh3OTdEYW1NK05kWEVXd1hNR2FMRW1i?=
+ =?utf-8?B?U2V3aE0yOXhVTDFjSG5UVkRuYlN2dUZTTDc4VTNOS0tCai9LcW1FZUZ3SHVq?=
+ =?utf-8?B?L3cxRE5nUUoyRGVaV2FkMFZvdk1iYk5IazNLRm9zeFh1UzVrYk9KMFRKNGpw?=
+ =?utf-8?B?RjRYUkVlRkRzaGwxSFlJcHBHc1VxSUFnMUdMOHZBQk9pN0RXY3ZMK1VPY2pu?=
+ =?utf-8?B?Qnhwd0xWeFVrVG1RY0VqL0dldUx3SDNtOVNVQUhjdzMvemtQLzUrL0s1d3U1?=
+ =?utf-8?B?bmhJcnVHc1ZLQTlsQnNZWmxFaHlDa2Znclc2NFRORThvT0p5RkNUTldDREdu?=
+ =?utf-8?B?V0JwRjNPWlFIV0RZTDZzWWxJb1Jab3JSZUFUNm96clFUZk80b3ZsQzdWR21w?=
+ =?utf-8?B?K1pwZz09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56d71303-a445-477d-a467-08d8bc623ded
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 10:06:59.3702
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 10:09:00.7634
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f8qqa/7EX7wQyTYcrPspb2by8JpoSuBv6VmbpZLyKsQ8aj/DNjxJ+Ki2szPywdVVfICW1UeCuGX+CkEzyWJx0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB3481
-X-OriginatorOrg: citrix.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: AO1iS9v29vGkuHdMyIDcrDDrLfUScuB70gBfRXb+7mucPKoJvkkUolzogpQDLo4E
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4706
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:43:01AM +0100, Jürgen Groß wrote:
-> On 18.01.21 16:15, Roger Pau Monne wrote:
-> > Don't require the discard-alignment xenstore node to be present in
-> > order to correctly setup the feature. This can happen with versions of
-> > QEMU that only write the discard-granularity but not the
-> > discard-alignment node.
-> > 
-> > Assume discard-alignment is 0 if not present. While there also fix the
-> > logic to not enable the discard feature if discard-granularity is not
-> > present.
-> > 
-> > Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
-> > Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> > ---
-> > Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> > Cc: Juergen Gross <jgross@suse.com>
-> > Cc: Stefano Stabellini <sstabellini@kernel.org>
-> > Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> > Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: xen-devel@lists.xenproject.org
-> > Cc: linux-block@vger.kernel.org
-> > Cc: Arthur Borsboom <arthurborsboom@gmail.com>
-> > ---
-> >   drivers/block/xen-blkfront.c | 25 +++++++++++++------------
-> >   1 file changed, 13 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> > index 5265975b3fba..5a93f7cc2939 100644
-> > --- a/drivers/block/xen-blkfront.c
-> > +++ b/drivers/block/xen-blkfront.c
-> > @@ -2179,22 +2179,23 @@ static void blkfront_closing(struct blkfront_info *info)
-> >   static void blkfront_setup_discard(struct blkfront_info *info)
-> >   {
-> > -	int err;
-> > -	unsigned int discard_granularity;
-> > -	unsigned int discard_alignment;
-> > +	unsigned int discard_granularity = 0;
-> > +	unsigned int discard_alignment = 0;
-> > +	unsigned int discard_secure = 0;
-> > -	info->feature_discard = 1;
-> > -	err = xenbus_gather(XBT_NIL, info->xbdev->otherend,
-> > +	xenbus_gather(XBT_NIL, info->xbdev->otherend,
-> >   		"discard-granularity", "%u", &discard_granularity,
-> >   		"discard-alignment", "%u", &discard_alignment,
-> > +		"discard-secure", "%u", &discard_secure,
-> >   		NULL);
-> 
-> This would mean that "discard-secure" will be evaluated only if the
-> other two items are set in Xenstore. From blkif.h I can't see this is
-> required, and your patch is modifying today's behavior in this regard.
-> 
-> You might want to have three xenbus_read_unsigned() calls instead.
+Am 19.01.21 um 11:05 schrieb Peter Zijlstra:
+> On Tue, Jan 19, 2021 at 10:46:53AM +0100, Christian König wrote:
+>> But I'm going to double check if drm_syncobj_fence_add_wait() isn't used
+>> elsewhere as well.
+> drm_syncobj_array_wait_timeout()
+>
+> Which is why I asked.. :-)
 
-You are right, discard-secure should be fetched regardless of whether
-discard-alignment exists.
+Ok, good point as well. But this isn't driver interface and rather IOCTL 
+implementation.
 
-I can fetch discard-granularity and discard-alignment using
-xenbus_gather and keep discard-secure using xenbus_read_unsigned. Let
-me send a new version.
+So if we hold any locks there it is our own stupidity. Going to add the 
+appropriate annotation anyway.
 
-Thanks, Roger.
+Thanks,
+Christian.
