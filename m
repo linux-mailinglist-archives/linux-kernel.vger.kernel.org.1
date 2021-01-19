@@ -2,143 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E2D2FC14F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90242FC17A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbhASUkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:40:10 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:54711 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729608AbhASUh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:37:58 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 7A695C0006;
-        Tue, 19 Jan 2021 20:37:10 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 21:37:10 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/3] reset: mchp: sparx5: add switch reset driver
-Message-ID: <20210119203710.GP3666@piout.net>
-References: <20210114162432.3039657-1-steen.hegelund@microchip.com>
- <20210114162432.3039657-3-steen.hegelund@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114162432.3039657-3-steen.hegelund@microchip.com>
+        id S2389038AbhASUp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:45:56 -0500
+Received: from mga07.intel.com ([134.134.136.100]:26412 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727323AbhASUn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 15:43:56 -0500
+IronPort-SDR: nfN4aBw0OfWaAX6nuppp8U2uBOXv3lJZbbOFLdT6XsWsVHIHZ+G0d29q2BPYWS2Zq1JY4p+cY0
+ qzaVfQDgDPyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243064926"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="243064926"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 12:42:02 -0800
+IronPort-SDR: 4MSVm10axK5OiaJrZ1c9NkGwWb6ZQDm+Moa1qfWb0RCnekOlxmcfkvFyHU3Wjrp5OS6rkTIwhv
+ 9oiJkooX5r4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="365990782"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga002.jf.intel.com with ESMTP; 19 Jan 2021 12:42:02 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 01/12] perf/core: Add PERF_SAMPLE_WEIGHT_EXT
+Date:   Tue, 19 Jan 2021 12:38:20 -0800
+Message-Id: <1611088711-17177-2-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
+References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-This commit is also missing a commit message and you could probably get
-some info from your cover letter here.
+Current PERF_SAMPLE_WEIGHT sample type is very useful to expresses the
+cost of an action represented by the sample. This allows the profiler
+to scale the samples to be more informative to the programmer. It could
+also help to locate a hotspot, e.g., when profiling by memory latencies,
+the expensive load appear higher up in the histograms. But current
+PERF_SAMPLE_WEIGHT sample type is solely determined by one factor. This
+could be a problem, if users want two or more factors to contribute to
+the weight. For example, Golden Cove core PMU can provide both the
+instruction latency and the cache Latency information as factors for the
+memory profiling.
 
-On 14/01/2021 17:24:31+0100, Steen Hegelund wrote:
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> ---
->  drivers/reset/Kconfig                  |   8 ++
->  drivers/reset/Makefile                 |   1 +
->  drivers/reset/reset-microchip-sparx5.c | 120 +++++++++++++++++++++++++
->  3 files changed, 129 insertions(+)
->  create mode 100644 drivers/reset/reset-microchip-sparx5.c
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index 71ab75a46491..05c240c47a8a 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -101,6 +101,14 @@ config RESET_LPC18XX
->  	help
->  	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
->  
-> +config RESET_MCHP_SPARX5
-> +	bool "Microchip Sparx5 reset driver"
-> +	depends on HAS_IOMEM || COMPILE_TEST
-> +	default y if SPARX5_SWITCH
-> +	select MFD_SYSCON
-> +	help
-> +	  This driver supports switch core reset for the Microchip Sparx5 SoC.
-> +
->  config RESET_MESON
->  	tristate "Meson Reset Driver"
->  	depends on ARCH_MESON || COMPILE_TEST
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 1054123fd187..341fd9ab4bf6 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
->  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
->  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
->  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
-> +obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
->  obj-$(CONFIG_RESET_MESON) += reset-meson.o
->  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
->  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
-> diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
-> new file mode 100644
-> index 000000000000..0dbd2b6161ef
-> --- /dev/null
-> +++ b/drivers/reset/reset-microchip-sparx5.c
-> @@ -0,0 +1,120 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/* Microchip Sparx5 Switch Reset driver
-> + *
-> + * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
-> + *
-> + * The Sparx5 Chip Register Model can be browsed at this location:
-> + * https://github.com/microchip-ung/sparx-5_reginfo
-> + */
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/of_device.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset-controller.h>
-> +
-> +#define PROTECT_REG    0x84
-> +#define PROTECT_BIT    BIT(10)
-> +#define SOFT_RESET_REG 0x08
-> +#define SOFT_RESET_BIT BIT(1)
-> +
-> +struct mchp_reset_context {
-> +	struct regmap *cpu_ctrl;
-> +	struct regmap *gcb_ctrl;
-> +	struct reset_controller_dev rcdev;
-> +};
-> +
-> +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
-> +			       unsigned long id)
-> +{
-> +	struct mchp_reset_context *ctx =
-> +		container_of(rcdev, struct mchp_reset_context, rcdev);
-> +	u32 val;
-> +
+Add a new sample type, PERF_SAMPLE_WEIGHT_EXT, as an extension of the
+PERF_SAMPLE_WEIGHT sample type.
 
-I would ensure the reset only happens once here else I'm not sure how
-you could do it from the individual drivers.
+The first 16-bit is used as the weight value for the instruction
+latency, defined by the delay measured between the dispatch of an
+instruction for execution and its completion. This is quite generic and
+can be extended to other kinds of architectures, as long as the hardware
+provides suitable values. Other fields are reserved for future usage.
 
-> +	/* Make sure the core is PROTECTED from reset */
-> +	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
-> +
-> +	/* Start soft reset */
-> +	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
-> +
-> +	/* Wait for soft reset done */
-> +	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
-> +					(val & SOFT_RESET_BIT) == 0,
-> +					1, 100);
-> +}
-> +
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ include/linux/perf_event.h      |  1 +
+ include/uapi/linux/perf_event.h | 18 +++++++++++++++++-
+ kernel/events/core.c            |  6 ++++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 9a38f57..005b6b8 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1030,6 +1030,7 @@ struct perf_sample_data {
+ 	u64				cgroup;
+ 	u64				data_page_size;
+ 	u64				code_page_size;
++	union perf_weight_ext		weight_ext;
+ } ____cacheline_aligned;
+ 
+ /* default value for data source */
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index b15e344..d0129e5 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -145,8 +145,9 @@ enum perf_event_sample_format {
+ 	PERF_SAMPLE_CGROUP			= 1U << 21,
+ 	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+ 	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
++	PERF_SAMPLE_WEIGHT_EXT			= 1U << 24,
+ 
+-	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
++	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
+ 
+ 	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+ };
+@@ -900,6 +901,13 @@ enum perf_event_type {
+ 	 *	  char			data[size]; } && PERF_SAMPLE_AUX
+ 	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
+ 	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
++	 *	{ union {
++	 *		u64		weight_ext;
++	 *		struct {
++	 *			u64	instr_latency:16,
++	 *				reserved:48;
++	 *		};
++	 *	} && PERF_SAMPLE_WEIGHT_EXT
+ 	 * };
+ 	 */
+ 	PERF_RECORD_SAMPLE			= 9,
+@@ -1248,4 +1256,12 @@ struct perf_branch_entry {
+ 		reserved:40;
+ };
+ 
++union perf_weight_ext {
++	__u64		val;
++	struct {
++		__u64	instr_latency:16,
++			reserved:48;
++	};
++};
++
+ #endif /* _UAPI_LINUX_PERF_EVENT_H */
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 55d1879..9363d12 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1903,6 +1903,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
+ 	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
+ 		size += sizeof(data->code_page_size);
+ 
++	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
++		size += sizeof(data->weight_ext);
++
+ 	event->header_size = size;
+ }
+ 
+@@ -6952,6 +6955,9 @@ void perf_output_sample(struct perf_output_handle *handle,
+ 			perf_aux_sample_output(event, handle, data);
+ 	}
+ 
++	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
++		perf_output_put(handle, data->weight_ext);
++
+ 	if (!event->attr.watermark) {
+ 		int wakeup_events = event->attr.wakeup_events;
+ 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.7.4
+
