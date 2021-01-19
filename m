@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF972FC4C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BBB2FC4C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbhASXcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbhASX27 (ORCPT
+        id S1728847AbhASXbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:31:03 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:34999 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbhASX3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:28:59 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38757C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:28:19 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id n2so26082826iom.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:28:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ppNFUDLkhvwlaQPg6siyPxeLAB8qizQSeUojeb9HOrU=;
-        b=TVZewjEtoyESZPYnxCRKpHkFeVRlw0bH1Mom5CozNv+9gl7IO/aeV7eiAXaG42MWc1
-         cQ4WgZ2Hx0wphYQmrwNEOkLQWibl7nZFbT55QlypCFm+I1DT7BI6DwVm0ldGhNd3vFJN
-         cIBG2YsiogRvggUIX3gg2UHaNgKgG+9+d+Cwy6ZE06N0mfL/Yj2nZSe6DtQw+aVMAW2Z
-         IPU4Nx5ZE07wAVlljGAIdusCaoJOHmHG7YzXLPmC+j+mhmKdXeThhKQoJbJeZIrt+Nj4
-         Q0fnNV2lk5glMkwK92PjIcJhvMqgTxpscGyZ2LySPklc1E47n0Jc7hVTKJb5OHTt8TSP
-         tUUA==
+        Tue, 19 Jan 2021 18:29:04 -0500
+Received: by mail-oi1-f177.google.com with SMTP id w8so1348449oie.2;
+        Tue, 19 Jan 2021 15:28:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ppNFUDLkhvwlaQPg6siyPxeLAB8qizQSeUojeb9HOrU=;
-        b=qSptK7GhRrasJ4w5KX5Jk2pMYnT5WwV6D+JS1g4d11f4oR8Zefhl2Kr1XpBM911Qj6
-         l1ViYCVz7hbk4ODa+RAiU9P65Qpmw9wQ10L0DI+MGgIch6XrdRdiH/0CoXagEXT04tB/
-         MxvWov45xDn1GyFFAvJ7qNd1XAd96r9UuFpJc1nI9uwZmgVvLlNvUbwGVClmyI/NM6or
-         gPhhp1aYy/LcpmVPMrIuLllQ4EALQV0tN2MB9K+84hhASKuc4TCCxNNpvTSxP4I8jgUT
-         CqIAy4KP7DyEnn3HrqHCaUMfs4KXK4KIMKC9lAMkZZ4ANIV+ehOqaESTq1cMtYuzgOJ0
-         +ybA==
-X-Gm-Message-State: AOAM533beXPaAKKtqaFjRhvL9JReZPej7uc6NtBl+UKMyA0a4SYDj3m4
-        VKgJljRSn0W3mMvGBKfO6HqyEIyee+JhyrcNxGzByQ==
-X-Google-Smtp-Source: ABdhPJwdMtwY5+ZTKb3YKBTBw+18+KnTl4ewr6eOgpYE/f7uMEjcNcPNiyfeI6tvVO98gafhWgrZSlks1l6PW/NnRAk=
-X-Received: by 2002:a5d:980d:: with SMTP id a13mr4752861iol.168.1611098898454;
- Tue, 19 Jan 2021 15:28:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20210114182700.1298392-1-dlatypov@google.com> <20210118103653.GA4077@smile.fi.intel.com>
-In-Reply-To: <20210118103653.GA4077@smile.fi.intel.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 19 Jan 2021 15:28:07 -0800
-Message-ID: <CAGS_qxojC-sw7kFdb_rDee9j_P91ccaaYhBY=Mju8i04-g53=A@mail.gmail.com>
-Subject: Re: [PATCH v2] lib: add basic KUnit test for lib/math
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=NgCjdpeD2ewodAEIf3EQzoU1nevKZ6HXzGccvrmfIfA=;
+        b=ElA8yaxMJd6GiuFs2Jt/zCSC8F3CKWQ8crU2SkJo2Fm6Hc2ifsNdUKffZy/q6ZiA3U
+         ezY8V/betxSAEdhtHYRlpJmN6X8fGA/dDc4YKdn/T2NdLlgQvHW0eKjO/HM+R1phBFzV
+         UTE99Qb+3fRTzPpLxrYUSG9rZYrI/R772IiRtc5qaX/HFeXofpNpHkEjfqvQFuOc6uV3
+         henhxwxZNazr376gQhUQbSgpc3VWEDo9iTTzT3EIzMk4zYL5CtyY3H+u9GrefrxeuWgE
+         D6a0BhLelRGt2Z4KRAYRg0IMWA/SnUuxWF3V6jpXnMzxE27v9gnnEJ3m/QejyGliIZKe
+         Vq/A==
+X-Gm-Message-State: AOAM533fKORvK9gIHUxXXPvedhBDzbzRoiTs/2HX4tXJ2zp0l8o7RWn/
+        zN2PtIWyeActfqAc/zmuRmZTGlXnUw==
+X-Google-Smtp-Source: ABdhPJxjoKWxggjGsvdJkBiPqoPTvu9VCOzm1dtQb6Aj5ED83KtYj9XBHxaWMQSIs/Fq0OCB5taxxA==
+X-Received: by 2002:aca:a915:: with SMTP id s21mr1412597oie.108.1611098903373;
+        Tue, 19 Jan 2021 15:28:23 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e12sm31915otp.25.2021.01.19.15.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 15:28:22 -0800 (PST)
+Received: (nullmailer pid 2803682 invoked by uid 1000);
+        Tue, 19 Jan 2021 23:28:21 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        devicetree@vger.kernel.org
+In-Reply-To: <20210119124622.9490-1-mike.looijmans@topic.nl>
+References: <20210119124622.9490-1-mike.looijmans@topic.nl>
+Subject: Re: [PATCH v6 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
+Date:   Tue, 19 Jan 2021 17:28:21 -0600
+Message-Id: <1611098901.303102.2803681.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 2:36 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Jan 14, 2021 at 10:27:00AM -0800, Daniel Latypov wrote:
-> > Add basic test coverage for files that don't require any config options:
-> > * gcd.c
-> > * lcm.c
-> > * int_sqrt.c
-> > * reciprocal_div.c
-> > (Ignored int_pow.c since it's a simple textbook algorithm.)
-> >
-> > These tests aren't particularly interesting, but they
-> > * provide a place to add tests for any new files in this dir
-> > * are written so adding new test cases to cover edge cases should be easy
->
->
-> >  lib/math/math_test.c | 197 +++++++++++++++++++++++++++++++++++++++++++
->
-> Can it have _kunit instead of _test?
+On Tue, 19 Jan 2021 13:46:21 +0100, Mike Looijmans wrote:
+> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+> the accelerometer part.
+> 
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> 
+> ---
+> 
+> Changes in v6:
+> I't been almost a year since the last commit, sorry...
+> Fixed the yaml errors
+> Add interrupt, vdd and vddio properties
+> 
+> Changes in v5:
+> submit together with driver code as patch series
+> 
+> Changes in v2:
+> convert to yaml format
+> 
+>  .../bindings/iio/accel/bosch,bmi088.yaml      | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+> 
 
-Sounds good, will send a v3 shortly.
+My bot found errors running 'make dt_binding_check' on your patch:
 
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+
+See https://patchwork.ozlabs.org/patch/1428668
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
