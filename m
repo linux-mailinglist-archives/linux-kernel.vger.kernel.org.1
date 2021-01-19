@@ -2,206 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F932FC379
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0862FC37D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbhASWaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728442AbhASRpE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:45:04 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0B8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:44:24 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id n10so13379772pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:44:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=kWBNJcIF/mmQYxN/XJRtvBsFP1lmMDlmMSbcjiUEDWs=;
-        b=BZc8jbvvchOU/xeb5GjRwwxVPhi62OEvPJweNbqEphEC5LOYriBuWHWvtJGU4jWeSe
-         8UTimL7RjnM6sA8QT51YZflgH5MLBfFH5AJpPMAGmSuog+qJALUcJqIjuE/cnqZNRoY4
-         6xZuBBplsi2gmIrdvfKkHjZHd5n0Kc0rMtL1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=kWBNJcIF/mmQYxN/XJRtvBsFP1lmMDlmMSbcjiUEDWs=;
-        b=gv2xrw1RvNLKNiTvgKb0oz098u6J5G8BoEzTEXj1Agvi07hx8QculLYaQOj9P6pTHv
-         i+3xd0R6Y6pSZGUtpY2KF5cWkVc51yDHxFPs8dAmZmS7j/1HkxjQgQ08pjfEE99+Til8
-         nN6VooMp5JbncgIN1ToOwLS89LwXzvKXulmIngbc8Ss3AF7lgRa1kOoS2n/4QAHv7GST
-         oL5z/4Y8EMMPL5o70KvWmsYcqDTRZwsYP7PqghqwKPhmibBy2PJ35YrirTSwofciCzeH
-         lnW9ea/JiT7Xd6iVy5w8Y5XEVTTbnB2pLt6wITYTnYNdBxIkquTwNJXaKbg+rrLpX0g1
-         CuPg==
-X-Gm-Message-State: AOAM532qqa+ZSTlmJBLjuMAHBMaaerAQfNUiKbA/YS9r6rPrlDUNznll
-        L2JSPePCemcnVJcbcGjMJp/4og==
-X-Google-Smtp-Source: ABdhPJyOQ3o8UuDuyx8ebtY6AKxy3XVO4gK1Rk4FtsEXCQgNa35yHx0yCwmbMzNJX0ZIwP8kXHfe2Q==
-X-Received: by 2002:a05:6a00:2286:b029:1ae:6c7f:31ce with SMTP id f6-20020a056a002286b02901ae6c7f31cemr5034315pfe.6.1611078263504;
-        Tue, 19 Jan 2021 09:44:23 -0800 (PST)
-Received: from [10.230.182.181] ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id w20sm16789263pga.90.2021.01.19.09.44.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 09:44:22 -0800 (PST)
-Subject: Re: [PATCH v1 1/1] arm64: dts: stingray: fix usb dma address
- translation
-To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bharat Gooty <bharat.gooty@broadcom.com>
-References: <20210119053444.23108-1-rayagonda.kokatanur@broadcom.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <2ea086ec-9af4-aaab-9ebf-a8e5986c9063@broadcom.com>
-Date:   Tue, 19 Jan 2021 09:44:18 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1729722AbhASWan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:30:43 -0500
+Received: from mail-co1nam11on2050.outbound.protection.outlook.com ([40.107.220.50]:52385
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728977AbhASWab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 17:30:31 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a5g8hga+OfJiAmrDYGjx3A9SSmFFo+dT0B8LRDLRLO4y5I5e9KrKHzTxYBzbsTcUtVCDB0vWUcXk8T/qo4plDyxwjyRUudyX9WJwL88snAHnhqCryu+mmFp2jZW46RdMwImwGfa5B0ZeD8ncTFPr/5gs9Jo7+lQWeaE8VLrOpXi6Fd0mtTCBf5SxbRF5MAfYobvrMkVU7eyxoMY+IuUHHQuVwC16hc6Hc/gZIke9j5ZnGi+oUwegOIfmNanhhue2hSAAhh4d0OgcCYPrCJDsTBsNeW0aMtBlBMMRRWEYbxEYrbtsEFk1eiGo/60PbFzkUxajmB/gcIUer8BMwKsV7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRfDC/GuRGi+rkZ4h294Bt+yxRogy/8aCWje634oqNE=;
+ b=gxLDPnzUiagATxi9QKnLsRaYnhPQU9DPmgqo/mPKyq4O66AkJuQg4ldBmkQUDa83uxvpY4aDHjFwBY70pva5iHktpI7aUsfT75+Xdgj8CVQKPP28GGo+DXoKTFqKQHhhxMqDfG1AZe36A0I7Cy055/z1et5FUNufLWWEDUfNvbf9vLsXuSxhBLirFfWmfZxVvgfK1kfvS6VYQ50jLrof66q+zamDWNYVRHG7s7V06qmDcT0yQFXNBbUvj19a3iEYisyiYoMJkiolsVuhY0ZDbwAXQx1KsWMgqrJU5Jzw7fP7X7i0KLPEoJInhPn5q+WgfPcFHfX3B+VbuREyLSpHgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRfDC/GuRGi+rkZ4h294Bt+yxRogy/8aCWje634oqNE=;
+ b=uQsYFOV43SoR8Rmyex9tdt2zcMbxKvVB2JXipJG7oT8WFfZqbZjwDqxdRktdGn6gfauY34qDtcovY/56OnDQiCTv57kErYhrL9hGwEUs4LVpyCg70lM4J9ysAH0juXeSZ603Fhz+p2npwP3WoiYuuCm73JNpvk/Eq3ZDzLYZivE=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN1PR12MB2591.namprd12.prod.outlook.com (2603:10b6:802:30::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Tue, 19 Jan
+ 2021 22:29:36 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff%5]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 22:29:36 +0000
+From:   Babu Moger <babu.moger@amd.com>
+Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        wanpengli@tencent.com, kvm@vger.kernel.org,
+        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
+        x86@kernel.org, kyung.min.park@intel.com,
+        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
+        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
+        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
+References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
+ <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
+ <YAclaWCL20at/0n+@google.com>
+Message-ID: <c3a81da0-4b6a-1854-1b67-31df5fbf30f6@amd.com>
+Date:   Tue, 19 Jan 2021 16:29:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <YAclaWCL20at/0n+@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: CH2PR08CA0021.namprd08.prod.outlook.com
+ (2603:10b6:610:5a::31) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
 MIME-Version: 1.0
-In-Reply-To: <20210119053444.23108-1-rayagonda.kokatanur@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a15aa005b9446363"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by CH2PR08CA0021.namprd08.prod.outlook.com (2603:10b6:610:5a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11 via Frontend Transport; Tue, 19 Jan 2021 22:29:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a7f4e893-c881-4dd6-e0a4-08d8bcc9b378
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2591:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2591802D305E146BD57E871E95A30@SN1PR12MB2591.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PLBwC7fwv12JIJJb4EZXKeFhkS21tq2lXeKKQL/4u6xePOLzDQoIGksKqcgbpI/LxnH94o+DB+KsoPUonT6+URzCiAmCW54v+cVYtHygC2VahMw+xki0Ovm1swG59Vp0cGu7HX+cY0GS/PwIFdsiL+6GQjfaD3bSw29brEf6onu0ALjNviMTkPAfOjNfy+pFuu7QopvTxXcE/OXtczss5CWIjGpXX0QlW/rIIWzQUnLuDaKXRY6JIrpsaOiU/sd4+nfMlwSyvo/1RxFS7ijAu8XpEauKehaqUM+LINQF3d0AteJ+zGgq611erV+H2OOP38nejWR02zJ0YwdD9emwcsvlH2ZSzgKBP+uOlu4W71jUFQ87fGAkB0gOKklHY6bFiaiEKhSTi6hGkXDrRINXHKhQqZKV8jeK77+HtRpMOrU9W/CvW7I1Yvuy5B2rZhZjEoALAYWH2O8VB/aOdR+C7nfrXFWdDapDLWCoFxu6joc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(376002)(396003)(136003)(346002)(7416002)(16526019)(53546011)(31686004)(36756003)(66476007)(6916009)(66556008)(66946007)(2906002)(2616005)(956004)(6486002)(186003)(26005)(52116002)(83380400001)(8676002)(44832011)(86362001)(478600001)(31696002)(4326008)(8936002)(316002)(16576012)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RUU1azRhK3I4SHZLV2IxTm1wZlp1b24vdlJFMzF6M0g3TXNJcTFhR3hscklJ?=
+ =?utf-8?B?dHMrQ3pvdzBDZVhtOW1lOXJZb01Rc2dMS3hVMWNpNmlnNDlyc01GTGhNVElX?=
+ =?utf-8?B?RlVLbDdHUmJNb09Na05wYmJhSkhQYjRxNzlCdmlFR0RaSDNzd0o0SW5ZWjAx?=
+ =?utf-8?B?Y3VrWXk1VDNNMFBDbUs3bEF6clVkVWErb0RUWDBSWEYyZXZ1YlVUT2ZsQWFU?=
+ =?utf-8?B?RGM2WFpBV2JaY0xWM0FaNWhEckFDcGgvYVk2LzFObEpCSkZmdmVFWlVHbDkw?=
+ =?utf-8?B?NUpGK29ncWNiM0VYc0FCTThOMWRBMWtxbkd3TnNtbWREQ3ZteTJYWHk5NHVU?=
+ =?utf-8?B?NDlWZTRkWkFuaGZNOVdlVUdjekZROGNTQUc4eGFrZ2R5cmFiRU04NC94ZmRX?=
+ =?utf-8?B?emk5SWJFUFI1TGRIQlJiTFB4R1YzZncrQUc1T1A2Yk14am1MWkNiRHJoUFgr?=
+ =?utf-8?B?eWliOUtOTUlNK3JQN0tmZG9VUm1VQ2EyVllJOGVlWmhPcGdYRGRQL3ZKWVUw?=
+ =?utf-8?B?WDJJci9ialI4T3NJSDNRbFEraEZZajFTSC81dlR3cmZjM0hRU1lBeUJoczZ2?=
+ =?utf-8?B?MmpsTWZJb1ZFekNqdU9hTXA2SGwvejIwbWJPVVFiRUYxNmwzV3pnM2k0Z3RR?=
+ =?utf-8?B?Y015bit3RkdkMUhBVUx5S2xUWlJjUmEyaW9lUFdBbXEvR0JJbzhxbGlmRVU3?=
+ =?utf-8?B?U0JCbkJIcWxWaDFlbkZNMElQQ2NPTDNNK0RwUkxnRVJQcy9TNWhhNldXdjMw?=
+ =?utf-8?B?WHVhZzM5bXo4cmJCYkVKTzBXQ3VSczVuczY5bTdycXk3WHJubVBGL0Y1R2hL?=
+ =?utf-8?B?MDBLeHZrNHN5REdhYjZlUGZSWW5td3R6eWJQRUVXSGFOSzVDZXZPbVFQeVJR?=
+ =?utf-8?B?RElMeGt0TUc5WE1tQWdNMGxaU1ZhampGSkpIcDA2dmF5OTVRL0gzMWxWM0do?=
+ =?utf-8?B?RzUzaG5QTXk3TmdLaFBBVHVubXVIZXEzcllQKzJEZEQ4VVFaSXQrT3Z6RW10?=
+ =?utf-8?B?R0VuYTZPajNXN3dRd0lwWjFIc1JLbDNodWpySW1NUXBsV1htTTQ5ZE9yWm5H?=
+ =?utf-8?B?MVVoN3VVOU5nWjE3RmlWcjNUeUloZWpHdm03NVBQaGdhekdmTHVsY2tYb21v?=
+ =?utf-8?B?LzRLaVd2eVVBMmw5SWxvNEpLaUxIeW12bTVxcFEwMDRQaU9oR0llSE11OElu?=
+ =?utf-8?B?RzNvTXRxcTN6WTFrOHFBQmhERkxpbzJrSG0yOU5ENURSQWY1SEc3Tm1acExj?=
+ =?utf-8?B?ZHpQRVViSWw5d3VVTG9wbFZPU2xOWVREMnpzRkgxaXQ1YW9JOFlON3FxcU51?=
+ =?utf-8?Q?JlOZPHMdq2Bag=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7f4e893-c881-4dd6-e0a4-08d8bcc9b378
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 22:29:36.1475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2VIuCGNjygYuqPikX/zmfnMnyNCWtd2WhTpa/2ueSn9vyQHLJEtKEEobAOqsU3YS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2591
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a15aa005b9446363
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 
 
-
-On 1/18/2021 9:34 PM, Rayagonda Kokatanur wrote:
-> From: Bharat Gooty <bharat.gooty@broadcom.com>
+On 1/19/21 12:31 PM, Sean Christopherson wrote:
+> On Fri, Jan 15, 2021, Babu Moger wrote:
+>> ---
+>>  arch/x86/include/asm/svm.h |    4 +++-
+>>  arch/x86/kvm/svm/sev.c     |    4 ++++
+>>  arch/x86/kvm/svm/svm.c     |   19 +++++++++++++++----
+>>  3 files changed, 22 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+>> index 1c561945b426..772e60efe243 100644
+>> --- a/arch/x86/include/asm/svm.h
+>> +++ b/arch/x86/include/asm/svm.h
+>> @@ -269,7 +269,9 @@ struct vmcb_save_area {
+>>  	 * SEV-ES guests when referenced through the GHCB or for
+>>  	 * saving to the host save area.
+>>  	 */
+>> -	u8 reserved_7[80];
+>> +	u8 reserved_7[72];
+>> +	u32 spec_ctrl;		/* Guest version of SPEC_CTRL at 0x2E0 */
+>> +	u8 reserved_7b[4];
 > 
-> Add a non-empty dma-ranges so that dma address translation
-> happens.
+> Don't nested_prepare_vmcb_save() and nested_vmcb_checks() need to be updated to
+> handle the new field, too?
+
+Ok. Sure. I will check and test few combinations to make sure of these
+changes.
+
 > 
-> Fixes: 2013a4b684b6 ("arm64: dts: broadcom: clear the warnings caused by empty dma-ranges")
+>>  	u32 pkru;
+>>  	u8 reserved_7a[20];
+>>  	u64 reserved_8;		/* rax already available at 0x01f8 */
+>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+>> index c8ffdbc81709..959d6e47bd84 100644
+>> --- a/arch/x86/kvm/svm/sev.c
+>> +++ b/arch/x86/kvm/svm/sev.c
+>> @@ -546,6 +546,10 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>>  	save->pkru = svm->vcpu.arch.pkru;
+>>  	save->xss  = svm->vcpu.arch.ia32_xss;
+>>  
+>> +	/* Update the guest SPEC_CTRL value in the save area */
+>> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+>> +		save->spec_ctrl = svm->spec_ctrl;
 > 
-> Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
-> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> ---
->  arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> I think this can be dropped if svm->spec_ctrl is unused when V_SPEC_CTRL is
+> supported (see below).  IIUC, the memcpy() that's just out of sight would do
+> the propgation to the VMSA.
+
+Yes, That is right. I will remove this.
+
 > 
-> diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-> index aef8f2b00778..5401a646c840 100644
-> --- a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-> +++ b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-> @@ -4,11 +4,16 @@
->   */
->  	usb {
->  		compatible = "simple-bus";
-> -		dma-ranges;
->  		#address-cells = <2>;
->  		#size-cells = <2>;
->  		ranges = <0x0 0x0 0x0 0x68500000 0x0 0x00400000>;
->  
-> +		/*
-> +		 * Internally, USB bus to the interconnect can only address up
-> +		 * to 40-bit
-> +		 */
-> +		dma-ranges = <0 0 0 0 0x100 0x0>;
-> +
-
-Should have had my signed-off since during our internal review, I added
-the above comment to explain why we set it to 40-bit here despite the
-USB controller itself is capable of addressing 64-bit as Arnd pointed out.
-
-Well, the following ack should do it too, thanks.
-
-Acked-by: Ray Jui <ray.jui@broadcom.com>
-
->  		usbphy0: usb-phy@0 {
->  			compatible = "brcm,sr-usb-combo-phy";
->  			reg = <0x0 0x00000000 0x0 0x100>;
+>> +
+>>  	/*
+>>  	 * SEV-ES will use a VMSA that is pointed to by the VMCB, not
+>>  	 * the traditional VMSA that is part of the VMCB. Copy the
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index 7ef171790d02..a0cb01a5c8c5 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -1244,6 +1244,9 @@ static void init_vmcb(struct vcpu_svm *svm)
+>>  
+>>  	svm_check_invpcid(svm);
+>>  
+>> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+>> +		save->spec_ctrl = svm->spec_ctrl;
+>> +
+>>  	if (kvm_vcpu_apicv_active(&svm->vcpu))
+>>  		avic_init_vmcb(svm);
+>>  
+>> @@ -3789,7 +3792,10 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>>  	 * is no need to worry about the conditional branch over the wrmsr
+>>  	 * being speculatively taken.
+>>  	 */
+>> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+>> +	if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+>> +		svm->vmcb->save.spec_ctrl = svm->spec_ctrl;
+>> +	else
+>> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
 > 
+> Can't we avoid functional code in svm_vcpu_run() entirely when V_SPEC_CTRL is
+> supported?  Make this code a nop, disable interception from time zero, and
 
---000000000000a15aa005b9446363
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Sean, I thought you mentioned earlier about not changing the interception
+mechanism. Do you think we should disable the interception right away if
+V_SPEC_CTRL is supported?
 
-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
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQggBEFQAH9YLUFYNStBiFLHxTGsYuOUKK9
-/FrHPWRvKMEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMTE5
-MTc0NDIzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBAG4Q9HMeBjM9DwbsSzRm7gLHu2ddOpWi1nrUCHVFjarRjfJ9OG5v
-TLylY7noZBoOlxKcyZwp4EVepfGWjt/R1X1qGb1LLe6nYv4Tn4QSBAgpXNSPeU1ndcdvRhWyOYv3
-UznBeM7fpF31b2w3GPM2YLD5lWZtDjwZUL46sNsLwEpgUVrY1K++S4TEKx5FpgIWnqdFKcgvYWZ3
-QstVzXyGr4mmJquQAzT+ZNsiCi/kXpfZ3tNQpM/6XrGIzHDtn0MFNxoSe374egXWzT9Wu/gmJ9EZ
-HyTUpphI6BTEbXNpdBh8bdSKCw6k+vNWUMLFYBjPfeHQ1CaUFSGIhouKtYpuaoI=
---000000000000a15aa005b9446363--
+> read/write the VMBC field in svm_{get,set}_msr().  I.e. don't touch
+> svm->spec_ctrl if V_SPEC_CTRL is supported.  
+> 
+> 	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> 		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> 
+> 	svm_vcpu_enter_exit(vcpu, svm);
+> 
+> 	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
+> 	    unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> 		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+
+Ok. It appears the above code might work fine with changes in
+svm_{get,set}_msr() to update save spec_ctlr. I will retest few
+combinations to make sure it works.
+Thanks
+Babu
+
+> 
+>>  	svm_vcpu_enter_exit(vcpu, svm);
+>>  
+>> @@ -3808,13 +3814,18 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>>  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+>>  	 * save it.
+>>  	 */
+>> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+>> -		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+>> +	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL))) {
+>> +		if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+>> +			svm->spec_ctrl = svm->vmcb->save.spec_ctrl;
+>> +		else
+>> +			svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+>> +	}
+>>  
+>>  	if (!sev_es_guest(svm->vcpu.kvm))
+>>  		reload_tss(vcpu);
+>>  
+>> -	x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+>> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+>> +		x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+>>  
+>>  	if (!sev_es_guest(svm->vcpu.kvm)) {
+>>  		vcpu->arch.cr2 = svm->vmcb->save.cr2;
+>>
