@@ -2,107 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA6D2FB72F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6742FB747
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390493AbhASK31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:29:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39506 "EHLO mail.kernel.org"
+        id S2404088AbhASKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:33:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389679AbhASKOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:14:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2623C23110;
-        Tue, 19 Jan 2021 10:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611051237;
-        bh=oJP2CZT0iShT2cm0o7ur8h+l0HQzMOMI5R/YrhgrDhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1PgBRxb8UZ1SDYsPZImNkOJenjNQ/5Ax42IdXTRX0z6dDTBi2HGOdtU1+WhJV5I6
-         JyME2lFCBmN+iZVfGU9BoSd5b2b1eClyFtC8uKLfHpQn3DosSo0ASQdHKa4OxaxqAp
-         +EN+LLxWn4uxvftWLAEHHUWFgnDtaut6d/xWk5gg=
-Date:   Tue, 19 Jan 2021 11:13:54 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Pho Tran <Pho.Tran@silabs.com>
-Cc:     "johan@kernel.org" <johan@kernel.org>,
-        "inux-usb@vger.kernel.org" <inux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: serial: cp210x: Fix error 32 when hardware flow
- control is enabled.
-Message-ID: <YAaw4lZHsfBRY3cd@kroah.com>
-References: <658ABD80-572C-44BD-8DBD-79396109A175@silabs.com>
+        id S2389736AbhASKPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:15:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE7623117;
+        Tue, 19 Jan 2021 10:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611051267;
+        bh=9vQ7UjXThe+aze016ZLln2Kxzjb+jQ7ZgmyYkaPF4JI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eUrkproo4kkKG1nNo/uQ4guLjSd4QU3bjH8FyMbpdK8LhD7XqOLRemwOpeRiODWAD
+         nVbvTzrX0XyG5fV0HF4P4iArs508otaP3Sx0V+PrBpj7v/BkZi5kMlyZflEF8AGDek
+         UVJkXZCOGcPcrS7vuGel5HumYAZBmp/PIaPqj36/3EAC0Ig5R9LG95Q19M7AY67Z74
+         uqkYtKwMfCM2+v2eDbsC4WqvlkPQC9hrptev81wof7Dc5kptYBY3NwIognNkQQR5TR
+         pIEHKyu2nPGTRxSR8/k7qP6NWW9wXVvrW6C/+sMOA66oxS1FzKfRCdTVHmdW+DO0as
+         rX8bl6Bq/kHEA==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l1o1o-000tOY-FW; Tue, 19 Jan 2021 11:14:24 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/18] Move Hisilicon 6421v600 SPMI driver set out of staging
+Date:   Tue, 19 Jan 2021 11:14:05 +0100
+Message-Id: <cover.1611048785.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <658ABD80-572C-44BD-8DBD-79396109A175@silabs.com>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 09:43:13AM +0000, Pho Tran wrote:
-> Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabled.
-> 
-> The root cause of error 32 is that user application (CoolTerm, linux-serial-test)
-> opened cp210x device with hardware flow control then attempt to control RTS/DTR pins.
-> In hardware flow control, RTS/DTR pins will be controlled by hardware only,
-> any attempt to control those pin will cause error 32 from the device.
-> This fix will block MHS command(command to control RTS/DTR pins) to the device
-> if hardware flow control is being used.
-> 
-> Signed-off-by: Pho Tran <pho.tran@silabs.com>
-> ---
->  drivers/usb/serial/cp210x.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index fbb10dfc56e3..1835ccf2aa2f 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -1211,6 +1211,11 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
->  		unsigned int set, unsigned int clear)
->  {
->  	u16 control = 0;
-> +	struct cp210x_flow_ctl flow_ctl;
-> +	u32 ctl_hs = 0;
-> +	u32 flow_repl = 0;
-> +	bool auto_dtr = false;
-> +	bool auto_rts = false;
->  
->  	if (set & TIOCM_RTS) {
->  		control |= CONTROL_RTS;
-> @@ -1230,6 +1235,25 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
->  	}
->  
->  	dev_dbg(&port->dev, "%s - control = 0x%.4x\n", __func__, control);
-> +	//Don't send MHS command if device in hardware flowcontrol mode
+Hi Mark/Lee,
 
-Please put a blank line before this comment.
+This patch series finish addressing support for Hikey 970
+SPMI controller, PMIC and regulators.
 
-And a ' ' after "//".
+I removed some unrelated DT patches from this series,
+plus the Hikey 970 PHY USB3 code from it, in order to avoid
+mixing different stuff on this series[1].
 
-> +	cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl, sizeof(flow_ctl));
+[1] Those unrelated patches were submitted last week on
+separate series.
 
-No error checking?
+The entire patchset is on this branch:
 
-> +	ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
-> +	flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
-> +
-> +	if (CP210X_SERIAL_DTR_SHIFT(CP210X_SERIAL_DTR_FLOW_CTL) == (ctl_hs & CP210X_SERIAL_DTR_MASK))
-> +		auto_dtr = true;
-> +	else
-> +		auto_dtr = false;
-> +
-> +	if (CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL) == (flow_repl & CP210X_SERIAL_RTS_MASK))
-> +		auto_rts = true;
-> +	else
-> +		auto_rts = false;
-> +
-> +	if (auto_dtr || auto_rts) {
-> +		dev_dbg(&port->dev, "Don't set MHS when while device in flow control mode\n");
-> +		return 0;
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=hikey970-destage-usb
 
-Shouldn't this be a real error to send back to userspace, so that they
-know the change they asked for failed?
+In order to make easier for review, this series was generated
+with --no-renames. So, you don't need to take a look at the
+staging patches, as the entire code will be there on patches 9-11.
 
-thanks,
+Patches 12 and 13 on this series will require that the other
+patch series to get merged first. It probably makes sense to be
+merged via DT tree. I opted to add them here just because,
+on the last submission, you asked to see the DT patches. 
 
-greg k-h
+Regards,
+Mauro
+
+v3:
+- fixed a bug with eco-mode at get_optimum_mode;
+- changed the sleep logic when enabling/disabling a power line;
+- additional cleanups, as requested by Mark;
+
+v2:
+
+- this driver's probe routine is very similar to the one at the non-SPMI
+  variant of Hisilicon 6421;
+- The register/voltage data were moved from DT into the driver itself;
+- It doesn't have anymore any static data;
+- All debug messages got removed;
+- Addressed a few be32 warnings from sparse.
+
+
+Mauro Carvalho Chehab (18):
+  staging: hikey9xx: hisilicon,hisi-spmi-controller.yaml fix bindings
+  staging: hikey9xx: hisilicon,hi6421-spmi-pmic.yaml: simplify props
+  staging: hikey9xx: hisi-spmi-controller: clean sparse warnings
+  staging: hikey9xx: hi6421v600-regulator: do some cleanups
+  staging: hikey9xx: hi6421v600-regulator: move LDO config from DT
+  staging: hikey9xx: hi6421v600-regulator: cleanup debug msgs
+  staging: hikey9xx: hi6421v600-regulator: get rid of an static data
+  staging: hikey9xx: hi6421v600-regulator: do some cleanups
+  staging: hikey9xx: hi6421v600-regulator: update copyright
+  staging: hikey9xx: hi6421v600-regulator: fix delay logic
+  staging: hikey9xx: hi6421v600-regulator: cleanup comments
+  staging: hikey9xx: hi6421v600-regulator: fix get_optimum_mode
+  staging: hikey9xx: hisilicon,hi6421-spmi-pmic.yaml: cleanup a warning
+  spmi: hi6421-spmi-pmic: move driver from staging
+  mfd: hi6421-spmi-pmic: move driver from staging
+  regulator: hi6421v600-regulator: move it from staging
+  dts: hisilicon: add support for USB3 on Hikey 970
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 +++++
+ .../spmi/hisilicon,hisi-spmi-controller.yaml  |  75 +++
+ MAINTAINERS                                   |  15 +-
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 124 ++++-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 +++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  87 ++++
+ drivers/mfd/Kconfig                           |  15 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                | 342 +++++++++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/hi6421v600-regulator.c      | 335 ++++++++++++
+ drivers/spmi/Kconfig                          |   9 +
+ drivers/spmi/Makefile                         |   1 +
+ drivers/spmi/hisi-spmi-controller.c           | 358 +++++++++++++
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  38 --
+ drivers/staging/hikey9xx/Makefile             |   5 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 342 -------------
+ .../staging/hikey9xx/hi6421v600-regulator.c   | 478 ------------------
+ .../staging/hikey9xx/hisi-spmi-controller.c   | 358 -------------
+ .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 159 ------
+ .../hisilicon,hisi-spmi-controller.yaml       |  62 ---
+ include/linux/mfd/hi6421-spmi-pmic.h          |   1 -
+ 26 files changed, 1542 insertions(+), 1473 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ create mode 100644 drivers/regulator/hi6421v600-regulator.c
+ create mode 100644 drivers/spmi/hisi-spmi-controller.c
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+ delete mode 100644 drivers/staging/hikey9xx/hi6421v600-regulator.c
+ delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+
+-- 
+2.29.2
+
+
