@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0412FBB14
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6182FBB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389753AbhASPXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:23:40 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:47896 "EHLO vps0.lunn.ch"
+        id S2389324AbhASPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:24:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391314AbhASPW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:22:26 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l1sp5-001T0o-6c; Tue, 19 Jan 2021 16:21:35 +0100
-Date:   Tue, 19 Jan 2021 16:21:35 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] mdio, phy: fix -Wshadow warnings triggered by
- nested container_of()
-Message-ID: <YAb4/7Nb1qaGiS0f@lunn.ch>
-References: <20210116161246.67075-1-alobakin@pm.me>
+        id S2391286AbhASPWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:22:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A3E23110;
+        Tue, 19 Jan 2021 15:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611069701;
+        bh=qk7bTIU32WQXEVpSYr8ZQ5kj+qrngrcgdHRTogxr7Dc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eoxZAwoaQ5d6ppq/JxVV+ZvPnmkXzAaC9P+yuT6raP3pPaU968h2eqioupYXq7+6e
+         xl74BdLKtv+HGlEak8XzPTvbwxi/9J7S2EpeiwyloIpCViCIVYGst39naXNI3Vxybm
+         MDvv8H20ZZEVUDe1FAGYKjyUuGTOrVvWf8YdTsOA=
+Date:   Tue, 19 Jan 2021 16:21:38 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v2] driver core: Extend device_is_dependent()
+Message-ID: <YAb5AofFj8akz3Kb@kroah.com>
+References: <17705994.d592GUb2YH@kreacher>
+ <CAJZ5v0gccJKSVuN-okBnvHPjNYJ_FbkzfOueb=AUDr2xHaL7Xg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210116161246.67075-1-alobakin@pm.me>
+In-Reply-To: <CAJZ5v0gccJKSVuN-okBnvHPjNYJ_FbkzfOueb=AUDr2xHaL7Xg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 04:13:22PM +0000, Alexander Lobakin wrote:
-> container_of() macro hides a local variable '__mptr' inside. This
-> becomes a problem when several container_of() are nested in each
-> other within single line or plain macros.
-> As C preprocessor doesn't support generating random variable names,
-> the sole solution is to avoid defining macros that consist only of
-> container_of() calls, or they will self-shadow '__mptr' each time:
+On Tue, Jan 19, 2021 at 04:09:14PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Jan 15, 2021 at 7:31 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > If the device passed as the target (second argument) to
+> > device_is_dependent() is not completely registered (that is, it has
+> > been initialized, but not added yet), but the parent pointer of it
+> > is set, it may be missing from the list of the parent's children
+> > and device_for_each_child() called by device_is_dependent() cannot
+> > be relied on to catch that dependency.
+> >
+> > For this reason, modify device_is_dependent() to check the ancestors
+> > of the target device by following its parent pointer in addition to
+> > the device_for_each_child() walk.
+> >
+> > Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Reported-by: Stephan Gerhold <stephan@gerhold.net>
+> > Tested-by: Stephan Gerhold <stephan@gerhold.net>
 > 
-> In file included from ./include/linux/bitmap.h:10,
->                  from drivers/net/phy/phy_device.c:12:
-> drivers/net/phy/phy_device.c: In function ‘phy_device_release’:
-> ./include/linux/kernel.h:693:8: warning: declaration of ‘__mptr’ shadows a previous local [-Wshadow]
->   693 |  void *__mptr = (void *)(ptr);     \
->       |        ^~~~~~
-> ./include/linux/phy.h:647:26: note: in expansion of macro ‘container_of’
->   647 | #define to_phy_device(d) container_of(to_mdio_device(d), \
->       |                          ^~~~~~~~~~~~
-> ./include/linux/mdio.h:52:27: note: in expansion of macro ‘container_of’
->    52 | #define to_mdio_device(d) container_of(d, struct mdio_device, dev)
->       |                           ^~~~~~~~~~~~
-> ./include/linux/phy.h:647:39: note: in expansion of macro ‘to_mdio_device’
->   647 | #define to_phy_device(d) container_of(to_mdio_device(d), \
->       |                                       ^~~~~~~~~~~~~~
-> drivers/net/phy/phy_device.c:217:8: note: in expansion of macro ‘to_phy_device’
->   217 |  kfree(to_phy_device(dev));
->       |        ^~~~~~~~~~~~~
-> ./include/linux/kernel.h:693:8: note: shadowed declaration is here
->   693 |  void *__mptr = (void *)(ptr);     \
->       |        ^~~~~~
-> ./include/linux/phy.h:647:26: note: in expansion of macro ‘container_of’
->   647 | #define to_phy_device(d) container_of(to_mdio_device(d), \
->       |                          ^~~~~~~~~~~~
-> drivers/net/phy/phy_device.c:217:8: note: in expansion of macro ‘to_phy_device’
->   217 |  kfree(to_phy_device(dev));
->       |        ^~~~~~~~~~~~~
+> Greg, are you going to pick up this one or do you want me to take care of it?
 > 
-> As they are declared in header files, these warnings are highly
-> repetitive and very annoying (along with the one from linux/pci.h).
-> 
-> Convert the related macros from linux/{mdio,phy}.h to static inlines
-> to avoid self-shadowing and potentially improve bug-catching.
-> No functional changes implied.
-> 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> It has been reviewed by Saravana.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I'll take it, thanks.  sorry for the delay.
 
-    Andrew
+greg k-h
