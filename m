@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582522FC52A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FB72FC52B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbhASXyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:54:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33602 "EHLO
+        id S1730747AbhASXy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729070AbhASXxS (ORCPT
+        with ESMTP id S1730555AbhASXxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:53:18 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD9CC061575;
-        Tue, 19 Jan 2021 15:52:37 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id o10so31589911lfl.13;
-        Tue, 19 Jan 2021 15:52:37 -0800 (PST)
+        Tue, 19 Jan 2021 18:53:24 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EED9C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:52:41 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v187so26731770ybv.21
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:52:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kY38Jr/zSrAzwJNu6cLdZX18v4uENGzkZyBc0LDwj2g=;
-        b=sONKCQA4mm0zJ54l9T/fgs/3+Sm6huCzz4UxF2Nzo3J7hWcf/n93JzjkwZpQwd5YKx
-         idKmoyrYGIBh3DqFxJVi65w1t+VBFAQnfn5yhoU8yGuWvRskZA91USeWE3OuZXLUj7ak
-         jArW2asAVNefjtQm+vtC7Y8CI7RW8+B1yJxdKhQ6W1x3xQbfbDk1pfwM90OAqiPcEZqZ
-         EAoodYmjk5OMd9YXYXQANqXP50rMGm1LH+23pBPqviWeTYTrsX1oBbMkKtJaj/xjwzMk
-         8kyPJQUq5KqKvZ2z1AVfItasbNThXbpaacNl/qqltHb6r/8/7qilsh3Z1GKMD86vaO9k
-         Sdjw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=JEMTUZ20yMo08GXgCsAKGqGJK8V3DyGDgd8Y1lymdBc=;
+        b=bgjnlKeiHI6RzMOOdt7M8I21LGue+wOl+S6abgFOIJHOYcOtJ7rD2heCgbrnefoF5w
+         Xj+3ySLX52m4Tww0KAeEhxlZY0HiMRwYyaIoWnHGEw59zWwYYByZ173ME7fAjVDtHfpB
+         Z4RfxSXHvhKt3q6qf5jGByUyrzFTfxO5qMiwAr4cVupbmstS1OJrIhSMrzjTfGM6NCKf
+         Qgjw6+/sLBvP8TpmNCIOxMwF71vwGipIJokxov9b7XvUM2jhX9NZA3SR1oE0Iqn889Lb
+         TSwxHLVznYUjOt/uKcmz03C8NS2lB9iQxPDaITQqg0/kCrBILQTO72nOAUs5H2Bft625
+         w/Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kY38Jr/zSrAzwJNu6cLdZX18v4uENGzkZyBc0LDwj2g=;
-        b=is7ZuqkJpsUo1+xuI4rqpHzlEz7WRBVAuv2jHMoSUAG2NTfkDa54ty6dQFIbMl98uw
-         2VEPcHF2/dLwXesZJsHNcPR4sLrmASlNnJPeA2lyFgs7xBD4obPOq3fq3KORPi4xp8Oj
-         4NzNjysdr+jgq/EOFGz1HGabxVrUzzdZg2wQEFA5tw5497+foiHc6YkWfOdVpLn3cD36
-         Sgc9iNo7EfMbvB7frum2GUTqHmWuWXrCb9ux/bSlJ7Jk5/Q2Mh69wDQpfi1ZTz/mSseK
-         B1rHaAjzPZJ+Jcwxr+elmsxIvq//at1t5ihz4bLCa0/DqnovSbUX1r2XG+/cc6Z0zEqM
-         nb4g==
-X-Gm-Message-State: AOAM5308lzcDVu/kWLSxQHou/YUnJdP5n55v5BMIm+1tnfDXoLXZtnbu
-        B1YFpr4nH5ajDyqqxeXf1r0=
-X-Google-Smtp-Source: ABdhPJxO+KbO8mRXzitiXehaLFyiGOZbRmAG055yLZTlzxiNJMTZE3Q/dhW8knhUnhxxr5o98ANiew==
-X-Received: by 2002:ac2:5d6d:: with SMTP id h13mr2926837lft.538.1611100356277;
-        Tue, 19 Jan 2021 15:52:36 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id 13sm31249lfy.286.2021.01.19.15.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 15:52:35 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] memory: tegra: Check whether reset is already asserted
-Date:   Wed, 20 Jan 2021 02:52:10 +0300
-Message-Id: <20210119235210.13006-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=JEMTUZ20yMo08GXgCsAKGqGJK8V3DyGDgd8Y1lymdBc=;
+        b=AytTNTffvU0XFCYj2ccERwIMZkRQ/MQfEhXKO8/4uytHhUD45DGGk22aAQsS2DKqiR
+         k0EizNS/MjvaSS9IKuWEWRO3V9avzjytN9ADJ9fH5CJV3iDqdUy1OYY2tR3+Sl+rPyKe
+         LMmcGG0p1vi0lWXRhEMSv26oipaBFHS16pj2ZWOgT28Wc05VirsKRhIhn6hAeCKcq+P8
+         0MF12HlTAU4caBSDvcGm6u9JWwXmrYZIJz+C8zlAijkrQL/nNUcuqm++J2+wnqvVw7mo
+         yz89gilHUzIL1USTCoBIY51+yUwk1c7dO8Qai9okZFLGTyHSxyNKgOgq/UwhDDtRviGC
+         AOVg==
+X-Gm-Message-State: AOAM532PowqCV+SinQd6KqL8gGPW94gpV4HMfd2cQ87XTvPoZFAWBbsc
+        +y9v87C9z+0ZYEX1v1Of+igbo7ijcHcuHA==
+X-Google-Smtp-Source: ABdhPJx9gADC9+UacYJUO+wrvyHZD58QYvIE7h9HdWAaUkYJWmnpygaVuChl1i21I3HcPfSHcZQtTFAANlaiRg==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a25:99c6:: with SMTP id
+ q6mr9687488ybo.408.1611100360313; Tue, 19 Jan 2021 15:52:40 -0800 (PST)
+Date:   Tue, 19 Jan 2021 15:52:26 -0800
+Message-Id: <20210119235226.93280-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+Subject: [PATCH] KUnit: Docs: make start.rst example Kconfig follow style.rst
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check whether memory client reset is already asserted in order to prevent
-DMA-flush error on trying to re-assert an already asserted reset.
+The primary change is that we want to encourage people to respect
+KUNIT_ALL_TESTS to make it easy to run all the relevant tests for a
+given config.
 
-This becomes a problem once PMC GENPD is enabled to use memory resets
-since GENPD will get a error and fail to toggle power domain. PMC GENPDs
-can't be toggled safely without holding memory reset on Tegra and we're
-about to fix this.
-
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- drivers/memory/tegra/mc.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/dev-tools/kunit/start.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-index 44064de962c2..a21163ccadc4 100644
---- a/drivers/memory/tegra/mc.c
-+++ b/drivers/memory/tegra/mc.c
-@@ -176,6 +176,13 @@ static int tegra_mc_hotreset_assert(struct reset_controller_dev *rcdev,
- 	if (!rst_ops)
- 		return -ENODEV;
+diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+index 454f307813ea..560f27af4619 100644
+--- a/Documentation/dev-tools/kunit/start.rst
++++ b/Documentation/dev-tools/kunit/start.rst
+@@ -196,8 +196,9 @@ Now add the following to ``drivers/misc/Kconfig``:
+ .. code-block:: kconfig
  
-+	/* DMA flushing will fail if reset is already asserted */
-+	if (rst_ops->reset_status) {
-+		/* check whether reset is asserted */
-+		if (rst_ops->reset_status(mc, rst))
-+			return 0;
-+	}
-+
- 	if (rst_ops->block_dma) {
- 		/* block clients DMA requests */
- 		err = rst_ops->block_dma(mc, rst);
+ 	config MISC_EXAMPLE_TEST
+-		bool "Test for my example"
++		tristate "Test for my example" if !KUNIT_ALL_TESTS
+ 		depends on MISC_EXAMPLE && KUNIT=y
++		default KUNIT_ALL_TESTS
+ 
+ and the following to ``drivers/misc/Makefile``:
+ 
+
+base-commit: 146620506274bd24d52fb1c589110a30eed8240b
 -- 
-2.29.2
+2.30.0.296.g2bfb1c46d8-goog
 
