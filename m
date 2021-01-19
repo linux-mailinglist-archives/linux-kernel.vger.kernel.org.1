@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2EE2FB7B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097C12FB7B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390958AbhASLXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:23:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391209AbhASLKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:10:08 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86DEC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:08:35 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0bca00c2aa0e949335efb7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:c2aa:e94:9335:efb7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 784801EC05DE;
-        Tue, 19 Jan 2021 12:08:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611054514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Kdn7P9WzM0xVuzlmYLDRSLdnweoXLWKsFHtwTTxXd58=;
-        b=Yyg/bTelymTJ0F9UpgftO+yPBlfEV8L22ww9skrs1MsNIWHTchstJ475l4N/bwhKNRDPM6
-        Mr9YSQQwwscqCJ1G+UyZyWLcoWfmPt5fybGyVMa61P/Y/SKUDzDrQBEbNt33RIdk4t+JNg
-        gEMmqq7jRx58floTsezJhbnPXeIXFFw=
-Date:   Tue, 19 Jan 2021 12:08:34 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Mazur <krzysiek@podlesie.net>,
-        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively
- initialize state
-Message-ID: <20210119110834.GH27433@zn.tnic>
-References: <cover.1610950681.git.luto@kernel.org>
- <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
+        id S2391239AbhASLX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:23:57 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47521 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390924AbhASLJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:09:49 -0500
+IronPort-SDR: ayeeKwzXc+2a1Its2izeC0KEq4y2QB0yIuiQW7WCh49++sSYfWfSTwGWmmnmvEOGCVdsV2l4Wa
+ 1iFf/z2Z8rpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="165999520"
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="165999520"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 03:07:40 -0800
+IronPort-SDR: ZuC9+ihAO86GOtXpMGq+tCSJWtRZxpK/ZQwFe9cqlfzrvLbMidkWIyPYaM9VwptmFjhsptGp+j
+ G8WRrN2cEFDA==
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="365713651"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 03:07:35 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1osH-003RIQ-1u; Tue, 19 Jan 2021 13:08:37 +0200
+Date:   Tue, 19 Jan 2021 13:08:37 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <20210119110837.GT4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+ <20210118144606.GO4077@smile.fi.intel.com>
+ <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
+ <20210119092448.GN4077@smile.fi.intel.com>
+ <a735380b-57ac-1950-b29a-07fe6cb708d2@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <a9630f17c5bcafbfe297a0828c7b6c78b0f6dcbe.1610950681.git.luto@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a735380b-57ac-1950-b29a-07fe6cb708d2@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just nitpicks:
-
-On Sun, Jan 17, 2021 at 10:20:38PM -0800, Andy Lutomirski wrote:
-> Currently, requesting kernel FPU access doesn't distinguish which parts of
-> the extended ("FPU") state are needed.  This is nice for simplicity, but
-> there are a few cases in which it's suboptimal:
+On Tue, Jan 19, 2021 at 10:40:42AM +0000, Daniel Scally wrote:
+> On 19/01/2021 09:24, Andy Shevchenko wrote:
+> >>>>> +static struct i2c_driver int3472_tps68470 = {
+> >>>>> +	.driver = {
+> >>>>> +		.name = "int3472-tps68470",
+> >>>>> +		.acpi_match_table = int3472_device_id,
+> >>>>> +	},
+> >>>>> +	.probe_new = skl_int3472_tps68470_probe,
+> >>>>> +};
+> >>> I'm not sure we want to have like this. If I'm not mistaken the I²C driver can
+> >>> be separated without ACPI IDs (just having I²C IDs) and you may instantiate it
+> >>> via i2c_new_client_device() or i2c_acpi_new_device() whichever suits better...
+> >> Sorry, I'm a bit confused by this. The i2c device is already
+> >> present...we just want the driver to bind to them, so what role do those
+> >> functions have there?
+> > What I meant is something like
+> >
+> >  *_i2c.c
+> > 	real I²C driver for the TPS chip, but solely with I²C ID table, no ACPI
+> > 	involved (and it sounds like it should be mfd/tps one, in which you
+> > 	just cut out ACPI IDs and convert to pure I²C one, that what I had
+> > 	suggested in the first place)
 > 
->  - The vast majority of in-kernel FPU users want XMM/YMM/ZMM state but do
->    not use legacy 387 state.  These users want MXCSR initialized but don't
->    care about the FPU control word.  Skipping FNINIT would save time.
->    (Empirically, FNINIT is several times slower than LDMXCSR.)
+> Ahh; sorry - i misunderstood what you meant there. I understand now I
+> think, but there is one complication; the ACPI subsystem already creates
+> a client for that i2c adapter and address; i2c_new_client_device()
+> includes a check to see whether that adapter / address combination has
+> an i2c device already.  So we would have to have the platform driver
+> with ACPI ID first find the existing i2c_client and unregister it before
+> registering the new one...the existing clients have a name matching the
+> ACPI device instance name (e.g i2c-INT3472:00) which we can't use as an
+> i2c_device_id of course.
+
+See how INT33FE is being handled. Hint: drivers/acpi/scan.c:~1600
+
+static const struct acpi_device_id i2c_multi_instantiate_ids[] = {
+	{"BSG1160", },
+	{"BSG2150", },
+	{"INT33FE", },
+	{"INT3515", },
+	{}
+};
+
+So, we quirklist it here and instantiate manually from platform driver (new
+coming one).
+
+...
+
+> > You need to modify clk-gpio.c to export
+> >
+> > clk_hw_register_gpio_gate()
+> > clk_hw_register_gpio_mux()
+> >
+> > (perhaps it will require to add *_unregister() counterparts) and call it from
+> > your code.
+> >
+> > See, for example, how clk_hw_unregister_fixed_rate() is being used. Another
+
+Here I meant of course clk_hw_register_fixed_rate().
+
+> > case is to add a helper directly into clk-gpio and call it instead of
+> > clk_hw_*() one, see how clk_register_fractional_divider() is implemented and
+> > used.
 > 
->  - Code that wants MMX doesn't want need MXCSR or FCW initialized.
-
-"want/need" ?
-
->    _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
->    initializing MXCSR will fail.
-
-"... because LDMXCSR generates an #UD when the aforementioned CR4 bit is
-not set."
-
->  - Any future in-kernel users of XFD (eXtended Feature Disable)-capable
->    dynamic states will need special handling.
-> 
-> This patch adds a more specific API that allows callers specify exactly
-
-s/This patch adds/Add/
-
-> what they want.
+> I'll take a look, thanks
 
 -- 
-Regards/Gruss,
-    Boris.
+With Best Regards,
+Andy Shevchenko
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
