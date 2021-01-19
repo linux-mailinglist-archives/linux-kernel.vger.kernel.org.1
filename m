@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451272FB4A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D5C2FB4D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 10:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731464AbhASI5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:57:21 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6161 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731061AbhASI4s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:56:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60069ea70000>; Tue, 19 Jan 2021 00:56:07 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 08:56:04 +0000
-Received: from jckuo-lt.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 19 Jan 2021 08:56:01 +0000
-From:   JC Kuo <jckuo@nvidia.com>
-To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
-        <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v6 04/15] phy: tegra: xusb: tegra210: Do not reset UPHY PLL
-Date:   Tue, 19 Jan 2021 16:55:35 +0800
-Message-ID: <20210119085546.725005-5-jckuo@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119085546.725005-1-jckuo@nvidia.com>
-References: <20210119085546.725005-1-jckuo@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611046567; bh=fMWbCxXN66OVLrsG2zwzPXGHGUm0Z1aSKFkU6EI97W8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=OXgWlOYCw4Z8aMnl1uoD6xlI3VFrl8wFlnP5EgB/rAkdApXrP1ajT8mLbhQNV9ocf
-         lcANcNDH0r7wecrQtJnl4OhvBqbwucf+HEhdx0j8P5IH5ikJnJig9VCYPTl4vnDZnD
-         CMSnpVSSKO1j7HdwJGonePClfVpBmNJsrOZ0q1Eau/H45RpZ4DG6QT9KAzoUJtlfu7
-         NstyrW2X1FV9zvkUyxZjSpEe2juvnLuZXps9kgJYnEZsnOjXmyTsTwZ3jxehkVXJli
-         +lFd88iq1lpiSCoDT4u78fhzg9Ct9NnlStTCVeBCv9mXPBiZCtsuEbOiuSfJaNhaTK
-         xW9lNz9Kal2fQ==
+        id S1731626AbhASJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:07:40 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:17536 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730612AbhASJEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:04:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DKjP81Cfjz9txSb;
+        Tue, 19 Jan 2021 10:03:24 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id XQKW7MRXoPXn; Tue, 19 Jan 2021 10:03:24 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DKjP74myHz9txSZ;
+        Tue, 19 Jan 2021 10:03:23 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A46158B7B8;
+        Tue, 19 Jan 2021 10:03:24 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FrUXJlyGBR-b; Tue, 19 Jan 2021 10:03:24 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E0728B7B7;
+        Tue, 19 Jan 2021 10:03:24 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D4B716639E; Tue, 19 Jan 2021 06:36:52 +0000 (UTC)
+Message-Id: <74461a99fa1466f361532ca794ca0753be3d9f86.1611038044.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/kvm: Force selection of CONFIG_PPC_FPU
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-ppc@vger.kernel.org
+Date:   Tue, 19 Jan 2021 06:36:52 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once UPHY PLL hardware power sequencer is enabled, do not assert
-reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
-This commit removes reset_control_assert(pcie->rst) and
-reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
+book3s/32 kvm is designed with the assumption that
+an FPU is always present.
 
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
+Force selection of FPU support in the kernel when
+build KVM.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 7d68c8916950 ("powerpc/32s: Allow deselecting CONFIG_PPC_FPU on mpc832x")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-v6:
-   no change
-v5:
-   no change
-v4:
-   no change
-v3:
-   new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
+ arch/powerpc/kvm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/phy/tegra/xusb-tegra210.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-teg=
-ra210.c
-index 4dc9286ec1b8..9bfecdfecf35 100644
---- a/drivers/phy/tegra/xusb-tegra210.c
-+++ b/drivers/phy/tegra/xusb-tegra210.c
-@@ -502,7 +502,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xusb=
-_padctl *padctl)
- 	if (--pcie->enable > 0)
- 		return;
-=20
--	reset_control_assert(pcie->rst);
- 	clk_disable_unprepare(pcie->pll);
- }
-=20
-@@ -739,7 +738,6 @@ static void tegra210_sata_uphy_disable(struct tegra_xus=
-b_padctl *padctl)
- 	if (--sata->enable > 0)
- 		return;
-=20
--	reset_control_assert(sata->rst);
- 	clk_disable_unprepare(sata->pll);
- }
-=20
---=20
-2.25.1
+diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+index 549591d9aaa2..e45644657d49 100644
+--- a/arch/powerpc/kvm/Kconfig
++++ b/arch/powerpc/kvm/Kconfig
+@@ -54,6 +54,7 @@ config KVM_BOOK3S_32
+ 	select KVM
+ 	select KVM_BOOK3S_32_HANDLER
+ 	select KVM_BOOK3S_PR_POSSIBLE
++	select PPC_FPU
+ 	help
+ 	  Support running unmodified book3s_32 guest kernels
+ 	  in virtual machines on book3s_32 host processors.
+-- 
+2.25.0
 
