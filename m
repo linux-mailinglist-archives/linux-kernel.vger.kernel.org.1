@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E73A2FB1F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9D22FB236
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbhASGsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729386AbhASGqg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:46:36 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4C7C061573;
-        Mon, 18 Jan 2021 22:45:56 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DKfLS4mvLz9sCD;
-        Tue, 19 Jan 2021 17:45:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611038752;
-        bh=k5MNvFbW5tFWhSOuk5jXGRMMZ8moR8cDEkb8qC5L/hE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rVqII02LiXpvLab5MCUyHBE9NuCrBj14Cmpbt48YdRuQAyfNZ8LaWUgR8Enq6P98p
-         uV1cEGXhNtP18LOlDwsuK6Bkm96aLX6IUnIkhEIGkLTSbSXotUh0iZjpEXNOH45fTm
-         LDBieZD8Ha+EFXgnEVW7Xi0QmQ6SI/H/crspnZBSrXniUiDH8RdhI2wm7J8bcfHHN/
-         l5SAwIxP1gvVLK4hEb3O7bHuQtm5W2UJwnbvIA7Oqvj+r24xf6hJouwjNurUe2HqXo
-         nIgqfvjsmHJNCYfVKduRzCNYzhf6skAJW9pkj3sx1WXb8gDQRuxFZv/avZZgGNk1gp
-         JsyqR0VIi5f3w==
-Date:   Tue, 19 Jan 2021 17:45:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the jc_docs tree
-Message-ID: <20210119174550.3f7e9a7b@canb.auug.org.au>
-In-Reply-To: <20210119171303.6be1bb1f@canb.auug.org.au>
-References: <20210119171303.6be1bb1f@canb.auug.org.au>
+        id S1727093AbhASG5G convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Jan 2021 01:57:06 -0500
+Received: from wnbcorp.com ([175.126.38.143]:45844 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727409AbhASGz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 01:55:27 -0500
+Received: from [10.54.228.138] (89-200-36-78.mobile.kpn.net [89.200.36.78])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10J6p0XS009545;
+        Tue, 19 Jan 2021 15:52:20 +0900
+Message-Id: <202101190652.10J6p0XS009545@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/064ryLahMhUD8b+4YoSXG4h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Tue, 19 Jan 2021 07:51:50 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/064ryLahMhUD8b+4YoSXG4h
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Hi all,
+Sir/Madam,
 
-On Tue, 19 Jan 2021 17:13:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> After merging the jc_docs tree, today's linux-next build (KCONFIG_NAME)
+CONGRATULATIONS!!!
 
-This was a "make htmldocs"
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
---=20
-Cheers,
-Stephen Rothwell
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
---Sig_/064ryLahMhUD8b+4YoSXG4h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
------BEGIN PGP SIGNATURE-----
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAGgB4ACgkQAVBC80lX
-0Gw0lQf+OXwtGtWtSYyYVGfjmt6WncWdjwVHKTEiu3O+Vh4q4bPQXAljYr0wUO9b
-VnrMf5cUv/3UzMrgsP8cKIGIqf9AYshf8Sp8mzsFUr5nabHB0wb6Oc6xHz1YJ8+n
-ChFQ2W4vT9kGP+/4WPigohXFYEGWe/HxRx5bnaJa5SXkm18VsMk7wIhOO6nRItdM
-KkDTFidpkwNFXZqiLoGjXVGz0n0aJwtat5O2DGajDXa9AlF0aQ3++ZyljbgklvEI
-EUNUy124XFBAZTpsxd6UbNqREFxYY0SNGUa7a2B4XC4WCvM6K7cRS9lDwOUMTDpW
-1HWz7BdnEI27p0ImLLu+12fPC/IMYg==
-=DMwZ
------END PGP SIGNATURE-----
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
 
---Sig_/064ryLahMhUD8b+4YoSXG4h--
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
