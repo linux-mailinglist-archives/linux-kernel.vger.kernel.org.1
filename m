@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB2E2FC529
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154302FC525
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbhASXyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S1730238AbhASXw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406358AbhASN6z (ORCPT
+        with ESMTP id S2406399AbhASN7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:58:55 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8932C061573;
-        Tue, 19 Jan 2021 05:58:06 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id r4so10537460pls.11;
-        Tue, 19 Jan 2021 05:58:06 -0800 (PST)
+        Tue, 19 Jan 2021 08:59:07 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CF5C061574;
+        Tue, 19 Jan 2021 05:58:22 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id k193so734506qke.6;
+        Tue, 19 Jan 2021 05:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KL4XTeXlgYSf3JC4dzvkf+Ob0LcmcMIcOK/73KdYSys=;
-        b=RP8XNWcgdk0ReCZvzMJI+MVBI4cqb1Tp+obUwl0iC/ywxJfA0moQ6Iy8DEWrWmQ0Fu
-         RiVyA4OEYU6whVzbw0fAHrNczTFIVZRMdlRNRjENnWMyzwiSPOW12Skt29j62b3PClQR
-         sYdRAbTZSLYdWTwKXiQadEG4l5ebbOcEA9Qg144lub/sMqjUsnNlN9pmXg7IGosM+0Ty
-         OYVrMTAbMBpJUhMXyEqxjE4q0Cm8AZhF8f1DbhskDBGbUDl+o91bRK+VXxi0Gyr2lwqq
-         jdNbWUcEhkmvslxFvKp+Rk6ixrZkBL1o/ImSt1SLGBs+pE+AQa+kl0gVq3ofu1yPeBtP
-         MDvw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nDg3MSaSmW/QUwXKAX2yr0bwfrbQw4H0zZIY31w5eOc=;
+        b=sSVDghft1NBADOLQaX2lOFLaOd62nQL8EV93AnAGZZRJXCC8hN9TBeI3b4l9sWkrhC
+         jOrREScDNjuRMZcvveZ9bMlueMIOtjKdlFDQ/dEO9cxwZrvMd043RT9oooMsTMMk1omE
+         89PVo3T6EZeZ1rJ3aNox+N+Sn4QZeKIvhG+1McYAHrbYQg19SmTJ2UPuWrjxKdFd+SpN
+         Av/48ruPLGktkBx3TgKIj1Zx0AzWFrz1QP1lfMpwp58oDCDaGhQTJdVxfG4E8glwyMij
+         TYRpUrnbmDnJL3xt9RiWX/g7i5z2uhL27hPztNTNwqgykw9K17ZhxeVf1g23PqkBy67D
+         rgtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KL4XTeXlgYSf3JC4dzvkf+Ob0LcmcMIcOK/73KdYSys=;
-        b=mLgRayafOEW+Ut4fMePTw5T9NcQl1hStRs7GMXdxVOdwTgct4o43P0qpNjqCltmj+u
-         73+3abXaxx701XMgnKTbTvxFgEySt3rIeejrsHNwlfp8kk7roU5CCLeHXq99l2Ofx/FB
-         vvEPUkHpm+BRPGCo1NAnRI/KiL6+WhqU7q37UOLjP39tt+znh2qCiuCoBLu5lVJt0g81
-         lpwfK0ajaHRek97Ge38PdhvVS/uhDbMpSGvgMgSAMWS7t3B9KKdoBnA1PqzT4Qyg7kD0
-         KrdF2GBgvgWG0EIdYIc6Zz4EcH+dGpmmNnl8I/1x/aggAVgP527WW9b1tZTSzo/396jy
-         srSA==
-X-Gm-Message-State: AOAM533/7krPvv7KHSti8w92rWCtn0POdya4lklh0GT9BWo1BmSBr2YP
-        +Km8Npkg7yfVX+al06cLK3r80B0Xxrk=
-X-Google-Smtp-Source: ABdhPJzH2iEUJxT2cTQQ2+zZ4EtLm7SM90YRu8usYcXGs9F9EQWJEZPk6GX3gDdx9mV/Fx0BREh0HQ==
-X-Received: by 2002:a17:90a:808a:: with SMTP id c10mr5589172pjn.229.1611064685930;
-        Tue, 19 Jan 2021 05:58:05 -0800 (PST)
-Received: from sol.lan (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
-        by smtp.gmail.com with ESMTPSA id c5sm6617710pfi.5.2021.01.19.05.58.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nDg3MSaSmW/QUwXKAX2yr0bwfrbQw4H0zZIY31w5eOc=;
+        b=UMKi60hF87/eZRQrlwGYKJxZc17K1xF64oHs0dsmaqQmvrUFKafZ1ljLWQBgnAzB8e
+         KHB2GuLybvhRpyH0xsI2UTXeXbSOk3VOeSCUwLo+whuh5k3IqvUiNEa/+0aDb9Wd14eN
+         x4yK4h36AqtidzBeCKJs49pZcT6agO02JmxNE/gLym3/qm/0ZfMNN1wtAIyczqwaaLnm
+         qjc1zkKq5jDs4t7C/B5ycdJExwVHmg7es5Y1L+yzyxQHYwAZMbCtQSe4qb7uAL8JhoY4
+         lA8a0nb/IfnDP0bVQi3U1ZJpYorMr7tVLWTUqGVj2JUUzZBKCV5Qbq0k4f4XfF8GE6t/
+         F6lQ==
+X-Gm-Message-State: AOAM532nF74dt/2AsI1/dBhuHsWtMN/0LDRK0GutOfiGiZxq+58qHuLH
+        +eLZ+OfIpijGH83YjKxQ8QM=
+X-Google-Smtp-Source: ABdhPJw5PGXbl+MKF/jHXLtXqibUZ5rVpv5QXQ/JShh7xyS6czbf+H++QVNge7SewYlcohjLMv4afg==
+X-Received: by 2002:a37:7003:: with SMTP id l3mr1255066qkc.467.1611064702210;
+        Tue, 19 Jan 2021 05:58:22 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id x25sm12686774qkx.88.2021.01.19.05.58.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 05:58:05 -0800 (PST)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH] gpio: uapi: fix line info flags description
-Date:   Tue, 19 Jan 2021 21:57:27 +0800
-Message-Id: <20210119135727.105360-1-warthog618@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 19 Jan 2021 05:58:20 -0800 (PST)
+Date:   Tue, 19 Jan 2021 14:58:18 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v6 11/15] phy: tegra: xusb: Add wake/sleepwalk for
+ Tegra210
+Message-ID: <YAblelq2PGXGVKOX@ulmo>
+References: <20210119085546.725005-1-jckuo@nvidia.com>
+ <20210119085546.725005-12-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="y0RLxbukScfb7M8w"
+Content-Disposition: inline
+In-Reply-To: <20210119085546.725005-12-jckuo@nvidia.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of the flags field of the struct gpio_v2_line_info
-mentions "the GPIO lines" while the info only applies to an individual
-GPIO line.  This was accidentally changed from "the GPIO line" during
-formatting improvements.
 
-Reword to "this GPIO line" to clarify and to be consistent with other
-struct gpio_v2_line_info fields.
+--y0RLxbukScfb7M8w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 2cc522d3931b ("gpio: uapi: kernel-doc formatting improvements")
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- include/uapi/linux/gpio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jan 19, 2021 at 04:55:42PM +0800, JC Kuo wrote:
+> This commit implements Tegra210 XUSB PADCTL wake and sleepwalk
+> routines. Sleepwalk logic is in PMC (always-on) hardware block.
+> PMC driver provides managed access to the sleepwalk registers
+> via regmap framework.
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+> v6:
+>    no change
+> v5:
+>    no change
+> v4:
+>    move sleepwalk/wake stubs from 'struct tegra_xusb_padctl_ops' to
+>    'struct tegra_xusb_lane_ops'
+>    remove a blank line=20
+>    rename 'pmc_dev' with 'pdev'
+>    remove 'struct device_node *np'=20
+>    rename label 'no_pmc' with 'out'
+>    defer .probe() if PMC driver is yet to load=20
+>=20
+> v3:
+>    rename 'pmc_reg" with 'regmap' and move to the top of 'struct tegra210=
+_xusb_padctl'
+>    change return data of .phy_remote_wake_detected() to 'bool'
+>    change input parameter of .phy_remote_wake_detected() to 'struct phy*'
+>    remove unnecessary 'else'
+>    rename 'val' with 'value'
+>    rename tegra_pmc_*() with tegra210_pmc_*()
+>    remove VBUS ON/OFF control change
+>=20
+>  drivers/phy/tegra/xusb-tegra210.c | 930 ++++++++++++++++++++++++++++++
+>  1 file changed, 930 insertions(+)
 
-diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
-index e4eb0b8c5cf9..7a6f7948a7df 100644
---- a/include/uapi/linux/gpio.h
-+++ b/include/uapi/linux/gpio.h
-@@ -212,7 +212,7 @@ struct gpio_v2_line_request {
-  * @offset: the local offset on this GPIO chip, fill this in when
-  * requesting the line information from the kernel
-  * @num_attrs: the number of attributes in @attrs
-- * @flags: flags for the GPIO lines, with values from &enum
-+ * @flags: flags for this GPIO line, with values from &enum
-  * gpio_v2_line_flag, such as %GPIO_V2_LINE_FLAG_ACTIVE_LOW,
-  * %GPIO_V2_LINE_FLAG_OUTPUT etc, added together.
-  * @attrs: the configuration attributes associated with the line
--- 
-2.30.0
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--y0RLxbukScfb7M8w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAG5XoACgkQ3SOs138+
+s6HT9RAAmRCnT89nxyY9HXYwGFC8OvEoNVtwhcOICytkXiUpaMX3SbQMkPsrr97Z
+am1qgDCs1wqYhCKJYCUtVZIA/csGepBBUIXRfBapuZcavUeZeKxLNBygnVz1mjpt
+n1iBRIyECZigzrAV1mAPZnUJL0P3l0ZSk5p+NsysPkyAO7Q7w/LMZb4Jrt/X+ZZf
+QyXDpKwIzGGlb7NnVtmm6Njxyyicl9UpgtzWwAyQnN3IEbcgPdjZlamYHTiwEqXH
+pVvj/ObvQOnXEBoSG2l5I1BzaB3Igk2yPNDNgKU6k5EpS6nPOma3f4y4GbMi+WAp
+5Yd9V43x0fhaWJY5nlkXHowQ6S7DkF8kSS3d92khyHHtGBOMohP9onpvs9pb1Tqk
+fVkAUUjnYoT2U01qmd+MT3sRzgoBfOFcqOlgcIv+U8bEegFRAw0mYod9tsclprRr
+kFrIS4GRHZmfimNJlsiRKZUuG3ZthSwfhTKXx0gkxtafXxJ0E0MJpVHGkH2Efvuc
+5vSCqX+03Xmo/mqlRUp+ASTzKiS3fE+hJU3DIgGn5I/MJtCW6pcXFb05hFSRi3IJ
+NZHL+T+P1leoDOZm/mtAukgchqZXQLi/OQMvH0gM+OPsLA19sB0In0ONyC5QGrRz
+T7V4Uns1xAbq0oN0Bb4zsA30xwGsehsy2Q24+cV4LxjN8sFm2gc=
+=VcYB
+-----END PGP SIGNATURE-----
+
+--y0RLxbukScfb7M8w--
