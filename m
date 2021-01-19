@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C212FBD22
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2962FBD1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391073AbhASRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:02:32 -0500
-Received: from esa7.hc324-48.eu.iphmx.com ([207.54.71.126]:40724 "EHLO
-        esa7.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389743AbhASQwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:52:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
-  t=1611075170; x=1642611170;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JtbhU+MEjxnH0ndi81FLN6q3gxthENEMNOMd1VdQ7F8=;
-  b=HWeF2TwMzE1D/lJ4Ku7B+hm3tHPgRKbqWXg6ZNTZx9lbD2AnAqSewBkk
-   4hr9thZ7FpFQcKWNqZy0QBYkHXOG9RxO9pnrPwBfHuhTpY7sUNlSrFXek
-   x+GNpZpTc2buTDnNZMJjUaPJK1OUVphQmCMn6Rni/Y2yFitw/vtD2bW0c
-   g=;
-Received: from esagw6.bmwgroup.com (HELO esagw6.muc) ([160.46.252.49]) by
- esa7.hc324-48.eu.iphmx.com with ESMTP/TLS; 19 Jan 2021 17:43:53 +0100
-Received: from esabb2.muc ([160.50.100.34])  by esagw6.muc with ESMTP/TLS;
- 19 Jan 2021 17:43:53 +0100
-Received: from smucm10m.bmwgroup.net (HELO smucm10m.europe.bmw.corp) ([160.48.96.49])
- by esabb2.muc with ESMTP/TLS; 19 Jan 2021 17:43:53 +0100
-Received: from greenhouse.bmw-carit.intra (192.168.221.38) by smucm10m.europe.bmw.corp
- (160.48.96.49) with Microsoft SMTP Server (TLS;
- Tue, 19 Jan 2021 17:43:52 +0100
-From:   Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
-Subject: [RFC PATCH 1/2] Use pause-on-trace with the latency tracers
-Date:   Tue, 19 Jan 2021 17:43:43 +0100
-Message-ID: <20210119164344.37500-2-Viktor.Rosendahl@bmw.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119164344.37500-1-Viktor.Rosendahl@bmw.de>
-References: <20210119164344.37500-1-Viktor.Rosendahl@bmw.de>
+        id S2390637AbhASRB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:01:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:40152 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388905AbhASQ4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:56:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5C9BD6E;
+        Tue, 19 Jan 2021 08:55:53 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00E573F66E;
+        Tue, 19 Jan 2021 08:55:52 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Subject: Re: [PATCH] sched/eas: Don't update misfit status if the task is pinned
+In-Reply-To: <CAKfTPtCRPViF7B1iqeNVDi31X2sgOWKDJSGCBSzbj0c_Zb=mzA@mail.gmail.com>
+References: <20210119120755.2425264-1-qais.yousef@arm.com> <CAKfTPtD+wU9-UitvnBmZFeAgXbsDO+qcsv-hYr0xxuewB_Kp+A@mail.gmail.com> <jhjmtx53ucp.mognet@arm.com> <CAKfTPtCRPViF7B1iqeNVDi31X2sgOWKDJSGCBSzbj0c_Zb=mzA@mail.gmail.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Tue, 19 Jan 2021 16:55:43 +0000
+Message-ID: <jhjim7s50j4.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SMUCM30K.europe.bmw.corp (160.46.167.47) To
- smucm10m.europe.bmw.corp (160.48.96.49)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eaerlier, tracing was disabled when reading the trace file. This behavior
-was changed with:
+On 19/01/21 15:19, Vincent Guittot wrote:
+> On Tue, 19 Jan 2021 at 14:54, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>> On 19/01/21 14:34, Vincent Guittot wrote:
+>> >> -       if (!p) {
+>> >> +       if (!p || p->nr_cpus_allowed == 1) {
+>> >
+>> > Side question: What happens if there is 2 misfit tasks and the current
+>> > one is pinned but not the other waiting one
+>> >
+>>
+>> update_misfit_status() is called either on the current task (at tick) or
+>> on the task picked by pick_next_task_fair() - i.e. CFS current or
+>> about-to-be-current.
+>>
+>> So if you have 2 CPU hogs enqueued on a single LITTLE, and one of them
+>> is pinned, the other one will be moved away either via regular load
+>
+> This doesn't seem reliable because it uses load or nr_running
+>
 
-commit 06e0a548bad0 ("tracing: Do not disable tracing when reading the
-trace file").
+Right
 
-This doesn't seem to work with the latency tracers.
+>> balance, or via misfit balance sometime after it's picked as the next
+>> task to run.
+>>
+>> Admittedly that second case suffers from unfortunate timing mostly
+>> related to the load balance interval. There was an old patch in the
+>> Android stack that would reduce the balance interval upon detecting a
+>
+> Shouldn't we keep track of enqueue misfit tasks instead ?
+>
 
-The above mentioned commit dit not only change the behavior but also added
-an option to emulate the old behavior. The idea with this patch is to
-enable this pause-on-trace option when the latency tracers are used.
+That might help. This being CFS however, the maintenance of it might
+prove prohibitive. I faintly recall having concerns about expanding the
+misfit logic to non-current tasks, but nothing comes to mind right
+now...
 
-This is a workaround, perhaps it would be better to make the latency
-tracers work without pausing but I am not sure how to do that, or even
-how feasible it is without significant rework.
+Historically (before PELT time scaling) I think it wasn't possible to
+have a steady state with more than one misfit task on a rq, as two
+similar CPU hogs would end up with a utilization value of at most half
+the CPU's capacity. If those were at e.g. opposite ends of the NICE
+spectrum, if one would be flagged as misfit then the other wouldn't
+(can't have two slices greater than 80%!)
 
-Signed-off-by: Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
----
- kernel/trace/trace_irqsoff.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I *think* that's still true with timescaling, but then we did add the
+uclamp stuff to make tasks look bigger than they are...
 
-diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
-index d06aab4dcbb8..6756379b661f 100644
---- a/kernel/trace/trace_irqsoff.c
-+++ b/kernel/trace/trace_irqsoff.c
-@@ -562,6 +562,8 @@ static int __irqsoff_tracer_init(struct trace_array *tr)
- 	/* non overwrite screws up the latency tracers */
- 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
- 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
-+	/* without pause, we will produce garbage if another latency occurs */
-+	set_tracer_flag(tr, TRACE_ITER_PAUSE_ON_TRACE, 1);
- 
- 	tr->max_latency = 0;
- 	irqsoff_trace = tr;
-@@ -583,11 +585,13 @@ static void __irqsoff_tracer_reset(struct trace_array *tr)
- {
- 	int lat_flag = save_flags & TRACE_ITER_LATENCY_FMT;
- 	int overwrite_flag = save_flags & TRACE_ITER_OVERWRITE;
-+	int pause_flag = save_flags & TRACE_ITER_PAUSE_ON_TRACE;
- 
- 	stop_irqsoff_tracer(tr, is_graph(tr));
- 
- 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
- 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
-+	set_tracer_flag(tr, TRACE_ITER_PAUSE_ON_TRACE, pause_flag);
- 	ftrace_reset_array_ops(tr);
- 
- 	irqsoff_busy = false;
--- 
-2.25.1
-
+>> misfit task to "accelerate" its upmigration; this might need to be
+>> revisited...
+>>
+>> >>                 rq->misfit_task_load = 0;
+>> >>                 return;
+>> >>         }
+>> >> --
+>> >> 2.25.1
+>> >>
