@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247372FBF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C1A2FBF85
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404021AbhASR76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:59:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47022 "EHLO mail.kernel.org"
+        id S1728107AbhASSxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:53:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731918AbhASPDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:03:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DB9A207B1;
-        Tue, 19 Jan 2021 15:02:51 +0000 (UTC)
+        id S1729307AbhASS2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:28:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2DFA23138;
+        Tue, 19 Jan 2021 16:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611068574;
-        bh=dZST2z3zdhC3d3+vZT1xghuXsRnYONAPhxzobtNNEXc=;
+        s=k20201202; t=1611073229;
+        bh=64AjEifXMNBvzlHCnURQuhMqMBw4Vwtflqm/WmV7xqA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bAPTk0z2dNr0o6iBUWXlIKiIeozZpt1A5TfBdwYXGiAqRhokwPhq6d4VGpDZShjB0
-         tsaFQeB92I6tnDB1wGM0MhOSsH8ypmGa/3qmrx8gVdp/qPhCXPpRMhIZdwQVoAUR9z
-         zMeFDZ8TBpA59R9g7SalT5R1toWvKGv0kzwGKBdRVr5OrDrkEAYq+CA5TdGHfQDjV/
-         0kIouCmcm/Lkptjn++EQ5odDpQ47VYxMuKZ8j/t9d9bO4/Apj55wQS6JKcNHZH6nRE
-         ALOU59V75ZWRqhfWXwi1uz+nSCdiGOfJK613XBR7OtjjY1B+i4B7ysthcpO2QmUf2g
-         Khk/UkK8G1CJg==
-Date:   Tue, 19 Jan 2021 20:32:47 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jack Pham <jackp@codeaurora.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
+        b=lQnKmZmHTzUoU3y0IQQczbLSgD41b/i4VaQAl0Q7EADTORfEpLNVAAZnJlK5XXbGJ
+         5ZytsC9pjcsoeQC4WbX9PjjXgcHx2DBnt6zE4xXwEk8GWrukCpcMPLlVw02ljRfGaz
+         cM8uoD0qwGAfr1TOs8Vnf7sdHi2cWruKJTM6ZKPaFI5kjmve+9wIQl498QeB0C0Di0
+         xs/+QdGyxtLIbVppucqHdqZXEmcWXvLf3A/aVhqj2QiA1pLoV+x4BCbS5b5NCb3NDT
+         qPcDxw9WD1qWYghoUeT5OdMGXfRCZwn4PumH6KZAI7GloHNN4Su2lWD7wYsXcwNcUr
+         amSST/on2GxTQ==
+Date:   Tue, 19 Jan 2021 16:19:50 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: phy: qcom,qmp: Add SM8150, SM8250
- and SM8350 USB PHY bindings
-Message-ID: <20210119150247.GX2771@vkoul-mobl>
-References: <20210115174723.7424-1-jackp@codeaurora.org>
- <20210115174723.7424-2-jackp@codeaurora.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 19/21] regulator: hi6421v600-regulator: move it from
+ staging
+Message-ID: <20210119161950.GC4478@sirena.org.uk>
+References: <cover.1611072387.git.mchehab+huawei@kernel.org>
+ <8000252dfd10677c5eb52d498e68de9c65304cf4.1611072387.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sHrvAb52M6C8blB9"
 Content-Disposition: inline
-In-Reply-To: <20210115174723.7424-2-jackp@codeaurora.org>
+In-Reply-To: <8000252dfd10677c5eb52d498e68de9c65304cf4.1611072387.git.mchehab+huawei@kernel.org>
+X-Cookie: Yow!  Am I in Milwaukee?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-01-21, 09:47, Jack Pham wrote:
-> Add the compatible strings for the USB3 PHYs found on SM8150, SM8250
-> and SM8350 SoCs. These require separate subschemas due to the different
-> required clock entries.
-> 
-> Note the SM8150 and SM8250 compatibles have already been in place in
-> the dts as well as the driver implementation but were missing from
-> the documentation.
 
-Applied, thanks
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-~Vinod
+On Tue, Jan 19, 2021 at 05:10:45PM +0100, Mauro Carvalho Chehab wrote:
+
+> +static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
+> +{
+
+> +static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
+> +						 unsigned int selector)
+
+Now that the driver has been converted to regmap these are just
+duplicates of the regmap helpers.  You may also be able to use them for
+the disable() and is_enabled() operations, I didn't confirm that that's
+OK with the device using multi-bit enable controls for some reason IIRC.
+
+--sHrvAb52M6C8blB9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAHBqUACgkQJNaLcl1U
+h9D3Owf/cbGWiEnDSCjUCkOceFn1nPslHI9p0GCP6typnAUlLJ5ncPcclNGCVhiE
+dO8v80ZBl17ZHecxXkObmnjtpTMM0m12onuk+Ack8o/5r+MM8kdl3funGXhgASzc
+Ep7bY17fo4a2xUb6l3/usDfK/FTmKXuyKc3ac2Jj1efxgjbMR3qAIBEBvPOyMQRn
+UioGpSk2fCnM3Rth6Ds+0Ao5IKHiHQaek5cxcypOpRmjUOCqBZ4Zg3qXMEXgIM4a
+OlN3PQFPRG2SfdZgPwUpGJ1VuvVP2PC3PkTTvntwMu08N0m4QFjy/laEfvREc0Nv
+U4+mfeyAsATetiwCfC0CPaWqgCF+9w==
+=gGRY
+-----END PGP SIGNATURE-----
+
+--sHrvAb52M6C8blB9--
