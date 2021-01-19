@@ -2,93 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B032FBF0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52AC2FBF32
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390705AbhASScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
+        id S2389447AbhASSe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731586AbhASSaz (ORCPT
+        with ESMTP id S2389940AbhASSbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:30:55 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3BFC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:30:15 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id d11so9605913qvo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:30:15 -0800 (PST)
+        Tue, 19 Jan 2021 13:31:55 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A6C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:31:14 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id b8so10991306plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:31:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=k26IIVGt0E6B0tvAWOLHZwdfWuzN6d7qHFvd8ZVNYk0=;
-        b=SUDvSIigSqo9rIUtIa5Eu7WRTj6rJFVObJR6As14fn+j77cYLuyyxMrcYQn4LJ7oG7
-         c+B4J2r9aBh7C2LK9Ij3Rwg3xcoBksq1T/LmdXvtLr00KreJld2kCA0eD9SMgWcetyIG
-         dN1f9MePpQ76i5U7QninrJfI6nDXmt78D4XVs8g1ze5Sg/QMQiFUS9DYfXAwUlRF8mqn
-         6cB8q+OXHzS5MK0gRo4uPohwvfUbo7BxlINAn4ZCTyFG0Tjjo977o6dQzaAww+qmiotF
-         Ybr9L5jpCctVi2x5b//4Cv/tMqGPxAeaLRqM/yCPr1TjJknCu6hQDBScR/SeH0Y4SDJu
-         VkJg==
+        bh=qeHz0k448eNAbSKl9/y70hCJkDl4GVJ8biKbIHgRs58=;
+        b=oKQDQb0xVyKRV+/c4nGVqoHTRSOtYoXMUS40R6UzHy2rVBQ0LY3zo71wAW/zDtDfVu
+         ZXc3RAFhSoj7phzKYsx3VWfe1Pac1RZfBNSxzRbfi0r+BK5OfZ9j/G1I425LaQZxhtJE
+         O+htKGMxky9G117TgbnhbKuRrMtcwOBD1HBAIdbhVyF5RHczvp8HQJfjzxOfGSKunybL
+         fBgseqmqSghh3OIO8faPOaF2b5H8e21Afwa3nBs+oDvQ/r41K2K8OgZegGIt4yundmE1
+         BiapXiavE7MAvPGAlvVd+6NqBPO3AKP5JXQiJWtl5Q663kjwMWsm+0Mz1Hk6sCxZj6fx
+         Xh4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=k26IIVGt0E6B0tvAWOLHZwdfWuzN6d7qHFvd8ZVNYk0=;
-        b=o6pGcbdSwe5Ut6xf1fQnroYZQswu1kU498vdpegO+KWDB87rFR9S8yJyYgLprWTsId
-         kchaz8JiS3OwroiBGSSNJjh9Oto25abBXMhsm1pQbSKcVIJ8gr+Qw8HgkaXOFEr/HDqK
-         DT2WOQLPcgYcZ10CjzKTnejOMzkFyMCC8SsxcCigW2C1iJkhOLvAq/rIxQodQ/PbjJt9
-         0zSzRRStfrCbJzGcNELQ71GEzqCy/9ry5/jURtXZoRNTVBxVWAoADF+2XiRE2oL+9SiI
-         yFKau7/zM3l3LGTprEKvOJAr48+yRlNC3A3ZRTxRYQHere2eIBugpHH2OdSL4Rw8IOUM
-         SzxA==
-X-Gm-Message-State: AOAM531aF6TtQu6F9MLN3l4+K+WSGLKu5RaGmsXVjFH7cqbylw8jhQya
-        3suOXoLBftP5JFBNzE1Ht/3ulg==
-X-Google-Smtp-Source: ABdhPJyVPdLzW30F86jbhbw02UhyEzNHNm1A2a7XQsfcX2SJOI44r3mS/eSEiOOFPJWqKfCPcbsZUA==
-X-Received: by 2002:a0c:f005:: with SMTP id z5mr5528978qvk.9.1611081014621;
-        Tue, 19 Jan 2021 10:30:14 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id 128sm13451661qki.26.2021.01.19.10.30.13
+        bh=qeHz0k448eNAbSKl9/y70hCJkDl4GVJ8biKbIHgRs58=;
+        b=em8yD25dcCwWt3DW+EP/xMqKEHqfstlPzYl8KiOP58xRWcB83fy+meWkvdf55mFaj8
+         xu7FS/Lad9cT0z9xX9D5JgXPBFKTwrcQckL66JqTwktKQaz+gxii9UexLz4bCIjb/VNK
+         wSHwGfqTII5PyRke3ZpI9WTeXFdWWfUJRs7Jv0KjnI7VCj3Po75Xt3AAIiSVIp43vnF7
+         E7uVKQI5RFq13o3aHUEjUgsGcMb30phN/RwbcD0egkzSYSHanKiLLc64KWqn7JdQxbEa
+         DjGU5w7Or0RpCpxMOOUmxjsEulGotrsNHTji6poVzqMTno+Nm/o6rZL2UcK1G/G5wk0z
+         woGA==
+X-Gm-Message-State: AOAM531Ss/uIiwB55kxzNzjz9GtRKiulBTkFGhfq3KXdHCq950r8/kBh
+        bM3QYAwz+341QoNJg5nOd+Y2Eg==
+X-Google-Smtp-Source: ABdhPJyDMuwnx++1Z35LFUhv27uQ5v8Xr4vR1+tqzfxAM8zbcvKlDr8AEeVfN8tTeqnKtADYp9PxQA==
+X-Received: by 2002:a17:90a:df15:: with SMTP id gp21mr1046339pjb.63.1611081074224;
+        Tue, 19 Jan 2021 10:31:14 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id u1sm3736060pjr.51.2021.01.19.10.31.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:30:14 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1vld-003pg1-Ed; Tue, 19 Jan 2021 14:30:13 -0400
-Date:   Tue, 19 Jan 2021 14:30:13 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
-Message-ID: <20210119183013.GB4605@ziepe.ca>
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
- <20210119043920.155044-9-pasha.tatashin@soleen.com>
+        Tue, 19 Jan 2021 10:31:13 -0800 (PST)
+Date:   Tue, 19 Jan 2021 10:31:05 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        wanpengli@tencent.com, kvm@vger.kernel.org,
+        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
+        x86@kernel.org, kyung.min.park@intel.com,
+        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
+        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
+        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
+Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+Message-ID: <YAclaWCL20at/0n+@google.com>
+References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
+ <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119043920.155044-9-pasha.tatashin@soleen.com>
+In-Reply-To: <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:39:14PM -0500, Pavel Tatashin wrote:
-> Zero page should not be used for long term pinned pages. Once pages
-> are pinned their physical addresses cannot changed until they are unpinned.
-> 
-> Guarantee to always return real pages when they are pinned by adding
-> FOLL_WRITE.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+On Fri, Jan 15, 2021, Babu Moger wrote:
 > ---
->  mm/gup.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>  arch/x86/include/asm/svm.h |    4 +++-
+>  arch/x86/kvm/svm/sev.c     |    4 ++++
+>  arch/x86/kvm/svm/svm.c     |   19 +++++++++++++++----
+>  3 files changed, 22 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 1c561945b426..772e60efe243 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -269,7 +269,9 @@ struct vmcb_save_area {
+>  	 * SEV-ES guests when referenced through the GHCB or for
+>  	 * saving to the host save area.
+>  	 */
+> -	u8 reserved_7[80];
+> +	u8 reserved_7[72];
+> +	u32 spec_ctrl;		/* Guest version of SPEC_CTRL at 0x2E0 */
+> +	u8 reserved_7b[4];
 
-No, this will definitely break things
+Don't nested_prepare_vmcb_save() and nested_vmcb_checks() need to be updated to
+handle the new field, too?
 
-Why does the zero page have to be movable?
+>  	u32 pkru;
+>  	u8 reserved_7a[20];
+>  	u64 reserved_8;		/* rax already available at 0x01f8 */
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index c8ffdbc81709..959d6e47bd84 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -546,6 +546,10 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>  	save->pkru = svm->vcpu.arch.pkru;
+>  	save->xss  = svm->vcpu.arch.ia32_xss;
+>  
+> +	/* Update the guest SPEC_CTRL value in the save area */
+> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		save->spec_ctrl = svm->spec_ctrl;
 
-Jason
+I think this can be dropped if svm->spec_ctrl is unused when V_SPEC_CTRL is
+supported (see below).  IIUC, the memcpy() that's just out of sight would do
+the propgation to the VMSA.
+
+> +
+>  	/*
+>  	 * SEV-ES will use a VMSA that is pointed to by the VMCB, not
+>  	 * the traditional VMSA that is part of the VMCB. Copy the
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 7ef171790d02..a0cb01a5c8c5 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1244,6 +1244,9 @@ static void init_vmcb(struct vcpu_svm *svm)
+>  
+>  	svm_check_invpcid(svm);
+>  
+> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		save->spec_ctrl = svm->spec_ctrl;
+> +
+>  	if (kvm_vcpu_apicv_active(&svm->vcpu))
+>  		avic_init_vmcb(svm);
+>  
+> @@ -3789,7 +3792,10 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  	 * is no need to worry about the conditional branch over the wrmsr
+>  	 * being speculatively taken.
+>  	 */
+> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +	if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		svm->vmcb->save.spec_ctrl = svm->spec_ctrl;
+> +	else
+> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+
+Can't we avoid functional code in svm_vcpu_run() entirely when V_SPEC_CTRL is
+supported?  Make this code a nop, disable interception from time zero, and
+read/write the VMBC field in svm_{get,set}_msr().  I.e. don't touch
+svm->spec_ctrl if V_SPEC_CTRL is supported.  
+
+	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+
+	svm_vcpu_enter_exit(vcpu, svm);
+
+	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
+	    unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+
+>  	svm_vcpu_enter_exit(vcpu, svm);
+>  
+> @@ -3808,13 +3814,18 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+>  	 * save it.
+>  	 */
+> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> -		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+> +	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL))) {
+> +		if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +			svm->spec_ctrl = svm->vmcb->save.spec_ctrl;
+> +		else
+> +			svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+> +	}
+>  
+>  	if (!sev_es_guest(svm->vcpu.kvm))
+>  		reload_tss(vcpu);
+>  
+> -	x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+>  
+>  	if (!sev_es_guest(svm->vcpu.kvm)) {
+>  		vcpu->arch.cr2 = svm->vmcb->save.cr2;
+> 
