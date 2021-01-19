@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE922FB750
+	by mail.lfdr.de (Postfix) with ESMTP id CAA442FB751
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404336AbhASKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:34:52 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:62109 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390430AbhASKXI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:23:08 -0500
-Date:   Tue, 19 Jan 2021 10:22:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail3; t=1611051746;
-        bh=vtNRLA5CE3I6wcgKrfTHuSBUc+uTmwDqtUGt5ElNsPU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=fCKI5HfShsUoM4GF9DEiDYOMlZ/uRKpa98tcc4F3MwCi5CAGkUrK3Q2lsKW/HyolT
-         DOF8mTyfFwjtWD/Pl+P7U2SIZbp5Z3d5avlBC1ys6SNWhOluCVb+Q3SHhM3g361gBm
-         xc1AkQwNuMa1ELxxffG3eZ9oN7LdqZuR9dq1/0gydrrCLPXMQgJHwZxU8TVplS+9VA
-         U6UCoO6izgl5Rt4Hb4rweU8cbOXfdzP2ljcem/VV9ajDuwSRrX+hxMax1UIgGr08Y5
-         xBVM56MRCWj+OGAZ/cxm2/4BCRVgowBiaxmYgMaRI0ZAbnT6SYAolFVhvCSxd0IZkF
-         g9rPT9hQzAq3Q==
-To:     Lyude Paul <lyude@redhat.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     nouveau@lists.freedesktop.org, Martin Peres <martin.peres@free.fr>,
-        Jeremy Cline <jcline@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to userspace
-Message-ID: <iyiRYoTlFNd1Crgc673rDXnfqahsfhKFP89rA0kKYEFUpLGwsFtYL-x-Jwh1ZAo7vJerbikydEDSUFtAoewsGkh3WSYeykScJdKC2PVrKQs=@emersion.fr>
-In-Reply-To: <20210119015415.2511028-2-lyude@redhat.com>
-References: <20210119015415.2511028-1-lyude@redhat.com> <20210119015415.2511028-2-lyude@redhat.com>
+        id S2404364AbhASKez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389369AbhASKX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:23:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4E7323117;
+        Tue, 19 Jan 2021 10:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611051766;
+        bh=ZCWD/b7A3OwSWmg8JXwsE+BsDPVkRktwRfyNPO6lUdg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UR8Jsg+mtUefwVHLkFSOyOYRGJOn/FgSapdFW7e+NAyIxOesltcdss4GA/ncuPXH1
+         Iq+lN2DMdA7/4RmShHjcaMGDRxQAhU4tua2Mauvf8YntfgBpSLPAd+UJ1wz3pooc+P
+         n7NoWJytThrmgGbwLYaloNtXMc+8P4137vFR9DAs=
+Date:   Tue, 19 Jan 2021 11:22:43 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Howard Yen <howardyen@google.com>
+Cc:     robh+dt@kernel.org, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] dt-bindings: usb: usb-xhci: add USB offload support
+Message-ID: <YAay83Ze47hNu5Ii@kroah.com>
+References: <20210119101044.1637023-1-howardyen@google.com>
+ <20210119101044.1637023-5-howardyen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119101044.1637023-5-howardyen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, January 19th, 2021 at 2:54 AM, Lyude Paul <lyude@redhat.com> wr=
-ote:
-
-> Cc: Martin Peres <martin.peres@free.fr>
-> Cc: Jeremy Cline <jcline@redhat.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
+On Tue, Jan 19, 2021 at 06:10:44PM +0800, Howard Yen wrote:
+> Document USB offload support for usb-xhci.
+> 
+> For example:
+> 
+> &usbdrd_dwc3 {
+> 	...
+> 	/* support usb offloading, 0: disabled, 1: audio */
+> 	offload = <1>;
+> 	...
+> };
+> 
+> Signed-off-by: Howard Yen <howardyen@google.com>
 > ---
->  drivers/gpu/drm/nouveau/dispnv50/disp.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/no=
-uveau/dispnv50/disp.c
-> index c6367035970e..5f4f09a601d4 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> @@ -2663,6 +2663,14 @@ nv50_display_create(struct drm_device *dev)
->  =09else
->  =09=09nouveau_display(dev)->format_modifiers =3D disp50xx_modifiers;
->
-> +=09if (disp->disp->object.oclass >=3D GK104_DISP) {
+>  Documentation/devicetree/bindings/usb/usb-xhci.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.txt b/Documentation/devicetree/bindings/usb/usb-xhci.txt
+> index b120dd6612a2..aab1fd499f15 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-xhci.txt
+> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.txt
+> @@ -46,6 +46,7 @@ Optional properties:
+>    - quirk-broken-port-ped: set if the controller has broken port disable mechanism
+>    - imod-interval-ns: default interrupt moderation interval is 5000ns
+>    - phys : see usb-hcd.yaml in the current directory
+> +  - offload: supporting USB offload feature, 0: disabled, 1: audio
 
-I can confirm this works fine on GK208B. Tested with wlroots. I don't
-have older cards to test, though.
+Why does the "type" of offload matter, shouldn't it just be:
+	0: disabled, 1: enabled
+?
 
-Tested-by: Simon Ser <contact@emersion.fr>
+And in thinking about it some more, why does this need to be a binding
+at all, shouldn't this just be an issue if the platform-specific ops are
+available or not, meaning no DT change should be needed at all?
 
-> +=09=09dev->mode_config.cursor_width =3D 256;
-> +=09=09dev->mode_config.cursor_height =3D 256;
-> +=09} else {
-> +=09=09dev->mode_config.cursor_width =3D 64;
-> +=09=09dev->mode_config.cursor_height =3D 64;
-> +=09}
-> +
->  =09/* create crtc objects to represent the hw heads */
->  =09if (disp->disp->object.oclass >=3D GV100_DISP)
->  =09=09crtcs =3D nvif_rd32(&device->object, 0x610060) & 0xff;
-> --
-> 2.29.2
+thanks,
 
+greg k-h
