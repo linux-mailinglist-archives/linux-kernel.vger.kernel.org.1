@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4602FAE55
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DDD2FAE58
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392250AbhASB22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 20:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731837AbhASB2R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 20:28:17 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFB2C061574;
-        Mon, 18 Jan 2021 17:27:36 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id y14so4530221oom.10;
-        Mon, 18 Jan 2021 17:27:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZU9lb0gFwAiVxebjP8MY9Tj0+cnu+M7cp3y/G+AYdA=;
-        b=Pgb3CRFFIZw0s2KoQaFK+XlRDx4+qu6UGDflszF1+a0NXL14M5X+dthe2n9dsTbKmz
-         oPpG+71PvnbCzbqaUjlMj5bERh7BWnpWAPBkoIN1kFEJRKhpC4MEKsjRfFL45FIno+5m
-         6dZlB1KBmrqvkNcJpG3Xbjth+mPoYSGHlIkuVptQ8unQ4/HNU2bfgBK7jA+Zzd/BjGud
-         mGmHPrVzKHqD3OY2mxbSqUumcVAlLOkE6xOgvZ8tPD4RQPpvUkX+rNHWzXaGRBBY231G
-         Zy6+KNXsaEj5eCSp6UI9BdJP8vWPnOzo0bIqEfiTxa2NzvGZouEdFAX+IZpptxtoLt4R
-         qWug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZU9lb0gFwAiVxebjP8MY9Tj0+cnu+M7cp3y/G+AYdA=;
-        b=ZgKBeVJgt3REavH4Cjz2ooZv+ucrdr3hev/wUVQSIFtym990aC0CdOqIL5o96tTvJL
-         5W2ZxF1yKxVkTgIQAcCo3XdJtI5QZisRKBq2cO62XaLNjGrFQPZoCaCuWKxYDsYFoxmX
-         h6JQQkNga51AQVX1jnUi1+NYKp1kBD0SLX1mWa8iYM+0hCbB19Z3FHvQzUJR09qArTBI
-         etrZysEAFPGB/KFRtEM2P+WIo2enA5KDHPK37iXKMTkHFJFFIB5ykAqvu1QTRJHIbEkg
-         QpdPEWVLK9zvNtRir9HNQkH8ub5IHjoB67kJRmelMMnuqxu/z33FzAuZisN+U6Tri95x
-         SIHg==
-X-Gm-Message-State: AOAM531qP8A3IDOstgLeOQxmh6dkfBxk93tvvMXNslCrc7lVL1GU1BXM
-        eqjj6Bp5zYApLDaZo+lEDdRkjxL3Kbxmvgzm8VQ=
-X-Google-Smtp-Source: ABdhPJyBQqesydIzsVse3Ol3uz2LTkTj1R2bgjIV3Lg88TwudoTK2p193rtSKqMbNpn9cuNm8iBitVo++Zcv9++uFPM=
-X-Received: by 2002:a05:6820:41:: with SMTP id v1mr1227340oob.41.1611019644070;
- Mon, 18 Jan 2021 17:27:24 -0800 (PST)
+        id S1731682AbhASBa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 20:30:29 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:43760 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731402AbhASBaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 20:30:24 -0500
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxBb3+NQZgRxoHAA--.8645S3;
+        Tue, 19 Jan 2021 09:29:34 +0800 (CST)
+Subject: Re: [PATCH 0/4] MIPS: process: Some fixes and improvements about
+ get_frame_info()
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+ <ab6e4efb-98b5-3ad6-5bad-2338c57d9392@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <3397a977-939c-b9e5-cadb-11191765d338@loongson.cn>
+Date:   Tue, 19 Jan 2021 09:29:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20210105192844.296277-1-nitesh@redhat.com> <X/UIh1PqmSLNg8vM@google.com>
- <CANRm+Cz1nHkLm=hg-JN3j-s-w1_c0zWm=EYLJ7hzPW-2k_a2Gw@mail.gmail.com>
-In-Reply-To: <CANRm+Cz1nHkLm=hg-JN3j-s-w1_c0zWm=EYLJ7hzPW-2k_a2Gw@mail.gmail.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 19 Jan 2021 09:27:13 +0800
-Message-ID: <CANRm+CwCqnNWr3KELG=6DLkOdWMnMP3uuyyROgXpZrPyo2A+bA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest context"
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        w90p710@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ab6e4efb-98b5-3ad6-5bad-2338c57d9392@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxBb3+NQZgRxoHAA--.8645S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kry8Wr47Xw47tFW3Ww4xCrg_yoW8Ww1xpr
+        43ArnxGF1rJry3Jr17J3yUJr15Jr4rJwn8JF47t340vrn8Cr1UAw1UJr40y34DXryUAF18
+        JF45Jr1UGr15JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjxU70tCUUUUU
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 at 11:20, Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> On Wed, 6 Jan 2021 at 08:51, Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > +tglx
-> >
-> > On Tue, Jan 05, 2021, Nitesh Narayan Lal wrote:
-> > > This reverts commit d7a08882a0a4b4e176691331ee3f492996579534.
-> > >
-> > > After the introduction of the patch:
-> > >
-> > >       87fa7f3e9: x86/kvm: Move context tracking where it belongs
-> > >
-> > > since we have moved guest_exit_irqoff closer to the VM-Exit, explicit
-> > > enabling of irqs to process pending interrupts should not be required
-> > > within vcpu_enter_guest anymore.
-> >
-> > Ugh, except that commit completely broke tick-based accounting, on both Intel
-> > and AMD.  With guest_exit_irqoff() being called immediately after VM-Exit, any
-> > tick that happens after IRQs are disabled will be accounted to the host.  E.g.
-> > on Intel, even an IRQ VM-Exit that has already been acked by the CPU isn't
-> > processed until kvm_x86_ops.handle_exit_irqoff(), well after PF_VCPU has been
-> > cleared.
-> >
->
-> This issue can be 100% reproduced.
-> https://bugzilla.kernel.org/show_bug.cgi?id=204177
+On 01/18/2021 09:51 AM, Jiaxun Yang wrote:
 
-Sorry, the posted link should be
-https://bugzilla.kernel.org/show_bug.cgi?id=209831
+> 在 2021/1/12 下午8:29, Jinyang He 写道:
+>> Not familiar with microMIPS. Not test on microMIPS.
+>
+> Hi Jinyang,
+>
+> I was messing around QEMU microMIPS and found kernel stuck
+> at loading init process after applied your patches :-(
+>
+> Thanks.
+>
+> - Jiaxun
+>
 
-    Wanpeng
+Hi, Jiaxun,
+
+Thanks you for test.
+I think the last patch went wrong.
+
++    if (ip->r_format.opcode == mm_pool32a_op &&
++        ip->r_format.func == mm_pool32axf_op &&
++        ((ip->u_format.uimmediate >> 6) & GENMASK(9,0)) == mm_jalr_op &&
++            ip->r_format.rs == 31)
+
+There is no POOL32A format in uapi/asm/inst.h, so some bits here use the
+format of r_format instead.
+
+---------------------------------------------------------------------
+|    format      |  31:26  | 25:21 | 20:16 |    15:6    |    5:0 |
+-----------------+---------+-------+-------+------------+------------
+| pool32a_format | pool32a |  rt   |  rs   |   jalrc    | pool32axf |
+-----------------+---------+-------+-------+------------+------------
+|    r_format    |  opcode |  rs   |  rt   | rd:5, re:5 |    func |
+---------------------------------------------------------------------
+
+I mistakenly thought that r_format.rs and pool32a_format.rs are the same.
+
++        return 1;
++    return 0;
+
+Could you help me test it again?
+
+Thanks,
+Jinyang
+
+>>
+>> Jinyang He (4):
+>>    MIPS: process: Reorder header files
+>>    MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
+>>    MIPS: Fix get_frame_info() handing of function size
+>>    MIPS: Add is_jr_ra_ins() to end the loop early
+>>
+>>   arch/mips/kernel/process.c | 92 
+>> +++++++++++++++++++++++++++++++---------------
+>>   1 file changed, 62 insertions(+), 30 deletions(-)
+>>
+
