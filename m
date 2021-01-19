@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A1B2FC541
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492E32FC54F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731013AbhASX7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:59:18 -0500
-Received: from mga14.intel.com ([192.55.52.115]:14052 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730605AbhASX6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:58:45 -0500
-IronPort-SDR: ha3Lu4+1c8q4WW2nA7oTVwwe51MloQfA7aK55VsQukr8wNdPmwOLuSFCWEN/k5VIknRmKDU7Hm
- 6zFmqFHz+aww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="178237128"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="178237128"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 15:58:00 -0800
-IronPort-SDR: Cr3m4y5okOrq1yhbLaWhhnHnH+hvpjKVUwfhFjIKslEtcuL+l6rDtnvmJFbtoRCs02T/kPK94B
- lS6RZYBCqJJQ==
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="402548004"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 15:58:00 -0800
-Date:   Tue, 19 Jan 2021 15:57:59 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-1-tony.luck@intel.com>
- <20210115003817.23657-1-tony.luck@intel.com>
- <20210115152754.GC9138@zn.tnic>
- <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
- <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
- <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
- <20210119105632.GF27433@zn.tnic>
+        id S1728514AbhATADk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731299AbhATACf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 19:02:35 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BD0C0613D6;
+        Tue, 19 Jan 2021 16:01:38 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id h205so31621295lfd.5;
+        Tue, 19 Jan 2021 16:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPHp1gyEWkrgtVqboUUCFGeKWlhOr+lbmjaTbVJNaHY=;
+        b=YNvFLyOAusQ8xPj7TCPsO3bqdjpIAasi0a073vS7ro5JYdNA4U1pQwfWnGkOMR/p/z
+         yhdqVNT8f91g+hSBYYJSceeF9t2FCdpwyppt8JrLyIGWJoXzqlTFPCIeNk//p3yf6BCd
+         muxZaYVZhI0qA8XO2RGV21aw1G++us7cHCWiR07V9wiyLc7HR5Xg+cZv/9G3zb1UDn5Q
+         fl02WZsOf+foEDr1ohikPdYQAfO03r5jcdwue4ybUjy4DaTJEUJYEKBEFhHSXWXckeaW
+         +RAMcvjPd55vJ9MyOoiPQWDTVxYR7zabE2bUtxMSrcg6XFIg9hZcZ+M8FsgWKUbgJb1Q
+         LVmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPHp1gyEWkrgtVqboUUCFGeKWlhOr+lbmjaTbVJNaHY=;
+        b=C83WwPxZOu/08irqAyi9JzhSj+KuPNgxGyJL0Pz3efadMQcS82o5JK/GfL5j40sJe9
+         Z1fQTVgIFYL06bJCSDafbhd5AtExdPmAkyagqSLP0WTF8gSWHXX0QXzO0pCvFYf7yH/4
+         9wSihoGe6LcF03TSfT4Or+Kbu35EUEdtt8cH8t46fF6AAkFHdIp7Oo7nzfUksY220eAn
+         sDhvVkhcNOea5Amla22TfU779nBQjLWJZLvwFpRaoWgbwvjZcMWqTu3ZTe0eAxFvMRhj
+         XGNw+AkMLe2/lsEo8+oGg0hk8yi31dIL5JcbuK+hOfuZzg4IQLueRBvQxM4RKLqVFycw
+         ML+w==
+X-Gm-Message-State: AOAM533YoFeEP4Zuhp47np6uUJL7iRO/TObeF093nL0pnsI+CXBRGo21
+        wfBxomtulZJzg/Gkkr/XExc=
+X-Google-Smtp-Source: ABdhPJxpmVVGV+7HsafbLo7U6IUfPpQz5hdw6pjiVqYxV0miEXIbAnQZRIQeDMZRVndk+uBE5YM8Pw==
+X-Received: by 2002:a05:6512:910:: with SMTP id e16mr2809899lft.506.1611100896702;
+        Tue, 19 Jan 2021 16:01:36 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id t30sm33128lft.266.2021.01.19.16.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 16:01:36 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-rtc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] rtc: tps65910: Support wakeup-source property
+Date:   Wed, 20 Jan 2021 02:59:48 +0300
+Message-Id: <20210119235949.15601-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210119105632.GF27433@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:56:32AM +0100, Borislav Petkov wrote:
-> On Fri, Jan 15, 2021 at 03:23:46PM -0800, Luck, Tony wrote:
-> > On Fri, Jan 15, 2021 at 12:51:03PM -0800, Luck, Tony wrote:
-> > >  static void kill_me_now(struct callback_head *ch)
-> > >  {
-> > > +	p->mce_count = 0;
-> > >  	force_sig(SIGBUS);
-> > >  }
-> > 
-> > Brown paper bag time ... I just pasted that line from kill_me_maybe()
-> > and I thought I did a re-compile ... but obviously not since it gives
-> > 
-> > error: ‘p’ undeclared (first use in this function)
-> > 
-> > Option a) (just like kill_me_maybe)
-> > 
-> > struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
-> > 
-> > Option b) (simpler ... not sure why PeterZ did the container_of thing
-> > 
-> > 	current->mce_count = 0;
-> 
-> Right, he says it is the canonical way to get it out of callback_head.
-> I don't think current will change while the #MC handler runs but we can
-> adhere to the design pattern here and do container_of() ...
+TPS65910 is a PMIC MFD device and RTC is one of its functions. The
+wakeup-source DT property is specified for the parent MFD device and we
+need to use this property for the RTC in order to allow to use RTC alarm
+for waking up system from suspend by default, instead of requiring user
+to enable wakeup manually via sysfs.
 
-Ok ... I'll use the canonical way.
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/rtc/rtc-tps65910.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-But now I've run into a weird issue. I'd run some basic tests with a
-dozen machine checks in each of:
-1) user access
-2) kernel copyin
-3) futex (multiple accesses from kernel before task_work())
+diff --git a/drivers/rtc/rtc-tps65910.c b/drivers/rtc/rtc-tps65910.c
+index 2d87b62826a8..f94899d2d5b3 100644
+--- a/drivers/rtc/rtc-tps65910.c
++++ b/drivers/rtc/rtc-tps65910.c
+@@ -426,7 +426,11 @@ static int tps65910_rtc_probe(struct platform_device *pdev)
+ 
+ 	tps_rtc->irq = irq;
+ 	if (irq != -1) {
+-		device_set_wakeup_capable(&pdev->dev, 1);
++		if (device_property_present(tps65910->dev, "wakeup-source"))
++			device_init_wakeup(&pdev->dev, 1);
++		else
++			device_set_wakeup_capable(&pdev->dev, 1);
++
+ 		tps_rtc->rtc->ops = &tps65910_rtc_ops;
+ 	} else
+ 		tps_rtc->rtc->ops = &tps65910_rtc_ops_noirq;
+-- 
+2.29.2
 
-and it passed my tests before I posted.
-
-But the real validation folks took my patch and found that it has
-destabilized cases 1 & 2 (and case 3 also chokes if you repeat a few
-more times). System either hangs or panics. Generally before 100
-injection/conumption cycles.
-
-Their tests are still just doing one at a time (i.e. complete recovery
-of one machine cehck before injecting the next error). So there aren't
-any complicated race conditions.
-
-So if you see anything obviously broken, let me know. Otherwise I'll
-be poking around at the patch to figure out what is wrong.
-
--Tony
