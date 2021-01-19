@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EF52FBFD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEF62FBFD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391241AbhASTOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:14:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38194 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391798AbhASS6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:58:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611082586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=USIJV7ocAqDOCberXRvY/8K18emSXxgvsqV2iaD7hJA=;
-        b=d6GgJSw/5UJ9hsAvdUvOtOLgLvfbmjo3PPNnDImL4W4sLPNe2S+wwNiBov/WbTK+B0EMGw
-        L/k3gs2MbpyeoklZcGn+uh4O5/7qexsw6c1m0d22j3WzrvUv2g2N/6zDu85x+RB/DU44pn
-        QGiH2oi+G8qXF950JWg+twoh6vvKWAA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-oSXhdUFTOCWgwZgH13Pj2w-1; Tue, 19 Jan 2021 13:56:22 -0500
-X-MC-Unique: oSXhdUFTOCWgwZgH13Pj2w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FBA0800D62;
-        Tue, 19 Jan 2021 18:56:19 +0000 (UTC)
-Received: from gondolin (ovpn-113-246.ams2.redhat.com [10.36.113.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 53AD218796;
-        Tue, 19 Jan 2021 18:56:13 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 19:56:10 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, <alex.williamson@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210119195610.18da1e78.cohuck@redhat.com>
-In-Reply-To: <20210118181626.GL4147@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
-        <20210118143806.036c8dbc.cohuck@redhat.com>
-        <20210118151020.GJ4147@nvidia.com>
-        <20210118170009.058c8c52.cohuck@redhat.com>
-        <20210118181626.GL4147@nvidia.com>
-Organization: Red Hat GmbH
+        id S2392106AbhASTMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:12:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:45490 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728519AbhASSzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:55:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5A9611B3;
+        Tue, 19 Jan 2021 10:54:23 -0800 (PST)
+Received: from [10.37.8.29] (unknown [10.37.8.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4ECF33F719;
+        Tue, 19 Jan 2021 10:54:22 -0800 (PST)
+Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
+ <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <cc3a5a99-5c99-e526-a5e1-a566f8c412fb@arm.com>
+Date:   Tue, 19 Jan 2021 18:58:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 14:16:26 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+Hi Andrey,
 
-> On Mon, Jan 18, 2021 at 05:00:09PM +0100, Cornelia Huck wrote:
+On 1/19/21 6:27 PM, Andrey Konovalov wrote:
+> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+>> the address passed as a parameter.
+>>
+>> Add a comment to make sure that the preconditions to the function are
+>> explicitly clarified.
+>>
+>> Note: An invalid address (e.g. NULL pointer address) passed to the
+>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
+>>
+>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+>> Cc: Alexander Potapenko <glider@google.com>
+>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>> Cc: Leon Romanovsky <leonro@mellanox.com>
+>> Cc: Andrey Konovalov <andreyknvl@google.com>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>> ---
+>>  mm/kasan/report.c | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+>> index c0fb21797550..2485b585004d 100644
+>> --- a/mm/kasan/report.c
+>> +++ b/mm/kasan/report.c
+>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>>         end_report(&flags);
+>>  }
+>>
+>> +/**
+>> + * kasan_report - report kasan fault details
+>> + * @addr: valid address of the allocation where the tag fault was detected
+>> + * @size: size of the allocation where the tag fault was detected
+>> + * @is_write: the instruction that caused the fault was a read or write?
+>> + * @ip: pointer to the instruction that cause the fault
+>> + *
+>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
+>> + * the address to access the tags, hence it must be valid at this point in
+>> + * order to not cause a kernel panic.
+>> + */
 > 
-> > > You can say that all the HW specific things are in the mlx5_vfio_pci
-> > > driver. It is an unusual driver because it must bind to both the PCI
-> > > VF with a pci_driver and to the mlx5_core PF using an
-> > > auxiliary_driver. This is needed for the object lifetimes to be
-> > > correct.  
-> > 
-> > Hm... I might be confused about the usage of the term 'driver' here.
-> > IIUC, there are two drivers, one on the pci bus and one on the
-> > auxiliary bus. Is the 'driver' you're talking about here more the
-> > module you load (and not a driver in the driver core sense?)  
+> It doesn't dereference the address, it just checks the tags, right?
 > 
-> Here "driver" would be the common term meaning the code that realizes
-> a subsytem for HW - so mlx5_vfio_pci is a VFIO driver because it
-> ultimately creates a /dev/vfio* through the vfio subsystem.
-> 
-> The same way we usually call something like mlx5_en an "ethernet
-> driver" not just a "pci driver"
-> 
-> > Yes, sure. But it also shows that mlx5_vfio_pci aka the device-specific
-> > code is rather small in comparison to the common vfio-pci code.
-> > Therefore my question whether it will gain more specific changes (that
-> > cannot be covered via the auxiliary driver.)  
-> 
-> I'm not sure what you mean "via the auxiliary driver" - there is only
-> one mlx5_vfio_pci, and the non-RFC version with all the migration code
-> is fairly big.
-> 
-> The pci_driver contributes a 'struct pci_device *' and the
-> auxiliary_driver contributes a 'struct mlx5_core_dev *'. mlx5_vfio_pci
-> fuses them together into a VFIO device. Depending on the VFIO
-> callback, it may use an API from the pci_device or from the
-> mlx5_core_dev device, or both.
 
-Let's rephrase my question a bit:
+This is correct, just realized that the use of "dereference" here is misleading.
 
-This proposal splits the existing vfio-pci driver into a "core"
-component and code actually implementing the "driver" part. For mlx5,
-an alternative "driver" is introduced that reuses the "core" component
-and also hooks into mlx5-specific code parts via the auxiliary device
-framework. (IIUC, the plan is to make existing special cases for
-devices follow mlx5's lead later.)
+> Ideally, kasan_report() should survive that with HW_TAGS like with the
+> other modes. The reason it doesn't is probably because of a blank
+> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
+> guess we should somehow check that the memory comes from page_alloc or
+> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
+> instruction to check whether the memory has tags?
+> 
 
-I've been thinking of an alternative split: Keep vfio-pci as it is now,
-but add an auxiliary device. For mlx5, an auxiliary device_driver can
-match to that device and implement mlx5-specific things. From the code
-in this RFC, it is not clear to me whether this would be feasible: most
-callbacks seem to simply forward to the core component, and that might
-be possible to be done by a purely auxiliary device_driver; but this
-may or may not work well for additional functionality.
+I agree, looking a second time at the code the problem comes from
+addr_has_metadata():
 
-I guess my question is: into which callbacks will the additional
-functionality hook? If there's no good way to do what they need to do
-without manipulating the vfio-pci calls, my proposal will not work, and
-this proposal looks like the better way. But it's hard to tell without
-seeing the code, which is why I'm asking :)
+...
 
+[   18.127273] BUG: KASAN: invalid-access in 0x0
+[   18.128604] Read at addr 0000000000000000 by task swapper/0/1
+[   18.130311] Unable to handle kernel NULL pointer dereference at virtual
+address 0000000000000000
+[   18.131291] Mem abort info:
+[   18.131696]   ESR = 0x96000004
+[   18.132169]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   18.132953]   SET = 0, FnV = 0
+[   18.133433]   EA = 0, S1PTW = 0
+[   18.133907] Data abort info:
+[   18.134308]   ISV = 0, ISS = 0x00000004
+[   18.134883]   CM = 0, WnR = 0
+[   18.135436] [0000000000000000] user address but active_mm is swapper
+[   18.136372] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[   18.137280] Modules linked in:
+[   18.138182] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+5.11.0-rc4-00007-g86cba71f117-dirty #2
+[   18.139275] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+[   18.140342] pstate: 60400085 (nZCv daIf +PAN -UAO -TCO BTYPE=--)
+[   18.141324] pc : mte_get_mem_tag+0x24/0x40
+[   18.142487] lr : print_tags+0x1c/0x40
+[   18.143095] sp : ffff80001004bcf0
+[   18.143570] x29: ffff80001004bcf0 x28: 0000000000000000
+[   18.144526] x27: ffffd042f0bf04e0 x26: ffffd042f0ca1068
+[   18.145369] x25: ffffd042f0bdde58 x24: ffffd042f1458000
+[   18.146209] x23: 0000000000000000 x22: 0000000000000000
+[   18.147047] x21: 0000000000000000 x20: 0000000000000000
+[   18.147928] x19: 0000000000000000 x18: ffffffffffffffff
+[   18.148928] x17: 000000000000000e x16: 0000000000000001
+[   18.149837] x15: ffff80009004ba17 x14: 0000000000000006
+[   18.150774] x13: ffffd042f11b27e0 x12: 0000000000000399
+[   18.151653] x11: 0000000000000133 x10: ffffd042f11b27e0
+[   18.152544] x9 : ffffd042f11b27e0 x8 : 00000000ffffefff
+[   18.153443] x7 : ffffd042f120a7e0 x6 : ffffd042f120a7e0
+[   18.154272] x5 : 000000000000bff4 x4 : 0000000000000000
+[   18.155096] x3 : 0000000000000000 x2 : 0000000000000000
+[   18.155958] x1 : 0000000000000000 x0 : 0000000000000000
+[   18.157145] Call trace:
+[   18.157615]  mte_get_mem_tag+0x24/0x40
+[   18.158258]  kasan_report+0xec/0x1b0
+
+...
+
+I noticed it differently but you can easily reproduce it calling
+kasan_report(0,0,0,0); from somewhere.
+
+I will send a patch tomorrow that checks if the memory comes from page_alloc or
+kmalloc. Not sure what you mean for "instruction to check whether the memory has
+tags".
+
+Thanks!
+
+-- 
+Regards,
+Vincenzo
