@@ -2,188 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D412FB3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9FC2FB3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731526AbhASICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:02:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54889 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731250AbhASH7J (ORCPT
+        id S1727552AbhASICj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:02:39 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:41861 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729629AbhASH7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:59:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611043061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8qNmdLSS5lsljSlr43wHmEkle6qxUVtow9wAgfeuvxc=;
-        b=DxzpMxkQ18DYqjMmWfS3x20taPC6xAXaT8Vsa40akUsFlzkH6ipYVMo6Zpza2ok1tGHqz1
-        bUbkcgPUuZG9Nel71YnSaHWnzMcQ0Wb+MNwzyn+fV7iDhVp1CyljtVYR25dz9VdDpTZDtV
-        kMP6TIY0Tei4MON/i8UAG4pcdJxTMLM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-yAa2RPojNceNOGfYig2k1w-1; Tue, 19 Jan 2021 02:57:39 -0500
-X-MC-Unique: yAa2RPojNceNOGfYig2k1w-1
-Received: by mail-wr1-f69.google.com with SMTP id j5so9514964wro.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:57:39 -0800 (PST)
+        Tue, 19 Jan 2021 02:59:54 -0500
+Received: by mail-ot1-f48.google.com with SMTP id x13so18940658oto.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:59:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8qNmdLSS5lsljSlr43wHmEkle6qxUVtow9wAgfeuvxc=;
-        b=irdK9u/o3zD9+D9OKxi8onx9T1FP/nRFrAGDyBRDgqj/se6dOb3DXfKF7XNKigtiVd
-         FZ+Kvlk0u2hRRs/X/16t//+gT+UsoAbL23EEub5Ls3DZ8+SOyYn9/22CouULwXU/ssf3
-         Of2zd9D7ATcaHUw03xWeJUTfb4eXPa12CjCCz98pbNulg41I4X0ig4w8tkOUftJzAnXM
-         QMMvySXZiZXyLyJM/lYFg06FIexp1bEwYnmrrt0qT/38f9PNYrg+dIcsjklpELAyxvdw
-         tRQqlJSEh+SSbLXuVjzr5+O/qFdLazwifw6LFyR9/QePbTuaLiM6rRSrCd7/rwOmYV7X
-         mD2A==
-X-Gm-Message-State: AOAM530pjTDiUptJiOfg/5JYEBQ7JKkmLQtUhSOqRbDcQGczcE2Jh9jB
-        up0/I9czrl2WkgdP+U60ggrM4hs7xpQ8mRSpVD9SMDiX7pMtil0w+Sfnmhj3JuziZTwS8UThsMM
-        wDB2Ibi8YooxK+WfoBlWZRribscBnhyz1jqlNpGRihI585sQlG+D7IjZeNt8RiPToDJ7PBli55p
-        6b
-X-Received: by 2002:adf:e541:: with SMTP id z1mr3021328wrm.143.1611043057866;
-        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCWTj4etfSQSfrsVGnDa05ynRnIWz5xJxfD+AlFdsC6qTk9zKdjl5YWJPa++3p4njMhamhdA==
-X-Received: by 2002:adf:e541:: with SMTP id z1mr3021308wrm.143.1611043057690;
-        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id n6sm3154700wmi.23.2021.01.18.23.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
-Subject: Re: Live patching on ARM64
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>, jpoimboe@redhat.com,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f3fe6a60-9ac2-591d-1b83-9113c50dc492@linux.microsoft.com>
- <20210115123347.GB39776@C02TD0UTHF1T.local>
- <a5f22237-a18d-3905-0521-f0d0f9c253ea@linux.microsoft.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <1cd6ab9a-74bc-258e-abf8-fcabba5e3484@redhat.com>
-Date:   Tue, 19 Jan 2021 08:57:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50LoqJ0vcbBGTat2MdC306m45dAPIXcmM7OGo1AqWqQ=;
+        b=CBxShEvf8xEWL/0Dmmhd1kZM2m7iOiV0QnFJanCNMD5SNhRyrlJn/OkGpT8xlDstNY
+         tUIKBodpIjCp+s2um8mWAaEcOGLV4eV5HXRDCb/Rub4jNIlZ5+k+u1kB+FF6iL42yu3J
+         CvaFANIQNkv86xf9FWtdSuFZn9L41ALyor6RneyvK7l9TA8DQMo+ZC/AxR1aA5GFow3w
+         DdPkdC0KLpe+GfKgEO3YaPFGNG1AIwtoocgy/Yo0V7ImYgmTGPHhoaLqbP7VJjEIsTvj
+         v/NfVq3FXD8tIlbkkqzq+WcKeIgDAD/6clzEFLAWcIyQKH3i5XFVZnjTIY9NuCJWG4xv
+         2Rvg==
+X-Gm-Message-State: AOAM5333+E0ZFxU+6Ia3Va5uQDgpjBhyA5sakG8BG9/ptquha8z8sst3
+        NFrFnNLUrDSgRMm6VX4SIUmaDcvM9hyd4UBTCZYWvgOO
+X-Google-Smtp-Source: ABdhPJz/WliAIvO0lI5a1zlFdgSSgBDzpNZaaOdrNvaOBvgBhtPOxwVGjna9pxcuoaXmPPw3jpupDfNrku6M8CJ0b7Q=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2586166oth.250.1611043153659;
+ Mon, 18 Jan 2021 23:59:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a5f22237-a18d-3905-0521-f0d0f9c253ea@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210104164500.1311091-1-geert@linux-m68k.org>
+ <CAMuHMdXG_B-3y1MWh64T6LU3Gmo6UQGGWU8EbLApjDeXVLL3GQ@mail.gmail.com>
+ <20210114020311.GE2002709@lianli.shorne-pla.net> <CAMuHMdWnrPBAh_U43C7jA8wDvyAegqCM3OP++NkkiT1Co5yjkQ@mail.gmail.com>
+ <20210118114331.GF2002709@lianli.shorne-pla.net> <CAMuHMdUxAEE2A=dyhdH5Tscin_=m_b61WfRpLvj6pJfdPjd1nA@mail.gmail.com>
+ <20210118211554.GH2002709@lianli.shorne-pla.net>
+In-Reply-To: <20210118211554.GH2002709@lianli.shorne-pla.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Jan 2021 08:59:02 +0100
+Message-ID: <CAMuHMdU4AyL=tWU5p5rZOGBet1BtpG3H2mnwcO0du29-dmK34w@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/soc/litex: Add restart handler
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Madhavan,
+Hi Stafford,
 
-On 1/17/21 6:25 PM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 1/15/21 6:33 AM, Mark Rutland wrote:
-> 
->>> It looks like the most recent work in this area has been from the
->>> following folks:
->>>
->>> Mark Brown and Mark Rutland:
->>> 	Kernel changes to providing reliable stack traces.
->>>
->>> Julien Thierry:
->>> 	Providing ARM64 support in objtool.
->>>
->>> Torsten Duwe:
->>> 	Ftrace with regs.
->>
->> IIRC that's about right. I'm also trying to make arm64 patch-safe (more
->> on that below), and there's a long tail of work there for anyone
->> interested.
->>
-> 
-> OK.
-> 
->>> I apologize if I have missed anyone else who is working on Live Patching
->>> for ARM64. Do let me know.
->>>
->>> Is there any work I can help with? Any areas that need investigation, any code
->>> that needs to be written, any work that needs to be reviewed, any testing that
->>> needs to done? You folks are probably super busy and would not mind an extra
->>> hand.
->>
->> One general thing that I believe we'll need to do is to rework code to
->> be patch-safe (which implies being noinstr-safe too). For example, we'll
->> need to rework the instruction patching code such that this cannot end
->> up patching itself (or anything that has instrumented it) in an unsafe
->> way.
->>
-> 
-> OK.
-> 
->> Once we have objtool it should be possible to identify those cases
->> automatically. Currently I'm aware that we'll need to do something in at
->> least the following places:
->>
->> * The entry code -- I'm currently chipping away at this.
->>
-> 
-> OK.
-> 
->> * The insn framework (which is used by some patching code), since the
->>    bulk of it lives in arch/arm64/kernel/insn.c and isn't marked noinstr.
->>    
->>    We can probably shift the bulk of the aarch64_insn_gen_*() and
->>    aarch64_get_*() helpers into a header as __always_inline functions,
->>    which would allow them to be used in noinstr code. As those are
->>    typically invoked with a number of constant arguments that the
->>    compiler can fold, this /might/ work out as an optimization if the
->>    compiler can elide the error paths.
->>
->> * The alternatives code, since we call instrumentable and patchable
->>    functions between updating instructions and performing all the
->>    necessary maintenance. There are a number of cases within
->>    __apply_alternatives(), e.g.
->>
->>    - test_bit()
->>    - cpus_have_cap()
->>    - pr_info_once()
->>    - lm_alias()
->>    - alt_cb, if the callback is not marked as noinstr, or if it calls
->>      instrumentable code (e.g. from the insn framework).
->>    - clean_dcache_range_nopatch(), as read_sanitised_ftr_reg() and
->>      related code can be instrumented.
->>
->>    This might need some underlying rework elsewhere (e.g. in the
->>    cpufeature code, or atomics framework).
->>
-> 
-> OK.
-> 
->> So on the kernel side, maybe a first step would be to try to headerize
->> the insn generation code as __always_inline, and see whether that looks
->> ok? With that out of the way it'd be a bit easier to rework patching
->> code depending on the insn framework.
->>
-> 
-> OK.
-> 
-> I have an understanding of some of the above already. I will come up to
-> speed on the others. I will email you any questions I might have.
-> 
->> I'm not sure about the objtool side, so I'll leave that to Julien and co
->> to answer.
->>
+On Mon, Jan 18, 2021 at 10:16 PM Stafford Horne <shorne@gmail.com> wrote:
+> On Mon, Jan 18, 2021 at 01:27:32PM +0100, Geert Uytterhoeven wrote:
+> > On Mon, Jan 18, 2021 at 12:43 PM Stafford Horne <shorne@gmail.com> wrote:
+> > > On Thu, Jan 14, 2021 at 02:48:49PM +0100, Geert Uytterhoeven wrote:
+> > > > On Thu, Jan 14, 2021 at 3:03 AM Stafford Horne <shorne@gmail.com> wrote:
+> > > > > On Mon, Jan 04, 2021 at 05:49:03PM +0100, Geert Uytterhoeven wrote:
+> > > > > > On Mon, Jan 4, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > > Let the LiteX SoC Controller a register a restart handler, which resets
+>
+> I think there is a typo here:
+>
+>   Let the LiteX SoC Controller a register a restart ...
+>
+> should remove the first 'a' and say
+>
+>  Let the LiteX SoC Controller register a restart ...
+>
+> > > > > > > the LiteX SoC by writing 1 to CSR_CTRL_RESET_ADDR.
+> > > > > > >
+> > > > > > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > > > > ---
+> > > > > > > Tested with linux-on-litex-vexriscv.
+> > > > > > >
+> > > > > > > This patch is based on upstream, i.e. not on top of Gabriel Somlo's
+> > > > > > > "[PATCH v5 0/4] drivers/soc/litex: support 32-bit subregisters, 64-bit
+> > > > > > > CPUs"
+> > > > > > > (https://lore.kernel.org/lkml/20201227161320.2194830-1-gsomlo@gmail.com/)
+> > > > > >
+> > > > > > Bummer, and that's why the RESET_REG_* definitions are no longer
+> > > > > > next to the SCRATCH_REG_* definitions :-(
+> > > > >
+> > > > > If it helps I have accepted Gabriel's patches and put them onto for-next.
+> > > > >
+> > > > >   https://github.com/openrisc/linux/commits/for-next
+> > > > >
+> > > > > I am happy to take and test a patch based on that.  Or I can do the adjustments
+> > > > > to base the patch on that myself.  Let me know.
+> > > >
+> > > > Thanks for letting me know! V3 sent.
+> > >
+> > > Hi Geert,
+> > >
+> > > I don't seem to see v3 anywhere.  Where did you send it and what is the subject?
+> >
+> > https://lore.kernel.org/linux-riscv/20210114134813.2238587-1-geert@linux-m68k.org/
+> >
+> > So "b4 am 20210114134813.2238587-1-geert@linux-m68k.org" should give you
+> > a copy.
+>
+> Thanks I got it, I am not sure why it does not show up in my inbox anywhere,
+> sometimes gmail drops mails.  Hence, I am replying here.
 
-Sorry for the late reply. The last RFC for arm64 support in objtool is a 
-bit old because it was preferable to split things into smaller series.
+You may want to add a rule to never mark as spam emails with "PATCH"
+in the subject.  And check your spam folder regularly, and teach gmail by
+marking non-spam as non-spam.
 
-I touched it much lately, so I'm picking it back up and will try to get 
-a git branch into shape on a recent mainline (a few things need fixing 
-since the last time I rebased it).
+> As per the typo above I can fix during applying or you could send during a v4.
+>
+> One more small nit is that you move soc_ctrl_dev out to a static instance it
+> might help to mention.  But it's easy to see why.
 
-I'll update you once I have something at least usable/presentable.
+Found a way to get rid of it.  Will send v4 shortly.
 
-Cheers,
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Julien Thierry
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
