@@ -2,179 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA26B2FC232
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236782FC233
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbhASVXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
+        id S1729762AbhASVXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728787AbhASVWO (ORCPT
+        with ESMTP id S1729436AbhASVXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:22:14 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89875C061575;
-        Tue, 19 Jan 2021 13:21:34 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id q2so41026221iow.13;
-        Tue, 19 Jan 2021 13:21:34 -0800 (PST)
+        Tue, 19 Jan 2021 16:23:30 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1375FC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:22:48 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id j18so9907399qvu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:22:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lugoyWzUMgBNPKbfRWrzKBcF96tFzVzbKcvJz2SoEvE=;
-        b=VN/NzfJRc7gUTIm7mQE8drysciOkARbiJTJPjlEORpTnbUo6ob4GD2dgWe8T3y8iB2
-         VZqZQqxC0sMgT0hZ0Ns2AV7s+3dCJXMFyYml4Y7Nx9MScfFl8exsz8gubj1ETJpdHP/t
-         GhjGAzMcR3IFK2SpVu2C73vC5xAwZOfRS5dPvTwFSTd0j6IsQ+h1Rnn1uF6apthYkwOw
-         A2ENOTF18F6UYnB4Q1gPEsoKrzxLGQjjz4pl3csxEwn3deA56Sb5GqDP/tAgBB+CS33/
-         MD/Z++f4sl8gShm4PzKXX7ZPpbmkTg3F6pQUuDJZur5QTADHoStuvLEvl4a5YlqO8O6J
-         mR0w==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=QoR15X76Wa8utojDFzghU0XUanvjdtOD0JtOJepg2zQ=;
+        b=iPJY1moesz74BGlcRCZu6JplYli8oRPYxZQBKc+pWMMbglhVWCtRcav6p7QbWlmfum
+         y9W2MoQitiRxq4vuw0hSckO056h6CHdVtyShAQ+wz+tlHDIjKqUAffiYs3CsV0+376MY
+         i8hyuUkqVPwmKiEluATsxtURE48Sqj8WPxQSqwJZhULp4yCG1KlkbEwseTV8eWdQSal0
+         yPhyyGwa1jxr7yCWBYKuryrDiBQ3BMIyUfykY6LKVg2m6kQdX/mCUhgPfYAb/XNq/IH6
+         Xy529AmwgQW8E7Mrhw1tcFJgcBLgkfVWq+KicOk4/kvAkAggZFcFNAGg7mehzP4iYq/5
+         z5yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lugoyWzUMgBNPKbfRWrzKBcF96tFzVzbKcvJz2SoEvE=;
-        b=axQLOqEK8UxKWVf7x+RwDYpkhn34wFGb9CfT4jP6q2i+mfpDXsS/SMNLhUCIZcw++O
-         UHuq/J54bQFb9DxG8QkSSk3tAsv8IZWWjThu7NLuILxzn1FkmKKqVaCkZVu+sLFmHGsp
-         HYYn1n4oR+yfBDFRwvn91BHB6Y80rxEo0PwAahYvODxmtclvkYTMoykTYo1qhLX2uaRW
-         8fV2NmOEECfpeevLWs6y9PSZ1BDDBKpMniebeF7BxCWdaGqQYlkTiIr+mbNLICF8iIf8
-         Cl3/lyiCXyx9+m2v8BgUjjLesXVrhSGYM76+VeyxP5rt03Z5iejkwwr+oWWNudR+HBFt
-         fJag==
-X-Gm-Message-State: AOAM533Q/qce1q2qWgs52KWldmMIkeGnA03QgYUXKL5zHzYpbku8h7bO
-        gDXm+26BFJ/yf09wdnyE65ewNUCPfla/dXWX
-X-Google-Smtp-Source: ABdhPJyAmHX8k+g5802hwkSVrAwlqdNgR6HgZQj1kwrrf4OEHYzW7qOoK0yTsjBJSNMagadyzG9A9Q==
-X-Received: by 2002:a92:77c9:: with SMTP id s192mr5088565ilc.75.1611091293569;
-        Tue, 19 Jan 2021 13:21:33 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:2386:3a11:421c:65a9])
-        by smtp.gmail.com with ESMTPSA id z87sm61418ilk.40.2021.01.19.13.21.30
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=QoR15X76Wa8utojDFzghU0XUanvjdtOD0JtOJepg2zQ=;
+        b=MIKbhG4XmVEAPtCy2rr9n5WWcxwgYflt78uE1e7wClCFGL9o9I3o9f4zkmiDTtMQRw
+         cXbySlGbO4Y0oxFD937oBBzbaULW1bSmban7isnN8k9AiARpHlLJx8qgMTqnhSd+8yha
+         fZO5J8T2l0G5+Ys6K+FCt44YtZmxhh/y4JE38aye6ihkxSCj7o1EvTlkk+a3tCcHEOD7
+         /4hC7PhtQ2GZoF/vKG8ON804oR7gRXlTXLRG4+rik8qwfYjdc5zsdCdZHR6xhFFmbKbB
+         YBCz1hz+xq3+iBVy5J9xPgxa0cpN0+rAcaa5D7F9OrKksFWMO+5uqVGrphKwn1XQDs5y
+         R+3A==
+X-Gm-Message-State: AOAM533/SwdXhA4JN7u761WnP7q5qyo8iHmvqUg0yV4RB+fUkfU+oPiH
+        GtBCgwX7fdTPojfve+3zgSJgTA==
+X-Google-Smtp-Source: ABdhPJy7oZ+C+6qSYY0OzIqs85mSSUlDrZJnwr/XBhiMfYxFs6zMdfwcY0MyqSmEu4dZm/GSpAD4lQ==
+X-Received: by 2002:ad4:4431:: with SMTP id e17mr6465871qvt.21.1611091367227;
+        Tue, 19 Jan 2021 13:22:47 -0800 (PST)
+Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
+        by smtp.gmail.com with ESMTPSA id l38sm3459069qte.88.2021.01.19.13.22.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 13:21:31 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
+        Tue, 19 Jan 2021 13:22:46 -0800 (PST)
+Date:   Tue, 19 Jan 2021 16:22:45 -0500 (EST)
+From:   Nicolas Pitre <npitre@baylibre.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Kevin Hilman <khilman@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/2] clk: vc5: Add support for optional load capacitance
-Date:   Tue, 19 Jan 2021 15:21:09 -0600
-Message-Id: <20210119212109.1064786-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119212109.1064786-1-aford173@gmail.com>
-References: <20210119212109.1064786-1-aford173@gmail.com>
+        Russell King <linux@armlinux.org.uk>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PM / clk: make PM clock layer compatible with clocks
+ that must sleep
+In-Reply-To: <CAMuHMdX8T+tO-sT_tgrgEi-D0z2ac7k4Atg13arHN5bA84HqTA@mail.gmail.com>
+Message-ID: <s41o2qs1-49or-rnr4-s370-2444r1055@onlyvoer.pbz>
+References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz> <7him7sydd6.fsf@baylibre.com> <CAMuHMdX8T+tO-sT_tgrgEi-D0z2ac7k4Atg13arHN5bA84HqTA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two registers which can set the load capacitance for
-XTAL1 and XTAL2. These are optional registers when using an
-external crystal.  Parse the device tree and set the
-corresponding registers accordingly.
+On Tue, 19 Jan 2021, Geert Uytterhoeven wrote:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  Make the math subtract 9000 since we have a DIV_ROUND_CLOSEST
-     This also allows us to remove the check for 9430 since values
-     between 9000 and 9430 will round up and down.
-     Make write VC5_XTAL_X1_LOAD_CAP and VC5_XTAL_X2_LOAD_CAP
-     a read-modify-write to not worry about the contents of
-     bits[1:0].
+> Hi Kevin, Nicolas,
+> 
+> On Tue, Jan 19, 2021 at 7:45 PM Kevin Hilman <khilman@baylibre.com> wrote:
+> > [ + Geert.. renesas SoCs are the primary user of PM clk ]
+> 
+> Thanks!
+> 
+> > Nicolas Pitre <npitre@baylibre.com> writes:
+> > > The clock API splits its interface into sleepable ant atomic contexts:
+> > >
+> > > - clk_prepare/clk_unprepare for stuff that might sleep
+> > >
+> > > - clk_enable_clk_disable for anything that may be done in atomic context
+> > >
+> > > The code handling runtime PM for clocks only calls clk_disable() on
+> > > suspend requests, and clk_enable on resume requests. This means that
+> > > runtime PM with clock providers that only have the prepare/unprepare
+> > > methods implemented is basically useless.
+> > >
+> > > Many clock implementations can't accommodate atomic contexts. This is
+> > > often the case when communication with the clock happens through another
+> > > subsystem like I2C or SCMI.
+> > >
+> > > Let's make the clock PM code useful with such clocks by safely invoking
+> > > clk_prepare/clk_unprepare upon resume/suspend requests. Of course, when
+> > > such clocks are registered with the PM layer then pm_runtime_irq_safe()
+> > > can't be used, and neither pm_runtime_suspend() nor pm_runtime_resume()
+> > > may be invoked in atomic context.
+> > >
+> > > For clocks that do implement the enable and disable methods then
+> > > everything just works as before.
+> > >
+> > > Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
+> 
+> Thanks for your patch!
+> 
+> > > --- a/drivers/base/power/clock_ops.c
+> > > +++ b/drivers/base/power/clock_ops.c
+> 
+> > > +/**
+> > > + * pm_clk_op_lock - ensure exclusive access for performing clock operations.
+> > > + * @psd: pm_subsys_data instance corresponding to the PM clock entry list
+> > > + *    and clk_op_might_sleep count being used.
+> > > + * @flags: stored irq flags.
+> > > + * @fn: string for the caller function's name.
+> > > + *
+> > > + * This is used by pm_clk_suspend() and pm_clk_resume() to guard
+> > > + * against concurrent modifications to the clock entry list and the
+> > > + * clock_op_might_sleep count. If clock_op_might_sleep is != 0 then
+> > > + * only the mutex can be locked and those functions can only be used in
+> > > + * non atomic context. If clock_op_might_sleep == 0 then these functions
+> > > + * may be used in any context and only the spinlock can be locked.
+> > > + * Returns -EINVAL if called in atomic context when clock ops might sleep.
+> > > + */
+> > > +static int pm_clk_op_lock(struct pm_subsys_data *psd, unsigned long *flags,
+> > > +                       const char *fn)
+> > > +{
+> > > +     bool atomic_context = in_atomic() || irqs_disabled();
+> 
+> Is this safe? Cfr.
+> https://lore.kernel.org/dri-devel/20200914204209.256266093@linutronix.de/
 
-diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
-index 43db67337bc0..c6b04c077224 100644
---- a/drivers/clk/clk-versaclock5.c
-+++ b/drivers/clk/clk-versaclock5.c
-@@ -759,6 +759,74 @@ static int vc5_update_power(struct device_node *np_output,
- 	return 0;
- }
- 
-+static int vc5_map_cap_value(u32 femtofarads)
-+{
-+	int mapped_value;
-+
-+	/*
-+	 * The datasheet explicitly states 9000 - 25000 with 0.5pF
-+	 * steps, but the Programmer's guide shows the steps are 0.430pF.
-+	 * After getting feedback from Renesas, the .5pF steps were the
-+	 * goal, but 430nF was the actual values.
-+	 * Because of this, the actual range goes to 22760 instead of 25000
-+	 */
-+	if (femtofarads < 9000 || femtofarads > 22760)
-+		return -EINVAL;
-+
-+	/*
-+	 * The Programmer's guide shows XTAL[5:0] but in reality,
-+	 * XTAL[0] and XTAL[1] are both LSB which makes the math
-+	 * strange.  With clarfication from Renesas, setting the
-+	 * values should be simpler by ignoring XTAL[0]
-+	 */
-+
-+	mapped_value = DIV_ROUND_CLOSEST(femtofarads - 9000, 430);
-+
-+	/*
-+	 * Since the calculation ignores XTAL[0], there is one
-+	 * special case where mapped_value = 32.  In reality, this means
-+	 * the real mapped value should be 111111b.  In other clases,
-+	 * the mapped_value needs to be shifted 1 to the left.
-+	 */
-+
-+	if (mapped_value > 31)
-+		mapped_value = 0x3f;
-+	else
-+		mapped_value <<= 1;
-+
-+	return mapped_value;
-+}
-+static int vc5_update_cap_load(struct device_node *node, struct vc5_driver_data *vc5)
-+{
-+	u32 value;
-+	int mapped_value, cache;
-+
-+	if (!of_property_read_u32(node, "idt,xtal-load-femtofarads", &value)) {
-+		mapped_value = vc5_map_cap_value(value);
-+		if (mapped_value < 0)
-+			return mapped_value;
-+
-+		/*
-+		 * The mapped_value is really the high 6 bits of
-+		 * VC5_XTAL_X1_LOAD_CAP and VC5_XTAL_X2_LOAD_CAP, so
-+		 * shift the value 2 places.  Read each register, wipe out
-+		 * the top 6 bits and, write the combined data back.
-+		 */
-+
-+		mapped_value = (mapped_value << 2);
-+
-+		cache = regmap_read(vc5->regmap, VC5_XTAL_X1_LOAD_CAP, &cache);
-+		cache &= 0x03;
-+		regmap_write(vc5->regmap, VC5_XTAL_X1_LOAD_CAP, mapped_value | cache);
-+
-+		cache = regmap_read(vc5->regmap, VC5_XTAL_X2_LOAD_CAP, &cache);
-+		cache &= 0x03;
-+		regmap_write(vc5->regmap, VC5_XTAL_X2_LOAD_CAP, mapped_value | cache);
-+	}
-+
-+	return 0;
-+}
-+
- static int vc5_update_slew(struct device_node *np_output,
- 			   struct vc5_out_data *clk_out)
- {
-@@ -884,6 +952,13 @@ static int vc5_probe(struct i2c_client *client, const struct i2c_device_id *id)
- 		return -EINVAL;
- 	}
- 
-+	/* Configure Optional Loading Capacitance for external XTAL */
-+	if (!(vc5->chip_info->flags & VC5_HAS_INTERNAL_XTAL)) {
-+		ret = vc5_update_cap_load(client->dev.of_node, vc5);
-+		if (ret)
-+			goto err_clk_register;
-+	}
-+
- 	init.name = kasprintf(GFP_KERNEL, "%pOFn.mux", client->dev.of_node);
- 	init.ops = &vc5_mux_ops;
- 	init.flags = 0;
--- 
-2.25.1
+I noticed this topic is a mess. This is why I'm not relying on 
+in_atomic() alone as it turned out not to be sufficient in all cases 
+during testing.
 
+What's there now is safe at least in the context from which it is called 
+i.e. the runtime pm core code. If not then hopefully the might_sleep() 
+that follows will catch misuses.
+
+It should be noted that we assume an atomic context by default. However, 
+if you rely on clocks that must sleep then you must not invoke runtime 
+pm facilities in atomic context from your driver in the first place. The 
+atomic_context variable above is there only used further down as a 
+validation check to catch programming mistakes and not an operational 
+parameter.
+
+
+Nicolas
