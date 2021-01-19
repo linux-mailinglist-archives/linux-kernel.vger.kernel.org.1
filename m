@@ -2,220 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2172FBE92
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338082FBE93
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392267AbhASSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:07:17 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55840 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391650AbhASR6n (ORCPT
+        id S1731421AbhASSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731968AbhASR6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:58:43 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10JHm10P016045;
-        Tue, 19 Jan 2021 18:56:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=5WYFGtdY+KCjXDAhcbztWKsr83wJ4tyifcNDQMaEHjk=;
- b=jpOQy+1g4mLwJN4aLOIXIg0FOR0UTggpirNgSbWbLGg+F0kMNkqb90wQIOQpn/uWdaxJ
- k0PtDvfzly8rLeknLJIdcKbDQT9hp8HXdp2SRoN38lOtfelmTRmloqtbQLAiPLI7S0+H
- XyrBoZ7f2QPbw2whmOYxp6X4DWEUTJHkuvi/0IvZ6uHvkLYLxa/guPQbSlbBhRXuDLQp
- CLarBPgMFsm3FfEzAEtbq8TkeoxiP4sDjnc3zWC7VbA7P2YTdJT+LEDgSJcpIvO14GQY
- wmTTuA4+8f0AHq7A+UruFbn7dE0ZCTxBxPCmPyk8pRGqnwoqFLUjEGVwo4UviU/Zz3vQ Ig== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 363qwnj2eb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 18:56:58 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E83CF10002A;
-        Tue, 19 Jan 2021 18:56:57 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D059D25D01B;
-        Tue, 19 Jan 2021 18:56:57 +0100 (CET)
-Received: from [10.211.11.124] (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 18:56:56 +0100
-Subject: Re: [Linux-stm32] [PATCH] iio: adc: stm32-adc: fix erroneous handling
- of spurious IRQs
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-CC:     Lars-Peter Clausen <lars@metafoo.de>,
-        Holger Assmann <has@pengutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-References: <20210112152441.20665-1-a.fatoum@pengutronix.de>
- <20210116175333.4d8684c5@archlinux>
- <47b0905a-4496-2f21-3b17-91988aa88e91@pengutronix.de>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <7668b126-d77c-7339-029f-50333d03fbd9@foss.st.com>
-Date:   Tue, 19 Jan 2021 18:56:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 12:58:16 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C6C061573;
+        Tue, 19 Jan 2021 09:57:35 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id a9so17165213wrt.5;
+        Tue, 19 Jan 2021 09:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cCuyHdaDKNdgvkGiCtIDRjNsTS1QMIkBB5jEcNPOBbc=;
+        b=WbtKuRS1nA02ixu8TOLQZmxeJ3Q3Ib6SmpAjhjsqyxpJP8SpTApAmNuII3RhU59gQT
+         HO1s26/ZYk8hn9946Y7LytYDSybdT3w4hcUKIHb54+I5XO8Gms4KfgmD+PW6x9m5E124
+         eUT4HK24tJWD4isorfUzWr7/XMAvOwNK38iMtNlf6IPczt/zLLIjoj3SqDv8YlfVfhyA
+         +KTnTGFpHmN2uf3JkSP3zdFUKJuT0fwZ/fDQxnFEP/Y0E2z4VER1w0YQsOkWLmdS49Uj
+         izNbb+ZygnZBWH05oGwO2lt9FlKKUcCnC68ONPUbXpWd+sLH70qS4Rb0Ih+6upKcJGLM
+         D7Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cCuyHdaDKNdgvkGiCtIDRjNsTS1QMIkBB5jEcNPOBbc=;
+        b=YJy756U1C5yM6jTzcWCxWA2edG/7fgUJnfeGDyc6CPRrNWSNgqqWbfeJRWXZmiWimM
+         uuh/B7YPoMn2CgTydTDNu28saNtBageWPLSfntZX55dZ7vESZ234O1X02MSqOzw0GrQm
+         RThUSs0Iq3rE+hQLXEIZ6FzXN1aScpsmanshyq+1I94YWfgepdVpNDdDQfq2TjY0spI+
+         +peeWBfcIQDJh4MpD7zVMZYYduC8OjEFq/GVyRj8EugxTWEZTfQJ7JfV9ome/9H7NCLP
+         Y7Fmqn2W9lL9pIzu8NW5wPYFs11rBkcG/I1kfRlL8Mb3NbC2OSVmB01caNQQp1PvEEwn
+         /o2A==
+X-Gm-Message-State: AOAM532vl2KZYXNW7ltcYXGy0xV4CpOORM/eozzHAo86sJb6z+zV2KGC
+        bdIF8+IisDn+YAVYkkizGT0q161Y130=
+X-Google-Smtp-Source: ABdhPJxgji7Hd60FCvBKG6RsKh9xWB1ix7MRh3EgGDUFQRiug/el9Iqg2O8XkLOQpxAUQ288fVSi7w==
+X-Received: by 2002:adf:d1ce:: with SMTP id b14mr5422477wrd.329.1611079054086;
+        Tue, 19 Jan 2021 09:57:34 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id t25sm5407477wmj.39.2021.01.19.09.57.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 09:57:32 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:57:31 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     broonie@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com
+Subject: Re: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for
+ Tegra210
+Message-ID: <YAcdi7ARk0imXafQ@ulmo>
+References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+ <1611048496-24650-6-git-send-email-spujar@nvidia.com>
+ <YAcTxxyogVgfN1uw@ulmo>
+ <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <47b0905a-4496-2f21-3b17-91988aa88e91@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_07:2021-01-18,2021-01-19 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ef4HD4ePKjEwSwzf"
+Content-Disposition: inline
+In-Reply-To: <b83eb795-328e-acc5-4555-7befd919a136@nvidia.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/18/21 12:42 PM, Ahmad Fatoum wrote:
-> Hello Jonathan,
->
-> On 16.01.21 18:53, Jonathan Cameron wrote:
->> On Tue, 12 Jan 2021 16:24:42 +0100
->> Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>
->>> 1c6c69525b40 ("genirq: Reject bogus threaded irq requests") makes sure
->>> that threaded IRQs either
->>>   - have IRQF_ONESHOT set
->>>   - don't have the default just return IRQ_WAKE_THREAD primary handler
->>>
->>> This is necessary because level-triggered interrupts need to be masked,
->>> either at device or irqchip, to avoid an interrupt storm.
->>>
->>> For spurious interrupts, the STM32 ADC driver still does this bogus
->>> request though:
->>>   - It doesn't set IRQF_ONESHOT
->>>   - Its primary handler just returns IRQ_WAKE_THREAD if the interrupt
->>>     is unexpected, i.e. !(status & enabled_mask)
->> This seems 'unusual'.  If this is a spurious interrupt we should be
->> returning IRQ_NONE and letting the spurious interrupt protection
->> stuff kick in.
->>
->> The only reason I can see that it does this is print an error message.
->> I'm not sure why we need to go into the thread to do that given
->> it's not supposed to happen. If we need that message at all, I'd
->> suggest doing it in the interrupt handler then return IRQ_NONE;
-> As described, I run into the spurious IRQ case, so I think the message is
-> still useful (until that's properly fixed), but yes, it should've returned
-> IRQ_NONE in that case.
->
-> With these changes, IRQF_ONESHOT shouldn't be necessary, but in practice
-> the driver doesn't function correctly with the primary IRQ handler threaded.
->
-> Olivier, Fabrice: Are you aware of this problem?
 
+--ef4HD4ePKjEwSwzf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ahmad, Jonathan,
+On Tue, Jan 19, 2021 at 11:09:32PM +0530, Sameer Pujar wrote:
+>=20
+>=20
+> On 1/19/2021 10:45 PM, Thierry Reding wrote:
+> > On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
+> > > Expose a header which describes DT bindings required to use audio-gra=
+ph
+> > > based sound card. All Tegra210 based platforms can include this header
+> > > and add platform specific information. Currently, from SoC point of v=
+iew,
+> > > all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
+> > >=20
+> > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> > > Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> > > ---
+> > >   .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 ++++++++++=
++++++++++++
+> > >   1 file changed, 153 insertions(+)
+> > >   create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.=
+dtsi
+> > I prefer keeping everything in tegra210.dtsi, but I can do that merge
+> > when I apply, after the DT bindings have been acked, so no need to
+> > resend just because of that.
+>=20
+> I think this may be fine for Tegra210 based boards. But for Tegra186 and
+> Tegra194, whenever we add support for it, can rely on a common audio-graph
+> dtsi because there is no change w.r.t APE. This can help us to avoid
+> duplication of the bindings. This most likely applies to future chips as
+> well (where Tegra186 audio-graph bindings can be considered as base) when
+> there is no significant change in APE.
 
-I wasn't aware of this up to now. I confirm we've the same behavior at
-our end with threadirqs=1.
+Maybe. Although that argument is somewhat extreme because we already
+have some of that same duplication throughout the other .dtsi files. By
+the same argument we could save a bit of duplication by having something
+like tegra-gpio.dtsi and including that in all the SoC .dtsi files and
+only update the compatible string, because that's the only significant
+change.
 
-Olivier and I started to look at this. Indeed, the IRQF_ONESHOT makes
-the issue to disappear.
-I'm not sure 100% that's for the above reasons. Please let me share some
-piece of logs, analysis and thoughts.
+Duplication isn't a big problem for DTS files because the data is meant
+to be stable anyway. So once it is in place and doesn't have to change,
+it really doesn't matter if it comes from an include or it's duplicated.
 
+Thierry
 
-I may miss it but, the patch "genirq: Reject bogus threaded irq
-requests" seems to handle the case where no HW handler is provided, but
-only the threaded part?
+--ef4HD4ePKjEwSwzf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In the stm32-adc both are provided. Also the IRQ domain in
-stm32-adc-core maybe a key here ?
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHHYsACgkQ3SOs138+
+s6HzERAApo6U7ZDcY9jQ9XXohES6pX0zS0bRwPETSxyp1JYt4RWMgDn5fnfeYtkP
+InqVfiYYiqSbF46y4yBtVv5CcNJFu8+NRMmXhlgf3BLP7wMOQo1ZA+awS+Q8LX11
+mIs2vuAnbyPZIaaU/+YiCpXjfu6Rb/+yLCZbCDkpy0E9BWh9q15Qo512HcEQTowh
+VrVSZLQfx7mWnAs0gDykKdnMghb/LCTtLsSLrJaS2Uh7LoY84L3sDHDIRqAVLgqu
+LyTPeb6cw+TH9YA9Vb1DbzXQiOl0fmb7ca1Fhglfd4oCoaSAh+Oti0m4TLkOlAwV
+2mJi7iHCOCGZw4EdMKsWBRPSwtAv/jqqnYzF2sozC6+79Kitktf2LalH3HdiwgWr
+bcnPVKIYGNK8nvvllKSxnODb9dwBh5dvVERUTrPScTb+wtVkBJckbDHQ8KhQsmzO
+HrXD6f/DpgSjkacP9We0zwiud1toD0kr0b3BsD4n3CrKeGuJBtK/jDK2WcwIXX4O
+oNxxKIhnSr//KNI+29dxug6BJaBMt55r8gqVg+d/EZeufXFvyiCwQHJKyuNREQgf
+Ne0cj/tDFyHu2l5TG0ivO+fbnmqin7UBFxNnFP7ObwS61l1VuYE3SCNraT2WrDtz
+PX+ONBWVUg6Bc0/HRieI978DI5krbdHZjxOmgNKfeqrT3r+Sfc4=
+=ThIL
+-----END PGP SIGNATURE-----
 
-We did some testing, ftrace and observed following behavior for one
-capture (a single cat in_voltage..._raw) :
-
-in stm32-adc-core, as IRQ source is still active until the IRQ thread
-can execute:
-- stm32_adc_irq_handler <-- generic_handle_irq
-- stm32_adc_irq_handler <-- generic_handle_irq
-- stm32_adc_irq_handler <-- generic_handle_irq
-...
-
-- sched_switch to the 1st IRQ thread
-- stm32_adc_irq_handler <-- generic_handle_irq (again until DR get read)
-
-- stm32_adc_isr <-- irq_forced_thread_fn (from stm32-adc)
-  DR read, clears the active flag
-- stm32_adc_isr <-- irq_forced_thread_fn
-  wakes the 2nd IRQ thread to print an error (unexpected...)
-
-sched_switch to the 2nd IRQ thread that prints the message.
-
-- stm32_adc_threaded_isr <-- irq_thread_fn
-
-
-So my understanding is: the cause seems to be the concurrency between
-
-- stm32_adc_irq_handler() storm calls in stm32-adc-core
-- stm32_adc_isr() call to clear the cause (forced into a thread with
-threadirqs=1).
-
-To properly work, the stm32_adc_irq_handler() should be masked in between.
-
-As you explain, this works in this case: the call to stm32_adc_isr (in
-stm32-adc) isn't longer forced threaded with IRQF_ONESHOT.
-
-It looks like IRQF_NO_THREAD for forced threading would have similar
-effect? Maybe the same would be applicable here ? (I haven't tested...)
-
-
-Hopefully this helps and is similar to what you observed.
-
-Thanks and best regards,
-Fabrice
-
->
-> Cheers,
-> Ahmad
->
->>>   - stm32mp151.dtsi describes the ADC interrupt as level-triggered
->>>
->>> Fix this by setting IRQF_ONESHOT to have the irqchip mask the IRQ
->>> until the IRQ thread has finished.
->>>
->>> IRQF_ONESHOT also has the effect that the primary handler is no longer
->>> forced into a thread. This makes the issue with spurious interrupts
->>> interrupts disappear when reading the ADC on a threadirqs=1 kernel.
->>> This used to result in following kernel error message:
->>>
->>> 	iio iio:device1: Unexpected IRQ: IER=0x00000000, ISR=0x0000100e
->>> or
->>> 	iio iio:device1: Unexpected IRQ: IER=0x00000004, ISR=0x0000100a
->>>
->>> But with this patch applied (or threaded IRQs disabled), this no longer
->>> occurs.
->>>
->>> Cc: Lucas Stach <l.stach@pengutronix.de>
->>> Reported-by: Holger Assmann <has@pengutronix.de>
->>> Fixes: 695e2f5c289b ("iio: adc: stm32-adc: fix a regression when using dma and irq")
->>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->>> ---
->>>  drivers/iio/adc/stm32-adc.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
->>> index c067c994dae2..7e0e21c79ac8 100644
->>> --- a/drivers/iio/adc/stm32-adc.c
->>> +++ b/drivers/iio/adc/stm32-adc.c
->>> @@ -1910,7 +1910,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
->>>  
->>>  	ret = devm_request_threaded_irq(&pdev->dev, adc->irq, stm32_adc_isr,
->>>  					stm32_adc_threaded_isr,
->>> -					0, pdev->name, indio_dev);
->>> +					IRQF_ONESHOT, pdev->name, indio_dev);
->>>  	if (ret) {
->>>  		dev_err(&pdev->dev, "failed to request IRQ\n");
->>>  		return ret;
->>
+--ef4HD4ePKjEwSwzf--
