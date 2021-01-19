@@ -2,203 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F0F2FBC59
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323842FBC5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730422AbhASQZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:25:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58027 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731578AbhASQXm (ORCPT
+        id S1730638AbhASQZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:25:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731977AbhASQYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:23:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611073335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2tefehAb/S+Y499xem07UWHiVem08zQonUc+tFyoGtQ=;
-        b=bmGzgzZMfU37JIO7dDmEKiUcTv68f2LTII4mSfr5PX6ZcWcUtaZdG8Ti0WYwBL6w8tWR/8
-        hPio0N0zfAvqQW1933Q81eJrHclwt/c6kt0BxEg3sbL57UbzVSo4Ywx6qAnd4wEdx87xwQ
-        T3+TwF6YkrIgizCpPujHJyJl0leYJ+A=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-O7c0FnCVOKGT4UzbkyuaeA-1; Tue, 19 Jan 2021 11:22:13 -0500
-X-MC-Unique: O7c0FnCVOKGT4UzbkyuaeA-1
-Received: by mail-ej1-f69.google.com with SMTP id h18so3150747ejx.17
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:22:13 -0800 (PST)
+        Tue, 19 Jan 2021 11:24:09 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395C2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:23:29 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id lw17so1645334pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0aw/dETMyxgWmjUTx9neVtUqH4K4+9hFjmLcYtwpTlI=;
+        b=r6uBjXQvcvyRmHqbrxzkyljpZ0UV1wRqHtetO09wL9bUkHwsRpMBrvAJBuhjn3bMN3
+         CK704Gq4qEDSkx6qEHFLql2vJa4yCo+BJnB1icdl1vvHD4nKZIczcF+KXMUCMMBHlbPh
+         +Ibs0/U9p3sB4dD0k788fjTw1qEQCmlUUAg4RBmyPNP06E1bwlyDy8QJ4TwwB6vLDFnF
+         cDQDTHiRz25/UYFM5Y8WrrXoiQhTfjI0oAu1Yw+mzMWKiAJRfkcAq4GjSuTlAMKjSm0S
+         Nf1mkIyQGjx7Cu4cAqNMXITF42n2vJyNbnA3gqCA2VxwP8aswR47e/f/RW7gTVDJq1qr
+         GCbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2tefehAb/S+Y499xem07UWHiVem08zQonUc+tFyoGtQ=;
-        b=ZGzKylvASXKKP25XhKH1zaxhKUM6MkF8zPrrrZvpxkZgCEv0UqSEDusY8JK6zKeiRH
-         AtOT+zqOTHR/QEAhNFzBgCSmcoFMxKY/rgWFxZVHd0dFmD7zo4rjLmxSIiP6h2bDdHwu
-         HUuejjqWwiIlT4wfSoSLlPye0sFt05x5dpeM9bdiZu2tXY4c2ksRXVYucqlzcYsoDgZt
-         qkSDkloK9Wn50dAD6kT9NP650U0d4Btim5Gw6ce51oOKKHYseWg2k4JRYeuUgF0E5XyJ
-         PEf7iSd16IvnP5UhRFLXQBjQff/8aqaJjZHnExP81m0LSsbgKU8zc0N99NryFZihZu89
-         Nkkw==
-X-Gm-Message-State: AOAM530L6bXTXZI7hMFnKFPBbWz4FJ/oRo3fyd+Uh1uzDIi5otInTdNl
-        16wPnPn7E8SqSCl8DAYyZbs1DyxTlqT2MRg8SaGBY/oeN5GcYxc7CXPymD1yvORHcjXfmWUApCw
-        qz0X51SCbY/NC57wzhJldt5YO
-X-Received: by 2002:a17:906:28d6:: with SMTP id p22mr3478719ejd.365.1611073332309;
-        Tue, 19 Jan 2021 08:22:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyfDgUkWdym2Ii227SbfpEBuWbMrSciJxkHOMTpPgqAwLgbdBZ6Oj9XcMQl1tHD2OB0qf91lg==
-X-Received: by 2002:a17:906:28d6:: with SMTP id p22mr3478704ejd.365.1611073332109;
-        Tue, 19 Jan 2021 08:22:12 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id f22sm2168066eje.34.2021.01.19.08.22.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0aw/dETMyxgWmjUTx9neVtUqH4K4+9hFjmLcYtwpTlI=;
+        b=G9LfWohpzUQBY7AcBhit5Eu03t3LZci+Pe7xWVWc6NGC+YwMR3GoSeh4LRhw2wSLSK
+         xgB2RK/BV4vjo8ZdMAQSv9VRROQ3txcgMBugMAMyCAJPiMgGJO4NUw0gdJzZAhsaypGt
+         /k4rn+ODHPCV7gv4HZkJv2sh9jrdIOwi5D7hd25N50SEPz67k2HiXV+HO/ypS+jcHdya
+         3ju6IdJzeOkSmNirDAwF07rAxVpjSE/6gaoyX8jZmF/CazntkUSwyh62OhDRbkELWuIJ
+         oqHNrFLb9YHtp1PNQKR8XOTo0Q1246z7tkvKe9GqszrWDX4J9DgYtToBlDdTUdXp/9UD
+         iouA==
+X-Gm-Message-State: AOAM533M5OPQax+OO7/1IAoy1B0mCsBFihWH6ZAClpokBMD6YVdWQEz9
+        yo+PYn4XFh6x9zhjop7gpjWtIQ==
+X-Google-Smtp-Source: ABdhPJzkbBTMkzVaU2ainTlxiwnqT4XcchF3oQOixMC4RLrfx24qmbl9157+OmRmbNU6roe5reBn8w==
+X-Received: by 2002:a17:90a:eacf:: with SMTP id ev15mr431309pjb.209.1611073408624;
+        Tue, 19 Jan 2021 08:23:28 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a188sm12854460pfb.108.2021.01.19.08.23.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:22:10 -0800 (PST)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Serge E . Hallyn" <serge@hallyn.com>
-Subject: [PATCH 2/2] security.capability: fix conversions on getxattr
-Date:   Tue, 19 Jan 2021 17:22:04 +0100
-Message-Id: <20210119162204.2081137-3-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210119162204.2081137-1-mszeredi@redhat.com>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
+        Tue, 19 Jan 2021 08:23:27 -0800 (PST)
+Date:   Tue, 19 Jan 2021 08:23:20 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
+ SEV-ES support
+Message-ID: <YAcHeOyluQY9C6HK@google.com>
+References: <20210116002517.548769-1-seanjc@google.com>
+ <20210118202931.GI30090@zn.tnic>
+ <5f7bbd70-35c3-24ca-7ec5-047c71b16b1f@redhat.com>
+ <20210118204701.GJ30090@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118204701.GJ30090@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a capability is stored on disk in v2 format cap_inode_getsecurity() will
-currently return in v2 format unconditionally.
+On Mon, Jan 18, 2021, Borislav Petkov wrote:
+> On Mon, Jan 18, 2021 at 09:32:07PM +0100, Paolo Bonzini wrote:
+> > I think it makes sense because AMD_SEV_ES_GUEST's #VC handling is quite a
+> > bit of code that you may not want or need.
+> 
+> Quite a bit of code which ends up practically enabled on the majority of
+> distros.
+> 
+> And it ain't about savings of whopping KiBs. And yet another Kconfig symbol
+> in our gazillion Kconfig symbols space means ugly ifdeffery and paying
+> attention to randconfig builds.
+> 
+> For tailored configs you simply disable AMD_MEM_ENCRYPT on !AMD hw and
+> all done.
 
-This is wrong: v2 cap should be equivalent to a v3 cap with zero rootid,
-and so the same conversions performed on it.
+It was the AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT dependency that tripped me up.  To
+get KVM to enable SEV/SEV-ES by default, that needs to be enabled, which in turn
+requires AMD_MEM_ENCRYPT=y.  I didn't realize that there isn't actually a
+dependency on AMD_MEM_ENCRYPT=y
 
-If the rootid cannot be mapped v3 is returned unconverted.  Fix this so
-that both v2 and v3 return -EOVERFLOW if the rootid (or the owner of the fs
-user namespace in case of v2) cannot be mapped in the current user
-namespace.
+> So I don't see the point for this.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- security/commoncap.c | 67 ++++++++++++++++++++++++++++----------------
- 1 file changed, 43 insertions(+), 24 deletions(-)
-
-diff --git a/security/commoncap.c b/security/commoncap.c
-index bacc1111d871..c9d99f8f4c82 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -371,10 +371,11 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
- {
- 	int size, ret;
- 	kuid_t kroot;
-+	__le32 nsmagic, magic;
- 	uid_t root, mappedroot;
- 	char *tmpbuf = NULL;
- 	struct vfs_cap_data *cap;
--	struct vfs_ns_cap_data *nscap;
-+	struct vfs_ns_cap_data *nscap = NULL;
- 	struct dentry *dentry;
- 	struct user_namespace *fs_ns;
- 
-@@ -396,46 +397,61 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
- 	fs_ns = inode->i_sb->s_user_ns;
- 	cap = (struct vfs_cap_data *) tmpbuf;
- 	if (is_v2header((size_t) ret, cap)) {
--		/* If this is sizeof(vfs_cap_data) then we're ok with the
--		 * on-disk value, so return that.  */
--		if (alloc)
--			*buffer = tmpbuf;
--		else
--			kfree(tmpbuf);
--		return ret;
--	} else if (!is_v3header((size_t) ret, cap)) {
--		kfree(tmpbuf);
--		return -EINVAL;
-+		root = 0;
-+	} else if (is_v3header((size_t) ret, cap)) {
-+		nscap = (struct vfs_ns_cap_data *) tmpbuf;
-+		root = le32_to_cpu(nscap->rootid);
-+	} else {
-+		size = -EINVAL;
-+		goto out_free;
- 	}
- 
--	nscap = (struct vfs_ns_cap_data *) tmpbuf;
--	root = le32_to_cpu(nscap->rootid);
- 	kroot = make_kuid(fs_ns, root);
- 
- 	/* If the root kuid maps to a valid uid in current ns, then return
- 	 * this as a nscap. */
- 	mappedroot = from_kuid(current_user_ns(), kroot);
- 	if (mappedroot != (uid_t)-1 && mappedroot != (uid_t)0) {
-+		size = sizeof(struct vfs_ns_cap_data);
- 		if (alloc) {
--			*buffer = tmpbuf;
-+			if (!nscap) {
-+				/* v2 -> v3 conversion */
-+				nscap = kzalloc(size, GFP_ATOMIC);
-+				if (!nscap) {
-+					size = -ENOMEM;
-+					goto out_free;
-+				}
-+				nsmagic = VFS_CAP_REVISION_3;
-+				magic = le32_to_cpu(cap->magic_etc);
-+				if (magic & VFS_CAP_FLAGS_EFFECTIVE)
-+					nsmagic |= VFS_CAP_FLAGS_EFFECTIVE;
-+				memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
-+				nscap->magic_etc = cpu_to_le32(nsmagic);
-+			} else {
-+				/* use allocated v3 buffer */
-+				tmpbuf = NULL;
-+			}
- 			nscap->rootid = cpu_to_le32(mappedroot);
--		} else
--			kfree(tmpbuf);
--		return size;
-+			*buffer = nscap;
-+		}
-+		goto out_free;
- 	}
- 
- 	if (!rootid_owns_currentns(kroot)) {
--		kfree(tmpbuf);
--		return -EOPNOTSUPP;
-+		size = -EOVERFLOW;
-+		goto out_free;
- 	}
- 
- 	/* This comes from a parent namespace.  Return as a v2 capability */
- 	size = sizeof(struct vfs_cap_data);
- 	if (alloc) {
--		*buffer = kmalloc(size, GFP_ATOMIC);
--		if (*buffer) {
--			struct vfs_cap_data *cap = *buffer;
--			__le32 nsmagic, magic;
-+		if (nscap) {
-+			/* v3 -> v2 conversion */
-+			cap = kzalloc(size, GFP_ATOMIC);
-+			if (!cap) {
-+				size = -ENOMEM;
-+				goto out_free;
-+			}
- 			magic = VFS_CAP_REVISION_2;
- 			nsmagic = le32_to_cpu(nscap->magic_etc);
- 			if (nsmagic & VFS_CAP_FLAGS_EFFECTIVE)
-@@ -443,9 +459,12 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
- 			memcpy(&cap->data, &nscap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
- 			cap->magic_etc = cpu_to_le32(magic);
- 		} else {
--			size = -ENOMEM;
-+			/* use unconverted v2 */
-+			tmpbuf = NULL;
- 		}
-+		*buffer = cap;
- 	}
-+out_free:
- 	kfree(tmpbuf);
- 	return size;
- }
--- 
-2.26.2
-
+Agreed, I'll send a KVM patch to remove the AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+dependency.
