@@ -2,113 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DC02FB4C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 10:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237CD2FB4D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 10:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbhASJDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:03:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731626AbhASI5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:57:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0470123103;
-        Tue, 19 Jan 2021 08:57:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611046628;
-        bh=FNcY0Ysa8mRAba5iHcXtcfQOnny/W/mDvHOHe7GEF0Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lpWQ49TouWfPuvM/2l87PgVTet3UyKx9kXsMTe8IcUcaf9NJxOooNf55QuaBflm58
-         QtF0WcrMXJmRPkbd7faM2Aw/41mG6G36eD2+EAnbZuue6Z0NXQj4j9L92zthdmTgKh
-         NjMDIVXk0DbnDgTGYH0CwfV+hRtqAeDnlgTTabeSUiO9E0gdsb704cuh6v8+T/qBjP
-         aWeD6T/T2YDup+KzPU5qCL0r8GEAA7FPfzb5zTNJeOUoVWuPdUJWlnM0+3EydtYUXv
-         N9LwHz3PMt5IWA2K5VgrzUfwr5uvSMekCEQtqGJk/ArYj+1P+zxClXmjRshvDA2Ars
-         2FkRPfNS12rHw==
-Date:   Tue, 19 Jan 2021 16:57:02 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ARM: dts: imx6qdl: specify vcc-supply for NOP USB
- PHYs
-Message-ID: <20210119085700.GB4356@dragon>
-References: <20201113152856.3758-1-a.fatoum@pengutronix.de>
+        id S1730691AbhASJGq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Jan 2021 04:06:46 -0500
+Received: from wnbcorp.com ([175.126.38.143]:33416 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728626AbhASJD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:03:59 -0500
+Received: from [10.54.228.138] (89-200-36-78.mobile.kpn.net [89.200.36.78])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10J8mFgY021371;
+        Tue, 19 Jan 2021 17:57:48 +0900
+Message-Id: <202101190857.10J8mFgY021371@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113152856.3758-1-a.fatoum@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Tue, 19 Jan 2021 09:57:20 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 04:28:55PM +0100, Ahmad Fatoum wrote:
-> The SoC dtsi lists a NOP USB PHY for each of the two HSIC-only USB
-> controllers. Their device tree node doesn't indicate a vcc-supply
-> resulting in:
-> 
->   usb_phy_generic usbphynop1: supply vcc not found, using dummy regulator
->   usb_phy_generic usbphynop2: supply vcc not found, using dummy regulator
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-So the patch is all for removing this kernel message, with introducing
-the following potential breakage?
+Sir/Madam,
 
-Shawn
+CONGRATULATIONS!!!
 
-> 
-> warnings on boot up. The USB IP vcc-supply - separate from the vusb - is
-> hardwired to LDO_2P5[1], which we already have a device tree node for.
-> Reference it for the dummy "phy" as well.
-> 
-> This will lead to breakage (probe deferment) for kernels that:
->   - Use a HSIC USB controller
->   - Use this new device tree
->   - but have CONFIG_REGULATOR_ANATOP disabled
-> 
-> Because while the regulator is always-on, it can't be resolved when
-> there is no driver for it.
-> 
-> As there are
-> 
->   - no affected upstream device trees
->   - existing device trees are unaffected without recompilation
->   - disabling CONFIG_REGULATOR_ANATOP is explicitly a non-recommended
->     configuration per symbol help text
-> 
-> this potential breakage is deemed acceptable.
-> 
-> [1]: i.MX 6Dual/6Quad Reference Manual, Rev. C,
->      Figure 53-1. Power System Overview
-> 
-> Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
->  arch/arm/boot/dts/imx6qdl.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-> index 43edbf1156c7..22e4c142de13 100644
-> --- a/arch/arm/boot/dts/imx6qdl.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl.dtsi
-> @@ -131,11 +131,13 @@ pmu: pmu {
->  
->  	usbphynop1: usbphynop1 {
->  		compatible = "usb-nop-xceiv";
-> +		vcc-supply = <&reg_vdd2p5>;
->  		#phy-cells = <0>;
->  	};
->  
->  	usbphynop2: usbphynop2 {
->  		compatible = "usb-nop-xceiv";
-> +		vcc-supply = <&reg_vdd2p5>;
->  		#phy-cells = <0>;
->  	};
->  
-> -- 
-> 2.28.0
-> 
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 16th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
