@@ -2,236 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6DD2FBCE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4642FBCED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388995AbhASQuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389681AbhASQsM (ORCPT
+        id S2390442AbhASQut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:50:49 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55454 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387840AbhASQtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:48:12 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435F4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:47:32 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id e15so14131256qte.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:47:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HQhIiqouZYO54MDphZpxd2e5yZbQev4tgCFWsf4zZmo=;
-        b=SKZViz0B81l15glJySEmk2KHv0dZ42QnZw63XyroVp+LT997+JqLHviX++WY4bwsHw
-         Snuf9828SnnBvpcPDuzcVgzwoaAzwIoEXSRgWikHQNIebuJ5zjAQF1W8NGfMoeBU5cg2
-         fqussE3+f/VCdDM6WdROtEOn1ozeSND0xsgBSYkIgy2JccFTUI3fLGvM3TzKVRZ0opee
-         uNc0diVqCRL1wP7dEI9CQo8n6I10dbbFY/dQ2Llw1snQ6926q0DUTby6ljheVvzykUvH
-         soPCZPyR+SAqb2rH2Z3V778u+xC5PPQdRPgJdtl5+gWx5bypel3J4131SY82hw/Vhjri
-         HdLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HQhIiqouZYO54MDphZpxd2e5yZbQev4tgCFWsf4zZmo=;
-        b=Gn0G7qSAC0ai0Grmslis4T7MsiyVjyeKRd2pvu8ooY8oEm7+ENNO2hQyMkTDMPlSyj
-         dAMdELP3KXfjfoEijnTETroD7b7bD74UX9Ce5WBCo5d1qsnQhw+rx+aT9vDEG6DDnVlZ
-         7WqejQwlczZVYR9C08yu4hUHY6nZ5Io8/2lakAfTE+M5JhIjicg8iMQLNwp+W7+mmzqE
-         KtlkIZdvoz3VH6HkZj2VsxjSYZfgPVAmeDxdnu94mnhpiLfQy6ufyAMIVMJpKLv6Rbt/
-         2oDq1qnxUNW8nbMenKEOY01NmPUY4H52ia643NB4GAnDfTYetnllubLlNJKQybcdam+3
-         ZL3w==
-X-Gm-Message-State: AOAM530ktu11BLzZ8M3usNpRhzf4z6hkAJz+Qj0+X9hHXHIha9xkG50x
-        VyvDZAXD4Dfi95O6kMlj7aieYw==
-X-Google-Smtp-Source: ABdhPJwE/MGthli/KCussSAE4vhaxFqSEWpfSlSLArsBv7ezEQscUgXUBOTZJraVuocscB/ps0H7xA==
-X-Received: by 2002:ac8:57c1:: with SMTP id w1mr5032944qta.313.1611074851420;
-        Tue, 19 Jan 2021 08:47:31 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id q27sm13022037qkj.131.2021.01.19.08.47.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:47:30 -0800 (PST)
-Date:   Tue, 19 Jan 2021 11:47:29 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <YAcNISYNGDA/26pw@cmpxchg.org>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210113144654.GD22493@dhcp22.suse.cz>
- <YAHA4uBSLlnxxAbu@cmpxchg.org>
- <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
- <YAIBSJg3btQ+2CNZ@cmpxchg.org>
- <20210115212723.GB631549@carbon.dhcp.thefacebook.com>
+        Tue, 19 Jan 2021 11:49:20 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0779CA2A;
+        Tue, 19 Jan 2021 17:48:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611074913;
+        bh=tXt+6GqoXAFC5UKjjCsKEitz3I/4145IB/D+Gmn5LhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O+OOZJ19fiQmFWVQXaecK5GtxR3WOs2g/1c44C0ZTqJiYkYBm2IFuo3qJ7VEZbpeZ
+         C4FwTTVQ8En2DSgVo0X2LIBQesk1rOy/Kdl9TzbYuFLqqbCp4cZXBwlu3YvNYC2UXB
+         FXudHWpJ6rL7gaMaQet1A/o/0s34WWvVQlQgo9qY=
+Date:   Tue, 19 Jan 2021 18:48:15 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        andy@kernel.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <YAcNT1d5zQHGsoe6@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+ <20210118144606.GO4077@smile.fi.intel.com>
+ <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
+ <20210119092448.GN4077@smile.fi.intel.com>
+ <a735380b-57ac-1950-b29a-07fe6cb708d2@gmail.com>
+ <20210119110837.GT4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210115212723.GB631549@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210119110837.GT4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 01:27:23PM -0800, Roman Gushchin wrote:
-> On Fri, Jan 15, 2021 at 03:55:36PM -0500, Johannes Weiner wrote:
-> > On Fri, Jan 15, 2021 at 09:03:41AM -0800, Roman Gushchin wrote:
-> > > On Fri, Jan 15, 2021 at 11:20:50AM -0500, Johannes Weiner wrote:
-> > > > On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
-> > > > > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
-> > > > > > When a value is written to a cgroup's memory.high control file, the
-> > > > > > write() context first tries to reclaim the cgroup to size before
-> > > > > > putting the limit in place for the workload. Concurrent charges from
-> > > > > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > > > > 
-> > > > > > In the past, a write to memory.high would first put the limit in place
-> > > > > > for the workload, then do targeted reclaim until the new limit has
-> > > > > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > > > > to the described starvation issue. However, this sequence could cause
-> > > > > > excessive latencies in the workload, when allocating threads could be
-> > > > > > put into long penalty sleeps on the sudden memory.high overage created
-> > > > > > by the write(), before that had a chance to work it off.
-> > > > > > 
-> > > > > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > > > > limit, reflect that the cgroup may well fail to converge due to
-> > > > > > concurrent workload activity. Bail out of the loop after a few tries.
-> > > > > 
-> > > > > I can see that you have provided some more details in follow up replies
-> > > > > but I do not see any explicit argument why an excessive time for writer
-> > > > > is an actual problem. Could you be more specific?
-> > > > 
-> > > > Our writer isn't necessarily time sensitive, but there is a difference
-> > > > between a) the write taking a few seconds to reclaim down the
-> > > > requested delta and b) the writer essentially turning into kswapd for
-> > > > the workload and busy-spinning inside the kernel indefinitely.
-> > > > 
-> > > > We've seen the writer stuck in this function for minutes, long after
-> > > > the requested delta has been reclaimed, consuming alarming amounts of
-> > > > CPU cycles - CPU time that should really be accounted to the workload,
-> > > > not the system software performing the write.
-> > > > 
-> > > > Obviously, we could work around it using timeouts and signals. In
-> > > > fact, we may have to until the new kernel is deployed everywhere. But
-> > > > this is the definition of an interface change breaking userspace, so
-> > > > I'm a bit surprised by your laid-back response.
-> > > > 
-> > > > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > > > > Cc: <stable@vger.kernel.org> # 5.8+
-> > > > > 
-> > > > > Why is this worth backporting to stable? The behavior is different but I
-> > > > > do not think any of them is harmful.
-> > > > 
-> > > > The referenced patch changed user-visible behavior in a way that is
-> > > > causing real production problems for us. From stable-kernel-rules:
-> > > > 
-> > > >  - It must fix a real bug that bothers people (not a, "This could be a
-> > > >    problem..." type thing).
-> > > > 
-> > > > > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > > 
-> > > > > I am not against the patch. The existing interface doesn't provide any
-> > > > > meaningful feedback to the userspace anyway. User would have to re check
-> > > > > to see the result of the operation. So how hard we try is really an
-> > > > > implementation detail.
-> > > > 
-> > > > Yeah, I wish it was a bit more consistent from an interface POV.
-> > > > 
-> > > > Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
-> > > > trying to reclaim went into the tree at the same exact time as Chris's
-> > > > series "mm, memcg: reclaim harder before high throttling" (commit
-> > > > b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
-> > > > 
-> > > > Chris's patch changes memory.high reclaim on the allocation side from
-> > > > 
-> > > > 	reclaim once, sleep if there is still overage
-> > > > 
-> > > > to
-> > > > 
-> > > > 	reclaim the overage as long as you make forward progress;
-> > > > 	sleep after 16 no-progress loops if there is still overage
-> > > > 
-> > > > Roman's patch describes a problem where allocating threads go to sleep
-> > > > when memory.high is lowered by a wider step. This is exceedingly
-> > > > unlikely after Chris's change.
-> > > > 
-> > > > Because after Chris's change, memory.high is reclaimed on the
-> > > > allocation side as aggressively as memory.max. The only difference is
-> > > > that upon failure, one sleeps and the other OOMs.
-> > > > 
-> > > > If Roman's issue were present after Chris's change, then we'd also see
-> > > > premature OOM kills when memory.max is lowered by a large step. And I
-> > > > have never seen that happening.
-> > > > 
-> > > > So I suggest instead of my fix here, we revert Roman's patch instead,
-> > > > as it should no longer be needed. Thoughts?
-> > > 
-> > > Chris's patch was merged way earlier than mine into the kernel tree which
-> > > was used when I observed the problem in the production. So likely it was there.
+On Tue, Jan 19, 2021 at 01:08:37PM +0200, Andy Shevchenko wrote:
+> On Tue, Jan 19, 2021 at 10:40:42AM +0000, Daniel Scally wrote:
+> > On 19/01/2021 09:24, Andy Shevchenko wrote:
+> > >>>>> +static struct i2c_driver int3472_tps68470 = {
+> > >>>>> +	.driver = {
+> > >>>>> +		.name = "int3472-tps68470",
+> > >>>>> +		.acpi_match_table = int3472_device_id,
+> > >>>>> +	},
+> > >>>>> +	.probe_new = skl_int3472_tps68470_probe,
+> > >>>>> +};
+> > >>> I'm not sure we want to have like this. If I'm not mistaken the I²C driver can
+> > >>> be separated without ACPI IDs (just having I²C IDs) and you may instantiate it
+> > >>> via i2c_new_client_device() or i2c_acpi_new_device() whichever suits better...
+> > >> Sorry, I'm a bit confused by this. The i2c device is already
+> > >> present...we just want the driver to bind to them, so what role do those
+> > >> functions have there?
+> > > What I meant is something like
+> > >
+> > >  *_i2c.c
+> > > 	real I²C driver for the TPS chip, but solely with I²C ID table, no ACPI
+> > > 	involved (and it sounds like it should be mfd/tps one, in which you
+> > > 	just cut out ACPI IDs and convert to pure I²C one, that what I had
+> > > 	suggested in the first place)
 > > 
-> > Chris's patch was in the tree earlier, but the first release
-> > containing it was tagged a day before you put in your change, so I
-> > doubt it was on the production system where you observed the issue.
-> > 
-> > As per above, it'd be very surprising to see premature sleeps when
-> > lowering memory.high, when allocation-side reclaim keeps going until
-> > the cgroup meets the definition of OOM.
-> > 
-> > > I think it makes sense to try to reclaim memory first before putting
-> > > all processes in the cgroup into reclaim mode. Even without artificial delays
-> > > it creates some latency and btw doesn't make the reclaim process more efficient.
-> > 
-> > It's not obvious that this is a practical problem. It certainly isn't
-> > for memory.max,
+> > Ahh; sorry - i misunderstood what you meant there. I understand now I
+> > think, but there is one complication; the ACPI subsystem already creates
+> > a client for that i2c adapter and address; i2c_new_client_device()
+> > includes a check to see whether that adapter / address combination has
+> > an i2c device already.  So we would have to have the platform driver
+> > with ACPI ID first find the existing i2c_client and unregister it before
+> > registering the new one...the existing clients have a name matching the
+> > ACPI device instance name (e.g i2c-INT3472:00) which we can't use as an
+> > i2c_device_id of course.
 > 
-> Because memory.max is usually not adjusted dynamically?
+> See how INT33FE is being handled. Hint: drivers/acpi/scan.c:~1600
 > 
-> > and there should be a good reason why the two should
-> > be different aside from the documented OOM vs sleep behavior.
+> static const struct acpi_device_id i2c_multi_instantiate_ids[] = {
+> 	{"BSG1160", },
+> 	{"BSG2150", },
+> 	{"INT33FE", },
+> 	{"INT3515", },
+> 	{}
+> };
 > 
-> Maybe we have different examples in our heads, but mine is a cgroup
-> with a significant amount of relatively cold pagecache and a multi-threaded
-> workload. Now somebody wants to tighten memory.high. Why would we put all
-> threads into a direct reclaim? I don't see a good reason.
+> So, we quirklist it here and instantiate manually from platform driver (new
+> coming one).
 
-But how is that different than a multi-threaded workload simply
-running up against a static limit?
+This is documented as used for devices that have multiple I2cSerialBus
+resources. That's not the case for the INT3472 as far as I can tell. I
+don't think we should abuse this mechanism.
 
-As soon as one event puts the cgroup over the limit, all concurrent
-allocations will form a thundering herd of reclaimers. I don't see
-much of a difference between a burst of allocations exceeding the
-limit from below and the limit being lowered from above.
+Don't forget that the TPS68470 I2C driver needs to be ACPI-aware, as it
+has to register an OpRegion for ACPI-based Chrome OS devices. On other
+platforms (including DT platforms), it should only register regulators,
+clocks and GPIOs. Given the differences between those platforms, I don't
+think a TPS68470 driver that would fake being unaware of being probed
+through ACPI would be a good idea. We can always refactor the code later
+when we'll have a non-ACPI based platform using the TPS68470, without
+such a platform there's no way we can test the I2C driver without ACPI
+anyway.
 
-Sure, the requested limit delta is usually bigger than a single
-allocation. However, memory.high enforcement is batched, and quite a
-few threads could contribute to the overage and be marked to enter
-direct reclaim before the first page is actually scanned. Also, while
-we do adjust memory.high dynamically, we do so no more than once every
-5-10 seconds, whereas a multi-threaded workload may breach its limit
-and provoke thundering herds many times a second.
+> ...
+> 
+> > > You need to modify clk-gpio.c to export
+> > >
+> > > clk_hw_register_gpio_gate()
+> > > clk_hw_register_gpio_mux()
+> > >
+> > > (perhaps it will require to add *_unregister() counterparts) and call it from
+> > > your code.
+> > >
+> > > See, for example, how clk_hw_unregister_fixed_rate() is being used. Another
+> 
+> Here I meant of course clk_hw_register_fixed_rate().
+> 
+> > > case is to add a helper directly into clk-gpio and call it instead of
+> > > clk_hw_*() one, see how clk_register_fractional_divider() is implemented and
+> > > used.
+> > 
+> > I'll take a look, thanks
 
-So I just cannot imagine the sequence of events here would make a
-practical difference for the aspect of the thundering herd (whereas it
-was VERY obvious with the premature sleep issue on the allocation
-side). But the thundering herd may start as soon as you lower the
-limit, whether you reclaim before or after. It may already be
-occurring against the higher limit before you even enter write().
+-- 
+Regards,
 
-Allocation latency is a real concern, I agree with you there. But
-that's IMO more to do with how cgroup limits are enforced in
-general. That's why there have been multiple discussions and patch
-submissions around async reclaim.
-
-But the fact is, the change of sequence is causing real problems in
-production, and with the premature-throttling-on-large-delta-bug out
-of the way, the justification for keeping it are somewhat nebulous.
-
-So unless we can clearly show from production that the sequence still
-matters after Chris's patch, I'd say we go with the revert and take
-the small risk of getting data to the contrary.
-
-As opposed to accruing additional complexity and special-cased code on
-a hunch, that we then may carry unnecessarily for a very long time -
-until somebody later on, under the pressure of keeping all this stuff
-maintainable, takes the risk of chopping it again with much less of
-the original context and stake holders available.
+Laurent Pinchart
