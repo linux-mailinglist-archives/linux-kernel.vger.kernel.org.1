@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3322FBD45
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16942FBD1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391086AbhASROA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:14:00 -0500
-Received: from mickerik.phytec.de ([195.145.39.210]:60038 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390961AbhASRNQ (ORCPT
+        id S2389163AbhASRAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:00:44 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54422 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389173AbhASQ7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:13:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1611075410; x=1613667410;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=71NL4qRxuCfKGxdVRCYWEgQ0RQvvYiTQUe2PM7pdqG4=;
-        b=VISOOmQu0zxUhdVN4y++vSb4maQiOseEQKt3HSOEPyExJnFk4E8OsDJ9qreg8XK6
-        WWCmIViH0bjUxDHrGzoSQpbwkTZXpGZpwfhXK3WBruWWXDFATbB52Ud7K43MLBXj
-        po+WLbpqPw4EMk+Ol00z+VprBy/Ek8WkCsRxbL8tviI=;
-X-AuditID: c39127d2-0c7b670000001c86-e2-60070f520b77
-Received: from Florix.phytec.de (florix.phytec.de [172.16.0.118])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id F9.90.07302.25F07006; Tue, 19 Jan 2021 17:56:50 +0100 (CET)
-Received: from [172.16.21.73] (172.16.0.116) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 19 Jan
- 2021 17:56:49 +0100
-Subject: Re: Splicing to/from a tty
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Christoph Hellwig <hch@lst.de>, Oliver Giles <ohw.giles@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
- <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
- <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com>
- <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
- <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
- <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
- <CAHk-=wjgufiORSuAb270XpGn45jexRjP9SCmcc7AAAZsVrAaPw@mail.gmail.com>
- <CAHk-=whW7t=3B=iCwYkJ3W-FH08wZNCFO7EJ5qQSqD9Z_tBxrQ@mail.gmail.com>
- <YAbIVgGt1Qz8ItMh@kroah.com>
-From:   Robert Karszniewicz <r.karszniewicz@phytec.de>
-Message-ID: <9d3baff9-5d4a-4308-9556-8dd037c2fe4b@phytec.de>
-Date:   Tue, 19 Jan 2021 17:56:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 19 Jan 2021 11:59:24 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JGXWR0143590;
+        Tue, 19 Jan 2021 16:57:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=sgdV4DlHNHTspbd/aK7hkeNWRoha9hMFwjn/ZmwVWQk=;
+ b=N6ODgjzWnXRoegsWTwaFflZ7AM6NcT0c5vtyyMYYAXB5kuxnJ6eavvmWkBdXiZHEF6CR
+ aAb3lnX+7LCGEazD06mBnK0XvmUubX4XqHFajisIhSoKVG8QtuP97odTL8qGVf9m8LLZ
+ hEWvwyCpgefIrGHH6Qz/8wegaUpW0HDdkjKKWjj7avmOT2iGF1f3zNvSQHcX34oiTd6f
+ 4ODXLDIeJ6CUpO5Y6gg1wB2+2aaHVla/pucjEXLEddNsGN3cjpLoNzL+yM43SozyVVUs
+ g8lG/gZHA41S1tCkgjQonycuvavpiN/O8M+9VpsvypAT63qxVOj3j3w5xkhFthgAsEjS rw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 363xyhse4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 16:57:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JGsbvn142094;
+        Tue, 19 Jan 2021 16:57:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3661khg06j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 16:57:49 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10JGvk9l005845;
+        Tue, 19 Jan 2021 16:57:47 GMT
+Received: from [10.74.104.209] (/10.74.104.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 Jan 2021 08:57:46 -0800
+Subject: Re: [PATCH] dt-bindings: soc: ti: Update TI PRUSS bindings about
+ schemas to include
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        tony@atomide.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        ssantosh@kernel.org, praneeth@ti.com, lee.jones@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201216225027.2681-1-grzegorz.jaszczyk@linaro.org>
+ <20201221213234.GA596829@robh.at.kernel.org>
+ <6f5b6609-bb9e-31f7-c0c2-3bb261a54d6a@ti.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <a080a917-9c37-088b-075b-7b5a5d49256d@oracle.com>
+Date:   Tue, 19 Jan 2021 08:57:43 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <YAbIVgGt1Qz8ItMh@kroah.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <6f5b6609-bb9e-31f7-c0c2-3bb261a54d6a@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.0.116]
-X-ClientProxiedBy: Florix.phytec.de (172.16.0.118) To Florix.phytec.de
- (172.16.0.118)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkkeLIzCtJLcpLzFFi42JZI8BQphvEz55gcGw7v0Xz4vVsFitXH2Wy
-        eDdXxuLyrjlsFr2rNrJaPOp7y25x/u9xVgd2j52z7rJ7bFrVyeZxYsZvFo/9c9ewe+y+2cDm
-        8XmTnMemJ2+ZAtijuGxSUnMyy1KL9O0SuDJaD99kLXjNUfFlknsDYy97FyMnh4SAicTee4+B
-        bC4OIYFlTBIreo8wQjj3GSX27D0IViUsoCwxsXseSxcjB4eIQKrE/p3VIDXMAqcYJe43zWGG
-        aLjDInHqwUZGkAY2oLG7m28xgzTwCthIrN5mBhJmEVCV+NHwFqxEVCBCorWvkxnE5hUQlDg5
-        8wkLiM0poClx4/h+RpBWZiB7/S59kDCzgLjErSfzmSBseYntb+eAtQoBjTzd9poJ4hkFibm/
-        JzJD2OES837PYp/AKDwLyYZZCFNnIZk6C8nUBYwsqxiFcjOTs1OLMrP1CjIqS1KT9VJSNzEC
-        o+nwRPVLOxj75ngcYmTiYDzEKMHBrCTC2/SXLUGINyWxsiq1KD++qDQntfgQozQHi5I47wbe
-        kjAhgfTEktTs1NSC1CKYLBMHp1QD48zkzMd/lWdessyepeJnpcnj+o5ponjq7cqK38d8I1pk
-        p0iy6aTee1zE8lWaj2fC/gie9dmPtCROWs35eOPSS+l6voq9Qc4h0pMlNi7a7rh69dSr0a6x
-        d1fdy8tRW7dV6JDMs95p+fIPD/3aN1tz+YpL9rKTkiY8YxRdcGL32dvOQpuVJO/uvKTEUpyR
-        aKjFXFScCAAtX8R2lAIAAA==
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ phishscore=0 mlxscore=0 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 spamscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 12:53 PM, Greg Kroah-Hartman wrote:
-> This looks sane, but I'm still missing what the goal of this is here.
-> It's nice from a "don't make the ldisc do the userspace copy", point of
-> view, but what is the next step in order to tie that into splice?
+On 1/15/21 8:38 AM, Suman Anna wrote:
+> Hi Santosh,
 > 
-> I ask as I also have reports that sysfs binary files are now failing for
-> this same reason, so I need to make the same change for them and it's
-> not excatly obvious what to do:
-> 	https://lore.kernel.org/r/1adf9aa4-ed7e-8f05-a354-57419d61ec18@codeaurora.org
-
-I would like to confirm this. We are using firmwared and it returns EINVAL on
-sendfile(), too. I have tried setting the .splice_write callback as in the
-linked thread, but it didn't help, it just EINVAL'd in a different place.
-
-I have bisected this issue down to this commit:
-4d03e3cc5982 ("fs: don't allow kernel reads and writes without iter ops")
-
-Another case I've also noticed is writing to a serial connection:
-kernel write not supported for file /ttymxc0 (pid: 252 comm: cat)
-
-(Which still prints, though, because cat falls back to write(2), I suppose.)
-
-Thank you,
-Robert
+> On 12/21/20 3:32 PM, Rob Herring wrote:
+>> On Wed, 16 Dec 2020 23:50:27 +0100, Grzegorz Jaszczyk wrote:
+>>> Now after ti,pruss-intc.yaml and ti,pru-rproc.yaml are merged, include
+>>> them in proper property and extend the examples section.
+>>>
+>>> At the occasion extend the allowed property list about dma-ranges.
+>>>
+>>> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+>>> ---
+>>>   .../devicetree/bindings/soc/ti/ti,pruss.yaml  | 76 +++++++++++++++++++
+>>>   1 file changed, 76 insertions(+)
+>>>
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>
+> 
+> Gentle reminder, I haven't seen this patch yet on linux-next.
+> Can you please pick this up for 5.12.
+> 
+Yes, will look into it this week.
