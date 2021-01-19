@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861BD2FBCDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435912FBCD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389707AbhASQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:48:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731245AbhASQqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:46:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611074723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gVhdzwbAOImxsJTDv99SXQWPupL510oLR948GPpcwJY=;
-        b=MEtI8Ru9LEEe8KkRySreWYs5mHhY1mJ+V0pxEyWLqqFusxTKvfQeHW1FIg4KfFVLjWIdVw
-        QSFQXtilVaJ+akqbZqmjwytmJ9MnD4yk3VgWgRTIJOLh+ZVupMmxHmXZLn6qvaIkuA1ioD
-        LecmbWQz0tALbVM8UMmcx3s9nFDXUew=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-1cUGtU7NMQ6K8j0n-4QDYw-1; Tue, 19 Jan 2021 11:45:22 -0500
-X-MC-Unique: 1cUGtU7NMQ6K8j0n-4QDYw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4B97107ACF5;
-        Tue, 19 Jan 2021 16:45:20 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-129.rdu2.redhat.com [10.10.118.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F0A460C74;
-        Tue, 19 Jan 2021 16:45:02 +0000 (UTC)
-Subject: Re: BUG: sleeping function called from invalid context at
- kernel/stop_machine.c:135
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <ffe8b460-4bc5-4a6b-bd66-4bb56e0f33d3@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <328c6389-9944-ba7d-6ec6-44009bac4f0b@redhat.com>
-Date:   Tue, 19 Jan 2021 11:45:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <ffe8b460-4bc5-4a6b-bd66-4bb56e0f33d3@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S2389206AbhASQr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:47:26 -0500
+Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]:42562
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731769AbhASQqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:46:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i05HlaPHrs1czJu3aCo9yF2p+6ApnU8oQ4y0aTtdc80Ha86CoURukZMOspciGq2GF6f8FyD95kuQyXzSeHcF0zaGls6liMPbJ6k0hr8PhL5ZlEs+Pg9c/G1S5m5vhvbZPYRE0NL5+0Ke8x3L1kYugYP5LdkMZbMcflLgZ/eG8/V/Hrlv8r5G/Eyq2eXR9EFyeTsc4dEtvkiguks/GRhbbrs4r3/jZVQY3AAeKn327MQqJChbQoq28Uq576Nh3+FS6IO4lFtyQSFIXRwiVOxGePYpgPqfM4T4PvQSmU3so8z80cUi7tXKCJ7TWtlq/dyGYkjNpY6ev7KHKi7mbEGSoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=10iwHlD7oZ5dA6uy/6nvfJd5fAJgrk0zCLY7/6loHw4=;
+ b=KWgB8lb4fJ6o1sSZKbmkUz6bZC8A+a2rCzTjItucEUllUgOQSjB31WLnAhoHQWVtRY2bTzVGa6sVmA3MWAVIpBryhJa94XVozPzQTNgJMB0Nno3EP0+RzX9y9Yu9E2J252x1vdXnBdxBIfie8pGGkDgv+jLbibngKnkQGpL0KWDv/ZpzFmsu09LTdUbcMBgPtTNX9nY2tPLTlIYVHXs3+FKC8EbeMmzKQbGIWRjNzCJ1VlDE6ulyF+m/OV9ct2GQyMoTWWqtjcsJ8N9ZtqoQ+qDZFEcPKjPzs06YF0mMTmry2lIORtaF1XLLa8WttqBszCvL4DN1Vk3jBpT/rFs8+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=10iwHlD7oZ5dA6uy/6nvfJd5fAJgrk0zCLY7/6loHw4=;
+ b=OMSo0v5JRjKnasbcAU0eiJLw1YyifSEMyd4yHCTquNvqd4Zl5opxOPWwl3lL4iTDquabp8k0ljnxv/Jo4QsXS6lnm5EKVJesiSfw3U0WNlR8WbyCd/wMp3PBUKtjSCaMBxDC9uXBcMCy6Fj6PFmBHoC4Os3aE4y+793Fh9llWT0=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VE1PR04MB6701.eurprd04.prod.outlook.com (2603:10a6:803:124::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Tue, 19 Jan
+ 2021 16:46:02 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::2c43:e9c9:db64:fa57]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::2c43:e9c9:db64:fa57%5]) with mapi id 15.20.3763.013; Tue, 19 Jan 2021
+ 16:46:01 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     "Bedel, Alban" <alban.bedel@aerq.com>
+CC:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] net: mscc: ocelot: Fix multicast to the CPU port
+Thread-Topic: [PATCH net v2] net: mscc: ocelot: Fix multicast to the CPU port
+Thread-Index: AQHW7mxY7uaoYquUzEO/44xBBVvQwKovKEqA
+Date:   Tue, 19 Jan 2021 16:46:01 +0000
+Message-ID: <20210119164601.dplx4js4wzhnmw6r@skbuf>
+References: <20210119140638.203374-1-alban.bedel@aerq.com>
+In-Reply-To: <20210119140638.203374-1-alban.bedel@aerq.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aerq.com; dkim=none (message not signed)
+ header.d=none;aerq.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.227.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5c7465ba-c001-49c7-c666-08d8bc99b49e
+x-ms-traffictypediagnostic: VE1PR04MB6701:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB6701F48187917B0C8414D485E0A30@VE1PR04MB6701.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0qVbfHRoeLPxIf4QS0KfPcB3jQmvEnwJhVT56Z32uTv49un1b9NlqjyvdMvLP39fH58aPrIg+x9HugY1vE1IEg1Mj408muz7C0PY6Nqx4xtGqMkkCdPnIIzBa+akpfq/tEXjvzJhVAdDArzN7k3XQh1HUgYzAw+6oRDDoR0INNWgXsQNUJgeXhuGWyBrwEpsBt9PyLf88Q7P6wC3c+kHQ9fvokuBczMtMDQNVWN/cLFkzxhNneeGTIrppD3bW2MbiXBSymjphrILodCLejYgRIp5dVOE1cDjb6x3SiKaIC+NfEK8DxtJFnCNv9aHMQYwb36vOKrkKz+gtPyYZLgEm28ah4VJm0ySERzhMO5sXfQAMejsx9uKnOzRoazbC65ubznWrLrn+LEe5/ps4GdqhQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(346002)(396003)(39850400004)(136003)(366004)(6916009)(1076003)(2906002)(6486002)(44832011)(316002)(5660300002)(478600001)(54906003)(8676002)(71200400001)(4326008)(66946007)(186003)(76116006)(66556008)(9686003)(6512007)(64756008)(66446008)(26005)(6506007)(8936002)(66476007)(33716001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0J7sl+rObeoRLq7TZpaZKra4e+dsiDQtwoFPHshtU2fZLUkqc68pdsEtuBSv?=
+ =?us-ascii?Q?g2SGDZpMfDT/HkLSH+GLx6opZo9U3/e44edznFXavEBYrGeIBlLCGcZV+t2u?=
+ =?us-ascii?Q?6o56uCwZsCyQzI6DYIH9UMoDtGrfapj+Xt9dpiZdCQSoFXpWjA0ppx1h7WVH?=
+ =?us-ascii?Q?L+Icio6C2FRVwZB+qejxG4Tbx3h5hYbc9L8qTVWgcERu8c6gthEhfww4WSbx?=
+ =?us-ascii?Q?j53EQG9BUOHaAt/ggOblDGBGy6AdLNUW84TGWJYk2MuGaP4uFzedxdcu1doP?=
+ =?us-ascii?Q?UtwfTY+w1XtKrkamnJbV0aETT7129kyWg7LD3O0MbWj4jVuqG9E3zWm3KcMZ?=
+ =?us-ascii?Q?VbOvqkzochrYXHfcOMegWzyq5/iRBjN0m3XwLFG3Vahx2RO+XJf8t7LIdMz1?=
+ =?us-ascii?Q?eBoCynvxeCPjJGtHxjdPWopf+ZzhsEsRTa54u6DLZ8rTTsa3bLR5xcpa7frM?=
+ =?us-ascii?Q?k50OKqDSMqB+ZAmmek+dLiVRJQcbLRZ1MtV+O+rWYuTVyQ9xZ+77/RwJCBDE?=
+ =?us-ascii?Q?ol3EQvAhr2WhEBdPOuTOvyZQ3N7R0uyEHeZFCM9EDeWDBB7FbTrLvswyJUIo?=
+ =?us-ascii?Q?xfR0zxWXJb1Z+TFIGrcEVPdZOtERZw7wRjRgWUn7Bsm5n6/kPWjDxjkIdghL?=
+ =?us-ascii?Q?KAEPnscGI4+yOwKc86bFxHnjPdi9XOqgwiqeZUOZ0hCdWTH2CEkOPAkCB+nY?=
+ =?us-ascii?Q?Pa8JN2mUMubC6703DzwsjdA0dX8aj2mCfI1EdjMHB4KlNZVzmdiIonSGQOTd?=
+ =?us-ascii?Q?PJSeFz4LyDwC08kmbygUdld/TaaEeqh9wzH5Y1654Ua9AHCu6hu/60rsUd8j?=
+ =?us-ascii?Q?ZhSIaI4HczUfq6v+slsrxPm01iVrFrSzk4d3cV2p0NAnkZEQwD3zyp2+NKr/?=
+ =?us-ascii?Q?E+7HaSrP/0MzX6CAUHmnkV5uXN2qpvyeu2JKCrJ8mMdelLgxzm48GE4MMU6o?=
+ =?us-ascii?Q?z5jyWr69EkLg7xSvKGhYRy7jb+L39P88mej2PhodDm/1mw25wbrOrIwPOzgR?=
+ =?us-ascii?Q?Mv7d?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <EFA47A8F6B01E145B71C8F1672496301@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c7465ba-c001-49c7-c666-08d8bc99b49e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 16:46:01.8278
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Yl4zNiBDpH7OmR5Cu2gFEmkO10hewzhHeMW+3qnCETfpejF8Aez9x10wZwPPmCr3AFU11QKggvJQYx7oUiYeRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6701
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 6:13 AM, Daniel Bristot de Oliveira wrote:
-> Hi Waiman,
->
-> Are you aware of this issue:
-> ----- %< -----
-> [   88.307857] BUG: sleeping function called from invalid context at kernel/stop_machine.c:135
-> [   88.308796] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 801, name: sh
-> [   88.309785] 6 locks held by sh/801:
-> [   88.310265]  #0: ffff9f008c575460 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0x58/0xd0
-> [   88.310906]  #1: ffff9f008e9dd088 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write+0xa5/0x1c0
-> [   88.311672]  #2: ffff9f0092164a88 (kn->active#195){.+.+}-{0:0}, at: kernfs_fop_write+0xad/0x1c0
-> [   88.312456]  #3: ffffffffbac68310 (cpu_hotplug_lock){++++}-{0:0}, at: sched_partition_write+0x72/0x2f0
-> [   88.313280]  #4: ffffffffbae37090 (&cpuset_rwsem){++++}-{0:0}, at: sched_partition_write+0x7e/0x2f0
-> [   88.314095]  #5: ffffffffbad89140 (rcu_read_lock){....}-{1:3}, at: update_sibling_cpumasks+0x5/0x140
-> [   88.314806] Preemption disabled at:
-> [   88.314810] [<ffffffffb900454d>] preempt_schedule_thunk+0x16/0x18
-> [   88.315815] CPU: 1 PID: 801 Comm: sh Not tainted 5.10.0-rc5+ #10
-> [   88.316203] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-> [   88.316714] Call Trace:
-> [   88.316875]  dump_stack+0x8b/0xb0
-> [   88.317087]  ___might_sleep.cold+0x102/0x116
-> [   88.317354]  stop_one_cpu+0x82/0xa0
-> [   88.317578]  ? set_cpus_allowed_ptr+0x10/0x10
-> [   88.317858]  __set_cpus_allowed_ptr+0x1e6/0x1f0
-> [   88.318144]  update_tasks_cpumask+0x25/0x50
-> [   88.318415]  update_cpumasks_hier+0x257/0x840
-> [   88.318687]  update_sibling_cpumasks+0x96/0x140
-> [   88.318968]  update_prstate+0x1a0/0x1f0
-> [   88.319210]  sched_partition_write+0x9f/0x2f0
-> [   88.319482]  kernfs_fop_write+0xdc/0x1c0
-> [   88.319730]  vfs_write+0xea/0x3b0
-> [   88.319943]  ksys_write+0x58/0xd0
-> [   88.320156]  do_syscall_64+0x33/0x40
-> [   88.320382]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   88.320692] RIP: 0033:0x7fbbd79be537
-> [   88.320915] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04
-> 		     25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3
-> 		     48 83 ec 28 48 89 54 24 18 48 89 74 24
-> [   88.322028] RSP: 002b:00007ffd44cc8398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [   88.322479] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fbbd79be537
-> [   88.322910] RDX: 0000000000000005 RSI: 0000558ae69200a0 RDI: 0000000000000001
-> [   88.323342] RBP: 0000558ae69200a0 R08: 000000000000000a R09: 0000000000000004
-> [   88.323775] R10: 0000558ae6921ba0 R11: 0000000000000246 R12: 0000000000000005
-> [   88.325046] R13: 00007fbbd7a90500 R14: 0000000000000005 R15: 00007fbbd7a90700
-> ----- >% -----
+On Tue, Jan 19, 2021 at 03:06:38PM +0100, Alban Bedel wrote:
+> Multicast entries in the MAC table use the high bits of the MAC
+> address to encode the ports that should get the packets. But this port
+> mask does not work for the CPU port, to receive these packets on the
+> CPU port the MAC_CPU_COPY flag must be set.
+>=20
+> Because of this IPv6 was effectively not working because neighbor
+> solicitations were never received. This was not apparent before commit
+> 9403c158 (net: mscc: ocelot: support IPv4, IPv6 and plain Ethernet mdb
+> entries) as the IPv6 entries were broken so all incoming IPv6
+> multicast was then treated as unknown and flooded on all ports.
+>=20
+> To fix this problem rework the ocelot_mact_learn() to set the
+> MAC_CPU_COPY flag when a multicast entry that target the CPU port is
+> added. For this we have to read back the ports endcoded in the pseudo
+> MAC address by the caller. It is not a very nice design but that avoid
+> changing the callers and should make backporting easier.
+>=20
+> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
+> Fixes: 9403c158b872 ("net: mscc: ocelot: support IPv4, IPv6 and plain Eth=
+ernet mdb entries")
+>=20
+> ---
 
-I am not aware of that.
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-void ___might_sleep(const char *file, int line, int preempt_offset)
-   :
-         if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
-              !is_idle_task(current) && !current->non_block_count) ||
-             system_state == SYSTEM_BOOTING || system_state > 
-SYSTEM_RUNNING ||
-             oops_in_progress)
-                 return;
-
-I think the failing test was preempt_count_equals(preempt_offset).
-
-static inline int preempt_count_equals(int preempt_offset)
-{
-         int nested = preempt_count() + rcu_preempt_depth();
-
-         return (nested == preempt_offset);
-}
-
-preempt_count() is 0 (in_atomic() == 0) and preempt_offset is 0, but 
-rcu_preempt_depth() should be at least 1 as a rcu_read_lock was held. I 
-don't think we should prevent sleeping if a rcu_read_lock is held. We 
-need to look at the reason why rcu_preempt_depth() is included in this test.
-
-Cheers,
-Longman
-
+Thanks!=
