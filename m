@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581CA2FBEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74152FBED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392430AbhASSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S2389366AbhASSVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:21:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392403AbhASST4 (ORCPT
+        with ESMTP id S2392581AbhASSUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:19:56 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5AAC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:15 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id y128so16856297ybf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:15 -0800 (PST)
+        Tue, 19 Jan 2021 13:20:35 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C48CC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:49 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id n76so26223277ybg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mHK63mNEb6W4AaDercWEjXkLeIiYVU3MkZRoAzxz/mw=;
-        b=TIKhKTRiWi86JaBOFJSF4irAc52V20kHLuNqvziTTpBjGp3nKdshbwFVlPqC5MQiSd
-         iuJl1Kioq0DuEj4Ij/cpA3HZALUgN1HS/TA5uG2KrYah/3L9lpuktzLLoiA365+IWEHf
-         d8iCmmDNoFSWNDuq/1zYACTbZNPeSSiMa/H28opAMGaxfB1dutjMLQ/Z32aF+wP+rWBC
-         zBTi/wLEuNcg/kVVduAO045TnKU1GD6+fDtWxuNWScZBSc+d2jwNrQV4B+00nOS0cBhU
-         02Oki33NxIM339vFFJbj/pkY4t6smCaD+O37PWEw5vD8+tAi1Edp9oQOctWwi3Xr6Ylf
-         Hxmw==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Ji13liyFDC2lDH5ciCyuoxMctj4vQjl6Y6p/lptZcMQ=;
+        b=KahbDg6Qmg7cuIzxVxouSdEQoqwS8E49utrQBHjwJDxSY8Iu9EjXH0WOhgA+XsUrDb
+         Q7622J51yBTUUqrn9mhnU+iA/59S00GXUNotCI4ejenbqihvLLuQSx5SwvbWykTLAe6O
+         AD8c7jm41fKNEjJnJ1jPujUCA41yV+OZSQYj/uXdhzdlz73gs3bH8lh1kKAcD4YhHr/t
+         ZLcTk3rNp3kNPgqrTo9qbyXgfLhXpd681hviEKtBzGt3HWUKwke0RjrVpyYI/pMZcMpr
+         Y364NdVt87H8GtQ7qfZxowR0DZ3J3MvWQYBtV1m7ybGJzW86/XzzEalDe6THYlbQ6HUn
+         sQnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mHK63mNEb6W4AaDercWEjXkLeIiYVU3MkZRoAzxz/mw=;
-        b=ZOfrJ3L4bBkv/fMUCBHmmqfU9NEBAbgenDApHN2zXhg+AxAt2rf/t+lw3bXiUYw4tr
-         VQiDOYQqB1XuOKexp9y+9SD8JLt1YwHJiBt7kVk4eJnFh/q6WPoJRpkn6zprB6MsflhM
-         3kii3ykPagtV2QXGvXj7az6hYDUW+7bncp/rl11p5RtVzVtxWkkVh1VeOjuS/UIi0Hue
-         A0c8s8Juh0wsJOP2fUKYX8sgRAcXf6mZT+0pedOlJo1R9Z4dpx+lsQ1ByOgVpw+Z69x0
-         l7iZBhEiDuWvuoVvkn6wedLq5DVm69v9lLlyVvYd0FfZGC1dZgMjLzkscUbc89BvRM1x
-         rAgw==
-X-Gm-Message-State: AOAM530unwA7VV4SfRUEsfA4PHZQTqqpkAmjgfNP74gqF9rXKL1bEq3r
-        il1gXoqLL9K469EsAF6sd56CWOY2SEbt0CLVZoQzvg==
-X-Google-Smtp-Source: ABdhPJyLm5a7tvFOQ9GLnScwek6wKmCIHJ18QWGEYTshZYKHDn18Z57uCs9I6lcgQx2VH3iG7/oNB3pahuCum8iP7M8=
-X-Received: by 2002:a25:77d4:: with SMTP id s203mr8612886ybc.32.1611080355041;
- Tue, 19 Jan 2021 10:19:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115210159.3090203-1-saravanak@google.com>
- <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
- <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
- <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
- <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com>
- <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com> <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 19 Jan 2021 10:18:38 -0800
-Message-ID: <CAGETcx_Ud+UJcdWkCH-WzEGjH4voRBoO++np7ARSi5Gnh51jYg@mail.gmail.com>
-Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
- "gpios" binding
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Ji13liyFDC2lDH5ciCyuoxMctj4vQjl6Y6p/lptZcMQ=;
+        b=tRi9KBx71WhgRrUpStgp+weYf0uX00A5AbQH3Hm0BLsyFm0LzrRnE0V15xFmswlPXt
+         6bOasJBGcqEmqSciSqJuCQT1Z9ks6jRHdtrhsU+j4+tNOfoA/3WRQY+3IkPJzCmJdenl
+         Mu41OERgZGzhD9gpFCZg3iHcI6mTpAQLDKwRtAvNURSiH+KhS7z4p8ONtp3GMdT8rVYJ
+         iqDJpaPmjjNhtTCUU6Jf2+anFoAdiOvSsPC/BZxmmSZSBkJNiI1Sow7/L+EZUcLx1lPQ
+         WAWLWagCaHC2jPe+bkTVdf4MMstKyxHzLFvaeOXOPgqqioJOoca+mpCNm+Sin5QnB+t/
+         pgjg==
+X-Gm-Message-State: AOAM530wvH4K5v0xBAb9RQIHkSQnZGYhng5Lx2z8tlQUOpAq7u+W8tL/
+        d5Tt5AgZaZtdChQgVVxdDDBuUF1fvO0M67XW5fU=
+X-Google-Smtp-Source: ABdhPJy+hou+UDcK8kw2WBpbLq4zWJgQR+O5obdxbkZUyouV3vd8l2vNYOf7hyaHUOvqiQywwVa78r8h/D6Tx3gwyzA=
+Sender: "paullawrence via sendgmr" <paullawrence@paullawrence.c.googlers.com>
+X-Received: from paullawrence.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:2534])
+ (user=paullawrence job=sendgmr) by 2002:a25:9706:: with SMTP id
+ d6mr7695305ybo.211.1611080388823; Tue, 19 Jan 2021 10:19:48 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:19:45 +0000
+Message-Id: <20210119181945.2071053-1-paullawrence@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] um: ubd: Fix crash from option parsing
+From:   Paul Lawrence <paullawrence@google.com>
+To:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        Paul Lawrence <paullawrence@google.com>
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:10 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > Can we pull this into driver-core-next please? It fixes issues on some
-> > > > > boards with fw_devlink=on.
-> > > >
-> > > > On r8a77951-salvator-xs.dts, it introduces one more failure:
-> > > >
-> > > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
-> > > > #gpio-cells for /cpus/cpu@102
-> >
-> > Geert,
-> >
-> > One good thing is that it's noticing this being weird and ignoring it
-> > in your particular board. I *think* it interprets the "7" as a phandle
-> > and that's cpu@102 and realizes it's not a gpio-controller. For at
-> > least in your case, it's a safe failure.
->
-> While 7 is the GPIO index, relative to the current GPIO controller,
-> represented by the parent device node.
->
-> > > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
-> > >
-> > > Could it be that the code assumes no self-referencing phandles?
-> > > (Just guessing...)
-> >
-> > Ok I tried to understand what gpio-hogs means. It's not fully clear to
-> > me. But it looks like if a gpio-controller has a gpio-hog, then it
-> > doesn't have/need gpio-cells? Is that right?
->
-> A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
-> Usually this is done to enable a piece of hardware on a board, or
-> control a mux.
->
-> The controller still needs gpio-cells.
->
-> > So if a gpio-controller has a gpio-hog, can it ever be referred to by
-> > another consumer in DT using blah-gpios = ...? If so, I don't see any
-> > obvious code that's handling the missing gpio-cells in this case.
->
-> Yes it can.
->
-> > Long story short, please help me understand gpio-hog in the context of
-> > finding dependencies in DT.
->
-> The hog references a GPIO on the current controller.  As this is always
-> the parent device node, the hog's gpios properties lack the phandle.
->
-> E.g. a normal reference to the first GPIO of gpio5 looks like:
->
->     gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
->
-> A hog on the first GPIO of gpio5 would be a subnode of gpio5,
-> and would just use:
->
->     gpios = <0 GPIO_ACTIVE_LOW>;
->
-> instead.
->
-> Hope this helps.
+Below patch will cause NULL ptr dereferences if the optional filenames
+are not present.
 
-I'm still not sure if I've understood this fully, but does this just
-boil down to:
-Don't parse [name-]gpio[s] to find dependencies if the node has
-gpio-hog property?
+Fixes: ef3ba87cb7c9 (um: ubd: Set device serial attribute from cmdline)
+Signed-off-by: Paul Lawrence <paullawrence@google.com>
+---
+ arch/um/drivers/ubd_kern.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
--Saravana
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 13b1fe694b90..704989088f28 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -371,15 +371,15 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+ 
+ break_loop:
+ 	file = strsep(&str, ",:");
+-	if (*file == '\0')
++	if (file && *file == '\0')
+ 		file = NULL;
+ 
+ 	backing_file = strsep(&str, ",:");
+-	if (*backing_file == '\0')
++	if (backing_file && *backing_file == '\0')
+ 		backing_file = NULL;
+ 
+ 	serial = strsep(&str, ",:");
+-	if (*serial == '\0')
++	if (serial && *serial == '\0')
+ 		serial = NULL;
+ 
+ 	if (backing_file && ubd_dev->no_cow) {
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
