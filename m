@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B35B2FC340
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30E12FC33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbhASWWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729265AbhASWQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 17:16:35 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040E0C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:15:55 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id x12so11337449plr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:15:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cXrBiBJi6Dfh9EHdaa74XDl1OgKypKBU2BA3Zhb7Oio=;
-        b=BPS/wTOnGz75i92A1dMKvgYAjl1WfvabQeCxCBiesEFZOBKuNb0RKlOXxWZWuN3lAL
-         qMFrwq5d2cy2nA4zhODGMB5PG/sx+BujLtSq7cBLsDxHhsC607cX08dG1y9eIYhKt6jQ
-         TYXb2tCvw3Sr20XDsLw/Gv9FKl9mvUV6nwZNy1Q1QVvwKPPTLA4bt954yXZT806s+1Od
-         C4UFWkkThXWrs6vfKUyYZLhorrwz+wl7TncueuJwP7DII+uje/qs/YsHrwzJRYaYiRoU
-         J7ByC0DMPsHi9a+N3kR4C0CvRpgmdfIw+V4TIDsAuohANSBFkE5YxfYoKglG6QqAAMrO
-         TJxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cXrBiBJi6Dfh9EHdaa74XDl1OgKypKBU2BA3Zhb7Oio=;
-        b=SP34vRjn4XUkILkJ/HEVH0MZp59TjkKE27ymCjQTjPGREKZl2HDcgI5PuGEvhhCcWc
-         JImdZKrPXAFG2jg1I49zYmp3D2puQ6mJ7PnYPYQrDTF6EyyxDbwGFVl1j1oXyynUsKhh
-         psf3lwZTOhFcRTulzPW8q2P54oXJqlNYfDb5fToKBS6Z3M+tyz0byoh3+t27CQxEHuqi
-         ON3s5c3KB5Joj/dn6vndKbniJ61SZez5MXXQh82oscCUgzwY1Ox7HKPLXImLttxJzJNA
-         gJ/yCAVZd1H1rqy2wG5ALi79teL1+qRGZFUqFLw3Dp4pjkIIC0UninsZ0h5fXkBrfhb4
-         OmzA==
-X-Gm-Message-State: AOAM533nB9V3v6tV3v2JTnBnqs5bg2gA5qG54di/2bsORPw2vE0Cudkt
-        fCCeSeytuQig0CmbjnRdm3+QD108y7og2npn/fF0ng==
-X-Google-Smtp-Source: ABdhPJweSr6AxMoV7UjQkfyCrmWN0xQnVlRGevtg7JbSUDmvq6E/SyeXrjiplkXY/nXeZGAHm5sA7IgS3H6RfKbO2BE=
-X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr2086115pjj.32.1611094554325;
- Tue, 19 Jan 2021 14:15:54 -0800 (PST)
+        id S1727186AbhASWVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:21:48 -0500
+Received: from www.zeus03.de ([194.117.254.33]:35790 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729661AbhASWR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 17:17:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=Tvs8pg44S10SnvU7Vfn6Lyi1Ih2C
+        n2uq3D4AyozPauE=; b=qg6kMS/whKZ3RVB00xvRN2S/4I6YmcquDb9RvNWZgQS0
+        QFcuHjbonM1SfmjlL9lnN5kLNUNJydeAfH5wM32f0CDy0+hgLiYyV1YrIHUa6LTq
+        kDImjJgj2zKLcpEg7/gj7w+Hh6Q2Oa3AS8+0+c1xQCc/Z9HWr6EgueriPobyfMs=
+Received: (qmail 1218336 invoked from network); 19 Jan 2021 23:16:34 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Jan 2021 23:16:34 +0100
+X-UD-Smtp-Session: l3s3148p1@DARzMEi5FKQgAwDPXw7XAOd/1ZKxv5fl
+Date:   Tue, 19 Jan 2021 23:16:24 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] dt-bindings: serial: renesas,hscif: Add r8a779a0
+ support
+Message-ID: <20210119221624.GA3651@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
+ <20201228112715.14947-4-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-References: <20210118135426.17372-1-will@kernel.org>
-In-Reply-To: <20210118135426.17372-1-will@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Jan 2021 14:15:43 -0800
-Message-ID: <CAKwvOdmShphZV96PjaHbUW17mKhhRi_X0AZotryKmiGVKyiQyw@mail.gmail.com>
-Subject: Re: [STABLE BACKPORT 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise
- minimum version of GCC to 5.1 for arm64
-To:     Will Deacon <will@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     "# 3.4.x" <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Caroline Tice <cmtice@google.com>,
-        Luis Lozano <llozano@google.com>,
-        Stephen Hines <srhines@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+In-Reply-To: <20201228112715.14947-4-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 5:54 AM Will Deacon <will@kernel.org> wrote:
->
-> commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
->
-> GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-> beyond the stack pointer, resulting in memory corruption if an interrupt
-> is taken after the stack pointer has been adjusted but before the
-> reference has been executed. This leads to subtle, infrequent data
-> corruption such as the EXT4 problems reported by Russell King at the
-> link below.
->
-> Life is too short for buggy compilers, so raise the minimum GCC version
-> required by arm64 to 5.1.
->
-> Reported-by: Russell King <linux@armlinux.org.uk>
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: Florian Weimer <fweimer@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-> Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> [will: backport to 4.4.y/4.9.y/4.14.y]
 
-Merging this from stable into "Android Common Kernel" trees that were
-built with AOSP GCC 4.9, I expect this to break some builds.  Arnd,
-IIRC did you mention that AOSP GCC had picked up a fix?  If so, did
-you verify that via disassembly, or gerrit patch file?
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(AOSP GCC 4.9: https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/
-master branch, roll back a few commits).
-It looks like AOSP GCC `#defines __android__ 1`.
-
-I'm not arguing against a backport, just trying to think through how
-we'll need to sort this out downstream.  (Revert or patch on top that
-checks for __android__, if AOSP GCC does in fact have a fix.)
-
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Mon, Dec 28, 2020 at 12:27:10PM +0100, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
->  include/linux/compiler-gcc.h | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index af8b4a879934..3cc8adede67b 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -145,6 +145,12 @@
->
->  #if GCC_VERSION < 30200
->  # error Sorry, your compiler is too old - please upgrade it.
-> +#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
-> +/*
-> + * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> + * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-> + */
-> +# error Sorry, your version of GCC is too old - please use 5.1 or newer.
->  #endif
->
->  #if GCC_VERSION < 30300
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
 
+Can we apply this via the serial tree? Or shall we take it via
+renesas-soc? Thanks!
 
--- 
-Thanks,
-~Nick Desaulniers
+>  Documentation/devicetree/bindings/serial/renesas,hscif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/serial/renesas,hscif.yaml =
+b/Documentation/devicetree/bindings/serial/renesas,hscif.yaml
+> index c139c5edb93e..512a84942f78 100644
+> --- a/Documentation/devicetree/bindings/serial/renesas,hscif.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,hscif.yaml
+> @@ -51,6 +51,7 @@ properties:
+>                - renesas,hscif-r8a77980     # R-Car V3H
+>                - renesas,hscif-r8a77990     # R-Car E3
+>                - renesas,hscif-r8a77995     # R-Car D3
+> +              - renesas,hscif-r8a779a0     # R-Car V3U
+>            - const: renesas,rcar-gen3-hscif # R-Car Gen3 and RZ/G2
+>            - const: renesas,hscif           # generic HSCIF compatible UA=
+RT
+> =20
+> --=20
+> 2.29.2
+>=20
+
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAHWjQACgkQFA3kzBSg
+KbbushAAh8VZmaIq8BcIedVSLt9mwtYU9iJ6PFD4s+QwcHaLo3/+HeRPj2y60X4h
+2TgvgKZrJ1jj6FEe/lrmxJ4b+Ja2Gd/2lNr0ZEOj2TNTIBTN9t84TdgFQIrkRDD9
+smBgo4IZtdrFLcAjTDEwO5yWcMdHJ+2IVl5ZYRlLXltAkaHlHdWvdJkgHQl3QZi2
+SOR/pQ8FT4dUqTinOa53ZbiljA/8DEV8FbxxMPoDaUeda+d8CnVT2txK4LkeDx6c
+kQf/MC9IRfihh5F57OcSuIAWTt0gMRhW8H9aqkFZ4wMQhDfETOxiZyySbnmcALS0
+IE9PLsOTKvUJvq3QT11IAmUe7F5fidbsOUDFGQEU/uQXYflQ6njy/A+n3hsBURsl
+A8AKyySCX1llZSJPZ+MkXa8eVqy7J9j98Ktu9J8BPvC929QjgFaUl6yvD0fzAK0p
+sLz5/kTfRwT/36AFs5acX+IE247kTk/+prliAaBqN+HVrWO9tNRHwrX0vEAC3TQI
+bnQPPaX6ytkZqaibXTXkx6JBNUFMDunhQvSiHVZjjEPYq5tiPxNdO5l7jvTfq3bA
+favvJFCPQr+IjToQhi+IK1dvFG7A1CXa0z4lCMGw+uzxTdb+cTK+Pfsu0zDZSqmy
+VKiwozDpVpe2WCFbW1brt/H6ychnhOenuzt3ILlqivHEuB9vwSk=
+=WX0p
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
