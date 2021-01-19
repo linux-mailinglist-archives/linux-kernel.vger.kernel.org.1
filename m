@@ -2,134 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ABC2FB3A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D412FB3B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731155AbhASH7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:59:04 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42008 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731406AbhASH5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:57:19 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax5byikAZgzlAHAA--.8948S2;
-        Tue, 19 Jan 2021 15:56:19 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile for manually compiling LLVM and clang
-Date:   Tue, 19 Jan 2021 15:56:18 +0800
-Message-Id: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Ax5byikAZgzlAHAA--.8948S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1Dtr4UAw45Ar1UGr4UJwb_yoW5ZFW8pr
-        47Ka4SqrZ2qry3ZFyxGr48WF4fZrZ8Xa4UCa4xJryrZ3Wqvrn7Gr43t34fWFW5Wr92vrW3
-        Cr1fKFWDGF1kXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfUeeOJUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1731526AbhASICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:02:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54889 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731250AbhASH7J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:59:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611043061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8qNmdLSS5lsljSlr43wHmEkle6qxUVtow9wAgfeuvxc=;
+        b=DxzpMxkQ18DYqjMmWfS3x20taPC6xAXaT8Vsa40akUsFlzkH6ipYVMo6Zpza2ok1tGHqz1
+        bUbkcgPUuZG9Nel71YnSaHWnzMcQ0Wb+MNwzyn+fV7iDhVp1CyljtVYR25dz9VdDpTZDtV
+        kMP6TIY0Tei4MON/i8UAG4pcdJxTMLM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-yAa2RPojNceNOGfYig2k1w-1; Tue, 19 Jan 2021 02:57:39 -0500
+X-MC-Unique: yAa2RPojNceNOGfYig2k1w-1
+Received: by mail-wr1-f69.google.com with SMTP id j5so9514964wro.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:57:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8qNmdLSS5lsljSlr43wHmEkle6qxUVtow9wAgfeuvxc=;
+        b=irdK9u/o3zD9+D9OKxi8onx9T1FP/nRFrAGDyBRDgqj/se6dOb3DXfKF7XNKigtiVd
+         FZ+Kvlk0u2hRRs/X/16t//+gT+UsoAbL23EEub5Ls3DZ8+SOyYn9/22CouULwXU/ssf3
+         Of2zd9D7ATcaHUw03xWeJUTfb4eXPa12CjCCz98pbNulg41I4X0ig4w8tkOUftJzAnXM
+         QMMvySXZiZXyLyJM/lYFg06FIexp1bEwYnmrrt0qT/38f9PNYrg+dIcsjklpELAyxvdw
+         tRQqlJSEh+SSbLXuVjzr5+O/qFdLazwifw6LFyR9/QePbTuaLiM6rRSrCd7/rwOmYV7X
+         mD2A==
+X-Gm-Message-State: AOAM530pjTDiUptJiOfg/5JYEBQ7JKkmLQtUhSOqRbDcQGczcE2Jh9jB
+        up0/I9czrl2WkgdP+U60ggrM4hs7xpQ8mRSpVD9SMDiX7pMtil0w+Sfnmhj3JuziZTwS8UThsMM
+        wDB2Ibi8YooxK+WfoBlWZRribscBnhyz1jqlNpGRihI585sQlG+D7IjZeNt8RiPToDJ7PBli55p
+        6b
+X-Received: by 2002:adf:e541:: with SMTP id z1mr3021328wrm.143.1611043057866;
+        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyCWTj4etfSQSfrsVGnDa05ynRnIWz5xJxfD+AlFdsC6qTk9zKdjl5YWJPa++3p4njMhamhdA==
+X-Received: by 2002:adf:e541:: with SMTP id z1mr3021308wrm.143.1611043057690;
+        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id n6sm3154700wmi.23.2021.01.18.23.57.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 23:57:37 -0800 (PST)
+Subject: Re: Live patching on ARM64
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>, jpoimboe@redhat.com,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <f3fe6a60-9ac2-591d-1b83-9113c50dc492@linux.microsoft.com>
+ <20210115123347.GB39776@C02TD0UTHF1T.local>
+ <a5f22237-a18d-3905-0521-f0d0f9c253ea@linux.microsoft.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <1cd6ab9a-74bc-258e-abf8-fcabba5e3484@redhat.com>
+Date:   Tue, 19 Jan 2021 08:57:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <a5f22237-a18d-3905-0521-f0d0f9c253ea@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current llvm/clang build procedure in samples/bpf/README.rst is
-out of date. See below that the links are not accessible any more.
+Hi Madhavan,
 
-$ git clone http://llvm.org/git/llvm.git
-Cloning into 'llvm'...
-fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-$ git clone --depth 1 http://llvm.org/git/clang.git
-Cloning into 'clang'...
-fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+On 1/17/21 6:25 PM, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 1/15/21 6:33 AM, Mark Rutland wrote:
+> 
+>>> It looks like the most recent work in this area has been from the
+>>> following folks:
+>>>
+>>> Mark Brown and Mark Rutland:
+>>> 	Kernel changes to providing reliable stack traces.
+>>>
+>>> Julien Thierry:
+>>> 	Providing ARM64 support in objtool.
+>>>
+>>> Torsten Duwe:
+>>> 	Ftrace with regs.
+>>
+>> IIRC that's about right. I'm also trying to make arm64 patch-safe (more
+>> on that below), and there's a long tail of work there for anyone
+>> interested.
+>>
+> 
+> OK.
+> 
+>>> I apologize if I have missed anyone else who is working on Live Patching
+>>> for ARM64. Do let me know.
+>>>
+>>> Is there any work I can help with? Any areas that need investigation, any code
+>>> that needs to be written, any work that needs to be reviewed, any testing that
+>>> needs to done? You folks are probably super busy and would not mind an extra
+>>> hand.
+>>
+>> One general thing that I believe we'll need to do is to rework code to
+>> be patch-safe (which implies being noinstr-safe too). For example, we'll
+>> need to rework the instruction patching code such that this cannot end
+>> up patching itself (or anything that has instrumented it) in an unsafe
+>> way.
+>>
+> 
+> OK.
+> 
+>> Once we have objtool it should be possible to identify those cases
+>> automatically. Currently I'm aware that we'll need to do something in at
+>> least the following places:
+>>
+>> * The entry code -- I'm currently chipping away at this.
+>>
+> 
+> OK.
+> 
+>> * The insn framework (which is used by some patching code), since the
+>>    bulk of it lives in arch/arm64/kernel/insn.c and isn't marked noinstr.
+>>    
+>>    We can probably shift the bulk of the aarch64_insn_gen_*() and
+>>    aarch64_get_*() helpers into a header as __always_inline functions,
+>>    which would allow them to be used in noinstr code. As those are
+>>    typically invoked with a number of constant arguments that the
+>>    compiler can fold, this /might/ work out as an optimization if the
+>>    compiler can elide the error paths.
+>>
+>> * The alternatives code, since we call instrumentable and patchable
+>>    functions between updating instructions and performing all the
+>>    necessary maintenance. There are a number of cases within
+>>    __apply_alternatives(), e.g.
+>>
+>>    - test_bit()
+>>    - cpus_have_cap()
+>>    - pr_info_once()
+>>    - lm_alias()
+>>    - alt_cb, if the callback is not marked as noinstr, or if it calls
+>>      instrumentable code (e.g. from the insn framework).
+>>    - clean_dcache_range_nopatch(), as read_sanitised_ftr_reg() and
+>>      related code can be instrumented.
+>>
+>>    This might need some underlying rework elsewhere (e.g. in the
+>>    cpufeature code, or atomics framework).
+>>
+> 
+> OK.
+> 
+>> So on the kernel side, maybe a first step would be to try to headerize
+>> the insn generation code as __always_inline, and see whether that looks
+>> ok? With that out of the way it'd be a bit easier to rework patching
+>> code depending on the insn framework.
+>>
+> 
+> OK.
+> 
+> I have an understanding of some of the above already. I will come up to
+> speed on the others. I will email you any questions I might have.
+> 
+>> I'm not sure about the objtool side, so I'll leave that to Julien and co
+>> to answer.
+>>
 
-The llvm community has adopted new ways to build the compiler. There are
-different ways to build llvm/clang, the Clang Getting Started page [1] has
-one way. As Yonghong said, it is better to just copy the build procedure
-in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+Sorry for the late reply. The last RFC for arm64 support in objtool is a 
+bit old because it was preferable to split things into smaller series.
 
-I verified the procedure and it is proved to be feasible, so we should
-update README.rst to reflect the reality. At the same time, update the
-related comment in Makefile.
+I touched it much lately, so I'm picking it back up and will try to get 
+a git branch into shape on a recent mainline (a few things need fixing 
+since the last time I rebased it).
 
-[1] https://clang.llvm.org/get_started.html
+I'll update you once I have something at least usable/presentable.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Yonghong Song <yhs@fb.com>
----
+Cheers,
 
-v2: Update the commit message suggested by Yonghong,
-    thank you very much.
-
- samples/bpf/Makefile   |  2 +-
- samples/bpf/README.rst | 17 ++++++++++-------
- 2 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 26fc96c..d061446 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
- TPROGLDLIBS_xsk_fwd		+= -pthread
- 
- # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
--#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-+# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
- LLC ?= llc
- CLANG ?= clang
- OPT ?= opt
-diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-index dd34b2d..d1be438 100644
---- a/samples/bpf/README.rst
-+++ b/samples/bpf/README.rst
-@@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
- Quick sniplet for manually compiling LLVM and clang
- (build dependencies are cmake and gcc-c++)::
- 
-- $ git clone http://llvm.org/git/llvm.git
-- $ cd llvm/tools
-- $ git clone --depth 1 http://llvm.org/git/clang.git
-- $ cd ..; mkdir build; cd build
-- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
-- $ make -j $(getconf _NPROCESSORS_ONLN)
-+ $ git clone https://github.com/llvm/llvm-project.git
-+ $ mkdir -p llvm-project/llvm/build/install
-+ $ cd llvm-project/llvm/build
-+ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-+            -DLLVM_ENABLE_PROJECTS="clang"    \
-+            -DBUILD_SHARED_LIBS=OFF           \
-+            -DCMAKE_BUILD_TYPE=Release        \
-+            -DLLVM_BUILD_RUNTIME=OFF
-+ $ ninja
- 
- It is also possible to point make to the newly compiled 'llc' or
- 'clang' command via redefining LLC or CLANG on the make command line::
- 
-- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-+ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
- 
- Cross compiling samples
- -----------------------
 -- 
-2.1.0
+Julien Thierry
 
