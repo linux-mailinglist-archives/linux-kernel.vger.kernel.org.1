@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798DB2FADFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C7D2FADF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391270AbhASAPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 19:15:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39761 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725983AbhASAOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 19:14:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611015205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k8uZwZ9l9/9GHM34N72Urrm3zDwDS5163gHM9WUjrbg=;
-        b=Rsrzfo9EAxgJKl8r6yCT60Z0ycl/YvqG7PSzNQ90Fa6ZBaG1Te6/hx56WW81qskvJ6hHu3
-        TBtF0nIAwOSz6Gtx3mU8g3bnt9Frqe7ycLb8H2zJdxEQAR+3ORnghBMwfe7CLnD75KweVw
-        asIIU4hLIbx4bBrcKehfYudRXY/qWu4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-Fj6D9-fAOwi5YHvuGOer8Q-1; Mon, 18 Jan 2021 19:13:23 -0500
-X-MC-Unique: Fj6D9-fAOwi5YHvuGOer8Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AB6F18C89C4;
-        Tue, 19 Jan 2021 00:13:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A5A960C9C;
-        Tue, 19 Jan 2021 00:13:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Tobias Markus <tobias@markus-regensburg.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] X.509: Fix crash caused by NULL pointer
+        id S1732632AbhASAOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 19:14:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49580 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726624AbhASAOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 19:14:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B766CAB9F;
+        Tue, 19 Jan 2021 00:13:28 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     gregkh@linuxfoundation.org
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] usb: gadget: u_serial: Remove old tasklet comments
+Date:   Mon, 18 Jan 2021 16:13:21 -0800
+Message-Id: <20210119001321.127750-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 19 Jan 2021 00:13:19 +0000
-Message-ID: <164034.1611015199@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Update old comments as of 8b4c62aef6f (usb: gadget: u_serial: process RX
+in workqueue instead of tasklet).
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-
-On the following call path, `sig->pkey_algo` is not assigned
-in asymmetric_key_verify_signature(), which causes runtime
-crash in public_key_verify_signature().
-
-  keyctl_pkey_verify
-    asymmetric_key_verify_signature
-      verify_signature
-        public_key_verify_signature
-
-This patch simply check this situation and fixes the crash
-caused by NULL pointer.
-
-Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verific=
-ation")
-Reported-by: Tobias Markus <tobias@markus-regensburg.de>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-and-tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Tested-by: Jo=C3=A3o Fonseca <jpedrofonseca@ua.pt>
-Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 ---
+ drivers/usb/gadget/function/u_serial.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- crypto/asymmetric_keys/public_key.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/p=
-ublic_key.c
-index 8892908ad58c..788a4ba1e2e7 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key=
- *pkey,
- 	if (ret)
- 		goto error_free_key;
-=20
--	if (strcmp(sig->pkey_algo, "sm2") =3D=3D 0 && sig->data_size) {
-+	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") =3D=3D 0 &&
-+	    sig->data_size) {
- 		ret =3D cert_sig_digest_update(sig, tfm);
- 		if (ret)
- 			goto error_free_key;
+diff --git a/drivers/usb/gadget/function/u_serial.c b/drivers/usb/gadget/function/u_serial.c
+index 2caccbb6e014..6d59f44ef2cd 100644
+--- a/drivers/usb/gadget/function/u_serial.c
++++ b/drivers/usb/gadget/function/u_serial.c
+@@ -346,7 +346,7 @@ __acquires(&port->port_lock)
+ }
+ 
+ /*
+- * RX tasklet takes data out of the RX queue and hands it up to the TTY
++ * RX work takes data out of the RX queue and hands it up to the TTY
+  * layer until it refuses to take any more data (or is throttled back).
+  * Then it issues reads for any further data.
+  *
+@@ -709,7 +709,7 @@ static void gs_close(struct tty_struct *tty, struct file *file)
+ 
+ 	/* Iff we're disconnected, there can be no I/O in flight so it's
+ 	 * ok to free the circular buffer; else just scrub it.  And don't
+-	 * let the push tasklet fire again until we're re-opened.
++	 * let the push async work fire again until we're re-opened.
+ 	 */
+ 	if (gser == NULL)
+ 		kfifo_free(&port->port_write_buf);
+-- 
+2.26.2
 
