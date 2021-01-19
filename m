@@ -2,82 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9BD2FBD3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E2B2FBD80
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbhASRML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S2389552AbhASRRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730595AbhASRKp (ORCPT
+        with ESMTP id S2389743AbhASRLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:10:45 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3DCC061573;
-        Tue, 19 Jan 2021 09:09:49 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0bca005ed5ab9a356b3c50.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:5ed5:ab9a:356b:3c50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A21C81EC0628;
-        Tue, 19 Jan 2021 18:09:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611076187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=aGYE3lrAaFtHuS6FfunC0o8NEZPPWrN9CoQB5+izi7E=;
-        b=qyyuoE50Ydqnd7+nAz9H+xW8KTiOadrdi/pQqgr4R+a+Rh1R6wscH4q87wD51nLkqE+q7p
-        X1cQMezfDFNAFytvW9MrYScqAlnDU8LHnkzjd9eGV6UBeUz9bc7TymdGzPetb7QcGA2Ma/
-        2qzBFG5LTcRZQAitm3tmOvUXWpMIDig=
-Date:   Tue, 19 Jan 2021 18:09:42 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
- SEV-ES support
-Message-ID: <20210119170942.GO27433@zn.tnic>
-References: <20210116002517.548769-1-seanjc@google.com>
- <20210118202931.GI30090@zn.tnic>
- <5f7bbd70-35c3-24ca-7ec5-047c71b16b1f@redhat.com>
- <20210118204701.GJ30090@zn.tnic>
- <YAcHeOyluQY9C6HK@google.com>
+        Tue, 19 Jan 2021 12:11:09 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566C3C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:10:25 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id o11so20493090ote.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pXSkCf6NTgWeornYKqyzoK7uvy0u52bJAmSUmFRq6Kk=;
+        b=fSkRlQI1Eq9zu7gjrvH74OD6VquTHZLJC/QSHGiWhCmHuBGHf/OjtT5VlBJz9LG/s8
+         Yom9x6VRsm+PgVQGiKa4yfQjuh6OdKacXb2GZBG/Cmp5wDGTgkEIWNqS4eptcZnafWI3
+         3q7b5gb7fBw70nh6VliSeSefH4OUygnybHTDjtX1YrZUs+u2feJoIU/hCZRBXYzREtFN
+         nnLlVPr6etMMpEHSq0mWn3mLQAaUHGlEBUgvtDtlB+E8dHQJ8PtuKMZWlCPtuXfRg/g3
+         9tAduNlcf1iAza8c9/WS4JRwj69Bo0S3q9aDnOVFbb7XDYylU51lK6DAfKIIjwXWQOWn
+         ZPAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pXSkCf6NTgWeornYKqyzoK7uvy0u52bJAmSUmFRq6Kk=;
+        b=LhZbGhe/5HOTe88JgLqMW5Eu9zxoC42Pn4xbTEP6v8icR3gLs9mwdXDCTn3bA82ERi
+         qzEFUwqNMpu8dQUYVuerwgZop3pkouiuEOkUxWYKB4pEeNdVvYnpKutCirn+DvC7fQDf
+         8HD+VecH+0n0i1eE7zI1w7bTilqabssUrlEW0VaezoZ9vIP2/KwBE2g4cGyLQsWt06bX
+         f26IQ5zjqEa3nJNszjftQqwndBdSzUKMpgDgGWX2doh27c+NV9YeqT456f5bk47mnV3/
+         eT8zHziP0Yta/0rkavdXFPMKsKeZj0iAaDtFy0BdcDhMJvDVr0x6zx/h/BNdf90grJuO
+         /YcA==
+X-Gm-Message-State: AOAM530lXVRvNQu7GNW1nqMD8/yuP7ZPKs9WhRcdfNpbCjvBNLURlVK9
+        7HCUSkIqbVGQszRzn90aUt8cJA==
+X-Google-Smtp-Source: ABdhPJwIVkhmej3WLIceC3lEJrYdFar4S/jJLeGL7N6ySC0eU3Z1pEwOya5yOuDEO52p/OcABnn1HQ==
+X-Received: by 2002:a9d:6188:: with SMTP id g8mr4131050otk.299.1611076224437;
+        Tue, 19 Jan 2021 09:10:24 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n11sm3975378oij.37.2021.01.19.09.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 09:10:23 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:10:22 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <YAcSfhpy3IA9H0qb@builder.lan>
+References: <20210106054950.303244-1-vkoul@kernel.org>
+ <20210106054950.303244-2-vkoul@kernel.org>
+ <X/dCIuUR/El8Gxaa@builder.lan>
+ <20210113025627.GA1414436@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAcHeOyluQY9C6HK@google.com>
+In-Reply-To: <20210113025627.GA1414436@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:23:20AM -0800, Sean Christopherson wrote:
-> It was the AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT dependency that tripped me up.  To
-> get KVM to enable SEV/SEV-ES by default,
+On Tue 12 Jan 20:56 CST 2021, Rob Herring wrote:
 
-By default? What would be the use case for that?
+> On Thu, Jan 07, 2021 at 11:17:22AM -0600, Bjorn Andersson wrote:
+> > On Tue 05 Jan 23:49 CST 2021, Vinod Koul wrote:
+> > 
+> > > Add device tree binding Documentation details for Qualcomm SM8350
+> > > pinctrl driver.
+> > > 
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  .../bindings/pinctrl/qcom,sm8350-tlmm.yaml    | 149 ++++++++++++++++++
+> > >  1 file changed, 149 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
+> > > new file mode 100644
+> > > index 000000000000..abdafd25bfc2
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
+> > > @@ -0,0 +1,149 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-tlmm.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm Technologies, Inc. SM8350 TLMM block
+> > > +
+> > > +maintainers:
+> > > +  - Vinod Koul <vkoul@kernel.org>
+> > > +
+> > > +description: |
+> > > +  This binding describes the Top Level Mode Multiplexer block found in the
+> > > +  SM8350 platform.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,sm8350-tlmm
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupt-controller: true
+> > > +
+> > > +  '#interrupt-cells':
+> > > +    description: Specifies the PIN numbers and Flags, as defined in
+> > > +      include/dt-bindings/interrupt-controller/irq.h
+> > > +    const: 2
+> > > +
+> > > +  gpio-controller: true
+> > > +
+> > > +  '#gpio-cells':
+> > > +    description: Specifying the pin number and flags, as defined in
+> > > +      include/dt-bindings/gpio/gpio.h
+> > > +    const: 2
+> > > +
+> > > +  gpio-ranges:
+> > > +    maxItems: 1
+> > > +
+> > > +  gpio-reserved-ranges:
+> > > +    maxItems: 1
+> > > +
+> > > +#PIN CONFIGURATION NODES
+> > > +patternProperties:
+> > > +  '-pinmux$':
+> > 
+> > I believe that what Rob was asking for was the matter of describing the
+> > mux and config subnodes under this one. But I don't know really how to
+> > express this, because the following are all valid:
+> > 
+> > default_state: default-state {
+> > 	pins = "gpio1";
+> > 	bias-disable;
+> > };
+> > 
+> > default_state: default-state {
+> > 	rx {
+> > 		pins = "gpio1";
+> > 		function = "gpio";
+> > 		bias-disable;
+> > 	};
+> > };
+> > 
+> > default_state: default-state {
+> > 	pinmux {
+> > 		pins = "gpio1";
+> > 		function = "gpio";
+> > 	};
+> > 
+> > 	pinconf {
+> > 		pins = "gpio1";
+> > 		bias-disable;
+> > 	};
+> > };
+> > 
+> > I.e. the properties described here applies either to this node directly,
+> > or any subnodes (1 level) down.
+> 
+> Why!?
+> 
 
-> Agreed, I'll send a KVM patch to remove the
-> AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT dependency.
+That's is how the generic pinctrl framework in Linux has parsed these
+nodes for the last several years, so I expect all pinctrl bindings to
+show this.
 
-Yah, AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT came out of the initial memory
-enc. SME patchset where the use case was something along the lines of
-booting a kernel and SME being enabled by default. But Tom doesn't
-remember exactly either. I guess that thing doesn't belong in kvm code
-anyway...
+And in particular, rather than forcing people to use the third form
+above the free naming of the subnodes allows to describe an entire 4 pin
+UART in a single pin state (the last requires 3-4 nodes + duplicates for
+sleep state), and for single gpio things the first one doesn't force
+people to make up phony names - which typically lands them in the last
+case (using pinmux/pinconf).
 
--- 
-Regards/Gruss,
-    Boris.
+> You can create a definition and reuse it. Something like this:
+> 
+> $defs:
+>   pin-node:
+>     type: object
+>     properties:
+>       ...
+> 
+> patternProperties:
+>   '-state$':
+>     oneOf:
+>       - $ref: #/$defs/pin-node
+> 
+>       - patternProperties:
+>           '.*':
+>             $ref: #/$defs/pin-node
 
-https://people.kernel.org/tglx/notes-about-netiquette
+So I presume then that it would make sense to convert
+{pinmux,pinconf}-node.yaml this form and then in our binding we should
+somehow just refer to these.
+
+But what's the appropriate method of extending and limiting pin-node? We
+have additional constraints and not all the properties are valid for the
+Qualcomm TLMM.
+
+Regards,
+Bjorn
+
+> 
+> 
+> Rob
