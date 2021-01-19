@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A7C2FB725
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0F02FB720
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390275AbhASKUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:20:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:47980 "EHLO foss.arm.com"
+        id S2390087AbhASKTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:19:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:46435 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389227AbhASJ7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:59:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A97F41FB;
-        Tue, 19 Jan 2021 01:57:30 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70A163F66E;
-        Tue, 19 Jan 2021 01:57:29 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:57:26 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests: bpf: Add a new test for bare
- tracepoints
-Message-ID: <20210119095726.obfhqanp6wmauzqs@e107158-lin>
-References: <20210116182133.2286884-1-qais.yousef@arm.com>
- <20210116182133.2286884-3-qais.yousef@arm.com>
- <e9d4b132-288d-594f-308c-132e89fcf63f@fb.com>
- <20210118121818.muifeogh4hvakfeb@e107158-lin>
- <fdda7117-e823-e240-4735-617a3df8a0cc@fb.com>
+        id S2389414AbhASKE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:04:27 -0500
+IronPort-SDR: T6sK1g08LkbFLJzdSfpTw3p9YLG3N0XsKCTGQ1k6RyPBHTA+7M2OcpK3D5hCJqsCPelW6XOKu9
+ 8z/ay9RILxgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="197606669"
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="197606669"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 02:00:10 -0800
+IronPort-SDR: YdqSs5Psq+23YLCpXN6FumFnhAAHgaRxKZ2jG/c1XZ2oRMo/e+avm521ANqo5It3JJVgMutKMw
+ yQoVZJ32nHNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="391042310"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by orsmga007.jf.intel.com with ESMTP; 19 Jan 2021 02:00:06 -0800
+Subject: Re: [PATCH v6 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210118201039.2398-1-huobean@gmail.com>
+ <20210118201039.2398-2-huobean@gmail.com>
+ <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
+ <fabf0e83387f6155efea521a15b00bb1225d35a4.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <9ad2cf1a-68df-47ef-9fe7-01954d2d6181@intel.com>
+Date:   Tue, 19 Jan 2021 12:00:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <fabf0e83387f6155efea521a15b00bb1225d35a4.camel@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fdda7117-e823-e240-4735-617a3df8a0cc@fb.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yonghong
-
-On 01/18/21 09:48, Yonghong Song wrote:
-> The original patch code:
+On 19/01/21 11:33 am, Bean Huo wrote:
+> On Tue, 2021-01-19 at 09:01 +0200, Adrian Hunter wrote:
+>> On 18/01/21 10:10 pm, Bean Huo wrote:
+>>> From: Bean Huo <beanhuo@micron.com>
+>>>
+>>> Currently UFS WriteBooster driver uses clock scaling up/down to set
+>>> WB on/off, for the platform which doesn't support
+>>> UFSHCD_CAP_CLK_SCALING,
+>>> WB will be always on. Provide a sysfs attribute to enable/disable
+>>> WB
+>>> during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable
+>>> UFS WB.
+>>
+>> Is it so, that after a full reset, WB is always enabled again?  Is
+>> that
+>> intended?
 > 
-> +static int trigger_module_test_write(int write_sz)
-> +{
-> +	int fd, err;
-> +	char *buf = malloc(write_sz);
-> +
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	memset(buf, 'a', write_sz);
-> +	buf[write_sz-1] = '\0';
-> +
-> +	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
-> +	err = -errno;
-> +	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
-> +		goto out;
-> +
-> +	write(fd, buf, write_sz);
-> +	close(fd);
-> +out:
-> +	free(buf);
-> +
-> +	return 0;
-> +}
+> Hello Adrian
+> Good questions. yes, after a full reset, the UFS device side by default
+> is wb disabled,  then WB will be always enabled agaion in
+> ufshcd_wb_config(hba). but, for the platform which
+> supports UFSHCD_CAP_CLK_SCALING, wb will be disabled again while clk
+> scaling down and enabled while clk scaling up.
 > 
-> Even for "fd < 0" case, it "goto out" and "return 0". We should return
-> error code here instead of 0.
-> 
-> Second, "err = -errno" is set before checking fd < 0. If fd >= 0, err might
-> inherit an postive errno from previous failure.
-> In trigger_module_test_write(), it is okay since the err is only used
-> when fd < 0:
->         err = -errno;
->         if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
->                 return err;
-> 
-> My above rewrite intends to use "err" during final "return" statement,
-> so I put assignment of "err = -errno" inside the CHECK branch.
-> But there are different ways to implement this properly.
+> Regarding the last question, I think OEM wants to do that. maybe they
+> suppose there will be a lot of writing after reset?? From the UFS
+> device's point of view, the control of WB is up to the user.
 
-Okay I see now. Sorry I missed your point initially. I will fix and send v3.
-
-Thanks
-
---
-Qais Yousef
+If it is by design enabled after reset, then perhaps it should be mentioned
+in the sysfs documentation.
