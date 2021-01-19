@@ -2,113 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DDD2FAE58
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41552FAE8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731682AbhASBa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 20:30:29 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43760 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731402AbhASBaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 20:30:24 -0500
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxBb3+NQZgRxoHAA--.8645S3;
-        Tue, 19 Jan 2021 09:29:34 +0800 (CST)
-Subject: Re: [PATCH 0/4] MIPS: process: Some fixes and improvements about
- get_frame_info()
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
- <ab6e4efb-98b5-3ad6-5bad-2338c57d9392@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Jun-Ru Chang <jrjang@realtek.com>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <3397a977-939c-b9e5-cadb-11191765d338@loongson.cn>
-Date:   Tue, 19 Jan 2021 09:29:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <ab6e4efb-98b5-3ad6-5bad-2338c57d9392@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxBb3+NQZgRxoHAA--.8645S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kry8Wr47Xw47tFW3Ww4xCrg_yoW8Ww1xpr
-        43ArnxGF1rJry3Jr17J3yUJr15Jr4rJwn8JF47t340vrn8Cr1UAw1UJr40y34DXryUAF18
-        JF45Jr1UGr15JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
-        uYvjxU70tCUUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S2393533AbhASB7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 20:59:03 -0500
+Received: from m12-16.163.com ([220.181.12.16]:49561 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387832AbhASB66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 20:58:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=BaI2A+HSw7WHeKSvld
+        /ZmSRtcyLfzivsyXFRFsquMtI=; b=Th1eOwq7NmeUZwEVIrNWjuTsiC+NZPiWd7
+        SFP9q+6oFJfLfwwNBOz3SwhJOrdzpztqtcTWF90yA++aM7qiQTSX0BWjb2XhPAg0
+        De76xe8UJNl1QW4OVcbiiHPCyXwA4mjq02lD+Vd3gNL0S//SPi1O/wyJiP0l0MKU
+        eQEEnNppo=
+Received: from COOL-20200923LL.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowABXxD9aMQZgwU0gXw--.10053S2;
+        Tue, 19 Jan 2021 09:09:48 +0800 (CST)
+From:   chiguoqing <chi962464zy@163.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangwen@yulong.com, chiguoqing <chi962464zy@163.com>
+Subject: [PATCH] media: vidtv: remove redundant quote
+Date:   Tue, 19 Jan 2021 09:09:47 +0800
+Message-Id: <20210119010947.709-1-chi962464zy@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EMCowABXxD9aMQZgwU0gXw--.10053S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWfWw1fGr4DAFy3WF15Arb_yoWxAFcE9w
+        n7Zr4xW342yry8tr17JF9rAa4FkayDZF95XFn0qw1YvF9rZa45G3ZFvw1UGanFgF4ava97
+        ZFy5JF109r17GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRt-eOJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiNxwfRFWBjTc6tQAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/18/2021 09:51 AM, Jiaxun Yang wrote:
+Repeated references string.h
 
-> 在 2021/1/12 下午8:29, Jinyang He 写道:
->> Not familiar with microMIPS. Not test on microMIPS.
->
-> Hi Jinyang,
->
-> I was messing around QEMU microMIPS and found kernel stuck
-> at loading init process after applied your patches :-(
->
-> Thanks.
->
-> - Jiaxun
->
+Signed-off-by: Wen Zhang <zhangwen@yulong.com>
+---
+ drivers/media/test-drivers/vidtv/vidtv_psi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Hi, Jiaxun,
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+index 4511a2a98405..8ff27d26c343 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+@@ -19,7 +19,6 @@
+ #include <linux/ratelimit.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+-#include <linux/string.h>
+ #include <linux/time.h>
+ #include <linux/types.h>
+ 
+-- 
+2.17.1
 
-Thanks you for test.
-I think the last patch went wrong.
-
-+    if (ip->r_format.opcode == mm_pool32a_op &&
-+        ip->r_format.func == mm_pool32axf_op &&
-+        ((ip->u_format.uimmediate >> 6) & GENMASK(9,0)) == mm_jalr_op &&
-+            ip->r_format.rs == 31)
-
-There is no POOL32A format in uapi/asm/inst.h, so some bits here use the
-format of r_format instead.
-
----------------------------------------------------------------------
-|    format      |  31:26  | 25:21 | 20:16 |    15:6    |    5:0 |
------------------+---------+-------+-------+------------+------------
-| pool32a_format | pool32a |  rt   |  rs   |   jalrc    | pool32axf |
------------------+---------+-------+-------+------------+------------
-|    r_format    |  opcode |  rs   |  rt   | rd:5, re:5 |    func |
----------------------------------------------------------------------
-
-I mistakenly thought that r_format.rs and pool32a_format.rs are the same.
-
-+        return 1;
-+    return 0;
-
-Could you help me test it again?
-
-Thanks,
-Jinyang
-
->>
->> Jinyang He (4):
->>    MIPS: process: Reorder header files
->>    MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
->>    MIPS: Fix get_frame_info() handing of function size
->>    MIPS: Add is_jr_ra_ins() to end the loop early
->>
->>   arch/mips/kernel/process.c | 92 
->> +++++++++++++++++++++++++++++++---------------
->>   1 file changed, 62 insertions(+), 30 deletions(-)
->>
 
