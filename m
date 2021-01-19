@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4582FBC49
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1637C2FBC4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730466AbhASQVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:21:21 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:50628 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728684AbhASQUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:20:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611073177; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=iy/S8TWo4V1brHw5rkLeSCIVsbtOU9fUJpOaqjSNd/I=; b=HT1+Ulqe0/EbLVXohEng7PaT/4brS4CqZfqWryqbp3RMfTkeM3kRLPIAxw4QHYqe5QVduI88
- lrr5C0kGbko+fusvBlcq17w1wYgcWGVcjejEMF8BMFeoF5lQkrZ/5mEOmmF5NmBNvh7wAfNq
- Pg5d9tCWWYrOsTj+ErwGeF8n6d0=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6007067f02b2f1cb1a0ff9da (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 16:19:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D73DCC43463; Tue, 19 Jan 2021 16:19:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731261AbhASQW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:22:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729360AbhASQU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:20:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611073167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BH8ph4x6tbslCUU39Kg1nnfczx3x5anbI8SBaxkZVBo=;
+        b=bSWYUDiKRR1BUZxZftFiKJl0EVEMSGZNJLBE2MMXq9brPdoY4fOC8l+Lpy8M3BYKbwTNiO
+        vMuV7N/UuSvFqjFKYlLP4staiUm1IJ+xeA859PlYEMWT4YP4N9Kkw6W3kHEH9In/L3qZAn
+        Y+7z8l6sKrySsBYaiQ3fBQUP5FWIFzw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-l5EMvfv2MhK1e8-RZb0Ofw-1; Tue, 19 Jan 2021 11:19:22 -0500
+X-MC-Unique: l5EMvfv2MhK1e8-RZb0Ofw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CF45C433CA;
-        Tue, 19 Jan 2021 16:19:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5CF45C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, luciano.coelho@intel.com,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pm@vger.kernel.org, amitk@kernel.org,
-        nathan.errera@intel.com
-Subject: Re: [PATCH 1/2] net: wireless: intel: iwlwifi: mvm: tt: Replace thermal_notify_framework
-References: <20210119140541.2453490-1-thara.gopinath@linaro.org>
-        <20210119140541.2453490-2-thara.gopinath@linaro.org>
-Date:   Tue, 19 Jan 2021 18:19:05 +0200
-In-Reply-To: <20210119140541.2453490-2-thara.gopinath@linaro.org> (Thara
-        Gopinath's message of "Tue, 19 Jan 2021 09:05:40 -0500")
-Message-ID: <87pn20garq.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 047851800D41;
+        Tue, 19 Jan 2021 16:19:21 +0000 (UTC)
+Received: from gondolin (ovpn-113-246.ams2.redhat.com [10.36.113.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 05FD519CB0;
+        Tue, 19 Jan 2021 16:19:15 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 17:19:13 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        thuth@redhat.com, david@redhat.com, borntraeger@de.ibm.com,
+        imbrenda@linux.ibm.com, linux-s390@vger.kernel.org,
+        gor@linux.ibm.com, mihajlov@linux.ibm.com
+Subject: Re: [PATCH 1/2] s390: uv: Fix sysfs max number of VCPUs reporting
+Message-ID: <20210119171913.29cc4a0d.cohuck@redhat.com>
+In-Reply-To: <20210119100402.84734-2-frankja@linux.ibm.com>
+References: <20210119100402.84734-1-frankja@linux.ibm.com>
+        <20210119100402.84734-2-frankja@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thara Gopinath <thara.gopinath@linaro.org> writes:
+On Tue, 19 Jan 2021 05:04:01 -0500
+Janosch Frank <frankja@linux.ibm.com> wrote:
 
-> thermal_notify_framework just updates for a single trip point where as
-> thermal_zone_device_update does other bookkeeping like updating the
-> temperature of the thermal zone and setting the next trip point etc.
-> Replace thermal_notify_framework with thermal_zone_device_update as the
-> later is more thorough.
->
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> The number reported by the query is N-1 and I think people reading the
+> sysfs file would expect N instead. For users creating VMs there's no
+> actual difference because KVM's limit is currently below the UV's
+> limit.
+> 
+> The naming of the field is a bit misleading. Number in this context is
+> used like ID and starts at 0. The query field denotes the maximum
+> number that can be put into the VCPU number field in the "create
+> secure CPU" UV call.
+> 
+> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+> Fixes: a0f60f8431999 ("s390/protvirt: Add sysfs firmware interface for Ultravisor information")
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/s390/boot/uv.c        | 2 +-
+>  arch/s390/include/asm/uv.h | 4 ++--
+>  arch/s390/kernel/uv.c      | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
 
-The title could be just "iwlwifi: mvm: tt: Replace
-thermal_notify_framework".
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 
-But via which tree is this going? I assume it's not
-wireless-drivers-next so:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
