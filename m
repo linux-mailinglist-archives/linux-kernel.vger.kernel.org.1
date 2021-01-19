@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C45F2FB8A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8992FB8A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392352AbhASN2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:28:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404136AbhASNUT (ORCPT
+        id S2393977AbhASN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:28:56 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:38261 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390548AbhASNQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:20:19 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E841FC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:11:52 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id u27so3171695uaa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FBCytU2tF2X6uPBN9VdsZsC0tQnDuvsMDL0KGzBzCMU=;
-        b=hxAZPtDJ6bUT3b2INOC7YVy3qWLFjcFkw7/nk0DMFpL33XpcKNr7Crukzxd2RiE5Kc
-         mkS+sRMYRcL/0Ubxx01jxTOxjZGUo4X7RHeXNZsbwzoKQmTWKBZLn2Z9Hj3X/OILYigf
-         e+mtA5pe8FexGOWspKNAssJ7RJ3LwYUFfWhHna44kRD6n6wLDsqt+509qc2pE0fCDzBE
-         hmja+6hXE5t+OocADu4rkTVznrmSTAPb7P53WivqmU7L3F+J9H9Shs5WjObhSxOLPJtl
-         R/ZdMZfNs8UKmRbqP69xySLBHq6edwjMF1/7/qcEHuxrWAOoi7AjW3/uW/CGR/zNIptS
-         b9ow==
+        Tue, 19 Jan 2021 08:16:20 -0500
+Received: by mail-ot1-f44.google.com with SMTP id 34so8870534otd.5;
+        Tue, 19 Jan 2021 05:15:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FBCytU2tF2X6uPBN9VdsZsC0tQnDuvsMDL0KGzBzCMU=;
-        b=Vg7ewBc2sQjf33mXS3bqyazFrKodgoEBLWoVCIXO6yKj1rX0z12857y8nZQlC84tdB
-         wgWjBbLDT3ynB0dGon3G/b8VyiIDDUuXvqjYYbhI6s1+qLfIjg/k3VYuJhxi9BRfeGhV
-         FhkbTnwEAWyZMu5c+5I8oGcDklkJoUrvozmxP90d8RzqnTQKcpDL6GBSdxhWpNZ/UzXV
-         RlNnaqlO/0Ikvbr3xqEgvis6dGWzE0tDjDArBG4A6qgs+VilQL2SgaBWpLSjusO4pwYq
-         NFAkBQRV7bEAy+8P53VY6lUtO0/iDw0vLDEPC8kXPB6aodWtuXIO9NLswGfN6bmkXE/J
-         mnEw==
-X-Gm-Message-State: AOAM530qWICSGDi+W26vn2RgsyLYG2Mh0mH5rHJeBab9ZdBDJwJ2V1+c
-        1upvaPLzr6IdcVpoR7fuyLoT4aam1G0R4Jw+xdkqfA==
-X-Google-Smtp-Source: ABdhPJzbTV3Tj80gHuisSCGfdH5eJWfgr/hnn3526HhEGa4vMB/JFqMrctqxXAkTLOdWfhaWFVYby2dTs9FAW/S4z6M=
-X-Received: by 2002:a9f:204e:: with SMTP id 72mr2023850uam.19.1611061912130;
- Tue, 19 Jan 2021 05:11:52 -0800 (PST)
+        bh=wxvsvsxyrpOZ/oY0spXlDXsPyT4qu420p3DmEnH6sfU=;
+        b=C7wqhDP881vKuRJx4NtLfuZjZGmBJsIQrLDCx47XV0OF/4dM5uoX6p/JUIDHW0vV77
+         VwsHE2cg70S6Nncx0BxDd4cD94/YhBJFE5B7rh+OVogNaSxiZM8U5CVQ+yAZb4EOicK/
+         i1hnEvBoNigSBeb12JDfGHd9iQu+Ej77JxDUF4xj6LOAEHseSgYYEMJQm+JjCio0+O5G
+         9GNCW0mqaAVvx19o9z+vX2NX9K1W6wWyqXuKIaQNtXmdKtc9e9SMg4zCk9vVZrADlYwo
+         P2Z7YfKKEzzaD9V8oN/X39MaJ7L1X3ILBmGM+ZdLljJAt9he7jzr4iNADjbKe8DVhZZZ
+         88Bw==
+X-Gm-Message-State: AOAM532jeKNkUBYdvL1O4Sglw2i3wVayK5VcspLs2DGDZzt2T0rfeE3J
+        IRE4mauSJ5Jr/104mmPWg+rug9mLlnKH5VuCKbdJHncX
+X-Google-Smtp-Source: ABdhPJwCehh3k/IMteXxnwOxWa37biw3gKZKIYGKKmoFB1cZ9WYyVmZ60RkecMm29B8DPoHIR9VSqGcKux2VkA0z8VU=
+X-Received: by 2002:a9d:1710:: with SMTP id i16mr3359773ota.260.1611062133927;
+ Tue, 19 Jan 2021 05:15:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201222133355.19807-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201222133355.19807-1-zhengyongjun3@huawei.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Jan 2021 14:11:16 +0100
-Message-ID: <CAPDyKFpGsAuBdmdcau8CwGUZYXaTF_RoQs=a-eoLOwZknZGBcw@mail.gmail.com>
-Subject: Re: [PATCH -next] mmc: core: use roundup macro to to calculate blk_sz
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com> <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+In-Reply-To: <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Jan 2021 14:15:21 +0100
+Message-ID: <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 at 14:34, Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
 >
-> Don't open-code roundup() kernel macro.
+> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+> > On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >> In some ACPI tables we encounter, devices use the _DEP method to assert
+> >> a dependence on other ACPI devices as opposed to the OpRegions that the
+> >> specification intends. We need to be able to find those devices "from"
+> >> the dependee, so add a function to parse all ACPI Devices and check if
+> >> the include the handle of the dependee device in their _DEP buffer.
+> > What exactly do you need this for?
 >
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/mmc/core/sdio_io.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/sdio_io.c b/drivers/mmc/core/sdio_io.c
-> index 79dbf90216b5..35c69bdeb40e 100644
-> --- a/drivers/mmc/core/sdio_io.c
-> +++ b/drivers/mmc/core/sdio_io.c
-> @@ -263,8 +263,7 @@ unsigned int sdio_align_size(struct sdio_func *func, unsigned int sz)
->                  * Realign it so that it can be done with one request,
->                  * and recheck if the controller still likes it.
->                  */
-> -               blk_sz = ((sz + func->cur_blksize - 1) /
-> -                       func->cur_blksize) * func->cur_blksize;
-> +               blk_sz = roundup(sz, func->cur_blksize);
-
-If I understand correctly, roundup() assumes func->cur_blksize is a
-power of 2. The above doesn't, which means there is no open coding
-happening here.
-
->                 blk_sz = _sdio_align_size(blk_sz);
->
->                 /*
-> --
-> 2.22.0
+> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+> refer to those INT3472's in their _DEP method. The driver binds to the
+> INT3472 device, we need to find the sensors dependent on them.
 >
 
-Kind regards
-Uffe
+Well, this is an interesting concept. :-)
+
+Why does _DEP need to be used for that?  Isn't there any other way to
+look up the dependent sensors?
+
+>
+> > Would it be practical to look up the suppliers in acpi_dep_list instead?
+> >
+> > Note that supplier drivers may remove entries from there, but does
+> > that matter for your use case?
+>
+> Ah - that may work, yes. Thank you, let me test that.
+
+Even if that doesn't work right away, but it can be made work, I would
+very much prefer that to the driver parsing _DEP for every device in
+the namespace by itself.
