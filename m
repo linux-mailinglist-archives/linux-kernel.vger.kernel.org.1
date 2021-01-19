@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F002FB29E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7C72FB27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbhASHOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390101AbhASF1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:27:05 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EE2C061573;
-        Mon, 18 Jan 2021 21:26:25 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DKcZj2q2kz9sVF;
-        Tue, 19 Jan 2021 16:26:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611033981;
-        bh=Fh0OV3SBtvG+RwPC7R1yZ9jUdVExiasmtVqnj4Jqa7o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZTK2wn+e3S+JP0CjhWndRy93UllRHg/gceUzzZo7Qume/uZy20Pw3OH4lGPC15zPL
-         SwmAmat0Qdhj/lhjDiRmXethHlFwL+EfCtGMuGrBZvWpmQ7uYrV33P5xmlAv41GsoJ
-         XaR1Fp23I83k5Lh7uYDuqo3y9v905wenhkGoX7thEh0vMTWmJGL2Z+hQO7M6UGdEhb
-         fXl1eDQJ/7TTxSS0/1AtS3qEguVzZj/m7twQ017lu/MGRVcaDPy6PydZx0iYrpu9j7
-         i4r7aMa7m0YBf4DffuYB4d5EYkDJBbV9XEgL1q1hAI2uVdBPMqnVgzaeKw15/s0rK0
-         EOXFwcbbOWOpA==
-Date:   Tue, 19 Jan 2021 16:26:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Daniel Vetter <daniel.vetter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: boot failure after merge of the iomem-mmap-vs-gup
- tree
-Message-ID: <20210119162619.6782c5d2@canb.auug.org.au>
-In-Reply-To: <20210113162948.45b0fbfd@canb.auug.org.au>
-References: <20210113162948.45b0fbfd@canb.auug.org.au>
+        id S1730712AbhASHIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:08:44 -0500
+Received: from mail-dm6nam11on2042.outbound.protection.outlook.com ([40.107.223.42]:50884
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390252AbhASF2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:28:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NWBHPBABbU6ei02mevF8exMuUKpbIUs8/D8uwmR8nxGdkVJdiIsAv8ZUBs5R+qv3xRpDfrKPxkNLXV4rN8MXC53E137ETRrJOPBPtTMtCsSE9asWsB4RWU1qbGZONFwchApgNuCOHtDX7EEFKx3fssPJB8rLTz/1v4cXpTeeLA45iFK4ZxT3L6bI9lZQ+t6JA7hCXlvERlCj2Y4IAseoj6yFTDiXO3YqqcRjpFWipba5iqJijH/TyEBau1HiLBFI1hCm0K7I3vOZYi28lank1rX7RvCLXoTlxLXeZb0ZSoPus04oTScSUrzCC1tmP7ysG08CDM24lFqTbUhc3DhPSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X/DbIy2PfTLqdgulH+VIgo9g3JsEtTLgh4puN30z2p4=;
+ b=OVe2RFT51AHe/1K4zqM7mbBQZFD5nQv5M/m/O0Kep7AjYJV4jFLgSln7ACmSZ4WeoArvAMyveW0S9nPcICUjxcrTffxewFiETMnP4fKsyJ+2cY8M152dmT5582Xm0fkRn6Q/FXFA6oj3QcDP9ohtx/u09jTEKXA6FSgguTYzq2HQ1nrFC/8X4K7+fGyDzLkbYq2QNyHQO7VfVuG+L5MmDPjoUbfQVXWk8F9tHNrEEPr2OoYXEyndNycKLC95nYyCLSr1eHOGeWFIOz4U102Fi8Kuwg09BcblqWwcrOdcCNGsXtnS2+ceTVV/U9xIg1SO9eHgJ+0wtZsKra0+G7FRSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X/DbIy2PfTLqdgulH+VIgo9g3JsEtTLgh4puN30z2p4=;
+ b=NOgXmc3d3xVkaWGuD9aC56vFpI809dqWV2vsNp9cWoI4coLFYOcNGO3umYq2XjxmT2wdJ0QcLTTBEivmWfeX2tTSHdfV6+eOr+2PTtXWuET8RiBALmTf353GFFQn1GfMu2LRK8vOf+UN93IKpt9JjDZc7AsE2HyMxBm2xFSwKG4=
+Received: from SN7PR04CA0012.namprd04.prod.outlook.com (2603:10b6:806:f2::17)
+ by CH2PR02MB6070.namprd02.prod.outlook.com (2603:10b6:610:6::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Tue, 19 Jan
+ 2021 05:27:50 +0000
+Received: from SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:f2:cafe::a0) by SN7PR04CA0012.outlook.office365.com
+ (2603:10b6:806:f2::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12 via Frontend
+ Transport; Tue, 19 Jan 2021 05:27:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT005.mail.protection.outlook.com (10.152.72.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3763.12 via Frontend Transport; Tue, 19 Jan 2021 05:27:50 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 18 Jan 2021 21:27:45 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 18 Jan 2021 21:27:45 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ saikrishna12468@gmail.com,
+ robh+dt@kernel.org,
+ linus.walleij@linaro.org,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.23.64.106] (port=37100 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
+        id 1l1jYO-0003Z5-Pf; Mon, 18 Jan 2021 21:27:45 -0800
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 14964)
+        id E2FCC1222CE; Tue, 19 Jan 2021 10:57:43 +0530 (IST)
+From:   Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <git@xilinx.com>,
+        <saikrishna12468@gmail.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Subject: [PATCH v2 0/3] Added ZynqMP pinctrl driver
+Date:   Tue, 19 Jan 2021 10:57:31 +0530
+Message-ID: <1611034054-63867-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wWPaKYBp9I_oUu9weKHPJhT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e09fbb85-8e1c-4d97-7287-08d8bc3af680
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6070:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6070CBAE84DB6A2A06B1BC71BDA30@CH2PR02MB6070.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oQpztlArkFSIItJSZ5MgkeKEdz03zJoQaBdQ0YkTxiNkakO7oq5VdqCyCgmPkVEST1Vewq6GGCFymREqfLiBha3kubzTSf9hfqj8bfoXSIw05R0KRRDfEuL6lCzceuQrYFjfjLieGpbzsucKpgj489OeaTp5860MCSUDtCapXYh6iEzSLZ94RZzlflM2ZNCX7Xj4VbRer6kh6WWDf7gI1e8LhHVZkORfO3sgzo2wc2ql5agZrAfIC08GdBYG8It2WsSKGKH6kzRb+ePi5WD3tsAeywgq1FlMnYMSkSlwdoVlkCabW6iwUw+x1OFIRog153/0tFdCyTJI5njccZBcuJFXTjaUWgT1z+5TL75aeLcqjvWX1DIPsOXqp/rtzbTeaD/aQjaLt9tX1aO4tcRaDtomM4WtefP4Sv9yah5V4mo1GJTxIEzP1B/2cTifmWIgMHP1o5abPupW+I85O9UT8wymwP1rRU+3vYSS1/QQCVr5EocQghLWOXLVE/PRFzDB
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(46966006)(5660300002)(6266002)(426003)(2616005)(26005)(186003)(36756003)(4326008)(336012)(42186006)(107886003)(36906005)(478600001)(8936002)(6666004)(316002)(110136005)(54906003)(7636003)(356005)(82310400003)(70586007)(83380400001)(47076005)(2906002)(82740400003)(8676002)(70206006)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 05:27:50.1849
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e09fbb85-8e1c-4d97-7287-08d8bc3af680
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wWPaKYBp9I_oUu9weKHPJhT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Added support for Xilinx ZynqMP pinctrl driver support and also
+updated the Xilinx firmware driver to support pinctrl functionality.
+This driver will query the pin information from the firmware and
+allow configuring the pins as per the request.
 
-Hi all,
+changes in v2:
+- Use pattern for pin names in yaml file.
+- Updated to support multiple groups and pins.
+- Added type ref for the vendor specific properties.
+- Removed 'schmitt-cmos', instead used common properties.
+- Removed macros for drive-strength property.
 
-On Wed, 13 Jan 2021 16:29:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the iomem-mmap-vs-gup tree, today's linux-next boot test
-> (powerpc pseries_le_defconfig) failed like this:
->=20
->     EEH: pSeries platform initialized
->     PCI: Probing PCI hardware
->     BUG: Kernel NULL pointer dereference on write at 0x00000030
->     Faulting instruction address: 0xc00000000013bf4c
->     Oops: Kernel access of bad area, sig: 11 [#1]
->     LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA pSeries
->     Modules linked in:
->     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc3 #2
->     NIP:  c00000000013bf4c LR: c0000000007a9ee8 CTR: 0000000000000000
->     REGS: c0000000063a3610 TRAP: 0380   Not tainted  (5.11.0-rc3)
->     MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 84002440  XER:=
- 00000000
->     CFAR: c0000000007a9ee4 IRQMASK: 0=20
->     GPR00: c0000000007a9ee8 c0000000063a38b0 c0000000013d8100 c0000000060=
-61300=20
->     GPR04: 0000000000000000 0000000000000b20 c000000000f11738 00000000000=
-0ffff=20
->     GPR08: c0000000007a7ab0 0000000000000000 c0000000007a7a40 2d6770696f7=
-30000=20
->     GPR12: 0000000000000000 c0000000015b0000 c000000000013120 00000000000=
-00000=20
->     GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000000=
-00000=20
->     GPR20: 0000000000000000 0000000000000000 0000000000000000 00000000000=
-00000=20
->     GPR24: c000000006210de8 c000000006167120 c000000006620b20 00000000000=
-00000=20
->     GPR28: c000000006167120 0000000000000180 c000000006061300 c0000000061=
-67000=20
->     NIP [c00000000013bf4c] iomem_get_mapping+0x1c/0x30
->     LR [c0000000007a9ee8] pci_create_legacy_files+0xa8/0x1c0
->     Call Trace:
->     [c0000000063a38b0] [c0000000007a9e84] pci_create_legacy_files+0x44/0x=
-1c0 (unreliable)
->     [c0000000063a3930] [c000000000795198] pci_register_host_bridge+0x288/=
-0x510
->     [c0000000063a3a60] [c000000000795514] pci_create_root_bus+0xf4/0x150
->     [c0000000063a3ac0] [c00000000006d424] pcibios_scan_phb+0xe4/0x270
->     [c0000000063a3b70] [c000000001010b40] pcibios_init+0x8c/0x128
->     [c0000000063a3bf0] [c000000000012b70] do_one_initcall+0x60/0x2c0
->     [c0000000063a3cc0] [c0000000010046b4] kernel_init_freeable+0x2e8/0x380
->     [c0000000063a3da0] [c000000000013144] kernel_init+0x2c/0x168
->     [c0000000063a3e10] [c00000000000dff0] ret_from_kernel_thread+0x5c/0x6c
->     Instruction dump:
->     7c634850 4e800020 60000000 60000000 60420000 3c4c012a 3842c1d0 7c0802=
-a6=20
->     60000000 3d22000d e929caf8 7c2004ac <e8690030> 4e800020 60000000 6000=
-0000=20
->     ---[ end trace 77f55ece72f02708 ]---
->    =20
->     Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000=
-000b
->=20
-> Caused by commit
->=20
->   85482fbab59e ("PCI: Revoke mappings like devmem")
->=20
-> Reverting that commit fixes the boot, so I have done that for today.
+This might be resend for some people, as i had some trouble with my
+email server earlier.
 
-I am still reverting this commit.
+Sai Krishna Potthuri (3):
+  firmware: xilinx: Added pinctrl support
+  dt-bindings: pinctrl: Added binding for ZynqMP pinctrl driver
+  pinctrl: Added Xilinx ZynqMP pinctrl driver support
 
---=20
-Cheers,
-Stephen Rothwell
+ .../bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml |  337 ++++++
+ drivers/firmware/xilinx/zynqmp.c              |  114 ++
+ drivers/pinctrl/Kconfig                       |   13 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-zynqmp.c              | 1031 +++++++++++++++++
+ include/dt-bindings/pinctrl/pinctrl-zynqmp.h  |   23 +
+ include/linux/firmware/xlnx-zynqmp.h          |   90 ++
+ 7 files changed, 1609 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-zynqmp.c
+ create mode 100644 include/dt-bindings/pinctrl/pinctrl-zynqmp.h
 
---Sig_/wWPaKYBp9I_oUu9weKHPJhT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAGbXsACgkQAVBC80lX
-0Gwh4wf9E+bcpwYY1ecMHrRNai6xzN3O4jJ39oVJ65WfBn5sa7uHPQc9M+T9pxUq
-YcezZEuoJSpek7xwM7gl5GbVbSRbiomA2H6vrCZjNdz+J/kQDu0AgeSpnYnhGka+
-DGKTQ0AtMk+82rKgbKOGp9lTKUjLxjw5dTbA2es8RPfe7ihQ/L9gImfVWq7bjEw8
-WmOxx8gUwdPZFv+ftqhaYTraYp8IwNZoYGkANnQbaEyORNhzf9PZvhnMxIVXlIh3
-EacyskKn7jW/7/8qtvFv51TyZd/8itM6Czpe/gmxD56KpbV7agv5aJ67W3x1Hpw8
-+zXOOK/cyGSgGgEm95M8AgxiehI+MQ==
-=R6Fw
------END PGP SIGNATURE-----
-
---Sig_/wWPaKYBp9I_oUu9weKHPJhT--
