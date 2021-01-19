@@ -2,328 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3995B2FAE5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108542FAE5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392212AbhASBhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 20:37:08 -0500
-Received: from mga06.intel.com ([134.134.136.31]:46604 "EHLO mga06.intel.com"
+        id S2392364AbhASBiS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Jan 2021 20:38:18 -0500
+Received: from mga17.intel.com ([192.55.52.151]:22878 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729202AbhASBhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 20:37:05 -0500
-IronPort-SDR: AbVkaheUr/xHEwHVy2k7ZKLIbsLwfu+1y5VDH+ek8HfO0KSWMovMRlukR6l5BRQDifjD6za/FO
- GbnXp9gDYEdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="240405321"
+        id S1729202AbhASBiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 20:38:13 -0500
+IronPort-SDR: wlOK/UyGXgNp/srMc05MbBEkpaq2VK64eJgqznsoak1P2Lp+r42Ue504HQz/jrH6/G+MO5K+Xt
+ pn8Qjjid72PA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158638312"
 X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="240405321"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 17:36:24 -0800
-IronPort-SDR: 2gyO3qQfL+vvI06qtcL6hY5xcI+DVuNdyofOeMg3kn0vXpg+Z3ZdvoF38ykX0E7Hz8oPVae1dx
- PWz68wuF+jdA==
+   d="scan'208";a="158638312"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 17:37:29 -0800
+IronPort-SDR: IMpdu4T63VIM+bChb5MYAewAOXgHALm0u+c7vuT9WUL14I53PJrMyd3+He/PiceT1Gl45+nd4p
+ fGu69FRltqRQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="383741805"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 17:36:18 -0800
-Date:   Tue, 19 Jan 2021 09:36:15 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>, Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sen Christopherson <sean.j.christopherson@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v7 01/18] docs: acrn: Introduce ACRN
-Message-ID: <20210119013615.GG22447@shuo-intel.sh.intel.com>
-References: <20210106075055.47226-1-shuo.a.liu@intel.com>
- <20210106075055.47226-2-shuo.a.liu@intel.com>
- <33ff89ab-db2d-ed9c-3632-014870a1c238@infradead.org>
+   d="scan'208";a="347022832"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga007.fm.intel.com with ESMTP; 18 Jan 2021 17:37:29 -0800
+Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 18 Jan 2021 17:37:28 -0800
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ SHSMSX605.ccr.corp.intel.com (10.109.6.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 19 Jan 2021 09:37:27 +0800
+Received: from shsmsx603.ccr.corp.intel.com ([10.109.6.143]) by
+ SHSMSX603.ccr.corp.intel.com ([10.109.6.143]) with mapi id 15.01.1713.004;
+ Tue, 19 Jan 2021 09:37:27 +0800
+From:   "Zhang, Rui" <rui.zhang@intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Guenter Roeck <linux@roeck-us.net>, Kamil Debski <kamil@wypas.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:PWM FAN DRIVER" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KHADAS MCU MFD DRIVER" <linux-amlogic@lists.infradead.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Subject: RE: [PATCH v2] thermal/core: Make cooling device state change private
+Thread-Topic: [PATCH v2] thermal/core: Make cooling device state change
+ private
+Thread-Index: AQHW7cDP1uLeJF14xUSIfMisXKv/LaouK6iQ
+Date:   Tue, 19 Jan 2021 01:37:27 +0000
+Message-ID: <2514d8a204c04b4695da7b73bd2ff848@intel.com>
+References: <20210118173824.9970-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20210118173824.9970-1-daniel.lezcano@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <33ff89ab-db2d-ed9c-3632-014870a1c238@infradead.org>
-User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
 
-Thanks for review.
 
-On Mon 18.Jan'21 at 14:30:51 -0800, Randy Dunlap wrote:
->On 1/5/21 11:50 PM, shuo.a.liu@intel.com wrote:
->> From: Shuo Liu <shuo.a.liu@intel.com>
->>
->> Add documentation on the following aspects of ACRN:
->>
->>   1) A brief introduction on the architecture of ACRN.
->>   2) I/O request handling in ACRN.
->>   3) CPUID functions of ACRN.
->>
->> To learn more about ACRN, please go to ACRN project website
->> https://projectacrn.org, or the documentation page
->> https://projectacrn.github.io/.
->>
->> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
->> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
->> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
->> Reviewed-by: Borislav Petkov <bp@suse.de>
->> Cc: Dave Hansen <dave.hansen@intel.com>
->> Cc: Sen Christopherson <sean.j.christopherson@intel.com>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: Fengwei Yin <fengwei.yin@intel.com>
->> Cc: Zhi Wang <zhi.a.wang@intel.com>
->> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
->> Cc: Yu Wang <yu1.wang@intel.com>
->> Cc: Reinette Chatre <reinette.chatre@intel.com>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Randy Dunlap <rdunlap@infradead.org>
->> ---
->>  Documentation/virt/acrn/cpuid.rst        | 46 +++++++++++
->>  Documentation/virt/acrn/index.rst        | 12 +++
->>  Documentation/virt/acrn/introduction.rst | 43 +++++++++++
->>  Documentation/virt/acrn/io-request.rst   | 97 ++++++++++++++++++++++++
->>  Documentation/virt/index.rst             |  1 +
->>  MAINTAINERS                              |  7 ++
->>  6 files changed, 206 insertions(+)
->>  create mode 100644 Documentation/virt/acrn/cpuid.rst
->>  create mode 100644 Documentation/virt/acrn/index.rst
->>  create mode 100644 Documentation/virt/acrn/introduction.rst
->>  create mode 100644 Documentation/virt/acrn/io-request.rst
->>
->> diff --git a/Documentation/virt/acrn/cpuid.rst b/Documentation/virt/acrn/cpuid.rst
->> new file mode 100644
->> index 000000000000..16727fc412f0
->> --- /dev/null
->> +++ b/Documentation/virt/acrn/cpuid.rst
->> @@ -0,0 +1,46 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +===============
->> +ACRN CPUID bits
->> +===============
->> +
->> +A guest VM running on an ACRN hypervisor, can check some of its features using
->
->comma not needed/not wanted.
+> -----Original Message-----
+> From: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Sent: Tuesday, January 19, 2021 1:38 AM
+> To: daniel.lezcano@linaro.org; Zhang, Rui <rui.zhang@intel.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>; Kamil Debski <kamil@wypas.org>;
+> Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>; Jean Delvare
+> <jdelvare@suse.com>; Neil Armstrong <narmstrong@baylibre.com>; Amit
+> Kucheria <amitk@kernel.org>; open list:PWM FAN DRIVER <linux-
+> hwmon@vger.kernel.org>; open list <linux-kernel@vger.kernel.org>; open
+> list:KHADAS MCU MFD DRIVER <linux-amlogic@lists.infradead.org>; open
+> list:THERMAL <linux-pm@vger.kernel.org>
+> Subject: [PATCH v2] thermal/core: Make cooling device state change private
+> Importance: High
+> 
+> The change of the cooling device state should be used by the governor or at
+> least by the core code, not by the drivers themselves.
+> 
+> Remove the API usage and move the function declaration to the internal
+> headers.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Removed.
+Acked-by: Zhang Rui <rui.zhang@intel.com>
 
->
->> +CPUID.
->> +
->> +ACRN cpuid functions are:
->> +
->> +function: 0x40000000
->> +
->> +returns::
->> +
->> +   eax = 0x40000010
->> +   ebx = 0x4e524341
->> +   ecx = 0x4e524341
->> +   edx = 0x4e524341
->> +
->> +Note that this value in ebx, ecx and edx corresponds to the string
->> +"ACRNACRNACRN". The value in eax corresponds to the maximum cpuid function
->> +present in this leaf, and will be updated if more functions are added in the
->
->except for the 0x4000000 bit?
+Thanks,
+rui
+> ---
+>  drivers/hwmon/pwm-fan.c          | 1 -
+>  drivers/thermal/khadas_mcu_fan.c | 1 -
+>  drivers/thermal/thermal_core.h   | 2 ++
+>  include/linux/thermal.h          | 3 ---
+>  4 files changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c index
+> bdba2143021a..0b1159ceac9b 100644
+> --- a/drivers/hwmon/pwm-fan.c
+> +++ b/drivers/hwmon/pwm-fan.c
+> @@ -378,7 +378,6 @@ static int pwm_fan_probe(struct platform_device
+> *pdev)
+>  			return ret;
+>  		}
+>  		ctx->cdev = cdev;
+> -		thermal_cdev_update(cdev);
+>  	}
+> 
+>  	return 0;
+> diff --git a/drivers/thermal/khadas_mcu_fan.c
+> b/drivers/thermal/khadas_mcu_fan.c
+> index 9eadd2d6413e..d35e5313bea4 100644
+> --- a/drivers/thermal/khadas_mcu_fan.c
+> +++ b/drivers/thermal/khadas_mcu_fan.c
+> @@ -100,7 +100,6 @@ static int khadas_mcu_fan_probe(struct
+> platform_device *pdev)
+>  		return ret;
+>  	}
+>  	ctx->cdev = cdev;
+> -	thermal_cdev_update(cdev);
+> 
+>  	return 0;
+>  }
+> diff --git a/drivers/thermal/thermal_core.h
+> b/drivers/thermal/thermal_core.h index 90f9a80c8b23..86b8cef7310e 100644
+> --- a/drivers/thermal/thermal_core.h
+> +++ b/drivers/thermal/thermal_core.h
+> @@ -65,6 +65,8 @@ static inline bool cdev_is_power_actor(struct
+> thermal_cooling_device *cdev)
+>  		cdev->ops->power2state;
+>  }
+> 
+> +void thermal_cdev_update(struct thermal_cooling_device *);
+> +
+>  /**
+>   * struct thermal_trip - representation of a point in temperature domain
+>   * @np: pointer to struct device_node that this trip point was created from
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h index
+> 1e686404951b..6ac7bb1d2b1f 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -390,7 +390,6 @@ int thermal_zone_get_temp(struct
+> thermal_zone_device *tz, int *temp);  int thermal_zone_get_slope(struct
+> thermal_zone_device *tz);  int thermal_zone_get_offset(struct
+> thermal_zone_device *tz);
+> 
+> -void thermal_cdev_update(struct thermal_cooling_device *);  void
+> thermal_notify_framework(struct thermal_zone_device *, int);  int
+> thermal_zone_device_enable(struct thermal_zone_device *tz);  int
+> thermal_zone_device_disable(struct thermal_zone_device *tz); @@ -437,8
+> +436,6 @@ static inline int thermal_zone_get_offset(
+>  		struct thermal_zone_device *tz)
+>  { return -ENODEV; }
+> 
+> -static inline void thermal_cdev_update(struct thermal_cooling_device
+> *cdev) -{ }  static inline void thermal_notify_framework(struct
+> thermal_zone_device *tz,
+>  	int trip)
+>  { }
+> --
+> 2.17.1
 
-It's the maximum cpuid function value. So it's 0x40000010.
-
->
->> +future.
->> +
->> +function: define ACRN_CPUID_FEATURES (0x40000001)
->> +
->> +returns::
->> +
->> +          ebx, ecx, edx
->> +          eax = an OR'ed group of (1 << flag)
->> +
->> +where ``flag`` is defined as below:
->> +
->> +================================= =========== ================================
->> +flag                              value       meaning
->> +================================= =========== ================================
->> +ACRN_FEATURE_PRIVILEGED_VM        0           guest VM is a privileged VM
->> +================================= =========== ================================
->> +
->> +function: 0x40000010
->> +
->> +returns::
->> +
->> +          ebx, ecx, edx
->> +          eax = (Virtual) TSC frequency in kHz.
->> diff --git a/Documentation/virt/acrn/index.rst b/Documentation/virt/acrn/index.rst
->> new file mode 100644
->> index 000000000000..b5f793e73df5
->> --- /dev/null
->> +++ b/Documentation/virt/acrn/index.rst
->> @@ -0,0 +1,12 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +===============
->> +ACRN Hypervisor
->> +===============
->> +
->> +.. toctree::
->> +   :maxdepth: 1
->> +
->> +   introduction
->> +   io-request
->> +   cpuid
->> diff --git a/Documentation/virt/acrn/introduction.rst b/Documentation/virt/acrn/introduction.rst
->> new file mode 100644
->> index 000000000000..f8d081bc084d
->> --- /dev/null
->> +++ b/Documentation/virt/acrn/introduction.rst
->> @@ -0,0 +1,43 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +ACRN Hypervisor Introduction
->> +============================
->> +
->> +The ACRN Hypervisor is a Type 1 hypervisor, running directly on bare-metal
->> +hardware. It has a privileged management VM, called Service VM, to manage User
->> +VMs and do I/O emulation.
->> +
->> +ACRN userspace is an application running in the Service VM that emulates
->> +devices for a User VM based on command line configurations. ACRN Hypervisor
->> +Service Module (HSM) is a kernel module in the Service VM which provides
->> +hypervisor services to the ACRN userspace.
->> +
->> +Below figure shows the architecture.
->> +
->> +::
->> +
->> +                Service VM                    User VM
->> +      +----------------------------+  |  +------------------+
->> +      |        +--------------+    |  |  |                  |
->> +      |        |ACRN userspace|    |  |  |                  |
->> +      |        +--------------+    |  |  |                  |
->> +      |-----------------ioctl------|  |  |                  |   ...
->> +      |kernel space   +----------+ |  |  |                  |
->> +      |               |   HSM    | |  |  | Drivers          |
->> +      |               +----------+ |  |  |                  |
->> +      +--------------------|-------+  |  +------------------+
->> +  +---------------------hypercall----------------------------------------+
->> +  |                         ACRN Hypervisor                              |
->> +  +----------------------------------------------------------------------+
->> +  |                          Hardware                                    |
->> +  +----------------------------------------------------------------------+
->> +
->> +ACRN userspace allocates memory for the User VM, configures and initializes the
->> +devices used by the User VM, loads the virtual bootloader, initializes the
->> +virtual CPU state and handles I/O request accesses from the User VM. It uses
->> +ioctls to communicate with the HSM. HSM implements hypervisor services by
->> +interacting with the ACRN Hypervisor via hypercalls. HSM exports a char device
->> +interface (/dev/acrn_hsm) to userspace.
->> +
->> +The ACRN hypervisor is open for contribution from anyone. The source repo is
->> +available at https://github.com/projectacrn/acrn-hypervisor.
->> diff --git a/Documentation/virt/acrn/io-request.rst b/Documentation/virt/acrn/io-request.rst
->> new file mode 100644
->> index 000000000000..79022a671ea7
->> --- /dev/null
->> +++ b/Documentation/virt/acrn/io-request.rst
->> @@ -0,0 +1,97 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +I/O request handling
->> +====================
->> +
->> +An I/O request of a User VM, which is constructed by the hypervisor, is
->> +distributed by the ACRN Hypervisor Service Module to an I/O client
->> +corresponding to the address range of the I/O request. Details of I/O request
->> +handling are described in the following sections.
->> +
->> +1. I/O request
->> +--------------
->> +
->> +For each User VM, there is a shared 4-KByte memory region used for I/O requests
->> +communication between the hypervisor and Service VM. An I/O request is a
->> +256-byte structure buffer, which is 'struct acrn_io_request', that is filled by
->> +an I/O handler of the hypervisor when a trapped I/O access happens in a User
->> +VM. ACRN userspace in the Service VM first allocates a 4-KByte page and passes
->> +the GPA (Guest Physical Address) of the buffer to the hypervisor. The buffer is
->> +used as an array of 16 I/O request slots with each I/O request slot being 256
->> +bytes. This array is indexed by vCPU ID.
->> +
->> +2. I/O clients
->> +--------------
->> +
->> +An I/O client is responsible for handling User VM I/O requests whose accessed
->> +GPA falls in a certain range. Multiple I/O clients can be associated with each
->> +User VM. There is a special client associated with each User VM, called the
->> +default client, that handles all I/O requests that do not fit into the range of
->> +any other clients. The ACRN userspace acts as the default client for each User
->> +VM.
->> +
->> +Below illustration shows the relationship between I/O requests shared buffer,
->> +I/O requests and I/O clients.
->> +
->> +::
->> +
->> +     +------------------------------------------------------+
->> +     |                                       Service VM     |
->> +     |+--------------------------------------------------+  |
->> +     ||      +----------------------------------------+  |  |
->> +     ||      | shared page            ACRN userspace  |  |  |
->> +     ||      |    +-----------------+  +------------+ |  |  |
->> +     ||   +----+->| acrn_io_request |<-+  default   | |  |  |
->> +     ||   |  | |  +-----------------+  | I/O client | |  |  |
->> +     ||   |  | |  |       ...       |  +------------+ |  |  |
->> +     ||   |  | |  +-----------------+                 |  |  |
->> +     ||   |  +-|--------------------------------------+  |  |
->> +     ||---|----|-----------------------------------------|  |
->> +     ||   |    |                             kernel      |  |
->> +     ||   |    |            +----------------------+     |  |
->> +     ||   |    |            | +-------------+  HSM |     |  |
->> +     ||   |    +--------------+             |      |     |  |
->> +     ||   |                 | | I/O clients |      |     |  |
->> +     ||   |                 | |             |      |     |  |
->> +     ||   |                 | +-------------+      |     |  |
->> +     ||   |                 +----------------------+     |  |
->> +     |+---|----------------------------------------------+  |
->> +     +----|-------------------------------------------------+
->> +          |
->> +     +----|-------------------------------------------------+
->> +     |  +-+-----------+                                     |
->> +     |  | I/O handler |              ACRN Hypervisor        |
->> +     |  +-------------+                                     |
->> +     +------------------------------------------------------+
->> +
->> +3. I/O request state transition
->> +-------------------------------
->> +
->> +The state transitions of an ACRN I/O request are as follows.
->> +
->> +::
->> +
->> +   FREE -> PENDING -> PROCESSING -> COMPLETE -> FREE -> ...
->> +
->> +- FREE: this I/O request slot is empty
->> +- PENDING: a valid I/O request is pending in this slot
->> +- PROCESSING: the I/O request is being processed
->> +- COMPLETE: the I/O request has been processed
->> +
->> +An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM and
->> +ACRN userspace are in charge of processing the others.
->> +
->> +4. Processing flow of I/O requests
->> +-------------------------------
->
->add 3 more '-' above, please.
-
-Sure. Thanks.
-
-shuo
