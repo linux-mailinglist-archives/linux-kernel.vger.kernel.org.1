@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7212FB7FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696C72FB806
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391572AbhASLgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:36:17 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55327 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405637AbhASL2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:28:14 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UMEykKZ_1611055592;
-Received: from 30.225.36.0(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UMEykKZ_1611055592)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Jan 2021 19:26:32 +0800
-Subject: Re: [PATCH] arm64/cpuinfo: Show right CPU architecture information
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>, gustavoars@kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210119105510.27836-1-zhangliguang@linux.alibaba.com>
- <20210119110131.GA18433@willie-the-truck>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <ff3a2f25-083c-2363-5e09-4d6acf5291e7@linux.alibaba.com>
-Date:   Tue, 19 Jan 2021 19:26:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2391040AbhASLqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:46:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:52144 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389029AbhASLbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:31:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F01DE1042;
+        Tue, 19 Jan 2021 03:30:05 -0800 (PST)
+Received: from e123427-lin.arm.com (unknown [10.57.35.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E06263F719;
+        Tue, 19 Jan 2021 03:30:03 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>,
+        Jon Mason <jdmason@kudzu.us>, Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Tom Joseph <tjoseph@cadence.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v9 00/17] Implement NTB Controller using multiple PCI EP
+Date:   Tue, 19 Jan 2021 11:29:55 +0000
+Message-Id: <161105563975.29969.4677344444174224884.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20210104152909.22038-1-kishon@ti.com>
+References: <20210104152909.22038-1-kishon@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119110131.GA18433@willie-the-truck>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2021/1/19 19:01, Will Deacon Ð´µÀ:
-> On Tue, Jan 19, 2021 at 06:55:10PM +0800, Liguang Zhang wrote:
->> CPU architecture is assigned to be a fixed value, it should be obtained
->> from midr register.
->>
->> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
->> ---
->>   arch/arm64/kernel/cpuinfo.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
->> index 77605aec25fe..0bd11e0fe9f2 100644
->> --- a/arch/arm64/kernel/cpuinfo.c
->> +++ b/arch/arm64/kernel/cpuinfo.c
->> @@ -191,7 +191,7 @@ static int c_show(struct seq_file *m, void *v)
->>   
->>   		seq_printf(m, "CPU implementer\t: 0x%02x\n",
->>   			   MIDR_IMPLEMENTOR(midr));
->> -		seq_printf(m, "CPU architecture: 8\n");
->> +		seq_printf(m, "CPU architecture: %d\n", MIDR_ARCHITECTURE(midr));
-> Huh? Won't this always return 0xf?
+On Mon, 4 Jan 2021 20:58:52 +0530, Kishon Vijay Abraham I wrote:
+> This series is about implementing SW defined Non-Transparent Bridge (NTB)
+> using multiple endpoint (EP) instances. This series has been tested using
+> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
+> on the other end. However there is nothing platform specific for the NTB
+> functionality.
+> 
+> This was presented in Linux Plumbers Conference. Link to presentation
+> and video can be found @ [1]
+> Created a video demo @ [9]
+> 
+> [...]
 
-Hi Will,
+Applied to pci/ntb to give it more visibility and testing, aiming
+for v5.12.
 
-I'm not sure. My platform return 0xf, but /proc/cpuinfo show 8. Why we 
-assign a fixed
+[01/17] Documentation: PCI: Add specification for the *PCI NTB* function device
+        https://git.kernel.org/lpieralisi/pci/c/75e6ac86ca
+[02/17] PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit BAR
+        https://git.kernel.org/lpieralisi/pci/c/b6c7a2a2b5
+[03/17] PCI: endpoint: Add helper API to get the 'next' unreserved BAR
+        https://git.kernel.org/lpieralisi/pci/c/43e293914d
+[04/17] PCI: endpoint: Make *_free_bar() to return error codes on failure
+        https://git.kernel.org/lpieralisi/pci/c/293e2c258c
+[05/17] PCI: endpoint: Remove unused pci_epf_match_device()
+        https://git.kernel.org/lpieralisi/pci/c/9a25bdab98
+[06/17] PCI: endpoint: Add support to associate secondary EPC with EPF
+        https://git.kernel.org/lpieralisi/pci/c/868fe90ea4
+[07/17] PCI: endpoint: Add support in configfs to associate two EPCs with EPF
+        https://git.kernel.org/lpieralisi/pci/c/632c92ec12
+[08/17] PCI: endpoint: Add pci_epc_ops to map MSI irq
+        https://git.kernel.org/lpieralisi/pci/c/310511a301
+[09/17] PCI: endpoint: Add pci_epf_ops for epf drivers to expose function specific attrs
+        https://git.kernel.org/lpieralisi/pci/c/34fb8ab2e3
+[10/17] PCI: endpoint: Allow user to create sub-directory of 'EPF Device' directory
+        https://git.kernel.org/lpieralisi/pci/c/3a5c112c7a
+[11/17] PCI: cadence: Implement ->msi_map_irq() ops
+        https://git.kernel.org/lpieralisi/pci/c/d5c3d2ae7c
+[12/17] PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
+        https://git.kernel.org/lpieralisi/pci/c/d3f4973104
+[13/17] PCI: endpoint: Add EP function driver to provide NTB functionality
+        https://git.kernel.org/lpieralisi/pci/c/7dc64244f9
+[14/17] PCI: Add TI J721E device to pci ids
+        https://git.kernel.org/lpieralisi/pci/c/17d49876c3
+[15/17] NTB: Add support for EPF PCI-Express Non-Transparent Bridge
+        https://git.kernel.org/lpieralisi/pci/c/5d0db3f429
+[16/17] Documentation: PCI: Add configfs binding documentation for pci-ntb endpoint function
+        https://git.kernel.org/lpieralisi/pci/c/099f07051e
+[17/17] Documentation: PCI: Add userguide for PCI endpoint NTB function
+        https://git.kernel.org/lpieralisi/pci/c/27f22f76c3
 
-value to cpu architecture?
-
-Regards
-
-Liguang Zhang
-
->
-> Will
+Thanks,
+Lorenzo
