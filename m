@@ -2,217 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41912FAF4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B66F2FAF53
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbhASEGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 23:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729991AbhASEDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 23:03:52 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5698C061573;
-        Mon, 18 Jan 2021 20:03:11 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id j3so664710ljb.9;
-        Mon, 18 Jan 2021 20:03:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QZbf/tHbkOzK8ODkUs/F8ksdfv4bYbCZtEAyN+1lVFc=;
-        b=iVnWB8g7Mb83HtkOHXTgAAGhI+6AjJvG/pcT/37eoLcFloQ7bshMYzCdKzuXiYtu9C
-         2pT94OxVUO01ZH2VUgNxYfjxZ1Z9m0boIi1t9Ttgv431AtXwDNCTY8fgQjJliVoJTTiw
-         1tmdP6DmaB8Q8+tlN4a+xX3Z9hRlIf5bfrGZAJxh5ZPhkxBp073OAVhMoH/7XBXXQeA7
-         6k3ey+t4CzFZV4h/zUZDMHasukBWA6mFJKNzMzQUI5xbDdf+XiwawcVUxOXWixZExl2s
-         MGffl9DJj/piFYXmXLU0+Bax31gph70GjwcXn5GxoRdgUg20zIjrjGGSQ6aVARJMTyji
-         FODA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZbf/tHbkOzK8ODkUs/F8ksdfv4bYbCZtEAyN+1lVFc=;
-        b=lw9jnxMwCtLnGU7FLIvPDnDd5MgRPSsWa08RzBLJsLSPajV7KLhB/pp1GJo/YjFUdD
-         0S/vkPB+7rG0cQsbbnBCJAAv+CI+U3s3LQKdr22i7sn5E6LbJV95GjSGE6NV1CfIGChT
-         bWQ09TNxKCOjO/O9yfylFBFEwfgHoV3LxDMkCVhFYttXG3FXRRfIYWtuM86EXjIqp4H/
-         hRWtG94WIIcWd/htLmXl2uyh2DhGO2vvjfMfzyVK3YPY7EwHsvLqBqq616uWb3RgorKz
-         rMPv9sbQ52A5TdILvkviHYD6JDPnnehLOyziSNmPg2/oyS5/KclbALSSvgNSogL7zINd
-         reLg==
-X-Gm-Message-State: AOAM533tI/PiHltUuhVhxDCVxHaATOgh4K0hIZxBXiXo/aM7jVs6aU/s
-        xRXHKhDu852VXUUW+wWoqqU=
-X-Google-Smtp-Source: ABdhPJztuSTxXLHjG6KJRw+QmajmQ+obnrUe+m87VL+zG528ca+DEStlj15L6rJRijL33pXbavz1gA==
-X-Received: by 2002:a2e:b80d:: with SMTP id u13mr1025962ljo.143.1611028990209;
-        Mon, 18 Jan 2021 20:03:10 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id r201sm2135071lff.268.2021.01.18.20.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 20:03:09 -0800 (PST)
-Date:   Tue, 19 Jan 2021 06:03:06 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com
-Subject: Re: [PATCH v17 02/10] fs/ntfs3: Add initialization of super block
-Message-ID: <20210119040306.54lm6oyeiarjrb2w@kari-VirtualBox>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-3-almaz.alexandrovich@paragon-software.com>
-MIME-Version: 1.0
+        id S1730107AbhASEHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 23:07:54 -0500
+Received: from mail-eopbgr80045.outbound.protection.outlook.com ([40.107.8.45]:9443
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727427AbhASEHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 23:07:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nj1J+2A9x+hnU3QY00SolBEyEBurExDO0Q1fpDNA2c6UadtRFoxJ/U7lQUrRSsZHAWJPVGtlCgGdgIT2N+JIRhqsbBXT2ge/hOLCMHaf/DQ9Ic9TmNeq5zCjN0FdN7H+9hG9XShZRuc6qJ/DiIhNgERitNDxex+RBs6j0I2pSP15ea2Oz+/gqHqGfzivfoYew1YSH5K+htrDkkdALx1uPvodG1QaRlt8S7c2N4It8uSNpPY2W3DQklIrOwjSj6xRcl3XQF3KOs6OzUeJQmvsAGGI11cmvy1reAcWdD69PTUXBvY0ueh77Jbtl+CZBNWBjiKNOD2cruT2BJVNopHdVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VAGjkSSfF3ZabSaKLTPjZ6M9r3OCGJ/tC+Lgfp0qnPU=;
+ b=lLSjcdGsu16cPYzHB3TqbT0jwOA1GRcFZajKQ6fco0ruMeyXw7D8PV8+XcjMaT3QDm+NntAliO4Wjmi9bkhI3zRRW5ZsXaEX22QXJsiK4CRfXzGtB90oL//W54aIkeIBXZiapiZf8AkjGxXqcRRP5M2mv6nMrUpJw591jewP94BGZ48PcMF2jIv50J/T2S6Q+jgSKMlaZ8RcNlmx3IYUDBdtoP2Mym+KyX0lKRfdvkMONWspGp+A+sYIijE9aIXOYOIjpCpJN7ZUd3cZSp9KG3Je8I1BnltyZW0RSxqLfHa/oFy/maTHdrn2wdcDwcuCtJ9Xv92z0CEXqb0Qr5Eu7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VAGjkSSfF3ZabSaKLTPjZ6M9r3OCGJ/tC+Lgfp0qnPU=;
+ b=NNFfKGIlC71qq6GvM2937OBg0f6w2k2yU2aZU9cNXJIumiwWpOD0bCQ4mRrYft9NfOoKs7myS9Z4dmx0YK9xfYgJgT6/1zqw1FQF3sVCFGUoPYnGN4bA8HZ6M599q6o1zI9oXeO0FcJNgnD6xeLiFASlFtWQ43qox5Inr2rBrZ4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB7155.eurprd04.prod.outlook.com (2603:10a6:208:194::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Tue, 19 Jan
+ 2021 04:06:15 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::bda3:e1f0:3c08:b357]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::bda3:e1f0:3c08:b357%6]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 04:06:15 +0000
+Date:   Tue, 19 Jan 2021 09:35:56 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v3 13/15] phylink: introduce
+ phylink_fwnode_phy_connect()
+Message-ID: <20210119031302.GA19428@lsv03152.swis.in-blr01.nxp.com>
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
+ <20210112134054.342-14-calvin.johnson@oss.nxp.com>
+ <CAHp75VcRDmQGfJ6ADJO8m4NvvenMaamNn8AYbYAyXV8JDy_b3w@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201231152401.3162425-3-almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <CAHp75VcRDmQGfJ6ADJO8m4NvvenMaamNn8AYbYAyXV8JDy_b3w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR06CA0221.apcprd06.prod.outlook.com
+ (2603:1096:4:68::29) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0221.apcprd06.prod.outlook.com (2603:1096:4:68::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Tue, 19 Jan 2021 04:06:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a6f48bf2-2164-4ed0-cb3a-08d8bc2f9070
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7155:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB71558167D45A75A5FB5B38F3D2A30@AM0PR04MB7155.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /f/sTKxtnT+rjPsbHPIt1uaDO2cmVDmGWHMAGJ30ZfN75lMDRW9AJkpRtGoYdlTThI3QKjXkogMdI9bJTsW55g9+S6X/a/WHAwkoh0mbsNgTs2XXxNOfL8k8PTv6xMcc+nrqZeaAwCmd680RUeQqcZTpHZ0PF9UO7p0FgmOK9QgBgmefzhQF/za19kYLhfYstThYcd0KvnvQ7mxTlHO05yxZOfrcvz3TVwg+tIZG5AmiDVjVE8QqURCNpE9JyWCaNekz1JW7vOckhMN8F/Q7yJh/T5KR7wzy2714Z4BqBfpCbVYgWyg+Oh5Rgf2C1KCiagqV/f+9BEebNFkv66pze22a4frFkDDl5BoPqTnR9QBr4o3DMS8s+UeMZCWn+cV1onOpTvY7DYJEJdtu6GbbIsKxxtHS8g8KySoc3mTCwWfB8HsFMdBbeBU5iiaPlECq3/L0MRc//4BwvWB4i1fCCL1LJ7vBcgcsjiZhTWTe0Kj00Iv1loFO5rQkpkQGlLlV+nhX13lLO5XgaNZt4pO4oUtL3bJV/K77/TmZbntZAAfT9BIqou2fArWiTXlAlpExxFsekGRiA8f1yypK0sdrvw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(396003)(39860400002)(136003)(66476007)(4326008)(66946007)(8936002)(1006002)(956004)(6666004)(55236004)(186003)(478600001)(33656002)(1076003)(66556008)(16526019)(86362001)(2906002)(7696005)(6506007)(53546011)(54906003)(8676002)(26005)(6916009)(52116002)(44832011)(5660300002)(4744005)(9686003)(7416002)(316002)(55016002)(110426009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?faQeBqK/O9tTuOiFalzoCDKVlzMrh4ZRjuh0woqcTKyX14xSzj3UYjTeukbI?=
+ =?us-ascii?Q?31+OPbXU7Bw2PWCeDQJFTMOwlg7zMXVNjA468ot9kclFhSucb10jEJcIfgBK?=
+ =?us-ascii?Q?4bqq2+FYmrk9XNbJ31lfTkLe+QBOJa5FkC+Kksz8PnPGtK4qVVsO8PCL7KgF?=
+ =?us-ascii?Q?GJmi0QOmJpaOJHK2DeXZCdZ55px7012y5TAa27TEH6wcGO3fOF1WEqGt02np?=
+ =?us-ascii?Q?cWTUaubiN6RKrZ0l0qiUXy5BoYup/BtsRJcsztpQPzXwcBArfobk6zrUO1e1?=
+ =?us-ascii?Q?Zn7nHLZxEEVAdv/PmE9M9+DZMUb0ZsnNyHSw+23Gvw4dYN5DjfzhG7EHZlTv?=
+ =?us-ascii?Q?dcYI4V0t8RxBQDqHsKSyj96OitH3+obHhH7pd6oLYOHaa38cR9F9CWXvmgCP?=
+ =?us-ascii?Q?ejN6HEdKbR3tu7ONP9aSEfxb1b8Xzc793lNM06j7G7fU8V2MQhTEV73+JtGi?=
+ =?us-ascii?Q?kjvDtQe24qpc6/Wooen2vJ2ZOpSiD6V63HO+h4qa0Fd8flEv4x1KWPKGuXEU?=
+ =?us-ascii?Q?tJpVcMWBZe7Mr10IyfKBBJhLWUHdUcbTmhk0bEsCHacGzzTcWGAjjsOX/tZU?=
+ =?us-ascii?Q?PVV5QCMxcGFhEEGGGBVjUCdpWq+ySvwTLsXBCQ8RlYaDuP3cRsVGE9FflRZ2?=
+ =?us-ascii?Q?hl+SH45hkVDP4vyQt4ByTo36yRvgDpm6KFI14IGEPyKYTleae1xzsOb9KJMw?=
+ =?us-ascii?Q?T/fZ7gvYBghD/wOT15U+sgvlXovIeRVI99aQ6Hw1XKWQAQfRvFgsZfWNNorU?=
+ =?us-ascii?Q?zl0GPkNDqdIHPrQJBZoRFFvu+/0ZcGjo6fZZg66IO8FT1lxcpqA2VD1188HO?=
+ =?us-ascii?Q?uKNWA1Suos8irMfhskhIOJlxoKNy3HBgsIKEL74HcwpGQKWdTKVKClm0d4Lr?=
+ =?us-ascii?Q?oTD5iIkfTNyAm7oSUZSvke2462XqLqqc6AI3ot2j6L7p1EuGfZ4aY6YaPaXm?=
+ =?us-ascii?Q?vdqUi7iQSRsVXoX2/q7LYfY8uzW2uui+4s08x+LijgAK55kOcj1JtT/SAIEZ?=
+ =?us-ascii?Q?7LUQ?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6f48bf2-2164-4ed0-cb3a-08d8bc2f9070
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 04:06:15.3186
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NZ1FlQRxV2h2v0Dm53/r06w0h7+D3xeeQiHVfTZlJpRu6iHqngam8UO4i0+PCLmiWHDlSgZBKXxAvXpj348xbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7155
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 06:23:53PM +0300, Konstantin Komarov wrote:
-> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-
-> +void fnd_clear(struct ntfs_fnd *fnd)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < fnd->level; i++) {
-> +		struct indx_node *n = fnd->nodes[i];
-> +
-> +		if (!n)
-> +			continue;
-> +
-> +		put_indx_node(n);
-> +		fnd->nodes[i] = NULL;
-> +	}
-> +	fnd->level = 0;
-> +	fnd->root_de = NULL;
-> +}
-> +
-> +static int fnd_push(struct ntfs_fnd *fnd, struct indx_node *n,
-> +		    struct NTFS_DE *e)
-> +{
-> +	int i;
-> +
-> +	i = fnd->level;
-> +	if (i < 0 || i >= ARRAY_SIZE(fnd->nodes))
-> +		return -EINVAL;
-> +	fnd->nodes[i] = n;
-> +	fnd->de[i] = e;
-> +	fnd->level += 1;
-> +	return 0;
-> +}
-> +
-> +static struct indx_node *fnd_pop(struct ntfs_fnd *fnd)
-> +{
-> +	struct indx_node *n;
-> +	int i = fnd->level;
-> +
-> +	i -= 1;
-> +	n = fnd->nodes[i];
-> +	fnd->nodes[i] = NULL;
-> +	fnd->level = i;
-> +
-> +	return n;
-> +}
-> +
-> +static bool fnd_is_empty(struct ntfs_fnd *fnd)
-> +{
-> +	if (!fnd->level)
-> +		return !fnd->root_de;
-> +
-> +	return !fnd->de[fnd->level - 1];
-> +}
-> +
-> +struct ntfs_fnd *fnd_get(struct ntfs_index *indx)
-> +{
-> +	struct ntfs_fnd *fnd = ntfs_alloc(sizeof(struct ntfs_fnd), 1);
-> +
-> +	if (!fnd)
-> +		return NULL;
-> +
-> +	return fnd;
-> +}
-
-This should be initilized. What about that indx. Is that neccasarry?
-Also no need to check NULL because if it is NULL we can just return it. 
-
-> +
-> +void fnd_put(struct ntfs_fnd *fnd)
-> +{
-> +	if (!fnd)
-> +		return;
-> +	fnd_clear(fnd);
-> +	ntfs_free(fnd);
-> +}
-
-> +/*
-> + * indx_insert_entry
-> + *
-> + * inserts new entry into index
-> + */
-> +int indx_insert_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
-> +		      const struct NTFS_DE *new_de, const void *ctx,
-> +		      struct ntfs_fnd *fnd)
-> +{
-> +	int err;
-> +	int diff;
-> +	struct NTFS_DE *e;
-> +	struct ntfs_fnd *fnd_a = NULL;
-> +	struct INDEX_ROOT *root;
-> +
-> +	if (!fnd) {
-> +		fnd_a = fnd_get(indx);
-
-Here we get uninitilized fnd.
-
-> +		if (!fnd_a) {
-> +			err = -ENOMEM;
-> +			goto out1;
-> +		}
-> +		fnd = fnd_a;
-> +	}
-> +
-> +	root = indx_get_root(indx, ni, NULL, NULL);
-> +	if (!root) {
-> +		err = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	if (fnd_is_empty(fnd)) {
-
-And example here we try to touch it.
-
-> +		/* Find the spot the tree where we want to insert the new entry. */
-> +		err = indx_find(indx, ni, root, new_de + 1,
-> +				le16_to_cpu(new_de->key_size), ctx, &diff, &e,
-> +				fnd);
-> +		if (err)
-> +			goto out;
-> +
-> +		if (!diff) {
-> +			err = -EEXIST;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	if (!fnd->level) {
-> +		/* The root is also a leaf, so we'll insert the new entry into it. */
-> +		err = indx_insert_into_root(indx, ni, new_de, fnd->root_de, ctx,
-> +					    fnd);
-> +		if (err)
-> +			goto out;
-> +	} else {
-> +		/* found a leaf buffer, so we'll insert the new entry into it.*/
-> +		err = indx_insert_into_buffer(indx, ni, root, new_de, ctx,
-> +					      fnd->level - 1, fnd);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +out:
-> +	fnd_put(fnd_a);
-> +out1:
-> +	return err;
-> +}
+On Tue, Jan 12, 2021 at 05:55:54PM +0200, Andy Shevchenko wrote:
+> On Tue, Jan 12, 2021 at 3:43 PM Calvin Johnson
+> <calvin.johnson@oss.nxp.com> wrote:
+> >
+> > Define phylink_fwnode_phy_connect() to connect phy specified by
+> > a fwnode to a phylink instance.
+> 
+> ...
+> 
+> > +       phy_dev = fwnode_phy_find_device(phy_fwnode);
+> > +       /* We're done with the phy_node handle */
+> > +       fwnode_handle_put(phy_fwnode);
+> > +       if (!phy_dev)
+> > +               return -ENODEV;
+> > +
+> > +       ret = phy_attach_direct(pl->netdev, phy_dev, flags,
+> > +                               pl->link_interface);
+> > +       if (ret)
+> 
+> Hmm... Shouldn't you put phy_dev here?
+I think you are right. We may have to add
+		put_device(&phydev->mdio.dev);
+It is missing in phylink_of_phy_connect() as well.
+> 
+> > +               return ret;
+> 
+> -- 
+Thanks
+Calvin
