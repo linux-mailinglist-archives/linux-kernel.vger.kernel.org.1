@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC36F2FBCFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F81E2FBD07
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389787AbhASQyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733193AbhASQxX (ORCPT
+        id S2391111AbhASQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:56:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38135 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390426AbhASQyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:53:23 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C71C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:52:40 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id h21so449423qvb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:52:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uGojdeA20zzASlYpdW76UKnqe50ntC8qShndn6zJIz4=;
-        b=xtAjKAEtfJQvTQE5lGL0o/pBMwEY1osKiNGCA40ER/PyoQC6arxZqOi3F65vp97cKN
-         h+lMfbHribwS5JhD+aM32o5RCl7lTiUuS4dsKUM0nJ8J/V4y8xND8eWXhbfYz935LOuH
-         Oygf+8ZTdrQUK4JsMzhoMVERDJnqu7csEnK5zT75ytSHbN7YI8FOvCBn/LZSz7DOvAwY
-         6GvraSTztJHRercM9PV46hF8l53VyDol1fxk7eJUlraR/FfdKKf2/tpxctc9l/tfB7JP
-         qwQhf7xoRiBqJLidHBzAtWUem0/wr1XEQeC0oFNFhYaFgbHqiOmNo1Baurzc1aS0pcu8
-         9iXg==
+        Tue, 19 Jan 2021 11:54:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611075189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HK4nAJ3T6oXK1ONWdl9zHivMWs2pVZ45ipCqU6He5eg=;
+        b=M/JULRFDF1gEPbSOAowUUqk5UHOclfRbFIsi9SRKyv/8YCclQ0T+1JDzFIJvheHkQnvr3J
+        Bi97rm+vTw5GtvRg6aVIarDeL5jwMPr9cjYMl/usS4JcrwDkGXt7FeShRvZX1xO7Io6u1h
+        SIlj42HfuhIh2J1VeKfuspqpAstS1rI=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-cQg_A79oOi-uhudHURkm9A-1; Tue, 19 Jan 2021 11:53:07 -0500
+X-MC-Unique: cQg_A79oOi-uhudHURkm9A-1
+Received: by mail-lj1-f198.google.com with SMTP id r22so5306314ljd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:53:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uGojdeA20zzASlYpdW76UKnqe50ntC8qShndn6zJIz4=;
-        b=Xa7hfKmB+UCCsCLnLORWMKJFtgg4jAXTCIlZLuMvQ29ksJ7O9ihF9I4vQjXtr3VgMK
-         w3Dml4bUCXnSre6mvyXocVNzY1ew1I7kSNl5Tc3pYQIhYPJM4rf4LIeC+1a+hKdWmEDf
-         /kr0fsuA4HR7aS2kh5HZ7sZBIyE8gC2HrNnw5bho5hl+TjjA5F9ZgAUHSk+kXmlrCt5y
-         Ii9R9DFiDN6HZwnSEAQWvhwXFhzn+kBP+pUO9uNQ2Vea42/1DbKN4q4EfI5xOgilhpIa
-         GZQ8VHAp9XBgvg2LgjEY4taXaslnIGzJqdXl6+Hd+CM0W4VTPgxgdQbCx7KSTrN79RRw
-         Rx5g==
-X-Gm-Message-State: AOAM5339SUVfo4AV3snEkyeT92DThBe6OgGo+uSHYwtBYSoA4vB97sWN
-        C3/p7UppMHn9z5qcraP4VWPoWA==
-X-Google-Smtp-Source: ABdhPJz3ic1j17HOrepfbmnlJXR37AVr6m5z0Ku7AfBnvKhYbNPxVtgPdcR7MnHR/P5XmARgVyLfHg==
-X-Received: by 2002:a0c:c3c9:: with SMTP id p9mr5315412qvi.49.1611075159264;
-        Tue, 19 Jan 2021 08:52:39 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id w91sm6552912qte.83.2021.01.19.08.52.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:52:38 -0800 (PST)
-Date:   Tue, 19 Jan 2021 11:52:37 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dschatzberg@fb.com, surenb@google.com
-Subject: Re: [PATCH v2 1/2] cgroup: fix psi monitor for root cgroup
-Message-ID: <YAcOVZ9hceK3gwWT@cmpxchg.org>
-References: <20210116173634.1615875-1-odin@uged.al>
- <20210116173634.1615875-2-odin@uged.al>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HK4nAJ3T6oXK1ONWdl9zHivMWs2pVZ45ipCqU6He5eg=;
+        b=E2Xo3bdZXBaGGEzdlSYYpt1BDEbtOJdJqepsgjvyXyUFdPh6wHwhklipr9B7ZwJbfp
+         llLHgksKVcOZsbVo50BiWIMd6OsezCzvq8LYLuaupvZ6gNYzYH0Rml3BPoptpBjIOA5r
+         LO67KGadM+yhxItDcR4dqLAQ94HQISb38ISws7jmFnNPO5B98GiCz7ADBaIY6X89GXq1
+         Ffb2mirtTltrwn6iyboIsHatpdWMDVSHX73r3K5+jX/DEpmp0v0YJoMK6mShqXbaGi/O
+         6Uq4szIx+MMmqz3VXJVr2IvOY9e2u3bmk/49066SJ3Ffgk8O0LI8fzdyfySh87vjbtAc
+         CqDA==
+X-Gm-Message-State: AOAM530cWTB07MRlx+1fT/ALem90S8XZoOPrSqXG4ksabREz3EnJQpJ8
+        4w+7pxPyB8j0u6l5RzA3i1OtSHPJJZBBuXOwU5wcJmN6ed/Y9456GPvtDAvBiyxfhmgdxrkuEyp
+        MWFy3PWvHy3ITqVv2gvHpDJKIzpkVmX9an95b25o9
+X-Received: by 2002:a19:58a:: with SMTP id 132mr2288990lff.355.1611075186344;
+        Tue, 19 Jan 2021 08:53:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyI3Q9N/A/K+bU3g9xUudRjbeGxYzhCCeDbwHeLDGBbfnqurDrSLN/JZZ3wEwt/vd6EIC8VtwC1NVoTsV0EYc4=
+X-Received: by 2002:a19:58a:: with SMTP id 132mr2288974lff.355.1611075186136;
+ Tue, 19 Jan 2021 08:53:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116173634.1615875-2-odin@uged.al>
+References: <20201203171431.256675-1-aklimov@redhat.com> <20201207083827.GD3040@hirez.programming.kicks-ass.net>
+ <87k0tritvq.fsf@oracle.com> <87im7yc2bu.fsf@oracle.com>
+In-Reply-To: <87im7yc2bu.fsf@oracle.com>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Tue, 19 Jan 2021 16:52:55 +0000
+Message-ID: <CAFBcO+_PoXhbq+p-2z=acCpboJtOewXkp-9-3=csafoAYuNFQw@mail.gmail.com>
+Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish
+ on cpu online
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+        qais.yousef@arm.com, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 06:36:33PM +0100, Odin Ugedal wrote:
-> Fix NULL pointer dereference when adding new psi monitor to the root
-> cgroup. PSI files for root cgroup was introduced in df5ba5be742 by using
-> system wide psi struct when reading, but file write/monitor was not
-> properly fixed. Since the PSI config for the root cgroup isn't
-> initialized, the current implementation tries to lock a NULL ptr,
-> resulting in a crash.
-> 
-> Can be triggered by running this as root:
-> $ tee /sys/fs/cgroup/cpu.pressure <<< "some 10000 1000000"
-> 
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+On Fri, Jan 15, 2021 at 6:54 AM Daniel Jordan
+<daniel.m.jordan@oracle.com> wrote:
+>
+> Daniel Jordan <daniel.m.jordan@oracle.com> writes:
+> > Peter Zijlstra <peterz@infradead.org> writes:
+> >>> The nature of this bug is also described here (with different consequences):
+> >>> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+> >>
+> >> Yeah, pesky deadlocks.. someone was going to try again.
+> >
+> > I dug up the synchronous patch
+> >
+> >     https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
+> >
+> > but surprisingly wasn't able to reproduce the lockdep splat from
+> >
+> >     https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
+> >
+> > even though I could hit it a few weeks ago.
+>
+> oh okay, you need to mount a legacy cpuset hierarchy.
+>
+> So as the above splat shows, making cpuset_hotplug_workfn() synchronous
+> means cpu_hotplug_lock (and "cpuhp_state-down") can be acquired before
+> cgroup_mutex.
+>
+> But there are at least four cgroup paths that take the locks in the
+> opposite order.  They're all the same, they take cgroup_mutex and then
+> cpu_hotplug_lock later on to modify one or more static keys.
+>
+> cpu_hotplug_lock should probably be ahead of cgroup_mutex because the
+> latter is taken in a hotplug callback, and we should keep the static
+> branches in cgroup, so the only way out I can think of is moving
+> cpu_hotplug_lock to just before cgroup_mutex is taken and switching to
+> _cpuslocked flavors of the static key calls.
+>
+> lockdep quiets down with that change everywhere, but it puts another big
+> lock around a lot of cgroup paths.  Seems less heavyhanded to go with
+> this RFC.  What do you all think?
 
-Fixes: df5ba5be7425 ("kernel/sched/psi.c: expose pressure metrics on root cgroup")
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Daniel, thank you for taking a look. I don't mind reviewing+testing
+another approach that you described.
 
-Since this is a userspace-triggerable NULL ptr crash, we should
-probably also
+> Absent further discussion, Alexey, do you plan to post another version?
 
-Cc: stable@vger.kernel.org # 5.2+
+I plan to update this patch and re-send in the next couple of days. It
+looks like it might be a series of two patches. Sorry for delays.
+
+Best regards,
+Alexey
+
