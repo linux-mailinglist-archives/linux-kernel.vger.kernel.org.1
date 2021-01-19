@@ -2,306 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A1A2FB780
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD302FB77F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404998AbhASLBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:01:35 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1235 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391041AbhASKwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:52:30 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10JAlo8w024026;
-        Tue, 19 Jan 2021 11:51:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=9YMOD6MmU6S+E9nQgamOnACAlveEyKVrfmoJphPUeHU=;
- b=TBRRBHg6sjVJRAb6kZJ2/Ebv4/CRq3EEuXNvCtjLq4JKisvSqNqd4ZTMRMvD7r22BdQd
- cMhQfLO98aTKU/6pn/U5C3k8COoorD8AZX3DXauwY91Z0qioIIxl10BUtWdYAI3Xd+Jq
- gmkALxqJ2wzxjlDx5o2aAt6ctAgZ4OqmOvhRoLLTzezpBt/EDFMJh/99IMWDo+ndVRQ0
- b7HfXs+cdX/YCIv6sbnPcZ3sOzJo6S2qOBpYnbIO+B29fVEa93xre4KEirOlYYNjiOk4
- YtWvFUjCcqKc1KZ5hc6a7tkfT8ZN6H8CFdm3ehguGzHSJryXVsROBbtNFYHnTtvry3Ty Zw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 363p5dfdet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 11:51:22 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C43F6100034;
-        Tue, 19 Jan 2021 11:51:20 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B341A2296E0;
-        Tue, 19 Jan 2021 11:51:20 +0100 (CET)
-Received: from lmecxl0602.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 11:51:19 +0100
-Subject: Re: [Linux-stm32] [PATCH] ARM: dts: stm32: enable STM32MP1 crypto/CRC
- accelerators unconditionally
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@pengutronix.de>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210119095241.17888-1-a.fatoum@pengutronix.de>
-From:   Lionel DEBIEVE <lionel.debieve@foss.st.com>
-Message-ID: <d14933ea-2c77-7cca-8e2b-3972ea47d733@foss.st.com>
-Date:   Tue, 19 Jan 2021 11:50:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210119095241.17888-1-a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S2404976AbhASLB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:01:29 -0500
+Received: from mail-eopbgr10066.outbound.protection.outlook.com ([40.107.1.66]:24965
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2391028AbhASKwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:52:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BP7V2wD8fvQsiWO8qMdbVau6sAmA/KD0awGh5l1jU4GkUJ2zq5kscu1GJq2LnHnJKAEckoXuYkmKsZI1R4x2YKzdammwHXrbXX+zrZECX7BF+gYSkWfuR3NS3hgvVsdej2DUFIwAI6qfaWzSTaf8R5/sd4dXd2bp4eLVFyDV/OWAWVgPkkBvFgPokGQ/+LiXNjegb6xX+ibtZbfhtjaitix38NPJdSX2IjLuiVPRiqj4VpSitREfDWMadgAVYgmrJV5/Emt3wkV9Dvy8XmBtiCym2PV4coJrjqsxLjx7qg+aLJgprEk8NzaeXswt5L96fgFKMC8PEfecsQILxhy3GA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oalw7dDrrDQTN4FuxtUUgN/2ZiHH1PawkpfjHQiIcCU=;
+ b=aL78bubPE37OK9hKbAirHZKQy3eAD6iZTmmXA55oK7iGbUN+HRLGhijyID1G9WOf7g2pb3Sr4llVmUIaFfyEU3ndoRg78ssQ/h393rCe+E4vZcHR372y76TWTthZ1q6RYfIfNYB+NNKUXY+8iHHTqwfezzsh5oAKoG04LynCyMVjGh40M2eA4+v5fJJI8dbm6B+riKZfiSb8hT7d6Qrv05esTRQpR9pnfV6FkKMlNc9X3yQAnB3SaBf5lXQbcXdkxRUrVIqMmCdvD5Z4fCJ6vJPEdkRCoe6bKptTNUsv6ccjXehMnoaylXm6Y/MoCrEjOA2EI+wSCobxfXoLt3/IfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oalw7dDrrDQTN4FuxtUUgN/2ZiHH1PawkpfjHQiIcCU=;
+ b=FG0r8L+Mhnjk/A9UA08s3z0tdB+fVXt8bmpDvUo86ijFxfOApMVC1GgC9HAJFRQU74gd99kj9C1Z8nJ4EGQ9uXpdhBu/361CXT+ouKFz0lDnduvdJSx9v/WSqBfZ2StZYVf+lJR0eiDw54FyclOT9KFdrdKfTIAmDVn2LFzuLcw=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB7119.eurprd04.prod.outlook.com (2603:10a6:800:12e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Tue, 19 Jan
+ 2021 10:51:24 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::2c43:e9c9:db64:fa57]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::2c43:e9c9:db64:fa57%5]) with mapi id 15.20.3763.013; Tue, 19 Jan 2021
+ 10:51:24 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     "Bedel, Alban" <alban.bedel@aerq.com>
+CC:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Subject: Re: [PATCH] net: mscc: ocelot: Fix multicast to the CPU port
+Thread-Topic: [PATCH] net: mscc: ocelot: Fix multicast to the CPU port
+Thread-Index: AQHW7bOA9fYvcfmYzUChcnWV1prsRqotu3KAgAEAXACAAArYgA==
+Date:   Tue, 19 Jan 2021 10:51:23 +0000
+Message-ID: <20210119105123.b3emeo22ykwyrot7@skbuf>
+References: <20210118160317.554018-1-alban.bedel@aerq.com>
+ <20210118185501.6wejo4xwb2lidicm@skbuf>
+ <2cb97bec861c751530a04a9764b8855c8e8e2e41.camel@aerq.com>
+In-Reply-To: <2cb97bec861c751530a04a9764b8855c8e8e2e41.camel@aerq.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_02:2021-01-18,2021-01-19 signatures=0
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aerq.com; dkim=none (message not signed)
+ header.d=none;aerq.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.227.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9ba1c36d-67ff-4c5a-80f9-08d8bc682a12
+x-ms-traffictypediagnostic: VI1PR04MB7119:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB711972AC80EC3D1D536CBEE9E0A30@VI1PR04MB7119.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Cm8Qq8KzV6dZSAM6pptYMMs3tFNWz9sFmKgxpgFcVYfQi8hT1HHpfc8xKNipJPm8I0qkbrilKTo58r2RCNPiyhQKeA9XpT506o2sU3l2Q3HwFVbE6k+Lmv0QHXq1ei3KM7xINvDdjLmG0mhqO+KtKpfeE/VLy+wO+T1ckpqxGOYyau6bNC4q/B0vRM3aYhMm2C5g4tOZEWJfEUu+hRliv9y1d7a2nj1jMNuW3FpZlsZ03GkY+sSWJIq+KdM/yZIzqI3pygiPnPNdPU1/G0MyWIDeqZb1han3/hZ5putDpXc1EAbMiF5f9XdMBZJKMvJT35T32mLKHOqBNfqlxy9/LDp5d5ME5F2WvzF8ciY5QQvnla1sWqUIuKw/W8efy+f5EaxQ7Xo/1XFTllUZpjkTNa44LtBeA+8hHngsbtVbZCbM6xffJjsmrvBMusSrT+hsGtteExNwHUNlHzhcBOi9Kn6jNCc39MCyhTEDGf40Rth3gvZEDXMN6r45V4oal+eFaI49IiaJ6+7Dmfqtj/kST7LcUhAvToJ9MT11w+2RbQg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(396003)(136003)(346002)(366004)(39850400004)(966005)(186003)(6486002)(8676002)(9686003)(2906002)(6512007)(86362001)(44832011)(26005)(6916009)(316002)(4326008)(66446008)(66556008)(54906003)(5660300002)(71200400001)(64756008)(33716001)(1076003)(4744005)(8936002)(66946007)(6506007)(66476007)(478600001)(76116006)(473944003)(414714003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?86slCKqcxrKIsvcie38Z+xAU/e4SVAW3r7XeDvuWV6nTDNgjGN6zvEbUNKZt?=
+ =?us-ascii?Q?5xNje3cVknDaWVHvmtSVcrjwIWvJ37fiqLGyDiXllTfprJloGcVKpNQOMjfA?=
+ =?us-ascii?Q?cphZqpRnVr470/wtEt/EW27eqiyZctr7gt6w9bZEBxDgfA6xAbF/Kf2noP2d?=
+ =?us-ascii?Q?sYD7wTq9insG8WmR9cAScYuVjzzAqzF1aYX+qV8V+O4Zji79G6/Spbt6Y682?=
+ =?us-ascii?Q?NoV4AAWgCWhOwbihbEJznvbACMyAPTv1tctkXmEcpRoEj3wQWvwJ7znXrc3w?=
+ =?us-ascii?Q?+a9t1MbEBxSkx1VgL6duDwiE+SgB4mpu8WE7TTexuLvKn38mnvBcCIUst3ne?=
+ =?us-ascii?Q?nmu0SsnZycEQQekGkvGzHc9TNDYTnfm77/WMZmvNR2y17VK4G2CNY++jG5TI?=
+ =?us-ascii?Q?4dNMUH+kAa7gorEVklfKwqxiWAGK2kgGQHdOJ8UVETGiy/30WrdFEtR9BCDJ?=
+ =?us-ascii?Q?CSBmzWOTRTawgukQjjTFNnJ2/4iW+Ps7T+ZT8wlZzwgkJAwpDjGbVZ4xR39J?=
+ =?us-ascii?Q?0wBS8K8h3skWl04jE+xYJd8jGvdgX19Q8fJLOwLaNGCR9REC+4dWca8NRLCv?=
+ =?us-ascii?Q?D/3/9lPpaIbryjZpzGBzDPZlMMwhJ42D28rZ37DpGTs7L3ZDvMv7XK6jhtCc?=
+ =?us-ascii?Q?SqcrtIqmI523CP8fDaMbvqc/VG6diEOCl0vvL5kCgdDlvwx2J8iyN0Qz5o7S?=
+ =?us-ascii?Q?KotGkw8SYckjuoO5eGn90HhOqmlps6+D34Yd8SUDQUOS9H6FzO+xP2Qtd99q?=
+ =?us-ascii?Q?LFBAIjQH5BSFLwIlMGkhgPNXwDSHbqR96MsHNPXsx51CVtHynmiCPWKF/TZo?=
+ =?us-ascii?Q?I2VLTVUydIg+R/zf4KMZ33os+WYb7xDuDNjjhJRG8EXatbjpT6PkDmdjkyxe?=
+ =?us-ascii?Q?u51achGuEnVZGpKuU/dQrmJ/awqLwmDrzPATl99Z6Wm/xry3A7rob+XfqXqj?=
+ =?us-ascii?Q?l6epQBLDw5HnmKr7lTWhMS3HVHjnsghkAfv4ssl9GoWTW5kxBzPZ1DLOQxDM?=
+ =?us-ascii?Q?xC79?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B1E26FB724BF984DACFEA15965D8B1E0@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ba1c36d-67ff-4c5a-80f9-08d8bc682a12
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 10:51:24.0382
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9CRsB+S9XGdHDSD8xb+ZQXfnfxg69Os9vhb60NQ4eZUea1DquXKMAhc72mwmB6pJoWMvTKI9BLgYZUa/H33S4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad,
+On Tue, Jan 19, 2021 at 10:12:34AM +0000, Bedel, Alban wrote:
+> My board use felix and I build without CONFIG_MSCC_OCELOT_SWITCH so I
+> missed these, my bad.
 
-These IPs could be enabled in the secure side. To avoid any concurrency 
-access, I prefer to keep all that crypto IPs status disable.
-For examples, RNG can be managed in OP-TEE, so it will remain disable in 
-Linux.
-BR,
+Ah, ok, this makes sense. It happens to me too to forget to build with
+CONFIG_MSCC_OCELOT_SWITCH enabled, more often than I'd like to admit.
 
-Lionel
+> I must say that this condescending tone is a real turn off.
 
-On 1/19/21 10:52 AM, Ahmad Fatoum wrote:
-> There is no SoC-external hardware support needed for the hash1, rng1,
-> crc1 and cryp1 IP blocks to function. Enable them thus unconditionally
-> instead of replicating their enablement in board device trees.
->
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
->   arch/arm/boot/dts/stm32mp151.dtsi              |  3 ---
->   arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   |  4 ----
->   arch/arm/boot/dts/stm32mp157c-dk2.dts          |  4 ----
->   arch/arm/boot/dts/stm32mp157c-ed1.dts          | 16 ----------------
->   arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  4 ----
->   arch/arm/boot/dts/stm32mp15xc.dtsi             |  1 -
->   arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   |  8 --------
->   arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi   |  4 ----
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi         | 12 ------------
->   arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       |  4 ----
->   10 files changed, 60 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-> index 3c75abacb374..c2d998343b6a 100644
-> --- a/arch/arm/boot/dts/stm32mp151.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-> @@ -1297,7 +1297,6 @@ hash1: hash@54002000 {
->   			dmas = <&mdma1 31 0x2 0x1000A02 0x0 0x0>;
->   			dma-names = "in";
->   			dma-maxburst = <2>;
-> -			status = "disabled";
->   		};
->   
->   		rng1: rng@54003000 {
-> @@ -1305,7 +1304,6 @@ rng1: rng@54003000 {
->   			reg = <0x54003000 0x400>;
->   			clocks = <&rcc RNG1_K>;
->   			resets = <&rcc RNG1_R>;
-> -			status = "disabled";
->   		};
->   
->   		mdma1: dma-controller@58000000 {
-> @@ -1402,7 +1400,6 @@ crc1: crc@58009000 {
->   			compatible = "st,stm32f7-crc";
->   			reg = <0x58009000 0x400>;
->   			clocks = <&rcc CRC1>;
-> -			status = "disabled";
->   		};
->   
->   		stmmac_axi_config_0: stmmac-axi-config {
-> diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-> index 58275bcf9e26..268a99291d79 100644
-> --- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-> @@ -253,10 +253,6 @@ &pwr_regulators {
->   	vdd_3v3_usbfs-supply = <&vdd_usb>;
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
->   &rtc {
->   	status = "okay";
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-> index 2bc92ef3aeb9..045636555ddd 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
-> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-> @@ -29,10 +29,6 @@ chosen {
->   	};
->   };
->   
-> -&cryp1 {
-> -	status = "okay";
-> -};
-> -
->   &dsi {
->   	status = "okay";
->   	phy-dsi-supply = <&reg18>;
-> diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-> index 81a7d5849db4..f69622097e89 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
-> +++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-> @@ -115,14 +115,6 @@ adc1: adc@0 {
->   	};
->   };
->   
-> -&crc1 {
-> -	status = "okay";
-> -};
-> -
-> -&cryp1 {
-> -	status = "okay";
-> -};
-> -
->   &dac {
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&dac_ch1_pins_a &dac_ch2_pins_a>;
-> @@ -144,10 +136,6 @@ &gpu {
->   	contiguous-area = <&gpu_reserved>;
->   };
->   
-> -&hash1 {
-> -	status = "okay";
-> -};
-> -
->   &i2c4 {
->   	pinctrl-names = "default", "sleep";
->   	pinctrl-0 = <&i2c4_pins_a>;
-> @@ -325,10 +313,6 @@ &pwr_regulators {
->   	vdd_3v3_usbfs-supply = <&vdd_usb>;
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
->   &rtc {
->   	status = "okay";
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-> index 6cf49a0a9e69..a2aca1982bf6 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-> @@ -250,10 +250,6 @@ &m4_rproc {
->   	status = "okay";
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
->   &rtc {
->   	status = "okay";
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
-> index b06a55a2fa18..86953d7ddde0 100644
-> --- a/arch/arm/boot/dts/stm32mp15xc.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
-> @@ -12,7 +12,6 @@ cryp1: cryp@54001000 {
->   			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
->   			clocks = <&rcc CRYP1>;
->   			resets = <&rcc CRYP1_R>;
-> -			status = "disabled";
->   		};
->   	};
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-> index ac46ab363e1b..603c14054509 100644
-> --- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-> @@ -377,14 +377,6 @@ flash0: mx66l51235l@0 {
->   	};
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
-> -&rtc {
-> -	status = "okay";
-> -};
-> -
->   &sdmmc1 {
->   	pinctrl-names = "default", "opendrain", "sleep";
->   	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
-> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-> index 803eb8bc9c85..3f4af430aaf4 100644
-> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-> @@ -204,10 +204,6 @@ flash0: spi-flash@0 {
->   	};
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
->   &rtc {
->   	status = "okay";
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-> index 89c0e1ddc387..0cca6c3ff4a0 100644
-> --- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-> @@ -124,10 +124,6 @@ &cec {
->   	status = "okay";
->   };
->   
-> -&crc1 {
-> -	status = "okay";
-> -};
-> -
->   &dts {
->   	status = "okay";
->   };
-> @@ -155,10 +151,6 @@ &gpu {
->   	contiguous-area = <&gpu_reserved>;
->   };
->   
-> -&hash1 {
-> -	status = "okay";
-> -};
-> -
->   &i2c1 {
->   	pinctrl-names = "default", "sleep";
->   	pinctrl-0 = <&i2c1_pins_a>;
-> @@ -482,10 +474,6 @@ &pwr_regulators {
->   	vdd_3v3_usbfs-supply = <&vdd_usb>;
->   };
->   
-> -&rng1 {
-> -	status = "okay";
-> -};
-> -
->   &rtc {
->   	status = "okay";
->   };
-> diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-> index 713485a95795..d03d4d12133c 100644
-> --- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-> @@ -224,7 +224,3 @@ &m4_rproc {
->   	interrupts = <68 1>;
->   	status = "okay";
->   };
-> -
-> -&rng1 {
-> -	status = "okay";
-> -};
+English is not my first language, it probably sounds harsher than it is
+when translated ;)
+
+So could you please resend a patch which:
+- has a Fixes: tag with 12 characters in the sha1sum
+- compiles with CONFIG_MSCC_OCELOT_SWITCH
+- has a --subject-prefix of "PATCH v2 net"
+- can be cherry-picked on linux-5.10.y and linux-5.9.y from
+  https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/,
+  but also to the net tree, which is where the patch will first be
+  applied:
+  https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git=
