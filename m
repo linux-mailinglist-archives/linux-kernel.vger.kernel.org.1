@@ -2,181 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52AC2FBF32
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363792FBF66
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389447AbhASSe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389940AbhASSbz (ORCPT
+        id S1729359AbhASSq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:46:59 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:33883 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388823AbhASSeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:31:55 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A6C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:31:14 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id b8so10991306plh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:31:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qeHz0k448eNAbSKl9/y70hCJkDl4GVJ8biKbIHgRs58=;
-        b=oKQDQb0xVyKRV+/c4nGVqoHTRSOtYoXMUS40R6UzHy2rVBQ0LY3zo71wAW/zDtDfVu
-         ZXc3RAFhSoj7phzKYsx3VWfe1Pac1RZfBNSxzRbfi0r+BK5OfZ9j/G1I425LaQZxhtJE
-         O+htKGMxky9G117TgbnhbKuRrMtcwOBD1HBAIdbhVyF5RHczvp8HQJfjzxOfGSKunybL
-         fBgseqmqSghh3OIO8faPOaF2b5H8e21Afwa3nBs+oDvQ/r41K2K8OgZegGIt4yundmE1
-         BiapXiavE7MAvPGAlvVd+6NqBPO3AKP5JXQiJWtl5Q663kjwMWsm+0Mz1Hk6sCxZj6fx
-         Xh4A==
+        Tue, 19 Jan 2021 13:34:08 -0500
+Received: by mail-oi1-f180.google.com with SMTP id h192so4545135oib.1;
+        Tue, 19 Jan 2021 10:33:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qeHz0k448eNAbSKl9/y70hCJkDl4GVJ8biKbIHgRs58=;
-        b=em8yD25dcCwWt3DW+EP/xMqKEHqfstlPzYl8KiOP58xRWcB83fy+meWkvdf55mFaj8
-         xu7FS/Lad9cT0z9xX9D5JgXPBFKTwrcQckL66JqTwktKQaz+gxii9UexLz4bCIjb/VNK
-         wSHwGfqTII5PyRke3ZpI9WTeXFdWWfUJRs7Jv0KjnI7VCj3Po75Xt3AAIiSVIp43vnF7
-         E7uVKQI5RFq13o3aHUEjUgsGcMb30phN/RwbcD0egkzSYSHanKiLLc64KWqn7JdQxbEa
-         DjGU5w7Or0RpCpxMOOUmxjsEulGotrsNHTji6poVzqMTno+Nm/o6rZL2UcK1G/G5wk0z
-         woGA==
-X-Gm-Message-State: AOAM531Ss/uIiwB55kxzNzjz9GtRKiulBTkFGhfq3KXdHCq950r8/kBh
-        bM3QYAwz+341QoNJg5nOd+Y2Eg==
-X-Google-Smtp-Source: ABdhPJyDMuwnx++1Z35LFUhv27uQ5v8Xr4vR1+tqzfxAM8zbcvKlDr8AEeVfN8tTeqnKtADYp9PxQA==
-X-Received: by 2002:a17:90a:df15:: with SMTP id gp21mr1046339pjb.63.1611081074224;
-        Tue, 19 Jan 2021 10:31:14 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id u1sm3736060pjr.51.2021.01.19.10.31.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:31:13 -0800 (PST)
-Date:   Tue, 19 Jan 2021 10:31:05 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        wanpengli@tencent.com, kvm@vger.kernel.org,
-        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
-        x86@kernel.org, kyung.min.park@intel.com,
-        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
-        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
-        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
-Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
-Message-ID: <YAclaWCL20at/0n+@google.com>
-References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
- <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lbVLgD/AmPRXVgD1Qm+R+JESdeabtq3CZjpUzVZvhfY=;
+        b=fKjB7s9CLJ3Li62DVNtOZ3U82i9wGaZi7I8+t45Sx/SkD54dNrIOC7mHoQBJsSWGZr
+         VzzgUn1UWXR2VroeHwNyK+xwZioGJVESSvRZ/nRKAOlUOibLgeed1saBUn6MtsLZtPdZ
+         ohEbHe08uhCXItHtir72KV8BeqUm/SqUe1AOacYga9hsqwPBpBj42hnwtX3yG1VgwUUb
+         ZWJ6aGn57bdP9dEDvpe9is6VNfGBYi41tvHpIqAwX7RNBg4wL6nYxpjjbDwSM96hOvGB
+         nQ2UNRVpoY5XYyhPE/kVwrB4aF+eEqV/UvyRFoyMgFwds5pxP7P5yR8lZ/AsTwUtrW8P
+         rJkg==
+X-Gm-Message-State: AOAM532PBuv+pFxjGY6EcN2SyW+r8eH4Sy+x58xDkLKXSNlgAnPWwsjs
+        E9UPZQ0QL2d6rCjUZtoQTUycjZhFsoNbnhaW9GY=
+X-Google-Smtp-Source: ABdhPJyi7FSrKeCQGWXG4jTZDvgDfi17y3rNnYi8HgSf5QEd5RWqUyZo+Kuj7HSsOsGqSMfOSvkqjzhDueOJnpCJgQ4=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr696462oia.54.1611081198709;
+ Tue, 19 Jan 2021 10:33:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
+References: <20210115210159.3090203-1-saravanak@google.com>
+ <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
+ <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
+ <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
+ <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com>
+ <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
+ <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com> <CAGETcx_Ud+UJcdWkCH-WzEGjH4voRBoO++np7ARSi5Gnh51jYg@mail.gmail.com>
+In-Reply-To: <CAGETcx_Ud+UJcdWkCH-WzEGjH4voRBoO++np7ARSi5Gnh51jYg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Jan 2021 19:32:57 +0100
+Message-ID: <CAMuHMdUe6W5ABO-WntCRFXnusacY=2HNiahXN-9ts-Nsf847uQ@mail.gmail.com>
+Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
+ "gpios" binding
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021, Babu Moger wrote:
-> ---
->  arch/x86/include/asm/svm.h |    4 +++-
->  arch/x86/kvm/svm/sev.c     |    4 ++++
->  arch/x86/kvm/svm/svm.c     |   19 +++++++++++++++----
->  3 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 1c561945b426..772e60efe243 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -269,7 +269,9 @@ struct vmcb_save_area {
->  	 * SEV-ES guests when referenced through the GHCB or for
->  	 * saving to the host save area.
->  	 */
-> -	u8 reserved_7[80];
-> +	u8 reserved_7[72];
-> +	u32 spec_ctrl;		/* Guest version of SPEC_CTRL at 0x2E0 */
-> +	u8 reserved_7b[4];
+Hi Saravana,
 
-Don't nested_prepare_vmcb_save() and nested_vmcb_checks() need to be updated to
-handle the new field, too?
+On Tue, Jan 19, 2021 at 7:19 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Jan 19, 2021 at 10:10 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > Can we pull this into driver-core-next please? It fixes issues on some
+> > > > > > boards with fw_devlink=on.
+> > > > >
+> > > > > On r8a77951-salvator-xs.dts, it introduces one more failure:
+> > > > >
+> > > > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
+> > > > > #gpio-cells for /cpus/cpu@102
+> > >
+> > > Geert,
+> > >
+> > > One good thing is that it's noticing this being weird and ignoring it
+> > > in your particular board. I *think* it interprets the "7" as a phandle
+> > > and that's cpu@102 and realizes it's not a gpio-controller. For at
+> > > least in your case, it's a safe failure.
+> >
+> > While 7 is the GPIO index, relative to the current GPIO controller,
+> > represented by the parent device node.
+> >
+> > > > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
+> > > >
+> > > > Could it be that the code assumes no self-referencing phandles?
+> > > > (Just guessing...)
+> > >
+> > > Ok I tried to understand what gpio-hogs means. It's not fully clear to
+> > > me. But it looks like if a gpio-controller has a gpio-hog, then it
+> > > doesn't have/need gpio-cells? Is that right?
+> >
+> > A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
+> > Usually this is done to enable a piece of hardware on a board, or
+> > control a mux.
+> >
+> > The controller still needs gpio-cells.
+> >
+> > > So if a gpio-controller has a gpio-hog, can it ever be referred to by
+> > > another consumer in DT using blah-gpios = ...? If so, I don't see any
+> > > obvious code that's handling the missing gpio-cells in this case.
+> >
+> > Yes it can.
+> >
+> > > Long story short, please help me understand gpio-hog in the context of
+> > > finding dependencies in DT.
+> >
+> > The hog references a GPIO on the current controller.  As this is always
+> > the parent device node, the hog's gpios properties lack the phandle.
+> >
+> > E.g. a normal reference to the first GPIO of gpio5 looks like:
+> >
+> >     gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+> >
+> > A hog on the first GPIO of gpio5 would be a subnode of gpio5,
+> > and would just use:
+> >
+> >     gpios = <0 GPIO_ACTIVE_LOW>;
+> >
+> > instead.
+> >
+> > Hope this helps.
+>
+> I'm still not sure if I've understood this fully, but does this just
+> boil down to:
+> Don't parse [name-]gpio[s] to find dependencies if the node has
+> gpio-hog property?
 
->  	u32 pkru;
->  	u8 reserved_7a[20];
->  	u64 reserved_8;		/* rax already available at 0x01f8 */
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index c8ffdbc81709..959d6e47bd84 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -546,6 +546,10 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
->  	save->pkru = svm->vcpu.arch.pkru;
->  	save->xss  = svm->vcpu.arch.ia32_xss;
->  
-> +	/* Update the guest SPEC_CTRL value in the save area */
-> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		save->spec_ctrl = svm->spec_ctrl;
+Indeed. You can just ignore all nodes with a gpio-hog property, as they're
+always handled by their parent.
 
-I think this can be dropped if svm->spec_ctrl is unused when V_SPEC_CTRL is
-supported (see below).  IIUC, the memcpy() that's just out of sight would do
-the propgation to the VMSA.
+Gr{oetje,eeting}s,
 
-> +
->  	/*
->  	 * SEV-ES will use a VMSA that is pointed to by the VMCB, not
->  	 * the traditional VMSA that is part of the VMCB. Copy the
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 7ef171790d02..a0cb01a5c8c5 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1244,6 +1244,9 @@ static void init_vmcb(struct vcpu_svm *svm)
->  
->  	svm_check_invpcid(svm);
->  
-> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		save->spec_ctrl = svm->spec_ctrl;
-> +
->  	if (kvm_vcpu_apicv_active(&svm->vcpu))
->  		avic_init_vmcb(svm);
->  
-> @@ -3789,7 +3792,10 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  	 * is no need to worry about the conditional branch over the wrmsr
->  	 * being speculatively taken.
->  	 */
-> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +	if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		svm->vmcb->save.spec_ctrl = svm->spec_ctrl;
-> +	else
-> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+                        Geert
 
-Can't we avoid functional code in svm_vcpu_run() entirely when V_SPEC_CTRL is
-supported?  Make this code a nop, disable interception from time zero, and
-read/write the VMBC field in svm_{get,set}_msr().  I.e. don't touch
-svm->spec_ctrl if V_SPEC_CTRL is supported.  
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
-
-	svm_vcpu_enter_exit(vcpu, svm);
-
-	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
-	    unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
-
->  	svm_vcpu_enter_exit(vcpu, svm);
->  
-> @@ -3808,13 +3814,18 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
->  	 * save it.
->  	 */
-> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-> -		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
-> +	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL))) {
-> +		if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +			svm->spec_ctrl = svm->vmcb->save.spec_ctrl;
-> +		else
-> +			svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
-> +	}
->  
->  	if (!sev_es_guest(svm->vcpu.kvm))
->  		reload_tss(vcpu);
->  
-> -	x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
->  
->  	if (!sev_es_guest(svm->vcpu.kvm)) {
->  		vcpu->arch.cr2 = svm->vmcb->save.cr2;
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
