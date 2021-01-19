@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80002FBF89
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E742FBF8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730575AbhASSzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:55:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48614 "EHLO mail.kernel.org"
+        id S2389736AbhASSz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:55:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389648AbhASS1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387434AbhASS1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 13:27:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 181D3236FB;
-        Tue, 19 Jan 2021 17:39:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2349123731;
+        Tue, 19 Jan 2021 17:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611077956;
-        bh=B0nbVoxGa+C36Jr6OtipmAgpoS6EnZrHQCygC20qrDA=;
+        s=k20201202; t=1611077961;
+        bh=Q7Wt0+lVfhHlWCEGnSufVJdo/kJ3Toujd33xSqH47fI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MsJg6AXHEtuAuqFIh5+SYsRWNP8NhdiGwyA9ltZA6EBRCg0yIAiFsLWNbu6tCUnVg
-         9+Fzbu3l+VLV5eT0fbKciA1BAbypqP8YJTFkbPFDjsKpI1zsGHIdmfbhFanuudyZur
-         /HoieVnZIFS06hDPDFTJSirgmjPosvu1lHJ25wYQjERmgII6rR64K8nJrOXndh9OmV
-         pqPY8o6L3k7uL4mb5FA8G1CeLPnYdHdYoXGkJvOrkwUjFtbuN7+t2TCcVMlZrrZY/E
-         dM8YhDPUW9EzPaLewj53NdieI6D92/2tpiEdTgLRJR8qyb51W8MxIdOYNQvoTXqflM
-         4t7t9uLR5FZ/w==
+        b=JAaQ3NtJflXhlixAMzk8fxDVZ2o1ICcpIYRZKUlPjH9KY8mhcSbgCVTc8idFG0vVV
+         v6VKequGBAagyhm6RIjR2edmEvxKrV127aFdYta0Plk+v7ciAueYWiMN7y0y5XwF1b
+         MtxwJyhJNtP9+sfykaBxyWEOiWOoz0JtzHY4zBf4sQCT3PIjhMLfKzex2PucbxrvtP
+         nQ4GcxiIk0qWZSQhSQrfvfPC0m0giDPt0ZGjNuSN34exgtZAY9DNsKzHVmYxVFzR5w
+         I1uGQC9VPt6/1n0breSBEyE/Xo+zrPuIoBhF3btiiw03PeBrSB/rECe84R1d5bYsss
+         NhbTTCodOAw0g==
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Krzysztof=20Ol=C4=99dzki?= <ole@ans.pl>,
         Arnd Bergmann <arnd@arndb.de>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 2/4] x86/mmx: Use KFPU_387 for MMX string operations
-Date:   Tue, 19 Jan 2021 09:39:00 -0800
-Message-Id: <cd68d61ece035201804a06e6993a2bd06bfe298b.1611077835.git.luto@kernel.org>
+Subject: [PATCH v2 3/4] x86/fpu: Make the EFI FPU calling convention explicit
+Date:   Tue, 19 Jan 2021 09:39:01 -0800
+Message-Id: <a2515090d8aa97f21d5dccf40402df8c8eb5a81d.1611077835.git.luto@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611077835.git.luto@kernel.org>
 References: <cover.1611077835.git.luto@kernel.org>
@@ -42,86 +42,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default kernel_fpu_begin() doesn't work on systems that support XMM but
-haven't yet enabled CR4.OSFXSR.  This causes crashes when _mmx_memcpy() is
-called too early because LDMXCSR generates #UD when the aforementioned bit
-is clear.
+EFI uses kernel_fpu_begin() to conform to the UEFI calling convention.
+This specifically requires initializing FCW, whereas no sane 64-bit kernel
+code should use legacy 387 operations that reference FCW.
 
-Fix it by using kernel_fpu_begin_mask(KFPU_387) explicitly.
+This should enable us to safely change the default semantics of
+kernel_fpu_begin() to stop initializing FCW on 64-bit kernels.
 
-Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
-Reported-by: Krzysztof Mazur <krzysiek@podlesie.net>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/lib/mmx_32.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/efi.h     | 24 ++++++++++++++++++++----
+ arch/x86/platform/efi/efi_64.c |  4 ++--
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
-index 4321fa02e18d..2a6ad7aa148a 100644
---- a/arch/x86/lib/mmx_32.c
-+++ b/arch/x86/lib/mmx_32.c
-@@ -26,6 +26,16 @@
- #include <asm/fpu/api.h>
- #include <asm/asm.h>
+diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+index bc9758ef292e..f3201544fbf8 100644
+--- a/arch/x86/include/asm/efi.h
++++ b/arch/x86/include/asm/efi.h
+@@ -68,17 +68,33 @@ extern unsigned long efi_fw_vendor, efi_config_table;
+ 		#f " called with too many arguments (" #p ">" #n ")");	\
+ })
  
-+/*
-+ * For MMX, we use KFPU_387.  MMX instructions are not affected by MXCSR,
-+ * but both AMD and Intel documentation states that even integer MMX
-+ * operations will result in #MF if an exception is pending in FCW.
-+ *
-+ * We don't need EMMS afterwards because, after we call kernel_fpu_end(),
-+ * any subsequent user of the 387 stack will reinitialize it using
-+ * KFPU_387.
-+ */
++static inline void efi_fpu_begin(void)
++{
++	/*
++	 * The UEFI calling convention (UEFI spec 2.3.2 and 2.3.4) requires
++	 * that FCW and MXCSR (64-bit) must be initialized prior to calling
++	 * UEFI code.  (Oddly the spec does not require that the FPU stack
++	 * be empty.)
++	 */
++	kernel_fpu_begin_mask(KFPU_387 | KFPU_MXCSR);
++}
 +
- void *_mmx_memcpy(void *to, const void *from, size_t len)
- {
- 	void *p;
-@@ -37,7 +47,7 @@ void *_mmx_memcpy(void *to, const void *from, size_t len)
- 	p = to;
- 	i = len >> 6; /* len/64 */
++static inline void efi_fpu_end(void)
++{
++	kernel_fpu_end();
++}
++
+ #ifdef CONFIG_X86_32
+ #define arch_efi_call_virt_setup()					\
+ ({									\
+-	kernel_fpu_begin();						\
++	efi_fpu_begin();						\
+ 	firmware_restrict_branch_speculation_start();			\
+ })
+ 
+ #define arch_efi_call_virt_teardown()					\
+ ({									\
+ 	firmware_restrict_branch_speculation_end();			\
+-	kernel_fpu_end();						\
++	efi_fpu_end();							\
+ })
+ 
+ #define arch_efi_call_virt(p, f, args...)	p->f(args)
+@@ -107,7 +123,7 @@ struct efi_scratch {
+ #define arch_efi_call_virt_setup()					\
+ ({									\
+ 	efi_sync_low_kernel_mappings();					\
+-	kernel_fpu_begin();						\
++	efi_fpu_begin();						\
+ 	firmware_restrict_branch_speculation_start();			\
+ 	efi_switch_mm(&efi_mm);						\
+ })
+@@ -119,7 +135,7 @@ struct efi_scratch {
+ ({									\
+ 	efi_switch_mm(efi_scratch.prev_mm);				\
+ 	firmware_restrict_branch_speculation_end();			\
+-	kernel_fpu_end();						\
++	efi_fpu_end();							\
+ })
+ 
+ #ifdef CONFIG_KASAN
+diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+index 8f5759df7776..f042040b5da1 100644
+--- a/arch/x86/platform/efi/efi_64.c
++++ b/arch/x86/platform/efi/efi_64.c
+@@ -848,7 +848,7 @@ efi_set_virtual_address_map(unsigned long memory_map_size,
+ 							 virtual_map);
+ 	efi_switch_mm(&efi_mm);
  
 -	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
++	efi_fpu_begin();
  
- 	__asm__ __volatile__ (
- 		"1: prefetch (%0)\n"		/* This set is 28 bytes */
-@@ -127,7 +137,7 @@ static void fast_clear_page(void *page)
- {
- 	int i;
+ 	/* Disable interrupts around EFI calls: */
+ 	local_irq_save(flags);
+@@ -857,7 +857,7 @@ efi_set_virtual_address_map(unsigned long memory_map_size,
+ 			  descriptor_version, virtual_map);
+ 	local_irq_restore(flags);
  
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
+-	kernel_fpu_end();
++	efi_fpu_end();
  
- 	__asm__ __volatile__ (
- 		"  pxor %%mm0, %%mm0\n" : :
-@@ -160,7 +170,7 @@ static void fast_copy_page(void *to, void *from)
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	/*
- 	 * maybe the prefetch stuff can go before the expensive fnsave...
-@@ -247,7 +257,7 @@ static void fast_clear_page(void *page)
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"  pxor %%mm0, %%mm0\n" : :
-@@ -282,7 +292,7 @@ static void fast_copy_page(void *to, void *from)
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"1: prefetch (%0)\n"
+ 	/* grab the virtually remapped EFI runtime services table pointer */
+ 	efi.runtime = READ_ONCE(systab->runtime);
 -- 
 2.29.2
 
