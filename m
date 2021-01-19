@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996EE2FBEA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0AF2FBEEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391214AbhASSMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:12:12 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:53241 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391729AbhASSEt (ORCPT
+        id S2392546AbhASSMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404163AbhASSFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:04:49 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 10JI3IuG030161;
-        Wed, 20 Jan 2021 03:03:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 10JI3IuG030161
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611079399;
-        bh=Ih7uwrWIh1HlT4Bc+Bd5iTe6Q63d4u9Mx0JTTh7N4Ug=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KM5PWRQrwfCfqgU14773qcBkj9sdwuMflIn/HzqPOsqDJKxCgDea5uV/7DQFcTL0K
-         E9Crbzoui4pWklS6fFn5Lfo8F2oUAsKOmC2Zwe18TKxJ8IGF6tTg/1qN6FLJClKhPg
-         Q8hhl9QEHAxQdIshBS1z+7E1iqRHf3I0Wm3svUuyrXD17MtDo6yKPvq2o+xi6JQ6eI
-         JfyxEz/1rDCJ4W/QVng6kpMVurtfxxYeYyN4y0qcuTXY+seuGum907PO00X33xZ4re
-         7SGlfTpQotEVjrp9qnC0hppDz8Ni3G/qIyi7LyvvcDho7P6e9p3oHxCr2OyZdUNma9
-         H8lVJ/OwsAGew==
-X-Nifty-SrcIP: [209.85.210.180]
-Received: by mail-pf1-f180.google.com with SMTP id t29so7609526pfg.11;
-        Tue, 19 Jan 2021 10:03:19 -0800 (PST)
-X-Gm-Message-State: AOAM531E7gOaGpMKcBaCFpWbqleDbiXIS90CjEkZsQguQs5eBDQWRk9/
-        umtBc7tBIW/5TLF8siJgKRh5ZJ+qKtLITwNtyZU=
-X-Google-Smtp-Source: ABdhPJxBpF/ghiNg93VnhoLmAjEg1PtnutvOti9CufgdcHqH6TGkLf7T6urYAC9EXiN5oCOBPAD1P8xkeGWzCC4REkc=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr5491577pgf.47.1611079398308;
- Tue, 19 Jan 2021 10:03:18 -0800 (PST)
+        Tue, 19 Jan 2021 13:05:12 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE64EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:03:29 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id w79so22717041qkb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:03:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j1M3uq+mXePAcpFXiBOTYof3FY5bhcapXrpc6RKaHY0=;
+        b=Hh9SblNojKOb5EYq3K8qUhYmB3i+erqETW1LvC5Uy6ZQG4qMseKDpiMEz841rNTZtM
+         piAYeqNY5m2TdjvJhkSAWhKNgGCOjG4i/PpQj5QuIIUpP8/qZO/rPv5EdJ1icP8JF/RV
+         zpK2vpvYwcHH2bud0iHBJxcdsOjCrzvlc7iOnWumPvzG4N1kvFI2AfXfG5+Z1Qshu0FK
+         pMwTb9bFOG2y5hZzWellK8LRib/HfIn066Mstgx+ewJPy6QpF/PbTZsnl1A7hBuWbhga
+         zLA/rKh1y/1AVUtAGOnEkigIKTS2hwFmgvEQbdveQmrPiAbvLMAGZA+FpscMSuo87voy
+         w3gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j1M3uq+mXePAcpFXiBOTYof3FY5bhcapXrpc6RKaHY0=;
+        b=lPAPddxPlSm2wFu0uRrx+ktbtQs2TZMTOrEz/cT77+0H7sCHBKMa+CHUdKcnnSq0l2
+         VtQZRy6XppsgoYfogoQhnFb9lIW7VooKM2DMXHrQJQc3H+HN9ZrVgZrgoNbGX+Z3cweg
+         iIcZ7sQqS1xS0y+skya4pvMfc8MDDp0guUmtiS1qY6lNtdqO+8BGK0xzfpeRMfcnHJuz
+         Pi//y9lyco0fNXrW2oU9wajofaVNBLPWQce0bA+6eRXrIexee6ftgqP3NCCZSKFmrVgH
+         Dw9HEOj9vMOxwc6ZDFZNA6mfYtDeElDFoQ03n8W3x7mEwQ/fJcZ2mPgf/IKnrlluuFWs
+         lTyA==
+X-Gm-Message-State: AOAM530MhmQrAkBwSGu0WQNv7Eu1w1n8TCDKOQDkgCZUlsmpvy3fKYnz
+        PfTfch37tRlhzpInMHBGy2CNbg==
+X-Google-Smtp-Source: ABdhPJw2XCT7fzRIheQITlzWVeRsNY4eXnLldryVnmv9+vJo9i0eBjqYTuC3jm5yDDU9pEhFsVWc3A==
+X-Received: by 2002:a05:620a:2149:: with SMTP id m9mr5538332qkm.60.1611079408965;
+        Tue, 19 Jan 2021 10:03:28 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id s30sm12979164qte.44.2021.01.19.10.03.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 10:03:28 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1vLj-003pDY-Qf; Tue, 19 Jan 2021 14:03:27 -0400
+Date:   Tue, 19 Jan 2021 14:03:27 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+Message-ID: <20210119180327.GX4605@ziepe.ca>
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+ <20210118234818.GP4605@ziepe.ca>
+ <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
 MIME-Version: 1.0
-References: <20210118195453.761623-1-sashal@kernel.org> <YAb5+R1R74QXds3o@kroah.com>
-In-Reply-To: <YAb5+R1R74QXds3o@kroah.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 20 Jan 2021 03:02:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT96ECeS2=UkNFdwU2fLG_3v1jGyO5pLqYkfGVHuJpXXA@mail.gmail.com>
-Message-ID: <CAK7LNAT96ECeS2=UkNFdwU2fLG_3v1jGyO5pLqYkfGVHuJpXXA@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: give the SUBLEVEL more room in KERNEL_VERSION
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:25 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jan 18, 2021 at 02:54:53PM -0500, Sasha Levin wrote:
-> > SUBLEVEL only has 8 bits of space, which means that we'll overflow it
-> > once it reaches 256.
-> >
-> > Few of the stable branches will imminently overflow SUBLEVEL while
-> > there's no risk of overflowing VERSION.
-> >
-> > Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
-> > should create a better balance between the different version numbers we
-> > use.
-> >
-> > The downside here is that Linus will have 8 bits less to play with, but
-> > given our current release cadence (~10 weeks), the number of Linus's
-> > fingers & toes (20), and the current VERSION (5) we can calculate that
-> > VERSION will overflow in just over 1,000 years, so I'm kicking this can
-> > down the road.
-> >
-> > Cc: stable@kernel.org
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
->
-> Looks good to me, thanks for fixing up the USB code.
->
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
+> 
+> I had a second look into math.h, but I don't find any reason why round_up
+> could overflow. Can you give a hint please?
 
+#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+                                                    ^^^^^
 
-Applied to linux-kbuild. Thanks.
+That +1 can overflow
 
+It looks like it would not be so bad to implement some
+check_round_up_overflow() if people prefer
 
-
--- 
-Best Regards
-Masahiro Yamada
+Jason
