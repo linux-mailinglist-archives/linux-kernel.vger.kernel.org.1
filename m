@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05722FB8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201D52FB8BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405698AbhASNmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S2405785AbhASNmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394234AbhASNfz (ORCPT
+        with ESMTP id S2394318AbhASNhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:35:55 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4ACC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:35:07 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id m10so21924933lji.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:35:07 -0800 (PST)
+        Tue, 19 Jan 2021 08:37:04 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C41C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:36:09 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id i63so16489284wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 05:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lVI4VFAi/KNUvYPZejE0M1noebhuVU3D3T9Afh85Z1U=;
-        b=AroODpIuIyQ60AuOkP48N/jvDoshWQYwCW/WoNKtw7AH8CU+YWtsRS52CixOgW5AZr
-         yvqk985ltazv8QX7tjib5EcZswsA6OTtwMMH5ocTuyzhG5c6Bx5krdkBMSiV78Uy06k0
-         NZW/sSq0gcJzSpG5Wrv0+7UpuXp5CcPY+BNwYFpK80tCJrQ9T4iBnRjPM/GtqVM7knjD
-         iG3kgQjmrOEP/yfz3H7w0hQPG7cSR1zy+SYjM2Kpi9tAXp2nXEtiiVPrkugkOa2QqcTM
-         wvn7Rp93OnT0VnOxJnCC8jD3LMjJkD6moBPIlo4itWS1G5edLmzkzTTrNdnyqJKj60Mj
-         gI3g==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BKE9rDCIZOyErbmD+LY8/lgohFsufzeQzYye47k5eNU=;
+        b=egv6CMm37ZE+aKLxMF65Ny/Cl+fogEW2LevhAiKiW/O889Pk6EHklNv2bNIYmFVsIB
+         Ne/OSh7TUc/Lyk+6ebECYQxfFVVAsBsej2T/Mwa6/nCntzuaSw/ESTi+dqxzx+kxoFes
+         moh5mGe1CceubqiTlWtQSFUO4b1ZWz0th5PfI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lVI4VFAi/KNUvYPZejE0M1noebhuVU3D3T9Afh85Z1U=;
-        b=FyBmleDa/Ho42tiOS2IMoYAOi37yvx5GafH803JZKqkbtz+ppMdVEf3tyrk3xtG90y
-         W4UKUhPUMmOAPC8KsAKSqtqO7L7XpWmIGpsgxo6fGAfwtcHMHrxTpOhJ24xiGmET0wti
-         coSN5DltWCoSdmjFU/T4vP5dvfqWFo18OC5ZZOVNu9lrrNzYvgCgQWAM1rEM14GdUCOB
-         77OzQTK4e0xjyyUwJdluMd/XhCqzzE5Ld634/nzAIW+6QsK/ftzU8j6C/GqmSe91koGx
-         mh0MihLTzHy8VXdhce26HYUls/bCE0EjVuF3Ef+2kmgSbHJNdSM8SCgbRVfbOhm6H+ee
-         VNOQ==
-X-Gm-Message-State: AOAM531R55setxkoTWpCWel3A7Vrhz78cOeIVkLOBYWE0V5xldPhZIKA
-        lotr+kHJzHedHlAowVMwjBWVAS+fuYAm2Z3VdjLdGg==
-X-Google-Smtp-Source: ABdhPJwSHc1GYwmGeUT69urHBYrNOixpLFtjemakraSTMnMbEFPxTMPSFl2AmtNVc6lGdR8leiKkxqsThbm06390I0c=
-X-Received: by 2002:a2e:b4d4:: with SMTP id r20mr1909981ljm.445.1611063306390;
- Tue, 19 Jan 2021 05:35:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=BKE9rDCIZOyErbmD+LY8/lgohFsufzeQzYye47k5eNU=;
+        b=HOzxRlPK87O3P23Ko5u9h1aMGKuThzQdCw3JQ7+O7SiXywGl8cVjMlH1A2hRL/GpCd
+         vlgcIN71NjYI0yniEBOq/5I3bMJQvUUkGH76yl/Ow6xWeZ1b7S5EgUYs4upxbQ6VSKHC
+         S2wtXJ3Q4CD4nA0dLcNOXwZjf/TmarFN9vnENa5g0CvF4ZTc35lDnsFvohiwpi7lAKVe
+         T3LKdGHSaztio+GHSCjrL5DRvy+pgxCvs9G2T4bI6ZpLKkFcaCAOdnToNZFHFda0qHTw
+         6zExIe6BadY1gjT9Q5zgun8a9Ky3DB0QuXVpGcSFpR/FLZhkQUkSOFwlrASKOHpNQJyA
+         D/Tg==
+X-Gm-Message-State: AOAM532i0KgpaH5UcHAXse0D4H3uTMLLLeFGkt13xZ4mkJbqR3mxKS2E
+        UACo39p2eEmFKqRogdBrwdig9w==
+X-Google-Smtp-Source: ABdhPJyxDhcjnIHo3Tv3lCkHjxbnmQ7vqX17dXcXNooyWX343UJoOqqngbbVLYY4daSVAO/uCH3Ayw==
+X-Received: by 2002:a1c:7c06:: with SMTP id x6mr4124710wmc.67.1611063368009;
+        Tue, 19 Jan 2021 05:36:08 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m12sm4581831wmc.10.2021.01.19.05.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 05:36:07 -0800 (PST)
+Date:   Tue, 19 Jan 2021 14:36:05 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] drm/atomic: put state on error path
+Message-ID: <YAbgRbyeN2QUWKJr@phenom.ffwll.local>
+Mail-Followup-To: Pan Bian <bianpan2016@163.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Sean Paul <seanpaul@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210119121127.84127-1-bianpan2016@163.com>
 MIME-Version: 1.0
-References: <20210119120755.2425264-1-qais.yousef@arm.com>
-In-Reply-To: <20210119120755.2425264-1-qais.yousef@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 19 Jan 2021 14:34:55 +0100
-Message-ID: <CAKfTPtD+wU9-UitvnBmZFeAgXbsDO+qcsv-hYr0xxuewB_Kp+A@mail.gmail.com>
-Subject: Re: [PATCH] sched/eas: Don't update misfit status if the task is pinned
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119121127.84127-1-bianpan2016@163.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 at 13:08, Qais Yousef <qais.yousef@arm.com> wrote:
->
-> If the task is pinned to a cpu, setting the misfit status means that
-> we'll unnecessarily continuously attempt to migrate the task but fail.
->
-> This continuous failure will cause the balance_interval to increase to
-> a high value, and eventually cause unnecessary significant delays in
-> balancing the system when real imbalance happens.
->
-> Caught while testing uclamp where rt-app calibration loop was pinned to
-> cpu 0, shortly after which we spawn another task with high util_clamp
-> value. The task was failing to migrate after over 40ms of runtime due to
-> balance_interval unnecessary expanded to a very high value from the
-> calibration loop.
->
-> Not done here, but it could be useful to extend the check for pinning to
-> verify that the affinity of the task has a cpu that fits. We could end
-> up in a similar situation otherwise.
->
-> Fixes: 3b1baa6496e6 ("sched/fair: Add 'group_misfit_task' load-balance type")
-> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+On Tue, Jan 19, 2021 at 04:11:27AM -0800, Pan Bian wrote:
+> Put the state before returning error code.
+> 
+> Fixes: 44596b8c4750 ("drm/atomic: Unify conflicting encoder handling.")
+> 
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
+
+Nice catch, patch merged to drm-misc-fixes with cc: stable.
+-Daniel
+
 > ---
->  kernel/sched/fair.c | 2 +-
+>  drivers/gpu/drm/drm_atomic_helper.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 197a51473e0c..9379a481dd8c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4060,7 +4060,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
->         if (!static_branch_unlikely(&sched_asym_cpucapacity))
->                 return;
->
-> -       if (!p) {
-> +       if (!p || p->nr_cpus_allowed == 1) {
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index ba1507036f26..4a8cbec832bc 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -3021,7 +3021,7 @@ int drm_atomic_helper_set_config(struct drm_mode_set *set,
+>  
+>  	ret = handle_conflicting_encoders(state, true);
+>  	if (ret)
+> -		return ret;
+> +		goto fail;
+>  
+>  	ret = drm_atomic_commit(state);
+>  
+> -- 
+> 2.17.1
+> 
+> 
 
-Side question: What happens if there is 2 misfit tasks and the current
-one is pinned but not the other waiting one
-
->                 rq->misfit_task_load = 0;
->                 return;
->         }
-> --
-> 2.25.1
->
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
