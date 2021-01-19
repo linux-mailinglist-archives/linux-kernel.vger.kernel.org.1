@@ -2,154 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985972FB771
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3492FB71B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404675AbhASKyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:54:17 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:23596 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389203AbhASKkr (ORCPT
+        id S2389896AbhASKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730765AbhASJ4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:40:47 -0500
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210119103946epoutp04c620fbdbf9b6f05dd08feed1da60df49~bm-lND4m12759027590epoutp045
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:39:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210119103946epoutp04c620fbdbf9b6f05dd08feed1da60df49~bm-lND4m12759027590epoutp045
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611052786;
-        bh=+7XKMc3T9eBTnjj09XrjdmMgt0rdKUYThtb6KsTWgyY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=g9KkCeMbqiuNNk4avT//iXR7bl8amRzXXldX1MCRjJUXqtU1E9kx2NkBMLC39hao7
-         duYAvRaPv5N9wT1QF8vIxm+wN/AUoSODZzlwi67j2Pt0V8kuOTvZXiD/XUPkBpxidO
-         CK2iYBof4vroQt2Zpf1Q9OVYHSXD0a8fao03Tjg4=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210119103946epcas5p2684a48457a7698f893fc34cb534cc22f~bm-kvQaR_0917709177epcas5p2H;
-        Tue, 19 Jan 2021 10:39:46 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C1.A9.50652.2F6B6006; Tue, 19 Jan 2021 19:39:46 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210119095514epcas5p2f4b4f456955a8be3d05f094d38168b13~bmYsOQlMv1399313993epcas5p2L;
-        Tue, 19 Jan 2021 09:55:14 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210119095514epsmtrp2d472b2636a457d608dbe4c93ea4b8341~bmYsNYkfH1714417144epsmtrp2U;
-        Tue, 19 Jan 2021 09:55:14 +0000 (GMT)
-X-AuditID: b6c32a4a-6c9ff7000000c5dc-f0-6006b6f2c65e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F3.F6.08745.28CA6006; Tue, 19 Jan 2021 18:55:14 +0900 (KST)
-Received: from shradhat02 (unknown [107.122.8.248]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210119095512epsmtip1746f9e82069f4017eeeb552946cd0fc7~bmYqbTBGT1120911209epsmtip1k;
-        Tue, 19 Jan 2021 09:55:12 +0000 (GMT)
-From:   "Shradha Todi" <shradha.t@samsung.com>
-To:     "'Leon Romanovsky'" <leon@kernel.org>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <bhelgaas@google.com>, <kishon@ti.com>,
-        <lorenzo.pieralisi@arm.com>, <pankaj.dubey@samsung.com>,
-        <sriram.dash@samsung.com>, <niyas.ahmed@samsung.com>,
-        <p.rajanbabu@samsung.com>, <l.mehra@samsung.com>,
-        <hari.tv@samsung.com>
-In-Reply-To: <20210113072104.GH4678@unreal>
-Subject: RE: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for
- ->get_features()
-Date:   Tue, 19 Jan 2021 15:25:10 +0530
-Message-ID: <147801d6ee49$2ecd2d30$8c678790$@samsung.com>
+        Tue, 19 Jan 2021 04:56:03 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC91BC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:55:14 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id y8so10202875plp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:55:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xAqXt2hrMnUwGHY4K/vXVEtDT5xO+PqICWyHvp6jNI4=;
+        b=yLyMj40c8dpxG49080WIa+e1h0pdwJbbPb6WrmW/NlllBflJkMeezxlqx/j4D5Eu+f
+         UVjn8MO4sm0KngRQxbChnQghGE8x7cuFzzgtIWVDa4mwXm+TnRc3LgZNKRDKwjDIWqk/
+         xd1U0afI3Wfh4S7IEVlwnL6i/FE6p/oj8XtHRhcJDpvC45IRYws7FU6ZBKyBFqPyed4U
+         MoieLszFLBCu2JWPzofsc8lwyRT7UFSDBPMDaoTmg4iGU+VoBu3jjofvFwH1C2en01Mf
+         UePfcVcZW4+RGC2J74FvKjBsbvFQ0mWIWrfMWdyEpT6tW6pjxGN2/N1X2RjaVTPIu+SA
+         92aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xAqXt2hrMnUwGHY4K/vXVEtDT5xO+PqICWyHvp6jNI4=;
+        b=IlGHyrUDogLDpyhanT+5nlV/5jFTwXW0rCbRxFMpnucSkX5TP0HRzXQN39H4sZEocc
+         1tLT5/RM7O7aPsfXkTZIera9nhA6KZ12nOoGmf602hZ7hTInYbEXhrueZ3nsEVM/adPt
+         4NOC0IFHwl2SsJLLxstgdWRJn2rR9d2J+QMccBBTCu2mSuWbsBYn0XUEAY7zE5kSWrde
+         DtqdZ9I7/BHwAJlBQAcAhzlr2Yo8ziMp3cCBbMJnGtOrldqOQse87Qr4T1KOrD13VkRl
+         KoHobg6YF/uJi54ifs0nVmk111TBShwW051k/lq6bHUz4Eo7JNeTyIKI4ZLb8hC1I6fS
+         Ixbw==
+X-Gm-Message-State: AOAM530auYc8ACFVXbInGb/ew8kPjBDiWCW9N5lujhfeFW6MStp76efk
+        McDCpzZjW3dZRX8tijhXdzkQVg==
+X-Google-Smtp-Source: ABdhPJzzA9SrNQFl+F6LdDy36vNrtNXWt6cwOvgIfknJpkBo8QX65rmWDW606+FJKruuIfh0mqyekA==
+X-Received: by 2002:a17:90a:fa84:: with SMTP id cu4mr4536724pjb.0.1611050114175;
+        Tue, 19 Jan 2021 01:55:14 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id q9sm18869325pgb.82.2021.01.19.01.55.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 01:55:13 -0800 (PST)
+Date:   Tue, 19 Jan 2021 15:25:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] PM: domains: Make set_performance_state()
+ callback optional
+Message-ID: <20210119095511.s3xntwwq4g65dcoa@vireshk-i7>
+References: <20210118011330.4145-1-digetx@gmail.com>
+ <20210118011330.4145-2-digetx@gmail.com>
+ <20210118072855.anncyl6z3e5uznvd@vireshk-i7>
+ <CAPDyKFquCGUSTvcCpmN0vm1eGEz9B_hYSNm7wojhgwuXT=jkEQ@mail.gmail.com>
+ <20210118110506.linvsoca7jbl42iq@vireshk-i7>
+ <CAPDyKFr7SD_A9sKD2+90XfjP09T+PCLE=8qvn=M-yPEPXvBhsg@mail.gmail.com>
+ <20210119034428.qgjjlvti6sirsnzy@vireshk-i7>
+ <CAPDyKFp3OpV5qgfB_EGf=fyCR5b0b0zntbsXAJJsWbJX09gF6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGwxsy/0exZ02HWY9tkJuphsuoUGQKa3YDmAkSCdsmqVAjF8A==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJKsWRmVeSWpSXmKPExsWy7bCmpu6nbWwJBv8msVksacqw+DhtJZPF
-        hac9bBZ3nt9gtJjyaymzxeVdc9gszs47zmbx5vcLdosnUx6xWhzdGGyxaOsXdosb69kdeDzW
-        zFvD6LFgU6nHplWdbB59W1Yxehy/sZ3J4/MmuQC2KC6blNSczLLUIn27BK6MCecuMBWs46/Y
-        veoAcwPjeZ4uRg4OCQETiRMvMrsYuTiEBHYzSnzp28cO4XxilJjZ+okVwvnMKHGhYwVTFyMn
-        WMfnu0uZIBK7GCWmtc5mhHBeMErM2tjHDlLFJqAj8eTKH2YQW0RAU2JD7yU2kCJmgeVMEnOu
-        tIGN4hTQluh+upMFxBYWiJI4P2c+WAOLgKrEuZf3wOK8ApYSZ6d/ZoKwBSVOznwCFmcWkJfY
-        /nYOM8RJChI/ny5jhVjmJHFhwm5GiBpxiZdHj7BD1BzgkDi3KQ/CdpGYvvEEVFxY4tXxLVC2
-        lMTnd3vZIOx8iakXnrJAAqlCYnlPHUTYXuLAlTlgYWagv9bv0ocIy0pMPbWOCWIrn0Tv7yfQ
-        wOKV2DEPxlaW+PJ3DwuELSkx79hl1gmMSrOQPDYLyWOzkDwwC2HbAkaWVYySqQXFuempxaYF
-        Rnmp5XrFibnFpXnpesn5uZsYwalLy2sH48MHH/QOMTJxMB5ilOBgVhLhLV3HlCDEm5JYWZVa
-        lB9fVJqTWnyIUZqDRUmcd4fBg3ghgfTEktTs1NSC1CKYLBMHp1QD0/ZE51y++ANCoacfXeUz
-        itZ6+I9n9a2Lgn5ND/OM2Hyfxu1ZvOr13S8qshlvj3X9/H7d8ptvaaXMeb9oT6u07ltmovyv
-        bBd2u5WLrZK+YtyRq/OVz/lSZ9gSPlGlzSm/WGy2RIr+85JwvHpeai2D0Sf1r3VtB4IPZ8z8
-        u5j17ALhE/6d9QfSJCRilvKKvCmvOzFH9sC0thSBTkXZm7fZtvc5cgjKRbXuY+Ur94/7tUMm
-        c/2cp23rfvwKy3iwlOkKU8MLJ+4GPdXct325P3ec+2+wJEDv9L4si9MHtOKvnV+6KPz0tyZT
-        858Lfx7bLj1jA3/q1yMz7Z6+dlCr3FlmbfV7geyfQ1Lhmoy3p05+rsRSnJFoqMVcVJwIANzI
-        fGPMAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWy7bCSnG7TGrYEg5c9LBZLmjIsPk5byWRx
-        4WkPm8Wd5zcYLab8WspscXnXHDaLs/OOs1m8+f2C3eLJlEesFkc3Blss2vqF3eLGenYHHo81
-        89YweizYVOqxaVUnm0ffllWMHsdvbGfy+LxJLoAtissmJTUnsyy1SN8ugStjwrkLTAXr+Ct2
-        rzrA3MB4nqeLkZNDQsBE4vPdpUxdjFwcQgI7GCX+LN/DDJGQlPh8cR0ThC0ssfLfc3YQW0jg
-        GaPEy//+IDabgI7Ekyt/wOpFBDQlNvReYgMZxCywmUlixdl/LBBTtzFKHPzVCTaJU0Bbovvp
-        ThYQW1ggQmLljgNg3SwCqhLnXt4Di/MKWEqcnf6ZCcIWlDg58wlQnANoqp5E20ZGkDCzgLzE
-        9rdzoA5VkPj5dBkrxBFOEhcm7IaqEZd4efQI+wRG4VlIJs1CmDQLyaRZSDoWMLKsYpRMLSjO
-        Tc8tNiwwykst1ytOzC0uzUvXS87P3cQIjkAtrR2Me1Z90DvEyMTBeIhRgoNZSYS3dB1TghBv
-        SmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1MK61PqBmdz7n7
-        dLbi3KWSN48IKBXJcj1LqrLdpjopNU90qmDIoS+silXnjfp/sJ3IY1Ds5w3Kz2SafoFv85PX
-        Nt9aRY5ws5yVYF9vvELcS6diveO+c+mtU+cLTn9+x1og1CDj5gw7l5n1UgvfRlZXunSmxRZP
-        lg7m2Xb4auYtlbxzEXc81NKvFeVx5FVEyWbWh95e+ivDc92iF2tPM0/Q/Xai+sG0wPQqRol/
-        EzfGPN+yryvv8t6Xtc9/aV/v7mmu27y9vvXUj9XJXpyeJ/X8TT/vPZtsHb/9pm3c3rT2/RXu
-        XuzyRyxyAvS7D36ccEr2isO3uzecJuxM7p7+JJ77SHroHaYFnFLbYkubPDiUWIozEg21mIuK
-        EwGcfR+sLwMAAA==
-X-CMS-MailID: 20210119095514epcas5p2f4b4f456955a8be3d05f094d38168b13
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c
-References: <CGME20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c@epcas5p4.samsung.com>
-        <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
-        <20210113072104.GH4678@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFp3OpV5qgfB_EGf=fyCR5b0b0zntbsXAJJsWbJX09gF6A@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for -
-> >get_features()
+On 19-01-21, 10:52, Ulf Hansson wrote:
+> That would work if the topology is built from top to bottom, but I
+> don't think we can rely on that.
 > 
-> On Tue, Jan 12, 2021 at 07:32:25PM +0530, Shradha Todi wrote:
-> > get_features ops of pci_epc_ops may return NULL, causing NULL pointer
-> > dereference in pci_epf_test_bind function. Let us add a check for
-> > pci_epc_feature pointer in pci_epf_test_bind before we access it to
-> > avoid any such NULL pointer dereference and return -ENOTSUPP in case
-> > pci_epc_feature is not found.
-> >
-> > When the patch is not applied and EPC features is not implemented in
-> > the platform driver, we see the following dump due to kernel NULL
-> > pointer dereference.
-> >
-> > [  105.135936] Call trace:
-> > [  105.138363]  pci_epf_test_bind+0xf4/0x388 [  105.142354]
-> > pci_epf_bind+0x3c/0x80 [  105.145817]  pci_epc_epf_link+0xa8/0xcc [
-> > 105.149632]  configfs_symlink+0x1a4/0x48c [  105.153616]
-> > vfs_symlink+0x104/0x184 [  105.157169]  do_symlinkat+0x80/0xd4 [
-> > 105.160636]  __arm64_sys_symlinkat+0x1c/0x24 [  105.164885]
-> > el0_svc_common.constprop.3+0xb8/0x170
-> > [  105.169649]  el0_svc_handler+0x70/0x88 [  105.173377]
-> > el0_svc+0x8/0x640 [  105.176411] Code: d2800581 b9403ab9 f9404ebb
-> > 8b394f60 (f9400400) [  105.182478] ---[ end trace a438e3c5a24f9df0
-> > ]---
-> 
-> 
-> Description and call trace don't correlate with the proposed code change.
-> 
-> The code in pci_epf_test_bind() doesn't dereference epc_features, at least
-in
-> direct manner.
-> 
-> Thanks
+> For example, when a domain A is added as a child to domain B, domain B
+> doesn't have a parent yet (and the "can-handle-pstates" don't get set
+> for neither domain A or domain B). Next, domain B is added as child
+> domain to domain C. Domain C has the "can-handle-pstates" set, which
+> means domain B gets the "can-handle-pstates" set as well. This means
+> domain A, will not have "can-handle-pstates" set, while it probably
+> should have.
 
-Thanks for the review. Yes, you're right. The dereference does not happen in
-the pci_epf_test_bind() itself, but in pci_epf_test_alloc_space() being
-called within. We will update the line "causing NULL pointer dereference in
-pci_epf_test_bind function. " in the commit message to "causing NULL pointer
-dereference in pci_epf_test_alloc_space function. " Would that be good
-enough?
+Okay, I missed that part.
 
+> >
+> > > So, maybe we should simply just stick to the existing code, forcing
+> > > the parent to have a ->set_performance() callback assigned if
+> > > propagation should continue?
+> >
+> > I think it would be better to fix the issue even if we aren't fully optimized
+> > and making the change to make sure we keep propagating is rather important.
+> 
+> Alright, let's continue with Dmitry's patches and discuss this further
+> when v4 is out, as he seems to have it almost ready.
+
+Right.
+
+-- 
+viresh
