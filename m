@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAFB2FAE32
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FDB2FAE35
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387415AbhASAvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 19:51:49 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48528 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732808AbhASAvp (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 19:51:45 -0500
-IronPort-SDR: L87LnFWIwdanQv6Quz8d9Kw0w8U9zFdf5D4RYwMG90vLh5r0ubinpzn0GesiHFtyeyLBnO/rCj
- N0w/gcWZ185g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="176290975"
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="176290975"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 16:49:57 -0800
-IronPort-SDR: E6wtFFaIku3AzslxS651+GFazQ8xrTMwUZbFMyUtMQJCa07GRnXSMpKQ0o/PE1UuuTpatxP8MT
- UKsWgHt/0pRg==
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="426287838"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 16:49:54 -0800
-Subject: Re: [PATCH v2] perf script: Fix overrun issue for
- dynamically-allocated pmu type number
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20201209005828.21302-1-yao.jin@linux.intel.com>
- <3fcdc860-d858-0166-de23-34fc6fe5c1cd@intel.com>
- <18fde68f-0d24-5bcb-38e1-11dcf6f70bc1@linux.intel.com>
-Message-ID: <934aa658-1147-8882-99c2-68561b42d63d@linux.intel.com>
-Date:   Tue, 19 Jan 2021 08:49:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2404628AbhASAyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 19:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732447AbhASAxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 19:53:44 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8F6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 16:53:04 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id j12so2014185pjy.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 16:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mg+Koq9lZ29m0hUxgegkWW5EEE3qCkZDZp3mxHRiqw0=;
+        b=LGG5Y1FHLZfLmnClZaLVaul72leJkAYHoBOlxgNpn7H3uAO0oF8h10RjG7NrnnN8t1
+         pjZHdijsDqNPhqMRULxkDdJBxatfrN87RkSQEG91pXHowqeIaAmBB833VpH+ykd5Pz+Y
+         9xLktuphI65BgGymIt8YOIV+3hzkYkEheRmpvSAc+UN/z9/i3upgD+bQbhLvDP/v+xs1
+         3g0DFS3lkDwLecyp2T8OaVp4w/QHK37lxxK7gl0/xnLJWLmQJbw/VDvaeyQpsMFUj0Oe
+         aXaSb+sT7V1sMyF7JjucUGJYNuh89syuMnHR/Rl1xcl9jOxb/T5XXYAf5XqRY6fjVT9K
+         Iniw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mg+Koq9lZ29m0hUxgegkWW5EEE3qCkZDZp3mxHRiqw0=;
+        b=ffrIGPWIsX0aGX41oMQPRE3o2NRuuJ5gWH1LGv0XMBlZ4k0pGrhT1JUKBOLR6aR/Xo
+         Fl8/coyMBDnJQOB8w8KWV7N4cnCsmezXjX//uubfvk3uoBysO+h321k/ZQxhR6g4Ohbg
+         VM2MgyRY/flncozlRnNPDVV03BaW4E8BQXe2+GU5Qjt3gaUX4SD04F1YxjEAhWK3axdR
+         RN+FgFW4atXlyMsTKYmHJk6w3jrpSQqUDsliWu41x048jf8sYlMWumPCg1NuKT3MVvpT
+         Gw9fG8Xm1wLlkY0RA6c7JDvB8OIClglLD7sg+uL57RSZtd7QCcJaFby4A2zEPGXwiESA
+         BdYw==
+X-Gm-Message-State: AOAM532K7ODjPKXbuDPQnWrbVFe24SDh19/cKSNplhE7hNEEUUuOFY3K
+        CQricVngb9izlfdipreXQxU=
+X-Google-Smtp-Source: ABdhPJy7q4KjN8lStiQNvymQ1gOiAbwpDRLg+pJL7opQQfA9UtzVt/R+aVmwwH8fDEqMpBNIezGMxg==
+X-Received: by 2002:a17:90a:d990:: with SMTP id d16mr2183806pjv.16.1611017584227;
+        Mon, 18 Jan 2021 16:53:04 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id 5sm551318pjz.23.2021.01.18.16.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 16:53:03 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:53:01 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        keescook@chromium.org, Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210118182635.GD2260413@casper.infradead.org>
+ <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <18fde68f-0d24-5bcb-38e1-11dcf6f70bc1@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo, Jiri,
+On (21/01/18 13:03), Timur Tabi wrote:
+> On 1/18/21 12:26 PM, Matthew Wilcox wrote:
+> > Don't make it easy.  And don't make it look like they're doing
+> > something innocent.  DUMP_PREFIX_SECURITY_HOLE would be OK
+> > by me.  DUMP_PREFIX_LEAK_INFORMATION would work fine too.
+> > DUMP_PREFIX_MAKE_ATTACKERS_LIFE_EASY might be a bit too far.
+> 
+> It's already extremely easy to replace %p with %px in your own printks, so I
+> don't really understand your argument.
 
-On 12/25/2020 9:10 AM, Jin, Yao wrote:
-> Hi Arnaldo, Jiri,
-> 
-> On 12/11/2020 2:10 PM, Adrian Hunter wrote:
->> On 9/12/20 2:58 am, Jin Yao wrote:
->>> When unpacking the event which is from dynamic pmu, the array
->>> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
->>> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
->>> PERF_TYPE_MAX + 1).
->>>
->>> /* In builtin-script.c */
->>> process_event()
->>> {
->>>          unsigned int type = output_type(attr->type);
->>>
->>>          if (output[type].fields == 0)
->>>                  return;
->>> }
->>>
->>> output[10] is overrun.
->>>
->>> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
->>> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
->>>
->>> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
->>> between old perf.data files that had a dynamicaliy allocated PMU number
->>> that would then be the same as a fixed PERF_TYPE.
->>>
->>> Example:
->>>
->>> perf record --switch-events -C 0 -e 
->>> "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
->>> perf script
->>>
->>> Before:
->>>           swapper     0 [000] 1479253.987551:     277766               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.987797:     246709               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.988127:     329883               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.988273:     146393               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.988523:     249977               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.988877:     354090               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.989023:     145940               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.989383:     359856               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1479253.989523:     140082               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>
->>> After:
->>>           swapper     0 [000] 1397040.402011:     272384               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
->>>           swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
->>>           swapper     0 [000] 1397040.402259:     249153               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
->>>           swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
->>>           swapper     0 [000] 1397040.402508:     249108               cpu-clock:  
->>> ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>           swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
->>>           swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
->>>
->>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->>
->> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->>
-> 
-> Can this patch be accepted? :)
-> 
-> Thanks
-> Jin Yao
-> 
+I like the idea of a more radical name, e.g. DUMP_PREFIX_RAW_POINTERS or
+something similar.
 
-Can this bug fix be accepted or anything else I need to improve?
+> Seriously, this patch should not be so contentious.  If you want hashed
+> addresses, then nothing changes.  If you need unhashed addresses while
+> debugging, then use DUMP_PREFIX_UNHASHED.  Just like you can use %px in
+> printk.  I never use %p in my printks, but then I never submit code upstream
+> that prints addresses, hashed or unhashed.
 
-Thanks
-Jin Yao
+So maybe DUMP_PREFIX_UNHASHED can do the unhashed dump only when
+CONFIG_DEBUG_KERNEL=y and fallback to DUMP_PREFIX_ADDRESS otherwise?
+
+	-ss
