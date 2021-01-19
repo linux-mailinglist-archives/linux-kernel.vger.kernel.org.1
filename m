@@ -2,142 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884832FAF5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41912FAF4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730583AbhASEMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 23:12:31 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:40866 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730216AbhASEJ2 (ORCPT
+        id S1730185AbhASEGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 23:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729991AbhASEDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 23:09:28 -0500
-X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Jan 2021 23:09:28 EST
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611029345; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=hqSaBJC25YzefV/w05jd1KbxgKk1Mst3ZpX3NfFPPZo=; b=X37eaPAH/Sb651mrGrOFvgbNfp+nVH/MzVWzmsgxKdzLXpH0FM1Nj0QQJYyBJPHs7DG7xHtb
- oW4WZ+uzfqpAptGM3wGZ0e3/8fLoj71MtfR0dhhzsxShWzzF7Gwue1IYNAm/+vrpSVsLedXk
- WpidGhjS+pVAonpeJ58GYj1jKI8=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 600659dc1e3bf9b669a40135 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 04:02:36
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 34EBBC43461; Tue, 19 Jan 2021 04:02:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [182.18.191.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E53EAC433C6;
-        Tue, 19 Jan 2021 04:02:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E53EAC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v4 1/2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     minchan@kernel.org, glider@google.com, dan.j.williams@intel.com,
-        broonie@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org, Thomas Gleixner <tglx@linutronix.de>
-References: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
- <20210104151223.34f97a033e966c9cc89915cb@linux-foundation.org>
- <50635706-e3b0-20da-a053-facb1430b1d1@codeaurora.org>
-Message-ID: <f97ae1cd-974d-f8bc-9fe4-c1d11464ac12@codeaurora.org>
-Date:   Tue, 19 Jan 2021 09:32:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 18 Jan 2021 23:03:52 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5698C061573;
+        Mon, 18 Jan 2021 20:03:11 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id j3so664710ljb.9;
+        Mon, 18 Jan 2021 20:03:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QZbf/tHbkOzK8ODkUs/F8ksdfv4bYbCZtEAyN+1lVFc=;
+        b=iVnWB8g7Mb83HtkOHXTgAAGhI+6AjJvG/pcT/37eoLcFloQ7bshMYzCdKzuXiYtu9C
+         2pT94OxVUO01ZH2VUgNxYfjxZ1Z9m0boIi1t9Ttgv431AtXwDNCTY8fgQjJliVoJTTiw
+         1tmdP6DmaB8Q8+tlN4a+xX3Z9hRlIf5bfrGZAJxh5ZPhkxBp073OAVhMoH/7XBXXQeA7
+         6k3ey+t4CzFZV4h/zUZDMHasukBWA6mFJKNzMzQUI5xbDdf+XiwawcVUxOXWixZExl2s
+         MGffl9DJj/piFYXmXLU0+Bax31gph70GjwcXn5GxoRdgUg20zIjrjGGSQ6aVARJMTyji
+         FODA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QZbf/tHbkOzK8ODkUs/F8ksdfv4bYbCZtEAyN+1lVFc=;
+        b=lw9jnxMwCtLnGU7FLIvPDnDd5MgRPSsWa08RzBLJsLSPajV7KLhB/pp1GJo/YjFUdD
+         0S/vkPB+7rG0cQsbbnBCJAAv+CI+U3s3LQKdr22i7sn5E6LbJV95GjSGE6NV1CfIGChT
+         bWQ09TNxKCOjO/O9yfylFBFEwfgHoV3LxDMkCVhFYttXG3FXRRfIYWtuM86EXjIqp4H/
+         hRWtG94WIIcWd/htLmXl2uyh2DhGO2vvjfMfzyVK3YPY7EwHsvLqBqq616uWb3RgorKz
+         rMPv9sbQ52A5TdILvkviHYD6JDPnnehLOyziSNmPg2/oyS5/KclbALSSvgNSogL7zINd
+         reLg==
+X-Gm-Message-State: AOAM533tI/PiHltUuhVhxDCVxHaATOgh4K0hIZxBXiXo/aM7jVs6aU/s
+        xRXHKhDu852VXUUW+wWoqqU=
+X-Google-Smtp-Source: ABdhPJztuSTxXLHjG6KJRw+QmajmQ+obnrUe+m87VL+zG528ca+DEStlj15L6rJRijL33pXbavz1gA==
+X-Received: by 2002:a2e:b80d:: with SMTP id u13mr1025962ljo.143.1611028990209;
+        Mon, 18 Jan 2021 20:03:10 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id r201sm2135071lff.268.2021.01.18.20.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 20:03:09 -0800 (PST)
+Date:   Tue, 19 Jan 2021 06:03:06 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com
+Subject: Re: [PATCH v17 02/10] fs/ntfs3: Add initialization of super block
+Message-ID: <20210119040306.54lm6oyeiarjrb2w@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-3-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <50635706-e3b0-20da-a053-facb1430b1d1@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231152401.3162425-3-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 31, 2020 at 06:23:53PM +0300, Konstantin Komarov wrote:
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
 
+> +void fnd_clear(struct ntfs_fnd *fnd)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < fnd->level; i++) {
+> +		struct indx_node *n = fnd->nodes[i];
+> +
+> +		if (!n)
+> +			continue;
+> +
+> +		put_indx_node(n);
+> +		fnd->nodes[i] = NULL;
+> +	}
+> +	fnd->level = 0;
+> +	fnd->root_de = NULL;
+> +}
+> +
+> +static int fnd_push(struct ntfs_fnd *fnd, struct indx_node *n,
+> +		    struct NTFS_DE *e)
+> +{
+> +	int i;
+> +
+> +	i = fnd->level;
+> +	if (i < 0 || i >= ARRAY_SIZE(fnd->nodes))
+> +		return -EINVAL;
+> +	fnd->nodes[i] = n;
+> +	fnd->de[i] = e;
+> +	fnd->level += 1;
+> +	return 0;
+> +}
+> +
+> +static struct indx_node *fnd_pop(struct ntfs_fnd *fnd)
+> +{
+> +	struct indx_node *n;
+> +	int i = fnd->level;
+> +
+> +	i -= 1;
+> +	n = fnd->nodes[i];
+> +	fnd->nodes[i] = NULL;
+> +	fnd->level = i;
+> +
+> +	return n;
+> +}
+> +
+> +static bool fnd_is_empty(struct ntfs_fnd *fnd)
+> +{
+> +	if (!fnd->level)
+> +		return !fnd->root_de;
+> +
+> +	return !fnd->de[fnd->level - 1];
+> +}
+> +
+> +struct ntfs_fnd *fnd_get(struct ntfs_index *indx)
+> +{
+> +	struct ntfs_fnd *fnd = ntfs_alloc(sizeof(struct ntfs_fnd), 1);
+> +
+> +	if (!fnd)
+> +		return NULL;
+> +
+> +	return fnd;
+> +}
 
-On 1/5/2021 2:54 PM, Vijayanand Jitta wrote:
-> 
-> 
-> On 1/5/2021 4:42 AM, Andrew Morton wrote:
->> On Wed, 30 Dec 2020 18:15:30 +0530 vjitta@codeaurora.org wrote:
->>
->>> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
->>>
->>> Aim is to have configurable value for  STACK_HASH_SIZE,
->>> so depend on use case one can configure it.
->>>
->>> One example is of Page Owner, default value of
->>> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
->>> Making it configurable and use lower value helps to enable features like
->>> CONFIG_PAGE_OWNER without any significant overhead.
->>
->> Questions regarding the stackdepot code.
->>
->> - stack_table_tmp[] is __initdata.  So after initmem is released,
->>   that "consume 8MB of static memory" should no longer be true.  But
->>   iirc, not all architectures actually release __initdata memory.  Does
->>   your architecture do this?
->>
-> Thanks for review comments, I wasn't aware that __initdata is
-> architecture dependent, I was assuming that __initdata always frees
-> memory and yes the architecture which i am using (arm64) does free
-> __inidata.
-> 
->> - Stackdepot copies stack_table_tmp[] into vmalloced memory during
->>   initcalls.  Why?  Why not simply make stack_table_tmp[] no longer
->>   __initdata and use that memory for all time?
->>
->>   Presumably because in the stack_depot_disable==true case, we
->>   release stack_table_tmp[] memory, don't vmalloc for a copy of it, and
->>   save a bunch of memory?  If so, this assumes that the __initdata
->>   memory is freed.
->>
-> 
-> Yes, that correct. assumption here is __initidata will free memory if
-> stack_depot_disable=true is set.
-> 
->> - Why is that hash table so large?  Is it appropriately sized?
->>
-> 
-> I think the large size of hash table is justified since the users of
-> stack depot like kasan, page owner etc store a very large number of  stacks.
-> 
->> - SMP is up and running during init_stackdepot(), I think?  If so, is
->>   that huge memcpy smp-safe?  Can other CPUs be modifying
->>   stack_table_tmp[] while the memcpy is in flight?
->>
->>
->>
-> Yes, parallel access could be possible. I will add a locking mechanism
-> inplace.
-> 
-> Thanks,
-> Vijay
-> 
+This should be initilized. What about that indx. Is that neccasarry?
+Also no need to check NULL because if it is NULL we can just return it. 
 
-I have updated the patch avoiding __initdata as per suggestion and the
-copy from tmp , can you please review v5.
+> +
+> +void fnd_put(struct ntfs_fnd *fnd)
+> +{
+> +	if (!fnd)
+> +		return;
+> +	fnd_clear(fnd);
+> +	ntfs_free(fnd);
+> +}
 
-https://lore.kernel.org/patchwork/patch/1367306/
+> +/*
+> + * indx_insert_entry
+> + *
+> + * inserts new entry into index
+> + */
+> +int indx_insert_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
+> +		      const struct NTFS_DE *new_de, const void *ctx,
+> +		      struct ntfs_fnd *fnd)
+> +{
+> +	int err;
+> +	int diff;
+> +	struct NTFS_DE *e;
+> +	struct ntfs_fnd *fnd_a = NULL;
+> +	struct INDEX_ROOT *root;
+> +
+> +	if (!fnd) {
+> +		fnd_a = fnd_get(indx);
 
-Thanks,
-Vijay
+Here we get uninitilized fnd.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+> +		if (!fnd_a) {
+> +			err = -ENOMEM;
+> +			goto out1;
+> +		}
+> +		fnd = fnd_a;
+> +	}
+> +
+> +	root = indx_get_root(indx, ni, NULL, NULL);
+> +	if (!root) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	if (fnd_is_empty(fnd)) {
+
+And example here we try to touch it.
+
+> +		/* Find the spot the tree where we want to insert the new entry. */
+> +		err = indx_find(indx, ni, root, new_de + 1,
+> +				le16_to_cpu(new_de->key_size), ctx, &diff, &e,
+> +				fnd);
+> +		if (err)
+> +			goto out;
+> +
+> +		if (!diff) {
+> +			err = -EEXIST;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	if (!fnd->level) {
+> +		/* The root is also a leaf, so we'll insert the new entry into it. */
+> +		err = indx_insert_into_root(indx, ni, new_de, fnd->root_de, ctx,
+> +					    fnd);
+> +		if (err)
+> +			goto out;
+> +	} else {
+> +		/* found a leaf buffer, so we'll insert the new entry into it.*/
+> +		err = indx_insert_into_buffer(indx, ni, root, new_de, ctx,
+> +					      fnd->level - 1, fnd);
+> +		if (err)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	fnd_put(fnd_a);
+> +out1:
+> +	return err;
+> +}
