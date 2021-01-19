@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6D22FC3F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB3C2FC3F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbhASWnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:43:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33180 "EHLO mail.kernel.org"
+        id S1730564AbhASWoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:44:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392045AbhASObK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:31:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C63D5206E5;
-        Tue, 19 Jan 2021 14:30:27 +0000 (UTC)
+        id S2405128AbhASOc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:32:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9255D206E5;
+        Tue, 19 Jan 2021 14:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611066628;
-        bh=MrFkVYJPvkHcslkriBHdzggCygel2lpmLMTZKwFK1zA=;
+        s=k20201202; t=1611066706;
+        bh=NfQU7Bh2uGMJeTO1WgOYbXM6ko6/LlpUampJfSpsipY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pe/oXl7V87ZzrmE8Uro/PfCcchPHBJkSDcwV6e9P1CU/s9TrjTzcdUU+shix8NBYp
-         UumzwHnYY1JbayqJEr4o6IOc6s5MA8fVnnyFgvDha45DJXvmSJY9/8IASa2qVUjBfh
-         ioa2fiMb+Abx9qa/0fdt+JtOzIU/fICkiIc1Ey14lchf2eR8se5gGD4cYJko1KXAIS
-         C+x70FPohRFE6H9ARhrx08b7LAOmoOjcUc6N5uobHgImAV8jFMWxa5PhBSpfixgqCj
-         24X0q6MmDjN0Nyd1Q8UR4pAfVbaAMx8BNOFnjCGvxWQnsFLiVlt8hsDoi/xcLT5Nyc
-         sRCVLrHJKbfew==
+        b=SrigU5FPI0Ij6S0yCfy3btTTVYmZ21Kog35h7ZfbCA3lL/nF60IGKYii68Qjny6qz
+         fecUUSH/PaMNni3xl4FPTGy5Og3BE9SmovOULwnvYf7z0NUHRFmqNmzY9/52/gHrpm
+         ySJCEzXWay0OfgI4nzrW4Xx4760SRj5f1oO03XDBn7kSNNsn4py8Mx5ndFFi74YRa1
+         n6bypWLiR/i5S+c2sWJHevMWbb8SM1iLw2nUJFmlx//kVQoUHKHuFCmQu7XtnC+S2s
+         AxHp0QUpsInrqyY1aRGtBvbc3vjYZKHCGpudJIdEsxZg+SNDJ8iZjuhpZMkVp3eBXu
+         Iw9q+Mj7qT0dQ==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D080540CE2; Tue, 19 Jan 2021 11:30:24 -0300 (-03)
-Date:   Tue, 19 Jan 2021 11:30:24 -0300
+        id F3B6F40CE2; Tue, 19 Jan 2021 11:31:43 -0300 (-03)
+Date:   Tue, 19 Jan 2021 11:31:43 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCHv4 0/4] perf tools: Allow to enable/disable events via
- control pipe
-Message-ID: <20210119143024.GI12699@kernel.org>
-References: <20201226232038.390883-1-jolsa@kernel.org>
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
+Message-ID: <20210119143143.GJ12699@kernel.org>
+References: <20201229214214.3413833-1-songliubraving@fb.com>
+ <20201229214214.3413833-4-songliubraving@fb.com>
+ <20210118193817.GG12699@kernel.org>
+ <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201226232038.390883-1-jolsa@kernel.org>
+In-Reply-To: <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Dec 27, 2020 at 12:20:34AM +0100, Jiri Olsa escreveu:
-> hi,
-> adding support to enable/disable specific events via control
-> file via following commands:
-> 
->     # echo 'enable sched:sched_process_fork' > control
->     # echo 'disabled sched:sched_process_fork' > control
-> 
-> v4 changes:
->   - some of the patches got merged
->   - rebased to latest perf/core
->   - fixed changelogs
->   - added 'ping' command
-> 
-> v3 changes:
->   - use ' ' instead of '-' in syntax and add command argument
->     processing [Arnaldo]
->   - add options to evlist [Arnaldo]
->   - add man page changes
-> 
-> v2 changes:
->   - added acks
->   - change list to evlist [Arnaldo]
->   - add evlist-verbose command [Arnaldo]
->   - add '' to enale-/disable- error message
-> 
-> The code is available in here:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   perf/control
-> 
-> thanks,
-> jirka
-
-Thanks, applied.
-
-- Arnaldo
-
+Em Tue, Jan 19, 2021 at 12:48:19AM +0000, Song Liu escreveu:
+> > On Jan 18, 2021, at 11:38 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> We are looking at two issues:
+> 1. Cannot recursively attach;
+> 2. prog FD 3 doesn't have valid btf. 
  
-> 
-> ---
-> Jiri Olsa (4):
->       perf tools: Allow to enable/disable events via control file
->       perf tools: Add evlist control command
->       perf tools: Add stop control command
->       perf tools: Add ping control command
-> 
->  tools/perf/Documentation/perf-record.txt |  15 ++++++++++++---
->  tools/perf/builtin-record.c              |  13 +++++++------
->  tools/perf/builtin-stat.c                |   5 +++--
->  tools/perf/util/evlist.c                 | 112 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
->  tools/perf/util/evlist.h                 |   6 ++++++
->  tools/perf/util/evsel_fprintf.c          |   2 ++
->  tools/perf/util/python-ext-sources       |   1 +
->  tools/perf/util/setup.py                 |   2 +-
->  8 files changed, 141 insertions(+), 15 deletions(-)
-> 
+> #1 was caused by the verifier disallowing attaching fentry/fexit program 
+> to program with type BPF_PROG_TYPE_TRACING (in bpf_check_attach_target). 
+> This constraint was added when we only had fentry/fexit in the TRACING
+> type. We have extended the TRACING type to many other use cases, like 
+> "tp_btf/", "fmod_ret" and "iter/". Therefore, it is good time to revisit 
+> this constraint. I will work on this. 
+ 
+> For #2, we require the target program to have BTF. I guess we won't remove
+> this requirement.
+ 
+> While I work on improving #1, could you please test with some kprobe 
+> programs? For example, we can use fileslower.py from bcc. 
 
--- 
+Sure, and please consider improving the error messages to state what you
+described above.
 
 - Arnaldo
