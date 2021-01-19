@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A222FC09C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26FB2FC0A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404535AbhASTGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:06:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S2392134AbhASTBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392074AbhASRzg (ORCPT
+        with ESMTP id S2391743AbhASR7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:55:36 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F04C061796;
-        Tue, 19 Jan 2021 09:48:41 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id A90BE3F1FF;
-        Tue, 19 Jan 2021 18:45:58 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     viresh.kumar@linaro.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v4 0/7] cpufreq-qcom-hw: Implement full OSM programming
-Date:   Tue, 19 Jan 2021 18:45:50 +0100
-Message-Id: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.30.0
+        Tue, 19 Jan 2021 12:59:39 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DE6C061573;
+        Tue, 19 Jan 2021 09:58:59 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id e15so581563wme.0;
+        Tue, 19 Jan 2021 09:58:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ud39rUOwi9a+eDdinAxLAEakzSkS3TdE+RD/bhNorzQ=;
+        b=VXR7vmWGIj2jjxYIWeOws2Wl7U9SiEVahWjLU/e+0eN82PYKaoRniIiDIRK7msShQ0
+         TBfAjeteW6riRRxAoQrjol1Z6EUC/OjkammyFdgHunOCrZtHA2/S6gDYFPSGopFWjlWD
+         glIrEMHhg+sYx/tZy/MByl3pxJr2XDyca5U6qecQ1fxzE4VbsVInnwY68Cy3NeeBetN/
+         9o4sKysDN9draRqQv1uBTFPEB8XXm+9dllwXobePv0iuIlgVkSFYjY6Ds/ssTN7xfL/U
+         58ts6kr6GPaC4gKFgM5/Li01b/rMBs7Fkqrpp0/rQojH4NAGkbMsjrn9ZPgWSxc4g3yd
+         Rrwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ud39rUOwi9a+eDdinAxLAEakzSkS3TdE+RD/bhNorzQ=;
+        b=BW9amq7I1zUq+i6ZaJzxa6EtekYENN5TFsyYHbsvB0w3VeXHNKvqhBDIVBot9GfGzK
+         6WBwyCVxS6YcBFwsbolgry4SQuy9KUXhguTCFOCc6CeTZu1IoWhKzc4hfSDueNDyMgBH
+         wcaQQ/2mB2W3jdy6FdNnRqDSGGEDE47hgZulMBKz2thOsQg6RHoU5deDILyyW+1Rj5G8
+         22pgJ3Azj7EB28P0qyHoBZ17j3otdiZi8raA4YCuk7/c9cH8TJa4tURNVqAWFNvaksc7
+         9TjzzdKQPXBdY4ljmB9IcBR68duI0xdnXNyqKIeUXIT99W95VwYLE2iUmD1m8HiGP8ai
+         KZcA==
+X-Gm-Message-State: AOAM5336rHo/LXhbzlFLETMeW98zj5bkG1XO5Yxef33EeudffoavmtBn
+        0HYhHFTr36FMhdJtMZNte5hC6VIFA/OTPnva
+X-Google-Smtp-Source: ABdhPJxJX9Y5y3EIyEHi9aNLRaU90KBI2X7LlLhhRsr/PehD6xzCuAqiAzYfgdq2RgPg9LZ6ZsBpSg==
+X-Received: by 2002:a05:600c:3548:: with SMTP id i8mr747653wmq.104.1611079137762;
+        Tue, 19 Jan 2021 09:58:57 -0800 (PST)
+Received: from anparri.mshome.net (host-79-50-177-118.retail.telecomitalia.it. [79.50.177.118])
+        by smtp.gmail.com with ESMTPSA id h125sm5899312wmh.16.2021.01.19.09.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 09:58:57 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, x86@kernel.org,
+        linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/4] Drivers: hv: vmbus: Restrict devices and configurations on 'isolated' guests
+Date:   Tue, 19 Jan 2021 18:58:37 +0100
+Message-Id: <20210119175841.22248-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  **
-  ** NOTE: To "view the full picture", please look at the following
-  ** patch series:
-  ** https://patchwork.kernel.org/project/linux-arm-msm/list/?series=413355
-  **              This is a subset of that series.
-  **
+Hi all,
 
-Changes in v4:
-- Huge patch series has been split for better reviewability,
-  as suggested by Bjorn
-- Rebased code on top of 266991721c15 ("cpufreq: qcom-hw: enable boost
-  support")
+To reduce the footprint of the code that will be exercised, and hence
+the exposure to bugs and vulnerabilities, restrict configurations and
+devices on 'isolated' VMs.
 
-Changes in v3:
-- Fixed a test robot build failure for ARCH=arm
-- Fixed dt_binding_check YAML doc issues
+Specs of the Isolation Configuration leaf (cf. patch #1) were derived
+from internal discussions with the Hyper-V team and, AFAICT, they are
+not publicly available yet.
 
-Changes in v2:
-- Rebased dt-binding on top of Manivannan's patches
-- Added MSM8998 to cpufreq-dt-platdev blacklist
-- Implemented dynamic Memory Accelerator corners support, needed
-  by MSM8998
-- Implemented ACD programming, needed by MSM8998
+The series has some minor/naming conflict with on-going work aimed at
+enabling SNP VMs on Hyper-V[1]; such conflicts can be addressed later
+at the right time.
 
-Tested on the following smartphones:
-- Sony Xperia XA2        (SDM630)
-- Sony Xperia XA2 Ultra  (SDM630)
-- Sony Xperia 10         (SDM630)
-- Sony Xperia XZ Premium (MSM8998)
-- F(x)Tec Pro 1          (MSM8998)
+Applies to hyperv-next.
 
-From SDM845 onwards, SAW, CPRh and OSM are getting setup by the
-bootloader/TZ *before* booting the OS, so then all the OS has to do
-is to request a specific performance state to the OSM hardware and
-forget about all the rest, which is anyway protected by the hypervisor
-(so there's no access anyway);
+Thanks,
+  Andrea
 
-BUT:
+[1] https://github.com/lantianyu/linux # cvm
 
-In MSM/APQ 8998, SDM/SDA 630/636/660 (and other variants), there is no
-setup of any of these puzzle pieces, and they're also (basically) fully
-accessible, which means that the OS must do it in order to get in the
-same state as the newer ones and to get the entire scaling hardware to
-start rolling.
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: x86@kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: netdev@vger.kernel.org
 
-AngeloGioacchino Del Regno (5):
-  cpufreq: blacklist SDM630/636/660 in cpufreq-dt-platdev
-  cpufreq: blacklist MSM8998 in cpufreq-dt-platdev
-  cpufreq: qcom-hw: Implement CPRh aware OSM programming
-  cpufreq: qcom-hw: Allow getting the maximum transition latency for
-    OPPs
-  dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
+Andrea Parri (Microsoft) (4):
+  x86/hyperv: Load/save the Isolation Configuration leaf
+  Drivers: hv: vmbus: Restrict vmbus_devices on isolated guests
+  Drivers: hv: vmbus: Enforce 'VMBus version >= 5.2' on isolated guests
+  hv_netvsc: Restrict configurations on isolated guests
 
-Manivannan Sadhasivam (2):
-  dt-bindings: arm: cpus: Document 'qcom,freq-domain' property
-  dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML bindings
-
- .../devicetree/bindings/arm/cpus.yaml         |    6 +
- .../bindings/cpufreq/cpufreq-qcom-hw.txt      |  172 ---
- .../bindings/cpufreq/cpufreq-qcom-hw.yaml     |  242 ++++
- drivers/cpufreq/cpufreq-dt-platdev.c          |    4 +
- drivers/cpufreq/qcom-cpufreq-hw.c             | 1247 ++++++++++++++++-
- 5 files changed, 1467 insertions(+), 204 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
- create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+ arch/x86/hyperv/hv_init.c          | 15 +++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h | 15 +++++++++++++
+ arch/x86/kernel/cpu/mshyperv.c     |  9 ++++++++
+ drivers/hv/channel_mgmt.c          | 36 ++++++++++++++++++++++++++++++
+ drivers/hv/connection.c            | 13 +++++++++++
+ drivers/net/hyperv/netvsc.c        | 21 ++++++++++++++---
+ include/asm-generic/hyperv-tlfs.h  |  1 +
+ include/asm-generic/mshyperv.h     |  5 +++++
+ include/linux/hyperv.h             |  1 +
+ 9 files changed, 113 insertions(+), 3 deletions(-)
 
 -- 
-2.30.0
+2.25.1
 
