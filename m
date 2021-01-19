@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4042FBFD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476BC2FBFD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404017AbhASTPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:15:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38846 "EHLO mail.kernel.org"
+        id S2392257AbhASTMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:12:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:45620 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391593AbhASTBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:01:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BAF020776;
-        Tue, 19 Jan 2021 19:00:40 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 19:00:38 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S2390775AbhASS6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:58:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27FEA11B3;
+        Tue, 19 Jan 2021 10:57:10 -0800 (PST)
+Received: from [10.37.8.29] (unknown [10.37.8.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9ECCE3F719;
+        Tue, 19 Jan 2021 10:57:08 -0800 (PST)
+Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Subject: Re: [PATCH v4 5/5] arm64: mte: Inline mte_assign_mem_tag_range()
-Message-ID: <20210119190037.GB26948@gaia>
-References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
- <20210118183033.41764-6-vincenzo.frascino@arm.com>
- <20210119144459.GE17369@gaia>
- <1bb4355f-4341-21a7-0a53-a4a27840adee@arm.com>
- <CAAeHK+y9sw0SENeDXLLBxD8XqD396rXbg1GeBRDEm7PnMzMmHQ@mail.gmail.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
+ <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
+ <20210119185206.GA26948@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <e3d67672-1825-894a-db68-5709b33b4991@arm.com>
+Date:   Tue, 19 Jan 2021 19:00:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+y9sw0SENeDXLLBxD8XqD396rXbg1GeBRDEm7PnMzMmHQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210119185206.GA26948@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:12:40PM +0100, Andrey Konovalov wrote:
-> On Tue, Jan 19, 2021 at 4:45 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
-> > On 1/19/21 2:45 PM, Catalin Marinas wrote:
-> > > On Mon, Jan 18, 2021 at 06:30:33PM +0000, Vincenzo Frascino wrote:
-> > >> mte_assign_mem_tag_range() is called on production KASAN HW hot
-> > >> paths. It makes sense to inline it in an attempt to reduce the
-> > >> overhead.
-> > >>
-> > >> Inline mte_assign_mem_tag_range() based on the indications provided at
-> > >> [1].
-> > >>
-> > >> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
-> > >>
-> > >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > >> Cc: Will Deacon <will@kernel.org>
-> > >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > >> ---
-> > >>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
-> > >>  arch/arm64/lib/mte.S         | 15 ---------------
-> > >>  2 files changed, 25 insertions(+), 16 deletions(-)
-> > >>
-> > >> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> > >> index 237bb2f7309d..1a6fd53f82c3 100644
-> > >> --- a/arch/arm64/include/asm/mte.h
-> > >> +++ b/arch/arm64/include/asm/mte.h
-> > >> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
-> > >>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
-> > >>                       unsigned long addr, unsigned long data);
-> > >>
-> > >> -void mte_assign_mem_tag_range(void *addr, size_t size);
-> > >> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-> > >> +{
-> > >> +    u64 _addr = (u64)addr;
-> > >> +    u64 _end = _addr + size;
-> > >> +
-> > >> +    /*
-> > >> +     * This function must be invoked from an MTE enabled context.
-> > >> +     *
-> > >> +     * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> > >> +     * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> > >> +     */
-> > >> +    do {
-> > >> +            /*
-> > >> +             * 'asm volatile' is required to prevent the compiler to move
-> > >> +             * the statement outside of the loop.
-> > >> +             */
-> > >> +            asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> > >> +                         :
-> > >> +                         : "r" (_addr)
-> > >> +                         : "memory");
-> > >> +
-> > >> +            _addr += MTE_GRANULE_SIZE;
-> > >> +    } while (_addr != _end);
-> > >> +}
-> > >
-> > > While I'm ok with moving this function to C, I don't think it solves the
-> > > inlining in the kasan code. The only interface we have to kasan is via
-> > > mte_{set,get}_mem_tag_range(), so the above function doesn't need to
-> > > live in a header.
-> > >
-> > > If you do want inlining all the way to the kasan code, we should
-> > > probably move the mte_{set,get}_mem_tag_range() functions to the header
-> > > as well (and ideally backed by some numbers to show that it matters).
-> > >
-> > > Moving it to mte.c also gives us more control on how it's called (we
-> > > have the WARN_ONs in place in the callers).
-> > >
-> >
-> > Based on the thread [1] this patch contains only an intermediate step to allow
-> > KASAN to call directly mte_assign_mem_tag_range() in future. At that point I
-> > think that mte_set_mem_tag_range() can be removed.
-> >
-> > If you agree, I would live the things like this to give to Andrey a chance to
-> > execute on the original plan with a separate series.
+
+
+On 1/19/21 6:52 PM, Catalin Marinas wrote:
+> On Tue, Jan 19, 2021 at 07:27:43PM +0100, Andrey Konovalov wrote:
+>> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
+>> <vincenzo.frascino@arm.com> wrote:
+>>>
+>>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
+>>> the address passed as a parameter.
+>>>
+>>> Add a comment to make sure that the preconditions to the function are
+>>> explicitly clarified.
+>>>
+>>> Note: An invalid address (e.g. NULL pointer address) passed to the
+>>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
+>>>
+>>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+>>> Cc: Alexander Potapenko <glider@google.com>
+>>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>>> Cc: Leon Romanovsky <leonro@mellanox.com>
+>>> Cc: Andrey Konovalov <andreyknvl@google.com>
+>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>>> ---
+>>>  mm/kasan/report.c | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+>>> index c0fb21797550..2485b585004d 100644
+>>> --- a/mm/kasan/report.c
+>>> +++ b/mm/kasan/report.c
+>>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>>>         end_report(&flags);
+>>>  }
+>>>
+>>> +/**
+>>> + * kasan_report - report kasan fault details
+>>> + * @addr: valid address of the allocation where the tag fault was detected
+>>> + * @size: size of the allocation where the tag fault was detected
+>>> + * @is_write: the instruction that caused the fault was a read or write?
+>>> + * @ip: pointer to the instruction that cause the fault
+>>> + *
+>>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
+>>> + * the address to access the tags, hence it must be valid at this point in
+>>> + * order to not cause a kernel panic.
+>>> + */
+>>
+>> It doesn't dereference the address, it just checks the tags, right?
+>>
+>> Ideally, kasan_report() should survive that with HW_TAGS like with the
+>> other modes. The reason it doesn't is probably because of a blank
+>> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
+>> guess we should somehow check that the memory comes from page_alloc or
+>> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
+>> instruction to check whether the memory has tags?
 > 
-> I think we should drop this patch from this series as it's unrelated.
+> There isn't an architected way to probe whether a memory location has a
+> VA->PA mapping. The tags are addressed by PA but you can't reach them if
+> you get a page fault on the VA. So we either document the kasan_report()
+> preconditions or, as you suggest, update addr_has_metadata() for the
+> HW_TAGS case. Something like:
 > 
-> I will pick it up into my future optimization series. Then it will be
-> easier to discuss it in the context. The important part that I needed
-> is an inlinable C implementation of mte_assign_mem_tag_range(), which
-> I now have with this patch.
+>         return is_vmalloc_addr(virt) || virt_addr_valid(virt));
+> 
 
-That's fine by me but we may want to add some forced-alignment on the
-addr and size as the loop here depends on them being aligned, otherwise
-it gets stuck. The mte_set_mem_tag_range() at least had a WARN_ON in
-place. Here we could do:
-
-	addr &= MTE_GRANULE_MASK;
-	size = ALIGN(size, MTE_GRANULE_SIZE);
-
-(or maybe trim "size" with MTE_GRANULE_MASK)
-
-That's unless the call places are well known and guarantee this
-alignment (only had a very brief look).
+Or we could have both ;)
 
 -- 
-Catalin
+Regards,
+Vincenzo
