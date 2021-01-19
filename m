@@ -2,59 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E39A2FB6FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CCE2FB6E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388533AbhASJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:48:12 -0500
-Received: from mail.functiononline.eu ([5.249.150.27]:33184 "EHLO
-        mail.functiononline.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732309AbhASJUx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:20:53 -0500
-X-Greylist: delayed 562 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 04:20:52 EST
-Received: by mail.functiononline.eu (Postfix, from userid 1001)
-        id D5F99A2125; Tue, 19 Jan 2021 09:10:20 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=functiononline.eu;
-        s=mail; t=1611047420;
-        bh=YBkn0ofue1n+5ODAHublaFG742PsrItaYQ4dIheLfy8=;
-        h=Date:From:To:Subject:From;
-        b=tdYPGDsAPXfMTDvAq1jJqX5QFu+By3CL8Q0//w2qiJ+EO6XpfKgsOvLudPNEmXobu
-         NBUudktiOKMj5Q9FzsoYU2MqqKVc83IZdZm8ookRnmBTVAN1xanWrdAjR5sAovWMfk
-         Q/ktJr+oQ7opbbrtVFgnmE/IOSVl76EJGozywWARNDQ7Fq0Dj+Kza5A/4fVKIWXGxE
-         WXbCAhq4wM93vS4BtjVAwzICoqJ4zTl0Ijg/cIfl2rDb3Gv9VEiOtMGxYN1mQ51yvR
-         2uJRxeUQHLAk/U5MbLUFPuH/+iI+efxx+Pn4Ch3X50b0kyvnZ5U7lFWHjZB1eDxEJx
-         jFm4JjAYxGa7g==
-Received: by mail.functiononline.eu for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:10:18 GMT
-Message-ID: <20210119074500-0.1.9.bji.0.r8lmdzf06m@functiononline.eu>
-Date:   Tue, 19 Jan 2021 09:10:18 GMT
-From:   "Pierre Musso" <pierre.musso@functiononline.eu>
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?D=C3=A9veloppement_de_projets?=
-X-Mailer: mail.functiononline.eu
+        id S1732937AbhASJ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:26:08 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:53038 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731838AbhASJMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:12:01 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l1n2U-0004qx-Qk; Tue, 19 Jan 2021 10:11:02 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chen-Yu Tsai <wens@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
+Date:   Tue, 19 Jan 2021 10:11:01 +0100
+Message-ID: <12687142.y0N7aAr316@diego>
+In-Reply-To: <20210106134617.391-2-wens@kernel.org>
+References: <20210106134617.391-1-wens@kernel.org> <20210106134617.391-2-wens@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bonjour,
-=20
-Nous recevons des signaux du march=C3=A9 sur la demande accrue de d=C3=A9=
-veloppement de projets logiciels. Vous recherchez des d=C3=A9veloppeurs e=
-xp=C3=A9riment=C3=A9s?
-=20
-Nous formons des =C3=A9quipes de d=C3=A9veloppement =C3=A0 distance pour =
-soutenir le d=C3=A9veloppement logiciel interne de nos clients et acc=C3=A9=
-l=C3=A9rer la croissance de leur entreprise. Nos programmeurs sont qualif=
-i=C3=A9s en JAVA, PHP, Python, C / C ++, C #, NET, Angular, React et Java=
-Script. Nous vous garantissons un mod=C3=A8le de coop=C3=A9ration =C3=A9l=
-astique, une prestation de service rapide et une r=C3=A9duction des co=C3=
-=BBts.
-=20
-Si vous recherchez toute l'=C3=A9quipe d'experts, je vous pr=C3=A9sentera=
-i volontiers les possibilit=C3=A9s de coop=C3=A9ration.
-=20
-Cordialement,
-Pierre Musso
+Am Mittwoch, 6. Januar 2021, 14:46:14 CET schrieb Chen-Yu Tsai:
+> From: Chen-Yu Tsai <wens@csie.org>
+> 
+> The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
+> an optional property. And indeed there are boards that don't require it.
+> 
+> Make the driver follow the binding by using devm_gpiod_get_optional()
+> instead of devm_gpiod_get().
+> 
+> Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
+> Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
+> Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+> Heiko, I dropped you reviewed-by due to the error message change
+> 
+> Changes since v2:
+>   - Fix error message for failed GPIO
+> 
+> Changes since v1:
+>   - Rewrite subject to match existing convention and reference
+>     'ep-gpios' DT property instead of the 'ep_gpio' field
+> ---
+>  drivers/pci/controller/pcie-rockchip.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
+> index 904dec0d3a88..90c957e3bc73 100644
+> --- a/drivers/pci/controller/pcie-rockchip.c
+> +++ b/drivers/pci/controller/pcie-rockchip.c
+> @@ -118,9 +118,10 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
+>  	}
+>  
+>  	if (rockchip->is_rc) {
+> -		rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
+> +		rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
+>  		if (IS_ERR(rockchip->ep_gpio)) {
+> -			dev_err(dev, "missing ep-gpios property in node\n");
+> +			dev_err_probe(dev, PTR_ERR(rockchip->ep_gpio),
+> +				      "failed to get ep GPIO\n");
+>  			return PTR_ERR(rockchip->ep_gpio);
+
+looking at [0] shouldn't that be just
+	return dev_err_probe(dev, PTR_ERR(.....)...);
+instead of dev_err_probe + additional return?
+
+Heiko
+
+[0] https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4223
+
+>  		}
+>  	}
+> 
+
+
+
+
