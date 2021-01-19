@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41722FAF0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 04:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8442FAF0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 04:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437252AbhASDLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 22:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437147AbhASDK6 (ORCPT
+        id S2394839AbhASDMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 22:12:54 -0500
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:38614 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388715AbhASDMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 22:10:58 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84211C061573;
-        Mon, 18 Jan 2021 19:10:18 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id l14so8528535qvh.2;
-        Mon, 18 Jan 2021 19:10:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bkirs0xt3XLTsL7Ppx9AG5Pdbq7hPLnjo1ZWo6evLOA=;
-        b=RAtvlXUhm8RArwZ3wSI+30Dj7+bGzn9tr/P6rGPOvZpqRR3n75HjlfQOXLwWV36Q8J
-         N+G+LRv/KhTOPMA+IDMP0LKzHM0HMYASb26+7537iYLLePHdjh6yoHIZ0eUqEh6vitJQ
-         OwQuuiTtW8noH/NngZH89NHqHTzQlnNSS4uXw=
+        Mon, 18 Jan 2021 22:12:52 -0500
+Received: by mail-lj1-f172.google.com with SMTP id n11so20321832lji.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 19:12:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Bkirs0xt3XLTsL7Ppx9AG5Pdbq7hPLnjo1ZWo6evLOA=;
-        b=BQx9D/KJWWF+U0NpeD3oCbxDBGXPtT0G0TAT0PT0XQHe4Ym5UXqrMPCELF56/NuxB+
-         OEfsl4QUcZHdwfK6ocIY59cCFheCZmIwr9RZUsJM/z5IUkRD2WNeLr+IWEmU8OOe0DQE
-         Xm8y9jpkCIEP9vYp4nocCxsOAtYf0GqbnX25HAsq9BrRriTiciebmB3KjL5ZQzqdNwx2
-         o0kPh7ReXdqM/FQScRA2JVAC03NbHNQ/IOJG/yq1IMP+nqCugq9YGDVjNo8C9i5iwBN1
-         P72Msug6vmxjRxivkDsXJwk2sTojSsDgdlwXj+Iw/1OyS6YzA0dv4S42A2hWZC9byFf8
-         9Hcw==
-X-Gm-Message-State: AOAM531CWf1Ju1/LQLmDy6qgQmrfNBscCt5JjVvHQyjrOJhNDPx1wk5g
-        QOa57UjFeyfTGkjciGMfJIKBXo2FAayxgjaHwq9n5miXZSA1bQ==
-X-Google-Smtp-Source: ABdhPJzjC/DCnkjtreGb9bDOj46D/UPo+qxk1NQO0thQYodj/luLEcDNpJhxNw+2s3Wr9g/BRHCwwHj7B288JX+08e0=
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr2395035qva.18.1611025817765;
- Mon, 18 Jan 2021 19:10:17 -0800 (PST)
+        bh=jvUY/VeZrCIqhPzWRGIVqTe2E15aU4shIkqn8ZCXmHU=;
+        b=bqrcoTUeOTikx5GXliofWp3nO2iIIts/ytTgrB+tmECTI1kA5iVUGcL8O6Rr7TmD3V
+         QuWR6GxBriikXtt7ejNQaGsg8uIRJ+yWdeI2NZlG+a0nJOg7zKQurRYJcxsw/33Pjgje
+         moaUeB4ooCD2/3htqr5nawWn7ubfCgWui6vUODB5ibk4WV2ug1jx/g8kzDh4neqgpAom
+         JEYHgapF5USuzVEMpG9YGnzPGQWoig6OYUjvJMbq35/B4XpajHYI/XzMk6sFYSYyGmUY
+         qVtiRMrPRSz1ILhingj5MBBarMrrxkhOE7E3hpsSeyXo5kT5AvG/zEfrbMpKwgt7u39I
+         U1PQ==
+X-Gm-Message-State: AOAM530hfr2YJtU1s1bqlCgksC26bidvRvTmqLF/icCR17Q6HfpW4ZVK
+        s46xXvRYBZu5+Aq+Z7LGh3DgI31N/cJbLYUeUtI=
+X-Google-Smtp-Source: ABdhPJyrONS9eH8DW3LnoewIHYBwQc/PiImfSRjUAHqCz7fOTyXSxcIwq410BJgaakBlyu+ZNUC119ojJhtBlidzmdo=
+X-Received: by 2002:a2e:b04e:: with SMTP id d14mr965124ljl.26.1611025929836;
+ Mon, 18 Jan 2021 19:12:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118100813.30821-1-ryan_chen@aspeedtech.com>
- <20210118100813.30821-2-ryan_chen@aspeedtech.com> <02b792c847ea1841603629ba0377cfdfff479882.camel@linux.ibm.com>
- <HK0PR06MB3380AC1A1DF9C0883E83F752F2A30@HK0PR06MB3380.apcprd06.prod.outlook.com>
-In-Reply-To: <HK0PR06MB3380AC1A1DF9C0883E83F752F2A30@HK0PR06MB3380.apcprd06.prod.outlook.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 19 Jan 2021 03:10:05 +0000
-Message-ID: <CACPK8XfuiN_Nxfwf89ig5tgEo1dmiV_k092TVu527w4fYVFE0Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] clk: aspeed: Fix APLL calculate formula for ast2600-A2
-To:     Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Joel Stanley <joel@linux.ibm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andrewrj@au1.ibm.com" <andrewrj@au1.ibm.com>,
-        BMC-SW <BMC-SW@aspeedtech.com>, Andrew Jeffery <andrew@aj.id.au>
+References: <20210118034323.427029-1-namhyung@kernel.org> <YAVezkTtAkIAImzx@hirez.programming.kicks-ass.net>
+ <CAM9d7cgr+Vxq_SnEkSO5zU0QN-X6-LLJDKUfE4C72Nomnrr=+Q@mail.gmail.com>
+ <YAWFkU+roDyMCgla@hirez.programming.kicks-ass.net> <CAM9d7cg_Agin3C0iuigDzQjZEZNtVXPe9z9eaDZsdyNoVa_wxA@mail.gmail.com>
+ <20210119024657.GA3526@tassilo.jf.intel.com>
+In-Reply-To: <20210119024657.GA3526@tassilo.jf.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 19 Jan 2021 12:11:58 +0900
+Message-ID: <CAM9d7chk5qC7er5EVmmrHZtP2PB6Y9EikfGYxYibE4HZpCOmbQ@mail.gmail.com>
+Subject: Re: [PATCH] perf/core: Emit PERF_RECORD_LOST for pinned events
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexey Alexandrov <aalexand@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 at 03:04, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
+Hi Andi,
+
+On Tue, Jan 19, 2021 at 11:47 AM Andi Kleen <ak@linux.intel.com> wrote:
 >
-> > -----Original Message-----
-> > From: Joel Stanley <joel@linux.ibm.com>
-> > Sent: Tuesday, January 19, 2021 10:20 AM
-> > To: Ryan Chen <ryan_chen@aspeedtech.com>; Michael Turquette
-> > <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>;
-> > linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > andrewrj@au1.ibm.com; BMC-SW <BMC-SW@aspeedtech.com>
-> > Cc: joel@jms.id.au; Andrew Jeffery <andrew@aj.id.au>
-> > Subject: Re: [PATCH 1/1] clk: aspeed: Fix APLL calculate formula for ast2600-A2
-> >
-> > On Mon, 2021-01-18 at 18:08 +0800, Ryan Chen wrote:
-> > > AST2600A1/A2 have different pll calculate formula.
-> >
-> > To clarify, only the A0 has the old calculation, and all subsequent revisions use
-> > the new calculation?
-> >
-> > If this is the case, do we need to support A0 in mainline linux, or should we
-> > drop support for A0 and only support A1, A2 and onwards?
-> >
-> A0/A1 is use older calculate formula
-> After A2 is new calculate formula as the patch.
-
-Thanks for clarifying. I suggest you change the commit log to say
-something like this:
-
-Starting from A2, the A-PLL calculation has changed. Use the existing
-formula for A0/A1 and the new formula for A2 onwards.
-
->
-> > You should add a line to indicate this is a fix:
-> >
-> > Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
-> >
-> Got it. so should I send new patch?
-
-Yes, please consider adjusting the commit message as I suggested
-above, and add the fixes line.
-
-> > > +       u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
+> > > I don't think I object to having an even in the stream, but your LOST
+> > > event is unfortunate in that it itself can get lost when there's no
+> > > space in the buffer (which arguably is unlikely, but still).
 > > >
-> > > -       if (val & BIT(20)) {
-> > > -               /* Pass through mode */
-> > > -               mult = div = 1;
-> > > +       if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
+> > > So from that point of view, I think overloading LOST is not so very nice
+> > > for this.
+> >
+> > But anything can get lost in case of no space.
+> > Do you want to use something other than the LOST event?
+>
+> Could always reserve the last entry in the ring buffer for a LOST event,
+> that would guarantee you can always get one out.
 
-Will this test be true if there are future versions of the chip (A3, etc)?
+A problem is that we can have more than one event that failed.
 
-Cheers,
+In my understanding, we keep the lost count and add a LOST event
+when there's a space later.  So probably we can keep a list of the
+failed events and do similar for each event.  Or just use a single
+event to notify some number of events were failed.
 
-Joel
+Thanks,
+Namhyung
