@@ -2,182 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207DB2FB39E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197192FB3C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731470AbhASH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730822AbhASHzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:55:46 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAC7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:55:05 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l1lql-0002gq-KV; Tue, 19 Jan 2021 08:54:51 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:8975:b8c4:b326:621a] (unknown [IPv6:2a03:f580:87bc:d400:8975:b8c4:b326:621a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 463EC5C7A0E;
-        Tue, 19 Jan 2021 07:54:36 +0000 (UTC)
-To:     angkery <angkery@163.com>, manivannan.sadhasivam@linaro.org,
-        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
-References: <20210119020221.3713-1-angkery@163.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH] can: mcp251xfd: mcp251xfd_handle_ivmif(): fix wrong NULL
- pointer check
-Message-ID: <cc10d919-4087-e61d-28c4-ccffabe7d95a@pengutronix.de>
-Date:   Tue, 19 Jan 2021 08:54:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731371AbhASIIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:08:44 -0500
+Received: from mga03.intel.com ([134.134.136.65]:32420 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730784AbhASHmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:42:23 -0500
+IronPort-SDR: FkAC0hu5drjun0LnJNkJgpYQIlixtK72hetvPXETKKo+Y18+N4yte6f4pAOgxVGa5qKVw3Kraa
+ MUYcwUxWibvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="178977520"
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="178977520"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 23:41:22 -0800
+IronPort-SDR: i/YlalNHDIxoeQPHAJGW+QdWZ4Se1tdYlC32zujte0nE3cTrzqcCJq8Zbome37Zi0sdThEyGc3
+ eobWMvhkjTQg==
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="426375711"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 23:41:19 -0800
+Subject: Re: [kvm-unit-tests PATCH] x86: Add tests for PKS
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201105081805.5674-1-chenyi.qiang@intel.com>
+ <20201105081805.5674-9-chenyi.qiang@intel.com>
+ <6174185b-25e0-f2a2-3f71-d8bbe6ca889d@redhat.com>
+ <7aa67008-a72f-f6e3-2de4-4b9b9e62cd86@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <e1ba2803-877c-e7d5-0a16-f356d5c2b571@intel.com>
+Date:   Tue, 19 Jan 2021 15:41:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210119020221.3713-1-angkery@163.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="MFBmdvepDAa83HI4jNqP40G2U9JYAOPNn"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <7aa67008-a72f-f6e3-2de4-4b9b9e62cd86@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MFBmdvepDAa83HI4jNqP40G2U9JYAOPNn
-Content-Type: multipart/mixed; boundary="MJd7BafsDwCg03TvaXIhqZgisVeE3DiRZ";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: angkery <angkery@163.com>, manivannan.sadhasivam@linaro.org,
- thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
- kuba@kernel.org
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
-Message-ID: <cc10d919-4087-e61d-28c4-ccffabe7d95a@pengutronix.de>
-Subject: Re: [PATCH] can: mcp251xfd: mcp251xfd_handle_ivmif(): fix wrong NULL
- pointer check
-References: <20210119020221.3713-1-angkery@163.com>
-In-Reply-To: <20210119020221.3713-1-angkery@163.com>
-
---MJd7BafsDwCg03TvaXIhqZgisVeE3DiRZ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-On 1/19/21 3:02 AM, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
->=20
-> if alloc_can_err_skb() returns NULL, we should check skb instead of cf.=
 
 
-Have a look at the function, there is a check for cf several times before=
- this.
-But as cf is initialized as NULL this is should be no problem.
+On 1/19/2021 2:27 AM, Paolo Bonzini wrote:
+> On 18/01/21 18:45, Thomas Huth wrote:
+>> On 05/11/2020 09.18, Chenyi Qiang wrote:
+>>> This unit-test is intended to test the KVM support for Protection Keys
+>>> for Supervisor Pages (PKS). If CR4.PKS is set in long mode, supervisor
+>>> pkeys are checked in addition to normal paging protections and Access or
+>>> Write can be disabled via a MSR update without TLB flushes when
+>>> permissions change.
+>>>
+>>> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+>>> ---
+>>>   lib/x86/msr.h       |   1 +
+>>>   lib/x86/processor.h |   2 +
+>>>   x86/Makefile.x86_64 |   1 +
+>>>   x86/pks.c           | 146 ++++++++++++++++++++++++++++++++++++++++++++
+>>>   x86/unittests.cfg   |   5 ++
+>>>   5 files changed, 155 insertions(+)
+>>>   create mode 100644 x86/pks.c
+>>>
+>>> diff --git a/lib/x86/msr.h b/lib/x86/msr.h
+>>> index 6ef5502..e36934b 100644
+>>> --- a/lib/x86/msr.h
+>>> +++ b/lib/x86/msr.h
+>>> @@ -209,6 +209,7 @@
+>>>   #define MSR_IA32_EBL_CR_POWERON        0x0000002a
+>>>   #define MSR_IA32_FEATURE_CONTROL        0x0000003a
+>>>   #define MSR_IA32_TSC_ADJUST        0x0000003b
+>>> +#define MSR_IA32_PKRS            0x000006e1
+>>>   #define FEATURE_CONTROL_LOCKED                (1<<0)
+>>>   #define FEATURE_CONTROL_VMXON_ENABLED_INSIDE_SMX    (1<<1)
+>>> diff --git a/lib/x86/processor.h b/lib/x86/processor.h
+>>> index 74a2498..985fdd0 100644
+>>> --- a/lib/x86/processor.h
+>>> +++ b/lib/x86/processor.h
+>>> @@ -50,6 +50,7 @@
+>>>   #define X86_CR4_SMEP   0x00100000
+>>>   #define X86_CR4_SMAP   0x00200000
+>>>   #define X86_CR4_PKE    0x00400000
+>>> +#define X86_CR4_PKS    0x01000000
+>>>   #define X86_EFLAGS_CF    0x00000001
+>>>   #define X86_EFLAGS_FIXED 0x00000002
+>>> @@ -157,6 +158,7 @@ static inline u8 cpuid_maxphyaddr(void)
+>>>   #define    X86_FEATURE_RDPID        (CPUID(0x7, 0, ECX, 22))
+>>>   #define    X86_FEATURE_SPEC_CTRL        (CPUID(0x7, 0, EDX, 26))
+>>>   #define    X86_FEATURE_ARCH_CAPABILITIES    (CPUID(0x7, 0, EDX, 29))
+>>> +#define    X86_FEATURE_PKS            (CPUID(0x7, 0, ECX, 31))
+>>>   #define    X86_FEATURE_NX            (CPUID(0x80000001, 0, EDX, 20))
+>>>   #define    X86_FEATURE_RDPRU        (CPUID(0x80000008, 0, EBX, 4))
+>>> diff --git a/x86/Makefile.x86_64 b/x86/Makefile.x86_64
+>>> index af61d85..3a353df 100644
+>>> --- a/x86/Makefile.x86_64
+>>> +++ b/x86/Makefile.x86_64
+>>> @@ -20,6 +20,7 @@ tests += $(TEST_DIR)/tscdeadline_latency.flat
+>>>   tests += $(TEST_DIR)/intel-iommu.flat
+>>>   tests += $(TEST_DIR)/vmware_backdoors.flat
+>>>   tests += $(TEST_DIR)/rdpru.flat
+>>> +tests += $(TEST_DIR)/pks.flat
+>>>   include $(SRCDIR)/$(TEST_DIR)/Makefile.common
+>>> diff --git a/x86/pks.c b/x86/pks.c
+>>> new file mode 100644
+>>> index 0000000..a3044cf
+>>> --- /dev/null
+>>> +++ b/x86/pks.c
+>>> @@ -0,0 +1,146 @@
+>>> +#include "libcflat.h"
+>>> +#include "x86/desc.h"
+>>> +#include "x86/processor.h"
+>>> +#include "x86/vm.h"
+>>> +#include "x86/msr.h"
+>>> +
+>>> +#define CR0_WP_MASK      (1UL << 16)
+>>> +#define PTE_PKEY_BIT     59
+>>> +#define SUPER_BASE        (1 << 24)
+>>> +#define SUPER_VAR(v)      (*((__typeof__(&(v))) (((unsigned long)&v) 
+>>> + SUPER_BASE)))
+>>> +
+>>> +volatile int pf_count = 0;
+>>> +volatile unsigned save;
+>>> +volatile unsigned test;
+>>> +
+>>> +static void set_cr0_wp(int wp)
+>>> +{
+>>> +    unsigned long cr0 = read_cr0();
+>>> +
+>>> +    cr0 &= ~CR0_WP_MASK;
+>>> +    if (wp)
+>>> +        cr0 |= CR0_WP_MASK;
+>>> +    write_cr0(cr0);
+>>> +}
+>>> +
+>>> +void do_pf_tss(unsigned long error_code);
+>>> +void do_pf_tss(unsigned long error_code)
+>>> +{
+>>> +    printf("#PF handler, error code: 0x%lx\n", error_code);
+>>> +    pf_count++;
+>>> +    save = test;
+>>> +    wrmsr(MSR_IA32_PKRS, 0);
+>>> +}
+>>> +
+>>> +extern void pf_tss(void);
+>>> +
+>>> +asm ("pf_tss: \n\t"
+>>> +#ifdef __x86_64__
+>>> +    // no task on x86_64, save/restore caller-save regs
+>>> +    "push %rax; push %rcx; push %rdx; push %rsi; push %rdi\n"
+>>> +    "push %r8; push %r9; push %r10; push %r11\n"
+>>> +    "mov 9*8(%rsp), %rdi\n"
+>>> +#endif
+>>> +    "call do_pf_tss \n\t"
+>>> +#ifdef __x86_64__
+>>> +    "pop %r11; pop %r10; pop %r9; pop %r8\n"
+>>> +    "pop %rdi; pop %rsi; pop %rdx; pop %rcx; pop %rax\n"
+>>> +#endif
+>>> +    "add $"S", %"R "sp\n\t" // discard error code
+>>> +    "iret"W" \n\t"
+>>> +    "jmp pf_tss\n\t"
+>>> +    );
+>>> +
+>>> +static void init_test(void)
+>>> +{
+>>> +    pf_count = 0;
+>>> +
+>>> +    invlpg(&test);
+>>> +    invlpg(&SUPER_VAR(test));
+>>> +    wrmsr(MSR_IA32_PKRS, 0);
+>>> +    set_cr0_wp(0);
+>>> +}
+>>> +
+>>> +int main(int ac, char **av)
+>>> +{
+>>> +    unsigned long i;
+>>> +    unsigned int pkey = 0x2;
+>>> +    unsigned int pkrs_ad = 0x10;
+>>> +    unsigned int pkrs_wd = 0x20;
+>>> +
+>>> +    if (!this_cpu_has(X86_FEATURE_PKS)) {
+>>> +        printf("PKS not enabled\n");
+>>> +        return report_summary();
+>>> +    }
+>>> +
+>>> +    setup_vm();
+>>> +    setup_alt_stack();
+>>> +    set_intr_alt_stack(14, pf_tss);
+>>> +    wrmsr(MSR_EFER, rdmsr(MSR_EFER) | EFER_LMA);
+>>> +
+>>> +    // First 16MB are user pages
+>>> +    for (i = 0; i < SUPER_BASE; i += PAGE_SIZE) {
+>>> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= 
+>>> ((unsigned long)pkey << PTE_PKEY_BIT);
+>>> +        invlpg((void *)i);
+>>> +    }
+>>> +
+>>> +    // Present the same 16MB as supervisor pages in the 16MB-32MB range
+>>> +    for (i = SUPER_BASE; i < 2 * SUPER_BASE; i += PAGE_SIZE) {
+>>> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= 
+>>> ~SUPER_BASE;
+>>> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) &= 
+>>> ~PT_USER_MASK;
+>>> +        *get_pte(phys_to_virt(read_cr3()), phys_to_virt(i)) |= 
+>>> ((unsigned long)pkey << PTE_PKEY_BIT);
+>>> +        invlpg((void *)i);
+>>> +    }
+>>> +
+>>> +    write_cr4(read_cr4() | X86_CR4_PKS);
+>>> +    write_cr3(read_cr3());
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(1);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
+>>> +    SUPER_VAR(test) = 21;
+>>> +    report(pf_count == 1 && test == 21 && save == 0,
+>>> +           "write to supervisor page when pkrs is ad and wp == 1");
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(0);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
+>>> +    SUPER_VAR(test) = 22;
+>>> +    report(pf_count == 1 && test == 22 && save == 21,
+>>> +           "write to supervisor page when pkrs is ad and wp == 0");
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(1);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
+>>> +    SUPER_VAR(test) = 23;
+>>> +    report(pf_count == 1 && test == 23 && save == 22,
+>>> +           "write to supervisor page when pkrs is wd and wp == 1");
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(0);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
+>>> +    SUPER_VAR(test) = 24;
+>>> +    report(pf_count == 0 && test == 24,
+>>> +           "write to supervisor page when pkrs is wd and wp == 0");
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(0);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
+>>> +    test = 25;
+>>> +    report(pf_count == 0 && test == 25,
+>>> +           "write to user page when pkrs is wd and wp == 0");
+>>> +
+>>> +    init_test();
+>>> +    set_cr0_wp(1);
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_wd);
+>>> +    test = 26;
+>>> +    report(pf_count == 0 && test == 26,
+>>> +           "write to user page when pkrs is wd and wp == 1");
+>>> +
+>>> +    init_test();
+>>> +    wrmsr(MSR_IA32_PKRS, pkrs_ad);
+>>> +    (void)((__typeof__(&(test))) (((unsigned long)&test)));
+>>> +    report(pf_count == 0, "read from user page when pkrs is ad");
+>>> +
+>>> +    return report_summary();
+>>> +}
+>>> diff --git a/x86/unittests.cfg b/x86/unittests.cfg
+>>> index 3a79151..b75419e 100644
+>>> --- a/x86/unittests.cfg
+>>> +++ b/x86/unittests.cfg
+>>> @@ -127,6 +127,11 @@ file = pku.flat
+>>>   arch = x86_64
+>>>   extra_params = -cpu host
+>>> +[pks]
+>>> +file = pks.flat
+>>> +arch = x86_64
+>>> +extra_params = -cpu host
+>>> +
+>>>   [asyncpf]
+>>>   file = asyncpf.flat
+>>>   extra_params = -m 2048
+>>>
+>>
+>> Ping? ... Paolo, I think this one fell through the cracks?
+>>
+>>   Thomas
+>>
+> 
+> No, it's just that the KVM patches haven't been merged yet (and there's 
+> no QEMU implementation yet).  But I'm getting to it.
+> 
+> Paolo
+> 
 
-While in:
+Hi Paolo,
 
-| ca4c6ebeeb50 can: mcp251xfd: mcp251xfd_handle_rxif_one():
-|             fix wrong NULL pointer check
+Thank you for your time. I was just thinking about resending this patch 
+series to ping you although no changes will be added. I really hope to 
+get the comments from you.
 
-a real problem has been fixed.
+Do you want me to resend a new non-RFC version as well as the QEMU 
+implementation? or you review this RFC series first?
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---MJd7BafsDwCg03TvaXIhqZgisVeE3DiRZ--
-
---MFBmdvepDAa83HI4jNqP40G2U9JYAOPNn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAGkDgACgkQqclaivrt
-76k3wwf/T3pirYlaWQKTcWKcDcJuvzEbAg109+zHl0Ltc0vlqd0foNtBv9064t8m
-41Ld7wModYPl2kzrs2H6VMWYafX676EbaUiuxdtr78xeM8g+ivFo9TLQH8gT8L9g
-RoKq3MCx6K09GSRTMzoJqgB7IL9wsgachdGS/MykgH7qZZfQ+mlW77J+KG/eV84Y
-kJT8QkWYyZhe/1emTdxiUZzTL0tE2zlNZFQzKE4qAXMvTHf1u5ge/T3IfpqYINVw
-yceHZ/NRq/5P1EkWetHhCX5/INDTpG0Uz4KkAtg7evS0TWnXZOnWxUNpcF3ajQ/X
-QayRHvX1Zvjg0SvnE9YbEUDJyAZv9g==
-=0LFJ
------END PGP SIGNATURE-----
-
---MFBmdvepDAa83HI4jNqP40G2U9JYAOPNn--
+Thanks
+Chenyi
