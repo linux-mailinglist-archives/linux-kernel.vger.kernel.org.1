@@ -2,289 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5032FB16F
+	by mail.lfdr.de (Postfix) with ESMTP id D24622FB170
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730272AbhASG3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:29:22 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:21176 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726122AbhASGUd (ORCPT
+        id S1727461AbhASGaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:30:00 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50596 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726747AbhASGUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 01:20:33 -0500
-X-UUID: a8d39a1e821b4ed68879dc6bccd930cf-20210119
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=ZEKQ1WAwKzbbYdatkwT70bwg6YBWiUDjW0MLlsn8Uuc=;
-        b=UxTR3H2n3EbTig9JgJpGpvSqFKKzoRgCzmKE34mXMpuRP8opG7tZTJGvpNsZmn0xNFzFvK1FhVQs0lagvMewwHNU82VpZ+USYaNRyaOJdjNK0TZGg2f+sFTJlcJv7R7qYT468tq6mF0EhYbnSXB6iFhOF0XgXw7z99Pr21RGzmo=;
-X-UUID: a8d39a1e821b4ed68879dc6bccd930cf-20210119
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yaqii.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 956507277; Tue, 19 Jan 2021 14:18:59 +0800
-Received: from MTKMBS31N1.mediatek.inc (172.27.4.69) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 19 Jan 2021 14:18:57 +0800
-Received: from MTKMBS31N1.mediatek.inc ([fe80::e1b3:15a3:610e:3f13]) by
- MTKMBS31N1.mediatek.inc ([fe80::e1b3:15a3:610e:3f13%23]) with mapi id
- 15.00.1497.000; Tue, 19 Jan 2021 14:18:57 +0800
-From:   =?utf-8?B?WWFxaWkgV3UgKOatpuS6muWlhyk=?= <Yaqii.Wu@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>,
-        =?utf-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= 
-        <Chunfeng.Yun@mediatek.com>
-CC:     =?utf-8?B?WmhhbnlvbmcgV2FuZyAo546L5oiY5YuHKQ==?= 
-        <zhanyong.wang@mediatek.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?VGlhbnBpbmcgRmFuZyAo5pa55aSp5bmzKQ==?= 
-        <Tianping.Fang@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: =?utf-8?B?562U5aSNOiBbUkZDIFBBVENIIHYzIDEvNV0gdXNiOiB4aGNpLW10azogaW1w?=
- =?utf-8?Q?rove_bandwidth_scheduling_with_multi-TT?=
-Thread-Topic: [RFC PATCH v3 1/5] usb: xhci-mtk: improve bandwidth scheduling
- with multi-TT
-Thread-Index: AQHW2EW0LI3uxv407kyMe1LV9lLZ66ok6nqAgAm1fsA=
-Date:   Tue, 19 Jan 2021 06:18:57 +0000
-Message-ID: <4c43a06844ac48eebbca6ec0141dcb5d@MTKMBS31N1.mediatek.inc>
-References: <1608629682-8535-1-git-send-email-chunfeng.yun@mediatek.com>
- <CAATdQgAx_3X6=HXa78P_UNumCyrt9ejyuVu_y5YZc4cPsJ6=ww@mail.gmail.com>
-In-Reply-To: <CAATdQgAx_3X6=HXa78P_UNumCyrt9ejyuVu_y5YZc4cPsJ6=ww@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.27.4.253]
-x-tm-snts-smtp: 9B0878420FBC1150B190857DA2E5B52E519532C2F5037BEBB8B34BD773E374A32000:8
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2CA884FB;
+        Tue, 19 Jan 2021 07:19:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611037180;
+        bh=IYpSSFS5uWQHDE9xBeG8TUITMXIREX1vOTs+lDKH2fY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fCQHz1mqiFog/n+vu2z9TTuTmUnhIkZZ7adowo6pzDyODOnLrel4VCyQxtfcU3700
+         YfriRj5RuUjTvCY1P8EccHorUmMjSv9LYDQZR84aIiTRkCjrcMMwVwF9pk+HOTyeXc
+         j6cJlKhTecsiF6FZlzwuxb77uUABz+kE6ydGhLPo=
+Date:   Tue, 19 Jan 2021 08:19:23 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <YAZ5648kEmCuobdj@pendragon.ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+ <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEkgQ2h1bmZlbmcNCgnor7flm57lpI3osLfmrYzku6XkuIvkuInkuKrpl67popjvvJoNCglRdWVz
-dG9uOiBBcmUgdGhlcmUgYW55IHJlYXNvbnMgZm9yIGRvaW5nIHRoaXM/IGNhbiBvbmx5IG9uZSBz
-cGxpdCBwYWNrZXQgYmUgc2NoZWR1bGVkIGluIGEgdS1mcmFtZSBmb3IgaXNvY2hyb25vdXMgb3V0
-PyBUaGlzIGxvb2tzIGxpa2Ugb3ZlcmtpbGwuDQoJQW5zd2VyOiBXZSB3aWxsIGNhbGN1bGF0ZSB0
-aGUgbnVtYmVyIG9mIHVmcmFtZXMgYmFzZWQgb24gdGhlIGlzb2Mgb3V0IGVwIG1heHAuIEV4Y2Vw
-dCBmb3IgdGhlIGxhc3QgdWZyYW1lLCBhbGwgb3RoZXIgY29uc3VtZWQgYmFuZHdpZHRoIGlzIDE4
-OC4gQnV0IHRvIGJlIHNhZmUsIHdlIGFsc28gY291bnQgdGhlIGJhbmR3aWR0aCAJY29uc3VtZWQg
-YnkgdGhlIGxhc3QgU1MgYXMgMTg4Lg0KDQoJUXVlc3Rvbjogc2FtZSBoZXJlLiBJdCB3b3VsZCBi
-ZSBtdWNoIGJldHRlciB0byB1bmRlcnN0YW5kIGlmIHlvdSBjYW4gcHJvdmlkZSBzb21lIGNvdW50
-ZXJleGFtcGxlcyBvZiBzY2hlZHVsZSB0aGF0IGNhbiBoYXBwZW4gd2hlbiB0aGlzIGJpdG1hcCBj
-aGVja2luZyBsb2dpYyBpcyBvbWl0dGVkLg0KCUFuc3dlcjogTWF5YmUgeW91IGFyZSByaWdodCwg
-aXQgd2lsbCBpbmRlZWQgZG91YmxlIGNoZWNrLiBJIHdpbGwgZGVsZXRlIHRoZSBiYW5kd2lkdGgg
-Y2hlY2ssIGFuZCB0aGVuIHBlcmZvcm0gYSByZWdyZXNzaW9uIHRlc3QuDQoNCglRdWVzdG9uOiBJ
-IGd1ZXNzIHRoaXMgaXMgZW5vdWdoIHRvIGNoZWNrIHRoZSBiYW5kd2lkdGggbGltaXQgb2YgdGhl
-IGxvd2VyIHNwZWVkIGJ1cyB3aXRob3V0IGEgYml0bWFwLg0KCUFuc3dlcjogSSBleHBsYWluZWQg
-dG8geW91IGxhc3QgdGltZSB0aGF0IHNzIGNhbm5vdCBiZSBvdmVybGFwcGVkLiBUaGlzIGlzIGEg
-aHViIGNvbXBhdGliaWxpdHkgaXNzdWUuIFRoZXJlZm9yZSB3ZSBuZWVkIGJpdG1hcCB0byBwcmV2
-ZW50IHNzIG92ZXJsYXAuDQpCUg0KeWFxaWkNCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R
-5Lu25Lq6OiBJa2pvb24gSmFuZyBbbWFpbHRvOmlram5AY2hyb21pdW0ub3JnXSANCuWPkemAgeaX
-tumXtDogMjAyMeW5tDHmnIgxM+aXpSAxNzo0NA0K5pS25Lu25Lq6OiBDaHVuZmVuZyBZdW4gKOS6
-keaYpeWzsCkgPENodW5mZW5nLll1bkBtZWRpYXRlay5jb20+DQrmioTpgIE6IFlhcWlpIFd1ICjm
-rabkuprlpYcpIDxZYXFpaS5XdUBtZWRpYXRlay5jb20+OyBaaGFueW9uZyBXYW5nICjnjovmiJjl
-i4cpIDx6aGFueW9uZy53YW5nQG1lZGlhdGVrLmNvbT47IFpoYW55b25nIFdhbmcgPHpoYW5neW9u
-Zy53YW5nQG1lZGlhdGVrLmNvbT47IGxpbnV4LXVzYkB2Z2VyLmtlcm5lbC5vcmc7IG9wZW4gbGlz
-dCA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IFRpYW5waW5nIEZhbmcgKOaWueWkqeW5
-sykgPFRpYW5waW5nLkZhbmdAbWVkaWF0ZWsuY29tPjsgbW9kZXJhdGVkIGxpc3Q6QVJNL01lZGlh
-dGVrIFNvQyBzdXBwb3J0IDxsaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnPg0K5Li7
-6aKYOiBSZTogW1JGQyBQQVRDSCB2MyAxLzVdIHVzYjogeGhjaS1tdGs6IGltcHJvdmUgYmFuZHdp
-ZHRoIHNjaGVkdWxpbmcgd2l0aCBtdWx0aS1UVA0KDQpPbiBUdWUsIERlYyAyMiwgMjAyMCBhdCA1
-OjM1IFBNIENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+
-DQo+IEZyb206IFpoYW55b25nIFdhbmcgPHpoYW55b25nLndhbmdAbWVkaWF0ZWsuY29tPg0KPg0K
-PiBBZnRlciBpbnNlcnRlZCB0aGUgdXNiIHR5cGUtYyAzLjVtbSBkb25nbGUgd2l0aCBoZWFkc2V0
-LCBkbWVzZyBzaG93ZWQ6DQo+IHVzYiAxLTEuMTogbmV3IGZ1bGwtc3BlZWQgVVNCIGRldmljZSBu
-dW1iZXIgNSB1c2luZyB4aGNpLW10ayB1c2IgDQo+IDEtMS4xOiBOZXcgVVNCIGRldmljZSBmb3Vu
-ZCwgaWRWZW5kb3I9MDVhYywgaWRQcm9kdWN0PTExMGEsIA0KPiBiY2REZXZpY2U9MjYuMTEgdXNi
-IDEtMS4xOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLCANCj4gU2Vy
-aWFsTnVtYmVyPTMgdXNiIDEtMS4xOiBQcm9kdWN0OiBVU0ItQyB0byAzLjVtbSBIZWFkcGhvbmUg
-SmFjayANCj4gQWRhcHRlciB1c2IgMS0xLjE6IE1hbnVmYWN0dXJlcjogQXBwbGUsIEluYy4NCj4g
-dXNiIDEtMS4xOiBTZXJpYWxOdW1iZXI6IERXSDkxNTUwMVRGSktMVEFNIHhoY2ktbXRrIDExMjAw
-MDAwLnhoY2k6IE5vdCANCj4gZW5vdWdoIGJhbmR3aWR0aCENCj4gdXNiIDEtMS4xOiBjYW4ndCBz
-ZXQgY29uZmlnICMyLCBlcnJvciAtMjgNCj4NCj4gaW1wcm92ZSBsb3ctc3BlZWQvZnVsbC1zcGVl
-ZCBJTlQvSVNPQyBiYW5kd2lkdGggc2NoZWR1bGluZyB3aXRoIFVTQiANCj4gbXVsaS1UVC4NCj4N
-Cj4gU2lnbmVkLW9mZi1ieTogWWFxaWkgV3UgPHlhcWlpLnd1QG1lZGlhdGVrLmNvbT4NCj4gU2ln
-bmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiAt
-LS0NCj4gdjJ+djM6IG5vIGNoYW5nZXMNCj4gLS0tDQo+ICBkcml2ZXJzL3VzYi9ob3N0L3hoY2kt
-bXRrLXNjaC5jIHwgOTEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+ICBkcml2
-ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmggICAgIHwgIDggKystDQo+ICAyIGZpbGVzIGNoYW5nZWQs
-IDg0IGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9ucygtKSAgbW9kZSBjaGFuZ2UgDQo+IDEwMDY0
-NCA9PiAxMDA3NTUgZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYw0KPg0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYyANCj4gYi9kcml2ZXJzL3VzYi9o
-b3N0L3hoY2ktbXRrLXNjaC5jIG9sZCBtb2RlIDEwMDY0NCBuZXcgbW9kZSAxMDA3NTUgDQo+IGlu
-ZGV4IDQ1YzU0ZDU2ZWNiZC4uOTQyOTJiOWJiYzYzDQo+IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3Qv
-eGhjaS1tdGstc2NoLmMNCj4gKysrIGIvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYw0K
-PiBAQCAtMzgzLDcgKzM4Myw5IEBAIHN0YXRpYyBpbnQgY2hlY2tfc2NoX3R0KHN0cnVjdCB1c2Jf
-ZGV2aWNlICp1ZGV2LA0KPiAgICAgICAgIHUzMiBmc19idWRnZXRfc3RhcnQ7DQo+ICAgICAgICAg
-dTMyIHN0YXJ0X3NzLCBsYXN0X3NzOw0KPiAgICAgICAgIHUzMiBzdGFydF9jcywgbGFzdF9jczsN
-Cj4gLSAgICAgICBpbnQgaTsNCj4gKyAgICAgICB1MzIgbnVtX2VzaXQsIGJhc2U7DQo+ICsgICAg
-ICAgaW50IGksIGo7DQo+ICsgICAgICAgdTMyIHRtcDsNCj4NCj4gICAgICAgICBzdGFydF9zcyA9
-IG9mZnNldCAlIDg7DQo+ICAgICAgICAgZnNfYnVkZ2V0X3N0YXJ0ID0gKHN0YXJ0X3NzICsgMSkg
-JSA4OyBAQCAtMzk4LDEwICs0MDAsMTMgQEAgDQo+IHN0YXRpYyBpbnQgY2hlY2tfc2NoX3R0KHN0
-cnVjdCB1c2JfZGV2aWNlICp1ZGV2LA0KPiAgICAgICAgICAgICAgICAgaWYgKCEoc3RhcnRfc3Mg
-PT0gNyB8fCBsYXN0X3NzIDwgNikpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAt
-RVJBTkdFOw0KPg0KPiAtICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IHNjaF9lcC0+Y3Nf
-Y291bnQ7IGkrKykNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgaWYgKHRlc3RfYml0KG9mZnNl
-dCArIGksIHR0LT5zcGxpdF9iaXRfbWFwKSkNCj4gKyAgICAgICAgICAgICAgIGZvciAoaSA9IDA7
-IGkgPCBzY2hfZXAtPmNzX2NvdW50OyBpKyspIHsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-aWYgKHRlc3RfYml0KG9mZnNldCArIGksIHR0LT5zc19iaXRfbWFwKSkNCj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVSQU5HRTsNCj4NCj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgaWYgKHRlc3RfYml0KG9mZnNldCArIGksIHR0LT5jc19iaXRfbWFwKSkNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVSQU5HRTsNCj4gKyAgICAgICAg
-ICAgICAgIH0NCg0KQXJlIHRoZXJlIGFueSByZWFzb25zIGZvciBkb2luZyB0aGlzPw0KV2h5IGNh
-biBvbmx5IG9uZSBzcGxpdCBwYWNrZXQgYmUgc2NoZWR1bGVkIGluIGEgdS1mcmFtZSBmb3IgaXNv
-Y2hyb25vdXMgb3V0Pw0KVGhpcyBsb29rcyBsaWtlIG92ZXJraWxsLg0KDQo+ICAgICAgICAgfSBl
-bHNlIHsNCj4gICAgICAgICAgICAgICAgIHUzMiBjc19jb3VudCA9IERJVl9ST1VORF9VUChzY2hf
-ZXAtPm1heHBrdCwgDQo+IEZTX1BBWUxPQURfTUFYKTsNCj4NCj4gQEAgLTQyOCw4ICs0MzMsMTAg
-QEAgc3RhdGljIGludCBjaGVja19zY2hfdHQoc3RydWN0IHVzYl9kZXZpY2UgKnVkZXYsDQo+ICAg
-ICAgICAgICAgICAgICBpZiAoY3NfY291bnQgPiA3KQ0KPiAgICAgICAgICAgICAgICAgICAgICAg
-ICBjc19jb3VudCA9IDc7IC8qIEhXIGxpbWl0ICovDQo+DQo+IC0gICAgICAgICAgICAgICBmb3Ig
-KGkgPSAwOyBpIDwgY3NfY291bnQgKyAyOyBpKyspIHsNCj4gLSAgICAgICAgICAgICAgICAgICAg
-ICAgaWYgKHRlc3RfYml0KG9mZnNldCArIGksIHR0LT5zcGxpdF9iaXRfbWFwKSkNCj4gKyAgICAg
-ICAgICAgICAgIGlmICh0ZXN0X2JpdChvZmZzZXQsIHR0LT5zc19iaXRfbWFwKSkNCj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FUkFOR0U7DQo+ICsgICAgICAgICAgICAgICBmb3Ig
-KGkgPSAwOyBpIDwgY3NfY291bnQ7IGkrKykgew0KPiArICAgICAgICAgICAgICAgICAgICAgICBp
-ZiAodGVzdF9iaXQob2Zmc2V0ICsgMiArIGksIHR0LT5jc19iaXRfbWFwKSkNCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVSQU5HRTsNCj4gICAgICAgICAgICAgICAg
-IH0NCj4NCg0Kc2FtZSBoZXJlLiBJdCB3b3VsZCBiZSBtdWNoIGJldHRlciB0byB1bmRlcnN0YW5k
-IGlmIHlvdSBjYW4gcHJvdmlkZSBzb21lIGNvdW50ZXJleGFtcGxlcyBvZiBzY2hlZHVsZSB0aGF0
-IGNhbiBoYXBwZW4gd2hlbiB0aGlzIGJpdG1hcCBjaGVja2luZyBsb2dpYyBpcyBvbWl0dGVkLg0K
-DQo+IEBAIC00NDUsMTEgKzQ1MiwyMiBAQCBzdGF0aWMgaW50IGNoZWNrX3NjaF90dChzdHJ1Y3Qg
-dXNiX2RldmljZSAqdWRldiwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgc2NoX2VwLT5udW1f
-YnVkZ2V0X21pY3JvZnJhbWVzID0gc2NoX2VwLT5lc2l0Ow0KPiAgICAgICAgIH0NCj4NCj4gKyAg
-ICAgICBudW1fZXNpdCA9IFhIQ0lfTVRLX01BWF9FU0lUIC8gc2NoX2VwLT5lc2l0Ow0KPiArICAg
-ICAgIGZvciAoaSA9IDA7IGkgPCBudW1fZXNpdDsgaSsrKSB7DQo+ICsgICAgICAgICAgICAgICBi
-YXNlID0gc2NoX2VwLT5vZmZzZXQgKyBpICogc2NoX2VwLT5lc2l0Ow0KPiArICAgICAgICAgICAg
-ICAgZm9yIChqID0gMDsgaiA8IHNjaF9lcC0+bnVtX2J1ZGdldF9taWNyb2ZyYW1lczsgaisrKSB7
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHRtcCA9IHR0LT5mc19idXNfYndbYmFzZSArIGpd
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICsgc2NoX2VwLT5id19jb3N0X3Blcl9t
-aWNyb2ZyYW1lOw0KPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAodG1wID4gRlNfUEFZTE9B
-RF9NQVgpDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FUkFOR0U7
-DQo+ICsgICAgICAgICAgICAgICB9DQo+ICsgICAgICAgfQ0KDQpJIGd1ZXNzIHRoaXMgaXMgZW5v
-dWdoIHRvIGNoZWNrIHRoZSBiYW5kd2lkdGggbGltaXQgb2YgdGhlIGxvd2VyIHNwZWVkIGJ1cyB3
-aXRob3V0IGEgYml0bWFwLg0KDQo+ICsNCj4gICAgICAgICByZXR1cm4gMDsNCj4gIH0NCj4NCj4g
-IHN0YXRpYyB2b2lkIHVwZGF0ZV9zY2hfdHQoc3RydWN0IHVzYl9kZXZpY2UgKnVkZXYsDQo+IC0g
-ICAgICAgc3RydWN0IG11M2hfc2NoX2VwX2luZm8gKnNjaF9lcCkNCj4gKyAgICAgICBzdHJ1Y3Qg
-bXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCBib29sIHVzZWQpDQo+ICB7DQo+ICAgICAgICAgc3Ry
-dWN0IG11M2hfc2NoX3R0ICp0dCA9IHNjaF9lcC0+c2NoX3R0Ow0KPiAgICAgICAgIHUzMiBiYXNl
-LCBudW1fZXNpdDsNCj4gQEAgLTQ1OCwxMSArNDc2LDUyIEBAIHN0YXRpYyB2b2lkIHVwZGF0ZV9z
-Y2hfdHQoc3RydWN0IHVzYl9kZXZpY2UgKnVkZXYsDQo+ICAgICAgICAgbnVtX2VzaXQgPSBYSENJ
-X01US19NQVhfRVNJVCAvIHNjaF9lcC0+ZXNpdDsNCj4gICAgICAgICBmb3IgKGkgPSAwOyBpIDwg
-bnVtX2VzaXQ7IGkrKykgew0KPiAgICAgICAgICAgICAgICAgYmFzZSA9IHNjaF9lcC0+b2Zmc2V0
-ICsgaSAqIHNjaF9lcC0+ZXNpdDsNCj4gLSAgICAgICAgICAgICAgIGZvciAoaiA9IDA7IGogPCBz
-Y2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXM7IGorKykNCj4gLSAgICAgICAgICAgICAgICAg
-ICAgICAgc2V0X2JpdChiYXNlICsgaiwgdHQtPnNwbGl0X2JpdF9tYXApOw0KPiArICAgICAgICAg
-ICAgICAgZm9yIChqID0gMDsgaiA8IHNjaF9lcC0+bnVtX2J1ZGdldF9taWNyb2ZyYW1lczsgaisr
-KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmICh1c2VkKQ0KPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHNldF9iaXQoYmFzZSArIGosIHR0LT5zcGxpdF9iaXRfbWFwKTsN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZWxzZQ0KPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGNsZWFyX2JpdChiYXNlICsgaiwgdHQtPnNwbGl0X2JpdF9tYXApOw0KPiArICAg
-ICAgICAgICAgICAgfQ0KPiArDQo+ICsgICAgICAgICAgICAgICBpZiAoc2NoX2VwLT5lcF90eXBl
-ID09IElTT0NfT1VUX0VQKSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGZvciAoaiA9IDA7
-IGogPCBzY2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXM7IGorKykgew0KPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGlmICh1c2VkKSB7DQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBzZXRfYml0KGJhc2UgKyBqLCB0dC0+c3NfYml0X21hcCk7DQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzZXRfYml0KGJhc2UgKyBq
-LCB0dC0+Y3NfYml0X21hcCk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB0dC0+ZnNfYnVzX2J3W2Jhc2UgKyBqXSArPQ0KPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBzY2hfZXAtPmJ3X2Nvc3RfcGVyX21pY3JvZnJhbWU7
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSBlbHNlIHsNCj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFyX2JpdChiYXNlICsgaiwgdHQtPnNz
-X2JpdF9tYXApOw0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xl
-YXJfYml0KGJhc2UgKyBqLCB0dC0+Y3NfYml0X21hcCk7DQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB0dC0+ZnNfYnVzX2J3W2Jhc2UgKyBqXSAtPQ0KPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzY2hfZXAtPmJ3X2Nvc3Rf
-cGVyX21pY3JvZnJhbWU7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPiAr
-ICAgICAgICAgICAgICAgICAgICAgICB9DQo+ICsgICAgICAgICAgICAgICB9IGVsc2Ugew0KPiAr
-ICAgICAgICAgICAgICAgICAgICAgICBpZiAodXNlZCkNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBzZXRfYml0KGJhc2UsIHR0LT5zc19iaXRfbWFwKTsNCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgZWxzZQ0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFy
-X2JpdChiYXNlLCB0dC0+c3NfYml0X21hcCk7DQo+ICsNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgZm9yIChqID0gMDsgaiA8IHNjaF9lcC0+Y3NfY291bnQ7IGorKykgew0KPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGlmICh1c2VkKSB7DQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBzZXRfYml0KGJhc2UgKyAyICsgaiwgDQo+ICsgdHQtPmNzX2Jp
-dF9tYXApOw0KPiArDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0
-dC0+ZnNfYnVzX2J3W2Jhc2UgKyAyICsgal0gKz0NCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgc2NoX2VwLT5id19jb3N0X3Blcl9taWNyb2ZyYW1lOw0K
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7DQo+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhcl9iaXQoYmFzZSArIDIgKyBqLCB0dC0+
-Y3NfYml0X21hcCk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0
-dC0+ZnNfYnVzX2J3W2Jhc2UgKyAyICsgal0gLT0NCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgc2NoX2VwLT5id19jb3N0X3Blcl9taWNyb2ZyYW1lOw0K
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgfQ0KPiArICAgICAgICAgICAgICAgfQ0KPiAgICAgICAgIH0NCj4NCj4gLSAgICAgICBs
-aXN0X2FkZF90YWlsKCZzY2hfZXAtPnR0X2VuZHBvaW50LCAmdHQtPmVwX2xpc3QpOw0KPiArICAg
-ICAgIGlmICh1c2VkKQ0KPiArICAgICAgICAgICAgICAgbGlzdF9hZGRfdGFpbCgmc2NoX2VwLT50
-dF9lbmRwb2ludCwgJnR0LT5lcF9saXN0KTsNCj4gKyAgICAgICBlbHNlDQo+ICsgICAgICAgICAg
-ICAgICBsaXN0X2RlbCgmc2NoX2VwLT50dF9lbmRwb2ludCk7DQo+ICB9DQo+DQo+ICBzdGF0aWMg
-aW50IGNoZWNrX3NjaF9idyhzdHJ1Y3QgdXNiX2RldmljZSAqdWRldiwgQEAgLTQ3MCw2ICs1Mjks
-NyBAQCANCj4gc3RhdGljIGludCBjaGVja19zY2hfYncoc3RydWN0IHVzYl9kZXZpY2UgKnVkZXYs
-ICB7DQo+ICAgICAgICAgdTMyIG9mZnNldDsNCj4gICAgICAgICB1MzIgZXNpdDsNCj4gKyAgICAg
-ICB1MzIgYm91bmRhcnk7DQo+ICAgICAgICAgdTMyIG1pbl9idzsNCj4gICAgICAgICB1MzIgbWlu
-X2luZGV4Ow0KPiAgICAgICAgIHUzMiB3b3JzdF9idzsNCj4gQEAgLTQ4NywxMCArNTQ3LDEzIEBA
-IHN0YXRpYyBpbnQgY2hlY2tfc2NoX2J3KHN0cnVjdCB1c2JfZGV2aWNlICp1ZGV2LA0KPiAgICAg
-ICAgICAqLw0KPiAgICAgICAgIG1pbl9idyA9IH4wOw0KPiAgICAgICAgIG1pbl9pbmRleCA9IDA7
-DQo+ICsgICAgICAgYm91bmRhcnkgPSBlc2l0Ow0KPiAgICAgICAgIG1pbl9jc19jb3VudCA9IHNj
-aF9lcC0+Y3NfY291bnQ7DQo+ICAgICAgICAgbWluX251bV9idWRnZXQgPSBzY2hfZXAtPm51bV9i
-dWRnZXRfbWljcm9mcmFtZXM7DQo+ICAgICAgICAgZm9yIChvZmZzZXQgPSAwOyBvZmZzZXQgPCBl
-c2l0OyBvZmZzZXQrKykgew0KPiAgICAgICAgICAgICAgICAgaWYgKGlzX2ZzX29yX2xzKHVkZXYt
-PnNwZWVkKSkgew0KPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAoc2NoX2VwLT5lcF90eXBl
-ICE9IElTT0NfT1VUX0VQKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvdW5k
-YXJ5ID0gZXNpdCArIDE7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IGNoZWNrX3Nj
-aF90dCh1ZGV2LCBzY2hfZXAsIG9mZnNldCk7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlm
-IChyZXQpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7IEBAIC00
-OTgsNyArNTYxLDcgQEAgc3RhdGljIA0KPiBpbnQgY2hlY2tfc2NoX2J3KHN0cnVjdCB1c2JfZGV2
-aWNlICp1ZGV2LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHR0X29mZnNldF9v
-ayA9IHRydWU7DQo+ICAgICAgICAgICAgICAgICB9DQo+DQo+IC0gICAgICAgICAgICAgICBpZiAo
-KG9mZnNldCArIHNjaF9lcC0+bnVtX2J1ZGdldF9taWNyb2ZyYW1lcykgPiBzY2hfZXAtPmVzaXQp
-DQo+ICsgICAgICAgICAgICAgICBpZiAoKG9mZnNldCArIHNjaF9lcC0+bnVtX2J1ZGdldF9taWNy
-b2ZyYW1lcykgPiANCj4gKyBib3VuZGFyeSkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgYnJl
-YWs7DQo+DQo+ICAgICAgICAgICAgICAgICB3b3JzdF9idyA9IGdldF9tYXhfYncoc2NoX2J3LCBz
-Y2hfZXAsIG9mZnNldCk7IEBAIA0KPiAtNTMyLDcgKzU5NSw3IEBAIHN0YXRpYyBpbnQgY2hlY2tf
-c2NoX2J3KHN0cnVjdCB1c2JfZGV2aWNlICp1ZGV2LA0KPiAgICAgICAgICAgICAgICAgaWYgKCF0
-dF9vZmZzZXRfb2spDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRVJBTkdFOw0K
-Pg0KPiAtICAgICAgICAgICAgICAgdXBkYXRlX3NjaF90dCh1ZGV2LCBzY2hfZXApOw0KPiArICAg
-ICAgICAgICAgICAgdXBkYXRlX3NjaF90dCh1ZGV2LCBzY2hfZXAsIDEpOw0KPiAgICAgICAgIH0N
-Cj4NCj4gICAgICAgICAvKiB1cGRhdGUgYnVzIGJhbmR3aWR0aCBpbmZvICovIEBAIC02OTYsMTIg
-Kzc1OSwxMiBAQCB2b2lkIA0KPiB4aGNpX210a19kcm9wX2VwX3F1aXJrKHN0cnVjdCB1c2JfaGNk
-ICpoY2QsIHN0cnVjdCB1c2JfZGV2aWNlICp1ZGV2LA0KPg0KPiAgICAgICAgIGxpc3RfZm9yX2Vh
-Y2hfZW50cnkoc2NoX2VwLCAmc2NoX2J3LT5id19lcF9saXN0LCBlbmRwb2ludCkgew0KPiAgICAg
-ICAgICAgICAgICAgaWYgKHNjaF9lcC0+ZXAgPT0gZXApIHsNCj4gLSAgICAgICAgICAgICAgICAg
-ICAgICAgdXBkYXRlX2J1c19idyhzY2hfYncsIHNjaF9lcCwgMCk7DQo+IC0gICAgICAgICAgICAg
-ICAgICAgICAgIGxpc3RfZGVsKCZzY2hfZXAtPmVuZHBvaW50KTsNCj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgaWYgKGlzX2ZzX29yX2xzKHVkZXYtPnNwZWVkKSkgew0KPiAtICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGxpc3RfZGVsKCZzY2hfZXAtPnR0X2VuZHBvaW50KTsNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1cGRhdGVfc2NoX3R0KHVkZXYsIHNjaF9lcCwg
-MCk7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZHJvcF90dCh1ZGV2KTsNCj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPiArICAgICAgICAgICAgICAgICAgICAgICB1cGRh
-dGVfYnVzX2J3KHNjaF9idywgc2NoX2VwLCAwKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-bGlzdF9kZWwoJnNjaF9lcC0+ZW5kcG9pbnQpOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICBr
-ZnJlZShzY2hfZXApOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gICAgICAg
-ICAgICAgICAgIH0NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaCBi
-L2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaCANCj4gaW5kZXggYTkzY2ZlODE3OTA0Li4zMjNi
-MjgxOTMzYjkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaA0KPiAr
-KysgYi9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmgNCj4gQEAgLTIxLDEyICsyMSwxOCBAQA0K
-Pg0KPiAgLyoqDQo+ICAgKiBAc3BsaXRfYml0X21hcDogdXNlZCB0byBhdm9pZCBzcGxpdCBtaWNy
-b2ZyYW1lcyBvdmVybGF5DQo+ICsgKiBAc3NfYml0X21hcDogdXNlZCB0byBhdm9pZCBzdGFydCBz
-cGxpdCBtaWNyb2ZyYW1lcyBvdmVybGF5DQo+ICsgKiBAY3NfYml0X21hcDogdXNlZCB0byBhdm9p
-ZCBjb21wbGV0ZSBzcGxpdCBtaWNyb2ZyYW1lcyBvdmVybGF5DQo+ICsgKiBAZnNfYnVzX2J3OiBh
-cnJheSB0byBrZWVwIHRyYWNrIG9mIGJhbmR3aWR0aCBhbHJlYWR5IHVzZWQgYXQgZnVsbCANCj4g
-KyBzcGVlZA0KPiAgICogQGVwX2xpc3Q6IEVuZHBvaW50cyB1c2luZyB0aGlzIFRUDQo+ICAgKiBA
-dXNiX3R0OiB1c2IgVFQgcmVsYXRlZA0KPiAgICogQHR0X3BvcnQ6IFRUIHBvcnQgbnVtYmVyDQo+
-ICAgKi8NCj4gIHN0cnVjdCBtdTNoX3NjaF90dCB7DQo+ICAgICAgICAgREVDTEFSRV9CSVRNQVAo
-c3BsaXRfYml0X21hcCwgWEhDSV9NVEtfTUFYX0VTSVQpOw0KPiArICAgICAgIERFQ0xBUkVfQklU
-TUFQKHNzX2JpdF9tYXAsIFhIQ0lfTVRLX01BWF9FU0lUKTsNCj4gKyAgICAgICBERUNMQVJFX0JJ
-VE1BUChjc19iaXRfbWFwLCBYSENJX01US19NQVhfRVNJVCArIDEpOw0KPiArICAgICAgIHUzMiBm
-c19idXNfYndbWEhDSV9NVEtfTUFYX0VTSVRdOw0KPiAgICAgICAgIHN0cnVjdCBsaXN0X2hlYWQg
-ZXBfbGlzdDsNCj4gICAgICAgICBzdHJ1Y3QgdXNiX3R0ICp1c2JfdHQ7DQo+ICAgICAgICAgaW50
-IHR0X3BvcnQ7DQo+IEBAIC00Miw3ICs0OCw3IEBAIHN0cnVjdCBtdTNoX3NjaF90dCB7DQo+ICAg
-KiB0d28gYmFuZHdpZHRoIGRvbWFpbnMsIG9uZSBmb3IgSU4gZXBzIGFuZCBhbm90aGVyIGZvciBP
-VVQgZXBzLg0KPiAgICovDQo+ICBzdHJ1Y3QgbXUzaF9zY2hfYndfaW5mbyB7DQo+IC0gICAgICAg
-dTMyIGJ1c19id1tYSENJX01US19NQVhfRVNJVF07DQo+ICsgICAgICAgdTMyIGJ1c19id1tYSENJ
-X01US19NQVhfRVNJVCArIDFdOw0KPiAgICAgICAgIHN0cnVjdCBsaXN0X2hlYWQgYndfZXBfbGlz
-dDsNCj4gIH07DQo+DQo+IC0tDQo+IDIuMTguMA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4g
-TGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQo=
+Hi Daniel,
+
+On Mon, Jan 18, 2021 at 08:46:34PM +0000, Daniel Scally wrote:
+> Hi Laurent, thanks for the comments - really appreciate the detail.
+> 
+> Some specific responses below but assume a general "will do" to
+> everything you mentioned otherwise...
+> 
+> On 18/01/2021 09:15, Laurent Pinchart wrote:
+> >> +	  PMIC) and one designed for Chrome OS.
+> > 
+> > How about expanding this a bit to explain what the INT3472 stands for ?
+> >
+> > 	  The INT3472 is an Intel camera power controller, a logical device
+> > 	  found on some Skylake-based systems that can map to different
+> > 	  hardware devices depending on the platform. On machines
+> > 	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
+> > 	  machines designed for Windows, it maps to either a TP68470
+> > 	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
+> > 	  and power gates.
+> 
+> Yeah sure ok
+> 
+> >> This driver handles all three
+> >> +	  situations by discovering information it needs to discern them at
+> >> +	  runtime.
+> >> +
+> >> +	  If your device was designed for Chrome OS, this driver will provide
+> >> +	  an ACPI operation region, which must be available before any of the
+> >> +	  devices using this are probed. For this reason, you should select Y
+> >> +	  if your device was designed for ChromeOS. This option also configures
+> >> +	  the designware-i2c driver to be built-in, for the same reason.
+> > 
+> > Is the last sentence a leftover ?
+> 
+> Oops - it is, but it was supposed to remind me to double check that that
+> was still necessary. I'll take a look, thanks.
+> 
+> >> +
+> >> +#include "intel_skl_int3472_common.h"
+> >> +
+> >> +int skl_int3472_get_cldb_buffer(struct acpi_device *adev,
+> >> +				struct int3472_cldb *cldb)
+> >> +{
+> >> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> >> +	acpi_handle handle = adev->handle;
+> >> +	union acpi_object *obj;
+> >> +	acpi_status status;
+> >> +	int ret = 0;
+> >> +
+> >> +	status = acpi_evaluate_object(handle, "CLDB", NULL, &buffer);
+> >> +	if (ACPI_FAILURE(status))
+> >> +		return -ENODEV;
+> >> +
+> >> +	obj = buffer.pointer;
+> >> +	if (!obj) {
+> >> +		dev_err(&adev->dev, "ACPI device has no CLDB object\n");
+> > 
+> > Is this the code path that is taken on Chrome OS ? If so an error
+> > message isn't appropriate. I'd drop this message, and instead add an
+> > error message in the discrete PMIC code.
+> 
+> Ah yes of course, thanks, I'll move the error message.
+> 
+> >> +
+> >> +	unsigned int n_gpios; /* how many GPIOs have we seen */
+> >> +
+> >> +	struct int3472_gpio_regulator regulator;
+> >> +	struct int3472_gpio_clock clock;
+> > 
+> > You don't necessarily need to define separate structures for this, you
+> > could also write
+> >
+> > 	struct {
+> > 		char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
+> > 		char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
+> > 		struct gpio_desc *gpio;
+> > 		struct regulator_dev *rdev;
+> > 		struct regulator_desc rdesc;
+> > 	} regulator;
+> >
+> > 	struct {
+> > 		struct clk *clk;
+> > 		struct clk_hw clk_hw;
+> > 		struct clk_lookup *cl;
+> > 		struct gpio_desc *gpio;
+> > 	} clock;
+> >
+> > It's entirely up to you.
+> 
+> Ooh yeah I like that more, thanks very much.
+> 
+> >> +/* 79234640-9e10-4fea-a5c1-b5aa8b19756f */
+> >> +static const guid_t int3472_gpio_guid =
+> >> +	GUID_INIT(0x79234640, 0x9e10, 0x4fea,
+> >> +		  0xa5, 0xc1, 0xb5, 0xaa, 0x8b, 0x19, 0x75, 0x6f);
+> >> +
+> >> +/* 822ace8f-2814-4174-a56b-5f029fe079ee */
+> >> +static const guid_t cio2_sensor_module_guid =
+> >> +	GUID_INIT(0x822ace8f, 0x2814, 0x4174,
+> >> +		  0xa5, 0x6b, 0x5f, 0x02, 0x9f, 0xe0, 0x79, 0xee);
+> > 
+> > A comment that explains what those DSM functions do would be useful for
+> > reference. It has taken lots of time to figure it out, let's spare the
+> > pain to the next person who tries to understand this :-)
+> 
+> Hah - good point, well made. I'll explain what they're for then.
+> 
+> >> +static int skl_int3472_clk_enable(struct clk_hw *hw)
+> >> +{
+> >> +	struct int3472_gpio_clock *clk = to_int3472_clk(hw);
+> >> +
+> >> +	gpiod_set_value(clk->gpio, 1);
+> > 
+> > The clock enable() and disable() methods are not supposed to sleep,
+> > while setting a GPIO value may sleep in the general case. Should this be
+> > moved to skl_int3472_clk_prepare() ? Same for skl_int3472_clk_disable()
+> > and skl_int3472_clk_unprepare().
+> 
+> I was under the assumption the difference between gpiod_set_value() and
+> gpiod_set_value_cansleep() was that gpiod_set_value() _can't_ sleep, but
+> actually reading the function's comments it seems it will just complain
+> if it turns out it can sleep:
+> 
+> * This function can be called from contexts where we cannot sleep, and will
+> * complain if the GPIO chip functions potentially sleep. It doesn't
+> complain, on either of my devices, but I guess that can't be guaranteed
+> for _every_ device, so these calls probably are safer in (un)prepare() yes.
+
+If we could guarantee that the GPIOs are connected to the SoC, we could
+keep using the code above, as there should be no need to sleep. The
+question is whether this can be guaranteed or not. It's true that I
+would be surprised if the GPIOs were connected, for instance, to an I2C
+GPIO expander..
+
+> >> +			}
+> >> +
+> >> +			i++;
+> >> +		}
+> >> +	}
+> >> +
+> >> +	if (!func)
+> >> +		return 0;
+> > 
+> > I initially thought this wasn't right, as if no entry was found in the
+> > mapping table, func would still have its non-NULL value as passed to
+> > this function. I then realized that you're checking if the match that
+> > was found is NULL. A comment to explain this would be useful.
+> 
+> Yep ok - I actually had one and decided it was superfluous and removed
+> it - my bad.
+> 
+> >> +
+> >> +	status = acpi_get_handle(NULL, path, &handle);
+> >> +	if (ACPI_FAILURE(status))
+> >> +		return -EINVAL;
+> >> +
+> >> +	ret = acpi_bus_get_device(handle, &adev);
+> >> +	if (ret)
+> >> +		return -ENODEV;
+> >> +
+> >> +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
+> >> +							   ares->data.gpio.pin_table[0],
+> >> +							   func, 0, polarity);
+> > 
+> > I wonder if
+> >
+> > 	table_entry.key = acpi_dev_name(adev);
+> > 	table_entry.chip_hwnum = ares->data.gpio.pin_table[0];
+> > 	table_entry.con_id = func;
+> > 	table_entry.idx = 0;
+> > 	table_entry.flags = polarity;
+> >
+> > (with struct gpiod_lookup table_entry = { }; above) would be more
+> > readable. Up to you.
+> >
+> >> +
+> >> +	memcpy(&int3472->gpios.table[int3472->n_sensor_gpios], &table_entry,
+> >> +	       sizeof(table_entry));
+> > 
+> > Ah, or maybe
+> >
+> > 	struct gpio_lookup *table_entry;
+> >
+> > 	table_entry = &int3472->gpios.table[int3472->n_sensor_gpios];
+> > 	table_entry->key = acpi_dev_name(adev);
+> > 	table_entry->chip_hwnum = ares->data.gpio.pin_table[0];
+> > 	table_entry->con_id = func;
+> > 	table_entry->idx = 0;
+> > 	table_entry->flags = polarity;
+> >
+> > (no need to memset() to 0 first as the whole structure has been
+> > allocated with kzalloc()).
+> 
+> Yeah you're right, this looks much nicer - thanks.
+> 
+> >> +	int ret = 0;
+> >> +
+> >> +	init.name = kasprintf(GFP_KERNEL, "%s-clk",
+> >> +			      acpi_dev_name(int3472->adev));
+> > 
+> > You need to check for NULL and return -ENOMEM.
+> 
+> Oops, of course, thanks
+> 
+> >> +		goto err_unregister_clk;
+> > 
+> > If this fails, you will end up calling clk_unregister() and
+> > clkdev_drop() in skl_int3472_discrete_remove(). You should replace the
+> > check in the remove function with
+> >
+> > 	if (!int3472->clock.cl) {
+> 
+> You're right, good spot, thank you.
+> 
+> >> +		dev_err(&int3472->pdev->dev, "No sensor module config\n");
+> >> +		return PTR_ERR(sensor_config);
+> >> +	}
+> > 
+> > Would it make sense to call this in skl_int3472_discrete_probe() or
+> > skl_int3472_parse_crs() and cache the config pointer ?
+> 
+> Yes, probably actually, and then the GPIO mapping function can just
+> check for its presence.
+> 
+> >> +	init_data.constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
+> >> +	init_data.num_consumer_supplies = 1;
+> >> +	init_data.consumer_supplies = &sensor_config->supply_map;
+> >> +
+> >> +	snprintf(int3472->regulator.regulator_name,
+> >> +		 GPIO_REGULATOR_NAME_LENGTH, "int3472-discrete-regulator");
+> > 
+> > s/GPIO_REGULATOR_NAME_LENGTH/sizeof(int3472->regulator.regulator_name)/
+> >
+> > Do regulator names need to be unique ? If so you may have a problem if a
+> > platform has two discrete INT3472.
+> 
+> Unlike clocks, the regulator framework doesn't shout at you when you do
+> this, but I agree it's suboptimal at the very least, I'll set it to
+> ..."%s-regulator", acpi_dev_name(int3472->adev)... as with the clock.
+> 
+> >> +	case INT3472_GPIO_TYPE_PRIVACY_LED:
+> >> +		ret = skl_int3472_map_gpio_to_sensor(int3472, ares,
+> >> +						     "indicator-led",
+> >> +						     GPIO_ACTIVE_HIGH);
+> > 
+> > Mapping the indicator LED to the sensor isn't great, as all sensor
+> > drivers would then need to handle it. Could it be handled in the
+> > regulator instead, so that it would be turned on automatically when the
+> > sensor is powered up ? Another option, more complicated, would be to
+> > handle it in the CIO2 driver (but I'm not sure how we would map it).
+> 
+> Not with the regulator, because it turns out only the 0x0b pin is one of
+> those and those appear on very few devices in scope, so it wouldn't be
+> called on a Surface Book 2 for example. Perhaps as part of clock
+> prepare/enable? I don't much like the idea of it running in the CIO2
+> driver to be honest, feels a bit out of place.
+
+The clock is another option, but could there be platforms where the
+clock GPIO isn't present ?
+
+Another option would be to let userspace handle that GPIO, but we then
+need to convey it to userspace.
+
+> >> +
+> >> +	if (int3472->gpios_mapped)
+> >> +		gpiod_remove_lookup_table(&int3472->gpios);
+> > 
+> > You could avoid the need for the gpios_mapped field by checking for
+> >
+> > 	if (int3472->gpios.list.next)
+> >
+> > Up to you.
+> 
+> Thank you! I was scratching my head trying to figure out a better way of
+> doing that.
+
+-- 
+Regards,
+
+Laurent Pinchart
