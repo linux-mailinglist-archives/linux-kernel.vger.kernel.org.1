@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70542FB740
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 616C02FB735
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403906AbhASKdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389840AbhASKRk (ORCPT
+        id S2390677AbhASKan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:30:43 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:33166 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390022AbhASKTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:17:40 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D86C061573;
-        Tue, 19 Jan 2021 02:16:57 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0bca00c2aa0e949335efb7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:c2aa:e94:9335:efb7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90EF01EC05C4;
-        Tue, 19 Jan 2021 11:16:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611051415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4CqezFVMKH36MJrRgW74iAw00guuFWAyVYHxCYgTsAo=;
-        b=Gh928GzQ6JGqQd2EW/IdX6MUCu5eog1EnJbJ0axAHdcj9ENc7N/VVzoc4FtcQm05sF5ZwP
-        2/wg3n5xOEbbdNsvS9nLyb0maPeMkPBArRD7oUCCZRXjk/9sqB5ZKp1SwL1beqC6G/V8ku
-        7fJUgJBNNv9kQz7g5639id4DLBTHtwQ=
-Date:   Tue, 19 Jan 2021 11:16:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rrichter@marvell.com" <rrichter@marvell.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        tanxiaofei <tanxiaofei@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [RFC PATCH 1/2] EDAC/ghes: Add EDAC device for the CPU caches
-Message-ID: <20210119101655.GD27433@zn.tnic>
-References: <20201208172959.1249-1-shiju.jose@huawei.com>
- <20201208172959.1249-2-shiju.jose@huawei.com>
- <20201231164409.GC4504@zn.tnic>
- <a5745b56831c461bbb2cde4afc7ee295@huawei.com>
- <20210118183637.GD30090@zn.tnic>
- <51d4ecaf997043718d3066e0a45518d2@huawei.com>
+        Tue, 19 Jan 2021 05:19:18 -0500
+Date:   Tue, 19 Jan 2021 10:18:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1611051513;
+        bh=q+dny+d9bvN1Z30lIJh9zYFbNAX8RL+E2yHDrPen8dc=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=EEJJJiPIPVks4KgMcNX6viXtSMfYjtON2y4W70FpTyTi14JE/rViukoIbCoh/NwXN
+         hS2y3D1bjc6lPimCVxpsJGSayd2xTHqIPYkw+u2PNQdJZGb4Ts6i0V0kinGewOOUKB
+         oBAMay6gJFo6aUuzcfDMK+QfOwnHlqdJ+tcouH/UU4s7dbOdAFtGrHpPbrCtmEiLVr
+         Uh2CHjzBIq/6E7dwbs5d92IPTrVY1/ye8B23nwyLheIdxzxKsSNI/011eJlJ3J6yIg
+         gEdyJ1b35Ic670vTqrTU2L79iCZcVqEYXS/RsIj7UFODx29LjbOHcEuOjkhOp7NBYg
+         OdkXmaVJ2dDfA==
+To:     Lyude Paul <lyude@redhat.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     nouveau@lists.freedesktop.org, James Jones <jajones@nvidia.com>,
+        Martin Peres <martin.peres@free.fr>,
+        Jeremy Cline <jcline@redhat.com>, stable@vger.kernel.org,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 1/3] drivers/nouveau/kms/nv50-: Reject format modifiers for cursor planes
+Message-ID: <HfzDFy00Jir8FH_WqWz7EmLYojZvbfaoSAhmjdxfTSVxhBBpUYgpdApQFXXM2Uv3yzq0ySUYLCq2izrT5d9_gxna2IN9U8zHme2dvo7LlKs=@emersion.fr>
+In-Reply-To: <20210119015415.2511028-1-lyude@redhat.com>
+References: <20210119015415.2511028-1-lyude@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <51d4ecaf997043718d3066e0a45518d2@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:04:23AM +0000, Shiju Jose wrote:
-> This EDAC code for the cache errors is  architecture independent for the
-> firmware-first error reporting and  could be used for other architectures,
+On Tuesday, January 19th, 2021 at 2:54 AM, Lyude Paul <lyude@redhat.com> wr=
+ote:
 
-I'm not so sure about that because you're lumping all the cache
-hierarchies together and there might be L3 slices on some x86
-incarnations, for example, which do not belong to the core you're
-reporting the error for... It would need to be tested though.
+> Nvidia hardware doesn't actually support using tiling formats with the
+> cursor plane, only linear is allowed. In the future, we should write a
+> testcase for this.
+>
+> Fixes: c586f30bf74c ("drm/nouveau/kms: Add format mod prop to base/ovly/n=
+vdisp")
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: Martin Peres <martin.peres@free.fr>
+> Cc: Jeremy Cline <jcline@redhat.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: <stable@vger.kernel.org> # v5.8+
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-Also, if this is a firmware-first mode, then I would expect the firmware
-to also report which cache triggered the error and thus not need any OS
-glue at all.
+Together with [1], this patch allows me to run unpatched modifier-aware
+user-space successfully, without a cursor visual glitch. drm_info
+correctly reports the new modifier list, and wlroots logs confirm that
+a flavor of NVIDIA_BLOCK_LINEAR_2D is used for the primary buffers and
+LINEAR is used for cursor buffers.
 
-Therefore ARM only and I'd need an ACK from ARM folks whether they want
-it this way.
+Code looks good to me as well.
 
-Thx.
+Reviewed-by: Simon Ser <contact@emersion.fr>
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+[1]: https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/3724
