@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDE02FC276
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0972FC28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731838AbhASRsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:48:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:34358 "EHLO foss.arm.com"
+        id S2391739AbhASRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:51:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:34518 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389089AbhASOsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:48:16 -0500
+        id S2391243AbhASOuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:50:11 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 254C5142F;
-        Tue, 19 Jan 2021 06:47:31 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D11A11474;
+        Tue, 19 Jan 2021 06:47:38 -0800 (PST)
 Received: from e121896.arm.com (unknown [10.57.56.227])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 556B23F66E;
-        Tue, 19 Jan 2021 06:47:27 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 201AE3F66E;
+        Tue, 19 Jan 2021 06:47:34 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
@@ -35,9 +35,9 @@ Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
         Wei Li <liwei391@huawei.com>,
         Tan Xiaojun <tanxiaojun@huawei.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 5/8] perf arm-spe: Synthesize memory event
-Date:   Tue, 19 Jan 2021 16:46:55 +0200
-Message-Id: <20210119144658.793-5-james.clark@arm.com>
+Subject: [PATCH 7/8] perf arm-spe: Save context ID in record
+Date:   Tue, 19 Jan 2021 16:46:57 +0200
+Message-Id: <20210119144658.793-7-james.clark@arm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210119144658.793-1-james.clark@arm.com>
 References: <20210119144658.793-1-james.clark@arm.com>
@@ -49,22 +49,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Leo Yan <leo.yan@linaro.org>
 
-The memory event can deliver two benefits:
-
-- The first benefit is the memory event can give out global view for
-  memory accessing, rather than organizing events with scatter mode
-  (e.g. uses separate event for L1 cache, last level cache, etc) which
-  which can only display a event for single memory type, memory events
-  include all memory accessing so it can display the data accessing
-  cross memory levels in the same view;
-
-- The second benefit is the sample generation might introduce a big
-  overhead and need to wait for long time for Perf reporting, we can
-  specify itrace option '--itrace=M' to filter out other events and only
-  output memory events, this can significantly reduce the overhead
-  caused by generating samples.
-
-This patch is to enable memory event for Arm SPE.
+This patch is to save context ID in record, this will be used to set TID
+for samples.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Signed-off-by: James Clark <james.clark@arm.com>
@@ -84,78 +70,42 @@ Cc: Wei Li <liwei391@huawei.com>
 Cc: Tan Xiaojun <tanxiaojun@huawei.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/util/arm-spe.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 2 ++
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 578725344603..5550906486d8 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -53,6 +53,7 @@ struct arm_spe {
- 	u8				sample_tlb;
- 	u8				sample_branch;
- 	u8				sample_remote_access;
-+	u8				sample_memory;
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+index 32fe41835fa6..1b58859d2314 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+@@ -151,6 +151,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 	u64 payload, ip;
  
- 	u64				l1d_miss_id;
- 	u64				l1d_access_id;
-@@ -62,6 +63,7 @@ struct arm_spe {
- 	u64				tlb_access_id;
- 	u64				branch_miss_id;
- 	u64				remote_access_id;
-+	u64				memory_id;
+ 	memset(&decoder->record, 0x0, sizeof(decoder->record));
++	decoder->record.context_id = -1;
  
- 	u64				kernel_start;
+ 	while (1) {
+ 		err = arm_spe_get_next_packet(decoder);
+@@ -180,6 +181,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 		case ARM_SPE_COUNTER:
+ 			break;
+ 		case ARM_SPE_CONTEXT:
++			decoder->record.context_id = payload;
+ 			break;
+ 		case ARM_SPE_OP_TYPE:
+ 			if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+index 59bdb7309674..46a8556a9e95 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+@@ -38,6 +38,7 @@ struct arm_spe_record {
+ 	u64 timestamp;
+ 	u64 virt_addr;
+ 	u64 phys_addr;
++	u64 context_id;
+ };
  
-@@ -293,6 +295,18 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
- 	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
- }
- 
-+#define SPE_MEM_TYPE	(ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS | \
-+			 ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS | \
-+			 ARM_SPE_REMOTE_ACCESS)
-+
-+static bool arm_spe__is_memory_event(enum arm_spe_sample_type type)
-+{
-+	if (type & SPE_MEM_TYPE)
-+		return true;
-+
-+	return false;
-+}
-+
- static int arm_spe_sample(struct arm_spe_queue *speq)
- {
- 	const struct arm_spe_record *record = &speq->decoder->record;
-@@ -354,6 +368,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
- 			return err;
- 	}
- 
-+	if (spe->sample_memory && arm_spe__is_memory_event(record->type)) {
-+		err = arm_spe__synth_mem_sample(speq, spe->memory_id);
-+		if (err)
-+			return err;
-+	}
-+
- 	return 0;
- }
- 
-@@ -917,6 +937,16 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
- 		id += 1;
- 	}
- 
-+	if (spe->synth_opts.mem) {
-+		spe->sample_memory = true;
-+
-+		err = arm_spe_synth_event(session, &attr, id);
-+		if (err)
-+			return err;
-+		spe->memory_id = id;
-+		arm_spe_set_event_name(evlist, id, "memory");
-+	}
-+
- 	return 0;
- }
- 
+ struct arm_spe_insn;
 -- 
 2.28.0
 
