@@ -2,74 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB3C2FC3F8
+	by mail.lfdr.de (Postfix) with ESMTP id D88A72FC3F9
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbhASWoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:44:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
+        id S1730452AbhASWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:44:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405128AbhASOc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:32:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9255D206E5;
-        Tue, 19 Jan 2021 14:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611066706;
-        bh=NfQU7Bh2uGMJeTO1WgOYbXM6ko6/LlpUampJfSpsipY=;
+        id S2405480AbhASOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:32:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2014F206E9;
+        Tue, 19 Jan 2021 14:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611066726;
+        bh=Tduvv18LK/LCkLs3ZnFGc8LwDL80UuULmc4HIuM8pAY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SrigU5FPI0Ij6S0yCfy3btTTVYmZ21Kog35h7ZfbCA3lL/nF60IGKYii68Qjny6qz
-         fecUUSH/PaMNni3xl4FPTGy5Og3BE9SmovOULwnvYf7z0NUHRFmqNmzY9/52/gHrpm
-         ySJCEzXWay0OfgI4nzrW4Xx4760SRj5f1oO03XDBn7kSNNsn4py8Mx5ndFFi74YRa1
-         n6bypWLiR/i5S+c2sWJHevMWbb8SM1iLw2nUJFmlx//kVQoUHKHuFCmQu7XtnC+S2s
-         AxHp0QUpsInrqyY1aRGtBvbc3vjYZKHCGpudJIdEsxZg+SNDJ8iZjuhpZMkVp3eBXu
-         Iw9q+Mj7qT0dQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id F3B6F40CE2; Tue, 19 Jan 2021 11:31:43 -0300 (-03)
-Date:   Tue, 19 Jan 2021 11:31:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
-Message-ID: <20210119143143.GJ12699@kernel.org>
-References: <20201229214214.3413833-1-songliubraving@fb.com>
- <20201229214214.3413833-4-songliubraving@fb.com>
- <20210118193817.GG12699@kernel.org>
- <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
+        b=prM3R5m3uo3uXxwz5GeHrVafgNEbazb911/CI5WpXB7mO0+x4TdgpD/xfl7vPnlJZ
+         RQsVqKJuk3PN4R4txzMSyCZaE72+c4UfnjcSxVefqnxyckuXd2lD6+sVDOm9sB3/vH
+         hju2ZT4LQV1lPp7LQu8FKl+QWHFfDJWRhHidhWT8=
+Date:   Tue, 19 Jan 2021 15:32:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Linux PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v7 12/17] PCI: Revoke mappings like devmem
+Message-ID: <YAbtZBU5PMr68q9E@kroah.com>
+References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch>
+ <20201127164131.2244124-13-daniel.vetter@ffwll.ch>
+ <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 19, 2021 at 12:48:19AM +0000, Song Liu escreveu:
-> > On Jan 18, 2021, at 11:38 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> We are looking at two issues:
-> 1. Cannot recursively attach;
-> 2. prog FD 3 doesn't have valid btf. 
- 
-> #1 was caused by the verifier disallowing attaching fentry/fexit program 
-> to program with type BPF_PROG_TYPE_TRACING (in bpf_check_attach_target). 
-> This constraint was added when we only had fentry/fexit in the TRACING
-> type. We have extended the TRACING type to many other use cases, like 
-> "tp_btf/", "fmod_ret" and "iter/". Therefore, it is good time to revisit 
-> this constraint. I will work on this. 
- 
-> For #2, we require the target program to have BTF. I guess we won't remove
-> this requirement.
- 
-> While I work on improving #1, could you please test with some kprobe 
-> programs? For example, we can use fileslower.py from bcc. 
+On Tue, Jan 19, 2021 at 09:17:55AM +0100, Daniel Vetter wrote:
+> On Fri, Nov 27, 2020 at 5:42 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> >
+> > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> > the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> > the default for all driver uses.
+> >
+> > Except there's two more ways to access PCI BARs: sysfs and proc mmap
+> > support. Let's plug that hole.
+> >
+> > For revoke_devmem() to work we need to link our vma into the same
+> > address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> > adjusted, because that's how (io_)remap_pfn_range works, but for the
+> > mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
+> > to adjust this at at ->open time:
+> >
+> > - for sysfs this is easy, now that binary attributes support this. We
+> >   just set bin_attr->mapping when mmap is supported
+> > - for procfs it's a bit more tricky, since procfs pci access has only
+> >   one file per device, and access to a specific resources first needs
+> >   to be set up with some ioctl calls. But mmap is only supported for
+> >   the same resources as sysfs exposes with mmap support, and otherwise
+> >   rejected, so we can set the mapping unconditionally at open time
+> >   without harm.
+> >
+> > A special consideration is for arch_can_pci_mmap_io() - we need to
+> > make sure that the ->f_mapping doesn't alias between ioport and iomem
+> > space. There's only 2 ways in-tree to support mmap of ioports: generic
+> > pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
+> > architecture hand-rolling. Both approach support ioport mmap through a
+> > special pfn range and not through magic pte attributes. Aliasing is
+> > therefore not a problem.
+> >
+> > The only difference in access checks left is that sysfs PCI mmap does
+> > not check for CAP_RAWIO. I'm not really sure whether that should be
+> > added or not.
+> >
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: Jérôme Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: linux-pci@vger.kernel.org
+> > Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > --
+> > v2:
+> > - Totally new approach: Adjust filp->f_mapping at open time. Note that
+> >   this now works on all architectures, not just those support
+> >   ARCH_GENERIC_PCI_MMAP_RESOURCE
+> > ---
+> >  drivers/pci/pci-sysfs.c | 4 ++++
+> >  drivers/pci/proc.c      | 1 +
+> >  2 files changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > index d15c881e2e7e..3f1c31bc0b7c 100644
+> > --- a/drivers/pci/pci-sysfs.c
+> > +++ b/drivers/pci/pci-sysfs.c
+> > @@ -929,6 +929,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+> >         b->legacy_io->read = pci_read_legacy_io;
+> >         b->legacy_io->write = pci_write_legacy_io;
+> >         b->legacy_io->mmap = pci_mmap_legacy_io;
+> > +       b->legacy_io->mapping = iomem_get_mapping();
+> >         pci_adjust_legacy_attr(b, pci_mmap_io);
+> >         error = device_create_bin_file(&b->dev, b->legacy_io);
+> >         if (error)
+> > @@ -941,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+> >         b->legacy_mem->size = 1024*1024;
+> >         b->legacy_mem->attr.mode = 0600;
+> >         b->legacy_mem->mmap = pci_mmap_legacy_mem;
+> > +       b->legacy_io->mapping = iomem_get_mapping();
+> 
+> Unlike the normal pci stuff below, the legacy files here go boom
+> because they're set up much earlier in the boot sequence. This only
+> affects HAVE_PCI_LEGACY architectures, which aren't that many. So what
+> should we do here now:
+> - drop the devmem revoke for these
+> - rework the init sequence somehow to set up these files a lot later
+> - redo the sysfs patch so that it doesn't take an address_space
+> pointer, but instead a callback to get at that (since at open time
+> everything is set up). Imo rather ugly
+> - ditch this part of the series (since there's not really any takers
+> for the latter parts it might just not make sense to push for this)
+> - something else?
+> 
+> Bjorn, Greg, thoughts?
 
-Sure, and please consider improving the error messages to state what you
-described above.
+What sysfs patch are you referring to here?
 
-- Arnaldo
+thanks,
+
+greg k-h
