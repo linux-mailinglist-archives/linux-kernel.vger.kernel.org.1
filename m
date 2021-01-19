@@ -2,135 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616782FC242
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6872FC22F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbhASV0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S1727305AbhASVXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728666AbhASSpS (ORCPT
+        with ESMTP id S1729254AbhASSq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:45:18 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A94C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:44:23 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id h4so22900361qkk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:44:23 -0800 (PST)
+        Tue, 19 Jan 2021 13:46:26 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36117C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:45:46 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c127so666414wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:45:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=26hOmcs1ZFwlV0P5j8AlWS9tixqHW+LF5uegLj5p6b0=;
-        b=b/StF/aIqwvXqCSIC65E7E8JUoyIek0eEPFL6QikaWiRgM6mNIOZmo6s10qWo04UOR
-         jP8KPOZ6cWtf1b/T94Uo9PplRKQ4R9OfCdMBFfIAmCdZ+UsO8q2pSRYfjbQ2SdRqZiOx
-         hy81hcg9f+Z7H7c7igHpYnFhwifmti68635yxxLGlR4jBgSQHXZqo2ZB+CIHAfYNXchK
-         SVDiye6/Bmxh7XF3wvokxanI3uJkwrxcA2u+Jbx9KG6tzR6/beR9EvOZL0x8pDOPbNfP
-         q/mtnTxEa/uNwKwonDVvLQNRk/yTPSMpKi0PQqG5cKeYjrsbFhH/tkwej/IDPQDqyxdX
-         QwJw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=/fM6ZKegC2tG0NRDag/j4tHgHZ38hRrg41AR1jJxjxw=;
+        b=KbSiT2HHZ+souT3aDvW/ZWlIIr+DKhkwOGwgrscS/2/BafdzRMTj+xs//a2BwKCPuj
+         JY8wGEcst+ErbTR/yu8sYie7HfXL4sLVoKe42K6DRgdWThWVb1QFZPHKNShpR3Bm/VBM
+         aAa1bJOTwVpm8h1CBfgUQ34H84h3VOIpbpHVEhGBGYB8f7fpf2f4u0HUOtsNRCs4wiEN
+         TDL3Zqj9zcs2TcLqG8QMYs8QHQgxE3h1HlDznEwPZ2EQ9eVQ3+rs7VRlkZo7hJXia8B1
+         AF+ykYH0TdoZ2yy4+Ky7GsXa0dRKKiezXxHQS9f/JWqNAMoM+3N5/zM+mTTSdYI7X67b
+         7Hdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=26hOmcs1ZFwlV0P5j8AlWS9tixqHW+LF5uegLj5p6b0=;
-        b=nmnPokxTrfGhoBM3dWOGcj22rrX6rUE+xhXCfz/k8Uc4nEyU9M1LKLfOzZpx1NPTWt
-         SyF9QLQ3EsKOEwetORomdxse45VDqsMOXbr1rPMbEfYvW0kxb0sfp7m19NjB4LHkH9DO
-         mbor8bo1ad6PuBlHrsHJ6SmL0KMstkdFZ7wbha4WEh4CeWErEDHTgXYWco2GjKC/kQOR
-         3MecTImOof6MlZ0REgcjPxjhjNGdU5YbdMi3nRIyMfN18uyoZ1fG+BnD4no+you9BHWd
-         UTMn3t6ETBUN6fztEMl0nz62PylNt8gxXe/WprtC6f0W760ril075MTYilQ1rxbT6NbK
-         cxPg==
-X-Gm-Message-State: AOAM5313XwC+Hu7I2vMxDce1EOPGFBAxzI+UT+w63T9n5f6827j16kJB
-        17Q4mcaYg9bCt22sRQ7BOKkFYZFqyxisjw==
-X-Google-Smtp-Source: ABdhPJyq0pj1DSKim2tiHKCcVLAYKOKzMtvbQ76/G0aVSuKxX7RkufNfnUa1rpUvzeGDlcYmiBZoXQ==
-X-Received: by 2002:a05:620a:1398:: with SMTP id k24mr5751440qki.109.1611081862587;
-        Tue, 19 Jan 2021 10:44:22 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id j66sm679287qkf.78.2021.01.19.10.44.22
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=/fM6ZKegC2tG0NRDag/j4tHgHZ38hRrg41AR1jJxjxw=;
+        b=RWYn9/VAQ6YHnkjWSVuumob6b3uYxK/ACShEPxF2O67jARg79ZnKKFXd0jn6Wu5K+/
+         26uc4t0gu8+VXi7BMGjkabyhE7/sH+tFqXGPea6QYyktjT0wtpCJdIBWKCaMXiH3wZMZ
+         YM7JV4RMUpB5se61rHrvQY/XZ5RlHiJFQudbBaDNUgE2Z62aw68+xBZnT0NQN4An5UYz
+         0GbH7elfKMRLJyxgl8SlTNZJZFHDI5jCqAhPaqZLbJ8se4moXeCkb6fuKd/o61J+7rnN
+         5fEuMZtGFCZX7fvsa+z+3Iaf7M+JWmNDttuQBwVWFOkjksZHu+I9QbRfbDROwQ7xP8Sw
+         7fNQ==
+X-Gm-Message-State: AOAM532cw2mu2DMM7ZYrZFLb4r+9qYLN4TmXGMr0ixto53OMS5EXaOW5
+        rwtk7Xbnl5QFf3bBTFUnalj5U400a0MgbQ30ntI=
+X-Google-Smtp-Source: ABdhPJyXahTgdED5eJ8tWfl9ABrXXVsuMiCwp/GWYC0ormp+KLzCr4C4vIF/Bbr12NaNkh28KWwZ8g==
+X-Received: by 2002:a1c:a9ce:: with SMTP id s197mr932539wme.146.1611081944619;
+        Tue, 19 Jan 2021 10:45:44 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id o124sm6074944wmb.5.2021.01.19.10.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:44:22 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1vzJ-003pxR-Lq; Tue, 19 Jan 2021 14:44:21 -0400
-Date:   Tue, 19 Jan 2021 14:44:21 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com>
-Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rpearson@hpe.com,
-        rpearsonhpe@gmail.com, syzkaller-bugs@googlegroups.com,
-        zyjzyj2000@gmail.com
-Subject: Re: BUG: sleeping function called from invalid context in
- rxe_alloc_nl
-Message-ID: <20210119184421.GC4605@ziepe.ca>
-References: <00000000000081830a05b9445165@google.com>
+        Tue, 19 Jan 2021 10:45:44 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Nicolas Pitre <npitre@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM / clk: make PM clock layer compatible with clocks
+ that must sleep
+In-Reply-To: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
+References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz>
+Date:   Tue, 19 Jan 2021 10:45:41 -0800
+Message-ID: <7him7sydd6.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000081830a05b9445165@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 09:39:19AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    b4bb878f Add linux-next specific files for 20210119
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12d34e9f500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1ca623d7cc5ca3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ec2fd72374785d0e558e
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148035af500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10eb8494d00000
-> 
-> The issue was bisected to:
-> 
-> commit 3853c35e243d56238159e8365b6aca410bdd4576
-> Author: Bob Pearson <rpearsonhpe@gmail.com>
-> Date:   Wed Dec 16 23:15:49 2020 +0000
-> 
->     RDMA/rxe: Add unlocked versions of pool APIs
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126612d0d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=116612d0d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=166612d0d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com
-> Fixes: 3853c35e243d ("RDMA/rxe: Add unlocked versions of pool APIs")
-> 
-> netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-> infiniband syz2: set active
-> infiniband syz2: added bond_slave_0
-> BUG: sleeping function called from invalid context at drivers/infiniband/sw/rxe/rxe_pool.c:346
-> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 8459, name: syz-executor401
-> 6 locks held by syz-executor401/8459:
->  #0: ffffffff8fc4a418 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
->  #1: ffffffff8c78ced0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
->  #2: ffffffff8c77c470 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1307
->  #3: ffffffff8c77c330 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1315
->  #4: ffff88802adc8598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:715
->  #5: ffff88802adc9640 (&pool->pool_lock){....}-{2:2}, at: rxe_alloc+0x1b/0x40 drivers/infiniband/sw/rxe/rxe_pool.c:384
+[ + Geert.. renesas SoCs are the primary user of PM clk ]
 
-Bob, yes, this is busted up
+Nicolas Pitre <npitre@baylibre.com> writes:
 
-        read_lock_irqsave(&pool->pool_lock, flags);
-        obj = rxe_alloc_nl(pool);
-        read_unlock_irqrestore(&pool->pool_lock, flags);
-
-Those are spin locks
-
-void *rxe_alloc_nl(struct rxe_pool *pool)
-{
-        obj = kzalloc(info->size, (pool->flags & RXE_POOL_ATOMIC) ?
-                      GFP_ATOMIC : GFP_KERNEL);
-
-And that is always calling GFP_KERNEL inside a spinlock, regardless of
-ATOMIC
-
-No idea how this should be fixed
-
-Jason
+> The clock API splits its interface into sleepable ant atomic contexts:
+>
+> - clk_prepare/clk_unprepare for stuff that might sleep
+>
+> - clk_enable_clk_disable for anything that may be done in atomic context
+>
+> The code handling runtime PM for clocks only calls clk_disable() on
+> suspend requests, and clk_enable on resume requests. This means that
+> runtime PM with clock providers that only have the prepare/unprepare
+> methods implemented is basically useless.
+>
+> Many clock implementations can't accommodate atomic contexts. This is
+> often the case when communication with the clock happens through another
+> subsystem like I2C or SCMI.
+>
+> Let's make the clock PM code useful with such clocks by safely invoking
+> clk_prepare/clk_unprepare upon resume/suspend requests. Of course, when
+> such clocks are registered with the PM layer then pm_runtime_irq_safe()
+> can't be used, and neither pm_runtime_suspend() nor pm_runtime_resume()
+> may be invoked in atomic context.
+>
+> For clocks that do implement the enable and disable methods then 
+> everything just works as before.
+>
+> Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
+>
+> diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
+> index ced6863a16..a62fb0f9b1 100644
+> --- a/drivers/base/power/clock_ops.c
+> +++ b/drivers/base/power/clock_ops.c
+> @@ -23,6 +23,7 @@
+>  enum pce_status {
+>  	PCE_STATUS_NONE = 0,
+>  	PCE_STATUS_ACQUIRED,
+> +	PCE_STATUS_PREPARED,
+>  	PCE_STATUS_ENABLED,
+>  	PCE_STATUS_ERROR,
+>  };
+> @@ -32,8 +33,102 @@ struct pm_clock_entry {
+>  	char *con_id;
+>  	struct clk *clk;
+>  	enum pce_status status;
+> +	bool enabled_when_prepared;
+>  };
+>  
+> +/**
+> + * pm_clk_list_lock - ensure exclusive access for modifying the PM clock
+> + *		      entry list.
+> + * @psd: pm_subsys_data instance corresponding to the PM clock entry list
+> + *	 and clk_op_might_sleep count to be modified.
+> + *
+> + * Get exclusive access before modifying the PM clock entry list and the
+> + * clock_op_might_sleep count to guard against concurrent modifications.
+> + * This also protects against a concurrent clock_op_might_sleep and PM clock
+> + * entry list usage in pm_clk_suspend()/pm_clk_resume() that may or may not
+> + * happen in atomic context, hence both the mutex and the spinlock must be
+> + * taken here.
+> + */
+> +static void pm_clk_list_lock(struct pm_subsys_data *psd)
+> +{
+> +	mutex_lock(&psd->clock_mutex);
+> +	spin_lock_irq(&psd->lock);
+> +}
+> +
+> +/**
+> + * pm_clk_list_unlock - counterpart to pm_clk_list_lock().
+> + * @psd: the same pm_subsys_data instance previously passed to
+> + *	 pm_clk_list_lock().
+> + */
+> +static void pm_clk_list_unlock(struct pm_subsys_data *psd)
+> +{
+> +	spin_unlock_irq(&psd->lock);
+> +	mutex_unlock(&psd->clock_mutex);
+> +}
+> +
+> +/**
+> + * pm_clk_op_lock - ensure exclusive access for performing clock operations.
+> + * @psd: pm_subsys_data instance corresponding to the PM clock entry list
+> + *	 and clk_op_might_sleep count being used.
+> + * @flags: stored irq flags.
+> + * @fn: string for the caller function's name.
+> + *
+> + * This is used by pm_clk_suspend() and pm_clk_resume() to guard
+> + * against concurrent modifications to the clock entry list and the
+> + * clock_op_might_sleep count. If clock_op_might_sleep is != 0 then
+> + * only the mutex can be locked and those functions can only be used in
+> + * non atomic context. If clock_op_might_sleep == 0 then these functions
+> + * may be used in any context and only the spinlock can be locked.
+> + * Returns -EINVAL if called in atomic context when clock ops might sleep.
+> + */
+> +static int pm_clk_op_lock(struct pm_subsys_data *psd, unsigned long *flags,
+> +			  const char *fn)
+> +{
+> +	bool atomic_context = in_atomic() || irqs_disabled();
+> +
+> +try_again:
+> +	spin_lock_irqsave(&psd->lock, *flags);
+> +	if (!psd->clock_op_might_sleep)
+> +		return 0;
+> +
+> +	/* bail out if in atomic context */
+> +	if (atomic_context) {
+> +		pr_err("%s: atomic context with clock_ops_might_sleep = %d",
+> +		       fn, psd->clock_op_might_sleep);
+> +		spin_unlock_irqrestore(&psd->lock, *flags);
+> +		might_sleep();
+> +		return -EPERM;
+> +	}
+> +
+> +	/* we must switch to the mutex */
+> +	spin_unlock_irqrestore(&psd->lock, *flags);
+> +	mutex_lock(&psd->clock_mutex);
+> +
+> +	/*
+> +	 * There was a possibility for psd->clock_op_might_sleep
+> +	 * to become 0 above. Keep the mutex only if not the case.
+> +	 */
+> +	if (likely(psd->clock_op_might_sleep))
+> +		return 0;
+> +
+> +	mutex_unlock(&psd->clock_mutex);
+> +	goto try_again;
+> +}
+> +
+> +/**
+> + * pm_clk_op_unlock - counterpart to pm_clk_op_lock().
+> + * @psd: the same pm_subsys_data instance previously passed to
+> + *	 pm_clk_op_lock().
+> + * @flags: irq flags provided by pm_clk_op_lock().
+> + */
+> +static void pm_clk_op_unlock(struct pm_subsys_data *psd, unsigned long *flags)
+> +{
+> +	if (psd->clock_op_might_sleep)
+> +		mutex_unlock(&psd->clock_mutex);
+> +	else
+> +		spin_unlock_irqrestore(&psd->lock, *flags);
+> +}
+> +
+>  /**
+>   * pm_clk_enable - Enable a clock, reporting any errors
+>   * @dev: The device for the given clock
+> @@ -43,14 +138,21 @@ static inline void __pm_clk_enable(struct device *dev, struct pm_clock_entry *ce
+>  {
+>  	int ret;
+>  
+> -	if (ce->status < PCE_STATUS_ERROR) {
+> +	switch (ce->status) {
+> +	case PCE_STATUS_ACQUIRED:
+> +		ret = clk_prepare_enable(ce->clk);
+> +		break;
+> +	case PCE_STATUS_PREPARED:
+>  		ret = clk_enable(ce->clk);
+> -		if (!ret)
+> -			ce->status = PCE_STATUS_ENABLED;
+> -		else
+> -			dev_err(dev, "%s: failed to enable clk %p, error %d\n",
+> -				__func__, ce->clk, ret);
+> +		break;
+> +	default:
+> +		return;
+>  	}
+> +	if (!ret)
+> +		ce->status = PCE_STATUS_ENABLED;
+> +	else
+> +		dev_err(dev, "%s: failed to enable clk %p, error %d\n",
+> +			__func__, ce->clk, ret);
+>  }
+>  
+>  /**
+> @@ -64,17 +166,20 @@ static void pm_clk_acquire(struct device *dev, struct pm_clock_entry *ce)
+>  		ce->clk = clk_get(dev, ce->con_id);
+>  	if (IS_ERR(ce->clk)) {
+>  		ce->status = PCE_STATUS_ERROR;
+> +		return;
+> +	} else if (clk_is_enabled_when_prepared(ce->clk)) {
+> +		/* we defer preparing the clock in that case */
+> +		ce->status = PCE_STATUS_ACQUIRED;
+> +		ce->enabled_when_prepared = true;
+> +	} else if (clk_prepare(ce->clk)) {
+> +		ce->status = PCE_STATUS_ERROR;
+> +		dev_err(dev, "clk_prepare() failed\n");
+> +		return;
+>  	} else {
+> -		if (clk_prepare(ce->clk)) {
+> -			ce->status = PCE_STATUS_ERROR;
+> -			dev_err(dev, "clk_prepare() failed\n");
+> -		} else {
+> -			ce->status = PCE_STATUS_ACQUIRED;
+> -			dev_dbg(dev,
+> -				"Clock %pC con_id %s managed by runtime PM.\n",
+> -				ce->clk, ce->con_id);
+> -		}
+> +		ce->status = PCE_STATUS_PREPARED;
+>  	}
+> +	dev_dbg(dev, "Clock %pC con_id %s managed by runtime PM.\n",
+> +		ce->clk, ce->con_id);
+>  }
+>  
+>  static int __pm_clk_add(struct device *dev, const char *con_id,
+> @@ -106,9 +211,11 @@ static int __pm_clk_add(struct device *dev, const char *con_id,
+>  
+>  	pm_clk_acquire(dev, ce);
+>  
+> -	spin_lock_irq(&psd->lock);
+> +	pm_clk_list_lock(psd);
+>  	list_add_tail(&ce->node, &psd->clock_list);
+> -	spin_unlock_irq(&psd->lock);
+> +	if (ce->enabled_when_prepared)
+> +		psd->clock_op_might_sleep++;
+> +	pm_clk_list_unlock(psd);
+>  	return 0;
+>  }
+>  
+> @@ -239,14 +346,20 @@ static void __pm_clk_remove(struct pm_clock_entry *ce)
+>  	if (!ce)
+>  		return;
+>  
+> -	if (ce->status < PCE_STATUS_ERROR) {
+> -		if (ce->status == PCE_STATUS_ENABLED)
+> -			clk_disable(ce->clk);
+> -
+> -		if (ce->status >= PCE_STATUS_ACQUIRED) {
+> -			clk_unprepare(ce->clk);
+> +	switch (ce->status) {
+> +	case PCE_STATUS_ENABLED:
+> +		clk_disable(ce->clk);
+> +		fallthrough;
+> +	case PCE_STATUS_PREPARED:
+> +		clk_unprepare(ce->clk);
+> +		fallthrough;
+> +	case PCE_STATUS_ACQUIRED:
+> +	case PCE_STATUS_ERROR:
+> +		if (!IS_ERR(ce->clk))
+>  			clk_put(ce->clk);
+> -		}
+> +		break;
+> +	default:
+> +		break;
+>  	}
+>  
+>  	kfree(ce->con_id);
+> @@ -269,7 +382,7 @@ void pm_clk_remove(struct device *dev, const char *con_id)
+>  	if (!psd)
+>  		return;
+>  
+> -	spin_lock_irq(&psd->lock);
+> +	pm_clk_list_lock(psd);
+>  
+>  	list_for_each_entry(ce, &psd->clock_list, node) {
+>  		if (!con_id && !ce->con_id)
+> @@ -280,12 +393,14 @@ void pm_clk_remove(struct device *dev, const char *con_id)
+>  			goto remove;
+>  	}
+>  
+> -	spin_unlock_irq(&psd->lock);
+> +	pm_clk_list_unlock(psd);
+>  	return;
+>  
+>   remove:
+>  	list_del(&ce->node);
+> -	spin_unlock_irq(&psd->lock);
+> +	if (ce->enabled_when_prepared)
+> +		psd->clock_op_might_sleep--;
+> +	pm_clk_list_unlock(psd);
+>  
+>  	__pm_clk_remove(ce);
+>  }
+> @@ -307,19 +422,21 @@ void pm_clk_remove_clk(struct device *dev, struct clk *clk)
+>  	if (!psd || !clk)
+>  		return;
+>  
+> -	spin_lock_irq(&psd->lock);
+> +	pm_clk_list_lock(psd);
+>  
+>  	list_for_each_entry(ce, &psd->clock_list, node) {
+>  		if (clk == ce->clk)
+>  			goto remove;
+>  	}
+>  
+> -	spin_unlock_irq(&psd->lock);
+> +	pm_clk_list_unlock(psd);
+>  	return;
+>  
+>   remove:
+>  	list_del(&ce->node);
+> -	spin_unlock_irq(&psd->lock);
+> +	if (ce->enabled_when_prepared)
+> +		psd->clock_op_might_sleep--;
+> +	pm_clk_list_unlock(psd);
+>  
+>  	__pm_clk_remove(ce);
+>  }
+> @@ -330,13 +447,16 @@ EXPORT_SYMBOL_GPL(pm_clk_remove_clk);
+>   * @dev: Device to initialize the list of PM clocks for.
+>   *
+>   * Initialize the lock and clock_list members of the device's pm_subsys_data
+> - * object.
+> + * object, set the count of clocks that might sleep to 0.
+>   */
+>  void pm_clk_init(struct device *dev)
+>  {
+>  	struct pm_subsys_data *psd = dev_to_psd(dev);
+> -	if (psd)
+> +	if (psd) {
+>  		INIT_LIST_HEAD(&psd->clock_list);
+> +		mutex_init(&psd->clock_mutex);
+> +		psd->clock_op_might_sleep = 0;
+> +	}
+>  }
+>  EXPORT_SYMBOL_GPL(pm_clk_init);
+>  
+> @@ -372,12 +492,13 @@ void pm_clk_destroy(struct device *dev)
+>  
+>  	INIT_LIST_HEAD(&list);
+>  
+> -	spin_lock_irq(&psd->lock);
+> +	pm_clk_list_lock(psd);
+>  
+>  	list_for_each_entry_safe_reverse(ce, c, &psd->clock_list, node)
+>  		list_move(&ce->node, &list);
+> +	psd->clock_op_might_sleep = 0;
+>  
+> -	spin_unlock_irq(&psd->lock);
+> +	pm_clk_list_unlock(psd);
+>  
+>  	dev_pm_put_subsys_data(dev);
+>  
+> @@ -397,23 +518,30 @@ int pm_clk_suspend(struct device *dev)
+>  	struct pm_subsys_data *psd = dev_to_psd(dev);
+>  	struct pm_clock_entry *ce;
+>  	unsigned long flags;
+> +	int ret;
+>  
+>  	dev_dbg(dev, "%s()\n", __func__);
+>  
+>  	if (!psd)
+>  		return 0;
+>  
+> -	spin_lock_irqsave(&psd->lock, flags);
+> +	ret = pm_clk_op_lock(psd, &flags, __func__);
+> +	if (ret)
+> +		return ret;
+>  
+>  	list_for_each_entry_reverse(ce, &psd->clock_list, node) {
+> -		if (ce->status < PCE_STATUS_ERROR) {
+> -			if (ce->status == PCE_STATUS_ENABLED)
+> +		if (ce->status == PCE_STATUS_ENABLED) {
+> +			if (ce->enabled_when_prepared) {
+> +				clk_disable_unprepare(ce->clk);
+> +				ce->status = PCE_STATUS_ACQUIRED;
+> +			} else {
+>  				clk_disable(ce->clk);
+> -			ce->status = PCE_STATUS_ACQUIRED;
+> +				ce->status = PCE_STATUS_PREPARED;
+> +			}
+>  		}
+>  	}
+>  
+> -	spin_unlock_irqrestore(&psd->lock, flags);
+> +	pm_clk_op_unlock(psd, &flags);
+>  
+>  	return 0;
+>  }
+> @@ -428,18 +556,21 @@ int pm_clk_resume(struct device *dev)
+>  	struct pm_subsys_data *psd = dev_to_psd(dev);
+>  	struct pm_clock_entry *ce;
+>  	unsigned long flags;
+> +	int ret;
+>  
+>  	dev_dbg(dev, "%s()\n", __func__);
+>  
+>  	if (!psd)
+>  		return 0;
+>  
+> -	spin_lock_irqsave(&psd->lock, flags);
+> +	ret = pm_clk_op_lock(psd, &flags, __func__);
+> +	if (ret)
+> +		return ret;
+>  
+>  	list_for_each_entry(ce, &psd->clock_list, node)
+>  		__pm_clk_enable(dev, ce);
+>  
+> -	spin_unlock_irqrestore(&psd->lock, flags);
+> +	pm_clk_op_unlock(psd, &flags);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 8c1d04db99..3d751ae5bc 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -1164,6 +1164,27 @@ int clk_enable(struct clk *clk)
+>  }
+>  EXPORT_SYMBOL_GPL(clk_enable);
+>  
+> +/**
+> + * clk_is_enabled_when_prepared - indicate if preparing a clock also enables it.
+> + * @clk: clock source
+> + *
+> + * Returns true if clk_prepare() implicitly enables the clock, effectively
+> + * making clk_enable()/clk_disable() no-ops, false otherwise.
+> + *
+> + * This is of interest mainly to power management code where actually
+> + * disabling the clock also requires unpreparing it to have any material
+> + * effect.
+> + *
+> + * Regardless of the value returned here, the caller must always invoke
+> + * clk_enable() or clk_prepare_enable()  and counterparts for usage counts
+> + * to be right.
+> + */
+> +bool clk_is_enabled_when_prepared(struct clk *clk)
+> +{
+> +	return clk && !(clk->core->ops->enable && clk->core->ops->disable);
+> +}
+> +EXPORT_SYMBOL_GPL(clk_is_enabled_when_prepared);
+> +
+>  static int clk_core_prepare_enable(struct clk_core *core)
+>  {
+>  	int ret;
+> diff --git a/include/linux/clk.h b/include/linux/clk.h
+> index 31ff1bf1b7..71295906a2 100644
+> --- a/include/linux/clk.h
+> +++ b/include/linux/clk.h
+> @@ -554,6 +554,23 @@ void clk_disable(struct clk *clk);
+>   */
+>  void clk_bulk_disable(int num_clks, const struct clk_bulk_data *clks);
+>  
+> +/**
+> + * clk_is_enabled_when_prepared - indicate if preparing a clock also enables it.
+> + * @clk: clock source
+> + *
+> + * Returns true if clk_prepare() implicitly enables the clock, effectively
+> + * making clk_enable()/clk_disable() no-ops, false otherwise.
+> + *
+> + * This is of interest mainly to the power management code where actually
+> + * disabling the clock also requires unpreparing it to have any material
+> + * effect.
+> + *
+> + * Regardless of the value returned here, the caller must always invoke
+> + * clk_enable() or clk_prepare_enable()  and counterparts for usage counts
+> + * to be right.
+> + */
+> +bool clk_is_enabled_when_prepared(struct clk *clk);
+> +
+>  /**
+>   * clk_get_rate - obtain the current clock rate (in Hz) for a clock source.
+>   *		  This is only valid once the clock source has been enabled.
+> diff --git a/include/linux/pm.h b/include/linux/pm.h
+> index 47aca6bac1..482313a8cc 100644
+> --- a/include/linux/pm.h
+> +++ b/include/linux/pm.h
+> @@ -537,6 +537,8 @@ struct pm_subsys_data {
+>  	spinlock_t lock;
+>  	unsigned int refcount;
+>  #ifdef CONFIG_PM_CLK
+> +	unsigned int clock_op_might_sleep;
+> +	struct mutex clock_mutex;
+>  	struct list_head clock_list;
+>  #endif
+>  #ifdef CONFIG_PM_GENERIC_DOMAINS
