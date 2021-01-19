@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2532FC4FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB732FC502
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730860AbhASXnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:43:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730678AbhASXnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:43:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 630D723109
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:42:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611099764;
-        bh=vfWq8ORmisMymcb7jEgSy/+PLX1UbYJNGh+DIqiVZ3c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cYz2SiA7iMr/9YcqooJQXawqQMzYzYTU3o97XUGd//h1JT+reDI5GVwdi8mDqCnB9
-         871S2NE8UrbERiInElunFQYPil6LVsNZEatFEYXrLZWRH6OtHMVUpq9r86iX3PIIoG
-         Q0Fq7sExupofbMKTPeBCpLwHGhalDrNDVv2iiWMP/IcIgCqalcet3yh5YmX/X1b2Qy
-         IeIKEADLH+L5ezQuqMyVlJ/BxVXNTVLTb7XmbVnSxX39Y1xYfN41ThRbZbYUbRnMb6
-         9vdfg4G9kPSGeJbLpfycTgh8ox85Tc2msxKaVD4OLuNxQL+t8rsquKQc309aYB183N
-         /6V8hKOsw50qQ==
-Received: by mail-ej1-f47.google.com with SMTP id by1so24582263ejc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:42:44 -0800 (PST)
-X-Gm-Message-State: AOAM532iIjBE+NXxd3AFjZmmYG8Z0QyDa6VZIljFfVx3Ibk28JdxjFXp
-        Hyd1dm9Na2UskgetttstDAz7Y8jXmRhsoMnXew==
-X-Google-Smtp-Source: ABdhPJy5pH3VJgW9xcAFQp76ROjf3pDBkBxpmVLZMF92SXietZmMe2rKOGmeI13Kif0jfu6KtXkSobYRfIp0pn/TCb8=
-X-Received: by 2002:a17:907:d8b:: with SMTP id go11mr4451807ejc.303.1611099762927;
- Tue, 19 Jan 2021 15:42:42 -0800 (PST)
+        id S1730058AbhASXp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730629AbhASXoo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 18:44:44 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31329C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:43:56 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h7so2372655lfc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:43:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D/G1m8PE0YTql3WtklqLcJoolwHbP1jsFDu8kUqAsjk=;
+        b=ElJArjScwx6VrNY8cu9sHOG+hiNtxsnqba7p4lx6dFH6orCd9GDBiEhH96Aq6cEBM3
+         o6gAA8i9eDCDdI1OYb9wrfKSIU6eP28xBrlScg4CYzkYpIzqGMV6kIsOT/VPoZZa9D04
+         Plw2hA6RvBQbDqA+6AlNWDro5DYmxEdSHG97Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D/G1m8PE0YTql3WtklqLcJoolwHbP1jsFDu8kUqAsjk=;
+        b=PhXVADwsCHbGaId697JkNA3lh1QilrHTMTximuIIqLuJVhubshHm54rN85o9lyN133
+         lGYhjkaVRrS83Khet54ylXVnQeBIm/ejbfvxgD2yQD3Z8epOxM5mAfkyCYWEUvqLBF7V
+         UYt6d6ywfm9jKm3by5HWmIxhN3sHdYurzlu06g25teSskK7Nt4cC7AVE1aLMO63QyjAy
+         KxzuoXk8fVl7ohtWAuZUdwf5ejfy7g5wj1zUCtb1lQGCG4l0DlgkQfIRZK9PloUI413e
+         c5/of7SgupoxzrwQebBuv3Jvb5LuwqICu3c05d5oHGwiKRAA4LRTeLrDe/Uw2X80mOy5
+         rfFA==
+X-Gm-Message-State: AOAM531Vn9EfpOlTBpIxQ52cxNhl8K0bpmo7O383KyTQXRp5YZSEzB0s
+        QpNtOkTObK90TSIaRQVIAPlmW/UgO4M8ME4OKkKA1MyEVhJLXA==
+X-Google-Smtp-Source: ABdhPJxBqqb+KLSnajsT/DbeOl0sTZlet887nfewnnGWNGEGILFOn3Maz+HeHkgfvTYPc3HetkFys+AElxbiEqKvY5k=
+X-Received: by 2002:a19:670f:: with SMTP id b15mr2808464lfc.340.1611099834522;
+ Tue, 19 Jan 2021 15:43:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106231729.17173-1-chunkuang.hu@kernel.org>
-In-Reply-To: <20210106231729.17173-1-chunkuang.hu@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 20 Jan 2021 07:42:31 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__OmMnXL5gvso4meUfQS-xnKA6EErhM3bL3HE4zh6JMcQ@mail.gmail.com>
-Message-ID: <CAAOTY__OmMnXL5gvso4meUfQS-xnKA6EErhM3bL3HE4zh6JMcQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] Share mtk mutex driver for both DRM and MDP
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201215012907.3062-1-ivan@cloudflare.com> <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Tue, 19 Jan 2021 15:43:43 -0800
+Message-ID: <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev queues
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=887:17=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+On Thu, Dec 17, 2020 at 10:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> mtk mutex is a driver used by DRM and MDP [1], so this series move
-> mtk mutex driver from DRM folder to soc folder, so it could be used
-> by DRM and MDP.
-
-Applied [1/5] ~ [4/5] to mediatek-drm-next [1].
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
+> On Mon, 14 Dec 2020 17:29:06 -0800 Ivan Babrou wrote:
+> > Without this change the driver tries to allocate too many queues,
+> > breaching the number of available msi-x interrupts on machines
+> > with many logical cpus and default adapter settings:
+> >
+> > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> >
+> > Which in turn triggers EINVAL on XDP processing:
+> >
+> > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> >
+> > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 >
-> Changes in v2:
-> 1. Rebase onto mediatek-drm-next [2].
-> 2. Export symbol for mtk-mutex API.
+> Looks like the discussion may have concluded, but we don't take -next
+> patches during the merge window, so please repost when net-next reopens.
 >
-> [1] https://patchwork.kernel.org/patch/11140751/
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.gi=
-t/log/?h=3Dmediatek-drm-next
->
-> CK Hu (5):
->   drm/mediatek: Remove redundant file including
->   drm/mediatek: Rename file mtk_drm_ddp to mtk_mutex
->   drm/mediatek: Change disp/ddp term to mutex in mtk mutex driver
->   drm/mediatek: Automatically search unclaimed mtk mutex in
->     mtk_mutex_get()
->   soc / drm: mediatek: Move mtk mutex driver to soc folder
->
->  drivers/gpu/drm/mediatek/Makefile             |   1 -
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  32 +-
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.h        |  28 --
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   3 -
->  drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   1 -
->  drivers/soc/mediatek/Makefile                 |   1 +
->  .../mediatek/mtk-mutex.c}                     | 328 +++++++++---------
->  include/linux/soc/mediatek/mtk-mutex.h        |  26 ++
->  8 files changed, 212 insertions(+), 208 deletions(-)
->  delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_ddp.h
->  rename drivers/{gpu/drm/mediatek/mtk_drm_ddp.c =3D> soc/mediatek/mtk-mut=
-ex.c} (53%)
->  create mode 100644 include/linux/soc/mediatek/mtk-mutex.h
->
+> Thanks!
 > --
-> 2.17.1
+> # Form letter - net-next is closed
 >
+> We have already sent the networking pull request for 5.11 and therefore
+> net-next is closed for new drivers, features, code refactoring and
+> optimizations. We are currently accepting bug fixes only.
+>
+> Please repost when net-next reopens after 5.11-rc1 is cut.
+
+Should I resend my patch now that the window is open or is bumping
+this thread enough?
+
+> Look out for the announcement on the mailing list or check:
+> http://vger.kernel.org/~davem/net-next.html
+>
+> RFC patches sent for review only are obviously welcome at any time.
