@@ -2,81 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6C52FB7F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64CE2FB7F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390428AbhASLcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:32:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42146 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388820AbhASLUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:20:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611055205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hWu+DiewVvlL1LmVaj1P5EWMhhS1qD2S88iFimQfQiA=;
-        b=u+9iQaqACTIILNUbsmGHGAbTTV7d8oElPwb1A8brtM67ZWjRmamG/cIfHT9MaljRbrWThU
-        iNB2/TB6PE8l/K1fWGuMsJf5yOCsFk7lB4TQBTw5cFeNXhTT7vPpprKDn105hVdosXdNrA
-        TpVj71TnbBKioWefssKs+RR6CQmqPRo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D501DADE3;
-        Tue, 19 Jan 2021 11:20:04 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 12:20:04 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-Message-ID: <YAbAZGeJSYGw2mgD@alley>
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
- <YAGE1O/nG57hyRs4@alley>
- <YAGFebfPNLwjyhcl@alley>
- <YAYriDiAl7lajty9@jagdpanzerIV.localdomain>
+        id S2391426AbhASLdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389090AbhASLV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:21:56 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA305C061574;
+        Tue, 19 Jan 2021 03:21:15 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id w18so756062pfu.9;
+        Tue, 19 Jan 2021 03:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DoSaOw4D6DcnY1MTubltmDQrBAAfXoso7EK/Rs/Vnr4=;
+        b=IYwDdvEsV1PpeMjZriTbkWhRCxtHrm6TpkjsmU1IfWXanflkTqXiILDi7mgg4NshdO
+         pMEalgbrjxhlhQEulDcbg4fkaWvd147W24rGtz8R465r0YvixvuuMJ7RdBXeL66oa9Wc
+         sD/vKrOf2GasPBrdXyN4IgXo+AvLGdL6qmeQd47voaIiPXbTaEuCiebNtX3BHd/w9Nrt
+         uoJJc1eWcYYH/H7873S2upqu9gR6hyxhQL5CnIi0GN+q8i/FIWlOROa9plYv5I5mB3Ti
+         cnpNcfYpsL00Uv07EI7B+xNWCz3rTr0a5Y3ssPqXWbwrqMLRFaQqJiJ9/su0Tbe+O1iM
+         ndig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DoSaOw4D6DcnY1MTubltmDQrBAAfXoso7EK/Rs/Vnr4=;
+        b=XnE+uJVQi/bdFwHTwT3OSg+W17ia0GcDcAbRIkpzscapukQCvMcGHtYRLHklEq2faO
+         nEQTipN0k9PfjKoFgAKwJyfX+rV72yk+hzcAw2r3vvVSHJF2bnIHbcLYQvkwB6PCb5G0
+         krvW/ysgGtrVvLKD5PlxgdQ9A309szEaPjEdVXaA96fc/K4Y4Q7j5NGAMEWXTWqh2F93
+         fyUaB+g//zaWOikOzmDQ1F/hKECWX6ufRe40d+1Snq7K1o3whH4yrTJit7wNYrt7uRw/
+         l75xuapkUIGhGNBWIa513N2pNABJ0FI71Apnj0yNyi72OuXhokCBL6/yJPt9bFamZtEx
+         P0WA==
+X-Gm-Message-State: AOAM531IeUdJWPqb5lK1s/F77kAWXk4nEwaD9lrK/h7kAfFbhAtEJolq
+        6cbZm16JCXskXweDS2iKUnw=
+X-Google-Smtp-Source: ABdhPJz7AEx0xnRMkogVlqcexbIk3sxRxofJlQJ77jzbddOkoVWl9aE6aCHo3T2rFoDi1UJ7DqQPww==
+X-Received: by 2002:a63:4e5f:: with SMTP id o31mr3935747pgl.55.1611055275048;
+        Tue, 19 Jan 2021 03:21:15 -0800 (PST)
+Received: from sol (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
+        by smtp.gmail.com with ESMTPSA id w2sm18788453pfj.110.2021.01.19.03.21.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 03:21:14 -0800 (PST)
+Date:   Tue, 19 Jan 2021 19:21:09 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
+Message-ID: <20210119112109.GA23328@sol>
+References: <20210107025731.226017-1-warthog618@gmail.com>
+ <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
+ <20210119003455.GB5169@sol>
+ <CAMpxmJUkFL+w7afS2NKF-xiMR==HVR1Mk8uQm3782DBoG0qneA@mail.gmail.com>
+ <20210119105933.GA21741@sol>
+ <CAMpxmJWMQ2uVJ77MYPr3dhy0=-P8FtAfz3BSoKbxh33J0Gx=Ug@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAYriDiAl7lajty9@jagdpanzerIV.localdomain>
+In-Reply-To: <CAMpxmJWMQ2uVJ77MYPr3dhy0=-P8FtAfz3BSoKbxh33J0Gx=Ug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-19 09:44:56, Sergey Senozhatsky wrote:
-> On (21/01/15 13:07), Petr Mladek wrote:
-> > On Fri 2021-01-15 13:04:37, Petr Mladek wrote:
-> > > On Thu 2021-01-14 18:10:12, John Ogness wrote:
-> > > > Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
-> > > > msg_print_text() would only write up to size-1 bytes into the
-> > > > provided buffer. Some callers expect this behavior and append
-> > > > a terminator to returned string. In particular:
-> > > > 
-> > > > arch/powerpc/xmon/xmon.c:dump_log_buf()
-> > > > arch/um/kernel/kmsg_dump.c:kmsg_dumper_stdout()
-> > > > 
-> > > > msg_print_text() has been replaced by record_print_text(), which
-> > > > currently fills the full size of the buffer. This causes a
-> > > > buffer overflow for the above callers.
-> > > > 
-> > > > Change record_print_text() so that it will only use size-1 bytes
-> > > > for text data. Also, for paranoia sakes, add a terminator after
-> > > > the text data.
-> > > > 
-> > > > And finally, document this behavior so that it is clear that only
-> > > > size-1 bytes are used and a terminator is added.
-> > > > 
-> > > > Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-> > > > Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On Tue, Jan 19, 2021 at 12:02:13PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Jan 19, 2021 at 11:59 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Tue, Jan 19, 2021 at 11:37:46AM +0100, Bartosz Golaszewski wrote:
+> > > On Tue, Jan 19, 2021 at 1:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jan 18, 2021 at 04:04:51PM +0100, Linus Walleij wrote:
+> > > > > On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > >
+> > > > > >   selftests: gpio: rework and simplify test implementation
+> > > > > >   selftests: gpio: remove obsolete gpio-mockup-chardev.c
+> > > > > >   selftests: remove obsolete build restriction for gpio
+> > > > > >   selftests: remove obsolete gpio references from kselftest_deps.sh
+> > > > > >   tools: gpio: remove uAPI v1 code no longer used by selftests
+> > > > > >   selftests: gpio: port to GPIO uAPI v2
+> > > > > >   selftests: gpio: add CONFIG_GPIO_CDEV to config
+> > > > >
+> > > > > Bartosz I think you can just merge these patches into the GPIO tree, at least
+> > > > > I think that is what I have done in the past.
+> > > > >
+> > > >
+> > > > Could you touch up that Fixes tag in patch 1 if you merge v2?
+> > > >
+> > > > Thanks,
+> > > > Kent.
+> > >
+> > > Kent,
+> > >
+> > > This doesn't apply to my for-next branch - there's a conflict in
+> > > tools/testing/selftests/gpio/Makefile, could you take a look?
+> > >
+> >
+> > Which is your for-next branch?
+> >
+> > The patch set is based on and applies cleanly to gpio/for-next 7ac554888233,
+> > so I'm not sure which branch you are targetting.
+> >
+> > Cheers,
+> > Kent.
 > 
-> John, how did you spot these problems?
+> Linus W is not picking up patches this release - everything goes through:
 > 
-> FWIW, Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+>     git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+> 
+> Sorry for the confusion.
+> 
 
-The patch has been committed into printk/linux.git, branch
-printk-rework.
+Ah, ok Michael Ellerman has been improving the Makefile toworkaround
+the build dependency issues for some cases.
 
-Best Regards,
-Petr
+My changes supersede all that - a basic Makefile is now sufficient.
+I'll send out a v3 shortly.
+
+Cheers,
+Kent.
