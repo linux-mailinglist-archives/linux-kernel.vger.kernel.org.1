@@ -2,106 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDCC2FB36C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FC82FB36E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbhASHnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730702AbhASHld (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:41:33 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC25AC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:40:52 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id t29so6605762pfg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:40:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9avt2pOBcvJfq1YOSVtKJyXRfPA6gi4W3HN8JdFkr7E=;
-        b=H7u0aSET/08uKmaL90MaLtrCKKWIVTcDGAfQcXL7yEfeXS2W1ILnwX5b28nS5cuogI
-         FcX5aPzkZvPi18mXmJ8dIcmiYm1Ry0ItT9HUaM/o+iXs6Kp8Dk20cz+ysMedb2uH112p
-         xogjdOySkTDvzejIdx3dWdt5599EyodIBlZC79zC0RUqMJ7hgu8ZEdSbu5aPq+JUNOfd
-         NuuWtk9YYCO8MJJpBHSZM/jazTzJB19IfAtzHHcOZ2HiiGGzrKBTIizgKCZ9J0MF5k/x
-         HOaYdH1e3/Cx0i4n1C936ALNLfxuBo2AaPD6H7EVJC24AWaJDv91/PIWMxc3/HEHdsdQ
-         z+9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9avt2pOBcvJfq1YOSVtKJyXRfPA6gi4W3HN8JdFkr7E=;
-        b=VqZBvw3UZ8dKwsyBrWtK5z8tV8pKBMpp22pUJd2KXnzwz+SakVIF6IFzSU0xr48Jhh
-         ekkWeEqB82Pe/PDxtFZ6sei+Oye4wkv0ksa7oRIo5a+a9OE2wOUAdWp/Rbb/kLrKzL9W
-         UuCxdS2JxNMndSBmrrai5xlIXc/sZdhJpNPKYgpELNAekD0c9OxiZVinIh7vJO3lGifW
-         VfqqsnRgQb9wsdKazs9LjG0EGYxAdEnWuSIe0R4+SXJ3s/rGbppBBV9FczFoL8oqwDa2
-         F8rkj0GChJc5jLPNpXH79m9tLKkRfyBqDEgGgIyko/Jsrb9Jrwry+WmLln6jnZvUn9zD
-         dcgQ==
-X-Gm-Message-State: AOAM533P5DynKpFWsqxq2kXPRWk6C6SgiW/Pip5WdIH/EDUporG1xn7y
-        4t0n0HJrV8BoECcX5vS0jDaFLA==
-X-Google-Smtp-Source: ABdhPJy90mTIjMN6C//R3eawLVr0JtAtTzJ6ix8X3qtKcBMdssq6bTuEaSVX+ktT80LWYM9GFCIWNg==
-X-Received: by 2002:a65:5244:: with SMTP id q4mr3354534pgp.50.1611042052159;
-        Mon, 18 Jan 2021 23:40:52 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id fh15sm2057724pjb.32.2021.01.18.23.40.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 18 Jan 2021 23:40:51 -0800 (PST)
-Date:   Tue, 19 Jan 2021 15:40:45 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: Re: [PATCH] venus: core: Fix platform driver shutdown
-Message-ID: <20210119074044.GB17701@dragon>
-References: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
+        id S1730108AbhASHpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:45:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33082 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728223AbhASHoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:44:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611042182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yblbjsqZtcjCRjUs6WEVPVCddUTVDccZNGaXAFRniww=;
+        b=B7QN1y55Pt6erzxCv+imFVYj+D7yURfz2WmOfwPPUfLlxv6F9KbFcny8grzCCVVatybkM1
+        6MV0sH5NOcNKJpj2QNagbXAqcr6agcJExWYXGooIdS6wbto8ciqaUE7NPEjO4c7LtyuZtr
+        KrN2czQUppkbyu/+u20nxwkDdSNoLM0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 07284AAAE;
+        Tue, 19 Jan 2021 07:43:02 +0000 (UTC)
+Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Arthur Borsboom <arthurborsboom@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org
+References: <20210118151528.81668-1-roger.pau@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
+Date:   Tue, 19 Jan 2021 08:43:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210118151528.81668-1-roger.pau@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="MZI3e7CGixY8GuKzcz1zAJm4vGyIsKoGI"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:58:20AM +0200, Stanimir Varbanov wrote:
-> With TZ system reboot cannot finish successfully. To fix that
-> enable core clocks by runtime pm before TZ calls and disable
-> clocks after that.
-> 
-> Fixes: 7399139be6b2 ("media: venus: core: add shutdown callback for venus")
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MZI3e7CGixY8GuKzcz1zAJm4vGyIsKoGI
+Content-Type: multipart/mixed; boundary="9gUXontkTbz1CfCeDSHWOcmqu5njosgx4";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Roger Pau Monne <roger.pau@citrix.com>, linux-kernel@vger.kernel.org
+Cc: Arthur Borsboom <arthurborsboom@gmail.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Jens Axboe
+ <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+ linux-block@vger.kernel.org
+Message-ID: <7cef385d-efe3-2661-bee2-9d21f159a5fb@suse.com>
+Subject: Re: [PATCH] xen-blkfront: don't make discard-alignment mandatory
+References: <20210118151528.81668-1-roger.pau@citrix.com>
+In-Reply-To: <20210118151528.81668-1-roger.pau@citrix.com>
 
-Hi Mauro,
+--9gUXontkTbz1CfCeDSHWOcmqu5njosgx4
+Content-Type: multipart/mixed;
+ boundary="------------5AAB304EC2804B58C551CB4D"
+Content-Language: en-US
 
-Could you help pick this fix up?
+This is a multi-part message in MIME format.
+--------------5AAB304EC2804B58C551CB4D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Shawn
-
+On 18.01.21 16:15, Roger Pau Monne wrote:
+> Don't require the discard-alignment xenstore node to be present in
+> order to correctly setup the feature. This can happen with versions of
+> QEMU that only write the discard-granularity but not the
+> discard-alignment node.
+>=20
+> Assume discard-alignment is 0 if not present. While there also fix the
+> logic to not enable the discard feature if discard-granularity is not
+> present.
+>=20
+> Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
+> Signed-off-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
 > ---
->  drivers/media/platform/qcom/venus/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index bdd293faaad0..7233a7311757 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -349,8 +349,10 @@ static void venus_core_shutdown(struct platform_device *pdev)
->  {
->  	struct venus_core *core = platform_get_drvdata(pdev);
->  
-> +	pm_runtime_get_sync(core->dev);
->  	venus_shutdown(core);
->  	venus_firmware_deinit(core);
-> +	pm_runtime_put_sync(core->dev);
->  }
->  
->  static __maybe_unused int venus_runtime_suspend(struct device *dev)
-> -- 
-> 2.17.1
-> 
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Cc: Arthur Borsboom <arthurborsboom@gmail.com>
+> ---
+>   drivers/block/xen-blkfront.c | 25 +++++++++++++------------
+>   1 file changed, 13 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.=
+c
+> index 5265975b3fba..5a93f7cc2939 100644
+> --- a/drivers/block/xen-blkfront.c
+> +++ b/drivers/block/xen-blkfront.c
+> @@ -2179,22 +2179,23 @@ static void blkfront_closing(struct blkfront_in=
+fo *info)
+>  =20
+>   static void blkfront_setup_discard(struct blkfront_info *info)
+>   {
+> -	int err;
+> -	unsigned int discard_granularity;
+> -	unsigned int discard_alignment;
+> +	unsigned int discard_granularity =3D 0;
+> +	unsigned int discard_alignment =3D 0;
+> +	unsigned int discard_secure =3D 0;
+>  =20
+> -	info->feature_discard =3D 1;
+> -	err =3D xenbus_gather(XBT_NIL, info->xbdev->otherend,
+> +	xenbus_gather(XBT_NIL, info->xbdev->otherend,
+>   		"discard-granularity", "%u", &discard_granularity,
+>   		"discard-alignment", "%u", &discard_alignment,
+> +		"discard-secure", "%u", &discard_secure,
+>   		NULL);
+
+This would mean that "discard-secure" will be evaluated only if the
+other two items are set in Xenstore. From blkif.h I can't see this is
+required, and your patch is modifying today's behavior in this regard.
+
+You might want to have three xenbus_read_unsigned() calls instead.
+
+
+Juergen
+
+--------------5AAB304EC2804B58C551CB4D
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------5AAB304EC2804B58C551CB4D--
+
+--9gUXontkTbz1CfCeDSHWOcmqu5njosgx4--
+
+--MZI3e7CGixY8GuKzcz1zAJm4vGyIsKoGI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAGjYUFAwAAAAAACgkQsN6d1ii/Ey/C
+0Af9FSuk3CbkkDBkagaqdGVlTJriLSG9JWtwdHg4aqr20eJmt/PG24EetmmX9Z08la6HCpRKrvOC
+6+No9Gst5R2yB4XH6hfvfwnZ86HDu6b8i4pNtvxhU/d6GZyy8it8SUvwHC7fa2ITkEvi3YAVOTHO
+5rbqd0kSVJNxmocW+5jIWiING8DgpUb0m1daYNG3kXBdY6AqbYO2qQ30iozvymm6ooBhz1nQnI8Y
+h6h0E1mwsZg7wlkBCcrNAW4+V9N52s/nT/2XYZDvN4AI+kBgaPyC5ZLZP9lTq0FZRZMig4ChX+gU
+8DJsVYOldhTl3SYRN8K7X9YK8GwOF7+ptFKX/08Z2w==
+=KNke
+-----END PGP SIGNATURE-----
+
+--MZI3e7CGixY8GuKzcz1zAJm4vGyIsKoGI--
