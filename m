@@ -2,106 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D632FC0E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53B62FC102
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731665AbhASUXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:23:14 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:38624 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730467AbhASUWh (ORCPT
+        id S1729969AbhASUaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391951AbhASU0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:22:37 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id AA0E030E76;
-        Tue, 19 Jan 2021 12:21:33 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AA0E030E76
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611087694;
-        bh=lZ/JMNpu6rfS9YeYxhVgrk4nqkhdY79CK6WmTClAM/k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aYbUj63BQSZKC++091Gzm4uOa8RxHIw8yV5j512+pssyyW2NQroamUFHuh4N5lLYI
-         KZrGhbgJBBMKEGyz0D2lnBykecfjWvy2mF2NhQLWOehUz3DgQSh0zFfybRUL4Gadxo
-         sS9AC8etDvdzqprb/p75sw+vz2dkrPeca6Q4TJFs=
-Subject: Re: [PATCH v8 00/13] Add Broadcom VK driver
-To:     Olof Johansson <olof@lixom.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Broadcom Kernel Feedback List 
-        <bcm-kernel-feedback-list@broadcom.com>
-References: <20201130184200.5095-1-scott.branden@broadcom.com>
- <CAOesGMjzUfNOEd4U20sAiyEFkYPai8asAC=kaWHG-PR0XE3pEQ@mail.gmail.com>
- <YAU2HnpwqGSNi3zF@kroah.com>
- <CAOesGMjmFPPmH6deqEwifdchpiN_xaCC362NSaJk3Tv=n-7b+g@mail.gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <09b6e829-75b8-4f16-3e01-c7193640d9c6@broadcom.com>
-Date:   Tue, 19 Jan 2021 12:21:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 15:26:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA58BC0613ED;
+        Tue, 19 Jan 2021 12:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3skarH8usgooZsIjjZg9m11Y8vaFLaunY8jfnB6wGPQ=; b=IcFHUlBLm4M8B7XITZrlaPwJZk
+        PxLbfPfkfkOKcDtLlhfkXiUHka5CvTPb7hLgrgmT3Ja+UqcHjN9zY1H6Tmg+WZOu5IRktFRwdo/cS
+        V9j3hg1Ow8RITENXtDtJLmBCwghrrgT8ZPHCKw/4HQvv4xpai+rfbtNKnht6rSRWFZHmep0AFdaLc
+        WpT0BIFZXKaOI1hvNwPxLTcH2Gpj0LlBuWbpsOxA9rDZtRWPCXjXziJFZX6g2OZYB33LP00RMcFkb
+        3de7nf3N03r6bUtfXPBA8XywS5tDj8kVNevPplCpPm+FZKgebPUFH+9MEl3Zc+oBbVK/fmh04LESS
+        xKXNl/dg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1xW1-00EmeP-RV; Tue, 19 Jan 2021 20:22:22 +0000
+Date:   Tue, 19 Jan 2021 20:22:13 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
+Subject: Re: [PATCH v14 05/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210119202213.GI2260413@casper.infradead.org>
+References: <20201203062949.5484-1-rppt@kernel.org>
+ <20201203062949.5484-6-rppt@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAOesGMjmFPPmH6deqEwifdchpiN_xaCC362NSaJk3Tv=n-7b+g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203062949.5484-6-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Thu, Dec 03, 2020 at 08:29:44AM +0200, Mike Rapoport wrote:
+> +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
+> +{
+> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> +	struct inode *inode = file_inode(vmf->vma->vm_file);
+> +	pgoff_t offset = vmf->pgoff;
+> +	vm_fault_t ret = 0;
+> +	unsigned long addr;
+> +	struct page *page;
+> +	int err;
+> +
+> +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
+> +		return vmf_error(-EINVAL);
+> +
+> +	page = find_get_page(mapping, offset);
+> +	if (!page) {
+> +
+> +		page = secretmem_alloc_page(vmf->gfp_mask);
+> +		if (!page)
+> +			return vmf_error(-ENOMEM);
 
-On 2021-01-18 3:06 p.m., Olof Johansson wrote:
-> On Sun, Jan 17, 2021 at 11:17 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->> On Sun, Jan 17, 2021 at 10:47:59AM -0800, Olof Johansson wrote:
->>> Hi,
->>>
->>> On Mon, Nov 30, 2020 at 10:42 AM Scott Branden
->>> <scott.branden@broadcom.com> wrote:
->>>> This patch series drops previous patches in [1]
->>>> that were incorporated by Kees Cook into patch series
->>>> "Introduce partial kernel_read_file() support" [2].
->>>>
->>>> Remaining patches are contained in this series to add Broadcom VK driver.
->>>> (which depends on request_firmware_into_buf API addition which has
->>>> now been accepted into the upstream kernel as of v5.10-rc1).
->>>>
->>>> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
->>>> [2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
->>>
->>> I've been following this series for some time, and I think the code is
->>> ready to go in.
->>>
->>> Greg, mind queuing this up in the misc tree?
->> I will need a new version, this is long gone from my queue.
-> I'll let Scott repost then (with acks applied etc)
-I can send another patch version with Olof's acks applied to each patch.
-Please let me know if that is what you are looking for?
->
->> And hopefully the tty layer abuse is gone... :)
-> There's a simple tty driver as the final patch in the series, but it's
-> pretty straightforward.
->
-> If you've still got concerns with it, the rest of the series should
-> stand on its own and should be mergeable without that piece.
-Yes, I placed the patch at the end of the series so it can be dropped
-if that is what is required to accept the rest of the patches.
+Just use VM_FAULT_OOM directly.
 
-There has been no viable solution suggested for replacing this functionality.
-We need a tty-like interface that works via access to the circular buffers
-in PCIe BAR space and interrupts.
+> +		err = add_to_page_cache(page, mapping, offset, vmf->gfp_mask);
+> +		if (unlikely(err))
+> +			goto err_put_page;
 
-The vk tty devices are a direct replacement to attaching serial cables.
-In real production environment it is not possible to attach such cables.
+What if the error is EEXIST because somebody else raced with you to add
+a new page to the page cache?
 
-I can work on an alternative tty solution and send such patch later
-but I don't know what is going to prevent the tty "abuse".
->
->
-> -Olof
-Regards,
-Scott
+> +		err = set_direct_map_invalid_noflush(page, 1);
+> +		if (err)
+> +			goto err_del_page_cache;
+
+Does this work correctly if somebody else has a reference to the page
+in the meantime?
+
+> +		addr = (unsigned long)page_address(page);
+> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +
+> +		__SetPageUptodate(page);
+
+Once you've added it to the cache, somebody else can come along and try
+to lock it.  They will set PageWaiter.  Now you call __SetPageUptodate
+and wipe out their PageWaiter bit.  So you won't wake them up when you
+unlock.
+
+You can call __SetPageUptodate before adding it to the page cache,
+but once it's visible to another thread, you can't do that.
+
+> +		ret = VM_FAULT_LOCKED;
+> +	}
+> +
+> +	vmf->page = page;
+
+You're supposed to return the page locked, so use find_lock_page() instead
+of find_get_page().
+
+> +	return ret;
+> +
+> +err_del_page_cache:
+> +	delete_from_page_cache(page);
+> +err_put_page:
+> +	put_page(page);
+> +	return vmf_error(err);
+> +}
