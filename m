@@ -2,151 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CB52FC462
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41CC2FC466
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbhASXDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729023AbhASXCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:02:04 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990D8C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:01:24 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id d1so1006838otl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:01:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mRg+gvvJ51JW9K/A8QugB/Fho1kaOXX/fvnAP5LcPtA=;
-        b=dw0w/4+KcEr8/9RT46PMqWBwFWdI49Mw6b591ShgUh69zPzoznsm8bK+rG6+p0ic0j
-         t86NWdwEp6/SatFbQYlwCAdE+G0KGsTkh1P10SfHwofcbLGPvrUsEzqzrjhVjhxK6Zkh
-         m6TcZaoxp88AL3fZWlHZUo+DmhRSZncgIX6FR4pUKs5n61ZO1tFM5rbYKJfWOXdCpqZA
-         u907jWVl2wjQ2enpdcgm97TF86DsPHEu91nE6o/pkicbFTmYrgzWeAXNTX8nXUefIIob
-         /HolFNaZ0Vyy4tValq1p5Uutw2yFSdBko/Ptpg40IhVXYl0jCJQ73L1Jkpuehp4CazAn
-         pxxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mRg+gvvJ51JW9K/A8QugB/Fho1kaOXX/fvnAP5LcPtA=;
-        b=V0vcPpmyCW0epWJ8lU9Lp0gabzaONMzZaTI376YVRNik/q9JMtRcDtoYU5ZVDcAUxP
-         59OmEWVYud1oD063v9/Tqo4gxGeigBiqpoEUMDpSM5UYbo1M8oMB+dEX8JIbFjwaEdTC
-         K3MTqag+xTh6GDYNZ4O4Jm/hw7npNLtauiECsyfl1DzQni8BDO3xcfgbZl8HEMEFkbWu
-         nM3igWUVQhq88ZtCN8RXho06nV9NQoL00sPX+bvIxxGxVumZF2vCDN46usO8gGvYPozL
-         L4uibgisHhG7T6+xxzmzXwr8Xm1vMR7HXfO+b+hs9K3iNr1KTHJLR7bMwro5tYLd7uSx
-         jdog==
-X-Gm-Message-State: AOAM5308UHtg0xZPz6NWkISS8527x9kMCePzkj3klXTaCkft9kFOqbFo
-        BKoId1D2u//maUIO7Gv3N1steBNWpATzGOolbKRZQA==
-X-Google-Smtp-Source: ABdhPJyoRx9I8d0VSaGzEknDnwFi70F1f7k4SQ1ZkNh6WMhNycm3BLi/rwGxz39ygAIHj8yvg7StJ2Ae8tGj1E6bSYg=
-X-Received: by 2002:a05:6830:143:: with SMTP id j3mr5106649otp.241.1611097283745;
- Tue, 19 Jan 2021 15:01:23 -0800 (PST)
+        id S1728525AbhASXFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:05:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729356AbhASXCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 18:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DE5B23104;
+        Tue, 19 Jan 2021 23:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611097313;
+        bh=BRjoZXz9P5rd6DP2GQfuMIdicwr2AwLiswGSnVFGcJI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m2DM104A5xGxLZYeaTetgY/OOQY2NdHh+Yi5E9s1ouqXhUw94gIH/kkoHol4a/hIp
+         5t7p4aAgYIHBLJpW0KLIFEFQth3c118vKZNKrdtaFk+cGhcYFeBk/JgEoT1UCypvnk
+         8FfgzS53mqvYTr6mESI/jPCtQ56jp+EtA7VeMX3lz5ccp3ANsD/XSKSehDtpIhfihD
+         5XJsani+eG+tSVxEoxFcF1LjqkeQ6F7uOcuPPMlVLGQQ+FfIDwMm8HwVAYwSsAkrj9
+         70R4wfI7pCrm0ZfY+Uo7M7O0HIfXuXtU5bJuNGSIW1MDYS6NkxDpFtXOD10SA+V1jR
+         OIbH97wN8Qj7Q==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l200U-001BBz-RJ; Wed, 20 Jan 2021 00:01:50 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 22/21] regulator: hi6421v600-regulator: use some regmap helpers
+Date:   Wed, 20 Jan 2021 00:01:48 +0100
+Message-Id: <e4049d2ce5ebdb498911883b674299be97ad212d.1611097264.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1611072387.git.mchehab+huawei@kernel.org>
+References: <cover.1611072387.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
- <83a96ca9-0810-6c07-2e45-5aa2da9b1ab0@redhat.com> <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
-In-Reply-To: <5df9b517-448f-d631-2222-6e78d6395ed9@amd.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 19 Jan 2021 15:01:12 -0800
-Message-ID: <CALMp9eRDSW66+XvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>
-Content-Type: multipart/mixed; boundary="0000000000004c527205b948d11d"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004c527205b948d11d
-Content-Type: text/plain; charset="UTF-8"
+Now that the driver was ported to use regmap, let's use
+some help functions in order to simplify the code a little
+bit.
 
-On Mon, Sep 14, 2020 at 11:33 AM Babu Moger <babu.moger@amd.com> wrote:
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/regulator/hi6421v600-regulator.c | 45 ++----------------------
+ 1 file changed, 3 insertions(+), 42 deletions(-)
 
-> Thanks Paolo. Tested Guest/nested guest/kvm units tests. Everything works
-> as expected.
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+index 9e319fa11137..7090107b9ec2 100644
+--- a/drivers/regulator/hi6421v600-regulator.c
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -95,17 +95,6 @@ static const unsigned int ldo34_voltages[] = {
+ 		.eco_uA			= ecoamp,			       \
+ 	}
+ 
+-static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
+-
+-	return ((reg_val & rdev->desc->enable_mask) != 0);
+-}
+-
+ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+@@ -136,34 +125,6 @@ static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
+ 				  rdev->desc->enable_mask, 0);
+ }
+ 
+-static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	regmap_read(pmic->map, rdev->desc->vsel_reg, &reg_val);
+-
+-	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
+-}
+-
+-static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
+-						 unsigned int selector)
+-{
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
+-
+-	if (selector >= rdev->desc->n_voltages)
+-		return -EINVAL;
+-
+-	reg_val = selector << (ffs(rdev->desc->vsel_mask) - 1);
+-
+-	/* set voltage selector */
+-	return regmap_update_bits(pmic->map, rdev->desc->vsel_reg,
+-				  rdev->desc->vsel_mask, reg_val);
+-}
+-
+ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+@@ -214,13 +175,13 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
+ }
+ 
+ static const struct regulator_ops hi6421_spmi_ldo_rops = {
+-	.is_enabled = hi6421_spmi_regulator_is_enabled,
++	.is_enabled = regulator_is_enabled_regmap,
+ 	.enable = hi6421_spmi_regulator_enable,
+ 	.disable = hi6421_spmi_regulator_disable,
+ 	.list_voltage = regulator_list_voltage_table,
+ 	.map_voltage = regulator_map_voltage_iterate,
+-	.get_voltage_sel = hi6421_spmi_regulator_get_voltage_sel,
+-	.set_voltage_sel = hi6421_spmi_regulator_set_voltage_sel,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+ 	.get_mode = hi6421_spmi_regulator_get_mode,
+ 	.set_mode = hi6421_spmi_regulator_set_mode,
+ 	.get_optimum_mode = hi6421_spmi_regulator_get_optimum_mode,
+-- 
+2.29.2
 
-Debian 9 does not like this patch set. As a kvm guest, it panics on a
-Milan CPU unless booted with 'nopcid'. Gmail mangles long lines, so
-please see the attached kernel log snippet. Debian 10 is fine, so I
-assume this is a guest bug.
 
---0000000000004c527205b948d11d
-Content-Type: application/octet-stream; name="debian9.panic"
-Content-Disposition: attachment; filename="debian9.panic"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kk4lo2930>
-X-Attachment-Id: f_kk4lo2930
-
-WyAgICAxLjIzNTcyNl0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tClsgICAg
-MS4yMzc1MTVdIGtlcm5lbCBCVUcgYXQgL2J1aWxkL2xpbnV4LWRxblJTYy9saW51eC00LjkuMjI4
-L2FyY2gveDg2L2tlcm5lbC9hbHRlcm5hdGl2ZS5jOjcwOSEKWyAgICAxLjI0MDkyNl0gaW52YWxp
-ZCBvcGNvZGU6IDAwMDAgWyMxXSBTTVAKWyAgICAxLjI0MzMwMV0gTW9kdWxlcyBsaW5rZWQgaW46
-ClsgICAgMS4yNDQ1ODVdIENQVTogMSBQSUQ6IDEgQ29tbTogc3dhcHBlci8wIE5vdCB0YWludGVk
-IDQuOS4wLTEzLWFtZDY0ICMxIERlYmlhbiA0LjkuMjI4LTEKWyAgICAxLjI0NzY1N10gSGFyZHdh
-cmUgbmFtZTogR29vZ2xlIEdvb2dsZSBDb21wdXRlIEVuZ2luZS9Hb29nbGUgQ29tcHV0ZSBFbmdp
-bmUsIEJJT1MgR29vZ2xlIDAxLzAxLzIwMTEKWyAgICAxLjI1MTI0OV0gdGFzazogZmZmZjkwOTM2
-M2U5NDA0MCB0YXNrLnN0YWNrOiBmZmZmYTQxYmMwMTk0MDAwClsgICAgMS4yNTM1MTldIFJJUDog
-MDAxMDpbPGZmZmZmZmZmOGZhMmU0MGM+XSAgWzxmZmZmZmZmZjhmYTJlNDBjPl0gdGV4dF9wb2tl
-KzB4MThjLzB4MjQwClsgICAgMS4yNTY1OTNdIFJTUDogMDAxODpmZmZmYTQxYmMwMTk3ZDkwICBF
-RkxBR1M6IDAwMDEwMDk2ClsgICAgMS4yNTg2NTddIFJBWDogMDAwMDAwMDAwMDAwMDAwZiBSQlg6
-IDAwMDAwMDAwMDEwMjA4MDAgUkNYOiAwMDAwMDAwMGZlZGEzMjAzClsgICAgMS4yNjEzODhdIFJE
-WDogMDAwMDAwMDAxNzhiZmJmZiBSU0k6IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiBmZmZmZmZmZmZm
-NTdhMDAwClsgICAgMS4yNjQxNjhdIFJCUDogZmZmZmZmZmY4ZmJkM2VjYSBSMDg6IDAwMDAwMDAw
-MDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAzClsgICAgMS4yNjY5ODNdIFIxMDogMDAwMDAw
-MDAwMDAwMDAwMyBSMTE6IDAwMDAwMDAwMDAwMDAxMTIgUjEyOiAwMDAwMDAwMDAwMDAwMDAxClsg
-ICAgMS4yNjk3MDJdIFIxMzogZmZmZmE0MWJjMDE5N2RjZiBSMTQ6IDAwMDAwMDAwMDAwMDAyODYg
-UjE1OiBmZmZmZWQxYzQwNDA3NTAwClsgICAgMS4yNzI1NzJdIEZTOiAgMDAwMDAwMDAwMDAwMDAw
-MCgwMDAwKSBHUzpmZmZmOTA5MzY2MzAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDAK
-WyAgICAxLjI3NTc5MV0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4
-MDA1MDAzMwpbICAgIDEuMjc4MDMyXSBDUjI6IDAwMDAwMDAwMDAwMDAwMDAgQ1IzOiAwMDAwMDAw
-MDEwYzA4MDAwIENSNDogMDAwMDAwMDAwMDM2MDZmMApbICAgIDEuMjgwODE1XSBTdGFjazoKWyAg
-ICAxLjI4MTYzMF0gIGZmZmZmZmZmOGZiZDNlY2EgMDAwMDAwMDAwMDAwMDAwNSBmZmZmYTQxYmMw
-MTk3ZTAzIGZmZmZmZmZmOGZiZDNlY2IKWyAgICAxLjI4NDY2MF0gIDAwMDAwMDAwMDAwMDAwMDAg
-MDAwMDAwMDAwMDAwMDAwMCBmZmZmZmZmZjhmYTJlODM1IGNjZmZmZmZmOGZhZDQzMjYKWyAgICAx
-LjI4NzcyOV0gIDFjY2QwMjMxODc0ZDU1ZDMgZmZmZmZmZmY4ZmJkM2VjYSBmZmZmYTQxYmMwMTk3
-ZTAzIGZmZmZmZmZmOTAyMDM4NDQKWyAgICAxLjI5MDg1Ml0gQ2FsbCBUcmFjZToKWyAgICAxLjI5
-MTc4Ml0gIFs8ZmZmZmZmZmY4ZmJkM2VjYT5dID8gc3dhcF9lbnRyeV9mcmVlKzB4MTJhLzB4MzAw
-ClsgICAgMS4yOTQ5MDBdICBbPGZmZmZmZmZmOGZiZDNlY2I+XSA/IHN3YXBfZW50cnlfZnJlZSsw
-eDEyYi8weDMwMApbICAgIDEuMjk3MjY3XSAgWzxmZmZmZmZmZjhmYTJlODM1Pl0gPyB0ZXh0X3Bv
-a2VfYnArMHg1NS8weGUwClsgICAgMS4yOTk0NzNdICBbPGZmZmZmZmZmOGZiZDNlY2E+XSA/IHN3
-YXBfZW50cnlfZnJlZSsweDEyYS8weDMwMApbICAgIDEuMzAxODk2XSAgWzxmZmZmZmZmZjhmYTJi
-NjRjPl0gPyBhcmNoX2p1bXBfbGFiZWxfdHJhbnNmb3JtKzB4OWMvMHgxMjAKWyAgICAxLjMwNDU1
-N10gIFs8ZmZmZmZmZmY5MDczZTgxZj5dID8gc2V0X2RlYnVnX3JvZGF0YSsweGMvMHhjClsgICAg
-MS4zMDY3OTBdICBbPGZmZmZmZmZmOGZiODFkOTI+XSA/IF9fanVtcF9sYWJlbF91cGRhdGUrMHg3
-Mi8weDgwClsgICAgMS4zMDkyNTVdICBbPGZmZmZmZmZmOGZiODIwNmY+XSA/IHN0YXRpY19rZXlf
-c2xvd19pbmMrMHg4Zi8weGEwClsgICAgMS4zMTE2ODBdICBbPGZmZmZmZmZmOGZiZDdhNTc+XSA/
-IGZyb250c3dhcF9yZWdpc3Rlcl9vcHMrMHgxMDcvMHgxZDAKWyAgICAxLjMxNDI4MV0gIFs8ZmZm
-ZmZmZmY5MDc3MDc4Yz5dID8gaW5pdF96c3dhcCsweDI4Mi8weDNmNgpbICAgIDEuMzE2NTQ3XSAg
-WzxmZmZmZmZmZjkwNzcwNTBhPl0gPyBpbml0X2Zyb250c3dhcCsweDhjLzB4OGMKWyAgICAxLjMx
-ODc4NF0gIFs8ZmZmZmZmZmY4ZmEwMjIzZT5dID8gZG9fb25lX2luaXRjYWxsKzB4NGUvMHgxODAK
-WyAgICAxLjMyMTA2N10gIFs8ZmZmZmZmZmY5MDczZTgxZj5dID8gc2V0X2RlYnVnX3JvZGF0YSsw
-eGMvMHhjClsgICAgMS4zMjMzNjZdICBbPGZmZmZmZmZmOTA3M2YwOGQ+XSA/IGtlcm5lbF9pbml0
-X2ZyZWVhYmxlKzB4MTZiLzB4MWVjClsgICAgMS4zMjU4NzNdICBbPGZmZmZmZmZmOTAwMTFkNTA+
-XSA/IHJlc3RfaW5pdCsweDgwLzB4ODAKWyAgICAxLjMyNzk4OV0gIFs8ZmZmZmZmZmY5MDAxMWQ1
-YT5dID8ga2VybmVsX2luaXQrMHhhLzB4MTAwClsgICAgMS4zMzAwOTJdICBbPGZmZmZmZmZmOTAw
-MWY0MjQ+XSA/IHJldF9mcm9tX2ZvcmsrMHg0NC8weDcwClsgICAgMS4zMzIzMTFdIENvZGU6IDAw
-IDBmIGEyIDRkIDg1IGU0IDc0IDRhIDBmIGI2IDQ1IDAwIDQxIDM4IDQ1IDAwIDc1IDE5IDMxIGMw
-IDgzIGMwIDAxIDQ4IDYzIGQwIDQ5IDM5IGQ0IDc2IDMzIDQxIDBmIGI2IDRjIDE1IDAwIDM4IDRj
-IDE1IDAwIDc0IGU5IDwwZj4gMGIgNDggODkgZWYgZTggZGEgZDYgMTkgMDAgNDggOGQgYmQgMDAg
-MTAgMDAgMDAgNDggODkgYzMgZTggClsgICAgMS4zNDI4MThdIFJJUCAgWzxmZmZmZmZmZjhmYTJl
-NDBjPl0gdGV4dF9wb2tlKzB4MThjLzB4MjQwClsgICAgMS4zNDU4NTldICBSU1AgPGZmZmZhNDFi
-YzAxOTdkOTA+ClsgICAgMS4zNDcyODVdIC0tLVsgZW5kIHRyYWNlIDBhMWM1YWI1ZWIxNmRlODkg
-XS0tLQpbICAgIDEuMzQ5MTY5XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXR0ZW1wdGVk
-IHRvIGtpbGwgaW5pdCEgZXhpdGNvZGU9MHgwMDAwMDAwYgpbICAgIDEuMzQ5MTY5XSAKWyAgICAx
-LjM1Mjg4NV0gS2VybmVsIE9mZnNldDogMHhlYTAwMDAwIGZyb20gMHhmZmZmZmZmZjgxMDAwMDAw
-IChyZWxvY2F0aW9uIHJhbmdlOiAweGZmZmZmZmZmODAwMDAwMDAtMHhmZmZmZmZmZmJmZmZmZmZm
-KQpbICAgIDEuMzU3MDM5XSAtLS1bIGVuZCBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXR0
-ZW1wdGVkIHRvIGtpbGwgaW5pdCEgZXhpdGNvZGU9MHgwMDAwMDAwYgpbICAgIDEuMzU3MDM5XSAK
---0000000000004c527205b948d11d--
