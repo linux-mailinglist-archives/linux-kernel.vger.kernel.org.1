@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B04C2FBEA4
+	by mail.lfdr.de (Postfix) with ESMTP id A8E592FBEA5
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392369AbhASSKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S2392412AbhASSKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403964AbhASR7q (ORCPT
+        with ESMTP id S2404142AbhASSAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:59:46 -0500
+        Tue, 19 Jan 2021 13:00:46 -0500
 Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EE6C061757;
-        Tue, 19 Jan 2021 09:45:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714F6C0617A3;
+        Tue, 19 Jan 2021 09:45:01 -0800 (PST)
 Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B06BA1F549;
-        Tue, 19 Jan 2021 18:44:58 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6A78C1F999;
+        Tue, 19 Jan 2021 18:44:59 +0100 (CET)
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
 To:     bjorn.andersson@linaro.org
@@ -31,70 +31,92 @@ Cc:     agross@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
         martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v4 0/3] cpufreq-qcom-hw: Implement full OSM programming
-Date:   Tue, 19 Jan 2021 18:44:51 +0100
-Message-Id: <20210119174454.226808-1-angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 2/3] soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS
+Date:   Tue, 19 Jan 2021 18:44:53 +0100
+Message-Id: <20210119174454.226808-3-angelogioacchino.delregno@somainline.org>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210119174454.226808-1-angelogioacchino.delregno@somainline.org>
+References: <20210119174454.226808-1-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  **
-  ** NOTE: To "view the full picture", please look at the following
-  ** patch series:
-  ** https://patchwork.kernel.org/project/linux-arm-msm/list/?series=413355
-  **              This is a subset of that series.
-  **
+Implement the support for SAW v4.1, used in at least MSM8998,
+SDM630, SDM660 and APQ variants and, while at it, also add the
+configuration for the SDM630/660 Silver and Gold cluster L2
+Adaptive Voltage Scaler: this is also one of the prerequisites
+to allow the OSM controller to perform DCVS.
 
-Changes in v4:
-- Huge patch series has been split for better reviewability,
-  as suggested by Bjorn
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+---
+ drivers/soc/qcom/spm.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-Changes in v3:
-- Rebased (no changes - was in previous series' v3)
-
-Changes in v2:
-- Fixed MSM8998 SAW parameters on SPM driver
-
-Tested on the following smartphones:
-- Sony Xperia XA2        (SDM630)
-- Sony Xperia XA2 Ultra  (SDM630)
-- Sony Xperia 10         (SDM630)
-- Sony Xperia XZ Premium (MSM8998)
-- F(x)Tec Pro 1          (MSM8998)
-
-This is a component that we can find on very old
-chips, like MSM8974; there, it has been used to actually do the
-power scaling basically "on its own" - sending the cores in a specific
-sleep mode to save power.
-On the newer ones, including MSM8998, SDM630, 660 and others, it is still
-present! Though, this time, it's being used for the cluster caches and it
-has a different firmware (and maybe it's also slightly different HW),
-implementing the SAWv4.1 set and getting controlled *not by the OS* but
-by other controllers in the SoC (like the OSM).
-
-Contrary from MSM8974 and the like, this new version of the SPM just
-requires us to set the initial parameters for AVS and *nothing else*, as
-its states will be totally managed internally.
-
-
-AngeloGioacchino Del Regno (3):
-  cpuidle: qcom_spm: Detach state machine from main SPM handling
-  soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS
-  soc: qcom: spm: Add compatible for MSM8998 SAWv4.1 L2
-
- drivers/cpuidle/Kconfig.arm        |   1 +
- drivers/cpuidle/cpuidle-qcom-spm.c | 294 ++++++-----------------------
- drivers/soc/qcom/Kconfig           |   9 +
- drivers/soc/qcom/Makefile          |   1 +
- drivers/soc/qcom/spm.c             | 240 +++++++++++++++++++++++
- include/soc/qcom/spm.h             |  45 +++++
- 6 files changed, 354 insertions(+), 236 deletions(-)
- create mode 100644 drivers/soc/qcom/spm.c
- create mode 100644 include/soc/qcom/spm.h
-
+diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
+index 0c8aa9240c41..843732d12c54 100644
+--- a/drivers/soc/qcom/spm.c
++++ b/drivers/soc/qcom/spm.c
+@@ -32,9 +32,28 @@ enum spm_reg {
+ 	SPM_REG_SEQ_ENTRY,
+ 	SPM_REG_SPM_STS,
+ 	SPM_REG_PMIC_STS,
++	SPM_REG_AVS_CTL,
++	SPM_REG_AVS_LIMIT,
+ 	SPM_REG_NR,
+ };
+ 
++static const u16 spm_reg_offset_v4_1[SPM_REG_NR] = {
++	[SPM_REG_AVS_CTL]	= 0x904,
++	[SPM_REG_AVS_LIMIT]	= 0x908,
++};
++
++static const struct spm_reg_data spm_reg_660_gold_l2  = {
++	.reg_offset = spm_reg_offset_v4_1,
++	.avs_ctl = 0x1010031,
++	.avs_limit = 0x4580458,
++};
++
++static const struct spm_reg_data spm_reg_660_silver_l2  = {
++	.reg_offset = spm_reg_offset_v4_1,
++	.avs_ctl = 0x101c031,
++	.avs_limit = 0x4580458,
++};
++
+ static const u16 spm_reg_offset_v2_1[SPM_REG_NR] = {
+ 	[SPM_REG_CFG]		= 0x08,
+ 	[SPM_REG_SPM_CTL]	= 0x30,
+@@ -126,6 +145,10 @@ void spm_set_low_power_mode(struct spm_driver_data *drv,
+ }
+ 
+ static const struct of_device_id spm_match_table[] = {
++	{ .compatible = "qcom,sdm660-gold-saw2-v4.1-l2",
++	  .data = &spm_reg_660_gold_l2 },
++	{ .compatible = "qcom,sdm660-silver-saw2-v4.1-l2",
++	  .data = &spm_reg_660_silver_l2 },
+ 	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
+ 	  .data = &spm_reg_8974_8084_cpu },
+ 	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
+@@ -169,6 +192,8 @@ static int spm_dev_probe(struct platform_device *pdev)
+ 	 * CPU was held in reset, the reset signal could trigger the SPM state
+ 	 * machine, before the sequences are completely written.
+ 	 */
++	spm_register_write(drv, SPM_REG_AVS_CTL, drv->reg_data->avs_ctl);
++	spm_register_write(drv, SPM_REG_AVS_LIMIT, drv->reg_data->avs_limit);
+ 	spm_register_write(drv, SPM_REG_CFG, drv->reg_data->spm_cfg);
+ 	spm_register_write(drv, SPM_REG_DLY, drv->reg_data->spm_dly);
+ 	spm_register_write(drv, SPM_REG_PMIC_DLY, drv->reg_data->pmic_dly);
+@@ -178,7 +203,8 @@ static int spm_dev_probe(struct platform_device *pdev)
+ 				drv->reg_data->pmic_data[1]);
+ 
+ 	/* Set up Standby as the default low power mode */
+-	spm_set_low_power_mode(drv, PM_SLEEP_MODE_STBY);
++	if (drv->reg_data->reg_offset[SPM_REG_SPM_CTL])
++		spm_set_low_power_mode(drv, PM_SLEEP_MODE_STBY);
+ 
+ 	return 0;
+ }
 -- 
 2.30.0
 
