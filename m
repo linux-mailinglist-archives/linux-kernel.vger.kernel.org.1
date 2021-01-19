@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D13F2FC442
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3B72FC422
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729159AbhASW4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:56:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29898 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395064AbhASO0U (ORCPT
+        id S1728014AbhASWxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:53:23 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:25960 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404540AbhASO3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:26:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611066294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S5oU2Ie/VxNNle5UC5ptcg2zY6dliYar7/T7TMF+R/8=;
-        b=VtIaQmiCdvhEZ3fk1eS9pa20pm6I+6HVZYuatrgth4ow105PV+e0Ygbea3HqRwHJper+HJ
-        7zAMvKKBLTpFesAjEbJcilUV0s+5RngyWB2+YbQi0HwTGZEMv2PGuw2AX/gsFgEqvyd6eU
-        iFlxCQtaQpll/gsrs8kRImrKAVkCXl8=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-YKJy7ar7N-CElPQo6wXPLA-1; Tue, 19 Jan 2021 09:24:52 -0500
-X-MC-Unique: YKJy7ar7N-CElPQo6wXPLA-1
-Received: by mail-qv1-f71.google.com with SMTP id m1so19835196qvp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 06:24:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S5oU2Ie/VxNNle5UC5ptcg2zY6dliYar7/T7TMF+R/8=;
-        b=WodZLaxuUv0Y3bzy6b2nD2VYXToHZ9L2NBhpFwnj1+/EFSnH+Aa1gZA27SLSz0JIb8
-         VRan3DgIAai4FCUubCXPl5xCHJaoEmGU9qj5DCTweHpzZ2i6t0YsOW6Cp4ef15eaPvUU
-         kyIxl1OOqKlOtwYSmb/Oq4bxQKhkRb/7HyPRaoAwwvjvYeFQwSIbpF8dpRJDPy8D4y/+
-         H0SR3pVFtIUMCXpWpJ9O+LRb2oMTmGTUXAC0aqHdC9gdApm9GflafqYjgKTtDzWKQx2X
-         RaJ2lf9pAEhi85Mdw2bNSPXthkBuwOp5nUtu39vfjZbBRj8wX4trXWW3MTbRYh5n3GsC
-         s1Jg==
-X-Gm-Message-State: AOAM531pQedee0ib4fJO3gtmHhHlpP0stddEUj6W6qQBfzcEXSWWlTVj
-        v9df71fhnWEVCjEvsAYv9IXHPucCUC/P26BpU13fcmnXHrRfIaTa0gTUhHsbw+rdG83C5lP/W8H
-        SpTbNZIf2qY1phzMmK/Wulkfh
-X-Received: by 2002:a0c:eed3:: with SMTP id h19mr4758385qvs.18.1611066292184;
-        Tue, 19 Jan 2021 06:24:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxexp38ofvK77a0ePIAQrevhe43Om+FBagMzeBtmCxifRFDTtSYScAIb2+5m2HDB8gP9xBm6A==
-X-Received: by 2002:a0c:eed3:: with SMTP id h19mr4758354qvs.18.1611066291871;
-        Tue, 19 Jan 2021 06:24:51 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id c136sm12986344qkg.71.2021.01.19.06.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 06:24:51 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:24:49 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH RFC 07/30] mm/swap: Introduce the idea of special swap
- ptes
-Message-ID: <20210119142449.GE76571@xz-x1>
-References: <20210115170907.24498-1-peterx@redhat.com>
- <20210115170907.24498-8-peterx@redhat.com>
- <20210118194013.GM4605@ziepe.ca>
+        Tue, 19 Jan 2021 09:29:12 -0500
+Date:   Tue, 19 Jan 2021 14:28:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611066490; bh=P38fjPaG9QBqq7nL2IRGN42Iu3wjac94WoOry2utDBM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=l4Fa1mHECkAkZZ0CFgdT9ywe7ofoL8nHeM9iskoqqPZ5ExFH9EmeinzW+88MIKxmg
+         QaYWlfh4BzZ6rsu/yWFvb10+edslILEVr+ODllqSg5M7IDAymCQ0Vs57yjsOTiv0jQ
+         RdnX2Zy0jou5bIuvA0FVhrerWj2PtThf4JXqrfQ+a9/s+4IMTxAw8zfCuqvTGCirlu
+         CczPZN7ypX8c2o59Sfl85zFF8LgfaX96tkKOOz9Yj8CPy5G1VVnRxWYpeYj3/6GKg0
+         j/Xj320IBrlemkSrNwJgeCT1symzDwFDnBodkVJHmy+FJ3ba0PmozfsPAJJuFWWPgm
+         zwPLUZCtiGB0w==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v2 2/3] virtio-net: support IFF_TX_SKB_NO_LINEAR
+Message-ID: <20210119142726.4970-1-alobakin@pm.me>
+In-Reply-To: <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com> <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210118194013.GM4605@ziepe.ca>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 03:40:13PM -0400, Jason Gunthorpe wrote:
-> Does the stuff in hmm.c need updating too?
-> 
->         if (!pte_present(pte)) {
->                 swp_entry_t entry = pte_to_swp_entry(pte);
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Tue, 19 Jan 2021 17:45:11 +0800
 
-This idea should be cross-tree, so yes.. even if I'm not 100% sure whether HMM
-would be a good candidate for file-backed uffd-wp, I agree we should also take
-care of those.
+> Virtio net supports the case where the skb linear space is empty, so add
+> priv_flags.
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index ba8e637..80d637f 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2972,7 +2972,8 @@ static int virtnet_probe(struct virtio_device *vdev=
+)
+>  =09=09return -ENOMEM;
+> =20
+>  =09/* Set up network device as normal. */
+> -=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+> +=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
+> +=09=09IFF_TX_SKB_NO_LINEAR;
 
-I guess I managed to take care of all the is_swap_pte() callers but forget I
-should also look for pte_to_swp_entry() users too, since sometimes pte_none()
-and pte_present() is checked separately, so there're quite a few places that I
-should have taken care of but got lost.  HMM is one of them.
+Please align IFF_TX_SKB_NO_LINEAR to IFF_UNICAST_FLT:
 
-Thanks for spotting this, Jason.  I'll coordinate in the next version.
+=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
+=09=09=09   IFF_TX_SKB_NO_LINEAR;
 
--- 
-Peter Xu
+>  =09dev->netdev_ops =3D &virtnet_netdev;
+>  =09dev->features =3D NETIF_F_HIGHDMA;
+
+Also, the series you sent is showed up incorrectly on lore.kernel.org
+and patchwork.kernel.org. Seems like you used different To and Cc for
+its parts.
+Please use scripts/get_maintainer.pl to the whole series:
+
+scripts/get_maintainer.pl ../patch-build-skb-by-page/*
+
+And use one list of addresses for every message, so they wouldn't
+lost.
+
+Al
 
