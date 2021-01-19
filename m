@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC902FBE51
+	by mail.lfdr.de (Postfix) with ESMTP id 76D762FBE52
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404089AbhASRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:51:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40612 "EHLO mail.kernel.org"
+        id S2404309AbhASRwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:52:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405012AbhASOv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:51:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D8C320DD4;
-        Tue, 19 Jan 2021 14:51:14 +0000 (UTC)
+        id S2405203AbhASOwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:52:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23A7321D1B;
+        Tue, 19 Jan 2021 14:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611067874;
-        bh=qOALRYpx8VGwwp5SoEb+UBz0tWOmyG8pglZmxBoikVE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m7Rm+D4I2y7BtzNch/jc6E/zBCBw/RA5fx5YRY4HqpOxgYIatEi91igNNZKlmUmu8
-         X3Lio+WuAAhYLIflvAgUn2GQgB7K5uMpqfL/JEvLLycdMZq7bEJU8Bb47J2dyskSS0
-         /ozQP1/8937fGg93pZSb1TABODB1iOa/9v7leF7VICKhA+zOpKvXU4GvH43uUdCxEb
-         oj8B+03Ngi6MbMiujtVvdGnCxboKbnyREEWNGnAyN67ptzwyJQhSIJNUrQmu90Quip
-         RTOYFcLhowalPAIahNqb9JFni4mh74/G6OXNcskFgdScMWsibylfZ+uhLLJGdR35Nn
-         RSx6c3Iws7a0A==
-Received: by mail-ej1-f50.google.com with SMTP id l9so23166076ejx.3;
-        Tue, 19 Jan 2021 06:51:14 -0800 (PST)
-X-Gm-Message-State: AOAM532PER8EDGTKuIS5NcqxuMxV311KKyzTTb0yOo+KVmXkG1D7trsJ
-        b7PLY7JuKCKIMS45FmCO3rGVRc+IsxGg/GO7Bg==
-X-Google-Smtp-Source: ABdhPJwrYsjRqRbp8W7L7RNsRzd0evjxpOTm49EMHHsM+d5m4OoM4vtdOIpMtlbNj9xIX15UkOfWeW2OVJ+CD82IXC8=
-X-Received: by 2002:a17:906:d87:: with SMTP id m7mr3166012eji.108.1611067872941;
- Tue, 19 Jan 2021 06:51:12 -0800 (PST)
+        s=k20201202; t=1611067901;
+        bh=5eQUqo35H7Bc70t3PZ/r+dVaPIenZbDCpuM9ic622SM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ccw9Y4bbntd0K+FTaVUEotLQDh+oix5coXndu0/+ASsrKkeKgl6zklakxcLvzGrwn
+         9cw2WMXw0JeUgSy9V2MZHeam1SUU9j6YoNtyp0P98CCDYbaRZMNgUq2dHB1yMrjus9
+         RB6b6XkibhfpnNsKnr1R0lK1id8XOel81lmdFrwt+j7phuY2txv1dt/F+56Sf3dMOU
+         b8KzzTvycJ6hzzeIotSdjuJ7PyUb/pXp8HcLNX6EMgP24Z2KgOBrYDSqAyav+1t1gj
+         4gV6W6uJXnDWpS2iMkQt8CH8FpJDv+zWyZsFU265xNTkl3HJXQHvwBD262X14W27KF
+         ynFQiQOWMVrVQ==
+Date:   Tue, 19 Jan 2021 20:21:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: intel: don't return error when clock stop
+ failed
+Message-ID: <20210119145135.GR2771@vkoul-mobl>
+References: <20210114030248.9005-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-References: <20210118073340.62141-1-tony@atomide.com> <CAK8P3a1Eec1cAOdxNQ=8LORop+ESqx_=dg1uhJwpXhknxOydsg@mail.gmail.com>
- <YAVJyjmrbLCFjqVA@atomide.com>
-In-Reply-To: <YAVJyjmrbLCFjqVA@atomide.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 19 Jan 2021 08:51:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJWPc4rt0NiaF=zS0XOy4b8pZKDCEaxCjp8rW+joMjvjQ@mail.gmail.com>
-Message-ID: <CAL_JsqJWPc4rt0NiaF=zS0XOy4b8pZKDCEaxCjp8rW+joMjvjQ@mail.gmail.com>
-Subject: Re: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with
- simple-bus for auxdata
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114030248.9005-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 2:41 AM Tony Lindgren <tony@atomide.com> wrote:
->
-> * Arnd Bergmann <arnd@kernel.org> [210118 08:30]:
-> > On Mon, Jan 18, 2021 at 8:33 AM Tony Lindgren <tony@atomide.com> wrote:
-> > >
-> > > After converting am335x to probe devices with simple-pm-bus I noticed
-> > > that we are not passing auxdata for of_platform_populate() like we do
-> > > with simple-bus.
-> > >
-> > > While device tree using SoCs should no longer need platform data, there
-> > > are still quite a few drivers that still need it as can be seen with
-> > > git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
-> > > replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
-> > > needed.
-> > >
-> > > Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
-> > > That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
-> > > And let's pass the auxdata for omaps to fix the issue for am335x.
-> > >
-> > > As an alternative solution, adding simple-pm-bus handling directly to
-> > > drivers/of/platform.c was considered, but we would still need simple-pm-bus
-> > > device driver. So passing auxdata as platform data seems like the simplest
-> > > solution.
-> > >
-> > > Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
-> > > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > > ---
-> > > Changes since v1: Updated description, added devicetree list to Cc
-> >
-> > This looks fine to me for now
-> >
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> Thanks for the review.
->
-> > But I think we should take the time to discuss how to phase out auxdata
-> > over time. There are still a number of users, but it's not that many in the
-> > end. For some of them I see a clear solution, for other ones I do not:
->
-> Yes agreed we should remove the auxdata use.
->
-> > omap2: I'll leave these for Tony to comment
->
-> The three hardest ones to update (because of PM dependencies):
->
-> - PRM power managment interrupts that also pinctrl driver uses
+On 14-01-21, 11:02, Bard Liao wrote:
+> dev->power.runtime_error will be set to the return value of the runtime
+> suspend callback function, and runtime resume function will return
+> -EINVAL if dev->power.runtime_error is not 0.
+> 
+> Somehow the codec rarely doesn't return an ACK to the clock prepare
+> command. If we stop the runtime suspend process and return error, we
+> will not be able to resume again. Likewise, if the codec lost sync and
+> did not rejoin, the resume operation will also fail. As a result, the
+> SoundWire bus can not be used anymore.
+> 
+> This patch suggests to finish the runtime suspend process even if we fail
+> to stop sdw bus clock. In the case where we do a hardware reset, the codecs
+> will be reconfigured completely. In the case where we use the regular clock
+> stop, the codecs keep their state and worst case will fall off the bus and
+> reattach.
+> 
+> The only drawback is that the power consumption may be higher and
+> device-initiated interrupts may be lost, but at least audio function can
+> still work after resume.
 
-I haven't looked at it, but can't one driver go find the other node
-and the interrupts it needs? There's nothing wrong with a driver
-looking outside 'its node' for information.
+Applied, thanks
 
-Rob
+-- 
+~Vinod
