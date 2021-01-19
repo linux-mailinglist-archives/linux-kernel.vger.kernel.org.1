@@ -2,164 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD22FB6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A3D2FB6F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388368AbhASJrK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Jan 2021 04:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        id S2388483AbhASJsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732443AbhASJVO (ORCPT
+        with ESMTP id S1732409AbhASJVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:21:14 -0500
+        Tue, 19 Jan 2021 04:21:11 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6430C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:20:33 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l1nBZ-0004WN-1x; Tue, 19 Jan 2021 10:20:25 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l1nBW-0001Dn-E1; Tue, 19 Jan 2021 10:20:22 +0100
-Date:   Tue, 19 Jan 2021 10:20:22 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        a.fatoum@pengutronix.de, david@lechnology.com,
-        linux-iio@vger.kernel.org, patrick.havelange@essensium.com,
-        alexandre.belloni@bootlin.com, mcoquelin.stm32@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel@pengutronix.de, fabrice.gasnier@st.com,
-        syednwaris@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, alexandre.torgue@st.com,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v6 3/5] counter: Add character device interface
-Message-ID: <20210119092022.GA14502@pengutronix.de>
-References: <cover.1606075915.git.vilhelm.gray@gmail.com>
- <b52a62196399d33221f78a1689276ac193c10229.1606075915.git.vilhelm.gray@gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41051C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:20:27 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l1nBZ-0004XH-NK; Tue, 19 Jan 2021 10:20:25 +0100
+Subject: Re: [RFC PATCH] ARM: dts: imx6qdl: specify vcc-supply for NOP USB
+ PHYs
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201113152856.3758-1-a.fatoum@pengutronix.de>
+ <20210119085700.GB4356@dragon>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <49756f17-c906-4fa5-4f0e-9297620c082e@pengutronix.de>
+Date:   Tue, 19 Jan 2021 10:20:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210119085700.GB4356@dragon>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <b52a62196399d33221f78a1689276ac193c10229.1606075915.git.vilhelm.gray@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:05:44 up 35 days, 17:13, 74 users,  load average: 0.14, 0.75,
- 1.44
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 03:29:54PM -0500, William Breathitt Gray wrote:
-> This patch introduces a character device interface for the Counter
-> subsystem. Device data is exposed through standard character device read
-> operations. Device data is gathered when a Counter event is pushed by
-> the respective Counter device driver. Configuration is handled via ioctl
-> operations on the respective Counter character device node.
+Hello Shawn,
+
+On 19.01.21 09:57, Shawn Guo wrote:
+> On Fri, Nov 13, 2020 at 04:28:55PM +0100, Ahmad Fatoum wrote:
+>> The SoC dtsi lists a NOP USB PHY for each of the two HSIC-only USB
+>> controllers. Their device tree node doesn't indicate a vcc-supply
+>> resulting in:
+>>
+>>   usb_phy_generic usbphynop1: supply vcc not found, using dummy regulator
+>>   usb_phy_generic usbphynop2: supply vcc not found, using dummy regulator
 > 
-> Cc: David Lechner <david@lechnology.com>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
+> So the patch is all for removing this kernel message, with introducing
+> the following potential breakage?
 
-Hello William,
+Pretty much. Either:
 
-the series looks quite interesting, we have some thoughts... see below:
+ - We never fix the warning
+ - We add an explicit dummy fixed-regulator, which doesn't reflect the HW
+ - We reference the correct regulator and have the low risk of a
+   non-upstream device tree breaking when they update both kernel,
+   device tree and have an non-recommended CONFIG_REGULATOR_ANATOP=n
 
-[...]
-> +/**
-> + * counter_push_event - queue event for userspace reading
-> + * @counter:	pointer to Counter structure
-> + * @event:	triggered event
-> + * @channel:	event channel
-> + *
-> + * Note: If no one is watching for the respective event, it is silently
-> + * discarded.
-> + *
-> + * RETURNS:
-> + * 0 on success, negative error number on failure.
-> + */
-> +int counter_push_event(struct counter_device *const counter, const u8 event,
-> +		       const u8 channel)
-> +{
-> +	struct counter_event ev = {0};
-> +	unsigned int copied = 0;
-> +	unsigned long flags;
-> +	struct counter_event_node *event_node;
-> +	struct counter_comp_node *comp_node;
-> +	int err = 0;
-> +
-> +	ev.timestamp = ktime_get_ns();
-> +	ev.watch.event = event;
-> +	ev.watch.channel = channel;
-> +
-> +	raw_spin_lock_irqsave(&counter->events_lock, flags);
-> +
-> +	/* Search for event in the list */
-> +	list_for_each_entry(event_node, &counter->events_list, l)
-> +		if (event_node->event == event &&
-> +		    event_node->channel == channel)
-> +			break;
-> +
-> +	/* If event is not in the list */
-> +	if (&event_node->l == &counter->events_list)
-> +		goto exit_early;
-> +
-> +	/* Read and queue relevant comp for userspace */
-> +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
-> +		err = counter_get_data(counter, comp_node, &ev.value);
-> +		if (err)
-> +			goto exit_early;
-> +
-> +		ev.watch.component = comp_node->component;
-> +
-> +		copied += kfifo_put(&counter->events, ev);
+What do you think?
 
-We want to calculate the frequency of some IRQ pulses in user space and
-counter values with time stamps really fits well here. As the pulses are
-from a physical system (rotating wheel), they will only change at a
-certain rate. We want to have the possibility to read from the counter
-device less often, we intentionally want to skip (meaning miss)
-events.
+Cheers,
+Ahmad
 
-When reading we're interested in the newest events. The kfifo implements
-a "tail" drop FIFO, which means new values are added at the end, and if
-the FIFO is full, they are dropped. We need a "head" drop FIFO which
-discards the oldest events, keeping only the recent ones.
-
-As far as we know, kfifo doesn't offer a head drop mode, but I think
-this can be added.
-
-[...]
-
->  struct counter_device {
->  	const char *name;
-> @@ -270,12 +270,20 @@ struct counter_device {
->  
->  	int id;
->  	struct device dev;
-> +	struct cdev chrdev;
-> +	raw_spinlock_t events_lock;
-> +	struct list_head events_list;
-> +	struct list_head next_events_list;
-> +	DECLARE_KFIFO(events, struct counter_event, 64);
-
-Do you plan to make the size of the FIFO configurable?
-
-regards,
-Oleksij & Marc
+> 
+> Shawn
+> 
+>>
+>> warnings on boot up. The USB IP vcc-supply - separate from the vusb - is
+>> hardwired to LDO_2P5[1], which we already have a device tree node for.
+>> Reference it for the dummy "phy" as well.
+>>
+>> This will lead to breakage (probe deferment) for kernels that:
+>>   - Use a HSIC USB controller
+>>   - Use this new device tree
+>>   - but have CONFIG_REGULATOR_ANATOP disabled
+>>
+>> Because while the regulator is always-on, it can't be resolved when
+>> there is no driver for it.
+>>
+>> As there are
+>>
+>>   - no affected upstream device trees
+>>   - existing device trees are unaffected without recompilation
+>>   - disabling CONFIG_REGULATOR_ANATOP is explicitly a non-recommended
+>>     configuration per symbol help text
+>>
+>> this potential breakage is deemed acceptable.
+>>
+>> [1]: i.MX 6Dual/6Quad Reference Manual, Rev. C,
+>>      Figure 53-1. Power System Overview
+>>
+>> Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>>  arch/arm/boot/dts/imx6qdl.dtsi | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+>> index 43edbf1156c7..22e4c142de13 100644
+>> --- a/arch/arm/boot/dts/imx6qdl.dtsi
+>> +++ b/arch/arm/boot/dts/imx6qdl.dtsi
+>> @@ -131,11 +131,13 @@ pmu: pmu {
+>>  
+>>  	usbphynop1: usbphynop1 {
+>>  		compatible = "usb-nop-xceiv";
+>> +		vcc-supply = <&reg_vdd2p5>;
+>>  		#phy-cells = <0>;
+>>  	};
+>>  
+>>  	usbphynop2: usbphynop2 {
+>>  		compatible = "usb-nop-xceiv";
+>> +		vcc-supply = <&reg_vdd2p5>;
+>>  		#phy-cells = <0>;
+>>  	};
+>>  
+>> -- 
+>> 2.28.0
+>>
+> 
 
 -- 
 Pengutronix e.K.                           |                             |
