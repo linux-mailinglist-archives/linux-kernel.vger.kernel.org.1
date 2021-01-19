@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93282FB72D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA6D2FB72F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390441AbhASK2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:28:47 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33716 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389674AbhASKOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:14:33 -0500
-Date:   Tue, 19 Jan 2021 10:12:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611051164;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hFacRMSOb7hOnhvpjeolZBzHLmtKYD7fT/MNfH3SARE=;
-        b=lCvNUp8EfxWyf7a7O5pLl49dthf8urDB72BPmppRb40uVafg0BVKoTMvGp27MedtGVwohW
-        +VI+xs7lRvmy18jojVofzfltweZ5AB/CjCRHd62FL1g6vGlI4wHDaI9im2jtw9M7sKvzLa
-        nGlg7TXwhEqOlawyxv8DhLVrTWvrv5BvQf1O9P6r1vZA/ukmRwTK5STPnKrhgTh36bRBfw
-        PxBUxanbl+RQdAY7MBvXKCUKfcYJwQoWNfCiggC09xPMpj3spSH0fgtYkM/ule9g8nwZOH
-        dQsUxdLoNf57G662F+RBaI4NzkhYYEMwrVs8aSl1Y1ITYaj7Bid95Dr72nLNdQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611051164;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hFacRMSOb7hOnhvpjeolZBzHLmtKYD7fT/MNfH3SARE=;
-        b=q6iRzVtPaOw5J+HQy1NqlJfqvHmdxn4F+h2BlOsswp3md9QffMUi9TMU+YlOypPAomlkMs
-        RrmacdLDb0rZSNCA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
-References: <YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net>
+        id S2390493AbhASK31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:29:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389679AbhASKOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:14:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2623C23110;
+        Tue, 19 Jan 2021 10:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611051237;
+        bh=oJP2CZT0iShT2cm0o7ur8h+l0HQzMOMI5R/YrhgrDhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G1PgBRxb8UZ1SDYsPZImNkOJenjNQ/5Ax42IdXTRX0z6dDTBi2HGOdtU1+WhJV5I6
+         JyME2lFCBmN+iZVfGU9BoSd5b2b1eClyFtC8uKLfHpQn3DosSo0ASQdHKa4OxaxqAp
+         +EN+LLxWn4uxvftWLAEHHUWFgnDtaut6d/xWk5gg=
+Date:   Tue, 19 Jan 2021 11:13:54 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Pho Tran <Pho.Tran@silabs.com>
+Cc:     "johan@kernel.org" <johan@kernel.org>,
+        "inux-usb@vger.kernel.org" <inux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: serial: cp210x: Fix error 32 when hardware flow
+ control is enabled.
+Message-ID: <YAaw4lZHsfBRY3cd@kroah.com>
+References: <658ABD80-572C-44BD-8DBD-79396109A175@silabs.com>
 MIME-Version: 1.0
-Message-ID: <161105116343.414.12774166706996994964.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <658ABD80-572C-44BD-8DBD-79396109A175@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Tue, Jan 19, 2021 at 09:43:13AM +0000, Pho Tran wrote:
+> Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabled.
+> 
+> The root cause of error 32 is that user application (CoolTerm, linux-serial-test)
+> opened cp210x device with hardware flow control then attempt to control RTS/DTR pins.
+> In hardware flow control, RTS/DTR pins will be controlled by hardware only,
+> any attempt to control those pin will cause error 32 from the device.
+> This fix will block MHS command(command to control RTS/DTR pins) to the device
+> if hardware flow control is being used.
+> 
+> Signed-off-by: Pho Tran <pho.tran@silabs.com>
+> ---
+>  drivers/usb/serial/cp210x.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index fbb10dfc56e3..1835ccf2aa2f 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -1211,6 +1211,11 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
+>  		unsigned int set, unsigned int clear)
+>  {
+>  	u16 control = 0;
+> +	struct cp210x_flow_ctl flow_ctl;
+> +	u32 ctl_hs = 0;
+> +	u32 flow_repl = 0;
+> +	bool auto_dtr = false;
+> +	bool auto_rts = false;
+>  
+>  	if (set & TIOCM_RTS) {
+>  		control |= CONTROL_RTS;
+> @@ -1230,6 +1235,25 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
+>  	}
+>  
+>  	dev_dbg(&port->dev, "%s - control = 0x%.4x\n", __func__, control);
+> +	//Don't send MHS command if device in hardware flowcontrol mode
 
-Commit-ID:     0bab9cb2d980d7c075cffb9216155f7835237f98
-Gitweb:        https://git.kernel.org/tip/0bab9cb2d980d7c075cffb9216155f7835237f98
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Thu, 14 Jan 2021 14:25:35 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 19 Jan 2021 11:06:14 +01:00
+Please put a blank line before this comment.
 
-x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
+And a ' ' after "//".
 
-That logic is unused since
+> +	cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl, sizeof(flow_ctl));
 
-  320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
+No error checking?
 
-Remove it.
+> +	ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
+> +	flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
+> +
+> +	if (CP210X_SERIAL_DTR_SHIFT(CP210X_SERIAL_DTR_FLOW_CTL) == (ctl_hs & CP210X_SERIAL_DTR_MASK))
+> +		auto_dtr = true;
+> +	else
+> +		auto_dtr = false;
+> +
+> +	if (CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL) == (flow_repl & CP210X_SERIAL_RTS_MASK))
+> +		auto_rts = true;
+> +	else
+> +		auto_rts = false;
+> +
+> +	if (auto_dtr || auto_rts) {
+> +		dev_dbg(&port->dev, "Don't set MHS when while device in flow control mode\n");
+> +		return 0;
 
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/YAAszZJ2GcIYZmB5@hirez.programming.kicks-ass.net
----
- arch/x86/entry/thunk_64.S | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Shouldn't this be a real error to send back to userspace, so that they
+know the change they asked for failed?
 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index c9a9fbf..496b11e 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -10,7 +10,7 @@
- #include <asm/export.h>
- 
- 	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
--	.macro THUNK name, func, put_ret_addr_in_rdi=0
-+	.macro THUNK name, func
- SYM_FUNC_START_NOALIGN(\name)
- 	pushq %rbp
- 	movq %rsp, %rbp
-@@ -25,11 +25,6 @@ SYM_FUNC_START_NOALIGN(\name)
- 	pushq %r10
- 	pushq %r11
- 
--	.if \put_ret_addr_in_rdi
--	/* 8(%rbp) is return addr on stack */
--	movq 8(%rbp), %rdi
--	.endif
--
- 	call \func
- 	jmp  __thunk_restore
- SYM_FUNC_END(\name)
+thanks,
+
+greg k-h
