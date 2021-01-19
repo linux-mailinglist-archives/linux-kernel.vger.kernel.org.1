@@ -2,144 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336912FBB48
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120E72FBB90
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389660AbhASPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:34:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388999AbhASPKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:10:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C421B23135;
-        Tue, 19 Jan 2021 15:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611069007;
-        bh=tujrG9Me8GcuwbvJoBlpOZZDK5rhXCB/ZsDuhMpneTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kukxcTcK68tYNhXg0JrBBz1Swd0ITrzW6B1n1KtWl5Dx4VtBvXRBymsaEn4UNAeX0
-         +QNHxB0cjZxSpFWBbDvZx/JpEWHBwqROFrt8GGRjfJutyq+o4SoJLFgRnYa3+ImMLf
-         mCzRKLGz5mEdqgfnCsmiM8ywdVdBmIc3qbXGVgO4LiJ6nVDE4+cE1sHvUS/RmpQAZT
-         v0Ns1LodHkqoUxcihQmuDmZ5TlYn9QxWY2nw9tk1I4M8RoPSJLQ5PA+6jCznX0Gb+J
-         SXtctoIFFeV9+miL5IRCLlyvf/ieSs6sXWqHBvzOJBntvIidtYtc3JFMxC0Jor++Y7
-         Y/jYI19qWADMQ==
-Received: by mail-ed1-f46.google.com with SMTP id c6so14794891ede.0;
-        Tue, 19 Jan 2021 07:10:06 -0800 (PST)
-X-Gm-Message-State: AOAM5314RlRkkkylInn5OBGor44ctBx8mtBVo12z1ShKZDoV9WVGfhD/
-        rIx130B+r/kQGGb7smBZnJxDRgZdTknlQGWg3g==
-X-Google-Smtp-Source: ABdhPJzIDLsQw+ZJBToPFJHIKOR8/yNxcIbFQDixAfzF4A2i09TM5FH3rBt23cPA/y6TPGYq/CTIGF1sNC4c/U++d8E=
-X-Received: by 2002:a05:6402:1751:: with SMTP id v17mr3857788edx.289.1611069005313;
- Tue, 19 Jan 2021 07:10:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20210118073340.62141-1-tony@atomide.com> <CAK8P3a1Eec1cAOdxNQ=8LORop+ESqx_=dg1uhJwpXhknxOydsg@mail.gmail.com>
-In-Reply-To: <CAK8P3a1Eec1cAOdxNQ=8LORop+ESqx_=dg1uhJwpXhknxOydsg@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 19 Jan 2021 09:09:51 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+h5AOBbgpZX-xQwrnjDk6QB2A6oZs6AKUt=rCugsN-BA@mail.gmail.com>
-Message-ID: <CAL_Jsq+h5AOBbgpZX-xQwrnjDk6QB2A6oZs6AKUt=rCugsN-BA@mail.gmail.com>
-Subject: Re: [PATCHv2] drivers: bus: simple-pm-bus: Fix compatibility with
- simple-bus for auxdata
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2389852AbhASPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:49:16 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:52036 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389189AbhASPrn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:47:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFYIJk150996;
+        Tue, 19 Jan 2021 15:46:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=5Uy+Pa/jD4jlnqQSrCyAWcYlvoNXAtFz5RTUmGI3lNY=;
+ b=fdd5S2oxBaDpccPX7bb01SE6BFi6TegWpLjD5KeXvBVXiJLJ9nEi3w7amYNcqq0kltU1
+ /a9mJUpkxrINyRp+xSoq2e+95tmHWV9K5x0j2eRrOmT2MV2pm3EFkYwWLawObyrsJCQN
+ 87oQGQrf2U9xe3fx1hLHF2wzdQHqoJSKRWnjStNH/1lNofx0oSUYguZe8+PkGISITPRX
+ 8PL89TuJLrAlq2xHHwlFXDQ1fQX5TmUL9eQ2W3eGftGiJZOL0ZA7crhITCkD1fRxwLtf
+ i1G9R7OIMP59vz62V3eMR8Hjk5zX7bCHbO2ZevtFDfmGpjr6ayAA4oqnoz/MGCMz1rDa /w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 363r3ksp0u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 15:46:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JFZj3D083877;
+        Tue, 19 Jan 2021 15:46:50 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 3661equw6h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 15:46:50 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10JFknfr020344;
+        Tue, 19 Jan 2021 15:46:49 GMT
+Received: from dhcp-10-154-146-132.vpn.oracle.com (/10.154.146.132)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 Jan 2021 07:16:25 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] scsi: qla2xxx: fix description for parameter
+ ql2xenforce_iocb_limit
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+In-Reply-To: <20210118184922.23793-1-ematsumiya@suse.de>
+Date:   Tue, 19 Jan 2021 09:16:25 -0600
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Arun Easi <aeasi@marvell.com>, Quinn Tran <qutran@marvell.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <9228BCF5-EFDE-4A23-96DB-674554979D44@oracle.com>
+References: <20210118184922.23793-1-ematsumiya@suse.de>
+To:     Enzo Matsumiya <ematsumiya@suse.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Linus W
 
-On Mon, Jan 18, 2021 at 2:30 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Mon, Jan 18, 2021 at 8:33 AM Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > After converting am335x to probe devices with simple-pm-bus I noticed
-> > that we are not passing auxdata for of_platform_populate() like we do
-> > with simple-bus.
-> >
-> > While device tree using SoCs should no longer need platform data, there
-> > are still quite a few drivers that still need it as can be seen with
-> > git grep OF_DEV_AUXDATA. We want to have simple-pm-bus be usable as a
-> > replacement for simple-bus also for cases where OF_DEV_AUXDATA is still
-> > needed.
-> >
-> > Let's fix the issue by passing auxdata as platform data to simple-pm-bus.
-> > That way the SoCs needing this can pass the auxdata with OF_DEV_AUXDATA.
-> > And let's pass the auxdata for omaps to fix the issue for am335x.
-> >
-> > As an alternative solution, adding simple-pm-bus handling directly to
-> > drivers/of/platform.c was considered, but we would still need simple-pm-bus
-> > device driver. So passing auxdata as platform data seems like the simplest
-> > solution.
-> >
-> > Fixes: 5a230524f879 ("ARM: dts: Use simple-pm-bus for genpd for am3 l4_wkup")
-> > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > ---
-> > Changes since v1: Updated description, added devicetree list to Cc
->
-> This looks fine to me for now
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> But I think we should take the time to discuss how to phase out auxdata
-> over time. There are still a number of users, but it's not that many in the
-> end. For some of them I see a clear solution, for other ones I do not:
 
-Thanks for summarizing.
+> On Jan 18, 2021, at 12:49 PM, Enzo Matsumiya <ematsumiya@suse.de> wrote:
+> 
+> Parameter ql2xenforce_iocb_limit is enabled by default.
+> 
+> Fixes: 89c72f4245a8 ("scsi: qla2xxx: Add IOCB resource tracking")
+> Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+> ---
+> drivers/scsi/qla2xxx/qla_os.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+> index f80abe28f35a..0e0fe5b09496 100644
+> --- a/drivers/scsi/qla2xxx/qla_os.c
+> +++ b/drivers/scsi/qla2xxx/qla_os.c
+> @@ -42,7 +42,7 @@ MODULE_PARM_DESC(ql2xfulldump_on_mpifail,
+> int ql2xenforce_iocb_limit = 1;
+> module_param(ql2xenforce_iocb_limit, int, S_IRUGO | S_IWUSR);
+> MODULE_PARM_DESC(ql2xenforce_iocb_limit,
+> -		 "Enforce IOCB throttling, to avoid FW congestion. (default: 0)");
+> +		 "Enforce IOCB throttling, to avoid FW congestion. (default: 1)");
+> 
+> /*
+>  * CT6 CTX allocation cache
+> -- 
+> 2.29.2
+> 
 
-> lpc32xx: Used only for pl080 DMA data with the old method, needs to
->     be converted to use the proper DT binding that was added a few years
->     ago.
->
-> kirkwood: I don't see what this does at all, as there is no pdata, and
->     there is no clkdev lookup for "mvebu-audio"
+Good Catch. 
 
-Probably nothing. I reached that conclusion on u300 too. Clocks got
-added in DT and someone forgot to remove auxdata. Granted, it's pretty
-non-obvious what the purpose is if there is no platform_data.
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 
->
-> orion: similar to kirkwood, these seem to have been added for
->     clkdev lookup, but the orion_clkdev_init() function seems to
->     not be called for the orion5x_dt variant.
->
-> omap2: I'll leave these for Tony to comment
->
-> spear3xx: pl022 and pl080 should just use the normal DT
->    binding, see lpc32xx.
->
-> u300: platform is scheduled for removal
->
-> integrator_ap: pl010_set_mctrl() needs a callback to
->     integrator_uart_set_mctrl(). I see no good alternative, but
->     a workaround might be to call into syscon directly from the
->     driver on versatile machines. For all I can tell, pl010 is only
->     used on versatile and ep93xx, so that would not harm a
->     commonly used driver.
+--
+Himanshu Madhani	 Oracle Linux Engineering
 
-That was my conclusion.
-
-> versatile/integrator_cp: similar problem but for mmci, which is
->     used more widely. Used for card detection, which could
->     theoretically be implemented with a fake gpio driver, but that
->     might be excessive.
->
-> mips/pic32: used for setting up DMA for sdhci, could be done
->    in a platform-specific sdhci front-end.
->
-> arm-cci: used to pass cci address after ioremap(), avoiding
->    this would revert e9c112c94b01 ("perf/arm-cci: Untangle
->    global cci_ctrl_base").
-
-Create a regmap and then secondary drivers needing register access can
-lookup the regmap? Or just ioremap it twice... I'll take a closer look
-at this one.
-
-Rob
