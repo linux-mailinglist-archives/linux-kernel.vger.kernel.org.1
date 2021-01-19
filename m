@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56A92FC372
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5172FC2F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbhASW2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:28:32 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49188 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728547AbhASRqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:46:00 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 10JHhwvQ015437;
-        Tue, 19 Jan 2021 18:43:58 +0100
-Date:   Tue, 19 Jan 2021 18:43:58 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
-Subject: Re: rcutorture initrd/nolibc build on ARMv8?
-Message-ID: <20210119174358.GB14704@1wt.eu>
-References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
- <20210119161901.GA14667@1wt.eu>
- <20210119170238.GA5603@C02TD0UTHF1T.local>
- <20210119171637.GA14704@1wt.eu>
+        id S1729364AbhASWGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728632AbhASRqc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:46:32 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F29FC061793;
+        Tue, 19 Jan 2021 09:44:26 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 980D43F0B4;
+        Tue, 19 Jan 2021 18:44:22 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 0/7] Really implement Qualcomm LAB/IBB regulators
+Date:   Tue, 19 Jan 2021 18:44:14 +0100
+Message-Id: <20210119174421.226541-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119171637.GA14704@1wt.eu>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 06:16:37PM +0100, Willy Tarreau wrote:
-> > | ${CROSS_COMPILE}gcc -fno-asynchronous-unwind-tables -fno-ident \
-> > |         -nostdlib -include ../../../../include/nolibc/nolibc.h \
-> > |         -lgcc -s -static -Os -o init init.c
-> 
-> OK I'll retry this, thank you!
+Okay, the title may be a little "aggressive"? However, the qcom-labibb
+driver wasn't really .. doing much.
+The current form of this driver is only taking care of enabling or
+disabling the regulators, which is pretty useless if they were not
+pre-set from the bootloader, which sets them only if continuous
+splash is enabled.
+Moreover, some bootloaders are setting a higher voltage and/or a higher
+current limit compared to what's actually required by the attached
+hardware (which is, in 99.9% of the cases, a display) and this produces
+a higher power consumption, higher heat output and a risk of actually
+burning the display if kept up for a very long time: for example, this
+is true on at least some Sony Xperia MSM8998 (Yoshino platform) and
+especially on some Sony Xperia SDM845 (Tama platform) smartphones.
 
-For me on my x86 PC it worked using a cross-compiler:
+In any case, the main reason why this change was necessary for us is
+that, during the bringup of Sony Xperia MSM8998 phones, we had an issue
+with the bootloader not turning on the display and not setting the lab
+and ibb regulators before booting the kernel, making it impossible to
+powerup the display.
 
-  $ /f/tc/gcc-linaro-6.4.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -Os -o init-fail init-fail.c 
-  $ file init-fail
-  init-fail: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, BuildID[sha1]=1088f8fad85b7b8a7f00eef4918d24c4c4fdaadf, stripped
+With this said, this patchset enables setting voltage, current limiting,
+overcurrent and short-circuit protection.. and others, on the LAB/IBB
+regulators.
+Each commit in this patch series provides as many informations as
+possible about what's going on and testing methodology.
 
-Given that you used a native compiler we can't suspect an issue with a
-bare-metal compiler possibly affecting how kernel headers are passed
-there. But nevertheless, I'd still not disregard the possibility that
-the headers found under "linux/" are picked from the libc which for
-whatever reason would be missing a lot of them.
+Changes in v4:
+ - Remove already applied commit
+ - Add commit to switch to regulator_{list,map}_voltage_linear
+   which in v3 got squashed in the commit that got removed in v4.
 
-I've now tested natively on a local rpi4b onto which I copied the files
-(not enough I/O BW on the SD card to clone a kernel there). Tried:
+Changes in v3:
+ - Improved check for PBS disable and short-circuit condition:
+   during the testing of short-circuit, coincidentally another
+   register reading zero on the interesting bit was probed,
+   which didn't trigger a malfunction of the SC logic, but was
+   also wrong.
+   After the change, the short-circuit test was re-done in the
+   same way as described in the commit that is implementing it.
+ - From Bjorn Andersson review:
+   - Improved documentation about over-current and short-circuit
+     protection in the driver
+   - Improved maintainability of qcom_labibb_sc_recovery_worker()
+   - Flipped around check for PBS vreg disabled in for loop of
+     function labibb_sc_err_handler()
+ - From Mark Brown (forgotten in v2):
+   - Changed regulator_{list,map}_voltage_linear_range usages to
+     regulator_{list,map}_voltage_linear (and fixed regulator
+     descs to reflect the change).
 
-  $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -Os -o init-fail init-fail.c
-  specs.
-  COLLECT_GCC=gcc
-  COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/7/lto-wrapper
-  Target: aarch64-linux-gnu
-  Configured with: ../src/configure -v --with-pkgversion='Ubuntu/Linaro 7.5.0-3ubuntu1~18.04' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu
-  Thread model: posix
-  gcc version 7.5.0 (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 
+Changes in v2:
+ - From Mark Brown review:
+   - Replaced some if branches with switch statements
+   - Moved irq get and request in probe function
+   - Changed short conditionals to full ones
+   - Removed useless check for ocp_irq_requested
+ -  Fixed issues with YAML documentation
 
-Could you please check the output of this from your intermediary "init.c"
-file:
+AngeloGioacchino Del Regno (7):
+  regulator: qcom-labibb: Switch voltage ops from linear_range to linear
+  regulator: qcom-labibb: Implement current limiting
+  regulator: qcom-labibb: Implement pull-down, softstart, active
+    discharge
+  dt-bindings: regulator: qcom-labibb: Document soft start properties
+  regulator: qcom-labibb: Implement short-circuit and over-current IRQs
+  dt-bindings: regulator: qcom-labibb: Document SCP/OCP interrupts
+  arm64: dts: pmi8998: Add the right interrupts for LAB/IBB SCP and OCP
 
-   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -E  init.c | grep '^#'
+ .../regulator/qcom-labibb-regulator.yaml      |  30 +-
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi         |   8 +-
+ drivers/regulator/qcom-labibb-regulator.c     | 720 +++++++++++++++++-
+ 3 files changed, 735 insertions(+), 23 deletions(-)
 
-It might give us a clue about where it's finding its includes. And possibly
-the list of __NR_ entries reported here as well:
+-- 
+2.30.0
 
-   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include tools/include/nolibc/nolibc.h -lgcc -s -static -E -dM init.c | grep __NR_
-
-We've seen that __NR_fork or __NR_dup2 for example were missing in your
-output, on my native machine I can see them, so that could give us a clue
-about the root cause of the issue:
-
-  $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(fork|dup2)'
-  #define __NR_dup2 1041
-  #define __NR_syscalls (__NR_fork+1)
-  #define __NR_fork 1079
-
-I could easily imagine a missing "linux" link or entry somewhere in the
-default includes path, but here since there's no such error it rather looks
-like an incorrect file which is a bit more concerning. I purposely avoided
-to maintain my own definitions for __NR_* let's hope we won't need to do
-that :-/
-
-Thanks,
-Willy
