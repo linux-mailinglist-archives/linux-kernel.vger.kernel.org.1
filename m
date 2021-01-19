@@ -2,130 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210F42FB717
+	by mail.lfdr.de (Postfix) with ESMTP id 8D83F2FB718
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389715AbhASKOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:14:53 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:57532 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389159AbhASJwq (ORCPT
+        id S2389785AbhASKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:16:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389170AbhASJx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:52:46 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10J9poiF017510;
-        Tue, 19 Jan 2021 03:51:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=ZGcMmV8ud8RsHGVG+9fWIXTvDt1zAVWYEvH2Lib4jVI=;
- b=E0FLQ5IMWCry+Mfo6u3aruWZbOGbkgCf5ivhN9bPBatcRSsUC23rbZ/0dEjXNZWThb9w
- wZi8T0ROP1rZ9E0mqKjoU19GwrVHFtFfF2kcepgO6LuFzeva57UYD/XhAISQIe5olW1I
- aX5+WU8g/4hur2QF4ISPcjdgXx0WMXdY73NzYedr5dq199O9Nc/gB8FlIuzxEuNjMesX
- 1+haR7jWn0j9o00um2j/6DXTf3qcTiG9R4Dd986tFzHlG0SSUZt18WM3onJ0vqRZZPV2
- j1NNVT/6qMCTI450P9AFWCfKUJbWu8O7Mua0kl1Mdt6XkQq5f9JtANGOtvrXlgOXYF4v 3w== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 363xe7avy7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 19 Jan 2021 03:51:50 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 19 Jan
- 2021 09:51:48 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 19 Jan 2021 09:51:48 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.215])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 84AA311CB;
-        Tue, 19 Jan 2021 09:51:41 +0000 (UTC)
-Subject: Re: [PATCH v2 08/12] ASoC: arizona-jack: convert into a helper
- library for codec drivers
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-References: <20210117160555.78376-1-hdegoede@redhat.com>
- <20210117160555.78376-9-hdegoede@redhat.com>
- <CAHp75VeSqVYWE9o-6JwY+pmjU7nfBJwZvaSk0v-ngjeGMMxQAQ@mail.gmail.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <e902dc43-42d1-c90b-98df-d054a72a5558@opensource.cirrus.com>
-Date:   Tue, 19 Jan 2021 09:51:42 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 19 Jan 2021 04:53:28 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C969C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:52:46 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id h18so10722821vsg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AvjIP08JcWTDKv/EkjmGjjz2/Ez706ArkiY7SpIuCxU=;
+        b=S76XbketDfZ5GOQP3pIs7MNG45HGRAYb/s53ny9BZCQVB19xEkUeQS01TTyf168ona
+         Dph7cxIw6Z8V1n9ieX5l131KhH5A+VOkODESEHvkz/WMefABtTe+zMkoTtHZDH/c3Ur0
+         VwzTLh0YRvzQ5DxgAwqwwNkMlywDSr+l+iAbDEpUAz/VwYhsZEdXl6r9F7CA/eyt0I9I
+         p66qw5dAFsWdoTR59kT9AEoZjYWnHF7dIx6iMOvhYIrh4nXYunYMOCqUhhBAPpA/Mwnd
+         NYVEi4txXDV6FnnXd8MtbkEdPJwcXgc//iI7JkmsSOL/vndGB73Ls5MUNmGRU6q84Vvj
+         8JaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AvjIP08JcWTDKv/EkjmGjjz2/Ez706ArkiY7SpIuCxU=;
+        b=cZW12lJUT5btiP7wfCmL1g8/s2J19d315C8I+fsiA/v08MHbBT2f4N8x5BGivcWMlu
+         DCGbPpdkvC97k6tONyaz8GqaJDpxkOv/vqhAD3CWRmhKNdD2RzNkOV72VEhwkqnlaKNA
+         vQzkecoQiZOzJrGvyBTGJfiONSqhX6czoQs+FaUhodNG+WSXVvgRTx4wK6uoPadrR39l
+         o7Y9oGqmtaO+XTciDc2dneHp6fEs3QfvnF3DMDQOAjlr2O1lnZfcMj5QDJSQlK73HFsh
+         scHVM4I7kNj9+SycUHrCauV8JvzR54LTW5ssFX1uRfeB5M0v4kAqSzAi+4raiMfd3SQ0
+         6+UA==
+X-Gm-Message-State: AOAM531xRDjjXX7IRR+zVqx0nAAm6VhaROzp3pJxqhGs5MFlaRYfSX/y
+        irA0fRkWBy6v+j1fV51SxpqtpmrxS+5KtpgfweAyaA==
+X-Google-Smtp-Source: ABdhPJxAkvFe7flhE98SBpSnM5IMOBz4v5rCx2G5W8QFgBx180sUyyr3j2h5bpp9P7Jgbxy5KNOUIPyvIujWKp8D73U=
+X-Received: by 2002:a67:facb:: with SMTP id g11mr2168122vsq.19.1611049965177;
+ Tue, 19 Jan 2021 01:52:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeSqVYWE9o-6JwY+pmjU7nfBJwZvaSk0v-ngjeGMMxQAQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=937 mlxscore=0 adultscore=0 impostorscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190059
+References: <20210118011330.4145-1-digetx@gmail.com> <20210118011330.4145-2-digetx@gmail.com>
+ <20210118072855.anncyl6z3e5uznvd@vireshk-i7> <CAPDyKFquCGUSTvcCpmN0vm1eGEz9B_hYSNm7wojhgwuXT=jkEQ@mail.gmail.com>
+ <20210118110506.linvsoca7jbl42iq@vireshk-i7> <CAPDyKFr7SD_A9sKD2+90XfjP09T+PCLE=8qvn=M-yPEPXvBhsg@mail.gmail.com>
+ <20210119034428.qgjjlvti6sirsnzy@vireshk-i7>
+In-Reply-To: <20210119034428.qgjjlvti6sirsnzy@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 19 Jan 2021 10:52:08 +0100
+Message-ID: <CAPDyKFp3OpV5qgfB_EGf=fyCR5b0b0zntbsXAJJsWbJX09gF6A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] PM: domains: Make set_performance_state() callback optional
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/01/2021 17:24, Andy Shevchenko wrote:
-> On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Convert the arizona extcon driver into a helper library for direct use
->> from the arizona codec-drivers, rather then being bound to a separate
->> MFD cell.
->>
->> Note the probe (and remove) sequence is split into 2 parts:
->>
->> 1. The arizona_jack_codec_dev_probe() function inits a bunch of
->> jack-detect specific variables in struct arizona_priv and tries to get
->> a number of resources where getting them may fail with -EPROBE_DEFER.
->>
->> 2. Then once the machine driver has create a snd_sock_jack through
->> snd_soc_card_jack_new() it calls snd_soc_component_set_jack() on
->> the codec component, which will call the new arizona_jack_set_jack(),
->> which sets up jack-detection and requests the IRQs.
->>
->> This split is necessary, because the IRQ handlers need access to the
->> arizona->dapm pointer and the snd_sock_jack which are not available
->> when the codec-driver's probe function runs.
->>
->> Note this requires that machine-drivers for codecs which are converted
->> to use the new helper functions from arizona-jack.c are modified to
->> create a snd_soc_jack through snd_soc_card_jack_new() and register
->> this jack with the codec through snd_soc_component_set_jack().
-> 
-> ...
-> 
->> +int arizona_jack_codec_dev_probe(struct arizona_priv *info, struct device *dev)
->>   {
->> -       struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
->> +       struct arizona *arizona = info->arizona;
->>          struct arizona_pdata *pdata = &arizona->pdata;
-> 
->> +       int ret, mode;
->>
->>          if (!dev_get_platdata(arizona->dev))
->> -               arizona_extcon_device_get_pdata(&pdev->dev, arizona);
->> +               arizona_extcon_device_get_pdata(dev, arizona);
->>
->> -       info->micvdd = devm_regulator_get(&pdev->dev, "MICVDD");
->> +       info->micvdd = devm_regulator_get(arizona->dev, "MICVDD");
-> 
-> I'm wondering if arizona->dev == dev here. if no, can this function
-> get a comment / kernel-doc explaining what dev is?
-> 
+On Tue, 19 Jan 2021 at 04:44, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 18-01-21, 13:46, Ulf Hansson wrote:
+> > You seem to be worried about latency/overhead while doing the
+> > propagation upwards in the hierarchy. That seems like a reasonable
+> > concern to me, especially as the genpd lock is taken at each level.
+>
+> I am not sure how many levels of domains we have normally, but unless the number
+> is big it won't be a very big problem.
 
-pdev->dev would be *this* driver.
-arizona->dev should be the MFD parent driver.
+It depends on the SoC topology, so obviously it differs. But more than
+a couple is unusual, I would say.
 
-I think these gets should be against the dev passed in as argument
-(I assume that is the caller's pdev->dev). So they are owned by this
-driver, not its parent.
+However, I think it may also depend on how many devices that are
+hooked up to the domains and how actively these are being used.
 
+>
+> > However, to mitigate this can be rather messy. In principle, we would
+> > need to walk the hierarchy upwards, each time a new subdomain is added
+> > in genpd_add_subdomain(). While doing this, we would also need to keep
+> > track on what level we set to continue the propagation of the
+> > performance states for. Even if this can be done in non-latency
+> > sensitive paths, I don't think it's worth it because of complexity (I
+> > haven't even thought of what happens when removing a subdomain).
+>
+> What about a new field in the domain structure like 'can-handle-pstates', and
+> then whenever sub-domain gets added it just needs to check its parent's field
+> and set his own.
+
+That would work if the topology is built from top to bottom, but I
+don't think we can rely on that.
+
+For example, when a domain A is added as a child to domain B, domain B
+doesn't have a parent yet (and the "can-handle-pstates" don't get set
+for neither domain A or domain B). Next, domain B is added as child
+domain to domain C. Domain C has the "can-handle-pstates" set, which
+means domain B gets the "can-handle-pstates" set as well. This means
+domain A, will not have "can-handle-pstates" set, while it probably
+should have.
+
+>
+> > So, maybe we should simply just stick to the existing code, forcing
+> > the parent to have a ->set_performance() callback assigned if
+> > propagation should continue?
+>
+> I think it would be better to fix the issue even if we aren't fully optimized
+> and making the change to make sure we keep propagating is rather important.
+
+Alright, let's continue with Dmitry's patches and discuss this further
+when v4 is out, as he seems to have it almost ready.
+
+Kind regards
+Uffe
