@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D222FBF96
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3D62FBF95
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391769AbhASS5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:57:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
+        id S2391683AbhASS5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404351AbhASSF7 (ORCPT
+        with ESMTP id S1727684AbhASSJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:05:59 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256A3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:05:14 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id 186so22732223qkj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:05:14 -0800 (PST)
+        Tue, 19 Jan 2021 13:09:15 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F17C061573;
+        Tue, 19 Jan 2021 10:08:35 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id g3so10445330ejb.6;
+        Tue, 19 Jan 2021 10:08:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VdWMG/uGCJ43g2jyUu+cOqHYdfz8BVsdLX4Jg//Lvgk=;
-        b=j05GmtUhLQZqMespMujz2B04lEC5T+G/IfPEWSLg9vszMTM84+Zwtv7YEyyGBOnOMD
-         YZC13ZpoqFi0CBqzxMyMLz5MGzx9rrfUGkf8WoTmWLe+XPRMAlK9wStYfMqqlkPknPAq
-         yGDvTKn7uo+pfQGH7wmxQgS0VxVr6WuRqwgAHe+hR8rmQgHR51984f46IM/N2BUDhuUS
-         YJMag/9hIm93ON0T4gX5kXGSFdmvo91YglWHnbp2mCOm7C6wA5Cg0t+d33mCD3gJD5CY
-         VLG4PZoRo65ssQgEKGnjk49NqZBmRBjXDP1dFdICMM9Iv1Yj7cOvkh0ctNhWEORsk4bd
-         7Mqg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QUIebfX8U940ENGHUTnKwYQ6vp3a2I5vmh0z1iwQG5o=;
+        b=b+NjSi8PtAmQc+ZlPq6VTlb/cUTGixdwmfMxQjrNKadr6m31k0f694vi7xBuV+CTTz
+         3gq5WRCHjKUdJQISQdXvV4mrdV1CpNlVKGkQj1JtGnOqKpWUrVuTSq86IutQQSDOLSOc
+         2BG/LjX6OEOR74D9Eso8Z/afSjVVF9zorwjjGbIugB6V7PeuZpT7GIDLTkTCXT9JX+vA
+         ep3Wsf44MjzhookyrMbIECdDhIzQgeQPfplMRVWlKBvuwFF0Ha/dMcPN57aTVa03yfPW
+         iPnkNE9h9HWDEHpCOBypmyJz0KOnLWV7ADgOzdAZFl5u3WvR/ptP1TJbnU1gdEx2g3kw
+         clIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VdWMG/uGCJ43g2jyUu+cOqHYdfz8BVsdLX4Jg//Lvgk=;
-        b=ReEpOROg+3ojPWp9G1ONt7+PTyZwx+XUCsr2q0Bftx+NB6+ShzJNtWO9W8DKIPUqFF
-         LqqUrUJOEenfERlxu+NxXt615UaKK9uuYqAq7F/muahT2SEeVS1sP78rmweQkfQ4Q9Vp
-         2k6O8Ar8UYGsUa32ZVrlKw+YtnvjltmeVN7ES6S6Ibu5OkDfdwpCnbXhGfCrMzo+0tQx
-         S9iLZiOOeO2y9VJ5g8K2xDLPiMmjN+KH9XWmSRluNSpMrYqDaBE3Xa9QofmFUqQzhnzN
-         ZOF/gnuDgS7XgFcregulnafFHEKmfoxSsmQ6n8MQUKjZpc31GFMUo7sYEM16Nt8g5RMV
-         9yVg==
-X-Gm-Message-State: AOAM53243uB1h+9yeeGW6q6INBL9Hwxi8cxtrzYugm43qGDUBsgY0lfC
-        UkKZrSIGB2gfW8cjrAUjJawRwA==
-X-Google-Smtp-Source: ABdhPJx7MA8sBMbEtUSV41m+37ci8w0m1RGlrZnwqu/7wxd6/5Vt3/6VIuQwvxqlLT6y5Ik3JcwCyA==
-X-Received: by 2002:a37:a50c:: with SMTP id o12mr5590816qke.98.1611079513428;
-        Tue, 19 Jan 2021 10:05:13 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id o5sm12802873qti.47.2021.01.19.10.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 10:05:13 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1vNQ-003pFv-F7; Tue, 19 Jan 2021 14:05:12 -0400
-Date:   Tue, 19 Jan 2021 14:05:12 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 02/14] mm/gup: check every subpage of a compound page
- during isolation
-Message-ID: <20210119180512.GY4605@ziepe.ca>
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
- <20210119043920.155044-3-pasha.tatashin@soleen.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QUIebfX8U940ENGHUTnKwYQ6vp3a2I5vmh0z1iwQG5o=;
+        b=m8itd4a4G1LySpPDN7lIht4nLtPeDXCx1wf5ec5nJdPKliyXN9fvQTCxwyUINYgYlb
+         NUPv+VJg7oEFP8sJutKuyp7bWI3WHmzIkkpf96DqRlDk+N+LcTuzRHLsU8A2InrIeJHx
+         ZBNFO1tqA6fYg8lJuE9lGCAluhWDk5ycZBk7clfG+e4KNkBREP35/WAbgmz6XAeg18Uz
+         S0SCLRANussjSFc6RZemZiIQTcDhqYnybrgaP9YIJwgOWq0dADNCGwyUjVZ7U+jsFS1a
+         ixO1Pdn5pZKW2X/g5PMQiu45WXaVoK8NLFiyX6mERJGjs3/6rWnAiZa1OdpX9aN3bq+7
+         vi/w==
+X-Gm-Message-State: AOAM532r1tYgFOgr//NZ27rrFcCdQgN97nm1AfP/yNHFcTyssiAlc2ej
+        lNRAxzSA8Hrv7oacTf4avhg=
+X-Google-Smtp-Source: ABdhPJxbPkdPQezctxiD6SZFvmQnmR1KZV4He8vTQy9fMToLOFpgvarG+gK/zrilW2FVZgdv7Grt0g==
+X-Received: by 2002:a17:906:f98f:: with SMTP id li15mr3724800ejb.123.1611079713890;
+        Tue, 19 Jan 2021 10:08:33 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
+        by smtp.gmail.com with ESMTPSA id b101sm4741633edf.49.2021.01.19.10.08.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 10:08:33 -0800 (PST)
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+ <20210118234818.GP4605@ziepe.ca>
+ <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
+ <20210119180327.GX4605@ziepe.ca>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
+Date:   Tue, 19 Jan 2021 19:08:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119043920.155044-3-pasha.tatashin@soleen.com>
+In-Reply-To: <20210119180327.GX4605@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:39:08PM -0500, Pavel Tatashin wrote:
-> When pages are isolated in check_and_migrate_movable_pages() we skip
-> compound number of pages at a time. However, as Jason noted, it is
-> not necessary correct that pages[i] corresponds to the pages that
-> we skipped. This is because it is possible that the addresses in
-> this range had split_huge_pmd()/split_huge_pud(), and these functions
-> do not update the compound page metadata.
+On 19.01.21 19:03, Jason Gunthorpe wrote:
+> On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
+>>
+>> I had a second look into math.h, but I don't find any reason why round_up
+>> could overflow. Can you give a hint please?
 > 
-> The problem can be reproduced if something like this occurs:
+> #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+>                                                      ^^^^^
 > 
-> 1. User faulted huge pages.
-> 2. split_huge_pmd() was called for some reason
-> 3. User has unmapped some sub-pages in the range
-> 4. User tries to longterm pin the addresses.
+> That +1 can overflow
+
+But that would be a unsigned long long overflow. I considered this to
+not be relevant.
+
 > 
-> The resulting pages[i] might end-up having pages which are not compound
-> size page aligned.
+> It looks like it would not be so bad to implement some
+> check_round_up_overflow() if people prefer
 > 
-> Fixes: aa712399c1e8 ("mm/gup: speed up check_and_migrate_cma_pages() on huge page")
+> Jason
 > 
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-
-No new line after fixes
-
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
->  mm/gup.c | 19 +++++++------------
->  1 file changed, 7 insertions(+), 12 deletions(-)
-
-Looks good
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Thanks,
-Jason
