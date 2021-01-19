@@ -2,132 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6312FBDCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5022FBDCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388992AbhASRfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:35:17 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:14738 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391658AbhASReQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:34:16 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DKwjf69LSz9v6K4;
-        Tue, 19 Jan 2021 18:33:26 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id mB7-tkk37xPd; Tue, 19 Jan 2021 18:33:26 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DKwjf5H2tz9v6K3;
-        Tue, 19 Jan 2021 18:33:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 654328B7DE;
-        Tue, 19 Jan 2021 18:33:28 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id sag3JxnQsqAg; Tue, 19 Jan 2021 18:33:28 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DAD18B7C7;
-        Tue, 19 Jan 2021 18:33:27 +0100 (CET)
-Subject: Re: [PATCH v6 04/49] soc: fsl: qe: introduce qe_io{read,write}*
- wrappers
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Scott Wood <oss@buserror.net>, Timur Tabi <timur@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>
-References: <20191128145554.1297-1-linux@rasmusvillemoes.dk>
- <20191128145554.1297-5-linux@rasmusvillemoes.dk>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <a80b9c70-f9f2-0f76-15d0-d7a1c926f485@csgroup.eu>
-Date:   Tue, 19 Jan 2021 18:33:20 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2391563AbhASRfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387620AbhASRfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:35:15 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974A6C061573;
+        Tue, 19 Jan 2021 09:34:34 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id 143so22577739qke.10;
+        Tue, 19 Jan 2021 09:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=p8tNnzd4y2KJS/reGqJBwxz1GlmlM3VOZcIG7Ld49os=;
+        b=UURw0+UWpe4aBZNtUILUdnwTTMO1z8WUJzSWZTGPjiftc+oGCvSwte9YNL490jXhJF
+         ZMnFHWbUZvKenzQacEy16CV4FbJg46GhIqUCnIO0yYn9wMYUJGFlVcXLubVyORs4HKsP
+         mLqAhRyj5m8cezm5qBLezA//8tM/X71+wPf+pPCQpUBxJMijzB/j9uhLLPT79r0c1QTS
+         Gt3nRfyb3gZvePzLJUZYU1ZIDIsP1+lCmEYFlB69v48s30WDoXChwvgMl2R1vd22NIIy
+         v7UVbFSGJenO3HurJUww+WAwho2Q23TYuIC2HUknAjJdreqZSa91bxJgEBzKIZcMgk6R
+         2eOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p8tNnzd4y2KJS/reGqJBwxz1GlmlM3VOZcIG7Ld49os=;
+        b=JnTFkuA2sJU1HQSPW/RwOMn2M9J1t9TX/J8ys0aG4JFwR8kPmcMhP7Dfnf0eIUwNix
+         EhKh+s8q5K4CR1mGw0NEE3eCKNJURM0we7u+kSJjni5x77S/yAmL0bSZV4twgZse2Npg
+         dzANyNic6dlXffwP9QRaKzOCyd138xaKD2Gb8qxvzRvy9AyiwkIagi8yMB036WO0Siex
+         6Iy3IDmgxiU5GtZDx6+rRjXO0yDwBGrcP21/Ngm4K2nIbWJltDiNp3GYRQRScskIaQO1
+         UYBx6l2SfRNYngE46N4wx4+60YqMxUbkj8BVqVjSwCY8tmvpu+OZ9iyWsMMEstuygHWW
+         5CZw==
+X-Gm-Message-State: AOAM533fjzysptvgTjGqt5x6wxDFG65QRVIb6et0AgOybX6Hp3B/6o4h
+        wI6FwT9xX8SnTCINO9rRZQI6iqLHw5U=
+X-Google-Smtp-Source: ABdhPJxnBhaCimzZgQX62uN2ZXLlnTeBj4V52zrzuS8102pthkDV0hPys/7gF47J3dljrPwAm+Gz6Q==
+X-Received: by 2002:a37:a110:: with SMTP id k16mr5462338qke.320.1611077673854;
+        Tue, 19 Jan 2021 09:34:33 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id k141sm13376514qke.38.2021.01.19.09.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 09:34:32 -0800 (PST)
+Date:   Tue, 19 Jan 2021 18:34:30 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] ASoC: tegra: ahub: Reset hardware properly
+Message-ID: <YAcYJpb/Zf7IKZp5@ulmo>
+References: <20210112125834.21545-1-digetx@gmail.com>
+ <20210112125834.21545-6-digetx@gmail.com>
+ <YAG4aFADwo7dh/oR@ulmo>
+ <c2f3d149-0781-3d0a-1d68-f6820386e84d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191128145554.1297-5-linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gssaDyI1tNRHdKsC"
+Content-Disposition: inline
+In-Reply-To: <c2f3d149-0781-3d0a-1d68-f6820386e84d@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rasmus,
 
-Le 28/11/2019 à 15:55, Rasmus Villemoes a écrit :
-> The QUICC engine drivers use the powerpc-specific out_be32() etc. In
-> order to allow those drivers to build for other architectures, those
-> must be replaced by iowrite32be(). However, on powerpc, out_be32() is
-> a simple inline function while iowrite32be() is out-of-line. So in
-> order not to introduce a performance regression on powerpc when making
-> the drivers work on other architectures, introduce qe_io* helpers.
-> 
-> Also define the qe_{clr,set,clrset}bits* helpers in terms of these new
-> macros.
+--gssaDyI1tNRHdKsC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since commit https://github.com/linuxppc/linux/commit/894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e 
-ioread/iowrite wrappers are also inlined on PPC32, so this commit can now be reverted.
+On Mon, Jan 18, 2021 at 03:02:38AM +0300, Dmitry Osipenko wrote:
+> 15.01.2021 18:44, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Tue, Jan 12, 2021 at 03:58:34PM +0300, Dmitry Osipenko wrote:
+> >> Assert hardware reset before clocks are enabled and then de-assert it
+> >> after clocks are enabled. This brings hardware into a predictable state
+> >> and removes relying on implicit de-assertion of resets which is done by
+> >> the clk driver.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  sound/soc/tegra/tegra30_ahub.c | 33 ++++++++++++++++-----------------
+> >>  sound/soc/tegra/tegra30_ahub.h |  1 +
+> >>  2 files changed, 17 insertions(+), 17 deletions(-)
+> >>
+> >> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_=
+ahub.c
+> >> index 4dbb58f7ea36..246cf6a373a1 100644
+> >> --- a/sound/soc/tegra/tegra30_ahub.c
+> >> +++ b/sound/soc/tegra/tegra30_ahub.c
+> >> @@ -65,10 +65,20 @@ static int tegra30_ahub_runtime_resume(struct devi=
+ce *dev)
+> >>  {
+> >>  	int ret;
+> >> =20
+> >> +	ret =3D reset_control_assert(ahub->reset);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >>  	ret =3D clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
+> >>  	if (ret)
+> >>  		return ret;
+> >> =20
+> >> +	ret =3D reset_control_reset(ahub->reset);
+> >> +	if (ret) {
+> >> +		clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
+> >> +		return ret;
+> >> +	}
+> >> +
+> >>  	regcache_cache_only(ahub->regmap_apbif, false);
+> >>  	regcache_cache_only(ahub->regmap_ahub, false);
+> >> =20
+> >> @@ -462,7 +472,6 @@ static int tegra30_ahub_probe(struct platform_devi=
+ce *pdev)
+> >>  {
+> >>  	const struct of_device_id *match;
+> >>  	const struct tegra30_ahub_soc_data *soc_data;
+> >> -	struct reset_control *rst;
+> >>  	struct resource *res0;
+> >>  	void __iomem *regs_apbif, *regs_ahub;
+> >>  	int ret =3D 0;
+> >> @@ -475,22 +484,6 @@ static int tegra30_ahub_probe(struct platform_dev=
+ice *pdev)
+> >>  		return -EINVAL;
+> >>  	soc_data =3D match->data;
+> >> =20
+> >> -	/*
+> >> -	 * The AHUB hosts a register bus: the "configlink". For this to
+> >> -	 * operate correctly, all devices on this bus must be out of reset.
+> >> -	 * Ensure that here.
+> >> -	 */
+> >> -	rst =3D of_reset_control_array_get_exclusive(pdev->dev.of_node);
+> >> -	if (IS_ERR(rst)) {
+> >> -		dev_err(&pdev->dev, "Can't get reset: %p\n", rst);
+> >> -		return PTR_ERR(rst);
+> >> -	}
+> >> -
+> >> -	ret =3D reset_control_deassert(rst);
+> >> -	reset_control_put(rst);
+> >> -	if (ret)
+> >> -		return ret;
+> >> -
+> >>  	ahub =3D devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+> >>  			    GFP_KERNEL);
+> >>  	if (!ahub)
+> >> @@ -507,6 +500,12 @@ static int tegra30_ahub_probe(struct platform_dev=
+ice *pdev)
+> >>  	if (ret)
+> >>  		return ret;
+> >> =20
+> >> +	ahub->reset =3D devm_reset_control_array_get_exclusive(&pdev->dev);
+> >> +	if (IS_ERR(ahub->reset)) {
+> >> +		dev_err(&pdev->dev, "Can't get reset: %p\n", ahub->reset);
+> >=20
+> > I didn't notice that the prior patch already introduced this, but I'd
+> > prefer for this to either be %pe so that the symbolic error name is
+> > printed, or %ld with PTR_ERR(ahub->reset) to format this in a more
+> > standard way that can be more easily grepped for and parsed.
+>=20
+> This is already fixed in v2. Good catch anyways, thanks.
+>=20
+> > It also seems like the prior patch that converts this to use
+> > of_reset_control_array_get_exclusive() is a bit pointless now. Why not
+> > just move to this directly instead?
+>=20
+> These are two independent changes. The previous patch fixed the missing
+> resets, this patch changes the hardware initialization logic.
 
-Christophe
+But moving to devm_reset_control_array_get_exclusive() isn't really part
+of the hardware initialization logic change, right? So it's not strictly
+related to the rest of this patch.
 
-> 
-> Reviewed-by: Timur Tabi <timur@kernel.org>
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->   include/soc/fsl/qe/qe.h | 34 +++++++++++++++++++++++++---------
->   1 file changed, 25 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/soc/fsl/qe/qe.h b/include/soc/fsl/qe/qe.h
-> index a1aa4eb28f0c..9cac04c692fd 100644
-> --- a/include/soc/fsl/qe/qe.h
-> +++ b/include/soc/fsl/qe/qe.h
-> @@ -241,21 +241,37 @@ static inline int qe_alive_during_sleep(void)
->   #define qe_muram_offset cpm_muram_offset
->   #define qe_muram_dma cpm_muram_dma
->   
-> -#define qe_setbits_be32(_addr, _v) iowrite32be(ioread32be(_addr) |  (_v), (_addr))
-> -#define qe_clrbits_be32(_addr, _v) iowrite32be(ioread32be(_addr) & ~(_v), (_addr))
-> +#ifdef CONFIG_PPC32
-> +#define qe_iowrite8(val, addr)     out_8(addr, val)
-> +#define qe_iowrite16be(val, addr)  out_be16(addr, val)
-> +#define qe_iowrite32be(val, addr)  out_be32(addr, val)
-> +#define qe_ioread8(addr)           in_8(addr)
-> +#define qe_ioread16be(addr)        in_be16(addr)
-> +#define qe_ioread32be(addr)        in_be32(addr)
-> +#else
-> +#define qe_iowrite8(val, addr)     iowrite8(val, addr)
-> +#define qe_iowrite16be(val, addr)  iowrite16be(val, addr)
-> +#define qe_iowrite32be(val, addr)  iowrite32be(val, addr)
-> +#define qe_ioread8(addr)           ioread8(addr)
-> +#define qe_ioread16be(addr)        ioread16be(addr)
-> +#define qe_ioread32be(addr)        ioread32be(addr)
-> +#endif
-> +
-> +#define qe_setbits_be32(_addr, _v) qe_iowrite32be(qe_ioread32be(_addr) |  (_v), (_addr))
-> +#define qe_clrbits_be32(_addr, _v) qe_iowrite32be(qe_ioread32be(_addr) & ~(_v), (_addr))
->   
-> -#define qe_setbits_be16(_addr, _v) iowrite16be(ioread16be(_addr) |  (_v), (_addr))
-> -#define qe_clrbits_be16(_addr, _v) iowrite16be(ioread16be(_addr) & ~(_v), (_addr))
-> +#define qe_setbits_be16(_addr, _v) qe_iowrite16be(qe_ioread16be(_addr) |  (_v), (_addr))
-> +#define qe_clrbits_be16(_addr, _v) qe_iowrite16be(qe_ioread16be(_addr) & ~(_v), (_addr))
->   
-> -#define qe_setbits_8(_addr, _v) iowrite8(ioread8(_addr) |  (_v), (_addr))
-> -#define qe_clrbits_8(_addr, _v) iowrite8(ioread8(_addr) & ~(_v), (_addr))
-> +#define qe_setbits_8(_addr, _v) qe_iowrite8(qe_ioread8(_addr) |  (_v), (_addr))
-> +#define qe_clrbits_8(_addr, _v) qe_iowrite8(qe_ioread8(_addr) & ~(_v), (_addr))
->   
->   #define qe_clrsetbits_be32(addr, clear, set) \
-> -	iowrite32be((ioread32be(addr) & ~(clear)) | (set), (addr))
-> +	qe_iowrite32be((qe_ioread32be(addr) & ~(clear)) | (set), (addr))
->   #define qe_clrsetbits_be16(addr, clear, set) \
-> -	iowrite16be((ioread16be(addr) & ~(clear)) | (set), (addr))
-> +	qe_iowrite16be((qe_ioread16be(addr) & ~(clear)) | (set), (addr))
->   #define qe_clrsetbits_8(addr, clear, set) \
-> -	iowrite8((ioread8(addr) & ~(clear)) | (set), (addr))
-> +	qe_iowrite8((qe_ioread8(addr) & ~(clear)) | (set), (addr))
->   
->   /* Structure that defines QE firmware binary files.
->    *
-> 
+Anyway, I don't feel strongly about it being part of this patch, so feel
+free to keep it here.
+
+Thierry
+
+--gssaDyI1tNRHdKsC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHGCYACgkQ3SOs138+
+s6E2pw//fpPwc7rRFuwtI+fpGYhR9bkSJGAsW8c13WeGUXpmIBG24DNPTMa5Dwjr
+dunxgN+tl4MRPvegW2vqWIDy/Gasxcp1eCryiYSal2W3UsDSb3B8DO/6zo4l0jUF
+XjLRslsDLVlXPvtiKLTeIAV6xbWmvjXvYLv0kZ6KrPj61PmSdejglDq+WqhG+mZu
+qYodRgqRCByrfjVhR1pvTtARbSZl+iQLsb9RhomzsB/bJUITiIu6+/ZVi+r/i6aR
+xj7mUu9YKkTmpVVi4Wv480Tuq2+u5sZc569FA6utPWAEelPdiFpDJrEjz6eq9Ouj
+ImjgMqZwFsERkJaAb35BU1eXn+VlylLjn8L+pzfGj2zW3TLrQ++Be7UY3iftlhrD
+qYssfr1rQmElNd1UuCWDDF5fyp1T423mxupboWmrai4iIAe+aUmgXlZZfHQaaI60
+5I4niaNihm9R4ZzBlkGvS7p93/dmSHY5MMAyTDMLrGXzt076MGcWezBk6P/jAW+m
+/hwWBXaRnf1E1v0BYX89P8pHUIr07LhmeYTu8IJGTna0IiLexmDrzh1U7gnw/MUk
+SbRFMYKCm4x5P3DSk9AnKo7R4yWavYohy9GMFVCQA48HLKAukKWLiDc1ayalNPf/
+Cb7exez/22oxAeTG+OWRH26o41R727BtXkl+SCP0tLj6X9urpQw=
+=ejHG
+-----END PGP SIGNATURE-----
+
+--gssaDyI1tNRHdKsC--
