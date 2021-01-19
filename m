@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785552FBB17
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191ED2FBB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390611AbhASPYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+        id S2391348AbhASPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:22:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbhASPWa (ORCPT
+        with ESMTP id S2391289AbhASPVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:22:30 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56800C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:21:50 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id z6so6841666qtn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:21:50 -0800 (PST)
+        Tue, 19 Jan 2021 10:21:14 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D336C061573;
+        Tue, 19 Jan 2021 07:20:34 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d4so10690115plh.5;
+        Tue, 19 Jan 2021 07:20:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2KppPTacTVT7N3+e7UjFJfespfp6ycO/Q7U7/d+lx9Q=;
-        b=DE48pgeszLoponGtlzOJdCzPLaItCn+LoaMEHHAByNm03yykCnrcTp4yUn89RtBHQF
-         GT8IvFsaPfQtqUKnEX+R23CkH4W9KlFphm9WoLGA/42EQXzsG2xpyOPrWVLpkaJsSI1U
-         Uaf5DA/SmX31gZoejeI/0WxKsxYSLLho0lSD0IE3sRE3XRyEkXd4DvjnPCHRUElS5AfO
-         USzQuLmREjq8ONff5F23uUuMRurjRtlt+1uZG1mA9adrnSM+jL7bFR3qXfNxIbxTjEBU
-         tRjvE65wqjVRcFPOU+r8PBJHSUDYa53bgSWo7UUDmbPBxVvqa1Eo1DzZ6yCkamDCxwe6
-         Ty7Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jxt4w4ggY4vN/CdqHUV7TtDziRTtz0CwnZSmwECkKwE=;
+        b=uUlkjJFj2KO4UD0W1i4m2465xydGM4l+ACJN+jL/a9PtdOUN4uQVYvdJUO6JnBe3rl
+         OzGiD/RCn1gO80P6GCwnELlFuVjiT0rKy6Uy7foPuPyeW1kNXDi0PHVnxHRjEVQ4xVh5
+         oM0JkFai+5zUYoISXL2NCyaZsnS3GE22Maf2OfVe9d43QNgk2kA3OYRtH129XoNkEIhj
+         +lFlfA4k0Ma0p49OpbfQTewCOsk6ZZEKtuw/8jue5gUmbgYMQduEvQkjr+LIdNGqWJ+g
+         15Wt1lgJQrfsYhX7A+31NyQlSLNZUPNcvVBvQHBcwIzgH5ze5ponpBIlbwO4wLaLJ3Q7
+         21NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2KppPTacTVT7N3+e7UjFJfespfp6ycO/Q7U7/d+lx9Q=;
-        b=Z1iBaLJgtnfWtE56tt1VWlIb0wHSGYfmqRqqK21saWY0pqLElIWYyDNml8QZRHLXGz
-         n0hekpYp4niSe+o4oEWC3rOkevGpWoYiEHDzxS0btY5tIbgREq4j02Q69SNRyrRxmrBI
-         +PCZrtBz/rFzKOpOh9WU30lj03cX3fUZCJUz0xBAgAK+Qe9jDj9fTD+mkcqvJ94yry8v
-         ryihhnKO82+FN5n7DfxRXwe7qwXJVGcDCPD1b6Z8bjL87JJJZwHImGC2K4HfMQ9eWAn+
-         rGLzDkLw3D78lFc3laTFJAIkU53woOwagZTSHeECVtJNzNBUnG5bbrHy1rY3VVzEujK6
-         A4/g==
-X-Gm-Message-State: AOAM532hmZXeBqkaU2URMeLlsmdKUKxIdaZO5lwk8S8xo4fbkcakK145
-        //d0QU/Q3cFpx1+rD57kJok=
-X-Google-Smtp-Source: ABdhPJyRLxVQgKXD4j8cw0xsZYUVAq/wrCMbm3kLE+ksSeem9Y+XNNPc/9lBg5Ia4bKH+Q9o8r14ng==
-X-Received: by 2002:ac8:4e53:: with SMTP id e19mr4759756qtw.77.1611069709470;
-        Tue, 19 Jan 2021 07:21:49 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:4cbf])
-        by smtp.gmail.com with ESMTPSA id k23sm5244562qtp.61.2021.01.19.07.21.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 07:21:48 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 19 Jan 2021 10:21:04 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH] workqueue: fix annotation for WQ_SYSFS
-Message-ID: <YAb44NN5d8uOB7Rj@mtj.duckdns.org>
-References: <20210118080455.33499-1-dong.menglong@zte.com.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jxt4w4ggY4vN/CdqHUV7TtDziRTtz0CwnZSmwECkKwE=;
+        b=jq5qojm5c+bsTltGuhG+Sh5T2TbdNk0/5+w9ksWo4oUfcHRZdnHmfzpJzKYFw6lib9
+         LFCKhcQuqrfsZOYM3lEe7x4p68aVvCcyZNeVCHJUvnicdqY/XNFAabr1PDpfCQl2WLLf
+         xUxCpJIwTR8/PdI4W5s5/JgUShuK/a08PRjElz/VwGrUKC5GdQF2sNeTcXr86uxjMW1T
+         7yTUl6FL4Qp+875wqSu0RG4315LbRhyFmcUmR2zzaLkbFkW6esJrBT6nFfxXRE1DUfO3
+         uRAs/UolP15x1D/vr+a9TeeoAcgsSnOWr8FihPUldzL3+KeEjiPo2ymYJ/ahMJjDlX3e
+         pwow==
+X-Gm-Message-State: AOAM5318b67eQjjTwpgr9aRvo8ReXpnT5L4TzilgIMuy62cuMyCH1e3u
+        XgjokBK1ixzoTkjHQyJEL0GuTGgchFMvQJzah8Q=
+X-Google-Smtp-Source: ABdhPJy9cd4uD4ZDVNE5k4wYxMzfD0jsGzIDGtxq0M0R5ffZ9NGiqS5Rfxd7PGqzOuXmA8HLWIRHeQD7hiMi4oabo44=
+X-Received: by 2002:a17:90a:6c90:: with SMTP id y16mr147003pjj.129.1611069634063;
+ Tue, 19 Jan 2021 07:20:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118080455.33499-1-dong.menglong@zte.com.cn>
+References: <20210115211543.33563-1-alcooperx@gmail.com> <20210115211543.33563-3-alcooperx@gmail.com>
+In-Reply-To: <20210115211543.33563-3-alcooperx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 19 Jan 2021 17:21:23 +0200
+Message-ID: <CAHp75VdQPQK8jTF3QDKx6mF1QzOg-qiuHrTiojnWn7GskokfoA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] serial: 8250: Add new 8250-core based Broadcom STB driver
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:04:55AM -0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> 'wq_sysfs_register()' in annotation for 'WQ_SYSFS' is unavailable,
-> change it to 'workqueue_sysfs_register()'.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+On Fri, Jan 15, 2021 at 11:19 PM Al Cooper <alcooperx@gmail.com> wrote:
+>
+> Add a UART driver for the new Broadcom 8250 based STB UART. The new
+> UART is backward compatible with the standard 8250, but has some
+> additional features. The new features include a high accuracy baud
+> rate clock system and DMA support.
+>
+> The driver will use the new optional BAUD MUX clock to select the best
+> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+> the baud rate selection logic for any requested baud rate.  This allows
+> for more accurate BAUD rates when high speed baud rates are selected.
+>
+> The driver will use the new UART DMA hardware if the UART DMA registers
+> are specified in Device Tree "reg" property. The DMA functionality can
+> be disabled on kernel boot with the argument:
+> "8250_bcm7271.disable_dma=Y".
+>
+> The driver also set the UPSTAT_AUTOCTS flag when hardware flow control
+> is enabled. This flag is needed for UARTs that don't assert a CTS
+> changed interrupt when CTS changes and AFE (Hardware Flow Control) is
+> enabled.
+>
+> The driver also contains a workaround for a bug in the Synopsis 8250
+> core. The problem is that at high baud rates, the RX partial FIFO
+> timeout interrupt can occur but there is no RX data (DR not set in
+> the LSR register). In this case the driver will not read the Receive
+> Buffer Register, which clears the interrupt, and the system will get
+> continuous UART interrupts until the next RX character arrives. The
+> fix originally suggested by Synopsis was to read the Receive Buffer
+> Register and discard the character when the DR bit in the LSR was
+> not set, to clear the interrupt. The problem was that occasionally
+> a character would arrive just after the DR bit check and a valid
+> character would be discarded. The fix that was added will clear
+> receive interrupts to stop the interrupt, deassert RTS to insure
+> that no new data can arrive, wait for 1.5 character times for the
+> sender to react to RTS and then check for data and either do a dummy
+> read or a valid read. Sysfs error counters were also added and were
+> used to help create test software that would cause the error condition.
+> The counters can be found at:
+> /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
+> /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
 
-Applied to wq/for-5.12.
+Brief looking into the code raises several questions:
+ - is it driver from the last decade?
+ - why it's not using what kernel provides?
+ - we have a lot of nice helpers:
+   - DMA Engine API
+   - BIT() and GENMASK() macros
+   - tons of different helpers like regmap API (if you wish to dump
+registers via debugfs)
 
-Thanks.
+Can you shrink this driver by 20-30% (I truly believe it's possible)
+and split DMA driver to drivers/dma (which may already have something
+similar there)?
 
 -- 
-tejun
+With Best Regards,
+Andy Shevchenko
