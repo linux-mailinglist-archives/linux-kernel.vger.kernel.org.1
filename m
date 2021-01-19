@@ -2,68 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381BE2FB321
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4852FB34D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbhASHgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:36:49 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:57366 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730636AbhASHgg (ORCPT
+        id S1730874AbhASHi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:38:29 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4998 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728608AbhASHhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:36:36 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10J7ZKrJ4019225, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10J7ZKrJ4019225
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 19 Jan 2021 15:35:20 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 19 Jan 2021 15:35:20 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
- RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
- 15.01.2106.006; Tue, 19 Jan 2021 15:35:20 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "abaci-bugfix@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>
-CC:     "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chiu@endlessos.org" <chiu@endlessos.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH v2] rtlwifi: rtl8192se: Simplify bool comparison.
-Thread-Topic: [PATCH v2] rtlwifi: rtl8192se: Simplify bool comparison.
-Thread-Index: AQHW7izmHuC9KfGQ3U+TQixYySp3yKouCKEA
-Date:   Tue, 19 Jan 2021 07:35:19 +0000
-Message-ID: <1611041680.9785.1.camel@realtek.com>
-References: <1611037955-105333-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1611037955-105333-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.213]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2FF55E670DAFCB488BE4711BC4C7E884@realtek.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        Tue, 19 Jan 2021 02:37:31 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J7X2kM113164;
+        Tue, 19 Jan 2021 02:36:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=+qIzXIBMsoplKGqI4+slcFF/1Ae/KuT5AYoNIFZCeYk=;
+ b=CloMoG8R9lJlgcj21AxKhZSfewBzaW6MojVjS9RNmPOAvb9x1itSGaEBvj+ZrQDl3xPJ
+ JmGcPBn8g2xLSBEobsBNThDqDI+MhYlCSX7F9oustC/MBaQFzhvRMWd4P+mjBfizuoDg
+ YtUCDV5/FHW15eMw8rEtVkw07DIMY5ayzq0KPe7MXWNtJMYeH3B78iEPLyMdUassSIt2
+ 7Jp6Mmqzkjx094Kuu/TYarmtiUxsDOWXJsu6+4+d2CQuB5hWRYOoERN+yQPpnX2LjuXk
+ NpNxnG2ZfiQqaC0g0i9iLBFAwF3TMbmfaBgcmXv0NaAYObvafN7FkOX2atqJ+n6dSRaf ow== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 365t87195n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 02:36:37 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J7W4SN004403;
+        Tue, 19 Jan 2021 07:36:34 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma01wdc.us.ibm.com with ESMTP id 363qs8vgxf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jan 2021 07:36:34 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J7aXQL33423776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 07:36:33 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 573B42805E;
+        Tue, 19 Jan 2021 07:36:33 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 877EE2805C;
+        Tue, 19 Jan 2021 07:36:32 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.79.213.81])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Jan 2021 07:36:32 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 01E2F2E2EE0; Tue, 19 Jan 2021 13:06:27 +0530 (IST)
+From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Subject: [PATCH 0/2] powerpc/cacheinfo: Add "ibm,thread-groups" awareness
+Date:   Tue, 19 Jan 2021 13:06:18 +0530
+Message-Id: <1611041780-8640-1-git-send-email-ego@linux.vnet.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_01:2021-01-18,2021-01-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=860 clxscore=1015 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAxLTE5IGF0IDE0OjMyICswODAwLCBKaWFwZW5nIFpob25nIHdyb3RlOg0K
-PiBGaXggdGhlIGZvbGxvdyBjb2NjaWNoZWNrIHdhcm5pbmdzOg0KPiANCj4gLi9kcml2ZXJzL25l
-dC93aXJlbGVzcy9yZWFsdGVrL3J0bHdpZmkvcnRsODE5MnNlL2h3LmM6MjMwNTo2LTI3Og0KPiBX
-QVJOSU5HOiBDb21wYXJpc29uIG9mIDAvMSB0byBib29sIHZhcmlhYmxlLg0KPiANCj4gLi9kcml2
-ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0bHdpZmkvcnRsODE5MnNlL2h3LmM6MTM3Njo1LTI2
-Og0KPiBXQVJOSU5HOiBDb21wYXJpc29uIG9mIDAvMSB0byBib29sIHZhcmlhYmxlLg0KPiANCj4g
-UmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBsaW51eC5hbGliYWJhLmNvbT4NCj4gU2ln
-bmVkLW9mZi1ieTogSmlhcGVuZyBaaG9uZyA8YWJhY2ktYnVnZml4QGxpbnV4LmFsaWJhYmEuY29t
-Pg0KPiAtLS0NCj4gQ2hhbmdlcyBpbiB2MjoNCj4gwqAgLU1vZGlmaWVkIHN1YmplY3QuDQo+IA0K
-DQpZb3UgZm9yZ2V0IHRvIHJlbW92ZSB0aGUgcGVyaW9kIGF0IHRoZSBlbmQgb2Ygc3ViamVjdC4N
-CmkuZS4NCiJydGx3aWZpOiBydGw4MTkyc2U6IFNpbXBsaWZ5IGJvb2wgY29tcGFyaXNvbiINCg0K
-LS0tDQpQaW5nLUtlDQoNCg==
+From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+
+Hi,
+
+Currently the cacheinfo code on powerpc indexes the "cache" objects
+(modelling the L1/L2/L3 caches) where the key is device-tree node
+corresponding to that cache. On some of the POWER server platforms
+thread-groups within the core share different sets of caches (Eg: On
+SMT8 POWER9 systems, threads 0,2,4,6 of a core share L1 cache and
+threads 1,3,5,7 of the same core share another L1 cache). On such
+platforms, there is a single device-tree node corresponding to that
+cache and the cache-configuration within the threads of the core is
+indicated via "ibm,thread-groups" device-tree property.
+
+Since the current code is not aware of the "ibm,thread-groups"
+property, on the aforementoined systems, cacheinfo code still treats
+all the threads in the core to be sharing the cache because of the
+single device-tree node (In the earlier example, the cacheinfo code
+would says CPUs 0-7 share L1 cache).
+
+In this patch series, we make the powerpc cacheinfo code aware of the
+"ibm,thread-groups" property. We indexe the "cache" objects by the
+key-pair (device-tree node, thread-group id). For any CPUX, for a
+given level of cache, the thread-group id is defined to be the first
+CPU in the "ibm,thread-groups" cache-group containing CPUX. For levels
+of cache which are not represented in "ibm,thread-groups" property,
+the thread-group id is -1.
+
+We can now remove the helper function get_shared_cpu_map() and
+index_dir_to_cpu() since the cache->shared_cpu_map contains the
+correct satate of the thread-siblings sharing the cache.
+
+This has been tested on a SMT8 POWER9 system where L1 cache is split
+between groups of threads in the core and on an SMT8 POWER10 system
+where L1 and L2 caches are split between groups of threads in a core.
+
+With this patch series, on POWER10 SMT8 system, we see the following
+reported via sysfs:
+
+$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
+/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8,10,12,14
+/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8,10,12,14
+/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8,10,12,14
+/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-15
+/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9,11,13,15
+/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9,11,13,15
+/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9,11,13,15
+/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-15
+
+$ ppc64_cpu --smt=4
+$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
+/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8,10
+/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8,10
+/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8,10
+/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-11
+/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9,11
+/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9,11
+/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9,11
+/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-11
+
+$ ppc64_cpu --smt=2
+$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
+/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8-9
+/sys/devices/system/cpu/cpu9/cache/index0/shared_cpu_list:9
+/sys/devices/system/cpu/cpu9/cache/index1/shared_cpu_list:9
+/sys/devices/system/cpu/cpu9/cache/index2/shared_cpu_list:9
+/sys/devices/system/cpu/cpu9/cache/index3/shared_cpu_list:8-9
+
+$ ppc64_cpu --smt=1
+$ grep . /sys/devices/system/cpu/cpu[89]/cache/index[0123]/shared_cpu_list
+/sys/devices/system/cpu/cpu8/cache/index0/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index1/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index2/shared_cpu_list:8
+/sys/devices/system/cpu/cpu8/cache/index3/shared_cpu_list:8
+
+Gautham R. Shenoy (2):
+  powerpc/cacheinfo: Lookup cache by dt node and thread-group id
+  powerpc/cacheinfo: Remove the redundant get_shared_cpu_map()
+
+ arch/powerpc/include/asm/smp.h  |   3 +
+ arch/powerpc/kernel/cacheinfo.c | 121 ++++++++++++++++++++--------------------
+ 2 files changed, 62 insertions(+), 62 deletions(-)
+
+-- 
+1.9.4
+
