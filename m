@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049442FB875
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639C22FB878
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393266AbhASMk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:40:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40874 "EHLO mail.kernel.org"
+        id S2393339AbhASMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:41:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393150AbhASMdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:33:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 979EE22D2A;
-        Tue, 19 Jan 2021 12:32:40 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 12:32:38 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     =?utf-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>, gustavoars@kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/cpuinfo: Show right CPU architecture information
-Message-ID: <20210119123237.GA17369@gaia>
-References: <20210119105510.27836-1-zhangliguang@linux.alibaba.com>
- <20210119110131.GA18433@willie-the-truck>
- <ff3a2f25-083c-2363-5e09-4d6acf5291e7@linux.alibaba.com>
+        id S2404937AbhASMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:34:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A52D2310E;
+        Tue, 19 Jan 2021 12:33:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611059632;
+        bh=nhLuurJSrgADMg3lBfOTeTfYMIf5bFMG7UNgaXRHqZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XMFySzbpHGeNgMMesjH9tuaLgO7p7bI6r5Eg9KF5YH4R+v+FeIvF8htdqA9C2hk2z
+         cZjZWaTyWQz+PWPcYgAX5FxSUAUWHtx8YqgpkkHPXhTgJonIU8FKqtiPzqPIIGRgc4
+         GEfcF2bkYGSR4csEKZpOTayWgH0Mz+4RHeu7OT/w=
+Date:   Tue, 19 Jan 2021 13:33:49 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Al Cooper <al.cooper@broadcom.com>
+Cc:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/2] serial: 8250: Add new 8250-core based Broadcom
+ STB driver
+Message-ID: <YAbRrSSNkzcvGSL3@kroah.com>
+References: <20210115211543.33563-1-alcooperx@gmail.com>
+ <20210115211543.33563-3-alcooperx@gmail.com>
+ <YAXJRDhS1HXeYaZz@kroah.com>
+ <CAGh=XABU=jdLWo8AfSBZPwn+_gDfCNN07cg9a58nxknjjyEfxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff3a2f25-083c-2363-5e09-4d6acf5291e7@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAGh=XABU=jdLWo8AfSBZPwn+_gDfCNN07cg9a58nxknjjyEfxg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:26:31PM +0800, 乱石 wrote:
-> 锟斤拷 2021/1/19 19:01, Will Deacon 写锟斤拷:
-> > On Tue, Jan 19, 2021 at 06:55:10PM +0800, Liguang Zhang wrote:
-> > > CPU architecture is assigned to be a fixed value, it should be obtained
-> > > from midr register.
-> > > 
-> > > Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> > > ---
-> > >   arch/arm64/kernel/cpuinfo.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
-> > > index 77605aec25fe..0bd11e0fe9f2 100644
-> > > --- a/arch/arm64/kernel/cpuinfo.c
-> > > +++ b/arch/arm64/kernel/cpuinfo.c
-> > > @@ -191,7 +191,7 @@ static int c_show(struct seq_file *m, void *v)
-> > >   		seq_printf(m, "CPU implementer\t: 0x%02x\n",
-> > >   			   MIDR_IMPLEMENTOR(midr));
-> > > -		seq_printf(m, "CPU architecture: 8\n");
-> > > +		seq_printf(m, "CPU architecture: %d\n", MIDR_ARCHITECTURE(midr));
-> > Huh? Won't this always return 0xf?
+On Mon, Jan 18, 2021 at 03:32:57PM -0500, Al Cooper wrote:
+> On Mon, Jan 18, 2021 at 12:45 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Jan 15, 2021 at 04:15:43PM -0500, Al Cooper wrote:
+> > > Add a UART driver for the new Broadcom 8250 based STB UART. The new
+> > > UART is backward compatible with the standard 8250, but has some
+> > > additional features. The new features include a high accuracy baud
+> > > rate clock system and DMA support.
+> > >
+> > > The driver will use the new optional BAUD MUX clock to select the best
+> > > one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+> > > the baud rate selection logic for any requested baud rate.  This allows
+> > > for more accurate BAUD rates when high speed baud rates are selected.
+> > >
+> > > The driver will use the new UART DMA hardware if the UART DMA registers
+> > > are specified in Device Tree "reg" property. The DMA functionality can
+> > > be disabled on kernel boot with the argument:
+> > > "8250_bcm7271.disable_dma=Y".
+> >
+> > Shouldn't that be on a per-device basis, and not a per-driver basis?
 > 
-> Hi Will,
-> 
-> I'm not sure. My platform return 0xf, but /proc/cpuinfo show 8. Why we
-> assign a fixed
-> 
-> value to cpu architecture?
+> There is only one instance of the UART DMA hardware and it gets muxed
+> to just one of the possible UARTS.
 
-Because 0xf first appeared on some ARMv6 CPUs (1176, 11MPcore and some
-newer revisions of 1136). A field value of 0xf means don't bother with
-architecture version but rather check the CPUID information for the
-features you need. We decided to call it 8 here with 64-bit as that was
-announced as ARMv8. A 32-bit kernel running on ARMv8 hardware would
-report 7 (as it would on some ARMv6 hardware like 1176 etc.)
+But the driver doesn't know/care about that, it binds to any device that
+matches it.  per-module/driver flags are not a good idea.
 
--- 
-Catalin
+> > And why would you want to disable this, if you have support for this in
+> > the DT?  Why not just rely on the DT setting?
+> 
+> The DMA feature is used when the UART is connected to a Bluetooth
+> controller and the BAUD rate is typically 2-3Mbs. The ability to
+> easily disable DMA is very useful when debugging BT communication
+> problems in the field. DT settings could also be used to disable DMA,
+> but knowing the correct modifications to the "reg" and "reg-names"
+> properties is a lot more complicated.
+
+So this is a debug-only option?  If so, why not just make it a debugfs
+file then?  No need to clutter up a module parameter for this mess.
+
+thanks,
+
+greg k-h
