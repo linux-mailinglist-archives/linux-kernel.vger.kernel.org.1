@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9C42FBCC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556982FBCFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389388AbhASQpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732983AbhASQnn (ORCPT
+        id S1730862AbhASQxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:53:19 -0500
+Received: from esa10.hc324-48.eu.iphmx.com ([207.54.69.29]:32351 "EHLO
+        esa10.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389514AbhASQwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:43:43 -0500
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4956C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:43:02 -0800 (PST)
-Received: by mail-ed1-x54a.google.com with SMTP id r4so398764eds.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:43:02 -0800 (PST)
+        Tue, 19 Jan 2021 11:52:43 -0500
+X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Jan 2021 11:52:42 EST
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Mv8HVHZiqq2Y22lxEuv91PTBTzfF3aDqkg+FO9Cjpcc=;
-        b=sMDi4o9tE+P0gYCKpCsgSYKKMzx29ksE7m2wjA+KO85uTUpDuhkfMFInQgjkr8yfsF
-         8Q+wFUdrqk1EjqshuBKCk2MukU8b+SsvgvMNkzJnFpZ+5+xUVt6Qs5dIMg0XCcXb6Xj9
-         cr8Iw+xLquN+FrQyE32gFCNctBztV8F5MODxfHff/reLdviDiImV9OzLV9zzug4jYnvd
-         hF17mG0QYbtONfqRYQjQKFPKxcGV2jzBvZps2e8ZHAGz6D4Do0vmkmRj/HjOD6nE3x+L
-         aA0t0N5rsw39WKKfziJ5TFLsw3wE91T0MTd0gcS7HUVFWjqxD/TcQfNwQsBXHLl6ZHjq
-         qpXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Mv8HVHZiqq2Y22lxEuv91PTBTzfF3aDqkg+FO9Cjpcc=;
-        b=J61dTOzeVeIBIKeCk4Z4RsqGfye2YaIQJTPvpJktg73Z05Wt6w3GeuXaSIDCDz14fB
-         aqL7rU+lrP1LBoucUpsBd/6c4VIR+50JguAYTqXhH/CSki6gLH/nMeeCry2buCME64HM
-         x4wmB81SMpF6Cj2Xi4VzrBZB7BEz0INiO9VfnPumaOzAM46V+eJkbbQoNv4ByRLSrnPi
-         UQp9fLMHwjwLOtveoad8Od5oaNwDxq9fUgp1oFnlNTvzVqDRqHeJVswKIFvMM2QTPR0j
-         5dceT/LYWxUVGsAm44BbSbFHH99o7VASyZ7/7uFPamS0VcMUt2WP+cCxJzVgmeVF78Gn
-         pT0A==
-X-Gm-Message-State: AOAM530tSAP7EGhiDTipO9ymSgQt8gYvSf9+RUwNKbU8+EHiv8nAMR3q
-        fzqXCALA33t7iRJc65p9muIPUhJzLhHDkp3/
-X-Google-Smtp-Source: ABdhPJyYT38o1pemfEC7bTB5RG+igiwtCnzLyzGxVJxVdrDLqyO+4RuE/lsIuIfAvcyeoJO0lx0Pv/cE4W8trvGg
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a17:906:351a:: with SMTP id
- r26mr3406466eja.204.1611074581393; Tue, 19 Jan 2021 08:43:01 -0800 (PST)
-Date:   Tue, 19 Jan 2021 17:42:55 +0100
-Message-Id: <02b5bcd692e912c27d484030f666b350ad7e4ae4.1611074450.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH] kasan, mm: fix resetting page_alloc tags for HW_TAGS
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
+  t=1611075162; x=1642611162;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MPS69wDC3jOWHDYcJZNJkUyR3I+TbN1xtQtEplkhjf8=;
+  b=J+Xe/JNPF1x1u5OaPvz4CWfjUYmTbru7853IMq+SMOgPXKVkjJlQAJlh
+   ogag8fbe28Ai/R8SlW6sPBQi+jHIcg8voAXlFCz9FmJLewRpQDGL2TdbL
+   Cgzc1En4MrRM6kGSMIxdlZ+LcMBsWjUPm+xJVmdCMpYFDeWHl2NV/w3V5
+   Y=;
+Received: from esagw4.bmwgroup.com (HELO esagw4.muc) ([160.46.252.39]) by
+ esa10.hc324-48.eu.iphmx.com with ESMTP/TLS; 19 Jan 2021 17:43:52 +0100
+Received: from esabb3.muc ([160.50.100.30])  by esagw4.muc with ESMTP/TLS;
+ 19 Jan 2021 17:43:52 +0100
+Received: from smucm10m.bmwgroup.net (HELO smucm10m.europe.bmw.corp) ([160.48.96.49])
+ by esabb3.muc with ESMTP/TLS; 19 Jan 2021 17:43:52 +0100
+Received: from greenhouse.bmw-carit.intra (192.168.221.38) by smucm10m.europe.bmw.corp
+ (160.48.96.49) with Microsoft SMTP Server (TLS;
+ Tue, 19 Jan 2021 17:43:52 +0100
+From:   Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: [RFC PATCH 0/2] Tracing bursts of latencies
+Date:   Tue, 19 Jan 2021 17:43:42 +0100
+Message-ID: <20210119164344.37500-1-Viktor.Rosendahl@bmw.de>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SMUCM30K.europe.bmw.corp (160.46.167.47) To
+ smucm10m.europe.bmw.corp (160.48.96.49)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A previous commit added resetting KASAN page tags to
-kernel_init_free_pages() to avoid false-positives due to accesses to
-metadata with the hardware tag-based mode.
+Hello all,
 
-That commit did reset page tags before the metadata access, but didn't
-restore them after. As the result, KASAN fails to detect bad accesses
-to page_alloc allocations on some configurations.
+This series contains two things:
 
-Fix this by recovering the tag after the metadata access.
+1. A fix for a bug in the Ftrace latency tracers that appeared with Linux 5.7.
 
-Fixes: aa1ef4d7b3f6 ("kasan, mm: reset tags when accessing metadata")
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- mm/page_alloc.c | 2 ++
- 1 file changed, 2 insertions(+)
+2. The latency-collector, a tool that is designed to work around the
+   limitations in the ftrace latency tracers. It needs the bug fix in order to
+   work properly.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index bdbec4c98173..8ef6fc53962a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1207,8 +1207,10 @@ static void kernel_init_free_pages(struct page *page, int numpages)
- 	/* s390's use of memset() could override KASAN redzones. */
- 	kasan_disable_current();
- 	for (i = 0; i < numpages; i++) {
-+		u8 tag = page_kasan_tag(page + i);
- 		page_kasan_tag_reset(page + i);
- 		clear_highpage(page + i);
-+		page_kasan_tag_set(page + i, tag);
- 	}
- 	kasan_enable_current();
- }
+I have sent a patch series with the latency-collector before.
+
+I never got any comments on it and I stopped pushing it because I thought that
+BPF tracing would be the wave of the future and that it would solve the problem
+in a cleaner and more elegant way.
+
+Recently, I tried out the criticalstat script from bcc tools but it did not
+fulfill all of my hopes and dreams.
+
+On the bright side, it was able to capture all latencies in a burst. The main
+problems that I encountered were:
+
+1. The system became unstable and froze now and then. The man page of
+   criticalstat has a mention of it being unstable, so I assume that this is a
+   known problem.
+
+2. Sometimes the stack traces were incorrect but not in an obvious way. After it
+   happened once, all subsequent ones were bad.
+   
+3. If two instances were run simultaneously (to capture both preemptoff and irq
+   off), there seemed to be a quite large performance hit but I did not measure
+   this exactly.
+   
+4. The filesystem footprint seemed quite large. The size of libbcc seemed to be
+   quite large for a small embedded system.
+
+For these reasons, I take the liberty of resending the latency-collector again.
+
+I would hope to get some comments regarding it, or some suggestion of an
+alternative approach of how to solve the problem of being able to capture
+latencies that systematically occur close to each other.
+
+Admittedly, it may from a developer's perspective be somewhat of a niche
+problem, since removing one latency will reveal the next but when one is doing
+validation with a fleet of devices being tested in a long and expensive test
+campaign, then it is quite desirable to not lose any latencies.
+
+best regards,
+
+Viktor
+
+Viktor Rosendahl (2):
+  Use pause-on-trace with the latency tracers
+  Add the latency-collector to tools
+
+ kernel/trace/trace_irqsoff.c      |    4 +
+ tools/Makefile                    |   14 +-
+ tools/tracing/Makefile            |   20 +
+ tools/tracing/latency-collector.c | 1212 +++++++++++++++++++++++++++++
+ 4 files changed, 1244 insertions(+), 6 deletions(-)
+ create mode 100644 tools/tracing/Makefile
+ create mode 100644 tools/tracing/latency-collector.c
+
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.25.1
 
