@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B1F2FC53F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A1B2FC541
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbhASX6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730831AbhASX6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:58:02 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2B2C061575;
-        Tue, 19 Jan 2021 15:57:22 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DL5DY2223z9s2g;
-        Wed, 20 Jan 2021 10:57:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611100638;
-        bh=aU6XNAzQbH3IDoetYyr1Fi183CHr/Mb4lTKH65/VU0o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Yj4HKl1AzKXbJ+uKLZfAtSLYrs9hb5aJ2Wqz8S8SEIBshqrwSmJ8j5eaamtwE6bfz
-         jo0df5vZ/iGg8FJIHU/i8s+Z5FuwQJEe6ozl4Heb21YF6zIRAwlp7vLPt+4XBMA+p5
-         XkCEUZmG40OUHVq/3NRCDt+8sK5IXiV+3yCS2/xRzb2LSWMOS42vdmaoWBpCw5KVet
-         SA5uKfg5eQX7sDZ4nijP6GQiSu1Q3Xrn+wFV1lqlIBOF9X1p5f0WNNYBsMgHGkN6Sk
-         bD8qEEzyThymTLpr5n84yTscnF3i2un6Bq6rX1m9R93B4lsOtQrsjVVsczq4bzkugb
-         +9qDyU8eSf+Ag==
-Date:   Wed, 20 Jan 2021 10:57:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Lyude Paul <lyude@redhat.com>, Jani Nikula <jani.nikula@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-intel tree
-Message-ID: <20210120105715.4391dd95@canb.auug.org.au>
+        id S1731013AbhASX7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:59:18 -0500
+Received: from mga14.intel.com ([192.55.52.115]:14052 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730605AbhASX6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 18:58:45 -0500
+IronPort-SDR: ha3Lu4+1c8q4WW2nA7oTVwwe51MloQfA7aK55VsQukr8wNdPmwOLuSFCWEN/k5VIknRmKDU7Hm
+ 6zFmqFHz+aww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="178237128"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="178237128"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 15:58:00 -0800
+IronPort-SDR: Cr3m4y5okOrq1yhbLaWhhnHnH+hvpjKVUwfhFjIKslEtcuL+l6rDtnvmJFbtoRCs02T/kPK94B
+ lS6RZYBCqJJQ==
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="402548004"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 15:58:00 -0800
+Date:   Tue, 19 Jan 2021 15:57:59 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
+References: <20210111214452.1826-1-tony.luck@intel.com>
+ <20210115003817.23657-1-tony.luck@intel.com>
+ <20210115152754.GC9138@zn.tnic>
+ <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
+ <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
+ <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
+ <20210119105632.GF27433@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7BT8h2PLWsOJZo2F4=5Rm_T";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210119105632.GF27433@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7BT8h2PLWsOJZo2F4=5Rm_T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 19, 2021 at 11:56:32AM +0100, Borislav Petkov wrote:
+> On Fri, Jan 15, 2021 at 03:23:46PM -0800, Luck, Tony wrote:
+> > On Fri, Jan 15, 2021 at 12:51:03PM -0800, Luck, Tony wrote:
+> > >  static void kill_me_now(struct callback_head *ch)
+> > >  {
+> > > +	p->mce_count = 0;
+> > >  	force_sig(SIGBUS);
+> > >  }
+> > 
+> > Brown paper bag time ... I just pasted that line from kill_me_maybe()
+> > and I thought I did a re-compile ... but obviously not since it gives
+> > 
+> > error: ‘p’ undeclared (first use in this function)
+> > 
+> > Option a) (just like kill_me_maybe)
+> > 
+> > struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+> > 
+> > Option b) (simpler ... not sure why PeterZ did the container_of thing
+> > 
+> > 	current->mce_count = 0;
+> 
+> Right, he says it is the canonical way to get it out of callback_head.
+> I don't think current will change while the #MC handler runs but we can
+> adhere to the design pattern here and do container_of() ...
 
-Hi all,
+Ok ... I'll use the canonical way.
 
-After merging the drm-intel tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+But now I've run into a weird issue. I'd run some basic tests with a
+dozen machine checks in each of:
+1) user access
+2) kernel copyin
+3) futex (multiple accesses from kernel before task_work())
 
-drivers/gpu/drm/msm/dp/dp_ctrl.c: In function 'dp_ctrl_use_fixed_nvid':
-drivers/gpu/drm/msm/dp/dp_ctrl.c:1425:16: error: implicit declaration of fu=
-nction 'drm_dp_get_edid_quirks'; did you mean 'drm_do_get_edid'? [-Werror=
-=3Dimplicit-function-declaration]
- 1425 |  edid_quirks =3D drm_dp_get_edid_quirks(ctrl->panel->edid);
-      |                ^~~~~~~~~~~~~~~~~~~~~~
-      |                drm_do_get_edid
-drivers/gpu/drm/msm/dp/dp_ctrl.c:1431:11: error: too many arguments to func=
-tion 'drm_dp_has_quirk'
- 1431 |   return (drm_dp_has_quirk(&ctrl->panel->desc, edid_quirks,
-      |           ^~~~~~~~~~~~~~~~
-In file included from drivers/gpu/drm/msm/dp/dp_ctrl.c:15:
-include/drm/drm_dp_helper.h:2087:1: note: declared here
- 2087 | drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quirk =
-quirk)
-      | ^~~~~~~~~~~~~~~~
+and it passed my tests before I posted.
 
-Caused by commit
+But the real validation folks took my patch and found that it has
+destabilized cases 1 & 2 (and case 3 also chokes if you repeat a few
+more times). System either hangs or panics. Generally before 100
+injection/conumption cycles.
 
-  7c553f8b5a7d ("drm/dp: Revert "drm/dp: Introduce EDID-based quirks"")
+Their tests are still just doing one at a time (i.e. complete recovery
+of one machine cehck before injecting the next error). So there aren't
+any complicated race conditions.
 
-Since the drm-intel tree still has its other build failure, I used the
-version from next-20210108 again today.
+So if you see anything obviously broken, let me know. Otherwise I'll
+be poking around at the patch to figure out what is wrong.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7BT8h2PLWsOJZo2F4=5Rm_T
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAHcdsACgkQAVBC80lX
-0GyL0gf9Gykgwv1C+podlywSGDeNb325PRn53gcy3mTvRd319wLt8Kna1AT/js1V
-lACULa7REx8bsskFFYlqIBuDBtr/ynoSM5Ptti+WRvBVwoPHzXfwlRNwIJnjepIb
-UgCDcuFz6V+FWEQL2VhPL2ZmI+BkaNPTfZiiJGrwT2MKChkiq0dB/3EtxTxn6hP1
-6e2oNmiX/byN+hPWfKBM7L1mI0C8mpglDT60vipysRsvUFT0TGMRgOdSNYYIfa23
-RWbn4icWFGv8XQEhIfbMg4rhYwU0V7qkg7vxw6SrPDZdm/1lZz6l26ep8Aq6Dwr7
-sEXT+ctNIffoWWjfSxpkXMbxmw3l5g==
-=0Jnl
------END PGP SIGNATURE-----
-
---Sig_/7BT8h2PLWsOJZo2F4=5Rm_T--
+-Tony
