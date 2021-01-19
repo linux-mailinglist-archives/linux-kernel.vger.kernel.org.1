@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9172FC01C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9702E2FC01E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404109AbhASTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S1730053AbhASThG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390775AbhASTf1 (ORCPT
+        with ESMTP id S1729879AbhASTfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:35:27 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5936C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:34:46 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id z21so13605432pgj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:34:46 -0800 (PST)
+        Tue, 19 Jan 2021 14:35:46 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F402C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:35:05 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id b3so12927139pft.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:35:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UzjGhv/xtQmLzd1fmO3nz3CB6VSkFAgOhOGhk3ruAHo=;
-        b=btK4sahzhn8n/ZvKOAXWg53tlRPKXWae8RKmUHzR3AqkqZLVqEpJMM1CjKQRBPkFLx
-         OmxVfd1eyzwMTrMEjzBYOJCjLDByiAtCHBBBHS0qiwyBbAIlBJMp+OLTtQ1OtAGz3UVD
-         hLLXFszNfn1toapAulw4VBa0GvR62IORaIW3FR1SbFWOGXkmpnvpyg5h2BtvSeTM80bY
-         yVWRLulTDnSSgMKQBDMxpzBTmZvD2bnEvPJqW1yl5PHTklCGjxhQsj7X0X9Ojo1rBn0s
-         pBvNK+C5SRBOvV+4bs/HBXN2cKV51T7z9agy7sHCKrIQeWaxwnSRQJ8VO7vjpywfstfH
-         fbrQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eXqV9fARKuqk4sDqyWfCKvyY10Fzq1Iziw7iD+TDihI=;
+        b=HMXEgmC8wQCFb/kC8Erg3nYF6JeRPUiTGjxGTsTdjXz5Xh79WL1qzUL4KxKlHK7pxQ
+         8GNXaa4VhFTwE6LdIYJ0aPxHNBGjLwDc8ZsdKAdNKBjGb7avxVH8uU0MgoIwMIckg107
+         qbRTSJBzkVI3Cluys8+xngZ70aho0F5XQB7VY6MLe0oq0bpQQAkOmccq+zDYJGSvD+nR
+         vh8VeCXBSc+xlt+nEWFh59JTeFotScDAQ/3wc+WCwVRvwdesI/C3Jq9D6Z3CKi/rlqD1
+         CYZfDrPenf579MvMlyS9AKIBF6fJqIGnlz8+lpLPU1QJWU1PIBLROJdu7z2ctQVoKeAk
+         mWQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UzjGhv/xtQmLzd1fmO3nz3CB6VSkFAgOhOGhk3ruAHo=;
-        b=cjra3v6fr8AkU789qoeVvvhr5sq8To/svb9yTGVQ1Izd/zHY+n0h8Tkz9NKhTK0y1X
-         TbfwFkb52OlUzps8JNxo8dNb5slunBA+psnwGurqYBrNl6yj1kFf3EVETcnQzql15yfM
-         +cKg29Yah4/4CrY72VLvUTI3CUYVHR+OOML2uS4/63QACl10oKM3JI/S1OkjdDWFzY8o
-         fmMTHlkDrMDzteTCRvZdfCCKQb+42F0T49kod+IOvvhY/kY9m+b5ndhUE2/BpBUaTfKD
-         0hiBLimLNwjU3ktKyL0kDdM8Y0iKejrJkL+0NLXdXH6p+BonBRgoggGxwJC5hdkvklRe
-         Bolw==
-X-Gm-Message-State: AOAM532RgCX0z5E/pSoZbNx8rg6HGeQ3k+iuhEZWK8WetTmvk4gVUgmV
-        JoV63X5t/jnCY2xArZnUsweiWKfNRMsN1I6a3xLWWw==
-X-Google-Smtp-Source: ABdhPJwzWwQi5vIgcGtN+LffWKqKBnrrpscjdLVZgHZZGj8pgOMQL1gYnUsRDjR43+4EweiXUn9ot2KNCuEEOKjoNCU=
-X-Received: by 2002:a65:430b:: with SMTP id j11mr5646612pgq.130.1611084886235;
- Tue, 19 Jan 2021 11:34:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eXqV9fARKuqk4sDqyWfCKvyY10Fzq1Iziw7iD+TDihI=;
+        b=gVOiCJ3nBNC6dt/+Nwp7wCBeGF+cfUHGxv4LDwGRopix/e3njKl13lZMZV9mVT4xNg
+         2fTG004JKbg9Qlu9w6lG3eBQwwcemdH8t9aDJQdyCQSVcaV65i9sEcTobpjNVuFEFFz6
+         p4nTNkiIGZhaHIAem3EaY7SJTIYn/+iYsPr7l+JGpMbgcZ0XV+Ak7mHJDeXF7VK46oCD
+         jDGYhlwXdGXYSoJ+jnjKH0O7bN2rp2zNTaM69Sn+kTSoTL0fD1gar5cVmpXAA1BKg3Gz
+         M2AxURO94CYXR1q9fJKuWNCR1lFkE+mnNGdLPNQtNd3yfVyWqAvdfbYRkxaZSiH2GWFJ
+         tT1Q==
+X-Gm-Message-State: AOAM530k/maHDAxtBN/H3W4bWdus5XjZHbW8bihKnIxEFLha8DsjhNT4
+        HDRRfjYDKz2+FCz9mzFyrs+evg==
+X-Google-Smtp-Source: ABdhPJyVaUMi3QM5fgunw34SWHPdUjFvccvZwpUY2X24xSPN+9uw382QeTI2RaCTvwGaXQYr6tJHZg==
+X-Received: by 2002:a62:75d0:0:b029:1b8:ae4d:620c with SMTP id q199-20020a6275d00000b02901b8ae4d620cmr5646338pfc.80.1611084904912;
+        Tue, 19 Jan 2021 11:35:04 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id u68sm19484064pfu.195.2021.01.19.11.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 11:35:04 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:34:57 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 1/4] x86/fpu: Add kernel_fpu_begin_mask() to
+ selectively initialize state
+Message-ID: <YAc0YRGHc5OFw+c/@google.com>
+References: <cover.1611077835.git.luto@kernel.org>
+ <d3197b2d887dab3bf3d9984e2b74b0146d3568fb.1611077835.git.luto@kernel.org>
 MIME-Version: 1.0
-References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
- <20210118183033.41764-6-vincenzo.frascino@arm.com> <20210119144459.GE17369@gaia>
- <1bb4355f-4341-21a7-0a53-a4a27840adee@arm.com> <CAAeHK+y9sw0SENeDXLLBxD8XqD396rXbg1GeBRDEm7PnMzMmHQ@mail.gmail.com>
- <20210119190037.GB26948@gaia>
-In-Reply-To: <20210119190037.GB26948@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 19 Jan 2021 20:34:34 +0100
-Message-ID: <CAAeHK+w3+StvU60KNPknQyEnGH_8BfwFdJbTifPb3gGQhXLDyw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] arm64: mte: Inline mte_assign_mem_tag_range()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3197b2d887dab3bf3d9984e2b74b0146d3568fb.1611077835.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 8:00 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, Jan 19, 2021 at 07:12:40PM +0100, Andrey Konovalov wrote:
-> > On Tue, Jan 19, 2021 at 4:45 PM Vincenzo Frascino
-> > <vincenzo.frascino@arm.com> wrote:
-> > > On 1/19/21 2:45 PM, Catalin Marinas wrote:
-> > > > On Mon, Jan 18, 2021 at 06:30:33PM +0000, Vincenzo Frascino wrote:
-> > > >> mte_assign_mem_tag_range() is called on production KASAN HW hot
-> > > >> paths. It makes sense to inline it in an attempt to reduce the
-> > > >> overhead.
-> > > >>
-> > > >> Inline mte_assign_mem_tag_range() based on the indications provided at
-> > > >> [1].
-> > > >>
-> > > >> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
-> > > >>
-> > > >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > >> Cc: Will Deacon <will@kernel.org>
-> > > >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > >> ---
-> > > >>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
-> > > >>  arch/arm64/lib/mte.S         | 15 ---------------
-> > > >>  2 files changed, 25 insertions(+), 16 deletions(-)
-> > > >>
-> > > >> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> > > >> index 237bb2f7309d..1a6fd53f82c3 100644
-> > > >> --- a/arch/arm64/include/asm/mte.h
-> > > >> +++ b/arch/arm64/include/asm/mte.h
-> > > >> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
-> > > >>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
-> > > >>                       unsigned long addr, unsigned long data);
-> > > >>
-> > > >> -void mte_assign_mem_tag_range(void *addr, size_t size);
-> > > >> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-> > > >> +{
-> > > >> +    u64 _addr = (u64)addr;
-> > > >> +    u64 _end = _addr + size;
-> > > >> +
-> > > >> +    /*
-> > > >> +     * This function must be invoked from an MTE enabled context.
-> > > >> +     *
-> > > >> +     * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> > > >> +     * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> > > >> +     */
-> > > >> +    do {
-> > > >> +            /*
-> > > >> +             * 'asm volatile' is required to prevent the compiler to move
-> > > >> +             * the statement outside of the loop.
-> > > >> +             */
-> > > >> +            asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> > > >> +                         :
-> > > >> +                         : "r" (_addr)
-> > > >> +                         : "memory");
-> > > >> +
-> > > >> +            _addr += MTE_GRANULE_SIZE;
-> > > >> +    } while (_addr != _end);
-> > > >> +}
-> > > >
-> > > > While I'm ok with moving this function to C, I don't think it solves the
-> > > > inlining in the kasan code. The only interface we have to kasan is via
-> > > > mte_{set,get}_mem_tag_range(), so the above function doesn't need to
-> > > > live in a header.
-> > > >
-> > > > If you do want inlining all the way to the kasan code, we should
-> > > > probably move the mte_{set,get}_mem_tag_range() functions to the header
-> > > > as well (and ideally backed by some numbers to show that it matters).
-> > > >
-> > > > Moving it to mte.c also gives us more control on how it's called (we
-> > > > have the WARN_ONs in place in the callers).
-> > > >
-> > >
-> > > Based on the thread [1] this patch contains only an intermediate step to allow
-> > > KASAN to call directly mte_assign_mem_tag_range() in future. At that point I
-> > > think that mte_set_mem_tag_range() can be removed.
-> > >
-> > > If you agree, I would live the things like this to give to Andrey a chance to
-> > > execute on the original plan with a separate series.
-> >
-> > I think we should drop this patch from this series as it's unrelated.
-> >
-> > I will pick it up into my future optimization series. Then it will be
-> > easier to discuss it in the context. The important part that I needed
-> > is an inlinable C implementation of mte_assign_mem_tag_range(), which
-> > I now have with this patch.
->
-> That's fine by me but we may want to add some forced-alignment on the
-> addr and size as the loop here depends on them being aligned, otherwise
-> it gets stuck. The mte_set_mem_tag_range() at least had a WARN_ON in
-> place. Here we could do:
->
->         addr &= MTE_GRANULE_MASK;
->         size = ALIGN(size, MTE_GRANULE_SIZE);
->
-> (or maybe trim "size" with MTE_GRANULE_MASK)
->
-> That's unless the call places are well known and guarantee this
-> alignment (only had a very brief look).
+On Tue, Jan 19, 2021, Andy Lutomirski wrote:
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index eb86a2b831b1..d4a71596c41e 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -121,7 +121,7 @@ int copy_fpregs_to_fpstate(struct fpu *fpu)
+>  }
+>  EXPORT_SYMBOL(copy_fpregs_to_fpstate);
+>  
+> -void kernel_fpu_begin(void)
+> +void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+>  {
+>  	preempt_disable();
+>  
+> @@ -141,13 +141,18 @@ void kernel_fpu_begin(void)
+>  	}
+>  	__cpu_invalidate_fpregs_state();
+>  
+> -	if (boot_cpu_has(X86_FEATURE_XMM))
+> -		ldmxcsr(MXCSR_DEFAULT);
+> +	/* Put sane initial values into the control registers. */
+> +	if (likely(kfpu_mask & KFPU_MXCSR)) {
+> +		if (boot_cpu_has(X86_FEATURE_XMM))
+> +			ldmxcsr(MXCSR_DEFAULT);
+> +	}
+>  
+> -	if (boot_cpu_has(X86_FEATURE_FPU))
+> -		asm volatile ("fninit");
+> +	if (unlikely(kfpu_mask & KFPU_387)) {
+> +		if (boot_cpu_has(X86_FEATURE_FPU))
+> +			asm volatile ("fninit");
+> +	}
 
-No problem. I'll either add the ALIGN or change the call site to
-ensure alignment.
+Why not combine these into a single if statement?  Easier on the eyes (IMO), and
+would generate a smaller diff.
+
+	if (likely(kfpu_mask & KFPU_MXCSR) && boot_cpu_has(X86_FEATURE_XMM))
+		ldmxcsr(MXCSR_DEFAULT);
+
+	if (unlikely(kfpu_mask & KFPU_387) && boot_cpu_has(X86_FEATURE_FPU))
+		asm volatile ("fninit");
+
+>  }
+> -EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+> +EXPORT_SYMBOL_GPL(kernel_fpu_begin_mask);
+>  
+>  void kernel_fpu_end(void)
+>  {
+> -- 
+> 2.29.2
+> 
