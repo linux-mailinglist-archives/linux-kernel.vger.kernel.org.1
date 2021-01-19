@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90142FBF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1DB2FBF3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732173AbhASS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:28:53 -0500
-Received: from mga11.intel.com ([192.55.52.93]:18071 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390060AbhASSLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:11:37 -0500
-IronPort-SDR: JW+2Ghkgf597jUJ+dJyEJhmVkeKeuLReUZnhTiV7ZwtE0KWk1uj8IRLcJ1lp0KKT76zdzRU4bP
- b7W6pOXS4XCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="175469449"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="175469449"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 10:10:28 -0800
-IronPort-SDR: MW+Y7Gj0C/LBuROhQHYbzeTL9GqKCSiDMootWJB1BDgmJJ+fW+k+A/nIJvJFMnk3f3BkFyB4T4
- CBQDqs25p7+g==
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="571089734"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.139.183]) ([10.209.139.183])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 10:10:25 -0800
-Subject: Re: [PATCH v17 02/26] x86/cet/shstk: Add Kconfig option for user-mode
- control-flow protection
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
- <20201229213053.16395-3-yu-cheng.yu@intel.com>
- <20210119110659.GG27433@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <e249dad7-1a33-964c-ffa6-c7921564c813@intel.com>
-Date:   Tue, 19 Jan 2021 10:10:24 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1731946AbhASS12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:27:28 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:45291 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392507AbhASSLi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:11:38 -0500
+Received: by mail-ot1-f48.google.com with SMTP id n42so20653427ota.12;
+        Tue, 19 Jan 2021 10:11:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ECmOo+b/Ycy8oSdsflKY56kBQ2KKW+k6NlOgYJAU6mg=;
+        b=pEdzMbDk0b+osb7hnN8l1TSaU2OEIiDdG8VkkF2CjjAfGTHeY8ofy/CcCAP4WRxQRP
+         GNHl/2GrlPo0ifZNAi2s5vNqW6XadwVKzTk1MvlN+nno2emSgtLSk9DXG6Q+WI4LRjps
+         QXIsn01uqgbGoCG9/HeHPD2/LQ6iqGKTZ2ulKaBRzaVkIqhIAj+cBAu5T5GzbL59AhOj
+         xYSVojc+1A3x6BA6n8+eFXqTn+QvscARL4JLPIxVaW5TFUpCBP1BrtjiMu8Nbl4WAohG
+         vong1WG0Q4SizfHzogSAWQZirXQo1F3y4rUwgEUk1FYAEoKLb5U4PCu1aB7rfZ8gaaZR
+         FE4w==
+X-Gm-Message-State: AOAM530slDjoDtogiHsGd8QFJLqI49DyOcWFqClSb4hnpCSf9ZMPqPhR
+        4k4JXWSfU1rZgZUo6Rr2D0Z2t4L0okXR63ZHRHE=
+X-Google-Smtp-Source: ABdhPJyROuH3pURiKJ6vM2XKihWlMn+WAXH/KDLEv+d8UpaWsrLEDusb3fix67/t7LnhX6sLXEwS45m4zrrGlHVYG9E=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr4353589otc.145.1611079854461;
+ Tue, 19 Jan 2021 10:10:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119110659.GG27433@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210115210159.3090203-1-saravanak@google.com>
+ <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
+ <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
+ <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
+ <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com> <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
+In-Reply-To: <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Jan 2021 19:10:43 +0100
+Message-ID: <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
+Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
+ "gpios" binding
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/2021 3:06 AM, Borislav Petkov wrote:
-> On Tue, Dec 29, 2020 at 01:30:29PM -0800, Yu-cheng Yu wrote:
->> Shadow Stack provides protection against function return address
->> corruption.  It is active when the processor supports it, the kernel has
->> CONFIG_X86_CET_USER enabled, and the application is built for the feature.
->> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
->> non-Shadow Stack applications continue to work, but without protection.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> ---
->>   arch/x86/Kconfig           | 22 ++++++++++++++++++++++
->>   arch/x86/Kconfig.assembler |  5 +++++
->>   2 files changed, 27 insertions(+)
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 7b6dd10b162a..72cff400b9ae 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -1950,6 +1950,28 @@ config X86_SGX
->>   
->>   	  If unsure, say N.
->>   
->> +config ARCH_HAS_SHADOW_STACK
->> +	def_bool n
->> +
->> +config X86_CET_USER
-> 
-> That thing needs to be X86_CET. How many times do I need to type this
-> before you do it?
-> 
+Hi Saravana,
 
-Yes, I totally understand that now.  I was still thinking about 
-separately enabling user/kernel mode.  Perhaps I should have 
-communicated that thought before the change.  Sorry about that.  I will 
-update it.
+On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > Can we pull this into driver-core-next please? It fixes issues on some
+> > > > boards with fw_devlink=on.
+> > >
+> > > On r8a77951-salvator-xs.dts, it introduces one more failure:
+> > >
+> > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
+> > > #gpio-cells for /cpus/cpu@102
+>
+> Geert,
+>
+> One good thing is that it's noticing this being weird and ignoring it
+> in your particular board. I *think* it interprets the "7" as a phandle
+> and that's cpu@102 and realizes it's not a gpio-controller. For at
+> least in your case, it's a safe failure.
 
---
-Yu-cheng
+While 7 is the GPIO index, relative to the current GPIO controller,
+represented by the parent device node.
+
+> > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
+> >
+> > Could it be that the code assumes no self-referencing phandles?
+> > (Just guessing...)
+>
+> Ok I tried to understand what gpio-hogs means. It's not fully clear to
+> me. But it looks like if a gpio-controller has a gpio-hog, then it
+> doesn't have/need gpio-cells? Is that right?
+
+A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
+Usually this is done to enable a piece of hardware on a board, or
+control a mux.
+
+The controller still needs gpio-cells.
+
+> So if a gpio-controller has a gpio-hog, can it ever be referred to by
+> another consumer in DT using blah-gpios = ...? If so, I don't see any
+> obvious code that's handling the missing gpio-cells in this case.
+
+Yes it can.
+
+> Long story short, please help me understand gpio-hog in the context of
+> finding dependencies in DT.
+
+The hog references a GPIO on the current controller.  As this is always
+the parent device node, the hog's gpios properties lack the phandle.
+
+E.g. a normal reference to the first GPIO of gpio5 looks like:
+
+    gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+
+A hog on the first GPIO of gpio5 would be a subnode of gpio5,
+and would just use:
+
+    gpios = <0 GPIO_ACTIVE_LOW>;
+
+instead.
+
+Hope this helps.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
