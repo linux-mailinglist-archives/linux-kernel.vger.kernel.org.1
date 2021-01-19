@@ -2,107 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE62B2FB707
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AEC2FB708
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389011AbhASJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387584AbhASJec (ORCPT
+        id S2389036AbhASJuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:50:51 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41322 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387607AbhASJfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:34:32 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E881C061575;
-        Tue, 19 Jan 2021 01:33:48 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id 6so27538006ejz.5;
-        Tue, 19 Jan 2021 01:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IABaVdUYHRPsPlVF0/vawd3QW8nnC9cA4OeVAWdYtLE=;
-        b=PIy+DGZ2JkAycV25VNA6uFUpYlhxHe++FXERzwkz3I+7Rw0aeWELb5mNYl5Lw66Vor
-         VTmj3l2tCPjYAV7Z4i+HNEzlGh2JRqPAuf3JCNt4OB4YZK4TY/1vooAIEKM3WhvPERjQ
-         s1fcvywcuWUc3hcWH0ldLODeL1m5jgHF6e3pfwI4uOgw62ahLVT0vAadNcE61l/zgmmO
-         bvpbFhR/HflzuGDcVuyQ5mD6dB9VTE/KcW2geM/76dTH5Nxv08T9V66LYZ7AiHqBOVpc
-         ezDnqI/9t5+MfUHuhoAt0R39xtV97SHtfKf6UYLwhHv3YCuPuB2SSPOrROby9KdjWkj9
-         zxEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IABaVdUYHRPsPlVF0/vawd3QW8nnC9cA4OeVAWdYtLE=;
-        b=B5K9/YkXluzqa6GdfMaAk8vA4yOr9xcA6bKyaV2sJQoCd9PKgiyQcLnvxd9CUsEbfZ
-         n3vspM2aXmi4kNZRXgY+ZhTZaXQlRl8ThwJb18NgxQBzVhIJ9hlSiqM8CYG6ngxc1rPy
-         Vfm7diUHgn2TaDlTwqkHZSFK9Bu5zvCwEY0uAOWBca79Q8p6rRW6Mu6vODTHef9RRJiO
-         Ewdq/uhLh0zXW/OPzV/IQjokeVhdMiuLA+sC/DmZDcr8xMzcqI4sMmWsJdOGkPHM069D
-         ZmnMIvAFosxbknUXQbXuafDoi1Q/YjTKu3s0Kkdv7WYwXNGAQg/nqdHI2YxGxL5Xyq/f
-         zbTg==
-X-Gm-Message-State: AOAM532yrfPnP+HZ322yPYmLbEWfbqsk2dxS2mBaNhSV5lP4IB9+YivE
-        A77/Kt2SR6oKaRUYFSX9A7M=
-X-Google-Smtp-Source: ABdhPJyJ7thX7Z5Wg+GZ9AKvvlsD/6vaTO3z5yqKEHZ3ivZiMhirZcZbNXWhMvxwSczqRn37XMzKHg==
-X-Received: by 2002:a17:906:2f83:: with SMTP id w3mr2543434eji.292.1611048826844;
-        Tue, 19 Jan 2021 01:33:46 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id pj11sm7657845ejb.58.2021.01.19.01.33.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Jan 2021 01:33:46 -0800 (PST)
-Message-ID: <fabf0e83387f6155efea521a15b00bb1225d35a4.camel@gmail.com>
-Subject: Re: [PATCH v6 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 19 Jan 2021 10:33:45 +0100
-In-Reply-To: <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
-References: <20210118201039.2398-1-huobean@gmail.com>
-         <20210118201039.2398-2-huobean@gmail.com>
-         <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 19 Jan 2021 04:35:36 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10J9XO8w080442;
+        Tue, 19 Jan 2021 09:34:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mPNMsGIPx1KtxDaTRvGKKYalFMRW2Q89hhpj3Ft7KuA=;
+ b=qBsuDb8YsCZFSUK8Skivb6bTzRnP8acm/j6Fsuhe4tzAzqqCy+Gcvq5PhaCUtqCeWpyr
+ szdEeKojXuQudqi9DriqLgAiGJcRUeLYJKESY/px6abvpt1xCvpO+ReKRZ8JKw8tg5eS
+ 06LhIYe05eaNKIz44tXAPCU3l24l/zoBJ6tlgEqVIarUDOFD1qW457x4hqmAmzzHJ5od
+ njR+FpK82okUlpg5DF9/AVEQjzAIR4w3GzhweT6vWoxs8qaAr74Ag4kGBJabqKZR0nSq
+ YwivJj97Szx0/Mpsn8em+WxO97EF16Jed5P65yFjihmdo+bAOSikIyOjU8Mxi17Z5pSa 9g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 363nnagbf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 09:34:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10J9VZ0t145481;
+        Tue, 19 Jan 2021 09:34:11 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 364a2wbtvd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jan 2021 09:34:11 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10J9Y5LS024333;
+        Tue, 19 Jan 2021 09:34:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 Jan 2021 01:34:04 -0800
+Date:   Tue, 19 Jan 2021 12:33:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Johannes Czekay <johannes.czekay@fau.de>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        jbwyatt4@gmail.com, gustavo@embeddedor.com,
+        linux-kernel@i4.cs.fau.de, linux-kernel@vger.kernel.org,
+        rkovhaev@gmail.com, nicolai.fischer@fau.de, hqjagain@gmail.com
+Subject: Re: [PATCH 6/6] wlan-ng: clean up reused macros
+Message-ID: <20210119093356.GL2696@kadam>
+References: <20210118010955.48663-1-johannes.czekay@fau.de>
+ <20210118010955.48663-7-johannes.czekay@fau.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118010955.48663-7-johannes.czekay@fau.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190058
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101190058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-19 at 09:01 +0200, Adrian Hunter wrote:
-> On 18/01/21 10:10 pm, Bean Huo wrote:
-> > From: Bean Huo <beanhuo@micron.com>
-> > 
-> > Currently UFS WriteBooster driver uses clock scaling up/down to set
-> > WB on/off, for the platform which doesn't support
-> > UFSHCD_CAP_CLK_SCALING,
-> > WB will be always on. Provide a sysfs attribute to enable/disable
-> > WB
-> > during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable
-> > UFS WB.
+On Mon, Jan 18, 2021 at 02:09:56AM +0100, Johannes Czekay wrote:
+> This patch cleans up two "macro argument reuse" warnings by checkpatch.
+> This should also make the code much more readable.
 > 
-> Is it so, that after a full reset, WB is always enabled again?  Is
-> that
-> intended?
+> Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+> Co-developed-by: Nicolai Fischer <nicolai.fischer@fau.de>
+> Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+> ---
+>  drivers/staging/wlan-ng/p80211metastruct.h | 18 +-------
+>  drivers/staging/wlan-ng/prism2mgmt.c       | 48 ++++++----------------
+>  2 files changed, 14 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/p80211metastruct.h b/drivers/staging/wlan-ng/p80211metastruct.h
+> index 4adc64580185..e963227f797c 100644
+> --- a/drivers/staging/wlan-ng/p80211metastruct.h
+> +++ b/drivers/staging/wlan-ng/p80211metastruct.h
+> @@ -114,22 +114,8 @@ struct p80211msg_dot11req_scan_results {
+>  	struct p80211item_uint32 cfpollreq;
+>  	struct p80211item_uint32 privacy;
+>  	struct p80211item_uint32 capinfo;
+> -	struct p80211item_uint32 basicrate1;
+> -	struct p80211item_uint32 basicrate2;
+> -	struct p80211item_uint32 basicrate3;
+> -	struct p80211item_uint32 basicrate4;
+> -	struct p80211item_uint32 basicrate5;
+> -	struct p80211item_uint32 basicrate6;
+> -	struct p80211item_uint32 basicrate7;
+> -	struct p80211item_uint32 basicrate8;
+> -	struct p80211item_uint32 supprate1;
+> -	struct p80211item_uint32 supprate2;
+> -	struct p80211item_uint32 supprate3;
+> -	struct p80211item_uint32 supprate4;
+> -	struct p80211item_uint32 supprate5;
+> -	struct p80211item_uint32 supprate6;
+> -	struct p80211item_uint32 supprate7;
+> -	struct p80211item_uint32 supprate8;
+> +	struct p80211item_uint32 basicrate[8];
+> +	struct p80211item_uint32 supprate[8];
+>  } __packed;
+>  
+>  struct p80211msg_dot11req_start {
+> diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+> index 1bd36dc2b7ff..8540c3336907 100644
+> --- a/drivers/staging/wlan-ng/prism2mgmt.c
+> +++ b/drivers/staging/wlan-ng/prism2mgmt.c
+> @@ -388,6 +388,7 @@ int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp)
+>  	struct hfa384x_hscan_result_sub *item = NULL;
+>  
+>  	int count;
+> +	int i;
+>  
+>  	req = msgp;
+>  
+> @@ -437,42 +438,17 @@ int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp)
+>  		if (item->supprates[count] == 0)
+>  			break;
+>  
+> -#define REQBASICRATE(N) \
+> -	do { \
+> -		if ((count >= (N)) && DOT11_RATE5_ISBASIC_GET(	\
+> -			item->supprates[(N) - 1])) { \
+> -			req->basicrate ## N .data = item->supprates[(N) - 1]; \
+> -			req->basicrate ## N .status = \
+> -				P80211ENUM_msgitem_status_data_ok; \
+> -		} \
+> -	} while (0)
+> -
+> -	REQBASICRATE(1);
+> -	REQBASICRATE(2);
+> -	REQBASICRATE(3);
+> -	REQBASICRATE(4);
+> -	REQBASICRATE(5);
+> -	REQBASICRATE(6);
+> -	REQBASICRATE(7);
+> -	REQBASICRATE(8);
+> -
+> -#define REQSUPPRATE(N) \
+> -	do { \
+> -		if (count >= (N)) {					\
+> -			req->supprate ## N .data = item->supprates[(N) - 1]; \
+> -			req->supprate ## N .status = \
+> -				P80211ENUM_msgitem_status_data_ok; \
+> -		} \
+> -	} while (0)
+> -
+> -	REQSUPPRATE(1);
+> -	REQSUPPRATE(2);
+> -	REQSUPPRATE(3);
+> -	REQSUPPRATE(4);
+> -	REQSUPPRATE(5);
+> -	REQSUPPRATE(6);
+> -	REQSUPPRATE(7);
+> -	REQSUPPRATE(8);
+> +	for (i = 0; i < 8; i++) {
+> +		if (count > 1) {
 
-Hello Adrian
-Good questions. yes, after a full reset, the UFS device side by default
-is wb disabled,  then WB will be always enabled agaion in
-ufshcd_wb_config(hba). but, for the platform which
-supports UFSHCD_CAP_CLK_SCALING, wb will be disabled again while clk
-scaling down and enabled while clk scaling up.
+This should be "i" instead of "1".  And conditions are more readable if
+you put the part that changes first "if (variable < limit)" to avoid
+backwards think.
 
-Regarding the last question, I think OEM wants to do that. maybe they
-suppose there will be a lot of writing after reset?? From the UFS
-device's point of view, the control of WB is up to the user.
+	if (i < count) {
 
-Thanks,
-Bean
+Or you could reverse it the other way:
 
+	if (i >= count)
+		break;
 
+> +			if (DOT11_RATE5_ISBASIC_GET(item->supprates[i])) {
+> +				req->basicrate[i].data = item->supprates[i];
+> +				req->basicrate[i].status = P80211ENUM_msgitem_status_data_ok;
+> +			}
+> +
+> +			req->supprate[i].data = item->supprates[i];
+> +			req->supprate[i].status = P80211ENUM_msgitem_status_data_ok;
+> +		}
+> +	}
 
+It's sort of surprising that we can change how we write this information
+but we don't have to change how it is read.  I guess presumably it's
+just dumped as hex to debugfs or something like that...  Who knows.  :/
 
-
+regards,
+dan carpenter
 
