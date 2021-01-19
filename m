@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5CF2FC204
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A402FC207
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389792AbhASVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:11:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
+        id S2391819AbhASVMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731305AbhASSsn (ORCPT
+        with ESMTP id S1731337AbhASSsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:48:43 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAB6C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:47:50 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id k132so9827128ybf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:47:50 -0800 (PST)
+        Tue, 19 Jan 2021 13:48:47 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE69C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:47:53 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id a1so9633580qvd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:47:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qbBb2z3wvLGYTO+ldEKir4YWRAxMBcx6I27778gF5Xs=;
-        b=VkIoZxm1URRRWxudAbS2nI/fxGZ6GztlJEv0aVWMFVv+0sWdHokVTwAPNPhN5/vfQk
-         14CK+51gc7yo2MH1XVhCHyeN3/zezbPlXpmtTEmEtfo3LYRelzFWIB/tEZtowqEzY3qz
-         eQjDHt+0C6gI4JoeJ/mYDIGLKqqknMqOwLOFTFBNEfCR3bo4ZaZsBfkdLTW1Kco54rDo
-         UsEEog+uddoV4/FUP3oYVcSebAh89g2Cg6uHMvbLbx3k1LKuJYnyc5AbQKE/wdUx9Slo
-         EhEYN01+mV3TPLwWW0NAQ2FH5LiAhkaHBhHoOzZ3C/w7TwNAvrjWBUWXV8jgWVMO1Y/G
-         UA/w==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nQtsb6P16nylvkQXum2zCiAgwE4Ex40JE2Dh9jAvfm4=;
+        b=IgbjYkdW3djs51hNlHYO9VNfWTGH7/ufXErYK8Yl5Fx4LHKBiCA5yvBpi5pswU6XFY
+         /AvEogrwJhlnPNZo2DNdbX1IOJG2GiYh0+feUZ0R4klG4XZAc6U9+5MmZRBPrQne1eRl
+         G452lLO6pY/Fo6fC2F9FCnn3yaLId/rJfFrfTKQLFl8jwdjBqh4zgZXYViW02CW0ANyo
+         gowSMDAo7j5F470PRut9ZssTLsH80Q9O/a3ZCQ81CUxtIa7xwCoOseqoXKDb+u9eoT0P
+         pwk8Gz6xyifQ5kf4eKKBgt2/ryPGpVG8HJbCHX1/GZ3TSP7EmwIf2GiIvrrzKBXFr4Np
+         uIAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qbBb2z3wvLGYTO+ldEKir4YWRAxMBcx6I27778gF5Xs=;
-        b=gsmXLwN46vn8D2GRZXB52wob0eAewAmxk+1HE5LNgSqQDbKhVIzXd14Z1L1Qt55+ui
-         8OCyuDmnAjnfhh7NYvgYvmyOTEmtnW6GmP9Qd97ryah5tB+CWRN9H/tpiog7mrZxpa1V
-         p0yYFo1ntvBk+JEQjyLHJqHYcOpuPx/i1hjXpBkC7rfPnajFqG/+/neFyJhICob1zxtw
-         aZUhprMVzTGmKBMVQ/+0+WmGRF4IJnsepK5oNDLuI5Bd7Tgcx1UvatMneqcaOiOiG0pG
-         E0PERHxXpxE2u13henwumzk3EisGkFLskX75aZyqGQUXed2kGtnz1bjZmZDcXYPk2d2r
-         CyvQ==
-X-Gm-Message-State: AOAM532YgkAUzuv8LU1zY3KILgzwYihkCIkAp5BoMZdBRV5iinrJX0kG
-        GZlm6Aw8YVDSnXj64PUdl+mSpYyBmYWOB+3uNgVL4eQ5F64=
-X-Google-Smtp-Source: ABdhPJwMEZUL/cpMRRzTRn9Eb+L3/pE4Y7I4NUEiGKRffpli7tbbMgrH43UvkSA1XJBKTvA8v5JFk5GblUU3+1OONqQ=
-X-Received: by 2002:a25:c343:: with SMTP id t64mr7758543ybf.228.1611082069882;
- Tue, 19 Jan 2021 10:47:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nQtsb6P16nylvkQXum2zCiAgwE4Ex40JE2Dh9jAvfm4=;
+        b=RV4iAzBw9UQg3Jm5xD6p3D7NNSnjMSCf0bQLEoy/Bff+uIATL+xJjZEFltzMjdyBHZ
+         /G/SW2FNSNIqHbXTu7Xk72nrVe053HtK+3pW4PPt3R3OTGFVe/aIDxS82u02KXzqdVz7
+         nlp8chfZJ3/5sX9hHK72+QoFIODRwBUA88HRFPds6gcLDiRW7k1lQ6blUo91mTlOiSrL
+         UshaSc+ZCjjWtP8WqPizeClUNtGzzlhxwc937n8cMabHxEzSgz0Qyppfj8lgsp0Eb+I/
+         ixFQOazu44s5aPlBcEcgxGeFUmO66tNm/4tDotnXadp+5mgcqytwpeWDo23Tzp7K17/C
+         69Uw==
+X-Gm-Message-State: AOAM5328Z7X2DgniiVpl4wyfz/dQtuP93D1kCcETJhg5AzPofw7fr0+N
+        C3dBX+xBkw2iqvV63IEGOYmHtQ==
+X-Google-Smtp-Source: ABdhPJzEG7viBlbUZNrXhEySKXWcNrfI5RfoT7MZqwFElxER/T6/kunL+TjK4dW1RsHYnK+4ZN5Vzg==
+X-Received: by 2002:ad4:42a5:: with SMTP id e5mr5599059qvr.37.1611082072927;
+        Tue, 19 Jan 2021 10:47:52 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id j7sm12802577qtb.87.2021.01.19.10.47.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 10:47:52 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1w2h-003q3W-Vv; Tue, 19 Jan 2021 14:47:51 -0400
+Date:   Tue, 19 Jan 2021 14:47:51 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
+Message-ID: <20210119184751.GD4605@ziepe.ca>
+References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
+ <20210119043920.155044-9-pasha.tatashin@soleen.com>
+ <20210119183013.GB4605@ziepe.ca>
+ <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210115210159.3090203-1-saravanak@google.com>
- <CACRpkdYrzaFuWkbTe7Fmos4Bk4Ojt6wbqayDjyrS7sf98P-Rbg@mail.gmail.com>
- <CAGETcx9t3R-k0ttiaBUqcveqnXMX75xuTcKPSo9J6WJOfgSP8w@mail.gmail.com>
- <CAMuHMdUN7+O28Xz5rkPwR2RuSA+o_E2VcWsz_9+kzy4=0Jnb1g@mail.gmail.com>
- <CACRpkdZqSm-xfo8a8aFUe-Mbaw9tM+OmCAF3KWjOVDfC=oWj+Q@mail.gmail.com>
- <CAGETcx-Vp0BpYbpPjwsmOv0q5ba1mJvfsPEZ9Oi2Rmx67udu7A@mail.gmail.com>
- <CAMuHMdUc+RCK=t02QhtWRekoYCx2pHnMyaTYiC0=SxKQVrqDHQ@mail.gmail.com>
- <CAGETcx_Ud+UJcdWkCH-WzEGjH4voRBoO++np7ARSi5Gnh51jYg@mail.gmail.com> <CAMuHMdUe6W5ABO-WntCRFXnusacY=2HNiahXN-9ts-Nsf847uQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUe6W5ABO-WntCRFXnusacY=2HNiahXN-9ts-Nsf847uQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 19 Jan 2021 10:47:13 -0800
-Message-ID: <CAGETcx9i7QWOhpS8-qgBaDQiYcgze_AMgE2d00qAyDkBzcZ-qA@mail.gmail.com>
-Subject: Re: [PATCH v1] of: property: Add fw_devlink support for "gpio" and
- "gpios" binding
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:33 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Tue, Jan 19, 2021 at 7:19 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Tue, Jan 19, 2021 at 10:10 AM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > > On Tue, Jan 19, 2021 at 6:54 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Tue, Jan 19, 2021 at 2:20 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > > > On Tue, Jan 19, 2021 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > Can we pull this into driver-core-next please? It fixes issues on some
-> > > > > > > boards with fw_devlink=on.
-> > > > > >
-> > > > > > On r8a77951-salvator-xs.dts, it introduces one more failure:
-> > > > > >
-> > > > > >     OF: /soc/i2c@e66d8000/gpio@20/pcie-sata-switch-hog: could not get
-> > > > > > #gpio-cells for /cpus/cpu@102
-> > > >
-> > > > Geert,
-> > > >
-> > > > One good thing is that it's noticing this being weird and ignoring it
-> > > > in your particular board. I *think* it interprets the "7" as a phandle
-> > > > and that's cpu@102 and realizes it's not a gpio-controller. For at
-> > > > least in your case, it's a safe failure.
-> > >
-> > > While 7 is the GPIO index, relative to the current GPIO controller,
-> > > represented by the parent device node.
-> > >
-> > > > > > Seems like it doesn't parse gpios properties in GPIO hogs correctly.
-> > > > >
-> > > > > Could it be that the code assumes no self-referencing phandles?
-> > > > > (Just guessing...)
-> > > >
-> > > > Ok I tried to understand what gpio-hogs means. It's not fully clear to
-> > > > me. But it looks like if a gpio-controller has a gpio-hog, then it
-> > > > doesn't have/need gpio-cells? Is that right?
-> > >
-> > > A GPIO hog is a way to fix (strap) a GPIO line to a specific value.
-> > > Usually this is done to enable a piece of hardware on a board, or
-> > > control a mux.
-> > >
-> > > The controller still needs gpio-cells.
-> > >
-> > > > So if a gpio-controller has a gpio-hog, can it ever be referred to by
-> > > > another consumer in DT using blah-gpios = ...? If so, I don't see any
-> > > > obvious code that's handling the missing gpio-cells in this case.
-> > >
-> > > Yes it can.
-> > >
-> > > > Long story short, please help me understand gpio-hog in the context of
-> > > > finding dependencies in DT.
-> > >
-> > > The hog references a GPIO on the current controller.  As this is always
-> > > the parent device node, the hog's gpios properties lack the phandle.
-> > >
-> > > E.g. a normal reference to the first GPIO of gpio5 looks like:
-> > >
-> > >     gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-> > >
-> > > A hog on the first GPIO of gpio5 would be a subnode of gpio5,
-> > > and would just use:
-> > >
-> > >     gpios = <0 GPIO_ACTIVE_LOW>;
-> > >
-> > > instead.
-> > >
-> > > Hope this helps.
+On Tue, Jan 19, 2021 at 01:34:26PM -0500, Pavel Tatashin wrote:
+> On Tue, Jan 19, 2021 at 1:30 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > >
-> > I'm still not sure if I've understood this fully, but does this just
-> > boil down to:
-> > Don't parse [name-]gpio[s] to find dependencies if the node has
-> > gpio-hog property?
->
-> Indeed. You can just ignore all nodes with a gpio-hog property, as they're
-> always handled by their parent.
+> > On Mon, Jan 18, 2021 at 11:39:14PM -0500, Pavel Tatashin wrote:
+> > > Zero page should not be used for long term pinned pages. Once pages
+> > > are pinned their physical addresses cannot changed until they are unpinned.
+> > >
+> > > Guarantee to always return real pages when they are pinned by adding
+> > > FOLL_WRITE.
+> > >
+> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > >  mm/gup.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > No, this will definitely break things
+> 
+> What will break
 
-Ok, I'll send out an updated patch later (next week probably). Or
-maybe we can merge this now and I can fix up gpio-hog handling later
-since I'd need to do it anyway for the name-gpios stuff anyway? Or
-will those never be combined with gpio-hog?
+Things assuming GUP doesn't break COW, making all GUP WRITE was
+already tried and revered for some other reason
 
--Saravana
+> > Why does the zero page have to be movable?
+> 
+> It is not even about being movable, we can't cow pinned pages returned
+> by GUP call, how can we use zero page for that?
+
+The zero page is always zero, it is never written to. What does cow
+matter?
+
+Jason
