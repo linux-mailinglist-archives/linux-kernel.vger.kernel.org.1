@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAB32FB10B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D11A2FB10A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391229AbhASFtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:49:13 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:40885 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731302AbhASFLF (ORCPT
+        id S2387893AbhASFsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:48:15 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34587 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388519AbhASFKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:11:05 -0500
+        Tue, 19 Jan 2021 00:10:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611033065; x=1642569065;
+  t=1611033049; x=1642569049;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fhRK4lG765wlnY3VYWw46zVxpefVZCaV0gGjGdWEZQs=;
-  b=R7+No9tp1XyE6QwPxFK3MylI1TBNFoHofHr8qpcAznGu+MniWOra0AGp
-   rkyIjlceZL8XB3XzN1DG2hxgFIQ6D0ryjCriDP1oUWkIWXwiVjoGfczo+
-   IU2PRCaT4wVq8HJWvbg6vP4qEPZ//U47QQN6t7zJ86tPUQftlBdECyBRC
-   aFE0+AuKoU1VbcihAx+ngbjC1W5jDLKniOyhKQATfWPCZG99rxuQjEKGW
-   I8g8dHkjefn/Sa46yqkYSbKMuXDGn52mwmeoUfGSzvAHwpOT4xmqoxXci
-   9OQG84oqF+5+okUMUT6fTFrKwTLP507LJSuRSLV3b6vyQ+nmqVPJm4l3C
-   g==;
-IronPort-SDR: XCoOb8cAHWFBO8fTHWUT62IqlKO4mf5GxWjf+I9xwWngc0y9tc+xlUa9h8/9R7tlAHt8C4ayRP
- vGNkzi+5OfWa3GP9nQsl+R1H19QyjU7/OrbYzX+HND8hxFasSL8QEgX8N5mGg1pgEsGoYKqDml
- 8ZUourU72cWSpYQui9SO0U93uw3IQHc53v63hAd/lexogRtnJMITIAvnOpGPT8Kmf1yTlebTqX
- C0NVJpho4C5g9uaZh+VZ4B4aqIMdl0MvR21YO2D3sOc/90h0Ed8wqQCMbOTjtYQ9DUCzmBz0DI
- rcU=
+  bh=nnZ15L+rQ/6NXzNuwsPySOITMggjv2dpPGtghDgn/3I=;
+  b=c6ge3YWau1INJmsjVAk3miP9WZn9TgseoFv6EOqoQC6pEZ1nSdc2v4H+
+   XY7xema/PlZUxMm7UmjFeo7N94HtuCKqcVmUHVSG17A8tROWpS6b1vg6x
+   OmpR5Xs/adYB4YsjvoN9Z0qY2bjx/cv9YKELvArFRHD/OdsoQmYfUxAw4
+   1ke950X9ux0Ug+67BzioxQ82+yXZrBTEFdBsWBfWCeANgT5qsjxk0SLjq
+   eBqYmFgwZPkUOG7tsdeJlEfFiAj5Bk0/g7eUZ2Zq7rZmBlu7K1Ec3dckX
+   cWC9kPtWyY4GLFws9H6mMDWx+i3m9ecfp7hUwUtov6N2EY0IwWGcn1YTE
+   w==;
+IronPort-SDR: gbGAu7FMM9M8ra3+i2OKLO6Jioiv358lVgEzPKNEu2wQS2qvvMBn6sOibH+3TH04xLAK7LIkk0
+ PxKEz+YInFHNc3iYphlT1w60bC1eS/YF66wsTlun+GeGNw+ngTePoNAvj67HmSnOP4C7ntmrTe
+ 41fMi5wApz9NqDKehY7r/diqAfT1k15t8QCgpkKP9Kzh+zENpuX+s/DJwP0BX86Nmz6SiEHyTQ
+ PYspGTVIesP99QfunG+h138RXlV0gUS6hKCM3+WKxFlL9b+Pq62pCAU2ABPVI/vq57691S3NHu
+ 5nw=
 X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
-   d="scan'208";a="157758770"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:09:50 +0800
-IronPort-SDR: /RxdgqlEktpFbTiaifQfI83jrfjGTwMp3JKsR5JM0iPexwja6MvIOL1Je1ACuC9nFFFMhWRZ9b
- 2nMSVG1hXMC+bNvMZ+AdUmD92Rn+5K1hRkiSNe3jd7ape+eHNmi2coNSmKJKcwrBbksv+YzOW9
- jbF1ae5FXLrjhm1HTs+/U+o+2z2C8x16bpQeGzypzQhP1e1nhs2/SlyNsrRUEfJvtYKFlZM2ZO
- e3hAsOi8xhTXbxUa/fywQ/v6f173zOdonOXEPdJW6APshL7QDtdWzAM54pzLPhP85Hd1V8KmgU
- APnfLn9EmzFHNq7RhSNsR27C
+   d="scan'208";a="268081200"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:10:04 +0800
+IronPort-SDR: xpJbTCxWpzCZeo36vMY6XjlmHCGC4zjkb4E++k4PpAOJx4m0PY9+lr8a7JAIsOXY9q6Lq8PKZN
+ eF/dP5iQOP3fnZEQKtZdFSb/stFf1HUhyR3XfKv4jQh6M4J5FBp3lvEQ729h1QEurdQqZLnRIP
+ yCEms2/NAZpbOCE0Ambs8Za1BZJHvf/X5MByCHb8470orI8KDjjFGzqmTSqCkb8BVJgqODQSJv
+ RhBCTpJbLbO7M5o/x6p8TsI8oQTYHne7dOmBwld9Uq6ubcEYAg7YVteWfcYW5SV+8rJq41lijO
+ flzi/OFrhDmWNYU5lKeuvhIh
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:52:25 -0800
-IronPort-SDR: JLU8nMTD+NZGhpcLc6bx6NezWoOxG1kLxe+XONRlNiEvcpn5x3JxGCWrI6N+TlSlWzGV1Q0IZH
- sVnYt6tKGijbl+nT2mxOo5/rgMe/5l4KRxVV0eiBp02GobWze2qiJQgHs9JNJvbu9kV03QI256
- THC/6jLcI9qR4UKAPS2gqtOtR4DwAg8fBaFWS2YCr+JhQOYLTSPNhMAbcyMh5IWuS0/MKfxvtN
- xPuF9hOwrup1UYc8D7gXKUTo1HoUHkPFFr+UvCvYhNW2SXbqPm5T4xFixZZesNSvVigWeniTT3
- 7fA=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:54:41 -0800
+IronPort-SDR: fQMFfgdtSu8nKcxUqzclyRB9P+rBI21YWfB4xejgzd1WEdOnHm3L4SakDlfU6oc/GiImWBi40s
+ xrwXfD+NR0eoiSPOERNl2yA3hT/FAiC6WXYJT29OBzUhR33jyW2a44OEEyaO8RW7lmq0Kfdbp8
+ zCQCZgyL3cFPfEB3ClOgIrUgLmRSb/JHMwYFzZiPt3rsP6BzAQG3FZAe7E697plU5PyJKHWhGY
+ W00r37LQP39Cea2s9M16j4CR51XnjLw+rlD/Eucyelmc2VgMjnWu4RGUyCYihZR6I9F/PiTOxm
+ QL8=
 WDCIronportException: Internal
 Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
-  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:09:50 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:10:04 -0800
 From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -70,9 +70,9 @@ Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
         osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
         asml.silence@gmail.com, jefflexu@linux.alibaba.com,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [RFC PATCH 27/37] nvmet: use bio_init_fields in bdev-ns
-Date:   Mon, 18 Jan 2021 21:06:21 -0800
-Message-Id: <20210119050631.57073-28-chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 29/37]  btrfs: use bio_init_fields in scrub
+Date:   Mon, 18 Jan 2021 21:06:23 -0800
+Message-Id: <20210119050631.57073-30-chaitanya.kulkarni@wdc.com>
 X-Mailer: git-send-email 2.22.1
 In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
 References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
@@ -84,24 +84,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 ---
- drivers/nvme/target/io-cmd-bdev.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/btrfs/scrub.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
-index 125dde3f410e..302ec6bc2a55 100644
---- a/drivers/nvme/target/io-cmd-bdev.c
-+++ b/drivers/nvme/target/io-cmd-bdev.c
-@@ -323,9 +323,7 @@ static void nvmet_bdev_execute_flush(struct nvmet_req *req)
- 		return;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 5f4f88a4d2c8..1e533966ccf1 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1650,10 +1650,8 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+ 			sbio->bio = bio;
+ 		}
  
- 	bio_init(bio, req->inline_bvec, ARRAY_SIZE(req->inline_bvec));
--	bio_set_dev(bio, req->ns->bdev);
--	bio->bi_private = req;
--	bio->bi_end_io = nvmet_bio_done;
-+	bio_init_fields(bio, req->ns->bdev, 0, req, nvmet_bio_done, 0, 0);
- 	bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
- 
- 	submit_bio(bio);
+-		bio->bi_private = sbio;
+-		bio->bi_end_io = scrub_wr_bio_end_io;
+-		bio_set_dev(bio, sbio->dev->bdev);
+-		bio->bi_iter.bi_sector = sbio->physical >> 9;
++		bio_init_fields(bio, sbio->dev->bdev, sbio->physical >> 9,
++				sbio, scrub_wr_bio_end_io, 0, 0);
+ 		bio->bi_opf = REQ_OP_WRITE;
+ 		sbio->status = 0;
+ 	} else if (sbio->physical + sbio->page_count * PAGE_SIZE !=
 -- 
 2.22.1
 
