@@ -2,298 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D295B2FC29E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B312FC2B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbhASVlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:41:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45158 "EHLO mail.kernel.org"
+        id S1726924AbhASVrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:47:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727254AbhASViQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:38:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DEA722D71;
-        Tue, 19 Jan 2021 21:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611092248;
-        bh=iYrgFRWLYCIMHQ0hwnd2piB3QZC01jHzbxEgapt/A9w=;
-        h=Date:From:To:Subject:From;
-        b=jZvVgTFxTT06avhj4b8FJ7//OhL1es9z7nyGen34DfXc5wxNVLki2wFcp90AgW9jQ
-         8lgqlDzHW497qh21a4CU3xN/8Rc/TGDgR8MYuEyaGk5Ni4XDG5Z+V2P/H/jGC3HYC7
-         E+7lzOSllwlEjEBIoT2QY4z0or1j6eyQjBhn7Bqk=
-Date:   Tue, 19 Jan 2021 13:37:27 -0800
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject:  mmotm 2021-01-19-13-36 uploaded
-Message-ID: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org>
-User-Agent: s-nail v14.8.16
+        id S1728438AbhASVnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 16:43:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F0F122E01;
+        Tue, 19 Jan 2021 21:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611092561;
+        bh=NJ0fj1UZts2wyuVAmmbb+RGcfmxqKrCG+Y21vpS0nZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GX5ttbMorPwMjfHWeIyOcRyMZcIlmOqmWuutILWS0rPHXORNFMDloXTgp1n+5xy82
+         MPkTMvFNGX6WXbSkizmArVa8BxSgBjXF98iKQM/WpRQiX/0Isn6RAy/MyDLDMxQ97d
+         EmHHkmrj9OPoaCVinWK08Xk0XYsCcW16TLJyYMNXzMZvstFA7YlG5zgex04XRDV2hg
+         M25M6fh6grHFxfDW8c6v77m8D+06PYt1+s3Nf+41DB1cL3Cq4IE6xAB4WHzw3A4RZE
+         8wogGxAFdRoS/8zF/rPTfxPLRRnEoTgTcsZXZXqExzn1li/Oi2UTiTwJVNr+ere3a8
+         btriazbyLAYsg==
+Date:   Tue, 19 Jan 2021 13:42:39 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
+ cache compressed blocks
+Message-ID: <YAdSTzYF8Hvxdcqy@google.com>
+References: <X/0DxG+AcX54730W@google.com>
+ <160f2cf9-73ca-18cd-6ad0-2498821b8db6@huawei.com>
+ <X/4kYf11oyoMY8P+@google.com>
+ <abc09f9f-561d-df8a-b835-6b5d7a15232c@huawei.com>
+ <X/8UtJU9Dy30kC7I@google.com>
+ <37ba41db-2589-e155-c416-d0c8832026cb@huawei.com>
+ <X//DPI10+ZXvHkYH@google.com>
+ <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
+ <YAGt0i244dWXym4H@google.com>
+ <20a1dbd3-808e-e62a-53f3-7f1e2a316b3c@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20a1dbd3-808e-e62a-53f3-7f1e2a316b3c@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2021-01-19-13-36 has been uploaded to
+On 01/16, Chao Yu wrote:
+> On 2021/1/15 22:59, Jaegeuk Kim wrote:
+> > On 01/15, Chao Yu wrote:
+> > > On 2021/1/14 12:06, Jaegeuk Kim wrote:
+> > > > On 01/14, Chao Yu wrote:
+> > > > > On 2021/1/13 23:41, Jaegeuk Kim wrote:
+> > > > > > [58690.961685] F2FS-fs (vdb) : inject page get in f2fs_pagecache_get_page of f2fs_quota_write+0x150/0x1f0 [f2fs]
+> > > > > > [58691.071481] F2FS-fs (vdb): Inconsistent error blkaddr:31058, sit bitmap:0
+> > > > > > [58691.077338] ------------[ cut here ]------------
+> > > > > > [58691.081461] WARNING: CPU: 5 PID: 8308 at fs/f2fs/checkpoint.c:151 f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+> > > > > > [58691.086734] Modules linked in: f2fs(O) quota_v2 quota_tree dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua ppdev intel_rapl_msr intel_rapl_common sb_edac kvm_intel kvm irqbypass joydev parport_pc parport input_leds serio_raw mac_hid qemu_fw_cfg sch_fq_codel ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy asy
+> > > > > > [58691.120632] CPU: 5 PID: 8308 Comm: kworker/u17:5 Tainted: G      D    O      5.11.0-rc3-custom #1
+> > > > > > [58691.125438] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> > > > > > [58691.129625] Workqueue: f2fs_post_read_wq f2fs_post_read_work [f2fs]
+> > > > > > [58691.133142] RIP: 0010:f2fs_is_valid_blkaddr+0x1e9/0x280 [f2fs]
+> > > > > > [58691.136221] Code: 3c 07 b8 01 00 00 00 d3 e0 21 f8 75 57 83 fa 07 75 52 89 f2 31 c9 48 c7 c6 20 6a a7 c0 48 89 df e8 bc d6 03 00 f0 80 4b 48 04 <0f> 0b 31 c0 e9 5e fe ff ff 48 8b 57 10 8b 42 30 d3 e0 03 42 48 39
+> > > > > > [58691.143142] RSP: 0018:ffffb429047afd40 EFLAGS: 00010206
+> > > > > > [58691.145639] RAX: 0000000000000000 RBX: ffff9c3b84041000 RCX: 0000000000000000
+> > > > > > [58691.148899] RDX: 0000000000000000 RSI: ffff9c3bbbd58940 RDI: ffff9c3bbbd58940
+> > > > > > [58691.152130] RBP: ffffb429047afd48 R08: ffff9c3bbbd58940 R09: ffffb429047afaa8
+> > > > > > [58691.155266] R10: 00000000001ba090 R11: 0000000000000003 R12: 0000000000007952
+> > > > > > [58691.158304] R13: fffff5cc81266ac0 R14: 00000000000000db R15: 0000000000000000
+> > > > > > [58691.161160] FS:  0000000000000000(0000) GS:ffff9c3bbbd40000(0000) knlGS:0000000000000000
+> > > > > > [58691.164286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > > [58691.166869] CR2: 00007f0fee9d3000 CR3: 000000005ee76001 CR4: 0000000000370ee0
+> > > > > > [58691.169714] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > > [58691.173102] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > > [58691.176163] Call Trace:
+> > > > > > [58691.177948]  f2fs_cache_compressed_page+0x69/0x280 [f2fs]
+> > > > > > [58691.180549]  ? newidle_balance+0x253/0x3d0
+> > > > > > [58691.183238]  f2fs_end_read_compressed_page+0x5a/0x70 [f2fs]
+> > > > > > [58691.188205]  f2fs_post_read_work+0x11d/0x120 [f2fs]
+> > > > > > [58691.192489]  process_one_work+0x221/0x3a0
+> > > > > > [58691.194482]  worker_thread+0x4d/0x3f0
+> > > > > > [58691.198867]  kthread+0x114/0x150
+> > > > > > [58691.202243]  ? process_one_work+0x3a0/0x3a0
+> > > > > > [58691.205367]  ? kthread_park+0x90/0x90
+> > > > > > [58691.208244]  ret_from_fork+0x22/0x30
+> > > > > 
+> > > > > Below patch fixes two issues, I expect this can fix above warning at least.
+> > > > 
+> > > > [106115.591837] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b73: 0000 [#1] SMP PTI
+> > > > [106115.595584] CPU: 3 PID: 10109 Comm: fsstress Tainted: G           O      5.11.0-rc3-custom #1
+> > > > [106115.601087] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> > > > [106115.601087] RIP: 0010:f2fs_read_multi_pages+0x415/0xa70 [f2fs]
+> > > 
+> > > Jaegeuk,
+> > > 
+> > > Could you please help to run:
+> > > 
+> > > gdb f2fs.ko
+> > > (gdb) l *(f2fs_read_multi_pages+0x415)
+> > > 
+> > > to see where we hit the panic.
+> > 
+> > It's fs/f2fs/data.c:2203
+> > 
+> > 2199                 goto out_put_dnode;
+> > 2200         }
+> > 2201
+> > 2202         for (i = 0; i < dic->nr_cpages; i++) {
+> 
+> I doubt when i == cc->nr_cpages, dic was released in below condition,
+> then dic->nr_cpages can be any value (may be larger than cc->nr_cpages),
+> then we may continue the loop, and will access invalid pointer dic.
+> 
+> 		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+> 			if (atomic_dec_and_test(&dic->remaining_pages))
+> 				f2fs_decompress_cluster(dic);
+> 			continue;
+> 		}
+> 
+> 
+> I'd like to add a condition here (in between line 2202 and line 2203) to
+> make sure whether this can happen, could you please help to verify this?
+> 
+> f2fs_bug_on(sbi, i >= cc->nr_cpages);
 
-   https://www.ozlabs.org/~akpm/mmotm/
+No, it seems this is not the case.
 
-mmotm-readme.txt says
-
-README for mm-of-the-moment:
-
-https://www.ozlabs.org/~akpm/mmotm/
-
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.11-rc4:
-(patches marked "*" will be included in linux-next)
-
-  origin.patch
-* x86-setup-dont-remove-e820_type_ram-for-pfn-0.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout.patch
-* mm-memcg-slab-optimize-objcg-stock-draining.patch
-* mm-memcg-fix-memcg-file_dirty-numa-stat.patch
-* mm-fix-numa-stats-for-thp-migration.patch
-* mm-memcontrol-prevent-starvation-when-writing-memoryhigh.patch
-* kasan-fix-unaligned-address-is-unhandled-in-kasan_remove_zero_shadow.patch
-* kasan-fix-incorrect-arguments-passing-in-kasan_add_zero_shadow.patch
-* kasan-fix-hw_tags-boot-parameters.patch
-* kasan-mm-fix-conflicts-with-init_on_alloc-free.patch
-* kasan-mm-fix-resetting-page_alloc-tags-for-hw_tags.patch
-* mm-hugetlbfs-fix-cannot-migrate-the-fallocated-hugetlb-page.patch
-* mm-hugetlb-fix-a-race-between-freeing-and-dissolving-the-page.patch
-* mm-hugetlb-fix-a-race-between-isolating-and-freeing-page.patch
-* mm-hugetlb-remove-vm_bug_on_page-from-page_huge_active.patch
-* mm-migrate-do-not-migrate-hugetlb-page-whose-refcount-is-one.patch
-* ubsan-disable-unsigned-overflow-check-for-i386.patch
-* mm-compaction-move-high_pfn-to-the-for-loop-scope.patch
-* mm-fix-page-reference-leak-in-soft_offline_page.patch
-* sparc-mm-highmem-flush-cache-and-tlb.patch
-* mm-highmem-prepare-for-overriding-set_pte_at.patch
-* mips-mm-highmem-use-set_pte-for-kmap_local.patch
-* powerpc-mm-highmem-use-__set_pte_at-for-kmap_local.patch
-* proc_sysctl-fix-oops-caused-by-incorrect-command-parameters.patch
-* maintainers-add-a-couple-more-files-to-the-clang-llvm-section.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* hexagon-remove-config_experimental-from-defconfigs.patch
-* ocfs2-remove-redundant-conditional-before-iput.patch
-* ocfs2-cleanup-some-definitions-which-is-not-used-anymore.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* ramfs-support-o_tmpfile.patch
-* fs-delete-repeated-words-in-comments.patch
-* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
-  mm.patch
-* mm-tracing-record-slab-name-for-kmem_cache_free.patch
-* mm-slub-disable-user-tracing-for-kmemleak-caches-by-default.patch
-* mm-slub-stop-freeing-kmem_cache_node-structures-on-node-offline.patch
-* mm-slab-slub-stop-taking-memory-hotplug-lock.patch
-* mm-slab-slub-stop-taking-cpu-hotplug-lock.patch
-* mm-slub-splice-cpu-and-page-freelists-in-deactivate_slab.patch
-* mm-debug-improve-memcg-debugging.patch
-* mm-msync-exit-early-when-the-flags-is-an-ms_async-and-start-vm_start.patch
-* mm-filemap-remove-unused-parameter-and-change-to-void-type-for-replace_page_cache_page.patch
-* mm-filemap-dont-revert-iter-on-eiocbqueued.patch
-* mm-swap-dont-setpageworkingset-unconditionally-during-swapin.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account-fix.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage-checkpatch-fixes.patch
-* mm-memcontrol-fix-nr_anon_thps-accounting-in-charge-moving.patch
-* mm-memcontrol-convert-nr_anon_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_pmdmapped-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_pmdmapped-account-to-pages.patch
-* mm-memcontrol-make-the-slab-calculation-consistent.patch
-* mm-memcg-revise-the-using-condition-of-lock_page_lruvec-function-series.patch
-* mm-memcg-remove-rcu-locking-for-lock_page_lruvec-function-series.patch
-* mm-memcg-add-swapcache-stat-for-memcg-v2.patch
-* mm-memcg-add-swapcache-stat-for-memcg-v2-fix.patch
-* mm-kmem-make-__memcg_kmem_uncharge-static.patch
-* mm-page_counter-relayout-structure-to-reduce-false-sharing.patch
-* mm-mmap-remove-unnecessary-local-variable.patch
-* mm-mmap-fix-the-adjusted-length-error.patch
-* mm-optimizing-error-condition-detection-in-do_mprotect_pkey.patch
-* mm-rmap-explicitly-reset-vma-anon_vma-in-unlink_anon_vmas.patch
-* mm-mremap-unlink-anon_vmas-when-mremap-with-mremap_dontunmap-success.patch
-* mm-page_reporting-use-list_entry_is_head-in-page_reporting_cycle.patch
-* kasan-prefix-global-functions-with-kasan_.patch
-* kasan-clarify-hw_tags-impact-on-tbi.patch
-* kasan-clean-up-comments-in-tests.patch
-* kasan-add-macros-to-simplify-checking-test-constraints.patch
-* kasan-add-match-all-tag-tests.patch
-* kasan-arm64-allow-using-kunit-tests-with-hw_tags-mode.patch
-* kasan-rename-config_test_kasan_module.patch
-* kasan-add-compiler-barriers-to-kunit_expect_kasan_fail.patch
-* kasan-adapt-kmalloc_uaf2-test-to-hw_tags-mode.patch
-* kasan-fix-memory-corruption-in-kasan_bitops_tags-test.patch
-* kasan-move-_ret_ip_-to-inline-wrappers.patch
-* kasan-fix-bug-detection-via-ksize-for-hw_tags-mode.patch
-* kasan-add-proper-page-allocator-tests.patch
-* kasan-add-a-test-for-kmem_cache_alloc-free_bulk.patch
-* kasan-dont-run-tests-when-kasan-is-not-enabled.patch
-* kasan-remove-redundant-config-option.patch
-* kasan-remove-redundant-config-option-v3.patch
-* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
-* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
-* mm-hugetlb-fix-potential-double-free-in-hugetlb_register_node-error-path.patch
-* mm-hugetlbc-fix-unnecessary-address-expansion-of-pmd-sharing.patch
-* mm-hugetlb-avoid-unnecessary-hugetlb_acct_memory-call.patch
-* mm-hugetlb-use-helper-huge_page_order-and-pages_per_huge_page.patch
-* mm-vmscan-__isolate_lru_page_prepare-clean-up.patch
-* mm-compaction-remove-rcu_read_lock-during-page-compaction.patch
-* mm-compaction-remove-duplicated-vm_bug_on_page-pagelocked.patch
-* mm-compaction-return-proper-state-in-should_proactive_compact_node.patch
-* mm-compaction-return-proper-state-in-should_proactive_compact_node-fix.patch
-* mm-compaction-correct-deferral-logic-for-proactive-compaction.patch
-* mm-hugetlb-change-hugetlb_reserve_pages-to-type-bool.patch
-* hugetlbfs-remove-special-hugetlbfs_set_page_dirty.patch
-* hugetlbfs-remove-useless-bug_oninode-in-hugetlbfs_setattr.patch
-* hugetlbfs-use-helper-macro-default_hstate-in-init_hugetlbfs_fs.patch
-* hugetlbfs-correct-obsolete-function-name-in-hugetlbfs_read_iter.patch
-* mm-migrate-remove-unneeded-semicolons.patch
-* mm-make-pagecache-tagged-lookups-return-only-head-pages.patch
-* mm-shmem-use-pagevec_lookup-in-shmem_unlock_mapping.patch
-* mm-swap-optimise-get_shadow_from_swap_cache.patch
-* mm-add-fgp_entry.patch
-* mm-filemap-rename-find_get_entry-to-mapping_get_entry.patch
-* mm-filemap-add-helper-for-finding-pages.patch
-* mm-filemap-add-helper-for-finding-pages-fix.patch
-* mm-filemap-add-mapping_seek_hole_data.patch
-* mm-filemap-add-mapping_seek_hole_data-fix.patch
-* iomap-use-mapping_seek_hole_data.patch
-* mm-add-and-use-find_lock_entries.patch
-* mm-add-and-use-find_lock_entries-fix.patch
-* mm-add-an-end-parameter-to-find_get_entries.patch
-* mm-add-an-end-parameter-to-pagevec_lookup_entries.patch
-* mm-remove-nr_entries-parameter-from-pagevec_lookup_entries.patch
-* mm-pass-pvec-directly-to-find_get_entries.patch
-* mm-remove-pagevec_lookup_entries.patch
-* mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-* mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-* mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
-* mm-cma-allocate-cma-areas-bottom-up.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-2.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-3.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-3-fix.patch
-* memblock-do-not-start-bottom-up-allocations-with-kernel_end.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
-* mm-vmstatc-erase-latency-in-vmstat_shepherd.patch
-* mm-move-pfn_to_online_page-out-of-line.patch
-* mm-teach-pfn_to_online_page-to-consider-subsection-validity.patch
-* mm-teach-pfn_to_online_page-about-zone_device-section-collisions.patch
-* mm-fix-memory_failure-handling-of-dax-namespace-metadata.patch
-* mm-zswap-clean-up-confusing-comment.patch
-* mm-zswap-add-the-flag-can_sleep_mapped.patch
-* mm-set-the-sleep_mapped-to-true-for-zbud-and-z3fold.patch
-* mm-zsmallocc-convert-to-use-kmem_cache_zalloc-in-cache_alloc_zspage.patch
-* mm-remove-arch_remap-and-mm-arch-hooksh.patch
-* mm-page-flagsh-typo-fix-it-if.patch
-* mm-dmapool-use-might_alloc.patch
-* bdi-use-might_alloc.patch
-* bdi-use-might_alloc-fix.patch
-* mm-add-kernel-electric-fence-infrastructure.patch
-* mm-add-kernel-electric-fence-infrastructure-fix.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-2.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-3.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-4.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-5.patch
-* x86-kfence-enable-kfence-for-x86.patch
-* x86-kfence-enable-kfence-for-x86-fix.patch
-* arm64-kfence-enable-kfence-for-arm64.patch
-* arm64-kfence-enable-kfence-for-arm64-fix.patch
-* kfence-use-pt_regs-to-generate-stack-trace-on-faults.patch
-* mm-kfence-insert-kfence-hooks-for-slab.patch
-* mm-kfence-insert-kfence-hooks-for-slub.patch
-* kfence-kasan-make-kfence-compatible-with-kasan.patch
-* kfence-kasan-make-kfence-compatible-with-kasan-fix.patch
-* kfence-documentation-add-kfence-documentation.patch
-* kfence-documentation-add-kfence-documentation-fix.patch
-* kfence-add-test-suite.patch
-* kfence-add-test-suite-fix.patch
-* kfence-add-test-suite-fix-2.patch
-* maintainers-add-entry-for-kfence.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* alpha-remove-config_experimental-from-defconfigs.patch
-* proc-wchan-use-printk-format-instead-of-lookup_symbol_name.patch
-* sysctlc-fix-underflow-value-setting-risk-in-vm_table.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* lib-genalloc-change-return-type-to-unsigned-long-for-bitmap_set_ll.patch
-* lib-optimize-cpumask_local_spread.patch
-* lib-optimize-cpumask_local_spread-v8.patch
-* stringh-move-fortified-functions-definitions-in-a-dedicated-header.patch
-* lib-hexdump-introduce-dump_prefix_unhashed-for-unhashed-addresses.patch
-* mm-page_poison-use-unhashed-address-in-hexdump-for-check_poison_mem.patch
-* bitops-spelling-s-synomyn-synonym.patch
-* checkpatch-improve-blank-line-after-declaration-test.patch
-* checkpatch-ignore-warning-designated-initializers-using-nr_cpus.patch
-* checkpatch-trivial-style-fixes.patch
-* checkpatch-prefer-ftrace-over-function-entry-exit-printks.patch
-* checkpatch-improve-typecast_int_constant-test-message.patch
-* aio-simplify-read_events.patch
-* scripts-gdb-fix-list_for_each.patch
-* initramfs-panic-with-memory-information.patch
-* initramfs-panic-with-memory-information-fix.patch
-  linux-next.patch
-* mm-add-definition-of-pmd_page_order.patch
-* mmap-make-mlock_future_check-global.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages-fix.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled-fix.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas-fix.patch
-* riscv-kconfig-make-direct-map-manipulation-options-depend-on-mmu.patch
-* secretmem-use-pmd-size-pages-to-amortize-direct-map-fragmentation.patch
-* secretmem-add-memcg-accounting.patch
-* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix-fix.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2-fix.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
+> 
+> Thanks,
+> 
+> > 2203                 struct page *page = dic->cpages[i];
+> > 2204                 block_t blkaddr;
+> > 2205                 struct bio_post_read_ctx *ctx;
+> > 2206
+> > 2207                 blkaddr = data_blkaddr(dn.inode, dn.node_page,
+> > 2208                                                 dn.ofs_in_node + i + 1);
+> > 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > [106115.601087] Code: ff ff ff 45 31 ff f7 d0 25 00 00 08 00 89 45 80 48 8b 45 a0 48 83 c0 6c 48 89 85 78 ff ff ff 48 8b 7d a0 49 63 c7 48 8b 57 30 <48> 8b 1c c2 8b 45 c4 8d 50 01 48 8b 45 b8 48 2b 05 c6 55 92 dc 48
+> > > > [106115.601087] RSP: 0018:ffffc0a4822f7710 EFLAGS: 00010206
+> > > > [106115.620978] RAX: 0000000000000001 RBX: ffffe801820034c0 RCX: 0000000000200000
+> > > > [106115.620978] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc09487af RDI: ffff9bc1d87c4200
+> > > > [106115.627351] RBP: ffffc0a4822f77c0 R08: 0000000000000000 R09: 0000000000000000
+> > > > [106115.627351] R10: ffff9bc1d87c4200 R11: 0000000000000001 R12: 0000000000105343
+> > > > [106115.627351] R13: ffff9bc2d2184000 R14: 0000000000000000 R15: 0000000000000001
+> > > > [106115.635587] FS:  00007f188e909b80(0000) GS:ffff9bc2fbcc0000(0000) knlGS:0000000000000000
+> > > > [106115.635587] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > [106115.635587] CR2: 000056446d88b358 CR3: 00000000534b4002 CR4: 0000000000370ee0
+> > > > [106115.635587] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > [106115.635587] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > [106115.635587] Call Trace:
+> > > > [106115.635587]  f2fs_mpage_readpages+0x4e4/0xac0 [f2fs]
+> > > > [106115.635587]  f2fs_readahead+0x47/0x90 [f2fs]
+> > > > [106115.635587]  read_pages+0x8e/0x280
+> > > > [106115.635587]  page_cache_ra_unbounded+0x11f/0x1f0
+> > > > [106115.665909]  do_page_cache_ra+0x3d/0x40
+> > > > [106115.670756]  ondemand_readahead+0x2c1/0x2e0
+> > > > [106115.671682]  page_cache_sync_ra+0xd4/0xe0
+> > > > [106115.675622]  generic_file_buffered_read_get_pages+0x126/0x8d0
+> > > > [106115.679158]  generic_file_buffered_read+0x113/0x4a0
+> > > > [106115.679158]  ? __filemap_fdatawrite_range+0xd8/0x110
+> > > > [106115.685672]  ? __mark_inode_dirty+0x98/0x330
+> > > > [106115.691168]  ? f2fs_direct_IO+0x80/0x6f0 [f2fs]
+> > > > [106115.691168]  generic_file_read_iter+0xdf/0x140
+> > > > [106115.691168]  f2fs_file_read_iter+0x34/0xb0 [f2fs]
+> > > > [106115.699450]  aio_read+0xef/0x1b0
+> > > > [106115.699450]  ? do_user_addr_fault+0x1b8/0x450
+> > > > [106115.699450]  io_submit_one+0x217/0xbc0
+> > > > [106115.699450]  ? io_submit_one+0x217/0xbc0
+> > > > [106115.699450]  __x64_sys_io_submit+0x8d/0x180
+> > > > [106115.699450]  ? __x64_sys_io_submit+0x8d/0x180
+> > > > [106115.712018]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> > > > [106115.717468]  do_syscall_64+0x38/0x90
+> > > > [106115.723157]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > 
+> > > > > 
+> > > > > - detect truncation during f2fs_cache_compressed_page()
+> > > > > - don't set PageUptodate for temporary page in f2fs_load_compressed_page()
+> > > > > 
+> > > > > From: Chao Yu <yuchao0@huawei.com>
+> > > > > 
+> > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > ---
+> > > > >    fs/f2fs/compress.c | 20 +++++++++++++-------
+> > > > >    fs/f2fs/data.c     |  3 +--
+> > > > >    fs/f2fs/f2fs.h     |  6 +++---
+> > > > >    3 files changed, 17 insertions(+), 12 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > > index 0fec71e40001..f364c10c506c 100644
+> > > > > --- a/fs/f2fs/compress.c
+> > > > > +++ b/fs/f2fs/compress.c
+> > > > > @@ -1741,7 +1741,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > > >    		return;
+> > > > > 
+> > > > > -	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
+> > > > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > > >    		return;
+> > > > > 
+> > > > >    	si_meminfo(&si);
+> > > > > @@ -1774,21 +1774,25 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    		return;
+> > > > >    	}
+> > > > > 
+> > > > > -	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+> > > > > -	SetPageUptodate(cpage);
+> > > > > -
+> > > > >    	f2fs_set_page_private(cpage, ino);
+> > > > > 
+> > > > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > > > +		goto out;
+> > > > > +
+> > > > > +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+> > > > > +	SetPageUptodate(cpage);
+> > > > > +out:
+> > > > >    	f2fs_put_page(cpage, 1);
+> > > > >    }
+> > > > > 
+> > > > > -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    								block_t blkaddr)
+> > > > >    {
+> > > > >    	struct page *cpage;
+> > > > > +	bool hitted = false;
+> > > > > 
+> > > > >    	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > > > -		return;
+> > > > > +		return false;
+> > > > > 
+> > > > >    	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
+> > > > >    				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
+> > > > > @@ -1797,10 +1801,12 @@ void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    			atomic_inc(&sbi->compress_page_hit);
+> > > > >    			memcpy(page_address(page),
+> > > > >    				page_address(cpage), PAGE_SIZE);
+> > > > > -			SetPageUptodate(page);
+> > > > > +			hitted = true;
+> > > > >    		}
+> > > > >    		f2fs_put_page(cpage, 1);
+> > > > >    	}
+> > > > > +
+> > > > > +	return hitted;
+> > > > >    }
+> > > > > 
+> > > > >    void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
+> > > > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > > > > index b3973494b102..3705c272b76a 100644
+> > > > > --- a/fs/f2fs/data.c
+> > > > > +++ b/fs/f2fs/data.c
+> > > > > @@ -2211,8 +2211,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > > > >    		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+> > > > >    						dn.ofs_in_node + i + 1);
+> > > > > 
+> > > > > -		f2fs_load_compressed_page(sbi, page, blkaddr);
+> > > > > -		if (PageUptodate(page)) {
+> > > > > +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+> > > > >    			if (atomic_dec_and_test(&dic->remaining_pages))
+> > > > >    				f2fs_decompress_cluster(dic);
+> > > > >    			continue;
+> > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > > index 9f79a6825f06..b807970d67b1 100644
+> > > > > --- a/fs/f2fs/f2fs.h
+> > > > > +++ b/fs/f2fs/f2fs.h
+> > > > > @@ -3951,7 +3951,7 @@ struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
+> > > > >    void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
+> > > > >    void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    						nid_t ino, block_t blkaddr);
+> > > > > -void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > >    								block_t blkaddr);
+> > > > >    void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+> > > > >    #else
+> > > > > @@ -3990,8 +3990,8 @@ static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
+> > > > >    				block_t blkaddr) { }
+> > > > >    static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
+> > > > >    				struct page *page, nid_t ino, block_t blkaddr) { }
+> > > > > -static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+> > > > > -				struct page *page, block_t blkaddr) { }
+> > > > > +static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+> > > > > +				struct page *page, block_t blkaddr) { return false; }
+> > > > >    static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
+> > > > >    							nid_t ino) { }
+> > > > >    #endif
+> > > > > -- 
+> > > > > 2.29.2
+> > > > .
+> > > > 
+> > 
+> > 
+> > _______________________________________________
+> > Linux-f2fs-devel mailing list
+> > Linux-f2fs-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > 
