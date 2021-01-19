@@ -2,103 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D712FC28F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDE02FC276
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404211AbhASRwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:52:07 -0500
-Received: from m12-11.163.com ([220.181.12.11]:51600 "EHLO m12-11.163.com"
+        id S1731838AbhASRsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:48:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:34358 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391524AbhASOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:51:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=zRHOb2PfEh1w+OV/Fv
-        PiPRQrZc0sHezKYe+j3QOylIg=; b=jQxEpBilipjA5g6kI/YEeKlUyMm7Gym8R4
-        d/QAuaAAxPSLFa7xJ/ZcF8zbcLAHy5NGW5vTKlwlHrj6rclgvyuDNRKGuQ+Wrbfb
-        LULln1UKAF8TsOWoGZqcnDa2fYXCXq/q7bC/FbEaRirxoOPxO81E3uGrGuwkgB0Q
-        VhFUV8Wpw=
-Received: from localhost.localdomain (unknown [223.87.231.20])
-        by smtp7 (Coremail) with SMTP id C8CowACXdNTZ2gZg8tlVJg--.38522S2;
-        Tue, 19 Jan 2021 21:12:58 +0800 (CST)
-From:   Hailong liu <carver4lio@163.com>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH 6/6] arm/mm/ptdump:Add address markers for KASAN regions
-Date:   Tue, 19 Jan 2021 21:12:28 +0800
-Message-Id: <20210119131228.8162-1-carver4lio@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: C8CowACXdNTZ2gZg8tlVJg--.38522S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur1kXF4fKFy5JrWxXryrJFb_yoW8WF4xpr
-        9xAr9xurW8J3W7XayjkrsFqryYkr4DZFZrZr429w4YyF15AFyIqF1Ik34fA3y2qFWrJr4r
-        uFnYyryYqF4DXw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07joFALUUUUU=
-X-Originating-IP: [223.87.231.20]
-X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/xtbCCwQfnV3Le1O3CAABsN
+        id S2389089AbhASOsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:48:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 254C5142F;
+        Tue, 19 Jan 2021 06:47:31 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.56.227])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 556B23F66E;
+        Tue, 19 Jan 2021 06:47:27 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH 5/8] perf arm-spe: Synthesize memory event
+Date:   Tue, 19 Jan 2021 16:46:55 +0200
+Message-Id: <20210119144658.793-5-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210119144658.793-1-james.clark@arm.com>
+References: <20210119144658.793-1-james.clark@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+From: Leo Yan <leo.yan@linaro.org>
 
-ARM has recently supported KASAN, so I think that it's time to add KASAN
-regions for PTDUMP on ARM.
+The memory event can deliver two benefits:
 
-I have tested this patch with QEMU + vexpress-a15. Both CONFIG_ARM_LPAE
-and no CONFIG_ARM_LPAE.
+- The first benefit is the memory event can give out global view for
+  memory accessing, rather than organizing events with scatter mode
+  (e.g. uses separate event for L1 cache, last level cache, etc) which
+  which can only display a event for single memory type, memory events
+  include all memory accessing so it can display the data accessing
+  cross memory levels in the same view;
 
-The result after patching looks like this:
-1 CONFIG_ARM_LPAE=y
----[ Kasan shadow start ]---
-0x6ee00000-0x7af00000         193M     RW NX SHD MEM/CACHED/WBWA
-0x7b000000-0x7f000000          64M     ro NX SHD MEM/CACHED/WBWA
----[ Kasan shadow end ]---
----[ Modules ]---
----[ Kernel Mapping ]---
-......
----[ vmalloc() Area ]---
-......
----[ vmalloc() End ]---
----[ Fixmap Area ]---
----[ Vectors ]---
-......
----[ Vectors End ]---
+- The second benefit is the sample generation might introduce a big
+  overhead and need to wait for long time for Perf reporting, we can
+  specify itrace option '--itrace=M' to filter out other events and only
+  output memory events, this can significantly reduce the overhead
+  caused by generating samples.
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+This patch is to enable memory event for Arm SPE.
+
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: James Clark <james.clark@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Al Grant <al.grant@arm.com>
+Cc: Andre Przywara <andre.przywara@arm.com>
+Cc: Wei Li <liwei391@huawei.com>
+Cc: Tan Xiaojun <tanxiaojun@huawei.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/arm/mm/dump.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/perf/util/arm-spe.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm/mm/dump.c b/arch/arm/mm/dump.c
-index c18d23a5e5f1..93ff0097f00b 100644
---- a/arch/arm/mm/dump.c
-+++ b/arch/arm/mm/dump.c
-@@ -19,6 +19,10 @@
- #include <asm/ptdump.h>
+diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+index 578725344603..5550906486d8 100644
+--- a/tools/perf/util/arm-spe.c
++++ b/tools/perf/util/arm-spe.c
+@@ -53,6 +53,7 @@ struct arm_spe {
+ 	u8				sample_tlb;
+ 	u8				sample_branch;
+ 	u8				sample_remote_access;
++	u8				sample_memory;
  
- static struct addr_marker address_markers[] = {
-+#ifdef CONFIG_KASAN
-+	{ KASAN_SHADOW_START,	"Kasan shadow start"},
-+	{ KASAN_SHADOW_END,	"Kasan shadow end"},
-+#endif
- 	{ MODULES_VADDR,	"Modules" },
- 	{ PAGE_OFFSET,		"Kernel Mapping" },
- 	{ 0,			"vmalloc() Area" },
-@@ -429,8 +433,11 @@ static void ptdump_initialize(void)
- 				if (pg_level[i].bits[j].nx_bit)
- 					pg_level[i].nx_bit = &pg_level[i].bits[j];
- 			}
--
-+#ifdef CONFIG_KASAN
-+	address_markers[4].start_address = VMALLOC_START;
-+#else
- 	address_markers[2].start_address = VMALLOC_START;
-+#endif
+ 	u64				l1d_miss_id;
+ 	u64				l1d_access_id;
+@@ -62,6 +63,7 @@ struct arm_spe {
+ 	u64				tlb_access_id;
+ 	u64				branch_miss_id;
+ 	u64				remote_access_id;
++	u64				memory_id;
+ 
+ 	u64				kernel_start;
+ 
+@@ -293,6 +295,18 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
+ 	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
  }
  
- static struct ptdump_info kernel_ptdump_info = {
++#define SPE_MEM_TYPE	(ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS | \
++			 ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS | \
++			 ARM_SPE_REMOTE_ACCESS)
++
++static bool arm_spe__is_memory_event(enum arm_spe_sample_type type)
++{
++	if (type & SPE_MEM_TYPE)
++		return true;
++
++	return false;
++}
++
+ static int arm_spe_sample(struct arm_spe_queue *speq)
+ {
+ 	const struct arm_spe_record *record = &speq->decoder->record;
+@@ -354,6 +368,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 			return err;
+ 	}
+ 
++	if (spe->sample_memory && arm_spe__is_memory_event(record->type)) {
++		err = arm_spe__synth_mem_sample(speq, spe->memory_id);
++		if (err)
++			return err;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -917,6 +937,16 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
+ 		id += 1;
+ 	}
+ 
++	if (spe->synth_opts.mem) {
++		spe->sample_memory = true;
++
++		err = arm_spe_synth_event(session, &attr, id);
++		if (err)
++			return err;
++		spe->memory_id = id;
++		arm_spe_set_event_name(evlist, id, "memory");
++	}
++
+ 	return 0;
+ }
+ 
 -- 
-2.17.1
+2.28.0
 
