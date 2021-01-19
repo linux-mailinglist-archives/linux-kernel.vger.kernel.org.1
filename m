@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046AE2FB7AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F852FB7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388841AbhASLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:20:52 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2372 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405174AbhASLGq (ORCPT
+        id S2405404AbhASLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404775AbhASLGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:06:46 -0500
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DKm0C1q6lz67cx2;
-        Tue, 19 Jan 2021 19:00:27 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 19 Jan 2021 12:05:53 +0100
-Received: from [10.47.10.61] (10.47.10.61) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
- 2021 11:05:52 +0000
-Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "irogers@google.com" <irogers@google.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
- <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <86abd4dd-a92b-f69b-64e0-7f985506f717@huawei.com>
-Date:   Tue, 19 Jan 2021 11:04:38 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 19 Jan 2021 06:06:07 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA792C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:05:20 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id i7so12746926pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:05:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4TOzYyZIin/yiRGi1ie9o6/CbIyjNQOy95/3SVEBU9A=;
+        b=uExiI/2TzOCWPI0pjBTK0TdMIUfxRWt8KPMbORnS5c9XO68eyPvKDWJwxuopER796L
+         vURhfaHxKLDrdEPMFkOr9D58bDFAGeSBZqyZoZFnV8Ds7wkLh1pLnTtIRfKzC3SNrIG8
+         4yP6GQFO22QzekfpAs4U1eCA1618km+cf6i7I1xDcH3U66TWqpFoSnJURTiEhgICz/DU
+         PNnFj2qdBYVwZw3IYfwhM3DmNJJsRyPbxgsnldEdXpXHVPwmlxWQ3gmqbfaoayhgLuzv
+         3XIncpgMG7FADLMlh68SnARce4hUuVnnPuu2JPftCXyp7Mk01bVkT2woy+Zvbj/1lR5b
+         eoIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4TOzYyZIin/yiRGi1ie9o6/CbIyjNQOy95/3SVEBU9A=;
+        b=oNwkjWrkWVEekGYdFhHzwOqaT0yGOyb1JMv1YhOp7bZy+5bbILvqLGCqjLGjGJSE01
+         I7Wd2F2+QnbBj7WU+vQCbTc1Pk3LHzlR7jhK9FFPw0DS1hKb64V/wH/uVJRUERONxjiO
+         9fNSfsReV0CXIJVc621/sOr8wrPjV/w0YOEsdGh9wea7rP/XQwW6pfFmCiHHSfTkKPGy
+         DtOUs1gtaQnND7F3eHRBP6iBcYLMc3dINySmrF9OMR5q9UKOjyj8wVsLMcIZZrnO1twA
+         epVHnWgmp0gb020GRDQ6Obo9JTQTli4l9ymwsWDOmiJUsJml7Tz5GChI0fX4TFe9XsOe
+         omBA==
+X-Gm-Message-State: AOAM531ycnKGoTo8bJ1h10wHImoLeO/14AE1bVJMmnco55HQr0Ro8pyy
+        HhQ8THM8LwYMQnGMi9NEOaFamw==
+X-Google-Smtp-Source: ABdhPJypZ7g85maNn/Fq9wWXClDnT5wovR1kfqNu7P4AWwxVkN+tY7vWNWWbv+l/0xEltuRgBAxuTA==
+X-Received: by 2002:a62:a508:0:b029:1ba:621:ff29 with SMTP id v8-20020a62a5080000b02901ba0621ff29mr707798pfm.44.1611054320340;
+        Tue, 19 Jan 2021 03:05:20 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id a5sm18186189pgl.41.2021.01.19.03.05.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 03:05:18 -0800 (PST)
+Date:   Tue, 19 Jan 2021 16:35:16 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
+ 'assigned-performance-states'
+Message-ID: <20210119110516.fgbbllyg7lxwwfdz@vireshk-i7>
+References: <20201224111210.1214-1-rojay@codeaurora.org>
+ <20201224111210.1214-4-rojay@codeaurora.org>
+ <YAGqKfDfB7EEuZVn@builder.lan>
+ <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
+ <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.10.61]
-X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/01/2021 10:56, Joakim Zhang wrote:
->> Joakim reports that getting "perf stat" for multiple system PMU metrics
->> segfaults:
->> ./perf stat -a -I 1000 -M imx8mm_ddr_write.all,imx8mm_ddr_write.all
->> Segmentation fault
->>
->> While the same works without issue for a single metric.
->>
->> The logic in metricgroup__add_metric_sys_event_iter() is broken, in that
->> add_metric() @m argument should be NULL for each new metric. Fix by not
->> passing a holder for that, and rather make local in
->> metricgroup__add_metric_sys_event_iter().
->>
->> Fixes: be335ec28efa ("perf metricgroup: Support adding metrics for system
->> PMUs")
->> Reported-by: Joakim Zhang<qiangqing.zhang@nxp.com>
->> Signed-off-by: John Garry<john.garry@huawei.com>
-> root@imx8mmevk:~# ./perf stat -a -I 1000 -M imx8mm_ddr_read.all,imx8mm_ddr_write                                                                                                    .all
-> #           time             counts unit events
->       1.001446500              40832      imx8mm_ddr.read_cycles    #    638.0 KB  imx8mm_ddr_read.all
->       1.001446500              16973      imx8mm_ddr.write_cycles   #    265.2 KB  imx8mm_ddr_write.all
->       2.003150250              28836      imx8mm_ddr.read_cycles    #    450.6 KB  imx8mm_ddr_read.all
->       2.003150250               6705      imx8mm_ddr.write_cycles   #    104.8 KB  imx8mm_ddr_write.all
-> 
-> For this issue, Tested-by: Joakim Zhang<qiangqing.zhang@nxp.com>
-> 
-> Hi John,
-> 
-> It seems have other issue compared to 5.10 kernel after switching to this framework, below metric can't work.
-> "MetricExpr": "(( imx8_ddr0@read\\-cycles@ + imx8_ddr0@write\\-cycles@ ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)"
-> After change to:
-> "MetricExpr": "(( imx8mm_ddr.read_cycles + imx8mm_ddr.write_cycles ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)",
+On 19-01-21, 12:02, Ulf Hansson wrote:
+> As a matter of fact this was quite recently discussed [1], which also
+> pointed out some issues when using the "required-opps" in combination,
+> but perhaps that got resolved? Viresh?
 
-Hmmm... not sure what you mean by "compared to 5.10 kernel". As far as 
-I'm concerned, none of this was supported in 5.10 and metrics did not 
-work for arm64. Support for sys PMU events+metrics only came in 5.11-rc.
+Perhaps we never did anything there ..
 
-Anyway, can you share the full metric event which you say does not work, 
-not just the "MetricExpr"?
-
-Thanks,
-John
+-- 
+viresh
