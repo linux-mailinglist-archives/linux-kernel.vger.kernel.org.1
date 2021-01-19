@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9922FBC07
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CE72FBC13
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391714AbhASQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:10:11 -0500
-Received: from mga02.intel.com ([134.134.136.20]:36115 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730806AbhASPwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:52:46 -0500
-IronPort-SDR: bEcqN7VMan0nEMhTFsjnIgDhSgu5Wn+dDCs52jyf0Diorn00Il29nkBC5QZ+CQ8sMf82idwPkY
- mzHhMNou8kpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="166037214"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="166037214"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 07:50:47 -0800
-IronPort-SDR: QcFo4LTPse8p65jCI8icg2cawYnEk2WuYQDw7YoWRjgZBd2Vxl0ZkS2skRF+nxz19/qEY1j5X1
- hbUSo2wp7itw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="383982855"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga008.jf.intel.com with SMTP; 19 Jan 2021 07:50:43 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 19 Jan 2021 17:50:42 +0200
-Date:   Tue, 19 Jan 2021 17:50:42 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau@lists.freedesktop.org,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        James Jones <jajones@nvidia.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Jeremy Cline <jcline@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Nirmoy Das <nirmoy.aiemd@gmail.com>
-Subject: Re: [PATCH 1/3] drivers/nouveau/kms/nv50-: Reject format modifiers
- for cursor planes
-Message-ID: <YAb/0urUmEg5kd3C@intel.com>
-References: <20210119015415.2511028-1-lyude@redhat.com>
+        id S2391778AbhASQKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391433AbhASPwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:52:45 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641B8C061574;
+        Tue, 19 Jan 2021 07:51:55 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id i63so5408102pfg.7;
+        Tue, 19 Jan 2021 07:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jGeJYEKHSWeoJcj5qAEZzduzYII6G03XjO2vsKZy9EA=;
+        b=hJ0iWDtRDdsvNgT4hiugAwGjsUNhnUCdTvbXWk4iz/IOuvGZmbcvd16r0EnSkMqqnp
+         QkQLl9bzqEgmLVsz0ItuuP6eTWk/sVER62hGsW0mDDRsLiExwHbDYT9ll5fJV4mKn8BP
+         hN1ILSB4S0B5U/LwWcOoBp5jzIPPEG67Wd/akzffGALccvQxyg+CiSZor4lrXcwdKjHQ
+         YTmTBZj5l1mclfnWNgreXQUnt38S6kwUXPv66RuvGNJpnfWVNOIO1P/5ArhQMphsPX32
+         RdXm9StV2ozHpE6ZZd78hBi9RpFCQtOkgrQCt5x4aFJFRKzRUMtPtjCR3ZihNQnR6kPJ
+         iwfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jGeJYEKHSWeoJcj5qAEZzduzYII6G03XjO2vsKZy9EA=;
+        b=APDRGHHv1gP48mGq7RvcTUyN2ayM/7RY1QNNBuKD9xFFIrzurS+RZwdzVL30fmV9i4
+         RKBZkJD1dvy5YRgFAa7cjM48YDD3UCwu1tEc/FzJgru+EDfQUikdTVrhKLS/2hK8+e5O
+         oNy/EMDhIQ3BTR265LNhVNPZzfAPtS58Hyn8DKL+be4d+Zs2Noy+LybTUj3Yfx0DycIy
+         8mZWtYEmpymOP5CeaAulBZDNm4Nbqs0IKClm8tAQ0l1gTBxc0LzldAsWab9iVeGc1StG
+         ZhM66ECYv8KCGBDhaqMHVCsHnOfhEvTIk+yYCIAqmfgg01eUVkOwirsj16jL+2zsrRj5
+         0DTQ==
+X-Gm-Message-State: AOAM532ruegrAmCGEK91JlO5zpA1YaMkmGIKjksnbAGnqOh4aFHS/oct
+        /wPSemgOLT75hFk1SpGz8ac=
+X-Google-Smtp-Source: ABdhPJyIr1aZov1YBsbDAEgjuC6i0+b3UdroSmkUYkfVGPf5O/G+0lPpjcSTJae7Ou5RcNlfOjI74Q==
+X-Received: by 2002:a63:605:: with SMTP id 5mr4916819pgg.144.1611071514834;
+        Tue, 19 Jan 2021 07:51:54 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:8d1f:e7:cd3c:db2f])
+        by smtp.gmail.com with ESMTPSA id a204sm5841762pfa.49.2021.01.19.07.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 07:51:53 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 19 Jan 2021 07:51:51 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        hyesoo.yu@samsung.com, david@redhat.com, mhocko@suse.com,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, john.stultz@linaro.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v3 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
+Message-ID: <YAcAF2FUhaOIDY3N@google.com>
+References: <20210113012143.1201105-1-minchan@kernel.org>
+ <20210113012143.1201105-5-minchan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210119015415.2511028-1-lyude@redhat.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <20210113012143.1201105-5-minchan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 08:54:12PM -0500, Lyude Paul wrote:
-> Nvidia hardware doesn't actually support using tiling formats with the
-> cursor plane, only linear is allowed. In the future, we should write a
-> testcase for this.
-
-There are a couple of old modifier/format sanity tests here:
-https://patchwork.freedesktop.org/series/46876/
-
-Couple of things missing that now came to my mind:
-- test setplane/etc. rejects unsupported formats/modifiers even if
-  addfb allowed them, exactly for the case where only a subset of
-  planes support something
-- validate the IN_FORMATS blob harder, eg. make sure each modifier
-  listed there supports at least one format. IIRC this was busted on
-  a few drivers last year, dunno if they got fixed or not. Hmm,
-  actually since this is now using the pre-parsed stuff I guess we
-  should just stick an assert into igt_fill_plane_format_mod() where
-  the blob gets parsed
-
+On Tue, Jan 12, 2021 at 05:21:43PM -0800, Minchan Kim wrote:
+> From: Hyesoo Yu <hyesoo.yu@samsung.com>
 > 
-> Fixes: c586f30bf74c ("drm/nouveau/kms: Add format mod prop to base/ovly/nvdisp")
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: Martin Peres <martin.peres@free.fr>
-> Cc: Jeremy Cline <jcline@redhat.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: <stable@vger.kernel.org> # v5.8+
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/dispnv50/wndw.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
+> This patch supports chunk heap that allocates the buffers that
+> arranged into a list a fixed size chunks taken from CMA.
 > 
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/wndw.c b/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-> index ce451242f79e..271de3a63f21 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-> @@ -702,6 +702,11 @@ nv50_wndw_init(struct nv50_wndw *wndw)
->  	nvif_notify_get(&wndw->notify);
->  }
->  
-> +static const u64 nv50_cursor_format_modifiers[] = {
-> +	DRM_FORMAT_MOD_LINEAR,
-> +	DRM_FORMAT_MOD_INVALID,
-> +};
-> +
->  int
->  nv50_wndw_new_(const struct nv50_wndw_func *func, struct drm_device *dev,
->  	       enum drm_plane_type type, const char *name, int index,
-> @@ -713,6 +718,7 @@ nv50_wndw_new_(const struct nv50_wndw_func *func, struct drm_device *dev,
->  	struct nvif_mmu *mmu = &drm->client.mmu;
->  	struct nv50_disp *disp = nv50_disp(dev);
->  	struct nv50_wndw *wndw;
-> +	const u64 *format_modifiers;
->  	int nformat;
->  	int ret;
->  
-> @@ -728,10 +734,13 @@ nv50_wndw_new_(const struct nv50_wndw_func *func, struct drm_device *dev,
->  
->  	for (nformat = 0; format[nformat]; nformat++);
->  
-> -	ret = drm_universal_plane_init(dev, &wndw->plane, heads, &nv50_wndw,
-> -				       format, nformat,
-> -				       nouveau_display(dev)->format_modifiers,
-> -				       type, "%s-%d", name, index);
-> +	if (type == DRM_PLANE_TYPE_CURSOR)
-> +		format_modifiers = nv50_cursor_format_modifiers;
-> +	else
-> +		format_modifiers = nouveau_display(dev)->format_modifiers;
-> +
-> +	ret = drm_universal_plane_init(dev, &wndw->plane, heads, &nv50_wndw, format, nformat,
-> +				       format_modifiers, type, "%s-%d", name, index);
->  	if (ret) {
->  		kfree(*pwndw);
->  		*pwndw = NULL;
-> -- 
-> 2.29.2
+> The chunk heap driver is bound directly to a reserved_memory
+> node by following Rob Herring's suggestion in [1].
 > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> [1] https://lore.kernel.org/lkml/20191025225009.50305-2-john.stultz@linaro.org/T/#m3dc63acd33fea269a584f43bb799a876f0b2b45d
+> 
+> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
 
--- 
-Ville Syrjälä
-Intel
+DMABUF folks,
+
+It would be great if you guys give any comments.
