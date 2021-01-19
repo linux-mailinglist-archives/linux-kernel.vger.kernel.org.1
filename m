@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BBB2FC4C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFE42FC4C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbhASXbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:31:03 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:34999 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbhASX3E (ORCPT
+        id S1727938AbhASXck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbhASXag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:29:04 -0500
-Received: by mail-oi1-f177.google.com with SMTP id w8so1348449oie.2;
-        Tue, 19 Jan 2021 15:28:49 -0800 (PST)
+        Tue, 19 Jan 2021 18:30:36 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32489C061573;
+        Tue, 19 Jan 2021 15:29:56 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id n142so23773640qkn.2;
+        Tue, 19 Jan 2021 15:29:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d94cS14NAvNpT+0LRM0deV47EMUpdOZrviz+DSohwD8=;
+        b=i9fTLjTyV7m/T5eKJHlOhLNOh1rMxoKZrtzGVr0wi3kQe88upJ2oQPIlkDtrZPddrn
+         eSUTEzxCobTIEoyxMFOgb/bMNWOk0k3YVgLgnGFLVNxnHxxcYc1JGxUxOvAV59hjfi0e
+         1rQph6CV0uCYTRuVOzBXQVONmQ81/cur/ap/uPrP5IXuoZHo/f+bt2T9aPYfKxyn76hE
+         IjH1vhA59/dpY6SEOAY3E1obqT8edrgK6IVzg4VtTYB/0WQqdsJJn4VSwg5ZkYto3B8a
+         FGzlg2tja6taplbHIcvdj3p/njLriQymwTiA7AcH+AZIbsxEo/RTvoPeefpjoE15yW7U
+         FNJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=NgCjdpeD2ewodAEIf3EQzoU1nevKZ6HXzGccvrmfIfA=;
-        b=ElA8yaxMJd6GiuFs2Jt/zCSC8F3CKWQ8crU2SkJo2Fm6Hc2ifsNdUKffZy/q6ZiA3U
-         ezY8V/betxSAEdhtHYRlpJmN6X8fGA/dDc4YKdn/T2NdLlgQvHW0eKjO/HM+R1phBFzV
-         UTE99Qb+3fRTzPpLxrYUSG9rZYrI/R772IiRtc5qaX/HFeXofpNpHkEjfqvQFuOc6uV3
-         henhxwxZNazr376gQhUQbSgpc3VWEDo9iTTzT3EIzMk4zYL5CtyY3H+u9GrefrxeuWgE
-         D6a0BhLelRGt2Z4KRAYRg0IMWA/SnUuxWF3V6jpXnMzxE27v9gnnEJ3m/QejyGliIZKe
-         Vq/A==
-X-Gm-Message-State: AOAM533fKORvK9gIHUxXXPvedhBDzbzRoiTs/2HX4tXJ2zp0l8o7RWn/
-        zN2PtIWyeActfqAc/zmuRmZTGlXnUw==
-X-Google-Smtp-Source: ABdhPJxjoKWxggjGsvdJkBiPqoPTvu9VCOzm1dtQb6Aj5ED83KtYj9XBHxaWMQSIs/Fq0OCB5taxxA==
-X-Received: by 2002:aca:a915:: with SMTP id s21mr1412597oie.108.1611098903373;
-        Tue, 19 Jan 2021 15:28:23 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e12sm31915otp.25.2021.01.19.15.28.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d94cS14NAvNpT+0LRM0deV47EMUpdOZrviz+DSohwD8=;
+        b=WuqQgjFw6BfPGDimTBe9VN50SOdrGgbGEX6p5Z3is5ixOEXpC8eOFFk8gZFSNI9kcO
+         UTOStBAAy1npy/Vp3Ye4TAtPzYqY4SezG/k8ylwXoo+k8hKoUDzGXX8XQjo1EgVvVpvj
+         MgvRk7xhLfEeDnU0n3wnIjQDkHCjwZvPfjAZ87oMZGVTH0uchgxxsBgIFI24oUc6XtHc
+         8S4GcSXSWzilTtoxhFgXagUL5QI+DzdvSFKsA3MRy1cQcwaHmmFRjrpwsYqS9lCgnMWN
+         7oUiaXg1RUFql+Jx9p1ZTZRA43LsETD4Ev9h4UQInaeYGsW1mTJvbAVruyn6chH6OvaN
+         zC5g==
+X-Gm-Message-State: AOAM532CnbbpT/CbezhpkkcEOr2b05HxcrJ+zx9YDJ7PA9bg1Bym+2GP
+        W8CdiMaY3vM79/EC0Q42iO4=
+X-Google-Smtp-Source: ABdhPJwOVVmjlVTvyAFhpuyGk9BYpBeUGXGTJRD7mVwiZ8zb/ffE19uoBLT30nGC8TLEjm0uQIxIxA==
+X-Received: by 2002:a37:4a82:: with SMTP id x124mr6953365qka.458.1611098995304;
+        Tue, 19 Jan 2021 15:29:55 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id l20sm128686qtu.25.2021.01.19.15.29.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 15:28:22 -0800 (PST)
-Received: (nullmailer pid 2803682 invoked by uid 1000);
-        Tue, 19 Jan 2021 23:28:21 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20210119124622.9490-1-mike.looijmans@topic.nl>
-References: <20210119124622.9490-1-mike.looijmans@topic.nl>
-Subject: Re: [PATCH v6 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
-Date:   Tue, 19 Jan 2021 17:28:21 -0600
-Message-Id: <1611098901.303102.2803681.nullmailer@robh.at.kernel.org>
+        Tue, 19 Jan 2021 15:29:54 -0800 (PST)
+Date:   Tue, 19 Jan 2021 16:29:52 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Caroline Tice <cmtice@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Stephen Hines <srhines@google.com>
+Subject: Re: [STABLE BACKPORT 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise
+ minimum version of GCC to 5.1 for arm64
+Message-ID: <20210119232952.GA2650682@ubuntu-m3-large-x86>
+References: <20210118135426.17372-1-will@kernel.org>
+ <CAKwvOdmShphZV96PjaHbUW17mKhhRi_X0AZotryKmiGVKyiQyw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmShphZV96PjaHbUW17mKhhRi_X0AZotryKmiGVKyiQyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 13:46:21 +0100, Mike Looijmans wrote:
-> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
-> the accelerometer part.
+On Tue, Jan 19, 2021 at 02:15:43PM -0800, Nick Desaulniers wrote:
+> On Mon, Jan 18, 2021 at 5:54 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
+> >
+> > GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+> > beyond the stack pointer, resulting in memory corruption if an interrupt
+> > is taken after the stack pointer has been adjusted but before the
+> > reference has been executed. This leads to subtle, infrequent data
+> > corruption such as the EXT4 problems reported by Russell King at the
+> > link below.
+> >
+> > Life is too short for buggy compilers, so raise the minimum GCC version
+> > required by arm64 to 5.1.
+> >
+> > Reported-by: Russell King <linux@armlinux.org.uk>
+> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
+> > Cc: Theodore Ts'o <tytso@mit.edu>
+> > Cc: Florian Weimer <fweimer@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
+> > Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
+> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> > [will: backport to 4.4.y/4.9.y/4.14.y]
 > 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> Merging this from stable into "Android Common Kernel" trees that were
+> built with AOSP GCC 4.9, I expect this to break some builds.  Arnd,
+> IIRC did you mention that AOSP GCC had picked up a fix?  If so, did
+> you verify that via disassembly, or gerrit patch file?
 > 
-> ---
-> 
-> Changes in v6:
-> I't been almost a year since the last commit, sorry...
-> Fixed the yaml errors
-> Add interrupt, vdd and vddio properties
-> 
-> Changes in v5:
-> submit together with driver code as patch series
-> 
-> Changes in v2:
-> convert to yaml format
-> 
->  .../bindings/iio/accel/bosch,bmi088.yaml      | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
-> 
+> (AOSP GCC 4.9: https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/
+> master branch, roll back a few commits).
+> It looks like AOSP GCC `#defines __android__ 1`.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+It seems like this is the source for that toolchain?
 
-yamllint warnings/errors:
+https://android.googlesource.com/toolchain/gcc
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+If so, it looks like that patch was picked up in this commit.
 
-See https://patchwork.ozlabs.org/patch/1428668
+https://android.googlesource.com/toolchain/gcc/+/5ae0308a147ec3f6502fd321860524e634a647a6
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Cheers,
+Nathan
