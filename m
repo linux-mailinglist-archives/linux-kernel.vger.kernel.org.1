@@ -2,103 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E925C2FBF3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2FB2FBF88
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404593AbhASSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:06:14 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34506 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391640AbhASRk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:40:56 -0500
-Received: by mail-io1-f70.google.com with SMTP id r16so36782880ioa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:40:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cz+TyUAdSvRaaR7wt0B3euj1+FtE/JPqehIJ2K4wFxI=;
-        b=V5Cs+I9TWWG8s29vKbD9Chpka7HdC2ckF3k5QTFn1tkVO+npzZZjuh7UDHkqKjZIk/
-         hEvRdcDxXnFZEZEEYHzVhAm2rW1WwYIp/7N+5yePrjStZmd4llL7SovHkCdoXw0G7y9f
-         y+OckGPqxuv6Y7uwDbZcAMvD4KR5U2H9REf4pwg5BuOSRJ+BmtXJ0iwFOfPOVebBw73j
-         S+OIU5jD5quVWifAqKcniUNuCWH2maxsmZz3JzLclBPXQMdiSlbfAHsKBtNtk+g2Zx5i
-         S+chiJvB3ra40DfmVY/uF7CFaf1/f4W4NwYL/mWGSTx4gj2ynai9vFkHjjtE4g0M8B4/
-         +hCw==
-X-Gm-Message-State: AOAM531QK0YsrYxOwLZJq1FeMGHunqZ+gJi/Mh1llIQgMwGxFcHSn5ut
-        wpEeHgKdJ4oNweb0czUr+sUC/FFnh1YYAuWKMODbUwImfxpX
-X-Google-Smtp-Source: ABdhPJwlc+pZ9ZKO5apRJCpOHaEETxebGPE+1ywptP03q7TAFkDD2MsfFXq3OJiJKgmCn346FiZgeNF7pFQ6Mw8wNF7tnjaJ8vul
+        id S1729338AbhASSzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:55:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390431AbhASS1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:27:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C86892388E;
+        Tue, 19 Jan 2021 17:41:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611078062;
+        bh=aR0zZuYtP0niTyCDTasWnxw5vYy4R+RIxCykasEXdGg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CqW2Cylk34362atGoLHnhyRFZ3dN4BLz0RriiwQcwLOc1wk54JSxHnHe1CmEfROA2
+         r9efOgEsxgHtqNtn70J7BeE8KVV9RNqrvlR1BTIfkLFjS6WLsLF/AWrgKc6OWD8RDd
+         QdrD9oOJ00LVb5YvdooX5ssqHxaB3cYZElVtdQ+eMdbJkc3N8fV5gRzgUBgwxQjsmk
+         XnWog363VCpRreLhlqxj4+odgMW5Rf7R5bLWwzlmzslgsk/8t1U1yXsqTKbRqZVqYW
+         ZgJbAcw1fWdSrcA4LV5fFau9NAzPwNShWVpULCLL5QwmF7KyfWR4YsrakDYOK7/oHj
+         TR3G/QpFTdujQ==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jann Horn <jannh@google.com>, Jan Kara <jack@suse.cz>,
+        Yu Zhao <yuzhao@google.com>, Peter Xu <peterx@redhat.com>,
+        Stas Sergeev <stsp@list.ru>, Brian Gerst <brgerst@gmail.com>
+Subject: [PATCH v2] x86/vm86/32: Remove VM86_SCREEN_BITMAP support
+Date:   Tue, 19 Jan 2021 09:40:55 -0800
+Message-Id: <f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:b503:: with SMTP id f3mr4214202ile.123.1611078015449;
- Tue, 19 Jan 2021 09:40:15 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:40:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1018c05b944543e@google.com>
-Subject: WARNING in cfg80211_bss_update
-From:   syzbot <syzbot+95c52e652a2fac1fcdf5@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The implementation was rather buggy.  It unconditionally marked PTEs
+read-only, even for VM_SHARED mappings.  I'm not sure whether this is
+actually a problem, but it certainly seems unwise.  More importantly, it
+released the mmap lock before flushing the TLB, which could allow a racing
+CoW operation to falsely believe that the underlying memory was not
+writable.
 
-syzbot found the following issue on:
+I can't find any users at all of this mechanism, so just remove it.
 
-HEAD commit:    66c55602 skbuff: back tiny skbs with kmalloc() in __netdev..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=121bf89f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c60c9ff9cc916cbc
-dashboard link: https://syzkaller.appspot.com/bug?extid=95c52e652a2fac1fcdf5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+95c52e652a2fac1fcdf5@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 25700 at net/wireless/scan.c:1565 cfg80211_combine_bsses net/wireless/scan.c:1565 [inline]
-WARNING: CPU: 1 PID: 25700 at net/wireless/scan.c:1565 cfg80211_bss_update+0x16cd/0x1c60 net/wireless/scan.c:1746
-Modules linked in:
-CPU: 1 PID: 25700 Comm: kworker/u4:15 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy12 ieee80211_iface_work
-RIP: 0010:cfg80211_combine_bsses net/wireless/scan.c:1565 [inline]
-RIP: 0010:cfg80211_bss_update+0x16cd/0x1c60 net/wireless/scan.c:1746
-Code: 00 48 c7 c7 20 8c 61 8a c6 05 88 7d b9 04 01 e8 a7 15 83 00 e9 27 ff ff ff e8 8f f0 3c f9 0f 0b e9 c2 f4 ff ff e8 83 f0 3c f9 <0f> 0b 4c 89 f7 e8 89 be 8c fb 31 ff 89 c6 88 44 24 70 e8 ec f6 3c
-RSP: 0000:ffffc90002e46f50 EFLAGS: 00010212
-RAX: 00000000000026ce RBX: 0000000000000001 RCX: ffffc90015d60000
-RDX: 0000000000040000 RSI: ffffffff8835d93d RDI: 0000000000000003
-RBP: ffff88802f58fc00 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8835d08d R11: 0000000000000000 R12: ffff888022182c68
-R13: 0000000000000005 R14: ffff88802f58fc10 R15: ffff888022182c00
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ee27000 CR3: 00000000144e2000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- cfg80211_inform_single_bss_frame_data+0x6e2/0xe90 net/wireless/scan.c:2400
- cfg80211_inform_bss_frame_data+0xa7/0xb10 net/wireless/scan.c:2433
- ieee80211_bss_info_update+0x3ce/0xb20 net/mac80211/scan.c:190
- ieee80211_rx_bss_info net/mac80211/ibss.c:1126 [inline]
- ieee80211_rx_mgmt_probe_beacon+0xccd/0x16b0 net/mac80211/ibss.c:1615
- ieee80211_ibss_rx_queued_mgmt+0xe3e/0x1870 net/mac80211/ibss.c:1642
- ieee80211_iface_work+0x761/0x9e0 net/mac80211/iface.c:1423
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Linux-MM <linux-mm@kvack.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: x86@kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stas Sergeev <stsp@list.ru>
+Cc: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Changes from v1:
+ - Get rid of the whole screen_bitmap and the fault code, too.
+
+ arch/x86/include/asm/vm86.h      |  1 -
+ arch/x86/include/uapi/asm/vm86.h |  4 +--
+ arch/x86/kernel/vm86_32.c        | 62 ++++++++------------------------
+ arch/x86/mm/fault.c              | 30 ----------------
+ 4 files changed, 16 insertions(+), 81 deletions(-)
+
+diff --git a/arch/x86/include/asm/vm86.h b/arch/x86/include/asm/vm86.h
+index 26efbec94448..9e8ac5073ecb 100644
+--- a/arch/x86/include/asm/vm86.h
++++ b/arch/x86/include/asm/vm86.h
+@@ -36,7 +36,6 @@ struct vm86 {
+ 	unsigned long saved_sp0;
+ 
+ 	unsigned long flags;
+-	unsigned long screen_bitmap;
+ 	unsigned long cpu_type;
+ 	struct revectored_struct int_revectored;
+ 	struct revectored_struct int21_revectored;
+diff --git a/arch/x86/include/uapi/asm/vm86.h b/arch/x86/include/uapi/asm/vm86.h
+index d2ee4e307ef8..18909b8050bc 100644
+--- a/arch/x86/include/uapi/asm/vm86.h
++++ b/arch/x86/include/uapi/asm/vm86.h
+@@ -97,7 +97,7 @@ struct revectored_struct {
+ struct vm86_struct {
+ 	struct vm86_regs regs;
+ 	unsigned long flags;
+-	unsigned long screen_bitmap;
++	unsigned long screen_bitmap;		/* unused, preserved by vm86() */
+ 	unsigned long cpu_type;
+ 	struct revectored_struct int_revectored;
+ 	struct revectored_struct int21_revectored;
+@@ -106,7 +106,7 @@ struct vm86_struct {
+ /*
+  * flags masks
+  */
+-#define VM86_SCREEN_BITMAP	0x0001
++#define VM86_SCREEN_BITMAP	0x0001        /* no longer supported */
+ 
+ struct vm86plus_info_struct {
+ 	unsigned long force_return_for_pic:1;
+diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
+index 764573de3996..e5a7a10a0164 100644
+--- a/arch/x86/kernel/vm86_32.c
++++ b/arch/x86/kernel/vm86_32.c
+@@ -134,7 +134,11 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+ 	unsafe_put_user(regs->ds, &user->regs.ds, Efault_end);
+ 	unsafe_put_user(regs->fs, &user->regs.fs, Efault_end);
+ 	unsafe_put_user(regs->gs, &user->regs.gs, Efault_end);
+-	unsafe_put_user(vm86->screen_bitmap, &user->screen_bitmap, Efault_end);
++
++	/*
++	 * Don't write screen_bitmap in case some user had a value there
++	 * and expected it to remain unchanged.
++	 */
+ 
+ 	user_access_end();
+ 
+@@ -160,49 +164,6 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+ 	do_exit(SIGSEGV);
+ }
+ 
+-static void mark_screen_rdonly(struct mm_struct *mm)
+-{
+-	struct vm_area_struct *vma;
+-	spinlock_t *ptl;
+-	pgd_t *pgd;
+-	p4d_t *p4d;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-	int i;
+-
+-	mmap_write_lock(mm);
+-	pgd = pgd_offset(mm, 0xA0000);
+-	if (pgd_none_or_clear_bad(pgd))
+-		goto out;
+-	p4d = p4d_offset(pgd, 0xA0000);
+-	if (p4d_none_or_clear_bad(p4d))
+-		goto out;
+-	pud = pud_offset(p4d, 0xA0000);
+-	if (pud_none_or_clear_bad(pud))
+-		goto out;
+-	pmd = pmd_offset(pud, 0xA0000);
+-
+-	if (pmd_trans_huge(*pmd)) {
+-		vma = find_vma(mm, 0xA0000);
+-		split_huge_pmd(vma, pmd, 0xA0000);
+-	}
+-	if (pmd_none_or_clear_bad(pmd))
+-		goto out;
+-	pte = pte_offset_map_lock(mm, pmd, 0xA0000, &ptl);
+-	for (i = 0; i < 32; i++) {
+-		if (pte_present(*pte))
+-			set_pte(pte, pte_wrprotect(*pte));
+-		pte++;
+-	}
+-	pte_unmap_unlock(pte, ptl);
+-out:
+-	mmap_write_unlock(mm);
+-	flush_tlb_mm_range(mm, 0xA0000, 0xA0000 + 32*PAGE_SIZE, PAGE_SHIFT, false);
+-}
+-
+-
+-
+ static int do_vm86_irq_handling(int subfunction, int irqnumber);
+ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus);
+ 
+@@ -282,6 +243,15 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
+ 			offsetof(struct vm86_struct, int_revectored)))
+ 		return -EFAULT;
+ 
++
++	/* VM86_SCREEN_BITMAP had numerous bugs and appears to have no users. */
++	if (v.flags & VM86_SCREEN_BITMAP) {
++		char comm[TASK_COMM_LEN];
++
++		pr_info_once("vm86: '%s' uses VM86_SCREEN_BITMAP, which is no longer supported\n", get_task_comm(comm, current));
++		return -EINVAL;
++	}
++
+ 	memset(&vm86regs, 0, sizeof(vm86regs));
+ 
+ 	vm86regs.pt.bx = v.regs.ebx;
+@@ -302,7 +272,6 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
+ 	vm86regs.gs = v.regs.gs;
+ 
+ 	vm86->flags = v.flags;
+-	vm86->screen_bitmap = v.screen_bitmap;
+ 	vm86->cpu_type = v.cpu_type;
+ 
+ 	if (copy_from_user(&vm86->int_revectored,
+@@ -370,9 +339,6 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
+ 	update_task_stack(tsk);
+ 	preempt_enable();
+ 
+-	if (vm86->flags & VM86_SCREEN_BITMAP)
+-		mark_screen_rdonly(tsk->mm);
+-
+ 	memcpy((struct kernel_vm86_regs *)regs, &vm86regs, sizeof(vm86regs));
+ 	return regs->ax;
+ }
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 82bf37a5c9ec..fd0dd60f6302 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -261,25 +261,6 @@ void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
+ 	}
+ }
+ 
+-/*
+- * Did it hit the DOS screen memory VA from vm86 mode?
+- */
+-static inline void
+-check_v8086_mode(struct pt_regs *regs, unsigned long address,
+-		 struct task_struct *tsk)
+-{
+-#ifdef CONFIG_VM86
+-	unsigned long bit;
+-
+-	if (!v8086_mode(regs) || !tsk->thread.vm86)
+-		return;
+-
+-	bit = (address - 0xA0000) >> PAGE_SHIFT;
+-	if (bit < 32)
+-		tsk->thread.vm86->screen_bitmap |= 1 << bit;
+-#endif
+-}
+-
+ static bool low_pfn(unsigned long pfn)
+ {
+ 	return pfn < max_low_pfn;
+@@ -334,15 +315,6 @@ KERN_ERR
+ "******* Disabling USB legacy in the BIOS may also help.\n";
+ #endif
+ 
+-/*
+- * No vm86 mode in 64-bit mode:
+- */
+-static inline void
+-check_v8086_mode(struct pt_regs *regs, unsigned long address,
+-		 struct task_struct *tsk)
+-{
+-}
+-
+ static int bad_address(void *p)
+ {
+ 	unsigned long dummy;
+@@ -1395,8 +1367,6 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		mm_fault_error(regs, hw_error_code, address, fault);
+ 		return;
+ 	}
+-
+-	check_v8086_mode(regs, address, tsk);
+ }
+ NOKPROBE_SYMBOL(do_user_addr_fault);
+ 
+-- 
+2.29.2
+
