@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DCA2FB7A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046AE2FB7AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405331AbhASLOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405083AbhASLDF (ORCPT
+        id S2388841AbhASLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:20:52 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2372 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405174AbhASLGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:03:05 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F04BC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:25 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id r12so16520502ejb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:02:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IZnuFpYCbe19cxJ76+YpreCLRQ8tQhMPYw7R6ZL2WJ4=;
-        b=dVu1QHRn/OV4BOewEbA4LqB3AIVpAdfJEJLBv0uhl0JUfflCX6PZh9qezPrSY1MTUe
-         EFVugQ8DUoKHFvnVKfTunkq7Uu/Tgmg3mhLL5XWZ1e0j1CsYJdEJ1IPCMsXY5NsSr1r8
-         X6nj0wlDdTBpxSSLVxQt0/nk2WMvYwjZlV+8yrgeMSmVA5M+4oQe+4gODTYB6j4r2HgG
-         A5zfX4nOKEBo/CufPTw0ywH/WmG34BemWdLgvQlnC7s1puuZ6JexzrrCEqfg+/AFzyZH
-         BJdACal/KGggSQB7dFfZ99cha2X3ey4VjJqkD0NcljqFfqnJgeUay9wRukRlptxvk6CK
-         scbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IZnuFpYCbe19cxJ76+YpreCLRQ8tQhMPYw7R6ZL2WJ4=;
-        b=U33gshnLQqxLKKSqaHcEKhY7kU2DHAnoXS3oTDwVCexgsTqPIEHTkhHkMboaIqJqKx
-         FJiEXDiErzDilGRbODdIxUlTUpUjgMB8g+seDcRLhaLF3agwDBQh5WKlKVSnxuQ/eFbB
-         6oT8pPbT8kHzkTbFD34f/xksQq4DCFkvsIGGvYY2vBV2aGN/OJEu8xi1RfrjDclH2WV/
-         rudD+5nCcXIBjjpGO6yNkLCKFXugYruzv7JwJE7j/NuQXYIhWBW1kKHqxN0W2PgAKweB
-         o0j8hh6apAQywI3R/5HH6idSvsSsU+XuzMq7pssQ7wZorTVnSiyK1wU0lo/L3yguxQz6
-         5cMA==
-X-Gm-Message-State: AOAM531CiLGfmzPKJZBUQ2trOAnGAt+Da3tAYUUgj9I9xBTslBpWO7wk
-        XL7+1di8Gi8Q6qKwLWQACW5CKqCr/pScO9PozuUXGg==
-X-Google-Smtp-Source: ABdhPJylYL+wams8p2wrCMy5DerxN+e+CypiMkGgUS49QH9T5mRlqQu3e4Vb0lqDoSie0F/lQn865oEnI2Cd8ScbyT4=
-X-Received: by 2002:a17:906:3146:: with SMTP id e6mr2479848eje.363.1611054143645;
- Tue, 19 Jan 2021 03:02:23 -0800 (PST)
+        Tue, 19 Jan 2021 06:06:46 -0500
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DKm0C1q6lz67cx2;
+        Tue, 19 Jan 2021 19:00:27 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 19 Jan 2021 12:05:53 +0100
+Received: from [10.47.10.61] (10.47.10.61) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
+ 2021 11:05:52 +0000
+Subject: Re: [PATCH] perf metricgroup: Fix system PMU metrics
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+ <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <86abd4dd-a92b-f69b-64e0-7f985506f717@huawei.com>
+Date:   Tue, 19 Jan 2021 11:04:38 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210107025731.226017-1-warthog618@gmail.com> <CACRpkdZf2GhScg=sUG35nA5P6jXH93uuK0Fq_uhz29wBQLHOKQ@mail.gmail.com>
- <20210119003455.GB5169@sol> <CAMpxmJUkFL+w7afS2NKF-xiMR==HVR1Mk8uQm3782DBoG0qneA@mail.gmail.com>
- <20210119105933.GA21741@sol>
-In-Reply-To: <20210119105933.GA21741@sol>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 19 Jan 2021 12:02:13 +0100
-Message-ID: <CAMpxmJWMQ2uVJ77MYPr3dhy0=-P8FtAfz3BSoKbxh33J0Gx=Ug@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] selftests: gpio: rework and port to GPIO uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.10.61]
+X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:59 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Tue, Jan 19, 2021 at 11:37:46AM +0100, Bartosz Golaszewski wrote:
-> > On Tue, Jan 19, 2021 at 1:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 18, 2021 at 04:04:51PM +0100, Linus Walleij wrote:
-> > > > On Thu, Jan 7, 2021 at 3:58 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > >
-> > > > >   selftests: gpio: rework and simplify test implementation
-> > > > >   selftests: gpio: remove obsolete gpio-mockup-chardev.c
-> > > > >   selftests: remove obsolete build restriction for gpio
-> > > > >   selftests: remove obsolete gpio references from kselftest_deps.sh
-> > > > >   tools: gpio: remove uAPI v1 code no longer used by selftests
-> > > > >   selftests: gpio: port to GPIO uAPI v2
-> > > > >   selftests: gpio: add CONFIG_GPIO_CDEV to config
-> > > >
-> > > > Bartosz I think you can just merge these patches into the GPIO tree, at least
-> > > > I think that is what I have done in the past.
-> > > >
-> > >
-> > > Could you touch up that Fixes tag in patch 1 if you merge v2?
-> > >
-> > > Thanks,
-> > > Kent.
-> >
-> > Kent,
-> >
-> > This doesn't apply to my for-next branch - there's a conflict in
-> > tools/testing/selftests/gpio/Makefile, could you take a look?
-> >
->
-> Which is your for-next branch?
->
-> The patch set is based on and applies cleanly to gpio/for-next 7ac554888233,
-> so I'm not sure which branch you are targetting.
->
-> Cheers,
-> Kent.
+On 19/01/2021 10:56, Joakim Zhang wrote:
+>> Joakim reports that getting "perf stat" for multiple system PMU metrics
+>> segfaults:
+>> ./perf stat -a -I 1000 -M imx8mm_ddr_write.all,imx8mm_ddr_write.all
+>> Segmentation fault
+>>
+>> While the same works without issue for a single metric.
+>>
+>> The logic in metricgroup__add_metric_sys_event_iter() is broken, in that
+>> add_metric() @m argument should be NULL for each new metric. Fix by not
+>> passing a holder for that, and rather make local in
+>> metricgroup__add_metric_sys_event_iter().
+>>
+>> Fixes: be335ec28efa ("perf metricgroup: Support adding metrics for system
+>> PMUs")
+>> Reported-by: Joakim Zhang<qiangqing.zhang@nxp.com>
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+> root@imx8mmevk:~# ./perf stat -a -I 1000 -M imx8mm_ddr_read.all,imx8mm_ddr_write                                                                                                    .all
+> #           time             counts unit events
+>       1.001446500              40832      imx8mm_ddr.read_cycles    #    638.0 KB  imx8mm_ddr_read.all
+>       1.001446500              16973      imx8mm_ddr.write_cycles   #    265.2 KB  imx8mm_ddr_write.all
+>       2.003150250              28836      imx8mm_ddr.read_cycles    #    450.6 KB  imx8mm_ddr_read.all
+>       2.003150250               6705      imx8mm_ddr.write_cycles   #    104.8 KB  imx8mm_ddr_write.all
+> 
+> For this issue, Tested-by: Joakim Zhang<qiangqing.zhang@nxp.com>
+> 
+> Hi John,
+> 
+> It seems have other issue compared to 5.10 kernel after switching to this framework, below metric can't work.
+> "MetricExpr": "(( imx8_ddr0@read\\-cycles@ + imx8_ddr0@write\\-cycles@ ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)"
+> After change to:
+> "MetricExpr": "(( imx8mm_ddr.read_cycles + imx8mm_ddr.write_cycles ) * 4 * 4 / duration_time) / (750 * 1000000 * 4 * 4)",
 
-Linus W is not picking up patches this release - everything goes through:
+Hmmm... not sure what you mean by "compared to 5.10 kernel". As far as 
+I'm concerned, none of this was supported in 5.10 and metrics did not 
+work for arm64. Support for sys PMU events+metrics only came in 5.11-rc.
 
-    git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+Anyway, can you share the full metric event which you say does not work, 
+not just the "MetricExpr"?
 
-Sorry for the confusion.
-
-Bartosz
+Thanks,
+John
