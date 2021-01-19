@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7120D2FB876
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70C52FB872
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393293AbhASMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404286AbhASMdd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:33:33 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B486FC0613D6;
-        Tue, 19 Jan 2021 04:31:59 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id e9so6262609plh.3;
-        Tue, 19 Jan 2021 04:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IKTIqcQhkM3h5tDVoQgabgdbJqdqY8zjeGWY7T21Mo0=;
-        b=Lc8inz36bV709VGqzp1ApA1O7MVA0IQfYykipyTgn/0gmhgn/eurbMV5w3oLjVzduZ
-         5UtfH8SSHGlCX/EoDe6h+foEGVtNCBd/p2rrNlgRC7gZuXVOyL7yFg6hQHx8+56of6e4
-         RPRVSqNr+WN7jF1mRyKnGaLItUF7rX921lru+jlO+aEMn+rGQCIs/T3VJ6BenyaJP7Kb
-         +BP9Ltj+JJ8WHBpOqpmncF+apD5wErwKpFL/b0+koR2UW6v5a195W8K4E2YI/2m9254+
-         26QMjlH1MYs1U+0Rzp7JRRAMtX0abw8CQXMf/73aSo6KXmBNqCU+CyDI4HsH7pUeUICy
-         1LYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IKTIqcQhkM3h5tDVoQgabgdbJqdqY8zjeGWY7T21Mo0=;
-        b=id4KJeXcZFqm6eZl731iP4Bok+dFN3A41+7mtgZfWE+jKc0dO6e/XfTSkuU4DWHGrT
-         V6LNNDBgvv/pfcHT9AP24lHpDe+bYq0N6MN1spOJHzZKpYkcG6dBSRzPy2NQva5YR2/9
-         NWUsAkYhogA0mVppY7AcUNT34d7S98foQazkoPGEr1dpId0cpDXnuLiZpKiE2K/rqupN
-         NwRPUkb+4lO9ZmtUYKZ57roKP1j2S9RJb/oJJNYri/pEA+2FbbqoMEJTMlaP3JWX5Rce
-         rBToICyaHtLpQ2wAh8NjvdSueCHBIBI7g7jCTa0GMgqDrpDeYsD3QCV+uGv8gjGvEzML
-         JCAA==
-X-Gm-Message-State: AOAM5331Mnws1neU2WT4Zz8B/HiYJPmVMhXbdk3lgdJ3qpOsGZOFSinx
-        +C1i6IognDaK0TJZCwvzgyPq9kdNONw=
-X-Google-Smtp-Source: ABdhPJya2Hri6hDk3mcgBsM+oNYotByVuzx9UzsuUXVoI4fHHkuvOqPQPg0Yubq/c7YO/relM51Clw==
-X-Received: by 2002:a17:90a:f988:: with SMTP id cq8mr5313365pjb.71.1611059519011;
-        Tue, 19 Jan 2021 04:31:59 -0800 (PST)
-Received: from sol.lan (106-69-181-154.dyn.iinet.net.au. [106.69.181.154])
-        by smtp.gmail.com with ESMTPSA id q4sm19283052pgr.39.2021.01.19.04.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 04:31:58 -0800 (PST)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, bgolaszewski@baylibre.com,
-        linus.walleij@linaro.org, shuah@kernel.org, bamv2005@gmail.com
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v3 7/7] selftests: gpio: add CONFIG_GPIO_CDEV to config
-Date:   Tue, 19 Jan 2021 20:30:59 +0800
-Message-Id: <20210119123059.102004-8-warthog618@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210119123059.102004-1-warthog618@gmail.com>
-References: <20210119123059.102004-1-warthog618@gmail.com>
+        id S2393197AbhASMkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:40:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:55348 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393143AbhASMdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:33:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FD47113E;
+        Tue, 19 Jan 2021 04:32:25 -0800 (PST)
+Received: from [10.57.39.58] (unknown [10.57.39.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F2013F719;
+        Tue, 19 Jan 2021 04:32:23 -0800 (PST)
+Subject: Re: [PATCH 1/2] perf/smmuv3: Don't reserve the register space that
+ overlaps with the SMMUv3
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Neil Leeder <nleeder@codeaurora.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
+ <20210119015951.1042-2-thunder.leizhen@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
+Date:   Tue, 19 Jan 2021 12:32:21 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210119015951.1042-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPIO CDEV is now optional and required for the selftests so add it to
-the config.
+On 2021-01-19 01:59, Zhen Lei wrote:
+> Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
+> inside the first 64kB region of the SMMU. Since SMMU and PMCG are managed
+> by two separate drivers, and this driver depends on ARM_SMMU_V3, so the
+> SMMU driver reserves the corresponding resource first, this driver should
+> not reserve the corresponding resource again. Otherwise, a resource
+> reservation conflict is reported during boot.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>   drivers/perf/arm_smmuv3_pmu.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 40 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+> index 74474bb322c3f26..dcce085431c6ce8 100644
+> --- a/drivers/perf/arm_smmuv3_pmu.c
+> +++ b/drivers/perf/arm_smmuv3_pmu.c
+> @@ -761,6 +761,44 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+>   	dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
+>   }
+>   
+> +static void __iomem *
+> +smmu_pmu_get_and_ioremap_resource(struct platform_device *pdev,
+> +				  unsigned int index,
+> +				  struct resource **out_res)
+> +{
+> +	int ret;
+> +	void __iomem *base;
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "invalid resource\n");
+> +		return IOMEM_ERR_PTR(-EINVAL);
+> +	}
+> +	if (out_res)
+> +		*out_res = res;
+> +
+> +	ret = region_intersects(res->start, resource_size(res),
+> +				IORESOURCE_MEM, IORES_DESC_NONE);
+> +	if (ret == REGION_INTERSECTS) {
+> +		/*
+> +		 * The resource has already been reserved by the SMMUv3 driver.
+> +		 * Don't reserve it again, just do devm_ioremap().
+> +		 */
+> +		base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+> +	} else {
+> +		/*
+> +		 * The resource may have not been reserved by any driver, or
+> +		 * has been reserved but not type IORESOURCE_MEM. In the latter
+> +		 * case, devm_ioremap_resource() reports a conflict and returns
+> +		 * IOMEM_ERR_PTR(-EBUSY).
+> +		 */
+> +		base = devm_ioremap_resource(&pdev->dev, res);
+> +	}
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- tools/testing/selftests/gpio/config | 1 +
- 1 file changed, 1 insertion(+)
+What if the PMCG driver simply happens to probe first?
 
-diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-index abaa6902b7b6..ce100342c20b 100644
---- a/tools/testing/selftests/gpio/config
-+++ b/tools/testing/selftests/gpio/config
-@@ -1,2 +1,3 @@
- CONFIG_GPIOLIB=y
-+CONFIG_GPIO_CDEV=y
- CONFIG_GPIO_MOCKUP=m
--- 
-2.30.0
+Robin.
 
+> +
+> +	return base;
+> +}
+> +
+>   static int smmu_pmu_probe(struct platform_device *pdev)
+>   {
+>   	struct smmu_pmu *smmu_pmu;
+> @@ -793,7 +831,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>   		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+>   	};
+>   
+> -	smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
+> +	smmu_pmu->reg_base = smmu_pmu_get_and_ioremap_resource(pdev, 0, &res_0);
+>   	if (IS_ERR(smmu_pmu->reg_base))
+>   		return PTR_ERR(smmu_pmu->reg_base);
+>   
+> @@ -801,7 +839,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>   
+>   	/* Determine if page 1 is present */
+>   	if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
+> -		smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
+> +		smmu_pmu->reloc_base = smmu_pmu_get_and_ioremap_resource(pdev, 1, NULL);
+>   		if (IS_ERR(smmu_pmu->reloc_base))
+>   			return PTR_ERR(smmu_pmu->reloc_base);
+>   	} else {
+> 
