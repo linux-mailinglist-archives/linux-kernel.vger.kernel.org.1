@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3FC2FB88E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CAD2FB89B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392165AbhASNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:07:37 -0500
-Received: from mga17.intel.com ([192.55.52.151]:18185 "EHLO mga17.intel.com"
+        id S2393023AbhASNTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:19:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393136AbhASNAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:00:08 -0500
-IronPort-SDR: UbsR6+4d7YihrdqgNZhvhtn7vwh4npX5AOsgRChKLEa9p0rn3iIpmbeWypGCy8vGfHIVL20jDe
- 1Dw8xxNLYyRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158692379"
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="158692379"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 04:56:43 -0800
-IronPort-SDR: yny2GPwwxTHgqcvt25gt0Pk9rP/v06zLB2Pgzamcqf+oLXM2XDX8rN727fFbWp5IEPf0pLHsRN
- TO3RxTm5viPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="355582899"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Jan 2021 04:56:40 -0800
-Date:   Tue, 19 Jan 2021 20:56:39 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nivedita@alum.mit.edu,
-        thomas.lendacky@amd.com, yazen.ghannam@amd.com, wei.huang2@amd.com
-Subject: Re: [PATCH v4] tools/x86: Add a kcpuid tool to show raw CPU features
-Message-ID: <20210119125639.GA7976@shbuild999.sh.intel.com>
-References: <1610955311-77910-1-git-send-email-feng.tang@intel.com>
- <20210119051942.GA87207@shbuild999.sh.intel.com>
- <20210119091116.GA27433@zn.tnic>
+        id S2390462AbhASNGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 08:06:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C086A2311C;
+        Tue, 19 Jan 2021 12:57:35 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 12:57:33 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH v4 1/5] arm64: mte: Add asynchronous mode support
+Message-ID: <20210119125732.GB17369@gaia>
+References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
+ <20210118183033.41764-2-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119091116.GA27433@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210118183033.41764-2-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:11:16AM +0100, Borislav Petkov wrote:
-> On Tue, Jan 19, 2021 at 01:19:42PM +0800, Feng Tang wrote:
-> > Sorry, after testing on more platforms, the following is needed to fix
-> > a potential array overflow ((a full patch with fix is also attached)
-> > 
-> > diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
-> > index 3ea607b..bf68335 100644
-> > --- a/tools/arch/x86/kcpuid/kcpuid.c
-> > +++ b/tools/arch/x86/kcpuid/kcpuid.c
-> > @@ -329,7 +329,8 @@ static int parse_line(char *line)
-> >  		range = leafs_basic;
-> >  
-> >  	index &= 0x7FFFFFFF;
-> > -	if ((int)index > range->nr)
-> > +	/* range->nr equals to max index plus 1 */
-> > +	if ((int)index >= range->nr)
+On Mon, Jan 18, 2021 at 06:30:29PM +0000, Vincenzo Frascino wrote:
+> MTE provides an asynchronous mode for detecting tag exceptions. In
+> particular instead of triggering a fault the arm64 core updates a
+> register which is checked by the kernel after the asynchronous tag
+> check fault has occurred.
 > 
-> That comment is basically repeating the code. What it should do is
-> explain *why* that test is being done or not be there at all.
- 
-Right! So this is better?
-/* Skip line parsing for non-existing indexes */ 
-
-Thanks,
-Feng
-
-> -- 
-> Regards/Gruss,
->     Boris.
+> Add support for MTE asynchronous mode.
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+> The exception handling mechanism will be added with a future patch.
+> 
+> Note: KASAN HW activates async mode via kasan.mode kernel parameter.
+> The default mode is set to synchronous.
+> The code that verifies the status of TFSR_EL1 will be added with a
+> future patch.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
