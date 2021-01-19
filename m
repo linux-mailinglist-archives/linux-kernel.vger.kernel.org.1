@@ -2,249 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB48F2FC3FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F1A2FC43A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbhASWrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:47:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727281AbhASWrF (ORCPT
+        id S1728467AbhASWyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:54:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbhASWvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 17:47:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611096331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dafNPlVCS4S2LXLJSuTR7hrwH8lsnXzQyIQZkxPQOvY=;
-        b=hrY1is0fxV4R3TyOWBhzT4WuWtaMA0Jnm0rqbPeXWb5kLYVvOuUNW2h/ld9UgwYl+uUyDd
-        2kOpWJBUaqDxIEcQvtCbFwt7cx3SIgCw43IS8YixlDRl7A304/EA17zYEpyyPy6wqUKTha
-        8qldIQEtG3k14t4QJCesbbCUK3ySVUY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516--ZdqYRckNFGsd70TsH0HUg-1; Tue, 19 Jan 2021 17:45:29 -0500
-X-MC-Unique: -ZdqYRckNFGsd70TsH0HUg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B21A918C89CF;
-        Tue, 19 Jan 2021 22:45:27 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C6AA5D9DD;
-        Tue, 19 Jan 2021 22:45:24 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 15:45:23 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     Vikas Gupta <vikas.gupta@broadcom.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikram Prakash <vikram.prakash@broadcom.com>,
-        Srinath Mannam <srinath.mannam@broadcom.com>,
-        Ashwin Kamath <ashwin.kamath@broadcom.com>,
-        Zac Schroff <zachary.schroff@broadcom.com>,
-        Manish Kurup <manish.kurup@broadcom.com>
-Subject: Re: [RFC v3 2/2] vfio/platform: msi: add Broadcom platform devices
-Message-ID: <20210119154523.00179254@omen.home.shazbot.org>
-In-Reply-To: <25199e7e-4a42-c69a-0d16-4bf1764ee87b@redhat.com>
-References: <20201124161646.41191-1-vikas.gupta@broadcom.com>
-        <20201214174514.22006-1-vikas.gupta@broadcom.com>
-        <20201214174514.22006-3-vikas.gupta@broadcom.com>
-        <b3dcbca3-c85a-d327-e64e-5830286dfbba@redhat.com>
-        <CAHLZf_u860kCfpExucwOxWmTDzH_QXnR_O=X8Yq3NAtXesmZ0w@mail.gmail.com>
-        <25199e7e-4a42-c69a-0d16-4bf1764ee87b@redhat.com>
+        Tue, 19 Jan 2021 17:51:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515F8C0613C1;
+        Tue, 19 Jan 2021 14:51:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=NAZnclwqIVnkHL0Jf2KXZeJMQN1hBYGTWVtka1kZllk=; b=d2QrYoOSerK3IeTm2nTNWffhnM
+        8TP+801lP1Emqg8TpYQtwK8f5GszUXmLo/SN97dMuWPoKXFjx1vTL5MORlIi9f/oiSV2xrwOG9gnA
+        6gZzzF0xEbBtVQOyOpDvjfIZR3I7CkG6quICum7MsZ7gp2EGA5VqyU7QeJk3B8zWROdAGFzvVHNg3
+        Pzfu81MwNJTrFlUfuo87UD1Hgn3J0hPf7sGaJPfGHdtX8Qk1obZx2Y1oCGd2rmWkbXK0nqTmpHob8
+        KBzn0Ko2t2Y1KZMs5DjVMuqcMxvex9UQb2gjjWsPGQkiH4PKjl78bvgzu/amQV1INAOYRfumueuQe
+        2J7rgkqQ==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l1zpz-0002rJ-0v; Tue, 19 Jan 2021 22:50:59 +0000
+Subject: Re: mmotm 2021-01-19-13-36 uploaded (ZONE_DEVICE)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3dccaa7e-f6e1-2e03-04c0-e055eb42c9b0@infradead.org>
+Date:   Tue, 19 Jan 2021 14:50:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210119213727.pkiuSGW9i%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 10:24:33 +0100
-Auger Eric <eric.auger@redhat.com> wrote:
+On 1/19/21 1:37 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2021-01-19-13-36 has been uploaded to
+> 
+>    https://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
 
-> Hi Vikas,
-> On 1/15/21 7:35 AM, Vikas Gupta wrote:
-> > Hi Eric,
-> > 
-> > On Tue, Jan 12, 2021 at 2:52 PM Auger Eric <eric.auger@redhat.com> wrote:  
-> >>
-> >> Hi Vikas,
-> >>
-> >> On 12/14/20 6:45 PM, Vikas Gupta wrote:  
-> >>> Add msi support for Broadcom platform devices
-> >>>
-> >>> Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
-> >>> ---
-> >>>  drivers/vfio/platform/Kconfig                 |  1 +
-> >>>  drivers/vfio/platform/Makefile                |  1 +
-> >>>  drivers/vfio/platform/msi/Kconfig             |  9 ++++
-> >>>  drivers/vfio/platform/msi/Makefile            |  2 +
-> >>>  .../vfio/platform/msi/vfio_platform_bcmplt.c  | 49 +++++++++++++++++++
-> >>>  5 files changed, 62 insertions(+)
-> >>>  create mode 100644 drivers/vfio/platform/msi/Kconfig
-> >>>  create mode 100644 drivers/vfio/platform/msi/Makefile
-> >>>  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c  
-> >> what does plt mean?  
-> > This(plt) is a generic name for Broadcom platform devices, which we`ll
-> >  plan to add in this file. Currently we have only one in this file.
-> > Do you think this name does not sound good here?  
-> 
-> we have VFIO_PLATFORM_BCMFLEXRM_RESET config which also applied to vfio
-> flex-rm platform device.
-> 
-> I think it would be more homegenous to have VFIO_PLATFORM_BCMFLEXRM_MSI
-> in case we keep a separate msi module.
-> 
-> also in reset dir we have vfio_platform_bcmflexrm.c
-> 
-> 
-> >>>
-> >>> diff --git a/drivers/vfio/platform/Kconfig b/drivers/vfio/platform/Kconfig
-> >>> index dc1a3c44f2c6..7b8696febe61 100644
-> >>> --- a/drivers/vfio/platform/Kconfig
-> >>> +++ b/drivers/vfio/platform/Kconfig
-> >>> @@ -21,3 +21,4 @@ config VFIO_AMBA
-> >>>         If you don't know what to do here, say N.
-> >>>
-> >>>  source "drivers/vfio/platform/reset/Kconfig"
-> >>> +source "drivers/vfio/platform/msi/Kconfig"
-> >>> diff --git a/drivers/vfio/platform/Makefile b/drivers/vfio/platform/Makefile
-> >>> index 3f3a24e7c4ef..9ccdcdbf0e7e 100644
-> >>> --- a/drivers/vfio/platform/Makefile
-> >>> +++ b/drivers/vfio/platform/Makefile
-> >>> @@ -5,6 +5,7 @@ vfio-platform-y := vfio_platform.o
-> >>>  obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform.o
-> >>>  obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform-base.o
-> >>>  obj-$(CONFIG_VFIO_PLATFORM) += reset/
-> >>> +obj-$(CONFIG_VFIO_PLATFORM) += msi/
-> >>>
-> >>>  vfio-amba-y := vfio_amba.o
-> >>>
-> >>> diff --git a/drivers/vfio/platform/msi/Kconfig b/drivers/vfio/platform/msi/Kconfig
-> >>> new file mode 100644
-> >>> index 000000000000..54d6b70e1e32
-> >>> --- /dev/null
-> >>> +++ b/drivers/vfio/platform/msi/Kconfig
-> >>> @@ -0,0 +1,9 @@
-> >>> +# SPDX-License-Identifier: GPL-2.0-only
-> >>> +config VFIO_PLATFORM_BCMPLT_MSI
-> >>> +     tristate "MSI support for Broadcom platform devices"
-> >>> +     depends on VFIO_PLATFORM && (ARCH_BCM_IPROC || COMPILE_TEST)
-> >>> +     default ARCH_BCM_IPROC
-> >>> +     help
-> >>> +       Enables the VFIO platform driver to handle msi for Broadcom devices
-> >>> +
-> >>> +       If you don't know what to do here, say N.
-> >>> diff --git a/drivers/vfio/platform/msi/Makefile b/drivers/vfio/platform/msi/Makefile
-> >>> new file mode 100644
-> >>> index 000000000000..27422d45cecb
-> >>> --- /dev/null
-> >>> +++ b/drivers/vfio/platform/msi/Makefile
-> >>> @@ -0,0 +1,2 @@
-> >>> +# SPDX-License-Identifier: GPL-2.0
-> >>> +obj-$(CONFIG_VFIO_PLATFORM_BCMPLT_MSI) += vfio_platform_bcmplt.o
-> >>> diff --git a/drivers/vfio/platform/msi/vfio_platform_bcmplt.c b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-> >>> new file mode 100644
-> >>> index 000000000000..a074b5e92d77
-> >>> --- /dev/null
-> >>> +++ b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-> >>> @@ -0,0 +1,49 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +/*
-> >>> + * Copyright 2020 Broadcom.
-> >>> + */
-> >>> +
-> >>> +#include <linux/module.h>
-> >>> +#include <linux/device.h>
-> >>> +#include <linux/interrupt.h>
-> >>> +#include <linux/msi.h>
-> >>> +#include <linux/vfio.h>
-> >>> +
-> >>> +#include "../vfio_platform_private.h"
-> >>> +
-> >>> +#define RING_SIZE            (64 << 10)
-> >>> +
-> >>> +#define RING_MSI_ADDR_LS     0x03c
-> >>> +#define RING_MSI_ADDR_MS     0x040
-> >>> +#define RING_MSI_DATA_VALUE  0x064  
-> >> Those 3 defines would not be needed anymore with that implementation option.  
-> >>> +
-> >>> +static u32 bcm_num_msi(struct vfio_platform_device *vdev)
-> >>> +{
-> >>> +     struct vfio_platform_region *reg = &vdev->regions[0];
-> >>> +
-> >>> +     return (reg->size / RING_SIZE);
-> >>> +}
-> >>> +
-> >>> +static struct vfio_platform_msi_node vfio_platform_bcmflexrm_msi_node = {
-> >>> +     .owner = THIS_MODULE,
-> >>> +     .compat = "brcm,iproc-flexrm-mbox",
-> >>> +     .of_get_msi = bcm_num_msi,
-> >>> +};
-> >>> +
-> >>> +static int __init vfio_platform_bcmflexrm_msi_module_init(void)
-> >>> +{
-> >>> +     __vfio_platform_register_msi(&vfio_platform_bcmflexrm_msi_node);
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static void __exit vfio_platform_bcmflexrm_msi_module_exit(void)
-> >>> +{
-> >>> +     vfio_platform_unregister_msi("brcm,iproc-flexrm-mbox");
-> >>> +}
-> >>> +
-> >>> +module_init(vfio_platform_bcmflexrm_msi_module_init);
-> >>> +module_exit(vfio_platform_bcmflexrm_msi_module_exit);  
-> >> One thing I would like to discuss with Alex.
-> >>
-> >> As the reset module is mandated (except if reset_required is forced to
-> >> 0), I am wondering if we shouldn't try to turn the reset module into a
-> >> "specialization" module and put the msi hooks there. I am afraid we may
-> >> end up having modules for each and every vfio platform feature
-> >> specialization. At the moment that's fully bearable but I can't predict
-> >> what's next.
-> >>
-> >> As the mandated feature is the reset capability maybe we could just keep
-> >> the config/module name terminology, tune the kconfig help message to
-> >> mention the msi support in case of flex-rm?
-> >>  
-> > As I understand, your proposal is that we should not have a separate
-> > module for MSI, rather we add in the existing reset module for
-> > flex-rm. Thus, this way reset modules do not seem to be specialized
-> > just for reset functionality only but for MSI as well. Apart from this
-> > we need not to load the proposed msi module in this patch series. Is
-> > my understanding correct?  
-> 
-> yes it is.
-> > For me it looks OK to consolidate MSI in the existing 'reset' module.
-> > Let me know your views so that I can work for the next patch set accordingly.  
-> 
-> Before you launch into the rewriting I would like to get the
-> confirmation Alex is OK or if he prefers to keep separate modules.
+on x86_64: (several build failures so far)
 
-If I understand correctly, the proposal here creates an entirely
-parallel vfio-msi request module interface like we have for vfio-reset,
-so the question is whether we should simplify vfio-platform-core to do
-a single module request per compat string and the device specific
-module would register multiple features rather than one per module.  Is
-that right?
+../mm/memory_hotplug.c: In function ‘move_pfn_range_to_zone’:
+../mm/memory_hotplug.c:772:24: error: ‘ZONE_DEVICE’ undeclared (first use in this function); did you mean ‘ZONE_MOVABLE’?
+  if (zone_idx(zone) == ZONE_DEVICE) {
 
-It seems the submodules are pretty simple, there's not a lot to be
-gained from duplicate boilerplate code in the modules themselves.  The
-core code would clearly be simplified slightly to avoid multiple module
-requests, but for a more grand benefit is seems the registration
-interfaces would also need to be consolidated, perhaps providing a
-feature "ops" structure.  As you indicate, having only two features at
-this point with a fairly small number of modules each, it's not yet too
-burdensome, but I could imagine it being a useful project.
+when CONFIG_ZONE_DEVICE is not set/enabled.
 
-More importantly in the short term, I'd expect modules handling the
-same compat string to be named similarly and enabled by a common
-Kconfig option.  Thanks,
 
-Alex
-
+-- 
+~Randy
+"He closes his eyes and drops the goggles.  You can't get hurt
+by looking at a bitmap.  Or can you?"
+(Neal Stephenson: Snow Crash)
