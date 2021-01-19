@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3492FB71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A7C2FB725
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389896AbhASKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730765AbhASJ4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:56:03 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC91BC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:55:14 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id y8so10202875plp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xAqXt2hrMnUwGHY4K/vXVEtDT5xO+PqICWyHvp6jNI4=;
-        b=yLyMj40c8dpxG49080WIa+e1h0pdwJbbPb6WrmW/NlllBflJkMeezxlqx/j4D5Eu+f
-         UVjn8MO4sm0KngRQxbChnQghGE8x7cuFzzgtIWVDa4mwXm+TnRc3LgZNKRDKwjDIWqk/
-         xd1U0afI3Wfh4S7IEVlwnL6i/FE6p/oj8XtHRhcJDpvC45IRYws7FU6ZBKyBFqPyed4U
-         MoieLszFLBCu2JWPzofsc8lwyRT7UFSDBPMDaoTmg4iGU+VoBu3jjofvFwH1C2en01Mf
-         UePfcVcZW4+RGC2J74FvKjBsbvFQ0mWIWrfMWdyEpT6tW6pjxGN2/N1X2RjaVTPIu+SA
-         92aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xAqXt2hrMnUwGHY4K/vXVEtDT5xO+PqICWyHvp6jNI4=;
-        b=IlGHyrUDogLDpyhanT+5nlV/5jFTwXW0rCbRxFMpnucSkX5TP0HRzXQN39H4sZEocc
-         1tLT5/RM7O7aPsfXkTZIera9nhA6KZ12nOoGmf602hZ7hTInYbEXhrueZ3nsEVM/adPt
-         4NOC0IFHwl2SsJLLxstgdWRJn2rR9d2J+QMccBBTCu2mSuWbsBYn0XUEAY7zE5kSWrde
-         DtqdZ9I7/BHwAJlBQAcAhzlr2Yo8ziMp3cCBbMJnGtOrldqOQse87Qr4T1KOrD13VkRl
-         KoHobg6YF/uJi54ifs0nVmk111TBShwW051k/lq6bHUz4Eo7JNeTyIKI4ZLb8hC1I6fS
-         Ixbw==
-X-Gm-Message-State: AOAM530auYc8ACFVXbInGb/ew8kPjBDiWCW9N5lujhfeFW6MStp76efk
-        McDCpzZjW3dZRX8tijhXdzkQVg==
-X-Google-Smtp-Source: ABdhPJzzA9SrNQFl+F6LdDy36vNrtNXWt6cwOvgIfknJpkBo8QX65rmWDW606+FJKruuIfh0mqyekA==
-X-Received: by 2002:a17:90a:fa84:: with SMTP id cu4mr4536724pjb.0.1611050114175;
-        Tue, 19 Jan 2021 01:55:14 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id q9sm18869325pgb.82.2021.01.19.01.55.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 01:55:13 -0800 (PST)
-Date:   Tue, 19 Jan 2021 15:25:11 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] PM: domains: Make set_performance_state()
- callback optional
-Message-ID: <20210119095511.s3xntwwq4g65dcoa@vireshk-i7>
-References: <20210118011330.4145-1-digetx@gmail.com>
- <20210118011330.4145-2-digetx@gmail.com>
- <20210118072855.anncyl6z3e5uznvd@vireshk-i7>
- <CAPDyKFquCGUSTvcCpmN0vm1eGEz9B_hYSNm7wojhgwuXT=jkEQ@mail.gmail.com>
- <20210118110506.linvsoca7jbl42iq@vireshk-i7>
- <CAPDyKFr7SD_A9sKD2+90XfjP09T+PCLE=8qvn=M-yPEPXvBhsg@mail.gmail.com>
- <20210119034428.qgjjlvti6sirsnzy@vireshk-i7>
- <CAPDyKFp3OpV5qgfB_EGf=fyCR5b0b0zntbsXAJJsWbJX09gF6A@mail.gmail.com>
+        id S2390275AbhASKUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:20:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:47980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389227AbhASJ7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:59:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A97F41FB;
+        Tue, 19 Jan 2021 01:57:30 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70A163F66E;
+        Tue, 19 Jan 2021 01:57:29 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:57:26 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests: bpf: Add a new test for bare
+ tracepoints
+Message-ID: <20210119095726.obfhqanp6wmauzqs@e107158-lin>
+References: <20210116182133.2286884-1-qais.yousef@arm.com>
+ <20210116182133.2286884-3-qais.yousef@arm.com>
+ <e9d4b132-288d-594f-308c-132e89fcf63f@fb.com>
+ <20210118121818.muifeogh4hvakfeb@e107158-lin>
+ <fdda7117-e823-e240-4735-617a3df8a0cc@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFp3OpV5qgfB_EGf=fyCR5b0b0zntbsXAJJsWbJX09gF6A@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <fdda7117-e823-e240-4735-617a3df8a0cc@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-01-21, 10:52, Ulf Hansson wrote:
-> That would work if the topology is built from top to bottom, but I
-> don't think we can rely on that.
+Hi Yonghong
+
+On 01/18/21 09:48, Yonghong Song wrote:
+> The original patch code:
 > 
-> For example, when a domain A is added as a child to domain B, domain B
-> doesn't have a parent yet (and the "can-handle-pstates" don't get set
-> for neither domain A or domain B). Next, domain B is added as child
-> domain to domain C. Domain C has the "can-handle-pstates" set, which
-> means domain B gets the "can-handle-pstates" set as well. This means
-> domain A, will not have "can-handle-pstates" set, while it probably
-> should have.
-
-Okay, I missed that part.
-
-> >
-> > > So, maybe we should simply just stick to the existing code, forcing
-> > > the parent to have a ->set_performance() callback assigned if
-> > > propagation should continue?
-> >
-> > I think it would be better to fix the issue even if we aren't fully optimized
-> > and making the change to make sure we keep propagating is rather important.
+> +static int trigger_module_test_write(int write_sz)
+> +{
+> +	int fd, err;
+> +	char *buf = malloc(write_sz);
+> +
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	memset(buf, 'a', write_sz);
+> +	buf[write_sz-1] = '\0';
+> +
+> +	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
+> +	err = -errno;
+> +	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+> +		goto out;
+> +
+> +	write(fd, buf, write_sz);
+> +	close(fd);
+> +out:
+> +	free(buf);
+> +
+> +	return 0;
+> +}
 > 
-> Alright, let's continue with Dmitry's patches and discuss this further
-> when v4 is out, as he seems to have it almost ready.
+> Even for "fd < 0" case, it "goto out" and "return 0". We should return
+> error code here instead of 0.
+> 
+> Second, "err = -errno" is set before checking fd < 0. If fd >= 0, err might
+> inherit an postive errno from previous failure.
+> In trigger_module_test_write(), it is okay since the err is only used
+> when fd < 0:
+>         err = -errno;
+>         if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+>                 return err;
+> 
+> My above rewrite intends to use "err" during final "return" statement,
+> so I put assignment of "err = -errno" inside the CHECK branch.
+> But there are different ways to implement this properly.
 
-Right.
+Okay I see now. Sorry I missed your point initially. I will fix and send v3.
 
--- 
-viresh
+Thanks
+
+--
+Qais Yousef
