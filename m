@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634D92FBB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC962FBB68
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391546AbhASPiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:38:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389869AbhASPhJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:37:09 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF77DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:36:00 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id a9so16707303wrt.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:36:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YXO92p6LLsj/rO1rdVlgY8L8ta2o0mwtBBy/FTduO/8=;
-        b=kWgqgntHOcSZF1eJJmyElYmGNhwK22bP/zEm9ekbz6bhoAKJaWelRaP968R/q16YbT
-         TwpnzNYqZOu3soAfufWPQEMxjM7UDdnXdnDMRP8H1BN7FxCrMdve4V6bLlcr3uO6Lljg
-         FiAER9G5cvHlD9prUx4QwtBZh8dSkL/UBpAt2W0S37eKAwZ4ZovPcGPwwRJQOSeLsX9K
-         n+sTtwdVVypT3ozZhQw8UXiTeLmdoit6MqedXybCRDEGddUrJxaC9BbeJ/x/S54Sp1io
-         6ymE6olcWkfL0ZCgNQrJ5TunfzymFSysMvvdj45IXhdBb40QGfjzOt/Sh0aVmopyXjNV
-         Lp3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YXO92p6LLsj/rO1rdVlgY8L8ta2o0mwtBBy/FTduO/8=;
-        b=dh0+QwKBWcwTD2boEy3IW7m92JE15XKe8W1sICbhuSGyvGGCsXTXLf1CGydzBUR09/
-         T/G0FfWt3998oXj0PGxb5ke4tgrgcGnu46ywWlUR5EapUAm0mzqf6VM+zrE/EfAvjZUM
-         FBmgsNrOV0UwLd0jsXCr4Zc1sMOKpSo9whRNyuvuacD6ZU6p/drhHtzzBne+oGC9tJps
-         2uqEKipZv/qYJyo3iq05/uZhusdm7iVUmrxoa0Vn3xR51nObgTltkA/gDGOpKi7UCq0I
-         8Dd2pLsXYOLgG4jugrKa+SgUN5kJ+g1AFvF8zYy5wEOmEGlCS28S19N4CBzjbTjgS/ym
-         TEcQ==
-X-Gm-Message-State: AOAM532HxFcYD9q0jpbMJOjEHxTcRQEtAczDJl1/EUGLgT3686yCRrN2
-        2dDejlcva/UJSNdAYF8cpfPdo0N89ivz1g==
-X-Google-Smtp-Source: ABdhPJyqu9oCc2mJe28sttBQwEdUIFLSOUBQQ9TaLQZCg/EoCdZ/KaRDTbK/zPx/c6Fga6sDXtAFOw==
-X-Received: by 2002:adf:edc8:: with SMTP id v8mr1053653wro.374.1611070559615;
-        Tue, 19 Jan 2021 07:35:59 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id x17sm36492668wro.40.2021.01.19.07.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 07:35:59 -0800 (PST)
-Date:   Tue, 19 Jan 2021 15:35:56 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        id S2391625AbhASPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:40:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:36666 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391577AbhASPiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:38:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A64A3D6E;
+        Tue, 19 Jan 2021 07:38:05 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 991063F66E;
+        Tue, 19 Jan 2021 07:38:02 -0800 (PST)
+Subject: Re: [PATCH 4/6] sched/deadline: Block DL tasks on non-exclusive
+ cpuset if bandwitdh control is enable
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Marco Perronet <perronet@mpi-sws.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH] sched/eas: Don't update misfit status if the task is
- pinned
-Message-ID: <YAb8XGyp3NtrHl+U@google.com>
-References: <20210119120755.2425264-1-qais.yousef@arm.com>
+        cgroups@vger.kernel.org
+References: <cover.1610463999.git.bristot@redhat.com>
+ <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
+ <4b37b32b-0e16-ffbc-ca6a-fbee935c0813@arm.com>
+ <08dd4e61-5c4a-b010-2149-8f84ced3fb38@redhat.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <f7cad09a-09e3-e150-d505-ac75aece0248@arm.com>
+Date:   Tue, 19 Jan 2021 16:37:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119120755.2425264-1-qais.yousef@arm.com>
+In-Reply-To: <08dd4e61-5c4a-b010-2149-8f84ced3fb38@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 19 Jan 2021 at 12:07:55 (+0000), Qais Yousef wrote:
-> If the task is pinned to a cpu, setting the misfit status means that
-> we'll unnecessarily continuously attempt to migrate the task but fail.
+On 19/01/2021 10:41, Daniel Bristot de Oliveira wrote:
+> On 1/14/21 4:51 PM, Dietmar Eggemann wrote:
+>> On 12/01/2021 16:53, Daniel Bristot de Oliveira wrote:
+
+[...]
+
+>> with this patch:
+>>
+>> cgroupv1:
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
+>> --sched-runtime 100000000 0 sleep 500 &
+>> [1] 1668
+>> root@juno:/sys/fs/cgroup/cpuset# PID1=$!
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
+>> --sched-runtime 100000000 0 sleep 500 &
+>> [2] 1669
+>> root@juno:/sys/fs/cgroup/cpuset# PID2=$!
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# mkdir A
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.mems
+>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.cpus
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
+>> -bash: echo: write error: Device or resource busy
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# echo 1 > ./A/cpuset.cpu_exclusive
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
+>>
+>> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID1/status | grep
+>> Cpus_allowed_list | awk '{print $2}'
+>> 0-5
+>> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID2/status | grep
+>> Cpus_allowed_list | awk '{print $2}'
+>> 0
 > 
-> This continuous failure will cause the balance_interval to increase to
-> a high value, and eventually cause unnecessary significant delays in
-> balancing the system when real imbalance happens.
+> On CPU v1 we also need to disable the load balance to create a root domain, right?
+
+IMHO, that's not necessary for this example. But yes, if we create 2
+exclusive cpusets A and B we want to turn off load-balancing on root
+level. It also doesn't hurt doing this in this example. But we end up
+with no sched domain since load-balance is disabled at root and A only
+contains CPU0.
+
+root@juno:/sys/fs/cgroup/cpuset# echo 0 > cpuset.sched_load_balance
+
+ls /proc/sys/kernel/sched_domain/cpu*/ doesn't show any (sched) domains.
+
+>> cgroupv2:
 > 
-> Caught while testing uclamp where rt-app calibration loop was pinned to
-> cpu 0, shortly after which we spawn another task with high util_clamp
-> value. The task was failing to migrate after over 40ms of runtime due to
-> balance_interval unnecessary expanded to a very high value from the
-> calibration loop.
+> Yeah, I see your point. I was seeing a different output because of Fedora
+> default's behavior of adding the tasks to the system.slice/user.slice...
 > 
-> Not done here, but it could be useful to extend the check for pinning to
-> verify that the affinity of the task has a cpu that fits. We could end
-> up in a similar situation otherwise.
+> doing:
+> 
+>> root@juno:/sys/fs/cgroup# echo +cpuset > cgroup.subtree_control
+> 
+> # echo $$ > cgroup.procs
 
-Do you mean failing the sched_setaffinity syscall if e.g. the task
-has a min clamp that is higher than the capacity of the CPUs to which it
-will be pinned? If so, I'm not sure if we really want that.
+The current shell should be already in the root cgroup?
 
-But this patch makes sense on its own for sure, so:
+root@juno:/sys/fs/cgroup# echo $$
+1644
+root@juno:/sys/fs/cgroup# cat cgroup.procs | grep $$
+1644
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+[...]
 
-Thanks,
-Quentin
