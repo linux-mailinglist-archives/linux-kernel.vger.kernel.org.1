@@ -2,199 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9622A2FC45E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5A42FC470
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbhASXB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:01:58 -0500
-Received: from mga17.intel.com ([192.55.52.151]:24148 "EHLO mga17.intel.com"
+        id S1728001AbhASXHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:07:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403813AbhASOTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:19:10 -0500
-IronPort-SDR: 3qypdZBcLs6p3tigMX9TUQ42v6QXr4lwVomxy1uX/hWxiAylQGMJNXlMbAHmtiPvoUNvCADd12
- SLgydeVT8SIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="158704858"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="158704858"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 06:15:52 -0800
-IronPort-SDR: EbQfvLRc2P53yHNIZ4Q7GcFGyhrWNL0YRQYnLaZigZa1Rj5vx4TOYGSAlD6MXvu92VOPrFo8mC
- 5SJgqBZu2yRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="347189967"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.149])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Jan 2021 06:15:50 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH 4/4] scsi: ufs-debugfs: Add user-defined exception event rate limiting
-Date:   Tue, 19 Jan 2021 16:15:42 +0200
-Message-Id: <20210119141542.3808-5-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210119141542.3808-1-adrian.hunter@intel.com>
-References: <20210119141542.3808-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S2390101AbhASORm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:17:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEF7A2312B;
+        Tue, 19 Jan 2021 14:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611065801;
+        bh=WdALA20uLKCngqo4AGEBJL8UiufT7fdSLEHPoC1nJI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uaqhy972klok16Vy1jZDUt4pwXHyGBztZ2wnW7ly53V423OMaaV+vo/LOKe2h+6bS
+         kHiuOAVJOx1GBwZhIEebBaU578BPCANWxHHoWnvgRRrWnHeBMHZb1C+lyIQa+8kb/9
+         51ni8/6hTJrl80L/xyd9LBTFxKrcN8E4JrzuxPwKEgR2McTN8+W/0yKmWr5uEyLVv+
+         IRot5LPy8XNYDy/wzyVmhffvyAHbsyKZ4soNRPLL0vaT03Mq/i3DyflrE9ICxw7ocn
+         YbHd/VlFF0GytEJy0oUTuAz5uipfnlDAAMsT0lgijrp0vDqMz8zbrnpBbZwsXc/+XY
+         62Yy9uSmC034Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4171340CE2; Tue, 19 Jan 2021 11:16:37 -0300 (-03)
+Date:   Tue, 19 Jan 2021 11:16:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 1/4] perf tools: Allow to enable/disable events via
+ control file
+Message-ID: <20210119141637.GH12699@kernel.org>
+References: <20201226232038.390883-1-jolsa@kernel.org>
+ <20201226232038.390883-2-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201226232038.390883-2-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An enabled user-specified exception event that does not clear quickly will
-repeatedly cause the handler to run. That could unduly disturb the driver
-behaviour being tested or debugged. To prevent that add debugfs file
-exception_event_rate_limit_ms. When a exception event happens, it is
-disabled, and then after a period of time (default 20ms) the exception
-event is enabled again.
+Em Sun, Dec 27, 2020 at 12:20:35AM +0100, Jiri Olsa escreveu:
+> Adding new control events to enable/disable specific event.
+> The interface string for control file are:
+> 
+>   'enable <EVENT NAME>'
+>   'disable <EVENT NAME>'
+> 
+> when received the command, perf will scan the current evlist
+> for <EVENT NAME> and if found it's enabled/disabled.
+> 
+> Example session:
+> 
+>   terminal 1:
+>     # mkfifo control ack perf.pipe
+>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+> 
+>   terminal 2:
+>     # cat perf.pipe | perf --no-pager script -i -
+> 
+>   terminal 1:
+>     Events disabled
+> 
+>   NOTE Above message will show only after read side of the pipe ('>')
+>   is started on 'terminal 2'. The 'terminal 1's bash does not execute
+>   perf before that, hence the delyaed perf record message.
+> 
+>   terminal 3:
+>     # echo 'enable sched:sched_process_fork' > control
+> 
+>   terminal 1:
+>     event sched:sched_process_fork enabled
+> 
+>   terminal 2:
+>     bash 33349 [034] 149587.674295: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34056
+>     bash 33349 [034] 149588.239521: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34057
+> 
+>   terminal 3:
+>     # echo 'enable sched:sched_wakeup_new' > control
+> 
+>   terminal 1:
+>     event sched:sched_wakeup_new enabled
+> 
+>   terminal 2:
+>     bash 33349 [034] 149632.228023: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34059
+>     bash 33349 [034] 149632.228050:   sched:sched_wakeup_new: bash:34059 [120] success=1 CPU:036
+>     bash 33349 [034] 149633.950005: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34060
+>     bash 33349 [034] 149633.950030:   sched:sched_wakeup_new: bash:34060 [120] success=1 CPU:036
 
-Note that if the driver also has that exception event enabled, it will not
-be disabled.
+'disable' doesn't seem to be working:
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/ufs-debugfs.c | 44 ++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-debugfs.h |  2 ++
- drivers/scsi/ufs/ufshcd.c      |  5 ++--
- drivers/scsi/ufs/ufshcd.h      |  4 ++++
- 4 files changed, 53 insertions(+), 2 deletions(-)
+Terminal 3:
 
-diff --git a/drivers/scsi/ufs/ufs-debugfs.c b/drivers/scsi/ufs/ufs-debugfs.c
-index 59729073b569..ced9ef4d7c78 100644
---- a/drivers/scsi/ufs/ufs-debugfs.c
-+++ b/drivers/scsi/ufs/ufs-debugfs.c
-@@ -88,15 +88,59 @@ static int ee_usr_mask_set(void *data, u64 val)
+[root@five ~]# echo 'enable sched:sched_process_fork' > control
+[root@five ~]# echo 'disable sched:sched_process_fork' > control
+[root@five ~]# echo 'disable' > control
+[root@five ~]# echo 'disable sched:sched_process_fork' > control
+[root@five ~]# echo 'disable sched:sched_process_fork' > control
+[root@five ~]# echo 'enable sched:sched_process_fork' > control
+[root@five ~]# echo 'disable sched:sched_process_fork' > control
+[root@five ~]# echo 'enable sched:sched_process_fork' > control
+[root@five ~]# echo 'disable sched:sched_process_fork' > control
+[root@five ~]# echo 'enable' > control
+[root@five ~]# echo 'disable' > control
+[root@five ~]# echo 'disable' > control
+[root@five ~]# echo 'disable' > control
+[root@five ~]#
+
+Terminal 1:
+
+[root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' > perf.pipe
+Events disabled
+Event sched:sched_process_fork enabled
+Event sched:sched_process_fork disabled
+Event sched:sched_process_fork enabled
+Event sched:sched_process_fork disabled
+Events enabled
+
+I tried also with '-o -', made no difference and:
+
+[root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+Events disabled
+Event sched:sched_process_fork enabled
+Event sched:sched_process_fork disabled
+Event sched:sched_process_fork disabled
+
+The second probably should be more clear stating that that event was
+already disabled.
+
+Probably your example with all the sched tracepoints make 'perf record'
+just process the stream of events and not look at the commands?
+
+If I try with:
+
+[root@five ~]# perf list sched:sched_process_* 2> /dev/null
+
+List of pre-defined events (to be used in -e):
+
+  sched:sched_process_exec                           [Tracepoint event]
+  sched:sched_process_exit                           [Tracepoint event]
+  sched:sched_process_fork                           [Tracepoint event]
+  sched:sched_process_free                           [Tracepoint event]
+  sched:sched_process_wait                           [Tracepoint event]
+
+[root@five ~]#
+
+[root@five ~]# perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:sched_process_*' -o - > perf.pipe
+Events disabled
+Events enabled
+Events disabled
+
+It works.
+
+So it is a pre-existing problem, I'll continue processing your patches
+and make a note about this...
+
+- Arnaldo
+
  
- DEFINE_DEBUGFS_ATTRIBUTE(ee_usr_mask_fops, ee_usr_mask_get, ee_usr_mask_set, "%#llx\n");
- 
-+void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status)
-+{
-+	bool chgd = false;
-+	u16 ee_ctrl_mask;
-+	int err = 0;
-+
-+	if (!hba->debugfs_ee_rate_limit_ms || !status)
-+		return;
-+
-+	mutex_lock(&hba->ee_ctrl_mutex);
-+	ee_ctrl_mask = hba->ee_drv_mask | (hba->ee_usr_mask & ~status);
-+	chgd = ee_ctrl_mask != hba->ee_ctrl_mask;
-+	if (chgd) {
-+		err = __ufshcd_write_ee_control(hba, ee_ctrl_mask);
-+		if (err)
-+			dev_err(hba->dev, "%s: failed to write ee control %d\n",
-+				__func__, err);
-+	}
-+	mutex_unlock(&hba->ee_ctrl_mutex);
-+
-+	if (chgd && !err) {
-+		unsigned long delay = msecs_to_jiffies(hba->debugfs_ee_rate_limit_ms);
-+
-+		queue_delayed_work(system_freezable_wq, &hba->debugfs_ee_work, delay);
-+	}
-+}
-+
-+static void ufs_debugfs_restart_ee(struct work_struct *work)
-+{
-+	struct ufs_hba *hba = container_of(work, struct ufs_hba, debugfs_ee_work.work);
-+
-+	if (!hba->ee_usr_mask || pm_runtime_suspended(hba->dev) ||
-+	    ufs_debugfs_get_user_access(hba))
-+		return;
-+	ufshcd_write_ee_control(hba);
-+	ufs_debugfs_put_user_access(hba);
-+}
-+
- void ufs_debugfs_hba_init(struct ufs_hba *hba)
- {
-+	/* Set default exception event rate limit period to 20ms */
-+	hba->debugfs_ee_rate_limit_ms = 20;
-+	INIT_DELAYED_WORK(&hba->debugfs_ee_work, ufs_debugfs_restart_ee);
- 	hba->debugfs_root = debugfs_create_dir(dev_name(hba->dev), ufs_debugfs_root);
- 	debugfs_create_file("stats", 0400, hba->debugfs_root, hba, &ufs_debugfs_stats_fops);
- 	debugfs_create_file("exception_event_mask", 0600, hba->debugfs_root,
- 			    hba, &ee_usr_mask_fops);
-+	debugfs_create_u32("exception_event_rate_limit_ms", 0600, hba->debugfs_root,
-+			   &hba->debugfs_ee_rate_limit_ms);
- }
- 
- void ufs_debugfs_hba_exit(struct ufs_hba *hba)
- {
- 	debugfs_remove_recursive(hba->debugfs_root);
-+	cancel_delayed_work_sync(&hba->debugfs_ee_work);
- }
-diff --git a/drivers/scsi/ufs/ufs-debugfs.h b/drivers/scsi/ufs/ufs-debugfs.h
-index f35b39c4b4f5..3ca29d30460a 100644
---- a/drivers/scsi/ufs/ufs-debugfs.h
-+++ b/drivers/scsi/ufs/ufs-debugfs.h
-@@ -12,11 +12,13 @@ void __init ufs_debugfs_init(void);
- void __exit ufs_debugfs_exit(void);
- void ufs_debugfs_hba_init(struct ufs_hba *hba);
- void ufs_debugfs_hba_exit(struct ufs_hba *hba);
-+void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status);
- #else
- static inline void ufs_debugfs_init(void) {}
- static inline void ufs_debugfs_exit(void) {}
- static inline void ufs_debugfs_hba_init(struct ufs_hba *hba) {}
- static inline void ufs_debugfs_hba_exit(struct ufs_hba *hba) {}
-+static inline void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status) {}
- #endif
- 
- #endif
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index d68f5ecc9b13..f0959b9609fd 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5147,14 +5147,14 @@ static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
- 	}
- }
- 
--static int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask)
-+int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask)
- {
- 	return ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_WRITE_ATTR,
- 				       QUERY_ATTR_IDN_EE_CONTROL, 0, 0,
- 				       &ee_ctrl_mask);
- }
- 
--static int ufshcd_write_ee_control(struct ufs_hba *hba)
-+int ufshcd_write_ee_control(struct ufs_hba *hba)
- {
- 	int err;
- 
-@@ -5643,6 +5643,7 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
- 	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
- 		ufshcd_bkops_exception_event_handler(hba);
- 
-+	ufs_debugfs_exception_event(hba, status);
- out:
- 	ufshcd_scsi_unblock_requests(hba);
- 	/*
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index ff9601f8d9e6..49eed4cf009c 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -833,6 +833,8 @@ struct ufs_hba {
- #endif
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_root;
-+	struct delayed_work debugfs_ee_work;
-+	u32 debugfs_ee_rate_limit_ms;
- #endif
- };
- 
-@@ -1276,6 +1278,8 @@ static inline u8 ufshcd_scsi_to_upiu_lun(unsigned int scsi_lun)
- int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
- 		     const char *prefix);
- 
-+int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask);
-+int ufshcd_write_ee_control(struct ufs_hba *hba);
- int ufshcd_update_ee_control(struct ufs_hba *hba, u16 *mask, u16 *other_mask,
- 			     u16 set, u16 clr);
- 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/Documentation/perf-record.txt |  8 +--
+>  tools/perf/builtin-record.c              |  8 +--
+>  tools/perf/builtin-stat.c                |  2 -
+>  tools/perf/util/evlist.c                 | 63 ++++++++++++++++++++++--
+>  4 files changed, 67 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index 34cf651ee237..05a85da0f7c5 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -640,9 +640,11 @@ ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
+>  Listen on ctl-fd descriptor for command to control measurement.
+>  
+>  Available commands:
+> -  'enable'  : enable events
+> -  'disable' : disable events
+> -  'snapshot': AUX area tracing snapshot).
+> +  'enable'       : enable events
+> +  'disable'      : disable events
+> +  'enable name'  : enable event 'name'
+> +  'disable name' : disable event 'name'
+> +  'snapshot'     : AUX area tracing snapshot).
+>  
+>  Measurements can be started with events disabled using --delay=-1 option. Optionally
+>  send control command completion ('ack\n') to ack-fd descriptor to synchronize with the
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index fd3911650612..7302e7527d40 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1937,18 +1937,14 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  
+>  		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
+>  			switch (cmd) {
+> -			case EVLIST_CTL_CMD_ENABLE:
+> -				pr_info(EVLIST_ENABLED_MSG);
+> -				break;
+> -			case EVLIST_CTL_CMD_DISABLE:
+> -				pr_info(EVLIST_DISABLED_MSG);
+> -				break;
+>  			case EVLIST_CTL_CMD_SNAPSHOT:
+>  				hit_auxtrace_snapshot_trigger(rec);
+>  				evlist__ctlfd_ack(rec->evlist);
+>  				break;
+>  			case EVLIST_CTL_CMD_ACK:
+>  			case EVLIST_CTL_CMD_UNSUPPORTED:
+> +			case EVLIST_CTL_CMD_ENABLE:
+> +			case EVLIST_CTL_CMD_DISABLE:
+>  			default:
+>  				break;
+>  			}
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 8cc24967bc27..3c6712ed5af7 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -578,14 +578,12 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
+>  	if (evlist__ctlfd_process(evlist, &cmd) > 0) {
+>  		switch (cmd) {
+>  		case EVLIST_CTL_CMD_ENABLE:
+> -			pr_info(EVLIST_ENABLED_MSG);
+>  			if (interval)
+>  				process_interval();
+>  			break;
+>  		case EVLIST_CTL_CMD_DISABLE:
+>  			if (interval)
+>  				process_interval();
+> -			pr_info(EVLIST_DISABLED_MSG);
+>  			break;
+>  		case EVLIST_CTL_CMD_SNAPSHOT:
+>  		case EVLIST_CTL_CMD_ACK:
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 05363a7247c4..c71c7e035641 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1957,6 +1957,64 @@ int evlist__ctlfd_ack(struct evlist *evlist)
+>  	return err;
+>  }
+>  
+> +static int get_cmd_arg(char *cmd_data, size_t cmd_size, char **arg)
+> +{
+> +	char *data = cmd_data + cmd_size;
+> +
+> +	/* no argument */
+> +	if (!*data)
+> +		return 0;
+> +
+> +	/* there's argument */
+> +	if (*data == ' ') {
+> +		*arg = data + 1;
+> +		return 1;
+> +	}
+> +
+> +	/* malformed */
+> +	return -1;
+> +}
+> +
+> +static int evlist__ctlfd_enable(struct evlist *evlist, char *cmd_data, bool enable)
+> +{
+> +	struct evsel *evsel;
+> +	char *name;
+> +	int err;
+> +
+> +	err = get_cmd_arg(cmd_data,
+> +			  enable ? sizeof(EVLIST_CTL_CMD_ENABLE_TAG) - 1 :
+> +				   sizeof(EVLIST_CTL_CMD_DISABLE_TAG) - 1,
+> +			  &name);
+> +	if (err < 0) {
+> +		pr_info("failed: wrong command\n");
+> +		return -1;
+> +	}
+> +
+> +	if (err) {
+> +		evsel = evlist__find_evsel_by_str(evlist, name);
+> +		if (evsel) {
+> +			if (enable)
+> +				evlist__enable_evsel(evlist, name);
+> +			else
+> +				evlist__disable_evsel(evlist, name);
+> +			pr_info("Event %s %s\n", evsel->name,
+> +				enable ? "enabled" : "disabled");
+> +		} else {
+> +			pr_info("failed: can't find '%s' event\n", name);
+> +		}
+> +	} else {
+> +		if (enable) {
+> +			evlist__enable(evlist);
+> +			pr_info(EVLIST_ENABLED_MSG);
+> +		} else {
+> +			evlist__disable(evlist);
+> +			pr_info(EVLIST_DISABLED_MSG);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  {
+>  	int err = 0;
+> @@ -1973,10 +2031,9 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  		if (err > 0) {
+>  			switch (*cmd) {
+>  			case EVLIST_CTL_CMD_ENABLE:
+> -				evlist__enable(evlist);
+> -				break;
+>  			case EVLIST_CTL_CMD_DISABLE:
+> -				evlist__disable(evlist);
+> +				err = evlist__ctlfd_enable(evlist, cmd_data,
+> +							   *cmd == EVLIST_CTL_CMD_ENABLE);
+>  				break;
+>  			case EVLIST_CTL_CMD_SNAPSHOT:
+>  				break;
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.17.1
 
+- Arnaldo
