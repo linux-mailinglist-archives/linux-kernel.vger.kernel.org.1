@@ -2,69 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C7A2FC0AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B462FC0BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392077AbhASUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:12:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391385AbhASUL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:11:28 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C211B23107;
-        Tue, 19 Jan 2021 20:10:46 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 15:10:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-Message-ID: <20210119151045.15c1fee3@gandalf.local.home>
-In-Reply-To: <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
-References: <20210116220950.47078-1-timur@kernel.org>
-        <20210118182635.GD2260413@casper.infradead.org>
-        <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
-        <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
-        <20210119014725.GH2260413@casper.infradead.org>
-        <202101191135.A78A570@keescook>
-        <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1730334AbhASUQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 15:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729476AbhASUPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 15:15:22 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4A0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:14:41 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id p22so23059764edu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:14:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=byRyQq0Zgtt5NgbHeIaYNBYUmY4ZzoHZBsdIAqa6syw=;
+        b=Gvl+pXMIcc2co0RDWG1pUGT2dp42EWP1Oa9B+3sOC1fEXqHYY0TNyn4mV/ProTlP1F
+         6ThCzCQJMElcNtFlKMxBEDs+M43Z3iur8b+I/VPtsNTEn3DRGKXGgQHDLK6dELHcR2if
+         ZHLG94pSN934JR9GRWS8HNj4barzLvHkGaTA708e9PQrN8RNfCZyVobjym7lfLJlenUa
+         8IEjgp2B1w5yyZccOskcIDNMCgMkjpWDivGrzGl9WjZsYw/oYhe93GkKRG6KmcDUeVkr
+         FO7Dk3NxbIwrPknVjZlUQmuSVKP4tIXyPHDJ5WnwBVugDNbaE5g4vXhLCKObLd+RZ6D0
+         6rxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=byRyQq0Zgtt5NgbHeIaYNBYUmY4ZzoHZBsdIAqa6syw=;
+        b=gjrguj8XmMlnWoJSa2R43Q0/SS6w6EGrT70f/ilIgDkZZ9GCXvW3AjtsF0agJiw6g2
+         wtjAqhsQBNi8hR2Q5incwWsYjIJiG1O7QVeKeKa5bV4DKXRoIS++WpK3Uw4gN8RfK0Ly
+         yT9tAgUgrA7ZyatON857bZ3TxQd/q4qFu+eR+118qatdXJMHADgnyt4cLUjzjbvsg0c0
+         8wDbgIg2lfWbJU2256dfposotzVroLf/2z/U1evHbmTZ2KuMYvqOqzmd2cGus3qavO+s
+         E/AILCq2b74uqRUFobKfbPVmW658XYBDn2Swjq4kmpne9qKywoNIefF3m25ctrBCwYZm
+         Ym5A==
+X-Gm-Message-State: AOAM532ltdrg6SntPzeQVbLthYkAvwYgQDWh4zW65pFkqnSDRRB+oWfx
+        IpcYPdQ14qeCqtpzNOhv0WAw6KnVFNjl84StondZUg==
+X-Google-Smtp-Source: ABdhPJz8pqr0iEoSJaOvD5DC/VO5AZGkgHQio8PjFJuSvIBVP2GzlgXm4FTOWjvYilIQV8nA55C/YRhAG3ldeAxU44U=
+X-Received: by 2002:a05:6402:304e:: with SMTP id bu14mr4545815edb.60.1611087280334;
+ Tue, 19 Jan 2021 12:14:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
+ <20210119043920.155044-9-pasha.tatashin@soleen.com> <20210119183013.GB4605@ziepe.ca>
+ <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com> <20210119184751.GD4605@ziepe.ca>
+In-Reply-To: <20210119184751.GD4605@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 19 Jan 2021 15:14:04 -0500
+Message-ID: <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
+Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 13:55:29 -0600
-Timur Tabi <timur@kernel.org> wrote:
-> >   		case DUMP_PREFIX_ADDRESS:
-> >   			printk("%s%s%p: %s\n",
-> > -			       level, prefix_str, ptr + i, linebuf);
-> > +			       level, prefix_str, addr + i, linebuf);  
-> 
-> Well, this is better than nothing, but not by much.  Again, as long as 
-> %px exists for printk(), I just cannot understand any resistance to 
-> allowing it in print_hex_dump().
-> 
-> Frankly, I think this patch and my patch should both be added.  During 
-> debugging, it's very difficult if not impossible to work with hashed 
-> addresses.  I use print_hex_dump() with an unhashed address all the 
-> time, either by applying my patch to my own kernel or just replacing the 
-> %p with %px.
+On Tue, Jan 19, 2021 at 1:47 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jan 19, 2021 at 01:34:26PM -0500, Pavel Tatashin wrote:
+> > On Tue, Jan 19, 2021 at 1:30 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Mon, Jan 18, 2021 at 11:39:14PM -0500, Pavel Tatashin wrote:
+> > > > Zero page should not be used for long term pinned pages. Once pages
+> > > > are pinned their physical addresses cannot changed until they are unpinned.
+> > > >
+> > > > Guarantee to always return real pages when they are pinned by adding
+> > > > FOLL_WRITE.
+> > > >
+> > > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > > >  mm/gup.c | 10 +++++++++-
+> > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > >
+> > > No, this will definitely break things
+> >
+> > What will break
+>
+> Things assuming GUP doesn't break COW, making all GUP WRITE was
+> already tried and revered for some other reason
+>
+> > > Why does the zero page have to be movable?
+> >
+> > It is not even about being movable, we can't cow pinned pages returned
+> > by GUP call, how can we use zero page for that?
+>
+> The zero page is always zero, it is never written to. What does cow
+> matter?
 
-I'm curious, what is the result if you replaced %p with %pS?
+Hi Jason,
 
-That way you get a kallsyms offset version of the output, which could still
-be very useful depending on what you are dumping.
+I was thinking about a use case where userland would pin an address
+without FOLL_WRITE, because the PTE for that address is not going to
+be writable, but some device via DMA will write to it. Now, if we got
+a zero page we have a problem... If this usecase is not valid then the
+fix for movable zero page is make the zero page always come from a
+non-movable zone so we do not need to isolate it during migration, and
+so the memory can be offlined later.
 
--- Steve
+Pasha
+
+>
+> Jason
