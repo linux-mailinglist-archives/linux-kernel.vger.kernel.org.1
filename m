@@ -2,200 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE3F2FB4D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 10:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F20262FB6FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbhASJKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:10:01 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:59533 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731669AbhASJF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:05:27 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 4AD73C002A;
-        Tue, 19 Jan 2021 09:04:28 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 10:04:27 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: Re: [PATCH 1/2] of: device: Allow DMA range map to be set before
- of_dma_configure_id
-Message-ID: <YAagmzfPXTW4Jlg0@aptenodytes>
-References: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
- <ddf44e96-187b-91c0-822d-ade4f1e5be2b@arm.com>
- <YAMdZ9peWRMRACv2@collins>
- <5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VWPV4+qJKHV+hHEv"
-Content-Disposition: inline
-In-Reply-To: <5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com>
+        id S2388621AbhASJtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:49:08 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:25071 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387430AbhASJ3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:29:12 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DKjxy3kpzz9tygP;
+        Tue, 19 Jan 2021 10:28:22 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id fCy10mwiE3V2; Tue, 19 Jan 2021 10:28:22 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DKjxy2py0z9tygH;
+        Tue, 19 Jan 2021 10:28:22 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 70C058B7AE;
+        Tue, 19 Jan 2021 10:28:23 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id MfolsJsVvjLe; Tue, 19 Jan 2021 10:28:23 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3DB408B7BB;
+        Tue, 19 Jan 2021 10:28:23 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 3234C66A64; Tue, 19 Jan 2021 07:00:00 +0000 (UTC)
+Message-Id: <2fed79b1154c872194f98bac4422c23918325e61.1611039590.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/47x: Disable 256k page size
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 19 Jan 2021 07:00:00 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+PPC47x_TLBE_SIZE isn't defined for 256k pages, so
+this size of page shall not be selected for 47x.
 
---VWPV4+qJKHV+hHEv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: e7f75ad01d59 ("powerpc/47x: Base ppc476 support")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Robin,
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 107bb4319e0e..a685e42d3993 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -772,7 +772,7 @@ config PPC_64K_PAGES
+ 
+ config PPC_256K_PAGES
+ 	bool "256k page size"
+-	depends on 44x && !STDBINUTILS
++	depends on 44x && !STDBINUTILS && !PPC_47x
+ 	help
+ 	  Make the page size 256k.
+ 
+-- 
+2.25.0
 
-On Mon 18 Jan 21, 13:27, Robin Murphy wrote:
-> On 2021-01-16 17:07, Paul Kocialkowski wrote:
-> > Hi Robin,
-> >=20
-> > Le Sat 16 Jan 21, 14:57, Robin Murphy a =C3=A9crit :
-> > > On 2021-01-15 17:58, Paul Kocialkowski wrote:
-> > > > A mechanism was recently introduced for the sunxi architecture where
-> > > > the DMA offset for specific devices (under the MBUS) is set by a co=
-mmon
-> > > > driver (sunxi_mbus). This driver calls dma_direct_set_offset to set
-> > > > the device's dma_range_map manually.
-> > > >=20
-> > > > However this information was overwritten by of_dma_configure_id, wh=
-ich
-> > > > obtains the map from of_dma_get_range (or keeps it NULL when it fai=
-ls
-> > > > and the force_dma argument is true, which is the case for platform
-> > > > devices).
-> > > >=20
-> > > > As a result, the dma_range_map was always overwritten and the mecha=
-nism
-> > > > could not correctly take effect.
-> > > >=20
-> > > > This adds a check to ensure that no previous DMA range map is
-> > > > overwritten and prints a warning when the map was already set while
-> > > > also being available from dt. In this case, the map that was already
-> > > > set is kept.
-> > >=20
-> > > Hang on, the hard-coded offset is only intended to be installed when =
-there
-> > > *isn't* anything described in DT, in which case of_dma_get_range() sh=
-ould
-> > > always bail out early without touching it anyway. This sounds like
-> > > something's not quite right in the MBUS driver, so I don't think work=
-ing
-> > > around it in core code is really the right thing to do.
-> >=20
-> > That's right, there is no practical case where the two are in conflict.
-> > The problem that I'm solving here is that dev->dma_range_map is *always*
-> > assigned, even when of_dma_get_range bailed and map still is NULL.
-> >=20
-> > This has the effect of always overwriting what the MBUS driver does
-> > (and leaking its memory too).
->=20
-> Oh, I should have looked closer at of_dma_configure_id() itself. I was
-> assuming that b4bdc4fbf8d0 had been tested and at least *could* work, but
-> apparently not :/
->=20
-> Indeed it seems there was a fundamental oversight in e0d072782c73
-> ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset"),
-> equivalent to the same one I previously made myself with bus_dma_mask and
-> fixed in 6778be4e5209 ("of/device: Really only set bus DMA mask when
-> appropriate"). I think same simpler fix is the right one for this case to=
-o,
-> i.e. just move the assignment to dev->dma_range_map up under the "if (!re=
-t)"
-> condition. Assigning it this late - after the IOMMU and arch setup - looks
-> wrong anyway, even if it isn't currently an issue in practice (in princip=
-le
-> an IOMMU driver *could* start trying to figure out reserved regions around
-> DMA windows for a device as early as its .of_xlate callback, even though
-> that's not the intent of the API design).
-
-Okay sounds good, I'll resend a patch with the assignment under if (!ret)!
-
-> Luckily dma_range_map hasn't been hooked up in the equivalent ACPI path y=
-et,
-> so you're off the hook for fixing that too :)
-
-Good for me :)
-
-Cheers,
-
-Paul
-
-> > > Do you have a case where one of the relevant devices inherits a "dma-=
-ranges"
-> > > via the regular hierarchy without indirecting via an "interconnects"
-> > > reference? Currently you're only checking for the latter, so that wou=
-ld be
-> > > one way things could go awry (although to be a problem, said "dma-ran=
-ges"
-> > > would also have to encode something *other* than the appropriate MBUS
-> > > offset, which implies an incorrect or at least inaccurately-structure=
-d DT as
-> > > well).
-> >=20
-> > No, I think things are good in that regard. No messed up dt or anything=
- like
-> > that :)
-> >=20
-> > Cheers,
-> >=20
-> > Paul
-> >=20
-> > > Robin.
-> > >=20
-> > > > Fixes: b4bdc4fbf8d0 ("soc: sunxi: Deal with the MBUS DMA offsets in=
- a central place")
-> > > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > > > ---
-> > > >    drivers/of/device.c | 9 ++++++++-
-> > > >    1 file changed, 8 insertions(+), 1 deletion(-)
-> > > >=20
-> > > > diff --git a/drivers/of/device.c b/drivers/of/device.c
-> > > > index aedfaaafd3e7..db1b8634c2c7 100644
-> > > > --- a/drivers/of/device.c
-> > > > +++ b/drivers/of/device.c
-> > > > @@ -181,7 +181,14 @@ int of_dma_configure_id(struct device *dev, st=
-ruct device_node *np,
-> > > >    	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
-> > > > -	dev->dma_range_map =3D map;
-> > > > +	if (!dev->dma_range_map) {
-> > > > +		dev->dma_range_map =3D map;
-> > > > +	} else if (map) {
-> > > > +		dev_warn(dev,
-> > > > +			 "DMA range map was already set, ignoring range map from dt\n");
-> > > > +		kfree(map);
-> > > > +	}
-> > > > +
-> > > >    	return 0;
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(of_dma_configure_id);
-> > > >=20
-> >=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---VWPV4+qJKHV+hHEv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmAGoJsACgkQ3cLmz3+f
-v9EHhwf/elOyvLNl99Y6DkOE0jrgwROy6MwAy6sEWzlI8Ks3G9JqNi7yLpQ3A1Ak
-0TvY9aChoHCSaoKMC/GoyxdbZrP662sELa4833LTLXNoLC7SZLMsqGeYDVriCA7p
-VBJC4kJNyHXknWLDF4NMEe0m7UApXI7bmckz+eImWYiQQJvw8JHKTgnzTt8NDfHw
-E5auZMZvtj5JJI2u9NriJUZeFxnwo4a9izHHTNsWWkWXXLZAieG3PCI+rdrOObmG
-9W2e1FdctysCIFwzRRFTn2t9u1j9+epnFTNw+C1BueuUKCM/Q6ZGHbOeEveakbas
-58uZgm9ppLgEZdCgFjduv7F1hjajvA==
-=j/jd
------END PGP SIGNATURE-----
-
---VWPV4+qJKHV+hHEv--
