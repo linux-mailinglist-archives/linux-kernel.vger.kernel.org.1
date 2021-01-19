@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AF32FADF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA16C2FADF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 01:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391215AbhASAMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 19:12:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391085AbhASAMF (ORCPT
+        id S2404302AbhASAM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 19:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391073AbhASAMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 19:12:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611015039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k8uZwZ9l9/9GHM34N72Urrm3zDwDS5163gHM9WUjrbg=;
-        b=N1PXWVKhMMIDMIXDYOaS3HL03n/rXd/p4AKvs/5dQxHBGNYCbJNwuaEIcX+PpnOvQVR3NS
-        rrqFE6Q7ppa7LrJeTRuwx52SiwVCeQ9P1Q7qctdfGUcXOygbPPV/G96v+5iokaGD3hIcLh
-        ZOz4BYVcDU7nYcohlBwai8i6tPwrgiM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-32ViLy7wPfmqPoRVTwRs-A-1; Mon, 18 Jan 2021 19:10:37 -0500
-X-MC-Unique: 32ViLy7wPfmqPoRVTwRs-A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA7118C89C4;
-        Tue, 19 Jan 2021 00:10:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A20370464;
-        Tue, 19 Jan 2021 00:10:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Tobias Markus <tobias@markus-regensburg.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: 
+        Mon, 18 Jan 2021 19:12:24 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8871C061573;
+        Mon, 18 Jan 2021 16:11:43 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id v184so10947539wma.1;
+        Mon, 18 Jan 2021 16:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=UmRvZt3oGsjKwYVRuTT29dplJG9vQFlA51PciylhdT4=;
+        b=fMJtulXAbW3qKUY3hFbmK6kX9G0R4hQ1lpMr1alJgKiGJCAv5GOtj7P7Ak8HXUwjZy
+         WBDOimIkLalIF5LY8qa293D6M/XMBtKaUXpTyvzlYAWFb8oTQKVnr7r/aDvQpFHKc1HL
+         lIN+PQ7PZ8KGSNQHcTilKRO/mJl9ReoedCB7cAvZ577xDcar6GGR3WeZ5Z2C2HAi4JrI
+         c0leQkiFumiFlSCVPP5U7QjGFXSlgejYcVz0g0b6W9KC83owivPPi+hHsGJ+twqxjQ9F
+         vTCdugz2GCsMzLYHIZxg1VO10KKZpUG2nefmPk8mx5SNP74YeLQ9JQfX/LvwAevWSnqU
+         xpVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UmRvZt3oGsjKwYVRuTT29dplJG9vQFlA51PciylhdT4=;
+        b=pQZrsp7LCXAEh9F1x+XEL/b5Znt78vp1sn7RSZJCdKLkD+OUbkoc0Q7buXNeVKHHo4
+         kEjyIo61/JBe7mb0du644hAbV+zdW+MgyFbsO062N/oXWVZLwHgAunjO5cz3cUWqj8Fe
+         UPjC7TTFdHRTaLWo6EbHj8ER9CKdJB7FBx4AhtxJ3fvxRpttG2NJUcuNyk/4cVsD6B2n
+         yR+kP0F5+OC4h/G7lDrtQ98eR7jWA4DdIPHyFjlGZ+XJPTahPPEoDc24O8Nrfd6tjKSH
+         GGJd4fneHVYuSP/HYwqYSf/j3W8tvxnnLpHq1rUsn28pYBX8xyDc2AiYvXwyMmsdSVhU
+         k6cw==
+X-Gm-Message-State: AOAM531VU6fx5f1ZbgVLIN/7XhToT45eLv809v1l925z5e1WUxTGp/87
+        a1g4dyiu0p8HAeg1mblaBVg=
+X-Google-Smtp-Source: ABdhPJxDNT5AFpdigI+10S+0uFyqJYdarEOvAQTjwuqZcQO2G+MCLjnQCRCABvW3AMPSVeP932C7RQ==
+X-Received: by 2002:a1c:2802:: with SMTP id o2mr1559574wmo.68.1611015102673;
+        Mon, 18 Jan 2021 16:11:42 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id 62sm1825887wmd.34.2021.01.18.16.11.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 16:11:41 -0800 (PST)
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+From:   Daniel Scally <djrscally@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com,
+        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
+ <20210118144606.GO4077@smile.fi.intel.com>
+ <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
+Message-ID: <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
+Date:   Tue, 19 Jan 2021 00:11:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 19 Jan 2021 00:10:33 +0000
-Message-ID: <163546.1611015033@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy, Laurent
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+On 18/01/2021 21:19, Daniel Scally wrote:
+>>>> +static const struct clk_ops skl_int3472_clock_ops = {
+>>>> +	.prepare = skl_int3472_clk_prepare,
+>>>> +	.unprepare = skl_int3472_clk_unprepare,
+>>>> +	.enable = skl_int3472_clk_enable,
+>>>> +	.disable = skl_int3472_clk_disable,
+>>>> +};
+>> Yeah, sounds like reinventing clk-gpio.c.
+>>
+>> static const struct clk_ops clk_gpio_gate_ops = {
+>> 	.enable = clk_gpio_gate_enable,
+>> 	.disable = clk_gpio_gate_disable,
+>> 	.is_enabled = clk_gpio_gate_is_enabled,
+>> };
+>>
+>> (Or is it mux? It has support there as well.
+>>
+> Hmm, yeah, this looks like it would work actually. So I think I'd need to:
+>
+>
+> 1. Make enabling INTEL_SKL_INT3472 also enable the clk-gpio driver
+>
+> 2. Register a platform device to bind to the clk-gpio driver
+>
+> 3. Register a gpio lookup table so that the clk-gpio driver can find the
+> gpio in question using gpiod_get()
+>
+>
+> And that looks like it will work; I'll try it.
 
-On the following call path, `sig->pkey_algo` is not assigned
-in asymmetric_key_verify_signature(), which causes runtime
-crash in public_key_verify_signature().
+I'm more and more confident that this will work, but it has some
+knock-on effects:
 
-  keyctl_pkey_verify
-    asymmetric_key_verify_signature
-      verify_signature
-        public_key_verify_signature
 
-This patch simply check this situation and fixes the crash
-caused by NULL pointer.
+The both clk and regulator gpio driver expects to be able to fetch the
+GPIO using devm_gpiod_get(&pdev->dev, "enable", ...). That won't work of
+course, so we need to add another GPIO lookup table so those drivers can
+see the GPIOs. For that, we need to know what dev_name(&pdev->dev) will
+be so we can set the .dev_id member of a gpiod_lookup_table to that
+value, but that isn't set until _after_ the pdev is registered (because
+it has to figure out the id, we can't manually set the IDs because there
+could be more than one instance of int3472-discrete bound to multiple
+PMIC devices, and we don't know which id the current one should have).
+Finally, we can't wait until the device is registered because it
+immediately probes, can't find the GPIO and then fails probe.
 
-Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verific=
-ation")
-Reported-by: Tobias Markus <tobias@markus-regensburg.de>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-and-tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Tested-by: Jo=C3=A3o Fonseca <jpedrofonseca@ua.pt>
-Cc: stable@vger.kernel.org # v5.10+
----
 
- crypto/asymmetric_keys/public_key.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It's similar problem that causes us to need the i2c-acpi name format
+macros, but complicated by the dynamic ID part of dev_name(&pdev->dev)
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/p=
-ublic_key.c
-index 8892908ad58c..788a4ba1e2e7 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -356,7 +356,8 @@ int public_key_verify_signature(const struct public_key=
- *pkey,
- 	if (ret)
- 		goto error_free_key;
-=20
--	if (strcmp(sig->pkey_algo, "sm2") =3D=3D 0 && sig->data_size) {
-+	if (sig->pkey_algo && strcmp(sig->pkey_algo, "sm2") =3D=3D 0 &&
-+	    sig->data_size) {
- 		ret =3D cert_sig_digest_update(sig, tfm);
- 		if (ret)
- 			goto error_free_key;
+
+Solving it is a bit of a sticky one; perhaps something like moving the
+dev_set_name() part of platform_device_add() [1] to its own function,
+that's called in both platform_device_alloc() and
+platform_device_register(). That way it would be available before the
+device itself was registered, meaning we could create the lookup table
+before it probes the driver.
+
+
+(also, Laurent, if we did it this way we wouldn't be able to also handle
+the led-indicator GPIO here without some fairly major rework)
+
+
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/base/platform.c#L563
 
