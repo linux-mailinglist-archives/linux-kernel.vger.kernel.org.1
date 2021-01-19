@@ -2,199 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0786F2FC05E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B732FC05A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbhASTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:52:30 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5196 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729866AbhASTnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:43:24 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600736260001>; Tue, 19 Jan 2021 11:42:30 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 19:42:30 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 19 Jan 2021 19:42:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kvPfuWyRGsF0MRWBBh+T3mnhANf1V34A3Wb3eHXsb4CfqIrOCwZRAXU+uzAZmUr1O3sMRJVVAe7np89zC7aXQv0fYdQHHr/x6dZBUUVGLSfhCL9UrZNO/y0tAkFpLoe7AReZCg44xZyL6RBKFPiM6f8iD5a0OFGLzmuKnY8uzEjNF6d92If1Yz0KsToMxpCmGflc//P7JGckKLVGFJ8Xzj/26t5Qn2wRLQHT63z3BkCv0EpiaFtfzijiQfRLEP4tDuzm9P49U7iFWIcHpTTZWwFJ6TVRggF/CLZaYyjIpU888vSwFRp1DVK7juty/W9lx+YEM3Zy0ZHqOVQp7rH6ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RcTSxcno5mAak3oEmM+85w6fqaZeDZ8lFv/+zeP8EzU=;
- b=ZQmRjNPcBGSecLPKvEkBMsTDet8W6Np3BxdirgY0iMPt0bzPYRAc0XRp8RLUEUKITSY9VKhEg7/hPwL1OR5c7I7d1W7wjssj9nFmCmFoZhiGmF0PNTZe4xgL3wBXDXB3xt0Glk9jtKwMj74EZqECPZunKwpt/BJG65pxrbjQ746B6iTW/KKdk6VcEuv5ikszbu/1KAf+WijhZuLaEDTkDgIP/pKG3s8K/8I0D056Z1dft7yFz7Q1E8vlXgECusyf6+Uhyt0LWpyTa4YUngdzPE1h30RwWukMVIK2+b34ebzZ3mFLXGm/lZKu2H5z8I9RsPguA/ye4WcNAvDytEuzIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1516.namprd12.prod.outlook.com (2603:10b6:4:5::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.10; Tue, 19 Jan 2021 19:42:28 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Tue, 19 Jan 2021
- 19:42:28 +0000
-Date:   Tue, 19 Jan 2021 15:42:26 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-CC:     Max Gurtovoy <mgurtovoy@nvidia.com>, <alex.williamson@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210119194226.GA916035@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
- <20210118143806.036c8dbc.cohuck@redhat.com>
- <20210118151020.GJ4147@nvidia.com>
- <20210118170009.058c8c52.cohuck@redhat.com>
- <20210118181626.GL4147@nvidia.com>
- <20210119195610.18da1e78.cohuck@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210119195610.18da1e78.cohuck@redhat.com>
-X-ClientProxiedBy: MN2PR02CA0028.namprd02.prod.outlook.com
- (2603:10b6:208:fc::41) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730209AbhASTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:51:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729930AbhASTo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:44:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B807230FE;
+        Tue, 19 Jan 2021 19:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611085426;
+        bh=79vhQIf6gbbZOYaxmyDna1ucaWKzRDifHOqFBJbDNvo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FWNX+iW9Hn2S+uEnINR9umuHvYPH7mXIyKstJ05iWLPO20RJXuDrXI6dPipMHJjIe
+         d7oayUwPo9e5blkpnpWTmTlE15py5WHFu0ja9vOAQyU9P7AtaekeTvJq/3peowT+46
+         MHYXm99UktpGVU0T0+gWpI+ARP1sj0U3xeCtkbPQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.169
+Date:   Tue, 19 Jan 2021 20:43:42 +0100
+Message-Id: <1611085422217146@kroah.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR02CA0028.namprd02.prod.outlook.com (2603:10b6:208:fc::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Tue, 19 Jan 2021 19:42:28 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1wtW-003r76-Tx; Tue, 19 Jan 2021 15:42:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611085350; bh=RcTSxcno5mAak3oEmM+85w6fqaZeDZ8lFv/+zeP8EzU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=B8CNbrTkmNralGJ1WS5zL8q1qT6+CGzd9M0NOd288SLQxGxd48aciPnTkQ6jaE8V8
-         G7ELx9e7Ah83xMVvrSr6BAp3nfkuGw4kHsx1de2w97JnL9w/SnJEaBVPuAt02YM32a
-         rCqYvxc0LWuI2IQEkYScVH0EsOLtp4KhvSmZ9WYAKJwUkTQDmPov2TAHt2MBK78ybc
-         Ji91NyonsOVbItbeDO+LpUz6QHMq3oa4uGwCvjPx6KOE+GboEjhGlSpUXJ70qsMmnj
-         LhiVzW87UpDEnKDvKgXmnXB0IUFzkh7I+nmo369yc0ScZXB1H6fIbnodP9HjLHaUVl
-         D5fuAHbBiWeIA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:56:10PM +0100, Cornelia Huck wrote:
-> On Mon, 18 Jan 2021 14:16:26 -0400
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Mon, Jan 18, 2021 at 05:00:09PM +0100, Cornelia Huck wrote:
-> > 
-> > > > You can say that all the HW specific things are in the mlx5_vfio_pci
-> > > > driver. It is an unusual driver because it must bind to both the PCI
-> > > > VF with a pci_driver and to the mlx5_core PF using an
-> > > > auxiliary_driver. This is needed for the object lifetimes to be
-> > > > correct.  
-> > > 
-> > > Hm... I might be confused about the usage of the term 'driver' here.
-> > > IIUC, there are two drivers, one on the pci bus and one on the
-> > > auxiliary bus. Is the 'driver' you're talking about here more the
-> > > module you load (and not a driver in the driver core sense?)  
-> > 
-> > Here "driver" would be the common term meaning the code that realizes
-> > a subsytem for HW - so mlx5_vfio_pci is a VFIO driver because it
-> > ultimately creates a /dev/vfio* through the vfio subsystem.
-> > 
-> > The same way we usually call something like mlx5_en an "ethernet
-> > driver" not just a "pci driver"
-> > 
-> > > Yes, sure. But it also shows that mlx5_vfio_pci aka the device-specific
-> > > code is rather small in comparison to the common vfio-pci code.
-> > > Therefore my question whether it will gain more specific changes (that
-> > > cannot be covered via the auxiliary driver.)  
-> > 
-> > I'm not sure what you mean "via the auxiliary driver" - there is only
-> > one mlx5_vfio_pci, and the non-RFC version with all the migration code
-> > is fairly big.
-> > 
-> > The pci_driver contributes a 'struct pci_device *' and the
-> > auxiliary_driver contributes a 'struct mlx5_core_dev *'. mlx5_vfio_pci
-> > fuses them together into a VFIO device. Depending on the VFIO
-> > callback, it may use an API from the pci_device or from the
-> > mlx5_core_dev device, or both.
-> 
-> Let's rephrase my question a bit:
-> 
-> This proposal splits the existing vfio-pci driver into a "core"
-> component and code actually implementing the "driver" part. For mlx5,
-> an alternative "driver" is introduced that reuses the "core" component
-> and also hooks into mlx5-specific code parts via the auxiliary device
-> framework.
+I'm announcing the release of the 4.19.169 kernel.
 
-Yes, I think you understand it well
+All users of the 4.19 kernel series must upgrade.
 
-> (IIUC, the plan is to make existing special cases for devices follow
-> mlx5's lead later.)
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Well, it is a direction to go. I think adding 'if pci matches XX then
-squeeze in driver Y' to vfio-pci was a hacky thing to do, this is a
-way out.
+thanks,
 
-We could just add 'if pci matches mlx5 then squeeze in driver mlx5'
-too - but that is really too horific to seriously consider.
+greg k-h
 
-> I've been thinking of an alternative split: Keep vfio-pci as it is now,
-> but add an auxiliary device. 
+------------
 
-vfio-pci cannot use auxiliary device. It is only for connecting parts
-of the same driver together. vfio-pci has no other parts to connect.
+ Makefile                                             |    4 +--
+ arch/arc/Makefile                                    |    9 +------
+ arch/arc/include/asm/page.h                          |    1 
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi               |    4 +++
+ arch/mips/boot/compressed/decompress.c               |    3 +-
+ arch/mips/kernel/relocate.c                          |   10 ++++++-
+ arch/x86/hyperv/mmu.c                                |   12 +++++++--
+ block/bfq-iosched.c                                  |    8 +++---
+ drivers/acpi/internal.h                              |    2 -
+ drivers/acpi/scan.c                                  |   15 +++++++++++
+ drivers/gpu/drm/msm/msm_drv.c                        |    8 +++---
+ drivers/infiniband/hw/mlx5/main.c                    |    2 -
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c         |    3 ++
+ drivers/isdn/mISDN/Kconfig                           |    1 
+ drivers/md/dm-integrity.c                            |    2 -
+ drivers/md/dm-snap.c                                 |   24 +++++++++++++++++++
+ drivers/md/dm.c                                      |    2 -
+ drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c |    1 
+ drivers/net/ethernet/freescale/fs_enet/mii-fec.c     |    1 
+ drivers/net/ethernet/freescale/ucc_geth.h            |    9 ++++++-
+ drivers/net/usb/cdc_ether.c                          |    7 +++++
+ drivers/net/usb/r8152.c                              |    1 
+ fs/btrfs/qgroup.c                                    |   13 +++++++---
+ fs/btrfs/super.c                                     |    8 ++++++
+ fs/ext4/ioctl.c                                      |    3 ++
+ fs/ext4/namei.c                                      |   16 +++++++-----
+ fs/nfs/internal.h                                    |   12 +++++----
+ fs/nfs/nfs4proc.c                                    |    2 -
+ fs/nfs/pnfs.c                                        |    7 +++++
+ include/linux/acpi.h                                 |    7 +++++
+ kernel/trace/Kconfig                                 |    2 -
+ kernel/trace/trace_kprobe.c                          |    2 -
+ mm/hugetlb.c                                         |    2 -
+ mm/slub.c                                            |    2 -
+ net/netfilter/nf_conntrack_standalone.c              |    3 ++
+ net/netfilter/nf_nat_core.c                          |    1 
+ net/sunrpc/addr.c                                    |    2 -
+ security/integrity/ima/ima_crypto.c                  |    2 -
+ security/lsm_audit.c                                 |    7 +++--
+ sound/firewire/fireface/ff-transaction.c             |    2 -
+ sound/firewire/tascam/tascam-transaction.c           |    2 -
+ sound/soc/intel/skylake/cnl-sst.c                    |    1 
+ sound/soc/meson/axg-tdm-interface.c                  |   14 ++++++++++-
+ sound/soc/soc-dapm.c                                 |    1 
+ 44 files changed, 184 insertions(+), 56 deletions(-)
 
-Further, that is not how the driver core in Linux is designed to
-work. We don't have subsytems provide a pci_driver and then go look
-around for a 2nd driver to somehow mix in. How would it know what
-driver to pick? How would drivers be autoloaded? How can the user know
-things worked out right? What if they didn't want that? So many
-questions.
+Akilesh Kailash (1):
+      dm snapshot: flush merged data before committing metadata
 
-The standard driver core flow is always 
-   pci_driver -> subsystem -> userspace
+Al Viro (1):
+      dump_common_audit_data(): fix racy accesses to ->d_name
 
-I don't think VFIO's needs are special, so why deviate?
+Alexander Lobakin (1):
+      MIPS: relocatable: fix possible boot hangup with KASLR enabled
 
-> I guess my question is: into which callbacks will the additional
-> functionality hook? If there's no good way to do what they need to do
-> without manipulating the vfio-pci calls, my proposal will not work, and
-> this proposal looks like the better way. But it's hard to tell without
-> seeing the code, which is why I'm asking :)
+Arnd Bergmann (2):
+      misdn: dsp: select CONFIG_BITREVERSE
+      ARM: picoxcell: fix missing interrupt-parent properties
 
-Well, could we have done the existing special devices we have today
-with that approach? What about the Intel thing I saw RFC'd a while
-ago? Or the next set of mlx5 devices beyond storage? Or an future SIOV
-device?
+Craig Tatlor (1):
+      drm/msm: Call msm_init_vram before binding the gpu
 
-If you have doubts the idea is flexible enough, then I think you
-already answered the question :)
+Dan Carpenter (1):
+      ASoC: Intel: fix error code cnl_set_dsp_D0()
 
-LWN had a good article on these design patterns. This RFC is following
-what LWN called the "tool box" pattern. We keep the driver and
-subsystem close together and provide useful tools to share common
-code. vfio_pci_core's stuff is a tool. It is a proven and flexable
-pattern.
+Dave Wysochanski (1):
+      NFS4: Fix use-after-free in trace_event_raw_event_nfs4_set_lock
 
-I think you are suggesting what LWN called a "midlayer mistake"
-pattern. While that can be workable, it doesn't seem right
-here. vfio-pci is not really a logical midlayer, and something acting
-as a midlayer should never have a device_driver..
+Dexuan Cui (1):
+      ACPI: scan: Harden acpi_device_add() against device ID overflows
 
-To quote lwn:
-   The core thesis of the "midlayer mistake" is that midlayers are bad
-   and should not exist. That common functionality which it is so
-   tempting to put in a midlayer should instead be provided as library
-   routines which can used, augmented, or ignored by each bottom level
-   driver independently. Thus every subsystem that supports multiple
-   implementations (or drivers) should provide a very thin top layer
-   which calls directly into the bottom layer drivers, and a rich library
-   of support code that eases the implementation of those drivers. This
-   library is available to, but not forced upon, those drivers.
+Dinghao Liu (2):
+      RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
+      netfilter: nf_nat: Fix memleak in nf_nat_init
 
-Given the exciting future of VFIO I belive strongly the above is the
-right general design direction.
+Filipe Manana (1):
+      btrfs: fix transaction leak and crash after RO remount caused by qgroup rescan
 
-Jason
+Geert Uytterhoeven (2):
+      ALSA: firewire-tascam: Fix integer overflow in midi_port_work()
+      ALSA: fireface: Fix integer overflow in transmit_midi_msg()
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.169
+
+Jan Kara (2):
+      bfq: Fix computation of shallow depth
+      ext4: fix superblock checksum failure when setting password salt
+
+Jann Horn (1):
+      mm, slub: consider rest of partial list if acquire_slab() fails
+
+Jerome Brunet (1):
+      ASoC: meson: axg-tdm-interface: fix loopback
+
+Jesper Dangaard Brouer (1):
+      netfilter: conntrack: fix reading nf_conntrack_buckets
+
+Leon Schuermann (1):
+      r8152: Add Lenovo Powered USB-C Travel Hub
+
+Mark Bloch (1):
+      RDMA/mlx5: Fix wrong free of blue flame register on error
+
+Masahiro Yamada (3):
+      ARC: build: remove non-existing bootpImage from KBUILD_IMAGE
+      ARC: build: add uImage.lzma to the top-level target
+      ARC: build: add boot_targets to PHONY
+
+Masami Hiramatsu (1):
+      tracing/kprobes: Do the notrace functions check without kprobes on ftrace
+
+Miaohe Lin (1):
+      mm/hugetlb: fix potential missing huge page size info
+
+Michael Ellerman (1):
+      net: ethernet: fs_enet: Add missing MODULE_LICENSE
+
+Mike Snitzer (1):
+      dm: eliminate potential source of excessive kernel log noise
+
+Mikulas Patocka (1):
+      dm integrity: fix the maximum number of arguments
+
+Olaf Hering (1):
+      kbuild: enforce -Werror=return-type
+
+Paul Cercueil (1):
+      MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
+
+Randy Dunlap (1):
+      arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
+
+Rasmus Villemoes (1):
+      ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
+
+Roberto Sassu (1):
+      ima: Remove __init annotation from ima_pcrread()
+
+Shawn Guo (1):
+      ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+
+Thomas Hebb (1):
+      ASoC: dapm: remove widget from dirty list on free
+
+Trond Myklebust (3):
+      pNFS: Mark layout for return if return-on-close was not sent
+      NFS/pNFS: Fix a leak of the layout 'plh_outstanding' counter
+      NFS: nfs_igrab_and_active must first reference the superblock
+
+Wei Liu (1):
+      x86/hyperv: check cpu mask after interrupt has been disabled
+
+j.nixdorf@avm.de (1):
+      net: sunrpc: interpret the return value of kstrtou32 correctly
+
+yangerkun (1):
+      ext4: fix bug for rename with RENAME_WHITEOUT
+
