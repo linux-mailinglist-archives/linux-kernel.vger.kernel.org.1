@@ -2,178 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540CD2FB83C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB3E2FB83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392505AbhASMKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        id S2392486AbhASMKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392367AbhASMFQ (ORCPT
+        with ESMTP id S2392366AbhASMFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:05:16 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFC9C061574;
-        Tue, 19 Jan 2021 04:04:35 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0bca00c2aa0e949335efb7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:c2aa:e94:9335:efb7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7A35E1EC05E9;
-        Tue, 19 Jan 2021 13:04:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611057871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/Pv8SRw220kJLxdDOBMETHVBBP03v/5o64vtmGCNBWM=;
-        b=aFehaN5VqYjE809Cxac/bMeLnYEeUHwYj7aStR7i3DSRTsYV1n9bR4MV51Fyepq+0KyUNv
-        Hgv6PDg2vj96bWjRz7a/bliHjv/5tAC5qZVCOD0B9zLErTlYWbS5i0lRdCXQZYuo82/mtf
-        TW846Qycog45LbPUY/XS3LDMejbLwp0=
-Date:   Tue, 19 Jan 2021 13:04:25 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Tue, 19 Jan 2021 07:05:14 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83150C061573;
+        Tue, 19 Jan 2021 04:04:33 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o19so28719735lfo.1;
+        Tue, 19 Jan 2021 04:04:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Dj35Y10xvadEoj4O3QQAv08yPioskFbVaeePKmUZ9Uk=;
+        b=OTt/HPQ18ep/L5BQjn0d2sUCrTGC/Eb4Pc7xsKgfQHwU8n7OQPpqQwwWnuLfwgSCwc
+         moSPENoto5XgW6Xn2Icf6eRj2iQEoDviYkXjqAqtot/1l9nVW0HwZK+epzIl721H+Mzd
+         1QD+hVWp2vE3ofoDobxXyeJf3cjOqbK++JvdC9FkbzerJIzy+q9F6BPLfsbVBS3ZFY5l
+         KfYz64mbFZNMrjIgCl9qJBk15ddrGeGhW03U8dCE8mssEOHWmsuqJ6emCHvym2/ar6nf
+         9FDnMXSJ0rU1Odei8mUWjPpWLYgh1DoWKNctx6tb/Nzk3B/GBYgiQNLgs5tSOeEZZJrc
+         0MdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Dj35Y10xvadEoj4O3QQAv08yPioskFbVaeePKmUZ9Uk=;
+        b=TEv1uLR4MGYn5z4cP5E88612O+MzuenX3iXuMNbwt/SpXGsw2rNSfEVQ1RRDMEhL48
+         8MHhqiNgcCjLl9g5fmMdnaAp2ZmWTWBTzgIAmsExbZ7sr1OTDzTgxkqk2gtIrs98JEr9
+         IrH94akP9dUN6+NxqsaaihLjlAIi7Yr3Vevl/0LHlTaT0yqYJMainxEES8DWSzamvslp
+         jCTytEKGWNnKAoG03jrJKqmezy2/EQ9LUgwBIJ7avo/EdgqsIk7T0btkuYAizg/ihvPb
+         bn0HmHrbRypvUSHYhxRDb6qQQC5+dXUzt3/7NgaD9WA3288Cp8boG9wNf+LHlH9FZqwj
+         JOUg==
+X-Gm-Message-State: AOAM533+d3nKf7NKTm4c3wM5Xd2ebzJhhtpKSxE/vCw9Q/+XekYqoR2y
+        Asfsp1EFXsP4GYS3HzYNo+U=
+X-Google-Smtp-Source: ABdhPJyKNYJ/6ghlt3pcnWSiKLntUja0K0OPnDzu3Ijj1aZpbb/PUweZfO0FMXBUIReFejQilX6ZPA==
+X-Received: by 2002:a05:6512:33a8:: with SMTP id i8mr1895774lfg.5.1611057872008;
+        Tue, 19 Jan 2021 04:04:32 -0800 (PST)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id h1sm2265819lfc.121.2021.01.19.04.04.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 04:04:31 -0800 (PST)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 10JC4RAh015519;
+        Tue, 19 Jan 2021 15:04:28 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 10JC4QTg015518;
+        Tue, 19 Jan 2021 15:04:26 +0300
+Date:   Tue, 19 Jan 2021 15:04:26 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Ernesto Corona <ernesto.corona@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v17 06/26] x86/cet: Add control-protection fault handler
-Message-ID: <20210119120425.GI27433@zn.tnic>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
- <20201229213053.16395-7-yu-cheng.yu@intel.com>
+        Andrew Jeffery <andrew@aj.id.au>,
+        Steven Filary <steven.a.filary@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Amithash Prasad <amithash@fb.com>,
+        Jiri Pirko <jiri@mellanox.com>, Rgrs <rgrs@protonmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Patrick Williams <patrickw3@fb.com>,
+        Oleksandr Shamray <oleksandrs@mellanox.com>,
+        Vadim Pasternak <vadimp@mellanox.com>
+Subject: Re: [PATCH v29 2/6]  dt-binding: jtag: Aspeed 2400 and 2500 series
+Message-ID: <20210119120426.GE2971@home.paul.comp>
+References: <20200413222920.4722-1-ernesto.corona@intel.com>
+ <20200413222920.4722-3-ernesto.corona@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229213053.16395-7-yu-cheng.yu@intel.com>
+In-Reply-To: <20200413222920.4722-3-ernesto.corona@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 01:30:33PM -0800, Yu-cheng Yu wrote:
-> @@ -606,6 +606,65 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->  	cond_local_irq_disable(regs);
->  }
->  
-> +#ifdef CONFIG_X86_CET_USER
-> +static const char * const control_protection_err[] = {
-> +	"unknown",
-> +	"near-ret",
-> +	"far-ret/iret",
-> +	"endbranch",
-> +	"rstorssp",
-> +	"setssbsy",
-> +};
+On Mon, Apr 13, 2020 at 03:29:16PM -0700, Ernesto Corona wrote:
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/jtag/aspeed-jtag.yaml
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/aspeed-clock.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
 > +
-> +/*
-> + * When a control protection exception occurs, send a signal to the responsible
-> + * application.  Currently, control protection is only enabled for the user
-> + * mode.  This exception should not come from the kernel mode.
-> + */
+> +      jtag: jtag@1e6e4000 {
+> +          compatible = "aspeed,ast2500-jtag";
+> +          reg = <0x1e6e4000 0x1c>;
+> +          clocks = <&syscon ASPEED_CLK_APB>;
+> +          resets = <&syscon ASPEED_RESET_JTAG_MASTER>;
+> +          interrupts = <43>;
+> +      };
 
-There's no "the user mode" or "the kernel mode" - just "user mode" or
-"kernel mode".
-
-> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> +{
-> +	struct task_struct *tsk;
-> +
-> +	if (!user_mode(regs)) {
-> +		if (notify_die(DIE_TRAP, "control protection fault", regs,
-> +			       error_code, X86_TRAP_CP, SIGSEGV) == NOTIFY_STOP)
-> +			return;
-> +		die("Upexpected/unsupported kernel control protection fault", regs, error_code);
-
-Isn't the machine supposed to panic() here and do no further progress?
-
-> +	}
-> +
-> +	cond_local_irq_enable(regs);
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_CET))
-> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
-> +
-> +	tsk = current;
-> +	tsk->thread.error_code = error_code;
-> +	tsk->thread.trap_nr = X86_TRAP_CP;
-> +
-> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-> +	    printk_ratelimit()) {
-
-WARNING: Prefer printk_ratelimited or pr_<level>_ratelimited to printk_ratelimit
-#136: FILE: arch/x86/kernel/traps.c:645:
-+	    printk_ratelimit()) {
-
-Still not using checkpatch?
-
-> +		unsigned int max_err;
-> +		unsigned long ssp;
-> +
-> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
-> +		if ((error_code < 0) || (error_code > max_err))
-> +			error_code = 0;
-> +
-> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
-> +		pr_info("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
-
-If anything, all this stuff should be pr_emerg().
-
-> +			tsk->comm, task_pid_nr(tsk),
-> +			regs->ip, regs->sp, ssp, error_code,
-> +			control_protection_err[error_code]);
-> +		print_vma_addr(KERN_CONT " in ", regs->ip);
-> +		pr_cont("\n");
-> +	}
-> +
-> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
-> +			(void __user *)uprobe_get_trap_addr(regs));
-> +	cond_local_irq_disable(regs);
-> +}
-> +#endif
-> +
->  static bool do_int3(struct pt_regs *regs)
->  {
->  	int res;
-> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> index d2597000407a..1c2ea91284a0 100644
-> --- a/include/uapi/asm-generic/siginfo.h
-> +++ b/include/uapi/asm-generic/siginfo.h
-> @@ -231,7 +231,8 @@ typedef struct siginfo {
->  #define SEGV_ADIPERR	7	/* Precise MCD exception */
->  #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
->  #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
-> -#define NSIGSEGV	9
-> +#define SEGV_CPERR	10	/* Control protection fault */
-> +#define NSIGSEGV	10
-
-This looks like it needs documentation in this manpage:
-
-https://www.man7.org/linux/man-pages/man2/sigaction.2.html
-
-+ Michael.
+It's nice to have an example but shouldn't it also be included in
+aspeed-g5.dtsi as part of the patch series if it's known that the
+driver works on those SoCs and the peripheral is always present?
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
