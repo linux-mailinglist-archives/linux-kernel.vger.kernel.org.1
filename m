@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3292FBBBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 16:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083042FBBD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390123AbhASPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 10:54:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391626AbhASPyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:54:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B90E20780;
-        Tue, 19 Jan 2021 15:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611071612;
-        bh=Iur7PMN12GFuotDbIDuqkaf5UvK7lDumrhI+4zfetYU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=AHpmAeWH1iRfEAre195nrrwKW2FWRvOUYavb2LdUrJeOVydXT2dlzWLitC8B9OTtr
-         Hq1/usVFKSxPStEojtv1ZZ2TeWp1HlwZCMSOu7us9yjnprUH87/DdY7TMH8urRy7hv
-         ns8gAKX9oRpRYLHt/xurKoxLbLmbxaf1AYx7BpUQSLqVkMIWe8nPLGI4A6kVNEvcDr
-         hAmbcBI/WtffU1qZ8FCqEKEos8ahWvYDQjsgeo6oYqlaB57gxdwD7Kna/2zkszJFvQ
-         ZWJKoDle1JMvJbU4WwD2YkxlB8tr0/PH8jIOZPpSJQ/DQNMPF16Q9Vtf5+RlB4Vgx2
-         DHGT/L5AmKisg==
-Date:   Tue, 19 Jan 2021 16:53:29 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Wim Osterholt <wim@djo.tudelft.nl>,
-        Denis Efremov <efremov@linux.com>
-Subject: Re: [PATCH RESEND] floppy: fix open(O_ACCMODE) for ioctl-only open
-In-Reply-To: <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
-Message-ID: <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm>
-References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2389930AbhASP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 10:59:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391784AbhASP45 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:56:57 -0500
+X-Greylist: delayed 604 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Jan 2021 07:56:12 PST
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42835C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 07:56:12 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 1626C450; Tue, 19 Jan 2021 16:46:05 +0100 (CET)
+Date:   Tue, 19 Jan 2021 16:46:01 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: IOMMU Maintainership
+Message-ID: <20210119154601.GA3229@8bytes.org>
+References: <20201117100953.GR22888@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117100953.GR22888@8bytes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jul 2016, Jens Axboe wrote:
-
-> > From: Jiri Kosina <jkosina@suse.cz>
-> >
-> > Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
-> > side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
-> > this is being used setfdprm userspace for ioctl-only open().
-> >
-> > Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
-> > modes, while still keeping the original O_NDELAY bug fixed.
-> >
-> > Cc: stable@vger.kernel.org # v4.5+
-> > Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
-> > Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
-> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+On Tue, Nov 17, 2020 at 11:09:53AM +0100, Joerg Roedel wrote:
+> Hi,
 > 
-> Added for this series, thanks.
+> last week I spent in the hospital and had an unplanned surgery from
+> which I am recovering now. The recovery will take a few weeks, which
+> unfortunatly does not allow me to fulfill my IOMMU maintainer duties or
+> do any other serious work in front of a computer.
+> 
+> Luckily Will Deacon volunteered to handle incoming IOMMU patches and
+> send them upstream. So please Cc him on any patches that you want to
+> have merged upstream for the next release and on important fixes for
+> v5.10. The patches will go through another tree for the time being, Will
+> can share the details on that.
 
-[ CCing Denis too ]
+I am happy to announce that my recovery has gone well and I can now
+return to my duties as the maintainer for IOMMU. Will already sent me a
+list of pending stuff I will go through soon.
 
-Let me revive this 4 years old thread.
-
-I've just now noticed that instead of my patch above being merged, what 
-happened instead was
-
-	commit f2791e7eadf437633f30faa51b30878cf15650be
-	Author: Jens Axboe <axboe@fb.com>
-	Date:   Thu Aug 25 08:56:51 2016 -0600
-
-	    Revert "floppy: refactor open() flags handling"
-    
-	    This reverts commit 09954bad448791ef01202351d437abdd9497a804.
+Thanks a lot to everyone who helped to keep things going through my
+absence, and especially Will Deacon who picked up the work to collect
+everything and sending it upstream!
 
 
-which was plain revert of 09954bad4 (without any further explanation), 
-which in turn reintroduced the O_NDELAY issue, and I've just been hit by 
-it again.
+Regards,
 
-I am not able to find any e-mail thread that'd indicate why ultimately 
-revert happened, instead of mergin my fix.
-Jens, do you have any idea?
-
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+	Joerg
