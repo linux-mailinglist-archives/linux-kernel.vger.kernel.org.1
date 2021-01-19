@@ -2,218 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408282FBBE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D9D2FBBE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391095AbhASQD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44220 "EHLO
+        id S2391582AbhASQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:04:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391816AbhASQBZ (ORCPT
+        with ESMTP id S2391937AbhASQBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:01:25 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEFBC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:10 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id a12so20216306wrv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:10 -0800 (PST)
+        Tue, 19 Jan 2021 11:01:43 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF2BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:37 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id u11so6461599plg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aAfSg8Fno74YY8zXaeftS+7dCj6mUJUr1YhGd25SC40=;
-        b=UgWzD947TTGVrvW7arOh16ahLc6G84WlpFGyJcwFgsOAz2clt+43fPC4JZrvfzfo1T
-         q52ay0Ks7gk639LogKiKFNQWP8yjBXY/HKySJHZC1dzMt09PpzJg/PaHXFzMCyMNjW+f
-         j7JnvO/3zREbMTL7PgwWJ4bzjz3eAu3qiM6eM=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cjhn+ON+hkziQZDm4FU1RytdB4SSkjTn8+uofKtncf4=;
+        b=d37eDwdiYcgU786B2/oaZHUv37IdCecqnYg5R1vsCoQXglwTHd6hvsG8k4V4VTmhcI
+         7eH4JakNM29vrQ5BTQznO5HiZId7FzqVQfIDWL4w3qL6DbXiZZx2y8Sdtjyta8s9qdm7
+         58paqu2uAH9OqJriHMFZf95FoRcXWnPa3Ph/Criww5sb744sR5UDVUWIuyHPYuAWnbQJ
+         Ab1VaspMUK7s5AWhZZn+bUqNMdtLogYc/KzmJjTPybx8zbPRe+C0Oen2HgpqugmcynNx
+         hLrFIDKWdEgryGNYcJVa4wklOvfNPST3pgCq28zYKBmIK/nnpo5tMBoR8XVRYfIg0p5A
+         gZpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aAfSg8Fno74YY8zXaeftS+7dCj6mUJUr1YhGd25SC40=;
-        b=ZdpXM5sqO42F5mPKg+sh2S6Xc4H/x0A5AZsMvrXF29OQbyHjJbfEfPqQUW5p6Ft5va
-         IxZ6vujPKIcS7Czl0P++GFtjKeASx3aFizwaGckFmnRGzvoZ+wtKO3JrW1y5JVonDXDy
-         884nDZLghKNoijlkkbiOmIM1M+q2bh8mzeGBvdxGy01L5FkQPmIQ8l+eacTo0wYDN9zq
-         Ay8q5INPA127CK4ppwhDqpf1NQt+H+hvcwpTsCoyBjjZ8cmUTN+8GjkEdZSU3T6HN42u
-         uSaVnN4rp+Q/8TVsg4lSDVQxyZWv8N2WLZ/NOGsG5VEdmklDxB6l0HMuowu80rizHcjB
-         urBw==
-X-Gm-Message-State: AOAM532AHK5o9JdyYA5F6nzIFSe0W7/DKZQirp+ZGRRbTvZGC3HgeMhU
-        9DcZffm4X64nrCwqea0RJ638qA==
-X-Google-Smtp-Source: ABdhPJyCEVFXBSzyGnJR7Uy/5wT+001olvKFYyd/vXosprgaDTgpTBP1GvcPtxJGTEga382CCaBEgg==
-X-Received: by 2002:adf:ffc8:: with SMTP id x8mr5052747wrs.158.1611072009246;
-        Tue, 19 Jan 2021 08:00:09 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:81f8:2ac6:58bf:7d7a])
-        by smtp.gmail.com with ESMTPSA id n11sm41454944wra.9.2021.01.19.08.00.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cjhn+ON+hkziQZDm4FU1RytdB4SSkjTn8+uofKtncf4=;
+        b=RM+RxNvJp+S5s9PgboJqDCQoOjUkN+HgLf87cB/2OY24hbdRLgGqT1MqxqzI8kTmIc
+         t5DcfbnKcmWZeIME1lV0R0sp6t8xgKZsa60m3ojo7UwBIUt2Q2QJlIVlhqZ+9fUi/wdW
+         7ioH21eu37s1Zx1yA+Qx2SdgKfklBaNgPMxubaPlP1amB1SSeiTgOYmj13JUDaLkJnIQ
+         HaW1Pke6dPPT6hIclV8aDlhvk2e6GDcRlcXifus1N6IodzJT8Qav8FvEFOXeNMrB6Wlj
+         y9f42nuk1Ll41pjX/pM59S+C3YRGcU3gff3XlBookYVXNCxXqPCuAPvQG5XcRJIR3pqR
+         EaMQ==
+X-Gm-Message-State: AOAM530jMiMRU3nzErC1+5kSwcbtx1Ch1tZ1/99jqfWm8WROGh1hJ9gm
+        J8NGFz+9AF50mPHFJVH+kZRPSw==
+X-Google-Smtp-Source: ABdhPJxxn9wfy3oMuHByRv7nVJi+Gxq6rGK6r1XgFPfGojJ12MEt28w4sbqXtyE0KooTYGUlUjCNCQ==
+X-Received: by 2002:a17:902:d893:b029:da:72d4:8343 with SMTP id b19-20020a170902d893b02900da72d48343mr5435514plz.84.1611072036147;
+        Tue, 19 Jan 2021 08:00:36 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id ne6sm4003328pjb.44.2021.01.19.08.00.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:00:08 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Tue, 19 Jan 2021 16:59:53 +0100
-Message-Id: <20210119155953.803818-4-revest@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210119155953.803818-1-revest@chromium.org>
-References: <20210119155953.803818-1-revest@chromium.org>
+        Tue, 19 Jan 2021 08:00:35 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:00:33 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Arnaud POULIQUEN - foss <arnaud.pouliquen@foss.st.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [Linux-stm32] [PATCH] rpmsg: char: return an error if device
+ already open
+Message-ID: <20210119160033.GB611676@xps15>
+References: <20210106133714.9984-1-arnaud.pouliquen@foss.st.com>
+ <20210114190543.GB255481@xps15>
+ <6de9ff8f-0be1-387a-df7e-7d77dd859513@st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6de9ff8f-0be1-387a-df7e-7d77dd859513@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+On Fri, Jan 15, 2021 at 10:13:35AM +0100, Arnaud POULIQUEN wrote:
+> Hi Mathieu,
+> 
+> 
+> On 1/14/21 8:05 PM, Mathieu Poirier wrote:
+> > On Wed, Jan 06, 2021 at 02:37:14PM +0100, Arnaud Pouliquen wrote:
+> >> The rpmsg_create_ept function is invoked when the device is opened.
+> >> As only one endpoint must be created per device. It is not
+> >> possible to open the same device twice.
+> >> The fix consists in returning -EBUSY when device is already
+> >> opened.
+> >>
+> >> Fixes: c0cdc19f84a4 ("rpmsg: Driver for user space endpoint interface")
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >>  drivers/rpmsg/rpmsg_char.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> >> index 4bbbacdbf3bb..360a1ab0a9c4 100644
+> >> --- a/drivers/rpmsg/rpmsg_char.c
+> >> +++ b/drivers/rpmsg/rpmsg_char.c
+> >> @@ -127,6 +127,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+> >>  	struct rpmsg_device *rpdev = eptdev->rpdev;
+> >>  	struct device *dev = &eptdev->dev;
+> >>  
+> >> +	if (eptdev->ept)
+> >> +		return -EBUSY;
+> >> +
+> > 
+> > I rarely had to work so hard to review a 2 line patch...
+> 
+> That means that my commit description was not enough explicit...
+> 
+> > 
+> > As far as I can tell the actual code is doing the right thing.  If user space is
+> > trying to open the same eptdev more than once function rpmsg_create_ept() should
+> > complain and the operation denied, wich is what the current code is doing.  
+> > 
+> > There is currently two customers for this API - SMD and GLINK.  The SMD code is
+> > quite clear that if the channel is already open, the operation will be
+> > denied [1].  The GLINK code isn't as clear but the fact that it returns NULL on
+> > error conditions [2] is a good indication that things are working the same way.
+> > 
+> > What kind of use case are you looking to address?  Is there any way you can use
+> > rpdev->ops->create_ept() as it is currently done?
+> 
+> This patch was part of the IOCTL rpmsg series. I sent it separately at Bjorn's
+> request [1].
+>
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
-
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- 2 files changed, 52 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-index 53d0c44e7907..e5c5e2ea1deb 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-@@ -15,8 +15,8 @@ struct socket_cookie {
+I am looking at [1] later today - I will get back to this patch when I have more
+context.
  
- void test_socket_cookie(void)
- {
-+	struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
- 	socklen_t addr_len = sizeof(struct sockaddr_in6);
--	struct bpf_link *set_link, *update_link;
- 	int server_fd, client_fd, cgroup_fd;
- 	struct socket_cookie_prog *skel;
- 	__u32 cookie_expected_value;
-@@ -39,15 +39,21 @@ void test_socket_cookie(void)
- 		  PTR_ERR(set_link)))
- 		goto close_cgroup_fd;
- 
--	update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
--						 cgroup_fd);
--	if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
--		  PTR_ERR(update_link)))
-+	update_sockops_link = bpf_program__attach_cgroup(
-+		skel->progs.update_cookie_sockops, cgroup_fd);
-+	if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-+		  "err %ld\n", PTR_ERR(update_sockops_link)))
- 		goto free_set_link;
- 
-+	update_tracing_link = bpf_program__attach(
-+		skel->progs.update_cookie_tracing);
-+	if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-+		  "err %ld\n", PTR_ERR(update_tracing_link)))
-+		goto free_update_sockops_link;
-+
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
- 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
--		goto free_update_link;
-+		goto free_update_tracing_link;
- 
- 	client_fd = connect_to_fd(server_fd, 0);
- 	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-@@ -71,8 +77,10 @@ void test_socket_cookie(void)
- 	close(client_fd);
- close_server_fd:
- 	close(server_fd);
--free_update_link:
--	bpf_link__destroy(update_link);
-+free_update_tracing_link:
-+	bpf_link__destroy(update_tracing_link);
-+free_update_sockops_link:
-+	bpf_link__destroy(update_sockops_link);
- free_set_link:
- 	bpf_link__destroy(set_link);
- close_cgroup_fd:
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 81e84be6f86d..1f770b732cb1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,9 +70,30 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+> I detect the issue using the RPMSG_ADDR_ANY for the source address when tested
+> it with the rpmsf_virtio bus. In this case at each sys open of the device, a new
+> endpoint is created because a new source address is allocated.
+> 
+> [1]https://patchwork.kernel.org/project/linux-remoteproc/patch/20201222105726.16906-11-arnaud.pouliquen@foss.st.com/
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> > [1]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_smd.c#L920
+> > [2]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_glink_native.c#L1149
+> > 
+> >>  	get_device(dev);
+> >>  
+> >>  	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+> >> -- 
+> >> 2.17.1
+> >>
+> > _______________________________________________
+> > Linux-stm32 mailing list
+> > Linux-stm32@st-md-mailman.stormreply.com
+> > https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
+> > 
