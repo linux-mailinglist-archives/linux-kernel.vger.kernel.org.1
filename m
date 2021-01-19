@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE50F2FC1C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F8E2FC1BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 22:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391390AbhASVDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 16:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404165AbhASUta (ORCPT
+        id S1728682AbhASVAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 16:00:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57917 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390364AbhASUvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:49:30 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDDDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:48:48 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id c6so16064443ede.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:48:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pkvwNS+El3HA8WD1wRriEqmYtWWjP+w29biUdXgRxJU=;
-        b=dSjBpa02JgglRGcx2/84mL0OXTCylHCQoDPgRwYBgrdb1HeoN9e0E5ozaqSaHQmRJQ
-         JEDFtdNYkjnRNQeiNWezHyCjWUGH/2rg0nNXA2QnrjGwXXd025IdsoTLQdA1uxQjS26+
-         cPfLfAiBXrj9cUDr24KbI0YvsYJLrKTOlLQ32ydg1HKyynrHQjQKJJ0mAgh3hNwrLJOz
-         zOStGtE9m+tRTCJAg3iZb5yyW4gCYRrXrq1RR6n6A1p7VVWXhf5XUvE71xzvcQbzG3+/
-         E8PEOsIclx3toavM02OCpAK44+Zx/5/MsgZKKBWQUOVOYE8kOLdYwf9kSTkRErEiWDiw
-         FCKQ==
+        Tue, 19 Jan 2021 15:51:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611089376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C2zkZ60nc0oYz+Jw0v4vLWfZnUOJXoKUEdPKsKZO6hc=;
+        b=LX3FqauqG9dOQaTjtRVt36xmUn5SPbsNdinTHfXJzrDgstIq3axuntoihACTijC/XH4FtU
+        /7625S1+wzX6dDg9/dGDwzmANwSWnriNPkNrY5Tc/0x5yMk1A8AWT4RzCAtMxhUIaX0Dmr
+        xUOR371U1nEJ3nb5VKWAGolrJrxvN64=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-eGqSDM2FMru6TYFp7UNk5A-1; Tue, 19 Jan 2021 15:49:32 -0500
+X-MC-Unique: eGqSDM2FMru6TYFp7UNk5A-1
+Received: by mail-qv1-f71.google.com with SMTP id h1so20808555qvr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:49:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pkvwNS+El3HA8WD1wRriEqmYtWWjP+w29biUdXgRxJU=;
-        b=jVtCfZ2nfWW28ZR1C2+w2Lor239Th//a+BI7yJYjOgDd1WRb7WcH7ZXZlN88VX6Phc
-         XPTTqfY4pWWjGTrdojenRNK1IczEgDIu9UeNsMNHyfIHEgE+iBU3F6bpYP69vlWAkLxV
-         2e4w1Oh8SyaqyX6tpTAC7bPyUntWuzr5yMqW/o19qhijJ1gLWiz8XUUP/b5unEbguk33
-         mmC82yRMpBRzG88Tuk8/ue1EICReqhUGR+bBnhOwHbbRN7m/TibtlAODHNOlJKmhAaqM
-         ZzzBvWYOBfFtcZT3cDCjNKbC93UhB9V02L2mDVwXRa2Hdok0E/8rUgECT+NVz6DgadLA
-         7aEA==
-X-Gm-Message-State: AOAM532FpbCP299wqyoRZucqSDHc9KgnHPd7vD3IzeTCovaon66mjr2w
-        CB0XNdV8R4CvCB+5v2/boXIuhnl39bYqsQ23tBEA3w==
-X-Google-Smtp-Source: ABdhPJwV9Ku3qyoq2kBTxOz6KgfvN81wwX3pQbkfxuQ92kJTO4QXY1Tul7nDV11Bbxd6oY64UzZ7b7Hp4cw5mc6tznY=
-X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr4912140edd.341.1611089327572;
- Tue, 19 Jan 2021 12:48:47 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=C2zkZ60nc0oYz+Jw0v4vLWfZnUOJXoKUEdPKsKZO6hc=;
+        b=WTte1qcXCrYF/YEJJeRnhFxEQyun+Nt6CLhVuoC5wbNEZbE/Nsq1LSKHdZfOKx/UFX
+         N7f1f9vNIXDehn+SzqjGO7XHBsQYcStrXqP8d8Fflu8oRbg44eZ5s3fJvbI/czmTuMv5
+         0ELG92SMt2E2oigFwUs6z0U8oKPlN8I3YExNyo2AKcYkaz9joiuhMXn0y3LlQwbrvADn
+         /1tT2K3PLSublW7XXOJPmYbvhdzhwUtpZJz+T4v+SwovM6iMK306W62CaZJ+nf4PSg/r
+         u6XzahqoLzYGZO/9xXK4k91c/5726yeWJ1tC9SoJtyuXJQoW1DQRzFCmAL9xFPQ8w5+h
+         Soww==
+X-Gm-Message-State: AOAM532hPjC31iqv0CvFZ1p4Zdp4ZAAbKuLCTUJKLr1+1f/4QlmJWgJN
+        WJDc9ho8ferexW9+PW6kDcaxJKUKv6Vc/YZiZzi1GyH6Tb+fl8qQw5r6X/GRg8Cc0Ib/XiZFkUR
+        4LzPZcqV37w/a6rDmT+gPZOS9
+X-Received: by 2002:ac8:564e:: with SMTP id 14mr6045340qtt.286.1611089371704;
+        Tue, 19 Jan 2021 12:49:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy7yWKQXou9HBpzcYqZ8RsXxZxxAaFbMWaMbqqtjcbkVrqtnKwMsT4xtWYjmXVeEV11IyPkcQ==
+X-Received: by 2002:ac8:564e:: with SMTP id 14mr6045326qtt.286.1611089371485;
+        Tue, 19 Jan 2021 12:49:31 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 38sm11016784qtb.67.2021.01.19.12.49.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 12:49:30 -0800 (PST)
+Subject: Re: [PATCH v7 0/6] Intel MAX10 BMC Secure Update Driver
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20210105230855.15019-1-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <b13a487f-7437-0278-6a9e-f10a5273065b@redhat.com>
+Date:   Tue, 19 Jan 2021 12:49:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
- <20210119043920.155044-9-pasha.tatashin@soleen.com> <20210119183013.GB4605@ziepe.ca>
- <CA+CK2bBKbht34Hkg9YvhwYAiAjd3NMd_+Eir9wfx+07V-Y2TTA@mail.gmail.com>
- <20210119184751.GD4605@ziepe.ca> <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
-In-Reply-To: <CA+CK2bDGDR9B=n5d4Dz6my6kKyFF=6y79HJt-k-SCpLhF1fUQQ@mail.gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 19 Jan 2021 15:48:11 -0500
-Message-ID: <CA+CK2bDo-9dP4JZeVscE65dhkJ9jPKk+0_6v0vQXTCM3m0J1DQ@mail.gmail.com>
-Subject: Re: [PATCH v5 08/14] mm/gup: do not allow zero page for pinned pages
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210105230855.15019-1-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I was thinking about a use case where userland would pin an address
-> without FOLL_WRITE, because the PTE for that address is not going to
-> be writable, but some device via DMA will write to it. Now, if we got
-> a zero page we have a problem... If this usecase is not valid then the
-> fix for movable zero page is make the zero page always come from a
-> non-movable zone so we do not need to isolate it during migration, and
-> so the memory can be offlined later.
 
-I looked into making zero_page non-movable, and I am confused here.
+On 1/5/21 3:08 PM, Russ Weight wrote:
 
-huge zero page is already not movable:
-get_huge_zero_page()
-   zero_page = alloc_pages((GFP_TRANSHUGE | __GFP_ZERO) & ~__GFP_MOVABLE, ...
+...
 
-Base zero page can be in a movable zone, which is a bug: if there are
-references to zero page, that page cannot be migrated, and we won't be
-hot-remove memory area where that page is located. On x86, zero page
-should always come from the bottom 4G of physical memory / DMA32 ZONE.
+>  .../testing/sysfs-driver-intel-m10-bmc-secure |  61 ++
+>  MAINTAINERS                                   |   2 +
+>  drivers/fpga/Kconfig                          |  11 +
+>  drivers/fpga/Makefile                         |   3 +
+>  drivers/fpga/intel-m10-bmc-secure.c           | 543 ++++++++++++++++++
+>  include/linux/mfd/intel-m10-bmc.h             |  85 +++
 
-However, I see that sometimes it is not (I reproduce in QEMU emulator):
-QEMU instance with 16G of memory and kernelcore=5G
+I am having trouble pulling this into my testing branch where i am tracking some other changes to intel-m10-bmc.h
 
-Boot#1:
-zero_pfn 48a8d
-zero_pfn zone: ZONE_DMA32
+https://lore.kernel.org/lkml/20210114231648.199685-1-russell.h.weight@intel.com/
 
-Boot#2:
-zero_pfn 20168d
-zero_pfn zone: ZONE_MOVABLE (???)
+https://lore.kernel.org/lkml/1609999628-12748-3-git-send-email-yilun.xu@intel.com/
 
-The problem is that the x86 zero page comes from the .bss segment:
-https://soleen.com/source/xref/linux/arch/x86/kernel/head_64.S?r=31d85460#583
+so I am wondering if it makes sense to split the intel-m10-bmc.h change out of this patchset and sent as a single patch to mfd subsystem ?  The change is a bunch of #defines that don't do anything on their own, but will conflict with other similar additions to the h file.
 
-Which, I thought would always be set within the first 4G of physical
-memory. What is going on here?
+Tom
 
-Pasha
+>  6 files changed, 705 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+>  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+>
+
