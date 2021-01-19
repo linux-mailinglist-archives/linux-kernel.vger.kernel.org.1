@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F852FB7AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CC12FB7B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405404AbhASLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404775AbhASLGH (ORCPT
+        id S2391299AbhASLYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:24:46 -0500
+Received: from support.corp-email.com ([222.73.234.235]:9498 "EHLO
+        support.corp-email.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389130AbhASLJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:06:07 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA792C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:05:20 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id i7so12746926pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4TOzYyZIin/yiRGi1ie9o6/CbIyjNQOy95/3SVEBU9A=;
-        b=uExiI/2TzOCWPI0pjBTK0TdMIUfxRWt8KPMbORnS5c9XO68eyPvKDWJwxuopER796L
-         vURhfaHxKLDrdEPMFkOr9D58bDFAGeSBZqyZoZFnV8Ds7wkLh1pLnTtIRfKzC3SNrIG8
-         4yP6GQFO22QzekfpAs4U1eCA1618km+cf6i7I1xDcH3U66TWqpFoSnJURTiEhgICz/DU
-         PNnFj2qdBYVwZw3IYfwhM3DmNJJsRyPbxgsnldEdXpXHVPwmlxWQ3gmqbfaoayhgLuzv
-         3XIncpgMG7FADLMlh68SnARce4hUuVnnPuu2JPftCXyp7Mk01bVkT2woy+Zvbj/1lR5b
-         eoIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4TOzYyZIin/yiRGi1ie9o6/CbIyjNQOy95/3SVEBU9A=;
-        b=oNwkjWrkWVEekGYdFhHzwOqaT0yGOyb1JMv1YhOp7bZy+5bbILvqLGCqjLGjGJSE01
-         I7Wd2F2+QnbBj7WU+vQCbTc1Pk3LHzlR7jhK9FFPw0DS1hKb64V/wH/uVJRUERONxjiO
-         9fNSfsReV0CXIJVc621/sOr8wrPjV/w0YOEsdGh9wea7rP/XQwW6pfFmCiHHSfTkKPGy
-         DtOUs1gtaQnND7F3eHRBP6iBcYLMc3dINySmrF9OMR5q9UKOjyj8wVsLMcIZZrnO1twA
-         epVHnWgmp0gb020GRDQ6Obo9JTQTli4l9ymwsWDOmiJUsJml7Tz5GChI0fX4TFe9XsOe
-         omBA==
-X-Gm-Message-State: AOAM531ycnKGoTo8bJ1h10wHImoLeO/14AE1bVJMmnco55HQr0Ro8pyy
-        HhQ8THM8LwYMQnGMi9NEOaFamw==
-X-Google-Smtp-Source: ABdhPJypZ7g85maNn/Fq9wWXClDnT5wovR1kfqNu7P4AWwxVkN+tY7vWNWWbv+l/0xEltuRgBAxuTA==
-X-Received: by 2002:a62:a508:0:b029:1ba:621:ff29 with SMTP id v8-20020a62a5080000b02901ba0621ff29mr707798pfm.44.1611054320340;
-        Tue, 19 Jan 2021 03:05:20 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id a5sm18186189pgl.41.2021.01.19.03.05.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 03:05:18 -0800 (PST)
-Date:   Tue, 19 Jan 2021 16:35:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
- 'assigned-performance-states'
-Message-ID: <20210119110516.fgbbllyg7lxwwfdz@vireshk-i7>
-References: <20201224111210.1214-1-rojay@codeaurora.org>
- <20201224111210.1214-4-rojay@codeaurora.org>
- <YAGqKfDfB7EEuZVn@builder.lan>
- <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
- <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
+        Tue, 19 Jan 2021 06:09:27 -0500
+Received: from ([183.47.25.45])
+        by support.corp-email.com ((LNX1044)) with ASMTP (SSL) id NEB00015;
+        Tue, 19 Jan 2021 19:07:15 +0800
+Received: from GCY-EXS-15.TCL.com (10.74.128.165) by GCY-EXS-06.TCL.com
+ (10.74.128.156) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
+ 2021 19:07:16 +0800
+Received: from localhost.localdomain (172.16.34.38) by GCY-EXS-15.TCL.com
+ (10.74.128.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 19 Jan
+ 2021 19:07:14 +0800
+From:   Rokudo Yan <wu-yan@tcl.com>
+To:     <balsini@android.com>
+CC:     <akailash@google.com>, <amir73il@gmail.com>, <axboe@kernel.dk>,
+        <bergwolf@gmail.com>, <duostefano93@gmail.com>,
+        <dvander@google.com>, <fuse-devel@lists.sourceforge.net>,
+        <gscrivan@redhat.com>, <jannh@google.com>,
+        <kernel-team@android.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maco@android.com>,
+        <miklos@szeredi.hu>, <palmer@dabbelt.com>,
+        <paullawrence@google.com>, <trapexit@spawn.link>, <wu-yan@tcl.com>,
+        <zezeozue@google.com>
+Subject: Re: [PATCH RESEND V11 0/7] fuse: Add support for passthrough read/write
+Date:   Tue, 19 Jan 2021 19:06:54 +0800
+Message-ID: <20210119110654.11817-1-wu-yan@tcl.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210118192748.584213-1-balsini@android.com>
+References: <20210118192748.584213-1-balsini@android.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.16.34.38]
+X-ClientProxiedBy: GCY-EXS-01.TCL.com (10.74.128.151) To GCY-EXS-15.TCL.com
+ (10.74.128.165)
+tUid:   2021119190715f9f4f0275f6c87c21aaa38b5cbe9b56e
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-01-21, 12:02, Ulf Hansson wrote:
-> As a matter of fact this was quite recently discussed [1], which also
-> pointed out some issues when using the "required-opps" in combination,
-> but perhaps that got resolved? Viresh?
+on Mon, Jan 18, 2021 at 5:27 PM Alessio Balsini <balsini@android.com> wrote:
+>
+> This is the 11th version of the series, rebased on top of v5.11-rc4.
+> Please find the changelog at the bottom of this cover letter.
+> 
+> Add support for file system passthrough read/write of files when enabled
+> in userspace through the option FUSE_PASSTHROUGH.
+[...]
 
-Perhaps we never did anything there ..
 
--- 
-viresh
+Hi Allesio,
+
+Could you please add support for passthrough mmap too ?
+If the fuse file opened with passthrough actived, and then map (shared) to (another) process
+address space using mmap interface. As access the file with mmap will pass the vfs cache of fuse,
+but access the file with read/write will bypass the vfs cache of fuse, this may cause inconsistency.
+eg. the reader read the fuse file with mmap() and the writer modify the file with write(), the reader
+may not see the modification immediately since the writer bypass the vfs cache of fuse.
+Actually we have already meet an issue caused by the inconsistency after applying fuse passthrough
+scheme to our product.
+
+Thanks,
+yanwu.
