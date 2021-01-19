@@ -2,125 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155412FB705
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34122FB709
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388966AbhASJuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
+        id S2389077AbhASJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:50:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387569AbhASJey (ORCPT
+        with ESMTP id S2387645AbhASJgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:34:54 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2AAC061757;
-        Tue, 19 Jan 2021 01:34:13 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id u14so11856930wmq.4;
-        Tue, 19 Jan 2021 01:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=MVmfHpv1dqQMC+/17HbeSr8gZKRBSbuLaqGXcEQcgHk=;
-        b=SsEI2cPmmm+oLI+ZZGbU+c63k+ebf/JYDG7XvRNGOYwaDFX0faD48+9eaCoDN1A8sf
-         OhLUZLP4OocLGpbEChsbsls0TjUnV2rd7UJ+RHSzdSd57F0Q+UuBjl18zI8VnCmtFHoA
-         nxMqUQlSyqzlTTlYP/dpE7VaNMeiw1k3I8y1UeohLWSuXtsWM+Dofa9YjPxdVT92dp3R
-         9eekQ/Dnys1/sfHLwyBX+L5rTIoQXkZ1FDemKljcOIaMMilEn7o2pka/1kqjnx8wgN6/
-         X06L5Fy7R1IsmLiVwbareaZoXxGTNsQ8oC3ZiqOijKgoZOEO01r9LWq5IDpNaxwI4GFT
-         TM6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MVmfHpv1dqQMC+/17HbeSr8gZKRBSbuLaqGXcEQcgHk=;
-        b=F1gKN6o/swZyT0EJ6a01GPDVSOXk4r7yMcLVMnRJ9YDgAHos420vZkj4yTBkZyhgz6
-         GEJEEq0WEm+sPhbBrRDl37SrfaIfQQzmspXZ/a1k9sEDcJbsm+oGN5/Bjszh9RBgx+FN
-         gMnQeuNGpdj2xIGqaA8oxp9mS4KYhSbcwIUcR7lXhWPgFHFeSc6bPaF/txFUrosa+OGH
-         1BeSVJWlIzCF1l9jkSLYAbaqsDAYQ+e6TSN2KW1hUQ3uc1W4IulBGkifkkGo3fo40r9N
-         DE2CmP6w0mH6nU5zTKfWA3TnYlNxsULcYRtGoGVc4mh8+9oiJrlOH+PcrOSiHaVDR0pz
-         Lthg==
-X-Gm-Message-State: AOAM530N2D1d+I7uzClUFzoUMLUmabZH5xeq5dNtAS7vB9XTw5CDxIAf
-        MWSqf/oZ+lKmbEjavWxLLmY=
-X-Google-Smtp-Source: ABdhPJwYG2+3uoFvFp6GVLGj68M1KOo01VGgg6KN5PSx7K0AsWLwl+7t1PTTmgagt75wnM5n8A7DVA==
-X-Received: by 2002:a1c:2945:: with SMTP id p66mr3221327wmp.110.1611048852535;
-        Tue, 19 Jan 2021 01:34:12 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id h16sm34544932wrq.29.2021.01.19.01.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 01:34:11 -0800 (PST)
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, kieran.bingham@ideasonboard.com
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <1053125f-7cb2-8aa0-3204-24df62986184@gmail.com>
- <20210119093358.GO4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <b01e1439-d503-2989-5769-971d75c1cae6@gmail.com>
-Date:   Tue, 19 Jan 2021 09:34:10 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 04:36:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF362C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=hvDZ+fxryuq539HgDjOUrQrHbe7h9X7Wa0ctGASWN10=; b=OgKqJ+MG9z0OBm+QeKncoVH6nk
+        XENt9FT49QZ7pXyt0d/n9FCFplAji+NLya51furZxTzehV6KnCjtX9ae0RtvONsRPkKSt+o9omq+U
+        FqAOa+4lAGL1GK7J5qRWeOv0HSEmmQhb3jSClOJas3LIDEHty4ow3qb7IiLIhAf7oOx6jOc8Uk42y
+        I3J7opZCXmmgirRPi/bx4/lj0qCTKK5BzVCI49Lves81lga7JsIGfXw8D/nw+cSK1pvJrh4vNGpau
+        26o//HwgrWsjnJfpFQtBxmJY1RfIYA16Ra9tyMh35SuIy3WC6pxRLpjfebbYXgt3c5D6sYUQdzmUf
+        gPDlYEsw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l1nQN-00E7lm-FO; Tue, 19 Jan 2021 09:35:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 84BB7304D28;
+        Tue, 19 Jan 2021 10:35:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 392A12023AA22; Tue, 19 Jan 2021 10:35:38 +0100 (CET)
+Date:   Tue, 19 Jan 2021 10:35:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     daniel@ffwll.ch, mingo@redhat.com, will@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/syncobj: make lockdep complain on WAIT_FOR_SUBMIT v2
+Message-ID: <YAan6haGjnIlNIoJ@hirez.programming.kicks-ass.net>
+References: <20210118180334.43714-1-christian.koenig@amd.com>
+ <20210118180334.43714-2-christian.koenig@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119093358.GO4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210118180334.43714-2-christian.koenig@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Morning Andy
+On Mon, Jan 18, 2021 at 07:03:34PM +0100, Christian König wrote:
 
-On 19/01/2021 09:33, Andy Shevchenko wrote:
-> On Tue, Jan 19, 2021 at 12:11:40AM +0000, Daniel Scally wrote:
->> On 18/01/2021 21:19, Daniel Scally wrote:
->> I'm more and more confident that this will work, but it has some
->> knock-on effects:
->>
->> The both clk and regulator gpio driver expects to be able to fetch the
->> GPIO using devm_gpiod_get(&pdev->dev, "enable", ...). That won't work of
->> course, so we need to add another GPIO lookup table so those drivers can
->> see the GPIOs. For that, we need to know what dev_name(&pdev->dev) will
->> be so we can set the .dev_id member of a gpiod_lookup_table to that
->> value, but that isn't set until _after_ the pdev is registered (because
->> it has to figure out the id, we can't manually set the IDs because there
->> could be more than one instance of int3472-discrete bound to multiple
->> PMIC devices, and we don't know which id the current one should have).
->> Finally, we can't wait until the device is registered because it
->> immediately probes, can't find the GPIO and then fails probe.
->>
->> It's similar problem that causes us to need the i2c-acpi name format
->> macros, but complicated by the dynamic ID part of dev_name(&pdev->dev)
->>
->> Solving it is a bit of a sticky one; perhaps something like moving the
->> dev_set_name() part of platform_device_add() [1] to its own function,
->> that's called in both platform_device_alloc() and
->> platform_device_register(). That way it would be available before the
->> device itself was registered, meaning we could create the lookup table
->> before it probes the driver.
-> See my previous reply. TL;DR: you have to modify clk-gpio.c to export couple of
-> methods to be able to use it as a library.
+> diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+> index 6e74e6745eca..f51458615158 100644
+> --- a/drivers/gpu/drm/drm_syncobj.c
+> +++ b/drivers/gpu/drm/drm_syncobj.c
+> @@ -387,6 +387,13 @@ int drm_syncobj_find_fence(struct drm_file *file_private,
+>  	if (!syncobj)
+>  		return -ENOENT;
+>  
+> +	/* Waiting for userspace with locks help is illegal cause that can
+> +	 * trivial deadlock with page faults for example. Make lockdep complain
+> +	 * about it early on.
+> +	 */
 
+Egads, the cursed comment style is spreading :/
 
-Ack! Ok, I thought about that the wrong way. I'll take another look
-tonight then.
+> +	if (flags & DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT)
+> +		lockdep_assert_none_held_once();
+> +
 
+Should this not be part of drm_syncobj_fence_add_wait() instead? Also,
+do you want to sprinkle might_sleep() around ?
 
->> (also, Laurent, if we did it this way we wouldn't be able to also handle
->> the led-indicator GPIO here without some fairly major rework)
-> LED indicators are done as LED class devices (see plenty of examples in PDx86
-> drivers: drivers/platform/x86/)
-And this too - thanks very much
+>  	*fence = drm_syncobj_fence_get(syncobj);
+>  	drm_syncobj_put(syncobj);
+>  
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
