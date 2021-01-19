@@ -2,137 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54652FBC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AD22FBC26
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbhASQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:11:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35072 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391775AbhASQKl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:10:41 -0500
-Date:   Tue, 19 Jan 2021 16:09:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611072596;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/X7bnT0Fs4sPITr8k9z7TTU0AiLMBMoPoDOqNqcWbo=;
-        b=0qXiEm+wwysMZJk8AGANYIvbLP8kledYnojIUmXol+1AVeFYXbTCDKBg7apquWozUXkg28
-        omvL9MYUixAxbborLr3/B2jgojwtqSa7Xrrdc2Bpm56fTzrjUfLAQdkGTVLJkKcdlcvAeu
-        +ETt411VByiwsZ9E6kJs7dihVERI8wWTInVvxTgXgaPXbS0glWjxGNJwQs/mLhmtgwDsDw
-        sWMQ0RRDIIGPIv2Gn5e3l1UC1RysLc1OaT+5bWHrq/1GLkWXY33Fh5nuKbEV8gdbOL3LmM
-        mgQ6jaPzXDsEoBriK6sOUYHsVml0Gv9QTmver//pv9ATm8xj+H32iuIKppMxYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611072596;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/X7bnT0Fs4sPITr8k9z7TTU0AiLMBMoPoDOqNqcWbo=;
-        b=+nMZrqv/PnClTnwLGYweWpXVEMuclFPJDv60inTobhnnFx+0pFp90Rgar0E9x10bAGrZy1
-        MUFG6wFOf667sRBA==
-From:   "tip-bot2 for Rafael J. Wysocki" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] x86: PM: Register syscore_ops for scale invariance
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1803209.Mvru99baaF@kreacher>
-References: <1803209.Mvru99baaF@kreacher>
+        id S2390869AbhASQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:12:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392020AbhASQLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:11:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFBA2311C;
+        Tue, 19 Jan 2021 16:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611072651;
+        bh=m+FSqXlvV3JjPMmUcXvwZL6Fu9L0fgTghhQI30bmy2k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Scv8LoYDdqSEF/O9EjJoFkntp6r0fkQ3IRKXeELmMo38FnVPXRiIS39TVlZDRohld
+         srTYmPQI3Ztdp3A5LP34We/EhbtQvyIDDjF+jQx3+GwEJ3GyQPUIfKKnhP227bRNFR
+         H0wirINUXiOaG6GVfOuRxmBfb7qvrmI5rg+lmzv5CKG86sdUFsFAYouZCrrT4GQ3Yi
+         2VvKfb4rqW0c8UY6FfAORXMpD3WSutS8cYRo/p7R7U+IMVMkz1CNj90xag5/cNLJFn
+         1yzWXcUgi8f83MC3BO3onXOSwRw3q6Rv5SGi9BqMX+S8s8iMNTPGHCUeTAgCrAbGhF
+         WHQxdyDwBqyAA==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l1tai-0012bT-Nj; Tue, 19 Jan 2021 17:10:48 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/21] Move Hisilicon 6421v600 SPMI driver set out of staging
+Date:   Tue, 19 Jan 2021 17:10:26 +0100
+Message-Id: <cover.1611072387.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-ID: <161107259553.414.4642815387021919631.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Hi Mark/Lee,
 
-Commit-ID:     9c7d9017a49fb8516c13b7bff59b7da2abed23e1
-Gitweb:        https://git.kernel.org/tip/9c7d9017a49fb8516c13b7bff59b7da2abed23e1
-Author:        Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-AuthorDate:    Fri, 08 Jan 2021 19:05:59 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 19 Jan 2021 17:04:03 +01:00
+This patch series finish addressing support for Hikey 970
+SPMI controller, PMIC and regulators.
 
-x86: PM: Register syscore_ops for scale invariance
+I removed some unrelated DT patches from this series,
+plus the Hikey 970 PHY USB3 code from it, in order to avoid
+mixing different stuff on this series[1].
 
-On x86 scale invariace tends to be disabled during resume from
-suspend-to-RAM, because the MPERF or APERF MSR values are not as
-expected then due to updates taking place after the platform
-firmware has been invoked to complete the suspend transition.
+[1] Those unrelated patches were submitted last week on
+separate series.
 
-That, of course, is not desirable, especially if the schedutil
-scaling governor is in use, because the lack of scale invariance
-causes it to be less reliable.
+The entire patchset is on this branch:
 
-To counter that effect, modify init_freq_invariance() to register
-a syscore_ops object for scale invariance with the ->resume callback
-pointing to init_counter_refs() which will run on the CPU starting
-the resume transition (the other CPUs will be taken care of the
-"online" operations taking place later).
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=hikey970-destage-usb
 
-Fixes: e2b0d619b400 ("x86, sched: check for counters overflow in frequency invariant accounting")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-Link: https://lkml.kernel.org/r/1803209.Mvru99baaF@kreacher
----
- arch/x86/kernel/smpboot.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+In order to make easier for review, this series was generated
+with --no-renames. So, you don't need to take a look at the
+staging patches, as the entire code will be there on patches 9-11.
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 8ca66af..117e24f 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -56,6 +56,7 @@
- #include <linux/numa.h>
- #include <linux/pgtable.h>
- #include <linux/overflow.h>
-+#include <linux/syscore_ops.h>
- 
- #include <asm/acpi.h>
- #include <asm/desc.h>
-@@ -2083,6 +2084,23 @@ static void init_counter_refs(void)
- 	this_cpu_write(arch_prev_mperf, mperf);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static struct syscore_ops freq_invariance_syscore_ops = {
-+	.resume = init_counter_refs,
-+};
-+
-+static void register_freq_invariance_syscore_ops(void)
-+{
-+	/* Bail out if registered already. */
-+	if (freq_invariance_syscore_ops.node.prev)
-+		return;
-+
-+	register_syscore_ops(&freq_invariance_syscore_ops);
-+}
-+#else
-+static inline void register_freq_invariance_syscore_ops(void) {}
-+#endif
-+
- static void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- 	bool ret = false;
-@@ -2109,6 +2127,7 @@ static void init_freq_invariance(bool secondary, bool cppc_ready)
- 	if (ret) {
- 		init_counter_refs();
- 		static_branch_enable(&arch_scale_freq_key);
-+		register_freq_invariance_syscore_ops();
- 		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
+The last two patches on this series will likely require that other
+patch series to get merged first. It probably makes sense to be
+merged via DT tree. 
+
+Regards,
+Mauro
+
+v4:
+- use regmap for mfd and spmi drivers;
+- a few minor cleanups at the mfd driver.
+
+v3:
+- fixed a bug with eco-mode at get_optimum_mode;
+- changed the sleep logic when enabling/disabling a power line;
+- additional cleanups, as requested by Mark.
+
+v2:
+
+- this driver's probe routine is very similar to the one at the non-SPMI
+  variant of Hisilicon 6421;
+- The register/voltage data were moved from DT into the driver itself;
+- It doesn't have anymore any static data;
+- All debug messages got removed;
+- Addressed a few be32 warnings from sparse.
+
+
+
+
+Mauro Carvalho Chehab (21):
+  staging: hikey9xx: hisilicon,hisi-spmi-controller.yaml fix bindings
+  staging: hikey9xx: hisilicon,hi6421-spmi-pmic.yaml: simplify props
+  staging: hikey9xx: hisi-spmi-controller: clean sparse warnings
+  staging: hikey9xx: hi6421v600-regulator: do some cleanups
+  staging: hikey9xx: hi6421v600-regulator: move LDO config from DT
+  staging: hikey9xx: hi6421v600-regulator: cleanup debug msgs
+  staging: hikey9xx: hi6421v600-regulator: get rid of an static data
+  staging: hikey9xx: hi6421v600-regulator: do some cleanups
+  staging: hikey9xx: hi6421v600-regulator: update copyright
+  staging: hikey9xx: hi6421v600-regulator: fix delay logic
+  staging: hikey9xx: hi6421v600-regulator: cleanup comments
+  staging: hikey9xx: hi6421v600-regulator: fix get_optimum_mode
+  staging: hikey9xx: hisilicon,hi6421-spmi-pmic.yaml: cleanup a warning
+  staging: hikey9xx: spmi driver: convert to regmap
+  staging: hikey9xx: hi6421-spmi-pmic: update copyright
+  staging: hikey9xx: simplify includes
+  spmi: hisi-spmi-controller: move driver from staging
+  mfd: hi6421-spmi-pmic: move driver from staging
+  regulator: hi6421v600-regulator: move it from staging
+  dts: hisilicon: add support for USB3 on Hikey 970
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 +++++
+ .../spmi/hisilicon,hisi-spmi-controller.yaml  |  75 +++
+ MAINTAINERS                                   |  15 +-
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 124 ++++-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 +++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  87 ++++
+ drivers/mfd/Kconfig                           |  15 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                | 281 ++++++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/hi6421v600-regulator.c      | 338 +++++++++++++
+ drivers/spmi/Kconfig                          |   9 +
+ drivers/spmi/Makefile                         |   1 +
+ drivers/spmi/hisi-spmi-controller.c           | 358 +++++++++++++
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  38 --
+ drivers/staging/hikey9xx/Makefile             |   5 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 342 -------------
+ .../staging/hikey9xx/hi6421v600-regulator.c   | 478 ------------------
+ .../staging/hikey9xx/hisi-spmi-controller.c   | 358 -------------
+ .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 159 ------
+ .../hisilicon,hisi-spmi-controller.yaml       |  62 ---
+ include/linux/mfd/hi6421-spmi-pmic.h          |   8 +-
+ 26 files changed, 1486 insertions(+), 1478 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ create mode 100644 drivers/regulator/hi6421v600-regulator.c
+ create mode 100644 drivers/spmi/hisi-spmi-controller.c
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+ delete mode 100644 drivers/staging/hikey9xx/hi6421v600-regulator.c
+ delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+
+-- 
+2.29.2
+
+
