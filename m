@@ -2,1243 +2,1215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7362FB317
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E772FB30D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbhASHfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:35:12 -0500
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:37414 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730187AbhASHXY (ORCPT
+        id S1730073AbhASHdj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Jan 2021 02:33:39 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:48566 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730611AbhASH0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:23:24 -0500
-Received: by mail-lj1-f176.google.com with SMTP id 3so571690ljc.4;
-        Mon, 18 Jan 2021 23:23:03 -0800 (PST)
+        Tue, 19 Jan 2021 02:26:46 -0500
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chia-lin.kao@canonical.com>)
+        id 1l1lOc-0005Xj-UA
+        for linux-kernel@vger.kernel.org; Tue, 19 Jan 2021 07:25:47 +0000
+Received: by mail-wr1-f72.google.com with SMTP id o17so9475921wra.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:25:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rfzXiBUbvuEVCCWtGSuSe1uQuaxsX3k7Npae0sPKWJ4=;
-        b=W/PlA8pdE62YpX3RWQDhXmEZEViJikFZ7U08HLpT/Ce+u98olb7tHkXiqVo8XKM9eU
-         jgK7pZLYBOm7jw26qdxXRkH0hvffvQr82OTeteq7YH1CwP62quhgs9W9V+k/iwfVaS6l
-         S5rFGg42B0sdM/Zof2zcOICpUyJ8AjqFpjAeziO80k58nR2LqS57IQAJWl3myT31f0lq
-         zace5+OuUdJOOjDz+cStd0KeE/P2H/UlFa3XpiwYkbkbubEtTjNM+3C3FWKbjGtkFFnK
-         XKrZCvm46a/ioLh2g6lQJIzgmV4M/u/95xaiVaP+d4JH+aT0mXNKNg+3e2Q8dQ8qIXx3
-         uNsg==
-X-Gm-Message-State: AOAM530ulXVhj1/G/HejiSv4SpOam1QYGr0RHT6tG/NPCIkRymd0y674
-        yQI/93rnLzliilW0yJDtYAc=
-X-Google-Smtp-Source: ABdhPJwHbuUISQiPtdcm4a47DgXNez7hjybzbZsUOyKnyGu44P8o+ryWyYuM3lf1m6TBbY7c81l/og==
-X-Received: by 2002:a2e:6c0f:: with SMTP id h15mr1329725ljc.305.1611040957783;
-        Mon, 18 Jan 2021 23:22:37 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id i29sm2184744lfc.193.2021.01.18.23.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 23:22:37 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:22:28 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH v2 09/17] mfd: Support for ROHM BD71815 PMIC core
-Message-ID: <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m2l7jSYxBbnk+fd2JgyTvgdBTnIDIqwdAS6klff0z70=;
+        b=bMKs50TzYOkcEHr5y6tupxg5nYCOD2sKVuVG1yGml0wZU9BBHp0ins1GWhwYlFtk6V
+         IFtCXrTvrUK2paBZPJ4ELH/PGhGj7hwuTIzdWd5JmzBHGNmBHtSPdYRa5kaMo7lLQ4ZU
+         5j4JbpGqdt8dLkaAdv+E40GSOJAoqup5/R1tMgs69cQLEFEq5xuBqM1mXhWnft9fWOos
+         EONFt/tCPD0Rdc8gDWuVSVin9SWqRiJxE5SzQfOqQChj7FsUENBddvQK+6D8/E2cfdsl
+         9efEtiFSvgFlfJo3V25trHaqBcsHatHrU503hAtfnJr+161W+XZ/ZqAJ4ym/d9FYlyg1
+         V1qw==
+X-Gm-Message-State: AOAM531In5Zw34aiFY0TPi0XFq5d/29/2uEHdMhbIMVPxj0poAM5wCZu
+        JdJULBp4Lfac54z6M+T/EIpnsf2+Vdya3VRx0Zo8heTv0Tiso1WLk/jJ75aATErftQKL/ei5RfA
+        J7GR/+vzl2ZlW3apTBrF28iplDbJOkDZdCskAQO/tnNV9TDRvyNt6vJvUBw==
+X-Received: by 2002:a5d:5146:: with SMTP id u6mr2928003wrt.46.1611041146303;
+        Mon, 18 Jan 2021 23:25:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy7P+tE+DQhPyZRJTr4ghv9Nf/QkBFSBIn+YIECnRJA25pa3usrkYH+jmU9xpshwDp6gUKsGL2cTMvz1qggM1E=
+X-Received: by 2002:a5d:5146:: with SMTP id u6mr2927973wrt.46.1611041145911;
+ Mon, 18 Jan 2021 23:25:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210118123749.4769-1-campion.kang@advantech.com.tw> <20210118123749.4769-4-campion.kang@advantech.com.tw>
+In-Reply-To: <20210118123749.4769-4-campion.kang@advantech.com.tw>
+From:   AceLan Kao <chia-lin.kao@canonical.com>
+Date:   Tue, 19 Jan 2021 15:25:34 +0800
+Message-ID: <CAFv23QngmvuKZb0_pK7RBa=VX=2ypabg5p1+vSqrT36CNdJhgw@mail.gmail.com>
+Subject: Re: [PATCH v6 4/6] mfd: ahc1ec0: Add support for Advantech embedded controller
+To:     Campion Kang <campion.kang@advantech.com.tw>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add core support for ROHM BD71815 Power Management IC.
+Campion Kang <campion.kang@advantech.com.tw> 於 2021年1月18日 週一 下午8:37寫道：
+>
+> AHC1EC0 is the embedded controller driver for Advantech industrial
+> products. This provides sub-devices such as hwmon and watchdog, and also
+> expose functions for sub-devices to read/write the value to embedded
+> controller.
+>
+> Changed since V5:
+>         - Kconfig: add "AHC1EC0" string to clearly define the EC name
+>         - fix the code according to reviewer's suggestion
+>         - remove unnecessary header files
+>         - change the structure name to lower case, align with others
+> naming
+>
+> Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
+> ---
+>  drivers/mfd/Kconfig         |  10 +
+>  drivers/mfd/Makefile        |   2 +
+>  drivers/mfd/ahc1ec0.c       | 808 ++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/ahc1ec0.h | 276 ++++++++++++
+>  4 files changed, 1096 insertions(+)
+>  create mode 100644 drivers/mfd/ahc1ec0.c
+>  create mode 100644 include/linux/mfd/ahc1ec0.h
+>
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index bdfce7b15621..7d5fb5c17d9a 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -2154,5 +2154,15 @@ config MFD_INTEL_M10_BMC
+>           additional drivers must be enabled in order to use the functionality
+>           of the device.
+>
+> +config MFD_AHC1EC0
+> +       tristate "Advantech AHC1EC0 Embedded Controller Module"
+> +       depends on X86
+> +       select MFD_CORE
+> +       help
+> +         This is the core function that for Advantech EC drivers. It
+> +         includes the sub-devices such as hwmon, watchdog, etc. And also
+> +         provides expose functions for sub-devices to read/write the value
+> +         to embedded controller.
+> +
+>  endmenu
+>  endif
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 14fdb188af02..a6af9d8825f4 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -268,3 +268,5 @@ obj-$(CONFIG_MFD_KHADAS_MCU)        += khadas-mcu.o
+>  obj-$(CONFIG_SGI_MFD_IOC3)     += ioc3.o
+>  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)       += simple-mfd-i2c.o
+>  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
+> +
+> +obj-$(CONFIG_MFD_AHC1EC0)      += ahc1ec0.o
+> diff --git a/drivers/mfd/ahc1ec0.c b/drivers/mfd/ahc1ec0.c
+> new file mode 100644
+> index 000000000000..015f4307a54e
+> --- /dev/null
+> +++ b/drivers/mfd/ahc1ec0.c
+> @@ -0,0 +1,808 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Advantech embedded controller core driver AHC1EC0
+> + *
+> + * Copyright 2020 Advantech IIoT Group
+> + *
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/delay.h>
+> +#include <linux/dmi.h>
+> +#include <linux/errno.h>
+> +#include <linux/mfd/ahc1ec0.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +
+> +#define DRV_NAME      "ahc1ec0"
+> +
+> +enum {
+> +       ADVEC_SUBDEV_BRIGHTNESS = 0,
+> +       ADVEC_SUBDEV_EEPROM,
+> +       ADVEC_SUBDEV_GPIO,
+> +       ADVEC_SUBDEV_HWMON,
+> +       ADVEC_SUBDEV_LED,
+> +       ADVEC_SUBDEV_WDT,
+> +       ADVEC_SUBDEV_MAX,
+> +};
+> +
+> +/* Wait IBF (Input Buffer Full) clear */
+> +static int ec_wait_write(void)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < EC_MAX_TIMEOUT_COUNT; i++) {
+> +               if ((inb(EC_COMMAND_PORT) & EC_COMMAND_BIT_IBF) == 0)
+> +                       return 0;
+> +
+> +               udelay(EC_RETRY_UDELAY);
+> +       }
+> +
+> +       return -ETIMEDOUT;
+> +}
+> +
+> +/* Wait OBF (Output Buffer Full) data ready */
+> +static int ec_wait_read(void)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < EC_MAX_TIMEOUT_COUNT; i++) {
+> +               if ((inb(EC_COMMAND_PORT) & EC_COMMAND_BIT_OBF) != 0)
+> +                       return 0;
+> +
+> +               udelay(EC_RETRY_UDELAY);
+> +       }
+> +
+> +       return -ETIMEDOUT;
+> +}
+> +
+> +/* Read data from EC HW RAM, the process is the following:
+> + * Step 0. Wait IBF clear to send command
+> + * Step 1. Send read command to EC command port
+> + * Step 2. Wait IBF clear that means command is got by EC
+> + * Step 3. Send read address to EC data port
+> + * Step 4. Wait OBF data ready
+> + * Step 5. Get data from EC data port
+> + */
+> +int read_hw_ram(struct adv_ec_platform_data *adv_ec_data, unsigned char addr, unsigned char *data)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_HW_RAM_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(addr, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       *data = inb(EC_STATUS_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       return ret;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       dev_err(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +              __LINE__);
+> +
+> +       return ret;
+> +}
+> +
+> +/* Write data to EC HW RAM
+> + * Step 0. Wait IBF clear to send command
+> + * Step 1. Send write command to EC command port
+> + * Step 2. Wait IBF clear that means command is got by EC
+> + * Step 3. Send write address to EC data port
+> + * Step 4. Wait IBF clear that means command is got by EC
+> + * Step 5. Send data to EC data port
+> + */
+> +int write_hw_ram(struct adv_ec_platform_data *adv_ec_data, unsigned char addr, unsigned char data)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_HW_RAM_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(addr, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(data, EC_STATUS_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_err(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +              __LINE__);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(write_hw_ram);
+> +
+> +/* Get dynamic control table */
+> +static int adv_get_dynamic_tab(struct adv_ec_platform_data *adv_ec_data)
+> +{
+> +       int i, ret;
+> +       unsigned char pin_tmp, device_id;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       for (i = 0; i < EC_MAX_TBL_NUM; i++) {
+> +               adv_ec_data->dym_tbl[i].device_id = 0xff;
+> +               adv_ec_data->dym_tbl[i].hw_pin_num = 0xff;
+> +       }
+> +
+> +       for (i = 0; i < EC_MAX_TBL_NUM; i++) {
+> +               ret = ec_wait_write();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_write. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +               outb(EC_TBL_WRITE_ITEM, EC_COMMAND_PORT);
+> +
+> +               ret = ec_wait_write();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_write. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +               outb(i, EC_STATUS_PORT);
+> +
+> +               ret = ec_wait_read();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_read. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +
+> +               /*
+> +                *  If item is defined, EC will return item number.
+> +                *  If table item is not defined, EC will return 0xFF.
+> +                */
+> +               pin_tmp = inb(EC_STATUS_PORT);
+> +               if (pin_tmp == 0xff) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: inb(EC_STATUS_PORT)=0x%02x != 0xff.\n",
+> +                               __func__, pin_tmp);
+> +                       goto pass;
+> +               }
+> +
+> +               ret = ec_wait_write();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_write. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +               outb(EC_TBL_GET_PIN, EC_COMMAND_PORT);
+> +
+> +               ret = ec_wait_read();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_read. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +               pin_tmp = inb(EC_STATUS_PORT) & 0xff;
+> +               if (pin_tmp == 0xff) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: pin_tmp(0x%02X). line: %d\n", __func__,
+> +                               pin_tmp, __LINE__);
+> +                       goto pass;
+> +               }
+> +
+> +               ret = ec_wait_write();
+> +               if (ret)
+> +                       goto error;
+> +               outb(EC_TBL_GET_DEVID, EC_COMMAND_PORT);
+> +
+> +               ret = ec_wait_read();
+> +               if (ret) {
+> +                       dev_dbg(adv_ec_data->dev, "%s: ec_wait_read. line: %d\n", __func__,
+> +                               __LINE__);
+> +                       goto error;
+> +               }
+> +               device_id = inb(EC_STATUS_PORT) & 0xff;
+> +
+> +               dev_dbg(adv_ec_data->dev, "%s: device_id=0x%02X. line: %d\n", __func__,
+> +                       device_id, __LINE__);
+> +
+> +               adv_ec_data->dym_tbl[i].device_id = device_id;
+> +               adv_ec_data->dym_tbl[i].hw_pin_num = pin_tmp;
+> +       }
+> +
+> +pass:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       dev_err(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n",
+> +               __func__, __LINE__);
+> +       return ret;
+> +}
+> +
+> +int read_ad_value(struct adv_ec_platform_data *adv_ec_data, unsigned char hwpin,
+> +               unsigned char multi)
+> +{
+> +       int ret;
+> +       u32 ret_val;
+> +       unsigned int LSB, MSB;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_AD_INDEX_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(hwpin, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +
+> +       if (inb(EC_STATUS_PORT) == 0xff) {
+> +               mutex_unlock(&adv_ec_data->lock);
+> +               return -1;
+> +       }
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_AD_LSB_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       LSB = inb(EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_AD_MSB_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       MSB = inb(EC_STATUS_PORT);
+> +       ret_val = ((MSB << 8) | LSB) & 0x03FF;
+> +       ret_val = ret_val * multi * 100;
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return ret_val;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +               __LINE__);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(read_ad_value);
+> +
+> +int read_acpi_value(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +               unsigned char *pvalue)
+> +{
+> +       int ret;
+> +       unsigned char value;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_ACPI_RAM_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(addr, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       value = inb(EC_STATUS_PORT);
+> +       *pvalue = value;
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +               __LINE__);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(read_acpi_value);
+> +
+> +int write_acpi_value(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +               unsigned char value)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_ACPI_DATA_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(addr, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(value, EC_STATUS_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +               __LINE__);
+> +
+> +       return ret;
+> +}
+> +
+> +int read_gpio_status(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +               unsigned char *pvalue)
+> +{
+> +       int ret;
+> +
+> +       unsigned char gpio_status_value;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(PinNumber, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +
+> +       if (inb(EC_STATUS_PORT) == 0xff) {
+> +               dev_err(adv_ec_data->dev, "%s: Read Pin Number error!!\n", __func__);
+> +               mutex_unlock(&adv_ec_data->lock);
+> +               return -1;
+> +       }
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_STATUS_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       gpio_status_value = inb(EC_STATUS_PORT);
+> +
+> +       *pvalue = gpio_status_value;
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +               __LINE__);
+> +       return ret;
+> +}
+> +
+> +int write_gpio_status(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +               unsigned char value)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(PinNumber, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +
+> +       if (inb(EC_STATUS_PORT) == 0xff) {
+> +               mutex_unlock(&adv_ec_data->lock);
+> +               dev_err(adv_ec_data->dev, "%s: Read Pin Number error!!\n", __func__);
+> +               return -1;
+> +       }
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_STATUS_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(value, EC_STATUS_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       dev_err(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d", __func__,
+> +               __LINE__);
+> +
+> +       return ret;
+> +}
+> +
+> +int read_gpio_dir(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +               unsigned char *pvalue)
+> +{
+> +       int ret;
+> +       unsigned char gpio_dir_value;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(PinNumber, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +
+> +       if (inb(EC_STATUS_PORT) == 0xff) {
+> +               mutex_unlock(&adv_ec_data->lock);
+> +               dev_err(adv_ec_data->dev, "%s: Read Pin Number error!! line: %d\n", __func__,
+> +                       __LINE__);
+> +               return -1;
+> +       }
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_DIR_READ, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +       gpio_dir_value = inb(EC_STATUS_PORT);
+> +       *pvalue = gpio_dir_value;
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +                       __LINE__);
+> +
+> +       return ret;
+> +}
+> +
+> +int write_gpio_dir(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +               unsigned char value)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(PinNumber, EC_STATUS_PORT);
+> +
+> +       ret = ec_wait_read();
+> +       if (ret)
+> +               goto error;
+> +
+> +       if (inb(EC_STATUS_PORT) == 0xff) {
+> +               mutex_unlock(&adv_ec_data->lock);
+> +               dev_warn(adv_ec_data->dev, "%s: Read Pin Number error!! line: %d\n", __func__,
+> +                       __LINE__);
+> +
+> +               return -1;
+> +       }
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(EC_GPIO_DIR_WRITE, EC_COMMAND_PORT);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(value, EC_STATUS_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +                       __LINE__);
+> +
+> +       return ret;
+> +}
+> +
+> +int write_hwram_command(struct adv_ec_platform_data *adv_ec_data, unsigned char data)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&adv_ec_data->lock);
+> +
+> +       ret = ec_wait_write();
+> +       if (ret)
+> +               goto error;
+> +       outb(data, EC_COMMAND_PORT);
+> +
+> +       mutex_unlock(&adv_ec_data->lock);
+> +       return 0;
+> +
+> +error:
+> +       mutex_unlock(&adv_ec_data->lock);
+> +
+> +       dev_warn(adv_ec_data->dev, "%s: Wait for IBF or OBF too long. line: %d\n", __func__,
+> +                       __LINE__);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(write_hwram_command);
+> +
+> +static int adv_ec_get_productname(struct adv_ec_platform_data *adv_ec_data, char *product)
+> +{
+> +       const char *vendor, *device;
+> +       int length = 0;
+> +
+> +       /* Check it is Advantech board */
+> +       vendor = dmi_get_system_info(DMI_SYS_VENDOR);
+> +       if (memcmp(vendor, "Advantech", sizeof("Advantech")) != 0)
+> +               return -ENODEV;
+> +
+> +       /* Get product model name */
+> +       device = dmi_get_system_info(DMI_PRODUCT_NAME);
+> +       if (device) {
+> +               while ((device[length] != ' ')
+> +                       && (length < AMI_ADVANTECH_BOARD_ID_LENGTH))
+> +                       length++;
+> +               memset(product, 0, AMI_ADVANTECH_BOARD_ID_LENGTH);
+> +               memmove(product, device, length);
+> +
+> +               dev_info(adv_ec_data->dev, "BIOS Product Name = %s\n", product);
+> +
+> +               return 0;
+> +       }
+> +
+> +       dev_warn(adv_ec_data->dev, "This device is not Advantech Board (%s)!\n", product);
+> +
+> +       return -ENODEV;
+> +}
+> +
+> +static const struct mfd_cell adv_ec_sub_cells[] = {
+> +       { .name = "adv-ec-brightness", },
+> +       { .name = "adv-ec-eeprom", },
+> +       { .name = "adv-ec-gpio", },
+> +       { .name = "ahc1ec0-hwmon", },
+> +       { .name = "adv-ec-led", },
+> +       { .name = "ahc1ec0-wdt", },
+> +};
+> +
+> +static int adv_ec_init_ec_data(struct adv_ec_platform_data *adv_ec_data)
+> +{
+> +       int ret;
+> +
+> +       adv_ec_data->sub_dev_mask = 0;
+> +       adv_ec_data->sub_dev_nb = 0;
+> +       adv_ec_data->dym_tbl = NULL;
+> +       adv_ec_data->bios_product_name = NULL;
+> +
+> +       mutex_init(&adv_ec_data->lock);
+> +
+> +       /* Get product name */
+> +       adv_ec_data->bios_product_name =
+> +               devm_kzalloc(adv_ec_data->dev, AMI_ADVANTECH_BOARD_ID_LENGTH, GFP_KERNEL);
+> +       if (!adv_ec_data->bios_product_name)
+> +               return -ENOMEM;
+> +
+> +       memset(adv_ec_data->bios_product_name, 0, AMI_ADVANTECH_BOARD_ID_LENGTH);
+> +       ret = adv_ec_get_productname(adv_ec_data, adv_ec_data->bios_product_name);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Get pin table */
+> +       adv_ec_data->dym_tbl = devm_kzalloc(adv_ec_data->dev,
+> +                                       EC_MAX_TBL_NUM * sizeof(struct ec_dynamic_table),
+> +                                       GFP_KERNEL);
+> +       if (!adv_ec_data->dym_tbl)
+> +               return -ENOMEM;
+> +
+> +       ret = adv_get_dynamic_tab(adv_ec_data);
+> +
+> +       return ret;
+> +}
+> +
+> +static int adv_ec_parse_prop(struct adv_ec_platform_data *adv_ec_data)
+> +{
+> +       int i, ret;
+> +       u32 nb, sub_dev[ADVEC_SUBDEV_MAX];
+> +
+> +       ret = device_property_read_u32(adv_ec_data->dev, "advantech,sub-dev-nb", &nb);
+> +       if (ret < 0) {
+> +               dev_err(adv_ec_data->dev, "get sub-dev-nb failed! (%d)\n", ret);
+> +               return ret;
+> +       }
+> +       adv_ec_data->sub_dev_nb = nb;
+> +
+> +       ret = device_property_read_u32_array(adv_ec_data->dev, "advantech,sub-dev",
+> +                                            sub_dev, nb);
+> +       if (ret < 0) {
+> +               dev_err(adv_ec_data->dev, "get sub-dev failed! (%d)\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       for (i = 0; i < nb; i++) {
+> +               switch (sub_dev[i]) {
+> +               case ADVEC_SUBDEV_BRIGHTNESS:
+> +               case ADVEC_SUBDEV_EEPROM:
+> +               case ADVEC_SUBDEV_GPIO:
+> +               case ADVEC_SUBDEV_HWMON:
+> +               case ADVEC_SUBDEV_LED:
+> +               case ADVEC_SUBDEV_WDT:
+> +                       adv_ec_data->sub_dev_mask |= BIT(sub_dev[i]);
+> +                       break;
+> +               default:
+> +                       dev_err(adv_ec_data->dev, "invalid prop value(%d)!\n",
+> +                               sub_dev[i]);
+> +               }
+> +       }
+> +       dev_info(adv_ec_data->dev, "sub-dev mask = 0x%x\n", adv_ec_data->sub_dev_mask);
+> +
+> +       return 0;
+> +}
+> +
+> +static int adv_ec_probe(struct platform_device *pdev)
+> +{
+> +       int ret, i;
+> +       struct device *dev = &pdev->dev;
+> +       struct adv_ec_platform_data *adv_ec_data;
+> +
+> +       adv_ec_data = devm_kzalloc(dev, sizeof(struct adv_ec_platform_data), GFP_KERNEL);
+> +       if (!adv_ec_data)
+> +               return -ENOMEM;
+> +
+> +       dev_set_drvdata(dev, adv_ec_data);
+> +       adv_ec_data->dev = dev;
+> +
+> +       ret = adv_ec_init_ec_data(adv_ec_data);
+> +       if (ret)
+> +               goto err_init_data;
+> +
+> +       ret = adv_ec_parse_prop(adv_ec_data);
+> +       if (ret)
+> +               goto err_prop;
+> +
+> +       /* check whether this EC has the following subdevices. */
+> +       for (i = 0; i < ARRAY_SIZE(adv_ec_sub_cells); i++) {
+> +               if (adv_ec_data->sub_dev_mask & BIT(i)) {
+> +                       ret = mfd_add_hotplug_devices(dev, &adv_ec_sub_cells[i], 1);
+> +                       dev_info(adv_ec_data->dev, "mfd_add_hotplug_devices[%d] %s\n", i,
+> +                               adv_ec_sub_cells[i].name);
+> +                       if (ret)
+> +                               dev_err(dev, "failed to add %s subdevice: %d\n",
+> +                                       adv_ec_sub_cells[i].name, ret);
+> +               }
+> +       }
+> +
+> +       dev_info(adv_ec_data->dev, "Advantech EC probe done");
+> +
+> +       return 0;
+> +
+> +err_prop:
+> +       dev_err(dev, "failed to probe\n");
+> +
+> +err_init_data:
+> +       mutex_destroy(&adv_ec_data->lock);
+> +
+> +       dev_err(dev, "failed to init data\n");
+> +
+> +       return ret;
+> +}
+> +
+> +static int adv_ec_remove(struct platform_device *pdev)
+> +{
+> +       struct adv_ec_platform_data *adv_ec_data;
+> +
+> +       adv_ec_data = dev_get_drvdata(&pdev->dev);
+> +
+> +       mutex_destroy(&adv_ec_data->lock);
+> +
+> +       mfd_remove_devices(&pdev->dev);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct of_device_id adv_ec_of_match[] __maybe_unused = {
+> +       {
+> +               .compatible = "advantech,ahc1ec0",
+> +       },
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(of, adv_ec_of_match);
+> +
+> +static const struct acpi_device_id adv_ec_acpi_match[] __maybe_unused = {
+> +       {"AHC1EC0", 0},
+> +       {},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, adv_ec_acpi_match);
+> +
+> +static struct platform_driver adv_ec_driver = {
+> +       .driver = {
+> +               .name = DRV_NAME,
+> +               .of_match_table = of_match_ptr(adv_ec_of_match),
+> +               .acpi_match_table = ACPI_PTR(adv_ec_acpi_match),
+> +       },
+> +       .probe = adv_ec_probe,
+> +       .remove = adv_ec_remove,
+> +};
+> +module_platform_driver(adv_ec_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:" DRV_NAME);
+> +MODULE_DESCRIPTION("Advantech Embedded Controller core driver.");
+> +MODULE_AUTHOR("Campion Kang <campion.kang@advantech.com.tw>");
+> +MODULE_AUTHOR("Jianfeng Dai <jianfeng.dai@advantech.com.cn>");
+> +MODULE_VERSION("1.0");
+> diff --git a/include/linux/mfd/ahc1ec0.h b/include/linux/mfd/ahc1ec0.h
+> new file mode 100644
+> index 000000000000..1b01e10c1fef
+> --- /dev/null
+> +++ b/include/linux/mfd/ahc1ec0.h
+> @@ -0,0 +1,276 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef __LINUX_MFD_AHC1EC0_H
+> +#define __LINUX_MFD_AHC1EC0_H
+> +
+> +#include <linux/device.h>
+> +
+> +#define EC_COMMAND_PORT             0x29A /* EC I/O command port */
+> +#define EC_STATUS_PORT              0x299 /* EC I/O data port */
+> +
+> +#define EC_RETRY_UDELAY              200 /* EC command retry delay in microseconds */
+> +#define EC_MAX_TIMEOUT_COUNT        5000 /* EC command max retry count */
+> +#define EC_COMMAND_BIT_OBF          0x01 /* Bit 0 is for OBF ready (Output buffer full) */
+> +#define EC_COMMAND_BIT_IBF          0x02 /* Bit 1 is for IBF ready (Input buffer full) */
+> +
+> +/* Analog to digital converter command */
+> +#define EC_AD_INDEX_WRITE   0x15 /* Write ADC port number into index */
+> +#define EC_AD_LSB_READ      0x16 /* Read ADC LSB value from ADC port */
+> +#define EC_AD_MSB_READ      0x1F /* Read ADC MSB value from ADC port */
+> +
+> +/* Voltage device ID */
+> +#define EC_DID_SMBOEM0      0x28 /* SMBUS/I2C. Smbus channel 0 */
+> +#define EC_DID_CMOSBAT      0x50 /* CMOS coin battery voltage */
+> +#define EC_DID_CMOSBAT_X2   0x51 /* CMOS coin battery voltage*2 */
+> +#define EC_DID_CMOSBAT_X10  0x52 /* CMOS coin battery voltage*10 */
+> +#define EC_DID_5VS0         0x56 /* 5VS0 voltage */
+> +#define EC_DID_5VS0_X2      0x57 /* 5VS0 voltage*2 */
+> +#define EC_DID_5VS0_X10     0x58 /* 5VS0 voltage*10 */
+> +#define EC_DID_5VS5         0x59 /* 5VS5 voltage */
+> +#define EC_DID_5VS5_X2      0x5A /* 5VS5 voltage*2 */
+> +#define EC_DID_5VS5_X10     0x5B /* 5VS5 voltage*10 */
+> +#define EC_DID_12VS0        0x62 /* 12VS0 voltage */
+> +#define EC_DID_12VS0_X2     0x63 /* 12VS0 voltage*2 */
+> +#define EC_DID_12VS0_X10    0x64 /* 12VS0 voltage*10 */
+> +#define EC_DID_VCOREA       0x65 /* CPU A core voltage */
+> +#define EC_DID_VCOREA_X2    0x66 /* CPU A core voltage*2 */
+> +#define EC_DID_VCOREA_X10   0x67 /* CPU A core voltage*10 */
+> +#define EC_DID_VCOREB       0x68 /* CPU B core voltage */
+> +#define EC_DID_VCOREB_X2    0x69 /* CPU B core voltage*2 */
+> +#define EC_DID_VCOREB_X10   0x6A /* CPU B core voltage*10 */
+> +#define EC_DID_DC           0x6B /* ADC. onboard voltage */
+> +#define EC_DID_DC_X2        0x6C /* ADC. onboard voltage*2 */
+> +#define EC_DID_DC_X10       0x6D /* ADC. onboard voltage*10 */
+> +
+> +/* Current device ID */
+> +#define EC_DID_CURRENT              0x74
+> +
+> +/* ACPI commands */
+> +#define EC_ACPI_RAM_READ            0x80
+> +#define EC_ACPI_RAM_WRITE           0x81
+> +
+> +/*
+> + *  Dynamic control table commands
+> + *  The table includes HW pin number, Device ID, and Pin polarity
+> + */
+> +#define EC_TBL_WRITE_ITEM           0x20
+> +#define EC_TBL_GET_PIN              0x21
+> +#define EC_TBL_GET_DEVID            0x22
+> +#define EC_MAX_TBL_NUM              32
+> +
+> +/* LED Device ID table */
+> +#define EC_DID_LED_RUN              0xE1
+> +#define EC_DID_LED_ERR              0xE2
+> +#define EC_DID_LED_SYS_RECOVERY     0xE3
+> +#define EC_DID_LED_D105_G           0xE4
+> +#define EC_DID_LED_D106_G           0xE5
+> +#define EC_DID_LED_D107_G           0xE6
+> +
+> +/* LED control HW RAM address 0xA0-0xAF */
+> +#define EC_HWRAM_LED_BASE_ADDR      0xA0
+> +#define EC_HWRAM_LED_PIN(N)         (EC_HWRAM_LED_BASE_ADDR + (4 * (N))) // N:0-3
+> +#define EC_HWRAM_LED_CTRL_HIBYTE(N) (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 1)
+> +#define EC_HWRAM_LED_CTRL_LOBYTE(N) (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 2)
+> +#define EC_HWRAM_LED_DEVICE_ID(N)   (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 3)
+> +
+> +/* LED control bit */
+> +#define LED_CTRL_ENABLE_BIT()           BIT(4)
+> +#define LED_CTRL_INTCTL_BIT()           BIT(5)
+> +#define LED_CTRL_LEDBIT_MASK            (0x03FF << 6)
+> +#define LED_CTRL_POLARITY_MASK          (0x000F << 0)
+> +#define LED_CTRL_INTCTL_EXTERNAL        0
+> +#define LED_CTRL_INTCTL_INTERNAL        1
+> +
+> +#define LED_DISABLE  0x0
+> +#define LED_ON       0x1
+> +#define LED_FAST     0x3
+> +#define LED_NORMAL   0x5
+> +#define LED_SLOW     0x7
+> +#define LED_MANUAL   0xF
+> +
+> +#define LED_CTRL_LEDBIT_DISABLE        0x0000
+> +#define LED_CTRL_LEDBIT_ON             0x03FF
+> +#define LED_CTRL_LEDBIT_FAST   0x02AA
+> +#define LED_CTRL_LEDBIT_NORMAL 0x0333
+> +#define LED_CTRL_LEDBIT_SLOW   0x03E0
+> +
+> +/* Get the device name */
+> +#define AMI_ADVANTECH_BOARD_ID_LENGTH  32
+> +
+> +/*
+> + * Advantech Embedded Controller watchdog commands
+> + * EC can send multi-stage watchdog event. System can setup watchdog event
+> + * independently to make up event sequence.
+> + */
+> +#define EC_COMMANS_PORT_IBF_MASK       0x02
+> +#define EC_RESET_EVENT                         0x04
+> +#define        EC_WDT_START                            0x28
+> +#define        EC_WDT_STOP                                     0x29
+> +#define        EC_WDT_RESET                            0x2A
+> +#define        EC_WDT_BOOTTMEWDT_STOP          0x2B
+> +
+> +#define EC_HW_RAM                                      0x89
+> +
+> +#define EC_EVENT_FLAG                          0x57
+> +#define EC_ENABLE_DELAY_H                      0x58
+> +#define EC_ENABLE_DELAY_L                      0x59
+> +#define EC_POWER_BTN_TIME_H                    0x5A
+> +#define EC_POWER_BTN_TIME_L                    0x5B
+> +#define EC_RESET_DELAY_TIME_H          0x5E
+> +#define EC_RESET_DELAY_TIME_L          0x5F
+> +#define EC_PIN_DELAY_TIME_H                    0x60
+> +#define EC_PIN_DELAY_TIME_L                    0x61
+> +#define EC_SCI_DELAY_TIME_H                    0x62
+> +#define EC_SCI_DELAY_TIME_L                    0x63
+> +
+> +/* EC ACPI commands */
+> +#define EC_ACPI_DATA_READ                      0x80
+> +#define EC_ACPI_DATA_WRITE                     0x81
+> +
+> +/* Brightness ACPI Addr */
+> +#define BRIGHTNESS_ACPI_ADDR           0x50
+> +
+> +/* EC HW RAM commands */
+> +#define EC_HW_EXTEND_RAM_READ          0x86
+> +#define EC_HW_EXTEND_RAM_WRITE         0x87
+> +#define        EC_HW_RAM_READ                          0x88
+> +#define EC_HW_RAM_WRITE                                0x89
+> +
+> +/* EC Smbus commands */
+> +#define EC_SMBUS_CHANNEL_SET           0x8A     /* Set selector number (SMBUS channel) */
+> +#define EC_SMBUS_ENABLE_I2C                    0x8C     /* Enable channel I2C */
+> +#define EC_SMBUS_DISABLE_I2C           0x8D     /* Disable channel I2C */
+> +
+> +/* Smbus transmit protocol */
+> +#define EC_SMBUS_PROTOCOL                      0x00
+> +
+> +/* SMBUS status */
+> +#define EC_SMBUS_STATUS                                0x01
+> +
+> +/* SMBUS device slave address (bit0 must be 0) */
+> +#define EC_SMBUS_SLV_ADDR                      0x02
+> +
+> +/* SMBUS device command */
+> +#define EC_SMBUS_CMD                           0x03
+> +
+> +/* 0x04-0x24 Data In read process, return data are stored in this address */
+> +#define EC_SMBUS_DATA                          0x04
+> +
+> +#define EC_SMBUS_DAT_OFFSET(n) (EC_SMBUS_DATA + (n))
+> +
+> +/* SMBUS channel selector (0-4) */
+> +#define EC_SMBUS_CHANNEL                       0x2B
+> +
+> +/* EC SMBUS transmit Protocol code */
+> +#define SMBUS_QUICK_WRITE                      0x02 /* Write Quick Command */
+> +#define SMBUS_QUICK_READ                       0x03 /* Read Quick Command */
+> +#define SMBUS_BYTE_SEND                                0x04 /* Send Byte */
+> +#define SMBUS_BYTE_RECEIVE                     0x05 /* Receive Byte */
+> +#define SMBUS_BYTE_WRITE                       0x06 /* Write Byte */
+> +#define SMBUS_BYTE_READ                                0x07 /* Read Byte */
+> +#define SMBUS_WORD_WRITE                       0x08 /* Write Word */
+> +#define SMBUS_WORD_READ                                0x09 /* Read Word */
+> +#define SMBUS_BLOCK_WRITE                      0x0A /* Write Block */
+> +#define SMBUS_BLOCK_READ                       0x0B /* Read Block */
+> +#define SMBUS_PROC_CALL                                0x0C /* Process Call */
+> +#define SMBUS_BLOCK_PROC_CALL          0x0D /* Write Block-Read Block Process Call */
+> +#define SMBUS_I2C_READ_WRITE           0x0E /* I2C block Read-Write */
+> +#define SMBUS_I2C_WRITE_READ           0x0F /* I2C block Write-Read */
+> +
+> +/* GPIO control commands */
+> +#define EC_GPIO_INDEX_WRITE                    0x10
+> +#define EC_GPIO_STATUS_READ                    0x11
+> +#define EC_GPIO_STATUS_WRITE           0x12
+> +#define EC_GPIO_DIR_READ                       0x1D
+> +#define EC_GPIO_DIR_WRITE                      0x1E
+> +
+> +/* One Key Recovery commands */
+> +#define EC_ONE_KEY_FLAG                                0x9C
+> +
+> +/* ASG OEM commands */
+> +#define EC_ASG_OEM                                     0xEA
+> +#define EC_ASG_OEM_READ                                0x00
+> +#define EC_ASG_OEM_WRITE                       0x01
+> +#define EC_OEM_POWER_STATUS_VIN1       0X10
+> +#define EC_OEM_POWER_STATUS_VIN2       0X11
+> +#define EC_OEM_POWER_STATUS_BAT1       0X12
+> +#define EC_OEM_POWER_STATUS_BAT2       0X13
+> +
+> +/* GPIO DEVICE ID */
+> +#define EC_DID_ALTGPIO_0                       0x10    /* 0x10 AltGpio0 User define gpio */
+> +#define EC_DID_ALTGPIO_1                       0x11    /* 0x11 AltGpio1 User define gpio */
+> +#define EC_DID_ALTGPIO_2                       0x12    /* 0x12 AltGpio2 User define gpio */
+> +#define EC_DID_ALTGPIO_3                       0x13    /* 0x13 AltGpio3 User define gpio */
+> +#define EC_DID_ALTGPIO_4                       0x14    /* 0x14 AltGpio4 User define gpio */
+> +#define EC_DID_ALTGPIO_5                       0x15    /* 0x15 AltGpio5 User define gpio */
+> +#define EC_DID_ALTGPIO_6                       0x16    /* 0x16 AltGpio6 User define gpio */
+> +#define EC_DID_ALTGPIO_7                       0x17    /* 0x17 AltGpio7 User define gpio */
+> +
+> +/* Lmsensor Chip Register */
+> +#define NSLM96163_CHANNEL                      0x02
+> +
+> +/* NS_LM96163 address 0x98 */
+> +#define NSLM96163_ADDR                         0x98
+> +
+> +/* LM96163 index(0x00) Local Temperature (Signed MSB) */
+> +#define NSLM96163_LOC_TEMP                     0x00
+> +
+> +/* HWMON registers */
+> +#define INA266_REG_VOLTAGE          0x02    /* 1.25mV */
+> +#define INA266_REG_POWER            0x03    /* 25mW */
+> +#define INA266_REG_CURRENT          0x04    /* 1mA */
+> +
+> +struct ec_hw_pin_table {
+> +       unsigned int vbat[2];
+> +       unsigned int v5[2];
+> +       unsigned int v12[2];
+> +       unsigned int vcore[2];
+> +       unsigned int vdc[2];
+> +       unsigned int ec_current[2];
+> +       unsigned int power[2];
+> +};
+> +
+> +struct ec_dynamic_table {
+> +       unsigned char device_id;
+> +       unsigned char hw_pin_num;
+> +};
+> +
+> +struct ec_smbuso_em0 {
+> +       unsigned char hw_pin_num;
+> +};
+> +
+> +struct pled_hw_pin_tbl {
+> +       unsigned int pled[6];
+> +};
+> +
+> +struct adv_ec_platform_data {
+> +       char *bios_product_name;
+> +       int sub_dev_nb;
+> +       u32 sub_dev_mask;
+> +       struct mutex lock;
+> +       struct device *dev;
+> +       struct class *adv_ec_class;
+> +
+> +       struct ec_dynamic_table *dym_tbl;
+> +};
+> +
+> +int read_ad_value(struct adv_ec_platform_data *adv_ec_data, unsigned char hwpin,
+> +                       unsigned char multi);
+> +int read_acpi_value(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +                       unsigned char *pvalue);
+> +int write_acpi_value(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +                       unsigned char value);
+> +int read_hw_ram(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +                       unsigned char *data);
+> +int write_hw_ram(struct adv_ec_platform_data *adv_ec_data, unsigned char addr,
+> +                       unsigned char data);
+> +int write_hwram_command(struct adv_ec_platform_data *adv_ec_data, unsigned char data);
+> +int read_gpio_status(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +                       unsigned char *pvalue);
+> +int write_gpio_status(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +                       unsigned char value);
+> +int read_gpio_dir(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +                       unsigned char *pvalue);
+> +int write_gpio_dir(struct adv_ec_platform_data *adv_ec_data, unsigned char PinNumber,
+> +                       unsigned char value);
+> +
+> +#endif /* __LINUX_MFD_AHC1EC0_H */
+> --
+> 2.17.1
+>
 
-The IC integrates regulators, a battery charger with a coulomb counter,
-a real-time clock (RTC), clock gate and general-purpose outputs (GPO).
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes since v1:
-  - Used BIT() for better readability
-  - removed some unused definitions
-
- drivers/mfd/Kconfig              |  15 +-
- drivers/mfd/rohm-bd71828.c       | 416 +++++++++++++++++++++--
- include/linux/mfd/rohm-bd71815.h | 561 +++++++++++++++++++++++++++++++
- include/linux/mfd/rohm-bd71828.h |   3 +
- 4 files changed, 952 insertions(+), 43 deletions(-)
- create mode 100644 include/linux/mfd/rohm-bd71815.h
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdfce7b15621..59bfacb91898 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1984,19 +1984,20 @@ config MFD_ROHM_BD70528
- 	  charger.
- 
- config MFD_ROHM_BD71828
--	tristate "ROHM BD71828 Power Management IC"
-+	tristate "ROHM BD71828 and BD71815 Power Management IC"
- 	depends on I2C=y
- 	depends on OF
- 	select REGMAP_I2C
- 	select REGMAP_IRQ
- 	select MFD_CORE
- 	help
--	  Select this option to get support for the ROHM BD71828 Power
--	  Management IC. BD71828GW is a single-chip power management IC for
--	  battery-powered portable devices. The IC integrates 7 buck
--	  converters, 7 LDOs, and a 1500 mA single-cell linear charger.
--	  Also included is a Coulomb counter, a real-time clock (RTC), and
--	  a 32.768 kHz clock gate.
-+	  Select this option to get support for the ROHM BD71828 and BD71815
-+	  Power Management ICs. BD71828GW and BD71815AGW are single-chip power
-+	  management ICs mainly for battery-powered portable devices.
-+	  The BD71828 integrates 7 buck converters and 7 LDOs. The BD71815
-+	  has 5 bucks, 7 LDOs, and a boost for driving LEDs. Both ICs provide
-+	  also a single-cell linear charger, a Coulomb counter, a real-time
-+	  clock (RTC), GPIOs and a 32.768 kHz clock gate.
- 
- config MFD_STM32_LPTIMER
- 	tristate "Support for STM32 Low-Power Timer"
-diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
-index 210261d026f2..28b82477ce4c 100644
---- a/drivers/mfd/rohm-bd71828.c
-+++ b/drivers/mfd/rohm-bd71828.c
-@@ -2,7 +2,7 @@
- //
- // Copyright (C) 2019 ROHM Semiconductors
- //
--// ROHM BD71828 PMIC driver
-+// ROHM BD71828/BD71815 PMIC driver
- 
- #include <linux/gpio_keys.h>
- #include <linux/i2c.h>
-@@ -11,7 +11,9 @@
- #include <linux/ioport.h>
- #include <linux/irq.h>
- #include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-bd71815.h>
- #include <linux/mfd/rohm-bd71828.h>
-+#include <linux/mfd/rohm-generic.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/regmap.h>
-@@ -29,12 +31,102 @@ static struct gpio_keys_platform_data bd71828_powerkey_data = {
- 	.name = "bd71828-pwrkey",
- };
- 
--static const struct resource rtc_irqs[] = {
-+static const struct resource bd71815_rtc_irqs[] = {
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC0, "bd71815-rtc-alm-0"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC1, "bd71815-rtc-alm-1"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC2, "bd71815-rtc-alm-2"),
-+};
-+
-+static const struct resource bd71828_rtc_irqs[] = {
- 	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC0, "bd71828-rtc-alm-0"),
- 	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC1, "bd71828-rtc-alm-1"),
- 	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC2, "bd71828-rtc-alm-2"),
- };
- 
-+static struct resource bd71815_power_irqs[] = {
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-ovp-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-ovp-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-mon-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_DET, "bd71815-dcin-mon-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_RES, "bd71815-vsys-uv-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_DET, "bd71815-vsys-uv-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-low-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-low-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-wdg-temp"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-wdg"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-rechg-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_DET, "bd71815-rechg-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
-+			     "bd71815-ranged-temp-transit"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_STATE_TRANSITION,
-+			     "bd71815-chg-state-change"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_TEMP_NORMAL,
-+			     "bd71815-bat-temp-normal"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_TEMP_ERANGE,
-+			     "bd71815-bat-temp-erange"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_REMOVED, "bd71815-bat-rmv"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_DETECTED, "bd71815-bat-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_THERM_REMOVED, "bd71815-therm-rmv"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_THERM_DETECTED, "bd71815-therm-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_DEAD, "bd71815-bat-dead"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_SHORTC_RES,
-+			     "bd71815-bat-short-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_SHORTC_DET,
-+			     "bd71815-bat-short-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_LOW_VOLT_RES,
-+			     "bd71815-bat-low-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_LOW_VOLT_DET,
-+			     "bd71815-bat-low-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_VOLT_RES,
-+			     "bd71815-bat-over-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_VOLT_DET,
-+			     "bd71815-bat-over-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_MON_RES, "bd71815-bat-mon-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_MON_DET, "bd71815-bat-mon-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON1, "bd71815-bat-cc-mon1"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON2, "bd71815-bat-cc-mon2"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON3, "bd71815-bat-cc-mon3"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_1_RES,
-+			     "bd71815-bat-oc1-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_1_DET,
-+			     "bd71815-bat-oc1-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_2_RES,
-+			     "bd71815-bat-oc2-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_2_DET,
-+			     "bd71815-bat-oc2-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_RES,
-+			     "bd71815-bat-oc3-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_DET,
-+			     "bd71815-bat-oc3-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_RES,
-+			     "bd71815-bat-low-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_DET,
-+			     "bd71815-bat-low-det"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_RES, "bd71815-bat-hi-res"),
-+	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_DET, "bd71815-bat-hi-det"),
-+};
-+
-+static struct mfd_cell bd71815_mfd_cells[] = {
-+	{ .name = "bd71815-pmic", },
-+	{ .name = "bd71815-clk", },
-+	{ .name = "bd71815-gpo", },
-+	{
-+		.name = "bd71815-power",
-+		.num_resources = ARRAY_SIZE(bd71815_power_irqs),
-+		.resources = &bd71815_power_irqs[0],
-+	},
-+	{
-+		.name = "bd71815-rtc",
-+		.num_resources = ARRAY_SIZE(bd71815_rtc_irqs),
-+		.resources = &bd71815_rtc_irqs[0],
-+	},
-+};
-+
- static struct mfd_cell bd71828_mfd_cells[] = {
- 	{ .name = "bd71828-pmic", },
- 	{ .name = "bd71828-gpio", },
-@@ -47,8 +139,8 @@ static struct mfd_cell bd71828_mfd_cells[] = {
- 	{ .name = "bd71827-power", },
- 	{
- 		.name = "bd71828-rtc",
--		.resources = rtc_irqs,
--		.num_resources = ARRAY_SIZE(rtc_irqs),
-+		.resources = bd71828_rtc_irqs,
-+		.num_resources = ARRAY_SIZE(bd71828_rtc_irqs),
- 	}, {
- 		.name = "gpio-keys",
- 		.platform_data = &bd71828_powerkey_data,
-@@ -56,7 +148,35 @@ static struct mfd_cell bd71828_mfd_cells[] = {
- 	},
- };
- 
--static const struct regmap_range volatile_ranges[] = {
-+static const struct regmap_range bd71815_volatile_ranges[] = {
-+	{
-+		.range_min = BD71815_REG_SEC,
-+		.range_max = BD71815_REG_YEAR,
-+	}, {
-+		.range_min = BD71815_REG_CONF,
-+		.range_max = BD71815_REG_BAT_TEMP,
-+	}, {
-+		.range_min = BD71815_REG_VM_IBAT_U,
-+		.range_max = BD71815_REG_CC_CTRL,
-+	}, {
-+		.range_min = BD71815_REG_CC_STAT,
-+		.range_max = BD71815_REG_CC_CURCD_L,
-+	}, {
-+		.range_min = BD71815_REG_VM_BTMP_MON,
-+		.range_max = BD71815_REG_VM_BTMP_MON,
-+	}, {
-+		.range_min = BD71815_REG_INT_STAT,
-+		.range_max = BD71815_REG_INT_UPDATE,
-+	}, {
-+		.range_min = BD71815_REG_VM_VSYS_U,
-+		.range_max = BD71815_REG_REX_CTRL_1,
-+	}, {
-+		.range_min = BD71815_REG_FULL_CCNTD_3,
-+		.range_max = BD71815_REG_CCNTD_CHG_2,
-+	},
-+};
-+
-+static const struct regmap_range bd71828_volatile_ranges[] = {
- 	{
- 		.range_min = BD71828_REG_PS_CTRL_1,
- 		.range_max = BD71828_REG_PS_CTRL_1,
-@@ -80,15 +200,28 @@ static const struct regmap_range volatile_ranges[] = {
- 	},
- };
- 
--static const struct regmap_access_table volatile_regs = {
--	.yes_ranges = &volatile_ranges[0],
--	.n_yes_ranges = ARRAY_SIZE(volatile_ranges),
-+static const struct regmap_access_table bd71815_volatile_regs = {
-+	.yes_ranges = &bd71815_volatile_ranges[0],
-+	.n_yes_ranges = ARRAY_SIZE(bd71815_volatile_ranges),
-+};
-+
-+static const struct regmap_access_table bd71828_volatile_regs = {
-+	.yes_ranges = &bd71828_volatile_ranges[0],
-+	.n_yes_ranges = ARRAY_SIZE(bd71828_volatile_ranges),
-+};
-+
-+static const struct regmap_config bd71815_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.volatile_table = &bd71815_volatile_regs,
-+	.max_register = BD71815_MAX_REGISTER - 1,
-+	.cache_type = REGCACHE_RBTREE,
- };
- 
--static struct regmap_config bd71828_regmap = {
-+static const struct regmap_config bd71828_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
--	.volatile_table = &volatile_regs,
-+	.volatile_table = &bd71828_volatile_regs,
- 	.max_register = BD71828_MAX_REGISTER,
- 	.cache_type = REGCACHE_RBTREE,
- };
-@@ -96,7 +229,7 @@ static struct regmap_config bd71828_regmap = {
- /*
-  * Mapping of main IRQ register bits to sub-IRQ register offsets so that we can
-  * access corect sub-IRQ registers based on bits that are set in main IRQ
-- * register.
-+ * register. BD71815 and BD71828 have same sub-register-block offests.
-  */
- 
- static unsigned int bit0_offsets[] = {11};		/* RTC IRQ */
-@@ -108,7 +241,7 @@ static unsigned int bit5_offsets[] = {3};		/* VSYS IRQ */
- static unsigned int bit6_offsets[] = {1, 2};		/* DCIN IRQ */
- static unsigned int bit7_offsets[] = {0};		/* BUCK IRQ */
- 
--static struct regmap_irq_sub_irq_map bd71828_sub_irq_offsets[] = {
-+static struct regmap_irq_sub_irq_map bd718xx_sub_irq_offsets[] = {
- 	REGMAP_IRQ_MAIN_REG_OFFSET(bit0_offsets),
- 	REGMAP_IRQ_MAIN_REG_OFFSET(bit1_offsets),
- 	REGMAP_IRQ_MAIN_REG_OFFSET(bit2_offsets),
-@@ -119,6 +252,130 @@ static struct regmap_irq_sub_irq_map bd71828_sub_irq_offsets[] = {
- 	REGMAP_IRQ_MAIN_REG_OFFSET(bit7_offsets),
- };
- 
-+static const struct regmap_irq bd71815_irqs[] = {
-+	REGMAP_IRQ_REG(BD71815_INT_BUCK1_OCP, 0, BD71815_INT_BUCK1_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BUCK2_OCP, 0, BD71815_INT_BUCK2_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BUCK3_OCP, 0, BD71815_INT_BUCK3_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BUCK4_OCP, 0, BD71815_INT_BUCK4_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BUCK5_OCP, 0, BD71815_INT_BUCK5_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_LED_OVP, 0, BD71815_INT_LED_OVP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_LED_OCP, 0, BD71815_INT_LED_OCP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_LED_SCP, 0, BD71815_INT_LED_SCP_MASK),
-+	/* DCIN1 interrupts */
-+	REGMAP_IRQ_REG(BD71815_INT_DCIN_RMV, 1, BD71815_INT_DCIN_RMV_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CLPS_OUT, 1, BD71815_INT_CLPS_OUT_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CLPS_IN, 1, BD71815_INT_CLPS_IN_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_DCIN_OVP_RES, 1,
-+		       BD71815_INT_DCIN_OVP_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_DCIN_OVP_DET, 1,
-+		       BD71815_INT_DCIN_OVP_DET_MASK),
-+	/* DCIN2 interrupts */
-+	REGMAP_IRQ_REG(BD71815_INT_DCIN_MON_RES, 2,
-+		       BD71815_INT_DCIN_MON_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_DCIN_MON_DET, 2,
-+		       BD71815_INT_DCIN_MON_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_WDOG, 2, BD71815_INT_WDOG_MASK),
-+	/* Vsys */
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_UV_RES, 3,
-+		       BD71815_INT_VSYS_UV_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_UV_DET, 3,
-+		       BD71815_INT_VSYS_UV_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_LOW_RES, 3,
-+		       BD71815_INT_VSYS_LOW_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_LOW_DET, 3,
-+		       BD71815_INT_VSYS_LOW_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_MON_RES, 3,
-+		       BD71815_INT_VSYS_MON_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_VSYS_MON_DET, 3,
-+		       BD71815_INT_VSYS_MON_DET_MASK),
-+	/* Charger */
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_WDG_TEMP, 4,
-+		       BD71815_INT_CHG_WDG_TEMP_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_WDG_TIME, 4,
-+		       BD71815_INT_CHG_WDG_TIME_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_RECHARGE_RES, 4,
-+		       BD71815_INT_CHG_RECHARGE_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_RECHARGE_DET, 4,
-+		       BD71815_INT_CHG_RECHARGE_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_RANGED_TEMP_TRANSITION, 4,
-+		       BD71815_INT_CHG_RANGED_TEMP_TRANSITION_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_CHG_STATE_TRANSITION, 4,
-+		       BD71815_INT_CHG_STATE_TRANSITION_MASK),
-+	/* Battery */
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_TEMP_NORMAL, 5,
-+		       BD71815_INT_BAT_TEMP_NORMAL_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_TEMP_ERANGE, 5,
-+		       BD71815_INT_BAT_TEMP_ERANGE_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_REMOVED, 5,
-+		       BD71815_INT_BAT_REMOVED_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_DETECTED, 5,
-+		       BD71815_INT_BAT_DETECTED_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_THERM_REMOVED, 5,
-+		       BD71815_INT_THERM_REMOVED_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_THERM_DETECTED, 5,
-+		       BD71815_INT_THERM_DETECTED_MASK),
-+	/* Battery Mon 1 */
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_DEAD, 6, BD71815_INT_BAT_DEAD_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_SHORTC_RES, 6,
-+		       BD71815_INT_BAT_SHORTC_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_SHORTC_DET, 6,
-+		       BD71815_INT_BAT_SHORTC_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_LOW_VOLT_RES, 6,
-+		       BD71815_INT_BAT_LOW_VOLT_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_LOW_VOLT_DET, 6,
-+		       BD71815_INT_BAT_LOW_VOLT_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_VOLT_RES, 6,
-+		       BD71815_INT_BAT_OVER_VOLT_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_VOLT_DET, 6,
-+		       BD71815_INT_BAT_OVER_VOLT_DET_MASK),
-+	/* Battery Mon 2 */
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_MON_RES, 7,
-+		       BD71815_INT_BAT_MON_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_MON_DET, 7,
-+		       BD71815_INT_BAT_MON_DET_MASK),
-+	/* Battery Mon 3 (Coulomb counter) */
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_CC_MON1, 8,
-+		       BD71815_INT_BAT_CC_MON1_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_CC_MON2, 8,
-+		       BD71815_INT_BAT_CC_MON2_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_CC_MON3, 8,
-+		       BD71815_INT_BAT_CC_MON3_MASK),
-+	/* Battery Mon 4 */
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_1_RES, 9,
-+		       BD71815_INT_BAT_OVER_CURR_1_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_1_DET, 9,
-+		       BD71815_INT_BAT_OVER_CURR_1_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_2_RES, 9,
-+		       BD71815_INT_BAT_OVER_CURR_2_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_2_DET, 9,
-+		       BD71815_INT_BAT_OVER_CURR_2_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_3_RES, 9,
-+		       BD71815_INT_BAT_OVER_CURR_3_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_BAT_OVER_CURR_3_DET, 9,
-+		       BD71815_INT_BAT_OVER_CURR_3_DET_MASK),
-+	/* Temperature */
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_BAT_LOW_RES, 10,
-+		       BD71815_INT_TEMP_BAT_LOW_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_BAT_LOW_DET, 10,
-+		       BD71815_INT_TEMP_BAT_LOW_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_BAT_HI_RES, 10,
-+		       BD71815_INT_TEMP_BAT_HI_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_BAT_HI_DET, 10,
-+		       BD71815_INT_TEMP_BAT_HI_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_CHIP_OVER_125_RES, 10,
-+		       BD71815_INT_TEMP_CHIP_OVER_125_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_CHIP_OVER_125_DET, 10,
-+		       BD71815_INT_TEMP_CHIP_OVER_125_DET_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_CHIP_OVER_VF_RES, 10,
-+		       BD71815_INT_TEMP_CHIP_OVER_VF_RES_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_TEMP_CHIP_OVER_VF_DET, 10,
-+		       BD71815_INT_TEMP_CHIP_OVER_VF_DET_MASK),
-+	/* RTC Alarm */
-+	REGMAP_IRQ_REG(BD71815_INT_RTC0, 11, BD71815_INT_RTC0_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_RTC1, 11, BD71815_INT_RTC1_MASK),
-+	REGMAP_IRQ_REG(BD71815_INT_RTC2, 11, BD71815_INT_RTC2_MASK),
-+};
-+
- static struct regmap_irq bd71828_irqs[] = {
- 	REGMAP_IRQ_REG(BD71828_INT_BUCK1_OCP, 0, BD71828_INT_BUCK1_OCP_MASK),
- 	REGMAP_IRQ_REG(BD71828_INT_BUCK2_OCP, 0, BD71828_INT_BUCK2_OCP_MASK),
-@@ -267,57 +524,138 @@ static struct regmap_irq_chip bd71828_irq_chip = {
- 	.init_ack_masked = true,
- 	.num_regs = 12,
- 	.num_main_regs = 1,
--	.sub_reg_offsets = &bd71828_sub_irq_offsets[0],
-+	.sub_reg_offsets = &bd718xx_sub_irq_offsets[0],
-+	.num_main_status_bits = 8,
-+	.irq_reg_stride = 1,
-+};
-+
-+static struct regmap_irq_chip bd71815_irq_chip = {
-+	.name = "bd71815_irq",
-+	.main_status = BD71815_REG_INT_STAT,
-+	.irqs = &bd71815_irqs[0],
-+	.num_irqs = ARRAY_SIZE(bd71815_irqs),
-+	.status_base = BD71815_REG_INT_STAT_01,
-+	.mask_base = BD71815_REG_INT_EN_01,
-+	.ack_base = BD71815_REG_INT_STAT_01,
-+	.mask_invert = true,
-+	.init_ack_masked = true,
-+	.num_regs = 12,
-+	.num_main_regs = 1,
-+	.sub_reg_offsets = &bd718xx_sub_irq_offsets[0],
- 	.num_main_status_bits = 8,
- 	.irq_reg_stride = 1,
- };
- 
-+static int set_clk_mode(struct device *dev, struct regmap *regmap,
-+			int clkmode_reg)
-+{
-+	int ret;
-+	const char *mode;
-+
-+	ret = of_property_read_string_index(dev->of_node, "rohm,clkout-mode", 0,
-+					    &mode);
-+	if (ret) {
-+		if (ret == -EINVAL)
-+			return 0;
-+		return ret;
-+	}
-+	if (!strncmp(mode, "open-drain", 10)) {
-+		dev_dbg(dev, "configuring clk32kout as open-drain");
-+		ret = regmap_update_bits(regmap, clkmode_reg, OUT32K_MODE,
-+					 OUT32K_MODE_OPEN_DRAIN);
-+	} else if (!strncmp(mode, "cmos", 4)) {
-+		dev_dbg(dev, "configuring clk32kout as cmos");
-+		ret = regmap_update_bits(regmap, clkmode_reg, OUT32K_MODE,
-+					 OUT32K_MODE_CMOS);
-+	} else {
-+		dev_err(dev, "bad clk32kout mode configuration");
-+		return -EINVAL;
-+	}
-+	return ret;
-+}
-+
- static int bd71828_i2c_probe(struct i2c_client *i2c)
- {
--	struct rohm_regmap_dev *chip;
- 	struct regmap_irq_chip_data *irq_data;
- 	int ret;
-+	struct regmap *regmap;
-+	const struct regmap_config *regmap_config;
-+	struct regmap_irq_chip *irqchip;
-+	unsigned int chip_type;
-+	struct mfd_cell *mfd;
-+	int cells;
-+	int button_irq;
-+	int clkmode_reg;
- 
- 	if (!i2c->irq) {
- 		dev_err(&i2c->dev, "No IRQ configured\n");
- 		return -EINVAL;
- 	}
- 
--	chip = devm_kzalloc(&i2c->dev, sizeof(*chip), GFP_KERNEL);
--	if (!chip)
--		return -ENOMEM;
--
--	dev_set_drvdata(&i2c->dev, chip);
-+	chip_type = (unsigned int)(uintptr_t)
-+		    of_device_get_match_data(&i2c->dev);
-+	switch (chip_type) {
-+	case ROHM_CHIP_TYPE_BD71828:
-+		mfd = bd71828_mfd_cells;
-+		cells = ARRAY_SIZE(bd71828_mfd_cells);
-+		regmap_config = &bd71828_regmap;
-+		irqchip = &bd71828_irq_chip;
-+		clkmode_reg = BD71815_REG_OUT32K;
-+		button_irq = BD71828_INT_SHORTPUSH;
-+		dev_info(&i2c->dev, "BD71828 found\n");
-+		break;
-+	case ROHM_CHIP_TYPE_BD71815:
-+		mfd = bd71815_mfd_cells;
-+		cells = ARRAY_SIZE(bd71815_mfd_cells);
-+		regmap_config = &bd71815_regmap;
-+		irqchip = &bd71815_irq_chip;
-+		clkmode_reg = BD71828_REG_OUT32K;
-+		/*
-+		 * If BD71817 support is needed we should be able to handle it
-+		 * with proper DT configs + BD71815 drivers + power-button.
-+		 * BD71815 data-sheet does not list the power-button IRQ so we
-+		 * don't use it.
-+		 */
-+		button_irq = 0;
-+		dev_info(&i2c->dev, "BD71815 found\n");
-+		break;
-+	default:
-+		dev_err(&i2c->dev, "Unknown device type");
-+		return -EINVAL;
-+	}
- 
--	chip->regmap = devm_regmap_init_i2c(i2c, &bd71828_regmap);
--	if (IS_ERR(chip->regmap)) {
-+	regmap = devm_regmap_init_i2c(i2c, regmap_config);
-+	if (IS_ERR(regmap)) {
- 		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
--		return PTR_ERR(chip->regmap);
-+		return PTR_ERR(regmap);
- 	}
- 
--	ret = devm_regmap_add_irq_chip(&i2c->dev, chip->regmap,
--				       i2c->irq, IRQF_ONESHOT, 0,
--				       &bd71828_irq_chip, &irq_data);
-+	ret = devm_regmap_add_irq_chip(&i2c->dev, regmap, i2c->irq,
-+				       IRQF_ONESHOT, 0, irqchip, &irq_data);
- 	if (ret) {
- 		dev_err(&i2c->dev, "Failed to add IRQ chip\n");
- 		return ret;
- 	}
- 
- 	dev_dbg(&i2c->dev, "Registered %d IRQs for chip\n",
--		bd71828_irq_chip.num_irqs);
-+		irqchip->num_irqs);
- 
--	ret = regmap_irq_get_virq(irq_data, BD71828_INT_SHORTPUSH);
--	if (ret < 0) {
--		dev_err(&i2c->dev, "Failed to get the power-key IRQ\n");
--		return ret;
-+	if (button_irq) {
-+		ret = regmap_irq_get_virq(irq_data, button_irq);
-+		if (ret < 0) {
-+			dev_err(&i2c->dev, "Failed to get the power-key IRQ\n");
-+			return ret;
-+		}
-+
-+		button.irq = ret;
- 	}
- 
--	button.irq = ret;
-+	ret = set_clk_mode(&i2c->dev, regmap, clkmode_reg);
-+	if (ret)
-+		return ret;
- 
--	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO,
--				   bd71828_mfd_cells,
--				   ARRAY_SIZE(bd71828_mfd_cells), NULL, 0,
--				   regmap_irq_get_domain(irq_data));
-+	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
-+				   NULL, 0, regmap_irq_get_domain(irq_data));
- 	if (ret)
- 		dev_err(&i2c->dev, "Failed to create subdevices\n");
- 
-@@ -325,7 +663,13 @@ static int bd71828_i2c_probe(struct i2c_client *i2c)
- }
- 
- static const struct of_device_id bd71828_of_match[] = {
--	{ .compatible = "rohm,bd71828", },
-+	{
-+		.compatible = "rohm,bd71828",
-+		.data = (void *)ROHM_CHIP_TYPE_BD71828,
-+	}, {
-+		.compatible = "rohm,bd71815",
-+		.data = (void *)ROHM_CHIP_TYPE_BD71815,
-+	 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, bd71828_of_match);
-diff --git a/include/linux/mfd/rohm-bd71815.h b/include/linux/mfd/rohm-bd71815.h
-new file mode 100644
-index 000000000000..8ee5874a5b73
---- /dev/null
-+++ b/include/linux/mfd/rohm-bd71815.h
-@@ -0,0 +1,561 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright 2014 Embest Technology Co. Ltd. Inc.
-+ *
-+ * Author: yanglsh@embest-tech.com
-+ *
-+ * 2020, 2021 Heavily modified by:
-+ *	 Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+ */
-+
-+#ifndef _MFD_BD71815_H
-+#define _MFD_BD71815_H
-+
-+#include <linux/regmap.h>
-+
-+enum {
-+	BD71815_BUCK1	=	0,
-+	BD71815_BUCK2,
-+	BD71815_BUCK3,
-+	BD71815_BUCK4,
-+	BD71815_BUCK5,
-+	/* General Purpose */
-+	BD71815_LDO1,
-+	BD71815_LDO2,
-+	BD71815_LDO3,
-+	/* LDOs for SD Card and SD Card Interface */
-+	BD71815_LDO4,
-+	BD71815_LDO5,
-+	/* LDO for DDR Reference Voltage */
-+	BD71815_LDODVREF,
-+	/* LDO for Low-Power State Retention */
-+	BD71815_LDOLPSR,
-+	BD71815_WLED,
-+	BD71815_REGULATOR_CNT,
-+};
-+
-+#define BD71815_SUPPLY_STATE_ENABLED    0x1
-+
-+enum {
-+	BD71815_REG_DEVICE		=	0,
-+	BD71815_REG_PWRCTRL,
-+	BD71815_REG_BUCK1_MODE,
-+	BD71815_REG_BUCK2_MODE,
-+	BD71815_REG_BUCK3_MODE,
-+	BD71815_REG_BUCK4_MODE,
-+	BD71815_REG_BUCK5_MODE,
-+	BD71815_REG_BUCK1_VOLT_H,
-+	BD71815_REG_BUCK1_VOLT_L,
-+	BD71815_REG_BUCK2_VOLT_H,
-+	BD71815_REG_BUCK2_VOLT_L,
-+	BD71815_REG_BUCK3_VOLT,
-+	BD71815_REG_BUCK4_VOLT,
-+	BD71815_REG_BUCK5_VOLT,
-+	BD71815_REG_LED_CTRL,
-+	BD71815_REG_LED_DIMM,
-+	BD71815_REG_LDO_MODE1,
-+	BD71815_REG_LDO_MODE2,
-+	BD71815_REG_LDO_MODE3,
-+	BD71815_REG_LDO_MODE4,
-+	BD71815_REG_LDO1_VOLT,
-+	BD71815_REG_LDO2_VOLT,
-+	BD71815_REG_LDO3_VOLT,
-+	BD71815_REG_LDO4_VOLT,
-+	BD71815_REG_LDO5_VOLT_H,
-+	BD71815_REG_LDO5_VOLT_L,
-+	BD71815_REG_BUCK_PD_DIS,
-+	BD71815_REG_LDO_PD_DIS,
-+	BD71815_REG_GPO,
-+	BD71815_REG_OUT32K,
-+	BD71815_REG_SEC,
-+	BD71815_REG_MIN,
-+	BD71815_REG_HOUR,
-+	BD71815_REG_WEEK,
-+	BD71815_REG_DAY,
-+	BD71815_REG_MONTH,
-+	BD71815_REG_YEAR,
-+	BD71815_REG_ALM0_SEC,
-+
-+	BD71815_REG_ALM1_SEC		=	0x2C,
-+
-+	BD71815_REG_ALM0_MASK		=	0x33,
-+	BD71815_REG_ALM1_MASK,
-+	BD71815_REG_ALM2,
-+	BD71815_REG_TRIM,
-+	BD71815_REG_CONF,
-+	BD71815_REG_SYS_INIT,
-+	BD71815_REG_CHG_STATE,
-+	BD71815_REG_CHG_LAST_STATE,
-+	BD71815_REG_BAT_STAT,
-+	BD71815_REG_DCIN_STAT,
-+	BD71815_REG_VSYS_STAT,
-+	BD71815_REG_CHG_STAT,
-+	BD71815_REG_CHG_WDT_STAT,
-+	BD71815_REG_BAT_TEMP,
-+	BD71815_REG_IGNORE_0,
-+	BD71815_REG_INHIBIT_0,
-+	BD71815_REG_DCIN_CLPS,
-+	BD71815_REG_VSYS_REG,
-+	BD71815_REG_VSYS_MAX,
-+	BD71815_REG_VSYS_MIN,
-+	BD71815_REG_CHG_SET1,
-+	BD71815_REG_CHG_SET2,
-+	BD71815_REG_CHG_WDT_PRE,
-+	BD71815_REG_CHG_WDT_FST,
-+	BD71815_REG_CHG_IPRE,
-+	BD71815_REG_CHG_IFST,
-+	BD71815_REG_CHG_IFST_TERM,
-+	BD71815_REG_CHG_VPRE,
-+	BD71815_REG_CHG_VBAT_1,
-+	BD71815_REG_CHG_VBAT_2,
-+	BD71815_REG_CHG_VBAT_3,
-+	BD71815_REG_CHG_LED_1,
-+	BD71815_REG_VF_TH,
-+	BD71815_REG_BAT_SET_1,
-+	BD71815_REG_BAT_SET_2,
-+	BD71815_REG_BAT_SET_3,
-+	BD71815_REG_ALM_VBAT_TH_U,
-+	BD71815_REG_ALM_VBAT_TH_L,
-+	BD71815_REG_ALM_DCIN_TH,
-+	BD71815_REG_ALM_VSYS_TH,
-+	BD71815_REG_VM_IBAT_U,
-+	BD71815_REG_VM_IBAT_L,
-+	BD71815_REG_VM_VBAT_U,
-+	BD71815_REG_VM_VBAT_L,
-+	BD71815_REG_VM_BTMP,
-+	BD71815_REG_VM_VTH,
-+	BD71815_REG_VM_DCIN_U,
-+	BD71815_REG_VM_DCIN_L,
-+	BD71815_REG_VM_VSYS,
-+	BD71815_REG_VM_VF,
-+	BD71815_REG_VM_OCI_PRE_U,
-+	BD71815_REG_VM_OCI_PRE_L,
-+	BD71815_REG_VM_OCV_PRE_U,
-+	BD71815_REG_VM_OCV_PRE_L,
-+	BD71815_REG_VM_OCI_PST_U,
-+	BD71815_REG_VM_OCI_PST_L,
-+	BD71815_REG_VM_OCV_PST_U,
-+	BD71815_REG_VM_OCV_PST_L,
-+	BD71815_REG_VM_SA_VBAT_U,
-+	BD71815_REG_VM_SA_VBAT_L,
-+	BD71815_REG_VM_SA_IBAT_U,
-+	BD71815_REG_VM_SA_IBAT_L,
-+	BD71815_REG_CC_CTRL,
-+	BD71815_REG_CC_BATCAP1_TH_U,
-+	BD71815_REG_CC_BATCAP1_TH_L,
-+	BD71815_REG_CC_BATCAP2_TH_U,
-+	BD71815_REG_CC_BATCAP2_TH_L,
-+	BD71815_REG_CC_BATCAP3_TH_U,
-+	BD71815_REG_CC_BATCAP3_TH_L,
-+	BD71815_REG_CC_STAT,
-+	BD71815_REG_CC_CCNTD_3,
-+	BD71815_REG_CC_CCNTD_2,
-+	BD71815_REG_CC_CCNTD_1,
-+	BD71815_REG_CC_CCNTD_0,
-+	BD71815_REG_CC_CURCD_U,
-+	BD71815_REG_CC_CURCD_L,
-+	BD71815_REG_VM_OCUR_THR_1,
-+	BD71815_REG_VM_OCUR_DUR_1,
-+	BD71815_REG_VM_OCUR_THR_2,
-+	BD71815_REG_VM_OCUR_DUR_2,
-+	BD71815_REG_VM_OCUR_THR_3,
-+	BD71815_REG_VM_OCUR_DUR_3,
-+	BD71815_REG_VM_OCUR_MON,
-+	BD71815_REG_VM_BTMP_OV_THR,
-+	BD71815_REG_VM_BTMP_OV_DUR,
-+	BD71815_REG_VM_BTMP_LO_THR,
-+	BD71815_REG_VM_BTMP_LO_DUR,
-+	BD71815_REG_VM_BTMP_MON,
-+	BD71815_REG_INT_EN_01,
-+
-+	BD71815_REG_INT_EN_11		=	0x95,
-+	BD71815_REG_INT_EN_12,
-+	BD71815_REG_INT_STAT,
-+	BD71815_REG_INT_STAT_01,
-+	BD71815_REG_INT_STAT_02,
-+	BD71815_REG_INT_STAT_03,
-+	BD71815_REG_INT_STAT_04,
-+	BD71815_REG_INT_STAT_05,
-+	BD71815_REG_INT_STAT_06,
-+	BD71815_REG_INT_STAT_07,
-+	BD71815_REG_INT_STAT_08,
-+	BD71815_REG_INT_STAT_09,
-+	BD71815_REG_INT_STAT_10,
-+	BD71815_REG_INT_STAT_11,
-+	BD71815_REG_INT_STAT_12,
-+	BD71815_REG_INT_UPDATE,
-+
-+	BD71815_REG_VM_VSYS_U		=	0xC0,
-+	BD71815_REG_VM_VSYS_L,
-+	BD71815_REG_VM_SA_VSYS_U,
-+	BD71815_REG_VM_SA_VSYS_L,
-+
-+	BD71815_REG_VM_SA_IBAT_MIN_U	=	0xD0,
-+	BD71815_REG_VM_SA_IBAT_MIN_L,
-+	BD71815_REG_VM_SA_IBAT_MAX_U,
-+	BD71815_REG_VM_SA_IBAT_MAX_L,
-+	BD71815_REG_VM_SA_VBAT_MIN_U,
-+	BD71815_REG_VM_SA_VBAT_MIN_L,
-+	BD71815_REG_VM_SA_VBAT_MAX_U,
-+	BD71815_REG_VM_SA_VBAT_MAX_L,
-+	BD71815_REG_VM_SA_VSYS_MIN_U,
-+	BD71815_REG_VM_SA_VSYS_MIN_L,
-+	BD71815_REG_VM_SA_VSYS_MAX_U,
-+	BD71815_REG_VM_SA_VSYS_MAX_L,
-+	BD71815_REG_VM_SA_MINMAX_CLR,
-+
-+	BD71815_REG_REX_CCNTD_3		=	0xE0,
-+	BD71815_REG_REX_CCNTD_2,
-+	BD71815_REG_REX_CCNTD_1,
-+	BD71815_REG_REX_CCNTD_0,
-+	BD71815_REG_REX_SA_VBAT_U,
-+	BD71815_REG_REX_SA_VBAT_L,
-+	BD71815_REG_REX_CTRL_1,
-+	BD71815_REG_REX_CTRL_2,
-+	BD71815_REG_FULL_CCNTD_3,
-+	BD71815_REG_FULL_CCNTD_2,
-+	BD71815_REG_FULL_CCNTD_1,
-+	BD71815_REG_FULL_CCNTD_0,
-+	BD71815_REG_FULL_CTRL,
-+
-+	BD71815_REG_CCNTD_CHG_3		=	0xF0,
-+	BD71815_REG_CCNTD_CHG_2,
-+
-+	BD71815_REG_TEST_MODE		=	0xFE,
-+	BD71815_MAX_REGISTER,
-+};
-+
-+/* BD71815_REG_BUCK1_MODE bits */
-+#define BD71815_BUCK_RAMPRATE_MASK	0xC0
-+#define BD71815_BUCK_RAMPRATE_10P00MV	0x0
-+#define BD71815_BUCK_RAMPRATE_5P00MV	0x01
-+#define BD71815_BUCK_RAMPRATE_2P50MV	0x02
-+#define BD71815_BUCK_RAMPRATE_1P25MV	0x03
-+
-+#define BD71815_BUCK_PWM_FIXED			BIT(4)
-+#define BD71815_BUCK_SNVS_ON			BIT(3)
-+#define BD71815_BUCK_RUN_ON			BIT(2)
-+#define BD71815_BUCK_LPSR_ON			BIT(1)
-+#define BD71815_BUCK_SUSP_ON			BIT(0)
-+
-+/* BD71815_REG_BUCK1_VOLT_H bits */
-+#define BD71815_BUCK_DVSSEL			BIT(7)
-+#define BD71815_BUCK_STBY_DVS			BIT(6)
-+#define BD71815_VOLT_MASK			0x3F
-+#define BD71815_BUCK1_H_DEFAULT			0x14
-+#define BD71815_BUCK1_L_DEFAULT			0x14
-+
-+/* BD71815_REG_BUCK2_VOLT_H bits */
-+#define BD71815_BUCK2_H_DEFAULT			0x14
-+#define BD71815_BUCK2_L_DEFAULT			0x14
-+
-+/* WLED output */
-+/* current register mask */
-+#define LED_DIMM_MASK			0x3f
-+/* LED enable bits at LED_CTRL reg */
-+#define LED_CHGDONE_EN			BIT(4)
-+#define LED_RUN_ON			BIT(2)
-+#define LED_LPSR_ON			BIT(1)
-+#define LED_SUSP_ON			BIT(0)
-+
-+/* BD71815_REG_LDO1_CTRL bits */
-+#define LDO1_EN				BIT(0)
-+#define LDO2_EN				BIT(1)
-+#define LDO3_EN				BIT(2)
-+#define DVREF_EN			BIT(3)
-+#define VOSNVS_SW_EN			BIT(4)
-+
-+/* LDO_MODE1_register */
-+#define LDO1_SNVS_ON			BIT(7)
-+#define LDO1_RUN_ON			BIT(6)
-+#define LDO1_LPSR_ON			BIT(5)
-+#define LDO1_SUSP_ON			BIT(4)
-+/* set => register control, unset => GPIO control */
-+#define LDO4_MODE_MASK			BIT(3)
-+#define LDO4_MODE_I2C			BIT(3)
-+#define LDO4_MODE_GPIO			0
-+/* set => register control, unset => start when DCIN connected */
-+#define LDO3_MODE_MASK			BIT(2)
-+#define LDO3_MODE_I2C			BIT(2)
-+#define LDO3_MODE_DCIN			0
-+
-+/* LDO_MODE2 register */
-+#define LDO3_SNVS_ON			BIT(7)
-+#define LDO3_RUN_ON			BIT(6)
-+#define LDO3_LPSR_ON			BIT(5)
-+#define LDO3_SUSP_ON			BIT(4)
-+#define LDO2_SNVS_ON			BIT(3)
-+#define LDO2_RUN_ON			BIT(2)
-+#define LDO2_LPSR_ON			BIT(1)
-+#define LDO2_SUSP_ON			BIT(0)
-+
-+
-+/* LDO_MODE3 register */
-+#define LDO5_SNVS_ON			BIT(7)
-+#define LDO5_RUN_ON			BIT(6)
-+#define LDO5_LPSR_ON			BIT(5)
-+#define LDO5_SUSP_ON			BIT(4)
-+#define LDO4_SNVS_ON			BIT(3)
-+#define LDO4_RUN_ON			BIT(2)
-+#define LDO4_LPSR_ON			BIT(1)
-+#define LDO4_SUSP_ON			BIT(0)
-+
-+/* LDO_MODE4 register */
-+#define DVREF_SNVS_ON			BIT(7)
-+#define DVREF_RUN_ON			BIT(6)
-+#define DVREF_LPSR_ON			BIT(5)
-+#define DVREF_SUSP_ON			BIT(4)
-+#define LDO_LPSR_SNVS_ON		BIT(3)
-+#define LDO_LPSR_RUN_ON			BIT(2)
-+#define LDO_LPSR_LPSR_ON		BIT(1)
-+#define LDO_LPSR_SUSP_ON		BIT(0)
-+
-+/* BD71815_REG_OUT32K bits */
-+#define OUT32K_EN			BIT(0)
-+#define OUT32K_MODE			BIT(1)
-+#define OUT32K_MODE_CMOS		BIT(1)
-+#define OUT32K_MODE_OPEN_DRAIN		0
-+
-+/* BD71815_REG_BAT_STAT bits */
-+#define BAT_DET				BIT(5)
-+#define BAT_DET_OFFSET			5
-+#define BAT_DET_DONE			BIT(4)
-+#define VBAT_OV				BIT(3)
-+#define DBAT_DET			BIT(0)
-+
-+/* BD71815_REG_VBUS_STAT bits */
-+#define VBUS_DET			BIT(0)
-+
-+#define BD71815_REG_RTC_START BD71815_REG_SEC
-+#define BD71815_REG_RTC_ALM_START BD71815_REG_ALM0_SEC
-+
-+/* BD71815_REG_ALM0_MASK bits */
-+#define A0_ONESEC			BIT(7)
-+
-+/* BD71815_REG_INT_EN_00 bits */
-+#define ALMALE				BIT(0)
-+
-+/* BD71815_REG_INT_STAT_03 bits */
-+#define DCIN_MON_DET			BIT(1)
-+#define DCIN_MON_RES			BIT(0)
-+#define POWERON_LONG			BIT(2)
-+#define POWERON_MID			BIT(3)
-+#define POWERON_SHORT			BIT(4)
-+#define POWERON_PRESS			BIT(5)
-+
-+/* BD71805_REG_INT_STAT_08 bits */
-+#define VBAT_MON_DET			BIT(1)
-+#define VBAT_MON_RES			BIT(0)
-+
-+/* BD71805_REG_INT_STAT_11 bits */
-+#define	INT_STAT_11_VF_DET		BIT(7)
-+#define	INT_STAT_11_VF_RES		BIT(6)
-+#define	INT_STAT_11_VF125_DET		BIT(5)
-+#define	INT_STAT_11_VF125_RES		BIT(4)
-+#define	INT_STAT_11_OVTMP_DET		BIT(3)
-+#define	INT_STAT_11_OVTMP_RES		BIT(2)
-+#define	INT_STAT_11_LOTMP_DET		BIT(1)
-+#define	INT_STAT_11_LOTMP_RES		BIT(0)
-+
-+#define VBAT_MON_DET			BIT(1)
-+#define VBAT_MON_RES			BIT(0)
-+
-+/* BD71815_REG_PWRCTRL bits */
-+#define RESTARTEN			BIT(0)
-+
-+/* BD71815_REG_GPO bits */
-+#define READY_FORCE_LOW			BIT(2)
-+#define BD71815_GPIO_DRIVE_MASK		BIT(4)
-+#define BD71815_GPIO_OPEN_DRAIN		0
-+#define BD71815_GPIO_CMOS		BIT(4)
-+
-+/* BD71815 interrupt masks */
-+enum {
-+	BD71815_INT_EN_01_BUCKAST_MASK	=	0x0F,
-+	BD71815_INT_EN_02_DCINAST_MASK	=	0x3E,
-+	BD71815_INT_EN_03_DCINAST_MASK	=	0x3F,
-+	BD71815_INT_EN_04_VSYSAST_MASK	=	0xCF,
-+	BD71815_INT_EN_05_CHGAST_MASK	=	0xFC,
-+	BD71815_INT_EN_06_BATAST_MASK	=	0xF3,
-+	BD71815_INT_EN_07_BMONAST_MASK	=	0xFE,
-+	BD71815_INT_EN_08_BMONAST_MASK	=	0x03,
-+	BD71815_INT_EN_09_BMONAST_MASK	=	0x07,
-+	BD71815_INT_EN_10_BMONAST_MASK	=	0x3F,
-+	BD71815_INT_EN_11_TMPAST_MASK	=	0xFF,
-+	BD71815_INT_EN_12_ALMAST_MASK	=	0x07,
-+};
-+/* BD71815 interrupt irqs */
-+enum {
-+	/* BUCK reg interrupts */
-+	BD71815_INT_BUCK1_OCP,
-+	BD71815_INT_BUCK2_OCP,
-+	BD71815_INT_BUCK3_OCP,
-+	BD71815_INT_BUCK4_OCP,
-+	BD71815_INT_BUCK5_OCP,
-+	BD71815_INT_LED_OVP,
-+	BD71815_INT_LED_OCP,
-+	BD71815_INT_LED_SCP,
-+	/* DCIN1 interrupts */
-+	BD71815_INT_DCIN_RMV,
-+	BD71815_INT_CLPS_OUT,
-+	BD71815_INT_CLPS_IN,
-+	BD71815_INT_DCIN_OVP_RES,
-+	BD71815_INT_DCIN_OVP_DET,
-+	/* DCIN2 interrupts */
-+	BD71815_INT_DCIN_MON_RES,
-+	BD71815_INT_DCIN_MON_DET,
-+	BD71815_INT_WDOG,
-+	/* Vsys INT_STAT_04 */
-+	BD71815_INT_VSYS_UV_RES,
-+	BD71815_INT_VSYS_UV_DET,
-+	BD71815_INT_VSYS_LOW_RES,
-+	BD71815_INT_VSYS_LOW_DET,
-+	BD71815_INT_VSYS_MON_RES,
-+	BD71815_INT_VSYS_MON_DET,
-+	/* Charger INT_STAT_05 */
-+	BD71815_INT_CHG_WDG_TEMP,
-+	BD71815_INT_CHG_WDG_TIME,
-+	BD71815_INT_CHG_RECHARGE_RES,
-+	BD71815_INT_CHG_RECHARGE_DET,
-+	BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
-+	BD71815_INT_CHG_STATE_TRANSITION,
-+	/* Battery  INT_STAT_06 */
-+	BD71815_INT_BAT_TEMP_NORMAL,
-+	BD71815_INT_BAT_TEMP_ERANGE,
-+	BD71815_INT_BAT_REMOVED,
-+	BD71815_INT_BAT_DETECTED,
-+	BD71815_INT_THERM_REMOVED,
-+	BD71815_INT_THERM_DETECTED,
-+	/* Battery Mon 1 INT_STAT_07 */
-+	BD71815_INT_BAT_DEAD,
-+	BD71815_INT_BAT_SHORTC_RES,
-+	BD71815_INT_BAT_SHORTC_DET,
-+	BD71815_INT_BAT_LOW_VOLT_RES,
-+	BD71815_INT_BAT_LOW_VOLT_DET,
-+	BD71815_INT_BAT_OVER_VOLT_RES,
-+	BD71815_INT_BAT_OVER_VOLT_DET,
-+	/* Battery Mon 2 INT_STAT_08 */
-+	BD71815_INT_BAT_MON_RES,
-+	BD71815_INT_BAT_MON_DET,
-+	/* Battery Mon 3 (Coulomb counter) INT_STAT_09 */
-+	BD71815_INT_BAT_CC_MON1,
-+	BD71815_INT_BAT_CC_MON2,
-+	BD71815_INT_BAT_CC_MON3,
-+	/* Battery Mon 4 INT_STAT_10 */
-+	BD71815_INT_BAT_OVER_CURR_1_RES,
-+	BD71815_INT_BAT_OVER_CURR_1_DET,
-+	BD71815_INT_BAT_OVER_CURR_2_RES,
-+	BD71815_INT_BAT_OVER_CURR_2_DET,
-+	BD71815_INT_BAT_OVER_CURR_3_RES,
-+	BD71815_INT_BAT_OVER_CURR_3_DET,
-+	/* Temperature INT_STAT_11 */
-+	BD71815_INT_TEMP_BAT_LOW_RES,
-+	BD71815_INT_TEMP_BAT_LOW_DET,
-+	BD71815_INT_TEMP_BAT_HI_RES,
-+	BD71815_INT_TEMP_BAT_HI_DET,
-+	BD71815_INT_TEMP_CHIP_OVER_125_RES,
-+	BD71815_INT_TEMP_CHIP_OVER_125_DET,
-+	BD71815_INT_TEMP_CHIP_OVER_VF_RES,
-+	BD71815_INT_TEMP_CHIP_OVER_VF_DET,
-+	/* RTC Alarm INT_STAT_12 */
-+	BD71815_INT_RTC0,
-+	BD71815_INT_RTC1,
-+	BD71815_INT_RTC2,
-+};
-+
-+#define BD71815_INT_BUCK1_OCP_MASK			BIT(0)
-+#define BD71815_INT_BUCK2_OCP_MASK			BIT(1)
-+#define BD71815_INT_BUCK3_OCP_MASK			BIT(2)
-+#define BD71815_INT_BUCK4_OCP_MASK			BIT(3)
-+#define BD71815_INT_BUCK5_OCP_MASK			BIT(4)
-+#define BD71815_INT_LED_OVP_MASK			BIT(5)
-+#define BD71815_INT_LED_OCP_MASK			BIT(6)
-+#define BD71815_INT_LED_SCP_MASK			BIT(7)
-+
-+#define BD71815_INT_DCIN_RMV_MASK			BIT(1)
-+#define BD71815_INT_CLPS_OUT_MASK			BIT(2)
-+#define BD71815_INT_CLPS_IN_MASK			BIT(3)
-+#define BD71815_INT_DCIN_OVP_RES_MASK			BIT(4)
-+#define BD71815_INT_DCIN_OVP_DET_MASK			BIT(5)
-+
-+#define BD71815_INT_DCIN_MON_RES_MASK			BIT(0)
-+#define BD71815_INT_DCIN_MON_DET_MASK			BIT(1)
-+#define BD71815_INT_WDOG_MASK				BIT(6)
-+
-+#define BD71815_INT_VSYS_UV_RES_MASK			BIT(0)
-+#define BD71815_INT_VSYS_UV_DET_MASK			BIT(1)
-+#define BD71815_INT_VSYS_LOW_RES_MASK			BIT(2)
-+#define BD71815_INT_VSYS_LOW_DET_MASK			BIT(3)
-+#define BD71815_INT_VSYS_MON_RES_MASK			BIT(6)
-+#define BD71815_INT_VSYS_MON_DET_MASK			BIT(7)
-+
-+#define BD71815_INT_CHG_WDG_TEMP_MASK			BIT(2)
-+#define BD71815_INT_CHG_WDG_TIME_MASK			BIT(3)
-+#define BD71815_INT_CHG_RECHARGE_RES_MASK		BIT(4)
-+#define BD71815_INT_CHG_RECHARGE_DET_MASK		BIT(5)
-+#define BD71815_INT_CHG_RANGED_TEMP_TRANSITION_MASK	BIT(6)
-+#define BD71815_INT_CHG_STATE_TRANSITION_MASK		BIT(7)
-+
-+#define BD71815_INT_BAT_TEMP_NORMAL_MASK		BIT(0)
-+#define BD71815_INT_BAT_TEMP_ERANGE_MASK		BIT(1)
-+#define BD71815_INT_BAT_REMOVED_MASK			BIT(4)
-+#define BD71815_INT_BAT_DETECTED_MASK			BIT(5)
-+#define BD71815_INT_THERM_REMOVED_MASK			BIT(6)
-+#define BD71815_INT_THERM_DETECTED_MASK			BIT(7)
-+
-+#define BD71815_INT_BAT_DEAD_MASK			BIT(1)
-+#define BD71815_INT_BAT_SHORTC_RES_MASK			BIT(2)
-+#define BD71815_INT_BAT_SHORTC_DET_MASK			BIT(3)
-+#define BD71815_INT_BAT_LOW_VOLT_RES_MASK		BIT(4)
-+#define BD71815_INT_BAT_LOW_VOLT_DET_MASK		BIT(5)
-+#define BD71815_INT_BAT_OVER_VOLT_RES_MASK		BIT(6)
-+#define BD71815_INT_BAT_OVER_VOLT_DET_MASK		BIT(7)
-+
-+#define BD71815_INT_BAT_MON_RES_MASK			BIT(0)
-+#define BD71815_INT_BAT_MON_DET_MASK			BIT(1)
-+
-+#define BD71815_INT_BAT_CC_MON1_MASK			BIT(0)
-+#define BD71815_INT_BAT_CC_MON2_MASK			BIT(1)
-+#define BD71815_INT_BAT_CC_MON3_MASK			BIT(2)
-+
-+#define BD71815_INT_BAT_OVER_CURR_1_RES_MASK		BIT(0)
-+#define BD71815_INT_BAT_OVER_CURR_1_DET_MASK		BIT(1)
-+#define BD71815_INT_BAT_OVER_CURR_2_RES_MASK		BIT(2)
-+#define BD71815_INT_BAT_OVER_CURR_2_DET_MASK		BIT(3)
-+#define BD71815_INT_BAT_OVER_CURR_3_RES_MASK		BIT(4)
-+#define BD71815_INT_BAT_OVER_CURR_3_DET_MASK		BIT(5)
-+
-+#define BD71815_INT_TEMP_BAT_LOW_RES_MASK		BIT(0)
-+#define BD71815_INT_TEMP_BAT_LOW_DET_MASK		BIT(1)
-+#define BD71815_INT_TEMP_BAT_HI_RES_MASK		BIT(2)
-+#define BD71815_INT_TEMP_BAT_HI_DET_MASK		BIT(3)
-+#define BD71815_INT_TEMP_CHIP_OVER_125_RES_MASK		BIT(4)
-+#define BD71815_INT_TEMP_CHIP_OVER_125_DET_MASK		BIT(5)
-+#define BD71815_INT_TEMP_CHIP_OVER_VF_RES_MASK		BIT(6)
-+#define BD71815_INT_TEMP_CHIP_OVER_VF_DET_MASK		BIT(7)
-+
-+#define BD71815_INT_RTC0_MASK				BIT(0)
-+#define BD71815_INT_RTC1_MASK				BIT(1)
-+#define BD71815_INT_RTC2_MASK				BIT(2)
-+
-+/* BD71815_REG_CC_CTRL bits */
-+#define CCNTRST					0x80
-+#define CCNTENB					0x40
-+#define CCCALIB					0x20
-+
-+/* BD71815_REG_CC_CURCD */
-+#define CURDIR_Discharging			0x8000
-+
-+/* BD71815_REG_VM_SA_IBAT */
-+#define IBAT_SA_DIR_Discharging			0x8000
-+
-+/* BD71815_REG_REX_CTRL_1 bits */
-+#define REX_CLR					BIT(4)
-+
-+/* BD71815_REG_REX_CTRL_1 bits */
-+#define REX_PMU_STATE_MASK			BIT(2)
-+
-+/* BD71815_REG_LED_CTRL bits */
-+#define CHGDONE_LED_EN				BIT(4)
-+
-+#endif /* __LINUX_MFD_BD71815_H */
-diff --git a/include/linux/mfd/rohm-bd71828.h b/include/linux/mfd/rohm-bd71828.h
-index 017a4c01cb31..c7ab69c87ee8 100644
---- a/include/linux/mfd/rohm-bd71828.h
-+++ b/include/linux/mfd/rohm-bd71828.h
-@@ -151,6 +151,9 @@ enum {
- #define BD71828_REG_GPIO_CTRL3		0x49
- #define BD71828_REG_IO_STAT		0xed
- 
-+/* clk */
-+#define BD71828_REG_OUT32K		0x4b
-+
- /* RTC */
- #define BD71828_REG_RTC_SEC		0x4c
- #define BD71828_REG_RTC_MINUTE		0x4d
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Tested-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
