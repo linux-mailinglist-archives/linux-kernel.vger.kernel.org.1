@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193642FB372
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9092C2FB37A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbhASHsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:48:14 -0500
-Received: from mail-eopbgr40080.outbound.protection.outlook.com ([40.107.4.80]:64958
+        id S1730702AbhASHu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:50:27 -0500
+Received: from mail-eopbgr40046.outbound.protection.outlook.com ([40.107.4.46]:22240
         "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731302AbhASHq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:46:59 -0500
+        id S1731361AbhASHra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:47:30 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=klVJTKU3gSsAprdKZwbeEpY9DrQ/H+bp/w3P3tXY2LwKTWuLmbM6LvdnrXFRuNzNmuFeY6zjHvVsW52nHtsS/IRrDj1pIvJrsmdss9pBGrHe1SgFS88DoIIaowfdo93vzDk0fmoT3JFqwR/JbhSahSw6lyMmlm+hDkJ01DGL5yhieuQJqVg+TtCHZCMbKFosjE9rsQ6W6ACWDEQJ03eFtoFI6RqkQAPNQw8r0YgpSu8so1UsQeqoQZKQYYvKt588+OyPbnQh/oSPKmdQwUl0Z6QvNfz7AyJSbpI/ajDx95dijVXla4FjR8NrfXsJQdT5B9FRTYaSEV8D99e0JZVDrw==
+ b=af+gTEmYrABdWPizFEbyfqLsMO0/yWD76NcCHBiZR7uW1dFseaYDm/j3QELRO2sMsyRaeWiJVTjw6rtKYFzNIXlmxyg8dqIIjjCLOKGczGVeZZpYKkdLNWNER7HnSDwTXdiiEtNHzVB/Qxo7Vu/zK+cLjDBLwFvUesuh/VyxGQveQV1fc2747YwafyQp9icKYARVSkInDrC0FrnNKBLNE9YZlGq1lAjEukXXanwJjfav1b+GP2F/7BPAXcuNOYfcTmkBrT+iv0fZynBbjqrkzhpa3dmR3jQ0MG68FUwZA0+uUTJIfF/DVQXGVlMvWZijt5OBqkUeYQFLR5iL9DPXGA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gDE+R7Ch/mAEdmQ1FO6tocOoj14gW072NHZg/cEzn5o=;
- b=iuhEZBtBmvuTKfqKrI2lbfigh/ebd1Rmv8rbI6WtnTTrxQ7amV6Q3HuoLhkhIbs0u01earCoAnRyj8qqtw8Jx3TG62BZWNBSP0+erOkDNIFKKcABJCy9ulbjYkv25mLWytQSHtteVKaoXrJU8MLgaSS79lKp5YeDwa0kdR+xnfhJaE+8MDOUhkz84HQH2TlNP/DSGGdvY+YhaAR3SYD7HlZMYMe9o6qy2yMf6BghyYZcfar1MtbyG0q5/cuBX4JgLKPlII+9fMTwO0FxcKPOR9eZtQgmIVqJ5hgbXWc0JgnIm7pAAovmwFvie3JAe1WIXLTvfqzYs6A8UM5I35GEnA==
+ bh=C2lJ32NApXPQJSBQSQTUo8FalMPB5GyWcrxu9zgUz0U=;
+ b=HIO2jPtk0Bb/TRqphUOb9dRZU2L4a7oER4par3s2k2LFxOVVQrWEKRUWT4I3GfcDELBKNk6nkUsSdCF78pVLA3XRtysQOMB1T6xDP08XqE/lPhJ1oXRKHmE4141WoXJH4bZoie1VYvXgHFzK8dbTwFXxx72AoosCHO7tNCehvT0Xv2POpOaPKQ3ZBoCHCBqA+y31oAbxJff40HecQLlJGO8eUmDxUcy84xVi8TDaM7HMM2V+fxkUuJ8JA8g2aiL3lOMUuCwVyVcB1qylF+MOBSfZ5VnQq24VUZge207zxTasrWIIgBEMgnrXN27xW+jPQsOfUW+POCwm5VXCnyhK/Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gDE+R7Ch/mAEdmQ1FO6tocOoj14gW072NHZg/cEzn5o=;
- b=CFblgJ8fcm/vsb+KwANXjaUeqMRqHKBT/dYrdxFvdqFvgzS5EOF0ibUqRNKjVi+Vw1n0MGqwKt2F7rr9vEHeZFmb8UIXzWBDA4EqMRwf9K4EL7Gbxz1gaLAYpvt40g0ue6Vg8hKZ+YyYSjRaJCki+iyrYM1Yy0cVL5G7JNJ+m74=
+ bh=C2lJ32NApXPQJSBQSQTUo8FalMPB5GyWcrxu9zgUz0U=;
+ b=jghiAg8zFaPKDV0jyENhxVS7cm9WFzpvB/uiYN5VvfqdpYUz4b6AFJjzIXH+gwIJOw79b/IRy+ayGCmyV5ElMdV7zGQ6LO4SLEj2ld74ZXdhNBar7GP5X1FL+8v+X2f4/4eND2l/hEyO7BPggt9TZsKzjoAI8uBbrdJ9JDdq8gs=
 Authentication-Results: wizery.com; dkim=none (message not signed)
  header.d=none;wizery.com; dmarc=none action=none header.from=nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB7PR04MB4492.eurprd04.prod.outlook.com (2603:10a6:5:39::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Tue, 19 Jan
- 2021 07:45:39 +0000
+ 2021 07:45:45 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
- 07:45:39 +0000
+ 07:45:45 +0000
 From:   peng.fan@nxp.com
 To:     ohad@wizery.com, bjorn.andersson@linaro.org,
         mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
@@ -47,9 +47,9 @@ Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
         patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V8 01/10] dt-bindings: remoteproc: convert imx rproc bindings to json-schema
-Date:   Tue, 19 Jan 2021 15:35:02 +0800
-Message-Id: <1611041711-15902-2-git-send-email-peng.fan@nxp.com>
+Subject: [PATCH V8 02/10] dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M support
+Date:   Tue, 19 Jan 2021 15:35:03 +0800
+Message-Id: <1611041711-15902-3-git-send-email-peng.fan@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611041711-15902-1-git-send-email-peng.fan@nxp.com>
 References: <1611041711-15902-1-git-send-email-peng.fan@nxp.com>
@@ -59,46 +59,46 @@ X-ClientProxiedBy: SG2PR04CA0161.apcprd04.prod.outlook.com (2603:1096:4::23)
  To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR04CA0161.apcprd04.prod.outlook.com (2603:1096:4::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3763.9 via Frontend Transport; Tue, 19 Jan 2021 07:45:33 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG2PR04CA0161.apcprd04.prod.outlook.com (2603:1096:4::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3763.9 via Frontend Transport; Tue, 19 Jan 2021 07:45:39 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d633ed2b-836a-4b6a-4a2d-08d8bc4e371b
+X-MS-Office365-Filtering-Correlation-Id: 413ac416-e40d-4620-7ab9-08d8bc4e3ada
 X-MS-TrafficTypeDiagnostic: DB7PR04MB4492:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4492855668732D50B48CFDD788A30@DB7PR04MB4492.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB449252D88455D3AA6ED2D17D88A30@DB7PR04MB4492.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t20KWysijcCD79d+Ix1fzdnFB7hFShA3GeUCjh2MMnNo1rf/mnIs0851/eXJP3e0ehmbh1X4ica6Zz3GcVjR8PUr0WLGpZdgLs2ZyIeh7z44yx34y4A5o7oh8um+pCoEJKx77xc9wvo0ar2CdaCTebDHXh3BQokjiIjpIE/8SsAp/i2x9scxiKpbBmZYo/9fkkfUEJan5bxP+et7cesdiGkjFqrUxXBUfOMbwWswvTq9PQqdR+IEKmHRq9zpVN0LbJ6/763C5NiLp3pBl/x+RSWEjmZsiu78gnhvPbrQPI6Y0O30RZdF4V77y6qyBqqrMsG8T5dEYGW3qrrTyvjOoiMBxttN24jBMNA1N6Ys+3tZ2B5/QM/XOgdurtcBITrWZmCvT1RU7+/dlLjajwrgjfLJmcLJpF0h5Wz4b46hiaO+w6bc0E9gZ0osTE4K5ASApHXtDaZpe+fWP1IXYRTUlznY8xVpsTpQCmoTulV1uegSUyoVYGfU+aYK4JDRZTaSPlRBYowmauc/M3XR/D1ZiQ==
+X-Microsoft-Antispam-Message-Info: b7NI8TcAAz14730ocVVaqDdmk9Ub1scEmCHADQj1Ddm2YVvZcp+kQyrlX4lKevDgG+8mmNONYdu6UEagynMZYJmaMin4V8uGI/eeHUVBKUDEwQHPJi6dk/z7cBN9DcbS8QH/VHgjIUbFdyh9pqGMmeG68SifO/Xjt+NMXhMcB3IWrlt5kfAdJ19VJ3XZTFDwYEBMR4DGK5R7R+XAgd9aEHwmzDGAo6SEfOkPNxpezxbVCS+6Bs6n5jXnV2Wl5U3d3y/PUCzbsQq/CaWusMH3B2hL/6z5mf+5NmP+yx/Cm1Wo33JBt8hfEKt0X0bhyt1VScrw7OVLmMSIN2uqHzJciqS8iHht/SoHACrD7xaDw/bOBumi3CY5EwIVNtZNTM23jOf8leAKkAP0B9h4X6Gd/7sPlqDm+wSb1j9ywdZpz8IMAki1V7zIDDe3Q6208+hYYIKmp0eDJSp8Cq0HYK3c9w==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(2906002)(66476007)(26005)(69590400011)(4326008)(6666004)(66946007)(186003)(83380400001)(6486002)(6512007)(2616005)(86362001)(36756003)(52116002)(8676002)(6506007)(498600001)(7416002)(9686003)(16526019)(8936002)(66556008)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UwZEbzhVi1xzsSAyR1dZa3th97IJfwvyCJz5S2YVrAec5X0GgYBce0iwyxr2?=
- =?us-ascii?Q?hHQO5GKlZXLS7iAqZUwe3Mx1oNicsdQgE/N6mQRh0qckzRzy41dAvMWD36tH?=
- =?us-ascii?Q?0DAuAEfi5Yiy4D2wYKD8tkF9VI0QoNxASdGOEbN3B8P8d8kqU4J+OPIt0rs+?=
- =?us-ascii?Q?MqUEywlQDKTbEdb12cBY+mZMcMQKu+lDa03sIVO/NUz/v0FtGrKF0wGR8Hk5?=
- =?us-ascii?Q?khe2iXoNVPtmskERRghQAOnzB/n+IM2qv4APqmesaGee4uqq6Utb/rNkHQya?=
- =?us-ascii?Q?VNhYCOqn0tHQX7R5xJLZkTdn5OQcf/qKrO3yLq/NpsBsWr3xy/97WHMa5t+r?=
- =?us-ascii?Q?PdX+/lQSxk3a3KC3yndVKsRfDFNBJyMsZkqehTbQUYo+ezwOcxFPqdGjlQvR?=
- =?us-ascii?Q?J+T+JYpXsJa93iM2LtQgCTsLQg3zImWrZd4Sw6ntt9CoLWIU6E66NhpRWUbU?=
- =?us-ascii?Q?l+HMs+Tl56FjrKUmdUWqPPgonYvBhCad60hgzLBlWwv2QdVaJSKOGONpNqPO?=
- =?us-ascii?Q?nl02hfe+eIWje+KXWjXYfKv4XW25SNW6SVIsBUwmKRScH7Z+ZmXynrf8ip8C?=
- =?us-ascii?Q?w6scddUzX+/qeBH2YMvXY100eQO4hbLL7F8bWhIGqL4AeSX9cNngORzWmyDq?=
- =?us-ascii?Q?ubZidxLWI3tLzYKsCQJRBtwJnsQkzHJMv0yiaCPmZjt+xNx/XgmvG7i1+1E0?=
- =?us-ascii?Q?CVWqIhXOBQK3lmLM4pVCNz92wUPpg+Pmxekp7RPBi5O70gKVdFZHdmWt+rqm?=
- =?us-ascii?Q?kKtkCkZAYKnqdTUj1w9tNOVdLYVhD29uQXEn2aEwuwFihJBEkRVnWjTIVr4J?=
- =?us-ascii?Q?RDKuFKQr05csDZZig3AS84/LzydKq5joI4rznVb9tfhOlSCwo6iwp0TagcOU?=
- =?us-ascii?Q?rdkLfZJhV/g2oROEuglYlxVBa69/QKylq4rDZFmicaGwGQlwAvA4y9CpMGFP?=
- =?us-ascii?Q?eIaodw01PzOzRz1hrdPQVnEPld51LbpePIAzsTASQGY1ia4v0Z7uuI/AKIeJ?=
- =?us-ascii?Q?RqYk?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HA3XfdKLaaLEUu4ycHB1BhHsQG6qJRsT4JgnV6C7u62n8lhSbkg0b7UGqaY5?=
+ =?us-ascii?Q?pZZ7rVNYC8DJNM0nthf4OU7HHawdvjbGLJrn9+AlIWCzLH1oM4E8eYtiXkPj?=
+ =?us-ascii?Q?mf9q8bT9Wk3EXoDaOp8Mci6rtRD9taYX9nuykaMewV9AY1VPTDRPLBF9dbTm?=
+ =?us-ascii?Q?mKfhblyJFD7Ev+leUudKsEA2pjZfzMApgSu69YHVvkQp5PuHJ6pziAj+PkNU?=
+ =?us-ascii?Q?RvD/Y+5VH42sUV9jaW33hVes9HOrP2YD05ATKdBPzW3MtmRhn/sprZ+9lbB7?=
+ =?us-ascii?Q?tfTd3VdUPfgCJBk35+xX0zLPmP0E1Fvnalz6EJUUIbP8xvni5PRRA8e92VUb?=
+ =?us-ascii?Q?7Di5uvYT62JVzCkppSJu/bDVWU4Ggq4hIEmGEKtT2JsiFM04fp2w0RPi0R0j?=
+ =?us-ascii?Q?VtBUgPeLcj2AlKqpUstACG7+EeNSu4tDxodjFLf8KnvdkDAvBvjSakqve5gT?=
+ =?us-ascii?Q?caofoAeD2ysp5AmoX9/zb6t/eVDOK0m+oXGyL9VlWiwWAq+eipApeSW1iFHM?=
+ =?us-ascii?Q?aZ0syKq19TyZeE9PYhJictML3Lcjr+RU6odhUhD29UCWwymaPI1Y1+gXZoPa?=
+ =?us-ascii?Q?F2fYm1n9RMaEalUi7GFDt4aytrC/0hLuMQUmbTY7/o1jedBpWTOZ4CwKu21M?=
+ =?us-ascii?Q?UzDGEFY2eaMQQMqc9UfgBHHC5za3IaSbDlZFczMJRwXI9+C/xX7/inr0j6li?=
+ =?us-ascii?Q?T9HbV20gTaOEP/MgoBGyiafsysbE5OmCcvg1sRpgtEF9HOjw/beCeFS4TIPu?=
+ =?us-ascii?Q?L5egO5sHjSiT7y0p8vA46PZl7XqSVvES6jDUQbN3OSKRqh3A0YoGveDxGQ0o?=
+ =?us-ascii?Q?Cb7SUnjCIcwf+/5ycMLmQXzCyGzZxZ87jChABJ3cx+AaVfsr7Bf95Bd7QD5d?=
+ =?us-ascii?Q?4oAl+vHa13xN9ojo6VcZNCnA/rYp5Zht8atXUYUTPkEfq3ifO1bjSu1UCClm?=
+ =?us-ascii?Q?l3ColzGTXts90WsZbx3uODH6PMHpq4SGl7kdVK6bVwWnaEqMubhLuXHVkNfq?=
+ =?us-ascii?Q?2o6G?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d633ed2b-836a-4b6a-4a2d-08d8bc4e371b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 413ac416-e40d-4620-7ab9-08d8bc4e3ada
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 07:45:39.3430
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2021 07:45:45.6001
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HLz0QnF8qL2+YVHkGGmr3HdFVoyy2t3YmhijOkhNI0DTDblHzUNOSm12SGHcw9sPQnl7//+6GfKAn6zDyxrorg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: SPn8fjM2xnoJHFYyDIyKLrS4/OtTQpx3G//o7VQOH6+aBx6o5uFPsIj1ekAb+Zu50K6EnrWZCQ8mgRl8Hy5o9Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -106,120 +106,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peng Fan <peng.fan@nxp.com>
 
-Convert the imx rproc binding to DT schema format using json-schema.
+Add i.MX8MQ/M support, also include mailbox for rpmsg/virtio usage.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- .../bindings/remoteproc/fsl,imx-rproc.yaml    | 59 +++++++++++++++++++
- .../bindings/remoteproc/imx-rproc.txt         | 33 -----------
- 2 files changed, 59 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
- delete mode 100644 Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
+ .../bindings/remoteproc/fsl,imx-rproc.yaml    | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-new file mode 100644
-index 000000000000..bce6ccfe1538
---- /dev/null
+index bce6ccfe1538..b0d600baa161 100644
+--- a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/remoteproc/fsl,imx-rproc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+@@ -15,6 +15,8 @@ maintainers:
+ properties:
+   compatible:
+     enum:
++      - fsl,imx8mq-cm4
++      - fsl,imx8mm-cm4
+       - fsl,imx7d-cm4
+       - fsl,imx6sx-cm4
+ 
+@@ -26,6 +28,20 @@ properties:
+     description:
+       Phandle to syscon block which provide access to System Reset Controller
+ 
++  mbox-names:
++    items:
++      - const: tx
++      - const: rx
++      - const: rxdb
 +
-+title: NXP iMX6SX/iMX7D Co-Processor Bindings
-+
-+description:
-+  This binding provides support for ARM Cortex M4 Co-processor found on some NXP iMX SoCs.
-+
-+maintainers:
-+  - Peng Fan <peng.fan@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx7d-cm4
-+      - fsl,imx6sx-cm4
-+
-+  clocks:
++  mboxes:
 +    description:
-+      Clock for co-processor (See ../clock/clock-bindings.txt)
++      This property is required only if the rpmsg/virtio functionality is used.
++      List of <&phandle type channel> - 1 channel for TX, 1 channel for RX, 1 channel for RXDB.
++      (see mailbox/fsl,mu.yaml)
++    minItems: 1
++    maxItems: 3
 +
-+  syscon:
-+    description:
-+      Phandle to syscon block which provide access to System Reset Controller
-+
-+  memory-region:
-+    description:
-+      list of phandels to the reserved memory regions.
-+      (see ../reserved-memory/reserved-memory.txt)
-+
-+required:
-+  - compatible
-+  - clocks
-+  - syscon
-+
-+additionalProperties: false
-+
-+examples:
+   memory-region:
+     description:
+       list of phandels to the reserved memory regions.
+@@ -56,4 +72,37 @@ examples:
+       clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
+     };
+ 
 +  - |
-+    #include <dt-bindings/clock/imx7d-clock.h>
-+    m4_reserved_sysmem1: cm4@80000000 {
-+      reg = <0x80000000 0x80000>;
++    #include <dt-bindings/clock/imx8mm-clock.h>
++    rsc_table: rsc_table@550ff000 {
++      no-map;
++      reg = <0x550ff000 0x1000>;
 +    };
 +
-+    m4_reserved_sysmem2: cm4@81000000 {
-+      reg = <0x81000000 0x80000>;
++    vdev0vring0: vdev0vring0@55000000 {
++      no-map;
++      reg = <0x55000000 0x8000>;
 +    };
 +
-+    imx7d-cm4 {
-+      compatible	= "fsl,imx7d-cm4";
-+      memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-+      syscon		= <&src>;
-+      clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
++    vdev0vring1: vdev0vring1@55008000 {
++      reg = <0x55008000 0x8000>;
++      no-map;
 +    };
 +
-+...
-diff --git a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt b/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-deleted file mode 100644
-index fbcefd965dc4..000000000000
---- a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--NXP iMX6SX/iMX7D Co-Processor Bindings
------------------------------------------
--
--This binding provides support for ARM Cortex M4 Co-processor found on some
--NXP iMX SoCs.
--
--Required properties:
--- compatible		Should be one of:
--				"fsl,imx7d-cm4"
--				"fsl,imx6sx-cm4"
--- clocks		Clock for co-processor (See: ../clock/clock-bindings.txt)
--- syscon		Phandle to syscon block which provide access to
--			System Reset Controller
--
--Optional properties:
--- memory-region		list of phandels to the reserved memory regions.
--			(See: ../reserved-memory/reserved-memory.txt)
--
--Example:
--	m4_reserved_sysmem1: cm4@80000000 {
--		reg = <0x80000000 0x80000>;
--	};
--
--	m4_reserved_sysmem2: cm4@81000000 {
--		reg = <0x81000000 0x80000>;
--	};
--
--	imx7d-cm4 {
--		compatible	= "fsl,imx7d-cm4";
--		memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
--		syscon		= <&src>;
--		clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
--	};
++    vdev0buffer: vdev0buffer@55400000 {
++      compatible = "shared-dma-pool";
++      reg = <0x55400000 0x100000>;
++      no-map;
++    };
++
++    imx8mm-cm4 {
++      compatible = "fsl,imx8mm-cm4";
++      clocks = <&clk IMX8MM_CLK_M4_DIV>;
++      mbox-names = "tx", "rx", "rxdb";
++      mboxes = <&mu 0 1
++                &mu 1 1
++                &mu 3 1>;
++      memory-region = <&vdev0buffer>, <&vdev0vring0>, <&vdev0vring1>, <&rsc_table>;
++      syscon = <&src>;
++    };
+ ...
 -- 
 2.28.0
 
