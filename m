@@ -2,198 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE792FB3F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680BB2FB3F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730835AbhASIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S1729489AbhASIYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729385AbhASIWE (ORCPT
+        with ESMTP id S1730884AbhASIXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:22:04 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3DDC061574;
-        Tue, 19 Jan 2021 00:21:21 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id b26so27874063lff.9;
-        Tue, 19 Jan 2021 00:21:21 -0800 (PST)
+        Tue, 19 Jan 2021 03:23:21 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B626C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:22:36 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id my11so1120852pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 00:22:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NSnwppJM4RBea6rhgGGM4rDbGdYQwq/CEd9KX8c0D8U=;
-        b=KKX43xE7CyF2OAHuoufRljedddmzgKGxjqqoHL0WRNIJh7aY09SxmQA88AnYR2a812
-         hLSEHieWkcK1Qnyq4av0mhU1BT8vD0Voa8VgjhuwHdW3XO6OaPJymUgX5TlGksBxlJKH
-         RfLZMBS8xRUo8/o4tLPTsIrdRI2qYz2odIaI6VLXwEsFi3N+YcGl1tcJdgXKg6LkFqSZ
-         wbnOevLZ/MdE4bLfktG88R1UChwhJCyp+TxWrl/nCTg4rqCwar/PzykpOE8ZvJiaswVp
-         1vDe+CDfuDEpfNdr8/u9Dk2Ff5RrCF0MtXcInHEn0yvJla/Mo/ltmKB0y0YcKXvNtywO
-         7ciQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NWqB/GoVkdljpMDCGL3FVT5zZbqPZEOnVZhu+cjokqA=;
+        b=pVXBoUg0EM0/gtnwyxcJZc6u2KLdurCxF5teoMEf/ZP9Xk4o6Luw09oLCWinIQ1m7w
+         48bP0e1rpkg5PE6dzyyKa2ajONBarWT+3WQh1j8VseGWSqzScxZVd55T+73gdz4XFmHr
+         aaLRqaENQ66rHSJJTc0CzBnZYxI4nl0ceDyib9Lo1Jv80KQVNe7mBTOkOtoFj99sfpDt
+         tTb+bmPnyuo8U/5Vr0ARuCw7Txxq3ovfZTcwWwmHr5L1eFJgv7GVOdGk3qvN1ZiYCT6n
+         Txj8DMfGx8E9zjOYev6DyWkh0B72kMGoukk2/JUVuvM89e1poI0ZnQwHJuJWhJtTaIdv
+         qGBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NSnwppJM4RBea6rhgGGM4rDbGdYQwq/CEd9KX8c0D8U=;
-        b=eooyZEiT1bFLCnec5C8M3dx9x3taUGC0/ZlJGvQsmjqRYnLMniJeMeRZhT0WYI7SJu
-         qyQWbytjYwds5fpmLTdK5zM03USAMID0SxBq3kNphovb9+W4nntoJ11o/mrER8Q+jXQB
-         VrYac65LVe0iceAkkbtwD3zpyT80sxD2iyo89nwKNDXyvczZgXFR+s0IqpDUlawqsF0C
-         9tn8kpE3g5L6NYfLqrYspgAtadZiirSgqXa0ZsuirDcKCOpMCmHcMdwKVM5lgcPvQeSZ
-         CmMYLLlimlzcoOU5WNisCH92KhDvEoOFFbjGuEs/py3vrzo3QFJsgQjQ2ZVp1NRt3C+v
-         Pq+g==
-X-Gm-Message-State: AOAM530wFE/afdA0jZdUBQN4e2vNuA3YZj3vp6Bw2Asm4KpFOpQz2EU/
-        zB/zc2CPxb0ms24jM0bkrFiqMygsqbugYCk1sFEkwmY9sSU=
-X-Google-Smtp-Source: ABdhPJy7lFmGjvnX+2QdulCkZeQ6a/G+bDIiQs0QLBdf5QXWUq0IjnzT13t9tJXYesmgQNMi5ZCyMg4N+moiqesZvqc=
-X-Received: by 2002:a19:ca5a:: with SMTP id h26mr1393081lfj.612.1611044480139;
- Tue, 19 Jan 2021 00:21:20 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NWqB/GoVkdljpMDCGL3FVT5zZbqPZEOnVZhu+cjokqA=;
+        b=dToRyujLa4gKsERufNPcNBzLmhvr8Ia6T61cxmQMr+Fwtx8iZrKMKz9Z3pQ9wYVfcj
+         LdO1ED7H+EqiuHRvczHa59K+gMOXT+x7FPYhdjplBMSzFBxvbcWkpsLP8G/2auIIx6gU
+         Kb0N9pOh3vUAf/UTH9z8ToCDS8xajBQr/Wo6REoIY6jDM4A6vrlv2izjQQ/L8Vr9tRY6
+         SHpvHsNTeRzY50xDL+S/+6RgPZ7v7fw+yQxFhURcUJdQFQK1dn0sqRngsq/SEZ9YOAhQ
+         G8MLO1967GcQhP8jfvB0hN68X7fsEqYMT81tvp26DM9DvFSVFVofelJx//Ms0HO1y5/5
+         vpiw==
+X-Gm-Message-State: AOAM533qizu1eXpEu2knPlP4GiQ/uX46IzckPXcga5mmswrk2S5Uon9l
+        jQOtTxxBBnKpY+7vSRGoJZ4tEQ==
+X-Google-Smtp-Source: ABdhPJxXowidB3QV6SfYuccQQERZU3/i23rKOz8wxL9hyQZP9P1g8KIW9bxPHRaRu72azEIyZ4VllQ==
+X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr4002698pjb.113.1611044555937;
+        Tue, 19 Jan 2021 00:22:35 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id g5sm9206465pfb.194.2021.01.19.00.22.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Jan 2021 00:22:35 -0800 (PST)
+Date:   Tue, 19 Jan 2021 16:22:11 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: Re: [PATCH] venus: core: Fix platform driver shutdown
+Message-ID: <20210119082210.GC17701@dragon>
+References: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
+ <20210119074044.GB17701@dragon>
+ <72d85c1b-ec0b-3cf1-dbbc-6c4924e4beec@linaro.org>
 MIME-Version: 1.0
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
- <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net> <1611041612.12761.9.camel@mhfsdcap03>
-In-Reply-To: <1611041612.12761.9.camel@mhfsdcap03>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 19 Jan 2021 16:21:08 +0800
-Message-ID: <CADiBU3-2DL9GOBesE6sZmWv_OeFNP5C5-TfrZ9tVkUXKSiV9wQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and
- external vbus supply control
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        matthias.bgg@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72d85c1b-ec0b-3cf1-dbbc-6c4924e4beec@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> On Sun, 2021-01-17 at 09:43 -0800, Guenter Roeck wrote:
-> > On 1/15/21 6:13 AM, cy_huang wrote:
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > >
-> > > MT6360 not support for TCPC command to control source and sink.
-> >
-> > does not
-> >
-> > > Uses external 5V vbus regulator as the vbus source control.
-> > >
-> > Use
-> >
-> > > Also adds the capability to report vsafe0v.
-> > >
-> > add
-> >
-> > So far this driver works without regulator. Unless I am missing somethi=
-ng,
-> > this patch makes regulator support mandatory, meaning existing code wil=
-l fail.
-> If don't provide vbus-supply in DTS, regulator framework will provide a
-> dummy regulator, so the code will not fail.
- In the last reply, I will change from regulator_get to
-regulator_get_exclusive, it will return -ENODEV.
-The IS_ERR can catch this situation, no dummy regulator will be returned.
+On Tue, Jan 19, 2021 at 09:59:41AM +0200, Stanimir Varbanov wrote:
+> On 1/19/21 9:40 AM, Shawn Guo wrote:
+> > On Mon, Dec 21, 2020 at 11:58:20AM +0200, Stanimir Varbanov wrote:
+> >> With TZ system reboot cannot finish successfully. To fix that
+> >> enable core clocks by runtime pm before TZ calls and disable
+> >> clocks after that.
+> >>
+> >> Fixes: 7399139be6b2 ("media: venus: core: add shutdown callback for venus")
+> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> > 
+> > Hi Mauro,
+> > 
+> > Could you help pick this fix up?
+> 
+> Shawn, it is part of linux-next already.
 
-And assume no vbus 5v for source & snk attached, It will cause typec
-state machine repeated from
-drp -> src_attach_wait -> src_attached -> PD_T_PS_SOURCE_on timeout.
-It will be stuck in the loop until snk detached.
+Ha, sorry, I did not check linux-next.  I sent the message because
+I see this fix is still missing after I rebase my Yoga C630 branch
+to 5.11-rc4.  We will get this fix into 5.11, right?
 
-> > I am not sure if that is appropriate/acceptable. Can we be sure that th=
-is will
-> > work for existing users of this driver ?
->
-> >
-> > Thanks,
-> > Guenter
-> >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > ---
-> > >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++++=
-++++
-> > >  1 file changed, 29 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/type=
-c/tcpm/tcpci_mt6360.c
-> > > index f1bd9e0..0edf4b6 100644
-> > > --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > > +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > > @@ -11,6 +11,7 @@
-> > >  #include <linux/of.h>
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/regmap.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >  #include <linux/usb/tcpm.h>
-> > >
-> > >  #include "tcpci.h"
-> > > @@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
-> > >     struct tcpci_data tdata;
-> > >     struct tcpci *tcpci;
-> > >     struct device *dev;
-> > > +   struct regulator *vbus;
-> > >     int irq;
-> > >  };
-> > >
-> > > @@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct regma=
-p *regmap,
-> > >     return regmap_raw_write(regmap, reg, &val, sizeof(u16));
-> > >  }
-> > >
-> > > +static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_da=
-ta *data, bool src, bool snk)
-> > > +{
-> > > +   struct mt6360_tcpc_info *mti =3D container_of(data, struct mt6360=
-_tcpc_info, tdata);
-> > > +   int ret;
-> > > +
-> > > +   /* To correctly handle the already enabled vbus and disable its s=
-upply first */
-> > > +   if (regulator_is_enabled(mti->vbus)) {
-> > > +           ret =3D regulator_disable(mti->vbus);
-> > > +           if (ret)
-> > > +                   return ret;
-> > > +   }
-> >
-> > Is it really a good idea to disable vbus if it happens to be already en=
-abled
-> > and there is (another ?) request to enable it ?
-> >
-> > > +
-> > > +   if (src) {
-> > > +           ret =3D regulator_enable(mti->vbus);
-> > > +           if (ret)
-> > > +                   return ret;
-> > > +   }
-> > > +
-> > > +   return 0;
-> > > +}
-> > > +
-> > >  static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *=
-tdata)
-> > >  {
-> > >     struct regmap *regmap =3D tdata->regmap;
-> > > @@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_dev=
-ice *pdev)
-> > >     if (mti->irq < 0)
-> > >             return mti->irq;
-> > >
-> > > +   mti->vbus =3D devm_regulator_get(&pdev->dev, "vbus");
-> > > +   if (IS_ERR(mti->vbus))
-> > > +           return PTR_ERR(mti->vbus);
-> > > +
-> > >     mti->tdata.init =3D mt6360_tcpc_init;
-> > > +   mti->tdata.set_vbus =3D mt6360_tcpc_set_vbus;
-> > > +   mti->tdata.vbus_vsafe0v =3D 1;
-> > >     mti->tcpci =3D tcpci_register_port(&pdev->dev, &mti->tdata);
-> > >     if (IS_ERR(mti->tcpci)) {
-> > >             dev_err(&pdev->dev, "Failed to register tcpci port\n");
-> > >
-> >
->
+Shawn
