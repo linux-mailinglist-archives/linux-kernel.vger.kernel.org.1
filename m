@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387B42FB302
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684702FB304
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730992AbhASHbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:31:10 -0500
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:39620 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbhASHaI (ORCPT
+        id S1728333AbhASHcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:32:19 -0500
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:40891 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731022AbhASHbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:30:08 -0500
-Received: by mail-lj1-f176.google.com with SMTP id b10so20776786ljp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 23:29:48 -0800 (PST)
+        Tue, 19 Jan 2021 02:31:16 -0500
+Received: by mail-lf1-f46.google.com with SMTP id v24so21046771lfr.7;
+        Mon, 18 Jan 2021 23:31:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=29poqHs28ucpOM2JQYDz4t1sEVBVlIMNMqAuZ65aFn0=;
-        b=Xp+yRQnoevag2LLB+I26gyMW1wBmRoERf3MihsQBCqG9x8aPk3KnMgFVYvXplkW84n
-         Px/+q1B+/0jVxPi5cJWDVqRt2yb9nbKn2Bs0Z+9W3t0eOeWduk99BOV22ELZJwzVmFZ2
-         EIplMVXk9hGr5H+a0Dub9IeFXs6VRZmuV5yGPTINbjUDTOFyz8FTf2gMmfuGidiBYm8d
-         /iOCoar9PFDKx1hgzL4pc9A7FTvHVvJQ8Lvh0IkBhExVvv3V0nJ6Kjx73fm7NCz+MwkF
-         EeVnLvxtAdF8YKYKTel76j5q5E23ggJE01ZzkCPfma5lAPzkTRLqLhTMBboUua8Ke2kP
-         cHcQ==
-X-Gm-Message-State: AOAM532zDH/2WR5rQfJNF4hlHk/DJAdHNiKHYLca5z28r3ibC2zk9k2y
-        5jdm0Ke5LNMg5WNBLU+XSOo=
-X-Google-Smtp-Source: ABdhPJx2Qd7dsRnuxNq8KJzbwhRsOwkl0o/LDrzhPnYxoCHuiV5L2YSrcFBd+yZ44CPiz2qE8XMZ4A==
-X-Received: by 2002:a2e:bc28:: with SMTP id b40mr106106ljf.167.1611041360628;
-        Mon, 18 Jan 2021 23:29:20 -0800 (PST)
+        bh=XisBtQoP/h2Art6/IseMNTK1FqmH5E0sUU7cL3tMI1Q=;
+        b=j5Yiy0GNvKe+N6YIJdudvAM0+pvm0+ZfBBzgJ/TokZhLTAG5Ia1BD746pbJ+RAvG7t
+         L6RG9kHz2DKftw+7weJGhosrqgjNE6nz7BpEBk9NM5y8b10SlD0NS9+ZQIdsnTIupvgm
+         IlzY8j+qZ/zr9f/q+Bdrasd6Bwr3AQtzu1IzBSrGSdw9G/cnJb5N1tpLFOA2Gl+/A1ue
+         1azF5UqVVo02q+6rLjDo1viWuQ4157PgxN6PEO9SsZvunh7aZP+vYS28JHKw1dHjDFTz
+         agEO2SLxzartl+W/1YqxniktOFpXvkTreE7VWWSxNwTsuv4UtUhEpzys8AzhcFvZcnFf
+         x/Vg==
+X-Gm-Message-State: AOAM530oQHVRZNvQzH/ADlE4BjkllMguZuMGIGeK3xoIP3nUhkS4uZrM
+        6O0Q5JtM4sTq9oumD9uqC+o=
+X-Google-Smtp-Source: ABdhPJwgAi159NofUTB5nRfYBYUd8MsJfhOdlcvkh3mTtkPy4WcBttk0ZNGEfhN2S+HP/ep5jSkT3g==
+X-Received: by 2002:a19:a40a:: with SMTP id q10mr1241256lfc.39.1611041434272;
+        Mon, 18 Jan 2021 23:30:34 -0800 (PST)
 Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id b11sm2196825lfi.174.2021.01.18.23.29.19
+        by smtp.gmail.com with ESMTPSA id t18sm476102lja.52.2021.01.18.23.30.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 23:29:20 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:29:13 +0200
+        Mon, 18 Jan 2021 23:30:33 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:30:26 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
 Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: [PATCH v2 14/17] regulator: Support ROHM BD71815 regulators
-Message-ID: <c523766d8669ba9e353abaf48500bdd2fc0cc7a9.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org
+Subject: [PATCH v2 15/17] clk: bd718x7: Add support for clk gate on ROHM
+ BD71815 PMIC
+Message-ID: <0f44b1d32d28f64b5a33a8319319506fdf317487.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -53,756 +54,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support voltage control for regulators on ROHM BD71815 PMIC.
-
-ROHM BD71815 contains 5 bucks, 7 LDOs and a boost (intended for LED).
-Bucks 1 and 2 support HW state based voltage level and enable states. Other
-regulators support HW state based enable states. All bucks and LDOs 1-5
-allow voltage changes for RUN state and LDO4 can be enabled/disabled via
-GPIO.
-
-LDO3 does support changing between two predetermined voltages by using
-a GPIO but this functionality is not included in this commit.
-
-This work is derived from driver originally written by Tony Luo
-<luofc@embedinfo.com> - although not much of original work is left.
+ROHM BD71815 also provide clk signal for RTC. Add control
+for gating this clock.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
+
 Changes since v1:
+removed squash-commit leftover from commit message
 
-- Staticized probe
-- cleaned comments
-- removed unused definitions
+ drivers/clk/clk-bd718x7.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- drivers/regulator/Kconfig             |  11 +
- drivers/regulator/Makefile            |   1 +
- drivers/regulator/bd71815-regulator.c | 682 ++++++++++++++++++++++++++
- 3 files changed, 694 insertions(+)
- create mode 100644 drivers/regulator/bd71815-regulator.c
-
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 5abdd29fb9f3..0646b7183e3f 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -205,6 +205,17 @@ config REGULATOR_BD70528
- 	  This driver can also be built as a module. If so, the module
- 	  will be called bd70528-regulator.
+diff --git a/drivers/clk/clk-bd718x7.c b/drivers/clk/clk-bd718x7.c
+index 17d90e09f1c0..d9e70e506d18 100644
+--- a/drivers/clk/clk-bd718x7.c
++++ b/drivers/clk/clk-bd718x7.c
+@@ -13,6 +13,8 @@
+ #include <linux/regmap.h>
  
-+config REGULATOR_BD71815
-+	tristate "ROHM BD71815 Power Regulator"
-+	depends on MFD_ROHM_BD71828
-+	help
-+	  This driver supports voltage regulators on ROHM BD71815 PMIC.
-+	  This will enable support for the software controllable buck
-+	  and LDO regulators and a current regulator for LEDs.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called bd71815-regulator.
-+
- config REGULATOR_BD71828
- 	tristate "ROHM BD71828 Power Regulator"
- 	depends on MFD_ROHM_BD71828
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 680e539f6579..2d18c5246ef6 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -30,6 +30,7 @@ obj-$(CONFIG_REGULATOR_AS3722) += as3722-regulator.o
- obj-$(CONFIG_REGULATOR_AXP20X) += axp20x-regulator.o
- obj-$(CONFIG_REGULATOR_BCM590XX) += bcm590xx-regulator.o
- obj-$(CONFIG_REGULATOR_BD70528) += bd70528-regulator.o
-+obj-$(CONFIG_REGULATOR_BD71815)	+= bd71815-regulator.o
- obj-$(CONFIG_REGULATOR_BD71828) += bd71828-regulator.o
- obj-$(CONFIG_REGULATOR_BD718XX) += bd718x7-regulator.o
- obj-$(CONFIG_REGULATOR_BD9571MWV) += bd9571mwv-regulator.o
-diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
-new file mode 100644
-index 000000000000..94f10080a81a
---- /dev/null
-+++ b/drivers/regulator/bd71815-regulator.c
-@@ -0,0 +1,682 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2014 Embest Technology Co. Ltd. Inc.
-+ * bd71815-regulator.c ROHM BD71815 regulator driver
-+ *
-+ * Author: Tony Luo <luofc@embedinfo.com>
-+ */
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
-+#include <linux/mfd/rohm-generic.h>
-+#include <linux/mfd/rohm-bd71815.h>
-+#include <linux/regulator/of_regulator.h>
-+
-+struct bd71815_regulator {
-+	struct regulator_desc desc;
-+	const struct rohm_dvs_config *dvs;
-+};
-+
-+struct bd71815_pmic {
-+	struct bd71815_regulator descs[BD71815_REGULATOR_CNT];
-+	struct regmap *regmap;
-+	struct device *dev;
-+	struct gpio_descs *gps;
-+	struct regulator_dev *rdev[BD71815_REGULATOR_CNT];
-+};
-+
-+static const int bd7181x_wled_currents[] = {
-+	/* 0x00 */
-+	10, 20, 30, 50,
-+	70, 100, 200, 300,
-+	500, 700, 1000, 2000,
-+	3000, 4000, 5000, 6000,
-+	/* 0x10 */
-+	7000, 8000, 9000, 10000,
-+	11000, 12000, 13000, 14000,
-+	15000, 16000, 17000, 18000,
-+	19000, 20000, 21000, 22000,
-+	/* 0x20 */
-+	23000, 24000, 25000,
-+};
-+
-+const struct rohm_dvs_config buck1_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_BUCK1_VOLT_H,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= BD71815_BUCK_RUN_ON,
-+	.snvs_on_mask		= BD71815_BUCK_SNVS_ON,
-+	.suspend_reg		= BD71815_REG_BUCK1_VOLT_L,
-+	.suspend_mask		= BD71815_VOLT_MASK,
-+	.suspend_on_mask	= BD71815_BUCK_SUSP_ON,
-+	.lpsr_reg		= BD71815_REG_BUCK1_VOLT_L,
-+	.lpsr_mask		= BD71815_VOLT_MASK,
-+	.lpsr_on_mask		= BD71815_BUCK_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config buck2_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_BUCK2_VOLT_H,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= BD71815_BUCK_RUN_ON,
-+	.snvs_on_mask		= BD71815_BUCK_SNVS_ON,
-+	.suspend_reg		= BD71815_REG_BUCK2_VOLT_L,
-+	.suspend_mask		= BD71815_VOLT_MASK,
-+	.suspend_on_mask	= BD71815_BUCK_SUSP_ON,
-+	.lpsr_reg		= BD71815_REG_BUCK2_VOLT_L,
-+	.lpsr_mask		= BD71815_VOLT_MASK,
-+	.lpsr_on_mask		= BD71815_BUCK_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config buck3_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_BUCK3_VOLT,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= BD71815_BUCK_RUN_ON,
-+	.snvs_on_mask		= BD71815_BUCK_SNVS_ON,
-+	.suspend_on_mask	= BD71815_BUCK_SUSP_ON,
-+	.lpsr_on_mask		= BD71815_BUCK_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config buck4_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_BUCK4_VOLT,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= BD71815_BUCK_RUN_ON,
-+	.snvs_on_mask		= BD71815_BUCK_SNVS_ON,
-+	.suspend_on_mask	= BD71815_BUCK_SUSP_ON,
-+	.lpsr_on_mask		= BD71815_BUCK_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldo1_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_LDO_MODE1,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= LDO1_RUN_ON,
-+	.snvs_on_mask		= LDO1_SNVS_ON,
-+	.suspend_on_mask	= LDO1_SUSP_ON,
-+	.lpsr_on_mask		= LDO1_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldo2_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_LDO_MODE2,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= LDO2_RUN_ON,
-+	.snvs_on_mask		= LDO2_SNVS_ON,
-+	.suspend_on_mask	= LDO2_SUSP_ON,
-+	.lpsr_on_mask		= LDO2_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldo3_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_LDO_MODE2,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= LDO3_RUN_ON,
-+	.snvs_on_mask		= LDO3_SNVS_ON,
-+	.suspend_on_mask	= LDO3_SUSP_ON,
-+	.lpsr_on_mask		= LDO3_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldo4_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_LDO_MODE3,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= LDO4_RUN_ON,
-+	.snvs_on_mask		= LDO4_SNVS_ON,
-+	.suspend_on_mask	= LDO4_SUSP_ON,
-+	.lpsr_on_mask		= LDO4_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldo5_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_LDO_MODE3,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= LDO5_RUN_ON,
-+	.snvs_on_mask		= LDO5_SNVS_ON,
-+	.suspend_on_mask	= LDO5_SUSP_ON,
-+	.lpsr_on_mask		= LDO5_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config dvref_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_on_mask		= DVREF_RUN_ON,
-+	.snvs_on_mask		= DVREF_SNVS_ON,
-+	.suspend_on_mask	= DVREF_SUSP_ON,
-+	.lpsr_on_mask		= DVREF_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config ldolpsr_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_on_mask		= DVREF_RUN_ON,
-+	.snvs_on_mask		= DVREF_SNVS_ON,
-+	.suspend_on_mask	= DVREF_SUSP_ON,
-+	.lpsr_on_mask		= DVREF_LPSR_ON,
-+};
-+
-+const struct rohm_dvs_config buck5_dvs = {
-+	.level_map		= ROHM_DVS_LEVEL_RUN | ROHM_DVS_LEVEL_SNVS |
-+				  ROHM_DVS_LEVEL_SUSPEND | ROHM_DVS_LEVEL_LPSR,
-+	.run_reg		= BD71815_REG_BUCK5_VOLT,
-+	.run_mask		= BD71815_VOLT_MASK,
-+	.run_on_mask		= BD71815_BUCK_RUN_ON,
-+	.snvs_on_mask		= BD71815_BUCK_SNVS_ON,
-+	.suspend_on_mask	= BD71815_BUCK_SUSP_ON,
-+	.lpsr_on_mask		= BD71815_BUCK_LPSR_ON,
-+};
-+
-+static int set_hw_dvs_levels(struct device_node *np,
-+			     const struct regulator_desc *desc,
-+			     struct regulator_config *cfg)
-+{
-+	struct bd71815_regulator *data;
-+
-+	data = container_of(desc, struct bd71815_regulator, desc);
-+	return rohm_regulator_set_dvs_levels(data->dvs, np, desc, cfg->regmap);
-+}
-+
-+/*
-+ * Bucks 1 and 2 have two voltage selection registers where selected
-+ * voltage can be set. Which of the registers is used can be either controlled
-+ * by a control bit in register - or by HW state. If HW state specific voltages
-+ * are given - then we assume HW state based control should be used.
-+ *
-+ * If volatge value is updated to currently selected register - then output
-+ * voltage is immediately changed no matter what is set as ramp rate. Thus we
-+ * default changing voltage by writing new value to inactive register and
-+ * then updating the 'register selection' bit. This naturally only works when
-+ * HW state machine is not used to select the voltage.
-+ */
-+static int buck12_set_hw_dvs_levels(struct device_node *np,
-+				    const struct regulator_desc *desc,
-+				    struct regulator_config *cfg)
-+{
-+	struct bd71815_regulator *data;
-+	int ret = 0, val;
-+
-+	data = container_of(desc, struct bd71815_regulator, desc);
-+
-+	if (of_find_property(np, "rohm,dvs-run-voltage", NULL) ||
-+	    of_find_property(np, "rohm,dvs-suspend-voltage", NULL) ||
-+	    of_find_property(np, "rohm,dvs-lpsr-voltage", NULL) ||
-+	    of_find_property(np, "rohm,dvs-snvs-voltage", NULL)) {
-+		ret = regmap_read(cfg->regmap, desc->vsel_reg, &val);
-+		if (ret)
-+			return ret;
-+
-+		if (!(BD71815_BUCK_STBY_DVS & val) &&
-+		    !(BD71815_BUCK_DVSSEL & val)) {
-+			int val2;
-+
-+			/*
-+			 * We are currently using voltage from _L.
-+			 * We'd better copy it to _H and switch to it to
-+			 * avoid shutting us down if LPSR or SUSPEND is set to
-+			 * disabled. _L value is at reg _H + 1
-+			 */
-+			ret = regmap_read(cfg->regmap, desc->vsel_reg + 1,
-+					  &val2);
-+			if (ret)
-+				return ret;
-+
-+			ret = regmap_update_bits(cfg->regmap, desc->vsel_reg,
-+						 BD71815_VOLT_MASK |
-+						 BD71815_BUCK_DVSSEL,
-+						 val2 | BD71815_BUCK_DVSSEL);
-+			if (ret)
-+				return ret;
-+		}
-+		ret = rohm_regulator_set_dvs_levels(data->dvs, np, desc,
-+						    cfg->regmap);
-+		if (ret)
-+			return ret;
-+		/*
-+		 * DVS levels were given => use HW-state machine for voltage
-+		 * controls. NOTE: AFAIK, This means that if voltage is changed
-+		 * by SW the ramp-rate is not respected. Should we disable
-+		 * SW voltage control when the HW state machine is used?
-+		 */
-+		ret = regmap_update_bits(cfg->regmap, desc->vsel_reg,
-+					 BD71815_BUCK_STBY_DVS,
-+					 BD71815_BUCK_STBY_DVS);
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * BUCK1/2
-+ * BUCK1RAMPRATE[1:0] BUCK1 DVS ramp rate setting
-+ * 00: 10.00mV/usec 10mV 1uS
-+ * 01: 5.00mV/usec	10mV 2uS
-+ * 10: 2.50mV/usec	10mV 4uS
-+ * 11: 1.25mV/usec	10mV 8uS
-+ */
-+static int bd7181x_buck12_set_ramp_delay(struct regulator_dev *rdev,
-+					 int ramp_delay)
-+{
-+	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
-+	int id = rdev->desc->id;
-+	unsigned int ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
-+
-+	switch (ramp_delay) {
-+	case 1 ... 1250:
-+		ramp_value = BD71815_BUCK_RAMPRATE_1P25MV;
+ /* clk control registers */
++/* BD71815 */
++#define BD71815_REG_OUT32K	0x1d
+ /* BD70528 */
+ #define BD70528_REG_OUT32K	0x2c
+ /* BD71828 */
+@@ -118,6 +120,10 @@ static int bd71837_clk_probe(struct platform_device *pdev)
+ 		c->reg = BD70528_REG_OUT32K;
+ 		c->mask = CLK_OUT_EN_MASK;
+ 		break;
++	case ROHM_CHIP_TYPE_BD71815:
++		c->reg = BD71815_REG_OUT32K;
++		c->mask = CLK_OUT_EN_MASK;
 +		break;
-+	case 1251 ... 2500:
-+		ramp_value = BD71815_BUCK_RAMPRATE_2P50MV;
-+		break;
-+	case 2501 ... 5000:
-+		ramp_value = BD71815_BUCK_RAMPRATE_5P00MV;
-+		break;
-+	case 5001 ... 10000:
-+		ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
-+		break;
-+	default:
-+		ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
-+		dev_err(pmic->dev,
-+			"%s: ramp_delay: %d not supported, setting 10000mV//us\n",
-+			rdev->desc->name, ramp_delay);
-+	}
-+
-+	return regmap_update_bits(pmic->regmap, BD71815_REG_BUCK1_MODE + id*0x1,
-+			BD71815_BUCK_RAMPRATE_MASK, ramp_value << 6);
-+}
-+
-+static int bd7181x_led_set_current_limit(struct regulator_dev *rdev,
-+					int min_uA, int max_uA)
-+{
-+	int ret;
-+	int onstatus;
-+
-+	onstatus = regulator_is_enabled_regmap(rdev);
-+
-+	ret = regulator_set_current_limit_regmap(rdev, min_uA, max_uA);
-+	if (!ret) {
-+		int newstatus;
-+
-+		newstatus = regulator_is_enabled_regmap(rdev);
-+		if (onstatus != newstatus) {
-+			/*
-+			 * HW FIX: spurious led status change detected. Toggle
-+			 * state as a workaround
-+			 */
-+			if (onstatus)
-+				ret = regulator_enable_regmap(rdev);
-+			else
-+				ret = regulator_disable_regmap(rdev);
-+
-+			if (ret)
-+				dev_err(rdev_get_dev(rdev),
-+					"LED status error\n");
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int bd7181x_buck12_get_voltage_sel(struct regulator_dev *rdev)
-+{
-+	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
-+	int rid = rdev_get_id(rdev);
-+	int ret, regh, regl, val;
-+
-+	regh = BD71815_REG_BUCK1_VOLT_H + rid * 0x2;
-+	regl = BD71815_REG_BUCK1_VOLT_L + rid * 0x2;
-+
-+	ret = regmap_read(pmic->regmap, regh, &val);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * If we use HW state machine based voltage reg selection - then we
-+	 * return BD71815_REG_BUCK1_VOLT_H which is used at RUN.
-+	 * Else we do return the BD71815_REG_BUCK1_VOLT_H or
-+	 * BD71815_REG_BUCK1_VOLT_L depending on which is selected to be used
-+	 * by BD71815_BUCK_DVSSEL bit
-+	 */
-+	if ((!(val & BD71815_BUCK_STBY_DVS)) && (!(val & BD71815_BUCK_DVSSEL)))
-+		ret = regmap_read(pmic->regmap, regl, &val);
-+
-+	if (ret)
-+		return ret;
-+
-+	return val & BD71815_VOLT_MASK;
-+}
-+
-+/*
-+ * For Buck 1/2.
-+ */
-+static int bd7181x_buck12_set_voltage_sel(struct regulator_dev *rdev,
-+					  unsigned int sel)
-+{
-+	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
-+	int rid = rdev_get_id(rdev);
-+	int ret, val, reg, regh, regl;
-+
-+	regh = BD71815_REG_BUCK1_VOLT_H + rid*0x2;
-+	regl = BD71815_REG_BUCK1_VOLT_L + rid*0x2;
-+
-+	ret = regmap_read(pmic->regmap, regh, &val);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * If bucks 1 & 2 are controlled by state machine - then the RUN state
-+	 * voltage is set to BD71815_REG_BUCK1_VOLT_H. Changing SUSPEND/LPSR
-+	 * voltages at runtime is not supported by this driver.
-+	 */
-+	if (((val & BD71815_BUCK_STBY_DVS))) {
-+		return regmap_update_bits(pmic->regmap, regh, BD71815_VOLT_MASK,
-+					  sel);
-+	}
-+	/* Update new voltage to the register which is not selected now */
-+	if (val & BD71815_BUCK_DVSSEL)
-+		reg = regl;
-+	else
-+		reg = regh;
-+
-+	ret = regmap_update_bits(pmic->regmap, reg, BD71815_VOLT_MASK, sel);
-+	if (ret)
-+		return ret;
-+
-+	/* Select the other DVS register to be used */
-+	return regmap_update_bits(pmic->regmap, regh, BD71815_BUCK_DVSSEL, ~val);
-+}
-+
-+static const struct regulator_ops bd7181x_ldo_regulator_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+};
-+
-+static const struct regulator_ops bd7181x_fixed_regulator_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.list_voltage = regulator_list_voltage_linear,
-+};
-+
-+static const struct regulator_ops bd7181x_buck_regulator_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_voltage_time_sel = regulator_set_voltage_time_sel,
-+};
-+
-+static const struct regulator_ops bd7181x_buck12_regulator_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = bd7181x_buck12_set_voltage_sel,
-+	.get_voltage_sel = bd7181x_buck12_get_voltage_sel,
-+	.set_voltage_time_sel = regulator_set_voltage_time_sel,
-+	.set_ramp_delay = bd7181x_buck12_set_ramp_delay,
-+};
-+
-+static const struct regulator_ops bd7181x_led_regulator_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.set_current_limit = bd7181x_led_set_current_limit,
-+	.get_current_limit = regulator_get_current_limit_regmap,
-+};
-+
-+#define BD71815_FIXED_REG(_name, _id, ereg, emsk, voltage, _dvs)	\
-+	[(_id)] = {							\
-+		.desc = {						\
-+			.name = #_name,					\
-+			.of_match = of_match_ptr(#_name),		\
-+			.regulators_node = of_match_ptr("regulators"),	\
-+			.n_voltages = 1,				\
-+			.ops = &bd7181x_fixed_regulator_ops,		\
-+			.type = REGULATOR_VOLTAGE,			\
-+			.id = (_id),					\
-+			.owner = THIS_MODULE,				\
-+			.min_uV = (voltage),				\
-+			.enable_reg = (ereg),				\
-+			.enable_mask = (emsk),				\
-+			.of_parse_cb = set_hw_dvs_levels,		\
-+		},							\
-+		.dvs = (_dvs),						\
-+	}
-+
-+#define BD71815_BUCK_REG(_name, _id, vsel, ereg, min, max, step, _dvs)	\
-+	[(_id)] = {							\
-+		.desc = {						\
-+			.name = #_name,					\
-+			.of_match = of_match_ptr(#_name),		\
-+			.regulators_node = of_match_ptr("regulators"),	\
-+			.n_voltages = ((max) - (min)) / (step) + 1,	\
-+			.ops = &bd7181x_buck_regulator_ops,		\
-+			.type = REGULATOR_VOLTAGE,			\
-+			.id = (_id),					\
-+			.owner = THIS_MODULE,				\
-+			.min_uV = (min),				\
-+			.uV_step = (step),				\
-+			.vsel_reg = (vsel),				\
-+			.vsel_mask = BD71815_VOLT_MASK,			\
-+			.enable_reg = (ereg),				\
-+			.enable_mask = BD71815_BUCK_RUN_ON,		\
-+			.of_parse_cb = set_hw_dvs_levels,		\
-+		},							\
-+		.dvs = (_dvs),						\
-+	}
-+
-+#define BD71815_BUCK12_REG(_name, _id, vsel, ereg, min, max, step,	\
-+			   _dvs)					\
-+	[(_id)] = {							\
-+		.desc = {						\
-+			.name = #_name,					\
-+			.of_match = of_match_ptr(#_name),		\
-+			.regulators_node = of_match_ptr("regulators"),	\
-+			.n_voltages = ((max) - (min)) / (step) + 1,	\
-+			.ops = &bd7181x_buck12_regulator_ops,		\
-+			.type = REGULATOR_VOLTAGE,			\
-+			.id = (_id),					\
-+			.owner = THIS_MODULE,				\
-+			.min_uV = (min),				\
-+			.uV_step = (step),				\
-+			.vsel_reg = (vsel),				\
-+			.vsel_mask = 0x3f,				\
-+			.enable_reg = (ereg),				\
-+			.enable_mask = 0x04,				\
-+			.of_parse_cb = buck12_set_hw_dvs_levels,	\
-+		},							\
-+		.dvs = (_dvs),						\
-+	}
-+
-+#define BD71815_LED_REG(_name, _id, csel, mask, ereg, emsk, currents)	\
-+	[(_id)] = {							\
-+		.desc = {						\
-+			.name = #_name,					\
-+			.of_match = of_match_ptr(#_name),		\
-+			.regulators_node = of_match_ptr("regulators"),	\
-+			.n_current_limits = ARRAY_SIZE(currents),	\
-+			.ops = &bd7181x_led_regulator_ops,		\
-+			.type = REGULATOR_CURRENT,			\
-+			.id = (_id),					\
-+			.owner = THIS_MODULE,				\
-+			.curr_table = currents,				\
-+			.csel_reg = (csel),				\
-+			.csel_mask = (mask),				\
-+			.enable_reg = (ereg),				\
-+			.enable_mask = (emsk),				\
-+		},							\
-+	}
-+
-+#define BD71815_LDO_REG(_name, _id, vsel, ereg, emsk, min, max, step,	\
-+			_dvs)						\
-+	[(_id)] = {							\
-+		.desc = {						\
-+			.name = #_name,					\
-+			.of_match = of_match_ptr(#_name),		\
-+			.regulators_node = of_match_ptr("regulators"),	\
-+			.n_voltages = ((max) - (min)) / (step) + 1,	\
-+			.ops = &bd7181x_ldo_regulator_ops,		\
-+			.type = REGULATOR_VOLTAGE,			\
-+			.id = (_id),					\
-+			.owner = THIS_MODULE,				\
-+			.min_uV = (min),				\
-+			.uV_step = (step),				\
-+			.vsel_reg = (vsel),				\
-+			.vsel_mask = BD71815_VOLT_MASK,			\
-+			.enable_reg = (ereg),				\
-+			.enable_mask = (emsk),				\
-+			.of_parse_cb = set_hw_dvs_levels,		\
-+		},							\
-+		.dvs = (_dvs),						\
-+	}
-+
-+static struct bd71815_regulator bd71815_regulators[] = {
-+	BD71815_BUCK12_REG(buck1, BD71815_BUCK1, BD71815_REG_BUCK1_VOLT_H,
-+			   BD71815_REG_BUCK1_MODE, 800000, 2000000, 25000,
-+			   &buck1_dvs),
-+	BD71815_BUCK12_REG(buck2, BD71815_BUCK2, BD71815_REG_BUCK2_VOLT_H,
-+			   BD71815_REG_BUCK2_MODE, 800000, 2000000, 25000,
-+			   &buck2_dvs),
-+	BD71815_BUCK_REG(buck3, BD71815_BUCK3, BD71815_REG_BUCK3_VOLT,
-+			 BD71815_REG_BUCK3_MODE,  1200000, 2700000, 50000,
-+			 &buck3_dvs),
-+	BD71815_BUCK_REG(buck4, BD71815_BUCK4, BD71815_REG_BUCK4_VOLT,
-+			 BD71815_REG_BUCK4_MODE,  1100000, 1850000, 25000,
-+			 &buck4_dvs),
-+	BD71815_BUCK_REG(buck5, BD71815_BUCK5, BD71815_REG_BUCK5_VOLT,
-+			 BD71815_REG_BUCK5_MODE,  1800000, 3300000, 50000,
-+			 &buck5_dvs),
-+	BD71815_LDO_REG(ldo1, BD71815_LDO1, BD71815_REG_LDO1_VOLT,
-+			BD71815_REG_LDO_MODE1, LDO1_RUN_ON, 800000, 3300000,
-+			50000, &ldo1_dvs),
-+	BD71815_LDO_REG(ldo2, BD71815_LDO2, BD71815_REG_LDO2_VOLT,
-+			BD71815_REG_LDO_MODE2, LDO2_RUN_ON, 800000, 3300000,
-+			50000, &ldo2_dvs),
-+	/*
-+	 * Let's default LDO3 to be enabled by SW. We can override ops if DT
-+	 * says LDO3 should be enabled by HW when DCIN is connected.
-+	 */
-+	BD71815_LDO_REG(ldo3, BD71815_LDO3, BD71815_REG_LDO3_VOLT,
-+			BD71815_REG_LDO_MODE2, LDO3_RUN_ON, 800000, 3300000,
-+			50000, &ldo3_dvs),
-+	BD71815_LDO_REG(ldo4, BD71815_LDO4, BD71815_REG_LDO4_VOLT,
-+			BD71815_REG_LDO_MODE3, LDO4_RUN_ON, 800000, 3300000,
-+			50000, &ldo4_dvs),
-+	BD71815_LDO_REG(ldo5, BD71815_LDO5, BD71815_REG_LDO5_VOLT_H,
-+			BD71815_REG_LDO_MODE3, LDO5_RUN_ON, 800000, 3300000,
-+			50000, &ldo5_dvs),
-+	BD71815_FIXED_REG(ldodvref, BD71815_LDODVREF, BD71815_REG_LDO_MODE4,
-+			  DVREF_RUN_ON, 3000000, &dvref_dvs),
-+	BD71815_FIXED_REG(ldolpsr, BD71815_LDOLPSR, BD71815_REG_LDO_MODE4,
-+			  LDO_LPSR_RUN_ON, 1800000, &ldolpsr_dvs),
-+	BD71815_LED_REG(wled, BD71815_WLED, BD71815_REG_LED_DIMM, LED_DIMM_MASK,
-+			BD71815_REG_LED_CTRL, LED_RUN_ON,
-+			bd7181x_wled_currents),
-+};
-+
-+static int bd7181x_probe(struct platform_device *pdev)
-+{
-+	struct bd71815_pmic *pmic;
-+	struct regulator_config config = {};
-+	int i, ret;
-+	struct gpio_desc *ldo4_en;
-+
-+	pmic = devm_kzalloc(&pdev->dev, sizeof(*pmic), GFP_KERNEL);
-+	if (!pmic)
-+		return -ENOMEM;
-+
-+	memcpy(pmic->descs, bd71815_regulators,	sizeof(pmic->descs));
-+
-+	pmic->dev = &pdev->dev;
-+	pmic->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!pmic->regmap) {
-+		dev_err(pmic->dev, "No parent regmap\n");
-+		return -ENODEV;
-+	}
-+	platform_set_drvdata(pdev, pmic);
-+	ldo4_en = devm_gpiod_get_from_of_node(&pdev->dev,
-+					      pdev->dev.parent->of_node,
-+						 "rohm,vsel-gpios", 0,
-+						 GPIOD_ASIS, "ldo4-en");
-+
-+	if (IS_ERR(ldo4_en)) {
-+		ret = PTR_ERR(ldo4_en);
-+		if (ret != -ENOENT)
-+			return ret;
-+		ldo4_en = NULL;
-+	}
-+
-+	/* Disable to go to ship-mode */
-+	ret = regmap_update_bits(pmic->regmap, BD71815_REG_PWRCTRL,
-+				 RESTARTEN, 0);
-+	if (ret)
-+		return ret;
-+
-+	config.dev = pdev->dev.parent;
-+	config.regmap = pmic->regmap;
-+
-+	for (i = 0; i < BD71815_REGULATOR_CNT; i++) {
-+		struct regulator_desc *desc;
-+		struct regulator_dev *rdev;
-+
-+		desc = &pmic->descs[i].desc;
-+		if (i == BD71815_LDO4)
-+			config.ena_gpiod = ldo4_en;
-+
-+		config.driver_data = pmic;
-+
-+		rdev = devm_regulator_register(&pdev->dev, desc, &config);
-+		if (IS_ERR(rdev)) {
-+			dev_err(&pdev->dev,
-+				"failed to register %s regulator\n",
-+				desc->name);
-+			return PTR_ERR(rdev);
-+		}
-+		config.ena_gpiod = NULL;
-+		pmic->rdev[i] = rdev;
-+	}
-+	return 0;
-+}
-+
-+static const struct platform_device_id bd7181x_pmic_id[] = {
-+	{ "bd71815-pmic", ROHM_CHIP_TYPE_BD71815 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(platform, bd7181x_pmic_id);
-+
-+static struct platform_driver bd7181x_regulator = {
-+	.driver = {
-+		.name = "bd7181x-pmic",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = bd7181x_probe,
-+	.id_table = bd7181x_pmic_id,
-+};
-+module_platform_driver(bd7181x_regulator);
-+
-+MODULE_AUTHOR("Tony Luo <luofc@embedinfo.com>");
-+MODULE_DESCRIPTION("BD71815 voltage regulator driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:bd7181x-pmic");
+ 	default:
+ 		dev_err(&pdev->dev, "Unknown clk chip\n");
+ 		return -EINVAL;
+@@ -146,6 +152,7 @@ static const struct platform_device_id bd718x7_clk_id[] = {
+ 	{ "bd71847-clk", ROHM_CHIP_TYPE_BD71847 },
+ 	{ "bd70528-clk", ROHM_CHIP_TYPE_BD70528 },
+ 	{ "bd71828-clk", ROHM_CHIP_TYPE_BD71828 },
++	{ "bd71815-clk", ROHM_CHIP_TYPE_BD71815 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(platform, bd718x7_clk_id);
+@@ -161,6 +168,6 @@ static struct platform_driver bd71837_clk = {
+ module_platform_driver(bd71837_clk);
+ 
+ MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
+-MODULE_DESCRIPTION("BD71837/BD71847/BD70528 chip clk driver");
++MODULE_DESCRIPTION("BD718(15/18/28/37/47/50) and BD70528 chip clk driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:bd718xx-clk");
 -- 
 2.25.4
 
