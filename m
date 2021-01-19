@@ -2,171 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62562FC2E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BF02FC2F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 23:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbhASWAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 17:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        id S1729137AbhASWGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 17:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbhASV7C (ORCPT
+        with ESMTP id S1728843AbhASWFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:59:02 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EBBC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 30so13828031pgr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
+        Tue, 19 Jan 2021 17:05:15 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8150AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:04:31 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id q20so13167176pfu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 14:04:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
-        b=byWAnMtOBUGykkl0kVkQ6CQf0S8r8iH9Dmayu8mQxBp+45awWTtaLWZK+sCctNvNi6
-         OQcM7YzgvoQP7vFoUOPAdHcq0Exc8A5qIltWrORr5GlbQu7OpEUlsRIIsRjOPMNEu8MM
-         KJkJ9h2pBNSl3gpKFS1mHwd4Yh8pSmhLhQ+xsdSRbNG79hRNaoSkn4x7kFpQa70zpOTD
-         2baF8bh7XZpGPB+vYEpB3YYp5CA8M37nZpiDjsHG2HM5Q0fM//zJbXVyQcJhoGFY2/US
-         z2kIqi+reocUHP+UQdZF0D/NV28zsna2hcDSgpI8gW4EXq2SmBmeLi6f+WraBCQVK6ZK
-         87OQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=km0tLx3Hb+77Yn2mV9SD+nXc5uKHViN4cP4UCVTdwFw=;
+        b=bXveCDmegZK7Dg+MXhIQShuMS/xuSf2+iMzkzJ0qHV+xN+Dx9mkmfYHphHG4EjeZUt
+         zbWJkvBpPcdwuJiNzcO5yUclwgDQCZpN2krmP3NpehzelE0mh86ww/qLOKKtyvsv3HX6
+         PqAq9TwxWw9V2hjDpD9zIoji3k57xE4sef5OeKbS6glCur+L1rEo7cpLOPz7vVwNPUVR
+         0Cp0XZWOTksA6gq5QkyvTtIQrNSKpD4TJcNsqSJS2bsmzPUvGPW3NGCIMbPqE2XBdv+a
+         R/tYfV9EBfYVSlKg2DAoDKhnuGBthnOyhZ/xfP5p0RkER+/J2fgciCT6Ybzu9SomngCC
+         huLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
-        b=PyzOgopfhSbx2YYiAax3BGJAuBpIAhQdIknWQzQ34qlIybw5L4WpScqhJADPe34Y6M
-         EnIYXUDkd+sDnXVoyc/0Z7lrsSTZyZPyusKeVu75huVBYrUF/wEH6ErCXB7nirc7vM6B
-         AatJGiFq+PFolX60k/foM/rKIqpFa9ZgWWJk0xkRWPR0RBvJLdoc8bLE2aHw+y77HCcj
-         G+12+TREzYZGio97jWgFLUf3emThyXLXNObTpybFAmZCrORUn3boZp5zB62Q6Xr2KtJ3
-         r52Hd+FBvYshcBLorstm4nO3UiRB9PyRZTJ6yrU3NE7NCrB6qb2qsQiGiAzYhYe/kzlj
-         o8pA==
-X-Gm-Message-State: AOAM533pIuee2Vdf8ViGYYCd4niUZVVvjbgr0/du81+xABG0QnEfubkQ
-        BFENG7DbUZWGzRnMwh0iCgf39g==
-X-Google-Smtp-Source: ABdhPJzExoHgzCqXecb1f0EjKl//W+yhWbxdATLzYoDeYSbylPsBXmpqSv8BG01cnkxtHt/nHoKAEw==
-X-Received: by 2002:a63:1f18:: with SMTP id f24mr6316123pgf.133.1611093499079;
-        Tue, 19 Jan 2021 13:58:19 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id z29sm91002pfk.67.2021.01.19.13.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 13:58:18 -0800 (PST)
-Date:   Tue, 19 Jan 2021 13:58:15 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile
- for manually compiling LLVM and clang
-Message-ID: <20210119215815.efyerbwwq5x2o26q@google.com>
-References: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=km0tLx3Hb+77Yn2mV9SD+nXc5uKHViN4cP4UCVTdwFw=;
+        b=IOVCiUrdiKBL3BJjt4Tp2HrwOFn4CaB63ZM0NeyaFtDwiT3Wtc4p+y+lTrSFigyMF3
+         +zBgdf44NiPbeJ2ChPd2ZcmeRl6ASE0qJxo1n/Td+b6R1RP7sq9vYc6aocWp0Ovqe+Ch
+         21fIHA6VjCZcFUE5e7OtgV2dLxan13W37tXW8zDJ0nw8zfs3JrfBgSlTF5B4CYlg3KSo
+         yHpMuw6HMnRAbui08M7i6pLbewqBsLC9P+X8ZQ4FQsGHk1Vj7+rwGO3g8GG94ZBPGLjK
+         ec5ve1q4HRGN7ZuVcowjhzjEyvPrpzIzaP15IkHCEMLRCFQmVu6r5yVbVSQwo5VJd2oQ
+         WtQw==
+X-Gm-Message-State: AOAM531mOsZc8ZMz0l0Oi7lsWLKT6EVpMWKYnQNrvszdKQCwgY8mM2bX
+        H+Qr/G34o/fE3WP6L6hJOFWJi9XWb7qym+hFmmsZRw==
+X-Google-Smtp-Source: ABdhPJzQwwcAkLru8Gxy5lZvCPBvEUijRCb6QEO1IugJWKnfsfADLbiM9n7r2/b4i8Mk5i/6XE2X3Q45DiFU8KTywp4=
+X-Received: by 2002:a63:1142:: with SMTP id 2mr6367757pgr.263.1611093870873;
+ Tue, 19 Jan 2021 14:04:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
+References: <20210119131724.308884-1-adrian.ratiu@collabora.com>
+ <20210119131724.308884-2-adrian.ratiu@collabora.com> <CAKwvOdkNZ09kkzi+A8diaxViqSufxrHizuBu-7quG6an3Z8iDA@mail.gmail.com>
+ <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
+In-Reply-To: <CAK8P3a0XWVu-oG3YaGppZDedRL=SA37Gr8YM4cojVap5Bwk2TA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 19 Jan 2021 14:04:19 -0800
+Message-ID: <CAKwvOdmPr8T9T=tjiVGWJAw-pGzDgsKxtkLxTW4CwTrHjT-v7A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] arm: lib: xor-neon: remove unnecessary GCC < 4.6 warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-19, Tiezhu Yang wrote:
->The current llvm/clang build procedure in samples/bpf/README.rst is
->out of date. See below that the links are not accessible any more.
+On Tue, Jan 19, 2021 at 1:35 PM Arnd Bergmann <arnd@kernel.org> wrote:
 >
->$ git clone http://llvm.org/git/llvm.git
->Cloning into 'llvm'...
->fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
->$ git clone --depth 1 http://llvm.org/git/clang.git
->Cloning into 'clang'...
->fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+> On Tue, Jan 19, 2021 at 10:18 PM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Tue, Jan 19, 2021 at 5:17 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+> > > diff --git a/arch/arm/lib/xor-neon.c b/arch/arm/lib/xor-neon.c
+> > > index b99dd8e1c93f..f9f3601cc2d1 100644
+> > > --- a/arch/arm/lib/xor-neon.c
+> > > +++ b/arch/arm/lib/xor-neon.c
+> > > @@ -14,20 +14,22 @@ MODULE_LICENSE("GPL");
+> > >  #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+> > >  #endif
+> > >
+> > > +/*
+> > > + * TODO: Even though -ftree-vectorize is enabled by default in Clang, the
+> > > + * compiler does not produce vectorized code due to its cost model.
+> > > + * See: https://github.com/ClangBuiltLinux/linux/issues/503
+> > > + */
+> > > +#ifdef CONFIG_CC_IS_CLANG
+> > > +#warning Clang does not vectorize code in this file.
+> > > +#endif
+> >
+> > Arnd, remind me again why it's a bug that the compiler's cost model
+> > says it's faster to not produce a vectorized version of these loops?
+> > I stand by my previous comment: https://bugs.llvm.org/show_bug.cgi?id=40976#c8
 >
->The llvm community has adopted new ways to build the compiler. There are
->different ways to build llvm/clang, the Clang Getting Started page [1] has
->one way. As Yonghong said, it is better to just copy the build procedure
->in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+> The point is that without vectorizing the code, there is no point in building
+> both the default xor code and a "neon" version that has to save/restore
+> the neon registers but doesn't actually use them.
 >
->I verified the procedure and it is proved to be feasible, so we should
->update README.rst to reflect the reality. At the same time, update the
->related comment in Makefile.
->
->[1] https://clang.llvm.org/get_started.html
->
->Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->Acked-by: Yonghong Song <yhs@fb.com>
->---
->
->v2: Update the commit message suggested by Yonghong,
->    thank you very much.
->
-> samples/bpf/Makefile   |  2 +-
-> samples/bpf/README.rst | 17 ++++++++++-------
-> 2 files changed, 11 insertions(+), 8 deletions(-)
->
->diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->index 26fc96c..d061446 100644
->--- a/samples/bpf/Makefile
->+++ b/samples/bpf/Makefile
->@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
-> TPROGLDLIBS_xsk_fwd		+= -pthread
->
-> # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
->-#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
->+# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> LLC ?= llc
-> CLANG ?= clang
-> OPT ?= opt
->diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
->index dd34b2d..d1be438 100644
->--- a/samples/bpf/README.rst
->+++ b/samples/bpf/README.rst
->@@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
-> Quick sniplet for manually compiling LLVM and clang
-> (build dependencies are cmake and gcc-c++)::
->
->- $ git clone http://llvm.org/git/llvm.git
->- $ cd llvm/tools
->- $ git clone --depth 1 http://llvm.org/git/clang.git
->- $ cd ..; mkdir build; cd build
->- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
->- $ make -j $(getconf _NPROCESSORS_ONLN)
->+ $ git clone https://github.com/llvm/llvm-project.git
->+ $ mkdir -p llvm-project/llvm/build/install
+>           Arnd
 
-llvm-project/llvm/build/install is not used.
+Thoughts?  Also, Nathan brings up my previous point about restrict.
+This would benefit both GCC and Clang as they would not produce 2
+"versions" of the loop; one vectorized if the std::distance between x
+& y >= 8, one scalar otherwise.  But the callers would have to ensure
+no overlap otherwise UB.
 
->+ $ cd llvm-project/llvm/build
->+ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
->+            -DLLVM_ENABLE_PROJECTS="clang"    \
->+            -DBUILD_SHARED_LIBS=OFF           \
+diff --git a/include/asm-generic/xor.h b/include/asm-generic/xor.h
+index b62a2a56a4d4..7db16adc7d89 100644
+--- a/include/asm-generic/xor.h
++++ b/include/asm-generic/xor.h
+@@ -7,12 +7,21 @@
 
--DBUILD_SHARED_LIBS=OFF is the default. It can be omitted.
+ #include <linux/prefetch.h>
 
->+            -DCMAKE_BUILD_TYPE=Release        \
->+            -DLLVM_BUILD_RUNTIME=OFF
++/* Overrule LLVM's cost model in order to always produce a vectorized loop
++ * version.
++ */
++#if defined(__clang__) && defined(CONFIG_ARM)
++#define FORCE_VECTORIZE _Pragma("clang loop vectorize(enable)")
++#else
++#define CLANG_FORCE_VECTORIZE
++#endif
++
+ static void
+ xor_8regs_2(unsigned long bytes, unsigned long *p1, unsigned long *p2)
+ {
+        long lines = bytes / (sizeof (long)) / 8;
 
--DLLVM_BUILD_RUNTIME=OFF can be omitted if none of
-compiler-rt/libc++/libc++abi is built.
+-       do {
++       FORCE_VECTORIZE do {
+                p1[0] ^= p2[0];
+                p1[1] ^= p2[1];
+                p1[2] ^= p2[2];
+@@ -32,7 +41,7 @@ xor_8regs_3(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
 
->+ $ ninja
->
-> It is also possible to point make to the newly compiled 'llc' or
-> 'clang' command via redefining LLC or CLANG on the make command line::
->
->- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
->+ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
->
-> Cross compiling samples
-> -----------------------
->-- 
->2.1.0
->
->-- 
->You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
->To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
->To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1611042978-21473-1-git-send-email-yangtiezhu%40loongson.cn.
+-       do {
++       FORCE_VECTORIZE do {
+                p1[0] ^= p2[0] ^ p3[0];
+                p1[1] ^= p2[1] ^ p3[1];
+                p1[2] ^= p2[2] ^ p3[2];
+@@ -53,7 +62,7 @@ xor_8regs_4(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
+-       do {
++       FORCE_VECTORIZE do {
+                p1[0] ^= p2[0] ^ p3[0] ^ p4[0];
+                p1[1] ^= p2[1] ^ p3[1] ^ p4[1];
+                p1[2] ^= p2[2] ^ p3[2] ^ p4[2];
+@@ -75,7 +84,7 @@ xor_8regs_5(unsigned long bytes, unsigned long *p1,
+unsigned long *p2,
+ {
+        long lines = bytes / (sizeof (long)) / 8;
+
+-       do {
++       FORCE_VECTORIZE do {
+                p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0];
+                p1[1] ^= p2[1] ^ p3[1] ^ p4[1] ^ p5[1];
+                p1[2] ^= p2[2] ^ p3[2] ^ p4[2] ^ p5[2];
+-- 
+Thanks,
+~Nick Desaulniers
