@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9182FC072
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A222FC09C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730237AbhAST5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:57:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392147AbhAST4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:56:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5233423104;
-        Tue, 19 Jan 2021 19:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611086132;
-        bh=5OONEVY+UXy6TZlBP5jOksmHE3/6yEFjijufZCWKRSk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mM6GekNo7M7nZMz3BIKqqTmHjNWaC+UHwfBf/Ym4I4WwPC4O8j/MXCfsZGMA4ABeg
-         cSR04o38SZOmkPccHe+BYj6DmehUbJP+kMDnqsmmHMYX8LYUA6/M1DKIHPd5u7P/Vk
-         2WOqFC8yWm7ykWYWlyzGkpUyAJHkEFNvUCnWZG1CgAI0NH47RSJWjsPqop8kU6R09+
-         7HvpHlS8r2BMv74iDfrQ1i2befSznTzu74rUbq38byvL8S4oOOexaUt4QwekjFZrvH
-         EjKS0NAfboOkX1Finu1tpqNThU4ahql1a6MHnw0c21vEXtoeXxay335c8kMCe7uBwn
-         7Ov6djH6k3J1Q==
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-To:     Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-References: <20210116220950.47078-1-timur@kernel.org>
- <20210118182635.GD2260413@casper.infradead.org>
- <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
- <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <202101191135.A78A570@keescook>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
-Date:   Tue, 19 Jan 2021 13:55:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2404535AbhASTGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392074AbhASRzg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:55:36 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F04C061796;
+        Tue, 19 Jan 2021 09:48:41 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id A90BE3F1FF;
+        Tue, 19 Jan 2021 18:45:58 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     viresh.kumar@linaro.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v4 0/7] cpufreq-qcom-hw: Implement full OSM programming
+Date:   Tue, 19 Jan 2021 18:45:50 +0100
+Message-Id: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <202101191135.A78A570@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/21 1:45 PM, Kees Cook wrote:
-> How about this so the base address is hashed once, with the offset added
-> to it for each line instead of each line having a "new" hash that makes
-> no sense:
-> 
-> diff --git a/lib/hexdump.c b/lib/hexdump.c
-> index 9301578f98e8..20264828752d 100644
-> --- a/lib/hexdump.c
-> +++ b/lib/hexdump.c
-> @@ -242,12 +242,17 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->   		    const void *buf, size_t len, bool ascii)
->   {
->   	const u8 *ptr = buf;
-> +	const u8 *addr;
->   	int i, linelen, remaining = len;
->   	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
->   
->   	if (rowsize != 16 && rowsize != 32)
->   		rowsize = 16;
->   
-> +	if (prefix_type == DUMP_PREFIX_ADDRESS &&
-> +	    ptr_to_hashval(ptr, &addr))
-> +		addr = 0;
-> +
->   	for (i = 0; i < len; i += rowsize) {
->   		linelen = min(remaining, rowsize);
->   		remaining -= rowsize;
-> @@ -258,7 +263,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->   		switch (prefix_type) {
->   		case DUMP_PREFIX_ADDRESS:
->   			printk("%s%s%p: %s\n",
-> -			       level, prefix_str, ptr + i, linebuf);
-> +			       level, prefix_str, addr + i, linebuf);
+  **
+  ** NOTE: To "view the full picture", please look at the following
+  ** patch series:
+  ** https://patchwork.kernel.org/project/linux-arm-msm/list/?series=413355
+  **              This is a subset of that series.
+  **
 
-Well, this is better than nothing, but not by much.  Again, as long as 
-%px exists for printk(), I just cannot understand any resistance to 
-allowing it in print_hex_dump().
+Changes in v4:
+- Huge patch series has been split for better reviewability,
+  as suggested by Bjorn
+- Rebased code on top of 266991721c15 ("cpufreq: qcom-hw: enable boost
+  support")
 
-Frankly, I think this patch and my patch should both be added.  During 
-debugging, it's very difficult if not impossible to work with hashed 
-addresses.  I use print_hex_dump() with an unhashed address all the 
-time, either by applying my patch to my own kernel or just replacing the 
-%p with %px.
+Changes in v3:
+- Fixed a test robot build failure for ARCH=arm
+- Fixed dt_binding_check YAML doc issues
+
+Changes in v2:
+- Rebased dt-binding on top of Manivannan's patches
+- Added MSM8998 to cpufreq-dt-platdev blacklist
+- Implemented dynamic Memory Accelerator corners support, needed
+  by MSM8998
+- Implemented ACD programming, needed by MSM8998
+
+Tested on the following smartphones:
+- Sony Xperia XA2        (SDM630)
+- Sony Xperia XA2 Ultra  (SDM630)
+- Sony Xperia 10         (SDM630)
+- Sony Xperia XZ Premium (MSM8998)
+- F(x)Tec Pro 1          (MSM8998)
+
+From SDM845 onwards, SAW, CPRh and OSM are getting setup by the
+bootloader/TZ *before* booting the OS, so then all the OS has to do
+is to request a specific performance state to the OSM hardware and
+forget about all the rest, which is anyway protected by the hypervisor
+(so there's no access anyway);
+
+BUT:
+
+In MSM/APQ 8998, SDM/SDA 630/636/660 (and other variants), there is no
+setup of any of these puzzle pieces, and they're also (basically) fully
+accessible, which means that the OS must do it in order to get in the
+same state as the newer ones and to get the entire scaling hardware to
+start rolling.
+
+AngeloGioacchino Del Regno (5):
+  cpufreq: blacklist SDM630/636/660 in cpufreq-dt-platdev
+  cpufreq: blacklist MSM8998 in cpufreq-dt-platdev
+  cpufreq: qcom-hw: Implement CPRh aware OSM programming
+  cpufreq: qcom-hw: Allow getting the maximum transition latency for
+    OPPs
+  dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
+
+Manivannan Sadhasivam (2):
+  dt-bindings: arm: cpus: Document 'qcom,freq-domain' property
+  dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML bindings
+
+ .../devicetree/bindings/arm/cpus.yaml         |    6 +
+ .../bindings/cpufreq/cpufreq-qcom-hw.txt      |  172 ---
+ .../bindings/cpufreq/cpufreq-qcom-hw.yaml     |  242 ++++
+ drivers/cpufreq/cpufreq-dt-platdev.c          |    4 +
+ drivers/cpufreq/qcom-cpufreq-hw.c             | 1247 ++++++++++++++++-
+ 5 files changed, 1467 insertions(+), 204 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+
+-- 
+2.30.0
+
