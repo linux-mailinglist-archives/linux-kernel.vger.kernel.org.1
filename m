@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEDD2FBE88
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE4E2FBE85
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404147AbhASSF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:05:29 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:51873 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390848AbhASRkB (ORCPT
+        id S2391944AbhASSEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:04:49 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:40004 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391273AbhASRkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:40:01 -0500
-Received: by mail-io1-f71.google.com with SMTP id y20so34077879ioy.18
+        Tue, 19 Jan 2021 12:40:00 -0500
+Received: by mail-io1-f69.google.com with SMTP id l18so36926361iok.7
         for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:39:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=y8kaXTac/zHnZjOPvN43x8xNUdLTe7kCmAq1Z4neSjk=;
-        b=HO3OPhmjj0wKE69QsEjnZ+dWLr7iTIWu0ogdZEWjsAtvg0hAvxHGinbH+ASVoZjRj4
-         LLfMLpJLhFLaw33d03BwzltlYybRRDJTsAEvebepeoJ69LvhrfZY5ilyiiDzYcq/6qj2
-         6G4MxiKuBNLbVE3RpXwOYslMsfLC8GFiTaoYMw+N+RVUZXMCY6btROzqkaoyKCFbUKcL
-         9mixfqwI0/deq9BY7EFpudwgH7dP9k0pVkgl2A18g+aVWteFC24Ad4G9VbX6DhXDgLBM
-         zGyjPlLME0Ko/Ph1++sMVurVqFmVuY/qr1UPa+Ru59tw8rHkUvwwhd3TSO4/drj+AowL
-         hdHQ==
-X-Gm-Message-State: AOAM5338C3f9Kx1ro/lYYEo+ntfLVfFI6JOuqwQ8d+JbtZBetFtN4uyn
-        OEu/rPoZQAP1oa5/Eutrb0+uAHK4rI++UBwBN0jWCj7YROAu
-X-Google-Smtp-Source: ABdhPJyr7ylh9Z/6TwryrQSWL58V8638Sa5T4OoVVNyFbmwhph8jW+4h2EPUhXJyK0ekSnsil2xboF6PlPDu4L9QpYChiS6PYWdB
+        bh=BrtrFB5BOP2JCJwrDmBx4rTYl4+oGSknnaiU84Ea2LE=;
+        b=Kk3FrMz/KpfPo2D1+aXk/GYbnsg1/z4ITVsZVGQkpQBcN9T0oIIIvzCt7yrcYw6qGm
+         2Fidwc7c8xvGVDD0ZRPtRhN/1GL2prZfC/bHTrt7k9W7V0M6Zfx8GSlkNRLgb38zLuoy
+         iaujQPu3ZF5CRMh9UwaTtLFL1QFMf+ZHC4/B49nbkyRgQRVCfCoJO/M+/JkbTqKGNW+R
+         A3byEThOJJjZg7v3jrVvmcDWBjkMHlkZlpPy4ONA3l8eJ8LECV6UTkHN5kTkjc/qCzur
+         hg62ZCg6bT4ei45abHCyAWtevwAFhezfZXw/BNlvLpItnW9BbCE3sWW2WWjZGbUiZAB7
+         9ynQ==
+X-Gm-Message-State: AOAM5309JzsrVuAinzQSrgTkNnErk8b9Z863jpWrAFQY/b8J+EIYm7Q3
+        1edQxetCpybevmkbEj0LjqYdnENPzw1jcCp3ZxqTjvUyVchc
+X-Google-Smtp-Source: ABdhPJwtTJ+NkPvzVZaOiHx3jIJe9Ij8tMbJQ4dZTSsAjfDKRQtgm7dOB/peCofp0aLhV63O9eKcShjFjGu+X9gomk/jIOoKpEEv
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:c6:: with SMTP id r6mr4246452ilq.95.1611077959908;
- Tue, 19 Jan 2021 09:39:19 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:39:19 -0800
+X-Received: by 2002:a6b:2d4:: with SMTP id 203mr3716775ioc.0.1611077960160;
+ Tue, 19 Jan 2021 09:39:20 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:39:20 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081830a05b9445165@google.com>
-Subject: BUG: sleeping function called from invalid context in rxe_alloc_nl
-From:   syzbot <syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@nvidia.com, jgg@ziepe.ca,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rpearson@hpe.com, rpearsonhpe@gmail.com,
-        syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com
+Message-ID: <000000000000855b9a05b94451de@google.com>
+Subject: WARNING in smk_write_net6addr
+From:   syzbot <syzbot+10c962a5945f43cca2e8@syzkaller.appspotmail.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,100 +49,62 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b4bb878f Add linux-next specific files for 20210119
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d34e9f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1ca623d7cc5ca3
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec2fd72374785d0e558e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148035af500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10eb8494d00000
+HEAD commit:    1d94330a Merge tag 'for-5.11/dm-fixes-1' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=124f589f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
+dashboard link: https://syzkaller.appspot.com/bug?extid=10c962a5945f43cca2e8
+compiler:       clang version 11.0.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115c4af7500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168e0858d00000
 
-The issue was bisected to:
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-commit 3853c35e243d56238159e8365b6aca410bdd4576
-Author: Bob Pearson <rpearsonhpe@gmail.com>
-Date:   Wed Dec 16 23:15:49 2020 +0000
-
-    RDMA/rxe: Add unlocked versions of pool APIs
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126612d0d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=116612d0d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=166612d0d00000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c008e7500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15c008e7500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c008e7500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com
-Fixes: 3853c35e243d ("RDMA/rxe: Add unlocked versions of pool APIs")
+Reported-by: syzbot+10c962a5945f43cca2e8@syzkaller.appspotmail.com
 
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-infiniband syz2: set active
-infiniband syz2: added bond_slave_0
-BUG: sleeping function called from invalid context at drivers/infiniband/sw/rxe/rxe_pool.c:346
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 8459, name: syz-executor401
-6 locks held by syz-executor401/8459:
- #0: ffffffff8fc4a418 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
- #1: ffffffff8c78ced0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
- #2: ffffffff8c77c470 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1307
- #3: ffffffff8c77c330 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1315
- #4: ffff88802adc8598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:715
- #5: ffff88802adc9640 (&pool->pool_lock){....}-{2:2}, at: rxe_alloc+0x1b/0x40 drivers/infiniband/sw/rxe/rxe_pool.c:384
-irq event stamp: 138912
-hardirqs last  enabled at (138911): [<ffffffff88fe5c72>] __raw_read_unlock_irqrestore include/linux/rwlock_api_smp.h:235 [inline]
-hardirqs last  enabled at (138911): [<ffffffff88fe5c72>] _raw_read_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:263
-hardirqs last disabled at (138912): [<ffffffff88fe5955>] __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:157 [inline]
-hardirqs last disabled at (138912): [<ffffffff88fe5955>] _raw_read_lock_irqsave+0x85/0x90 kernel/locking/spinlock.c:231
-softirqs last  enabled at (138886): [<ffffffff89000eaf>] asm_call_irq_on_stack+0xf/0x20
-softirqs last disabled at (138843): [<ffffffff89000eaf>] asm_call_irq_on_stack+0xf/0x20
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 8459 Comm: syz-executor401 Not tainted 5.11.0-rc4-next-20210119-syzkaller #0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8460 at mm/page_alloc.c:4977 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5021
+Modules linked in:
+CPU: 1 PID: 8460 Comm: syz-executor559 Not tainted 5.11.0-rc3-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5021
+Code: ab 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 f4 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
+RSP: 0018:ffffc900017cf8a0 EFLAGS: 00010246
+RAX: ffffc900017cf920 RBX: ffffc900017cf920 RCX: 0000000000000000
+RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc900017cf948
+RBP: ffffc900017cf9e0 R08: dffffc0000000000 R09: ffffc900017cf920
+R10: fffff520002f9f29 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000012 R14: 1ffff920002f9f20 R15: 0000000000040cc0
+FS:  00000000025fa880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbe8867e6c0 CR3: 0000000021afc000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:8083
- rxe_alloc_nl+0x55c/0x710 drivers/infiniband/sw/rxe/rxe_pool.c:346
- rxe_alloc+0x26/0x40 drivers/infiniband/sw/rxe/rxe_pool.c:385
- rxe_get_dma_mr+0x49/0x110 drivers/infiniband/sw/rxe/rxe_verbs.c:870
- __ib_alloc_pd+0x277/0x6d0 drivers/infiniband/core/verbs.c:299
- ib_mad_port_open drivers/infiniband/core/mad.c:2981 [inline]
- ib_mad_init_device+0xc78/0x1400 drivers/infiniband/core/mad.c:3092
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
- enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1317
- ib_register_device drivers/infiniband/core/device.c:1399 [inline]
- ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1351
- rxe_register_device+0x3b2/0x480 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
- rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:489
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
- rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
- nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc_track_caller+0x246/0x330 mm/slub.c:4457
+ memdup_user_nul+0x26/0xf0 mm/util.c:260
+ smk_write_net6addr+0x124/0x25b0 security/smack/smackfs.c:1433
+ vfs_write+0x289/0xc90 fs/read_write.c:603
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443689
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd92ed8ec8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443689
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 00007ffd92ed8ed0 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd92ed8ee0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-RDS/IB: syz2: added
-smc: adding ib device syz2 with port count 1
-smc:    ib device syz2 port 1 has pnetid 
+RIP: 0033:0x4403b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc17e5a7e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004403b9
+RDX: 000000002000012e RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000014 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401bc0
+R13: 0000000000401c50 R14: 0000000000000000 R15: 0000000000000000
 
 
 ---
