@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F762FB8A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA632FB8A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392692AbhASN2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:28:09 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:38586 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391542AbhASNS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:18:57 -0500
-Received: from zn.tnic (p200300ec2f0bca001beaf3e1446171b7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:1bea:f3e1:4461:71b7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA0741EC05F1;
-        Tue, 19 Jan 2021 14:17:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611062279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=49X+dnnC4B/ABzZM6fYCQbbb7PQaNSr+M45P48fRRVo=;
-        b=gfC4JVAPrd2rAZJy0ufv7U7FyT3q2WPsF7fWGSPqwSHylSY5cHS0PWdNGCWfrHTcpixcGX
-        Xw4WPkYm3w6ND3AMHt+knar/UAOwijkUEBnNn2ANOrQJf8hNHq32QFHPyupYOj83o3Molu
-        aUGwQp4TCwKJ6Og3MvYkAgOVGvWwb18=
-Date:   Tue, 19 Jan 2021 14:17:59 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Jonathan Lemon <bsd@fb.com>, Tony Luck <tony.luck@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [x86/mce]  7bb39313cd:  netperf.Throughput_tps -4.5% regression
-Message-ID: <20210119131759.GL27433@zn.tnic>
-References: <20210112142109.GE30747@xsang-OptiPlex-9020>
- <20210112141438.GF13086@zn.tnic>
- <20210116035251.GB29609@shbuild999.sh.intel.com>
- <20210116153413.GP2743@paulmck-ThinkPad-P72>
- <20210116160921.GA101665@shbuild999.sh.intel.com>
- <20210119042721.GA12664@paulmck-ThinkPad-P72>
- <20210119100255.GC27433@zn.tnic>
- <20210119121505.GA111354@shbuild999.sh.intel.com>
+        id S2392178AbhASN1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:27:45 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:43398 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404399AbhASNUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 08:20:43 -0500
+Received: by mail-oi1-f179.google.com with SMTP id q25so21077411oij.10;
+        Tue, 19 Jan 2021 05:19:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kUDdGSpowK1CEbj8McVC+bBtkLq63WQr+Zql2YLqG5U=;
+        b=APR2QqebwLBhixWfzvKPO1J2toMMxc5wGp2eyDUTVTgDdeiNhXK9t6GdizLJ1xkZqO
+         9FUJcPELlC8JsKvZHgBtP/Ouyr8wWl7/QC6N2kqS0Li/vWGRmut2IRxVbXPhlkaNolc+
+         YXtBkshomBq06Z92/3M3YA3v32X5IuS3Fjcs2T+j7H8yNeRu/EH+gKLfKCGJPh9Buv2w
+         PH0oMcgsVw9Y6E7Bp34L49D7RMsDRVlVulxSNBXLwVyuZf1n6mqf1hlwIDnkodjDxUv5
+         TSBMz7CAVNaWyjyCpMwPiJ6OEpyBpr+lxLlu9AucA+mGHM9ffrkAt1B/xb2zhDj9eT2T
+         EnZg==
+X-Gm-Message-State: AOAM5320PfM7sBJ4mg7+Ikxwfq1IGR98LK0HQaVUFF7cmGuDrycn1e5q
+        +seTqS7UdaDCLlahsDcTmZN/4kOlHfyFAY4r+II=
+X-Google-Smtp-Source: ABdhPJx6gcAwtwXRqp5/IJOsji1kIJ+Z/62NGRk7TKZOMu+nRuZ+LcTh4icQ0/TaVor6jnR3+WE/obLzf1Lcm6Gy7n8=
+X-Received: by 2002:aca:5c05:: with SMTP id q5mr2555018oib.157.1611062368209;
+ Tue, 19 Jan 2021 05:19:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210119121505.GA111354@shbuild999.sh.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-5-djrscally@gmail.com>
+ <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
+In-Reply-To: <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Jan 2021 14:19:16 +0100
+Message-ID: <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Scally <djrscally@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:15:05PM +0800, Feng Tang wrote:
-> On Tue, Jan 19, 2021 at 11:02:55AM +0100, Borislav Petkov wrote:
-> > On Mon, Jan 18, 2021 at 08:27:21PM -0800, Paul E. McKenney wrote:
-> > > I bet that the results vary depending on the type of CPU, and also on
-> > > the kernel address-space layout, which of course also varies based on
-> > > the Kconfig options.  Let's see how the maintainers would like to proceed.
-> > 
-> > So I ran the "reproduce" script in the original mail on a KBL box here
-> > with the .config tailored for it:
-> > 
-> > cpu family      : 6
-> > model           : 158
-> > model name      : Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz
-> > stepping        : 12
-> > microcode       : 0xd6
-> 
-> I will also try to find a similar KBL in 0day to run the job. This
-> -4.5% comes from a CascadeLake AP which is 4 nodes, 96C/192T.
-> 
-> > and I get mixed results. But I'd need to know how exactly they generate
-> > the metrics "netperf.Throughput_total_tps" and "netperf.Throughput_tps"
-> > 
-> > Feng?
-> 
-> I have to admit I'm just a dumb user of 0day :) I'll leave this question
-> to Philip/Oliver/Rong who are from 0day team.
-> 
-> I assumed you've cloned the lkp-tests.git, and seems one Ruby file
-> https://github.com/intel/lkp-tests/blob/master/stats/netperf is used to
-> process the output of the netperf.
+On Mon, Jan 18, 2021 at 9:55 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Daniel,
+>
+> Thank you for the patch.
+>
+> On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
+> > We want to refer to an i2c device by name before it has been
+>
+> s/i2c device/acpi i2c device/ ?
+>
+> > created by the kernel; add a function that constructs the name
+> > from the acpi device instead.
+> >
+> > Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> > ---
+> > Changes in v2:
+> >
+> >       - Stopped using devm_kasprintf()
+> >
+> >  drivers/i2c/i2c-core-acpi.c | 16 ++++++++++++++++
+> >  include/linux/i2c.h         |  5 +++++
+> >  2 files changed, 21 insertions(+)
+> >
+> > diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
+> > index 37c510d9347a..98c3ba9a2350 100644
+> > --- a/drivers/i2c/i2c-core-acpi.c
+> > +++ b/drivers/i2c/i2c-core-acpi.c
+> > @@ -497,6 +497,22 @@ struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
+> >  }
+> >  EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
+> >
+> > +/**
+> > + * i2c_acpi_dev_name - Construct i2c device name for devs sourced from ACPI
+> > + * @adev:     ACPI device to construct the name for
+> > + *
+> > + * Constructs the name of an i2c device matching the format used by
+> > + * i2c_dev_set_name() to allow users to refer to an i2c device by name even
+> > + * before they have been instantiated.
+> > + *
+> > + * The caller is responsible for freeing the returned pointer.
+> > + */
+> > +char *i2c_acpi_dev_name(struct acpi_device *adev)
+> > +{
+> > +     return kasprintf(GFP_KERNEL, I2C_DEV_NAME_FORMAT, acpi_dev_name(adev));
+>
+> There's a real danger of a memory leak, as the function name sounds very
+> similar to dev_name() or acpi_dev_name() and those don't allocate
+> memory. I'm not sure what a better name would be, but given that this
+> function is only used in patch 6/7 and not in the I2C subsystem itself,
+> I wonder if we should inline this kasprintf() call in the caller and
+> drop this patch.
 
-$ ../lkp-tests/stats/netperf  < rc2.log
-Throughput_tps: 12759.701875000002
-Throughput_total_tps: 204155.23000000004
-workload: 61246569.000000015
-
-$ ../lkp-tests/stats/netperf  < with-holdout.log
-Throughput_tps: 12863.416875
-Throughput_total_tps: 205814.67
-workload: 61744401.00000001
-
-So this definitely depends on the .config because in my case, *with* the
-holdout patch it is better vs plain 5.11-rc2.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+IMO if this is a one-off usage, it's better to open-code it.
