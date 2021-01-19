@@ -2,376 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E472FB703
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400DC2FB701
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388901AbhASJuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:50:04 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10762 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387465AbhASJ3o (ORCPT
+        id S2388829AbhASJtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:49:52 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:24455 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387439AbhASJ3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:29:44 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6006a6500001>; Tue, 19 Jan 2021 01:28:48 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 09:28:48 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 19 Jan 2021 09:28:44 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [RESEND PATCH v6 3/6] ASoC: tegra: Add audio graph based card driver
-Date:   Tue, 19 Jan 2021 14:58:13 +0530
-Message-ID: <1611048496-24650-4-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+        Tue, 19 Jan 2021 04:29:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611048584; x=1642584584;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=VYb0BXiQJtOAiOfaabg+I0DtkW8uo5nju/KrgjCFAvM=;
+  b=J5tIuBJwAwoI7OLe7xrK52+C8O1T8raT/FrnMQHMTO3uccnCJfkhbyPD
+   pqVTLigYa7iyH5em9wotjDWHxwWXlxZqHEn08eE1KRHLe/b0jtXPR4udX
+   PsvxpZieltCa9WHUUk4+ve3TI321MqdUmIKKnFfMDABKVv1odexlVDxPx
+   b+c2j+pX2Kl8z5RbKAgWZA04AWtWOPmeVQDHQtWM/COGUOOZ+JoX6ock6
+   id9/3Owf4ZvsMw1s2XiWqjhK1lwmzeXM494IWNchnX8zyeRlOOaxPPjyS
+   aysXOoZDS9cBo2IvrQ2Dqp4B2+MUqETtfhj6swl/VAt/gJC7PzpWStzQD
+   Q==;
+IronPort-SDR: 9xM3qGmvA0EmL7oVd/Z71JOr1PMGvJnCeOkNLovnt3vszkf7qkAyKRO/zeWhX7DEq7nG5oUgGm
+ 9UoNHDOwyVYlNk/kQyu8ZaaU5a97vxxNnu28zCLABJOTEu+m9wAKGDvVUiEUgvgLfStvQPg21o
+ DIOun/+vOb6VTFA1RaOnWT6llRYk3AOEtF46oETrcuAVOWdlRlFt66mW3Q4wScMZnYHsvE8aHQ
+ MlDyMpRKVi5nMoxXlF0Cw4CDGwqQz/0lj5Ei9G3LuzzuCeM44xF3qvMdiNktnImgzDWaiVa84/
+ pJQ=
+X-IronPort-AV: E=Sophos;i="5.79,358,1602518400"; 
+   d="scan'208";a="158960680"
+Received: from mail-dm6nam11lp2172.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.172])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 17:28:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fbQwdhhGzX4wxbyG4nR34WkEZ8m/hNAD4RKvUGkZ7lB8DQmvURZAmpv+Y48Vc+vrH5Uj7xTF/xy7OJB5wdam2FGwAaX0aw69uo1KT13VZ0KnBkM4ZdjbM9v85oNvwQt9ZlPp46owotsFebf7VjA3brlHR5NdXUwdpeeM7EIJpNsGtN5S+PS9c8pouTA7FYLGZXqd+V3nZhKkKd6RV2I+APV6/nOedRakkthMozsszj2rTJE5Ls1TkFVOfcO7Zv7QCDblnVN6j2xYT3yV6rSgniHIkwnD1G2xx+ZZn6ndrW0DzNZkqgv9U3kWxSfZR54l02sX0g6+ki1yGS+hBkIxUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYb0BXiQJtOAiOfaabg+I0DtkW8uo5nju/KrgjCFAvM=;
+ b=B3MPFZF5PzIJlGsO2kLQxVwdz41aZS3xaAvZFCb3x5iL5hXWCgCaXCsiyzqEajBH1Z3gtUI+3xTFLD4oWdnJE4609CI+gjzB6tX3d4F7XX/K3fV4OftNkJV0f3CiDyWjioD2n58n4Cm+ekpTA41DLWPvqTCCSvKt6EYmyBQeju1zyHTHmraqUj1eYRNFV8jAiEHGYr5UYgVRNZUEe1IYE+EWbn71466IwoX3iq3OJvV94buVhDKvW0Csy4voFJmWD/VEetO96Yo2IbVK6KpcQuV4gB0Gjd1W+u/iwSjjRZ7ZSZzO9I+8TTniyrF4x8gFlmcIuIt3FUxhOgDhQlS9RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYb0BXiQJtOAiOfaabg+I0DtkW8uo5nju/KrgjCFAvM=;
+ b=f1f9VSqBn+02xOKyGYxXxPfI7IyT61+yDsW6ReN0o38Qdb3zHLpYX3r7F5usrqagfCLn2TTr+dbMuW5hZXa6kfsK+hxiuSMii2mZZxE/AYRVE5onbji0blYO/j/eTFWGi4i7DgMRe3U5MUbeMUd4wjJRPHz1LRXs69eQQESRrig=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB7132.namprd04.prod.outlook.com (2603:10b6:5:247::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.10; Tue, 19 Jan 2021 09:28:14 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 09:28:14 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: ufs: delete redundant if statement in ufshcd_intr()
+Thread-Topic: [PATCH] scsi: ufs: delete redundant if statement in
+ ufshcd_intr()
+Thread-Index: AQHW7dZaW0JuPmYTxkCI7jZkMz323KourvEg
+Date:   Tue, 19 Jan 2021 09:28:13 +0000
+Message-ID: <DM6PR04MB6575BA0870E0C2DEA03119BEFCA30@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210118201233.3043-1-huobean@gmail.com>
+In-Reply-To: <20210118201233.3043-1-huobean@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c830018a-171f-4ac0-db09-08d8bc5c8bc3
+x-ms-traffictypediagnostic: DM6PR04MB7132:
+x-microsoft-antispam-prvs: <DM6PR04MB7132089660CBDFCA2C16C863FCA30@DM6PR04MB7132.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:644;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FmQsyOJbVVPRvWaWF5YM9HJzqG/NZ9c08cjHgkKuWvkabpqOiwfkn5n7MjuVWEIYu77ETKGSy8oQT5iKkG5ZaScUfgtxAefiTKQliw+vaO+jQ+hNmBxP5g0vnB3aTIbaTu6UAMgUPnQhY1RjoHhXD2Sj6SrcSerK8RiE/zOVJ3+UitWpZHmi5N3UVKWJLoOPV+o0OJeV5CaP3MiPuBF+bLA7ujzm3efqVind8O0uu0LPkhK06DHhxtUISLxSs4pdNMlXrJso/a7ElHodrVf/j6fo1IEVP877W6lUWmHFyApDGnEDzV0uhAi1auC/M8s9IvIAm6pJvshjtF7iQ5EXzHekjjOG9ZJNf/hL65w9eZubqXH4Yn3Yymt7nKfWRhEkLajB84PgQEmdxEwXu8s70LMGEwO6iM98GkyAl0i+6B3IHsmHIuYW1yyXXoGRW6t4lj1kRdyVNDkDZJuYfAHk/KokWzAusMz/VYgIkcS+04d6FdO+fRgcnc0Y5/1fu7Fzg6jVwARMW37+N2MRtwTto9ph3t3z1/IUrVpHM0tbvSpcH46xgE75hxQDgOrurHmm
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(346002)(396003)(9686003)(55016002)(558084003)(2906002)(7416002)(110136005)(8936002)(71200400001)(33656002)(186003)(54906003)(7696005)(316002)(86362001)(6506007)(921005)(4326008)(26005)(66556008)(52536014)(478600001)(5660300002)(64756008)(66946007)(66446008)(76116006)(8676002)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ZHy+i+PsTPcMaqknreTA7ltriGiqRmkWDypVHUuZk4ViHsOA2DPEQH1et4Y7?=
+ =?us-ascii?Q?8NwKr8pDtHQbfry2Ca0pcyGi162WtW88T+ntdLuKMY8WoMg2j2Sk1Pf44xH5?=
+ =?us-ascii?Q?k3wgtPDgb4MtZwtha29tmsAegiKFGEsah703ePvIPT8MoJ8LvVnPts/pgWCY?=
+ =?us-ascii?Q?ROIjZ4ciKBWb1TgBOeFI+CbSMJvcQik+qKmDse+IMKWHKhDByI+rGXWoXbxu?=
+ =?us-ascii?Q?MChV7f3GtSgWtHTbMk9tFAW+G+hEUa8JQTgfWdqd+kgqYAvF8AaIk7pqiU8a?=
+ =?us-ascii?Q?UysB7RX3SJQ1/4sji/MS93L8wzV3uDMQ8mD3pcDQCml2LGvVQSbiuP6vDv04?=
+ =?us-ascii?Q?Ss4sgUysA+NmMgh7rvtWyCfda1lZK33CQPxlmEdX5gdLZuahqPsuBfNyKUoV?=
+ =?us-ascii?Q?DeM/B5EVPy9o2JQd6aUH0vXXiDXKA9azkrXu+oAOT2N5W25WbWapoGqcV0Hc?=
+ =?us-ascii?Q?rOxQXodNPMsAwWHsRYjxJZfXYdmrQAw+00FbvQaOMdYZ70bP33RLjNBM857p?=
+ =?us-ascii?Q?Qd+JWiLCx4ZCOKo2aVNgZZtYwudpe0RA1gcnT1w8vWSPJMQv4HxuNFEG5AjT?=
+ =?us-ascii?Q?C4BvEtjNSEwMeGMkPBFfFtj0hBLwG+ArgIH6n2RBBJHIqdTjQukQZdZwpqZO?=
+ =?us-ascii?Q?fmaElnatnZoNs+XzBP+Tz0GwSGwTGIzG4PRm/lG+nmjNx6r3S6s0aYaxah0T?=
+ =?us-ascii?Q?7qzt9dn/T6R4O6la/znGIXsxOvrr3SutSKppxukHNyEKEV+9eA5VkWNqYhQ2?=
+ =?us-ascii?Q?fTwd67BuIyaWxCpXeNHyn1kZ+MnPTh+i9zz04/7aL7ejL4egsQrXjXLMr9no?=
+ =?us-ascii?Q?ETzEzfO1NGagQ/o1+Dn08ylkdCOipwNRNcClPQqkp9OWeY3srthvwExgsrop?=
+ =?us-ascii?Q?P1UiE9ZBY2PYoD92MDdXcFopFF3E4xj+pmbvjjTrFfcEFpkGFUNMD83g0MUb?=
+ =?us-ascii?Q?Ff+a8JqUcUx0vy+baCqvsXzYjyoJnq3nB8bfhHHNQMg=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611048528; bh=myn0avhGV8FRG9HA6zQNhSBQW8UTjpYuBexd3sk0A6w=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=m9vW/HRMemRjp1mhm0Ecz/1Mc58eAxzpOdprgp43gUQ79Tq9gw3dtmA8Jk942JM6l
-         SSKXnOTC/AIL43KsOBNRurynZRs86/C1ii9o+xKAEhqPUk5wJap3PfaHq9bibT8kOf
-         jeYuQmfF0oalJ93Qy2eTJNT+XGXbBP3GZfWEiAJA+DYZ3qtM7DldMksNMDqgvMVMoz
-         0EcFR4LO3BieeVY78GnSCnBMq9doU+WyINnNpjhKoY3rgx/HcBbUC3tPv67h6gO4vu
-         exT1fyuzO9laGOq+95xhdFIEOE5SKsibmESQ4mDZUGr2/kScX4CSbExYtv8HRhQn8h
-         WTa9XYHKCecwQ==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c830018a-171f-4ac0-db09-08d8bc5c8bc3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 09:28:14.0199
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xXkyRjNpzeBjaHMawVOvQK4Bd5sFEqA0tpL4LAnV7mJyPUtOXo2ArCvULNmphwapE0SPPTZqGj4+JfsaX4UOdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Tegra audio machine driver which is based on generic audio graph card
-driver. It re-uses most of the common stuff from audio graph driver and
-uses the same DT binding. Required Tegra specific customizations are done
-in the driver and additional DT bindings are required for clock handling.
-
-Details on the customizations done:
-
- - Update PLL rates at runtime: Tegra HW supports multiple sample rates
-   (multiples of 8x and 11.025x) and both of these groups require different
-   PLL rates. Hence there is a requirement to update this at runtime.
-   This is achieved by providing a custom 'snd_soc_ops' and in hw_param()
-   callback PLL rate is updated as per the sample rate.
-
- - Internal structure 'tegra_audio_graph_data' is used to maintain clock
-   handles of PLL.
-
- - The 'force_dpcm' flag is set to use DPCM for all DAI links.
-
- - The 'component_chaining' flag is set to use DPCM with component model.
-
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
----
- sound/soc/tegra/Kconfig                  |   9 ++
- sound/soc/tegra/Makefile                 |   2 +
- sound/soc/tegra/tegra_audio_graph_card.c | 251 +++++++++++++++++++++++++++++++
- 3 files changed, 262 insertions(+)
- create mode 100644 sound/soc/tegra/tegra_audio_graph_card.c
-
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index a62cc87..6dc83ad 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -117,6 +117,15 @@ config SND_SOC_TEGRA210_ADMAIF
- 	  channel. Buffer size is configurable for each ADMAIIF channel.
- 	  Say Y or M if you want to add support for Tegra210 ADMAIF module.
- 
-+config SND_SOC_TEGRA_AUDIO_GRAPH_CARD
-+	tristate "Audio Graph Card based Tegra driver"
-+	depends on SND_AUDIO_GRAPH_CARD
-+	help
-+	  Config to enable Tegra audio machine driver based on generic
-+	  audio graph driver. It is a thin driver written to customize
-+	  few things for Tegra audio. Most of the code is re-used from
-+	  audio graph driver and the same DT bindings are used.
-+
- config SND_SOC_TEGRA_RT5640
- 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index 60040a0..b17dd6e 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -38,6 +38,7 @@ snd-soc-tegra-trimslice-objs := trimslice.o
- snd-soc-tegra-alc5632-objs := tegra_alc5632.o
- snd-soc-tegra-max98090-objs := tegra_max98090.o
- snd-soc-tegra-sgtl5000-objs := tegra_sgtl5000.o
-+snd-soc-tegra-audio-graph-card-objs := tegra_audio_graph_card.o
- 
- obj-$(CONFIG_SND_SOC_TEGRA_RT5640) += snd-soc-tegra-rt5640.o
- obj-$(CONFIG_SND_SOC_TEGRA_RT5677) += snd-soc-tegra-rt5677.o
-@@ -48,3 +49,4 @@ obj-$(CONFIG_SND_SOC_TEGRA_TRIMSLICE) += snd-soc-tegra-trimslice.o
- obj-$(CONFIG_SND_SOC_TEGRA_ALC5632) += snd-soc-tegra-alc5632.o
- obj-$(CONFIG_SND_SOC_TEGRA_MAX98090) += snd-soc-tegra-max98090.o
- obj-$(CONFIG_SND_SOC_TEGRA_SGTL5000) += snd-soc-tegra-sgtl5000.o
-+obj-$(CONFIG_SND_SOC_TEGRA_AUDIO_GRAPH_CARD) += snd-soc-tegra-audio-graph-card.o
-diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-new file mode 100644
-index 0000000..9e43f16
---- /dev/null
-+++ b/sound/soc/tegra/tegra_audio_graph_card.c
-@@ -0,0 +1,251 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// tegra_audio_graph_card.c - Audio Graph based Tegra Machine Driver
-+//
-+// Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
-+
-+#include <linux/math64.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <sound/graph_card.h>
-+#include <sound/pcm_params.h>
-+
-+#define MAX_PLLA_OUT0_DIV 128
-+
-+#define simple_to_tegra_priv(simple) \
-+		container_of(simple, struct tegra_audio_priv, simple)
-+
-+enum srate_type {
-+	/*
-+	 * Sample rates multiple of 8000 Hz and below are supported:
-+	 * ( 8000, 16000, 32000, 48000, 96000, 192000 Hz )
-+	 */
-+	x8_RATE,
-+
-+	/*
-+	 * Sample rates multiple of 11025 Hz and below are supported:
-+	 * ( 11025, 22050, 44100, 88200, 176400 Hz )
-+	 */
-+	x11_RATE,
-+
-+	NUM_RATE_TYPE,
-+};
-+
-+struct tegra_audio_priv {
-+	struct asoc_simple_priv simple;
-+	struct clk *clk_plla_out0;
-+	struct clk *clk_plla;
-+};
-+
-+/* Tegra audio chip data */
-+struct tegra_audio_cdata {
-+	unsigned int plla_rates[NUM_RATE_TYPE];
-+	unsigned int plla_out0_rates[NUM_RATE_TYPE];
-+};
-+
-+/* Setup PLL clock as per the given sample rate */
-+static int tegra_audio_graph_update_pll(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct asoc_simple_priv *simple = snd_soc_card_get_drvdata(rtd->card);
-+	struct tegra_audio_priv *priv = simple_to_tegra_priv(simple);
-+	struct device *dev = rtd->card->dev;
-+	const struct tegra_audio_cdata *data = of_device_get_match_data(dev);
-+	unsigned int plla_rate, plla_out0_rate, bclk;
-+	unsigned int srate = params_rate(params);
-+	int err;
-+
-+	switch (srate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+	case 176400:
-+		plla_out0_rate = data->plla_out0_rates[x11_RATE];
-+		plla_rate = data->plla_rates[x11_RATE];
-+		break;
-+	case 8000:
-+	case 16000:
-+	case 32000:
-+	case 48000:
-+	case 96000:
-+	case 192000:
-+		plla_out0_rate = data->plla_out0_rates[x8_RATE];
-+		plla_rate = data->plla_rates[x8_RATE];
-+		break;
-+	default:
-+		dev_err(rtd->card->dev, "Unsupported sample rate %u\n",
-+			srate);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Below is the clock relation:
-+	 *
-+	 *	PLLA
-+	 *	  |
-+	 *	  |--> PLLA_OUT0
-+	 *		  |
-+	 *		  |---> I2S modules
-+	 *		  |
-+	 *		  |---> DMIC modules
-+	 *		  |
-+	 *		  |---> DSPK modules
-+	 *
-+	 *
-+	 * Default PLLA_OUT0 rate might be too high when I/O is running
-+	 * at minimum PCM configurations. This may result in incorrect
-+	 * clock rates and glitchy audio. The maximum divider is 128
-+	 * and any thing higher than that won't work. Thus reduce PLLA_OUT0
-+	 * to work for lower configurations.
-+	 *
-+	 * This problem is seen for I2S only, as DMIC and DSPK minimum
-+	 * clock requirements are under allowed divider limits.
-+	 */
-+	bclk = srate * params_channels(params) * params_width(params);
-+	if (div_u64(plla_out0_rate, bclk) > MAX_PLLA_OUT0_DIV)
-+		plla_out0_rate >>= 1;
-+
-+	dev_dbg(rtd->card->dev,
-+		"Update clock rates: PLLA(= %u Hz) and PLLA_OUT0(= %u Hz)\n",
-+		plla_rate, plla_out0_rate);
-+
-+	/* Set PLLA rate */
-+	err = clk_set_rate(priv->clk_plla, plla_rate);
-+	if (err) {
-+		dev_err(rtd->card->dev,
-+			"Can't set plla rate for %u, err: %d\n",
-+			plla_rate, err);
-+		return err;
-+	}
-+
-+	/* Set PLLA_OUT0 rate */
-+	err = clk_set_rate(priv->clk_plla_out0, plla_out0_rate);
-+	if (err) {
-+		dev_err(rtd->card->dev,
-+			"Can't set plla_out0 rate %u, err: %d\n",
-+			plla_out0_rate, err);
-+		return err;
-+	}
-+
-+	return err;
-+}
-+
-+static int tegra_audio_graph_hw_params(struct snd_pcm_substream *substream,
-+				       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	int err;
-+
-+	/*
-+	 * This gets called for each DAI link (FE or BE) when DPCM is used.
-+	 * We may not want to update PLLA rate for each call. So PLLA update
-+	 * must be restricted to external I/O links (I2S, DMIC or DSPK) since
-+	 * they actually depend on it. I/O modules update their clocks in
-+	 * hw_param() of their respective component driver and PLLA rate
-+	 * update here helps them to derive appropriate rates.
-+	 *
-+	 * TODO: When more HW accelerators get added (like sample rate
-+	 * converter, volume gain controller etc., which don't really
-+	 * depend on PLLA) we need a better way to filter here.
-+	 */
-+	if (cpu_dai->driver->ops && rtd->dai_link->no_pcm) {
-+		err = tegra_audio_graph_update_pll(substream, params);
-+		if (err)
-+			return err;
-+	}
-+
-+	return asoc_simple_hw_params(substream, params);
-+}
-+
-+static const struct snd_soc_ops tegra_audio_graph_ops = {
-+	.startup	= asoc_simple_startup,
-+	.shutdown	= asoc_simple_shutdown,
-+	.hw_params	= tegra_audio_graph_hw_params,
-+};
-+
-+static int tegra_audio_graph_card_probe(struct snd_soc_card *card)
-+{
-+	struct asoc_simple_priv *simple = snd_soc_card_get_drvdata(card);
-+	struct tegra_audio_priv *priv = simple_to_tegra_priv(simple);
-+
-+	priv->clk_plla = devm_clk_get(card->dev, "pll_a");
-+	if (IS_ERR(priv->clk_plla)) {
-+		dev_err(card->dev, "Can't retrieve clk pll_a\n");
-+		return PTR_ERR(priv->clk_plla);
-+	}
-+
-+	priv->clk_plla_out0 = devm_clk_get(card->dev, "plla_out0");
-+	if (IS_ERR(priv->clk_plla_out0)) {
-+		dev_err(card->dev, "Can't retrieve clk plla_out0\n");
-+		return PTR_ERR(priv->clk_plla_out0);
-+	}
-+
-+	return graph_card_probe(card);
-+}
-+
-+static int tegra_audio_graph_probe(struct platform_device *pdev)
-+{
-+	struct tegra_audio_priv *priv;
-+	struct device *dev = &pdev->dev;
-+	struct snd_soc_card *card;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	card = simple_priv_to_card(&priv->simple);
-+
-+	card->probe = tegra_audio_graph_card_probe;
-+
-+	/* graph_parse_of() depends on below */
-+	card->component_chaining = 1;
-+	priv->simple.ops = &tegra_audio_graph_ops;
-+	priv->simple.force_dpcm = 1;
-+
-+	return graph_parse_of(&priv->simple, dev);
-+}
-+
-+static const struct tegra_audio_cdata tegra210_data = {
-+	/* PLLA */
-+	.plla_rates[x8_RATE] = 368640000,
-+	.plla_rates[x11_RATE] = 338688000,
-+	/* PLLA_OUT0 */
-+	.plla_out0_rates[x8_RATE] = 49152000,
-+	.plla_out0_rates[x11_RATE] = 45158400,
-+};
-+
-+static const struct tegra_audio_cdata tegra186_data = {
-+	/* PLLA */
-+	.plla_rates[x8_RATE] = 245760000,
-+	.plla_rates[x11_RATE] = 270950400,
-+	/* PLLA_OUT0 */
-+	.plla_out0_rates[x8_RATE] = 49152000,
-+	.plla_out0_rates[x11_RATE] = 45158400,
-+};
-+
-+static const struct of_device_id graph_of_tegra_match[] = {
-+	{ .compatible = "nvidia,tegra210-audio-graph-card",
-+	  .data = &tegra210_data },
-+	{ .compatible = "nvidia,tegra186-audio-graph-card",
-+	  .data = &tegra186_data },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, graph_of_tegra_match);
-+
-+static struct platform_driver tegra_audio_graph_card = {
-+	.driver = {
-+		.name = "tegra-audio-graph-card",
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = graph_of_tegra_match,
-+	},
-+	.probe = tegra_audio_graph_probe,
-+};
-+module_platform_driver(tegra_audio_graph_card);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ASoC Tegra Audio Graph Sound Card");
-+MODULE_AUTHOR("Sameer Pujar <spujar@nvidia.com>");
--- 
-2.7.4
-
+>=20
+>=20
+> From: Bean Huo <beanhuo@micron.com>
+>=20
+> Once going into while-do loop, intr_status is already true,
+> this if-statement is redundant, remove it.
+>=20
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
