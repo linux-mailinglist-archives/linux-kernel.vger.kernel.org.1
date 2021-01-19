@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9842FAE3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52ED2FAE40
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 02:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387577AbhASBFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 20:05:05 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:46116 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732238AbhASBFD (ORCPT
+        id S2391753AbhASBGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 20:06:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391322AbhASBGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 20:05:03 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 5895E2EA058;
-        Mon, 18 Jan 2021 20:04:21 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id YDJ1pjI18RLg; Mon, 18 Jan 2021 19:50:44 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        Mon, 18 Jan 2021 20:06:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611018276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=saOK2rQZ8LvjXL+D11visYuXDiXxSd5YTYGDgVAQGHk=;
+        b=YRcOscQGp2DkqNg/sbo7Scw7kCq9Mul15qg1N4NFhob8yuHUqs9OnybFzqLJQWnO/mueKa
+        6xoP9kovQXjnaiG9TfvgnkXVISyBCftpazoxhEcNpCypDryd7fWggaYIxQwhLpiNHepF1s
+        zyrBRqOllMLauthSmo+uSJt1k1CKrqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-eF1HJRQnOjq782tDW6jN7Q-1; Mon, 18 Jan 2021 20:04:32 -0500
+X-MC-Unique: eF1HJRQnOjq782tDW6jN7Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id A39982EA02A;
-        Mon, 18 Jan 2021 20:04:20 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v6 3/4] scatterlist: add sgl_compare_sgl() function
-To:     David Disseldorp <ddiss@suse.de>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        jgg@ziepe.ca
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-4-dgilbert@interlog.com>
- <20210119002741.4dbc290e@suse.de>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <d0b8312b-5dbf-6196-d962-40851c5cbbf7@interlog.com>
-Date:   Mon, 18 Jan 2021 20:04:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 627F13E751;
+        Tue, 19 Jan 2021 01:04:30 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F24F210023AB;
+        Tue, 19 Jan 2021 01:04:28 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 20:04:27 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v3] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210119010427.GB1191409@redhat.com>
+References: <20210113223548.1171655-1-jarod@redhat.com>
+ <20210115192103.1179450-1-jarod@redhat.com>
+ <79af4145-48cc-0961-b341-c0e106beb14b@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119002741.4dbc290e@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79af4145-48cc-0961-b341-c0e106beb14b@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-18 6:27 p.m., David Disseldorp wrote:
-> On Mon, 18 Jan 2021 11:30:05 -0500, Douglas Gilbert wrote:
+On Mon, Jan 18, 2021 at 04:10:38PM -0700, David Ahern wrote:
+> On 1/15/21 12:21 PM, Jarod Wilson wrote:
+> > diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+> > index adc314639085..36562dcd3e1e 100644
+> > --- a/Documentation/networking/bonding.rst
+> > +++ b/Documentation/networking/bonding.rst
+> > @@ -951,6 +951,19 @@ xmit_hash_policy
+> >  		packets will be distributed according to the encapsulated
+> >  		flows.
+> >  
+> > +	vlan+srcmac
+> > +
+> > +		This policy uses a very rudimentary vland ID and source mac
 > 
->> After enabling copies between scatter gather lists (sgl_s), another
->> storage related operation is to compare two sgl_s. This new function
->> is modelled on NVMe's Compare command and the SCSI VERIFY(BYTCHK=1)
->> command. Like memcmp() this function returns false on the first
->> miscompare and stops comparing.
->>
->> A helper function called sgl_compare_sgl_idx() is added. It takes an
->> additional parameter (miscompare_idx) which is a pointer. If that
->> pointer is non-NULL and a miscompare is detected (i.e. the function
->> returns false) then the byte index of the first miscompare is written
->> to *miscomapre_idx. Knowing the location of the first miscompare is
->> needed to implement the SCSI COMPARE AND WRITE command properly.
->>
->> Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
->> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
->> ---
->>   include/linux/scatterlist.h |   8 +++
->>   lib/scatterlist.c           | 109 ++++++++++++++++++++++++++++++++++++
->>   2 files changed, 117 insertions(+)
->>
->> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
->> index 3f836a3246aa..71be65f9ebb5 100644
->> --- a/include/linux/scatterlist.h
->> +++ b/include/linux/scatterlist.h
->> @@ -325,6 +325,14 @@ size_t sgl_copy_sgl(struct scatterlist *d_sgl, unsigned int d_nents, off_t d_ski
->>   		    struct scatterlist *s_sgl, unsigned int s_nents, off_t s_skip,
->>   		    size_t n_bytes);
->>   
->> +bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_skip,
->> +		     struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
->> +		     size_t n_bytes);
->> +
->> +bool sgl_compare_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_skip,
->> +			 struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
->> +			 size_t n_bytes, size_t *miscompare_idx);
+> s/vland/vlan/
 > 
+> > +		ID hash to load-balance traffic per-vlan, with failover
 > 
-> This patch looks good and works fine as a replacement for
-> compare_and_write_do_cmp(). One minor suggestion would be to name it
-> sgl_equal() or similar, to perhaps better reflect the bool return and
-> avoid memcmp() confusion. Either way:
-> Reviewed-by: David Disseldorp <ddiss@suse.de>
+> drop ID on this line; just 'source mac'.
 
-Thanks. NVMe calls the command that does this Compare and SCSI uses
-COMPARE AND WRITE (and VERIFY(BYTCHK=1) ) but "equal" is fine with me.
-There will be another patchset version (at least) so there is time
-to change.
+Bah. Crap. Didn't test documentation, clearly. Or proof-read it. Will fix
+in v4. Hopefully, nothing else to change though...
 
-Do you want:
-   - sgl_equal(...), or
-   - sgl_equal_sgl(...) ?
-
-Doug Gilbert
+-- 
+Jarod Wilson
+jarod@redhat.com
 
