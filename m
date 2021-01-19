@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873322FB746
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9052FB741
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404060AbhASKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:33:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
+        id S2403928AbhASKdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:33:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389809AbhASKRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 05:17:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07FDC2312D;
+        id S2389835AbhASKRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:17:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14BBF23135;
         Tue, 19 Jan 2021 10:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611051267;
-        bh=IpeT4f8JXrVnsFJHt6Enkj704N8aVAQGXWVcjhCAoIY=;
+        bh=f70VrjUazjIsj4geHIDw8iQGbGJuOPNIJZNEMBLszRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=av31pOUhbBdpgLTyP8C4PAXu0wdYuoorgxJXoi2EFiiKNPrtXzQRfD/JL+bc2onkd
-         ORVu5DnGQ4KWGphG2IUIEP1xniFF7ShMwsjKapzD+GoT0x+l16XNDw+o/5G8khJbPT
-         1d5IK5CaAGee7FElStdoAydE/qhgfuBLZ1dS0IVN2p3IyClM+PfhryHtnAPph4oec/
-         2/HCyvjM/5fWWbt+z63kZrRMLirFa/f8QD/t9Ae6v88vImxm6emuMIm+easIYjofKF
-         alIllAsh598hwOBUKUQ5FJgBEF0YOj4APLv8lxFttI7gDmWCSAbA6uSLVZWs73Pavu
-         CijX13LT+1MRg==
+        b=tPojx9r5LoGRC1ee4hZVw2igy9mmbVvGuf6QgUNEoYQx4JFPmoC9B4btEsnavSJYa
+         mjB08TRcgde9QMn17z1iR7yP+9jApxQfKKRIqYEInrmyp0I2lAuvVAFaPzDL9DIPnE
+         pjJ9lUEV6hDTNN4xhu6D/Zq66OHEBDRnCkZbMJjblJQD8tw7QxpNeOKkgigokxGQ1J
+         ZXFUbpOvmHkAR6+STCtIapkWYgqQt1A6BD7IY1TGrzZDS6YWWB02jI3NfTYNVL+3sx
+         2ev14SHq5npr0NofCqVDLMFmIAXchsyOxPF/ueVWsZz5EOhm7vs/2YWocvrPvpMTwx
+         lg2At/rptwb9g==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l1o1o-000tP0-SG; Tue, 19 Jan 2021 11:14:24 +0100
+        id 1l1o1o-000tP2-T6; Tue, 19 Jan 2021 11:14:24 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 11/18] staging: hikey9xx: hi6421v600-regulator: cleanup comments
-Date:   Tue, 19 Jan 2021 11:14:16 +0100
-Message-Id: <871347dc3e67d111a4047675d04136958b35844a.1611048785.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 12/18] staging: hikey9xx: hi6421v600-regulator: fix get_optimum_mode
+Date:   Tue, 19 Jan 2021 11:14:17 +0100
+Message-Id: <7b981bc43760502e3ad3553ca9480cf861346457.1611048785.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611048785.git.mchehab+huawei@kernel.org>
 References: <cover.1611048785.git.mchehab+huawei@kernel.org>
@@ -45,91 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove obvious comments and fix the comment for the
-HI6421V600_LDO() macro.
+During the driver refactor, a regression broke the logic inside
+hi6421_spmi_regulator_get_optimum_mode(). Basically, if a LDO
+has eco_uA == 0, it doesn't support economic mode. So, it should
+return REGULATOR_MODE_NORMAL.
 
-While on it, use kernel-doc notation for HI6421V600_LDO(),
-as kernel-doc can check if the arguments match its
-description.
+If economic mode is supported, it can return either
+REGULATOR_MODE_IDLE or REGULATOR_MODE_NORMAL, depending on the
+load current.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../staging/hikey9xx/hi6421v600-regulator.c   | 27 ++++++++-----------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ drivers/staging/hikey9xx/hi6421v600-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index f728118e84c0..72dd779d85e6 100644
+index 72dd779d85e6..5fe77b490166 100644
 --- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
 +++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -57,17 +57,17 @@ static const unsigned int ldo34_voltages[] = {
- 	3000000, 3100000, 3200000, 3300000
- };
- 
--/*
-- * _id - LDO id name string
-- * _match - of match name string
-- * v_table - voltage table
-- * vreg - voltage select register
-- * vmask - voltage select mask
-- * ereg - enable register
-- * emask - enable mask
-- * odelay - off/on delay time in uS
-- * ecomask - eco mode mask
-- * ecoamp - eco mode load uppler limit in uA
-+/**
-+ * HI6421V600_LDO() - specify a LDO power line
-+ * @_id: LDO id name string
-+ * @vtable: voltage table
-+ * @ereg: enable register
-+ * @emask: enable mask
-+ * @vreg: voltage select register
-+ * @odelay: off/on delay time in uS
-+ * @etime: enable time in uS
-+ * @ecomask: eco mode mask
-+ * @ecoamp: eco mode load uppler limit in uA
-  */
- #define HI6421V600_LDO(_id, vtable, ereg, emask, vreg,			       \
- 		       odelay, etime, ecomask, ecoamp)			       \
-@@ -114,7 +114,6 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
- 	/* cannot enable more than one regulator at one time */
- 	mutex_lock(&sreg->enable_mutex);
- 
--	/* set enable register */
- 	ret = hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
- 				   rdev->desc->enable_mask,
- 				   rdev->desc->enable_mask);
-@@ -132,7 +131,6 @@ static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
+@@ -206,7 +206,7 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
+ {
  	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
- 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
  
--	/* set enable register to 0 */
- 	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
- 				    rdev->desc->enable_mask, 0);
- }
-@@ -143,7 +141,6 @@ static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
- 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
- 	u32 reg_val;
+-	if (load_uA || ((unsigned int)load_uA > sreg->eco_uA))
++	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
+ 		return REGULATOR_MODE_NORMAL;
  
--	/* get voltage selector */
- 	reg_val = hi6421_spmi_pmic_read(pmic, rdev->desc->vsel_reg);
- 
- 	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
-@@ -198,7 +195,6 @@ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
- 		return -EINVAL;
- 	}
- 
--	/* set mode */
- 	return hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
- 				    sreg->eco_mode_mask, val);
- }
-@@ -304,7 +300,6 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	mutex_init(&sreg->enable_mutex);
- 
- 	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
--		/* assign per-regulator data */
- 		info = &regulator_info[i];
- 
- 		config.dev = pdev->dev.parent;
+ 	return REGULATOR_MODE_IDLE;
 -- 
 2.29.2
 
