@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFA52FB3B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1912FB3B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730735AbhASIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:07:12 -0500
-Received: from smtp23.cstnet.cn ([159.226.251.23]:44652 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbhASIBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:01:40 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-03 (Coremail) with SMTP id rQCowABn0iiokQZg3xbUAA--.54909S2;
-        Tue, 19 Jan 2021 16:00:40 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] octeontx2-af: rvu.c: Remove unneeded semicolon
-Date:   Tue, 19 Jan 2021 08:00:37 +0000
-Message-Id: <20210119080037.17931-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowABn0iiokQZg3xbUAA--.54909S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF45CF1rKFy5CF48Jw1UKFg_yoW3uFcEkr
-        nFqF43Zan8KF90yw1jyrW3Ja4Fv3WkXrWvyF43K39YkFWxJw4fCr97Cr4xXrWxur40q3WD
-        Ar1ak3ySy3y2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8ZwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jYg4fUUUUU=
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgcGA10Te7OtdwAAsY
+        id S1731401AbhASIFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:05:07 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:64509 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730945AbhASIEc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 03:04:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611043452; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=G6CrMrwkBlH/hAife+o1/KscQx/5H1OEZNAP7AT9sBg=; b=A/7TMF18TF9/TxatgLX8LySEVilpoIpS/KMeWzI5fJCAWyuCBPK89Pyr210giejTUskeM6W3
+ 40v5NNwxrj0X5u9lkNQaa/ulGYh1vb77MD7E28A6ogf4A9oUzn6l33lw7eGcmpEY6aimtooV
+ qy8puVZ0WJUQTNtd0EFRVELl43I=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6006925d75e5c01cba0b46ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Jan 2021 08:03:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D376FC43463; Tue, 19 Jan 2021 08:03:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6F62C433CA;
+        Tue, 19 Jan 2021 08:03:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6F62C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pkshih <pkshih@realtek.com>
+Cc:     "abaci-bugfix\@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>,
+        "Larry.Finger\@lwfinger.net" <Larry.Finger@lwfinger.net>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chiu\@endlessos.org" <chiu@endlessos.org>,
+        "kuba\@kernel.org" <kuba@kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH v2] rtlwifi: rtl8192se: Simplify bool comparison.
+References: <1611037955-105333-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        <1611041680.9785.1.camel@realtek.com>
+Date:   Tue, 19 Jan 2021 10:03:36 +0200
+In-Reply-To: <1611041680.9785.1.camel@realtek.com> (pkshih@realtek.com's
+        message of "Tue, 19 Jan 2021 07:35:19 +0000")
+Message-ID: <87v9btqron.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix semicolon.cocci warnings:
-drivers/net/ethernet/marvell/octeontx2/af/rvu.c:1326:2-3: Unneeded semicolon
+Pkshih <pkshih@realtek.com> writes:
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, 2021-01-19 at 14:32 +0800, Jiapeng Zhong wrote:
+>> Fix the follow coccicheck warnings:
+>>=20
+>> ./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:2305:6-27:
+>> WARNING: Comparison of 0/1 to bool variable.
+>>=20
+>> ./drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c:1376:5-26:
+>> WARNING: Comparison of 0/1 to bool variable.
+>>=20
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+>> ---
+>> Changes in v2:
+>> =C2=A0 -Modified subject.
+>>=20
+>
+> You forget to remove the period at the end of subject.
+> i.e.
+> "rtlwifi: rtl8192se: Simplify bool comparison"
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index e8fd712860a1..0b6bf9f0c6f0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -1323,7 +1323,7 @@ static int rvu_get_attach_blkaddr(struct rvu *rvu, int blktype,
- 		break;
- 	default:
- 		return rvu_get_blkaddr(rvu, blktype, 0);
--	};
-+	}
- 
- 	if (is_block_implemented(rvu->hw, blkaddr))
- 		return blkaddr;
--- 
-2.17.1
+I can fix that during commit.
 
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
