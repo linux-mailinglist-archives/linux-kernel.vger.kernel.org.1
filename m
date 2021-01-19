@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E652FC497
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3E42FC489
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbhASXPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:15:54 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:39776 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728496AbhASXLn (ORCPT
+        id S1728857AbhASXOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729898AbhASXNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 18:11:43 -0500
-Received: by mail-ot1-f46.google.com with SMTP id i30so8621037ota.6;
-        Tue, 19 Jan 2021 15:11:25 -0800 (PST)
+        Tue, 19 Jan 2021 18:13:18 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3768EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:12:38 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 190so1266385wmz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 15:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kJdfqz839OeseYYkmWz4yh6z5zvAjLz0yxVJ3bu4P2g=;
+        b=smpsCbyHn0NnsknFBhgrLWNcTjBC2cOujZNIGIWjZUwrWZr3wtfLtSfdNEpdyXlrFc
+         bTnGqluXpZ5/C8tyKdBVD8q8yX29bHUL0CJAiinunPPHQIT/VDNVd1npwF1v0r5N6rcn
+         fdS2dswwTfgbBiZbKXJc4TKbqE+RxWFUXpITUA8fARK/B1Nms2Ct0O88BnZtQ6Z6rz0J
+         G/xWFWFvwy4ovmUHlmdAy0LkdYk5hcBUEW+NCq4RtP2I72tbXzc10XJsoV9zzh9Db5QH
+         OAQsUCrcgydDrGNAGLr35SVdRUcfL+AuY3/SxCyx5KaWst19r6ci+s73/8AtGMcZjU0e
+         5O3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zwnspLO1XU1UxAjviLLOho2793ZeLPfsqMsqct/RJD4=;
-        b=I5p36v8nFPGov43Xa1UYERG+V0gM6jF+5D0bBQWU43E5o9eNphYHXgvk+Chaa1xecP
-         41Vq/8rFz7MJLVprcK6PfeBzI04li/dWROHEq14rSvy7y6kTfYxmGNyJskvWuytAIVqS
-         013ksw1IHmOJ6KnA0j5YoUhy5YtM/hzvPuskuz7m8VAckMwLlfTPl5hQzWeEOPMTI2E+
-         9YvXmiHjuer+sMu0SL4Jfcda55SY0DH8f9Ud10Nc4Dl4o5qWZpoIEYWo6Q9hVxLmeE08
-         +fEi3tmAA0MVGTKI598IcMXuBF71WxlTB6LBjVHog/IHgjR9ZwNfz+WXFNmS6imHVHkM
-         VjwA==
-X-Gm-Message-State: AOAM530VJCefrYW79vck7PVIiAD6ZQYqlieyGOFGzinZTh8N8Fm92/qh
-        ZSBfhWgCDvpzln3w7z0nuRP2Fzw1RQ==
-X-Google-Smtp-Source: ABdhPJyTgJTFM5NXoV7ntdMWXNrAUbzEb6Iwjg696qOUlnMDqKMVqsb1IVxmC6Gqyn9VRUxLSXvACQ==
-X-Received: by 2002:a9d:4e8d:: with SMTP id v13mr5250786otk.12.1611097860450;
-        Tue, 19 Jan 2021 15:11:00 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h203sm31052oib.11.2021.01.19.15.10.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 15:10:59 -0800 (PST)
-Received: (nullmailer pid 2774332 invoked by uid 1000);
-        Tue, 19 Jan 2021 23:10:58 -0000
-Date:   Tue, 19 Jan 2021 17:10:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, gene_chen@richtek.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb typec: tcpci: mt6360: Add vbus supply into
- dt-binding description
-Message-ID: <20210119231058.GA2772032@robh.at.kernel.org>
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
- <1610720001-15300-2-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kJdfqz839OeseYYkmWz4yh6z5zvAjLz0yxVJ3bu4P2g=;
+        b=oEeHxgp0d3AX8A+vT2LCf7DjLC+ZI/lNA3K0fSZcOV1KNHqhkyZYeHxrvkneLhAamh
+         2SxggW1E0S/+VAK3pifrTNL10JPBCReRSkTGUlIP15t5xCAgBX7jH2blSVSZXE7V9U37
+         yax76r2lBk4ouqpfUbQeX5O1dgOqv7J+HN4x1ytPeTX+AVxAiZbGcpYjCNQK1UTVTHxe
+         CjoBMSo/6+BRbPoh8bs4gtrmVrpJj+OLNYhPbtLZ8Km8dmJVgfH09dPhp1CduHagEgPP
+         HLCXr78K7DqZ2JyT61Ar53lDhjD0KTh2Yy8L1rOLcR1vubOZrsIbB5QAgA2xIeD7LbDM
+         GCoA==
+X-Gm-Message-State: AOAM531D3HsRUnDPj9D801zV2C+OZDw95Mw912u6o78t8I500dxTraZ9
+        e6iFZDSf1Ekz4HRhT83fxFYaNro6TsQn4uKlMeU8Ww==
+X-Google-Smtp-Source: ABdhPJxTe6K+eqd0wxGdLv0AWWP9UYN9ZNOZKj8crhBvfDwZyzy2FzLxMxXw8Y7IY7riTOkOJecfM8Rcy1ApAJBqhCE=
+X-Received: by 2002:a05:600c:2110:: with SMTP id u16mr1621013wml.65.1611097956708;
+ Tue, 19 Jan 2021 15:12:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610720001-15300-2-git-send-email-u0084500@gmail.com>
+References: <20210119175336.4016923-1-marcorr@google.com> <20210119180024.GA28024@lst.de>
+In-Reply-To: <20210119180024.GA28024@lst.de>
+From:   Marc Orr <marcorr@google.com>
+Date:   Tue, 19 Jan 2021 15:12:25 -0800
+Message-ID: <CAA03e5GeGRLcLzp8d6pOC7UnQq9mZYzgW9rQgV3XHMb5gfsLWQ@mail.gmail.com>
+Subject: Re: [PATCH] nvme: fix handling mapping failure
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kbusch@kernel.org, axboe@fb.com, sagi@grimberg.me,
+        Jianxiong Gao <jxgao@google.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:13:21PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> Add external vbus source into dt-binding description.
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
->  Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml b/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
-> index 1e8e1c2..b8d842b 100644
-> --- a/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
-> +++ b/Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
-> @@ -26,6 +26,11 @@ properties:
->      items:
->        - const: PD_IRQB
->  
-> +  vbus-supply:
-> +    description:
-> +      Vbus source supply regulator.
-> +    maxItems: 1
+On Tue, Jan 19, 2021 at 10:00 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, Jan 19, 2021 at 09:53:36AM -0800, Marc Orr wrote:
+> > This patch ensures that when `nvme_map_data()` fails to map the
+> > addresses in a scatter/gather list:
+> >
+> > * The addresses are not incorrectly unmapped. The underlying
+> > scatter/gather code unmaps the addresses after detecting a failure.
+> > Thus, unmapping them again in the driver is a bug.
+> > * The DMA pool allocations are not deallocated when they were never
+> > allocated.
+> >
+> > The bug that motivated this patch was the following sequence, which
+> > occurred within the NVMe driver, with the kernel flag `swiotlb=force`.
+> >
+> > * NVMe driver calls dma_direct_map_sg()
+> > * dma_direct_map_sg() fails part way through the scatter gather/list
+> > * dma_direct_map_sg() calls dma_direct_unmap_sg() to unmap any entries
+> >   succeeded.
+> > * NVMe driver calls dma_direct_unmap_sg(), redundantly, leading to a
+> >   double unmap, which is a bug.
+> >
+> > Before this patch, I observed intermittent application- and VM-level
+> > failures when running a benchmark, fio, in an AMD SEV guest. This patch
+> > resolves the failures.
+>
+> I think the right way to fix this is to just do a proper unwind insted
+> of calling a catchall function.  Can you try this patch?
 
-vbus-supply is already in the 'connector' node, you don't need it here.
+Done. It works great, thanks! Shall I send out a v2 with what you've proposed?
 
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 25456d02eddb8c..47d7075053b6b2 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -842,7 +842,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>         sg_init_table(iod->sg, blk_rq_nr_phys_segments(req));
+>         iod->nents = blk_rq_map_sg(req->q, req, iod->sg);
+>         if (!iod->nents)
+> -               goto out;
+> +               goto out_free_sg;
+>
+>         if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>                 nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
+> @@ -851,16 +851,25 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>                 nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+>                                              rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>         if (!nr_mapped)
+> -               goto out;
+> +               goto out_free_sg;
+>
+>         iod->use_sgl = nvme_pci_use_sgls(dev, req);
+>         if (iod->use_sgl)
+>                 ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw, nr_mapped);
+>         else
+>                 ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
+> -out:
+>         if (ret != BLK_STS_OK)
+> -               nvme_unmap_data(dev, req);
+> +               goto out_dma_unmap;
+> +       return BLK_STS_OK;
 > +
->    connector:
->      type: object
->      $ref: ../connector/usb-connector.yaml#
-> @@ -38,6 +43,7 @@ required:
->    - compatible
->    - interrupts
->    - interrupt-names
-> +  - vbus-supply
->  
->  examples:
->    - |
-> @@ -54,6 +60,7 @@ examples:
->            compatible = "mediatek,mt6360-tcpc";
->            interrupts-extended = <&gpio26 3 IRQ_TYPE_LEVEL_LOW>;
->            interrupt-names = "PD_IRQB";
-> +          vbus-supply = <&otg_vbus>;
->  
->            connector {
->              compatible = "usb-c-connector";
-> -- 
-> 2.7.4
-> 
+> +out_dma_unmap:
+> +       if (is_pci_p2pdma_page(sg_page(iod->sg)))
+> +               pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
+> +                                   rq_dma_dir(req));
+> +       else
+> +               dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
+
+Do you think it's worth hoisting this sg unmap snippet into a helper
+that can be called from both here, as well as nvme_unmap_data()?
+
+> +out_free_sg:
+> +       mempool_free(iod->sg, dev->iod_mempool);
+>         return ret;
+>  }
+>
