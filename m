@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD8F2FC0FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4192FC138
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 21:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391584AbhASU2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 15:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729879AbhASUZ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:25:26 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2103EC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:24:44 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b5so658419pjl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 12:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PIgo1AoKq/QNkl9sdqmNCwvTTcuChuuT7IVQW1TPqHU=;
-        b=XCX8haXoigSPZNeJRbH+qv688CZq5/UyppWpQdrMjVLWBGmHTsUeojs9xqrJ1UNRpX
-         adChEPtxT3v/RpLbyp917BxfRPL+B1TYS/Y3Pt8Ebcci9kYo6v2EdKMKFn+h7YPDafnz
-         oDyUWlBwkA/fA7yJt95Ie9bWRd54658cyCiBrZCb6iEgwvMTasedX/K2+Y0sR01Mmhwr
-         Sy1pvX2oSngUSICr2xWyi8eTo8569NE0hqQVTv6AnXeaim8qXH8357Ftx8uCizocqHuk
-         qU+8xm8eKvcfhEYLl59Ki5r7YfA8nC88FbzRbakerXFWtnRSaUuXIfk9RAddEQICmORl
-         DPqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PIgo1AoKq/QNkl9sdqmNCwvTTcuChuuT7IVQW1TPqHU=;
-        b=gIPL+Dy/T71Q99kB+LWgloTgwM88BAj1GZhrdWiqNGOJ3pEWi08IvWAcLtG2w4C8tL
-         2WzWedhoY45lhu2jY7fxQrVyU6I4qYHa+yk0nyqr00PrS5vuxjf+yuZ62fNbVDEKxWf9
-         XJnlWCEDwsY0FTuJOV+DRy60nCEVmapr8KEDZNBwB5oYgEJx8CUo6if8rn3C6gIs6lqZ
-         yLiYz0shlyM+wtbhJthqT0yMiF8VVM+OM0gkTzhVdF55+b1LZIvrpLn5acKJCHrpxglB
-         hoNZZ+/glRXCuZBygC1piJRZ6qd9uK8a8OFX4Iz1u/BuUXFUpqF5pCUSbVuxB5X51yoy
-         WCTA==
-X-Gm-Message-State: AOAM530UvmvSQ9lEo0Y6HdlkGj5gK2n7jwJUcJTb7Mv07+e82ZE2uWrP
-        dCzeNm1gHCLurQwBkHj76kV80g==
-X-Google-Smtp-Source: ABdhPJxJHsccxJIQ/ZXXRzDM/ux4QViH9HBl44g/0iJToKDtBxr3CY4v45NE2/X87p2CEuXItieFRQ==
-X-Received: by 2002:a17:902:ce81:b029:de:6b3c:fcd2 with SMTP id f1-20020a170902ce81b02900de6b3cfcd2mr6433539plg.67.1611087883265;
-        Tue, 19 Jan 2021 12:24:43 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id p15sm19706701pgl.19.2021.01.19.12.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 12:24:42 -0800 (PST)
-Date:   Tue, 19 Jan 2021 12:24:35 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH] x86/sgx: Fix free_cnt counting logic in epc section
-Message-ID: <YAdAA6k7ZjqikE0R@google.com>
-References: <20210118133347.99158-1-tianjia.zhang@linux.alibaba.com>
+        id S1729281AbhASSvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:51:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730577AbhASS22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 13:28:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 581F523619;
+        Tue, 19 Jan 2021 17:39:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611077952;
+        bh=WjGuzk/VOloUTSe9j4I7TkcwS1Dn5shgj6tFjFOY1Tc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=enImUKuJ2vCMaRte5XIMcnUHkuW/c9yusTB5UrLNAXWVnHNgJiQdDESB4y+TzTyAE
+         NLec3OlCZAyXB/nnYcllph/98lgGF2GQiJEgYTO+zxKo8POc9gYH9sWz8BmIVmmlDR
+         ro+Gf6zqkHDL1hDqo3lvyahPi73PZob2Ms5tF2eDHi/iIbwX+FGmo8P/QdQIThjOpY
+         L0IAFuDK1Gr2NZ53n2ePyZhwGbMTdvIZ8/5/QxOZ4ouyOkW+bmr/hUOIqiubwd6aYJ
+         +0jYxuy1oQAVnN8og6brwB8eeo7oHwhKuBGgQIQC7q8tOvkZcg1MltPdoU6cIBZND1
+         8FEaRki7rWb5g==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        =?UTF-8?q?Krzysztof=20Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v2 1/4] x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
+Date:   Tue, 19 Jan 2021 09:38:59 -0800
+Message-Id: <d3197b2d887dab3bf3d9984e2b74b0146d3568fb.1611077835.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1611077835.git.luto@kernel.org>
+References: <cover.1611077835.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118133347.99158-1-tianjia.zhang@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021, Tianjia Zhang wrote:
-> Increase `section->free_cnt` in sgx_sanitize_section() is
-> more reasonable, which is called in ksgxd kernel thread,
-> instead of assigning it to epc section pages number at
-> initialization. Although this is unlikely to fail, these
-> pages cannot be allocated after initialization, and which
-> need to be reset by ksgxd.
-> 
-> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Currently, requesting kernel FPU access doesn't distinguish which parts of
+the extended ("FPU") state are needed.  This is nice for simplicity, but
+there are a few cases in which it's suboptimal:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+ - The vast majority of in-kernel FPU users want XMM/YMM/ZMM state but do
+   not use legacy 387 state.  These users want MXCSR initialized but don't
+   care about the FPU control word.  Skipping FNINIT would save time.
+   (Empirically, FNINIT is several times slower than LDMXCSR.)
 
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index c519fc5f6948..9e9a3cf7c00b 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -48,9 +48,10 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
->  					struct sgx_epc_page, list);
->  
->  		ret = __eremove(sgx_get_epc_virt_addr(page));
-> -		if (!ret)
-> +		if (!ret) {
->  			list_move(&page->list, &section->page_list);
-> -		else
-> +			section->free_cnt += 1;
-> +		} else
+ - Code that wants MMX doesn't want or need MXCSR initialized.
+   _mmx_memcpy(), for example, can run before CR4.OSFXSR gets set, and
+   initializing MXCSR will fail.
 
-Nit: the the "else" should also have curly braces.
+ - Any future in-kernel users of XFD (eXtended Feature Disable)-capable
+   dynamic states will need special handling.
 
->  			list_move_tail(&page->list, &dirty);
->  
->  		spin_unlock(&section->lock);
+This patch adds a more specific API that allows callers specify exactly
+what they want.
 
-FWIW, taking section->lock could be moved inside the !ret flow so that EREMOVE
-is done without holding the lock.  I've no idea if that'd actually change
-anything in practice, but it's theoretically possible that ksgxd hasn't finished
-sanitizing the EPC when userspace starts creating enclaves.
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ arch/x86/include/asm/fpu/api.h | 15 +++++++++++++--
+ arch/x86/kernel/fpu/core.c     | 17 +++++++++++------
+ 2 files changed, 24 insertions(+), 8 deletions(-)
 
-> @@ -646,7 +647,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
->  		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
->  	}
->  
-> -	section->free_cnt = nr_pages;
->  	return true;
->  }
->  
-> -- 
-> 2.19.1.3.ge56e4f7
-> 
+diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+index dcd9503b1098..38f4936045ab 100644
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@ -16,14 +16,25 @@
+  * Use kernel_fpu_begin/end() if you intend to use FPU in kernel context. It
+  * disables preemption so be careful if you intend to use it for long periods
+  * of time.
+- * If you intend to use the FPU in softirq you need to check first with
++ * If you intend to use the FPU in irq/softirq you need to check first with
+  * irq_fpu_usable() if it is possible.
+  */
+-extern void kernel_fpu_begin(void);
++
++/* Kernel FPU states to initialize in kernel_fpu_begin_mask() */
++#define KFPU_387	_BITUL(0)	/* 387 state will be initialized */
++#define KFPU_MXCSR	_BITUL(1)	/* MXCSR will be initialized */
++
++extern void kernel_fpu_begin_mask(unsigned int kfpu_mask);
+ extern void kernel_fpu_end(void);
+ extern bool irq_fpu_usable(void);
+ extern void fpregs_mark_activate(void);
+ 
++/* Code that is unaware of kernel_fpu_begin_mask() can use this */
++static inline void kernel_fpu_begin(void)
++{
++	kernel_fpu_begin_mask(KFPU_387 | KFPU_MXCSR);
++}
++
+ /*
+  * Use fpregs_lock() while editing CPU's FPU registers or fpu->state.
+  * A context switch will (and softirq might) save CPU's FPU registers to
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index eb86a2b831b1..d4a71596c41e 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -121,7 +121,7 @@ int copy_fpregs_to_fpstate(struct fpu *fpu)
+ }
+ EXPORT_SYMBOL(copy_fpregs_to_fpstate);
+ 
+-void kernel_fpu_begin(void)
++void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+ {
+ 	preempt_disable();
+ 
+@@ -141,13 +141,18 @@ void kernel_fpu_begin(void)
+ 	}
+ 	__cpu_invalidate_fpregs_state();
+ 
+-	if (boot_cpu_has(X86_FEATURE_XMM))
+-		ldmxcsr(MXCSR_DEFAULT);
++	/* Put sane initial values into the control registers. */
++	if (likely(kfpu_mask & KFPU_MXCSR)) {
++		if (boot_cpu_has(X86_FEATURE_XMM))
++			ldmxcsr(MXCSR_DEFAULT);
++	}
+ 
+-	if (boot_cpu_has(X86_FEATURE_FPU))
+-		asm volatile ("fninit");
++	if (unlikely(kfpu_mask & KFPU_387)) {
++		if (boot_cpu_has(X86_FEATURE_FPU))
++			asm volatile ("fninit");
++	}
+ }
+-EXPORT_SYMBOL_GPL(kernel_fpu_begin);
++EXPORT_SYMBOL_GPL(kernel_fpu_begin_mask);
+ 
+ void kernel_fpu_end(void)
+ {
+-- 
+2.29.2
+
