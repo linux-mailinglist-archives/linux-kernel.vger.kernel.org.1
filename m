@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183612FBEAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748282FBECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392427AbhASSPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        id S2392439AbhASSUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387440AbhASSNd (ORCPT
+        with ESMTP id S2392430AbhASSQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:13:33 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72116C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:12:53 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id c132so13469959pga.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:12:53 -0800 (PST)
+        Tue, 19 Jan 2021 13:16:48 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E8AC061796
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:15:56 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id kx7so428528pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FOoggJCbzXRMl4jyfsPuja537UMtpRuFG/6/vUZLLVw=;
-        b=iv99R8t2vDGOpTe1LWU469QYH8yXYR906um2UqJyt3Ml7l4OycT9h4Sj3/VAGQ72C6
-         +zidYQjPqsOBYnZuDOhHevOP7/W3TiRFPzG7FwczMr832KaC3k28kfwlMy7jfkhmRva0
-         6PhgcahHm0FPU6JJe4l2d+sQB5WPF3XMC43qWghip4ihA/4XHf0a3oLVj0kpsD1AOZma
-         2BnrVkd0NqQYiOI1V5RXzv8TtqWXCcrUK6foASilOL54l0xXGxZ8WFX03NaiRyBvhFRZ
-         vsGi8djLxcT8MCwyVFKuF+Hmw1ULOyAwocriVJGXhOPSPwxmjRR98DHyCfsZUi3+TvX7
-         5r6w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=13C+aDMWdR7G+9z6gG9CJgTmkaWg21aJx2K27CvN4no=;
+        b=U3VsmjPK7+3aOXhJjs7v729bvyo003RHm2LylUqo2zf7oclXO+ARtJpA4GaTpMh/OF
+         HZnAuI0jPb4G5QE1tP+wuk4PYCVe+yMDrEQOlhsxuqqWJXg/M4EUywBkhsh/1nIIKZSI
+         AajTsmQCXeFve1pbjRLZjuVNYDKty/JW02Aw80IhU054Vj3i1bgfxODMbvRAMj8xO3iY
+         nkfE0ifT/3dtCjO20TbYDE2SyPpfTNrm+L5vt+/VSn7pGzxafz6DwtePTHBSO9Lni6pr
+         UeeSYFrRR3dSUqm79aDV49MGNbJHTPZXXoEO+yYx/QnRnSfen80CS3XbdMxVMqFn0vwu
+         Gn3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FOoggJCbzXRMl4jyfsPuja537UMtpRuFG/6/vUZLLVw=;
-        b=hpjWc5qVvETG6toZfOaKa2BXJGFryK6VDGsxo8+cXJgPakIQolEEhDwFHYJbM1tlCs
-         TRvqUiR5dDMUYnvwGwZM5z9vGEVG2YomR4V4kwo/KqJdUoggPVL1koqS0SCvKA6B+ore
-         mur/B5huKfPBHCcpYI2FTW1WCYOpnkkyV7EzVkQCrO/fFZ4cOPPh0rrFT98Qi8zX4urx
-         5YsjQqPRj0I2kVQKu/rp5pv0kX17MYv9pg4xiQTJZNQHiclqOUteL6dZb2YdZUDIRcz1
-         iad8r8Xyy7EaGvEF1Cvj8RdI2uE36w8yvK6ltNWW9EjzLdS5nWhdCZ84kZPiSfFGsQDy
-         VTLA==
-X-Gm-Message-State: AOAM531Xo+6zt7FXsAU1kvOxVJKSMbrYApVaydHNOdFYGOWXhogC+X5R
-        jf5Os6hIonE5ZxPp/l/yGJHXMozR1XhM9TKIq2vrtw==
-X-Google-Smtp-Source: ABdhPJwsfRtuShYHZst3VQRycWmUmqICvs41zNjVpXiFeeNNosrHLvczO2xUJrXwHSPVSHf4XHX4zJUQm40chE6qLbE=
-X-Received: by 2002:a63:4644:: with SMTP id v4mr5582075pgk.440.1611079972778;
- Tue, 19 Jan 2021 10:12:52 -0800 (PST)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=13C+aDMWdR7G+9z6gG9CJgTmkaWg21aJx2K27CvN4no=;
+        b=qY8CShyUayUQo3vIy63fllvKWde+CYtflCGiw0S8G/HABfDI41oIRlqH6+/hsYm7Q0
+         JMNU2lCe0mMrqsxdWeYdc8ZJ1f/fhUWRddSiwQDWMgi9cZ50SEFKggU1GEY8a/xLnyCE
+         TsEUQ8Yxmgt2oVhpMtj9DL0hBJXYQxaIAaUOPkZD06O6qwCdiroLf4AnREagL4UufCrR
+         zEIvjU226f2zVZhq3btBwDXcEewrJr/0msTEw0XmJEWmW5o2HIipUdRTZOA1ThljGQpw
+         YZPY6kBnCleamy1s/gGuRS3teWQYsv/lwj48LbFnHzLXYNn7xdd3PrGhLus/TKU0EaA5
+         S5GA==
+X-Gm-Message-State: AOAM531G2pjajWTYF4V5wAptodj+KggLZ5ODGCxNgA6wL7C3lJPp12Hx
+        Y96lPJSe3m3rSHNL316kycXGEWEQ8uxktw==
+X-Google-Smtp-Source: ABdhPJwQFdOk3/JhnkYAJ7+4UxWeSODdgmrzXc6v6ZZNNVodaufosO8lzD8MEq5dMApJxPrN8j9fHQ==
+X-Received: by 2002:a17:90a:7e2:: with SMTP id m89mr1061075pjm.2.1611080156359;
+        Tue, 19 Jan 2021 10:15:56 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id r14sm20043775pgi.27.2021.01.19.10.15.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 10:15:55 -0800 (PST)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] task_work fix for 5.11
+Message-ID: <87a18f00-8f32-edcc-4595-da70e623febc@kernel.dk>
+Date:   Tue, 19 Jan 2021 11:15:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
- <20210118183033.41764-6-vincenzo.frascino@arm.com> <20210119144459.GE17369@gaia>
- <1bb4355f-4341-21a7-0a53-a4a27840adee@arm.com>
-In-Reply-To: <1bb4355f-4341-21a7-0a53-a4a27840adee@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 19 Jan 2021 19:12:40 +0100
-Message-ID: <CAAeHK+y9sw0SENeDXLLBxD8XqD396rXbg1GeBRDEm7PnMzMmHQ@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] arm64: mte: Inline mte_assign_mem_tag_range()
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 4:45 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> Hi Catalin,
->
-> On 1/19/21 2:45 PM, Catalin Marinas wrote:
-> > On Mon, Jan 18, 2021 at 06:30:33PM +0000, Vincenzo Frascino wrote:
-> >> mte_assign_mem_tag_range() is called on production KASAN HW hot
-> >> paths. It makes sense to inline it in an attempt to reduce the
-> >> overhead.
-> >>
-> >> Inline mte_assign_mem_tag_range() based on the indications provided at
-> >> [1].
-> >>
-> >> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
-> >>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> >> ---
-> >>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
-> >>  arch/arm64/lib/mte.S         | 15 ---------------
-> >>  2 files changed, 25 insertions(+), 16 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> >> index 237bb2f7309d..1a6fd53f82c3 100644
-> >> --- a/arch/arm64/include/asm/mte.h
-> >> +++ b/arch/arm64/include/asm/mte.h
-> >> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
-> >>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
-> >>                       unsigned long addr, unsigned long data);
-> >>
-> >> -void mte_assign_mem_tag_range(void *addr, size_t size);
-> >> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-> >> +{
-> >> +    u64 _addr = (u64)addr;
-> >> +    u64 _end = _addr + size;
-> >> +
-> >> +    /*
-> >> +     * This function must be invoked from an MTE enabled context.
-> >> +     *
-> >> +     * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> >> +     * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> >> +     */
-> >> +    do {
-> >> +            /*
-> >> +             * 'asm volatile' is required to prevent the compiler to move
-> >> +             * the statement outside of the loop.
-> >> +             */
-> >> +            asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> >> +                         :
-> >> +                         : "r" (_addr)
-> >> +                         : "memory");
-> >> +
-> >> +            _addr += MTE_GRANULE_SIZE;
-> >> +    } while (_addr != _end);
-> >> +}
-> >
-> > While I'm ok with moving this function to C, I don't think it solves the
-> > inlining in the kasan code. The only interface we have to kasan is via
-> > mte_{set,get}_mem_tag_range(), so the above function doesn't need to
-> > live in a header.
-> >
-> > If you do want inlining all the way to the kasan code, we should
-> > probably move the mte_{set,get}_mem_tag_range() functions to the header
-> > as well (and ideally backed by some numbers to show that it matters).
-> >
-> > Moving it to mte.c also gives us more control on how it's called (we
-> > have the WARN_ONs in place in the callers).
-> >
->
-> Based on the thread [1] this patch contains only an intermediate step to allow
-> KASAN to call directly mte_assign_mem_tag_range() in future. At that point I
-> think that mte_set_mem_tag_range() can be removed.
->
-> If you agree, I would live the things like this to give to Andrey a chance to
-> execute on the original plan with a separate series.
+Hi Linus,
 
-I think we should drop this patch from this series as it's unrelated.
+The TIF_NOTIFY_SIGNAL change inadvertently removed the unconditional
+task_work run we had in get_signal(). This caused a regression for some
+setups, since we're relying on eg ____fput() being run to close and
+release, for example, a pipe and wake the other end. For 5.11, I prefer
+the simple solution of just reinstating the unconditional run, even if
+it conceptually doesn't make much sense - if you need that kind of
+guarantee, you should be using TWA_SIGNAL instead of TWA_NOTIFY. But
+it's the trivial fix for 5.11, and would ensure that other potential
+gotchas/assumptions for task_work don't regress for 5.11.
 
-I will pick it up into my future optimization series. Then it will be
-easier to discuss it in the context. The important part that I needed
-is an inlinable C implementation of mte_assign_mem_tag_range(), which
-I now have with this patch.
+we're looking into further simplifying the task_work notifications for
+5.12 which would resolve that too.
 
-Thanks, Vincenzo!
+Please pull!
+
+
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/task_work-2021-01-19
+
+for you to fetch changes up to 35d0b389f3b23439ad15b610d6e43fc72fc75779:
+
+  task_work: unconditionally run task_work from get_signal() (2021-01-08 09:14:21 -0700)
+
+----------------------------------------------------------------
+task_work-2021-01-19
+
+----------------------------------------------------------------
+Jens Axboe (1):
+      task_work: unconditionally run task_work from get_signal()
+
+ kernel/signal.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+-- 
+Jens Axboe
+
