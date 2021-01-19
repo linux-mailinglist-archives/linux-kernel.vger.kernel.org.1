@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054682FB8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBBD2FB8B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391997AbhASNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 08:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393747AbhASN2x (ORCPT
+        id S2394472AbhASNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 08:41:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28626 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391304AbhASNep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:28:53 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3B9C061573;
-        Tue, 19 Jan 2021 05:28:11 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id c127so1260089wmf.5;
-        Tue, 19 Jan 2021 05:28:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=5y8Ro1ypuMwid9mJ+5yTb8j+eAM7KPlRMembrO9vocc=;
-        b=lx6zvICzjPPHETERikm0s4RqzxKqjLCL/yTU4tYQDIumZZt4FI6Zr0zXmBGkJ4xtSg
-         Tpev99JjWdgHUg0pnM/bgFnJ1naDMnmNS+C4GOAxcA6U9nR7HAHbyT668vglCwGfXn7k
-         mQrTwoyW3LrjUlLHMqNTTBDb5o8sw8NWZSuvNybzvMkicpDX10QKTtp5Eu5f8acMamf+
-         kF9QqGU/8CINxLPv+UGKla0AoMuD0DXTAB4hbRfqV/SMTPm9/862zcSP7K+cAKuw/0U9
-         YT6AEHteHr8n+n7FkZQslMfQdIogjDB/Lh1c2nanAh+bQzmIe2ezQ9LuuMGIlSbtXLbO
-         id0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5y8Ro1ypuMwid9mJ+5yTb8j+eAM7KPlRMembrO9vocc=;
-        b=swUAc9o7nu6HWCv0ZiH0jmVg9uGGm5wU6OGmwiSclCNFZgkxIa18x4ZAEfNEqEPHMu
-         Z9gfU3WJOmHPELuFyatHfCoAQa211GRxWc6uj2Qf9SmjDYiJCz47cMXLk3QwNh5MtGZU
-         8Sh1tDtElzNydm3iu6Ce/9JfWntHxaM0SI6ytYEeTemai5TUWrBWVaXDIidmP0xuBv3L
-         smzYcf744SFToYLod6etYOJTTc2mHKVKmNzWvX4HzDmNllfJxcj9jQpYz31BQDw0/eBK
-         Ij+geNHkP9AUGFEpSnAsyHFNYW7Tw1mqr/8vJW2VfqdUxcpOYDyYcmFn4qgqrd6UVyn4
-         hSWA==
-X-Gm-Message-State: AOAM531CuP+sQsD4wLA5mamFJUYOWF4jzH1UOlvJLbNgRiRjR9nkglD5
-        WRj1bNbfIlDestSCSSWqQ8I=
-X-Google-Smtp-Source: ABdhPJyqV3r5lugb4G4AUkJpM01DH9xMik3Jbf10xwwURpVgVJLd2eqD2bWAvX85ZopBoeYJj6Z5Rg==
-X-Received: by 2002:a7b:c08b:: with SMTP id r11mr2514749wmh.11.1611062890337;
-        Tue, 19 Jan 2021 05:28:10 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id b64sm4518824wmb.26.2021.01.19.05.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 05:28:09 -0800 (PST)
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
- acpi_devices
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
- <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <29f82122-8059-c9dc-15af-a6812e5509f7@gmail.com>
-Date:   Tue, 19 Jan 2021 13:28:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 08:34:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611063194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s8gwizIGxobKFJeAKg2wgbu6EM+02EMIctz5np7WFso=;
+        b=LF8t9eHxP/p4gITWkV/QcTCsyTs2cma1mjKaR1GY9D8z7KJOddCizZDhS0rOMBPYc4NeRJ
+        pKCUIPu2VwWjxXa8aem7nrgXkgt0yVzKEgxXXMRt71GupkSUzTYDIKK/UrZxpR5MI2Ee2n
+        puohsi2RWwO5IaY182zCu1Ldt9x51/o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-anA8w-6tMK-1y_U-fcUlaw-1; Tue, 19 Jan 2021 08:33:10 -0500
+X-MC-Unique: anA8w-6tMK-1y_U-fcUlaw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01272CC623;
+        Tue, 19 Jan 2021 13:33:07 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D58F9D62;
+        Tue, 19 Jan 2021 13:33:04 +0000 (UTC)
+Subject: Re: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range
+ with platform
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d57036a1-de12-2d32-be65-daaa3dc5b772@redhat.com>
+Date:   Tue, 19 Jan 2021 14:33:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+In-Reply-To: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18.01.21 14:12, Anshuman Khandual wrote:
+> This series adds a mechanism allowing platforms to weigh in and prevalidate
+> incoming address range before proceeding further with the memory hotplug.
+> This helps prevent potential platform errors for the given address range,
+> down the hotplug call chain, which inevitably fails the hotplug itself.
+> 
+> This mechanism was suggested by David Hildenbrand during another discussion
+> with respect to a memory hotplug fix on arm64 platform.
+> 
+> https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
+> 
+> This mechanism focuses on the addressibility aspect and not [sub] section
+> alignment aspect. Hence check_hotplug_memory_range() and check_pfn_span()
+> have been left unchanged. Wondering if all these can still be unified in
+> an expanded memhp_range_allowed() check, that can be called from multiple
+> memory hot add and remove paths.
+> 
+> This series applies on v5.11-rc4 and has been tested on arm64. But only
+> build tested on s390.
+> 
+> Changes in V3
+> 
+> - Updated the commit message in [PATCH 1/3]
+> - Replaced 1 with 'true' and 0 with 'false' in memhp_range_allowed()
+> - Updated memhp_range.end as VMEM_MAX_PHYS - 1 and updated vmem_add_mapping() on s390
+> - Changed memhp_range_allowed() behaviour in __add_pages()
+> - Updated __add_pages() to return E2BIG when memhp_range_allowed() fails for non-linear mapping based requests
 
-On 19/01/2021 13:15, Rafael J. Wysocki wrote:
-> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
->> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
->>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>> In some ACPI tables we encounter, devices use the _DEP method to assert
->>>> a dependence on other ACPI devices as opposed to the OpRegions that the
->>>> specification intends. We need to be able to find those devices "from"
->>>> the dependee, so add a function to parse all ACPI Devices and check if
->>>> the include the handle of the dependee device in their _DEP buffer.
->>> What exactly do you need this for?
->> So, in our DSDT we have devices with _HID INT3472, plus sensors which
->> refer to those INT3472's in their _DEP method. The driver binds to the
->> INT3472 device, we need to find the sensors dependent on them.
->>
-> Well, this is an interesting concept. :-)
->
-> Why does _DEP need to be used for that?  Isn't there any other way to
-> look up the dependent sensors?
-
-
-If there is, I'm not aware of it, I don't see a reference to the sensor
-in the INT3472 device (named "PMI0", with the corresponding sensor being
-"CAM0") in DSDT  [1]
-
->>> Would it be practical to look up the suppliers in acpi_dep_list instead?
->>>
->>> Note that supplier drivers may remove entries from there, but does
->>> that matter for your use case?
->> Ah - that may work, yes. Thank you, let me test that.
-> Even if that doesn't work right away, but it can be made work, I would
-> very much prefer that to the driver parsing _DEP for every device in
-> the namespace by itself.
+Minor thing, we should make up our mind if we want to call stuff
+internally "memhp_" or "mhp". I prefer the latter, because it is shorter.
 
 
-Alright; I haven't looked too closely yet, but I think an iterator over
-acpi_dep_list exported from the ACPI subsystem would also work in a
-pretty similar way to the function introduced in this patch does,
-without much work
+-- 
+Thanks,
 
-
-[1]
-https://gist.githubusercontent.com/djrscally/e64d112180517352fa3392878b0f4a7d/raw/88b90b3ea4204fd7845257b6666fdade47cc2981/dsdt.dsl
+David / dhildenb
 
