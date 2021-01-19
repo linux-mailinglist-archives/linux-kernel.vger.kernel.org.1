@@ -2,152 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6CA2FB27A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878C42FB2A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbhASHH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:07:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:40744 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729489AbhASHGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:06:09 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D13E71FB;
-        Mon, 18 Jan 2021 23:05:21 -0800 (PST)
-Received: from [10.57.40.145] (unknown [10.57.40.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55B633F66E;
-        Mon, 18 Jan 2021 23:05:18 -0800 (PST)
-Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
- for kernel at EL2
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Al Grant <al.grant@arm.com>
-References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-2-leo.yan@linaro.org> <20210115223043.GA375055@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <b147f348-1f87-31f9-7941-fca5a76c71f4@arm.com>
-Date:   Tue, 19 Jan 2021 07:05:10 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1730513AbhASHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:15:58 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:44803 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbhASHOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:14:42 -0500
+Received: by mail-lf1-f44.google.com with SMTP id m25so27590192lfc.11;
+        Mon, 18 Jan 2021 23:14:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=P+qSMLDwGxE2JaNJxyZHsDHJ0xuN3IOTE+zNh6TVqf0=;
+        b=B5sPLwMmSGZ7a3yW+x8NAT0VpgSHT/Op2olujQsRZTZnfFxla7Y577uXQnRZWwfUKb
+         vSkop34dz+pbnvJqxeARW5I1QWSbkJ8WZ5YzjKYZr5+DyCW0ye+RYc+ivJhyIWHrDubx
+         52wEBzNCPcCLQQER+jfJpFzBAyVT4PaYTI5idwU+r51633Erb24xKIxGhjc6W2h4FOJD
+         qykgOaDLBTcfgejuNVxtJK4ArDMyzz+hLa71r5+NjNqeC9xbjzsMO/0Py6BLFWLsayOe
+         x9JABhWWth/v6KNHte/h16Q4UhTJumT1f8roA4g0fvruw8m6FyLPKkx7H/xFZacqpC/v
+         gWMA==
+X-Gm-Message-State: AOAM530mVHf31ZrlJu7zq7qVC62f2+hWR64lvpvY0yQDoMvatHWRV0lm
+        XYP1QskGrN0RUe2rM6jmflM=
+X-Google-Smtp-Source: ABdhPJyhPq5gBNyzuAtHByHBCEaWug1JFAfsuCEmg7e4TK6mPMxRbbYp3M7Qkz63uDppCQb0efK8wQ==
+X-Received: by 2002:a19:dc5:: with SMTP id 188mr1254716lfn.513.1611040438809;
+        Mon, 18 Jan 2021 23:13:58 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id m13sm1905288ljo.121.2021.01.18.23.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 23:13:57 -0800 (PST)
+Date:   Tue, 19 Jan 2021 09:13:49 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: [PATCH v2 00/17] Support ROHM BD71815 PMIC
+Message-ID: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210115223043.GA375055@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
+Patch series introducing support for ROHM BD71815 PMIC
 
-On 1/15/21 10:30 PM, Mathieu Poirier wrote:
-> Hey guys,
-> 
-> On Sat, Jan 09, 2021 at 03:44:29PM +0800, Leo Yan wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> When the kernel is running at EL2, the PID is stored in CONTEXTIDR_EL2.
->> So, tracing CONTEXTIDR_EL1 doesn't give us the pid of the process.
->> Thus we should trace the VMID with VMIDOPT set to trace
->> CONTEXTIDR_EL2 instead of CONTEXTIDR_EL1. Given that we have an existing
->> config option "contextid" and this will be useful for tracing
->> virtual machines (when we get to support virtualization). So instead,
->> this patch adds a new option, contextid_in_vmid as a separate config.
->> Thus on an EL2 kernel, we will have two options available for
->> the perf tool. However, to make it easier for the user to
->> do pid tracing, we add a new format which will default to
->> "contextid" (on EL1 kernel) or "contextid_in_vmid" (on EL2
->> kernel). So that the user doesn't have to bother which EL the
->> kernel is running.
->>
->>   i.e, perf record -e cs_etm/pid/u --
->>
->> will always do the "pid" tracing, independent of the kernel EL.
->>
->> Also, the perf tool will be updated to automatically select
->> "pid" config instead of the "contextid" for system wide/CPU wide
->> mode.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Al Grant <al.grant@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->> ---
->>   drivers/hwtracing/coresight/coresight-etm-perf.c   | 14 ++++++++++++++
->>   drivers/hwtracing/coresight/coresight-etm4x-core.c |  9 +++++++++
->>   include/linux/coresight-pmu.h                      | 11 +++++++----
->>   3 files changed, 30 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> index bdc34ca449f7..f763def145e4 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> @@ -30,14 +30,28 @@ static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
->>   /* ETMv3.5/PTM's ETMCR is 'config' */
->>   PMU_FORMAT_ATTR(cycacc,		"config:" __stringify(ETM_OPT_CYCACC));
->>   PMU_FORMAT_ATTR(contextid,	"config:" __stringify(ETM_OPT_CTXTID));
->> +PMU_FORMAT_ATTR(contextid_in_vmid,	"config:" __stringify(ETM_OPT_CTXTID_IN_VMID));
-> 
-> I am not convinced adding this new contextid_in_vmid is the best way forward.
-> 
->>   PMU_FORMAT_ATTR(timestamp,	"config:" __stringify(ETM_OPT_TS));
->>   PMU_FORMAT_ATTR(retstack,	"config:" __stringify(ETM_OPT_RETSTK));
->>   /* Sink ID - same for all ETMs */
->>   PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
->>   
->> +static ssize_t format_attr_pid_show(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    char *page)
->> +{
->> +	int pid_fmt = is_kernel_in_hyp_mode() ? ETM_OPT_CTXTID_IN_VMID : ETM_OPT_CTXTID;
->> +
->> +	return sprintf(page, "config:%d\n", pid_fmt);
->> +}
->> +
->> +struct device_attribute format_attr_pid = __ATTR(pid, 0444, format_attr_pid_show, NULL);
-> 
-> The same applies here.  PMU format bits are options the PMU supports rather than
-> a representation of the hardware, making bit numbering arbitrary.  A such we
-> don't explicitly need a contextid_in_vmid option.  Making the current contextid
-> variable, the same it was done for 'pid', should be sufficient.  Based on the
-> value carried by contexid, i.e 14 or 15, the perf tools will know where to get
-> the contextID.
-> 
-> With regards to backward functionality, user who hard code 'config' on the perf
-> command line won't get the results they want when the kernel is at EL2 anyway.
-> 
-> The kernel, with function is_kernel_in_hyp_mode(), is not an issue.
+Please note that this series depends on previously sent patches.
 
-I did think about that. The reason behind using a new alias is vaguely mentioned
-in the description. If a host perf session wants to trace a VM with the contextid_el1,
-there is no option for that with "contextid" flipped to trace "contextid_el2".
-This is precisely why I preferred keeping both the hardware configurations
-and let the kernel choose the right one for the EL, by having an alias.
-i.e,
+Already merged regulator patches (in regulator tree - not yet in Linus'
+tree):
+[PATCH] regulator: ROHM bd7xxxx: Do not depend on parent driver data
+https://lore.kernel.org/lkml/20210105130221.GA3438042@localhost.localdomain/
+[PATCH] regulator: bd718x7: Stop using parent data
+https://lore.kernel.org/lkml/20210107122355.GA35080@localhost.localdomain/
 
-perf record -e cs_etm/contextid,contextid_in_vmid/ vm
-
-could still trace the VM vcpu threads and the CID changes within
-the VM. (This is triggered from the host, so VM support is not necessary).
-
-If we decide not to do this, or change the meaning of contextid now
-to mean "pid" and change it in the future back to what it really
-means for supporting such scenarios above, then we are going to
-be back where we are with the proposal.
+Already merged GPIO patch (in GPIO tree - not yet in Linus' tree):
+[PATCH] gpio: bd7xxxx: Do not depend on parent driver data
+https://lore.kernel.org/lkml/20210105125335.GA3430233@localhost.localdomain/
 
 
-Suzuki
+This series also includes already sent patches:
+The patches 1, 2 and 3 have been sent separately to mfd/regulator, rtc and clk
+subsystems - but they have not yet been reviewed / applied. They are present
+also in this series because the series depends on those changes.
+I will drop those patches from this series if they get merged to
+(MFD or regulator)/RTC/clk trees from previous submits.
+
+patch 1 previous submit:
+regulator: bd718x7, bd71828, Fix dvs voltage levels
+https://lore.kernel.org/lkml/20210118075851.GA1016281@localhost.localdomain/
+
+patch 2 previous submit:
+rtc: bd70528: Do not require parent data
+https://lore.kernel.org/lkml/20210105152350.GA3714833@localhost.localdomain/
+
+patch 3 previous submit:
+clk: BD718x7: Do not depend on parent driver data
+https://lore.kernel.org/lkml/20210105123028.GA3409663@localhost.localdomain/
+
+
+Please note that due to the dependencies all of the patches are probably
+not applying cleanly to all subsystem trees. (regulator/RTC patches to
+other subsystems). I understand it perfectly well if this series can't be
+merged before all dependencies are merged to all relevant subsystem trees
+but I would be grateful if I got the first set of review comments even
+before that.
+
+
+ROHM BD71815 is a power management IC used in some battery powered
+systems. It contains regulators, GPO(s), charger + coulomb counter, RTC
+and a clock gate.
+
+All regulators can be controlled via I2C. LDO4 can additionally be set to
+be enabled/disabled by a GPIO. LDO3 voltage could be selected from two
+voltages written into separate VSEL reisters using GPIO but this mode is
+not supported by driver. On top of that the PMIC has the typical HW
+state machine which is present also on many other ROHM PMICs.
+
+IC contains two GPOs - but one of the GPOs is marked as GND in
+data-sheet. Thus the driver by default only exposes one GPO. The second
+GPO can be enabled by special DT property.
+
+RTC is almost similar to what is on BD71828. For currently used features
+only the register address offset to RTC block differs.
+
+The charger driver is not included in this series. ROHM has a charger
+driver with some fuel-gauging logig written in but this is not included
+here. I am working on separating the logic from HW specific driver and
+supporting both BD71815 and BD71828 chargers in separate patch series.
+
+Changelog v2:
+  - Rebased on top of v5.11-rc3
+  - Added another "preliminary patch" which fixes HW-dvs voltage
+    handling (patch 1)
+  - split regulator patch to two.
+  - changed dt-binding patch ordering.
+  regulators:
+    - staticized probe
+    - removed some unnecessary defines
+    - updated comments
+    - split rohm-regulator patch adding SNVS and supporting simple
+      linear mapping into two - one adding support for mapping, other
+      adding SNVS.
+  GPIO:
+    - removed unnecessary headers
+    - clarified dev/parent->dev usage
+    - removed forgotten #define DEBUG
+  dt-bindings:
+    - changed patch order to meet ref-dependencies
+    - added missing regulator nodes
+    - changed string property for clk mode to tristated
+  MFD:
+    - header cleanups.
+  CLK:
+    - fixed commit message
+
+Matti Vaittinen (17):
+  regulator: bd718x7, bd71828, Fix dvs voltage levels
+  rtc: bd70528: Do not require parent data
+  clk: BD718x7: Do not depend on parent driver data
+  mfd: bd718x7: simplify by cleaning unnecessary device data
+  dt_bindings: bd71828: Add clock output mode
+  dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
+  dt_bindings: mfd: Add ROHM BD71815 PMIC
+  mfd: Add ROHM BD71815 ID
+  mfd: Support for ROHM BD71815 PMIC core
+  gpio: support ROHM BD71815 GPOs
+  regulator: helpers: Export helper voltage listing
+  regulator: rohm-regulator: linear voltage support
+  regulator: rohm-regulator: Support SNVS HW state.
+  regulator: Support ROHM BD71815 regulators
+  clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
+  rtc: bd70528: Support RTC on ROHM BD71815
+  MAINTAINERS: Add ROHM BD71815AGW
+
+ .../bindings/mfd/rohm,bd71815-pmic.yaml       | 202 ++++++
+ .../bindings/mfd/rohm,bd71828-pmic.yaml       |   6 +
+ .../regulator/rohm,bd71815-regulator.yaml     | 116 +++
+ MAINTAINERS                                   |   3 +
+ drivers/clk/clk-bd718x7.c                     |  21 +-
+ drivers/gpio/Kconfig                          |  10 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-bd71815.c                   | 171 +++++
+ drivers/mfd/Kconfig                           |  15 +-
+ drivers/mfd/rohm-bd71828.c                    | 416 ++++++++++-
+ drivers/mfd/rohm-bd718x7.c                    |  43 +-
+ drivers/regulator/Kconfig                     |  11 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/bd71815-regulator.c         | 682 ++++++++++++++++++
+ drivers/regulator/helpers.c                   |  36 +-
+ drivers/regulator/rohm-regulator.c            |  32 +-
+ drivers/rtc/Kconfig                           |   6 +-
+ drivers/rtc/rtc-bd70528.c                     | 104 ++-
+ include/linux/mfd/rohm-bd71815.h              | 561 ++++++++++++++
+ include/linux/mfd/rohm-bd71828.h              |   3 +
+ include/linux/mfd/rohm-bd718x7.h              |  13 -
+ include/linux/mfd/rohm-generic.h              |  19 +-
+ include/linux/regulator/driver.h              |   2 +
+ 23 files changed, 2321 insertions(+), 153 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+ create mode 100644 drivers/gpio/gpio-bd71815.c
+ create mode 100644 drivers/regulator/bd71815-regulator.c
+ create mode 100644 include/linux/mfd/rohm-bd71815.h
+
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
