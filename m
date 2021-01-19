@@ -2,331 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24622FB170
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0532FB171
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 07:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbhASGaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 01:30:00 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50596 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbhASGUd (ORCPT
+        id S1729279AbhASGae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 01:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbhASGVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 01:20:33 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2CA884FB;
-        Tue, 19 Jan 2021 07:19:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611037180;
-        bh=IYpSSFS5uWQHDE9xBeG8TUITMXIREX1vOTs+lDKH2fY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fCQHz1mqiFog/n+vu2z9TTuTmUnhIkZZ7adowo6pzDyODOnLrel4VCyQxtfcU3700
-         YfriRj5RuUjTvCY1P8EccHorUmMjSv9LYDQZR84aIiTRkCjrcMMwVwF9pk+HOTyeXc
-         j6cJlKhTecsiF6FZlzwuxb77uUABz+kE6ydGhLPo=
-Date:   Tue, 19 Jan 2021 08:19:23 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        rjw@rjwysocki.net, lenb@kernel.org, andy@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com,
-        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAZ5648kEmCuobdj@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
+        Tue, 19 Jan 2021 01:21:09 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D4AC061573;
+        Mon, 18 Jan 2021 22:20:18 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id g24so20088519edw.9;
+        Mon, 18 Jan 2021 22:20:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zN7GL9dgBP2q22KrliTWCCxzySVH9W5rRcAGz5Qc+HE=;
+        b=StV+ttBnN18Wf0nTXq4Z+PaByF7nDUSt3k9444xmciL7AUzBxuJUGZbu324v4vo2Sj
+         /+GxpHuwHC6JwfM1mbq8fjVXhbImvOSnnnfkJm8zRT8o/sq5Zx7KhRYClWA/rUr5elYB
+         uyC+EwtscUKCTncsrCExuUf34lvpimKU1cRb6Sh1o8QvSsM8zrTnm2uiDuKY7GHmH9Zf
+         zVmzg4fWIZ3ExHfEOmSHugzpekY2awdb6HH0EWdJNq4pH/CqSxju8D3s78vVyCCxWWDV
+         jBucNN79F7jYOpscBrydSMX9arVy0PiZiJn1IQ9XBexWWSt5UDaMYjaAPQDhEmQK5jwc
+         9TCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zN7GL9dgBP2q22KrliTWCCxzySVH9W5rRcAGz5Qc+HE=;
+        b=hI0VnkPfl4KjIowb6b0OhP2DaSDPhMyEl50LaKb43kZSpzLpVQ6jbyvu7Zu2kM8x36
+         GO2jckqHwKYpS1w40T0xI5H22PbQlG2UMnWWhu9Ya8Bh1xhyPS8HfjFYTw5C9FUnaJSB
+         FFNTQzE2UyDGeF9vJOHUMtHryDWKFX3OeT1tdEHsXXfXkKdSPhX+BUniQmmqqv8LNcld
+         ciNzvXMe+xgvfZH/An5KnZpLOFl02syowrpGuinEnOsqkMTF9I0QgoRFEKNlM3Svy1kT
+         Gbs/muT/XWPUE2QZ+h2x8xfAfz2Kc4U0SFG8UD4e4XgfcW0R+Ku+I/oSVRiYKl+ICyY3
+         kmOQ==
+X-Gm-Message-State: AOAM530X/jayVkWk9xJ0C3++qObCdPQ8vy8LfxtLGC3jRusVtNIBCWzd
+        BoLEVwtcgEHa01rcB9JmG5vijhhNGe2QIzzW+39ZfAf3ss0=
+X-Google-Smtp-Source: ABdhPJxpuKMWC1bb5IMA4GaSPmuqanmgCNWWsaojSotKzFjoCauJj02hfRVKcUCwcumuavvm+QQL5t3Qn43Ql7HqTcg=
+X-Received: by 2002:a05:6402:2c5:: with SMTP id b5mr2301824edx.258.1611037217108;
+ Mon, 18 Jan 2021 22:20:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3872041c-1a4a-2508-d325-80242598d55e@gmail.com>
+References: <20210118084918.356050f3@canb.auug.org.au>
+In-Reply-To: <20210118084918.356050f3@canb.auug.org.au>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Tue, 19 Jan 2021 14:20:04 +0800
+Message-ID: <CAFH1YnOQ-cPrQ=DYzprspYTWOfhiV6rp9VM7ueC=D+0XBTO0MA@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the csky tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Guo Ren <ren_guo@c-sky.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, Jan 18, 2021 at 5:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   8bfb676492da ("csky: Fix a size determination in gpr_get()")
+>
+> Fixes tag
+>
+>   Fixes: dcad7854fcce ("sky: switch to ->regset_get()")
+>
+> has these problem(s):
+>
+>   - Subject does not match target commit subject
+>     Just use
+>         git log -1 --format='Fixes: %h ("%s")'
 
-On Mon, Jan 18, 2021 at 08:46:34PM +0000, Daniel Scally wrote:
-> Hi Laurent, thanks for the comments - really appreciate the detail.
-> 
-> Some specific responses below but assume a general "will do" to
-> everything you mentioned otherwise...
-> 
-> On 18/01/2021 09:15, Laurent Pinchart wrote:
-> >> +	  PMIC) and one designed for Chrome OS.
-> > 
-> > How about expanding this a bit to explain what the INT3472 stands for ?
-> >
-> > 	  The INT3472 is an Intel camera power controller, a logical device
-> > 	  found on some Skylake-based systems that can map to different
-> > 	  hardware devices depending on the platform. On machines
-> > 	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
-> > 	  machines designed for Windows, it maps to either a TP68470
-> > 	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
-> > 	  and power gates.
-> 
-> Yeah sure ok
-> 
-> >> This driver handles all three
-> >> +	  situations by discovering information it needs to discern them at
-> >> +	  runtime.
-> >> +
-> >> +	  If your device was designed for Chrome OS, this driver will provide
-> >> +	  an ACPI operation region, which must be available before any of the
-> >> +	  devices using this are probed. For this reason, you should select Y
-> >> +	  if your device was designed for ChromeOS. This option also configures
-> >> +	  the designware-i2c driver to be built-in, for the same reason.
-> > 
-> > Is the last sentence a leftover ?
-> 
-> Oops - it is, but it was supposed to remind me to double check that that
-> was still necessary. I'll take a look, thanks.
-> 
-> >> +
-> >> +#include "intel_skl_int3472_common.h"
-> >> +
-> >> +int skl_int3472_get_cldb_buffer(struct acpi_device *adev,
-> >> +				struct int3472_cldb *cldb)
-> >> +{
-> >> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> >> +	acpi_handle handle = adev->handle;
-> >> +	union acpi_object *obj;
-> >> +	acpi_status status;
-> >> +	int ret = 0;
-> >> +
-> >> +	status = acpi_evaluate_object(handle, "CLDB", NULL, &buffer);
-> >> +	if (ACPI_FAILURE(status))
-> >> +		return -ENODEV;
-> >> +
-> >> +	obj = buffer.pointer;
-> >> +	if (!obj) {
-> >> +		dev_err(&adev->dev, "ACPI device has no CLDB object\n");
-> > 
-> > Is this the code path that is taken on Chrome OS ? If so an error
-> > message isn't appropriate. I'd drop this message, and instead add an
-> > error message in the discrete PMIC code.
-> 
-> Ah yes of course, thanks, I'll move the error message.
-> 
-> >> +
-> >> +	unsigned int n_gpios; /* how many GPIOs have we seen */
-> >> +
-> >> +	struct int3472_gpio_regulator regulator;
-> >> +	struct int3472_gpio_clock clock;
-> > 
-> > You don't necessarily need to define separate structures for this, you
-> > could also write
-> >
-> > 	struct {
-> > 		char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
-> > 		char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
-> > 		struct gpio_desc *gpio;
-> > 		struct regulator_dev *rdev;
-> > 		struct regulator_desc rdesc;
-> > 	} regulator;
-> >
-> > 	struct {
-> > 		struct clk *clk;
-> > 		struct clk_hw clk_hw;
-> > 		struct clk_lookup *cl;
-> > 		struct gpio_desc *gpio;
-> > 	} clock;
-> >
-> > It's entirely up to you.
-> 
-> Ooh yeah I like that more, thanks very much.
-> 
-> >> +/* 79234640-9e10-4fea-a5c1-b5aa8b19756f */
-> >> +static const guid_t int3472_gpio_guid =
-> >> +	GUID_INIT(0x79234640, 0x9e10, 0x4fea,
-> >> +		  0xa5, 0xc1, 0xb5, 0xaa, 0x8b, 0x19, 0x75, 0x6f);
-> >> +
-> >> +/* 822ace8f-2814-4174-a56b-5f029fe079ee */
-> >> +static const guid_t cio2_sensor_module_guid =
-> >> +	GUID_INIT(0x822ace8f, 0x2814, 0x4174,
-> >> +		  0xa5, 0x6b, 0x5f, 0x02, 0x9f, 0xe0, 0x79, 0xee);
-> > 
-> > A comment that explains what those DSM functions do would be useful for
-> > reference. It has taken lots of time to figure it out, let's spare the
-> > pain to the next person who tries to understand this :-)
-> 
-> Hah - good point, well made. I'll explain what they're for then.
-> 
-> >> +static int skl_int3472_clk_enable(struct clk_hw *hw)
-> >> +{
-> >> +	struct int3472_gpio_clock *clk = to_int3472_clk(hw);
-> >> +
-> >> +	gpiod_set_value(clk->gpio, 1);
-> > 
-> > The clock enable() and disable() methods are not supposed to sleep,
-> > while setting a GPIO value may sleep in the general case. Should this be
-> > moved to skl_int3472_clk_prepare() ? Same for skl_int3472_clk_disable()
-> > and skl_int3472_clk_unprepare().
-> 
-> I was under the assumption the difference between gpiod_set_value() and
-> gpiod_set_value_cansleep() was that gpiod_set_value() _can't_ sleep, but
-> actually reading the function's comments it seems it will just complain
-> if it turns out it can sleep:
-> 
-> * This function can be called from contexts where we cannot sleep, and will
-> * complain if the GPIO chip functions potentially sleep. It doesn't
-> complain, on either of my devices, but I guess that can't be guaranteed
-> for _every_ device, so these calls probably are safer in (un)prepare() yes.
+Sorry for the mistake. Should be
+'Fixes: dcad7854fcce ("csky: switch to ->regset_get()")'
+not
+'Fixes: dcad7854fcce ("sky: switch to ->regset_get()")'
 
-If we could guarantee that the GPIOs are connected to the SoC, we could
-keep using the code above, as there should be no need to sleep. The
-question is whether this can be guaranteed or not. It's true that I
-would be surprised if the GPIOs were connected, for instance, to an I2C
-GPIO expander..
+Should I send the patch again with above fix?
 
-> >> +			}
-> >> +
-> >> +			i++;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	if (!func)
-> >> +		return 0;
-> > 
-> > I initially thought this wasn't right, as if no entry was found in the
-> > mapping table, func would still have its non-NULL value as passed to
-> > this function. I then realized that you're checking if the match that
-> > was found is NULL. A comment to explain this would be useful.
-> 
-> Yep ok - I actually had one and decided it was superfluous and removed
-> it - my bad.
-> 
-> >> +
-> >> +	status = acpi_get_handle(NULL, path, &handle);
-> >> +	if (ACPI_FAILURE(status))
-> >> +		return -EINVAL;
-> >> +
-> >> +	ret = acpi_bus_get_device(handle, &adev);
-> >> +	if (ret)
-> >> +		return -ENODEV;
-> >> +
-> >> +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
-> >> +							   ares->data.gpio.pin_table[0],
-> >> +							   func, 0, polarity);
-> > 
-> > I wonder if
-> >
-> > 	table_entry.key = acpi_dev_name(adev);
-> > 	table_entry.chip_hwnum = ares->data.gpio.pin_table[0];
-> > 	table_entry.con_id = func;
-> > 	table_entry.idx = 0;
-> > 	table_entry.flags = polarity;
-> >
-> > (with struct gpiod_lookup table_entry = { }; above) would be more
-> > readable. Up to you.
-> >
-> >> +
-> >> +	memcpy(&int3472->gpios.table[int3472->n_sensor_gpios], &table_entry,
-> >> +	       sizeof(table_entry));
-> > 
-> > Ah, or maybe
-> >
-> > 	struct gpio_lookup *table_entry;
-> >
-> > 	table_entry = &int3472->gpios.table[int3472->n_sensor_gpios];
-> > 	table_entry->key = acpi_dev_name(adev);
-> > 	table_entry->chip_hwnum = ares->data.gpio.pin_table[0];
-> > 	table_entry->con_id = func;
-> > 	table_entry->idx = 0;
-> > 	table_entry->flags = polarity;
-> >
-> > (no need to memset() to 0 first as the whole structure has been
-> > allocated with kzalloc()).
-> 
-> Yeah you're right, this looks much nicer - thanks.
-> 
-> >> +	int ret = 0;
-> >> +
-> >> +	init.name = kasprintf(GFP_KERNEL, "%s-clk",
-> >> +			      acpi_dev_name(int3472->adev));
-> > 
-> > You need to check for NULL and return -ENOMEM.
-> 
-> Oops, of course, thanks
-> 
-> >> +		goto err_unregister_clk;
-> > 
-> > If this fails, you will end up calling clk_unregister() and
-> > clkdev_drop() in skl_int3472_discrete_remove(). You should replace the
-> > check in the remove function with
-> >
-> > 	if (!int3472->clock.cl) {
-> 
-> You're right, good spot, thank you.
-> 
-> >> +		dev_err(&int3472->pdev->dev, "No sensor module config\n");
-> >> +		return PTR_ERR(sensor_config);
-> >> +	}
-> > 
-> > Would it make sense to call this in skl_int3472_discrete_probe() or
-> > skl_int3472_parse_crs() and cache the config pointer ?
-> 
-> Yes, probably actually, and then the GPIO mapping function can just
-> check for its presence.
-> 
-> >> +	init_data.constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
-> >> +	init_data.num_consumer_supplies = 1;
-> >> +	init_data.consumer_supplies = &sensor_config->supply_map;
-> >> +
-> >> +	snprintf(int3472->regulator.regulator_name,
-> >> +		 GPIO_REGULATOR_NAME_LENGTH, "int3472-discrete-regulator");
-> > 
-> > s/GPIO_REGULATOR_NAME_LENGTH/sizeof(int3472->regulator.regulator_name)/
-> >
-> > Do regulator names need to be unique ? If so you may have a problem if a
-> > platform has two discrete INT3472.
-> 
-> Unlike clocks, the regulator framework doesn't shout at you when you do
-> this, but I agree it's suboptimal at the very least, I'll set it to
-> ..."%s-regulator", acpi_dev_name(int3472->adev)... as with the clock.
-> 
-> >> +	case INT3472_GPIO_TYPE_PRIVACY_LED:
-> >> +		ret = skl_int3472_map_gpio_to_sensor(int3472, ares,
-> >> +						     "indicator-led",
-> >> +						     GPIO_ACTIVE_HIGH);
-> > 
-> > Mapping the indicator LED to the sensor isn't great, as all sensor
-> > drivers would then need to handle it. Could it be handled in the
-> > regulator instead, so that it would be turned on automatically when the
-> > sensor is powered up ? Another option, more complicated, would be to
-> > handle it in the CIO2 driver (but I'm not sure how we would map it).
-> 
-> Not with the regulator, because it turns out only the 0x0b pin is one of
-> those and those appear on very few devices in scope, so it wouldn't be
-> called on a Surface Book 2 for example. Perhaps as part of clock
-> prepare/enable? I don't much like the idea of it running in the CIO2
-> driver to be honest, feels a bit out of place.
-
-The clock is another option, but could there be platforms where the
-clock GPIO isn't present ?
-
-Another option would be to let userspace handle that GPIO, but we then
-need to convey it to userspace.
-
-> >> +
-> >> +	if (int3472->gpios_mapped)
-> >> +		gpiod_remove_lookup_table(&int3472->gpios);
-> > 
-> > You could avoid the need for the gpios_mapped field by checking for
-> >
-> > 	if (int3472->gpios.list.next)
-> >
-> > Up to you.
-> 
-> Thank you! I was scratching my head trying to figure out a better way of
-> doing that.
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks
+Zhenzhong
