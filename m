@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20F82FBF67
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F22002FBF6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 19:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbhASSrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 13:47:47 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:39641 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391584AbhASSj6 (ORCPT
+        id S1729875AbhASSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 13:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729159AbhASSkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 13:39:58 -0500
-Received: by mail-io1-f70.google.com with SMTP id i143so14363283ioa.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 10:39:42 -0800 (PST)
+        Tue, 19 Jan 2021 13:40:10 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF9FC061573;
+        Tue, 19 Jan 2021 10:39:26 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id rv9so11181901ejb.13;
+        Tue, 19 Jan 2021 10:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oPpd0xzESQegPnVY2N4DoOcYulfBZy0CSElYWiJn91o=;
+        b=aft9YB4i5E5pliXL4ZQE13Dzs9PfvtIFzNDto56ylX9Pf/tk9+leQZIREncSo7q10q
+         bTuvk7EYdqNzxfoiew+Wxq8s3fu8uXZcMy8p4tuBWiZgNq570A+FffbuHpa15UUbzwl4
+         OzxO0DK83jB0OnP4dAhNqtUpRrj/mZzpB76y1GlqGsCRmUiyxiR9iwCsHkzu5LRxoxM+
+         2JVfxTxrQcpxhG2wKQCmJEnnB8y2Btohsb47FTSy6YpP3wUvj567xdDlBM6VJjCykyZy
+         7pSDdkpu0/OgL90WNf1SdO7rZfTKtm+xEPMzYlhG8UYX0pdPZilFiFvSOUalaBsVb+p0
+         Y35Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WdkBn9riwIbRJJ+uSYY9Jvm7Ton9pmCnypyx0bUimvQ=;
-        b=ayzvcVF2eVGO87nkiOT0YeKmKqCB88cN1o3uBEecpMckBEn8Dxy83CF+Xs9z65qNrI
-         euUxRcfiWkgcaEXl5hP1rTZ8YYLtZby/0cR2XneKFSxG7rVGNYh5HBzPkIJBzY1y//7W
-         /W9xGi2GCtcJnClcjeeCkbIGSLJAVZInnsSM6MghFH+lYyv8uo4KFhLqJHIMwQRtTeqM
-         ZBfeNfRIJCj0fkHsgcJYfjPTCNFzQiF3txuqVmPB0l4RHFh7e/FjaNunEahKeRjjfBhQ
-         1Gm7Qc5LhobVY2UMNTTeQ0LXgobpgvesEAGUXOmLg9Bx4nHDamiR/YUG6+HjO4ywX2/V
-         hGQg==
-X-Gm-Message-State: AOAM530F0ij+eoHLpwsGjOst2Tim3JhRy3t4cuCRbc7MW+lbG2jmJaqe
-        F2OSm6E76nRO9C5S133g5z/7KdWz00l0N+QHgF+TuTdqngGN
-X-Google-Smtp-Source: ABdhPJxa3gLsf9Z4xg5RCxUHvK2/e6vpqujSQ54YT4qMV/IbyZxynsLQLJvLPM2M4NB1H6/PP91l9uoSyXLCWU+FlQFgn+AstOTy
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oPpd0xzESQegPnVY2N4DoOcYulfBZy0CSElYWiJn91o=;
+        b=BCOAge8pzDuYWkR2JI6PJ+HLJq4m2RfThhcP/hgBj5NUhhnkZRo8JyJZMDPvT7/IzO
+         6ZbQEQ/lWUUjIyoQUunNeixNG4QkH9GlVNqi7TIEVOAJ45tnLYmphgCk/5Gesdq1a7El
+         kRWT9fC1AuHgDMR9wVpYYeQMWfP9pSm6u2xuZpnnuayQJtMxIC5A9SS3Kufg/Te+BUHo
+         /uRNlb1ca8AaLU8/VEAGmWkjD6dCoMIAikpA8d1TmciXZi/Gh2QEmTwcSL6vstkPEO28
+         +ts9o5ZqeuTJTgnWTxvNupAGzKtXBWkwo/d9hQTlm1mvLUyjik3rCodeLmhsydWv9qNT
+         3oVw==
+X-Gm-Message-State: AOAM531MmYewxFtdkFD5dyVjUpRUzWIkxFQErRZuBhQPR4SkiQRLVBQD
+        KsABiYwkzjDUrTumiZV9oTU=
+X-Google-Smtp-Source: ABdhPJyDaMyA5JaFGa1IcVtwtX3v2ntzPQieWmEe7SnBOyNPDIdZlsJaDkgqSmXkM6E5rzL2b+AIbA==
+X-Received: by 2002:a17:906:11d6:: with SMTP id o22mr3938523eja.106.1611081565179;
+        Tue, 19 Jan 2021 10:39:25 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
+        by smtp.gmail.com with ESMTPSA id s22sm10850372ejd.106.2021.01.19.10.39.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 10:39:24 -0800 (PST)
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+ <20210118234818.GP4605@ziepe.ca>
+ <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
+ <20210119180327.GX4605@ziepe.ca>
+ <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
+ <20210119181714.GA909645@ziepe.ca>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <05a7b524-aee2-fd1d-e342-b85f355adb82@gmail.com>
+Date:   Tue, 19 Jan 2021 19:39:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:c25:: with SMTP id q5mr4535832ilg.286.1611081557543;
- Tue, 19 Jan 2021 10:39:17 -0800 (PST)
-Date:   Tue, 19 Jan 2021 10:39:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1136d05b9452773@google.com>
-Subject: UBSAN: shift-out-of-bounds in std_validate
-From:   syzbot <syzbot+42d8c7c3d3e594b34346@syzkaller.appspotmail.com>
-To:     ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        jacopo@jmondi.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210119181714.GA909645@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 19.01.21 19:17, Jason Gunthorpe wrote:
+> On Tue, Jan 19, 2021 at 07:08:32PM +0100, Bodo Stroesser wrote:
+>> On 19.01.21 19:03, Jason Gunthorpe wrote:
+>>> On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
+>>>>
+>>>> I had a second look into math.h, but I don't find any reason why round_up
+>>>> could overflow. Can you give a hint please?
+>>>
+>>> #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+>>>                                                       ^^^^^
+>>>
+>>> That +1 can overflow
+>>
+>> But that would be a unsigned long long overflow. I considered this to
+>> not be relevant.
+> 
+> Why not? It still makes nents 0 and still causes a bad bug
+> 
 
-syzbot found the following issue on:
+Generally spoken, you of course are right.
 
-HEAD commit:    1e2a199f Merge tag 'spi-fix-v5.11-rc4' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=146e0c94d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41e68e7e8a23ad09
-dashboard link: https://syzkaller.appspot.com/bug?extid=42d8c7c3d3e594b34346
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12166d58d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14dfc294d00000
+OTOH, if someone tries to allocate such big sgls, then we will run into
+trouble during memory allocation even without overrun.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42d8c7c3d3e594b34346@syzkaller.appspotmail.com
+Anyway, if we first calculate nent and nalloc and then check with
 
-================================================================================
-UBSAN: shift-out-of-bounds in drivers/media/v4l2-core/v4l2-ctrls.c:2168:36
-shift exponent 100 is too large for 64-bit type 'long long unsigned int'
-CPU: 0 PID: 8469 Comm: syz-executor534 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- std_validate.cold+0x19/0x1e drivers/media/v4l2-core/v4l2-ctrls.c:2168
- validate_new drivers/media/v4l2-core/v4l2-ctrls.c:2477 [inline]
- set_ctrl+0x207/0x4a0 drivers/media/v4l2-core/v4l2-ctrls.c:4425
- set_ctrl_lock drivers/media/v4l2-core/v4l2-ctrls.c:4448 [inline]
- v4l2_s_ctrl+0x2fd/0x4f0 drivers/media/v4l2-core/v4l2-ctrls.c:4469
- v4l_s_ctrl+0x324/0x390 drivers/media/v4l2-core/v4l2-ioctl.c:2253
- __video_do_ioctl+0xb94/0xe20 drivers/media/v4l2-core/v4l2-ioctl.c:2993
- video_usercopy+0x23d/0x12d0 drivers/media/v4l2-core/v4l2-ioctl.c:3345
- v4l2_ioctl+0x1b3/0x250 drivers/media/v4l2-core/v4l2-dev.c:360
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443ee9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe02e7df08 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000443ee9
-RDX: 0000000020000140 RSI: 00000000c008561c RDI: 0000000000000003
-RBP: 00000000006ce018 R08: 0000000000000000 R09: 00000000004002e0
-R10: 000000000000000f R11: 0000000000000246 R12: 0000000000401b70
-R13: 0000000000401c00 R14: 0000000000000000 R15: 0000000000000000
-================================================================================
+	if ((unsigned long long)nalloc << (PAGE_SHIFT + order) < length)
+		return NULL;
+
+I think we would have checked against all kind of overrun in a single
+step. Or am I missing something?
+
+Bodo
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
