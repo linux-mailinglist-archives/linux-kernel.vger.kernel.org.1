@@ -2,143 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BD02FC01A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9172FC01C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389541AbhASTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S2404109AbhASTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:36:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbhASTeZ (ORCPT
+        with ESMTP id S2390775AbhASTf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:34:25 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EC5C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:33:40 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g15so13585437pgu.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:33:40 -0800 (PST)
+        Tue, 19 Jan 2021 14:35:27 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5936C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:34:46 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id z21so13605432pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:34:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Et5oXk9EBnfayAqZpeLMrHHvh8j8h9yJAXgaYXUhqsI=;
-        b=UXLRrAGf55FXqFBtm5JN1IX0SiNXfZcg8vBi/zcTHDGN3ouW/nfab86vXFhIEd1dMw
-         g/JFpz0qKMY3jiUmR89QfDXbtfeBSaEmqGQ4yqvB0EMXvU25daKDFaecy0e7EM3feYbT
-         utLTkh9x8+B59+dG3Q6Dk0g9ltAwbYhauC7qbwwSrXyoRkTsFSWOD3Jrp/NdwzpN0bEO
-         h7kPrrqWO0t85WgLXLrAkGUTr+gK/8DGAyrz3iiqOMyM34ar35hh6A8xuKQ51mYwCPek
-         LLRvaq3lB8MrUbhVGKsOrRXGEtZrbhkeSp7Yiqo6lmgKaSZc5vMb2+dDmXBQfvX4GCqG
-         5frg==
+        bh=UzjGhv/xtQmLzd1fmO3nz3CB6VSkFAgOhOGhk3ruAHo=;
+        b=btK4sahzhn8n/ZvKOAXWg53tlRPKXWae8RKmUHzR3AqkqZLVqEpJMM1CjKQRBPkFLx
+         OmxVfd1eyzwMTrMEjzBYOJCjLDByiAtCHBBBHS0qiwyBbAIlBJMp+OLTtQ1OtAGz3UVD
+         hLLXFszNfn1toapAulw4VBa0GvR62IORaIW3FR1SbFWOGXkmpnvpyg5h2BtvSeTM80bY
+         yVWRLulTDnSSgMKQBDMxpzBTmZvD2bnEvPJqW1yl5PHTklCGjxhQsj7X0X9Ojo1rBn0s
+         pBvNK+C5SRBOvV+4bs/HBXN2cKV51T7z9agy7sHCKrIQeWaxwnSRQJ8VO7vjpywfstfH
+         fbrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Et5oXk9EBnfayAqZpeLMrHHvh8j8h9yJAXgaYXUhqsI=;
-        b=WUAEBowIjnOUBibviXCTcAYV24dtpKmFcLJSBfnjlIZn7rEuACUsYlJyqD15nOrka/
-         XyBrsUXK3fWbq0Rugwv/Y3YnQquNN6wAmsSsdC1jDSCZB6VlPClI3BwPhifDQGg31Uw1
-         JwRPCC2prx4nx2jNwLzv+4ptvrYvO2sQodcHiX6oyelK7W/xfgE4h0JPzihTBd31SYKi
-         xAEjLZtacRh4BB1mqiOLjs3bCpGP0xew127J+Csn+9uBUbcUCVBIVa2gsa+eoK87numn
-         mw5671bD3ygtIkpchS2o7uD1kPf/Fh+g8VyE0HOcQn/IcdYtvtAoTWvuAfXgibuxobb0
-         Y3HQ==
-X-Gm-Message-State: AOAM533q16X4oXgBbAW/A1fQTOpHOJPHaUaDuU1LCG57BOlzyihu0CsL
-        QbZ8WVnEDxucP3MI8uHGuNvX7UNzED8hCWwp20gDDg==
-X-Google-Smtp-Source: ABdhPJxbD8OMrOCfs3cBJOgqP7HfmOjdZ1ZHPmgeqYeiJsqyD8QbEDas0BBqydVog+u+PYQcaklHI9Nc4hKQ0aJpGP4=
-X-Received: by 2002:aa7:8597:0:b029:1b9:38bd:d0dc with SMTP id
- w23-20020aa785970000b02901b938bdd0dcmr5377887pfn.24.1611084820015; Tue, 19
- Jan 2021 11:33:40 -0800 (PST)
+        bh=UzjGhv/xtQmLzd1fmO3nz3CB6VSkFAgOhOGhk3ruAHo=;
+        b=cjra3v6fr8AkU789qoeVvvhr5sq8To/svb9yTGVQ1Izd/zHY+n0h8Tkz9NKhTK0y1X
+         TbfwFkb52OlUzps8JNxo8dNb5slunBA+psnwGurqYBrNl6yj1kFf3EVETcnQzql15yfM
+         +cKg29Yah4/4CrY72VLvUTI3CUYVHR+OOML2uS4/63QACl10oKM3JI/S1OkjdDWFzY8o
+         fmMTHlkDrMDzteTCRvZdfCCKQb+42F0T49kod+IOvvhY/kY9m+b5ndhUE2/BpBUaTfKD
+         0hiBLimLNwjU3ktKyL0kDdM8Y0iKejrJkL+0NLXdXH6p+BonBRgoggGxwJC5hdkvklRe
+         Bolw==
+X-Gm-Message-State: AOAM532RgCX0z5E/pSoZbNx8rg6HGeQ3k+iuhEZWK8WetTmvk4gVUgmV
+        JoV63X5t/jnCY2xArZnUsweiWKfNRMsN1I6a3xLWWw==
+X-Google-Smtp-Source: ABdhPJwzWwQi5vIgcGtN+LffWKqKBnrrpscjdLVZgHZZGj8pgOMQL1gYnUsRDjR43+4EweiXUn9ot2KNCuEEOKjoNCU=
+X-Received: by 2002:a65:430b:: with SMTP id j11mr5646612pgq.130.1611084886235;
+ Tue, 19 Jan 2021 11:34:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119172607.18400-1-vincenzo.frascino@arm.com>
- <CAAeHK+zpB6GZcAbWnmvKu5mk_HuNEaXV2OwRuSNnVjddjBqZMQ@mail.gmail.com>
- <20210119185206.GA26948@gaia> <e3d67672-1825-894a-db68-5709b33b4991@arm.com>
-In-Reply-To: <e3d67672-1825-894a-db68-5709b33b4991@arm.com>
+References: <20210118183033.41764-1-vincenzo.frascino@arm.com>
+ <20210118183033.41764-6-vincenzo.frascino@arm.com> <20210119144459.GE17369@gaia>
+ <1bb4355f-4341-21a7-0a53-a4a27840adee@arm.com> <CAAeHK+y9sw0SENeDXLLBxD8XqD396rXbg1GeBRDEm7PnMzMmHQ@mail.gmail.com>
+ <20210119190037.GB26948@gaia>
+In-Reply-To: <20210119190037.GB26948@gaia>
 From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 19 Jan 2021 20:33:28 +0100
-Message-ID: <CAAeHK+zKnSdx+=8mA5o1YWR5aV8OSEUaRZiaJiB6wsOo_5kYJQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan: Add explicit preconditions to kasan_report()
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+Date:   Tue, 19 Jan 2021 20:34:34 +0100
+Message-ID: <CAAeHK+w3+StvU60KNPknQyEnGH_8BfwFdJbTifPb3gGQhXLDyw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] arm64: mte: Inline mte_assign_mem_tag_range()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         kasan-dev <kasan-dev@googlegroups.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:57 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
+On Tue, Jan 19, 2021 at 8:00 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
->
->
-> On 1/19/21 6:52 PM, Catalin Marinas wrote:
-> > On Tue, Jan 19, 2021 at 07:27:43PM +0100, Andrey Konovalov wrote:
-> >> On Tue, Jan 19, 2021 at 6:26 PM Vincenzo Frascino
-> >> <vincenzo.frascino@arm.com> wrote:
-> >>>
-> >>> With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
-> >>> the address passed as a parameter.
-> >>>
-> >>> Add a comment to make sure that the preconditions to the function are
-> >>> explicitly clarified.
-> >>>
-> >>> Note: An invalid address (e.g. NULL pointer address) passed to the
-> >>> function when, KASAN_HW_TAGS is enabled, leads to a kernel panic.
-> >>>
-> >>> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> >>> Cc: Alexander Potapenko <glider@google.com>
-> >>> Cc: Dmitry Vyukov <dvyukov@google.com>
-> >>> Cc: Leon Romanovsky <leonro@mellanox.com>
-> >>> Cc: Andrey Konovalov <andreyknvl@google.com>
-> >>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> >>> ---
-> >>>  mm/kasan/report.c | 11 +++++++++++
-> >>>  1 file changed, 11 insertions(+)
-> >>>
-> >>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> >>> index c0fb21797550..2485b585004d 100644
-> >>> --- a/mm/kasan/report.c
-> >>> +++ b/mm/kasan/report.c
-> >>> @@ -403,6 +403,17 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
-> >>>         end_report(&flags);
-> >>>  }
-> >>>
-> >>> +/**
-> >>> + * kasan_report - report kasan fault details
-> >>> + * @addr: valid address of the allocation where the tag fault was detected
-> >>> + * @size: size of the allocation where the tag fault was detected
-> >>> + * @is_write: the instruction that caused the fault was a read or write?
-> >>> + * @ip: pointer to the instruction that cause the fault
-> >>> + *
-> >>> + * Note: When CONFIG_KASAN_HW_TAGS is enabled kasan_report() dereferences
-> >>> + * the address to access the tags, hence it must be valid at this point in
-> >>> + * order to not cause a kernel panic.
-> >>> + */
-> >>
-> >> It doesn't dereference the address, it just checks the tags, right?
-> >>
-> >> Ideally, kasan_report() should survive that with HW_TAGS like with the
-> >> other modes. The reason it doesn't is probably because of a blank
-> >> addr_has_metadata() definition for HW_TAGS in mm/kasan/kasan.h. I
-> >> guess we should somehow check that the memory comes from page_alloc or
-> >> kmalloc. Or otherwise make sure that it has tags. Maybe there's an arm
-> >> instruction to check whether the memory has tags?
+> On Tue, Jan 19, 2021 at 07:12:40PM +0100, Andrey Konovalov wrote:
+> > On Tue, Jan 19, 2021 at 4:45 PM Vincenzo Frascino
+> > <vincenzo.frascino@arm.com> wrote:
+> > > On 1/19/21 2:45 PM, Catalin Marinas wrote:
+> > > > On Mon, Jan 18, 2021 at 06:30:33PM +0000, Vincenzo Frascino wrote:
+> > > >> mte_assign_mem_tag_range() is called on production KASAN HW hot
+> > > >> paths. It makes sense to inline it in an attempt to reduce the
+> > > >> overhead.
+> > > >>
+> > > >> Inline mte_assign_mem_tag_range() based on the indications provided at
+> > > >> [1].
+> > > >>
+> > > >> [1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
+> > > >>
+> > > >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > >> Cc: Will Deacon <will@kernel.org>
+> > > >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > > >> ---
+> > > >>  arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
+> > > >>  arch/arm64/lib/mte.S         | 15 ---------------
+> > > >>  2 files changed, 25 insertions(+), 16 deletions(-)
+> > > >>
+> > > >> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > > >> index 237bb2f7309d..1a6fd53f82c3 100644
+> > > >> --- a/arch/arm64/include/asm/mte.h
+> > > >> +++ b/arch/arm64/include/asm/mte.h
+> > > >> @@ -49,7 +49,31 @@ long get_mte_ctrl(struct task_struct *task);
+> > > >>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
+> > > >>                       unsigned long addr, unsigned long data);
+> > > >>
+> > > >> -void mte_assign_mem_tag_range(void *addr, size_t size);
+> > > >> +static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+> > > >> +{
+> > > >> +    u64 _addr = (u64)addr;
+> > > >> +    u64 _end = _addr + size;
+> > > >> +
+> > > >> +    /*
+> > > >> +     * This function must be invoked from an MTE enabled context.
+> > > >> +     *
+> > > >> +     * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+> > > >> +     * size must be non-zero and MTE_GRANULE_SIZE aligned.
+> > > >> +     */
+> > > >> +    do {
+> > > >> +            /*
+> > > >> +             * 'asm volatile' is required to prevent the compiler to move
+> > > >> +             * the statement outside of the loop.
+> > > >> +             */
+> > > >> +            asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
+> > > >> +                         :
+> > > >> +                         : "r" (_addr)
+> > > >> +                         : "memory");
+> > > >> +
+> > > >> +            _addr += MTE_GRANULE_SIZE;
+> > > >> +    } while (_addr != _end);
+> > > >> +}
+> > > >
+> > > > While I'm ok with moving this function to C, I don't think it solves the
+> > > > inlining in the kasan code. The only interface we have to kasan is via
+> > > > mte_{set,get}_mem_tag_range(), so the above function doesn't need to
+> > > > live in a header.
+> > > >
+> > > > If you do want inlining all the way to the kasan code, we should
+> > > > probably move the mte_{set,get}_mem_tag_range() functions to the header
+> > > > as well (and ideally backed by some numbers to show that it matters).
+> > > >
+> > > > Moving it to mte.c also gives us more control on how it's called (we
+> > > > have the WARN_ONs in place in the callers).
+> > > >
+> > >
+> > > Based on the thread [1] this patch contains only an intermediate step to allow
+> > > KASAN to call directly mte_assign_mem_tag_range() in future. At that point I
+> > > think that mte_set_mem_tag_range() can be removed.
+> > >
+> > > If you agree, I would live the things like this to give to Andrey a chance to
+> > > execute on the original plan with a separate series.
 > >
-> > There isn't an architected way to probe whether a memory location has a
-> > VA->PA mapping. The tags are addressed by PA but you can't reach them if
-> > you get a page fault on the VA. So we either document the kasan_report()
-> > preconditions or, as you suggest, update addr_has_metadata() for the
-> > HW_TAGS case. Something like:
+> > I think we should drop this patch from this series as it's unrelated.
 > >
-> >         return is_vmalloc_addr(virt) || virt_addr_valid(virt));
-> >
+> > I will pick it up into my future optimization series. Then it will be
+> > easier to discuss it in the context. The important part that I needed
+> > is an inlinable C implementation of mte_assign_mem_tag_range(), which
+> > I now have with this patch.
 >
-> Or we could have both ;)
+> That's fine by me but we may want to add some forced-alignment on the
+> addr and size as the loop here depends on them being aligned, otherwise
+> it gets stuck. The mte_set_mem_tag_range() at least had a WARN_ON in
+> place. Here we could do:
+>
+>         addr &= MTE_GRANULE_MASK;
+>         size = ALIGN(size, MTE_GRANULE_SIZE);
+>
+> (or maybe trim "size" with MTE_GRANULE_MASK)
+>
+> That's unless the call places are well known and guarantee this
+> alignment (only had a very brief look).
 
-Sounds good! Please also update the comment to avoid mentioning tag
-faults. kasan_report() is used for the generic KASAN mode as well, and
-it doesn't use tags.
-
-Thanks!
+No problem. I'll either add the ALIGN or change the call site to
+ensure alignment.
