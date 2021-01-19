@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556B22FBD86
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA752FBD88
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbhASR0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S2390595AbhASR04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:26:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390855AbhASRZc (ORCPT
+        with ESMTP id S2390864AbhASR0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:25:32 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE67BC061573;
-        Tue, 19 Jan 2021 09:24:51 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id g3so10244155ejb.6;
-        Tue, 19 Jan 2021 09:24:51 -0800 (PST)
+        Tue, 19 Jan 2021 12:26:20 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E093C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:25:40 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id o10so30128893lfl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:25:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Qy8mcYDslRubqQMPczlIvoAYWYvQDOq96eQu0PafMfE=;
-        b=eYfwUxhXfHaIuxuNwRrS8kQvPBRik+2A3J6NIRPhdjdSewQ2FD4YP6cz0CzJ/dRyni
-         3Nl8SNvf0ZfUSIH8M8bHbgPvVZvfOZh0F1olxQfRGqmUlZJvT4CTvQ1IDetZNfnsywLS
-         YTJObCiYFz8qs4JmrJZDJYx5rTXYoq16cu9z8PGpv1+jUY7yoMBmJNHhjOqw0/673aU1
-         yQvFUpoKeMzBAzJWh6m+uMLYfNoqwWB9COa2EkQvGd1kF5yH+8MjCmiKVDLrMSlI80B3
-         Tp0X5UjNbZ7UilcKIoJ4Si85g+Hc0vOra2v3AuTTGdKTsvo2eg2Qd2ujYfLeZdBrFosQ
-         BYmA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PSuxKl9i3MviKkXc1tPk1ynw+W/qV9a+NFF8vAhWt1Y=;
+        b=BvEi4TQRn5+15HoGp/+RRlpw3/o46gBl2BWPMovGuq5ET0EnljlKkuuVyP/gR6btg4
+         i3BBIXx0Fe+Cf6yHXdAahAnr3C3GNvZHK24KUjcs87/8hSYNIN9B6KBJOxAAHSmZEMYT
+         8sktds61hNSKjE/JVBkCFdCdbN8U1q+kIjuv0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qy8mcYDslRubqQMPczlIvoAYWYvQDOq96eQu0PafMfE=;
-        b=Za0i2LrP7pnw2SHBT7m8MKwhmTaRnIwXstgAzRFjlDT/NB8+Coat7Yymuym6CI2NPS
-         l9nzXgq0IVtetQQ9InLpAK9S2viTxi5aGgK2NY4+z0Sgbcuf2yBEcGlEDqk+4NwtAaM/
-         +dofHkd9tlVqy06APZJ4oOxzElrmsMThYSGa7zySIa188Zbpe0fSSxbJxu6+Dqxp1HS4
-         2eUWyKVAl8ZUG3lQkOWjZ61CnfP+Ea7ZvgGohu7lOzUCVodog+lbfjoccei80TaaMRdo
-         qHGFQJIRLOFBldCxuI6Z5RVm39Ht/W/FQ/0++6rsdMr6E2/uJTxZ8Qy+K3jo5WQTqSuX
-         LWTw==
-X-Gm-Message-State: AOAM533bnQrhnWaaCcrtUPiUTIBd7C2ckmn/A24uCNg+4n0riS8qjZyf
-        Q9DtaAKJUsl/1xJoSz4DZTA=
-X-Google-Smtp-Source: ABdhPJwIemtsVHlkxlk8JB7ypAMSs0GcJ4fX03fAf9hgs661+3MwI0c+/ccJWxE9OP0oPSEYjCWTVQ==
-X-Received: by 2002:a17:906:dfce:: with SMTP id jt14mr2794501ejc.435.1611077090638;
-        Tue, 19 Jan 2021 09:24:50 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id s19sm13021962edx.7.2021.01.19.09.24.49
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PSuxKl9i3MviKkXc1tPk1ynw+W/qV9a+NFF8vAhWt1Y=;
+        b=LWhxSBIYiSkF9uUnCdOuCRD8jSdYRDxtKCKfLQfC9ElBxvkfMN6EV3iggDRyevOnbp
+         BE2NGUUsnAAk2loaS96RepTH8+fzDnZ8Nos47vPVad0wRJ3orsas64SPpM6g4MOh32xN
+         ZEyzs6K+LXqCQiQ/z6gqnppBFQoZfdsiQcyfcm4LeYh5qTkqVhRFuHNfd6D8qfkfCpny
+         Ot5+/WsmAty6kyeg3uU6osdu0NyzEfgc6SoSbPzJAUf8Q1er6wWaVAPgfBGHtIOA+7oD
+         Xd070wb1K19EfVNJ6L4e4jIx8qXHY9WzWPkn5WBGMXu6ICtZbPO25sc5c87+jxulU+z2
+         Uqbw==
+X-Gm-Message-State: AOAM531lbqF0s8Doo362lxZpjoPzodk50M2lCLy0ooeMdcmWCkC4agcJ
+        F+7zwFJixIMgT8dIrUW9l0eNwch9U/0VuQ==
+X-Google-Smtp-Source: ABdhPJy05hmQ9F+59mUexdDjp0wq3+6r2eRkwrdgQlDRWXedirkGAoGl4eRK3TAmnVrvww0QVCikmg==
+X-Received: by 2002:a05:6512:3a8e:: with SMTP id q14mr2104367lfu.209.1611077138316;
+        Tue, 19 Jan 2021 09:25:38 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id q25sm2335609lfd.282.2021.01.19.09.25.37
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 09:24:50 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
- <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
- <20210118234818.GP4605@ziepe.ca>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
-Date:   Tue, 19 Jan 2021 18:24:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 09:25:37 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id o13so30199971lfr.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 09:25:37 -0800 (PST)
+X-Received: by 2002:ac2:420a:: with SMTP id y10mr2222580lfh.377.1611077137003;
+ Tue, 19 Jan 2021 09:25:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210118234818.GP4605@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc> <20210118081615.GA1397@lst.de>
+ <CAHk-=wgoWjqMoEZ9A7N+MF+urrw2Vyk+PP_FW4BQLAeY9PWARQ@mail.gmail.com>
+ <CAHk-=wg1n2B2dJAzohVdFN4OQCFnnpE7Zbm2gRa8hfGXrReFQg@mail.gmail.com>
+ <CAHk-=wga4M_VLcfkBL0mK-1_mJHYKDzPA48jEOCBgME=nE4O6Q@mail.gmail.com>
+ <CAHk-=whsaDmEch8KR3Qr-KkcxoOhTX5RaEJ529cB2c97fu+=Ag@mail.gmail.com>
+ <CAHk-=wg-1gntaB4xTAsQhvxumOeB_36sFdpVCWgZGLnCUQGUvw@mail.gmail.com>
+ <CAHk-=wjgufiORSuAb270XpGn45jexRjP9SCmcc7AAAZsVrAaPw@mail.gmail.com>
+ <CAHk-=whW7t=3B=iCwYkJ3W-FH08wZNCFO7EJ5qQSqD9Z_tBxrQ@mail.gmail.com> <YAbIVgGt1Qz8ItMh@kroah.com>
+In-Reply-To: <YAbIVgGt1Qz8ItMh@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 Jan 2021 09:25:20 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi_CDqKUZ50QkEhKrAwuEm=qLs=rEFf8e2uUWEqL13oGw@mail.gmail.com>
+Message-ID: <CAHk-=wi_CDqKUZ50QkEhKrAwuEm=qLs=rEFf8e2uUWEqL13oGw@mail.gmail.com>
+Subject: Re: Splicing to/from a tty
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.01.21 00:48, Jason Gunthorpe wrote:
-> On Mon, Jan 18, 2021 at 10:22:56PM +0100, Bodo Stroesser wrote:
->> On 18.01.21 21:24, Jason Gunthorpe wrote:
->>> On Mon, Jan 18, 2021 at 03:08:51PM -0500, Douglas Gilbert wrote:
->>>> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
->>>>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
->>>>>
->>>>>> After several flawed attempts to detect overflow, take the fastest
->>>>>> route by stating as a pre-condition that the 'order' function argument
->>>>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
->>>>>
->>>>> That doesn't help, the point of the overflow check is similar to
->>>>> overflow checks in kcalloc: to prevent the routine from allocating
->>>>> less memory than the caller might assume.
->>>>>
->>>>> For instance ipr_store_update_fw() uses request_firmware() (which is
->>>>> controlled by userspace) to drive the length argument to
->>>>> sgl_alloc_order(). If userpace gives too large a value this will
->>>>> corrupt kernel memory.
->>>>>
->>>>> So this math:
->>>>>
->>>>>      	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
->>>>
->>>> But that check itself overflows if order is too large (e.g. 65).
->>>
->>> I don't reall care about order. It is always controlled by the kernel
->>> and it is fine to just require it be low enough to not
->>> overflow. length is the data under userspace control so math on it
->>> must be checked for overflow.
->>>
->>>> Also note there is another pre-condition statement in that function's
->>>> definition, namely that length cannot be 0.
->>>
->>> I don't see callers checking for that either, if it is true length 0
->>> can't be allowed it should be blocked in the function
->>>
->>> Jason
->>>
->>
->> A already said, I also think there should be a check for length or
->> rather nent overflow.
->>
->> I like the easy to understand check in your proposed code:
->>
->> 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
->> 		return NULL;
->>
->>
->> But I don't understand, why you open-coded the nent calculation:
->>
->> 	nent = length >> (PAGE_SHIFT + order);
->> 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
->> 		nent++;
-> 
-> It is necessary to properly check for overflow, because the easy to
-> understand check doesn't prove that round_up will work, only that >>
-> results in something that fits in an int and that +1 won't overflow
-> the int.
-> 
->> Wouldn't it be better to keep the original line instead:
->>
->> 	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-> 
-> This can overflow inside the round_up
+On Tue, Jan 19, 2021 at 3:54 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This looks sane, but I'm still missing what the goal of this is here.
+> It's nice from a "don't make the ldisc do the userspace copy", point of
+> view, but what is the next step in order to tie that into splice?
 
-I had a second look into math.h, but I don't find any reason why 
-round_up could overflow. Can you give a hint please?
+I'll cook something up. With this, it should be fairly easy to add
+both the splice and iov_iter versions, because now it only needs the
+wrappers in tty_io.c, not for each line discipline.
 
-Regarding the overflow checks: would it be a good idea to not check
-length >> (PAGE_SHIFT + order) in the beginning, but check nalloc
-immediately before the kmalloc_array() as the only overrun check:
+I hope. Let's see..
 
-	if ((unsigned long long)nalloc << (PAGE_SHIFT + order) < length)
-		return NULL;
-
--Bodo
+           Linus
