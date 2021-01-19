@@ -2,165 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AD72FAEB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBE82FAEB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 03:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405735AbhASCVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 21:21:20 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22502 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405608AbhASCVK (ORCPT
+        id S2394140AbhASCWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 21:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393946AbhASCWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 21:21:10 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10J2BJYW001170;
-        Mon, 18 Jan 2021 21:20:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+ijC5B9LGHCd59fCrivuX0XsD/MFsM/npCAcNaKHsr8=;
- b=EEqO02eZ2Fo2d1IuacCQTY4GQI+RhPVZ6NUfbVd5sBlW5lxuVlgZWEsu7pPL06ag3zHm
- //s7crA6C2IhnwCgQ4xBp2xZVD4fhJGa4H9RrivCOEcNpEiRt3jBJzO0VSXnGA1O9b6h
- AMqeJjhlc7upgAXvcfdHM9CpS9P0TMC+x+tGtRXkDDT/26LIfNGCpqoErWLfitY2B9yB
- C/SaAK1ncupY2FbFiw8JraSXyfKdXhg4vlS3tE53shYEcEps/lpRfAAxSoCpcclVWU9d
- 7iHoCNZGjnDqxA/P77z+nCGWfw391J7ZNRmWbp7D+dTj71cmtO+BxrFWAb7vX1zX9Eqr Dw== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 365p2dge29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Jan 2021 21:20:16 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10J2D2dW022784;
-        Tue, 19 Jan 2021 02:20:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 36454vs2v5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jan 2021 02:20:14 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10J2KBjw18743652
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 02:20:11 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC320A4040;
-        Tue, 19 Jan 2021 02:20:11 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFC88A405B;
-        Tue, 19 Jan 2021 02:20:07 +0000 (GMT)
-Received: from [9.81.211.54] (unknown [9.81.211.54])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jan 2021 02:20:07 +0000 (GMT)
-Message-ID: <02b792c847ea1841603629ba0377cfdfff479882.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] clk: aspeed: Fix APLL calculate formula for
- ast2600-A2
-From:   Joel Stanley <joel@linux.ibm.com>
-To:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrewrj@au1.ibm.com,
-        BMC-SW@aspeedtech.com
-Cc:     joel@jms.id.au, Andrew Jeffery <andrew@aj.id.au>
-Date:   Tue, 19 Jan 2021 12:50:05 +1030
-In-Reply-To: <20210118100813.30821-2-ryan_chen@aspeedtech.com>
-References: <20210118100813.30821-1-ryan_chen@aspeedtech.com>
-         <20210118100813.30821-2-ryan_chen@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Mon, 18 Jan 2021 21:22:45 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03135C061573;
+        Mon, 18 Jan 2021 18:22:05 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id e17so3624368qto.3;
+        Mon, 18 Jan 2021 18:22:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uvVQDxYFvYqoF+K8ci4qn05sk1l1BTuSg44ft2MDtH4=;
+        b=HhgxnwqY6uDcFQ+5x2NAJSxS+o0DYUVGshktNgxa0/nmN9Ba3kNfESPag6zMFT5/bf
+         ZPXDJjuAU/xXq0rB/qLMMen6XDzxDfP/bQggDclv64JMkkbBy2w2OAE1M/s1VRQKtdb8
+         F1SROHq+eYyKSGXlxk9W56ql3qnntLyE0RRTlEbUvL0vimjLtO2L1VXEIe+nX8LDIsaZ
+         jXDZ0ntt7VNY8aUc5/zMynH8NAmatSAUTVr3s6WTVoEKZ20s4/M7P5JUNKUlQkTKdiif
+         /evy0bFQAjsN7IJbRBwHycfV1o4CH7aSb4HXIcOkvKHX8HJvweOCAIx+9YH19N/q4QZM
+         jA4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uvVQDxYFvYqoF+K8ci4qn05sk1l1BTuSg44ft2MDtH4=;
+        b=Lp6o80cRAt9d0jlbpyWTEEx6g9yuvbRk/7afAqkqjc1WBTCtUy0R0EvNsgPviv4Xnj
+         G0nojEyU3CZAQRU5fOHWOae+YrVfXY7KTF6KwarjPRy7eSfbgV6C6lDpwn73tssRl1mt
+         WDp3erJfwVktVSLgQzD2uCjDOnQFvLaphxoPhCzFZk/E2Uq3sxpl1+vPbVGZ+/SIr42o
+         Se0ybxO75FDRs+dpHs5aU+VACkLCwjUbnzFdp89j2piIeTG4KtrWZyo6ZvX9r7F8Zue0
+         GY2a6OmJvymQhgObbubDlhp0rWgNb9GV0pwzP0D5kVMBcZV/nJE0zmTM0j5v0zIzI9FJ
+         6Q6A==
+X-Gm-Message-State: AOAM530LpBHbW0yUvMHqPYADNBqF5+wFM9kez0OtrB8qBw1bH+UvHVC6
+        /o/g2Ib05ZSi1pmpGCN7fH0=
+X-Google-Smtp-Source: ABdhPJy+bgCIazljR4BqFCPgcP9YA7HwXsTvCuYFjYtbZfrEBjq6gUYEDUO6b9l9pzjCzGNITu31rQ==
+X-Received: by 2002:ac8:370b:: with SMTP id o11mr2465925qtb.314.1611022923564;
+        Mon, 18 Jan 2021 18:22:03 -0800 (PST)
+Received: from localhost.localdomain (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id s14sm12212194qke.45.2021.01.18.18.22.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 18:22:02 -0800 (PST)
+From:   frowand.list@gmail.com
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        pantelis.antoniou@konsulko.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+Date:   Mon, 18 Jan 2021 20:21:54 -0600
+Message-Id: <20210119022154.2338781-1-frowand.list@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-18_15:2021-01-18,2021-01-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-18 at 18:08 +0800, Ryan Chen wrote:
-> AST2600A1/A2 have different pll calculate formula.
+From: Frank Rowand <frank.rowand@sony.com>
 
-To clarify, only the A0 has the old calculation, and all subsequent
-revisions use the new calculation?
+These changes apply on top of the patches in:
 
-If this is the case, do we need to support A0 in mainline linux, or
-should we drop support for A0 and only support A1, A2 and onwards?
+  [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+  Message-Id: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
 
-You should add a line to indicate this is a fix:
+There are still some issues to be cleaned up, so not ready for acceptance.
 
-Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
+I have not used the construct "always-$(CONFIG_OF_OVERLAY)" before, and
+have not looked into the proper usage of it.
 
-Also, when sending single patches you do not need to include the cover
-letter. You should include all of the relevant information in the
-patch's commit message.
+I tested this using a hand build libfdt and fdtoverlay from the dtc-compiler
+upstream project.  For my testing I added LD_LIBRARY_PATH to the body of
+"cmd_fdtoverlay" to reference my hand built libfdt.  The kernel build
+system will have to instead use a libfdt that is built in the kernel
+tree.
 
-> 
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
-> ---
->  drivers/clk/clk-ast2600.c | 37 +++++++++++++++++++++++++++----------
->  1 file changed, 27 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
-> index bbacaccad554..8933bd1506b3 100644
-> --- a/drivers/clk/clk-ast2600.c
-> +++ b/drivers/clk/clk-ast2600.c
-> @@ -17,7 +17,8 @@
->  
->  #define ASPEED_G6_NUM_CLKS             71
->  
-> -#define ASPEED_G6_SILICON_REV          0x004
-> +#define ASPEED_G6_SILICON_REV          0x014
-> +#define CHIP_REVISION_ID                       GENMASK(23, 16)
->  
->  #define ASPEED_G6_RESET_CTRL           0x040
->  #define ASPEED_G6_RESET_CTRL2          0x050
-> @@ -190,18 +191,34 @@ static struct clk_hw *ast2600_calc_pll(const
-> char *name, u32 val)
->  static struct clk_hw *ast2600_calc_apll(const char *name, u32 val)
->  {
->         unsigned int mult, div;
-> +       u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
->  
-> -       if (val & BIT(20)) {
-> -               /* Pass through mode */
-> -               mult = div = 1;
-> +       if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
-> +               if (val & BIT(24)) {
-> +                       /* Pass through mode */
-> +                       mult = div = 1;
-> +               } else {
-> +                       /* F = 25Mhz * [(m + 1) / (n + 1)] / (p + 1)
-> */
-> +                       u32 m = val & 0x1fff;
-> +                       u32 n = (val >> 13) & 0x3f;
-> +                       u32 p = (val >> 19) & 0xf;
-> +
-> +                       mult = (m + 1);
-> +                       div = (n + 1) * (p + 1);
-> +               }
->         } else {
-> -               /* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)] */
-> -               u32 m = (val >> 5) & 0x3f;
-> -               u32 od = (val >> 4) & 0x1;
-> -               u32 n = val & 0xf;
-> +               if (val & BIT(20)) {
-> +                       /* Pass through mode */
-> +                       mult = div = 1;
-> +               } else {
-> +                       /* F = 25Mhz * (2-od) * [(m + 2) / (n + 1)]
-> */
-> +                       u32 m = (val >> 5) & 0x3f;
-> +                       u32 od = (val >> 4) & 0x1;
-> +                       u32 n = val & 0xf;
->  
-> -               mult = (2 - od) * (m + 2);
-> -               div = n + 1;
-> +                       mult = (2 - od) * (m + 2);
-> +                       div = n + 1;
-> +               }
->         }
->         return clk_hw_register_fixed_factor(NULL, name, "clkin", 0,
->                         mult, div);
+I have not run this through checkpatch, or my checks for build warnings.
+I have not run unittests on my target with these patches applied.
 
+---
+ drivers/of/unittest-data/Makefile | 67 ++++++++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+index f17bce85f65f..28614a123d1e 100644
+--- a/drivers/of/unittest-data/Makefile
++++ b/drivers/of/unittest-data/Makefile
+@@ -39,25 +39,54 @@ DTC_FLAGS_testcases += -@
+ # suppress warnings about intentional errors
+ DTC_FLAGS_testcases += -Wno-interrupts_property
+ 
+-# Apply overlays statically with fdtoverlay
+-intermediate-overlay	:= overlay.dtb
+-master			:= overlay_0.dtb overlay_1.dtb overlay_2.dtb \
+-			   overlay_3.dtb overlay_4.dtb overlay_5.dtb \
+-			   overlay_6.dtb overlay_7.dtb overlay_8.dtb \
+-			   overlay_9.dtb overlay_10.dtb overlay_11.dtb \
+-			   overlay_12.dtb overlay_13.dtb overlay_15.dtb \
+-			   overlay_gpio_01.dtb overlay_gpio_02a.dtb \
+-			   overlay_gpio_02b.dtb overlay_gpio_03.dtb \
+-			   overlay_gpio_04a.dtb overlay_gpio_04b.dtb \
+-			   intermediate-overlay.dtb
+-
+-quiet_cmd_fdtoverlay = fdtoverlay $@
+-      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
+-
+-$(obj)/intermediate-overlay.dtb: $(obj)/overlay_base.dtb $(addprefix $(obj)/,$(intermediate-overlay))
+-	$(call if_changed,fdtoverlay)
++# Apply overlays statically with fdtoverlay.  This is a build time test that
++# the overlays can be applied successfully by fdtoverlay.  This does not
++# guarantee that the overlays can be applied successfully at run time by
++# unittest, but it provides a bit of build time test coverage for those
++# who do not execute unittest.
++#
++# The overlays are applied on top of testcases.dtb to create static_test.dtb
++# If fdtoverlay detects an error than the kernel build will fail.
++# static_test.dtb is not consumed by unittest.
++#
++# Some unittest overlays deliberately contain errors that unittest checks for.
++# These overlays will cause fdtoverlay to fail, and are thus not included
++# in the static test:
++#			overlay.dtb \
++#			overlay_bad_add_dup_node.dtb \
++#			overlay_bad_add_dup_prop.dtb \
++#			overlay_bad_phandle.dtb \
++#			overlay_bad_symbol.dtb \
++
++apply_static_overlay := overlay_base.dtb \
++			overlay_0.dtb \
++			overlay_1.dtb \
++			overlay_2.dtb \
++			overlay_3.dtb \
++			overlay_4.dtb \
++			overlay_5.dtb \
++			overlay_6.dtb \
++			overlay_7.dtb \
++			overlay_8.dtb \
++			overlay_9.dtb \
++			overlay_10.dtb \
++			overlay_11.dtb \
++			overlay_12.dtb \
++			overlay_13.dtb \
++			overlay_15.dtb \
++			overlay_gpio_01.dtb \
++			overlay_gpio_02a.dtb \
++			overlay_gpio_02b.dtb \
++			overlay_gpio_03.dtb \
++			overlay_gpio_04a.dtb \
++			overlay_gpio_04b.dtb \
++
++quiet_cmd_fdtoverlay = FDTOVERLAY $@
++
++## This is not correct, need to use libfdt from the kernel tree:
++cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
+ 
+-$(obj)/master.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(master))
++$(obj)/static_test.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(apply_static_overlay))
+ 	$(call if_changed,fdtoverlay)
+ 
+-always-$(CONFIG_OF_OVERLAY) += intermediate-overlay.dtb master.dtb
++always-$(CONFIG_OF_OVERLAY) += static_test.dtb
+-- 
+Frank Rowand <frank.rowand@sony.com>
 
