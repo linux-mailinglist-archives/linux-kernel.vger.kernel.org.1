@@ -2,276 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D8D2FB719
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DCF2FB71A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389808AbhASKR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        id S2389861AbhASKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389177AbhASJxi (ORCPT
+        with ESMTP id S2389193AbhASJyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:53:38 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D975C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:52:58 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l1ngy-0007kD-71; Tue, 19 Jan 2021 10:52:52 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l1ngw-0004fd-0U; Tue, 19 Jan 2021 10:52:50 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: stm32: enable STM32MP1 crypto/CRC accelerators unconditionally
-Date:   Tue, 19 Jan 2021 10:52:39 +0100
-Message-Id: <20210119095241.17888-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Tue, 19 Jan 2021 04:54:20 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E630C0613CF;
+        Tue, 19 Jan 2021 01:53:36 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id f1so6624981edr.12;
+        Tue, 19 Jan 2021 01:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/z2s2KReLWcfABIGgx+T2H5a0KcybizOYnqI2zx5L7g=;
+        b=JFAufC9TCuGfd1Drt91CAvfcPhG47NLebHKCfVKql2xRiKjEfFFGgHcAbmGjEr+VIF
+         7SmyfPNmpGoCDOGlEI/f7KrOQ871aaa/kE5N/JxmVXX3FZChwQViqa0DLCqbCZy24uey
+         FXNXql4fjl4DvEe/VJ47Y4UA3KJArzW5hs6WMNEavgYxX/HtpIDlgkdg9O77ycfLf0d5
+         PTqVCg1IplPzPCktfSjT71w2OFUACQGZaJ8ibLOk9xL9H/2+c6X5VyF6jvRNts4/UYmk
+         imXdCZu3uPEzTIPjYSW6cv8wwi6lxG5RbkMKgEgGX972RD4FqlyK1FbJdc9REzwogODq
+         jxsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/z2s2KReLWcfABIGgx+T2H5a0KcybizOYnqI2zx5L7g=;
+        b=M+e8YC/FznoogW7WsU9TC8L2Wi3aTnnuME0GhWmIwcYPbRT+JIyPVwKRKCaPaNJWv6
+         Vmx2AVmJ5eOBq3CbzlOIiP9HygUZGroKYFGFviBoIKMuXpOCPPe9hFjbZxeN53V+dGtF
+         ERgfQh2fu2/eIgxqKNXGLsswvzpoBi3WrWydi06ZxWB3FUuHD7Q1RSDGsLszGR1AnWxI
+         2E1l7Y6nheUKp6Z/AWByRy9hxi//f/vs5BzUnUucH+gfUY+l+WQLBstZ1v1gaqUkta1s
+         NQhjkxd25sVxAy8VlttRNiCs0O49MuMU2fpceUAr7I224+Csfm9aS2mZoNlLBExUWAyX
+         u0WA==
+X-Gm-Message-State: AOAM533r6zbsvR9dEboyIyOdKn6NWCO//S5CJZUf7nzHktWAA9COCBuf
+        PnRPvqPyNIIw0yUbmsWJBvbQKeDFzGcBNw==
+X-Google-Smtp-Source: ABdhPJzTvs9qNX1hl10cmUhbLNpnvAeavuosxPgGvXWqx+5jlzBYNsL9oPc5zNREIvn6nAeMASpJxA==
+X-Received: by 2002:a05:6402:4d6:: with SMTP id n22mr2813409edw.27.1611050015274;
+        Tue, 19 Jan 2021 01:53:35 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dee:e100:71f9:d08b:59b4:3a8f])
+        by smtp.gmail.com with ESMTPSA id cy13sm2834449edb.27.2021.01.19.01.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 01:53:34 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] arch/Kconfig: update a broken file reference
+Date:   Tue, 19 Jan 2021 10:53:26 +0100
+Message-Id: <20210119095326.13896-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no SoC-external hardware support needed for the hash1, rng1,
-crc1 and cryp1 IP blocks to function. Enable them thus unconditionally
-instead of replicating their enablement in board device trees.
+Commit adab66b71abf ("Revert: "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"")
+added the config HAVE_64BIT_ALIGNED_ACCESS back into arch/Kconfig with this
+revert. In the meantime, commit c9b54d6f362c ("docs: move other kAPI
+documents to core-api") changed ./Documentation/unaligned-memory-access.txt
+to ./Documentation/core-api/unaligned-memory-access.rst.
 
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Fortunately, ./scripts/documentation-file-ref-check detects this and warns
+about this broken reference.
+
+Update the file reference in arch/Kconfig.
+
+Fixes: adab66b71abf ("Revert: "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm/boot/dts/stm32mp151.dtsi              |  3 ---
- arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   |  4 ----
- arch/arm/boot/dts/stm32mp157c-dk2.dts          |  4 ----
- arch/arm/boot/dts/stm32mp157c-ed1.dts          | 16 ----------------
- arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  4 ----
- arch/arm/boot/dts/stm32mp15xc.dtsi             |  1 -
- arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   |  8 --------
- arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi   |  4 ----
- arch/arm/boot/dts/stm32mp15xx-dkx.dtsi         | 12 ------------
- arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       |  4 ----
- 10 files changed, 60 deletions(-)
+applies cleanly on current master and next-20210118
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3c75abacb374..c2d998343b6a 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1297,7 +1297,6 @@ hash1: hash@54002000 {
- 			dmas = <&mdma1 31 0x2 0x1000A02 0x0 0x0>;
- 			dma-names = "in";
- 			dma-maxburst = <2>;
--			status = "disabled";
- 		};
+Steven, could you pick this fix to your commit or, at least, ack it so that
+Jonathan can pick it?
+
+ arch/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 24862d15f3a3..dc104b8270c0 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -156,8 +156,8 @@ config HAVE_64BIT_ALIGNED_ACCESS
+ 	  accesses are required to be 64 bit aligned in this way even
+ 	  though it is not a 64 bit architecture.
  
- 		rng1: rng@54003000 {
-@@ -1305,7 +1304,6 @@ rng1: rng@54003000 {
- 			reg = <0x54003000 0x400>;
- 			clocks = <&rcc RNG1_K>;
- 			resets = <&rcc RNG1_R>;
--			status = "disabled";
- 		};
+-	  See Documentation/unaligned-memory-access.txt for more
+-	  information on the topic of unaligned memory accesses.
++	  See Documentation/core-api/unaligned-memory-access.rst for
++	  more information on the topic of unaligned memory accesses.
  
- 		mdma1: dma-controller@58000000 {
-@@ -1402,7 +1400,6 @@ crc1: crc@58009000 {
- 			compatible = "st,stm32f7-crc";
- 			reg = <0x58009000 0x400>;
- 			clocks = <&rcc CRC1>;
--			status = "disabled";
- 		};
- 
- 		stmmac_axi_config_0: stmmac-axi-config {
-diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-index 58275bcf9e26..268a99291d79 100644
---- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-@@ -253,10 +253,6 @@ &pwr_regulators {
- 	vdd_3v3_usbfs-supply = <&vdd_usb>;
- };
- 
--&rng1 {
--	status = "okay";
--};
--
- &rtc {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-index 2bc92ef3aeb9..045636555ddd 100644
---- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-@@ -29,10 +29,6 @@ chosen {
- 	};
- };
- 
--&cryp1 {
--	status = "okay";
--};
--
- &dsi {
- 	status = "okay";
- 	phy-dsi-supply = <&reg18>;
-diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-index 81a7d5849db4..f69622097e89 100644
---- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-@@ -115,14 +115,6 @@ adc1: adc@0 {
- 	};
- };
- 
--&crc1 {
--	status = "okay";
--};
--
--&cryp1 {
--	status = "okay";
--};
--
- &dac {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&dac_ch1_pins_a &dac_ch2_pins_a>;
-@@ -144,10 +136,6 @@ &gpu {
- 	contiguous-area = <&gpu_reserved>;
- };
- 
--&hash1 {
--	status = "okay";
--};
--
- &i2c4 {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&i2c4_pins_a>;
-@@ -325,10 +313,6 @@ &pwr_regulators {
- 	vdd_3v3_usbfs-supply = <&vdd_usb>;
- };
- 
--&rng1 {
--	status = "okay";
--};
--
- &rtc {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-index 6cf49a0a9e69..a2aca1982bf6 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-@@ -250,10 +250,6 @@ &m4_rproc {
- 	status = "okay";
- };
- 
--&rng1 {
--	status = "okay";
--};
--
- &rtc {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
-index b06a55a2fa18..86953d7ddde0 100644
---- a/arch/arm/boot/dts/stm32mp15xc.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
-@@ -12,7 +12,6 @@ cryp1: cryp@54001000 {
- 			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&rcc CRYP1>;
- 			resets = <&rcc CRYP1_R>;
--			status = "disabled";
- 		};
- 	};
- };
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-index ac46ab363e1b..603c14054509 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-@@ -377,14 +377,6 @@ flash0: mx66l51235l@0 {
- 	};
- };
- 
--&rng1 {
--	status = "okay";
--};
--
--&rtc {
--	status = "okay";
--};
--
- &sdmmc1 {
- 	pinctrl-names = "default", "opendrain", "sleep";
- 	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-index 803eb8bc9c85..3f4af430aaf4 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-@@ -204,10 +204,6 @@ flash0: spi-flash@0 {
- 	};
- };
- 
--&rng1 {
--	status = "okay";
--};
--
- &rtc {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-index 89c0e1ddc387..0cca6c3ff4a0 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-@@ -124,10 +124,6 @@ &cec {
- 	status = "okay";
- };
- 
--&crc1 {
--	status = "okay";
--};
--
- &dts {
- 	status = "okay";
- };
-@@ -155,10 +151,6 @@ &gpu {
- 	contiguous-area = <&gpu_reserved>;
- };
- 
--&hash1 {
--	status = "okay";
--};
--
- &i2c1 {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&i2c1_pins_a>;
-@@ -482,10 +474,6 @@ &pwr_regulators {
- 	vdd_3v3_usbfs-supply = <&vdd_usb>;
- };
- 
--&rng1 {
--	status = "okay";
--};
--
- &rtc {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-index 713485a95795..d03d4d12133c 100644
---- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-@@ -224,7 +224,3 @@ &m4_rproc {
- 	interrupts = <68 1>;
- 	status = "okay";
- };
--
--&rng1 {
--	status = "okay";
--};
+ config HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	bool
 -- 
-2.30.0
+2.17.1
 
