@@ -2,237 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFBE2FB712
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E762FB70E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389475AbhASKEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 05:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387775AbhASJnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:43:39 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B780C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:42:59 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id y205so6073705pfc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 01:42:59 -0800 (PST)
+        id S2389340AbhASKCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 05:02:21 -0500
+Received: from mail-eopbgr750045.outbound.protection.outlook.com ([40.107.75.45]:32418
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387798AbhASJoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:44:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YyJZycvbzC0+gRkNeZvS0bMMw1JxDXcFOQp3/1O2UvfPK5A5zz73OhUQQ4Ph9CoEj3R4GEaaqfbBoKa6BpS/tAa/YE+mQSsnU10UVM+pZF5j/HYmuGM+d0eG0wbcAyPxSHGDr2Mdd5GkrZhM7fphfoSJO7LsbRSXFNpUkiPtmkRdxWI/2AdgJgFm9ybdz8JWw/P+Yp5ujWrfuc+NYhsxzp3yzPkDYulNjn9PqIn3gx/QY2am6s3WGzdbwVHBKuO40lEDwW/8KS6W2QQ6+DGWEBbDH9FPYcMzbBUj5LrTrTokskFNoJa/Bp/q2QNKM72RyHl0XBdtbpfAudh6rXP1yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+PG2E1w1ll4gbYlz6K7nwsWoByj8dlr07EitUuHU8qs=;
+ b=mrUAeowkA4XpmhfptY5uWC75+SsQOIbhD+UnWsTtWfDm6c1fnHa082yvDFyI4XxT0yCc2IyKUxQw3/PUQi6dbKw3D5y+PQVUuDYa8FFzBiFp/xhyhMg3q7JQ/KXEO3HDiTQkwkq2Bs/zFslTOdTy/luGzUDYWDiNYBO7QRADAgWJHwa5EOg9+1FKJmIjoeALAJ9yUHUZmZ3WNaJuh07SyQWZLqogj+1GbowPamzju/q4TZAFdo9HkwXpdAEjMVqcj6f7SHi9BhDGfTFxaX69DufevvyIVMUyRbIdAJKBqJwbgN2WlaGqrnQRWSziM+PpBM4CyMtWDf6sRugxaoCAMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7S8BJ9E71QGUjoMsbM7R7bFNhP0M0RCDUnqEIz/LTU0=;
-        b=T2ce0h1aKxfGTD188B5ysB78EIoD51SKYr0QCy8rEGw/Ql1p7kleii6O4YpAyLfVic
-         3/XDjFGFb71eGl/XbHFuWk3pBtkRy6DwSNLM+Db9t0sqDsjDYWedwIFd+L1IlCBw+Igx
-         2kg69atc6+rxyws7N2uHwYgC7SZ3MyKfG4/6ysitEp4l6umN0z3dKJA7H2H+uAICDDjC
-         TlwHVrz+4OQA2sjobVj+I9I23P/fQq31roZNKPr6a/MSfIkiXqUYNTfuCdeG6+Iqh97S
-         fArC7BVz+lMAH6aEYAGuYPx0Tm1FyvtTIZl34QFkCEkRP9kWta7yNllwb3ogMgY18jy3
-         0wsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7S8BJ9E71QGUjoMsbM7R7bFNhP0M0RCDUnqEIz/LTU0=;
-        b=U0Mfly44Axwh1N4stckdiKDe2x3w6dKQoLYWrBIhzapR7THgJex8UN0z1n5ONqPCGX
-         56EvFxGuiZcHDdssIXj1DHchdYgmno4kXvYdYAoii7i11IVh2S/CnK8N9su87bqQsgrz
-         gCNJe92VpWgPnMylcGxxxLKuYsR0sgGvCb7nznyLxjdTncuHaw7YP5XrpzlBTBBqoNvR
-         mGnLhjL3zA/KwbjVrqxlbdAbrKy/NL6cR7lkqgsMOjDMwvAv4s9kzVQmiZvP+OJ38evQ
-         Afarf7TZ3RCsNHNiC3Ny2xtSU/4O0qmb22eqSCqMO7DXppU8jESttBw3Ri3BuOjuIZsW
-         eDMQ==
-X-Gm-Message-State: AOAM532RGDhVQ2psldb/dIobJWn7xPQeFAU6iqZJ21JK35sTMZ7sv9k1
-        ER1Q/Fc0zQ1layXSZpkuJfZ/
-X-Google-Smtp-Source: ABdhPJx8r0csAja55qm2L6GcuO7UQsGh3beyaY11fvbj47zO9Gc36MNLXZcfp01U/y8QYXGLrlllHA==
-X-Received: by 2002:a62:1981:0:b029:1b7:ec14:e2d9 with SMTP id 123-20020a6219810000b02901b7ec14e2d9mr3308769pfz.54.1611049378518;
-        Tue, 19 Jan 2021 01:42:58 -0800 (PST)
-Received: from thinkpad ([2409:4072:6c8e:9a14:351c:5713:cb9a:6935])
-        by smtp.gmail.com with ESMTPSA id y6sm1269136pfn.123.2021.01.19.01.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 01:42:57 -0800 (PST)
-Date:   Tue, 19 Jan 2021 15:12:50 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org,
-        hemantk@codeaurora.org
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <20210119094250.GA20682@thinkpad>
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
- <20210113152625.GB30246@work>
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+PG2E1w1ll4gbYlz6K7nwsWoByj8dlr07EitUuHU8qs=;
+ b=g4w1QeptMnTRd3YNbOjXX4pEbOfWYhDtROrimSsoWfepbInsMTFgjHKAk/LUnwoxsHvVJAe0hHZTcX/bBYz4dB2iuHx6qren5p9olzay5fCBL3GJSdOcfFjoPBbj5n/LY5OAXay3ma210gt5XecyOIrRGRrVc1bo+M0OreFuLgI=
+Received: from SJ0PR11MB5008.namprd11.prod.outlook.com (2603:10b6:a03:2d5::17)
+ by BY5PR11MB4242.namprd11.prod.outlook.com (2603:10b6:a03:1c1::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Tue, 19 Jan
+ 2021 09:43:13 +0000
+Received: from SJ0PR11MB5008.namprd11.prod.outlook.com
+ ([fe80::589d:3fe7:733c:eb72]) by SJ0PR11MB5008.namprd11.prod.outlook.com
+ ([fe80::589d:3fe7:733c:eb72%6]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 09:43:13 +0000
+From:   Pho Tran <Pho.Tran@silabs.com>
+To:     "johan@kernel.org" <johan@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "inux-usb@vger.kernel.org" <inux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] USB: serial: cp210x: Fix error 32 when hardware flow control
+  is enabled.
+Thread-Topic: [PATCH] USB: serial: cp210x: Fix error 32 when hardware flow
+ control  is enabled.
+Thread-Index: AQHW7keBkUVh9dKpX0uN/Ls1iOAoLg==
+Date:   Tue, 19 Jan 2021 09:43:13 +0000
+Message-ID: <658ABD80-572C-44BD-8DBD-79396109A175@silabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.40.0.2.31)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=silabs.com;
+x-originating-ip: [118.70.199.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4d3ae3fb-6391-4684-82bb-08d8bc5ea3ef
+x-ms-traffictypediagnostic: BY5PR11MB4242:
+x-microsoft-antispam-prvs: <BY5PR11MB424223972E97C6AB0EA570A6E3A30@BY5PR11MB4242.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EZBbwppCuvuk7Ub/f+5oej0BGlxVOIqLwFJSEFawDox9lrGQkahrACXAEzXANNn/enmtrzCEXAtvfPKI6bL8Ww9Z+tfhTH+c6QzhJ+xF6Bz6RzxVx9vIw7s7f79z6yLJgd6CTmA8zBCUUr4d/mT0HTNeFDIlsoh/gJuiEu/+ExErAQd91aUS2m826/uWZ8CdC0Yi9V93d6NDDbQceFsLjvIzHCgyoB/k0xHJJTN/mTrxouBtyGYsCJPq8rLFOQrHD4o1MYBYNooiu3BoOQ0JiJT8IanoU7xzFzwptdHd1awLjd0acigb7A713CE+LCDt3bNj4DJI7so1dDm/9SoxN0TQqq/S+H6UuhQlzTQ5g3/O/qacOyL5c5hhPbavxl3T8g26J9qZx86x38jC+/K/9NxP/I539j/FMaKYMwNDd1MH6Ek+QXCl26aOiq2COdWb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5008.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39850400004)(366004)(396003)(6506007)(83380400001)(66556008)(33656002)(86362001)(26005)(76116006)(64756008)(91956017)(6512007)(5660300002)(316002)(6486002)(8676002)(186003)(110136005)(54906003)(36756003)(71200400001)(478600001)(66446008)(4326008)(66946007)(2616005)(8936002)(2906002)(66476007)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nr5BPZy9mj9C0hE3ShK/TfuYBs8k5WK55i2odUwltvIXM050aIbUjdPT/qBd?=
+ =?us-ascii?Q?wQM02gEn7dD2e3WLIAndY1eXDUfw5hP6YfjzJI70K5tvzR8+NqepGihxm/Mp?=
+ =?us-ascii?Q?Mwhb9r0Xtotwqw2Iz/hpJGTVb8IQn/XUZ9WJL1aW9xP62r1e3basc2D2H9Co?=
+ =?us-ascii?Q?WCa2RKePQO8VO6gQY87/GPNVL0btDkMbOj41GP7PlAINDfV65RvZ/Vt7WTQc?=
+ =?us-ascii?Q?3JJq/QOEyrlQkhUQlU+/3t8Zq79PRhjEH8Q8feef3QUwhExQwpN+IhIQ516t?=
+ =?us-ascii?Q?O9l8ctCvf4hsnbtJdLVy2zEyLGU2EX6Sa3zZPI9X1ksc5So5kmovPts44kgQ?=
+ =?us-ascii?Q?fVJSRrniLFPDYrA8p5nIBV4hYXxviPHwu7V9EgJUN+9L2j4ue/3/m0EhECi4?=
+ =?us-ascii?Q?0msWgWJ5rm0KShabYfm5YWsfPEcr3SKeclB7j3Y5bSJGqE/J3ynVmQ6PpSk8?=
+ =?us-ascii?Q?bgrU01QoCbR+7YURhDpBIQkV+FDMv90RdXP1T5CJ1Sb2OGYozJU7q/L0TGPC?=
+ =?us-ascii?Q?W+t0F1IqGJT2/O2rWQVfYSNZRqq6T/3ab6MVLWBdH/V5+TPG6r4EZLkE5rCR?=
+ =?us-ascii?Q?5VrVozc5GTxB+xWIAB+Gyu7/ZbQ/JEsRf7qv59BQNslp7gakhlO6tI3E28iK?=
+ =?us-ascii?Q?jjQ9qlXqRG7feGao1o1m+2EF1xog+d8ilCwWfsWIIoSv04ktar1k6isAXsm8?=
+ =?us-ascii?Q?Yo4NwAc2g/1qLTerUC2tnbfF5Rqbty5Gra6Nq8uf9nQFQnrbZlllGTzFBUec?=
+ =?us-ascii?Q?E4BFxYxxCf5W4I5Hh/Op3fP0aSsriEJvMGUtSYmyDvV2+vTBhqwuf6ZF7A70?=
+ =?us-ascii?Q?9s5NuPoArbGPXGOd2RYcgD/+7b6KIW8v7PKi8jEmoPdNgG2mn3FmMhueJ2QE?=
+ =?us-ascii?Q?SJiQ4UjKwD4j/1XUJRtNlPDJ5K8RvqU18BXGd0Dq+IuSTTLqu4WbDG5ClW1X?=
+ =?us-ascii?Q?ToLBqmtEqOJL5g0eAy6K7+m5S+lcVH9ejjfJHTGZXg/xQXG4aXTNa9og5xG7?=
+ =?us-ascii?Q?nO2b?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <64831C329BA8B745B6972C35C453CA04@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113152625.GB30246@work>
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5008.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d3ae3fb-6391-4684-82bb-08d8bc5ea3ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 09:43:13.5469
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oo94pSl+RjYPC0/7ZMDDmcZMXgiy01A5U36Jv5z9wyeE/TdqgLSKEtXE6EVVMBfDxn8/IoGG3MbcaUg6nXwAdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4242
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabl=
+ed.
 
-On Wed, Jan 13, 2021 at 08:56:25PM +0530, Manivannan Sadhasivam wrote:
-> Hi Greg,
-> 
-> On Wed, Jan 06, 2021 at 10:44:13AM -0800, Hemant Kumar wrote:
-> > This patch series adds support for UCI driver. UCI driver enables userspace
-> > clients to communicate to external MHI devices like modem. UCI driver probe
-> > creates standard character device file nodes for userspace clients to
-> > perform open, read, write, poll and release file operations. These file
-> > operations call MHI core layer APIs to perform data transfer using MHI bus
-> > to communicate with MHI device. 
-> > 
-> > This interface allows exposing modem control channel(s) such as QMI, MBIM,
-> > or AT commands to userspace which can be used to configure the modem using
-> > tools such as libqmi, ModemManager, minicom (for AT), etc over MHI. This is
-> > required as there are no kernel APIs to access modem control path for device
-> > configuration. Data path transporting the network payload (IP), however, is
-> > routed to the Linux network via the mhi-net driver. Currently driver supports
-> > QMI channel. libqmi is userspace MHI client which communicates to a QMI
-> > service using QMI channel. Please refer to
-> > https://www.freedesktop.org/wiki/Software/libqmi/ for additional information
-> > on libqmi.
-> > 
-> > Patch is tested using arm64 and x86 based platform.
-> > 
-> 
-> This series looks good to me and I'd like to merge it into mhi-next. You
-> shared your reviews on the previous revisions, so I'd like to get your
-> opinion first.
-> 
+The root cause of error 32 is that user application (CoolTerm, linux-serial=
+-test)
+opened cp210x device with hardware flow control then attempt to control RTS=
+/DTR pins.
+In hardware flow control, RTS/DTR pins will be controlled by hardware only,
+any attempt to control those pin will cause error 32 from the device.
+This fix will block MHS command(command to control RTS/DTR pins) to the dev=
+ice
+if hardware flow control is being used.
 
-Ping!
+Signed-off-by: Pho Tran <pho.tran@silabs.com>
+---
+ drivers/usb/serial/cp210x.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Thanks,
-Mani
-
-> Thanks,
-> Mani
-> 
-> > V18:
-> > - Updated commit text for UCI to clarify why this driver is required for QMI
-> >   over MHI. Also updated cover letter with same information.
-> > 
-> > v17:
-> > - Updated commit text for UCI driver by mentioning about libqmi open-source
-> >   userspace program that will be talking to this UCI kernel driver.
-> > - UCI driver depends upon patch "bus: mhi: core: Add helper API to return number
-> >   of free TREs".
-> > 
-> > v16:
-> > - Removed reference of WLAN as an external MHI device in documentation and
-> >   cover letter.
-> > 
-> > v15:
-> > - Updated documentation related to poll and release operations.
-> > 
-> > V14:
-> > - Fixed device file node format to /dev/<mhi_dev_name> instead of
-> >   /dev/mhi_<mhi_dev_name> because "mhi" is already part of mhi device name.
-> >   For example old format: /dev/mhi_mhi0_QMI new format: /dev/mhi0_QMI.
-> > - Updated MHI documentation to reflect index mhi controller name in
-> >   QMI usage example.
-> > 
-> > V13:
-> > - Removed LOOPBACK channel from mhi_device_id table from this patch series.
-> >   Pushing a new patch series to add support for LOOPBACK channel and the user
-> >   space test application. Also removed the description from kernel documentation.
-> > - Added QMI channel to mhi_device_id table. QMI channel has existing libqmi
-> >   support from user space.
-> > - Updated kernel Documentation for QMI channel and provided external reference
-> >   for libqmi.
-> > - Updated device file node name by appending mhi device name only, which already
-> >   includes mhi controller device name.
-> > 
-> > V12:
-> > - Added loopback test driver under selftest/drivers/mhi. Updated kernel
-> >   documentation for the usage of the loopback test application.
-> > - Addressed review comments for renaming variable names, updated inline
-> >   comments and removed two redundant dev_dbg.
-> > 
-> > V11:
-> > - Fixed review comments for UCI documentation by expanding TLAs and rewording
-> >   some sentences.
-> > 
-> > V10:
-> > - Replaced mutex_lock with mutex_lock_interruptible in read() and write() file
-> >   ops call back.
-> > 
-> > V9:
-> > - Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
-> >   clarity.
-> > - Used read lock to protect cur_buf.
-> > - Change transfer status check logic and only consider 0 and -EOVERFLOW as
-> >   only success.
-> > - Added __int to module init function.
-> > - Print channel name instead of minor number upon successful probe.
-> > 
-> > V8:
-> > - Fixed kernel test robot compilation error by changing %lu to %zu for
-> >   size_t.
-> > - Replaced uci with UCI in Kconfig, commit text, and comments in driver
-> >   code.
-> > - Fixed minor style related comments.
-> > 
-> > V7:
-> > - Decoupled uci device and uci channel objects. uci device is
-> >   associated with device file node. uci channel is associated
-> >   with MHI channels. uci device refers to uci channel to perform
-> >   MHI channel operations for device file operations like read()
-> >   and write(). uci device increments its reference count for
-> >   every open(). uci device calls mhi_uci_dev_start_chan() to start
-> >   the MHI channel. uci channel object is tracking number of times
-> >   MHI channel is referred. This allows to keep the MHI channel in
-> >   start state until last release() is called. After that uci channel
-> >   reference count goes to 0 and uci channel clean up is performed
-> >   which stops the MHI channel. After the last call to release() if
-> >   driver is removed uci reference count becomes 0 and uci object is
-> >   cleaned up.
-> > - Use separate uci channel read and write lock to fine grain locking
-> >   between reader and writer.
-> > - Use uci device lock to synchronize open, release and driver remove.
-> > - Optimize for downlink only or uplink only UCI device.
-> > 
-> > V6:
-> > - Moved uci.c to mhi directory.
-> > - Updated Kconfig to add module information.
-> > - Updated Makefile to rename uci object file name as mhi_uci
-> > - Removed kref for open count
-> > 
-> > V5:
-> > - Removed mhi_uci_drv structure.
-> > - Used idr instead of creating global list of uci devices.
-> > - Used kref instead of local ref counting for uci device and
-> >   open count.
-> > - Removed unlikely macro.
-> > 
-> > V4:
-> > - Fix locking to protect proper struct members.
-> > - Updated documentation describing uci client driver use cases.
-> > - Fixed uci ref counting in mhi_uci_open for error case.
-> > - Addressed style related review comments.
-> > 
-> > V3: Added documentation for MHI UCI driver.
-> > 
-> > V2:
-> > - Added mutex lock to prevent multiple readers to access same
-> > - mhi buffer which can result into use after free.
-> > 
-> > Hemant Kumar (3):
-> >   bus: mhi: core: Move MHI_MAX_MTU to external header file
-> >   docs: Add documentation for userspace client interface
-> >   bus: mhi: Add userspace client interface driver
-> > 
-> >  Documentation/mhi/index.rst     |   1 +
-> >  Documentation/mhi/uci.rst       |  95 ++++++
-> >  drivers/bus/mhi/Kconfig         |  13 +
-> >  drivers/bus/mhi/Makefile        |   3 +
-> >  drivers/bus/mhi/core/internal.h |   1 -
-> >  drivers/bus/mhi/uci.c           | 664 ++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mhi.h             |   3 +
-> >  7 files changed, 779 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/mhi/uci.rst
-> >  create mode 100644 drivers/bus/mhi/uci.c
-> > 
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index fbb10dfc56e3..1835ccf2aa2f 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1211,6 +1211,11 @@ static int cp210x_tiocmset_port(struct usb_serial_po=
+rt *port,
+ 		unsigned int set, unsigned int clear)
+ {
+ 	u16 control =3D 0;
++	struct cp210x_flow_ctl flow_ctl;
++	u32 ctl_hs =3D 0;
++	u32 flow_repl =3D 0;
++	bool auto_dtr =3D false;
++	bool auto_rts =3D false;
+=20
+ 	if (set & TIOCM_RTS) {
+ 		control |=3D CONTROL_RTS;
+@@ -1230,6 +1235,25 @@ static int cp210x_tiocmset_port(struct usb_serial_po=
+rt *port,
+ 	}
+=20
+ 	dev_dbg(&port->dev, "%s - control =3D 0x%.4x\n", __func__, control);
++	//Don't send MHS command if device in hardware flowcontrol mode
++	cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl, sizeof(flow_ctl))=
+;
++	ctl_hs =3D le32_to_cpu(flow_ctl.ulControlHandshake);
++	flow_repl =3D le32_to_cpu(flow_ctl.ulFlowReplace);
++
++	if (CP210X_SERIAL_DTR_SHIFT(CP210X_SERIAL_DTR_FLOW_CTL) =3D=3D (ctl_hs & =
+CP210X_SERIAL_DTR_MASK))
++		auto_dtr =3D true;
++	else
++		auto_dtr =3D false;
++
++	if (CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL) =3D=3D (flow_repl=
+ & CP210X_SERIAL_RTS_MASK))
++		auto_rts =3D true;
++	else
++		auto_rts =3D false;
++
++	if (auto_dtr || auto_rts) {
++		dev_dbg(&port->dev, "Don't set MHS when while device in flow control mod=
+e\n");
++		return 0;
++	}
+=20
+ 	return cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
+ }
+--=20
+2.17.1=
