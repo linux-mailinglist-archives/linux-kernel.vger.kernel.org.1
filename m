@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62CD2FB862
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CE72FB864
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392875AbhASMaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 07:30:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57844 "EHLO mx2.suse.de"
+        id S2392942AbhASMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 07:31:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:54686 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387414AbhASMXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:23:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611058923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kzOjM95fJedKhanGDes7Gs/np2Mc8EB1YqmNdBhWlW0=;
-        b=HsvHysxL/+Ozf2nxPNfuID3A/uqizmc/x30cu3vnqls0uKtM6x+I8/x3hZieIRIKldul2Q
-        N1O7TvUCy9dTjwvDtmNhuIUUQaLk9X9rBsNy6mM/rC9iqtxeKOkCqLkKVUBq73T9eD5rON
-        t2Bz/wJS8NkcEML5hcK6/BAf08o/Tno=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0DFEAC6E;
-        Tue, 19 Jan 2021 12:22:03 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 13:22:02 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        id S2390818AbhASMX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:23:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FD7E113E;
+        Tue, 19 Jan 2021 04:22:46 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3C3C3F719;
+        Tue, 19 Jan 2021 04:22:44 -0800 (PST)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-Message-ID: <YAbO6tQelFISgovf@alley>
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
- <YAGE1O/nG57hyRs4@alley>
- <YAGFebfPNLwjyhcl@alley>
- <YAYriDiAl7lajty9@jagdpanzerIV.localdomain>
- <87r1mh5mso.fsf@jogness.linutronix.de>
- <YAa0j9CG/6yrGcs+@jagdpanzerIV.localdomain>
- <87bldl5exc.fsf@jogness.linutronix.de>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH v3 bpf-next 0/2] Allow attaching to bare tracepoints
+Date:   Tue, 19 Jan 2021 12:22:35 +0000
+Message-Id: <20210119122237.2426878-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bldl5exc.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-19 12:50:47, John Ogness wrote:
-> On 2021-01-19, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
-> >>> John, how did you spot these problems?
-> >> 
-> >> I am preparing my series to remove the logbuf_lock, which also
-> >> refactors and consolidates code from syslog_print_all() and
-> >> kmsg_dump_get_buffer(). While testing/verifying my series, I noticed
-> >> the these oddities in the semantics and decided I should research
-> >> where they came from and if they were actually necessary.
-> >
-> > Any chance you can put those tests somewhere public so that we can
-> > run them regularly?
+Changes in v3:
+	* Fix not returning error value correctly in
+	  trigger_module_test_write() (Yonghong)
+	* Add Yonghong acked-by to patch 1.
 
-Great idea.
+Changes in v2:
+	* Fix compilation error. (Andrii)
+	* Make the new test use write() instead of read() (Andrii)
 
-> I have a collection of hacked-together tools that I use to test most of
-> the various interfaces of printk. I would need to clean them up if they
-> should be used for any kind of automated regression testing.
+Add some missing glue logic to teach bpf about bare tracepoints - tracepoints
+without any trace event associated with them.
 
-Sounds good. We could even help with the clean up. This kind of code
-always need it when it was not written for public use from scratch.
+Bare tracepoints are declare with DECLARE_TRACE(). Full tracepoints are declare
+with TRACE_EVENT().
 
-> And where should I make such things available? I could put them in a
-> repo in the Linutronix github account (like I did for the ringbuffer
-> stress testing tool). (??)
+BPF can attach to these tracepoints as RAW_TRACEPOINT() only as there're no
+events in tracefs created with them.
 
-Sounds good as well.
+Qais Yousef (2):
+  trace: bpf: Allow bpf to attach to bare tracepoints
+  selftests: bpf: Add a new test for bare tracepoints
 
-Best Regards,
-Petr
+ Documentation/bpf/bpf_design_QA.rst           |  6 +++++
+ include/trace/bpf_probe.h                     | 12 +++++++--
+ .../bpf/bpf_testmod/bpf_testmod-events.h      |  6 +++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 21 ++++++++++++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  6 +++++
+ .../selftests/bpf/prog_tests/module_attach.c  | 27 +++++++++++++++++++
+ .../selftests/bpf/progs/test_module_attach.c  | 10 +++++++
+ 7 files changed, 85 insertions(+), 3 deletions(-)
+
+-- 
+2.25.1
+
