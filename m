@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44532FB0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457272FB0FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 06:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731721AbhASFfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 00:35:14 -0500
-Received: from sg2plout10-02.prod.sin2.secureserver.net ([182.50.145.5]:59460
-        "EHLO sg2plout10-02.prod.sin2.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732137AbhASEpP (ORCPT
+        id S2390909AbhASFmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 00:42:08 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:63871 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727219AbhASFJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 23:45:15 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41])
-        by :SMTPAUTH: with ESMTPSA
-        id 1ijglAmDNxz4B1ijjlUIX6; Mon, 18 Jan 2021 21:35:24 -0700
-X-CMAE-Analysis: v=2.4 cv=SbAyytdu c=1 sm=1 tr=0 ts=6006618d
- a=PTypr3n1IRLBnQ3yzyqIcw==:117 a=IkcTkHD0fZMA:10 a=EmqxpYm9HcoA:10
- a=pGLkceISAAAA:8 a=9vr8BnzVG96gFNSbxsUA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: kaiwan@kaiwantech.com
-Received: by mail-ot1-f41.google.com with SMTP id n42so18564091ota.12;
-        Mon, 18 Jan 2021 20:35:23 -0800 (PST)
-X-Gm-Message-State: AOAM5311zvsh950bILj656SOwg57D71NMDhnIjyUQwbSTDs458NjoB1H
-        Yff/96XxcNLwEpvrJX3afd/ebhzlW0ihOWr+w54=
-X-Google-Smtp-Source: ABdhPJz0r7vrYUw3z7gsYPwKEPEVuiSgalGCOodz7zAs+w8wsmDs5ru5RxydNPiwFhVZ8XJd00vziAdKjyYOqXKV72E=
-X-Received: by 2002:a9d:2c43:: with SMTP id f61mr2091626otb.329.1611030919638;
- Mon, 18 Jan 2021 20:35:19 -0800 (PST)
+        Tue, 19 Jan 2021 00:09:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611032947; x=1642568947;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jmrSa8deAEe1LJieS4GwadhMznrvItaU1cHEcGf0nvk=;
+  b=AJ+kLfsSJ4s07yDnlseG1ISGGXpWVyUnFL49c/GKPrU9mkELI+wPkQgM
+   k0Sr307YGaCRfbszrgkwae6u4u5+PF2WExHyAS4niMtdGlrMpa96wgYxX
+   3B0iiRd5Lc60P2FsQOBYgGRYjZm9V9hMjqd4Te2OvXkHRwWVSZtNQJOJB
+   JNXadhODsrLaKmZNKUfkCxPlcFBeFKDpkdXVEYsoMyhMUgE5f+rz/FEOZ
+   QrrGa3U4KHbx5KQn9l7nbpESN4LFl80EcDp8IwgB9ACrppt+nwnD/2f8Q
+   3T2DuSkwQOUY4qLxFZUMpfozg94uu1qvD1VFpy0wfzT+/1zw6lapxdyl6
+   A==;
+IronPort-SDR: 9IH0QRgyJGceub+HSw+OAYsR5g1UCjXvkRmOE7pb+OJfE20FELHvx3qtZPekjvtw1i86u9sDa3
+ Wd0vMOjW/VERMIeI5SKgiRawxhPaPi/nZJw5T3lIfIG+Vk3Auy9ROAiUG3v+gA4sqD+fkQ5+ue
+ JEhP0wVRB4xHIpobUtJZSI3/HPc9vV3NoBDJQ/aTDYgMjsXV1LJFK1j+d917YlZJLeZVrdT5zd
+ 1sCjSjLnqohrvTxj99NK/iKEHCJgpMxZIsRb021sQpVIGrQQSIKFfY+Lw/VPCAO9vMjo96CS2G
+ 1dA=
+X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
+   d="scan'208";a="162200901"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:06:57 +0800
+IronPort-SDR: kcItOcwBlllKPIE0vRa1+mRTFZtJJbvDNuhgcrhd9IY4m04UCBUhtKuaMVVVeVxRMd6HO5zug3
+ NgoC8qBAlLOMdyKTOOvvsgp3JuNwOZ07vKUS8lQ6idDPGzTYsTX+PSMu7GqHzaa4R1uPAE8ACO
+ Ps/fy9eWrwsAhY7/XR2JujFhlqthtEncw9UDL1Tq1zwcd2Mpn9k9H7jHVp7VmhTh+3iq2/8/+D
+ rf8Ne1JB2PAWp7CI29odNbqyNjraTVnhvazDXd+z11HyHdIIDMYRdWDlzm8FelWaFQITFdCccg
+ pwvzAfSCO3v9OcNpwX+7iJEC
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:51:35 -0800
+IronPort-SDR: 2QvgFwKv1l58qACx1LkMFx25aQa2SIK+nja25KW+g1fGCIsFCI2aDBEoSVRt5vd+mstvmW96a+
+ 737tI66XYa3YGuNZc7mhzaBx90mzE+7INtx21d/7HVJL8Fs4lXsY46xoeP6qPWvnDZ3ihPj4yc
+ 0PHxNbwk5lPXU8GKWjmU1O8sK8W4HyOAc9WnAAEnbKb4wGAIm+2gNrXPeVygtgzGsA4DXXJ+Yd
+ mrqI036gzbWwtshapKuKgeKERGx47y7vTXELUquL2fc2urlWZF3SUiFLdWMNhtGfvEB6B//WSB
+ xEk=
+WDCIronportException: Internal
+Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:06:57 -0800
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com
+Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
+        axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
+        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
+        song@kernel.org, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
+        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
+        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
+        asml.silence@gmail.com, jefflexu@linux.alibaba.com,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 03/37] btrfs: use bio_init_fields in disk-io
+Date:   Mon, 18 Jan 2021 21:05:57 -0800
+Message-Id: <20210119050631.57073-4-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.1
+In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
+References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
 MIME-Version: 1.0
-References: <cover.1610722473.git.gladkov.alexey@gmail.com>
- <116c7669744404364651e3b380db2d82bb23f983.1610722473.git.gladkov.alexey@gmail.com>
- <CAHk-=wjsg0Lgf1Mh2UiJE4sqBDDo0VhFVBUbhed47ot2CQQwfQ@mail.gmail.com>
- <20210118194551.h2hrwof7b3q5vgoi@example.org> <CAHk-=wiNpc5BS2BfZhdDqofJx1G=uasBa2Q1eY4cr8O59Rev2A@mail.gmail.com>
- <20210118205629.zro2qkd3ut42bpyq@example.org>
-In-Reply-To: <20210118205629.zro2qkd3ut42bpyq@example.org>
-From:   Kaiwan N Billimoria <kaiwan@kaiwantech.com>
-Date:   Tue, 19 Jan 2021 10:05:03 +0530
-X-Gmail-Original-Message-ID: <CAPDLWs-fefTqAe+z-7BeALFpinanfPPd-9rmjKwUQ6WRP3_1Tg@mail.gmail.com>
-Message-ID: <CAPDLWs-fefTqAe+z-7BeALFpinanfPPd-9rmjKwUQ6WRP3_1Tg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 1/8] Use refcount_t for ucounts reference counting
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-CMAE-Envelope: MS4xfBuCjVuUNzQ9MWUWLlb8iVSUpyoTLrRRPg51VIhbGaS7/r/JfQ4EeCJYJwI3C5A/3IGr0RrIOw/WjTnlGS70S+7fv4X0Xrk+mW7YC7iAJT50eyS+qwic
- JpjBaPm1nVA/UnSgdWar1vNFccMXyBSgHTghu7QmpGrKaXma+Nky59gOwDd9elXAgfw53u8nNqRUBKG4Qg+U/6BDfsBku39FmGkMXdC+8nj42UGYhK1DmD7I
- iWpBynvllxUgGzYNkx3+2Q==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Sorry for the gmail client)
-My 0.2, HTH:
-a) AFAIK, refcount_inc() (and similar friends) don't return any value
-b) they're designed to just WARN() if they saturate or if you're
-attempting to increment the value 0 (as it's possibly a UAF bug)
-c) refcount_inc_checked() is documented as "Similar to atomic_inc(),
-but will saturate at UINT_MAX and WARN"
-d) we should avoid using the __foo() when foo() 's present as far as
-is sanely possible...
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+---
+ fs/btrfs/disk-io.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-So is one expected to just fix things when they break? - as signalled
-by the WARN firing?
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 765deefda92b..9a65432fc5e9 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3637,10 +3637,8 @@ static int write_dev_supers(struct btrfs_device *device,
+ 		 * checking.
+ 		 */
+ 		bio = bio_alloc(GFP_NOFS, 1);
+-		bio_set_dev(bio, device->bdev);
+-		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+-		bio->bi_private = device;
+-		bio->bi_end_io = btrfs_end_super_write;
++		bio_init_fields(bio, device->bdev, bytenr >> SECTOR_SHIFT,
++				device, btrfs_end_super_write, 0, 0);
+ 		__bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
+ 			       offset_in_page(bytenr));
+ 
+@@ -3748,11 +3746,10 @@ static void write_dev_flush(struct btrfs_device *device)
+ 		return;
+ 
+ 	bio_reset(bio);
+-	bio->bi_end_io = btrfs_end_empty_barrier;
+-	bio_set_dev(bio, device->bdev);
+ 	bio->bi_opf = REQ_OP_WRITE | REQ_SYNC | REQ_PREFLUSH;
+ 	init_completion(&device->flush_wait);
+-	bio->bi_private = &device->flush_wait;
++	bio_init_fields(bio, device->bdev, 0, &device->flush_wait,
++			btrfs_end_empty_barrier, 0, 0);
+ 
+ 	btrfsic_submit_bio(bio);
+ 	set_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state);
+-- 
+2.22.1
 
---
-Regards, kaiwan.
-
-
-On Tue, Jan 19, 2021 at 2:26 AM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
->
-> On Mon, Jan 18, 2021 at 12:34:29PM -0800, Linus Torvalds wrote:
-> > On Mon, Jan 18, 2021 at 11:46 AM Alexey Gladkov
-> > <gladkov.alexey@gmail.com> wrote:
-> > >
-> > > Sorry about that. I thought that this code is not needed when switching
-> > > from int to refcount_t. I was wrong.
-> >
-> > Well, you _may_ be right. I personally didn't check how the return
-> > value is used.
-> >
-> > I only reacted to "it certainly _may_ be used, and there is absolutely
-> > no comment anywhere about why it wouldn't matter".
->
-> I have not found examples where checked the overflow after calling
-> refcount_inc/refcount_add.
->
-> For example in kernel/fork.c:2298 :
->
->    current->signal->nr_threads++;
->    atomic_inc(&current->signal->live);
->    refcount_inc(&current->signal->sigcnt);
->
-> $ semind search signal_struct.sigcnt
-> def include/linux/sched/signal.h:83             refcount_t              sigcnt;
-> m-- kernel/fork.c:723 put_signal_struct                 if (refcount_dec_and_test(&sig->sigcnt))
-> m-- kernel/fork.c:1571 copy_signal              refcount_set(&sig->sigcnt, 1);
-> m-- kernel/fork.c:2298 copy_process                             refcount_inc(&current->signal->sigcnt);
->
-> It seems to me that the only way is to use __refcount_inc and then compare
-> the old value with REFCOUNT_MAX
->
-> Since I have not seen examples of such checks, I thought that this is
-> acceptable. Sorry once again. I have not tried to hide these changes.
->
-> --
-> Rgrds, legion
->
->
