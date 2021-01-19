@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BFC2FC51A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B032FC4E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 00:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730440AbhASXth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 18:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S1729904AbhASXie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 18:38:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731589AbhASOAc (ORCPT
+        with ESMTP id S2395026AbhASOE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:00:32 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2C8C0613CF;
-        Tue, 19 Jan 2021 05:59:31 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id c1so13684888qtc.1;
-        Tue, 19 Jan 2021 05:59:31 -0800 (PST)
+        Tue, 19 Jan 2021 09:04:56 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983FBC061573;
+        Tue, 19 Jan 2021 06:04:05 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id c7so21881127qke.1;
+        Tue, 19 Jan 2021 06:04:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Ym9OdXfOruhx0VJLHJZTkysCmTkqfAJuYVRSw4XnoL8=;
-        b=EBZb1OECg0pM/OcFrJFHHcTW2Gfd64bzWcWr9Vc9asStUH1lSYwKZQIkBDMAOcfUO5
-         1Geu+QFg/NgTXuWqA6fpl8lFr9TqzTs8WRbPPVnC8NORmxaFEnLTTuevU4xy2DlEmX6v
-         D360/Cv/ncHzhuqU0qcoCvs/OGAW7WOC8lyeEDKvQoZk0+mZubKZNdJbaH6xBxf1d1WF
-         P9IUbHPVAc4H0wysQK6+8c0ukYe4R+V9zCjz9FQXsbLW769m0+OAQUTdlA84EZOW2LRN
-         XyGJ102USONTAtaqrDEP5D3qrROhN5GWVxnn/4iM47Fa/8EVmmwnJ2HjtdRjC2ZxDnCI
-         ZLLQ==
+        bh=EDeK0lzTgoH/F/4wDr6SvtdsoHPqaLFNgf6XdA+ur08=;
+        b=mXBWNhqE4/90NeQXsy/H9x94t4yJ2FiofbnRAcVcCoUHkHfII5ZSAq3LJ7rW9b4VId
+         UsQ5WpozSto+hnbLJlqTyyVAO8l0fRfHFfiFggtjo/fNCqoEuESU+hrZN5dwaREwawKL
+         ZS2uhSVh+Sw5C6pylIjA55AIP3yAzYDKSPoj6JROvHcOgGkLN2MuzsigCDDLBjaJyegz
+         l30Qe3uRxCxBH4nBYh2Cs1V+fg4mNjV3J1JEXjPxB8dHAAvyuNr9bvVBfJvwxeOeVC0t
+         Tfx5PgxhkzAEg5hCOK2Wc+EevWHTPbbntgo9kQ0t009N7aUg/Oa0w6xh/gleWlQL6a/G
+         En/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ym9OdXfOruhx0VJLHJZTkysCmTkqfAJuYVRSw4XnoL8=;
-        b=trA0do/jNkoQrWQl9nOsKxsnMNfPduwTLAbda6qhy31PnPNAkpEHLWWBJfGqB6/k5f
-         k8GFhLzmpPnPg10FhQ/I3SssxNO2GG0JPCjBWirMDeTAtmRksz1Af8kHRelgTXAUyYCX
-         qE/uYEDcHsocpINYg6Zmp7u9yiVVXh214bKwqYhDLp1k6zKapAZXq0bRk/5YMYoSJ1ni
-         OmSqNEW9gUnaqX0IQQyO0vKHB5XlWChawGxX8oyEWXXkUphV0QAi0ua3sQ3UaGw8pY5g
-         Rcjz43H0UH+2c+PkWP8Oy6gqmVzcJNeqJJJYDfSmVOFgyUbXqJHQHp9/UuynsvnRIbCi
-         nfbw==
-X-Gm-Message-State: AOAM532VOJnWo7FpQll+Oalo8uBdhLOGH0vIe935pLxNGHWUMHet7E90
-        JVOfwYiwOGntg/TetVx1oAg=
-X-Google-Smtp-Source: ABdhPJxfvNtzwj2msR5tqNRB5ZxUuEV+4weiNh12lt3ZDH5679gJY1FRS5R4LNSD8MOrNxHQ4fGu+w==
-X-Received: by 2002:ac8:7767:: with SMTP id h7mr4400936qtu.136.1611064770511;
-        Tue, 19 Jan 2021 05:59:30 -0800 (PST)
+        bh=EDeK0lzTgoH/F/4wDr6SvtdsoHPqaLFNgf6XdA+ur08=;
+        b=dmQoBvg2z+/O6HuTW7yoGN3xcd4XcARyYHMEHnFIIyFwUybfOeYu8Afy4kmGFFK3uD
+         XOPF2HS6a2k9PzmVXkQB98Mffp3U9cnqYM2DnhajrwhnGste5u8WDQetIVly03uny4dv
+         zM4QIJMH8pOzTCxJcF53+1kQmif87VzFS1FmuEA8zjUQhsh597ZsXCITp5kDGv+hPhJD
+         7jEYUQENYJKHT+bXuyPwyOGYG0S6lQJkjJ7+xubfxU+FhJvGI30k70ijYhNh8iGViRFG
+         chpk427disbhpqoHk6DhmF42OdERuVd3TGkWAGPY9rMQ8rp2yA9MhvLpoKBHvv6Ph2Er
+         En4w==
+X-Gm-Message-State: AOAM530E9css3z3PftcVCTR5pWWsTgcsMkQXcCc9YCTwLCxbu2kja9qA
+        9Vy9h/gOz+wC9dwkp/0y+NM=
+X-Google-Smtp-Source: ABdhPJyokyoVbgPCCEuLApBDGnb/D0dHQEpI6NDrkAwHwHHCpLjaKTrln+enuDkwKhlqxhEiKUWJNw==
+X-Received: by 2002:a37:4f4a:: with SMTP id d71mr4489426qkb.55.1611065044747;
+        Tue, 19 Jan 2021 06:04:04 -0800 (PST)
 Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id b78sm12913371qkg.29.2021.01.19.05.59.28
+        by smtp.gmail.com with ESMTPSA id k187sm13007651qkc.74.2021.01.19.06.04.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 05:59:29 -0800 (PST)
-Date:   Tue, 19 Jan 2021 14:59:27 +0100
+        Tue, 19 Jan 2021 06:04:02 -0800 (PST)
+Date:   Tue, 19 Jan 2021 15:04:00 +0100
 From:   Thierry Reding <thierry.reding@gmail.com>
 To:     JC Kuo <jckuo@nvidia.com>
 Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
         kishon@ti.com, linux-tegra@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v6 13/15] phy: tegra: xusb: Add wake/sleepwalk for
- Tegra186
-Message-ID: <YAblv4Mk01wrHmEj@ulmo>
+Subject: Re: [PATCH v6 14/15] usb: host: xhci-tegra: Unlink power domain
+ devices
+Message-ID: <YAbm0ELbAiFIZ+9G@ulmo>
 References: <20210119085546.725005-1-jckuo@nvidia.com>
- <20210119085546.725005-14-jckuo@nvidia.com>
+ <20210119085546.725005-15-jckuo@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2pZGkO1M510CWEK5"
+        protocol="application/pgp-signature"; boundary="9nt/UnHYaVisIkOl"
 Content-Disposition: inline
-In-Reply-To: <20210119085546.725005-14-jckuo@nvidia.com>
+In-Reply-To: <20210119085546.725005-15-jckuo@nvidia.com>
 User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---2pZGkO1M510CWEK5
+--9nt/UnHYaVisIkOl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 19, 2021 at 04:55:44PM +0800, JC Kuo wrote:
-> This commit implements Tegra186/Tegra194 XUSB PADCTL/AO wake and
-> sleepwalk operations.
+On Tue, Jan 19, 2021 at 04:55:45PM +0800, JC Kuo wrote:
+> This commit unlinks xhci-tegra platform device with SS/host power
+> domain devices. Reasons for this change is - at ELPG entry, PHY
+> sleepwalk and wake configuration need to be done before powering
+> down SS/host partitions, and PHY need be powered off after powering
+> down SS/host partitions. Sequence looks like roughly below:
+>=20
+>   tegra_xusb_enter_elpg() -> xhci_suspend()
+>                           -> enable PHY sleepwalk and wake if needed
+>                           -> power down SS/host partitions
+>                           -> power down PHY
+>=20
+> If SS/host power domains are linked to xhci-tegra platform device, we
+> are not able to perform the sequence like above.
+>=20
+> This commit introduces:
+>   1. tegra_xusb_unpowergate_partitions() to power up SS and host
+>      partitions together. If SS/host power domain devices are
+>      available, it invokes pm_runtime_get_sync() to request power
+>      driver to power up partitions; If power domain devices are not
+>      available, tegra_powergate_sequence_power_up() will be used to
+>      power up partitions.
+>=20
+>   2. tegra_xusb_powergate_partitions() to power down SS and host
+>      partitions together. If SS/host power domain devices are
+>      available, it invokes pm_runtime_put_sync() to request power
+>      driver to power down partitions; If power domain devices are not
+>      available, tegra_powergate_power_off() will be used to power down
+>      partitions.
 >=20
 > Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> ---
-> v6:
->    no change
-> v5:
->    no change
-> v4:
->    move sleepwalk/wake stubs from 'struct tegra_xusb_padctl_ops' to
->    'struct tegra_xusb_lane_ops'
-> v3:
->    move 'ao_regs' to the top of 'struct tegra186_xusb_padctl'
->    change return data of .phy_remote_wake_detected() to 'bool'
->    change input parameter of .phy_remote_wake_detected() to 'struct phy*'
->    remove unnecessary 'else'
->    rename 'val' with 'value'
->=20
->  drivers/phy/tegra/xusb-tegra186.c | 558 +++++++++++++++++++++++++++++-
->  1 file changed, 557 insertions(+), 1 deletion(-)
 
 Acked-by: Thierry Reding <treding@nvidia.com>
 
---2pZGkO1M510CWEK5
+--9nt/UnHYaVisIkOl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAG5b4ACgkQ3SOs138+
-s6HlEQ/8CuPqb+9pMvyV/wNLtjmK+GLs+WUaLtoxCnl3s8UhYpzW6EPvjKKbaaIR
-iaKf5i0I1WSdNwmKLV2qn/jalkJ3VrY9169HgBDx1LAiS8lzZAjNBLSfsgUFa8Fe
-G2PeRi7O2Trln5D62lvpkURcvPnzShZPZ7kUKi1wOQk4XvzGejsUGgPWHrEEn/wB
-5D9aihWByZDp3IlprcVZ9HPHE4zxNPIjkMXYNjdK2uqgUWR3D8Sf11kV3ZLKvkym
-9dh65nZNCKg9KTPg8+dnpi+LaH6TmwZAnc1h7FeQy0Nx2KYwW4jeiWI90dcr1INS
-1otONRUT8WtR1DCBve1/F3Vv0bcswgnA3QHYnfempGBYhsSLT5N3yk5oKEUoGJYO
-8BQOPqteicsw+EKyySpWRLPukGXCeTFp1ipWD8j9klTXQiRemtKy8ZuhVWCSI1On
-s+Q80pXYDgrFBHnVzpRimVuG8eDUhuS0LlPHr1qvMXrXvUILTBfBGs1IXgmcV90O
-5AY04GbPBGLIn8WkoBGFf5DOfFFwbAaXpckHtC2h/jtIyLJRBL04BhInwyvGtAoK
-EYJ5lC6u3WpsLIZGFYHuTdbMGotPU0oc6ZcK24EuNu+zYu8vLbr0C8+1FtiY/WRR
-3W6HUk9VthfAtGFTD9QBkLAdFf7fgXBXcXHMIGyKFP8cLtRNXrg=
-=Kz45
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAG5tAACgkQ3SOs138+
+s6HtZg//YATKR0XCFqPsQh+D3HoLvJv6I3p39ntPOPsmRwuP5GJj+Z3Jb1pKbTwH
+Kkf1V5pqOoMCgViGa/HVvqOokgs9JffGHDg67oLQqXnZv7KFoh7r9xpsFZkF0anG
+5RB7ygKIf9o7e6IZQDX9XWM25diE4dQ/lrfY/cKYEEcIXBNeEtbIDe9lxydUPWxW
+zcL8qfW2woN8iq/Nl4po2h8fZb3BvPn4zZBVdQJP4FxQF5HGNJJABVXeh10yZzHL
+/CmD0ekojMtRiNSQUtxr7AlD/Vq9YqPkVNgZc/prhoTVswlJPO9tSO3hVYPDRpU4
+HIqro3nRsg5BjA6JQGAfO1qP2I3jyo+r5WIbVrBzVP0fRZxbtzTt7Y9juieqgc+l
+9gEPhSqUMupHAXgs+x1V5WzxOVRh+h67uIYsxfFSWRrXlvUScefdZE2bMCcUgJxe
+DDm5/39okjToZafBcvvC2R5Ky7i2qM+KW+3I7dNO93rIdDIzk9GmoXeq8SKCSDei
+lLjHZD4OZWKWHh3j5tIUsIqPQvOd6Oqf8HbNDpj5aN8l+YHWH2Q5DalqL/BXLgdD
+WFYPuQi9Azrj3z9dMm7E68w8VHAc0yNhpieLpYPihIJDfEGTnxV3Omvb72ZgFG7R
+hoA5lXMMf2GN25yq3gYtWzNITEaTtnrpv+EuPkJ3gMSOROi7OH8=
+=g0x5
 -----END PGP SIGNATURE-----
 
---2pZGkO1M510CWEK5--
+--9nt/UnHYaVisIkOl--
