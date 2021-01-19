@@ -2,223 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B548C2FB40D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B832FB40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 09:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731361AbhASI0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 03:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731290AbhASIYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 03:24:54 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672F6C0613CF;
-        Tue, 19 Jan 2021 00:24:10 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id n8so12127620ljg.3;
-        Tue, 19 Jan 2021 00:24:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lzQ4WSBpq2hEo6V0PK/bKozargiQZ72MCs5Zs/PuMUA=;
-        b=OdNxzGO0wq9dEmorue2gc6pO6u+B5YkF+JpkTRxuOnkIlCd3O5+rWrcB2CgQnY23Da
-         3//2g2/2CiWpNCwJb4J22R8K3Ic2QrEXLck96wfi57ZAh9kUSxTyyshzSiH4Gp7rtazs
-         BZn09RytTMren18LIcFijQYa0RaqoGdy6U3jGSfolF0Fdqqz65UQ3gzUGHPVXrZtWMwZ
-         NyoEzHMHEEu8IEKauF2NgU+Um+F8VXkpyWGiIcRLO0Hlu93VJEVsQ4sXJ0E9KgaC/G92
-         lFs1WfWrQFG5bYLo0U66+iaRht+7FR1cc2TV3iyBDp4x2H/KRV+IJyxjFZLCybXEfmtW
-         ZVbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lzQ4WSBpq2hEo6V0PK/bKozargiQZ72MCs5Zs/PuMUA=;
-        b=qgIokDj/reOcsEHo2yjPGI7Tl1jdU85PWUNe+ysGIL3vF+Er0qrOzfE8ibZSj5Ao5R
-         H8nkAbk2RTGQe1TcM2cJaPsG9WDiYaM4LWVRqokQyDZhwjS66ep3qIVndYkkJnMnBifs
-         LcoU5B/So2eWZ++iYTrgsWEgzMoFnUggFb6iGJObuc98s69W0/EAjSapAeySt9X7FvhA
-         75JAVngXN1rJks4T5nadFcPo4WRYlVaNw9sN93Z8Oce1dn2lmMh4UX3vdj/qlAYJkLad
-         KoKlD0wklkpxpoF8jK40sb6LCfGr2Y6b7H07bmX3/ahkAFEFm+NtAkbsgtJMx/H/C/EI
-         KVew==
-X-Gm-Message-State: AOAM532IWhsdwieV29ZXlFOZlzlcAtkP28K2zCQVRMW6SMJl2x+Ab87K
-        7x4ISpJbY8kdQmeHn4TGX7p1zFzFPN7aIMyX+do=
-X-Google-Smtp-Source: ABdhPJw3SUHClF0Yr/xAP9QfMg0cROH78E5MpdK77ZL6G9aGQ8zQx2aWFdiCVVnBV6y6tt5vnSzns4SbPLZuoZv6wmY=
-X-Received: by 2002:a2e:9805:: with SMTP id a5mr1417257ljj.175.1611044648876;
- Tue, 19 Jan 2021 00:24:08 -0800 (PST)
+        id S1731490AbhASI3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 03:29:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730691AbhASI1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 03:27:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED87C2311C;
+        Tue, 19 Jan 2021 08:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611044819;
+        bh=+Q+XPSElQgpBDAKZynrp8adUrT0O6HKRNCJn++9NB2E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y3y+bNhPsgZySuRFBVeWqJZKvWn7F9xTrD/4sJXpl8dxZFSJUZ0ch67wuwoBBm3ue
+         uaJGFQLRyhPSxkTVB11yGqn86IIQbdEAnwJgIIaZsQsk0LqS1THH3trbHLCRiIqs8E
+         7Eu//fwIItYRjJOFE7hxzh0DAEOFjMPhL7FXa5uo=
+Date:   Tue, 19 Jan 2021 09:26:55 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     rjw@rjwysocki.net, AceLan Kao <acelan.kao@canonical.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ACPI / device_sysfs: Use OF_MODALIAS for "compatible"
+ modalias
+Message-ID: <YAaXz9Pg5x3DsCs3@kroah.com>
+References: <20210119081513.300938-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-References: <1610720001-15300-1-git-send-email-u0084500@gmail.com>
- <3a4a88a9-f0e3-2b65-9df4-6c1d4e3f1c14@roeck-us.net> <CADiBU38g_E+iH4jTwQfPvJh4=WRH4vzQ12oubGg47gj+CpTU0A@mail.gmail.com>
- <1611041874.12761.13.camel@mhfsdcap03>
-In-Reply-To: <1611041874.12761.13.camel@mhfsdcap03>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 19 Jan 2021 16:23:56 +0800
-Message-ID: <CADiBU39fAa30pK5uNCN=sBVZ2pC-ACFqCoY8vKr3+6e+n828tw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb typec: tcpci: mt6360: Add vsafe0v support and
- external vbus supply control
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        matthias.bgg@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, gene_chen@richtek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119081513.300938-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:38=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> On Mon, 2021-01-18 at 16:28 +0800, ChiYuan Huang wrote:
-> > Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2021=E5=B9=B41=E6=9C=8818=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > >
-> > > On 1/15/21 6:13 AM, cy_huang wrote:
-> > > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > > >
-> > > > MT6360 not support for TCPC command to control source and sink.
-> > >
-> > > does not
-> > >
-> > Ack
-> > > > Uses external 5V vbus regulator as the vbus source control.
-> > > >
-> > > Use
-> > >
-> > Ack
-> > > > Also adds the capability to report vsafe0v.
-> > > >
-> > > add
-> > >
-> > Ack
-> > > So far this driver works without regulator. Unless I am missing somet=
-hing,
-> > > this patch makes regulator support mandatory, meaning existing code w=
-ill fail.
-> > > I am not sure if that is appropriate/acceptable. Can we be sure that =
-this will
-> > > work for existing users of this driver ?
-> > >
-> > Yes, I already checked all the src/snk functionality based on  the
-> > latest typec code.
-> > It'll be common for our TCPC. It didn't support for TCPC command.
-> > From the recent patches, actually, I have the local change to test the
-> > src capability.
-> > But I didn't submit it. It's almost the same to add set_vbus callback.
-> > That's why I submit this change after tcpci 'set_vbus callback' is adde=
-d.
-> >
-> > > Thanks,
-> > > Guenter
-> > >
-> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > > ---
-> > > >  drivers/usb/typec/tcpm/tcpci_mt6360.c | 29 +++++++++++++++++++++++=
-++++++
-> > > >  1 file changed, 29 insertions(+)
-> > > >
-> > > > diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/ty=
-pec/tcpm/tcpci_mt6360.c
-> > > > index f1bd9e0..0edf4b6 100644
-> > > > --- a/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > > > +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
-> > > > @@ -11,6 +11,7 @@
-> > > >  #include <linux/of.h>
-> > > >  #include <linux/platform_device.h>
-> > > >  #include <linux/regmap.h>
-> > > > +#include <linux/regulator/consumer.h>
-> > > >  #include <linux/usb/tcpm.h>
-> > > >
-> > > >  #include "tcpci.h"
-> > > > @@ -36,6 +37,7 @@ struct mt6360_tcpc_info {
-> > > >       struct tcpci_data tdata;
-> > > >       struct tcpci *tcpci;
-> > > >       struct device *dev;
-> > > > +     struct regulator *vbus;
-> > > >       int irq;
-> > > >  };
-> > > >
-> > > > @@ -51,6 +53,27 @@ static inline int mt6360_tcpc_write16(struct reg=
-map *regmap,
-> > > >       return regmap_raw_write(regmap, reg, &val, sizeof(u16));
-> > > >  }
-> > > >
-> > > > +static int mt6360_tcpc_set_vbus(struct tcpci *tcpci, struct tcpci_=
-data *data, bool src, bool snk)
-> > > > +{
-> > > > +     struct mt6360_tcpc_info *mti =3D container_of(data, struct mt=
-6360_tcpc_info, tdata);
-> > > > +     int ret;
-> > > > +
-> > > > +     /* To correctly handle the already enabled vbus and disable i=
-ts supply first */
-> > > > +     if (regulator_is_enabled(mti->vbus)) {
-> > > > +             ret =3D regulator_disable(mti->vbus);
-> > > > +             if (ret)
-> > > > +                     return ret;
-> > > > +     }
-> > >
-> > > Is it really a good idea to disable vbus if it happens to be already =
-enabled
-> > > and there is (another ?) request to enable it ?
-> > >
-> > Yes, for  the state change from src_attach_wait to src_attach,
-> > It need to meet the requirement that  the vbus is at vsafe0v.
-> > So to disable it first is needed.
-> > And to prevent other users from enabling/disabling external vbus
-> > regulator in any case.
-> > I think we may change regulator_get  to 'regulator_get_exclusive'.
-> > From the design, 5v regulator only can be controlled via typec framewor=
-k.
-> > If other user touch it, it'll affect the typec state transition.
-> How about to process the case that even switch usb controller to device
-> mode, platform also need to keep vbus on? e.g. Iphone Carplay
->
->
-It must be processed by USBPD data role swap.
+On Tue, Jan 19, 2021 at 04:15:13PM +0800, Kai-Heng Feng wrote:
+> Commit 8765c5ba1949 ("ACPI / scan: Rework modalias creation when
+> "compatible" is present") may create two "MODALIAS=" in uevent file if
+> conditions are met.
+> 
+> This breaks systemd-udevd, which assumes each "key" in uevent file is
+> unique. The internal implementation of systemd-udevd overwrites the
+> first MODALIAS with the second one, so its kmod rule doesn't load driver
+> for the first MODALIAS.
+> 
+> Right now it doesn't seem to have any user relies on the second
+> MODALIAS, so change it to OF_MODALIAS to workaround the issue.
+> 
+> Reference: https://github.com/systemd/systemd/pull/18163
+> Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
+> Cc: AceLan Kao <acelan.kao@canonical.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/acpi/device_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index 96869f1538b9..c92b671cb816 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -260,7 +260,7 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+>  	if (!adev->data.of_compatible)
+>  		return 0;
+>  
+> -	if (len > 0 && add_uevent_var(env, "MODALIAS="))
+> +	if (len > 0 && add_uevent_var(env, "OF_MODALIAS="))
 
-Type C only decide the initial role (SNK: power snk and ufp; SRC:
-power src and DFP).
-Only USBPD can change the power/data/vconn role individually.
+Who will use OF_MODALIAS and where have you documented it?
 
-> > > > +
-> > > > +     if (src) {
-> > > > +             ret =3D regulator_enable(mti->vbus);
-> > > > +             if (ret)
-> > > > +                     return ret;
-> > > > +     }
-> > > > +
-> > > > +     return 0;
-> > > > +}
-> > > > +
-> > > >  static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data=
- *tdata)
-> > > >  {
-> > > >       struct regmap *regmap =3D tdata->regmap;
-> > > > @@ -138,7 +161,13 @@ static int mt6360_tcpc_probe(struct platform_d=
-evice *pdev)
-> > > >       if (mti->irq < 0)
-> > > >               return mti->irq;
-> > > >
-> > > > +     mti->vbus =3D devm_regulator_get(&pdev->dev, "vbus");
-> > > > +     if (IS_ERR(mti->vbus))
-> > > > +             return PTR_ERR(mti->vbus);
-> > > > +
-> > > >       mti->tdata.init =3D mt6360_tcpc_init;
-> > > > +     mti->tdata.set_vbus =3D mt6360_tcpc_set_vbus;
-> > > > +     mti->tdata.vbus_vsafe0v =3D 1;
-> > > >       mti->tcpci =3D tcpci_register_port(&pdev->dev, &mti->tdata);
-> > > >       if (IS_ERR(mti->tcpci)) {
-> > > >               dev_err(&pdev->dev, "Failed to register tcpci port\n"=
-);
-> > > >
-> > >
->
+thanks,
+
+greg k-h
