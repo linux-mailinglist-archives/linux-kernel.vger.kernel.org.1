@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713032FB7AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 425762FB7AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389109AbhASLWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 06:22:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405224AbhASLLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 06:11:55 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD1AC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:11:11 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id d22so10001240edy.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 03:11:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzzlZM79+je0IaX7qHpL9yVgFOtBxcnXULVGyLZiDbQ=;
-        b=BjBn3aSUCY5Lqy8Cqpp8fSn7FXd+k9Vfy4O6jRlJfNBNxExwSbKhm2hm7skaWWZ2Un
-         RPzSzpy+qtbT0acBlFVorZtRxBDmMGDP5dzt3wYnVzx0NYsymAB1nc/W+N2Kt9wL0jxW
-         ckXRc/ak0FPh/CA9Xv3+nflva9jZT+gOOGglaKaTA7QSsOWvrswV2YdmbgYMzYuKlpg6
-         65oLG1iDOqzOKVeMufg9gOl6q//FnvuIXSJPu6YssUXvAsXSDqTI1DKbRkBlnmxbdjvV
-         M8YimzUoWp8g33VgE+E1We35nyXQbt8HyoPBBwmN7beT+liSOCRNy0y3F928+FVklkEn
-         G6SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzzlZM79+je0IaX7qHpL9yVgFOtBxcnXULVGyLZiDbQ=;
-        b=QvAX99TcwQfSEkujtOv7jlQ8qhicsinrVtiMiDZ0chCohFwiD6NauMH8M9exIjAssH
-         6u/KdPAboriNCuItZ89EmXfhufF8c98h7Zjvu1gaKoW8VDs1WyveVKpQ/5g+363bYg1a
-         hyge9u25xFZtmEuRorc4CqhbL8rbtLu1S2MiYBM0V6DdLSeO49axDFrCKrhKJfU5Wcst
-         mBMHcumEF2gvLBwFYys8HaOj8pCKl8p4IK47Pm05mK/l6YfU9oClYE3z2BfWvGOzosN6
-         DfMiwRhf/Nv+oDrqBKPZ1vsEKTX/StbC216lvyaVYTpjY9VjKlHM1uUODcvrPo0+mnsL
-         ofSA==
-X-Gm-Message-State: AOAM530Ppc+VWAjNYsLI3DorJyCpPYYejCKYTrvlBxEI/KfUsO8da809
-        vbkc3tJ91LwuWolMtw9nLvalduHDx1s2dS1hdl3aQuHMtTY=
-X-Google-Smtp-Source: ABdhPJwNNMggKrYZPmut1W+3BQp7oi6AHtjMfb5EnDKaIVcqmSkOpdxjdqGNnqUVVFtkBUXTHF20acar1tFffkeZEc4=
-X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr3025956edc.186.1611054670036;
- Tue, 19 Jan 2021 03:11:10 -0800 (PST)
+        id S2389700AbhASLWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 06:22:43 -0500
+Received: from mga11.intel.com ([192.55.52.93]:49505 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405240AbhASLMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 06:12:23 -0500
+IronPort-SDR: 3uYPwzDIQ74XV46GpVMoSozFwrE3m5nPN72LzvC/gSgi+kodCpc0uq3Muln088cmEQ42CZybe3
+ 4FNP4YdF9O7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="175407051"
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="175407051"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 03:10:27 -0800
+IronPort-SDR: qyBoVzudwLBj/l7BjOhWTnh9a9OJS7YiHbyJra8Jlwne0DRqr15v4uwaFEzRmL8KEvFfXgwl9j
+ AzKWny92iNBw==
+X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
+   d="scan'208";a="569671485"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 03:10:21 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l1ouw-003RSK-QR; Tue, 19 Jan 2021 13:11:22 +0200
+Date:   Tue, 19 Jan 2021 13:11:22 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        andy@kernel.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
+        laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Message-ID: <20210119111122.GU4077@smile.fi.intel.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-7-djrscally@gmail.com>
+ <2d8d7072-3b6f-4ffa-29dc-51f31fe4af72@ideasonboard.com>
 MIME-Version: 1.0
-References: <20210119031813.16980-1-rdunlap@infradead.org>
-In-Reply-To: <20210119031813.16980-1-rdunlap@infradead.org>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 19 Jan 2021 12:10:59 +0100
-Message-ID: <CAMpxmJWNDLoLEYepj8AtssfYuttOPE9R6D=HF_Nf=Nb0mW_Cyw@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sifive: select IRQ_DOMAIN_HIERARCHY rather than
- depend on it
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Yash Shah <yash.shah@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d8d7072-3b6f-4ffa-29dc-51f31fe4af72@ideasonboard.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 4:18 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> This is the only driver in the kernel source tree that depends on
-> IRQ_DOMAIN_HIERARCHY instead of selecting it. Since it is not a
-> visible Kconfig symbol, depending on it (expecting a user to
-> set/enable it) doesn't make much sense, so change it to select
-> instead of "depends on".
->
-> Fixes: 96868dce644d ("gpio/sifive: Add GPIO driver for SiFive SoCs")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: Thierry Reding <treding@nvidia.com>
-> Cc: Greentime Hu <greentime.hu@sifive.com>
-> Cc: Yash Shah <yash.shah@sifive.com>
-> ---
->  drivers/gpio/Kconfig |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> --- linux-next-20210118.orig/drivers/gpio/Kconfig
-> +++ linux-next-20210118/drivers/gpio/Kconfig
-> @@ -521,7 +521,8 @@ config GPIO_SAMA5D2_PIOBU
->
->  config GPIO_SIFIVE
->         bool "SiFive GPIO support"
-> -       depends on OF_GPIO && IRQ_DOMAIN_HIERARCHY
-> +       depends on OF_GPIO
-> +       select IRQ_DOMAIN_HIERARCHY
->         select GPIO_GENERIC
->         select GPIOLIB_IRQCHIP
->         select REGMAP_MMIO
+On Tue, Jan 19, 2021 at 10:56:17AM +0000, Kieran Bingham wrote:
+> On 18/01/2021 00:34, Daniel Scally wrote:
 
-Applied, thanks!
+...
 
-Bart
+> > +config INTEL_SKL_INT3472
+> > +	tristate "Intel SkyLake ACPI INT3472 Driver"
+> > +	depends on X86 && ACPI
+> > +	select REGMAP_I2C
+> 
+> I've tried compiling this as a built in and a module and on my minimal
+> config I had failures on both for regulator_register and
+> regulator_unregister.
+> 
+> I suspect this needs to have either a selects or a depends upon
+> CONFIG_REGULATOR
+
+Valid point, although it seems no consensus on which is better to use. It seems
+to me that in this case we need to select it.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
