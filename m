@@ -2,346 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C6D2FBFF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE532FBFFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389575AbhASTXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:23:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:46568 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404563AbhASTSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:18:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EEB7D6E;
-        Tue, 19 Jan 2021 11:17:27 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 304873F719;
-        Tue, 19 Jan 2021 11:17:27 -0800 (PST)
-Date:   Tue, 19 Jan 2021 19:17:25 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Puhov <peter.puhov@linaro.org>, Jeremy.Linton@arm.com,
+        id S1729270AbhAST22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392147AbhAST0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:26:52 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898FFC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:26:12 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id w14so3852046pfi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:26:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=hfjS8PpIK8Sw4H2BcFdwSk9imrJFBiUObKqAE346rrk=;
+        b=jyZa03UY8jzWno2ByRrYjgjIuxfrx8l6GP0hi8fyQo1ibeyOebB//A/mTKgQk8fLOk
+         kV3jtIUFrA5uLcVGBtVIXP/+sM51GSwpXGMHSIXIQLkJ9xojm+qZNkDcYruKKsrO/8Fi
+         1ZXeflrRW7G3tUdtxoKWm0qaXcR0gPonGzp2DvuY/XlYsRflR2P19m1xaEwXAtWe6LJw
+         uAkCj5qCL7hdEl2V4MwSj1idaEwSL2s8fViYo18/Lqk7Z612cms7cyZhI8k7bLYoEzQz
+         VB3ResK/cl0l4jjet8E6r1hopiVM9BlmBuMjAABJJZBcwcaFJX4TzDvK4ddji7zbZwnL
+         tHDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=hfjS8PpIK8Sw4H2BcFdwSk9imrJFBiUObKqAE346rrk=;
+        b=DdhX6n732jnTvkESvF43LzI1+reUkula7kwHlA3l7TnOeYPPwYbHmxd+k5IMdU7J1K
+         rFn00JPcUsCzUiR3sO/3xvWaSuHEHbnEIuXAFFh/x7uMsPymPhAcfv3H1IVXSiTrCubs
+         n/crSxIBtGFhOz0Oo9wub6Tc/DG4Mj8hAusvszC61uLm8Be6s3YpEjBbhgZTnlI7lykJ
+         mByQntfihp5x9nlE5GNylY722PDMBg82at2+akoerhZ1CrT+zIqmzepLQ2TvOcT4+1Eq
+         FbmYuxAF4AlsXn4j3ZN6KSirUHxXVlbPvcN+PrgEDqzn81XzYq1Y2XXXsqdVUaB7kCHW
+         +Vwg==
+X-Gm-Message-State: AOAM532YBVQp/v0XxU7eZRNR3ObSPvZnG288GrqxfinllNZVVol9VHsB
+        POY8sMrRuTulmmKaCHXakqvOmQ==
+X-Google-Smtp-Source: ABdhPJzQwpiDV5HQytZYjQWGdyI9tq13ne04cT1sfU9a98D/zozIZ7EUoNl+9+wMtJrdPfxxmr1q6Q==
+X-Received: by 2002:a63:1b1e:: with SMTP id b30mr5791504pgb.421.1611084370066;
+        Tue, 19 Jan 2021 11:26:10 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id a9sm19569815pfn.178.2021.01.19.11.26.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 11:26:09 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:26:08 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        khalid.aziz@oracle.com, ngupta@nitingupta.dev,
+        vinmenon@codeaurora.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC V2 2/2] cpufreq: cppc: Add support for frequency invariance
-Message-ID: <20210119191550.GB19274@arm.com>
-References: <cover.1608030508.git.viresh.kumar@linaro.org>
- <069c40c173fc391116d13d60f4c1382c47e1a05a.1608030508.git.viresh.kumar@linaro.org>
+Subject: Re: [PATCH V3] mm/compaction: correct deferral logic for proactive
+ compaction
+In-Reply-To: <1610989938-31374-1-git-send-email-charante@codeaurora.org>
+Message-ID: <af22a056-5c27-256f-74d-63de8fd33084@google.com>
+References: <1610989938-31374-1-git-send-email-charante@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <069c40c173fc391116d13d60f4c1382c47e1a05a.1608030508.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 18 Jan 2021, Charan Teja Reddy wrote:
 
-Do you know of a current platform that would benefit from this, that we
-could run some tests on?
-
-I've Cc-ed Jeremy as well, as he might be interested in this.
-
-Also, please find some initial comments below:
-
-On Tuesday 15 Dec 2020 at 16:46:36 (+0530), Viresh Kumar wrote:
-> The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> correction factor that helps achieve more accurate load-tracking.
+> should_proactive_compact_node() returns true when sum of the
+> weighted fragmentation score of all the zones in the node is greater
+> than the wmark_high of compaction, which then triggers the proactive
+> compaction that operates on the individual zones of the node. But
+> proactive compaction runs on the zone only when its weighted
+> fragmentation score is greater than wmark_low(=wmark_high - 10).
 > 
-> Normally, this scaling factor can be obtained directly with the help of
-> the cpufreq drivers as they know the exact frequency the hardware is
-> running at. But that isn't the case for CPPC cpufreq driver.
+> This means that the sum of the weighted fragmentation scores of all the
+> zones can exceed the wmark_high but individual weighted fragmentation
+> zone scores can still be less than wmark_low which makes the unnecessary
+> trigger of the proactive compaction only to return doing nothing.
 > 
-> Another way of obtaining that is using the AMU counter support, which is
-> already present in kernel, but that hardware is optional for platforms.
+> Issue with the return of proactive compaction with out even trying is
+> its deferral. It is simply deferred for 1 << COMPACT_MAX_DEFER_SHIFT if
+> the scores across the proactive compaction is same, thinking that
+> compaction didn't make any progress but in reality it didn't even try.
+
+Isn't this an issue in deferred compaction as well?  It seems like 
+deferred compaction should check that work was actually performed before 
+deferring subsequent calls to compaction.
+
+In other words, I don't believe deferred compaction is intended to avoid 
+checks to determine if compaction is worth it; it should only defer 
+*additional* work that was not productive.
+
+Thoughts?
+
+> With the delay between successive retries for proactive compaction is
+> 500msec, it can result into the deferral for ~30sec with out even trying
+> the proactive compaction.
 > 
-> This patch thus obtains this scaling factor using the existing logic
-> present in the cppc driver. Note that the AMUs have higher priority than
-> CPPC counters if available, though the CPPC driver doesn't need to have
-> any special handling for that.
+> Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
+> 50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
+> sizes 5GB and 6GB respectively. After opening some apps on the android,
+> the weighted fragmentation scores of these zones are 47 and 49
+> respectively. Since the sum of these fragmentation scores are above the
+> wmark_high which triggers the proactive compaction and there since the
+> individual zones weighted fragmentation scores are below wmark_low, it
+> returns without trying the proactive compaction. As a result the
+> weighted fragmentation scores of the zones are still 47 and 49 which
+> makes the existing logic to defer the compaction thinking that
+> noprogress is made across the compaction.
 > 
-
-Probably best to replace "AMU counters" with "architectural counters" as
-the use of cppc_cpufreq is not limited to arm64.
-
-> This also exports sched_setattr_nocheck() as the CPPC driver can be
-> built as a module.
+> Fix this by checking just zone fragmentation score, not the weighted, in
+> __compact_finished() and use the zones weighted fragmentation score in
+> fragmentation_score_node(). In the test case above, If the weighted
+> average of is above wmark_high, then individual score (not adjusted) of
+> atleast one zone has to be above wmark_high. Thus it avoids the
+> unnecessary trigger and deferrals of the proactive compaction.
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/cpufreq/cppc_cpufreq.c | 140 ++++++++++++++++++++++++++++++++-
->  include/linux/arch_topology.h  |   1 +
->  kernel/sched/core.c            |   1 +
->  3 files changed, 140 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 7cc9bd8568de..a739e20aefd6 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -10,14 +10,18 @@
->  
->  #define pr_fmt(fmt)	"CPPC Cpufreq:"	fmt
->  
-> +#include <linux/arch_topology.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/delay.h>
->  #include <linux/cpu.h>
->  #include <linux/cpufreq.h>
->  #include <linux/dmi.h>
-> +#include <linux/irq_work.h>
-> +#include <linux/kthread.h>
->  #include <linux/time.h>
->  #include <linux/vmalloc.h>
-> +#include <uapi/linux/sched/types.h>
->  
->  #include <asm/unaligned.h>
->  
-> @@ -39,6 +43,15 @@
->  static struct cppc_cpudata **all_cpu_data;
->  static bool boost_supported;
->  
-> +struct cppc_freq_invariance {
-> +	struct kthread_worker *worker;
-> +	struct irq_work irq_work;
-> +	struct kthread_work work;
-> +	struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
-> +	unsigned int max_freq;
-> +};
-> +static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_f_i);
-> +
->  struct cppc_workaround_oem_info {
->  	char oem_id[ACPI_OEM_ID_SIZE + 1];
->  	char oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
-> @@ -243,7 +256,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
->  	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->  	unsigned int cpu = policy->cpu;
-> -	int ret = 0;
-> +	int ret = 0, i;
->  
->  	cpu_data->cpu = cpu;
->  	ret = cppc_get_perf_caps(cpu, caps);
-> @@ -300,6 +313,9 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  
->  	cpu_data->cur_policy = policy;
->  
-> +	for_each_cpu(i, policy->cpus)
-> +		per_cpu(cppc_f_i, i).max_freq = policy->cpuinfo.max_freq;
-> +
+> Fix-suggested-by: Vlastimil Babka <vbabka@suse.cz>
 
-Is policy->cpuinfo populated at this point?
+Suggested-by
 
->  	/*
->  	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
->  	 * is supported.
-> @@ -374,7 +390,7 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
->  {
->  	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
->  	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
-> -	int ret;
-> +	int ret, i;
->  
->  	if (!boost_supported) {
->  		pr_err("BOOST not supported by CPU or firmware\n");
-> @@ -389,6 +405,9 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
->  						       caps->nominal_perf);
->  	policy->cpuinfo.max_freq = policy->max;
->  
-> +	for_each_cpu(i, policy->related_cpus)
-> +		per_cpu(cppc_f_i, i).max_freq = policy->cpuinfo.max_freq;
-> +
->  	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
->  	if (ret < 0)
->  		return ret;
-> @@ -449,6 +468,120 @@ static void cppc_check_hisi_workaround(void)
->  	acpi_put_table(tbl);
->  }
->  
-> +static void cppc_scale_freq_tick_workfn(struct kthread_work *work)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-> +	int cpu = raw_smp_processor_id();
-> +	struct cppc_cpudata *cpudata = all_cpu_data[cpu];
-> +	u64 rate;
-> +
-> +	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
-> +
-> +	if (cppc_get_perf_ctrs(cpu, &fb_ctrs)) {
-> +		pr_info("%s: cppc_get_perf_ctrs() failed\n", __func__);
-> +		return;
-> +	}
-> +
-> +	rate = cppc_get_rate_from_fbctrs(cpudata, cppc_fi->prev_perf_fb_ctrs, fb_ctrs);
-> +	cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-> +
-> +	rate <<= SCHED_CAPACITY_SHIFT;
-> +	per_cpu(freq_scale, cpu) = div64_u64(rate, cppc_fi->max_freq);
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 
-It will save you some computation by skipping the intermediary frequency
-scale transition. For this computation you're obtaining current
-performance from counters, on the CPPC abstract performance scale,
-then you're converting it to a current frequency, which then gets
-translated again to a scale factor on the [0,1024] scale.
-
-You probably want to keep the sanitation done in
-cppc_get_rate_from_fbctrs() on the counter values, but you could skip
-the call to cppc_cpufreq_perf_to_khz(), and use obtained performance
-together with caps->highest_perf, or caps->nominal_perf instead of
-cppc_fi->max_freq, in this function.
-
-Also, to optimise it further, you can compute a reference scale (from
-reference performance and highest/nominal performance as done in
-freq_inv_set_max_ratio() - arch/arm64/kernel/topology.c, and use that
-instead in further freq scale computations.
-
-I've resurrected my Juno setup and I'll do further review and testing
-tomorrow.
-
-Hope it helps,
-Ionela.
-
-> +}
-> +
-> +static void cppc_irq_work(struct irq_work *irq_work)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +
-> +	cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
-> +	kthread_queue_work(cppc_fi->worker, &cppc_fi->work);
-> +}
-> +
-> +static void cppc_scale_freq_tick(void)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_f_i, raw_smp_processor_id());
-> +
-> +	/*
-> +	 * cppc_get_perf_ctrs() can potentially sleep, call that from the right
-> +	 * context.
-> +	 */
-> +	irq_work_queue(&cppc_fi->irq_work);
-> +}
-> +
-> +static struct scale_freq_tick_data cppc_sftd = {
-> +	.source = SCALE_FREQ_SOURCE_CPPC,
-> +	.scale_freq = cppc_scale_freq_tick,
-> +};
-> +
-> +static void cppc_freq_invariance_exit(void)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	int i;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	topology_clear_scale_freq_tick(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
-> +
-> +	for_each_possible_cpu(i) {
-> +		cppc_fi = &per_cpu(cppc_f_i, i);
-> +		if (cppc_fi->worker) {
-> +			irq_work_sync(&cppc_fi->irq_work);
-> +			kthread_destroy_worker(cppc_fi->worker);
-> +			cppc_fi->worker = NULL;
-> +		}
-> +	}
-> +}
-> +
-> +static void __init cppc_freq_invariance_init(void)
-> +{
-> +	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	struct sched_attr attr = {
-> +		.size		= sizeof(struct sched_attr),
-> +		.sched_policy	= SCHED_DEADLINE,
-> +		.sched_nice	= 0,
-> +		.sched_priority	= 0,
-> +		/*
-> +		 * Fake (unused) bandwidth; workaround to "fix"
-> +		 * priority inheritance.
-> +		 */
-> +		.sched_runtime	= 1000000,
-> +		.sched_deadline = 10000000,
-> +		.sched_period	= 10000000,
-> +	};
-> +	struct kthread_worker *worker;
-> +	int i, ret;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	for_each_possible_cpu(i) {
-> +		cppc_fi = &per_cpu(cppc_f_i, i);
-> +
-> +		kthread_init_work(&cppc_fi->work, cppc_scale_freq_tick_workfn);
-> +		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-> +		worker = kthread_create_worker_on_cpu(i, 0, "cppc:%d", i);
-> +		if (IS_ERR(worker))
-> +			return cppc_freq_invariance_exit();
-> +
-> +		cppc_fi->worker = worker;
-> +		ret = sched_setattr_nocheck(worker->task, &attr);
-> +		if (ret) {
-> +			pr_warn("%s: failed to set SCHED_DEADLINE\n", __func__);
-> +			return cppc_freq_invariance_exit();
-> +		}
-> +
-> +		ret = cppc_get_perf_ctrs(i, &fb_ctrs);
-> +		if (!ret)
-> +			per_cpu(cppc_fi->prev_perf_fb_ctrs, i) = fb_ctrs;
-> +	}
-> +
-> +	/* Register for freq-invariance */
-> +	topology_set_scale_freq_tick(&cppc_sftd, cpu_present_mask);
-> +}
-> +
->  static int __init cppc_cpufreq_init(void)
->  {
->  	struct cppc_cpudata *cpu_data;
-> @@ -484,6 +617,8 @@ static int __init cppc_cpufreq_init(void)
->  	if (ret)
->  		goto out;
->  
-> +	cppc_freq_invariance_init();
-> +
->  	return ret;
->  
->  out:
-> @@ -504,6 +639,7 @@ static void __exit cppc_cpufreq_exit(void)
->  	struct cppc_cpudata *cpu_data;
->  	int i;
->  
-> +	cppc_freq_invariance_exit();
->  	cpufreq_unregister_driver(&cppc_cpufreq_driver);
->  
->  	for_each_possible_cpu(i) {
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index b2422ebef2dd..09205b584ca5 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -36,6 +36,7 @@ bool topology_scale_freq_invariant(void);
->  
->  enum scale_freq_tick_source {
->  	SCALE_FREQ_SOURCE_AMU,
-> +	SCALE_FREQ_SOURCE_CPPC,
->  };
->  
->  struct scale_freq_tick_data {
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 51514eef0a9d..76b2fa1a7aaa 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6075,6 +6075,7 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
->  {
->  	return __sched_setscheduler(p, attr, false, true);
->  }
-> +EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
->  
->  /**
->   * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
+Acked-by: David Rientjes <rientjes@google.com>
