@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B102B2FB36F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13C32FB385
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 08:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbhASHq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 02:46:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727511AbhASHod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 02:44:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E49CA2312D;
-        Tue, 19 Jan 2021 07:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611042232;
-        bh=LwmCI6DkrJei1b8r1Zp6vrx7jK2blz6c0T5Ie2QRjYU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X8mdbWIH6Mm9kZKrfjaf5AYt1NelNyK/1tKwW5rJxD0gHKOqtlseU80MBHK+P+VvW
-         42HS0bz6vYgt5fgAWtuORqmeFSnEYrTk35s6SOX7dDyTeSLMuiMSKWTgskB4zIp5cN
-         XyqtA5fIqPXAQb+139dn+hxqU8ko6wufC3qlxR0yc5nEd1tdeWsFkSCjDBBPZ+tg/W
-         dFwCPLosNR4YbenWnjbXaw2fidiuEdIDTFz8GsEMzdGgjv69wXZgsD46baPCWwQtuG
-         8tX6Q6QmiAKw2tVV8lW6fGd2wUoHOfM9Rn1MvDmqobz8eRoZvUZPJFYhkjDPT99Cnx
-         A4ccrXEod5OnA==
-Date:   Tue, 19 Jan 2021 08:43:49 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 11/16] scripts: kernel-doc: validate kernel-doc
- markup with the actual names
-Message-ID: <20210119084328.749e415f@coco.lan>
-In-Reply-To: <20210118133545.05af2277@lwn.net>
-References: <cover.1610610937.git.mchehab+huawei@kernel.org>
-        <081546f141a496d6cabb99a4adc140444c705e93.1610610937.git.mchehab+huawei@kernel.org>
-        <20210118133545.05af2277@lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731192AbhASHxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 02:53:21 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:37436 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731279AbhASHwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 02:52:05 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowABXOfpmjwZgCqXTAA--.55622S2;
+        Tue, 19 Jan 2021 15:51:03 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] octeontx2-af: Remove unneeded semicolon
+Date:   Tue, 19 Jan 2021 07:50:59 +0000
+Message-Id: <20210119075059.17493-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowABXOfpmjwZgCqXTAA--.55622S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruryUAFWxurWrCFyftF13Arb_yoW3KrgEkr
+        srXF43AayDWryqyw4UtrZFv34I93WkWF4vyF47trWYyFZrJF409397CF4IqF48Wr1FqF9r
+        ArnrCF1xZwsIyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4UJVWxJr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2S_MUUUUU
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQcFA102Z4IiQgABsn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 18 Jan 2021 13:35:45 -0700
-Jonathan Corbet <corbet@lwn.net> escreveu:
+fix semicolon.cocci warnings:
+./drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c:272:2-3: Unneeded semicolon
 
-> On Thu, 14 Jan 2021 09:04:47 +0100
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > Kernel-doc currently expects that the kernel-doc markup to come
-> > just before the function/enum/struct/union/typedef prototype.
-> > 
-> > Yet, if it find things like:
-> > 
-> > 	/**
-> > 	 * refcount_add - add a value to a refcount
-> > 	 * @i: the value to add to the refcount
-> > 	 * @r: the refcount
-> > 	 */
-> > 	static inline void __refcount_add(int i, refcount_t *r, int *oldp);
-> > 	static inline void refcount_add(int i, refcount_t *r);
-> > 
-> > Kernel-doc will do the wrong thing:
-> > 
-> > 	foobar.h:6: warning: Function parameter or member 'oldp' not described in '__refcount_add'
-> > 	.. c:function:: void __refcount_add (int i, refcount_t *r, int *oldp)
-> > 
-> > 	   add a value to a refcount
-> > 
-> > 	**Parameters**
-> > 
-> > 	``int i``
-> > 	  the value to add to the refcount
-> > 
-> > 	``refcount_t *r``
-> > 	  the refcount
-> > 
-> > 	``int *oldp``
-> > 	  *undescribed*
-> > 
-> > Basically, it will document "__refcount_add" with the kernel-doc
-> > markup for refcount_add.
-> > 
-> > If both functions have the same arguments, this won't even
-> > produce any warning!
-> > 
-> > Add a logic to check if the kernel-doc identifier matches the actual
-> > name of the C function or data structure that will be documented.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> 
-> I've applied this one; 
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 14832b66d1fe..f72c79540b24 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -269,7 +269,7 @@ static void npc_scan_parse_result(struct npc_mcam *mcam, u8 bit_number,
+ 		break;
+ 	default:
+ 		return;
+-	};
++	}
+ 	npc_set_kw_masks(mcam, type, nr_bits, kwi, offset, intf);
+ }
+ 
+-- 
+2.17.1
 
-> it seems useful to have even if it creates more
-> warnings that Stephen will duly email me about tomorrow...:)  I have parts
-> 1-10 set aside and will apply any that don't get picked up directly by the
-> maintainers involved.
-
-Yeah, new warnings are unavoidable, as new patches may be introducing
-extra issues. Hopefully, the new warning will help people to detect
-the issue earlier before submitting upstream.
-
-
-Thanks,
-Mauro
