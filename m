@@ -2,175 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C502FAFC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3608F2FAFB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 05:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389373AbhASEwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Jan 2021 23:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387804AbhASEmd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Jan 2021 23:42:33 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2C4C061384
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 20:39:45 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 22so20792942qkf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Jan 2021 20:39:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=GrD5c9rl+nII4dP015r3zSdw7qVCON9D7TFIA6KRom8=;
-        b=bFnhOEN6Qv2S/HqctXkiMhHJAVkoPKQS8sMyCEJOO0o3KfR8IjIjYLkN83MQ/Nvvt9
-         OpB6h9A6EB6v9xtqZXbEachoM82WqY3pZcrSAWEPAUzFJBaV51jCmA0+kM1AkfI63QEp
-         /VC9wUe6Epd+99hD3btoHOUJ+M5r/Jyqn7dKw9dbu8J026YxMIn3TMIjH7A/dtbQFAKa
-         ZFWMODdfzRuMjZMRaWIT/TLXUGpJvv6Ud3SPVRCuj5ShWVfpnbKqugHOvKsGZ3fVkTDJ
-         mh3FGaj4jqVjV0L95goZ8j7ea/wRSJ2mhgh0rCagBleHX4d1fT/8fL26PSvCYO9uAkBX
-         YQRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GrD5c9rl+nII4dP015r3zSdw7qVCON9D7TFIA6KRom8=;
-        b=oKB4VM96bWWUcFSMcvyepZkH/QdZckVR81cE03FDpLCkfXrQfL8hFtDWbGBjPOQn/N
-         TFGc27tKRQz4CwSHQZLjMWH832QYtzEpcIGNH/7UZrSCqTXQhvYciyROYPvIRP1P/bcn
-         CMzsY9Qk7Z7/QXS8nUvO9s1K90NGMuJ+VKctNzDp5iEGH22RI+i7aAB+QK1vCvBrnkTs
-         wCLEW0AxFC3iW26mycv4Nd3/K87lCjAiECwHzKxmpvi6INSf4703zobHXo+VwNGywYwc
-         /MBtYWVoStAKbGJNaTtDTFth7DLT8ypuSDBkPOkR989xRAXPxQyjRjpI/nvn4Tt6Dpw/
-         y+tg==
-X-Gm-Message-State: AOAM533mtbo0JAhDCf49lpAEd7jD+VEMuTFt/dz2KMonZnwcx44EbIz8
-        jXER2DHgT0SKAcDnj4bWLm7Cbw==
-X-Google-Smtp-Source: ABdhPJzIJnuNSk1VeOUOLD2b3+EgzyuqPhHZjyj95Mv5V3QwSOIYNgtx5B7jN8TQadRhwc3DX6/ONw==
-X-Received: by 2002:a05:620a:46:: with SMTP id t6mr2751756qkt.108.1611031184638;
-        Mon, 18 Jan 2021 20:39:44 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id z20sm11934536qkz.37.2021.01.18.20.39.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 20:39:44 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 14/14] selftests/vm: test faulting in kernel, and verify pinnable pages
-Date:   Mon, 18 Jan 2021 23:39:20 -0500
-Message-Id: <20210119043920.155044-15-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119043920.155044-1-pasha.tatashin@soleen.com>
-References: <20210119043920.155044-1-pasha.tatashin@soleen.com>
+        id S2387962AbhASEpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Jan 2021 23:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731373AbhASEkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Jan 2021 23:40:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B45AF20848;
+        Tue, 19 Jan 2021 04:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611031196;
+        bh=Tongjwl+FwLZedxmbC6m+/81gorkgsi3qjXCL0mucog=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YKCjtjU8PKy1SgH2kMiBA6gEjdS2RrBLtch69Is5MMVwXkity1+Y66zGZv3uDSyIT
+         PKGOijhWUVExEpoiXz8aymDf8tSsJKsaxJ4YrPQL8dq98ddRRAKJ/H3i+exmSPJC9S
+         1ul1ab+UFceM+gjWJ1/hNC2XmkABumq7OBqX0pXPqFLLLaWujXsgpPB/K/PqHKtu5z
+         Rc02Xt+najHajx8atE/5iY8vxoqFvC+OplzQcbhInjb05/29mZZ6mP4YA8gZls5Rg7
+         WTLY3P+7uGB20ib3iMeocfTgmj8fsbS8b/uBEv3V3VAxIg9C1aRDBDu6EjGR54WuA+
+         1ctAqVH/UTl9g==
+Date:   Mon, 18 Jan 2021 20:39:54 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     wangyingjie55@126.com
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nikolay Aleksandrov <nikolay@nvidia.com>
+Subject: Re: [PATCH v1] ipv4: add iPv4_is_multicast() check in
+ ip_mc_leave_group().
+Message-ID: <20210118203954.15553706@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1610890456-42846-1-git-send-email-wangyingjie55@126.com>
+References: <1610890456-42846-1-git-send-email-wangyingjie55@126.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages are pinned they can be faulted in userland and migrated, and
-they can be faulted right in kernel without migration.
+On Sun, 17 Jan 2021 05:34:16 -0800 wangyingjie55@126.com wrote:
+> From: Yingjie Wang <wangyingjie55@126.com>
+> 
+> There is no iPv4_is_multicast() check added to ip_mc_leave_group()
+> to check if imr->imr_multiaddr.s_addr is a multicast address.
+> If not a multicast address, it may result in an error.
 
-In either case, the pinned pages must end-up being pinnable (not movable).
+Could you please say more? From looking at the code it seems like
+no address should match if group is non-mcast, and -EADDRNOTAVAIL 
+will be returned.
 
-Add a new test to gup_test, to help verify that the gup/pup
-(get_user_pages() / pin_user_pages()) behavior with respect to pinnable
-and movable pages is reasonable and correct. Specifically, provide a way
-to:
+Adding Nik to CC.
 
-1) Verify that only "pinnable" pages are pinned. This is checked
-automatically for you.
-
-2) Verify that gup/pup performance is reasonable. This requires
-comparing benchmarks between doing gup/pup on pages that have been
-pre-faulted in from user space, vs. doing gup/pup on pages that are not
-faulted in until gup/pup time (via FOLL_TOUCH). This decision is
-controlled with the new -z command line option.
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- mm/gup_test.c                         |  6 ++++++
- tools/testing/selftests/vm/gup_test.c | 23 +++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index a6ed1c877679..d974dec19e1c 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
- 
- 				dump_page(page, "gup_test failure");
- 				break;
-+			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
-+				WARN(!is_pinnable_page(page),
-+				     "pages[%lu] is NOT pinnable but pinned\n",
-+				     i)) {
-+				dump_page(page, "gup_test failure");
-+				break;
- 			}
- 		}
- 		break;
-diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
-index 943cc2608dc2..1e662d59c502 100644
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@ -13,6 +13,7 @@
- 
- /* Just the flags we need, copied from mm.h: */
- #define FOLL_WRITE	0x01	/* check pte is writable */
-+#define FOLL_TOUCH	0x02	/* mark page accessed */
- 
- static char *cmd_to_str(unsigned long cmd)
- {
-@@ -39,11 +40,11 @@ int main(int argc, char **argv)
- 	unsigned long size = 128 * MB;
- 	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
- 	unsigned long cmd = GUP_FAST_BENCHMARK;
--	int flags = MAP_PRIVATE;
-+	int flags = MAP_PRIVATE, touch = 0;
- 	char *file = "/dev/zero";
- 	char *p;
- 
--	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
-+	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			cmd = PIN_FAST_BENCHMARK;
-@@ -110,6 +111,10 @@ int main(int argc, char **argv)
- 		case 'H':
- 			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
- 			break;
-+		case 'z':
-+			/* fault pages in gup, do not fault in userland */
-+			touch = 1;
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -167,8 +172,18 @@ int main(int argc, char **argv)
- 	else if (thp == 0)
- 		madvise(p, size, MADV_NOHUGEPAGE);
- 
--	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
--		p[0] = 0;
-+	/*
-+	 * FOLL_TOUCH, in gup_test, is used as an either/or case: either
-+	 * fault pages in from the kernel via FOLL_TOUCH, or fault them
-+	 * in here, from user space. This allows comparison of performance
-+	 * between those two cases.
-+	 */
-+	if (touch) {
-+		gup.gup_flags |= FOLL_TOUCH;
-+	} else {
-+		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
-+			p[0] = 0;
-+	}
- 
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
--- 
-2.25.1
+> In some cases, the callers of ip_mc_leave_group() don't check
+> whether it is multicast address or not before calling
+> such as do_ip_setsockopt(). So I suggest adding the ipv4_is_multicast()
+> check to the ip_mc_leave_group() to prevent this from happening.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+> ---
+>  net/ipv4/igmp.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+> index 7b272bbed2b4..1b6f91271cfd 100644
+> --- a/net/ipv4/igmp.c
+> +++ b/net/ipv4/igmp.c
+> @@ -2248,6 +2248,9 @@ int ip_mc_leave_group(struct sock *sk, struct ip_mreqn *imr)
+>  	u32 ifindex;
+>  	int ret = -EADDRNOTAVAIL;
+>  
+> +	if (!ipv4_is_multicast(group))
+> +		return -EINVAL;
+> +
+>  	ASSERT_RTNL();
+>  
+>  	in_dev = ip_mc_find_dev(net, imr);
 
