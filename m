@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A002FB704
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE62B2FB707
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 15:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388929AbhASJuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 04:50:10 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:54008 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387543AbhASJc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:32:57 -0500
-Received: from zn.tnic (p200300ec2f0bca00060d4a1f80a80a6a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:60d:4a1f:80a8:a6a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4540A1EC059F;
-        Tue, 19 Jan 2021 10:32:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611048725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=C4TkBqWq+vmw2+Loapcennvk02Pn9BQkzA2VOF0MEKQ=;
-        b=sdcQagCDDbS4it4pL1Ib0a7pFn0CoPoQ/cNA772sxWYSWQ5ZR8rQevIbExxTfPhipNZvUn
-        xvUNdg4hVMasvItADKQbCmYRXbRhRys5XOjLqlQOqhOsmIb/RWPTqh7iYSc4sDjviQZZMH
-        A08hnAL8E9T3L0PtZE6f7VUcW+b5PuI=
-Date:   Tue, 19 Jan 2021 10:32:00 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     menglong8.dong@gmail.com
-Cc:     rric@kernel.org, khuong@os.amperecomputing.com, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH v2] edac: remove redundant error print in xgene_edac_probe
-Message-ID: <20210119093200.GB27433@zn.tnic>
-References: <20210112103540.7818-1-dong.menglong@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210112103540.7818-1-dong.menglong@zte.com.cn>
+        id S2389011AbhASJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 04:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387584AbhASJec (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:34:32 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E881C061575;
+        Tue, 19 Jan 2021 01:33:48 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id 6so27538006ejz.5;
+        Tue, 19 Jan 2021 01:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IABaVdUYHRPsPlVF0/vawd3QW8nnC9cA4OeVAWdYtLE=;
+        b=PIy+DGZ2JkAycV25VNA6uFUpYlhxHe++FXERzwkz3I+7Rw0aeWELb5mNYl5Lw66Vor
+         VTmj3l2tCPjYAV7Z4i+HNEzlGh2JRqPAuf3JCNt4OB4YZK4TY/1vooAIEKM3WhvPERjQ
+         s1fcvywcuWUc3hcWH0ldLODeL1m5jgHF6e3pfwI4uOgw62ahLVT0vAadNcE61l/zgmmO
+         bvpbFhR/HflzuGDcVuyQ5mD6dB9VTE/KcW2geM/76dTH5Nxv08T9V66LYZ7AiHqBOVpc
+         ezDnqI/9t5+MfUHuhoAt0R39xtV97SHtfKf6UYLwhHv3YCuPuB2SSPOrROby9KdjWkj9
+         zxEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IABaVdUYHRPsPlVF0/vawd3QW8nnC9cA4OeVAWdYtLE=;
+        b=B5K9/YkXluzqa6GdfMaAk8vA4yOr9xcA6bKyaV2sJQoCd9PKgiyQcLnvxd9CUsEbfZ
+         n3vspM2aXmi4kNZRXgY+ZhTZaXQlRl8ThwJb18NgxQBzVhIJ9hlSiqM8CYG6ngxc1rPy
+         Vfm7diUHgn2TaDlTwqkHZSFK9Bu5zvCwEY0uAOWBca79Q8p6rRW6Mu6vODTHef9RRJiO
+         Ewdq/uhLh0zXW/OPzV/IQjokeVhdMiuLA+sC/DmZDcr8xMzcqI4sMmWsJdOGkPHM069D
+         ZmnMIvAFosxbknUXQbXuafDoi1Q/YjTKu3s0Kkdv7WYwXNGAQg/nqdHI2YxGxL5Xyq/f
+         zbTg==
+X-Gm-Message-State: AOAM532yrfPnP+HZ322yPYmLbEWfbqsk2dxS2mBaNhSV5lP4IB9+YivE
+        A77/Kt2SR6oKaRUYFSX9A7M=
+X-Google-Smtp-Source: ABdhPJyJ7thX7Z5Wg+GZ9AKvvlsD/6vaTO3z5yqKEHZ3ivZiMhirZcZbNXWhMvxwSczqRn37XMzKHg==
+X-Received: by 2002:a17:906:2f83:: with SMTP id w3mr2543434eji.292.1611048826844;
+        Tue, 19 Jan 2021 01:33:46 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
+        by smtp.googlemail.com with ESMTPSA id pj11sm7657845ejb.58.2021.01.19.01.33.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Jan 2021 01:33:46 -0800 (PST)
+Message-ID: <fabf0e83387f6155efea521a15b00bb1225d35a4.camel@gmail.com>
+Subject: Re: [PATCH v6 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 19 Jan 2021 10:33:45 +0100
+In-Reply-To: <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
+References: <20210118201039.2398-1-huobean@gmail.com>
+         <20210118201039.2398-2-huobean@gmail.com>
+         <0a9971aa-e508-2aaa-1379-fb898471a252@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:35:40AM -0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, 2021-01-19 at 09:01 +0200, Adrian Hunter wrote:
+> On 18/01/21 10:10 pm, Bean Huo wrote:
+> > From: Bean Huo <beanhuo@micron.com>
+> > 
+> > Currently UFS WriteBooster driver uses clock scaling up/down to set
+> > WB on/off, for the platform which doesn't support
+> > UFSHCD_CAP_CLK_SCALING,
+> > WB will be always on. Provide a sysfs attribute to enable/disable
+> > WB
+> > during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable
+> > UFS WB.
 > 
-> Coccinelle reports a redundant error print in xgene_edac_probe.
-> As 'platform_get_irq' already prints the error message, error
-> print here is redundant.
-> 
-> Fix it by using 'platform_get_irq_optional' in place of
-> 'platform_get_irq', as Robert suggested.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> ---
-> v2:
-> - use 'platform_get_irq_optional' instead of 'platform_get_irq'
-> ---
->  drivers/edac/xgene_edac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
-> index 1d2c27a00a4a..2ccd1db5e98f 100644
-> --- a/drivers/edac/xgene_edac.c
-> +++ b/drivers/edac/xgene_edac.c
-> @@ -1916,7 +1916,7 @@ static int xgene_edac_probe(struct platform_device *pdev)
->  		int i;
->  
->  		for (i = 0; i < 3; i++) {
-> -			irq = platform_get_irq(pdev, i);
-> +			irq = platform_get_irq_optional(pdev, i);
->  			if (irq < 0) {
->  				dev_err(&pdev->dev, "No IRQ resource\n");
->  				rc = -EINVAL;
-> -- 
+> Is it so, that after a full reset, WB is always enabled again?  Is
+> that
+> intended?
 
-Applied, thanks.
+Hello Adrian
+Good questions. yes, after a full reset, the UFS device side by default
+is wb disabled,  then WB will be always enabled agaion in
+ufshcd_wb_config(hba). but, for the platform which
+supports UFSHCD_CAP_CLK_SCALING, wb will be disabled again while clk
+scaling down and enabled while clk scaling up.
 
--- 
-Regards/Gruss,
-    Boris.
+Regarding the last question, I think OEM wants to do that. maybe they
+suppose there will be a lot of writing after reset?? From the UFS
+device's point of view, the control of WB is up to the user.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Bean
+
+
+
+
+
+
