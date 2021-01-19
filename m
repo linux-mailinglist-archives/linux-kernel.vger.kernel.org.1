@@ -2,154 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D9D2FBBE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E1E2FBBEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 17:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391582AbhASQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 11:04:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391937AbhASQBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 11:01:43 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF2BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:37 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u11so6461599plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 08:00:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cjhn+ON+hkziQZDm4FU1RytdB4SSkjTn8+uofKtncf4=;
-        b=d37eDwdiYcgU786B2/oaZHUv37IdCecqnYg5R1vsCoQXglwTHd6hvsG8k4V4VTmhcI
-         7eH4JakNM29vrQ5BTQznO5HiZId7FzqVQfIDWL4w3qL6DbXiZZx2y8Sdtjyta8s9qdm7
-         58paqu2uAH9OqJriHMFZf95FoRcXWnPa3Ph/Criww5sb744sR5UDVUWIuyHPYuAWnbQJ
-         Ab1VaspMUK7s5AWhZZn+bUqNMdtLogYc/KzmJjTPybx8zbPRe+C0Oen2HgpqugmcynNx
-         hLrFIDKWdEgryGNYcJVa4wklOvfNPST3pgCq28zYKBmIK/nnpo5tMBoR8XVRYfIg0p5A
-         gZpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cjhn+ON+hkziQZDm4FU1RytdB4SSkjTn8+uofKtncf4=;
-        b=RM+RxNvJp+S5s9PgboJqDCQoOjUkN+HgLf87cB/2OY24hbdRLgGqT1MqxqzI8kTmIc
-         t5DcfbnKcmWZeIME1lV0R0sp6t8xgKZsa60m3ojo7UwBIUt2Q2QJlIVlhqZ+9fUi/wdW
-         7ioH21eu37s1Zx1yA+Qx2SdgKfklBaNgPMxubaPlP1amB1SSeiTgOYmj13JUDaLkJnIQ
-         HaW1Pke6dPPT6hIclV8aDlhvk2e6GDcRlcXifus1N6IodzJT8Qav8FvEFOXeNMrB6Wlj
-         y9f42nuk1Ll41pjX/pM59S+C3YRGcU3gff3XlBookYVXNCxXqPCuAPvQG5XcRJIR3pqR
-         EaMQ==
-X-Gm-Message-State: AOAM530jMiMRU3nzErC1+5kSwcbtx1Ch1tZ1/99jqfWm8WROGh1hJ9gm
-        J8NGFz+9AF50mPHFJVH+kZRPSw==
-X-Google-Smtp-Source: ABdhPJxxn9wfy3oMuHByRv7nVJi+Gxq6rGK6r1XgFPfGojJ12MEt28w4sbqXtyE0KooTYGUlUjCNCQ==
-X-Received: by 2002:a17:902:d893:b029:da:72d4:8343 with SMTP id b19-20020a170902d893b02900da72d48343mr5435514plz.84.1611072036147;
-        Tue, 19 Jan 2021 08:00:36 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id ne6sm4003328pjb.44.2021.01.19.08.00.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 08:00:35 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:00:33 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Arnaud POULIQUEN - foss <arnaud.pouliquen@foss.st.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [Linux-stm32] [PATCH] rpmsg: char: return an error if device
- already open
-Message-ID: <20210119160033.GB611676@xps15>
-References: <20210106133714.9984-1-arnaud.pouliquen@foss.st.com>
- <20210114190543.GB255481@xps15>
- <6de9ff8f-0be1-387a-df7e-7d77dd859513@st.com>
+        id S1727646AbhASQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 11:05:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:37606 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389504AbhASQCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 11:02:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A33AAD6E;
+        Tue, 19 Jan 2021 08:01:17 -0800 (PST)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F33483F66E;
+        Tue, 19 Jan 2021 08:01:15 -0800 (PST)
+Date:   Tue, 19 Jan 2021 16:00:56 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with
+ softirqs disabled
+Message-ID: <20210119160045.GA1684@arm.com>
+References: <20201218170106.23280-1-ardb@kernel.org>
+ <20201218170106.23280-5-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6de9ff8f-0be1-387a-df7e-7d77dd859513@st.com>
+In-Reply-To: <20201218170106.23280-5-ardb@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:13:35AM +0100, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
+On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
+> Kernel mode NEON can be used in task or softirq context, but only in
+> a non-nesting manner, i.e., softirq context is only permitted if the
+> interrupt was not taken at a point where the kernel was using the NEON
+> in task context.
 > 
+> This means all users of kernel mode NEON have to be aware of this
+> limitation, and either need to provide scalar fallbacks that may be much
+> slower (up to 20x for AES instructions) and potentially less safe, or
+> use an asynchronous interface that defers processing to a later time
+> when the NEON is guaranteed to be available.
 > 
-> On 1/14/21 8:05 PM, Mathieu Poirier wrote:
-> > On Wed, Jan 06, 2021 at 02:37:14PM +0100, Arnaud Pouliquen wrote:
-> >> The rpmsg_create_ept function is invoked when the device is opened.
-> >> As only one endpoint must be created per device. It is not
-> >> possible to open the same device twice.
-> >> The fix consists in returning -EBUSY when device is already
-> >> opened.
-> >>
-> >> Fixes: c0cdc19f84a4 ("rpmsg: Driver for user space endpoint interface")
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index 4bbbacdbf3bb..360a1ab0a9c4 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -127,6 +127,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
-> >>  	struct rpmsg_device *rpdev = eptdev->rpdev;
-> >>  	struct device *dev = &eptdev->dev;
-> >>  
-> >> +	if (eptdev->ept)
-> >> +		return -EBUSY;
-> >> +
-> > 
-> > I rarely had to work so hard to review a 2 line patch...
+> Given that grabbing and releasing the NEON is cheap, we can relax this
+> restriction, by increasing the granularity of kernel mode NEON code, and
+> always disabling softirq processing while the NEON is being used in task
+> context.
 > 
-> That means that my commit description was not enough explicit...
-> 
-> > 
-> > As far as I can tell the actual code is doing the right thing.  If user space is
-> > trying to open the same eptdev more than once function rpmsg_create_ept() should
-> > complain and the operation denied, wich is what the current code is doing.  
-> > 
-> > There is currently two customers for this API - SMD and GLINK.  The SMD code is
-> > quite clear that if the channel is already open, the operation will be
-> > denied [1].  The GLINK code isn't as clear but the fact that it returns NULL on
-> > error conditions [2] is a good indication that things are working the same way.
-> > 
-> > What kind of use case are you looking to address?  Is there any way you can use
-> > rpdev->ops->create_ept() as it is currently done?
-> 
-> This patch was part of the IOCTL rpmsg series. I sent it separately at Bjorn's
-> request [1].
->
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-I am looking at [1] later today - I will get back to this patch when I have more
-context.
- 
-> I detect the issue using the RPMSG_ADDR_ANY for the source address when tested
-> it with the rpmsf_virtio bus. In this case at each sys open of the device, a new
-> endpoint is created because a new source address is allocated.
+Sorry for the slow reply on this...  it looks reasonable, but I have a
+few comments below.
+
+> ---
+>  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
+>  arch/arm64/kernel/asm-offsets.c    |  2 ++
+>  arch/arm64/kernel/fpsimd.c         |  4 ++--
+>  3 files changed, 17 insertions(+), 8 deletions(-)
 > 
-> [1]https://patchwork.kernel.org/project/linux-remoteproc/patch/20201222105726.16906-11-arnaud.pouliquen@foss.st.com/
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> > [1]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_smd.c#L920
-> > [2]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_glink_native.c#L1149
-> > 
-> >>  	get_device(dev);
-> >>  
-> >>  	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> >> -- 
-> >> 2.17.1
-> >>
-> > _______________________________________________
-> > Linux-stm32 mailing list
-> > Linux-stm32@st-md-mailman.stormreply.com
-> > https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
-> > 
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index ddbe6bf00e33..74ce46ed55ac 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -15,6 +15,7 @@
+>  #include <asm-generic/export.h>
+>  
+>  #include <asm/asm-offsets.h>
+> +#include <asm/alternative.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/cputype.h>
+>  #include <asm/debug-monitors.h>
+> @@ -717,17 +718,23 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+>  	.endm
+>  
+>  	.macro		if_will_cond_yield_neon
+> -#ifdef CONFIG_PREEMPTION
+>  	get_current_task	x0
+>  	ldr		x0, [x0, #TSK_TI_PREEMPT]
+> -	sub		x0, x0, #PREEMPT_DISABLE_OFFSET
+> -	cbz		x0, .Lyield_\@
+> +#ifdef CONFIG_PREEMPTION
+> +	cmp		x0, #PREEMPT_DISABLE_OFFSET
+> +	beq		.Lyield_\@	// yield on need_resched in task context
+> +#endif
+> +	/* never yield while serving a softirq */
+> +	tbnz		x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
+
+Can you explain the rationale here?
+
+Using if_will_cond_yield_neon suggests the algo thinks it may run for
+too long the stall preemption until completion, but we happily stall
+preemption _and_ softirqs here.
+
+Is it actually a bug to use the NEON conditional yield helpers in
+softirq context?
+
+Ideally, if processing in softirq context takes an unreasonable about of
+time, the work would be handed off to an asynchronous worker, but that
+does seem to conflict rather with the purpose of this series...
+
+> +
+> +	adr_l		x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
+> +	this_cpu_offset	x1
+> +	ldr		w0, [x0, x1]
+> +	cbnz		w0, .Lyield_\@	// yield on pending softirq in task context
+> +.Lnoyield_\@:
+>  	/* fall through to endif_yield_neon */
+>  	.subsection	1
+>  .Lyield_\@ :
+> -#else
+> -	.section	".discard.cond_yield_neon", "ax"
+> -#endif
+>  	.endm
+>  
+>  	.macro		do_cond_yield_neon
+> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> index 7d32fc959b1a..34ef70877de4 100644
+> --- a/arch/arm64/kernel/asm-offsets.c
+> +++ b/arch/arm64/kernel/asm-offsets.c
+> @@ -93,6 +93,8 @@ int main(void)
+>    DEFINE(DMA_FROM_DEVICE,	DMA_FROM_DEVICE);
+>    BLANK();
+>    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
+> +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
+> +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
+>    BLANK();
+>    DEFINE(CPU_BOOT_STACK,	offsetof(struct secondary_data, stack));
+>    DEFINE(CPU_BOOT_TASK,		offsetof(struct secondary_data, task));
+> diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> index 062b21f30f94..823e3a8a8871 100644
+> --- a/arch/arm64/kernel/fpsimd.c
+> +++ b/arch/arm64/kernel/fpsimd.c
+> @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
+>   */
+>  static void get_cpu_fpsimd_context(void)
+>  {
+> -	preempt_disable();
+> +	local_bh_disable();
+>  	__get_cpu_fpsimd_context();
+>  }
+>  
+> @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
+>  static void put_cpu_fpsimd_context(void)
+>  {
+>  	__put_cpu_fpsimd_context();
+> -	preempt_enable();
+> +	local_bh_enable();
+>  }
+>  
+>  static bool have_cpu_fpsimd_context(void)
+
+I was concerned about catching all the relevant preempt_disable()s, but
+it had slipped my memory that Julien had factored these into one place.
+
+I can't see off the top of my head any reason why this shouldn't work.
+
+
+In threory, switching to local_bh_enable() here will add a check for
+pending softirqs onto context handling fast paths.  I haven't dug into
+how that works, so perhaps this is trivial on top of the preemption
+check in preempt_enable().  Do you see any difference in hackbench or
+similar benchmarks?
+
+Cheers
+---Dave
