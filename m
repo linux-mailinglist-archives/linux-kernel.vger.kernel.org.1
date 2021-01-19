@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B832FBFFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF2E2FBFE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 20:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbhASTZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 14:25:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:46374 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391760AbhASTNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 14:13:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15599D6E;
-        Tue, 19 Jan 2021 11:12:46 -0800 (PST)
-Received: from bogus (unknown [10.57.35.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABF833F719;
-        Tue, 19 Jan 2021 11:12:44 -0800 (PST)
-Date:   Tue, 19 Jan 2021 19:12:42 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Chen Jun <chenjun102@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lorenzo.pieralisi@arm.com, catalin.marinas@arm.com,
-        guohanjun@huawei.com, rui.xiang@huawei.com, houtao1@huawei.com,
-        will@kernel.org
-Subject: Re: [PATCH] arm64: kernel: Make IPI_WAKEUP under control of
- CONFIG_ARM64_ACPI_PARKING_PROTOCOL
-Message-ID: <20210119191242.mna6ieiwjuyzol6j@bogus>
-References: <20210119140609.106420-1-chenjun102@huawei.com>
+        id S2404752AbhASTVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 14:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727366AbhASTNq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 14:13:46 -0500
+Received: from forward106o.mail.yandex.net (forward106o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::609])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F133FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 11:13:05 -0800 (PST)
+Received: from myt5-4fa6d87d1832.qloud-c.yandex.net (myt5-4fa6d87d1832.qloud-c.yandex.net [IPv6:2a02:6b8:c12:2507:0:640:4fa6:d87d])
+        by forward106o.mail.yandex.net (Yandex) with ESMTP id 9C5325060D7A;
+        Tue, 19 Jan 2021 22:13:02 +0300 (MSK)
+Received: from myt6-9bdf92ffd111.qloud-c.yandex.net (myt6-9bdf92ffd111.qloud-c.yandex.net [2a02:6b8:c12:468a:0:640:9bdf:92ff])
+        by myt5-4fa6d87d1832.qloud-c.yandex.net (mxback/Yandex) with ESMTP id YReIGUqZQY-D2Fe9MtE;
+        Tue, 19 Jan 2021 22:13:02 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1611083582;
+        bh=/MNdusjVBdqHw5qjDLgNu7ow8up6s3cMeSI0EmEjL2A=;
+        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
+        b=dJLRIh42IpbW6waBaYOgyK61rZpTsyhkKXYgG0o4leblyFvW+yqFMeBdjHu+y1G2t
+         JEYy7zMjp2sJAV/SwNauGZRCciSJNwJIbSXMttK35bbvoPyUTA6RCz7Z+Pnb7Ey6HL
+         qqSl5SYdDByr6wa2E37TgJT8rVamPk8liYI2zjLE=
+Authentication-Results: myt5-4fa6d87d1832.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by myt6-9bdf92ffd111.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id KA6voNREkq-D1IexuS7;
+        Tue, 19 Jan 2021 22:13:01 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH v2] x86/vm86/32: Remove VM86_SCREEN_BITMAP support
+To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jann Horn <jannh@google.com>, Jan Kara <jack@suse.cz>,
+        Yu Zhao <yuzhao@google.com>, Peter Xu <peterx@redhat.com>,
+        Brian Gerst <brgerst@gmail.com>
+References: <f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org>
+From:   stsp <stsp2@yandex.ru>
+Message-ID: <65ca981d-1a23-d8fe-71fb-efe17befe8df@yandex.ru>
+Date:   Tue, 19 Jan 2021 22:13:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119140609.106420-1-chenjun102@huawei.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <f3086de0babcab36f69949b5780bde851f719bc8.1611078018.git.luto@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 02:06:09PM +0000, Chen Jun wrote:
-> since commit 5e89c55e4ed81d7abb1ce8828db35fa389dc0e90
-> ("arm64: kernel: implement ACPI parking protocol")
-> 
-> On arm64, IPI 6 will be wasted without setting
-> CONFIG_ARM64_ACPI_PARKING_PROTOCOL.
-> 
-> Signed-off-by: Chen Jun <chenjun102@huawei.com>
+19.01.2021 20:40, Andy Lutomirski пишет:
+> The implementation was rather buggy.  It unconditionally marked PTEs
+> read-only, even for VM_SHARED mappings.  I'm not sure whether this is
+> actually a problem, but it certainly seems unwise.  More importantly, it
+> released the mmap lock before flushing the TLB, which could allow a racing
+> CoW operation to falsely believe that the underlying memory was not
+> writable.
+>
+> I can't find any users at all of this mechanism, so just remove it.
+>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Linux-MM <linux-mm@kvack.org>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: x86@kernel.org
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Stas Sergeev <stsp@list.ru>
+> Cc: Brian Gerst <brgerst@gmail.com>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  arch/arm64/kernel/smp.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index ad00f99ee9b0..8b494ad1c61e 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -73,7 +73,9 @@ enum ipi_msg_type {
->  	IPI_CPU_CRASH_STOP,
->  	IPI_TIMER,
+Acked-by: stsp2@yandex.ru
 
-Going by that logic, IPI_TIMER is used only when
-CONFIG_GENERIC_CLOCKEVENTS_BROADCAST=y and
-
->  	IPI_IRQ_WORK,
-
-IPI_IRQ_WORK when CONFIG_IRQ_WORK=y
-
-Not sure if we what to go down that path as it may result in confusion
-about IPI number and what OS is using it for. I am not against this, just
-want to know others opinion on this.
-
-> +#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
->  	IPI_WAKEUP,
-> +#endif
-
-Just out of curiosity, are you changing this only by code inspection or
-or you running short of IPI with some downstream patches. It will be
-interesting to know how you are using then if you are as it may break if
-kernel decides to you them in future for its own use.
-
--- 
-Regards,
-Sudeep
+dosemu2 just uses mprotect().
+The BIOSSEG stuff in vm86_32.c is also
+unused btw.
