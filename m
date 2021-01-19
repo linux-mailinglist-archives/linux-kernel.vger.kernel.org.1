@@ -2,190 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E7C2FBD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9BD2FBD3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Jan 2021 18:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391289AbhASR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 12:27:26 -0500
-Received: from smtp.infotech.no ([82.134.31.41]:59533 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390332AbhASRKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 12:10:52 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id 8CBAA204238;
-        Tue, 19 Jan 2021 18:09:41 +0100 (CET)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Fw3IrksLcJGC; Tue, 19 Jan 2021 18:09:39 +0100 (CET)
-Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        by smtp.infotech.no (Postfix) with ESMTPA id ACAF92042B1;
-        Tue, 19 Jan 2021 18:09:36 +0100 (CET)
-From:   Douglas Gilbert <dgilbert@interlog.com>
-To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        bostroesser@gmail.com, ddiss@suse.de, bvanassche@acm.org
-Subject: [PATCH 3/3] scatterlist: add sgl_memset()
-Date:   Tue, 19 Jan 2021 12:09:28 -0500
-Message-Id: <20210119170928.79805-4-dgilbert@interlog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119170928.79805-1-dgilbert@interlog.com>
-References: <20210119170928.79805-1-dgilbert@interlog.com>
+        id S1727185AbhASRML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 12:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730595AbhASRKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:10:45 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3DCC061573;
+        Tue, 19 Jan 2021 09:09:49 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0bca005ed5ab9a356b3c50.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ca00:5ed5:ab9a:356b:3c50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A21C81EC0628;
+        Tue, 19 Jan 2021 18:09:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611076187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=aGYE3lrAaFtHuS6FfunC0o8NEZPPWrN9CoQB5+izi7E=;
+        b=qyyuoE50Ydqnd7+nAz9H+xW8KTiOadrdi/pQqgr4R+a+Rh1R6wscH4q87wD51nLkqE+q7p
+        X1cQMezfDFNAFytvW9MrYScqAlnDU8LHnkzjd9eGV6UBeUz9bc7TymdGzPetb7QcGA2Ma/
+        2qzBFG5LTcRZQAitm3tmOvUXWpMIDig=
+Date:   Tue, 19 Jan 2021 18:09:42 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Add AMD_SEV_ES_GUEST Kconfig for including
+ SEV-ES support
+Message-ID: <20210119170942.GO27433@zn.tnic>
+References: <20210116002517.548769-1-seanjc@google.com>
+ <20210118202931.GI30090@zn.tnic>
+ <5f7bbd70-35c3-24ca-7ec5-047c71b16b1f@redhat.com>
+ <20210118204701.GJ30090@zn.tnic>
+ <YAcHeOyluQY9C6HK@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YAcHeOyluQY9C6HK@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing sg_zero_buffer() function is a bit restrictive. For
-example protection information (PI) blocks are usually initialized
-to 0xff bytes. As its name suggests sgl_memset() is modelled on
-memset(). One difference is the type of the val argument which is
-u8 rather than int. Plus it returns the number of bytes (over)written.
+On Tue, Jan 19, 2021 at 08:23:20AM -0800, Sean Christopherson wrote:
+> It was the AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT dependency that tripped me up.  To
+> get KVM to enable SEV/SEV-ES by default,
 
-Change implementation of sg_zero_buffer() to call this new function.
+By default? What would be the use case for that?
 
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
----
- include/linux/scatterlist.h | 20 +++++++++-
- lib/scatterlist.c           | 79 +++++++++++++++++++++----------------
- 2 files changed, 62 insertions(+), 37 deletions(-)
+> Agreed, I'll send a KVM patch to remove the
+> AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT dependency.
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 40449ce96a18..04be80d1a07c 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -317,8 +317,6 @@ size_t sg_pcopy_from_buffer(struct scatterlist *sgl, unsigned int nents,
- 			    const void *buf, size_t buflen, off_t skip);
- size_t sg_pcopy_to_buffer(struct scatterlist *sgl, unsigned int nents,
- 			  void *buf, size_t buflen, off_t skip);
--size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
--		       size_t buflen, off_t skip);
- 
- size_t sgl_copy_sgl(struct scatterlist *d_sgl, unsigned int d_nents, off_t d_skip,
- 		    struct scatterlist *s_sgl, unsigned int s_nents, off_t s_skip,
-@@ -332,6 +330,24 @@ bool sgl_equal_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_
- 		       struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
- 		       size_t n_bytes, size_t *miscompare_idx);
- 
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes);
-+
-+/**
-+ * sg_zero_buffer - Zero-out a part of a SG list
-+ * @sgl:		The SG list
-+ * @nents:		Number of SG entries
-+ * @buflen:		The number of bytes to zero out
-+ * @skip:		Number of bytes to skip before zeroing
-+ *
-+ * Returns the number of bytes zeroed.
-+ **/
-+static inline size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
-+				    size_t buflen, off_t skip)
-+{
-+	return sgl_memset(sgl, nents, skip, 0, buflen);
-+}
-+
- /*
-  * Maximum number of entries that will be allocated in one piece, if
-  * a list larger than this is required then chaining will be utilized.
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index a8672bc6d883..cb4d59111c78 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1024,41 +1024,6 @@ size_t sg_pcopy_to_buffer(struct scatterlist *sgl, unsigned int nents,
- }
- EXPORT_SYMBOL(sg_pcopy_to_buffer);
- 
--/**
-- * sg_zero_buffer - Zero-out a part of a SG list
-- * @sgl:		 The SG list
-- * @nents:		 Number of SG entries
-- * @buflen:		 The number of bytes to zero out
-- * @skip:		 Number of bytes to skip before zeroing
-- *
-- * Returns the number of bytes zeroed.
-- **/
--size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
--		       size_t buflen, off_t skip)
--{
--	unsigned int offset = 0;
--	struct sg_mapping_iter miter;
--	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
--
--	sg_miter_start(&miter, sgl, nents, sg_flags);
--
--	if (!sg_miter_skip(&miter, skip))
--		return false;
--
--	while (offset < buflen && sg_miter_next(&miter)) {
--		unsigned int len;
--
--		len = min(miter.length, buflen - offset);
--		memset(miter.addr, 0, len);
--
--		offset += len;
--	}
--
--	sg_miter_stop(&miter);
--	return offset;
--}
--EXPORT_SYMBOL(sg_zero_buffer);
--
- /**
-  * sgl_copy_sgl - Copy over a destination sgl from a source sgl
-  * @d_sgl:		 Destination sgl
-@@ -1242,3 +1207,47 @@ bool sgl_equal_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_skip
- 	return sgl_equal_sgl_idx(x_sgl, x_nents, x_skip, y_sgl, y_nents, y_skip, n_bytes, NULL);
- }
- EXPORT_SYMBOL(sgl_equal_sgl);
-+
-+/**
-+ * sgl_memset - set byte 'val' up to n_bytes times on SG list
-+ * @sgl:		 The SG list
-+ * @nents:		 Number of SG entries in sgl
-+ * @skip:		 Number of bytes to skip before starting
-+ * @val:		 byte value to write to sgl
-+ * @n_bytes:		 The (maximum) number of bytes to modify
-+ *
-+ * Returns:
-+ *   The number of bytes written.
-+ *
-+ * Notes:
-+ *   Stops writing if either sgl or n_bytes is exhausted. If n_bytes is
-+ *   set SIZE_MAX then val will be written to each byte until the end
-+ *   of sgl.
-+ *
-+ *   The notes in sgl_copy_sgl() about large sgl_s _applies here as well.
-+ *
-+ **/
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes)
-+{
-+	size_t offset = 0;
-+	size_t len;
-+	struct sg_mapping_iter miter;
-+
-+	if (n_bytes == 0)
-+		return 0;
-+	sg_miter_start(&miter, sgl, nents, SG_MITER_ATOMIC | SG_MITER_TO_SG);
-+	if (!sg_miter_skip(&miter, skip))
-+		goto fini;
-+
-+	while ((offset < n_bytes) && sg_miter_next(&miter)) {
-+		len = min(miter.length, n_bytes - offset);
-+		memset(miter.addr, val, len);
-+		offset += len;
-+	}
-+fini:
-+	sg_miter_stop(&miter);
-+	return offset;
-+}
-+EXPORT_SYMBOL(sgl_memset);
-+
+Yah, AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT came out of the initial memory
+enc. SME patchset where the use case was something along the lines of
+booting a kernel and SME being enabled by default. But Tom doesn't
+remember exactly either. I guess that thing doesn't belong in kvm code
+anyway...
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
