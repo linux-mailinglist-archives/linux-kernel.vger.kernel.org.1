@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF7A2FD986
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA962FD978
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392105AbhATTYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
+        id S2388705AbhATTWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389903AbhATSpz (ORCPT
+        with ESMTP id S2391821AbhATSqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:45:55 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A44C061575;
-        Wed, 20 Jan 2021 10:45:11 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o17so35520168lfg.4;
-        Wed, 20 Jan 2021 10:45:10 -0800 (PST)
+        Wed, 20 Jan 2021 13:46:02 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFE6C061757;
+        Wed, 20 Jan 2021 10:45:23 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id q4so12994190plr.7;
+        Wed, 20 Jan 2021 10:45:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zrMNRZvlEESWdG6jggtCoB+4numwazy+fXWH/nTPU9U=;
-        b=GbiCYI2AOS9Mde7ZZGAB8iKTEaPVyUk3NJn7BsJ4aNMPDW3bfjjQOlDjJVeyI01LfK
-         yGrcSPsCfKcKMod8xBD3FRFhA2PKjb0+UA9u+c+PLBc6ucvOs4H76CCyWbj5qRgGzSxL
-         YYeBDYP7YKSgdZ2tcOGzhxRWs+uk1fru9f/FsIBpFq4b3uFMzw/dOgkhsRnbJz85JTGD
-         OFp28kiITVDeZNpIvktOImEsP9FYI+HUZ15TQ4xgjNS0A45AjvFeCkc/hiGkbKW6oV51
-         UkYN9KTEvNSswvk+NvyWRYiqpqIG5SqjCPISQdicL2egTc1jJYF1v01KBc8Pl6R7uTGn
-         P/AA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ia6awbsKTp8Y/OHTrNkojNrbZCc+h9n0c5uhLVndNlM=;
+        b=eSi3o7Hts7hlc+psPE7j5Kec/PGslxCLCSrtgddOK7PeOLtUELUScC19XvhmHJ5u+0
+         rXlqVKVY2zMJ1HWAueNB9GonOPcFaf/mtyEMczkFpV3wGPGIda8mkeZU3WKcHfGHRt4j
+         aD/ACcYD1Hv8SktX/bHpw9/Ow484JyIxeAnfKDbqRypjWdJe7py1KTT8Pr2yfS3Q12/S
+         kXHSIefq3Ism6JVf2Ip5kFK0simc85ZKhNN3HsO0ka0QcV2WHfz/55I4LajlfDHGCsEY
+         Iml9mG0t2z2zC3r6sBXs+dFoCcddttdw3yOdLW5XOAhWVdV+LGXtXQ2hUuuEqzoiEjFR
+         zk1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zrMNRZvlEESWdG6jggtCoB+4numwazy+fXWH/nTPU9U=;
-        b=BQqb9xHzS3Q3cW/HfiF08HssFRa7X4tkKto4CQaRFNYQQzYdTk832/+3VIv6E8x+EK
-         EaMwg/9gLe9eEeJwrdYBqFN8Xblu8mO7MPFMSuSv5lNCL+jizh/6khQd/7X5Ki3y4Rbc
-         YsAN91msjEOo9Nytsqb2qp32kRvO1w2WLdMG/y0/eeAwijR+K2H1cPJKBtGzUcxOJdC+
-         Zp0d22MRKB4wqwGV3XbaNhxQQNwGJX9QyGu3rM/BDJ1zCXLauh6PBsmxyQlTTeGoS6yR
-         nIqJlkvgxC3hrlecfsCho6C5SDv4b8u8fnj5rwOChyrc03c1hYFCI5TwH/N+DJnKRHEF
-         8NQQ==
-X-Gm-Message-State: AOAM532QOqGUBY9ruwM2TTcc8NDIkXf+Lq/IztatkLw4Meff+hL4RCDV
-        IUCK24Vi5NiTJRjtUHFWiZOIeBAwz0CJB2CFVuE=
-X-Google-Smtp-Source: ABdhPJysfNizrzDQUVINGOhhgWus7azEpICiAnwV+p4EXlvDkyaX1pVlGFfbUwglU72IpLHWW5TDXiNALg3A++evFDI=
-X-Received: by 2002:a05:6512:34c5:: with SMTP id w5mr4908698lfr.214.1611168309505;
- Wed, 20 Jan 2021 10:45:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ia6awbsKTp8Y/OHTrNkojNrbZCc+h9n0c5uhLVndNlM=;
+        b=aDp1s5Jd74rNWFuUBMiid5BKqLSwqAC83jee/pKNFGXSpLT30Mvkkb5EGuejWVWv8J
+         qWdOFzfub44u8wEYi8KV3kRdnnTKdB1qk8SPm+3XzzvlevghemtozsJO8MfUL2NluvNs
+         fa6QS6V6AWlfZVnBXTS1g0t4V1b8xuPij6RSbHVfnuEcuNcoxxZZGQRsocqM8rAgEFB3
+         V7gYputVpGMhOEk6rzl9ypvekxENX8NmrqtFsnwaoXCiwYXXWn0ZV4ALZnU5yc9Ke3sh
+         yhZHfC6AlOdceKjq6hzwlEIbxy/Syh30fU8hffZPTIdvKfTRzOQftTQeAhNqWzuQGUze
+         LciQ==
+X-Gm-Message-State: AOAM533g6OsAe0RsxwQJX7QsYWrEU8DAHCiMBbXjDO9LbDYWEHar5X4k
+        tSaWdHMyWeqd9YTo5iZEcVI=
+X-Google-Smtp-Source: ABdhPJyhB9PHGnnWdxziLm9KpjmPL5UoX71QgHgl2PhJNwCoIZhwO1TLD702kIRSrpEGKico853KQw==
+X-Received: by 2002:a17:902:8687:b029:dc:2a2c:e99b with SMTP id g7-20020a1709028687b02900dc2a2ce99bmr11204747plo.37.1611168322755;
+        Wed, 20 Jan 2021 10:45:22 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y21sm3061846pfp.208.2021.01.20.10.45.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 10:45:22 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bharat Gooty <bharat.gooty@broadcom.com>
+Subject: Re: [PATCH v1 1/1] arm64: dts: stingray: fix usb dma address translation
+Date:   Wed, 20 Jan 2021 10:45:20 -0800
+Message-Id: <20210120184520.2093143-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210119053444.23108-1-rayagonda.kokatanur@broadcom.com>
+References: <20210119053444.23108-1-rayagonda.kokatanur@broadcom.com>
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
- <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-In-Reply-To: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 20 Jan 2021 10:44:58 -0800
-Message-ID: <CAADnVQJLN0sFyKdAmc6Pikv8Ww9OocnK_VXMG=ZLSMONHkqe4Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Willem de Bruijn <willemb@google.com>, gustavoars@kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:55 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> > <yuri.benditovich@daynix.com> wrote:
-> > >
-> > > This program type can set skb hash value. It will be useful
-> > > when the tun will support hash reporting feature if virtio-net.
-> > >
-> > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > ---
-> > >  drivers/net/tun.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > > index 7959b5c2d11f..455f7afc1f36 100644
-> > > --- a/drivers/net/tun.c
-> > > +++ b/drivers/net/tun.c
-> > > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> > >                 prog = NULL;
-> > >         } else {
-> > >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > > +               if (IS_ERR(prog))
-> > > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> > >                 if (IS_ERR(prog))
-> > >                         return PTR_ERR(prog);
-> > >         }
-> >
-> > Comment from Alexei Starovoitov:
-> > Patches 1 and 2 are missing for me, so I couldn't review properly,
-> > but this diff looks odd.
-> > It allows sched_cls prog type to attach to tun.
-> > That means everything that sched_cls progs can do will be done from tun hook?
->
-> We do not have an intention to modify the packet in this steering eBPF.
+On Tue, 19 Jan 2021 11:04:44 +0530, Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com> wrote:
+> From: Bharat Gooty <bharat.gooty@broadcom.com>
+> 
+> Add a non-empty dma-ranges so that dma address translation
+> happens.
+> 
+> Fixes: 2013a4b684b6 ("arm64: dts: broadcom: clear the warnings caused by empty dma-ranges")
+> 
+> Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+> ---
 
-The intent is irrelevant. Using SCHED_CLS here will let users modify the packet
-and some users will do so. Hence the tun code has to support it.
-
-> There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-> that the eBPF needs to make possible to deliver the hash to the guest
-> VM - it is 'bpf_set_hash'
->
-> Does it mean that we need to define a new eBPF type for socket filter
-> operations + set_hash?
->
-> Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-> index and 8-bit of hash type.
-> But it is able to return only 32-bit integer, so in this set of
-> patches the eBPF returns
-> queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
-
-bpf prog can only return a 32-bit integer. That's true.
-But the prog can use helpers to set any number of bits and variables.
-bpf_set_hash_v2() with hash, queue and index arguments could fit this purpose,
-but if you allow it for SCHED_CLS type,
-tc side of the code should be ready to deal with that too and this extended
-helper should be meaningful for both tc and tun.
-
-In general if the purpose of the prog is to compute three values they better be
-grouped together. Returned two of them via ORed 32-bit integer and
-returning 32-bit via bpf_set_hash is an awkward api.
+Applied to devicetree-arm64/fixes, thanks!
+--
+Florian
