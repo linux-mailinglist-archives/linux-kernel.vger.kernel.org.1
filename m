@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657092FD2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9E02FD2B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388894AbhATO3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        id S2389888AbhATOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:30:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390354AbhATOWs (ORCPT
+        with ESMTP id S1730084AbhATOXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:22:48 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477B8C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:08 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 19so25426343qkm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z4W9rabaHYlfp3dZefhZ5eDc2vFVS8lzPwoif6mGzIk=;
-        b=lSs9ai1zpvEddnzbn0rPsX1lMsDhdwTM2sGuacKqBuxvFOp54XeD5QVbqhtCJ3jvdE
-         7jeoGRp5VQH3Yuoxr7uVpSAknAQQ6kfPLR0Nb4s2MXshtYqE9Qasr3BHDUswnNpbVKot
-         h8vTMB6s2y/krzb9joV4VLeAAg4rOKCJ0r29LeLWbN5LxNWvsF7ljOlhFUAToZb30CXT
-         tpCqnpGmSVqGc1jpsd+orsN+cDWxWhAf89+XBMouzdpubCPgNd2bSeEpJEhI/8MJjTvp
-         n4sye4N1CGVVJaLvSEC4dr2MrL7wNp27sIqy3NorhXvT3FbNUYbq7zrZ10x2qZEmjsED
-         HjZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z4W9rabaHYlfp3dZefhZ5eDc2vFVS8lzPwoif6mGzIk=;
-        b=h1YJC/Pl3d3Tjwg7KKXlgqtPQSqAN03vzrQFVWPf9GMFcxNOEWfMyZDXzOOFsNQiqo
-         RqxcAhdYuIYWI0mHBW3Sil+m7mq+sYsy+eE2vXxdZtCNs3XZ2ZSjOJt6XkhuPdYhVjVH
-         px7w0Ee5LoadlsgCK7XV59QFCns6SSnMBG94g9HQaqcLGCvpaqcwOyqnAu/goWlkJyK3
-         fruEQKnd+R8CnpfSQvKRg/VrIDbEY2PA7AvCP5lEEiwi7MIhjdB9cfVGKqlyzzaBGTDv
-         qPdKQ+GxEKdHxfFB77k7dQCxMr5eodF5tUj4Zpncbc5RIae0CyuhBaJVRIfA68cDg77f
-         ilcQ==
-X-Gm-Message-State: AOAM531lZ1Lwd37BpvjC+kR4rXGLcVhxGMt0k4JRLvyyrUR1PYoazOy8
-        ddH1+cgKSWIvunCjCCQ0MBniPQ+u+APS9g==
-X-Google-Smtp-Source: ABdhPJxkYYw2XbGfGKURyhRpH6boaYYKpat53CLT9cYotcvRIL2s4CHl/gop67NAmIcos1xmP/Y+CQ==
-X-Received: by 2002:a05:620a:788:: with SMTP id 8mr9564286qka.224.1611152527536;
-        Wed, 20 Jan 2021 06:22:07 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.160])
-        by smtp.gmail.com with ESMTPSA id n7sm1402912qkg.19.2021.01.20.06.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 06:22:05 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] arch: powerpc: mm: book3s64: Fixed spelling architectue -> architecture in line number 1061
-Date:   Wed, 20 Jan 2021 19:50:21 +0530
-Message-Id: <20210120142020.2623355-1-unixbhaskar@gmail.com>
+        Wed, 20 Jan 2021 09:23:11 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E68C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:22:31 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2ENH-0001dB-CE; Wed, 20 Jan 2021 15:22:19 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l2ENG-0007jQ-4c; Wed, 20 Jan 2021 15:22:18 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v1 1/7] dt-bindings: display: simple: add Innolux G070Y2-T02 panel
+Date:   Wed, 20 Jan 2021 15:22:11 +0100
+Message-Id: <20210120142217.29652-2-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210120142217.29652-1-o.rempel@pengutronix.de>
+References: <20210120142217.29652-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/architectue/architecture/
+Add binding for the Innolux G070Y2-T02 panel. It is 7" WVGA (800x480)
+TFT LCD panel with TTL interface and a backlight unit.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/powerpc/mm/book3s64/radix_pgtable.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
-index 98f0b243c1ab..8b8f1451e944 100644
---- a/arch/powerpc/mm/book3s64/radix_pgtable.c
-+++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
-@@ -1058,7 +1058,7 @@ void radix__ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
- 		 * Book3S does not require a TLB flush when relaxing access
- 		 * restrictions when the address space is not attached to a
- 		 * NMMU, because the core MMU will reload the pte after taking
--		 * an access fault, which is defined by the architectue.
-+		 * an access fault, which is defined by the architecture.
- 		 */
- 	}
- 	/* See ptesync comment in radix__set_pte_at */
---
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 3207608d1178..f7a1465313db 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -152,6 +152,8 @@ properties:
+       - innolux,at070tn92
+         # Innolux G070Y2-L01 7" WVGA (800x480) TFT LCD panel
+       - innolux,g070y2-l01
++        # Innolux G070Y2-T02 7" WVGA (800x480) TFT LCD TTL panel
++      - innolux,g070y2-t02
+         # Innolux Corporation 10.1" G101ICE-L01 WXGA (1280x800) LVDS panel
+       - innolux,g101ice-l01
+         # Innolux Corporation 12.1" WXGA (1280x800) TFT LCD panel
+-- 
 2.30.0
 
