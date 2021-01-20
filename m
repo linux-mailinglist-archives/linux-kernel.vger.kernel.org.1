@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591372FCBE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2832FCBED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbhATHm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729571AbhATHlT (ORCPT
+        id S1728424AbhATHoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:44:16 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:36806 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728852AbhATHoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:41:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC95CC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:40:38 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l286U-0004eK-7C; Wed, 20 Jan 2021 08:40:34 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l286S-0001Md-2k; Wed, 20 Jan 2021 08:40:32 +0100
-Date:   Wed, 20 Jan 2021 08:40:32 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 2/2] Input: ads7846: convert to one message
-Message-ID: <20210120074032.2swvp7iqli6xttul@pengutronix.de>
-References: <20201110085041.16303-1-o.rempel@pengutronix.de>
- <20201110085041.16303-3-o.rempel@pengutronix.de>
- <20201118003138.GD2009714@dtor-ws>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201118003138.GD2009714@dtor-ws>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:38:56 up 48 days, 21:45, 28 users,  load average: 0.00, 0.03,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Wed, 20 Jan 2021 02:44:03 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UMJS1pF_1611128583;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMJS1pF_1611128583)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Jan 2021 15:43:06 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     linus.walleij@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] pinctrl: nomadik: Assign boolean values to a bool variable
+Date:   Wed, 20 Jan 2021 15:43:01 +0800
+Message-Id: <1611128581-73345-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following coccicheck warnings:
 
-Hi Dmitry,
+./drivers/pinctrl/nomadik/pinctrl-nomadik.c:1397:6-16: WARNING:
+Assignment of 0/1 to bool variable.
 
-On Tue, Nov 17, 2020 at 04:31:38PM -0800, Dmitry Torokhov wrote:
-> On Tue, Nov 10, 2020 at 09:50:41AM +0100, Oleksij Rempel wrote:
-> > Convert multiple full duplex transfers in to a single transfer to reduce
-> > CPU load.
-> > 
-> > Current driver version support following filtering modes:
-> > - ads7846_no_filter() - not filtered
-> > - ads7846_debounce_filter() - driver specific debounce filter
-> > - pdata->filter - platform specific debounce filter (do any platform
-> > 	provides such filter?)
-> > 
-> > Without filter this HW is not really usable, since the physic of
-> > resistive touchscreen can provide some bounce effects. With driver internal
-> > filter, we have constant amount of retries + debounce retries if some anomaly
-> > was detected.
-> > 
-> > High amount of tiny SPI transfers is the primer reason of high CPU load
-> > and interrupt frequency.
-> > 
-> > This patch create one SPI transfer with all fields and not optional retires. If
-> > bounce anomaly was detected, we will make more transfer if needed.
-> > 
-> > Without this patch, we will get about 10% CPU load on iMX6S on pen-down event.
-> > For example by holding stylus on the screen.
-> > 
-> > With this patch, depending in the amount of retries, the CPU load will
-> > be 1% with "ti,debounce-rep = <3>".
-> > 
-> > One buffer transfer allows us to use PIO FIFO or DMA engine, depending
-> > on the platform.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
-> Applied, thank you.
+./drivers/pinctrl/nomadik/pinctrl-nomadik.c:1380:4-14: WARNING:
+Assignment of 0/1 to bool variable.
 
-I can't find this patch in your git repository. Should I rebase it
-against latest git and resend it?
+./drivers/pinctrl/nomadik/pinctrl-nomadik.c:1370:6-16: WARNING:
+Assignment of 0/1 to bool variable.
 
-Regards,
-Oleksij
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+index d4ea108..770cbf7 100644
+--- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
++++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+@@ -1367,7 +1367,7 @@ static const char *nmk_find_pin_name(struct pinctrl_dev *pctldev, const char *pi
+ static bool nmk_pinctrl_dt_get_config(struct device_node *np,
+ 		unsigned long *configs)
+ {
+-	bool has_config = 0;
++	bool has_config = false;
+ 	unsigned long cfg = 0;
+ 	int i, val, ret;
+ 
+@@ -1377,7 +1377,7 @@ static bool nmk_pinctrl_dt_get_config(struct device_node *np,
+ 		if (ret != -EINVAL) {
+ 			if (nmk_dt_pin_config(i, val, &cfg) == 0) {
+ 				*configs |= cfg;
+-				has_config = 1;
++				has_config = true;
+ 			}
+ 		}
+ 	}
+@@ -1394,7 +1394,7 @@ static int nmk_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
+ 	int ret;
+ 	const char *function = NULL;
+ 	unsigned long configs = 0;
+-	bool has_config = 0;
++	bool has_config = false;
+ 	struct property *prop;
+ 	struct device_node *np_config;
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.3.1
+
