@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931D02FD6A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04492FD6A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404163AbhATRQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        id S2404039AbhATROS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391278AbhATRIi (ORCPT
+        with ESMTP id S2403861AbhATRK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:08:38 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81B8C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:07:51 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id b5so2592693pjl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:07:51 -0800 (PST)
+        Wed, 20 Jan 2021 12:10:26 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98843C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:09:46 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id f6so20102648ybq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:09:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=+akV9+498hWAyHQj1gJxVNZ06aod6fZIAeKpazBamJ8=;
-        b=tD6Q6bhhstouDPVfYjGCPiyMS/q01Qua1A3dSQXRRD1e/pgrTi5en2FuYh6KAFa8/o
-         aoZFFS57zhqrVKZE4cIalUJ35Gd5wFEcCQNrdrGZJ/4FNFsu5Dj6pvnuZNt0NkOqzXZJ
-         f9yNnXMKnMXTrCkSjkhN8SRv1OKlEdV/lGkM8bw42K4TdUp4lAK7VitZT0pYi9E7JPQE
-         yabaeBfGVm7/01IsQhhD0MPMPgQ+cUBtBgzs3Hjs/94S0MC5ba6MPzRDIg2LKyw6j6eM
-         4WKkOZNWLd9WRSJF0+5LkC8Rn7acIwf6W04OVZ2tToeHDE1nwZAyYy40vKeTOa+AlEON
-         mnHw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WPDT0PVm4/aPIbV0EAFgXlokPV1lvrypzi2ZcvT8T1I=;
+        b=rFRBi4r7OH8297hz1xcaXSPUbNFKEfIqzd2Rx6NTH6Y+ffjagOVvyD11mOjKIK6B0O
+         EnTvixK2CI5mbaIucjkharRIVAqkKZG5jXeLsZt8H/leQjyUZfpCU/YrMuoQYOs7zzkz
+         L3qyIDLjN5iwMYQDLHDxV5/WN03ot8PPm69Pjib6KSymHmyH+aT+P9pOLSe4amUP9zgH
+         CITfFpa4KGafOK3wMO9DHmi/sQr8tpA4uiCLdHLID2eCDdqnrsUfY98E2eqIgUP/aMEh
+         Fp/feg0UkH6IqjyNqHlfmOLP3AmpJpT9w9xsPjzaL1gKQTdRETZyG3AN8dWBD/XddnwN
+         0T7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=+akV9+498hWAyHQj1gJxVNZ06aod6fZIAeKpazBamJ8=;
-        b=AQeIGNPnUFqGtnD5mSyVmWaiCRTtFSciQjKF3ZKtdq/ij0YBgLmSf+xRY+puL5G2pQ
-         vsbSPK6TosNSimKRcSRp/scK3kKxHLNFc3GI+KwwMIN7I2uUb7QxxmHRXXYeyO4hG+Gx
-         iaNbClkPD2cRj+Fyx1eM9RiJVxGURorKmInjIQF6pTquJ4N/NF1hoTD5s7z+LWEuYT+q
-         +dxms/Q/CJ7mIkYc9dnUOD29ClNCoGYHpQbVfSbElcg/VM6VYMH7Z3haOnTug29FfuTK
-         uX9NRh7ogY8Hbez55dfL2yrLF51Bym8rqAXn38Ava/aIKTQ/Tex9n1cFC250lBo57FVL
-         g65w==
-X-Gm-Message-State: AOAM530t5wco5wZdnH68KXpn2bmKsN5+zRPs1XJn64KYGFitG88m3tJ1
-        ET2C3foX1RcHK1nbkxZdmg3lIKkErXZV5dBRj83Iw3T4S7XaPA==
-X-Google-Smtp-Source: ABdhPJxei248SQTiwFaDKDsBZRlcAASfDxW4cdLAd6y9GUG2KWsJG3YwHfaaLIkzcxLIBQg3NXifrBLl9dicD1N9Fs0=
-X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr6769396pja.228.1611162471139;
- Wed, 20 Jan 2021 09:07:51 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=WPDT0PVm4/aPIbV0EAFgXlokPV1lvrypzi2ZcvT8T1I=;
+        b=SVZKSU01xLnXf6OpCENPhjCnItqZivEIU99b6cYuE8CRsF0j1rcAb9dtSlwN6a2AFt
+         IXiBOsrX5JO96xVxN5Qrx3hbcz6rl2T7R6xbvGZE2XmZ/VK7iwihf+rTrb6UAU7Wllux
+         cayxquayGkNpWB9+6fRA7EnpkM21xBzjEGZR8dIfYXEiy1+a0hBE3B+pIMehaX45Jo3Y
+         DTX603pJMy5rjf2UxgOzoAoME2ERehRKdD8UJnSSlSOkuV7clyuuxP7rXQ4etdNfqbH0
+         aEB6hPJD0+xY75y5F7wlRdkofPzneRm4hExWBW1p0ARTVbx5Kb0pu1AYEqdTxqMcRi3Q
+         xM5g==
+X-Gm-Message-State: AOAM531VoZFZ9Ieb4icWgtevg+UJDHWEGAFnK2lHeUA64spaAp09B/f0
+        H81VnVibIfWdpMK/r5sis5u/dd5jI5/a0w0rhXadRA==
+X-Google-Smtp-Source: ABdhPJwgt9Cxc/JcL4f7pl9d8H1GVMqWeXV7Rq5bFY8Gar7UAQgJ9hjlLUp5Y+jDcGNKkVZXb2EOADxVGcwvFJ6fju0=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr7809991ybz.466.1611162585610;
+ Wed, 20 Jan 2021 09:09:45 -0800 (PST)
 MIME-Version: 1.0
-References: <faa7532b-e345-c125-4db9-13d3b6bc372f@oracle.com>
-In-Reply-To: <faa7532b-e345-c125-4db9-13d3b6bc372f@oracle.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 20 Jan 2021 19:08:40 +0200
-Message-ID: <CAHp75VfqCKiHiQsxRHshtQXe9mcQNcdgdvt8zK+kjnNzXP6qwg@mail.gmail.com>
-Subject: Re: PVPANIC PCI driver
-To:     Mihai Carabas <mihai.carabas@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peng Hao <peng.hao2@zte.com.cn>
+References: <20210120142323.2203705-1-geert+renesas@glider.be>
+In-Reply-To: <20210120142323.2203705-1-geert+renesas@glider.be>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 20 Jan 2021 09:09:09 -0800
+Message-ID: <CAGETcx-ZcXB9Zw_RnMjA0G2oKAyeK3VfKgha=Mvqnn_dDREuOw@mail.gmail.com>
+Subject: Re: [PATCH/RFC] soc: renesas: rcar-sysc: Mark device node
+ OF_POPULATED after init
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: LKML and Peng
-
-On Wed, Jan 20, 2021 at 6:48 PM Mihai Carabas <mihai.carabas@oracle.com> wrote:
+On Wed, Jan 20, 2021 at 6:23 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 >
-> Hello Andy,
+> The R-Car System Controller (SYSC) driver registers PM domains from an
+> early_initcall().  It does not use a platform driver, as secondary CPU
+> startup on R-Car H1 needs to control the CPU power domains, before
+> initialization of the driver framework.
 >
-> Some time ago you have created a patchset where you have combined
-> ACPI/MMIO into a single driver for pvpanic:
+> As fw_devlink only considers platform devices,
+
+Correction. It only considers devices. As in, devices on all types of
+busses are supported.
+
+> it does not know that the
+> System Controller is ready.  Hence probing of on-chip devices that are
+> part of the SYSC PM domain fail:
 >
-> commit f104060813fe79350565b68c1098fcea050a6504
-> Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Date:   Wed Dec 9 22:36:41 2020 +0200
+>     probe deferral - supplier e6180000.system-controller not ready
 >
->       misc: pvpanic: Combine ACPI and platform drivers
+> Fix this by setting the OF_POPULATED flag for the SYSC device node after
+> successful initialization.  This will make of_link_to_phandle() ignore
+> the SYSC device node as a dependency, and consumer devices will be
+> probed again.
+
+It'd still be nice if you could (maybe in a later patch), at least
+probe all the power domains that aren't really needed this early.
+Using the driver core framework (when it's possible), gives you nice
+things :)
+
++Rob. I know he hates people using OF_POPULATED, but I think this case
+is reasonable and want to make sure he's aware of this.
+
+Once you fix my commit nitpick, you can add:
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+
+-Saravana
+
 >
-> I also have sent some patches where I created a driver framework for
-> adding a PCI driver. These being said, I want to send again another
-> patchset to add a PVPANIC PCI driver, but I am not sure what is the
-> right approach you would like to see:
-> - create a totally different driver for pvpanic pci and naming it
-> pvpanic-pci.c with its config PVPANIC_PCI
-> - create the framework I have sent before but having only two buses
-> (ACPI/MMIO in one file and PCI in another)
-
-Generic approach is to have three files:
- - core part
- - platform driver
- - PCI driver
-
-in this case.
-
-> In qemu they are basically two different devices (one is -device pvpanic
-> and the other is -device pvpanic-pci)
+> Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/soc/renesas/rcar-sysc.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> I could not find any precedence in other drivers. Your input is welcome.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sysc.c
+> index 9b235fc900273405..a00bb098e1fe7488 100644
+> --- a/drivers/soc/renesas/rcar-sysc.c
+> +++ b/drivers/soc/renesas/rcar-sysc.c
+> @@ -439,6 +439,8 @@ static int __init rcar_sysc_pd_init(void)
+>         }
+>
+>         error = of_genpd_add_provider_onecell(np, &domains->onecell_data);
+> +       if (!error)
+> +               of_node_set_flag(np, OF_POPULATED);
+>
+>  out_put:
+>         of_node_put(np);
+> --
+> 2.25.1
+>
