@@ -2,82 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0953A2FD269
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2802FD28E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390246AbhATOMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:12:17 -0500
-Received: from m12-12.163.com ([220.181.12.12]:56711 "EHLO m12-12.163.com"
+        id S2390395AbhATOWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:22:52 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49207 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732883AbhATNYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:24:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=QKBPJdPhe6W3ktMeVz
-        19YEpmtpvlJjr+9MD8d5vLnQc=; b=GL4cQ3DSEwXQ3/jn/OTpk3Nih5M4X1pnhP
-        H7zdG+1pJntREwK7czGn0zQ7ipNtbKhBcL/YZC17JMzRTNbqJZJz9VdquacdWcs6
-        bsyX/q5awCDYd4FFqk/2jdpDPNeQPvwW4tdg6C49mstAWpN6gOVEVkTCb5DJrw73
-        p3gAPT/Lo=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp8 (Coremail) with SMTP id DMCowADHLNoLIwhgVejfMw--.54081S4;
-        Wed, 20 Jan 2021 20:33:18 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Carlo Caione <carlo@caione.org>
-Cc:     linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] regulator: axp20x: Fix reference cout leak
-Date:   Wed, 20 Jan 2021 04:33:13 -0800
-Message-Id: <20210120123313.107640-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DMCowADHLNoLIwhgVejfMw--.54081S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw45Jr4fJr1ftFykXry7KFg_yoW8JFyDpa
-        15WFZFkr48CFy8Gw48G39Fva4YqF1jy3s7Z3y8GwsYkF98JFnxJrn7ZFy5AayrKrykJr42
-        yrZrtr18AF18XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bxv38UUUUU=
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/xtbBUQ8gclaD9tCoEwAAsE
+        id S2390086AbhATMoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:44:37 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10KChe5s015967;
+        Wed, 20 Jan 2021 13:43:40 +0100
+Date:   Wed, 20 Jan 2021 13:43:40 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
+Subject: Re: rcutorture initrd/nolibc build on ARMv8?
+Message-ID: <20210120124340.GA15935@1wt.eu>
+References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
+ <20210119161901.GA14667@1wt.eu>
+ <20210119170238.GA5603@C02TD0UTHF1T.local>
+ <20210119171637.GA14704@1wt.eu>
+ <20210119174358.GB14704@1wt.eu>
+ <20210120120725.GB73692@C02TD0UTHF1T.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120120725.GB73692@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decrements the reference count of device node and its child node.
+Hi Mark,
 
-Fixes: dfe7a1b058bb ("regulator: AXP20x: Add support for regulators subsystem")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/regulator/axp20x-regulator.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+On Wed, Jan 20, 2021 at 12:07:25PM +0000, Mark Rutland wrote:
+> On Tue, Jan 19, 2021 at 06:43:58PM +0100, Willy Tarreau wrote:
+> > On Tue, Jan 19, 2021 at 06:16:37PM +0100, Willy Tarreau wrote:
+> > Given that you used a native compiler we can't suspect an issue with a
+> > bare-metal compiler possibly affecting how kernel headers are passed
+> > there. But nevertheless, I'd still not disregard the possibility that
+> > the headers found under "linux/" are picked from the libc which for
+> > whatever reason would be missing a lot of them.
+> 
+> I think the actual issue here is a misapprehension in nolibc.h, which
+> started blowing up due to a refactoring in asm/unistd.h.
+> 
+> In nolibc.h, we do:
+> 
+> | /* Some archs (at least aarch64) don't expose the regular syscalls anymore by
+> |  * default, either because they have an "_at" replacement, or because there are
+> |  * more modern alternatives. For now we'd rather still use them.
+> |  */
+> | #define __ARCH_WANT_SYSCALL_NO_AT
+> | #define __ARCH_WANT_SYSCALL_NO_FLAGS
+> | #define __ARCH_WANT_SYSCALL_DEPRECATED
+> 
+> ... but this isn't quite right -- it's not that the syscalls aren't
+> exposed by default, but rather that these syscall numbers are not valid
+> for architectures which do not define the corresponding __ARCH_WANT_*
+> flags. Architectures without those have never implemented the syscalls,
+> and would have returned -ENOSYS for the unrecognized syscall numbers,
+> but the numbers could be allocated to (distinct) syscalls in future.
+> 
+> Since commit:
+> 
+>   a0673fdbcd421052 ("asm-generic: clean up asm/unistd.h")
+> 
+> ... those definitions got pulled out of <asm-generic/unistd.h>, and
+> hence it's no longer possible to accidentally get those where a
+> userspace header defines __ARCH_WANT_* in an architecture where they
+> don't exist (e.g. arm64).
 
-diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-index 90cb8445f721..d260c442b788 100644
---- a/drivers/regulator/axp20x-regulator.c
-+++ b/drivers/regulator/axp20x-regulator.c
-@@ -1070,7 +1070,7 @@ static int axp20x_set_dcdc_freq(struct platform_device *pdev, u32 dcdcfreq)
- static int axp20x_regulator_parse_dt(struct platform_device *pdev)
- {
- 	struct device_node *np, *regulators;
--	int ret;
-+	int ret = 0;
- 	u32 dcdcfreq = 0;
- 
- 	np = of_node_get(pdev->dev.parent->of_node);
-@@ -1085,13 +1085,12 @@ static int axp20x_regulator_parse_dt(struct platform_device *pdev)
- 		ret = axp20x_set_dcdc_freq(pdev, dcdcfreq);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "Error setting dcdc frequency: %d\n", ret);
--			return ret;
- 		}
--
- 		of_node_put(regulators);
- 	}
- 
--	return 0;
-+	of_node_put(np);
-+	return ret;
- }
- 
- static int axp20x_set_dcdc_workmode(struct regulator_dev *rdev, int id, u32 workmode)
--- 
-2.17.1
+I didn't remember the details behind these definitions, I've found
+this in the related commit message:
 
+    Some syscall numbers are not exported
+    by default unless a few macros are defined before including unistd.h :
+    
+      #define __ARCH_WANT_SYSCALL_NO_AT
+      #define __ARCH_WANT_SYSCALL_NO_FLAGS
+      #define __ARCH_WANT_SYSCALL_DEPRECATED
 
+So it seems I faced difficulties getting the __NR_* entries and only
+could get them using such definitions :-/
+
+Did you figure the correct way to get __NR_* defined on your machine or
+should I search ?
+
+> It seems that the headers on my Debian 10.7 system were generated after
+> that commit, whereas yours were generated before that.
+
+It's very possible indeed.
+
+> > We've seen that __NR_fork or __NR_dup2 for example were missing in your
+> > output, on my native machine I can see them, so that could give us a clue
+> > about the root cause of the issue:
+> > 
+> >   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(fork|dup2)'
+> >   #define __NR_dup2 1041
+> >   #define __NR_syscalls (__NR_fork+1)
+> >   #define __NR_fork 1079
+> 
+> As above, these are bogus for arm64. There is no syscall number for dup2
+> or fork, and __NR_syscalls is currently only 442.
+
+Ah that's very interesting indeed because actually these ones should
+only be used when __NR_dup3 or __NR_clone are not defined. Thus I wanted
+to check the definitions that were reported in your error output but
+actually what was needed was to figure whether the correct ones were
+present, and they are, here on my machine (and yes I agree that in this
+case the dup2/fork above are bofus):
+
+  ubuntu@ubuntu:~$ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
+  #define __NR_clone 220
+  #define __NR_dup3 24
+
+Do you have these ones with your more recent includes ? Or are these wrong
+again ? Again I'd be surprised given that I didn't invent them and that my
+systems boot fine using these.
+
+> I think the right thing to do is to have nolibc.h detect which syscalls
+> are implemented, and to not define __ARCH_WANT_*.
+
+Actually that's what was attempted by already focusing on ifdefs but
+without *any* __NR_* we can't even hope to call a syscall and check for
+ENOSYS for example. So the code really tries to figure which is the right
+__NR_ value for a given syscall, and a quick check at my userland code
+shows that I'm already using dup2() and fork() as defined from dup3()
+and clone().
+
+Thanks!
+Willy
