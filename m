@@ -2,133 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E78E2FDFA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515112FDF53
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388087AbhATXri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 18:47:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728464AbhATV1h (ORCPT
+        id S2391223AbhATXwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 18:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731339AbhATV3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:27:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611177960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6M0kiTHNLGAWYX3jX6GQ7MllBMP9eI8gpCnHl+Iru4E=;
-        b=CxNRwCxzvTzkI4eo0Prs2pnCd2xEmm4GsrVIE91GLcJ7W2PEiFIKIGFjm831Z3gskfnUWD
-        6kJHgxV/AQfmC4ZrvgmVuqs29jaqS5oYOAuCAN/g/lj7A6jVZdlKsHwAHLJyo09HX/Pswd
-        MKpzdgVlcoYthUkOnFNpjgz2A8WN2fQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-PUdxj0ibMC6SgjhV1SGiLQ-1; Wed, 20 Jan 2021 16:25:57 -0500
-X-MC-Unique: PUdxj0ibMC6SgjhV1SGiLQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B3FE107ACE4;
-        Wed, 20 Jan 2021 21:25:56 +0000 (UTC)
-Received: from krava (unknown [10.40.194.35])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 024FF1992D;
-        Wed, 20 Jan 2021 21:25:53 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 22:25:53 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
-Message-ID: <20210120212553.GA1798087@krava>
-References: <20210104021837.30473-1-yao.jin@linux.intel.com>
- <20210112100807.GB1273297@krava>
- <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
+        Wed, 20 Jan 2021 16:29:44 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D3CC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:12 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id y19so49806409iov.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xd2GUZj3T4zjFRODOdjWCJrpvC64HI9cvgOt1hRzcXo=;
+        b=NcHa2lk+46K6MbdGohVqiHQXnmqpJ8siABBlaLV/rmA57a7Y3j6f77UeYkSpqwdB7R
+         yrzNT3XPcVXuHpyoTumAbklQnFqGPOWAYKDKEHbSzBHFAJjUekNsG0x8lgKROoiuzbF6
+         g5O7hBMEOGW6gkh8Pzrdd4EeOxK2/AHqOL0n+orJv2I8l1PCNOx4eh0IKi4W89Ga+RXm
+         pZ3jN2ympQfC8zF14KfWE4otV3zrTZkEoVlcTEhg4Vm3O6E0xhmbqS9JIuLKn9llsBXn
+         T69goAPjS26xVfX3oxp5PhrgPOevbiaSwa14TJicIJumolftO5NccU1thxr85ELS0Cpq
+         thPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xd2GUZj3T4zjFRODOdjWCJrpvC64HI9cvgOt1hRzcXo=;
+        b=B03kSmsf/WZkhwEntNlYJLFcGPQBMbDrL5YQy3J/6tCMhI41miTVmgCJ0Ws7ecfu2P
+         wLRgYExu4Twr6/TFnu1R4a/qKeZ/uFcMPokdixFV3NmGm2/t6pdkrlmtqVJQVe0NExrI
+         ANY2LMmElKhidMhP+4aifJ8Tb39GgVVvYCRHT/dqO667eQWpqDhnAr5weiNJwGIAstPe
+         jWMTGpQ8KNEELnjwWC6IUMuGQZ5VeiCbCuxsGtsngKVoRjAPf5ldVeHOKiy4GoB0HfyV
+         ShgKX47auyAHaJbYPmgZey6W+R93yd33eMf6e7ZRjJ96gfh8t4GEAqifvZPfgd4F86KR
+         4LpA==
+X-Gm-Message-State: AOAM532T+VnBMd2icSL8txh2ijK6eHR5j462g555OI+7RQ9zNvCxTPWX
+        43aZueoXmdJymc0CiENQVZL72w==
+X-Google-Smtp-Source: ABdhPJzZqPGNgOfIkksBHD4QL34TDOa2/VNuOfRn8fc4tYQlS13XMOlYT3l4noykcZKIbRPxD4ixTw==
+X-Received: by 2002:a92:40c4:: with SMTP id d65mr9811584ill.197.1611177972089;
+        Wed, 20 Jan 2021 13:26:12 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id q196sm1335687iod.27.2021.01.20.13.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 13:26:11 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, robh+dt@kernel.org, rdunlap@infradead.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v3 net-next 1/4] net: ipa: remove a remoteproc dependency
+Date:   Wed, 20 Jan 2021 15:26:03 -0600
+Message-Id: <20210120212606.12556-2-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210120212606.12556-1-elder@linaro.org>
+References: <20210120212606.12556-1-elder@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64dba2a3-0bf2-3af3-6f54-6e200840017d@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 12:54:37PM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 1/12/2021 6:08 PM, Jiri Olsa wrote:
-> > On Mon, Jan 04, 2021 at 10:18:37AM +0800, Jin Yao wrote:
-> > > The default event list includes the most common events which are widely
-> > > used by users. But with -e option, the current perf only counts the events
-> > > assigned by -e option. Users may want to collect some extra events with
-> > > the default list. For this case, users have to manually add all the events
-> > > from the default list. It's inconvenient. Also, users may don't know how to
-> > > get the default list.
-> > > 
-> > > Now it supports a simple syntax: -e +event
-> > > 
-> > > The prefix '+' tells perf to append this event (or event list) to default
-> > > event list.
-> > > 
-> > > Before:
-> > > 
-> > > root@kbl-ppc:~# ./perf stat -e power/energy-pkg/ -a -- sleep 1
-> > > 
-> > >   Performance counter stats for 'system wide':
-> > > 
-> > >                2.04 Joules power/energy-pkg/
-> > > 
-> > >         1.000863884 seconds time elapsed
-> > > 
-> > > After:
-> > > 
-> > > root@kbl-ppc:~# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
-> > > 
-> > >   Performance counter stats for 'system wide':
-> > > 
-> > >                2.11 Joules +power/energy-pkg/        #    0.000 K/sec
-> > 
-> > I dont think we should print the extra '+' prefix
-> > 
-> > jirka
-> > 
-> > >            8,007.17 msec   cpu-clock                 #    7.993 CPUs utilized
-> > >                 125        context-switches          #    0.016 K/sec
-> > >                   8        cpu-migrations            #    0.001 K/sec
-> > >                   2        page-faults               #    0.000 K/sec
-> > >           8,520,084        cycles                    #    0.001 GHz
-> > >           2,808,302        instructions              #    0.33  insn per cycle
-> > >             555,427        branches                  #    0.069 M/sec
-> > >              59,005        branch-misses             #   10.62% of all branches
-> > > 
-> > >         1.001832003 seconds time elapsed
-> > > 
-> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > 
-> 
-> Printing '+' prefix is the original behavior.
-> 
-> Without this patch,
-> 
-> root@kbl-ppc:# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
-> 
->  Performance counter stats for 'system wide':
-> 
->               2.02 Joules +power/energy-pkg/
-> 
->        1.000859434 seconds time elapsed
-> 
-> The '+' prefix is printed. So I finally decide not to remove the '+' prefix
-> in order to keep original behavior.
+The IPA driver currently requires a DT property to be defined whose
+value is the phandle for the modem subsystem.  This was needed to
+look up a remoteproc structure pointer used when registering for
+notifications in the original IPA notification mechanism.
 
-hm, originaly there's no purpose for the '+', right?
-it seems it's more like bug then anything else
+Remoteproc provides a more generic SSR notifier system, and the IPA
+driver switched over to it last summer, but this remoteproc phandle
+dependency was not removed at that time.
 
-you added function to the '+' to add default events to specified event,
-which I think is good idea, but I don't think we should display the
-extra '+' in output
+Get rid of the IPA remoteproc pointer and stop requiring the phandle
+be specified.
 
-thanks,
-jirka
+This avoids a link error (rproc_put() not defined) for certain
+configurations.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa.h      |  2 --
+ drivers/net/ipa/ipa_main.c | 38 ++------------------------------------
+ 2 files changed, 2 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
+index 6c2371084c55a..c6c6a7f6909c1 100644
+--- a/drivers/net/ipa/ipa.h
++++ b/drivers/net/ipa/ipa.h
+@@ -43,7 +43,6 @@ enum ipa_flag {
+  * @flags:		Boolean state flags
+  * @version:		IPA hardware version
+  * @pdev:		Platform device
+- * @modem_rproc:	Remoteproc handle for modem subsystem
+  * @smp2p:		SMP2P information
+  * @clock:		IPA clocking information
+  * @table_addr:		DMA address of filter/route table content
+@@ -83,7 +82,6 @@ struct ipa {
+ 	DECLARE_BITMAP(flags, IPA_FLAG_COUNT);
+ 	enum ipa_version version;
+ 	struct platform_device *pdev;
+-	struct rproc *modem_rproc;
+ 	struct notifier_block nb;
+ 	void *notifier;
+ 	struct ipa_smp2p *smp2p;
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 84bb8ae927252..ab0fd5cb49277 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -15,7 +15,6 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/of_address.h>
+-#include <linux/remoteproc.h>
+ #include <linux/qcom_scm.h>
+ #include <linux/soc/qcom/mdt_loader.h>
+ 
+@@ -729,19 +728,6 @@ static const struct of_device_id ipa_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ipa_match);
+ 
+-static phandle of_property_read_phandle(const struct device_node *np,
+-					const char *name)
+-{
+-        struct property *prop;
+-        int len = 0;
+-
+-        prop = of_find_property(np, name, &len);
+-        if (!prop || len != sizeof(__be32))
+-                return 0;
+-
+-        return be32_to_cpup(prop->value);
+-}
+-
+ /* Check things that can be validated at build time.  This just
+  * groups these things BUILD_BUG_ON() calls don't clutter the rest
+  * of the code.
+@@ -807,10 +793,8 @@ static int ipa_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	const struct ipa_data *data;
+ 	struct ipa_clock *clock;
+-	struct rproc *rproc;
+ 	bool modem_init;
+ 	struct ipa *ipa;
+-	phandle ph;
+ 	int ret;
+ 
+ 	ipa_validate_build();
+@@ -829,25 +813,12 @@ static int ipa_probe(struct platform_device *pdev)
+ 		if (!qcom_scm_is_available())
+ 			return -EPROBE_DEFER;
+ 
+-	/* We rely on remoteproc to tell us about modem state changes */
+-	ph = of_property_read_phandle(dev->of_node, "modem-remoteproc");
+-	if (!ph) {
+-		dev_err(dev, "DT missing \"modem-remoteproc\" property\n");
+-		return -EINVAL;
+-	}
+-
+-	rproc = rproc_get_by_phandle(ph);
+-	if (!rproc)
+-		return -EPROBE_DEFER;
+-
+ 	/* The clock and interconnects might not be ready when we're
+ 	 * probed, so might return -EPROBE_DEFER.
+ 	 */
+ 	clock = ipa_clock_init(dev, data->clock_data);
+-	if (IS_ERR(clock)) {
+-		ret = PTR_ERR(clock);
+-		goto err_rproc_put;
+-	}
++	if (IS_ERR(clock))
++		return PTR_ERR(clock);
+ 
+ 	/* No more EPROBE_DEFER.  Allocate and initialize the IPA structure */
+ 	ipa = kzalloc(sizeof(*ipa), GFP_KERNEL);
+@@ -858,7 +829,6 @@ static int ipa_probe(struct platform_device *pdev)
+ 
+ 	ipa->pdev = pdev;
+ 	dev_set_drvdata(dev, ipa);
+-	ipa->modem_rproc = rproc;
+ 	ipa->clock = clock;
+ 	ipa->version = data->version;
+ 
+@@ -935,8 +905,6 @@ static int ipa_probe(struct platform_device *pdev)
+ 	kfree(ipa);
+ err_clock_exit:
+ 	ipa_clock_exit(clock);
+-err_rproc_put:
+-	rproc_put(rproc);
+ 
+ 	return ret;
+ }
+@@ -944,7 +912,6 @@ static int ipa_probe(struct platform_device *pdev)
+ static int ipa_remove(struct platform_device *pdev)
+ {
+ 	struct ipa *ipa = dev_get_drvdata(&pdev->dev);
+-	struct rproc *rproc = ipa->modem_rproc;
+ 	struct ipa_clock *clock = ipa->clock;
+ 	int ret;
+ 
+@@ -970,7 +937,6 @@ static int ipa_remove(struct platform_device *pdev)
+ 	ipa_reg_exit(ipa);
+ 	kfree(ipa);
+ 	ipa_clock_exit(clock);
+-	rproc_put(rproc);
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
 
