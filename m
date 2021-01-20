@@ -2,129 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDB42FDC4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9908A2FDC55
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 23:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391127AbhATWTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 17:19:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53294 "EHLO
+        id S1726370AbhATWU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 17:20:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34644 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731476AbhATVwF (ORCPT
+        by vger.kernel.org with ESMTP id S1731463AbhATVwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Jan 2021 16:52:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611179417;
+        s=mimecast20190719; t=1611179414;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S7lzl9Lt2MjVC8UQX3UTaRWTMvWQodOhj9ejnhEdfCg=;
-        b=BJzIENIAk7RXT/Qka+eXoO4NFrZKG6of8kpcz3B9amD1Hr3fTuFO9NZ4j8dbC0WcuA5yq8
-        K32k5WZ5Fgs6ukrEPLmZu4LyplMC6+WB7lbOYr5wh18lCEQfNHs8YYhnqBW8RaJAkOFxqM
-        rQbBTM6CDrRTjPvzKDnqM3Jx+XjWcec=
+        bh=tREhvIowpuNt34h8cXw35P3uhjLTE4JeSLhACvuKEJQ=;
+        b=BXurlk89FL2+n/lZ08QQEmrLzmvj5Zff6V/9udIdnPfHOBSDTrYG+JBDZrydsb8NBkHGbe
+        w34/lefzZRi6CWiDCldb2ODorzioBpZ2iVoyFaW7xF3zwdNJhVxhZPzKhKU+PZ3S9A5Kfx
+        CdzsSMMU7jUhSquwr+OTEUIeDuoVip4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-b1p4fpiMOP2nSa52UgXqDA-1; Wed, 20 Jan 2021 16:50:13 -0500
-X-MC-Unique: b1p4fpiMOP2nSa52UgXqDA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-302-88BXdPz0Pcicl3JAOSqdHw-1; Wed, 20 Jan 2021 16:50:09 -0500
+X-MC-Unique: 88BXdPz0Pcicl3JAOSqdHw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CE8EE743;
-        Wed, 20 Jan 2021 21:50:11 +0000 (UTC)
-Received: from x1.localdomain (ovpn-114-1.ams2.redhat.com [10.36.114.1])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 79AF25D6AD;
-        Wed, 20 Jan 2021 21:50:09 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
-Date:   Wed, 20 Jan 2021 22:49:56 +0100
-Message-Id: <20210120214957.140232-5-hdegoede@redhat.com>
-In-Reply-To: <20210120214957.140232-1-hdegoede@redhat.com>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACC18E743;
+        Wed, 20 Jan 2021 21:50:07 +0000 (UTC)
+Received: from krava (unknown [10.40.194.35])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6EB9A19CB1;
+        Wed, 20 Jan 2021 21:50:05 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 22:50:04 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2] perf script: Fix overrun issue for
+ dynamically-allocated pmu type number
+Message-ID: <20210120215004.GD1798087@krava>
+References: <20201209005828.21302-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209005828.21302-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Bay Trail systems:
-1. Use a non CR version of the Bay Trail SoC
-2. Contain at least 6 interrupt resources so that the
-   platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
-   non CR systems which list their IPC IRQ at index 0 despite being
-   non CR does not work
-3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
+On Wed, Dec 09, 2020 at 08:58:28AM +0800, Jin Yao wrote:
+> When unpacking the event which is from dynamic pmu, the array
+> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
+> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
+> PERF_TYPE_MAX + 1).
+> 
+> /* In builtin-script.c */
+> process_event()
+> {
+>         unsigned int type = output_type(attr->type);
+> 
+>         if (output[type].fields == 0)
+>                 return;
+> }
+> 
+> output[10] is overrun.
+> 
+> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
+> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
+> 
+> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
+> between old perf.data files that had a dynamicaliy allocated PMU number
+> that would then be the same as a fixed PERF_TYPE.
+> 
+> Example:
+> 
+> perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
+> perf script
+> 
+> Before:
+>          swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+> 
+> After:
+>          swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
+>          swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
+>          swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>          swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
+>          swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v2:
+>   Remove Fixes tag because this issue has always been here, not caused by
+>   1405720d4f26 ("perf script: Add 'synth' event type for synthesized events").
+>   No functional change in v2. 
 
-Add a DMI quirk table to check for the few known models with this issue,
-so that the right IPC IRQ index is used on these systems.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/sound/soc/intel/common/soc-intel-quirks.h b/sound/soc/intel/common/soc-intel-quirks.h
-index b07df3059926..a93987ab7f4d 100644
---- a/sound/soc/intel/common/soc-intel-quirks.h
-+++ b/sound/soc/intel/common/soc-intel-quirks.h
-@@ -11,6 +11,7 @@
- 
- #if IS_ENABLED(CONFIG_X86)
- 
-+#include <linux/dmi.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/iosf_mbi.h>
-@@ -38,12 +39,36 @@ SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
- 
- static inline bool soc_intel_is_byt_cr(struct platform_device *pdev)
- {
-+	/*
-+	 * List of systems which:
-+	 * 1. Use a non CR version of the Bay Trail SoC
-+	 * 2. Contain at least 6 interrupt resources so that the
-+	 *    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check below
-+	 *    succeeds
-+	 * 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
-+	 *
-+	 * This needs to be here so that it can be shared between the SST and
-+	 * SOF drivers. We rely on the compiler to optimize this out in files
-+	 * where soc_intel_is_byt_cr is not used.
-+	 */
-+	static const struct dmi_system_id force_bytcr_table[] = {
-+		{	/* Lenovo Yoga Tablet 2 series */
-+			.matches = {
-+				DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+				DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
-+			},
-+		},
-+		{}
-+	};
- 	struct device *dev = &pdev->dev;
- 	int status = 0;
- 
- 	if (!soc_intel_is_byt())
- 		return false;
- 
-+	if (dmi_check_system(force_bytcr_table))
-+		return true;
-+
- 	if (iosf_mbi_available()) {
- 		u32 bios_status;
- 
--- 
-2.28.0
+thanks,
+jirka
 
