@@ -2,87 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E022FDA6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931872FDA84
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392840AbhATUI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733220AbhATUHQ (ORCPT
+        id S1732615AbhATUKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:10:31 -0500
+Received: from smtprelay0193.hostedemail.com ([216.40.44.193]:45328 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389909AbhATUKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:07:16 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAF0C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:06:35 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id i5so15973469pgo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 12:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lQbchGQKY82wl+o4TbL309jkEN0qre7XquQdqrcnNpI=;
-        b=t2WzXAXK+d5diH6v6Tf6zXB6OePNdD9FnHGfiUxFtMgNyA6M4Xrmx+jkO3oroMeOhN
-         yYQLs3MNmjIW2lWg6oaiZPSa1t6wWiZpok8Vf7PmlIb1CEd4iBRUO2b2PM3fPpwGDc/g
-         xa6HXupPoG6OK6eMkLW4z3JC+Cr3OCvFYx7BXghViIrlipr/aEaHswAx3fsnXwYsKgB4
-         l2WKPFR849OaILDuv2bkKdyFiibD9XR60vbS2ta/v4waXomAZLk97QXiOAJZw+T7KoQc
-         Pcx0KLGcrReVSeu/N632kpcbhnM6ND/aHIOsnx0SlgbVQ1iFh1tm9LMa2Pc/zBF19nEa
-         SP4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lQbchGQKY82wl+o4TbL309jkEN0qre7XquQdqrcnNpI=;
-        b=Tn12s93ONPLZNALI+AvWKt3d1F077m1wExD2XVnqbXSmnXee4GLJXdSMyaz1X6Guh6
-         r2eP2fiauCK1b+CCRRUjgABetVMWCVU56amgo+a53XrJopoQLEJ5k+ULOnsp2H3UC/7o
-         Xsk4DPCOOVioeuUCo0j8UOV4LWENSw1qmxNYT7zzC4qWamhnJ0ciCVOIIpuxhdOnwCj+
-         5CitazWfFmLxqH6FVG9qAxu5OooWS0/AvsOAHW9zJQVWaaYPeVb+4eZp9NFT3ip0BAwM
-         FsKSUrHk/TMFgiTXrz+Jp1u1UoZCYcGt3a1rZiylWdvgdfv8IfEvhXcYNzNmWqUXERJx
-         yMCg==
-X-Gm-Message-State: AOAM5313wabafDRX6BFmgJC/i0t+EbgiC1Auxk5MddvgV92OjB5dE3OH
-        TFANgQ/8/94EFOLGyK7GFgTvsO4ZmVIz4g==
-X-Google-Smtp-Source: ABdhPJzLZhyZH91lMH6g/S9TFPhw2SKyEeH5hRTVqmU/4tOHhIuZEFfwCGZWC/wQ0RURsY4LFROCOw==
-X-Received: by 2002:a63:520e:: with SMTP id g14mr10767120pgb.378.1611173194845;
-        Wed, 20 Jan 2021 12:06:34 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id b1sm3150314pjh.54.2021.01.20.12.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 12:06:34 -0800 (PST)
-Date:   Wed, 20 Jan 2021 12:06:27 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 09/24] kvm: x86/mmu: Don't redundantly clear TDP MMU pt
- memory
-Message-ID: <YAiNQ/SgVqg+h6WG@google.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-10-bgardon@google.com>
+        Wed, 20 Jan 2021 15:10:09 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 8D930182CED28;
+        Wed, 20 Jan 2021 20:09:21 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3866:3868:3870:3874:4321:4362:5007:7652:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21212:21451:21627:21660:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: gold90_1a0b8a72755d
+X-Filterd-Recvd-Size: 1045
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 20 Jan 2021 20:09:20 +0000 (UTC)
+Message-ID: <614c6027cc22a5024b4ee3334079d501998add83.camel@perches.com>
+Subject: Re: [PATCH v1 0/6] ACPI:  Clean up printing messages in some source
+ files
+From:   Joe Perches <joe@perches.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Date:   Wed, 20 Jan 2021 12:09:19 -0800
+In-Reply-To: <2809410.8bz27usjlQ@kreacher>
+References: <2809410.8bz27usjlQ@kreacher>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112181041.356734-10-bgardon@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Ben Gardon wrote:
-> The KVM MMU caches already guarantee that shadow page table memory will
-> be zeroed, so there is no reason to re-zero the page in the TDP MMU page
-> fault handler.
-> 
-> No functional change intended.
-> 
-> Reviewed-by: Peter Feiner <pfeiner@google.com>
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+On Wed, 2021-01-20 at 19:56 +0100, Rafael J. Wysocki wrote:
+> This series cleans up messaging in some source files under drivers/acpi/
+> and get rids of some debug code pieces that aren't needed any more.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+Thanks Rafael.
+
+
