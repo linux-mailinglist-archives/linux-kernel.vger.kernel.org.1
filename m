@@ -2,101 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B92C2FD938
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BD32FD8F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392305AbhATS4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:56:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387765AbhATRjv (ORCPT
+        id S2392231AbhATS7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732853AbhATRi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:39:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611164304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D/xnDCC8nOFGfsA+lStDur0FhQOLzj3Vyiz97OzDpc8=;
-        b=gUFlrtaEr7qsAtT1h1dRYUW3jycPC8WQ4rOwmnolbIFHWNmPUoEhd6J++ryIQ0s/4aMX4U
-        +XKqAMBV2pEgXfgpI1fPA8ZOlCv7uyZBsetDiK01L6ScObo2dYZ3GzBRCT7EWQQeUILb0c
-        Ow4KS0HV9M9C3pA6pW0OnT9vzBflld8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-q0O4Oi6cPuy--ujO7x__iQ-1; Wed, 20 Jan 2021 12:38:23 -0500
-X-MC-Unique: q0O4Oi6cPuy--ujO7x__iQ-1
-Received: by mail-wr1-f72.google.com with SMTP id o12so11853647wrq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:38:22 -0800 (PST)
+        Wed, 20 Jan 2021 12:38:56 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7474C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:38:15 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id a109so24168349otc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:38:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MNhh3DZneZFVWfjxYIARFu1yzUnEDm7HphLodqo3DQk=;
+        b=b3rRh/jJExyI8+DPE2UALXm6/mFfCwwF0E489at7YF/FdDDs0G59cic92B9HOqPYkn
+         i6Ke9a/H8crN4utU/49/HEC+QiHzShWj0IbERe//iYPc/9zNyUUpHrEorXkfeSdsJ1j+
+         ioxRKAxIg8/yTdUpMKiCa5gZBnHCO8HcDx4+M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D/xnDCC8nOFGfsA+lStDur0FhQOLzj3Vyiz97OzDpc8=;
-        b=b81IdY6HlKNZcExnCuHVqSltN/Hq0Tb0LhwfB3NMU7yq/FnCu6Ukb/tIgN18O3QS51
-         xfnnjGpvjVFiXkJxCaghAi2qIv3ChKoYfM664bs43t3HbBfVCglaDDfHNDiL9TbkxzsE
-         EWLBlTK9t2JLVUQqNeQq3/VEhu8OdQVa1zk5eRVUOxqMAy6hJa2eBZoP0xff8de4eCi+
-         6FLzo44IRpOimG+KumPs014dsopsCujQt7SBgXdcENRp/E9ihHbxAwHJE81wN/oOOD0G
-         smHY+zULu92wSJPtenrSqpEThuc0lVbWQ89GLAkZz+/oh3AOLRf/GDd2viVam4xaLKhq
-         SW5A==
-X-Gm-Message-State: AOAM533BnxdCKJga9vlNbmGOVPCVnpz4ENg2rWYNEjojD06VtMxVhWUU
-        zzhF3aCq0kQ8IlvVgkUZXB+fM14GSV111Ut2C+nH4Gq1aHGQxZ8bML6kahBecelyIRTCGb8hX9h
-        Qck0SJPOJUoDDUn8kW3WIqHPqC1Td5Aggappx/Vdf7unrJoyeoq0v2E5MAZwlP6Wu2uW2T4cPRW
-        AN
-X-Received: by 2002:a5d:660c:: with SMTP id n12mr10531790wru.291.1611164300970;
-        Wed, 20 Jan 2021 09:38:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5Gt3Pu1qW2EdggZtB7MguFp/4lDK5HfkXjM4AsXdknZgXR2j5+4eIlyKpZr1CO2oaPexByA==
-X-Received: by 2002:a5d:660c:: with SMTP id n12mr10531762wru.291.1611164300731;
-        Wed, 20 Jan 2021 09:38:20 -0800 (PST)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id x11sm4948325wmi.4.2021.01.20.09.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 09:38:20 -0800 (PST)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        masahiroy@kernel.org, keescook@chromium.org,
-        michal.lkml@markovi.net, jpoimboe@redhat.com, peterz@infradead.org,
-        mark.rutland@arm.com, broonie@kernel.org,
-        linux-efi@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Julien Thierry <jthierry@redhat.com>
-Subject: [RFC PATCH 07/17] objtool: arm64: Decode other system instructions
-Date:   Wed, 20 Jan 2021 18:37:50 +0100
-Message-Id: <20210120173800.1660730-8-jthierry@redhat.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210120173800.1660730-1-jthierry@redhat.com>
-References: <20210120173800.1660730-1-jthierry@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MNhh3DZneZFVWfjxYIARFu1yzUnEDm7HphLodqo3DQk=;
+        b=ON6Yq0rlzfj6Bs54VTayY1p8mqJUl66hWAZg/GhTsIJUMpwqJRbu4LdZAtLtTxjskb
+         AMOfij3pIdZDXgU3df7Yrue0jUf0XRVO/xms+XJNK61kZqgj7nAVL7Q+hk9tP1D16yGU
+         Y4LqEJEsb6empVKYDI69b49k4wSfjw5iBDWsvx9LmcxOCR/z8gliOzN5LLIiPuXoNCLs
+         RJ9xGZKMPWEjTDetQZ2iyACeTj/FTnvu3ERPCz8VFeLiT51S6a+4ciR+n6V+bA7Nl1BI
+         MsSrD0tQG32oxbZd4DWlNXS6vm/vW3xopIs6uREL+PBag6H/vZZjR6YfWnWB91SPyayl
+         /Oqw==
+X-Gm-Message-State: AOAM532cbR1GG/t2Ci4xgiL1+k7aIJ8kSMuGndILrflSsdZCZD06QSIV
+        sPeP8aTVzb2MrI7nm5QviUy+JsfyvfiYNaxb36GFpQ==
+X-Google-Smtp-Source: ABdhPJxv43HxmTetCKsV75E7UstyzxmA3kKBQo3KsMDk26idvuSiiEtoQRKDJaZO3thYnbrqW0w9yXakr98YoMiThxM=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr7621513otb.303.1611164294761;
+ Wed, 20 Jan 2021 09:38:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210120123535.40226-1-paul@crapouillou.net> <20210120123535.40226-2-paul@crapouillou.net>
+ <CAKMK7uGGDe8bZpeTnyCkF7g_2gC1nixOzWe4FWYXPRWi-q5y7A@mail.gmail.com> <4YQ8NQ.HNQ7IMBKVEBV2@crapouillou.net>
+In-Reply-To: <4YQ8NQ.HNQ7IMBKVEBV2@crapouillou.net>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 20 Jan 2021 18:38:03 +0100
+Message-ID: <CAKMK7uFHYPvJm46f-LXBO=nERGBBO3i_=YXZyAUi0ZXJFLmXVw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] drm: bridge/panel: Cleanup connector on bridge detach
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decode ERET, BRK and NOPs
+On Wed, Jan 20, 2021 at 6:12 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+>
+>
+> Le mer. 20 janv. 2021 =C3=A0 17:03, Daniel Vetter <daniel@ffwll.ch> a
+> =C3=A9crit :
+> > On Wed, Jan 20, 2021 at 1:35 PM Paul Cercueil <paul@crapouillou.net>
+> > wrote:
+> >>
+> >>  If we don't call drm_connector_cleanup() manually in
+> >>  panel_bridge_detach(), the connector will be cleaned up with the
+> >> other
+> >>  DRM objects in the call to drm_mode_config_cleanup(). However,
+> >> since our
+> >>  drm_connector is devm-allocated, by the time
+> >> drm_mode_config_cleanup()
+> >>  will be called, our connector will be long gone. Therefore, the
+> >>  connector must be cleaned up when the bridge is detached to avoid
+> >>  use-after-free conditions.
+> >
+> > For -fixes this sounds ok, but for -next I think switching to drmm_
+> > would be much better.
+>
+> The API would need to change to have access to the drm_device struct,
+> though. That would be quite a big patch, there are a few dozens source
+> files that use this API already.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- tools/objtool/arch/arm64/decode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Hm right pure drmm_ doesn't work for panel or bridge since it's
+usually a separate driver. But devm_ also doesn't work. I think what
+we need here is two-stage: first kmalloc the panel (or bridge, it's
+really the same) in the panel/bridge driver load. Then when we bind it
+to the drm_device we can tie it into the managed resources with
+drmm_add_action_or_reset. Passing the drm_device to the point where we
+allocate the panel/bridge doesn't work for these.
 
-diff --git a/tools/objtool/arch/arm64/decode.c b/tools/objtool/arch/arm64/decode.c
-index 924121b4b466..a4a587c400a1 100644
---- a/tools/objtool/arch/arm64/decode.c
-+++ b/tools/objtool/arch/arm64/decode.c
-@@ -223,6 +223,13 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			/* Remaining branch opcodes are conditional */
- 			*type = INSN_JUMP_CONDITIONAL;
- 			*immediate = aarch64_get_branch_offset(insn);
-+		} else if (aarch64_insn_is_eret(insn)) {
-+			*type = INSN_CONTEXT_SWITCH;
-+		} else if (aarch64_insn_is_steppable_hint(insn)) {
-+			*type = INSN_NOP;
-+		} else if (aarch64_insn_is_brk(insn)) {
-+			*immediate = aarch64_insn_decode_immediate(AARCH64_INSN_IMM_16, insn);
-+			*type = INSN_BUG;
- 		} else {
- 			*type = INSN_OTHER;
- 		}
--- 
-2.25.4
+I think minimally we need a FIXME here and ack from Laurent on how
+this should be solved at least, since panel bridge is used rather
+widely.
+-Daniel
 
+>
+> Cheers,
+> -Paul
+>
+> >
+> >>  v2: Cleanup connector only if it was created
+> >>
+> >>  Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper
+> >> from the lvds-encoder bridge.")
+> >>  Cc: <stable@vger.kernel.org> # 4.12+
+> >>  Cc: Andrzej Hajda <a.hajda@samsung.com>
+> >>  Cc: Neil Armstrong <narmstrong@baylibre.com>
+> >>  Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> >>  Cc: Jonas Karlman <jonas@kwiboo.se>
+> >>  Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> >>  ---
+> >>   drivers/gpu/drm/bridge/panel.c | 6 ++++++
+> >>   1 file changed, 6 insertions(+)
+> >>
+> >>  diff --git a/drivers/gpu/drm/bridge/panel.c
+> >> b/drivers/gpu/drm/bridge/panel.c
+> >>  index 0ddc37551194..df86b0ee0549 100644
+> >>  --- a/drivers/gpu/drm/bridge/panel.c
+> >>  +++ b/drivers/gpu/drm/bridge/panel.c
+> >>  @@ -87,6 +87,12 @@ static int panel_bridge_attach(struct drm_bridge
+> >> *bridge,
+> >>
+> >>   static void panel_bridge_detach(struct drm_bridge *bridge)
+> >>   {
+> >>  +       struct panel_bridge *panel_bridge =3D
+> >> drm_bridge_to_panel_bridge(bridge);
+> >>  +       struct drm_connector *connector =3D &panel_bridge->connector;
+> >>  +
+> >>  +       /* Cleanup the connector if we know it was initialized */
+> >>  +       if (!!panel_bridge->connector.dev)
+> >>  +               drm_connector_cleanup(connector);
+> >>   }
+> >>
+> >>   static void panel_bridge_pre_enable(struct drm_bridge *bridge)
+> >>  --
+> >>  2.29.2
+> >>
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+>
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
