@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828642FDA32
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C818B2FD9B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392642AbhATTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:55:47 -0500
-Received: from smtprelay0125.hostedemail.com ([216.40.44.125]:52892 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387509AbhATSoJ (ORCPT
+        id S2392402AbhATTbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388689AbhATSpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:44:09 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id CB1C1365F;
-        Wed, 20 Jan 2021 18:43:24 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7652:7875:10004:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12295:12297:12438:12663:12740:12760:12895:13255:13439:14096:14097:14659:14721:19904:19999:21080:21324:21433:21451:21627:21660:21740:21741:30012:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: lunch37_0515e5b2755c
-X-Filterd-Recvd-Size: 4179
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 20 Jan 2021 18:43:23 +0000 (UTC)
-Message-ID: <fb1b511d71761c99a9bece803f508b674fce9962.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols
- in assembly files
-From:   Joe Perches <joe@perches.com>
-To:     Aditya <yashsri421@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        broonie@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-Date:   Wed, 20 Jan 2021 10:43:22 -0800
-In-Reply-To: <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
-References: <20210120072547.10221-1-yashsri421@gmail.com>
-         <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
-         <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 20 Jan 2021 13:45:45 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1CBC061795;
+        Wed, 20 Jan 2021 10:44:41 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id f63so7241921pfa.13;
+        Wed, 20 Jan 2021 10:44:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4NjDehqz0VgBm2L8y0qfZbDJgiSQ3HAHgeBuj2A8VUE=;
+        b=Ew80wgcaPeRu4eGH9QGEtVnTO2VVqb4OOkFIowpw4AhsVGl/lFDyVUG/v6htZyPlYG
+         vcZAk29nRUxj1cjXxqLNLywTlTuSkiCKoKN7Ode1kLfXHdpEtXd1qnV8MeRj/Uw0bvea
+         zljoRfRy9jUqxrU2KB6s2KTVH+1U478kvx4/sNRjKCM48gwk8eviC1jP62HHOt/TSDOS
+         7wq1HCmvqQrVA45t3YkOzUvgxf3hMRFETvFeEBYIi1CdWxs10qaVRxgHQkIXT7mbVcLf
+         OB6ci0CoX7/HVOAnmg9q0R01YslgykNumPlJp6ozHV4Q8Wk6KZtadB4oAUnSktIl7ypn
+         +eoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4NjDehqz0VgBm2L8y0qfZbDJgiSQ3HAHgeBuj2A8VUE=;
+        b=bkOCA83uFtYQnmWu7us9JlRlk772hQGaJf727unbrWsB5hEgGblxKsyE2XAqCQ8qu9
+         U7WKUB9UtFPtZlPLB0fc2hAMiVptcuMWEDIA+KZ5d0vy5PDhTh9O1v77RSTiUeFfoXqF
+         X+QN6b999JU4MbU0TlA+E6vE52HS7R9xmz9h6MlXomoytn0R1Q3HztQdImr0lPGfx0Wa
+         N1i1yBMtNJIYDNDpjDDRyir4pH+Upa2nq3v4iVECXalxI8RIqsuQQz+LeWrrjTBdXq1l
+         KH9qafXQdmvWHXTPnvZwSMX/kyFfSTUMzF3x0hkOqWeyuBV/HOeQIu0dmqN7q7Z+FJkA
+         LgNQ==
+X-Gm-Message-State: AOAM532mW6QeWwHjcvXm2LeO4OsIhSAkpi093G/Hqv/cPhLrBynOVAlo
+        tQAiGOLCPAWU3bJt79+5Y3AuyZ8xp/N3RtpMRg4=
+X-Google-Smtp-Source: ABdhPJyOxC9DANNKIW3fVJdIGBkotlsd6iFQeUA8RKkDW+/BvfBEPt3uPpSRULwknE4nfSX+6odRLjPBCy+zUwIOi20=
+X-Received: by 2002:a65:644b:: with SMTP id s11mr10783324pgv.4.1611168281104;
+ Wed, 20 Jan 2021 10:44:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
+ <20210112134054.342-10-calvin.johnson@oss.nxp.com> <CAHp75VdyPWD-cM5Q_9k8yRAutMSjm-3kwE0pQT3+ztKGwcU+4A@mail.gmail.com>
+ <CAJZ5v0hic-Yf74Rn06kui4z+KZBES_uiH-pRmmRcFcYjuDZ=CA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hic-Yf74Rn06kui4z+KZBES_uiH-pRmmRcFcYjuDZ=CA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 20 Jan 2021 20:45:30 +0200
+Message-ID: <CAHp75Vc=b8tXmv7yussXNVKPOovmpKAB1b9cWSAw5rpKDcvLiQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-20 at 18:23 +0530, Aditya wrote:
-> On 20/1/21 2:51 pm, Joe Perches wrote:
-> > On Wed, 2021-01-20 at 12:55 +0530, Aditya Srivastava wrote:
-> > > Local symbols prefixed with '.L' do not emit symbol table entries, as
-> > > they have special meaning for the assembler.
-> > > 
-> > > '.L' prefixed symbols can be used within a code region, but should be
-> > > avoided for denoting a range of code via 'SYM_*_START/END' annotations.
-> > > 
-> > > Add a new check to emit a warning on finding the usage of '.L' symbols
-> > > in '.S' files, if it lies within SYM_*_START/END annotation pair.
-> > 
-> > I believe this needs a test for $file as it won't work well on
-> > patches as the SYM_*_START/END may not be in the patch context.
-> > 
-> Okay.
-> 
-> > Also, is this supposed to work for local labels like '.L<foo>:'?
-> > I don't think a warning should be generated for those.
-> > 
-> Yes, currently it will generate warning for all symbols which start
-> with .L and have non- white character symbol following it, if it is
-> lying within SYM_*_START/END annotation pair.
-> 
-> Should I reduce the check to \.L_\S+ instead? (please note "_"
-> following ".L")
+On Wed, Jan 20, 2021 at 8:18 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Tue, Jan 12, 2021 at 4:47 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Jan 12, 2021 at 3:42 PM Calvin Johnson
+> > <calvin.johnson@oss.nxp.com> wrote:
 
-Use grep first.  That would still match several existing labels.
+...
 
-> Pardon me, I'm not good with assembly :/
+> > > +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
+> > > +{
+> > > +#ifdef CONFIG_ACPI
+> > > +       unsigned long long adr;
+> > > +       acpi_status status;
+> > > +#endif
+> > > +       int ret;
+> > > +
+> > > +       ret = fwnode_property_read_u32(fwnode, "reg", id);
+> > > +       if (!(ret && is_acpi_node(fwnode)))
+> > > +               return ret;
+> > > +
+> > > +#ifdef CONFIG_ACPI
+> > > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+> > > +                                      METHOD_NAME__ADR, NULL, &adr);
+> > > +       if (ACPI_FAILURE(status))
+> > > +               return -EINVAL;
+> > > +       *id = (u32)adr;
+> >
+> > Shouldn't be
+> >
+> >        return 0;
+> > #else
+> >        return -EINVAL;
+> > #endif
+> >
+> > ?
+> >
+> > Yes, it's a theoretical case when is_acpi_node() returns true when
+> > CONFIG_ACPI=n.
+>
+> How so?  is_acpi_node() is defined as a static inline returning false then.
 
-Spending time reading docs can help with that.
+I understand that, that's why it's pure theoretical when, for example,
+the semantics is changed. But I believe it's unlucky to happen.
 
-Mark?  Can you please comment about the below?
-
-I believe the test should be:
-
-	if ($realfile =~ /\.S$/ &&
-	    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
-		WARN(...);
-	}
-
-so that only this code currently matches:
-
-$ git grep -P '^\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L' -- '*.S'
-arch/x86/boot/compressed/head_32.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
-arch/x86/boot/compressed/head_32.S:SYM_FUNC_END(.Lrelocated)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lrelocated)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lpaging_enabled)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lpaging_enabled)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lno_longmode)
-arch/x86/boot/compressed/head_64.S:SYM_FUNC_END(.Lno_longmode)
-arch/x86/boot/pmjump.S:SYM_FUNC_START_LOCAL_NOALIGN(.Lin_pm32)
-arch/x86/boot/pmjump.S:SYM_FUNC_END(.Lin_pm32)
-arch/x86/entry/entry_64.S:SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
-arch/x86/entry/entry_64.S:SYM_CODE_END(.Lbad_gs)
-arch/x86/lib/copy_user_64.S:SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
-arch/x86/lib/copy_user_64.S:SYM_CODE_END(.Lcopy_user_handle_tail)
-arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_clac)
-arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_clac)
-arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_8_clac)
-arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_8_clac)
-arch/x86/lib/putuser.S:SYM_CODE_START_LOCAL(.Lbad_put_user_clac)
-arch/x86/lib/putuser.S:SYM_CODE_END(.Lbad_put_user_clac)
-arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_START_LOCAL(.Lwakeup_idt)
-arch/x86/realmode/rm/wakeup_asm.S:SYM_DATA_END(.Lwakeup_idt)
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
