@@ -2,146 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5484D2FD83C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9FF2FD83B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404702AbhATS0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:26:51 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:39512 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391964AbhATSSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:18:44 -0500
-Received: by mail-ot1-f50.google.com with SMTP id i30so11348535ota.6;
-        Wed, 20 Jan 2021 10:18:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IgWDE0PErg3ORn5MUSyThw1N3Ecrc6Z8pCtsc577ahI=;
-        b=ojM9r7PCtlxNYXItFNuFj/iw6hmuaeCLkNxVczASwTCTvtBngMAekwLoUvvd6etJaI
-         ybFnwSmuTOkJoyBjly/xRwbNLWye/NhawA2DdPwZRVj/ilBSIhz5Eo7crOy2+itv0nNV
-         CVcL7Tsw77M7BMHNUNHT3u/vQOlMggZ8R77Fl2P0wfSyzjuFrAvDQuFe5AZDM2sTKUxE
-         yJSK1lErEmX26ucnQWobUn2fJ32RYt5FYhrlWU+jLaHSWABujrBDC5nZod/Jlx1JOMjZ
-         P7B/LQPO1JeBtWjEkwgI/+b06V5MWh8DoJrkiWvy5Lpq27Ii0kQ8mgg6OWZMhhuBvo7e
-         6a0Q==
-X-Gm-Message-State: AOAM5319XFPLIJwgtWTE35qCnVYCoOV0ZimRJ132nvoFjO4vSDacAFK4
-        vDHXGKIyblYZqlCEhS0v3Ikp3kcOQLjtnVeNQHs=
-X-Google-Smtp-Source: ABdhPJwN77JI0VoJPEv4UVgKZFKkiy2aKaFZpzEAoON0ded46fj5YtH3TNGxm9cmcPfHk60ojzmuOupUQn33CroVRy0=
-X-Received: by 2002:a05:6830:138f:: with SMTP id d15mr1588674otq.321.1611166682565;
- Wed, 20 Jan 2021 10:18:02 -0800 (PST)
+        id S2404680AbhATS0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:26:37 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:51760 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391967AbhATSSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:18:51 -0500
+Received: from zn.tnic (p200300ec2f0bb000f815c9e084808a0b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b000:f815:c9e0:8480:8a0b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C699F1EC04D1;
+        Wed, 20 Jan 2021 19:18:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611166688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=YdsY64auz+N4Ke+6Uorfvs1e0o4cdCe8WQpfT5eDLSU=;
+        b=YTPOvvCTWi8wDa1Njffe848Yoloadu1DGr7T9DL9MlfpgGosH3d+CmaJZ2Fl75fq0/Tg67
+        E730Gx0BIyHJ6i6Mq123KgAPnIFqxMSIXI2/8F3aMDkYlURkZK1yqtVNXlqw/BVIivos/H
+        iUylhhYiM3xcUzkEUXBjecppuqDzjPI=
+Date:   Wed, 20 Jan 2021 19:18:02 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/4] x86/mmx: Use KFPU_387 for MMX string operations
+Message-ID: <20210120181802.GH825@zn.tnic>
+References: <cover.1611077835.git.luto@kernel.org>
+ <cd68d61ece035201804a06e6993a2bd06bfe298b.1611077835.git.luto@kernel.org>
 MIME-Version: 1.0
-References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
- <20210112134054.342-10-calvin.johnson@oss.nxp.com> <CAHp75VdyPWD-cM5Q_9k8yRAutMSjm-3kwE0pQT3+ztKGwcU+4A@mail.gmail.com>
-In-Reply-To: <CAHp75VdyPWD-cM5Q_9k8yRAutMSjm-3kwE0pQT3+ztKGwcU+4A@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 Jan 2021 19:17:51 +0100
-Message-ID: <CAJZ5v0hic-Yf74Rn06kui4z+KZBES_uiH-pRmmRcFcYjuDZ=CA@mail.gmail.com>
-Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cd68d61ece035201804a06e6993a2bd06bfe298b.1611077835.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 4:47 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Tue, Jan 12, 2021 at 3:42 PM Calvin Johnson
-> <calvin.johnson@oss.nxp.com> wrote:
-> >
-> > Using fwnode_get_id(), get the reg property value for DT node
-> > or get the _ADR object value for ACPI node.
-> >
-> > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > ---
-> >
-> > Changes in v3:
-> > - Modified to retrieve reg property value for ACPI as well
-> > - Resolved compilation issue with CONFIG_ACPI = n
-> > - Added more info into documentation
-> >
-> > Changes in v2: None
-> >
-> >  drivers/base/property.c  | 33 +++++++++++++++++++++++++++++++++
-> >  include/linux/property.h |  1 +
-> >  2 files changed, 34 insertions(+)
-> >
-> > diff --git a/drivers/base/property.c b/drivers/base/property.c
-> > index 35b95c6ac0c6..2d51108cb936 100644
-> > --- a/drivers/base/property.c
-> > +++ b/drivers/base/property.c
-> > @@ -580,6 +580,39 @@ const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode)
-> >         return fwnode_call_ptr_op(fwnode, get_name_prefix);
-> >  }
-> >
-> > +/**
-> > + * fwnode_get_id - Get the id of a fwnode.
-> > + * @fwnode: firmware node
-> > + * @id: id of the fwnode
-> > + *
-> > + * This function provides the id of a fwnode which can be either
-> > + * DT or ACPI node. For ACPI, "reg" property value, if present will
-> > + * be provided or else _ADR value will be provided.
-> > + * Returns 0 on success or a negative errno.
-> > + */
-> > +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
-> > +{
-> > +#ifdef CONFIG_ACPI
-> > +       unsigned long long adr;
-> > +       acpi_status status;
-> > +#endif
-> > +       int ret;
-> > +
-> > +       ret = fwnode_property_read_u32(fwnode, "reg", id);
-> > +       if (!(ret && is_acpi_node(fwnode)))
-> > +               return ret;
-> > +
-> > +#ifdef CONFIG_ACPI
-> > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
-> > +                                      METHOD_NAME__ADR, NULL, &adr);
-> > +       if (ACPI_FAILURE(status))
-> > +               return -EINVAL;
-> > +       *id = (u32)adr;
->
-> Shouldn't be
->
->        return 0;
-> #else
->        return -EINVAL;
-> #endif
->
-> ?
->
-> Yes, it's a theoretical case when is_acpi_node() returns true when
-> CONFIG_ACPI=n.
+On Tue, Jan 19, 2021 at 09:39:00AM -0800, Andy Lutomirski wrote:
+> The default kernel_fpu_begin() doesn't work on systems that support XMM but
+> haven't yet enabled CR4.OSFXSR.  This causes crashes when _mmx_memcpy() is
+> called too early because LDMXCSR generates #UD when the aforementioned bit
+> is clear.
+> 
+> Fix it by using kernel_fpu_begin_mask(KFPU_387) explicitly.
+> 
+> Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
+> Reported-by: Krzysztof Mazur <krzysiek@podlesie.net>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 
-How so?  is_acpi_node() is defined as a static inline returning false then.
+Cc: <stable@vger.kernel.org> I guess.
+
+> ---
+>  arch/x86/lib/mmx_32.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
+> index 4321fa02e18d..2a6ad7aa148a 100644
+> --- a/arch/x86/lib/mmx_32.c
+> +++ b/arch/x86/lib/mmx_32.c
+> @@ -26,6 +26,16 @@
+>  #include <asm/fpu/api.h>
+>  #include <asm/asm.h>
+>  
+> +/*
+> + * For MMX, we use KFPU_387.  MMX instructions are not affected by MXCSR,
+> + * but both AMD and Intel documentation states that even integer MMX
+> + * operations will result in #MF if an exception is pending in FCW.
+> + *
+> + * We don't need EMMS afterwards because, after we call kernel_fpu_end(),
+> + * any subsequent user of the 387 stack will reinitialize it using
+> + * KFPU_387.
+
+Please use passive voice and convert the "we" to something impersonal.
+For example:
+
+"Use KFPU_387 for MMX. MMX instructions are not affected by MXCSR, but
+both AMD and Intel documentation states that even integer MMX operations
+will result in #MF if an exception is pending in FCW.
+
+EMMS afterwards is not needed because, after kernel_fpu_end(), any
+subsequent user of the 387 stack will reinitialize it using KFPU_387."
+
+Voila, de-we-fied!
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
