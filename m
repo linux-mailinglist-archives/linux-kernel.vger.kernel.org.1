@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCF12FD5A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704732FD5A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403897AbhATQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        id S2404040AbhATQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403994AbhATQ0u (ORCPT
+        with ESMTP id S2391398AbhATQ1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:26:50 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E62C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:26:10 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id g13so576651uaw.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:26:10 -0800 (PST)
+        Wed, 20 Jan 2021 11:27:18 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C0EC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:26:13 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id v1so5836310ott.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:26:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VA3sevNOG9LLzIdGtexh/+cDQStXz1NVLJUbTaa/OpI=;
-        b=XqHtcC1Cu+MW2ZiMfGVlGOQfR0LPyWWzi5zKLqS01utd6G69mhKg9C0CV4ZI0McEbv
-         CSg7aZXht+OcOyeAmNPQMaBsN2VzhaPNVYuP5qT4pckI9GKBN60qMdtolLmElgTe5Xol
-         633w5+Z4SJCMYCOPmES8Zy3+SQdgwmdr/qrXA=
+        bh=TR4A8q6K02DxTiaXZ3lXiS7PoGiZ905DDYVFaKV6hJs=;
+        b=X+6XC27e9NvRxAXSFcJCX7sBLTclDZaFZztT0rBtKNzuYzjxhbDoOceu3gLmc7RRCG
+         jJYxKFy0VDUwRGiSiNWileQMSufEJIZvnv2Lm7VGg7bRZF63rBoiyNMPWnVjrdckTwIc
+         bBeX+A5PFbrlPkTNtMd6QGzwA2TjoCRzbkA1k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VA3sevNOG9LLzIdGtexh/+cDQStXz1NVLJUbTaa/OpI=;
-        b=UxHX39EFlMkGsBNSCtgmL7Q8AS/37S46Yl8g4aXB4qToBmhAB8ITqR0EoXxp0w7AUh
-         kEETFRc8kZRfS19flVn9tGe2l4d2lcqxXhdVWCHxyq+x6a5XGuS1HQdB+Nz1NQlgVXom
-         foPEL3gwXg5b+8k2dYCpDqLXWC6Ct/yTaswb73thQ8vgqE6z/YkcoylVYJ1XNKRpZFFU
-         1VduAD6HDlgMuWX1XwbxeAssuim5zzAZWawIAuGk7XF7S2CdFUeq4iuJPbmJ9c3DNEp5
-         ERO0nXeXodlkcRcL83ge2uNar5HVXGRjhGWigAwzCCQZ06B/H3XakwO/S5evKy2NfNNN
-         9s3w==
-X-Gm-Message-State: AOAM533nn/hFHpBXmKaSFP6gzbUlkPRa9/bi3aj4W4WuqFDfXfaqfvq0
-        suTRh7hwhyhFOq85Ys4tU//QA+6Y/WyCNg==
-X-Google-Smtp-Source: ABdhPJyMCGkFgkukNC+zpLZrfRAN5HA/USIhYcjZHtQPJosF+31ke1uU8ZlET0iB3YUctHrvB+bqKg==
-X-Received: by 2002:ab0:2549:: with SMTP id l9mr6670123uan.128.1611159969067;
-        Wed, 20 Jan 2021 08:26:09 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id i17sm352801vkn.38.2021.01.20.08.26.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 08:26:08 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id p2so8044021uac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:26:07 -0800 (PST)
-X-Received: by 2002:ab0:6454:: with SMTP id j20mr6909033uap.0.1611159967277;
- Wed, 20 Jan 2021 08:26:07 -0800 (PST)
+        bh=TR4A8q6K02DxTiaXZ3lXiS7PoGiZ905DDYVFaKV6hJs=;
+        b=O+jlZsyBPWAFoFOayltu3WzD+moNla/wAG49685FaK64zsT/ZhN7WWy9DVbF1/VuN7
+         zRlDVl1rl52fFqbsm2k6K99OC0a272rTcgzOv4vtw0kuk3faTR3PVNSiUfVxM5DvZvN6
+         XMWiLsGa2GxyIVXVFtxDun/zD1uNTKXg2F/ZNAGyz8a9zovrF1oDjvJ60OQusWaG5JZh
+         UnQt4aJdBQBLiL7c99XXXsWcTYL4OJf/SA6eUQvCa0qOc9aGkD4oaOmH4xlsDshYmGuv
+         29At4qb9RCuUOY2a8iDo6DGYtoYbTJd0KZ5hOT6aaJDBoHfL1fps8DwqY5+LmdqVQZKp
+         GRzw==
+X-Gm-Message-State: AOAM532giiHefmkAH7vfeDLS5d184mBebvC9B+O4C4PRyVxyyj8pkJgA
+        CvLAawf0Ptz1d5YlZdp6VFsl1MMg74w7/MAzpIhHxQ==
+X-Google-Smtp-Source: ABdhPJyqk40fmfS7gqlnqy6/UClYuooRH8LNmG2/KUb4n6AFXeVUr0ep1ChY8yMP9+rjQYw6gpo15Az+wTN1pS5m+oA=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr7418547otb.303.1611159973120;
+ Wed, 20 Jan 2021 08:26:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118113651.71955-1-colin.king@canonical.com> <YAf+o85Z9lgkq3Nw@mwanda>
-In-Reply-To: <YAf+o85Z9lgkq3Nw@mwanda>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 20 Jan 2021 08:25:54 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XMxHCs5bvjPGjENL2Sty=AD6CS3jYnESDG+qKJdiMU+Q@mail.gmail.com>
-Message-ID: <CAD=FV=XMxHCs5bvjPGjENL2Sty=AD6CS3jYnESDG+qKJdiMU+Q@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: socinfo: Fix an off by one in qcom_show_pmic_model()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+References: <20210120123535.40226-1-paul@crapouillou.net> <20210120123535.40226-4-paul@crapouillou.net>
+In-Reply-To: <20210120123535.40226-4-paul@crapouillou.net>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 20 Jan 2021 17:26:02 +0100
+Message-ID: <CAKMK7uFWUWtsOK-tcnon5p6-8ek3ZD2HeexUE7s7vUKKNXFXkg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] drm/ingenic: Fix non-OSD mode
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        od@zcrc.me, dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jan 20, 2021 at 1:36 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Even though the JZ4740 did not have the OSD mode, it had (according to
+> the documentation) two DMA channels, but there is absolutely no
+> information about how to select the second DMA channel.
+>
+> Make the ingenic-drm driver work in non-OSD mode by using the
+> foreground0 plane (which is bound to the DMA0 channel) as the primary
+> plane, instead of the foreground1 plane, which is the primary plane
+> when in OSD mode.
+>
+> Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
+> Cc: <stable@vger.kernel.org> # v5.8+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-On Wed, Jan 20, 2021 at 1:58 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> These need to be < ARRAY_SIZE() instead of <= ARRAY_SIZE() to prevent
-> accessing one element beyond the end of the array.
->
-> Fixes: e9247e2ce577 ("soc: qcom: socinfo: fix printing of pmic_model")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Does what it says on the tin^Wcommit message.
+
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 > ---
->  drivers/soc/qcom/socinfo.c | 2 +-
->  1 file changed, 1 insertions(+), 1 deletions(-)
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 158433b4c084..963dcbfeaba2 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -554,7 +554,7 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>                 height = state->src_h >> 16;
+>                 cpp = state->fb->format->cpp[0];
+>
+> -               if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
+> +               if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
+>                         hwdesc = &priv->dma_hwdescs->hwdesc_f0;
+>                 else
+>                         hwdesc = &priv->dma_hwdescs->hwdesc_f1;
+> @@ -826,6 +826,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>         const struct jz_soc_info *soc_info;
+>         struct ingenic_drm *priv;
+>         struct clk *parent_clk;
+> +       struct drm_plane *primary;
+>         struct drm_bridge *bridge;
+>         struct drm_panel *panel;
+>         struct drm_encoder *encoder;
+> @@ -940,9 +941,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>         if (soc_info->has_osd)
+>                 priv->ipu_plane = drm_plane_from_index(drm, 0);
+>
+> -       drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
+> +       primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
+>
+> -       ret = drm_universal_plane_init(drm, &priv->f1, 1,
+> +       drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
+> +
+> +       ret = drm_universal_plane_init(drm, primary, 1,
+>                                        &ingenic_drm_primary_plane_funcs,
+>                                        priv->soc_info->formats_f1,
+>                                        priv->soc_info->num_formats_f1,
+> @@ -954,7 +957,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>
+>         drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+>
+> -       ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+> +       ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
+>                                         NULL, &ingenic_drm_crtc_funcs, NULL);
+>         if (ret) {
+>                 dev_err(dev, "Failed to init CRTC: %i\n", ret);
+> --
+> 2.29.2
+>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
