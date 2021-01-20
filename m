@@ -2,51 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806B72FD61A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2592E2FD622
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391071AbhATQiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:38:23 -0500
-Received: from mga06.intel.com ([134.134.136.31]:8540 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391387AbhATQfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:35:12 -0500
-IronPort-SDR: NTfWwIvawqACqSzBYKe2EHFlQ2bIYQWwrbYtNgP7JKxDkqLtS6/71ItDncH1M6WmtvYSIzxSUF
- cFdFteEOv2hQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="240673440"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="240673440"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 08:33:23 -0800
-IronPort-SDR: NaTwmjflADhRHtNI8n0obvI0Q7vHMzOHK+6I23GOLIWvsfLcOL1dFqajClmMBmHE+qn0RzpzKd
- YIBVWTkaq5xw==
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="426954211"
-Received: from yperets-mobl1.ger.corp.intel.com (HELO [10.209.89.231]) ([10.209.89.231])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 08:33:21 -0800
-Subject: Re: [PATCH v2] ASoC: Intel: Skylake: Check the kcontrol against NULL
-To:     =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>
-Cc:     Marcin Wojtas <mw@semihalf.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Guenter Roeck <groeck@google.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-References: <20201210121438.7718-1-lma@semihalf.com>
- <20201217130439.141943-1-lma@semihalf.com>
- <CAFJ_xbprw7UKREWgRAq3dDAA9oC_3cWoozn5pCY8w9By4dASag@mail.gmail.com>
- <CAFJ_xbrvr7jcCB57MPwzXf=oC5OYT5KUBkcqHYyOYH=a5njfSA@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8c22c415-1807-b673-20e3-bc8d7f4c05b7@linux.intel.com>
-Date:   Wed, 20 Jan 2021 10:33:19 -0600
+        id S2391532AbhATQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391274AbhATQe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:34:58 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC55C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:33:58 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id r4so12779625pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=JLGWYHpThCdPVVDkiECV6GKoYJQKgK7kvIvNi0RW4IU=;
+        b=EajgIUSDQxdCeg1OOPniYRAp+omb97kwO2g5i7bqkXMWDjS7VjoaElZINfyJOOZmoG
+         pOvX5fWOSSjkCG8Eeomlfkmqm7v39xXJ37bWf1wavV1hK+/uHSOVeUyffjcKeAYaB68O
+         L3+FQ7T7sxByCYhXnnS+yDgeR6rnjk7aDwJTnO5logdsMbwWEl8CyAaaN/oBETX+l86S
+         qH95YaB6iVT4E/2DZBRSXHtXJTOgTVMoMyd45xl7KvrOgBfdaJP5ck/FJdH7PJl9hbV+
+         47XR+Nkw7+/EHz51FwAFAj8Vw0ueySSNW2sobdHcRnLSF1wENC7Z8rSG2OGxoaUtHLnM
+         S52Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JLGWYHpThCdPVVDkiECV6GKoYJQKgK7kvIvNi0RW4IU=;
+        b=gagh2xiYegNuCoY7/khxPsqT+fIWgADhGcwxqFOj47QuMQz6Gf9pjbyB/Pp4NhO807
+         L5vceqiceaHy1ZgRoBVboxRKSEPB1c2pC/PvYKbD2mjcckpqBjDXITDztTkFB8t6RrlM
+         U0xFkkWR/mxdqRa1WLNljUhY6XZ21GVanyv9Xw03b6NAK16sTJwnPF4wEzaDXOi6Ttol
+         E7iBB/Hb72AnIdCYSjzON1pwcpgs0OURYhiuRTP9kMwqXFPgKIdFWmiHmXBkYcv1oQB6
+         shWZYIGy6lNqzvbbg7QFU+eH4KnRhZcdAJ3+zpaCtMUM0EPaa1KhfcPO2azBEIPojxO5
+         pQww==
+X-Gm-Message-State: AOAM532Lot1dlUTLB8HIe9FlZHCsrVV2nJKibPVABFZdZzwDAR0fP0DT
+        YjSaGR0httDcH8AvSveUzJF3zg==
+X-Google-Smtp-Source: ABdhPJwn5ZkwkYWcRHQRxbmIFZ2sDHzHlj3u2Gzc5GSHGe+J+1okMzB8JjH/ZgqHWCtuOQjQBiZkbA==
+X-Received: by 2002:a17:90a:db96:: with SMTP id h22mr6610657pjv.204.1611160436902;
+        Wed, 20 Jan 2021 08:33:56 -0800 (PST)
+Received: from [10.8.0.149] ([196.245.9.36])
+        by smtp.gmail.com with ESMTPSA id y26sm3031976pgk.42.2021.01.20.08.33.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 08:33:56 -0800 (PST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+ <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
+ <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
+ <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
+ <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
+ <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
+ <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
+Date:   Wed, 20 Jan 2021 17:33:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAFJ_xbrvr7jcCB57MPwzXf=oC5OYT5KUBkcqHYyOYH=a5njfSA@mail.gmail.com>
+In-Reply-To: <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -54,71 +77,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Donald,
 
-
-On 1/20/21 9:49 AM, Łukasz Majczak wrote:
-> Hi Pierre,
+On 1/19/21 12:30, Donald Buczek wrote:
+> Dear md-raid people,
 > 
-> Is there anything more to do to get the ACK for this patch?
-
-Adding Cezary and Amadeusz for feedback, I can't pretend having any sort 
-of knowledge on the Skylake driver internals and topology usage.
-
-> Best regards,
-> Lukasz
+> I've reported a problem in this thread in December:
 > 
-> wt., 12 sty 2021 o 12:34 Łukasz Majczak <lma@semihalf.com> napisał(a):
->>
->> Hi,
->>
->> This is just a kind reminder. Is there anything more required to
->> upstream this patch?
->>
->> Best regards,
->> Lukasz
->>
->>
->> czw., 17 gru 2020 o 14:06 Lukasz Majczak <lma@semihalf.com> napisał(a):
->>>
->>> There is no check for the kcontrol against NULL and in some cases
->>> it causes kernel to crash.
->>>
->>> Fixes: 2d744ecf2b984 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT")
->>> Cc: <stable@vger.kernel.org> # 5.4+
->>> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
->>> Reviewed-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
->>> ---
->>>   sound/soc/intel/skylake/skl-topology.c | 14 ++++++++++----
->>>   1 file changed, 10 insertions(+), 4 deletions(-)
->>>   v1 -> v2: fixed coding style
->>>
->>> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
->>> index ae466cd592922..8f0bfda7096a9 100644
->>> --- a/sound/soc/intel/skylake/skl-topology.c
->>> +++ b/sound/soc/intel/skylake/skl-topology.c
->>> @@ -3618,12 +3618,18 @@ static void skl_tplg_complete(struct snd_soc_component *component)
->>>          int i;
->>>
->>>          list_for_each_entry(dobj, &component->dobj_list, list) {
->>> -               struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
->>> -               struct soc_enum *se =
->>> -                       (struct soc_enum *)kcontrol->private_value;
->>> -               char **texts = dobj->control.dtexts;
->>> +               struct snd_kcontrol *kcontrol;
->>> +               struct soc_enum *se;
->>> +               char **texts;
->>>                  char chan_text[4];
->>>
->>> +               kcontrol = dobj->control.kcontrol;
->>> +               if (!kcontrol)
->>> +                       continue;
->>> +
->>> +               se = (struct soc_enum *)kcontrol->private_value;
->>> +               texts = dobj->control.dtexts;
->>> +
->>>                  if (dobj->type != SND_SOC_DOBJ_ENUM ||
->>>                      dobj->control.kcontrol->put !=
->>>                      skl_tplg_multi_config_set_dmic)
->>> --
->>> 2.25.1
->>>
+> "We are using raid6 on several servers. Occasionally we had failures, 
+> where a mdX_raid6 process seems to go into a busy loop and all I/O to 
+> the md device blocks. We've seen this on various kernel versions." It 
+> was clear, that this is related to "mdcheck" running, because we found, 
+> that the command, which should stop the scrubbing in the morning (`echo 
+> idle > /sys/devices/virtual/block/md1/md/sync_action`) is also blocked.
+> 
+> On 12/21/20, I've reported, that the problem might be caused by a 
+> failure of the underlying block device driver, because I've found 
+> "inflight" counters of the block devices not being zero. However, this 
+> is not the case. We were able to run into the mdX_raid6 looping 
+> condition a few times again, but the non-zero inflight counters have not 
+> been observed again.
+> 
+> I was able to collect a lot of additional information from a blocked 
+> system.
+> 
+> - The `cat idle > /sys/devices/virtual/block/md1/md/sync_action` command 
+> is waiting at kthread_stop to stop the sync thread. [ 
+> https://elixir.bootlin.com/linux/latest/source/drivers/md/md.c#L7989 ]
+> 
+> - The sync thread ("md1_resync") does not finish, because its blocked at
+> 
+> [<0>] raid5_get_active_stripe+0x4c4/0x660     # [1]
+> [<0>] raid5_sync_request+0x364/0x390
+> [<0>] md_do_sync+0xb41/0x1030
+> [<0>] md_thread+0x122/0x160
+> [<0>] kthread+0x118/0x130
+> [<0>] ret_from_fork+0x22/0x30
+> 
+> [1] https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L735
+> 
+> - yes, gdb confirms that `conf->cache_state` is 0x03 ( 
+> R5_INACTIVE_BLOCKED + R5_ALLOC_MORE )
+
+The resync thread is blocked since it can't get sh from inactive list, 
+so R5_ALLOC_MORE and R5_INACTIVE_BLOCKED are set, that is why `echo idle 
+ > /sys/devices/virtual/block/md1/md/sync_action` can't stop sync thread.
+
+> 
+> - We have lots of active stripes:
+> 
+> root@deadbird:~/linux_problems/mdX_raid6_looping# cat 
+> /sys/block/md1/md/stripe_cache_active
+> 27534
+
+There are too many active stripes, so this is false:
+
+atomic_read(&conf->active_stripes) < (conf->max_nr_stripes * 3 / 4)
+
+so raid5_get_active_stripe has to wait till it becomes true, either 
+increase max_nr_stripes or decrease active_stripes.
+
+1. Increase max_nr_stripes
+since "mdX_raid6 process seems to go into a busy loop" and R5_ALLOC_MORE 
+is set, if there is enough memory, I suppose mdX_raid6 (raid5d) could 
+alloc new stripe in grow_one_stripe and increase max_nr_stripes. So 
+please check the memory usage of your system.
+
+Another thing is you can try to increase the number of sh manually by 
+write new number to stripe_cache_size if there is enough memory.
+
+2. Or decrease active_stripes
+This is suppose to be done by do_release_stripe, but STRIPE_HANDLE is set
+
+> - handle_stripe() doesn't make progress:
+> 
+> echo "func handle_stripe =pflt" > /sys/kernel/debug/dynamic_debug/control
+> 
+> In dmesg, we see the debug output from 
+> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4925 
+> but never from 
+> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4958:
+> 
+> [171908.896651] [1388] handle_stripe:4929: handling stripe 4947089856, 
+> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
+>                  , check:4, reconstruct:0
+> [171908.896657] [1388] handle_stripe:4929: handling stripe 4947089872, 
+> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
+>                  , check:4, reconstruct:0
+> [171908.896669] [1388] handle_stripe:4929: handling stripe 4947089912, 
+> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
+>                  , check:4, reconstruct:0
+> 
+> The sector numbers repeat after some time. We have only the following 
+> variants of stripe state and "check":
+> 
+> state=0x2031 cnt=1, check:0 # ACTIVE        +INSYNC+REPLACED+IO_STARTED, 
+> check_state_idle
+> state=0x2029 cnt=1, check:4 # ACTIVE+SYNCING       +REPLACED+IO_STARTED, 
+> check_state_check_result
+> state=0x2009 cnt=1, check:0 # ACTIVE+SYNCING                +IO_STARTED, 
+> check_state_idle
+> 
+> - We have MD_SB_CHANGE_PENDING set:
+
+because MD_SB_CHANGE_PENDING flag. So do_release_stripe can't call 
+atomic_dec(&conf->active_stripes).
+
+Normally, SB_CHANGE_PENDING is cleared from md_update_sb which could be 
+called by md_reap_sync_thread. But md_reap_sync_thread stuck with 
+unregister sync_thread (it was blocked in raid5_get_active_stripe).
+
+
+Still I don't understand well why mdX_raid6 in a busy loop, maybe raid5d 
+can't break from the while(1) loop because "if (!batch_size && 
+!released)" is false. I would assume released is '0' since
+ >      released_stripes = {
+ >          first = 0x0
+ >      }
+And __get_priority_stripe fetches sh from conf->handle_list and delete
+it from handle_list, handle_stripe marks the state of the sh with 
+STRIPE_HANDLE, then do_release_stripe put the sh back to handle_list.
+So batch_size can't be '0', and handle_active_stripes in the loop
+repeats the process in the busy loop. This is my best guess to explain 
+the busy loop situation.
+
+> 
+> root@deadbird:~/linux_problems/mdX_raid6_looping# cat 
+> /sys/block/md1/md/array_state
+> write-pending
+> 
+> gdb confirms that sb_flags = 6 (MD_SB_CHANGE_CLEAN + MD_SB_CHANGE_PENDING)
+
+since rdev_set_badblocks could set them, could you check if there is 
+badblock of underlying device (sd*)?
+
+> 
+> So it can be assumed that handle_stripe breaks out at 
+> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4939
+> 
+> - The system can manually be freed from the deadlock:
+> 
+> When `echo active > /sys/block/md1/md/array_state` is used, the 
+> scrubbing and other I/O continue. Probably because of 
+> https://elixir.bootlin.com/linux/latest/source/drivers/md/md.c#L4520
+
+Hmm, seems clear SB_CHANGE_PENDING made the trick, so the blocked 
+process can make progress.
+
+> 
+> I, of coruse, don't fully understand it yet. Any ideas?
+> 
+> I append some data from a hanging raid... (mddev, r5conf and a sample 
+> stripe_head from handle_list with it first disks)
+
+These data did help for investigation!
+
+Thanks,
+Guoqing
