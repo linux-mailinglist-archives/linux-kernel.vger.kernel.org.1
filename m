@@ -2,226 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36652FCAB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4322FCAA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 06:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729804AbhATFVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 00:21:35 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:27859 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729781AbhATFOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 00:14:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611119665; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ORUMplqyK6IaDqFhTEvsF33PBH35b7H9236CHedemic=;
- b=e+wTX6PW7QbeVmw1ltyxm1gYjT9UnUIfJRy5n0ulChof/oXQX45bFXAP+w8Y9reTVvXzXMyw
- QnoDxQXj5huoqHRU8crF2bB9f/LnmuLxvF5KRxgO7QiavOqbd8qcQVU1q2x31ZHRDR2Zpccb
- iFEcGrARXIDZWTQuVtUSZ2UFisQ=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6007bc17e23dedcc3a11fe5c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Jan 2021 05:13:59
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84062C4331D; Wed, 20 Jan 2021 05:13:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB88DC43464;
-        Wed, 20 Jan 2021 05:13:54 +0000 (UTC)
+        id S1726757AbhATFUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 00:20:10 -0500
+Received: from mail-eopbgr40055.outbound.protection.outlook.com ([40.107.4.55]:63396
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727425AbhATFP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 00:15:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IYNtlS6tSagV2DqmrZMLKHjqXnLp/vk3GiCb0iADEosSpWWjYg4yPRcF+xGfnxMxCUfJtDjJZBLpWk0LpGFykEOapkZRwUm2yJzDHh4Ly4E94l+kGpxdjBTkijLepuHtYOLWQGZYpSzMgGAxLPH7AyCO3rp58sv8/1L04HtvUJ/gBDrd/01SQUWO/jBDbGjdYlXTd6lJky6d6cY24n750o+tjm/iib1EDL7z971tYp85qswSlHq5hKnkvTigaO/B1yw8UnrxYf7AX1L1M66fjLip3ZHNb6a4lZHc7ylBElgk0gevD2bxxx00Rt2NX2AjO9qgJj5CNfZ5t6dYADOktQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D4xFDc0SIFHS3BDZHRYK0bebcYMolWPoXgkgKHgKnIs=;
+ b=aqEaxu6fYOgeqGrTIwZO0MwogDK75/V+HfjhbitaLidnAya/UotWOaMoouAFm99HvL8nP4ERSLZBwYH70Jkb8EelAW+Xy3A7l3Qc+zZEGEZ+FjZ3izpjlP3DvCx0TBlM2LtMfv45h1qttgGelEhVKQB5QqaR5spXsaIpAv5vbrue9ECmv9JDGIw/yS0ETAL2MZ2SWM5KhRdiA5FP/d013eYbZ5ikHjGbE08n+ZWa27AQHZoQDXisN2wLZ7ZgtWUCIsdpNpYxON7FenLtgCGMQLcnGfjqUFnXKuBxCtjuEDiAZd3Bgg44JZ8t42eOOgMduUoxHb4DGFq6MLPFEYOLig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D4xFDc0SIFHS3BDZHRYK0bebcYMolWPoXgkgKHgKnIs=;
+ b=jwuhu2UNAVulrxIHZIclWrAAiR4DwN5Pclu0sPVv6mpQieUI7JObedGchT6NNR+AGctrMzmO16dzvx/esgFE/M8A9T+g8ryrElwK25envV32JBYjwpHtUPnorM2Ujsk0vidzS2KAZuEcqK9o3w7OL7Ehpj4Cfv87nAW/KszxorI=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB7PR04MB5132.eurprd04.prod.outlook.com (2603:10a6:10:15::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Wed, 20 Jan
+ 2021 05:15:06 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::b83c:2edc:17e8:2666]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::b83c:2edc:17e8:2666%4]) with mapi id 15.20.3763.014; Wed, 20 Jan 2021
+ 05:15:06 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     John Garry <john.garry@huawei.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [PATCH] perf metricgroup: Fix system PMU metrics
+Thread-Topic: [PATCH] perf metricgroup: Fix system PMU metrics
+Thread-Index: AQHW7ksGebtibLbnaUWJ/YJe+SCr+aouwcUwgABWSgCAAB2ugIAAwm9g
+Date:   Wed, 20 Jan 2021 05:15:06 +0000
+Message-ID: <DB8PR04MB67951BF5DBE4524CB13BAAE4E6A20@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <1611050655-44020-1-git-send-email-john.garry@huawei.com>
+ <DB8PR04MB67957F13AE831ECC67EFFD7BE6A30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <b25f0861-1cec-3ac8-a0ef-8e9e94c4e662@huawei.com>
+ <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
+In-Reply-To: <4a876638-3c92-4a49-1925-0ff20c5d42b7@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2d34863f-9606-442b-8f5b-08d8bd0259ca
+x-ms-traffictypediagnostic: DB7PR04MB5132:
+x-microsoft-antispam-prvs: <DB7PR04MB5132CE18744D0B11B86B9559E6A20@DB7PR04MB5132.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qqC9n02JUV4DgjwAhMUbwy/sch4uGBglKCTIUeFzpfhcHM2YUVgtPsoRplxuSl8Eb0kSLwhkbbtH+d9y7W5erxVGDOLGYvbB+5lcFeTlaFjLhgIJvIFQm6yeeaL3q0WivL6mADJMYQiPmuS3pIEMm9SZ3ahsoXcpIr6ZXiaR5KQfNbow6ovMpOtJkxsE5ks4tmkKr1LBud8pYMBg9UgrUCUemUQUH8bRctoDguU4aKupbwdd+fDQt4eGS/T112h+oHRvKd6sqae34QsXy4dHMh80faNknDJ8TVMlevmOfEAo9PUjLk2kFZfVuySOVOYT1XgOd1NJBhvlPLKcz4cXTDNNyltAxywxyoMZna6X7lFy7tSqNIQVnPvab62zsIvoMmxd3jgBHvzIA4+NchM3MB8fZORm2sir6fogVgTewSnaM3rCj6bvTn58Z/K7Y+Jm
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(9686003)(66476007)(55016002)(316002)(921005)(478600001)(76116006)(110136005)(7416002)(71200400001)(5660300002)(8936002)(6506007)(33656002)(186003)(66556008)(4326008)(8676002)(52536014)(54906003)(26005)(86362001)(66446008)(7696005)(83380400001)(64756008)(2906002)(19627235002)(53546011)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?OG9GQnRMTWhocSs0dFZHdkkzaUVicjdtQitMbGxKRXVacWdhOEoyYzY1SkRo?=
+ =?utf-8?B?ajZaOXJaWTVIVnRzdzFzQkJhcUNwOE9aMnJPRDV4dlkrY0wrajg1eXhUMVBp?=
+ =?utf-8?B?YmxDOHh0bUlyeVFUVEdxT2QzMmJhaHp3SEMrOXlET29ES09vcndnMlB1czVX?=
+ =?utf-8?B?bjVEblU1QkpOazI2WnVYSTgxZ0pkM0dkZ29LUm5sd3U5c2RiaWU5b1I3MUh5?=
+ =?utf-8?B?cTRYNUoxd1hJSGdIUEpuSy9OU2thclRkTisxMDc0WTU0eVcyQzZ2d1RiUDUy?=
+ =?utf-8?B?UEljdFRpU1JJQ2E5SGtCOEl3bC9nakNNUkxwdDNCenNTSWg2TUJabUtlRXh1?=
+ =?utf-8?B?V29ZT0E2VXNLVFlXR2pkelFyOXlZT3Y2Z0tiV3VrUVQwYzkzakdoeGtwK0tQ?=
+ =?utf-8?B?RENuYTFJRUQwelJ0SmNQSGp1bk5Wb2U0RjBUakFXOXNIYXREdmpRcEJPak5G?=
+ =?utf-8?B?VUoreG1MdmpLOExzRHpJd2ZSc1A3MlFKQWJEUndFdytVRHpEN2tDbVc1TXNq?=
+ =?utf-8?B?T0lya0RFK0lyWTR6ZlFsS2x5SXNETjBLYko1bEJITlZXRTlxbk1GdzBrS2xJ?=
+ =?utf-8?B?dERPRnluQlVWV3l6Q1dZMUNnSWJGWDNxNThJY2duUjg4R25Ua2R1TU9tb2RZ?=
+ =?utf-8?B?amx1aFV6aHVBUEFRRTQyTXdxb2ZSYk9UUGk0aFdvT3V5MHhiVG1BNFBoYkF6?=
+ =?utf-8?B?Sk13bDJXM2VpMzNzRnFjdURzQnlQVzZOcHdRc3cvTzlXQWxNbmJUdzIyYlJt?=
+ =?utf-8?B?YmVyaU53TFpLNnNac05zbkZ2RWJzUW44ZDBoQWFaZXBQT2F5ZlVQZ0pNVkhP?=
+ =?utf-8?B?V3BqTGZrUDFqWHZJQzNSQ0hRN0Z0em0reW1DOTFaMEk3M2wvcStqd0I3SFFL?=
+ =?utf-8?B?dWZlK0hRL0M5cm1MVzhlbGNIdEVOU2h6bHo5eEQ3YUJiaWZCU29GbERDd3E1?=
+ =?utf-8?B?ZGRmL0hOK0VYY0xlVWRSWWRyM3UyK2I4aDhtQnRuSnBCbkRReVQwVjBERjgr?=
+ =?utf-8?B?L0tJdmQ5ejNITTNBUkdva3daVVhyQWZnSkpHLzRvK2NQUlZoVjgrVlgyUkFy?=
+ =?utf-8?B?ZUptN0xpcURvSXpra1JKbXR3Q0hHUGZ1WFhQM0VCY0RxUFc4ZGZ0UE1qQWRI?=
+ =?utf-8?B?UUFHMnkvSmxrUTUrL3A3Z2dDbGNoTFpSUEh2cnZRcXNDN1d5VWlKeHM5VDRP?=
+ =?utf-8?B?WVo5eFRYTkcyaUw2dUJqR2s5MVFrdDczc0xGSnIvK1NmSm1QTW9KVXFyMU5y?=
+ =?utf-8?B?S1Zra1paczkybEQ3a1FGNnVPZFQ0TnpkZ0dJVkVieGs5TS9FTnVJbXZTdTR1?=
+ =?utf-8?Q?K1vy6eQcjquQ8=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 20 Jan 2021 10:43:54 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Al Grant <Al.Grant@arm.com>
-Cc:     Suzuki Poulose <Suzuki.Poulose@arm.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        leo.yan@linaro.org, mnissler@google.com,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-In-Reply-To: <DB7PR08MB3355472BF00A47087E0130CA86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <dd400fd7017a5d92b55880cf28378267@codeaurora.org>
- <20210118202354.GC464579@xps15>
- <32216e9fa5c9ffb9df1123792d40eafb@codeaurora.org>
- <DB7PR08MB3355E85C72492D4766F0BEFC86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
- <03b893801841f732a25072b4e62f8e0b@codeaurora.org>
- <de2487eb-ddb9-589a-8093-fae31235c884@arm.com>
- <DB7PR08MB3355472BF00A47087E0130CA86A30@DB7PR08MB3355.eurprd08.prod.outlook.com>
-Message-ID: <a8377f54c68361ba1aba948704e631ac@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d34863f-9606-442b-8f5b-08d8bd0259ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2021 05:15:06.5512
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KJoizH7wMUdATNB0NiVU9FDMIMq0Y3ZGs3XAYjdWI3t18Rq3FK67Le7OdsE5O6B7I32rzrHhHV6TYB2Uobw70g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
-
-On 2021-01-19 17:26, Al Grant wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->> On 1/19/21 9:51 AM, Sai Prakash Ranjan wrote:
->> > Hi Al,
->> >
->> > On 2021-01-19 14:06, Al Grant wrote:
->> >> Hi Sai,
->> >>
->> >>> From: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
->> >>> Hi Mathieu,
->> >>>
->> >>> On 2021-01-19 01:53, Mathieu Poirier wrote:
->> >>> > On Fri, Jan 15, 2021 at 11:16:24AM +0530, Sai Prakash Ranjan wrote:
->> >>> >> Hello Mathieu, Suzuki
->> >>> >>
->> >>> >> On 2020-10-15 21:32, Mathieu Poirier wrote:
->> >>> >> > On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
->> >>> >> > > On production systems with ETMs enabled, it is preferred to
->> >>> >> > > exclude kernel mode(NS EL1) tracing for security concerns and
->> >>> >> > > support only userspace(NS EL0) tracing. So provide an option
->> >>> >> > > via kconfig to exclude kernel mode tracing if it is required.
->> >>> >> > > This config is disabled by default and would not affect the
->> >>> >> > > current configuration which has both kernel and userspace
->> >>> >> > > tracing enabled by default.
->> >>> >> > >
->> >>> >> >
->> >>> >> > One requires root access (or be part of a special trace group)
->> >>> >> > to be able to use the cs_etm PMU.  With this kind of elevated
->> >>> >> > access restricting tracing at EL1 provides little in terms of security.
->> >>> >> >
->> >>> >>
->> >>> >> Apart from the VM usecase discussed, I am told there are other
->> >>> >> security concerns here regarding need to exclude kernel mode
->> >>> >> tracing even for the privileged users/root. One such case being
->> >>> >> the ability to analyze cryptographic code execution since ETMs
->> >>> >> can record all branch instructions including timestamps in the
->> >>> >> kernel and there may be other cases as well which I may not be
->> >>> >> aware of and hence have added Denis and Mattias. Please let us
->> >>> >> know if you have any questions further regarding this not being a security
->> concern.
->> >>> >
->> >>> > Even if we were to apply this patch there are many ways to
->> >>> > compromise a system or get the kernel to reveal important
->> >>> > information using the perf subsystem.  I would perfer to tackle
->> >>> > the problem at that level rather than concentrating on coresight.
->> >>> >
->> >>>
->> >>> Sorry but I did not understand your point. We are talking about the
->> >>> capabilities of coresight etm tracing which has the instruction level tracing
->> and a lot more.
->> >>> Perf subsystem is just the framework used for it.
->> >>> In other words, its not the perf subsystem which does instruction
->> >>> level tracing, its the coresight etm. Why the perf subsystem should
->> >>> be modified to lockdown kernel mode? If we were to let perf handle
->> >>> all the trace filtering for different exception levels, then why do
->> >>> we need the register settings in coresight etm driver to filter out
->> >>> NS EL* tracing? And more importantly, how do you suppose we handle sysfs
->> mode of coresight tracing with perf subsystem?
->> >>
->> >> You both have good points. Mathieu is right that this is not a
->> >> CoreSight issue specifically, it is a matter of kernel security
->> >> policy, and other hardware tracing mechanisms ought to be within its
->> >> scope. There should be a general "anti kernel exfiltration" config
->> >> that applies to all mechanisms within its scope, and we'd definitely expect
->> that to include Intel PT as well as ETM.
->> >>
->> >
->> > I agree with this part where there should be a generic config for all
->> > hardware tracing families(atleast for Intel PT and ARM Coresight),
->> > Suzuki suggested that as well. I am under the impression that Mathieu
->> > didn't like adding such a config and wanted perf subsystem to handle
->> > it since initial discussion was around whether root compromise meant
->> > everything is lost already and such a kconfig would not help, but
->> > Mattias already gave some good examples where that is not true.
->> >
->> >> A kernel config that forced exclude_kernel on all perf events would
->> >> deal with ETM and PT in one place, but miss the sysfs interface to ETM.
->> >>
->> >> On the other hand, doing it in the ETM drivers would cover the perf
->> >> and sysfs interfaces to ETM, but would miss Intel PT.
->> >>
->> >> So I think what is needed is a general config option that is both
->> >> implemented in perf (excluding all kernel tracing events) and by any
->> >> drivers that provide an alternative interface to hardware tracing events.
->> >>
->> >
->> > I am good with this approach, once Mathieu confirms, I can add a
->> > kernel wide kconfig as Suzuki suggested earlier and make ETM{3,4}x as
->> > the initial users. Someone more familiar with Intel PTs can then make
->> > use of this kconfig.
->> 
->> Instead of adding the support for individual drivers, you could handle 
->> this in the
->> generic perf layer. e.g, Fail perf_event create with an attribute 
->> which allows
->> kernel tracing ?
->> 
->> if (!attr.exclude_kernel)
->> 	return -EINVAL;
->> 
->> Or even exclude the kernel silently always.
->> 
->> This could also be limited to PMUs with PERF_PMU_CAP_ITRACE, if you 
->> want to
->> limit this to PMUs that instruction level tracing.
-> 
-> The sysfs interface to ETM also needs to deny access to kernel trace, 
-> so it's
-> safest to enforce it in the drivers in addition to any enforcement done 
-> in perf.
-> 
-
-Yes, it will be done in drivers for sysfs interface as well based on the
-same kconfig.
-
-> Also, forcing exclude_kernel on all perf events may be too strong. 
-> Including
-> the kernel in counted events e.g. cache misses can help understand the 
-> effect
-> of system calls on performance, and isn't a big side channel compared 
-> to
-> userspace event counts. It doesn't reveal detailed timings in the way
-> trace does.
-> 
-> So there's an argument for locking out kernel trace specifically (ETM 
-> or PT
-> on the kernel); or even, for locking out timed trace with timestamps 
-> and
-> cycle counts, and allowing untimed trace. So, that could be done in 
-> perf, with
-> a more specific test on the type of event, before it forced 
-> exclude_kernel.
-> 
-
-Yes exclude_kernel for all events might not be possible, so it would be
-better if it is initially applied for PMUs with PERF_PMU_CAP_ITRACE as
-Suzuki suggested.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvaG4gR2FycnkgPGpvaG4u
+Z2FycnlAaHVhd2VpLmNvbT4NCj4gU2VudDogMjAyMeW5tDHmnIgyMOaXpSAxOjMzDQo+IFRvOiBK
+b2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgcGV0ZXJ6QGluZnJhZGVhZC5v
+cmc7DQo+IG1pbmdvQHJlZGhhdC5jb207IGFjbWVAa2VybmVsLm9yZzsgbWFyay5ydXRsYW5kQGFy
+bS5jb207DQo+IGFsZXhhbmRlci5zaGlzaGtpbkBsaW51eC5pbnRlbC5jb207IGpvbHNhQHJlZGhh
+dC5jb207DQo+IG5hbWh5dW5nQGtlcm5lbC5vcmc7IGlyb2dlcnNAZ29vZ2xlLmNvbTsga2phaW5A
+bGludXguaWJtLmNvbQ0KPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXhh
+cm1Ab3BlbmV1bGVyLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBwZXJmIG1ldHJpY2dyb3Vw
+OiBGaXggc3lzdGVtIFBNVSBtZXRyaWNzDQo+IA0KPiBPbiAxOS8wMS8yMDIxIDE1OjQ3LCBKb2hu
+IEdhcnJ5IHdyb3RlOg0KPiA+IE9uIDE5LzAxLzIwMjEgMTA6NTYsIEpvYWtpbSBaaGFuZyB3cm90
+ZToNCj4gPj4gSXQgc2VlbXMgaGF2ZSBvdGhlciBpc3N1ZSBjb21wYXJlZCB0byA1LjEwIGtlcm5l
+bCBhZnRlciBzd2l0Y2hpbmcgdG8NCj4gPj4gdGhpcyBmcmFtZXdvcmssIGJlbG93IG1ldHJpYyBj
+YW4ndCB3b3JrLg0KPiA+PiAiTWV0cmljRXhwciI6ICIoKCBpbXg4X2RkcjBAcmVhZFxcLWN5Y2xl
+c0AgKw0KPiA+PiBpbXg4X2RkcjBAd3JpdGVcXC1jeWNsZXNADQo+ID4+ICkgKiA0ICogNCAvIGR1
+cmF0aW9uX3RpbWUpIC8gKDc1MCAqIDEwMDAwMDAgKiA0ICogNCkiDQo+ID4+IEFmdGVyIGNoYW5n
+ZSB0bzoNCj4gPj4gIk1ldHJpY0V4cHIiOiAiKCggaW14OG1tX2Rkci5yZWFkX2N5Y2xlcyArIGlt
+eDhtbV9kZHIud3JpdGVfY3ljbGVzICkNCj4gPj4gKg0KPiA+PiA0ICogNCAvIGR1cmF0aW9uX3Rp
+bWUpIC8gKDc1MCAqIDEwMDAwMDAgKiA0ICogNCkiLA0KPiA+DQo+ID4gSXQgc2VlbXMgdGhhdCBh
+bnkgbWV0cmljIHdoaWNoIGluY2x1ZGVzICJkdXJhdGlvbl90aW1lIiBpcyBicm9rZW4sDQo+ID4g
+ZXZlbiBvbiB4ODY6DQo+ID4NCj4gPiBqb2huQGxvY2FsaG9zdDp+L2FjbWUvdG9vbHMvcGVyZj4g
+c3VkbyAuL3BlcmYgc3RhdCAtdiAtTQ0KPiA+IEwxRF9DYWNoZV9GaWxsX0JXIHNsZWVwIDEgVXNp
+bmcgQ1BVSUQgR2VudWluZUludGVsLTYtM0QtNCBtZXRyaWMgZXhwcg0KPiA+IDY0ICogbDFkLnJl
+cGxhY2VtZW50IC8gMTAwMDAwMDAwMCAvIGR1cmF0aW9uX3RpbWUgZm9yDQo+ID4gTDFEX0NhY2hl
+X0ZpbGxfQlcgZm91bmQgZXZlbnQgZHVyYXRpb25fdGltZSBmb3VuZCBldmVudA0KPiA+IGwxZC5y
+ZXBsYWNlbWVudCBhZGRpbmcge2wxZC5yZXBsYWNlbWVudH06VyxkdXJhdGlvbl90aW1lDQo+ID4g
+bDFkLnJlcGxhY2VtZW50IC0+IGNwdS91bWFzaz0weDEsKG51bGwpPTB4MWU4NDgzLGV2ZW50PTB4
+NTEvDQo+ID4gU2VnbWVudGF0aW9uIGZhdWx0DQo+ID4NCj4gPg0KPiA+IFNlZW1zIHRvIGJlIGZy
+b20gbXkgY29tbWl0IGMyMzM3ZDY3MTk5ICgicGVyZiBtZXRyaWNncm91cDogRml4IG1ldHJpY3MN
+Cj4gPiB1c2luZyBhbGlhc2VzIGNvdmVyaW5nIG11bHRpcGxlIFBNVXMiKQ0KPiA+DQo+ID4gSSds
+bCBsb29rIHRvIGZpeCBpdCBub3cuDQo+ID4NCj4gDQo+IFBsZWFzZSB0cnkgdGhpczoNCj4gDQo+
+ICBGcm9tIDIzODBmMWVmMDI1MGU2ODE4YjNkYmM3YmZmNGE4Njg4MTA4NzVlMmEgTW9uIFNlcCAx
+NyAwMDowMDowMA0KPiAyMDAxDQo+IEZyb206IEpvaG4gR2FycnkgPGpvaG4uZ2FycnlAaHVhd2Vp
+LmNvbT4NCj4gRGF0ZTogVHVlLCAxOSBKYW4gMjAyMSAxNzoyOTo1NCArMDAwMA0KPiBTdWJqZWN0
+OiBbUEFUQ0hdIHBlcmYgbWV0cmljZ3JvdXA6IEZpeCBtZXRyaWMgc3VwcG9ydCBmb3IgZHVyYXRp
+b25fdGltZQ0KPiANCj4gRm9yIGEgbWV0cmljIHVzaW5nIGR1cmF0aW9uX3RpbWUsIHRoZSBzdHJj
+bXAoKSBjaGVjayB3aGVuIGZpbmRpbmcgaWRlbnRpY2FsDQo+IGV2ZW50cyBpbiBtZXRyaWNfZXZl
+bnRzW10gaXMgYnJva2VuLCBhcyBpdCBkb2VzIG5vdCBjb25zaWRlciB0aGF0IHRoZQ0KPiBldmVu
+dCBwbXVfbmFtZSBpcyBOVUxMIC0gaXQgd291bGQgYmUgZm9yIGR1cmF0aW9uX3RpbWUuDQo+IA0K
+PiBBcyBzdWNoLCBhZGQgYSBOVUxMIGNoZWNrIGhlcmUgZm9yIGV2ZW50IHBtdV9uYW1lLg0KPiAN
+Cj4gU2lnbmVkLW9mZi1ieTogSm9obiBHYXJyeSA8am9obi5nYXJyeUBodWF3ZWkuY29tPg0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3BlcmYvdXRpbC9tZXRyaWNncm91cC5jIGIvdG9vbHMvcGVy
+Zi91dGlsL21ldHJpY2dyb3VwLmMNCj4gaW5kZXggZWU5NGQzZThkZDY1Li4yNzdhZGZmODAxN2Yg
+MTAwNjQ0DQo+IC0tLSBhL3Rvb2xzL3BlcmYvdXRpbC9tZXRyaWNncm91cC5jDQo+ICsrKyBiL3Rv
+b2xzL3BlcmYvdXRpbC9tZXRyaWNncm91cC5jDQo+IEBAIC0yODAsNiArMjgwLDggQEAgc3RhdGlj
+IHN0cnVjdCBldnNlbCAqZmluZF9ldnNlbF9ncm91cChzdHJ1Y3QgZXZsaXN0DQo+ICpwZXJmX2V2
+bGlzdCwNCj4gICAJCQkgKi8NCj4gICAJCQlpZiAoIWhhc19jb25zdHJhaW50ICYmDQo+ICAgCQkJ
+ICAgIGV2LT5sZWFkZXIgIT0gbWV0cmljX2V2ZW50c1tpXS0+bGVhZGVyICYmDQo+ICsJCQkgICAg
+ZXYtPmxlYWRlci0+cG11X25hbWUgJiYNCj4gKwkJCSAgICBtZXRyaWNfZXZlbnRzW2ldLT5sZWFk
+ZXItPnBtdV9uYW1lICYmDQo+ICAgCQkJICAgICFzdHJjbXAoZXYtPmxlYWRlci0+cG11X25hbWUs
+DQo+ICAgCQkJCSAgICBtZXRyaWNfZXZlbnRzW2ldLT5sZWFkZXItPnBtdV9uYW1lKSkNCj4gICAJ
+CQkJYnJlYWs7DQo+IC0tDQo+IDIuMjYuMg0KPiANCj4gDQoNCkZvciB0aGlzIHBhdGNoOiBUZXN0
+ZWQtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQoNCkhpIEpvaG4s
+IEpvbHNhLA0KDQpJcyB0aGVyZSBhbnkgd2F5IHRvIGF2b2lkIGJyZWFraW5nIGV4aXN0IG1ldHJp
+YyBleHByZXNzaW9ucz8gSWYgbm90LCBpdCB3aWxsIGFsd2F5cyBoYXBwZW5lZCBhZnRlciBtZXRy
+aWNncm91cCBjaGFuZ2VzLg0KDQpJIHJlY2FsbCB0aGF0IEpvbHNhIG1lbnRpb25lZCBpdCBiZWZv
+cmUsIGJ1dCBJIGRvbuKAmXQgcmVtZW1iZXIgaXQgdmVyeSBjbGVhcmx5Lg0KDQpUaGFua3MgYSBs
+b3QgZm9yIEpvaG4ncyBidWcgZml4Lg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg==
