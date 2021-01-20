@@ -2,58 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7D42FCE41
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F362FCE44
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732746AbhATKTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:19:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
+        id S1732801AbhATKT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbhATKH5 (ORCPT
+        with ESMTP id S1728638AbhATKIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:07:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB7AC061757;
-        Wed, 20 Jan 2021 02:06:26 -0800 (PST)
+        Wed, 20 Jan 2021 05:08:11 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6256CC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 02:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oB6bOagXwR+k0i3DKoNOg46fE73bVdDB9v4Xz01POuQ=; b=EVNlUbvsyxqz5qg4y5PHqciTcs
-        aJ3nFOgPgn673dOeTWK+YLdm6xtvRKr9Ctf/KsErx1ADRcoRYlKIAXeJD8DtsqNLlg+etbJSZS1+Z
-        oPBYO6KZ5Q00Tk2k1soTqzThgCIOOHVICCyrMAEq+wpGbXHCzZTDVZX5nfMCyarG/JXkJlqmWDM0a
-        BuGgQjFhk+lM5HXOPjdScBvBRSt+4tZHhGCCzAAC45Stng/h+fn8G+iP+VzD3uOUWW6igWgfbqjhr
-        bY4tFIB835dX6SIYaVtr2iNePPRv7V74BKXOxFvZx69/MeaP64p82w/q7q+FOanKgnVZbAl31NfNK
-        9x/9IXzw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2AMy-00FVxQ-LR; Wed, 20 Jan 2021 10:05:51 +0000
-Date:   Wed, 20 Jan 2021 10:05:44 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Jens Axboe <axboe@kernel.dk>,
-        Jan Kara <jack@suse.cz>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] block: Fix an error handling in add_partition
-Message-ID: <20210120100544.GC3694085@infradead.org>
-References: <20210117085023.24352-1-dinghao.liu@zju.edu.cn>
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=dWRKnysMoCYVgpiHotWOpoe9PF3rMjzOvG2xl7rGJB4=; b=yLc58B08pClT6QzHO0Z7IA7SAV
+        XYaYC+U+bDEYYrdca+4yw2uImJyiRcqXyiOb/BsHaTEoFH3ns3tLfRFDzwHWz6z4yo38f6iASUvPD
+        C3CYQtn7DnBnKAZCDzhvC4ylJrKOiP2ZNhqCz97f16BGk1DTWXMecpcrdDVWQrCOndUbDujFmZtjm
+        fJjxSDN4l/18y5eXvzX7cKVUdo6DVDOakD0cwaAAeJcFnac+ydAP6YS55mszlVR9vs7rzE8vta/Dp
+        ozNxSv06quRTfa3QRCub81EeIKgPXiYlHT+kss0SBiWs6UteOIE5VbSL+vswTI1TyQP48UcmAQfbT
+        1riSy+fg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2AOS-0006dN-1M; Wed, 20 Jan 2021 10:07:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A12C5301959;
+        Wed, 20 Jan 2021 11:07:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4F94F206A9211; Wed, 20 Jan 2021 11:07:11 +0100 (CET)
+Date:   Wed, 20 Jan 2021 11:07:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Mazur <krzysiek@podlesie.net>,
+        Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2 4/4] x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
+Message-ID: <YAgAz4qYESIv8iNR@hirez.programming.kicks-ass.net>
+References: <cover.1611077835.git.luto@kernel.org>
+ <803d45a172a25314fdaec0a01aada8333d55df4e.1611077835.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210117085023.24352-1-dinghao.liu@zju.edu.cn>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <803d45a172a25314fdaec0a01aada8333d55df4e.1611077835.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 04:50:17PM +0800, Dinghao Liu wrote:
-> Once we have called device_initialize(), we should use put_device() to
-> give up the reference on error, just like what we have done on failure
-> of device_add().
+On Tue, Jan 19, 2021 at 09:39:02AM -0800, Andy Lutomirski wrote:
+> The remaining callers of kernel_fpu_begin() in 64-bit kernels don't use 387
+> instructions, so there's no need to sanitize the FPU state.  Skip it to get
+> most of the performance we lost back.
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Reported-by: Krzysztof Olędzki <ole@ans.pl>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/x86/include/asm/fpu/api.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+> index 38f4936045ab..435bc59d539b 100644
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -32,7 +32,19 @@ extern void fpregs_mark_activate(void);
+>  /* Code that is unaware of kernel_fpu_begin_mask() can use this */
+>  static inline void kernel_fpu_begin(void)
+>  {
+> +#ifdef CONFIG_X86_64
+> +	/*
+> +	 * Any 64-bit code that uses 387 instructions must explicitly request
+> +	 * KFPU_387.
+> +	 */
+> +	kernel_fpu_begin_mask(KFPU_MXCSR);
 
-Looks good,
+I'm also still sitting on this:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/fpu
+
+what do we do with that?
