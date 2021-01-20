@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4095F2FD4FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DC02FD52D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731631AbhATQIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:08:39 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27954 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391243AbhATQIJ (ORCPT
+        id S2391313AbhATQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391242AbhATQJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:08:09 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10KG4Axe123491;
-        Wed, 20 Jan 2021 11:07:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=A1bIFM9NYAheORR+plPg7G3Z9va+nqu/TpLkuMlQioI=;
- b=CPnqeajm81Qy2H6ylARkAEyQroRb7eUr75eeZRdv+lMETb6vY4Zcv/Im1XMV5nS2eBuK
- EFYJdWpo6rZ7bCE86/rK60mLDIPwZ5K/5rkbgZpMCJWAHpKthUPunvn3+UeO5Kttq4t4
- bPR0xH7hexM+cQVorb5TM4LczjHZu8rA1ePrTYldzPiIqC9YifHexP3eFxpjg+OBHZQQ
- d0VgIoaRhdOwyHzRs/smgR7J3NfPCbZ8M/XMJwFKDGmTj+bs5OLPoiIRihV+8GnTw268
- IJ3m1lLmiO0DSfOtA8u+tMX9r8lHriYpUZVQ/STMfyI3mG+P3ARXZGjqxbDQkStX1bdY qg== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 366nfcd4a5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 11:07:16 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10KG6ogA007440;
-        Wed, 20 Jan 2021 16:07:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3668ny0dsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Jan 2021 16:07:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10KG7BgV44892640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 16:07:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 628B7AE06A;
-        Wed, 20 Jan 2021 16:07:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15B49AE067;
-        Wed, 20 Jan 2021 16:07:11 +0000 (GMT)
-Received: from [9.145.21.215] (unknown [9.145.21.215])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 20 Jan 2021 16:07:11 +0000 (GMT)
-Subject: Re: [PATCH] init/module: split CONFIG_CONSTRUCTORS to fix module gcov
- on UML
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210119121853.4e22b2506c9a.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <8191aa4a-3bd7-5de7-1ad2-73b851128ff3@linux.ibm.com>
-Date:   Wed, 20 Jan 2021 17:07:11 +0100
+        Wed, 20 Jan 2021 11:09:57 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BB3C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:09:11 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id b2so26387376edm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:09:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uFPoWmdT1E7447c/foHDjqNJuO8UPeUXJAj8ZTCeNuI=;
+        b=bNp4m8GXBuiU/FXyjO9D9cA/C4gIGIPznUcpKtSxPEKyebwvVQ+aRwdeBURGW60Aqn
+         LWDM8IY14JaXyGVpmy9pspE7lfObh3UXUk1T9JUoE9m742jY/UWqwZOuCBJ1bPyIODGl
+         UnlPbfbmqFegwGszXH5A2WM1t7WLON4F/hTTf41tPfVOHi9uvgUn8pBT7w/CdD4OSxCR
+         Pj4XoIeByZmeoQNQ4FhMnueL2wZ9/ttGENz2s0DHc9xIW18UNCzE7rgOV30lEB4IWM6K
+         z43ISZVwDPuNuqM8j3RZAlGmRUAK0i/ai2ThrTF7kmw/zPRYVf/biTfeZ/ArEDWa+95U
+         iDfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uFPoWmdT1E7447c/foHDjqNJuO8UPeUXJAj8ZTCeNuI=;
+        b=T821vr5SP6sj7VcmO+8pyXKh7/54g2kaQcoVLERD4KRyr7Q5EtWR6ArzSnNxZAIX2w
+         VO30foH994bKMjIhFawSjoIhQeBe9/NPD3ex5A/zHnAm5tKdy47if2pFf02wQgjHr2oI
+         MDm3Qvn8deU0qTy0IrJnHHbYvMDgnuPXhsYeFdxyPqBYoh2XqYy0hKmKUhRxQUmrojFB
+         JcVrwF/Z8jcYpJA0+l5Gfwew60/th1o73xWAgdTNek71Nkaq/aymTcPi9jMI9e2RMNda
+         OkRxekFViCjVy2PHcAJZgGvRS2Ab/Zfzq8CgTet+1QWwqDIljwJaP63tIssW8z2Thscs
+         o5Nw==
+X-Gm-Message-State: AOAM533DzQb9159V1PhuOKPnBByD7UITYGfbmJYV4mukLgkjyDoQ2UF6
+        n72hQBeFu1avBegAw2LRumXLgtM01P/qnmwsuWFYcQ==
+X-Google-Smtp-Source: ABdhPJzzrx43U/MRM+U+2IS6fjT5/s61ISkHSJJW/uV0YTHN3o25ui9xpDMoE2/qruoEGyRFVzUk7yyVBnemuDxnOFQ=
+X-Received: by 2002:aa7:d803:: with SMTP id v3mr7685979edq.153.1611158950213;
+ Wed, 20 Jan 2021 08:09:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119121853.4e22b2506c9a.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-20_06:2021-01-20,2021-01-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=895 suspectscore=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 mlxscore=0 spamscore=0 malwarescore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101200092
+References: <20210120120058.29138-1-wei.liu@kernel.org> <20210120120058.29138-5-wei.liu@kernel.org>
+In-Reply-To: <20210120120058.29138-5-wei.liu@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 20 Jan 2021 11:08:34 -0500
+Message-ID: <CA+CK2bByGvCr_H3_wv_3-vAOONhRenonFNeHff5UdeFLDxSoUw@mail.gmail.com>
+Subject: Re: [PATCH v5 04/16] iommu/hyperv: don't setup IRQ remapping when
+ running as root
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.01.2021 12:18, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> On ARCH=um, loading a module doesn't result in its constructors
-> getting called, which breaks module gcov since the debugfs files
-> are never registered. On the other hand, in-kernel constructors
-> have already been called by the dynamic linker, so we can't call
-> them again.
-> 
-> Get out of this conundrum by splitting CONFIG_CONSTRUCTORS into
-> CONFIG_CONSTRUCTORS_KERNEL and CONFIG_CONSTRUCTORS_MODULE, both
-> of which are enabled by default if CONFIG_CONSTRUCTORS is turned
-> on, but CONFIG_CONSTRUCTORS_KERNEL depends on !UML so that it's
-> not used on ARCH=um.
-> 
-> Also remove the "if !UML" from GCOV selecting CONSTRUCTORS now,
-> since we really do want CONSTRUCTORS, just not kernel binary
-> ones.
-> 
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-
-Do you expect other users for these new config symbols? If not it seems
-to me that the goal of enabling module constructors for UML could also
-be achieved without introducing new config symbols.
-
-For example you could suppress calling any built-in kernel constructors
-in case of UML by extending the ifdef in do_ctors() to depend on both
-CONFIG_CONSTRUCTORS and !CONFIG_UML (maybe with an explanatory comment).
-
-Of course you'd still need to remove the !UML dependency in
-CONFIG_GCOV_KERNEL.
-
+On Wed, Jan 20, 2021 at 7:01 AM Wei Liu <wei.liu@kernel.org> wrote:
+>
+> The IOMMU code needs more work. We're sure for now the IRQ remapping
+> hooks are not applicable when Linux is the root partition.
+>
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> Acked-by: Joerg Roedel <jroedel@suse.de>
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
-> Tested with a kernel configured with CONFIG_GCOV_KERNEL, without
-> the patch nothing ever appears in /sys/kernel/debug/gcov/ (apart
-> from the reset file), and with it we get the files and they work.
-> 
-> I have no idea which tree this might go through, any suggestions?
+>  drivers/iommu/hyperv-iommu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
+> index 1d21a0b5f724..b7db6024e65c 100644
+> --- a/drivers/iommu/hyperv-iommu.c
+> +++ b/drivers/iommu/hyperv-iommu.c
+> @@ -20,6 +20,7 @@
+>  #include <asm/io_apic.h>
+>  #include <asm/irq_remapping.h>
+>  #include <asm/hypervisor.h>
+> +#include <asm/mshyperv.h>
+>
+>  #include "irq_remapping.h"
+>
+> @@ -122,7 +123,7 @@ static int __init hyperv_prepare_irq_remapping(void)
+>
+>         if (!hypervisor_is_type(X86_HYPER_MS_HYPERV) ||
+>             x86_init.hyper.msi_ext_dest_id() ||
+> -           !x2apic_supported())
+> +           !x2apic_supported() || hv_root_partition)
+>                 return -ENODEV;
 
-So far Andrew Morton was kind enough to pick up gcov-kernel related
-changes, so that route might be an option.
-
-
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
