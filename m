@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C872FD1CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17302FD1D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733079AbhATN2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731521AbhATNUU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:20:20 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D65C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:19:40 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id l7so10834890qvt.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 05:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JuQvGRvkQQfVRzn/FUI+haarmzYqzGiLWBP9Je4qZPE=;
-        b=QHJVd3T5Tsl7WmiiJ+h+AhTVu4iAWpt/4foFcd4/mjShCb05HeiGCXzKAj+Da/VDvV
-         QqCbyDX+iw+0+XERIeP1O2cu/DekTw4hKakyJ638PzTcE2mQiR/oPwKEsyQv81ntuBUA
-         IxtkYJu/+X8kTXcCLKn+qpX/46Ms6sZfYWWaIdX0MhJg6q5zRuogluR7m7+4GTW68pJy
-         CNJzr2I+/7YWY6RRVTZNzBKAWMuIFxMbyHZqzIQbmdcme9ixdyOYyqXa3nCZnV08TVmf
-         t1RQvZOApFqM68tMKYBli2pd1wrLaIUXypZac/PIJ2HSrwUtOfWNghJ1LMNXXysB4qCX
-         6JDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JuQvGRvkQQfVRzn/FUI+haarmzYqzGiLWBP9Je4qZPE=;
-        b=OQ7TvCXokHJLuPr/lsWDx5S1xID8MqBTQksF7AuT4BwId1DUktiq9IVY8aBn64Jo8n
-         0nQSjf8XorJg/L5tmbaSW7htu4wukXj+h8GzOMcihm0yDK0BBTh+fWwvaAVIIP+uTzyA
-         MCynxMMrP/Lhu22SI++mbsBlWfECbx2RTy4zgDeUmRgLxvvvXPEqwWvcZxJWqNZkYrUj
-         LMBxbpSpE42wpnsEDyBRzVPbIvuw0OZ9e5QkB9mHkdMG+GH/AypNuAXHn8IEssnOHac4
-         2INgrByhBvfjbyu5IGs/n8doQOfFGRaDrz6PdkCM0oiczZl0yCunHa7yIODQcSVti8+M
-         fGOQ==
-X-Gm-Message-State: AOAM5321czGIPGl/hIcfJa0Iv7VO26yv0tyv/tds3O6OuloYX7PIqSUx
-        Nap/ghzLwUc0OkmZimv96dPRjk5J9l4LZA==
-X-Google-Smtp-Source: ABdhPJz4cQZ1YMTMG0FLUN0ZbA69O2/qIdTs4LRKLu+daL+1MgPSen3w52S63HZWxLilbEYISziQdA==
-X-Received: by 2002:a05:6214:1110:: with SMTP id e16mr9110666qvs.62.1611148779431;
-        Wed, 20 Jan 2021 05:19:39 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id b67sm1249374qkc.44.2021.01.20.05.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 05:19:38 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l2DOb-004Tve-SU; Wed, 20 Jan 2021 09:19:37 -0400
-Date:   Wed, 20 Jan 2021 09:19:37 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
-        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 12/14] mm/gup: longterm pin migration cleaup
-Message-ID: <20210120131937.GG4605@ziepe.ca>
-References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
- <20210120014333.222547-13-pasha.tatashin@soleen.com>
+        id S2389913AbhATN37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:29:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389682AbhATNVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:21:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F5862336D;
+        Wed, 20 Jan 2021 13:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611148850;
+        bh=PR/kVFx/sCLW3origvXu1t632FYIhuBFrmGGZ+ULzk8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F6YZTtfUUmHAztlOGPcYKFEY/Ee9qTjY6YExXOLs2vu7HCFU7lMK8Pt7DiZQ9v1jh
+         EMNu21/V7uEsCmaVYEkVq5Oa7YyXoW/sVMfRoiuCVFUl8rcjIZXbJ1A6STvoS+STzB
+         8Z5JqL0udowVjb4c7zoU3AwSjxEWAD0BOr2bYrRnDWGwiNJzDaZCQlLATUm84lvcrm
+         Y+MWPGOyn6SsMP769+HbFfrHdm4N3HNkQ/aUoH851RZYdOV9p5Wn1SicJeGitQwu91
+         UCMYP5brEOK+MMXsr7c70qu3jEWN5DcFTZS/3WxfA2IjL8hbdGYvT+fsnEVx1pFjEj
+         TYzi/W93xFK7A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/5] pinctrl/gpio: remove obsolete drivers
+Date:   Wed, 20 Jan 2021 14:20:40 +0100
+Message-Id: <20210120132045.2127659-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120014333.222547-13-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 08:43:31PM -0500, Pavel Tatashin wrote:
-> When pages are longterm pinned, we must migrated them out of movable zone.
-> The function that migrates them has a hidden loop with goto. The loop is
-> to retry on isolation failures, and after successful migration.
-> 
-> Make this code better by moving this loop to the caller.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
->  mm/gup.c | 88 +++++++++++++++++++++++---------------------------------
->  1 file changed, 36 insertions(+), 52 deletions(-)
+From: Arnd Bergmann <arnd@arndb.de>
 
-This looks OK, it is better
+A few Arm platforms are getting removed in v5.12, this removes
+the corresponding gpio and pinctrl drivers.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
 
-I really dislike we always have to go over the page list twice in pin
-mode
+Arnd Bergmann (5):
+  gpio: remove zte zx driver
+  pinctrl: remove zte zx driver
+  pinctrl: remove sirf atlas/prima drivers
+  pinctrl: remove coh901 driver
+  pinctrl: remove ste u300 driver
 
-The is_pinnable_page() and LRU isolation should really be done inside
-__get_user_pages_locked() as each page is added to the output list
+ .../devicetree/bindings/gpio/gpio-atlas7.txt  |   50 -
+ .../bindings/gpio/gpio-stericsson-coh901.txt  |    7 -
+ .../bindings/gpio/zx296702-gpio.txt           |   24 -
+ .../bindings/pinctrl/pinctrl-atlas7.txt       |  109 -
+ .../bindings/pinctrl/pinctrl-zx.txt           |   84 -
+ drivers/gpio/Kconfig                          |    7 -
+ drivers/gpio/Makefile                         |    1 -
+ drivers/gpio/gpio-zx.c                        |  289 -
+ drivers/pinctrl/Kconfig                       |   25 -
+ drivers/pinctrl/Makefile                      |    4 -
+ drivers/pinctrl/pinctrl-coh901.c              |  774 ---
+ drivers/pinctrl/pinctrl-coh901.h              |    6 -
+ drivers/pinctrl/pinctrl-u300.c                | 1111 ---
+ drivers/pinctrl/sirf/Makefile                 |    7 -
+ drivers/pinctrl/sirf/pinctrl-atlas6.c         | 1137 ---
+ drivers/pinctrl/sirf/pinctrl-atlas7.c         | 6157 -----------------
+ drivers/pinctrl/sirf/pinctrl-prima2.c         | 1131 ---
+ drivers/pinctrl/sirf/pinctrl-sirf.c           |  894 ---
+ drivers/pinctrl/sirf/pinctrl-sirf.h           |  116 -
+ drivers/pinctrl/zte/Kconfig                   |   14 -
+ drivers/pinctrl/zte/Makefile                  |    3 -
+ drivers/pinctrl/zte/pinctrl-zx.c              |  445 --
+ drivers/pinctrl/zte/pinctrl-zx.h              |  102 -
+ drivers/pinctrl/zte/pinctrl-zx296718.c        | 1024 ---
+ 24 files changed, 13521 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-atlas7.txt
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stericsson-coh901.txt
+ delete mode 100644 Documentation/devicetree/bindings/gpio/zx296702-gpio.txt
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-atlas7.txt
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-zx.txt
+ delete mode 100644 drivers/gpio/gpio-zx.c
+ delete mode 100644 drivers/pinctrl/pinctrl-coh901.c
+ delete mode 100644 drivers/pinctrl/pinctrl-coh901.h
+ delete mode 100644 drivers/pinctrl/pinctrl-u300.c
+ delete mode 100644 drivers/pinctrl/sirf/Makefile
+ delete mode 100644 drivers/pinctrl/sirf/pinctrl-atlas6.c
+ delete mode 100644 drivers/pinctrl/sirf/pinctrl-atlas7.c
+ delete mode 100644 drivers/pinctrl/sirf/pinctrl-prima2.c
+ delete mode 100644 drivers/pinctrl/sirf/pinctrl-sirf.c
+ delete mode 100644 drivers/pinctrl/sirf/pinctrl-sirf.h
+ delete mode 100644 drivers/pinctrl/zte/Kconfig
+ delete mode 100644 drivers/pinctrl/zte/Makefile
+ delete mode 100644 drivers/pinctrl/zte/pinctrl-zx.c
+ delete mode 100644 drivers/pinctrl/zte/pinctrl-zx.h
+ delete mode 100644 drivers/pinctrl/zte/pinctrl-zx296718.c
 
-But that is more of a larger issue than this series
+-- 
+2.29.2
 
-Jason
