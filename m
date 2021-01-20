@@ -2,235 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2592E2FD622
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596442FD5CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391532AbhATQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391274AbhATQe6 (ORCPT
+        id S2388537AbhATQgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:36:45 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:46510 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391260AbhATQe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:34:58 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC55C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:33:58 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id r4so12779625pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 08:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=JLGWYHpThCdPVVDkiECV6GKoYJQKgK7kvIvNi0RW4IU=;
-        b=EajgIUSDQxdCeg1OOPniYRAp+omb97kwO2g5i7bqkXMWDjS7VjoaElZINfyJOOZmoG
-         pOvX5fWOSSjkCG8Eeomlfkmqm7v39xXJ37bWf1wavV1hK+/uHSOVeUyffjcKeAYaB68O
-         L3+FQ7T7sxByCYhXnnS+yDgeR6rnjk7aDwJTnO5logdsMbwWEl8CyAaaN/oBETX+l86S
-         qH95YaB6iVT4E/2DZBRSXHtXJTOgTVMoMyd45xl7KvrOgBfdaJP5ck/FJdH7PJl9hbV+
-         47XR+Nkw7+/EHz51FwAFAj8Vw0ueySSNW2sobdHcRnLSF1wENC7Z8rSG2OGxoaUtHLnM
-         S52Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JLGWYHpThCdPVVDkiECV6GKoYJQKgK7kvIvNi0RW4IU=;
-        b=gagh2xiYegNuCoY7/khxPsqT+fIWgADhGcwxqFOj47QuMQz6Gf9pjbyB/Pp4NhO807
-         L5vceqiceaHy1ZgRoBVboxRKSEPB1c2pC/PvYKbD2mjcckpqBjDXITDztTkFB8t6RrlM
-         U0xFkkWR/mxdqRa1WLNljUhY6XZ21GVanyv9Xw03b6NAK16sTJwnPF4wEzaDXOi6Ttol
-         E7iBB/Hb72AnIdCYSjzON1pwcpgs0OURYhiuRTP9kMwqXFPgKIdFWmiHmXBkYcv1oQB6
-         shWZYIGy6lNqzvbbg7QFU+eH4KnRhZcdAJ3+zpaCtMUM0EPaa1KhfcPO2azBEIPojxO5
-         pQww==
-X-Gm-Message-State: AOAM532Lot1dlUTLB8HIe9FlZHCsrVV2nJKibPVABFZdZzwDAR0fP0DT
-        YjSaGR0httDcH8AvSveUzJF3zg==
-X-Google-Smtp-Source: ABdhPJwn5ZkwkYWcRHQRxbmIFZ2sDHzHlj3u2Gzc5GSHGe+J+1okMzB8JjH/ZgqHWCtuOQjQBiZkbA==
-X-Received: by 2002:a17:90a:db96:: with SMTP id h22mr6610657pjv.204.1611160436902;
-        Wed, 20 Jan 2021 08:33:56 -0800 (PST)
-Received: from [10.8.0.149] ([196.245.9.36])
-        by smtp.gmail.com with ESMTPSA id y26sm3031976pgk.42.2021.01.20.08.33.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 08:33:56 -0800 (PST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
- <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
- <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
- <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
- <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
- <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
- <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
- <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
-Date:   Wed, 20 Jan 2021 17:33:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 20 Jan 2021 11:34:59 -0500
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Wed, 20 Jan 2021 08:33:37 -0800
+Received: from sc-dbc2115.eng.vmware.com (sc-dbc2115.eng.vmware.com [10.182.28.6])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 699272086F;
+        Wed, 20 Jan 2021 08:33:40 -0800 (PST)
+From:   Jorgen Hansen <jhansen@vmware.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>
+CC:     <gregkh@linuxfoundation.org>, <pv-drivers@vmware.com>,
+        <nslusarek@gmx.net>, Jorgen Hansen <jhansen@vmware.com>
+Subject: [PATCH v2 3/3] VMCI: Enforce queuepair max size for IOCTL_VMCI_QUEUEPAIR_ALLOC
+Date:   Wed, 20 Jan 2021 08:33:40 -0800
+Message-ID: <1611160420-30573-1-git-send-email-jhansen@vmware.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: jhansen@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Donald,
+When create the VMCI queue pair tracking data structures on the host
+side, the IOCTL for creating the VMCI queue pair didn't validate
+the queue pair size parameters. This change adds checks for this.
 
-On 1/19/21 12:30, Donald Buczek wrote:
-> Dear md-raid people,
-> 
-> I've reported a problem in this thread in December:
-> 
-> "We are using raid6 on several servers. Occasionally we had failures, 
-> where a mdX_raid6 process seems to go into a busy loop and all I/O to 
-> the md device blocks. We've seen this on various kernel versions." It 
-> was clear, that this is related to "mdcheck" running, because we found, 
-> that the command, which should stop the scrubbing in the morning (`echo 
-> idle > /sys/devices/virtual/block/md1/md/sync_action`) is also blocked.
-> 
-> On 12/21/20, I've reported, that the problem might be caused by a 
-> failure of the underlying block device driver, because I've found 
-> "inflight" counters of the block devices not being zero. However, this 
-> is not the case. We were able to run into the mdX_raid6 looping 
-> condition a few times again, but the non-zero inflight counters have not 
-> been observed again.
-> 
-> I was able to collect a lot of additional information from a blocked 
-> system.
-> 
-> - The `cat idle > /sys/devices/virtual/block/md1/md/sync_action` command 
-> is waiting at kthread_stop to stop the sync thread. [ 
-> https://elixir.bootlin.com/linux/latest/source/drivers/md/md.c#L7989 ]
-> 
-> - The sync thread ("md1_resync") does not finish, because its blocked at
-> 
-> [<0>] raid5_get_active_stripe+0x4c4/0x660     # [1]
-> [<0>] raid5_sync_request+0x364/0x390
-> [<0>] md_do_sync+0xb41/0x1030
-> [<0>] md_thread+0x122/0x160
-> [<0>] kthread+0x118/0x130
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> [1] https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L735
-> 
-> - yes, gdb confirms that `conf->cache_state` is 0x03 ( 
-> R5_INACTIVE_BLOCKED + R5_ALLOC_MORE )
+This avoids a memory allocation issue in qp_host_alloc_queue, as
+reported by nslusarek@gmx.net. The check in qp_host_alloc_queue
+has also been updated to enforce the maximum queue pair size
+as defined by VMCI_MAX_GUEST_QP_MEMORY.
 
-The resync thread is blocked since it can't get sh from inactive list, 
-so R5_ALLOC_MORE and R5_INACTIVE_BLOCKED are set, that is why `echo idle 
- > /sys/devices/virtual/block/md1/md/sync_action` can't stop sync thread.
+The fix has been verified using sample code supplied by
+nslusarek@gmx.net.
 
-> 
-> - We have lots of active stripes:
-> 
-> root@deadbird:~/linux_problems/mdX_raid6_looping# cat 
-> /sys/block/md1/md/stripe_cache_active
-> 27534
+Reported-by: nslusarek@gmx.net
+Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
+---
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 12 ++++++++----
+ include/linux/vmw_vmci_defs.h           |  4 ++--
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
-There are too many active stripes, so this is false:
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index 525ef96..d787dde 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -237,7 +237,9 @@ static struct qp_list qp_guest_endpoints = {
+ #define QPE_NUM_PAGES(_QPE) ((u32) \
+ 			     (DIV_ROUND_UP(_QPE.produce_size, PAGE_SIZE) + \
+ 			      DIV_ROUND_UP(_QPE.consume_size, PAGE_SIZE) + 2))
+-
++#define QP_SIZES_ARE_VALID(_prod_qsize, _cons_qsize) \
++	((_prod_qsize) + (_cons_qsize) >= max(_prod_qsize, _cons_qsize) && \
++	 (_prod_qsize) + (_cons_qsize) <= VMCI_MAX_GUEST_QP_MEMORY)
+ 
+ /*
+  * Frees kernel VA space for a given queue and its queue header, and
+@@ -528,7 +530,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+ 	u64 num_pages;
+ 	const size_t queue_size = sizeof(*queue) + sizeof(*(queue->kernel_if));
+ 
+-	if (size > SIZE_MAX - PAGE_SIZE)
++	if (size > min_t(size_t, VMCI_MAX_GUEST_QP_MEMORY, SIZE_MAX - PAGE_SIZE))
+ 		return NULL;
+ 	num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
+ 	if (num_pages > (SIZE_MAX - queue_size) /
+@@ -1929,6 +1931,9 @@ int vmci_qp_broker_alloc(struct vmci_handle handle,
+ 			 struct vmci_qp_page_store *page_store,
+ 			 struct vmci_ctx *context)
+ {
++	if (!QP_SIZES_ARE_VALID(produce_size, consume_size))
++		return VMCI_ERROR_NO_RESOURCES;
++
+ 	return qp_broker_alloc(handle, peer, flags, priv_flags,
+ 			       produce_size, consume_size,
+ 			       page_store, context, NULL, NULL, NULL, NULL);
+@@ -2685,8 +2690,7 @@ int vmci_qpair_alloc(struct vmci_qp **qpair,
+ 	 * used by the device is NO_RESOURCES, so use that here too.
+ 	 */
+ 
+-	if (produce_qsize + consume_qsize < max(produce_qsize, consume_qsize) ||
+-	    produce_qsize + consume_qsize > VMCI_MAX_GUEST_QP_MEMORY)
++	if (!QP_SIZES_ARE_VALID(produce_qsize, consume_qsize))
+ 		return VMCI_ERROR_NO_RESOURCES;
+ 
+ 	retval = vmci_route(&src, &dst, false, &route);
+diff --git a/include/linux/vmw_vmci_defs.h b/include/linux/vmw_vmci_defs.h
+index be0afe6..e36cb11 100644
+--- a/include/linux/vmw_vmci_defs.h
++++ b/include/linux/vmw_vmci_defs.h
+@@ -66,7 +66,7 @@ enum {
+  * consists of at least two pages, the memory limit also dictates the
+  * number of queue pairs a guest can create.
+  */
+-#define VMCI_MAX_GUEST_QP_MEMORY (128 * 1024 * 1024)
++#define VMCI_MAX_GUEST_QP_MEMORY ((size_t)(128 * 1024 * 1024))
+ #define VMCI_MAX_GUEST_QP_COUNT  (VMCI_MAX_GUEST_QP_MEMORY / PAGE_SIZE / 2)
+ 
+ /*
+@@ -80,7 +80,7 @@ enum {
+  * too much kernel memory (especially on vmkernel).  We limit a queuepair to
+  * 32 KB, or 16 KB per queue for symmetrical pairs.
+  */
+-#define VMCI_MAX_PINNED_QP_MEMORY (32 * 1024)
++#define VMCI_MAX_PINNED_QP_MEMORY ((size_t)(32 * 1024))
+ 
+ /*
+  * We have a fixed set of resource IDs available in the VMX.
+-- 
+2.6.2
 
-atomic_read(&conf->active_stripes) < (conf->max_nr_stripes * 3 / 4)
-
-so raid5_get_active_stripe has to wait till it becomes true, either 
-increase max_nr_stripes or decrease active_stripes.
-
-1. Increase max_nr_stripes
-since "mdX_raid6 process seems to go into a busy loop" and R5_ALLOC_MORE 
-is set, if there is enough memory, I suppose mdX_raid6 (raid5d) could 
-alloc new stripe in grow_one_stripe and increase max_nr_stripes. So 
-please check the memory usage of your system.
-
-Another thing is you can try to increase the number of sh manually by 
-write new number to stripe_cache_size if there is enough memory.
-
-2. Or decrease active_stripes
-This is suppose to be done by do_release_stripe, but STRIPE_HANDLE is set
-
-> - handle_stripe() doesn't make progress:
-> 
-> echo "func handle_stripe =pflt" > /sys/kernel/debug/dynamic_debug/control
-> 
-> In dmesg, we see the debug output from 
-> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4925 
-> but never from 
-> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4958:
-> 
-> [171908.896651] [1388] handle_stripe:4929: handling stripe 4947089856, 
-> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
->                  , check:4, reconstruct:0
-> [171908.896657] [1388] handle_stripe:4929: handling stripe 4947089872, 
-> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
->                  , check:4, reconstruct:0
-> [171908.896669] [1388] handle_stripe:4929: handling stripe 4947089912, 
-> state=0x2029 cnt=1, pd_idx=9, qd_idx=10
->                  , check:4, reconstruct:0
-> 
-> The sector numbers repeat after some time. We have only the following 
-> variants of stripe state and "check":
-> 
-> state=0x2031 cnt=1, check:0 # ACTIVE        +INSYNC+REPLACED+IO_STARTED, 
-> check_state_idle
-> state=0x2029 cnt=1, check:4 # ACTIVE+SYNCING       +REPLACED+IO_STARTED, 
-> check_state_check_result
-> state=0x2009 cnt=1, check:0 # ACTIVE+SYNCING                +IO_STARTED, 
-> check_state_idle
-> 
-> - We have MD_SB_CHANGE_PENDING set:
-
-because MD_SB_CHANGE_PENDING flag. So do_release_stripe can't call 
-atomic_dec(&conf->active_stripes).
-
-Normally, SB_CHANGE_PENDING is cleared from md_update_sb which could be 
-called by md_reap_sync_thread. But md_reap_sync_thread stuck with 
-unregister sync_thread (it was blocked in raid5_get_active_stripe).
-
-
-Still I don't understand well why mdX_raid6 in a busy loop, maybe raid5d 
-can't break from the while(1) loop because "if (!batch_size && 
-!released)" is false. I would assume released is '0' since
- >      released_stripes = {
- >          first = 0x0
- >      }
-And __get_priority_stripe fetches sh from conf->handle_list and delete
-it from handle_list, handle_stripe marks the state of the sh with 
-STRIPE_HANDLE, then do_release_stripe put the sh back to handle_list.
-So batch_size can't be '0', and handle_active_stripes in the loop
-repeats the process in the busy loop. This is my best guess to explain 
-the busy loop situation.
-
-> 
-> root@deadbird:~/linux_problems/mdX_raid6_looping# cat 
-> /sys/block/md1/md/array_state
-> write-pending
-> 
-> gdb confirms that sb_flags = 6 (MD_SB_CHANGE_CLEAN + MD_SB_CHANGE_PENDING)
-
-since rdev_set_badblocks could set them, could you check if there is 
-badblock of underlying device (sd*)?
-
-> 
-> So it can be assumed that handle_stripe breaks out at 
-> https://elixir.bootlin.com/linux/latest/source/drivers/md/raid5.c#L4939
-> 
-> - The system can manually be freed from the deadlock:
-> 
-> When `echo active > /sys/block/md1/md/array_state` is used, the 
-> scrubbing and other I/O continue. Probably because of 
-> https://elixir.bootlin.com/linux/latest/source/drivers/md/md.c#L4520
-
-Hmm, seems clear SB_CHANGE_PENDING made the trick, so the blocked 
-process can make progress.
-
-> 
-> I, of coruse, don't fully understand it yet. Any ideas?
-> 
-> I append some data from a hanging raid... (mddev, r5conf and a sample 
-> stripe_head from handle_list with it first disks)
-
-These data did help for investigation!
-
-Thanks,
-Guoqing
