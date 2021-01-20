@@ -2,186 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55BD2FCF9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463A72FCFA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 13:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733151AbhATLkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 06:40:33 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:41614 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388699AbhATLAP (ORCPT
+        id S1733187AbhATLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 06:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731352AbhATLC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 06:00:15 -0500
-Received: by mail-oi1-f172.google.com with SMTP id 15so24575767oix.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 02:59:59 -0800 (PST)
+        Wed, 20 Jan 2021 06:02:57 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18FC061575;
+        Wed, 20 Jan 2021 03:01:47 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id d13so42774454ioy.4;
+        Wed, 20 Jan 2021 03:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L+IuBTQtieqaT+RwFnqYJbcf3g6vdNyCnN2MiBzAXBE=;
+        b=RBbs6zIZczLTU2w8yjiug6EgsOcd9gNaGOCCe0mrqg6PDvRCwumhKYIGDcNNBelC0r
+         Jw2uH8crESjpMHW9SZCBzcPjSONexWHjeGmi26S8WWU0fs3+r+phtFPbhvZb8WMPY0hx
+         M0wgpnfVF1Kq00UVy0qfVpJ754lyIbhwPP/sUGMpqz2gVfFVHEd8jdxuEjs9TKAxpC9s
+         CPFceo01nDHUm2vkbZ4tG9S97roi4+tbVpNe4kgUNjKrBgUGdLhPhDEV1A/wTzt+WA3U
+         CPjQJeedKBCbpFvJmc9iIS19KmmnM+y2s3ch0DS4Jf2YLDqSXTenb09E/OmH++20HglT
+         RCRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DK+FZYOgme3Ym7xK/6JU3jj5omlMd5NXSakDyCnkIA0=;
-        b=G4T4aj0/HehZXc8VzLaxdwZ/CJbS1gcmbTJS0Ak5dT6OMAtdWYXMvfmAELf5o9lsLq
-         kzPUj3O9wxWvmMtYZ8MA30zQ5SP3OeCP3MOXnjP2EoATUv13hrNUBmnJ4ZXlsIFffLmH
-         hiIFQceMc1iTYa6KaorlHEb2Q7FDn/JFX5hXtqL25Nx9ibCMsLlNB5oJdrllZLVbUroQ
-         /clIL+D1ZG0LqALlKmCUceUi98QmMzj/IcHLtZQ/+XlvrFbO+8FJDZSyQDMkvkLh6MWF
-         HmkYSkeWKPVQBfCy/SsLWXVpJ1rlyo2zZZJ0+mlOm7l/NdnTVCLQnP58oL3iSQ2EIeOS
-         i3nQ==
-X-Gm-Message-State: AOAM533dTQgD+tI/SuctQx6o+fQvVhOZ6ACqUw2ceJ1HkVUQ41r3qJWs
-        KPtgAUACPZQCUUEDxDS2oaz6Wg88cbq1PH7M8GU=
-X-Google-Smtp-Source: ABdhPJzNOkj0RJCg5MWPsB2nJeuOLyBgBm/U9bYvMf7/sxQ4TwReP40jMWCWWK5UEYqKMB4u26wZ+I6DChBs1N3JiDs=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr2455753oia.148.1611140371974;
- Wed, 20 Jan 2021 02:59:31 -0800 (PST)
+        bh=L+IuBTQtieqaT+RwFnqYJbcf3g6vdNyCnN2MiBzAXBE=;
+        b=mg4BimVXD/Y99Sey6eiXEMy8DufjMhntUCYFNk8UvM5B8V82UC3i0ENQN+iNTQV6Jo
+         RSswpQL+zV/FLT/DBte6XM6xp+Av+PFGY4U8lDIhYXwZcX4oPKBpQepSD2OZBPiBlS3H
+         /hb44IsG8Wocp36dvSGQJo1PGme2ETltalRFdx5ygfYo9rJzx+49m3PNskUqENLAfj9W
+         VoCNfOh1mCJtGf1E6StnSNFW19SiuvQjRUmtx3vCb77U51bzBC5qesFQLlZTQXjOl9NV
+         OzpFlrSPHweww+Y/m7nmjOcp+0FMUeUoJXKmoIoZjiZO4eEmvafacs5zt/gEtI2jZDv8
+         bQyw==
+X-Gm-Message-State: AOAM532TLfeE3dvj3+YJBVvyAGqCsTEruVx3y601GaQoG1ucTif8hekJ
+        IMZvYJLkz24g+Y42pgF7PiwzPvTEgXYJYBTdDvg=
+X-Google-Smtp-Source: ABdhPJymzK3wPrNevSHmVMS1UuQOIEYzZqh9echOATw1rO+7elhN62r/NWs4kXRZmBvlUELy+5b3qOOQzmdj6w3PiLU=
+X-Received: by 2002:a05:6e02:1566:: with SMTP id k6mr7215915ilu.19.1611140506416;
+ Wed, 20 Jan 2021 03:01:46 -0800 (PST)
 MIME-Version: 1.0
-References: <CAMuHMdXQr-qNQ2aNVmgQFfs_dJ8=A-xzrhxRf9VUmzFXx+2o_w@mail.gmail.com>
- <mhng-c5ceb653-6391-407e-acd9-bd5c43ca434a@penguin> <CAMuHMdXoJ9-jM4sazFbHXEsaDFFMK1ybM53SDqy_2QqPMZEQ=g@mail.gmail.com>
-In-Reply-To: <CAMuHMdXoJ9-jM4sazFbHXEsaDFFMK1ybM53SDqy_2QqPMZEQ=g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Jan 2021 11:59:20 +0100
-Message-ID: <CAMuHMdU9JTYKGxLpmDaYGMGOeaeDb_mCWbCNP2VM7LKwSE+YAg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>
+References: <20210119194646.GA20820@kadam>
+In-Reply-To: <20210119194646.GA20820@kadam>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 20 Jan 2021 12:01:59 +0100
+Message-ID: <CAOi1vP-7AYWiJJganaUROaGiyJA8ejUmbx90uetwsV23KYGNFw@mail.gmail.com>
+Subject: Re: [kbuild] net/ceph/messenger_v1.c:1099:23: warning: Boolean result
+ is used in bitwise operation. Clarify expression with parentheses.
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, kbuild test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 8:03 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Fri, Jan 15, 2021 at 11:44 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > On Thu, 14 Jan 2021 23:59:04 PST (-0800), geert@linux-m68k.org wrote:
-> > > On Thu, Jan 14, 2021 at 10:11 PM Atish Patra <atishp@atishpatra.org> wrote:
-> > >> On Thu, Jan 14, 2021 at 11:46 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > >> > On Thu, 14 Jan 2021 10:33:01 PST (-0800), atishp@atishpatra.org wrote:
-> > >> > > On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > >> > >>
-> > >> > >> On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
-> > >> > >> > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
-> > >> > >> > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
-> > >> > >> > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
-> > >> > >> >
-> > >> > >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > >> > >> > ---
-> > >> > >> >  arch/riscv/include/asm/cache.h | 4 ++++
-> > >> > >> >  1 file changed, 4 insertions(+)
-> > >> > >> >
-> > >> > >> > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-> > >> > >> > index 9b58b104559e..c9c669ea2fe6 100644
-> > >> > >> > --- a/arch/riscv/include/asm/cache.h
-> > >> > >> > +++ b/arch/riscv/include/asm/cache.h
-> > >> > >> > @@ -7,7 +7,11 @@
-> > >> > >> >  #ifndef _ASM_RISCV_CACHE_H
-> > >> > >> >  #define _ASM_RISCV_CACHE_H
-> > >> > >> >
-> > >> > >> > +#ifdef CONFIG_64BIT
-> > >> > >> >  #define L1_CACHE_SHIFT               6
-> > >> > >> > +#else
-> > >> > >> > +#define L1_CACHE_SHIFT               5
-> > >> > >> > +#endif
-> > >> > >> >
-> > >> > >> >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
-> > >> > >>
-> > >> > >> Should we not instead just
-> > >> > >>
-> > >> > >> #define SMP_CACHE_BYTES L1_CACHE_BYTES
-> > >> > >>
-> > >> > >> like a handful of architectures do?
-> > >> > >>
-> > >> > >
-> > >> > > The generic code already defines it that way in include/linux/cache.h
-> > >> > >
-> > >> > >> The cache size is sort of fake here, as we don't have any non-coherent
-> > >> > >> mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
-> > >> > >> cache lines in RISC-V implementations as software may assume that for
-> > >> > >> performance reasons.  Not really a strong reason, but I'd prefer to just make
-> > >> > >> these match.
-> > >> > >>
-> > >> > >
-> > >> > > If it is documented somewhere in the kernel, we should update that. I
-> > >> > > think SMP_CACHE_BYTES being 64
-> > >> > > actually degrades the performance as there will be a fragmented memory
-> > >> > > blocks with 32 bit bytes gap wherever
-> > >> > > SMP_CACHE_BYTES is used as an alignment requirement.
-> > >> >
-> > >> > I don't buy that: if you're trying to align to the cache size then the gaps are
-> > >> > the whole point.  IIUC the 64-byte cache lines come from DDR, not XLEN, so
-> > >> > there's really no reason for these to be different between the base ISAs.
-> > >> >
-> > >>
-> > >> Got your point. I noticed this when fixing the resource tree issue
-> > >> where the SMP_CACHE_BYTES
-> > >> alignment was not intentional but causing the issue. The real issue
-> > >> was solved via another patch in this series though.
-> > >>
-> > >> Just to clarify, if the allocation function intends to allocate
-> > >> consecutive memory, it should use 32 instead of SMP_CACHE_BYTES.
-> > >> This will lead to a #ifdef macro in the code.
-> > >>
-> > >> > > In addition to that, Geert Uytterhoeven mentioned some panic on vex32
-> > >> > > without this patch.
-> > >> > > I didn't see anything in Qemu though.
-> > >> >
-> > >> > Something like that is probably only going to show up on real hardware, QEMU
-> > >> > doesn't really do anything with the cache line size.  That said, as there's
-> > >> > nothing in our kernel now related to non-coherent memory there really should
-> > >> > only be performance issue (at least until we have non-coherent systems).
-> > >> >
-> > >> > I'd bet that the change is just masking some other bug, either in the software
-> > >> > or the hardware.  I'd prefer to root cause this rather than just working around
-> > >> > it, as it'll probably come back later and in a more difficult way to find.
-> > >> >
-> > >>
-> > >> Agreed. @Geert Uytterhoeven Can you do a further analysis of the panic
-> > >> you were saying ?
-> > >> We may need to change an alignment requirement to 32 for RV32 manually
-> > >> at some place in code.
-> > >
-> > > My findings were in
-> > > https://lore.kernel.org/linux-riscv/CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com/
-> > >
-> > > Note that when the memblock.reserved list kept increasing, it kept on
-> > > adding the same entry to the list.  But that was fixed by "[PATCH 1/4]
-> > > RISC-V: Do not allocate memblock while iterating reserved memblocks".
-> > >
-> > > After that, only the (reproducible) "Unable to handle kernel paging
-> > > request at virtual address 61636473" was left, always at the same place.
-> > > No idea where the actual corruption happened.
-> >
-> > Thanks.  Presumably I need an FPGA to run this?  That will make it tricky to
-> > find anything here on my end.
+On Tue, Jan 19, 2021 at 8:46 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 >
-> In theory, it should work with the LiteX simulation, too.
-> I.e. follow the instructions at
-> https://github.com/litex-hub/linux-on-litex-vexriscv
-> You can find prebuilt binaries at
-> https://github.com/litex-hub/linux-on-litex-vexriscv/issues/164
-> Take images/opensbi.bin from opensbi_2020_12_15.zip, and
-> images/rootfs.cpio from linux_2021_01_11.zip.
-> Take images/Image from your own kernel build.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> head:   1e2a199f6ccdc15cf111d68d212e2fd4ce65682e
+> commit: 2f713615ddd9d805b6c5e79c52e0e11af99d2bf1 libceph: move msgr1 protocol implementation to its own file
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 >
-> Unfortunately it seems the simulator is currently broken, and kernels
-> (both prebuilt and my own config) hang after
-> "sched_clock: 64 bits at 1000kHz, resolution 1000ns, wraps every
-> 2199023255500ns"
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+>
+> cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+>
+> >> net/ceph/messenger_v1.c:1099:23: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>      BUG_ON(!con->in_msg ^ skip);
+>                          ^
+>
+> vim +1099 net/ceph/messenger_v1.c
+>
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1033  static int read_partial_message(struct ceph_connection *con)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1034  {
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1035          struct ceph_msg *m = con->in_msg;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1036          int size;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1037          int end;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1038          int ret;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1039          unsigned int front_len, middle_len, data_len;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1040          bool do_datacrc = !ceph_test_opt(from_msgr(con->msgr), NOCRC);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1041          bool need_sign = (con->peer_features & CEPH_FEATURE_MSG_AUTH);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1042          u64 seq;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1043          u32 crc;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1044
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1045          dout("read_partial_message con %p msg %p\n", con, m);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1046
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1047          /* header */
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1048          size = sizeof (con->in_hdr);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1049          end = size;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1050          ret = read_partial(con, end, size, &con->in_hdr);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1051          if (ret <= 0)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1052                  return ret;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1053
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1054          crc = crc32c(0, &con->in_hdr, offsetof(struct ceph_msg_header, crc));
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1055          if (cpu_to_le32(crc) != con->in_hdr.crc) {
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1056                  pr_err("read_partial_message bad hdr crc %u != expected %u\n",
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1057                         crc, con->in_hdr.crc);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1058                  return -EBADMSG;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1059          }
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1060
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1061          front_len = le32_to_cpu(con->in_hdr.front_len);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1062          if (front_len > CEPH_MSG_MAX_FRONT_LEN)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1063                  return -EIO;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1064          middle_len = le32_to_cpu(con->in_hdr.middle_len);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1065          if (middle_len > CEPH_MSG_MAX_MIDDLE_LEN)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1066                  return -EIO;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1067          data_len = le32_to_cpu(con->in_hdr.data_len);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1068          if (data_len > CEPH_MSG_MAX_DATA_LEN)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1069                  return -EIO;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1070
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1071          /* verify seq# */
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1072          seq = le64_to_cpu(con->in_hdr.seq);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1073          if ((s64)seq - (s64)con->in_seq < 1) {
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1074                  pr_info("skipping %s%lld %s seq %lld expected %lld\n",
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1075                          ENTITY_NAME(con->peer_name),
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1076                          ceph_pr_addr(&con->peer_addr),
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1077                          seq, con->in_seq + 1);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1078                  con->in_base_pos = -front_len - middle_len - data_len -
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1079                          sizeof_footer(con);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1080                  con->in_tag = CEPH_MSGR_TAG_READY;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1081                  return 1;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1082          } else if ((s64)seq - (s64)con->in_seq > 1) {
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1083                  pr_err("read_partial_message bad seq %lld expected %lld\n",
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1084                         seq, con->in_seq + 1);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1085                  con->error_msg = "bad message sequence # for incoming message";
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1086                  return -EBADE;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1087          }
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1088
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1089          /* allocate message? */
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1090          if (!con->in_msg) {
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1091                  int skip = 0;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1092
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1093                  dout("got hdr type %d front %d data %d\n", con->in_hdr.type,
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1094                       front_len, data_len);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1095                  ret = ceph_con_in_msg_alloc(con, &con->in_hdr, &skip);
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1096                  if (ret < 0)
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1097                          return ret;
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12  1098
+> 2f713615ddd9d805 Ilya Dryomov 2020-11-12 @1099                  BUG_ON(!con->in_msg ^ skip);
+>
+> ! has higher precedence than ^.  It's not clear that was intended
+> necessarily.
 
-In the mean time, the simulator got fixed.
-Unfortunately the crash does not happen on the simulator.
+Hi Dan,
 
-Gr{oetje,eeting}s,
+This line and the surrounding code date back to 2013, commit
+2f713615ddd9 just moved it.  It is correct (we either get a message
+to work with or get instructed to skip, in the latter case con->in_msg
+is expected to be NULL), so I'm inclined to leave it as is.
 
-                        Geert
+Thanks,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+                Ilya
