@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAE52FCBE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591372FCBE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbhATHlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S1729646AbhATHm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729554AbhATHkb (ORCPT
+        with ESMTP id S1729571AbhATHlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:40:31 -0500
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD12C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:39:51 -0800 (PST)
-Received: by mail-vk1-xa31.google.com with SMTP id k9so5459723vke.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aUaAld+7PlVuBg6y2NQxllJPdU7rN5fhUZHbRArJm2Y=;
-        b=ahvlTktyt5QECQ7ao3XTiHPAajLjWlC1X23RksKxj9quUyIyi6ILEaGj+Zez2VgIEk
-         FxQFC+jSl1dmJmwQSp8sO/qEnB5YwxKwK5rAJQL7HsFgpP3rkvOEM6/pDSzuVwyo1f1y
-         N27jXlR6oEBpfbksqHzmNNRDHk2ZprG03G5b0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aUaAld+7PlVuBg6y2NQxllJPdU7rN5fhUZHbRArJm2Y=;
-        b=sARuNPEafHDwNc8/vhLLJ7jaS+NAuDODeoS6cbZo3v8rYhJ4a6SeGsamC8nOO/46Ux
-         yFaykRH4tXOs1l6IynILaN1DMYtvemg5fgFye0aVlE+J5iJH2CQzZOvzafBhwLmH3tEu
-         53mKpsBJXb1QBOOWOfVPx32ycq6yk6/HE6RsReKBa4FX7+DDEhf2xgwQgiqVsTBjHVgL
-         /Rj4s8wLHITfUB65x30S/R2OCtEJaPZ2lTB2K8+ndCRN1GV6IViecvg6rX7Djgq/2kN8
-         YZGgIjbXxc2QyzWFPnd37wERGg4dcyo5IndU1HHtAKx94MWkN9K7fuZlPyi4kyqSSCoU
-         CGuw==
-X-Gm-Message-State: AOAM530gATwcyiCoU7bNP0FKAVtm0IKiS2qPHhPx+fig71ynJDO7RHFi
-        gaHE3VO1tZ10yPD4WhZ8zPBzD2ddEFqNkoI+9hNoew==
-X-Google-Smtp-Source: ABdhPJxShMDCebz+BhaZwQUtaF/FMwTNyrAirvhIZqreLahBtuMVI+fIoCzbuAkc9Jh3F6ZuZLnKT+5lMhMhECOWtS8=
-X-Received: by 2002:a1f:410c:: with SMTP id o12mr5750549vka.19.1611128390259;
- Tue, 19 Jan 2021 23:39:50 -0800 (PST)
+        Wed, 20 Jan 2021 02:41:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC95CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:40:38 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l286U-0004eK-7C; Wed, 20 Jan 2021 08:40:34 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l286S-0001Md-2k; Wed, 20 Jan 2021 08:40:32 +0100
+Date:   Wed, 20 Jan 2021 08:40:32 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: Re: [PATCH v2 2/2] Input: ads7846: convert to one message
+Message-ID: <20210120074032.2swvp7iqli6xttul@pengutronix.de>
+References: <20201110085041.16303-1-o.rempel@pengutronix.de>
+ <20201110085041.16303-3-o.rempel@pengutronix.de>
+ <20201118003138.GD2009714@dtor-ws>
 MIME-Version: 1.0
-References: <20210119162204.2081137-1-mszeredi@redhat.com> <87y2go8wg9.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87y2go8wg9.fsf@x220.int.ebiederm.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 20 Jan 2021 08:39:39 +0100
-Message-ID: <CAJfpegvY1ckAfR0c-RtzeBSaR8_dM2CV1MD_xJr=A6+MkSXi9A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] capability conversion fixes
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <code@tyhicks.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201118003138.GD2009714@dtor-ws>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:38:56 up 48 days, 21:45, 28 users,  load average: 0.00, 0.03,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:15 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Miklos Szeredi <mszeredi@redhat.com> writes:
->
-> > It turns out overlayfs is actually okay wrt. mutliple conversions, because
-> > it uses the right context for lower operations.  I.e. before calling
-> > vfs_{set,get}xattr() on underlying fs, it overrides creds with that of the
-> > mounter, so the current user ns will now match that of
-> > overlay_sb->s_user_ns, meaning that the caps will be converted to just the
-> > right format for the next layer
-> >
-> > OTOH ecryptfs, which is the only other one affected by commit 7c03e2cda4a5
-> > ("vfs: move cap_convert_nscap() call into vfs_setxattr()") needs to be
-> > fixed up, since it doesn't do the cap override thing that overlayfs does.
-> >
-> > I don't have an ecryptfs setup, so untested, but it's a fairly trivial
-> > change.
-> >
-> > My other observation was that cap_inode_getsecurity() messes up conversion
-> > of caps in more than one case.  This is independent of the overlayfs user
-> > ns enablement but affects it as well.
-> >
-> > Maybe we can revisit the infrastructure improvements we discussed, but I
-> > think these fixes are more appropriate for the current cycle.
->
-> I mostly agree.  Fixing the bugs in a back-portable way is important.
->
-> However we need to sort out the infrastructure, and implementation.
->
-> As far as I can tell it is only the fact that overlayfs does not support
-> the new mount api aka fs_context that allows this fix to work and be
-> correct.
->
-> I believe the new mount api would allow specifying a different userns
-> thatn curent_user_ns for the overlay filesystem and that would break
-> this.
 
-This is a valid concern.   I'll add a WARN_ON() to make sure that
-whenever this changes it doesn't go unnoticed.
+Hi Dmitry,
 
-Fixing it would also be easy:  just update creds->user_ns field to
-that of sb->s_user_ns in ovl_fill_super().   For now I'll go with the
-WARNING though, since this cannot be tested.
+On Tue, Nov 17, 2020 at 04:31:38PM -0800, Dmitry Torokhov wrote:
+> On Tue, Nov 10, 2020 at 09:50:41AM +0100, Oleksij Rempel wrote:
+> > Convert multiple full duplex transfers in to a single transfer to reduce
+> > CPU load.
+> > 
+> > Current driver version support following filtering modes:
+> > - ads7846_no_filter() - not filtered
+> > - ads7846_debounce_filter() - driver specific debounce filter
+> > - pdata->filter - platform specific debounce filter (do any platform
+> > 	provides such filter?)
+> > 
+> > Without filter this HW is not really usable, since the physic of
+> > resistive touchscreen can provide some bounce effects. With driver internal
+> > filter, we have constant amount of retries + debounce retries if some anomaly
+> > was detected.
+> > 
+> > High amount of tiny SPI transfers is the primer reason of high CPU load
+> > and interrupt frequency.
+> > 
+> > This patch create one SPI transfer with all fields and not optional retires. If
+> > bounce anomaly was detected, we will make more transfer if needed.
+> > 
+> > Without this patch, we will get about 10% CPU load on iMX6S on pen-down event.
+> > For example by holding stylus on the screen.
+> > 
+> > With this patch, depending in the amount of retries, the CPU load will
+> > be 1% with "ti,debounce-rep = <3>".
+> > 
+> > One buffer transfer allows us to use PIO FIFO or DMA engine, depending
+> > on the platform.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> Applied, thank you.
 
-Thanks,
-Miklos
+I can't find this patch in your git repository. Should I rebase it
+against latest git and resend it?
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
