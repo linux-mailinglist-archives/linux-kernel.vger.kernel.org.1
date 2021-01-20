@@ -2,408 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F229B2FD628
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686982FD601
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 17:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391530AbhATQxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 11:53:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391335AbhATQxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:53:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B98233EB;
-        Wed, 20 Jan 2021 16:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611161555;
-        bh=/vv9dIbNF09o9S/oSbuHSEg98bEt4VU3HCJ4vApZ3i0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vPj/ICJHJ/gN8DZO4QCcN5jHSjsocYhzSDbBP5i0khZ1Xu7zYSi1RwWw1aKSw+OWx
-         PaTJPfzx23/TYrQJhUlMQzGghHm60FjzRBy3nmhJDpvJAtTHEPttqZAJpV1lylVZGF
-         o3lpzbnMX5SH8rmqri8tGfAdxrk3Rw+DcD+EBWa7Z+LfdJu8wIcTTGBxGXSZHmKhox
-         DYTmpN5RQeGPuTMHTNWN2vvBU1oes7qL/0VJiCUxdMuPsvfyfYE7F3i3DUefvoWZg4
-         89D4PUMAcUUpmv7OJ1z7nTunsO5z6yKI9XfDrUMIj9vKcy1d+HVe9yq2ele7kc+ayz
-         32kshjDP5dKiQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-doc@vger.kernel.org, live-patching@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH v6 2/2] Documentation: livepatch: document reliable stacktrace
-Date:   Wed, 20 Jan 2021 16:47:14 +0000
-Message-Id: <20210120164714.16581-3-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210120164714.16581-1-broonie@kernel.org>
-References: <20210120164714.16581-1-broonie@kernel.org>
+        id S2391549AbhATQtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 11:49:20 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:42537 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391659AbhATQsJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:48:09 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D72EE22727;
+        Wed, 20 Jan 2021 17:47:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611161246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u4wx+DAuNXnn48tFtGcIcB1I4EME04LspQ3CfIceYDY=;
+        b=dHh95gnl5GLBDRo3Z5fa/8fhWWMxqKQ89fCrkyEnESYB2/l7R23AGYxeaHB4Fyt9XhiSGU
+        NhMkKiLgTBnyXQfJF2+TA3xKMi4gEeK9HBrH+mjnyEjhDxFQAS2PmScyf74BUThpFFIrfB
+        3NgdV7M9kUOikDrNuwFbYbPX/+JFLBw=
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=A9PsKdI6fru4UpkVtfZrCdqiT+4T2CRoKzSEuDeJEEc=; m=O+scWfNvw5KJDu26mwseFBPjMTyjYzXIGylse6Xuv3k=; p=KvyhWmynbz11vAy21877OZEmID3wrlPWT1+zIdKTCUc=; g=c464f531e7c1dac10949381f7649cb7de6783022
-X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAIXpEACgkQJNaLcl1Uh9CP+Qf+MyW ySXbLw1fbYGe0SoZmAqmDSrgoHwzDD400JiDwvloEgY2P2YmJ2T0tPq0SPSDEow3dk08xWuC5JGet 4mC11SgAi7M7vfgnuJj6uvMVcjPSUF5mP/bAAlA/1/u5/SxUuT/Dg8xCU368nomXcJgGy2mJrp7uG RaXWKKNsdHKn295riljSoVg5+R3zqUES3hl50rbd0UjYEwh4OdoSJ++nkaff/fjfAmrLEnot5RC8Y ttUZERi3D0UO5FzyDtH9cZg9rjHKND9gK5cuRyGJI3NlS5PxF9YrWaxSwMN6nJ3uayj5Gfic1MQIc MfCvnbz2WV8J5VjRr/ECDkISlWY3W4Q==
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Wed, 20 Jan 2021 17:47:25 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     vigneshr@ti.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
+        richard@nod.at, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kavyasree.Kotagiri@microchip.com
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
+ on sst26vf
+In-Reply-To: <6c4adaa7-9397-2373-16aa-a3dd2775c63f@microchip.com>
+References: <20210120131914.277363-1-tudor.ambarus@microchip.com>
+ <20210120131914.277363-2-tudor.ambarus@microchip.com>
+ <b3a61abec8927c7229c27415d2c769a8@walle.cc>
+ <ad0cc416-73b7-f626-115f-d192fac17957@microchip.com>
+ <447aca9c61a45b05f7869b9747e2c301@walle.cc>
+ <8a0e7885-4b9e-be62-eb46-1af74c65afa8@microchip.com>
+ <e1e5f647fd9e91538fd730c626beff52@walle.cc>
+ <6c4adaa7-9397-2373-16aa-a3dd2775c63f@microchip.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <c62393288e9d82b08d14d74a9a8389ad@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+Am 2021-01-20 17:25, schrieb Tudor.Ambarus@microchip.com:
+> On 1/20/21 5:49 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Am 2021-01-20 16:39, schrieb Tudor.Ambarus@microchip.com:
+>>> On 1/20/21 5:02 PM, Michael Walle wrote:
+>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you 
+>>>> know
+>>>> the content is safe
+>>>> 
+>>>> Am 2021-01-20 15:52, schrieb Tudor.Ambarus@microchip.com:
+>>>>> On 1/20/21 4:05 PM, Michael Walle wrote:
+>>>>>>> diff --git a/drivers/mtd/spi-nor/sst.c 
+>>>>>>> b/drivers/mtd/spi-nor/sst.c
+>>>>>>> index 00e48da0744a..d6e1396abb96 100644
+>>>>>>> --- a/drivers/mtd/spi-nor/sst.c
+>>>>>>> +++ b/drivers/mtd/spi-nor/sst.c
+>>>>>>> @@ -8,6 +8,39 @@
+>>>>>>> 
+>>>>>>>  #include "core.h"
+>>>>>>> 
+>>>>>>> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, 
+>>>>>>> uint64_t
+>>>>>>> len)
+>>>>>>> +{
+>>>>>>> +     return -EOPNOTSUPP;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs,
+>>>>>>> uint64_t
+>>>>>>> len)
+>>>>>>> +{
+>>>>>>> +     if (ofs == 0 && len == nor->params->size)
+>>>>>>> +             return spi_nor_global_block_unlock(nor);
+>>>>>> 
+>>>>>> 
+>>>>>> Some blocks might not be unlocked because they are permanently
+>>>>>> locked. Does it make sense to read BPNV of the control register
+>>>>>> and add a debug message here?
+>>>>> 
+>>>>> It would, yes. If any block is permanently locked in the unlock_all
+>>>>> case,
+>>>>> I'll just print a dbg message and return -EINVAL. Sounds good?
+>>>> 
+>>>> spi_nor_sr_unlock(), atmel_at25fs_unlock() and
+>>>> atmel_global_unprotect()
+>>>> will return -EIO in case the SR wasn't writable.
+>>> 
+>>> You mean in the spi_nor_write_sr_and_check() calls. -EIO is fine
+>>> there if what we wrote is different than what we read back, it would
+>>> indicate an IO error.
+>>> 
+>>> GBULK command clears all the write-protection bits in the Block
+>>> Protection register, except for those bits that have been permanently
+>>> locked down. So even if we have few blocks permanently locked, i.e.
+>>> CR.BPNV == 1, the GBULK can clear the protection for the remaining
+>>> blocks. So not really an IO error, but rather an -EINVAL, because
+>>> the user asks to unlock more than we can.
+>> 
+>> Doesn't EINVAL indicate wrong parameters, but does nothing? In this
+>> case, unlock would be partially successful.
+>> 
+> yes, that's what I said I'll do: "If any block is permanently locked
+> in the unlock_all case, I'll just print a dbg message and return 
+> -EINVAL",
+> without sending a GBULK cmd. Caller wrongly asks to unlock all, when we
+> can just unlock partial memory.
 
-Add documentation for reliable stacktrace. This is intended to describe
-the semantics and to be an aid for implementing architecture support for
-HAVE_RELIABLE_STACKTRACE.
+Doh, I've missed that you will do it beforehand. Yes then EINVAL
+is fine by me.
 
-Unwinding is a subtle area, and architectures vary greatly in both
-implementation and the set of concerns that affect them, so I've tried
-to avoid making this too specific to any given architecture. I've used
-examples from both x86_64 and arm64 to explain corner cases in more
-detail, but I've tried to keep the descriptions sufficient for those who
-are unfamiliar with the particular architecture.
+But you won't unlock the flash during startup (given the config option
+is enabled) if any blocks has been permanently locked. Thus if just the
+topmost 4k block is permanently locked down, the whole flash wouldn't be
+writable, right?. I don't have a strong opinion on that.
 
-This document aims to give rationale for all the recommendations and
-requirements, since that makes it easier to spot nearby issues, or when
-a check happens to catch a few things at once.
+-michael
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-[Updates following review -- broonie]
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/livepatch/index.rst             |   1 +
- .../livepatch/reliable-stacktrace.rst         | 309 ++++++++++++++++++
- 2 files changed, 310 insertions(+)
- create mode 100644 Documentation/livepatch/reliable-stacktrace.rst
+> 
+> It's similar to what is at:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/drivers/mtd/spi-nor/core.c?h=spi-nor/next#n1946
+> 
+>> In any case, my point was that depending on the underlying locking
+>> ops, either -EIO or -EINVAL is returned if spi_nor_unlock() fails
+>> for the same reason, that is unlock() wasn't possible because of
+>> some sort of hardware write protection. And IMHO it should return
+>> the same errno (whatever the correct errno is in this case).
+>> 
+> 
+> But the reasons are different: 1/caller wrongly asks to unlock
+> more than we can, thus -EINVAL 2/ -EIO when we don't read what
+> we expect to read.
 
-diff --git a/Documentation/livepatch/index.rst b/Documentation/livepatch/index.rst
-index 525944063be7..43cce5fad705 100644
---- a/Documentation/livepatch/index.rst
-+++ b/Documentation/livepatch/index.rst
-@@ -13,6 +13,7 @@ Kernel Livepatching
-     module-elf-format
-     shadow-vars
-     system-state
-+    reliable-stacktrace
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/livepatch/reliable-stacktrace.rst b/Documentation/livepatch/reliable-stacktrace.rst
-new file mode 100644
-index 000000000000..67459d2ca2af
---- /dev/null
-+++ b/Documentation/livepatch/reliable-stacktrace.rst
-@@ -0,0 +1,309 @@
-+===================
-+Reliable Stacktrace
-+===================
-+
-+This document outlines basic information about reliable stacktracing.
-+
-+.. Table of Contents:
-+
-+.. contents:: :local:
-+
-+1. Introduction
-+===============
-+
-+The kernel livepatch consistency model relies on accurately identifying which
-+functions may have live state and therefore may not be safe to patch. One way
-+to identify which functions are live is to use a stacktrace.
-+
-+Existing stacktrace code may not always give an accurate picture of all
-+functions with live state, and best-effort approaches which can be helpful for
-+debugging are unsound for livepatching. Livepatching depends on architectures
-+to provide a *reliable* stacktrace which ensures it never omits any live
-+functions from a trace.
-+
-+
-+2. Requirements
-+===============
-+
-+Architectures must implement one of the reliable stacktrace functions.
-+Architectures using CONFIG_ARCH_STACKWALK must implement
-+'arch_stack_walk_reliable', and other architectures must implement
-+'save_stack_trace_tsk_reliable'.
-+
-+Principally, the reliable stacktrace function must ensure that either:
-+
-+* The trace includes all functions that the task may be returned to, and the
-+  return code is zero to indicate that the trace is reliable.
-+
-+* The return code is non-zero to indicate that the trace is not reliable.
-+
-+.. note::
-+   In some cases it is legitimate to omit specific functions from the trace,
-+   but all other functions must be reported. These cases are described in
-+   futher detail below.
-+
-+Secondly, the reliable stacktrace function must be robust to cases where
-+the stack or other unwind state is corrupt or otherwise unreliable. The
-+function should attempt to detect such cases and return a non-zero error
-+code, and should not get stuck in an infinite loop or access memory in
-+an unsafe way.  Specific cases are described in further detail below.
-+
-+
-+3. Compile-time analysis
-+========================
-+
-+To ensure that kernel code can be correctly unwound in all cases,
-+architectures may need to verify that code has been compiled in a manner
-+expected by the unwinder. For example, an unwinder may expect that
-+functions manipulate the stack pointer in a limited way, or that all
-+functions use specific prologue and epilogue sequences. Architectures
-+with such requirements should verify the kernel compilation using
-+objtool.
-+
-+In some cases, an unwinder may require metadata to correctly unwind.
-+Where necessary, this metadata should be generated at build time using
-+objtool.
-+
-+
-+4. Considerations
-+=================
-+
-+The unwinding process varies across architectures, their respective procedure
-+call standards, and kernel configurations. This section describes common
-+details that architectures should consider.
-+
-+4.1 Identifying successful termination
-+--------------------------------------
-+
-+Unwinding may terminate early for a number of reasons, including:
-+
-+* Stack or frame pointer corruption.
-+
-+* Missing unwind support for an uncommon scenario, or a bug in the unwinder.
-+
-+* Dynamically generated code (e.g. eBPF) or foreign code (e.g. EFI runtime
-+  services) not following the conventions expected by the unwinder.
-+
-+To ensure that this does not result in functions being omitted from the trace,
-+even if not caught by other checks, it is strongly recommended that
-+architectures verify that a stacktrace ends at an expected location, e.g.
-+
-+* Within a specific function that is an entry point to the kernel.
-+
-+* At a specific location on a stack expected for a kernel entry point.
-+
-+* On a specific stack expected for a kernel entry point (e.g. if the
-+  architecture has separate task and IRQ stacks).
-+
-+4.2 Identifying unwindable code
-+-------------------------------
-+
-+Unwinding typically relies on code following specific conventions (e.g.
-+manipulating a frame pointer), but there can be code which may not follow these
-+conventions and may require special handling in the unwinder, e.g.
-+
-+* Exception vectors and entry assembly.
-+
-+* Procedure Linkage Table (PLT) entries and veneer functions.
-+
-+* Trampoline assembly (e.g. ftrace, kprobes).
-+
-+* Dynamically generated code (e.g. eBPF, optprobe trampolines).
-+
-+* Foreign code (e.g. EFI runtime services).
-+
-+To ensure that such cases do not result in functions being omitted from a
-+trace, it is strongly recommended that architectures positively identify code
-+which is known to be reliable to unwind from, and reject unwinding from all
-+other code.
-+
-+Kernel code including modules and eBPF can be distinguished from foreign code
-+using '__kernel_text_address()'. Checking for this also helps to detect stack
-+corruption.
-+
-+There are several ways an architecture may identify kernel code which is deemed
-+unreliable to unwind from, e.g.
-+
-+* Placing such code into special linker sections, and rejecting unwinding from
-+  any code in these sections.
-+
-+* Identifying specific portions of code using bounds information.
-+
-+4.3 Unwinding across interrupts and exceptions
-+----------------------------------------------
-+
-+At function call boundaries the stack and other unwind state is expected to be
-+in a consistent state suitable for reliable unwinding, but this may not be the
-+case part-way through a function. For example, during a function prologue or
-+epilogue a frame pointer may be transiently invalid, or during the function
-+body the return address may be held in an arbitrary general purpose register.
-+For some architectures this may change at runtime as a result of dynamic
-+instrumentation.
-+
-+If an interrupt or other exception is taken while the stack or other unwind
-+state is in an inconsistent state, it may not be possible to reliably unwind,
-+and it may not be possible to identify whether such unwinding will be reliable.
-+See below for examples.
-+
-+Architectures which cannot identify when it is reliable to unwind such cases
-+(or where it is never reliable) must reject unwinding across exception
-+boundaries. Note that it may be reliable to unwind across certain
-+exceptions (e.g. IRQ) but unreliable to unwind across other exceptions
-+(e.g. NMI).
-+
-+Architectures which can identify when it is reliable to unwind such cases (or
-+have no such cases) should attempt to unwind across exception boundaries, as
-+doing so can prevent unnecessarily stalling livepatch consistency checks and
-+permits livepatch transitions to complete more quickly.
-+
-+4.4 Rewriting of return addresses
-+---------------------------------
-+
-+Some trampolines temporarily modify the return address of a function in order
-+to intercept when that function returns with a return trampoline, e.g.
-+
-+* An ftrace trampoline may modify the return address so that function graph
-+  tracing can intercept returns.
-+
-+* A kprobes (or optprobes) trampoline may modify the return address so that
-+  kretprobes can intercept returns.
-+
-+When this happens, the original return address will not be in its usual
-+location. For trampolines which are not subject to live patching, where an
-+unwinder can reliably determine the original return address and no unwind state
-+is altered by the trampoline, the unwinder may report the original return
-+address in place of the trampoline and report this as reliable. Otherwise, an
-+unwinder must report these cases as unreliable.
-+
-+Special care is required when identifying the original return address, as this
-+information is not in a consistent location for the duration of the entry
-+trampoline or return trampoline. For example, considering the x86_64
-+'return_to_handler' return trampoline:
-+
-+.. code-block:: none
-+
-+   SYM_CODE_START(return_to_handler)
-+           UNWIND_HINT_EMPTY
-+           subq  $24, %rsp
-+
-+           /* Save the return values */
-+           movq %rax, (%rsp)
-+           movq %rdx, 8(%rsp)
-+           movq %rbp, %rdi
-+
-+           call ftrace_return_to_handler
-+
-+           movq %rax, %rdi
-+           movq 8(%rsp), %rdx
-+           movq (%rsp), %rax
-+           addq $24, %rsp
-+           JMP_NOSPEC rdi
-+   SYM_CODE_END(return_to_handler)
-+
-+While the traced function runs its return address on the stack points to
-+the start of return_to_handler, and the original return address is stored in
-+the task's cur_ret_stack. During this time the unwinder can find the return
-+address using ftrace_graph_ret_addr().
-+
-+When the traced function returns to return_to_handler, there is no longer a
-+return address on the stack, though the original return address is still stored
-+in the task's cur_ret_stack. Within ftrace_return_to_handler(), the original
-+return address is removed from cur_ret_stack and is transiently moved
-+arbitrarily by the compiler before being returned in rax. The return_to_handler
-+trampoline moves this into rdi before jumping to it.
-+
-+Architectures might not always be able to unwind such sequences, such as when
-+ftrace_return_to_handler() has removed the address from cur_ret_stack, and the
-+location of the return address cannot be reliably determined.
-+
-+It is recommended that architectures unwind cases where return_to_handler has
-+not yet been returned to, but architectures are not required to unwind from the
-+middle of return_to_handler and can report this as unreliable. Architectures
-+are not required to unwind from other trampolines which modify the return
-+address.
-+
-+4.5 Obscuring of return addresses
-+---------------------------------
-+
-+Some trampolines do not rewrite the return address in order to intercept
-+returns, but do transiently clobber the return address or other unwind state.
-+
-+For example, the x86_64 implementation of optprobes patches the probed function
-+with a JMP instruction which targets the associated optprobe trampoline. When
-+the probe is hit, the CPU will branch to the optprobe trampoline, and the
-+address of the probed function is not held in any register or on the stack.
-+
-+Similarly, the arm64 implementation of DYNAMIC_FTRACE_WITH_REGS patches traced
-+functions with the following:
-+
-+.. code-block:: none
-+
-+   MOV X9, X30
-+   BL <trampoline>
-+
-+The MOV saves the link register (X30) into X9 to preserve the return address
-+before the BL clobbers the link register and branches to the trampoline. At the
-+start of the trampoline, the address of the traced function is in X9 rather
-+than the link register as would usually be the case.
-+
-+Architectures must either ensure that unwinders either reliably unwind
-+such cases, or report the unwinding as unreliable.
-+
-+4.6 Link register unreliability
-+-------------------------------
-+
-+On some other architectures, 'call' instructions place the return address into a
-+link register, and 'return' instructions consume the return address from the
-+link register without modifying the register. On these architectures software
-+must save the return address to the stack prior to making a function call. Over
-+the duration of a function call, the return address may be held in the link
-+register alone, on the stack alone, or in both locations.
-+
-+Unwinders typically assume the link register is always live, but this
-+assumption can lead to unreliable stack traces. For example, consider the
-+following arm64 assembly for a simple function:
-+
-+.. code-block:: none
-+
-+   function:
-+           STP X29, X30, [SP, -16]!
-+           MOV X29, SP
-+           BL <other_function>
-+           LDP X29, X30, [SP], #16
-+           RET
-+
-+At entry to the function, the link register (x30) points to the caller, and the
-+frame pointer (X29) points to the caller's frame including the caller's return
-+address. The first two instructions create a new stackframe and update the
-+frame pointer, and at this point the link register and the frame pointer both
-+describe this function's return address. A trace at this point may describe
-+this function twice, and if the function return is being traced, the unwinder
-+may consume two entries from the fgraph return stack rather than one entry.
-+
-+The BL invokes 'other_function' with the link register pointing to this
-+function's LDR and the frame pointer pointing to this function's stackframe.
-+When 'other_function' returns, the link register is left pointing at the BL,
-+and so a trace at this point could result in 'function' appearing twice in the
-+backtrace.
-+
-+Similarly, a function may deliberately clobber the LR, e.g.
-+
-+.. code-block:: none
-+
-+   caller:
-+           STP X29, X30, [SP, -16]!
-+           MOV X29, SP
-+           ADR LR, <callee>
-+           BLR LR
-+           LDP X29, X30, [SP], #16
-+           RET
-+
-+The ADR places the address of 'callee' into the LR, before the BLR branches to
-+this address. If a trace is made immediately after the ADR, 'callee' will
-+appear to be the parent of 'caller', rather than the child.
-+
-+Due to cases such as the above, it may only be possible to reliably consume a
-+link register value at a function call boundary. Architectures where this is
-+the case must reject unwinding across exception boundaries unless they can
-+reliably identify when the LR or stack value should be used (e.g. using
-+metadata generated by objtool).
--- 
-2.20.1
-
+-michael
