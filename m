@@ -2,298 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A7D2FD12E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FED2FD131
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389768AbhATNNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S1728940AbhATNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbhATMiu (ORCPT
+        with ESMTP id S1730924AbhATMl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:38:50 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00961C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:38:09 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id d189so24813744oig.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:38:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cUvq+3j2UZsZMpqSR7hZFwIpt01vjr1BcAn5QPI98HI=;
-        b=JVRsRUNObTpASX4m1samBC1mklhZy/jQS2Omjrbh3aPUgrmW/63lHzLRHRqFip9OYI
-         1bhPk86QOLo9KEGMI61x5hBjdnmBd1UQ6H1RjTadiLLz1b5aObuyok2rCgLLcas2gI6y
-         YRVrgt1aZN9mOeIP+9/M1PYwW1LgWQrKbAsdQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cUvq+3j2UZsZMpqSR7hZFwIpt01vjr1BcAn5QPI98HI=;
-        b=Q/EM32LvVolM0PHUwc5ZY8jrf0kkI7P/dhso8Otapl8gaDdLjofcHiiWYCNxzbqwAt
-         goO9YqO5GaIvnsb4yeKwm6uH4lLg5dgRAwd8fQuYYB7QNRVrIa639KmL9zQgpCo5KPKo
-         XCHvTKzbf8tAocVGIvj0AMuBNHHAveOtGW3qPaCgc3bJuqivmWfrfyR6y0R+bTO53kP0
-         YwIdUfcaNoPDIVbmteS/eOE9Z/0iQtFkbqAYu/mfGGP03d/L6DtYT60JPAvWYcR+LUD0
-         6DVr6aNEe1aPnH4dgtGLeNaLNCFC3UDb6txjZI6d1vFn688O042VQ0eaUmzjGKx59DTx
-         xl0A==
-X-Gm-Message-State: AOAM533HIsZExRurOcdk8GXBmjAI1pdMpeLu9pS3q6numUCLtXSiLn9S
-        Q5nhVYlDtlk/d9bctrdl/U87+8izdivyDtX/Pj9y1A==
-X-Google-Smtp-Source: ABdhPJyLEhvQVDZvawZb4fB5BWgVVbsvjXs0uZbHyF2fRaWuYnahTZBfwUesFW975l8pjFlccP3Tw3QDeGrbbX911GA=
-X-Received: by 2002:aca:4ac5:: with SMTP id x188mr2636242oia.14.1611146289366;
- Wed, 20 Jan 2021 04:38:09 -0800 (PST)
-MIME-Version: 1.0
-References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
- <20210118234057.270930-1-zzyiwei@android.com> <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
- <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
- <YAfzxS95Yy86qnBi@phenom.ffwll.local> <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
-In-Reply-To: <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 20 Jan 2021 13:37:57 +0100
-Message-ID: <CAKMK7uE3xF80AsJ1zGfSM-KTry=ikJ-S-Dn6nK8ZAvCSWw2FHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
-To:     Yiwei Zhang <zzyiwei@android.com>
-Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Wed, 20 Jan 2021 07:41:28 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B138BC061575;
+        Wed, 20 Jan 2021 04:40:47 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AFA738F2;
+        Wed, 20 Jan 2021 13:40:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611146445;
+        bh=77EaWeT+0cZbNSa8YOcULtlIbHVRWVmnJsuCSWfP3bo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IFrTwLdCcO+NV9ZoGu/aohVsXR+lkQRp9e8n4PEM5vIsM1nU9T1P6F7JJN1K3IjnO
+         yU4Z+7NjPMMhaNJ+FCCt4QdwbuSJTB/QQA+Fe3x9HIn+hXQXluhnxnqYzqSMwf/afC
+         b+/BRkytbcexIuhQEl3eG2QkRbeaEbCJ7kwwnT4Q=
+Date:   Wed, 20 Jan 2021 14:40:28 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        LKML <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Subject: Re: [PATCH 2/2] drm: bridge: Add SN65DSI84 DSI to LVDS bridge
+Message-ID: <YAgkvE4UvLUKbjz0@pendragon.ideasonboard.com>
+References: <20210120112158.62109-1-jagan@amarulasolutions.com>
+ <20210120112158.62109-2-jagan@amarulasolutions.com>
+ <CAOf5uwnn0-89-hBDE3DTXACdTJG6u7jswAP9zfa=UiUeAz2ewA@mail.gmail.com>
+ <CAMty3ZAFUyoSAZXkcjs86_Y_3cLiJz=hR4Y0FM73G9uj=O1Fgg@mail.gmail.com>
+ <CAOf5uw=M7WXRp6errp4MSKEYbk3e01Qwfix1mqqtnaXnkr5xjw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAOf5uw=M7WXRp6errp4MSKEYbk3e01Qwfix1mqqtnaXnkr5xjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:51 AM Yiwei Zhang=E2=80=8E <zzyiwei@android.com>=
- wrote:
->
-> On Wed, Jan 20, 2021 at 1:11 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Jan 19, 2021 at 11:08:12AM -0800, Yiwei Zhang wrote:
-> > > On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrot=
-e:
+On Wed, Jan 20, 2021 at 12:55:40PM +0100, Michael Nazzareno Trimarchi wrote:
+> On Wed, Jan 20, 2021 at 12:29 PM Jagan Teki wrote:
+> > On Wed, Jan 20, 2021 at 4:55 PM Michael Nazzareno Trimarchi wrote:
+> > > On Wed, Jan 20, 2021 at 12:22 PM Jagan Teki wrote:
 > > > >
-> > > > On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> =
-wrote:
-> > > > >
-> > > > > On the success of virtio_gpu_object_create, add size of newly all=
-ocated
-> > > > > bo to the tracled total_mem. In drm_gem_object_funcs.free, after =
-the gem
-> > > > > bo lost its last refcount, subtract the bo size from the tracked
-> > > > > total_mem if the original underlying memory allocation is success=
-ful.
-> > > > >
-> > > > > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> > > > SN65DSI84 is a Single Channel DSI to Dual-link LVDS bridge from
+> > > > Texas Instruments.
 > > > >
-> > > > Isn't this something that ideally we'd for everyone? Also tracepoin=
-t
-> > > > for showing the total feels like tracepoint abuse, usually we show
-> > > > totals somewhere in debugfs or similar, and tracepoint just for wha=
-t's
-> > > > happening (i.e. which object got deleted/created).
+> > > > SN65DSI83, SN65DSI85 are variants of the same family of bridge
+> > > > controllers.
 > > > >
-> > > > What is this for exactly?
-> > > > -Daniel
+> > > > Right now the bridge driver is supporting a single link, dual-link
+> > > > support requires to initiate I2C Channel B registers.
 > > > >
-> > > > > ---
-> > > > >  drivers/gpu/drm/virtio/Kconfig          |  1 +
-> > > > >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
-> > > > >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
-> > > > >  3 files changed, 24 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/vir=
-tio/Kconfig
-> > > > > index b925b8b1da16..e103b7e883b1 100644
-> > > > > --- a/drivers/gpu/drm/virtio/Kconfig
-> > > > > +++ b/drivers/gpu/drm/virtio/Kconfig
-> > > > > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
-> > > > >         select DRM_KMS_HELPER
-> > > > >         select DRM_GEM_SHMEM_HELPER
-> > > > >         select VIRTIO_DMA_SHARED_BUFFER
-> > > > > +       select TRACE_GPU_MEM
-> > > > >         help
-> > > > >            This is the virtual GPU driver for virtio.  It can be =
-used with
-> > > > >            QEMU based VMMs (like KVM or Xen).
-> > > > > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/d=
-rm/virtio/virtgpu_drv.h
-> > > > > index 6a232553c99b..7c60e7486bc4 100644
-> > > > > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > > > > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-> > > > > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
-> > > > >         spinlock_t resource_export_lock;
-> > > > >         /* protects map state and host_visible_mm */
-> > > > >         spinlock_t host_visible_lock;
-> > > > > +
-> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > > > +       atomic64_t total_mem;
-> > > > > +#endif
-> > > > >  };
-> > > > >
-> > > > >  struct virtio_gpu_fpriv {
-> > > > > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gp=
-u/drm/virtio/virtgpu_object.c
-> > > > > index d69a5b6da553..1e16226cebbe 100644
-> > > > > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
-> > > > > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-> > > > > @@ -25,12 +25,29 @@
-> > > > >
-> > > > >  #include <linux/dma-mapping.h>
-> > > > >  #include <linux/moduleparam.h>
-> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > > > +#include <trace/events/gpu_mem.h>
-> > > > > +#endif
-> > > > >
-> > > > >  #include "virtgpu_drv.h"
-> > > > >
-> > > > >  static int virtio_gpu_virglrenderer_workaround =3D 1;
-> > > > >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaroun=
-d, int, 0400);
-> > > > >
-> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
-> > > > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_=
-device *vgdev,
-> > > > > +                                             s64 delta)
-> > > > > +{
-> > > > > +       u64 total_mem =3D atomic64_add_return(delta, &vgdev->tota=
-l_mem);
-> > > > > +
-> > > > > +       trace_gpu_mem_total(0, 0, total_mem);
-> > > > > +}
-> > > > > +#else
-> > > > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_=
-device *, s64)
-> > > > > +{
-> > > > > +}
-> > > > > +#endif
-> > > > > +
-> > > > >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, =
-uint32_t *resid)
-> > > > >  {
-> > > > >         if (virtio_gpu_virglrenderer_workaround) {
-> > > > > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm=
-_gem_object *obj)
-> > > > >         struct virtio_gpu_device *vgdev =3D bo->base.base.dev->de=
-v_private;
-> > > > >
-> > > > >         if (bo->created) {
-> > > > > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
-> > > > >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
-> > > > >                 virtio_gpu_notify(vgdev);
-> > > > >                 /* completion handler calls virtio_gpu_cleanup_ob=
-ject() */
-> > > > > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gp=
-u_device *vgdev,
-> > > > >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
-> > > > >         }
-> > > > >
-> > > > > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
-> > > > >         *bo_ptr =3D bo;
-> > > > >         return 0;
-> > > > >
-> > > > > --
-> > > > > 2.30.0.284.gd98b1dd5eaa7-goog
-> > > > >
+> > > > Tested with STM32MP1 MIPI DSI host design configuration.
 > > > >
+> > > > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > ---
+> > > >  MAINTAINERS                           |   6 +
+> > > >  drivers/gpu/drm/bridge/Kconfig        |  19 +
+> > > >  drivers/gpu/drm/bridge/Makefile       |   1 +
+> > > >  drivers/gpu/drm/bridge/ti-sn65dsi84.c | 488 ++++++++++++++++++++++++++
+> > > >  4 files changed, 514 insertions(+)
+> > > >  create mode 100644 drivers/gpu/drm/bridge/ti-sn65dsi84.c
 > > > >
-> > > > --
-> > > > Daniel Vetter
-> > > > Software Engineer, Intel Corporation
-> > > > http://blog.ffwll.ch
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 12dd1fff2a39..44750ff7640c 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -5984,6 +5984,12 @@ S:       Maintained
+> > > >  F:     Documentation/devicetree/bindings/display/ti/
+> > > >  F:     drivers/gpu/drm/omapdrm/
+> > > >
+> > > > +DRM DRIVERS FOR TI SN65DSI84 DSI TO LVDS BRIDGE
+> > > > +M:     Jagan Teki <jagan@amarulasolutions.com>
+> > > > +S:     Maintained
+> > > > +F:     Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+> > > > +F:     drivers/gpu/drm/bridge/ti-sn65dsi84.c
+> > > > +
+> > > >  DRM DRIVERS FOR V3D
+> > > >  M:     Eric Anholt <eric@anholt.net>
+> > > >  S:     Supported
+> > > > diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> > > > index e4110d6ca7b3..6494881bffb3 100644
+> > > > --- a/drivers/gpu/drm/bridge/Kconfig
+> > > > +++ b/drivers/gpu/drm/bridge/Kconfig
+> > > > @@ -232,6 +232,25 @@ config DRM_TI_TFP410
+> > > >         help
+> > > >           Texas Instruments TFP410 DVI/HDMI Transmitter driver
+> > > >
+> > > > +config DRM_TI_SN65DSI84
+> > > > +       tristate "TI SN65DSI84 DSI to LVDS bridge"
+> > > > +       depends on OF
+> > > > +       select DRM_KMS_HELPER
+> > > > +       select REGMAP_I2C
+> > > > +       select DRM_PANEL
+> > > > +       select DRM_MIPI_DSI
+> > > > +       help
+> > > > +         Texas Instruments SN65DSI84 Single Channel DSI to Dual-link LVDS
+> > > > +         bridge driver.
+> > > > +
+> > > > +         Bridge decodes MIPI DSI 18bpp RGB666 and 240bpp RG888 packets and
+> > > > +         converts the formatted video data stream to a FlatLink compatible
+> > > > +         LVDS output operating at pixel clocks operating from 25 MHx to
+> > > > +         154 MHz.
+> > > > +
+> > > > +         SN65DSI84 offers a Dual-Link LVDS, Single-Link LVDS interface with
+> > > > +         four data lanes per link.
+> > > > +
+> > > >  config DRM_TI_SN65DSI86
+> > > >         tristate "TI SN65DSI86 DSI to eDP bridge"
+> > > >         depends on OF
+> > > > diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> > > > index 86e7acc76f8d..3906052ef639 100644
+> > > > --- a/drivers/gpu/drm/bridge/Makefile
+> > > > +++ b/drivers/gpu/drm/bridge/Makefile
+> > > > @@ -20,6 +20,7 @@ obj-$(CONFIG_DRM_TOSHIBA_TC358767) += tc358767.o
+> > > >  obj-$(CONFIG_DRM_TOSHIBA_TC358768) += tc358768.o
+> > > >  obj-$(CONFIG_DRM_TOSHIBA_TC358775) += tc358775.o
+> > > >  obj-$(CONFIG_DRM_I2C_ADV7511) += adv7511/
+> > > > +obj-$(CONFIG_DRM_TI_SN65DSI84) += ti-sn65dsi84.o
+> > > >  obj-$(CONFIG_DRM_TI_SN65DSI86) += ti-sn65dsi86.o
+> > > >  obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
+> > > >  obj-$(CONFIG_DRM_TI_TPD12S015) += ti-tpd12s015.o
+> > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi84.c b/drivers/gpu/drm/bridge/ti-sn65dsi84.c
+> > > > new file mode 100644
+> > > > index 000000000000..3ed1f9a7d898
+> > > > --- /dev/null
+> > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi84.c
+> > > > @@ -0,0 +1,488 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Copyright (c) 2021 Engicam srl
+> > > > + * Copyright (C) 2021 Amarula Solutions(India)
+> > > > + * Author: Jagan Teki <jagan@amarulasolutions.com>
+> > > > + */
+> > > > +
+> > > > +#include <drm/drm_of.h>
+> > > > +#include <drm/drm_panel.h>
+> > > > +#include <drm/drm_print.h>
+> > > > +#include <drm/drm_mipi_dsi.h>
+> > > > +
+> > > > +#include <linux/delay.h>
+> > > > +#include <linux/gpio/consumer.h>
+> > > > +#include <linux/i2c.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/regmap.h>
+> > > > +
+> > > > +/* sn65dsi84 registers */
+> > > > +#define SN65DSI_SOFT_RESET             0x09
+> > > > +#define SN65DSI_LVDS_CLK               0x0a
+> > > > +#define SN65DSI_CLK_DIV                        0x0b
+> > > > +#define SN65DSI_CLK_PLL                        0x0d
+> > > > +#define SN65DSI_DSI_CFG                        0x10
+> > > > +#define SN65DSI_DSI_CLK_EQ             0x11
+> > > > +#define SN65DSI_DSI_CLK_RANGE          0x12
+> > > > +#define SN65DSI_LVDS_MODE              0x18
+> > > > +#define SN65DSI_CHA_LINE_LO            0x20
+> > > > +#define SN65DSI_CHA_LINE_HI            0x21
+> > > > +#define SN65DSI_CHA_VIRT_LO            0x24
+> > > > +#define SN65DSI_CHA_VIRT_HI            0x25
+> > > > +#define SN65DSI_CHA_SYNC_DELAY_LO      0x28
+> > > > +#define SN65DSI_CHA_SYNC_DELAY_HI      0x29
+> > > > +#define SN65DSI_CHA_HSYNC_WIDTH_LO     0x2c
+> > > > +#define SN65DSI_CHA_HSYNC_WIDTH_HI     0x2d
+> > > > +#define SN65DSI_CHA_VSYNC_WIDTH_LO     0x30
+> > > > +#define SN65DSI_CHA_VSYNC_WIDTH_HI     0x31
+> > > > +#define SN65DSI_CHA_HBACK_PORCH                0x34
+> > > > +#define SN65DSI_CHA_VBACK_PORCH                0x36
+> > > > +#define SN65DSI_CHA_HFRONT_PORCH       0x38
+> > > > +#define SN65DSI_CHA_VFRONT_PORCH       0x3a
+> > > > +#define SN65DSI_CHA_ERR                        0xe5
+> > > > +
+> > > > +/* sn65dsi register bits */
+> > > > +#define SN65DSI_RESET_EN               BIT(0)
+> > > > +#define SN65DSI_PLL_EN                 BIT(0)
+> > > > +#define SN65DSI_LVDS_CLK_MASK          GENMASK(3, 1)
+> > > > +#define SN65DSI_LVDS_CLK_SHIFT         1
+> > > > +#define SN65DSI_LVDS_CLK_SRC_DSI       BIT(0)
+> > > > +#define SN65DSI_CLK_DIV_MASK           GENMASK(7, 3)
+> > > > +#define SN65DSI_CLK_DIV_SHIFT          3
+> > > > +#define SN65DSI_DSI_LANE_MASK          GENMASK(4, 3)
+> > > > +#define SN65DSI_DSI_LANE_SHIFT         3
+> > > > +#define SN65DSI_LVDS_LINK_CFG          BIT(4)
+> > > > +#define SN65DSI_LVDS_CHA_24BPP         BIT(3)
+> > > > +#define SN65DSI_CHA_LOW_SYNC_DELAY     0x20
+> > > > +#define SN65DSI_CHA_HIGH_SYNC_DELAY    0x00
+> > > > +
+> > > > +struct sn65dsi {
+> > > > +       struct device                   *dev;
+> > > > +       struct drm_bridge               bridge;
+> > > > +       struct drm_bridge               *panel_bridge;
+> > > > +
+> > > > +       struct device_node              *host_node;
+> > > > +       struct mipi_dsi_device          *dsi;
+> > > > +       u8                              dsi_lanes;
+> > > > +
+> > > > +       struct regmap                   *regmap;
+> > > > +       struct gpio_desc                *enable;
+> > > > +};
+> > > > +
+> > > > +static const struct regmap_config sn65dsi_regmap_config = {
+> > > > +       .reg_bits = 8,
+> > > > +       .val_bits = 8,
+> > > > +       .max_register = SN65DSI_CHA_ERR,
+> > > > +       .name = "sn65dsi",
+> > > > +       .cache_type = REGCACHE_RBTREE,
+> > > > +};
+> > > > +
+> > > > +static inline struct sn65dsi *bridge_to_sn65dsi(struct drm_bridge *bridge)
+> > > > +{
+> > > > +       return container_of(bridge, struct sn65dsi, bridge);
+> > > > +}
+> > > > +
+> > > > +static struct drm_display_mode *bridge_to_mode(struct drm_bridge *bridge)
+> > > > +{
+> > > > +       return &bridge->encoder->crtc->state->mode;
+> > > > +}
+> > > > +
+> > > > +static void sn65dsi_setup_channels(struct sn65dsi *sn,
+> > > > +                                  struct drm_display_mode *mode)
+> > > > +{
+> > > > +       u32 hsync_len, hfront_porch, hback_porch;
+> > > > +       u32 vsync_len, vfront_porch, vback_porch;
+> > > > +
+> > > > +       hfront_porch = mode->hsync_start - mode->hdisplay;
+> > > > +       hsync_len = mode->hsync_end - mode->hsync_start;
+> > > > +       hback_porch = mode->htotal - mode->hsync_end;
+> > > > +
+> > > > +       vfront_porch = mode->vsync_start - mode->vdisplay;
+> > > > +       vsync_len = mode->vsync_end - mode->vsync_start;
+> > > > +       vback_porch = mode->vtotal - mode->vsync_end;
+> > > > +
+> > > > +       /* cha, lower 8-bits of hdisplay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_LINE_LO, mode->hdisplay & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
 > > >
-> > > Thanks for your reply! Android Cuttlefish virtual platform is using
-> > > the virtio-gpu driver, and we currently are carrying this small patch
-> > > at the downstream side. This is essential for us because:
-> > > (1) Android has deprecated debugfs on production devices already
-> > > (2) Android GPU drivers are not DRM based, and this won't change in a
-> > > short term.
-> > >
-> > > Android relies on this tracepoint + eBPF to make the GPU memory total=
-s
-> > > available at runtime on production devices, which has been enforced
-> > > already. Not only game developers can have a reliable kernel total GP=
-U
-> > > memory to look at, but also Android leverages this to take GPU memory
-> > > usage out from the system lost ram.
-> > >
-> > > I'm not sure whether the other DRM drivers would like to integrate
-> > > this tracepoint(maybe upstream drivers will move away from debugfs
-> > > later as well?), but at least we hope virtio-gpu can take this.
+> > > I don't find any reason for those msleep. I don't have on my setup
+> > > with the same bridge
 > >
-> > There's already another proposal from Android people for tracking dma-b=
-uf
-> > (in dma-buf heaps/ion) usage. I think we need something which is overal=
-l
-> > integrated, otherwise we have a complete mess of partial solutions.
+> > As recommended by 8.2.2.1 Example Script from the datasheet.
 > >
-> > Also there's work going on to add cgroups support to gpu drivers (pushe=
-d
-> > by amd and intel folks, latest rfc have been quite old), so that's anot=
-her
-> > proposal for gpu memory usage tracking.
-> >
-> > Also for upstream we need something which works with upstream gpu drive=
-rs
-> > (even if you don't end up using that in shipping products). So that's
-> > another reason maybe why a quick hack in the virtio gpu driver isn't th=
-e
-> > best approach here.
-> >
-> > I guess a good approach would be if Android at least can get to somethi=
-ng
-> > unified (gpu driver, virtio-gpu, dma-buf heaps), and then we need to
-> > figure out how to mesh that with the cgroups side somehow.
-> >
-> > Also note that at least on dma-buf we already have some other debug
-> > features (for android), so an overall "how does this all fit together"
-> > would be good.
-> > -Daniel
-> >
-> > >
-> > > Many thanks!
-> > > Yiwei
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
->
-> The entire story is to better explain Android system memory usage.
-> They fit together so that the dma-bufs overlap can be removed.
->
-> Android GPU vendors have integrated this tracepoint to track gpu
-> memory usage total(mapped into the gpu address space), which consists
-> of below:
-> (1) directly allocated via physical page allocator
-> (2) imported external memory backed by dma-bufs
-> (3) allocated exportable memory backed by dma-bufs
->
-> Our Android kernel team is leading the other side of effort to help
-> remove the dma-bufs overlap(those mapped into a gpu device) as a joint
-> effort, so that we can accurately explain the memory usage of the
-> entire Android system.
->
-> For virtio-gpu, since that's used by our reference platform
-> Cuttlefish(Cloud Android), we have to integrate the same tracepoint as
-> well to enforce the use of this tracepoint and the eBPF stuff built on
-> top to support runtime query of gpu memory on production devices. For
-> virtio-gpu at this moment, we only want to track GEM allocations since
-> PRIME import is currently not supported/used in Cuttlefish. That's all
-> we are doing in this small patch.
+> > https://www.ti.com/product/SN65DSI84
 
-Ok if the plan is to have that as a hard requirement for android
-across all android uapi drivers, then
-- this needs to be done across all upstream drivers too (otherwise we
-don't have that uapi)
-- usual open source requirements for new uapi (but I don't think that
-should be a problem, these parts of android are all open I think)
-- figuring out the overlap with the dma-buf account, before we merge either
+That seems dodgy. A confirmation from TI as to whether those delays are
+needed are not would be useful.
 
-Otherwise I don't see how this can work and be backed with upstreams
-"never break uapi" guarantee.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Jurat wrap in one function and avoid, multiple msleep. Invesitgate
+> even if delay_us in regamp can be
+> used
+> 
+> > > > +       /* cha, upper 4-bits of hdisplay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_LINE_HI, (mode->hdisplay >> 8) & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, lower 8-bits of vdisplay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VIRT_LO, mode->vdisplay & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, upper 4-bits of vdisplay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VIRT_HI, (mode->vdisplay >> 8) & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /*cha, lower sync delay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_SYNC_DELAY_LO, SN65DSI_CHA_LOW_SYNC_DELAY);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /*cha, upper sync delay */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_SYNC_DELAY_HI, SN65DSI_CHA_HIGH_SYNC_DELAY);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, lower 8-bits of hsync_len */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_HSYNC_WIDTH_LO, hsync_len & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, upper 2-bits of hsync_len */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_HSYNC_WIDTH_HI, (hsync_len >> 8) & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, lower 8-bits of vsync_len */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VSYNC_WIDTH_LO, vsync_len & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, upper 2-bits of vsync_len */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VSYNC_WIDTH_HI, (vsync_len >> 8) & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, hback_porch */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_HBACK_PORCH, hback_porch & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, vback_porch */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VBACK_PORCH, vback_porch & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, hfront_porch */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_HFRONT_PORCH, hfront_porch & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* cha, vfront_porch */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CHA_VFRONT_PORCH, vfront_porch & 0xff);
+> > > > +
+> > > > +       msleep(10);
+> > > > +}
+> > > > +
+> > > > +static int sn65dsi_get_clk_range(int min, int max, unsigned long clock,
+> > > > +                                unsigned long start, unsigned long diff)
+> > > > +{
+> > > > +       unsigned long next;
+> > > > +       int i;
+> > > > +
+> > > > +       for (i = min; i <= max; i++) {
+> > > > +               next = start + diff;
+> > > > +               if (start <= clock && clock < next)
+> > > > +                       return i;
+> > > > +
+> > > > +               start += diff;
+> > > > +       }
+> > > > +
+> > > > +       return -EINVAL;
+> > > > +}
+> > > > +
+> > > > +static void sn65dsi_enable(struct drm_bridge *bridge)
+> > > > +{
+> > > > +       struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
+> > > > +       struct drm_display_mode *mode = bridge_to_mode(bridge);
+> > > > +       int bpp = mipi_dsi_pixel_format_to_bpp(sn->dsi->format);
+> > > > +       unsigned int lanes = sn->dsi->lanes;
+> > > > +       unsigned int pixel_clk = mode->clock * 1000;
+> > > > +       unsigned int dsi_clk = pixel_clk * bpp / (lanes * 2);
+> > > > +       unsigned int val;
+> > > > +
+> > > > +       /* set SOFT_RESET bit */
+> > > > +       regmap_write(sn->regmap, SN65DSI_SOFT_RESET, SN65DSI_RESET_EN);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* set PLL_EN bit */
+> > > > +       regmap_write(sn->regmap, SN65DSI_CLK_PLL, 0x0);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* setup lvds clock */
+> > > > +       val = sn65dsi_get_clk_range(0, 5, pixel_clk, 25000000, 25000000);
+> > > > +       if (val < 0) {
+> > > > +               DRM_DEV_ERROR(sn->dev, "invalid LVDS clock range %d\n", val);
+> > > > +               return;
+> > > > +       }
+> > > > +
+> > > > +       regmap_update_bits(sn->regmap, SN65DSI_LVDS_CLK,
+> > > > +                          SN65DSI_LVDS_CLK_MASK,
+> > > > +                          val << SN65DSI_LVDS_CLK_SHIFT);
+> > > > +
+> > > > +       regmap_update_bits(sn->regmap, SN65DSI_LVDS_CLK,
+> > > > +                          SN65DSI_LVDS_CLK_SRC_DSI,
+> > > > +                          SN65DSI_LVDS_CLK_SRC_DSI);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* setup bridge clock divider */
+> > > > +       val = (dsi_clk / pixel_clk) - 1;
+> > > > +       regmap_update_bits(sn->regmap, SN65DSI_CLK_DIV,
+> > > > +                          SN65DSI_CLK_DIV_MASK,
+> > > > +                          val << SN65DSI_CLK_DIV_SHIFT);
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* configure dsi */
+> > > > +       regmap_update_bits(sn->regmap, SN65DSI_DSI_CFG,
+> > > > +                          SN65DSI_DSI_LANE_MASK,
+> > > > +                          lanes << SN65DSI_DSI_LANE_SHIFT);
+> > > > +       msleep(10);
+> > > > +
+> > >
+> > > Most of those, look like. I don't know why it does not work without.
+> > > Where is mention in datasheet?
+> > >
+> > > > +       /* dsi clock range */
+> > > > +       val = sn65dsi_get_clk_range(8, 100, dsi_clk, 40000000, 5000000);
+> > > > +       if (val < 0) {
+> > > > +               DRM_DEV_ERROR(sn->dev, "invalid DSI clock range %d\n", val);
+> > > > +               return;
+> > > > +       }
+> > > > +
+> > > > +       regmap_write(sn->regmap, SN65DSI_DSI_CLK_RANGE, val);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* setup lvds channels */
+> > > > +       regmap_read(sn->regmap, SN65DSI_LVDS_MODE, &val);
+> > > > +       if (bpp == 24)
+> > > > +               val |= SN65DSI_LVDS_CHA_24BPP;
+> > > > +       regmap_write(sn->regmap, SN65DSI_LVDS_MODE, val);
+> > > > +
+> > > > +       msleep(10);
+> > > > +
+> > > > +       /* TODO Channel B required to set up for dual-link LVDS */
+> > > > +       sn65dsi_setup_channels(sn, mode);
+> > > > +
+> > >
+> > > If you are supporting 84 this code can be drop.
+> >
+> > Right now the above function is setting up channel A for single-link
+> > LVDS. 84 support Single and Dual link LVDS.
+
+-- 
+Regards,
+
+Laurent Pinchart
