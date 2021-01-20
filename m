@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9932FD33A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3408C2FD333
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbhATOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727999AbhATOeN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:34:13 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CFAC061575;
-        Wed, 20 Jan 2021 06:33:32 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id n142so25513160qkn.2;
-        Wed, 20 Jan 2021 06:33:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SLu7xLOHoJk5O71a5t7wOSknBRIhuk86LWysAaeDJZM=;
-        b=GZxKdB38mCVGErj2d360bCRiS2NAxk1fd9wfaf8+zwujob//aIdTzNxpAAu9Iiazan
-         kINFjOHISYOIKd73cZ2+G33l/NiDImZWGlvV0C6tVqxOtKtjpt6S2YvHEavLlWlC98In
-         E54YCWU3qunL+3GY4VxarPKv/YD8b+CYQKrc9/5j26TYz7POHz1JwMRCOzzltflgOGyE
-         Yoa1gNYdS7lkFF7URMebz9i3TIbaxM6ELI+K5b1tmWJzE881oHNMc98mIIlbnxzB06EY
-         8Te+KmYTd9OOMdkxwSCvjyDdpq9Sdg52VSQd+MuykXLYdczVoOp+rhVNvBDqa936d1zS
-         nPQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SLu7xLOHoJk5O71a5t7wOSknBRIhuk86LWysAaeDJZM=;
-        b=jGGUD7W/1/fNRo8lb+zeDNcKqi08TLd6G2bNuFTIlOosChFNbYWJHxiSHUHV3cRuGS
-         0X+pjeCO/a3hIFcplUnimUciDnXDb/hQweq8xZliJS3M3+vx6bz7roz6/3s+VaiHS/Ya
-         pTHbZvpfLKAGkuqESdYg5ul1eniUZGkuXmrE1Kcm4VXEfg1NmqqumxuJptUUsxkuWhjU
-         CyQFZOm6jevD6NrVgfMvVPOtaZG9PaZrImiNAQfz9ZZQ0c+UGCDKruCmsWHXuD+kjvpF
-         QGIKytXGf/Hk90qOs3aSbI7c4OyGqwqjYjwI4wrEEa72hKZxcZkcN6gaZB23h5s4hjiI
-         NyRw==
-X-Gm-Message-State: AOAM532wJ7c687rdyNGZtdfmqhCdZROAA9EsQvSiS7IkN2uLi8af0apl
-        BPeqTvMfIKzhPjtOmnQAftvYuL8+1zasbtJ4
-X-Google-Smtp-Source: ABdhPJxHk4aeFawkVpe68oU75ElldH9GhBht/4QXt0tv+mHZU4x1LlehQ5KeQ21hqIICkrUg/GqPUg==
-X-Received: by 2002:a37:a713:: with SMTP id q19mr9859652qke.23.1611153212088;
-        Wed, 20 Jan 2021 06:33:32 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.160])
-        by smtp.gmail.com with ESMTPSA id q6sm1407832qkd.41.2021.01.20.06.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 06:33:31 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: base: power: Fix resposible -> responsible in runtime.c
-Date:   Wed, 20 Jan 2021 20:03:12 +0530
-Message-Id: <20210120143312.3229181-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S2388339AbhATOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:52:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390597AbhATOfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:35:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E0AF23329;
+        Wed, 20 Jan 2021 14:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611153299;
+        bh=iFdLpwpKeZkJepwYerrVF40vWRJ3GSqvzjorTDnVdD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ll53owdsB6m2x9i4robbS/FM07EzmKvW/7Iy/ycMt5rkzITycq9dnrnFdP+AL4q1P
+         cK+Clib06xz7LXRK9hzzM5GaP7fI7s3urYUPLNHkohZRf8DGauG3MiE4vtW/VU/B/6
+         e7xH/jQf/ZJlJ3uNK4QWDsACg6SQOcDKunvFaxU8pyfksjeDclo08iukFItIDqve6w
+         xA5binXJ584bFr5CpU+YcBfqp8WLH6Bvw4T+HnF+h8Sw2C18hFqSpFjmSaDDPmB1aD
+         F6pIoNgn0XkCzGxitIzuR0R1ekQPGnNtnoTUJrhekjhch9cznVHIOeR9m0FzHnT+Pg
+         nfMh51c56T6iw==
+Date:   Wed, 20 Jan 2021 16:34:53 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH] selftests/x86: Simplify the code of getting vdso base
+ address in sgx
+Message-ID: <YAg/jfoCdE0GanNQ@kernel.org>
+References: <20210118133321.98655-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118133321.98655-1-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/resposible/responsible/
+On Mon, Jan 18, 2021 at 09:33:21PM +0800, Tianjia Zhang wrote:
+> The base address of vDSO can be obtained through the library function
+> `getauxval()`, so use `getauxval(AT_SYSINFO_EHDR)` instead of a custom
+> implementation to simplify the code.
+> 
+> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/base/power/runtime.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- Remove reported-by, as there is no regression.
+- Please write to the long description what the commit does.
+  It's lacking that. I.e. instead of passive form: "Obtain the
+  base address...".
 
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-index bfda153b1a41..a46a7e30881b 100644
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1100,7 +1100,7 @@ EXPORT_SYMBOL_GPL(__pm_runtime_resume);
-  * suspending the device when both its runtime PM status is %RPM_ACTIVE and its
-  * runtime PM usage counter is not zero.
-  *
-- * The caller is resposible for decrementing the runtime PM usage counter of
-+ * The caller is responsible for decrementing the runtime PM usage counter of
-  * @dev after this function has returned a positive value for it.
-  */
- int pm_runtime_get_if_active(struct device *dev, bool ign_usage_count)
---
-2.30.0
+/Jarkko
 
+> ---
+>  tools/testing/selftests/sgx/main.c | 24 ++++--------------------
+>  1 file changed, 4 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+> index 724cec700926..365d01dea67b 100644
+> --- a/tools/testing/selftests/sgx/main.c
+> +++ b/tools/testing/selftests/sgx/main.c
+> @@ -15,6 +15,7 @@
+>  #include <sys/stat.h>
+>  #include <sys/time.h>
+>  #include <sys/types.h>
+> +#include <sys/auxv.h>
+>  #include "defines.h"
+>  #include "main.h"
+>  #include "../kselftest.h"
+> @@ -28,24 +29,6 @@ struct vdso_symtab {
+>  	Elf64_Word *elf_hashtab;
+>  };
+>  
+> -static void *vdso_get_base_addr(char *envp[])
+> -{
+> -	Elf64_auxv_t *auxv;
+> -	int i;
+> -
+> -	for (i = 0; envp[i]; i++)
+> -		;
+> -
+> -	auxv = (Elf64_auxv_t *)&envp[i + 1];
+> -
+> -	for (i = 0; auxv[i].a_type != AT_NULL; i++) {
+> -		if (auxv[i].a_type == AT_SYSINFO_EHDR)
+> -			return (void *)auxv[i].a_un.a_val;
+> -	}
+> -
+> -	return NULL;
+> -}
+> -
+>  static Elf64_Dyn *vdso_get_dyntab(void *addr)
+>  {
+>  	Elf64_Ehdr *ehdr = addr;
+> @@ -162,7 +145,7 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
+>  	return 0;
+>  }
+>  
+> -int main(int argc, char *argv[], char *envp[])
+> +int main(int argc, char *argv[])
+>  {
+>  	struct sgx_enclave_run run;
+>  	struct vdso_symtab symtab;
+> @@ -203,7 +186,8 @@ int main(int argc, char *argv[], char *envp[])
+>  	memset(&run, 0, sizeof(run));
+>  	run.tcs = encl.encl_base;
+>  
+> -	addr = vdso_get_base_addr(envp);
+> +	/* Get vDSO base address */
+> +	addr = (void *)(uintptr_t)getauxval(AT_SYSINFO_EHDR);
+>  	if (!addr)
+>  		goto err;
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
+> 
+> 
