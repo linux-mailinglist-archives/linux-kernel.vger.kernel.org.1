@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554322FC82B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A133A2FC830
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbhATCn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:43:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
+        id S2387681AbhATCpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:45:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730086AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730101AbhATB2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Jan 2021 20:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC6D2311C;
-        Wed, 20 Jan 2021 01:27:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D70723340;
+        Wed, 20 Jan 2021 01:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106021;
-        bh=SyhzL3wKjvVs6HHrpK4LfBtmC+2xOrb/9aBifmqgYOk=;
+        s=k20201202; t=1611106022;
+        bh=p1zvHNvX4mBTOFr0HwcT/Szj2x4F0eoll/67TJiUa4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gySbF9SxHMTVguUIhx8cjOqh6hfzutykQSuSb+shHhWy378vLPOjCR1BdStHKE33+
-         84N0mIIn3qE7zQUlNltwQpn/KY3VCdFF7e7EpMHVVXIEBOWUzkRl/g3JYxQTXMuKKh
-         ehx4d0VgPh+EzEh2tISRaWAuG0KqDed6dR5QchGvk1GnleJgAUtKuq5AUXGeKzFnwi
-         JGyfYBXqSzJxFGP56SWsK0Fyul8wt618iUoERPZV7IB7H3bSDL6JZxh5WWO5aPQA4O
-         xfZk35stJp7nIQLazfbJ5S4tgnH2TmMtkzHmD+ehuK0TlRTOUf/W5uaItsv5iQCMT9
-         XdxuxobOAq4FQ==
+        b=VbAisGcOMP21BrtTr/9HhpyUwjRa+RjvBj+tPuZn/eB+rDVeSLEeK8xveTg6P8TmZ
+         e+ei4RsHiTCYj48OdYDyqzX2hRNAEnobQpLvmZlu6PjvE7VeEeBkyi+ac6PrvWZvWr
+         ynChJOUEWYIdkQcc3Tkk32abfWal2WqnLYzdsH1+Zfl0iIi7ZK4tKSCe+iUr9Q3/SC
+         wt+dMRhp3vTwcYxMcXjQAzeccbmFc6ayhI2P5BAR1iwO7eCoaW4wzr9A2ljOsXsfRu
+         Ji8n1agqX/nb3Idw9vWz93iLYSQcOfvjHUvOk+R+IpXwuGK2WVC5t34tRg/LqNfwtA
+         kNVgi6rqGXneQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
@@ -30,9 +30,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 44/45] RISC-V: Set current memblock limit
-Date:   Tue, 19 Jan 2021 20:26:01 -0500
-Message-Id: <20210120012602.769683-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 45/45] RISC-V: Fix maximum allowed phsyical memory for RV32
+Date:   Tue, 19 Jan 2021 20:26:02 -0500
+Message-Id: <20210120012602.769683-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
 References: <20210120012602.769683-1-sashal@kernel.org>
@@ -46,61 +46,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Atish Patra <atish.patra@wdc.com>
 
-[ Upstream commit abb8e86b269604e906a6a4af7a09f04b72dbb862 ]
+[ Upstream commit e557793799c5a8406afb08aa170509619f7eac36 ]
 
-Currently, linux kernel can not use last 4k bytes of addressable space
-because IS_ERR_VALUE macro treats those as an error. This will be an issue
-for RV32 as any memblock allocator potentially allocate chunk of memory
-from the end of DRAM (2GB) leading bad address error even though the
-address was technically valid.
-
-Fix this issue by limiting the memblock if available memory spans the
-entire address space.
+Linux kernel can only map 1GB of address space for RV32 as the page offset
+is set to 0xC0000000. The current description in the Kconfig is confusing
+as it indicates that RV32 can support 2GB of physical memory. That is
+simply not true for current kernel. In future, a 2GB split support can be
+added to allow 2GB physical address space.
 
 Reviewed-by: Anup Patel <anup@brainfault.org>
 Signed-off-by: Atish Patra <atish.patra@wdc.com>
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/mm/init.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/riscv/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index e4133c20744ce..608082fb9a6c6 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -155,9 +155,10 @@ static void __init setup_initrd(void)
- void __init setup_bootmem(void)
- {
- 	phys_addr_t mem_start = 0;
--	phys_addr_t start, end = 0;
-+	phys_addr_t start, dram_end, end = 0;
- 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
- 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-+	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
- 	u64 i;
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 44377fd7860e4..234a21d26f674 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -134,7 +134,7 @@ config PA_BITS
  
- 	/* Find the memory region containing the kernel */
-@@ -179,7 +180,18 @@ void __init setup_bootmem(void)
- 	/* Reserve from the start of the kernel to the end of the kernel */
- 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+ config PAGE_OFFSET
+ 	hex
+-	default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
++	default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
+ 	default 0x80000000 if 64BIT && !MMU
+ 	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+ 	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+@@ -247,10 +247,12 @@ config MODULE_SECTIONS
  
--	max_pfn = PFN_DOWN(memblock_end_of_DRAM());
-+	dram_end = memblock_end_of_DRAM();
-+
-+	/*
-+	 * memblock allocator is not aware of the fact that last 4K bytes of
-+	 * the addressable memory can not be mapped because of IS_ERR_VALUE
-+	 * macro. Make sure that last 4k bytes are not usable by memblock
-+	 * if end of dram is equal to maximum addressable memory.
-+	 */
-+	if (max_mapped_addr == (dram_end - 1))
-+		memblock_set_current_limit(max_mapped_addr - 4096);
-+
-+	max_pfn = PFN_DOWN(dram_end);
- 	max_low_pfn = max_pfn;
- 	set_max_mapnr(max_low_pfn);
+ choice
+ 	prompt "Maximum Physical Memory"
+-	default MAXPHYSMEM_2GB if 32BIT
++	default MAXPHYSMEM_1GB if 32BIT
+ 	default MAXPHYSMEM_2GB if 64BIT && CMODEL_MEDLOW
+ 	default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
  
++	config MAXPHYSMEM_1GB
++		bool "1GiB"
+ 	config MAXPHYSMEM_2GB
+ 		bool "2GiB"
+ 	config MAXPHYSMEM_128GB
 -- 
 2.27.0
 
