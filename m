@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459A52FC848
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FE42FC84B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730882AbhATCwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 21:52:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        id S2388009AbhATCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:53:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730641AbhATB3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FEA2312D;
-        Wed, 20 Jan 2021 01:27:24 +0000 (UTC)
+        id S1730677AbhATB3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:29:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC64923405;
+        Wed, 20 Jan 2021 01:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611106045;
-        bh=RXasSzsPwlyqWugfoG3XkngjRibGw7leLfBysKrf8B4=;
+        s=k20201202; t=1611106046;
+        bh=jmecdH5m1sZMM1i2nSpyh9TsmuTOVzBLpDjaKJ7LffY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pAg10lR56ClIYbZShGRFOUX0Bec9zxo05MTV2e9nwWrtZwb84D41mFbFmBSGUbiSa
-         J63fH3rjSWQ1aMVtN9ckEV6QE29PdU7HtdHhOZs6rr/K2iJuc7YWc0TnDG/3nGzTGA
-         gaK4JUUNqoHHOvd3fwFCAPWn/I5wDj02F8PJNc+wcANdloWvqFNioGuCNn/sqPrwqT
-         raOxghCYy6RF7o32bpQD39X7JA46EPVqDVAdM8TbncjugDyRC2RonTLCQKEKNkzlN9
-         r0pDic+Ff/znW9xiINU5xOmRD7f3YH5cZtwM5mpJ643VLJiI7tLsRFr/Q+CBwDLmCn
-         jcwwrRNOYJ4Dg==
+        b=V3PnYBbcdaMCK4tZ0i+cSJmggBqQ9710r3B0en+UXK+nN09gRNNXHyCc/b9EzdMB3
+         x9fCIhBEJWwtDFf5AKVc0qyfQANaq5KWE914bBnRen4WD2AHxZWYe3Vgz+PfhXXY5S
+         vhCbk1hp8OSxhBgrlPsv2u1OWy4hajtDslSNbJWkrwqao3UVwjnKvlHG+qGJKRkiI9
+         w0fT9jkJXOiyIx1rVldU9gpEA15ZTu4xsjWkNN37zrjtr/N+Llg8ZKOaBiTIWAPdfd
+         +d7TrySXjOAPA+4fLrUlM8fjGtFvGfRAVmOqouEZ/EzGQOI5VQ9irTz7GP+keIM1VA
+         U0HeEi2Q5YWHw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-doc@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH AUTOSEL 5.4 15/26] x86/xen: Add xen_no_vector_callback option to test PCI INTX delivery
-Date:   Tue, 19 Jan 2021 20:26:52 -0500
-Message-Id: <20210120012704.770095-15-sashal@kernel.org>
+Cc:     David Wu <david.wu@rock-chips.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 16/26] net: stmmac: Fixed mtu channged by cache aligned
+Date:   Tue, 19 Jan 2021 20:26:53 -0500
+Message-Id: <20210120012704.770095-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210120012704.770095-1-sashal@kernel.org>
 References: <20210120012704.770095-1-sashal@kernel.org>
@@ -44,78 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: David Wu <david.wu@rock-chips.com>
 
-[ Upstream commit b36b0fe96af13460278bf9b173beced1bd15f85d ]
+[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
 
-It's useful to be able to test non-vector event channel delivery, to make
-sure Linux will work properly on older Xen which doesn't have it.
+Since the original mtu is not used when the mtu is updated,
+the mtu is aligned with cache, this will get an incorrect.
+For example, if you want to configure the mtu to be 1500,
+but mtu 1536 is configured in fact.
 
-It's also useful for those working on Xen and Xen-compatible hypervisors,
-because there are guest kernels still in active use which use PCI INTX
-even when vector delivery is available.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210106153958.584169-4-dwmw2@infradead.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+Signed-off-by: David Wu <david.wu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  4 ++++
- arch/x86/xen/enlighten_hvm.c                    | 11 ++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 74ba077e99e56..a19ae163c0589 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5452,6 +5452,10 @@
- 			This option is obsoleted by the "nopv" option, which
- 			has equivalent effect for XEN platform.
- 
-+	xen_no_vector_callback
-+			[KNL,X86,XEN] Disable the vector callback for Xen
-+			event channel interrupts.
-+
- 	xen_scrub_pages=	[XEN]
- 			Boolean option to control scrubbing pages before giving them back
- 			to Xen, for use by other domains. Can be also changed at runtime
-diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-index e138f7de52d20..6024fafed1642 100644
---- a/arch/x86/xen/enlighten_hvm.c
-+++ b/arch/x86/xen/enlighten_hvm.c
-@@ -175,6 +175,8 @@ static int xen_cpu_dead_hvm(unsigned int cpu)
-        return 0;
- }
- 
-+static bool no_vector_callback __initdata;
-+
- static void __init xen_hvm_guest_init(void)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 18c5a9bb6759c..ce5d3e9e5dff4 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3739,6 +3739,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
  {
- 	if (xen_pv_domain())
-@@ -194,7 +196,7 @@ static void __init xen_hvm_guest_init(void)
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int txfifosz = priv->plat->tx_fifo_size;
++	const int mtu = new_mtu;
  
- 	xen_panic_handler_init();
+ 	if (txfifosz == 0)
+ 		txfifosz = priv->dma_cap.tx_fifo_size;
+@@ -3756,7 +3757,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
+ 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
+ 		return -EINVAL;
  
--	if (xen_feature(XENFEAT_hvm_callback_vector))
-+	if (!no_vector_callback && xen_feature(XENFEAT_hvm_callback_vector))
- 		xen_have_vector_callback = 1;
+-	dev->mtu = new_mtu;
++	dev->mtu = mtu;
  
- 	xen_hvm_smp_init();
-@@ -220,6 +222,13 @@ static __init int xen_parse_nopv(char *arg)
- }
- early_param("xen_nopv", xen_parse_nopv);
+ 	netdev_update_features(dev);
  
-+static __init int xen_parse_no_vector_callback(char *arg)
-+{
-+	no_vector_callback = true;
-+	return 0;
-+}
-+early_param("xen_no_vector_callback", xen_parse_no_vector_callback);
-+
- bool __init xen_hvm_need_lapic(void)
- {
- 	if (xen_pv_domain())
 -- 
 2.27.0
 
