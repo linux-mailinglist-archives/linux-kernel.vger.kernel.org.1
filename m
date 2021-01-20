@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BF42FDDE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978AA2FDDE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393091AbhAUA2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        id S2393075AbhAUA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404158AbhATXZw (ORCPT
+        with ESMTP id S2404091AbhATXYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:25:52 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D88C061387
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:50:29 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id x13so25005804oto.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:50:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Vc7WFCAWQd7lGBvjvH/5e8iw6nJRl7Fhz61duy/6iFg=;
-        b=u/1tJKMNtHK98EFuEZpTHLK+W1csEfoTc92KipCGW7mazkJJQt3U61PItRCVAS8XKD
-         G+BDGVE92bFOQO9fW+hCMxOU8zMB44QekYabBps0qLMDHDnI99Vl435M51AawtE4hhBo
-         zNhOXEhEZic7qlS1o0X1ov20FhuCkwVvDq2kOJvUwPGEsMpLT0qXhbUBXfvxDWX8KARw
-         DScCVyzoh2v8uimhXaqQPlatsu6i4aeXUzQdw+v6GIvbGlD22RrQYazyLtUrMFTVeRJw
-         7reRpOAN9YWq5Y8Sg9em4UBrvKlfgP8IDb7jXOVy77SLucv1/6QfH5uxfgYyKOb1XPl3
-         lpLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Vc7WFCAWQd7lGBvjvH/5e8iw6nJRl7Fhz61duy/6iFg=;
-        b=cc5WOg/8bp7b3ajzmL/jU3cV8imjqJKUm3W0ylwA3kaZEi6gXcx5axuBIycDwlSYqg
-         XOjW0YJjj5w//hfPV1rgotNmomxw/URz/xtVzPKGAfGF99VtQZD5WxPQ25SodoYAslDz
-         tS+fBTdJJ7znUZjeAGLORV3P4llPuq/opIjyruDNXtG3Dsa1hPsKq9G2jcR4BMAvXylz
-         uKNsQo4vo1w3GhM6gQ/SZ9cKgylC2xQpz9CzGT4KCHUtH/sLBhALomS2WvAam2rcWlGC
-         OMfD52dw8aK1sMuQzFbbNey8UTK6qUWVYfmEjocZ4U24/SwEidgvlKYB/ZQNI3EFbTGd
-         RfTg==
-X-Gm-Message-State: AOAM531KvJs4kdHXQ5usVJNcRLfoP/Q5QxSzbJRvQcdnQoKj3A/7wr0Y
-        wh+ZpBGvUDbccPAcDP6kN2K6Bw==
-X-Google-Smtp-Source: ABdhPJzEkbbKp7kG9e04NFVhjy2sAAt6Kpbsjhwi/k9ObpNujk5WxyEW16BW5wy01w1BwOb9eKjQTA==
-X-Received: by 2002:a9d:2046:: with SMTP id n64mr8646527ota.38.1611183029398;
-        Wed, 20 Jan 2021 14:50:29 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r133sm677632oia.17.2021.01.20.14.50.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:50:28 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] dt-bindings: power: rpmpd: Add SC8180X to rpmpd binding
-Date:   Wed, 20 Jan 2021 14:50:36 -0800
-Message-Id: <20210120225037.1611353-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 20 Jan 2021 18:24:18 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65512C061342
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 15:03:23 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2MV4-0041GW-6h; Wed, 20 Jan 2021 23:02:54 +0000
+Date:   Wed, 20 Jan 2021 23:02:54 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Oliver Giles <ohw.giles@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Splicing to/from a tty
+Message-ID: <20210120230254.GD740243@zeniv-ca>
+References: <C8KER7U60WXE.25UFD8RE6QZQK@oguc>
+ <f184764a283bdf3694478fa35ad41d2b3ec38850.camel@sipsolutions.net>
+ <20210118085311.GA2735@lst.de>
+ <20210118193457.GA736435@zeniv-ca>
+ <CAHk-=wh6HLz_qMam_J=W3X4caBqAGN8P+8c_y+sGFvBaD70K8w@mail.gmail.com>
+ <20210118195400.GC736435@zeniv-ca>
+ <20210120162608.GB740243@zeniv-ca>
+ <20210120191116.GC740243@zeniv-ca>
+ <CAHk-=wjtTC_jNL+K1Ey_wY_KpTYZOR5XwhkZ+Eu7vviVi5itDQ@mail.gmail.com>
+ <29625ab9f4f94b84aacf96ad9b5da828@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29625ab9f4f94b84aacf96ad9b5da828@AcuMS.aculab.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible and constants for the power domains exposed by the RPMH
-in the Qualcomm SC8180X platform.
+On Wed, Jan 20, 2021 at 10:25:56PM +0000, David Laight wrote:
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- .../devicetree/bindings/power/qcom,rpmpd.yaml       |  1 +
- include/dt-bindings/power/qcom-rpmpd.h              | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
+> I also wonder if pread/pwrite with offset == 0 should be valid
+> on things where the offset makes no sense.
+> 
+> I'm rather surprised the offset isn't just silently ignored
+> for devices where seeking is non-sensical.
+> You might want to error it for mag tapes, but not pipes,
+> ttys, sockets etc.
+> 
+> I really can't remember what SYSV, Solaris or NetBSD do.
 
-diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-index 64825128ee97..bdf454712b10 100644
---- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-+++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
-@@ -24,6 +24,7 @@ properties:
-       - qcom,qcs404-rpmpd
-       - qcom,sdm660-rpmpd
-       - qcom,sc7180-rpmhpd
-+      - qcom,sc8180x-rpmhpd
-       - qcom,sdm845-rpmhpd
-       - qcom,sdx55-rpmhpd
-       - qcom,sm8150-rpmhpd
-diff --git a/include/dt-bindings/power/qcom-rpmpd.h b/include/dt-bindings/power/qcom-rpmpd.h
-index 7714487ac76b..5f07dc16f863 100644
---- a/include/dt-bindings/power/qcom-rpmpd.h
-+++ b/include/dt-bindings/power/qcom-rpmpd.h
-@@ -55,6 +55,19 @@
- #define SC7180_LCX	6
- #define SC7180_MSS	7
- 
-+/* SC8180X Power Domain Indexes */
-+#define SC8180X_CX	0
-+#define SC8180X_CX_AO	1
-+#define SC8180X_EBI	2
-+#define SC8180X_GFX	3
-+#define SC8180X_LCX	4
-+#define SC8180X_LMX	5
-+#define SC8180X_MMCX	6
-+#define SC8180X_MMCX_AO	7
-+#define SC8180X_MSS	8
-+#define SC8180X_MX	9
-+#define SC8180X_MX_AO	10
-+
- /* SDM845 Power Domain performance levels */
- #define RPMH_REGULATOR_LEVEL_RETENTION	16
- #define RPMH_REGULATOR_LEVEL_MIN_SVS	48
--- 
-2.29.2
+... nor can you be arsed to RTFPOSIX.   Why am I not surprised?
 
+In https://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
+(located by arcane action known as googling for pwrite POSIX):
+==============================
+The pwrite() function shall fail if:
+
+[EINVAL]
+	The file is a regular file or block special file, and the offset argument is negative.
+The file offset shall remain unchanged.
+[ESPIPE]
+	The file is incapable of seeking.
+==============================
