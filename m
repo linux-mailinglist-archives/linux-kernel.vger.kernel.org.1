@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F99B2FCAF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0918D2FCAF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbhATGNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:13:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
+        id S1725892AbhATGO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:14:58 -0500
+Received: from mga05.intel.com ([192.55.52.43]:39834 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727681AbhATGKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:10:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E051A23158;
-        Wed, 20 Jan 2021 06:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611123008;
-        bh=oG/jzzzUs/lJ9JubbJ0uBHuqCgWajZxCe2w3uNMkur4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JEetTJljQogx5rITdbdJ6tE/b5ici8w25Y6esXwhakIQBz4l9psB0XTDspHbCTSrp
-         4GYD8mHqa25NvT0MLbTtUGKoY1ko9VmId8wShGYXnkAD615ZAWZwTyPlvE406i0xa5
-         aXxnQugndRuiKd4Y/6UzLmRosQtJRRVpjDe17/y8Ijv/EFiJE/iYpFI74ro+Q+1ive
-         ug94019ypwxG7G0mas0/BOFVZc/oqRwJlm5Z5Hy2gy4yFLhhhgb/CUPDHA4TMEmoUv
-         FVy+eg1LgExxUcGLq24EWeXfNGqKaZ7hRSULOyf6mLrHwoudoLx7CgelubElLc9aOg
-         UvPKc38msbGRw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id D907260591;
-        Wed, 20 Jan 2021 06:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1728907AbhATGOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 01:14:04 -0500
+IronPort-SDR: E8BRTE5uocQn6uiFp9UvE8X+fLuVSpBw/Kd5ujtMY4FvP5HpA9KitHZIhCQqiRaTZQLNAkj7MH
+ tIeOswAD/fXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="263861777"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="263861777"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 22:13:21 -0800
+IronPort-SDR: cb/LPdqap+NBCBq8dn8vJUVttOnSwklJfB9TdxDaLVeKn0SURH1SP3VtA7RNRInWqFmRQmrZ1B
+ R8jsSofSnEHQ==
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="384449244"
+Received: from yhuang6-mobl1.sh.intel.com ([10.238.6.89])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 22:13:17 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: [PATCH -V9 0/3] numa balancing: Migrate on fault among multiple bound nodes
+Date:   Wed, 20 Jan 2021 14:12:32 +0800
+Message-Id: <20210120061235.148637-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4] bonding: add a vlan+srcmac tx hashing option
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161112300888.30718.6036824083040046684.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Jan 2021 06:10:08 +0000
-References: <20210119010927.1191922-1-jarod@redhat.com>
-In-Reply-To: <20210119010927.1191922-1-jarod@redhat.com>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        kuba@kernel.org, tadavis@lbl.gov, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+To make it possible to optimize cross-socket memory accessing with
+AutoNUMA even if the memory of the application is bound to multiple
+NUMA nodes.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Patch [2/3] and [3/3] are NOT kernel patches.  Instead, they are
+patches for man-pages and numactl respectively.  They are sent
+together to make it easy to review the newly added kernel API.
 
-On Mon, 18 Jan 2021 20:09:27 -0500 you wrote:
-> This comes from an end-user request, where they're running multiple VMs on
-> hosts with bonded interfaces connected to some interest switch topologies,
-> where 802.3ad isn't an option. They're currently running a proprietary
-> solution that effectively achieves load-balancing of VMs and bandwidth
-> utilization improvements with a similar form of transmission algorithm.
-> 
-> Basically, each VM has it's own vlan, so it always sends its traffic out
-> the same interface, unless that interface fails. Traffic gets split
-> between the interfaces, maintaining a consistent path, with failover still
-> available if an interface goes down.
-> 
-> [...]
+Changes:
 
-Here is the summary with links:
-  - [net-next,v4] bonding: add a vlan+srcmac tx hashing option
-    https://git.kernel.org/netdev/net-next/c/7b8fc0103bb5
+v9:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+- Rebased on latest mmotm kernel v5.11-rc3-mmots-2021-01-12-02-00
 
+v8:
 
+- Rebased on latest upstream kernel v5.11-rc2
+
+v7:
+
+- Make set_mempolicy() return -1 with errno is set to EINVAL if mode
+  isn't MPOL_BIND per Mel's comments.  Revise document accordingly
+  too.
+
+v6:
+
+- Rebased on latest upstream kernel v5.10-rc5
+
+- Added some benchmark data and example in patch description of [1/3]
+
+- Rename AutoNUMA to NUMA Balancing
+
+- Add patches to man-pages [2/3] and numactl [3/3]
+
+v5:
+
+- Remove mbind() support, because it's not clear that it's necessary.
+
+v4:
+
+- Use new flags instead of reuse MPOL_MF_LAZY.
+
+v3:
+
+- Rebased on latest upstream (v5.10-rc3)
+
+- Revised the change log.
+
+v2:
+
+- Rebased on latest upstream (v5.10-rc1)
+
+Best Regards,
+Huang, Ying
