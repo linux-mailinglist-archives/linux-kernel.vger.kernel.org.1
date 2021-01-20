@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498022FDDCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F292FDDCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732335AbhAUAVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403966AbhATXV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:21:57 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A9AC0617A1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:37:35 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id a109so25026201otc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:37:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6dk3qEQlAxZmfI82OkyXmz2gwMMTg8wFXIlLMCIVZCs=;
-        b=D54trIQyKNCQBtrdVoW8dxM3SpF4NsCBDQTflV5Ceg4ElKwbkYO74DJxzFvEhwdZR3
-         UB3hYh+IPwfJhSLHqa6aIqOYb/gLyCQ2NegN2tsVPs92+gnFV94Gt6hU9GB3HE48hYgU
-         M8AO0DnOEkYBrgNaw4bkfZGUCFgP56swCIH6zqt8hOa9XBT+Es5oHtQTtTkWGsvE2PKw
-         RMkYzz5mYqgiwKW7+sQ9/iZ2JoKsDLumfa05+Q05Afe+tJVlvHVARF4k0+QTg1M1NZUa
-         QYpX+A11Qnuxjnw7F+XInftjpF5hiXCyshTMvkmPpUMA2MnVrxvMhMH4ItLB0Hr4CEZF
-         FdxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6dk3qEQlAxZmfI82OkyXmz2gwMMTg8wFXIlLMCIVZCs=;
-        b=LGw+LCNXZzCU0yftFFEiOhlh0RVo1jadw/DrQyJ8TQPEviSEcWOIlqhkGGQ7gCjvcy
-         fa39Mzz/j6rjrMvtbTMO+bQhuDCu1kJVwP/OPrYV/45fcBFiOvkJULV8EszlVZCg43Fv
-         NHzAyWzc9tY3dupjNErsET2KiV6m7o1ZZz8yGpgBRx2ABNzRc0REgV2vmkYlyse6sUd6
-         bJgfirWrunF0/uiHZKFxefc6o5br7taUBNdWG57FrcHZ/Afv8mt5cjRlRfoer1BPdab6
-         Y8Tz+RJQEhdJ/61ePt4GYkfTwPTgK97XnHrQJiMdh57/4Ij3m8OZsvX42Ji6TB+3D/4E
-         7xJA==
-X-Gm-Message-State: AOAM531EsizX1ZIz4ToitXjgJA5eSIjsaRTsA0YsrwkgC7nly0r5ZHpr
-        n+4/PfMXu2QPpGYThV0xaNhNvw==
-X-Google-Smtp-Source: ABdhPJzTj+jVlL6gEbqCpPhh5IQwO3ePGGnx/6S5K8uwgZeKw4aGYU4mpGn0M82xs6Emw12s/LRugA==
-X-Received: by 2002:a9d:65:: with SMTP id 92mr8393081ota.207.1611182254456;
-        Wed, 20 Jan 2021 14:37:34 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j9sm614894ooq.1.2021.01.20.14.37.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:37:33 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] clk: qcom: rpmhcc: Add sc8180x rpmh clocks
-Date:   Wed, 20 Jan 2021 14:37:41 -0800
-Message-Id: <20210120223741.1610344-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120223741.1610344-1-bjorn.andersson@linaro.org>
-References: <20210120223741.1610344-1-bjorn.andersson@linaro.org>
+        id S2392935AbhAUAUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:20:32 -0500
+Received: from mga02.intel.com ([134.134.136.20]:63848 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403911AbhATXV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 18:21:29 -0500
+IronPort-SDR: rKkLTyjplmBFVaHt6do2dNFAezJins6Pmd0cIfgve6P0/BV2R9o2rCwShhSJ20IL3I1DrqUNmo
+ StFIQWplSecQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="166283778"
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="166283778"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 14:38:46 -0800
+IronPort-SDR: zolBOEUHtbelebkdFAiHWg8eHG7cz9/esoy2XeQanwIXe7LH/OUMUIcrkBNsp6QNgdRqw6V8pk
+ JwEsAQ41Iz5Q==
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; 
+   d="scan'208";a="366538808"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.255.228.129]) ([10.255.228.129])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 14:38:44 -0800
+Subject: Re: [RFC V1 1/7] x86: Probe assembler capabilities for VAES and
+ VPLCMULQDQ support
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
+        andi.kleen@intel.com, Dave Hansen <dave.hansen@intel.com>,
+        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
+        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
+        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
+        ilya.albrekht@intel.com, kyung.min.park@intel.com,
+        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com,
+        X86 ML <x86@kernel.org>
+References: <1608325864-4033-1-git-send-email-megha.dey@intel.com>
+ <1608325864-4033-2-git-send-email-megha.dey@intel.com>
+ <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <ea72956e-aa3c-4ce6-436d-34e5e701c242@intel.com>
+Date:   Wed, 20 Jan 2021 14:38:44 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXGJD1FdixURybqZEOJV+h1-QESp=WCJVPo-Bvd7Zh9j1Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add clocks provides by RPMH in the Qualcomm SC8180x platform.
+Hi Ard,
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/clk/qcom/clk-rpmh.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+On 1/16/2021 8:54 AM, Ard Biesheuvel wrote:
+> On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
+>> This is a preparatory patch to introduce the optimized crypto algorithms
+>> using AVX512 instructions which would require VAES and VPLCMULQDQ support.
+>>
+>> Check for VAES and VPCLMULQDQ assembler support using AVX512 registers.
+>>
+>> Cc: x86@kernel.org
+>> Signed-off-by: Megha Dey <megha.dey@intel.com>
+>> ---
+>>   arch/x86/Kconfig.assembler | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>
+>> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
+>> index 26b8c08..9ea0bc8 100644
+>> --- a/arch/x86/Kconfig.assembler
+>> +++ b/arch/x86/Kconfig.assembler
+>> @@ -1,6 +1,16 @@
+>>   # SPDX-License-Identifier: GPL-2.0
+>>   # Copyright (C) 2020 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+>>
+>> +config AS_VAES_AVX512
+>> +       def_bool $(as-instr,vaesenc %zmm0$(comma)%zmm1$(comma)%zmm1) && 64BIT
+> Is the '&& 64BIT' necessary here, but not below?
+>
+> In any case, better to use a separate 'depends on' line, for legibility
 
-diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-index 6a2a13c5058e..e356291f3ce7 100644
---- a/drivers/clk/qcom/clk-rpmh.c
-+++ b/drivers/clk/qcom/clk-rpmh.c
-@@ -348,6 +348,10 @@ DEFINE_CLK_RPMH_VRM(sdm845, rf_clk1, rf_clk1_ao, "rfclka1", 1);
- DEFINE_CLK_RPMH_VRM(sdm845, rf_clk2, rf_clk2_ao, "rfclka2", 1);
- DEFINE_CLK_RPMH_VRM(sdm845, rf_clk3, rf_clk3_ao, "rfclka3", 1);
- DEFINE_CLK_RPMH_VRM(sm8150, rf_clk3, rf_clk3_ao, "rfclka3", 1);
-+DEFINE_CLK_RPMH_VRM(sc8180x, rf_clk1, rf_clk1_ao, "rfclkd1", 1);
-+DEFINE_CLK_RPMH_VRM(sc8180x, rf_clk2, rf_clk2_ao, "rfclkd2", 1);
-+DEFINE_CLK_RPMH_VRM(sc8180x, rf_clk3, rf_clk3_ao, "rfclkd3", 1);
-+DEFINE_CLK_RPMH_VRM(sc8180x, rf_clk4, rf_clk4_ao, "rfclkd4", 1);
- DEFINE_CLK_RPMH_BCM(sdm845, ipa, "IP0");
- DEFINE_CLK_RPMH_BCM(sdm845, ce, "CE0");
- 
-@@ -431,6 +435,26 @@ static const struct clk_rpmh_desc clk_rpmh_sc7180 = {
- 	.num_clks = ARRAY_SIZE(sc7180_rpmh_clocks),
- };
- 
-+static struct clk_hw *sc8180x_rpmh_clocks[] = {
-+	[RPMH_CXO_CLK]		= &sdm845_bi_tcxo.hw,
-+	[RPMH_CXO_CLK_A]	= &sdm845_bi_tcxo_ao.hw,
-+	[RPMH_LN_BB_CLK2]	= &sdm845_ln_bb_clk2.hw,
-+	[RPMH_LN_BB_CLK2_A]	= &sdm845_ln_bb_clk2_ao.hw,
-+	[RPMH_LN_BB_CLK3]	= &sdm845_ln_bb_clk3.hw,
-+	[RPMH_LN_BB_CLK3_A]	= &sdm845_ln_bb_clk3_ao.hw,
-+	[RPMH_RF_CLK1]		= &sc8180x_rf_clk1.hw,
-+	[RPMH_RF_CLK1_A]	= &sc8180x_rf_clk1_ao.hw,
-+	[RPMH_RF_CLK2]		= &sc8180x_rf_clk2.hw,
-+	[RPMH_RF_CLK2_A]	= &sc8180x_rf_clk2_ao.hw,
-+	[RPMH_RF_CLK3]		= &sc8180x_rf_clk3.hw,
-+	[RPMH_RF_CLK3_A]	= &sc8180x_rf_clk3_ao.hw,
-+};
-+
-+static const struct clk_rpmh_desc clk_rpmh_sc8180x = {
-+	.clks = sc8180x_rpmh_clocks,
-+	.num_clks = ARRAY_SIZE(sc8180x_rpmh_clocks),
-+};
-+
- DEFINE_CLK_RPMH_VRM(sm8250, ln_bb_clk1, ln_bb_clk1_ao, "lnbclka1", 2);
- 
- static struct clk_hw *sm8250_rpmh_clocks[] = {
-@@ -570,6 +594,7 @@ static int clk_rpmh_probe(struct platform_device *pdev)
- 
- static const struct of_device_id clk_rpmh_match_table[] = {
- 	{ .compatible = "qcom,sc7180-rpmh-clk", .data = &clk_rpmh_sc7180},
-+	{ .compatible = "qcom,sc8180x-rpmh-clk", .data = &clk_rpmh_sc8180x},
- 	{ .compatible = "qcom,sdm845-rpmh-clk", .data = &clk_rpmh_sdm845},
- 	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
- 	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
--- 
-2.29.2
+yeah , I think the '&& 64 BIT' is not required. I will remove it in the 
+next version.
 
+-Megha
+
+>
+>> +       help
+>> +         Supported by binutils >= 2.30 and LLVM integrated assembler
+>> +
+>> +config AS_VPCLMULQDQ
+>> +       def_bool $(as-instr,vpclmulqdq \$0$(comma)%zmm2$(comma)%zmm6$(comma)%zmm4)
+>> +       help
+>> +         Supported by binutils >= 2.30 and LLVM integrated assembler
+>> +
+>>   config AS_AVX512
+>>          def_bool $(as-instr,vpmovm2b %k1$(comma)%zmm5)
+>>          help
+>> --
+>> 2.7.4
+>>
