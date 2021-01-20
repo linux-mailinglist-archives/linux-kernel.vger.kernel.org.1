@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7E72FC761
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896172FC767
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 03:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbhATBoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:44:20 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8876 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhATBnw (ORCPT
+        id S1731324AbhATCDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 21:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730997AbhATBpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:43:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60078aaa0000>; Tue, 19 Jan 2021 17:43:06 -0800
-Received: from [10.19.109.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 01:43:00 +0000
-Subject: Re: [PATCH v6 04/15] phy: tegra: xusb: tegra210: Do not reset UPHY
- PLL
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
-        <jonathanh@nvidia.com>, <kishon@ti.com>,
-        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>
-References: <20210119085546.725005-1-jckuo@nvidia.com>
- <20210119085546.725005-5-jckuo@nvidia.com> <YAbkABc68aMTvIyr@ulmo>
-From:   JC Kuo <jckuo@nvidia.com>
-Organization: NVIDIA
-Message-ID: <f389ab2f-1ecf-9eb5-6897-f780a27f4fec@nvidia.com>
-Date:   Wed, 20 Jan 2021 09:42:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 19 Jan 2021 20:45:00 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA47AC061796
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:41 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id w79so23972788qkb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 17:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=gHgQfTRvar1lIU9rNG4Q491ak9Bif38ih9mdt5Czeeg=;
+        b=EEahLgI2IDWObWfsAD0JI1JVF8Cn8kbvHzl/a3zQRzwTOxk1mXISMzEKGL00rZFp3W
+         WIKAI2WioD+6gmcTpgPZdsy/xncMBzalKS1d5RhqvKc+Db395BRV13meAT3Rk4ZULIWJ
+         nYnOxew1UD+I6RR+vZ/6MvDShJLfaGHcrF4phFYQBCEQs0R9oiEZOnV8h4e78DmIqi3o
+         6WuGDzGYmUjwhxzYxhO3/gNQHqqAbtLCRssN0q8ivlxPpO04RYY8dS9UvKapVgAu7LGB
+         uEWOP3OxDFwDD0czAXsJoCl47IS4NrzSUzz/hcNrkL9XYLlbPdqwreNZQshuC0KSnOxX
+         lpfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gHgQfTRvar1lIU9rNG4Q491ak9Bif38ih9mdt5Czeeg=;
+        b=RyRFEDjuzSNLoz1JrU+PBj6MbkMa/3i1hvwKbMtU/Oc9idaAM9PpOgfOc0rLVaNRhn
+         WmJccOPPWH6Y6um+Et1mcJtcCup5pj7jr2I6fbWkcaU3q9bLUBrV/vGznk/VWY1KrEgC
+         j41VeIwhpviqHvzfBk0j36ckXnahdG+8yNvfAkSxhdDHgrwGr7lxCruC4m/q7jfnmz5G
+         ehWjyqnhE2VofkLwMjIuUgToN0nhpF6Hs5Qf4dxd6NEmeC45e8GbHJND2i+IfsrSg/fv
+         S84zpCqA86Db0TUlezF2JGFip91636nY9OvL/QbXQ08tifsKGWGaueqbLa1sz1bXPMiu
+         YRsg==
+X-Gm-Message-State: AOAM533hlskJX/32b/oKkHGGSgnUOylYbL/KIe7hXkisRd+/owc3isK7
+        TBOEWbeBBiMe/rrW4wtioQ1GWA==
+X-Google-Smtp-Source: ABdhPJzHj6LQ0cBsDfz1RNSBv0bk1KWxpZzS84FijMdIS8OK4Ed3mNROA1OjtyVVSBCQUoJgercOMA==
+X-Received: by 2002:a37:a64c:: with SMTP id p73mr2740731qke.439.1611107021036;
+        Tue, 19 Jan 2021 17:43:41 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id a9sm391871qkk.39.2021.01.19.17.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 17:43:40 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
+        dan.j.williams@intel.com, sashal@kernel.org,
+        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
+        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
+        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
+        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
+        linux-doc@vger.kernel.org, ira.weiny@intel.com,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v6 03/14] mm/gup: return an error on migration failure
+Date:   Tue, 19 Jan 2021 20:43:22 -0500
+Message-Id: <20210120014333.222547-4-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210120014333.222547-1-pasha.tatashin@soleen.com>
+References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-In-Reply-To: <YAbkABc68aMTvIyr@ulmo>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611106986; bh=7ZWJjA3V1BT8uXEoBJb4nujxJszYGXToGqMzgsjGGFY=;
-        h=Subject:To:CC:References:From:Organization:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Y0G9aiLxpNBJoGv63xS+8ysFT8PWHMqh+wxlTDSkRUzlwYbtHZSz9M876pF0JmHyn
-         WJfi7TVUl8oPq+nMtRK575C6RKbH1eJI9GuO4k7iGa9t9nw7jUWmk4/5jNPaSWnROq
-         BTCAbhkY5bmLt1AuiqqypRGjAGPyVNzqfjtz8sXKMabPBZi/QVGMRoFnwATyxgZaUR
-         m2OrSKX4xQHLIFSJm8gDmfDODNFaIfopdEXijBNGPwarAmajfIFOCRR6cYay36wT5+
-         a1NEJv9HYE3MAzmVpPP5aQvxie4zQvscRJEpS1+Yuu2F0nTUcE3dR3SmcacZi6kSxP
-         Mn62fT258b/XQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When migration failure occurs, we still pin pages, which means
+that we may pin CMA movable pages which should never be the case.
 
-On 1/19/21 9:52 PM, Thierry Reding wrote:
-> On Tue, Jan 19, 2021 at 04:55:35PM +0800, JC Kuo wrote:
->> Once UPHY PLL hardware power sequencer is enabled, do not assert
->> reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
->> This commit removes reset_control_assert(pcie->rst) and
->> reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
->>
->> Signed-off-by: JC Kuo <jckuo@nvidia.com>
->> ---
->> v6:
->>    no change
->> v5:
->>    no change
->> v4:
->>    no change
->> v3:
->>    new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
->>
->>  drivers/phy/tegra/xusb-tegra210.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-tegra210.c
->> index 4dc9286ec1b8..9bfecdfecf35 100644
->> --- a/drivers/phy/tegra/xusb-tegra210.c
->> +++ b/drivers/phy/tegra/xusb-tegra210.c
->> @@ -502,7 +502,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xusb_padctl *padctl)
->>  	if (--pcie->enable > 0)
->>  		return;
->>  
->> -	reset_control_assert(pcie->rst);
->>  	clk_disable_unprepare(pcie->pll);
->>  }
->>  
->> @@ -739,7 +738,6 @@ static void tegra210_sata_uphy_disable(struct tegra_xusb_padctl *padctl)
->>  	if (--sata->enable > 0)
->>  		return;
->>  
->> -	reset_control_assert(sata->rst);
->>  	clk_disable_unprepare(sata->pll);
->>  }
-> 
-> Isn't this going to break things between here and patch 5 where the
-> hardware sequencer is enabled? If so, it might be better to move this
-> into patch 5 so that things stay functional and bisectible.
-Hi Thierry,
-Yes, I will move it into patch 5.
+Instead return an error without pinning pages when migration failure
+happens.
 
-Thanks,
-JC
+No need to retry migrating, because migrate_pages() already retries
+10 times.
 
-> 
-> Thierry
-> 
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ mm/gup.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 16f10d5a9eb6..88ce41f41543 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1557,7 +1557,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ {
+ 	unsigned long i;
+ 	bool drain_allow = true;
+-	bool migrate_allow = true;
+ 	LIST_HEAD(cma_page_list);
+ 	long ret = nr_pages;
+ 	struct page *prev_head, *head;
+@@ -1608,17 +1607,15 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 			for (i = 0; i < nr_pages; i++)
+ 				put_page(pages[i]);
+ 
+-		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
+-			/*
+-			 * some of the pages failed migration. Do get_user_pages
+-			 * without migration.
+-			 */
+-			migrate_allow = false;
+-
++		ret = migrate_pages(&cma_page_list, alloc_migration_target,
++				    NULL, (unsigned long)&mtc, MIGRATE_SYNC,
++				    MR_CONTIG_RANGE);
++		if (ret) {
+ 			if (!list_empty(&cma_page_list))
+ 				putback_movable_pages(&cma_page_list);
++			return ret > 0 ? -ENOMEM : ret;
+ 		}
++
+ 		/*
+ 		 * We did migrate all the pages, Try to get the page references
+ 		 * again migrating any new CMA pages which we failed to isolate
+@@ -1628,7 +1625,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 						   pages, vmas, NULL,
+ 						   gup_flags);
+ 
+-		if ((ret > 0) && migrate_allow) {
++		if (ret > 0) {
+ 			nr_pages = ret;
+ 			drain_allow = true;
+ 			goto check_again;
+-- 
+2.25.1
+
