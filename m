@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B4B2FCDF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD2F2FCDF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbhATKOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:14:36 -0500
-Received: from smtprelay0197.hostedemail.com ([216.40.44.197]:51660 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731194AbhATJV6 (ORCPT
+        id S1731095AbhATKOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:14:30 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:54277 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731191AbhATJVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:21:58 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EEF9C8384364;
-        Wed, 20 Jan 2021 09:21:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:960:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3870:3871:3872:4321:5007:7652:10004:10400:10450:10455:10848:11232:11658:11914:12297:12740:12760:12895:13069:13255:13311:13357:13439:14659:19904:19999:21080:21324:21433:21451:21627:21660:21740:21741:30012:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: flesh62_610477627559
-X-Filterd-Recvd-Size: 1671
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 20 Jan 2021 09:21:04 +0000 (UTC)
-Message-ID: <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols
- in assembly files
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        broonie@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-Date:   Wed, 20 Jan 2021 01:21:03 -0800
-In-Reply-To: <20210120072547.10221-1-yashsri421@gmail.com>
-References: <20210120072547.10221-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 20 Jan 2021 04:21:31 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 517C120016;
+        Wed, 20 Jan 2021 09:20:46 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 10:21:05 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] media: i2c/Kconfig: Select FWNODE for OV772x sensor
+Message-ID: <20210120092105.niausxf2dfe46p7p@uno.localdomain>
+References: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210120090148.30598-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-20 at 12:55 +0530, Aditya Srivastava wrote:
-> Local symbols prefixed with '.L' do not emit symbol table entries, as
-> they have special meaning for the assembler.
-> 
-> '.L' prefixed symbols can be used within a code region, but should be
-> avoided for denoting a range of code via 'SYM_*_START/END' annotations.
-> 
-> Add a new check to emit a warning on finding the usage of '.L' symbols
-> in '.S' files, if it lies within SYM_*_START/END annotation pair.
+Hi Prabhakar,
 
-I believe this needs a test for $file as it won't work well on
-patches as the SYM_*_START/END may not be in the patch context.
+On Wed, Jan 20, 2021 at 09:01:48AM +0000, Lad Prabhakar wrote:
+> Fix OV772x build breakage by selecting V4L2_FWNODE config:
+>
+> ia64-linux-ld: drivers/media/i2c/ov772x.o: in function `ov772x_probe':
+> ov772x.c:(.text+0x1ee2): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+> ia64-linux-ld: ov772x.c:(.text+0x1f12): undefined reference to `v4l2_fwnode_endpoint_free'
+> ia64-linux-ld: ov772x.c:(.text+0x2212): undefined reference to `v4l2_fwnode_endpoint_alloc_parse'
+>
+> Fixes: 8a10b4e3601e ("media: i2c: ov772x: Parse endpoint properties")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Also, is this supposed to work for local labels like '.L<foo>:'?
-I don't think a warning should be generated for those.
+You beat me to it, I was about to hit send for the same patch :)
 
+Thanks!
+Acked-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
+> ---
+>  drivers/media/i2c/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index eddb10220953..bb1b5a340431 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -1013,6 +1013,7 @@ config VIDEO_OV772X
+>  	tristate "OmniVision OV772x sensor support"
+>  	depends on I2C && VIDEO_V4L2
+>  	select REGMAP_SCCB
+> +	select V4L2_FWNODE
+>  	help
+>  	  This is a Video4Linux2 sensor driver for the OmniVision
+>  	  OV772x camera.
+> --
+> 2.17.1
+>
