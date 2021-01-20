@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2802FD28E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F076A2FD296
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390395AbhATOWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:22:52 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49207 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390086AbhATMoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:44:37 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 10KChe5s015967;
-        Wed, 20 Jan 2021 13:43:40 +0100
-Date:   Wed, 20 Jan 2021 13:43:40 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
-Subject: Re: rcutorture initrd/nolibc build on ARMv8?
-Message-ID: <20210120124340.GA15935@1wt.eu>
-References: <20210119153147.GA5083@paulmck-ThinkPad-P72>
- <20210119161901.GA14667@1wt.eu>
- <20210119170238.GA5603@C02TD0UTHF1T.local>
- <20210119171637.GA14704@1wt.eu>
- <20210119174358.GB14704@1wt.eu>
- <20210120120725.GB73692@C02TD0UTHF1T.local>
+        id S2390458AbhATOWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727143AbhATMpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:45:32 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032B6C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:44:17 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id h18so12946772vsg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:44:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xt7JVmEFE/aJx6FE4Qvl47o9pAkmFlCT9+vpzHf5qLw=;
+        b=fGWP96aayixQ3J4z0EyohXgXAbUnf33N8q/UY1tuVs/m8Xa1UVZhW1aZBCaOmBqHK2
+         FcMa2kowZFptVFa8wvIwZ+x3bnx8MT8+IizLlwkx7KTCBXIaDZsYOffn8rZ5cjMgVU+D
+         Tj4X2iPnIRfbf5uUmIdY5pcRIZGtXVyFaYtXylZlV+875MpUhhmbBm1sU1k067xtqAqo
+         KTVhHrp1uJ3XxgoixjotVi/3OfJ7oC3UbTf94X0hwKmT4sEjzJmSGZSis02/7lEjGMvV
+         WEgd1eO+Ic7t0d+lOY/INFj6UBf9yj5M3jhc0Mo2DQc4+TzDL2hJRpGQPRZGR3oqFEaI
+         1bNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xt7JVmEFE/aJx6FE4Qvl47o9pAkmFlCT9+vpzHf5qLw=;
+        b=SUZayK2X01YnLmm2zvye9wftdNBsNBfHs0RZUEsqRlc4M8XR/+VNYi5tUcRjuzzjBn
+         PbRkuvnEY5szeUos91lEPkY6+LylWhP3TnX+i1koGBIaFBV3Yz+o46DzJSDMb5yBMNRR
+         VgRavlKBHrBG8ey88kRnJXEWNKS+YF4bsfXiOaRWfEDqdZqUI6wyZR8+BRWjCARDsi8J
+         VK3vKeY99qy2jUk1nFiLFBCkd41GkHDyq/VOIkVNFReSWqzknhCZmw1a699wBedRqnTC
+         evugHcNkYZNgj/wbOqb+5iRXwiZU/unL7XyZ2+Vy6vpLwB1R5P/hwwQpR6PltQEJR8JM
+         DQxA==
+X-Gm-Message-State: AOAM530AHqov+c3+1qALBKpLmtCS3xEcqjBZhhS5nsZf9gchXMqm2JSG
+        SuawbnPTntmYXYP06u3BzZMmJJrhk2fgJka9Z11qKQ==
+X-Google-Smtp-Source: ABdhPJwHKz/HISSKEW13+jRITfAZ0pDF7sP9tUx8JY9r8JXFfhafF7y8RJ66INMh7ccOdw76hnSi+qRQe6KwjMKndBU=
+X-Received: by 2002:a67:25c3:: with SMTP id l186mr662163vsl.27.1611146655834;
+ Wed, 20 Jan 2021 04:44:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120120725.GB73692@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+References: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
+ <20210113195301.tyeeyrf5y7ajd5yw@treble>
+In-Reply-To: <20210113195301.tyeeyrf5y7ajd5yw@treble>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Wed, 20 Jan 2021 23:44:03 +1100
+Message-ID: <CAATStaPWxLvCsY77tgTsHj0Jp8+6WZ52Rm+t+=ie=uio50EgBg@mail.gmail.com>
+Subject: Re: [RFC PATCH] x86/speculation: Add finer control for when to issue IBPB
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Anthony Steinhauser <asteinhauser@google.com>,
+        tglx@linutronix.de, Borislav Petkov <bp@alien8.de>,
+        Joel Fernandes <joelaf@google.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+> > This proposal attempts to reduce that cost by letting the system
+> > developer choose whether to issue the IBPB on entry or exit of an IB
+> > speculation disabled process (default is both, which is current
+> > behaviour). Documentation/admin-guide/hw-vuln/spectre.rst documents two
+> > mitigation strategies that use conditional IBPB;
+> > "Protect sensitive programs", and "Sandbox untrusted programs".
+>
+> Why make the setting system-wide?  Shouldn't this decision be made on a
+> per-task basis, depending on whether the task is sensitive or untrusted?
 
-On Wed, Jan 20, 2021 at 12:07:25PM +0000, Mark Rutland wrote:
-> On Tue, Jan 19, 2021 at 06:43:58PM +0100, Willy Tarreau wrote:
-> > On Tue, Jan 19, 2021 at 06:16:37PM +0100, Willy Tarreau wrote:
-> > Given that you used a native compiler we can't suspect an issue with a
-> > bare-metal compiler possibly affecting how kernel headers are passed
-> > there. But nevertheless, I'd still not disregard the possibility that
-> > the headers found under "linux/" are picked from the libc which for
-> > whatever reason would be missing a lot of them.
-> 
-> I think the actual issue here is a misapprehension in nolibc.h, which
-> started blowing up due to a refactoring in asm/unistd.h.
-> 
-> In nolibc.h, we do:
-> 
-> | /* Some archs (at least aarch64) don't expose the regular syscalls anymore by
-> |  * default, either because they have an "_at" replacement, or because there are
-> |  * more modern alternatives. For now we'd rather still use them.
-> |  */
-> | #define __ARCH_WANT_SYSCALL_NO_AT
-> | #define __ARCH_WANT_SYSCALL_NO_FLAGS
-> | #define __ARCH_WANT_SYSCALL_DEPRECATED
-> 
-> ... but this isn't quite right -- it's not that the syscalls aren't
-> exposed by default, but rather that these syscall numbers are not valid
-> for architectures which do not define the corresponding __ARCH_WANT_*
-> flags. Architectures without those have never implemented the syscalls,
-> and would have returned -ENOSYS for the unrecognized syscall numbers,
-> but the numbers could be allocated to (distinct) syscalls in future.
-> 
-> Since commit:
-> 
->   a0673fdbcd421052 ("asm-generic: clean up asm/unistd.h")
-> 
-> ... those definitions got pulled out of <asm-generic/unistd.h>, and
-> hence it's no longer possible to accidentally get those where a
-> userspace header defines __ARCH_WANT_* in an architecture where they
-> don't exist (e.g. arm64).
+It definitely could be. I didn't give it as much thought since for me,
+the entire system uses a "sandbox" approach, so the behaviour would
+apply to any IB spec disabled process. And conversely, any system
+taking the "sensitive programs" approach would also expect the same
+behaviour from all processes.
 
-I didn't remember the details behind these definitions, I've found
-this in the related commit message:
-
-    Some syscall numbers are not exported
-    by default unless a few macros are defined before including unistd.h :
-    
-      #define __ARCH_WANT_SYSCALL_NO_AT
-      #define __ARCH_WANT_SYSCALL_NO_FLAGS
-      #define __ARCH_WANT_SYSCALL_DEPRECATED
-
-So it seems I faced difficulties getting the __NR_* entries and only
-could get them using such definitions :-/
-
-Did you figure the correct way to get __NR_* defined on your machine or
-should I search ?
-
-> It seems that the headers on my Debian 10.7 system were generated after
-> that commit, whereas yours were generated before that.
-
-It's very possible indeed.
-
-> > We've seen that __NR_fork or __NR_dup2 for example were missing in your
-> > output, on my native machine I can see them, so that could give us a clue
-> > about the root cause of the issue:
-> > 
-> >   $ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(fork|dup2)'
-> >   #define __NR_dup2 1041
-> >   #define __NR_syscalls (__NR_fork+1)
-> >   #define __NR_fork 1079
-> 
-> As above, these are bogus for arm64. There is no syscall number for dup2
-> or fork, and __NR_syscalls is currently only 442.
-
-Ah that's very interesting indeed because actually these ones should
-only be used when __NR_dup3 or __NR_clone are not defined. Thus I wanted
-to check the definitions that were reported in your error output but
-actually what was needed was to figure whether the correct ones were
-present, and they are, here on my machine (and yes I agree that in this
-case the dup2/fork above are bofus):
-
-  ubuntu@ubuntu:~$ gcc -fno-asynchronous-unwind-tables -fno-ident -nostdlib -include nolibc.h -lgcc -s -static -E -dM init-fail.c | egrep '__NR_(clone|dup3)'
-  #define __NR_clone 220
-  #define __NR_dup3 24
-
-Do you have these ones with your more recent includes ? Or are these wrong
-again ? Again I'd be surprised given that I didn't invent them and that my
-systems boot fine using these.
-
-> I think the right thing to do is to have nolibc.h detect which syscalls
-> are implemented, and to not define __ARCH_WANT_*.
-
-Actually that's what was attempted by already focusing on ifdefs but
-without *any* __NR_* we can't even hope to call a syscall and check for
-ENOSYS for example. So the code really tries to figure which is the right
-__NR_ value for a given syscall, and a quick check at my userland code
-shows that I'm already using dup2() and fork() as defined from dup3()
-and clone().
-
-Thanks!
-Willy
+I'm open to making it per-process. It's just that making it
+system-wide seemed to "fit" with the documented mitigation strategies,
+and it's what I would use in production.
