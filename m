@@ -2,252 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338BC2FCCD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEF02FCCE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbhATIhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730949AbhATIec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:34:32 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D353EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:33:51 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id u14so2021615wmq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kf68twK2VJqQ9rG90iy/Ey4koGBofqxtFe6BH41DE2U=;
-        b=ugv47AZmMA+xT9rztkNUf1l1ZWJmiwwKfuZcduQNMyAoiXL1mZ4978OKPr3LEWr7vz
-         KNR0D99j9aUzgV+TNPAvrOBbhn7PIvz7iQEtTR8K7v2JE6FekzIw1fz+7P8nFv0cCABa
-         DFK85L7PJVYKs3/kbL4eFwcH8lwz93GswENPw+JUpWOI4HzhyrwL1SkCK8duQCmGJj/J
-         Zykl2cLd1X48gVne+VuwLslmUSSTeNwdoTkcr/PaN0H1vjdySHEBNArm4zAIzxcmNa3P
-         /oxAmhso1coeEuToHfQMLoUafrOJ1eonMC542hB3+fycgWMDpuMVbNSJBoZp6Aee3GnB
-         yUwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kf68twK2VJqQ9rG90iy/Ey4koGBofqxtFe6BH41DE2U=;
-        b=GaqbHgDdxNcXl8ywNMqPl+D8oVOuL+/1Eczk00Cscz0EeBVK+09XKbNHd5H9n56VG1
-         XgQhOO/pqXK8tjajXBnt2V0YUTppG1Xo3CkvYHGVU83ZBBWbmt0NswYMNzGnvhn/lRWw
-         tsm0khSTt91BdIN4mHUU/jePawhSZVKv+fvftwBPOiuOgzpHs5sf1ndtZTd5E8/4hCOH
-         w/jVA3ZqdeeMd/o8ZV3RM5eRox4gHRhyztm06IF2GHIp7DScJxpZDvV39s/tIibrRKBG
-         P1N9LPT1QcdlVO0UpshhhdcMJpMhELby1bOqyG/8+eOQPjSeaDGAYoyjO1kgxtH+Drm6
-         Em4w==
-X-Gm-Message-State: AOAM533jA0L8qtnJmENQ2iI9rQr0CcYQQf2G0n68UNjb3ooTyqpVUU0Y
-        Yya1V0MSiU3COV+I3DhI9GxaEg==
-X-Google-Smtp-Source: ABdhPJzEiyHU50818frV69xIg7wQLT2H4SHkDbjF641qDAzxYiCtZvuG6UsYBlE6su9suTh5V1Du6g==
-X-Received: by 2002:a1c:6005:: with SMTP id u5mr3248278wmb.122.1611131630513;
-        Wed, 20 Jan 2021 00:33:50 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id h13sm2480169wrm.28.2021.01.20.00.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 00:33:49 -0800 (PST)
-Date:   Wed, 20 Jan 2021 08:33:48 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] mfd: Add MFD driver for ATC260x PMICs
-Message-ID: <20210120083348.GM4903@dell>
-References: <cover.1610534765.git.cristian.ciocaltea@gmail.com>
- <81546cf3265f51374a1b38b9e801003fd6c3e298.1610534765.git.cristian.ciocaltea@gmail.com>
+        id S1731084AbhATIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:40:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:35476 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730650AbhATIkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 03:40:22 -0500
+IronPort-SDR: 6OLk+sVH+rA0jyw7UqTlWCYr32G+dmpo0fDXuzxKxUDMkgZwE5eMdXljuYEoljyh9xn/WAfAJx
+ wiizrzYsXs1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="179217788"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="179217788"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 00:39:29 -0800
+IronPort-SDR: mZqUniam7VcFuXD5LerhCNav9/39cJyr5DIghBgYfJqvLTX4cFYsqoM2xmK0sIEiEKIgiK59v1
+ fXAN1acu4PsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="426822497"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 20 Jan 2021 00:39:27 -0800
+Date:   Wed, 20 Jan 2021 16:35:03 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: altera: Fix memory leak on error path
+Message-ID: <20210120083502.GA15003@yilunxu-OptiPlex-7050>
+References: <20210120082635.49304-1-bianpan2016@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <81546cf3265f51374a1b38b9e801003fd6c3e298.1610534765.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <20210120082635.49304-1-bianpan2016@163.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Cristian Ciocaltea wrote:
-
-> Add initial support for the Actions Semi ATC260x PMICs which integrates
-> Audio Codec, Power management, Clock generation and GPIO controller
-> blocks.
+On Wed, Jan 20, 2021 at 12:26:35AM -0800, Pan Bian wrote:
+> Release master that have been previously allocated if the number of
+> chipselect is invalid.
 > 
-> For the moment this driver only supports Regulator, Poweroff and Onkey
-> functionalities for the ATC2603C and ATC2609A chip variants.
-> 
-> Since the PMICs can be accessed using both I2C and SPI buses, the
-> following driver structure has been adopted:
-> 
->            -----> atc260x-core.c (Implements core functionalities)
->           /
-> ATC260x --------> atc260x-i2c.c (Implements I2C interface)
->           \
->            -----> atc260x-spi.c (Implements SPI interface - TODO)
-> 
-> Co-developed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> Fixes: 8e04187c1bc7 ("spi: altera: add SPI core parameters support via platform data.")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 > ---
-> Changes in v5:
->  - None
+>  drivers/spi/spi-altera.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Changes in v4 - according to Lee's review:
->  - Replaced 'regmap_add_irq_chip()' with 'devm' counterpart and dropped
->    'atc260x_device_remove()' and 'atc260x_i2c_remove()' functions
->  - Moved kerneldoc sections from prototypes to real functions
->  - Placed single line entries on one line for mfd_cells[]
->  - Several other minor changes
-> 
-> Changes in v3:
->  - Fixed the issues reported by Lee's kernel test robot:
->    WARNING: modpost: missing MODULE_LICENSE() in drivers/mfd/atc260x-core.o
->    >> FATAL: modpost: drivers/mfd/atc260x-i2c: sizeof(struct i2c_device_id)=24 is
->       not a modulo of the size of section __mod_i2c__<identifier>_device_table=588.
->    >> Fix definition of struct i2c_device_id in mod_devicetable.h
->  - Dropped the usage of '.of_compatible' fields in {atc2603c,atc2609a}_mfd_cells[]
->  - Added 'Co-developed-by' tag in commit message and dropped [cristian: ...] line
-> 
->  drivers/mfd/Kconfig                  |  18 ++
->  drivers/mfd/Makefile                 |   3 +
->  drivers/mfd/atc260x-core.c           | 293 +++++++++++++++++++++++++
->  drivers/mfd/atc260x-i2c.c            |  64 ++++++
->  include/linux/mfd/atc260x/atc2603c.h | 281 ++++++++++++++++++++++++
->  include/linux/mfd/atc260x/atc2609a.h | 308 +++++++++++++++++++++++++++
->  include/linux/mfd/atc260x/core.h     |  58 +++++
->  7 files changed, 1025 insertions(+)
->  create mode 100644 drivers/mfd/atc260x-core.c
->  create mode 100644 drivers/mfd/atc260x-i2c.c
->  create mode 100644 include/linux/mfd/atc260x/atc2603c.h
->  create mode 100644 include/linux/mfd/atc260x/atc2609a.h
->  create mode 100644 include/linux/mfd/atc260x/core.h
+> diff --git a/drivers/spi/spi-altera.c b/drivers/spi/spi-altera.c
+> index cbc4c28c1541..62ea0c9e321b 100644
+> --- a/drivers/spi/spi-altera.c
+> +++ b/drivers/spi/spi-altera.c
+> @@ -254,7 +254,8 @@ static int altera_spi_probe(struct platform_device *pdev)
+>  			dev_err(&pdev->dev,
+>  				"Invalid number of chipselect: %hu\n",
+>  				pdata->num_chipselect);
+> -			return -EINVAL;
+> +			err = -EINVAL;
+> +			goto exit;
 
-[...]
+Thanks for the fix. Looks good to me.
 
-> +/**
-> + * atc260x_device_probe(): Probe a configured ATC260x device
-> + *
-> + * @atc260x: ATC260x device to probe (must be configured)
-> + *
-> + * This function lets the ATC260x core register the ATC260x MFD devices
-> + * and IRQCHIP. The ATC260x device passed in must be fully configured
-> + * with atc260x_match_device, its IRQ set, and regmap created.
-> + */
-> +int atc260x_device_probe(struct atc260x *atc260x)
-> +{
-> +	struct device *dev = atc260x->dev;
-> +	unsigned int chip_rev;
-> +	int ret;
-> +
-> +	if (!atc260x->irq) {
-> +		dev_err(dev, "No interrupt support\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Initialize the hardware */
-> +	atc260x->dev_init(atc260x);
-> +
-> +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to get chip revision\n");
-> +		return ret;
-> +	}
-> +
-> +	if (chip_rev > 31) {
-
-Nit: If you have to respin this, please define this magic number.
-
-> +		dev_err(dev, "Unknown chip revision: %u\n", chip_rev);
-> +		return -EINVAL;
-> +	}
-> +
-> +	atc260x->ic_ver = __ffs(chip_rev + 1U);
-> +
-> +	dev_info(dev, "Detected chip type %s rev.%c\n",
-> +		 atc260x->type_name, 'A' + atc260x->ic_ver);
-> +
-> +	ret = devm_regmap_add_irq_chip(dev, atc260x->regmap, atc260x->irq, IRQF_ONESHOT,
-> +				       -1, atc260x->regmap_irq_chip, &atc260x->irq_data);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to add IRQ chip: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE,
-> +				   atc260x->cells, atc260x->nr_cells, NULL, 0,
-> +				   regmap_irq_get_domain(atc260x->irq_data));
-> +	if (ret) {
-> +		dev_err(dev, "Failed to add child devices: %d\n", ret);
-> +		regmap_del_irq_chip(atc260x->irq, atc260x->irq_data);
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(atc260x_device_probe);
-
-[...]
-
-> +static struct i2c_driver atc260x_i2c_driver = {
-> +	.driver = {
-> +		.name	= "atc260x",
-> +		.of_match_table	= of_match_ptr(atc260x_i2c_of_match),
-> +	},
-> +	.probe		= atc260x_i2c_probe,
-> +};
-
-Nit: These spacings/line-ups just look odd.
-
-Please stick to one ' ' after the '='.
-
-> +module_i2c_driver(atc260x_i2c_driver);
-
-[...]
-
-> +struct atc260x {
-> +	struct device *dev;
-> +
-> +	struct regmap *regmap;
-> +	const struct regmap_irq_chip *regmap_irq_chip;
-> +	struct regmap_irq_chip_data *irq_data;
-> +
-> +	struct mutex *regmap_mutex;	/* mutex for custom regmap locking */
-> +
-> +	const struct mfd_cell *cells;
-> +	int nr_cells;
-> +	int irq;
-> +
-> +	enum atc260x_type ic_type;
-> +	enum atc260x_ver ic_ver;
-> +	const char *type_name;
-> +	unsigned int rev_reg;
-> +
-> +	int (*dev_init)(struct atc260x *atc260x);
-
-Ah, I didn't see this before.
-
-Call-backs of this nature are the devil.  Please populate a struct
-with the differentiating register addresses/values instead and always
-call a generic deivce_init().
-
-> +};
-> +
-> +struct regmap_config;
-> +
-> +int atc260x_match_device(struct atc260x *atc260x, struct regmap_config *regmap_cfg);
-> +int atc260x_device_probe(struct atc260x *atc260x);
-> +
-> +#endif /* __LINUX_MFD_ATC260X_CORE_H */
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yilun
