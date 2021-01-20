@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D83E2FD775
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2952FD77A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 18:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732203AbhATRrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 12:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        id S1732959AbhATRsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 12:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390118AbhATRo1 (ORCPT
+        with ESMTP id S2391797AbhATRqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:44:27 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A50C0613D6;
-        Wed, 20 Jan 2021 09:43:28 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id 6so34712292ejz.5;
-        Wed, 20 Jan 2021 09:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8u2YlGjdBiXNxHWMGsZ9iS3g5Vphiu4Bzp3sgjIxUwE=;
-        b=U0P9dEXEM4NoH+BqodC4cEeN4r/GmfP53g5aE4yK0deN5k07b4YOy9j5o1Jb0roGFw
-         CIf+Dn5X/VW5cLy477UM+m1OhWII0ZvKn/6qnINuaa1zsDb4GHTrfuVb7L4FQoiAzPGs
-         nv7WdkMCpzquzQOqRPn2Cg4h4AIZO4uHsW4ocdwsV3EhsTiUAnzB4n83w6nPUXmZXhqW
-         Fy/21p4PQoPkFMk4gwiPuyzRvBnsCTWofgjaObT4puFWPqF286FqBjXC6+o/KzjXM7f5
-         qndEFOA8fllMatsvsZQC8rLmTWPEDjtzWmmhKVQvmg397g/aPE/e3IsTcKfpmUCCyM/7
-         R+eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8u2YlGjdBiXNxHWMGsZ9iS3g5Vphiu4Bzp3sgjIxUwE=;
-        b=LHm59uuIWXtVd/RLr15hTF0oPr2f/uZzskLo4AmRz5pVjA82hAkQ5weoUhLeHGwN28
-         CgTKu4TK+uhuresTOvo4achXvWDR5oBCso+f2xHDK4kbCC4AU3j+ZdtOAPoRhqxQ1Uki
-         Tw5OgoaphEzmQUso1a+PjmzCMpgc4WkQ9Pr70FT9g1b5ZffYFsV3WR8dNVBtXpJ2P/as
-         5BAuCFDciBBC+eVfgZ3IBL/0BqS4T8qF226O5U9tUREPX1uhWUpazYYkljVJUgj/UMXP
-         2acY0Z0WwGUheIqjvCWjfvPAH1Amli53ISJZQDh35+kOxRl8mXipk2oxDnVnGntg+yqJ
-         Fv0Q==
-X-Gm-Message-State: AOAM531Wg+iOn6kpWi4pJp0VmqXpLToXum7tvRpkFhubTCzAqLzahKIc
-        9AZy3qS/Fjvj74eYE+OhbQnU7jkATEkwqJVsepA=
-X-Google-Smtp-Source: ABdhPJzqMIq5g8wOuUcoOmqgtdw52RzWdslz8i5l1px8OWut790tQiG6dDoxTbxrnxh1dtCEnouRnXStBxSV9RAo1gU=
-X-Received: by 2002:a17:906:9619:: with SMTP id s25mr6945195ejx.345.1611164607310;
- Wed, 20 Jan 2021 09:43:27 -0800 (PST)
+        Wed, 20 Jan 2021 12:46:07 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1613EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 09:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Br/9Jhb2pIM3jsWsK/El0R8bMfCO02TFGx7tgtozy24=; b=o9zGwF+gSmutoUV/+gfC9MMcA2
+        h08w6Ph5gFFkkR2Ck2WC2PnWS8fPAg+9OD3qJBwKe5/mPTFcEi+q1Ke4yBBoMLcTUw0NkdymSly3/
+        lJD0JWnWw+s8xQz5bllBCwMSyAh0FMEDJ6uwW3JzCFRg4AGPGKSPqnjBIlteq8KuSGSLWL5c211v4
+        eD3J0dW6+WmLB3rWPi/WYUrHfFIYQWPR+7v85iuz/4gLCO6erZ/b5Sgq3i425AlHm3CdIBtbddqBK
+        n2UIuDpZFEYnJhoVQgRvBJoz9aF8zAd1FYlzWzbN7Rq7/+H26KBPXxUCrLv7y4ZgB9T/8qzcyTFdK
+        lWpVXVUA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l2HXk-0006d3-KB; Wed, 20 Jan 2021 17:45:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59D7F3012DF;
+        Wed, 20 Jan 2021 18:45:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B58EB2CEAD191; Wed, 20 Jan 2021 18:45:16 +0100 (CET)
+Date:   Wed, 20 Jan 2021 18:45:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     vincent.donnefort@arm.com
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com
+Subject: Re: [PATCH 3/4] cpu/hotplug: Add cpuhp_invoke_callback_range()
+Message-ID: <YAhsLPLXg37fs/BA@hirez.programming.kicks-ass.net>
+References: <1610385047-92151-1-git-send-email-vincent.donnefort@arm.com>
+ <1610385047-92151-4-git-send-email-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-References: <20210119110121.36656-1-bianpan2016@163.com>
-In-Reply-To: <20210119110121.36656-1-bianpan2016@163.com>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Wed, 20 Jan 2021 09:43:16 -0800
-Message-ID: <CAD+ocbz+DKHKGN=G8Vn0pjuAfVRX3UP85ZaeZEEwcNemS1kJ8A@mail.gmail.com>
-Subject: Re: [PATCH] ext4: stop update inode before return
-To:     Pan Bian <bianpan2016@163.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610385047-92151-4-git-send-email-vincent.donnefort@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Pan for the fix. Looks good to me.
+On Mon, Jan 11, 2021 at 05:10:46PM +0000, vincent.donnefort@arm.com wrote:
+> @@ -475,6 +478,11 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
+>  static inline void
+>  cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
+>  {
+> +	st->target = prev_state;
+> +
+> +	if (st->rollback)
+> +		return;
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+I'm thinking that if we call rollback while already rollback we're hosed
+something fierce, no?
 
-On Tue, Jan 19, 2021 at 3:04 AM Pan Bian <bianpan2016@163.com> wrote:
->
-> Stop inode updating before returning the error code.
->
-> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
-> ---
->  fs/ext4/inode.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index c173c8405856..64039bbb656d 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5389,8 +5389,10 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->                         inode->i_gid = attr->ia_gid;
->                 error = ext4_mark_inode_dirty(handle, inode);
->                 ext4_journal_stop(handle);
-> -               if (unlikely(error))
-> +               if (unlikely(error)) {
-> +                       ext4_fc_stop_update(inode);
->                         return error;
-> +               }
->         }
->
->         if (attr->ia_valid & ATTR_SIZE) {
-> --
-> 2.17.1
->
+That like going up, failing, going back down again, also failing, giving
+up in a fiery death.
