@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513712FD13C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43FF2FD1A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389004AbhATNSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:18:55 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:43064 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730545AbhATNPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:15:39 -0500
-X-UUID: 60b6bc89ec734d91a51602aa5828f7ed-20210120
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=rAYd+FVMlgcEIg6UoFBMR9Wnpjlgxf5lFnSG19N+XHc=;
-        b=P7MQuR1SzsJcin6KCNB0dBFf9KcIlWWKDx21pwaCyoDlkJM1MSUhshSPTgwTuVeCN+3+pHBTqsTvPCfrzGTxQ5qhJ+/86oDJBLPKCDyrhXkDLQLdA5BIxHVgppi+IAfhBLRSgF1LM20uHmh5b41g69NS4TCsJEsphUJ2P4RrE9o=;
-X-UUID: 60b6bc89ec734d91a51602aa5828f7ed-20210120
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 299025821; Wed, 20 Jan 2021 21:14:33 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Jan
- 2021 21:14:32 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Jan 2021 21:14:31 +0800
-Message-ID: <1611148472.1261.6.camel@mtkswgap22>
-Subject: Re: [PATCH v11 1/3] scsi: ufs: Protect some contexts from
- unexpected clock scaling
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Satya Tangirala" <satyat@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 20 Jan 2021 21:14:32 +0800
-In-Reply-To: <1611137065-14266-2-git-send-email-cang@codeaurora.org>
-References: <1611137065-14266-1-git-send-email-cang@codeaurora.org>
-         <1611137065-14266-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S2389247AbhATNB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:01:56 -0500
+Received: from aposti.net ([89.234.176.197]:38846 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732270AbhATMMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:12:15 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     od@zcrc.me, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/2] dt-bindings/phy: ingenic: Add compatibles for JZ4760(B) SoCs
+Date:   Wed, 20 Jan 2021 11:59:44 +0000
+Message-Id: <20210120115945.29046-1-paul@crapouillou.net>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAxLTIwIGF0IDAyOjA0IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBJbiBj
-b250ZXh0cyBsaWtlIHN1c3BlbmQsIHNodXRkb3duIGFuZCBlcnJvciBoYW5kbGluZywgd2UgbmVl
-ZCB0byBzdXNwZW5kDQo+IGRldmZyZXEgdG8gbWFrZSBzdXJlIHRoZXNlIGNvbnRleHRzIHdvbid0
-IGJlIGRpc3R1cmJlZCBieSBjbG9jayBzY2FsaW5nLg0KPiBIb3dldmVyLCBzdXNwZW5kaW5nIGRl
-dmZyZXEgaXMgbm90IGVub3VnaCBzaW5jZSB1c2VycyBjYW4gc3RpbGwgdHJpZ2dlciBhDQo+IGNs
-b2NrIHNjYWxpbmcgYnkgbWFuaXB1bGF0aW5nIHRoZSBkZXZmcmVxIHN5c2ZzIG5vZGVzIGxpa2Ug
-bWluL21heF9mcmVxIGFuZA0KPiBnb3Zlcm5vciBldmVuIGFmdGVyIGRldmZyZXEgaXMgc3VzcGVu
-ZGVkLiBNb3Jlb3ZlciwgbWVyZSBzdXNwZW5kaW5nIGRldmZyZXENCj4gY2Fubm90IHN5bmNocm9p
-bnplIGEgY2xvY2sgc2NhbGluZyB3aGljaCBoYXMgYWxyZWFkeSBiZWVuIGludm9rZWQgdGhyb3Vn
-aA0KPiB0aGVzZSBzeXNmcyBub2Rlcy4gQWRkIG9uZSBtb3JlIGZsYWcgaW4gc3RydWN0IGNsa19z
-Y2FsaW5nIGFuZCB3cmFwIHRoZQ0KPiBlbnRpcmUgZnVuYyB1ZnNoY2RfZGV2ZnJlcV9zY2FsZSgp
-IHdpdGggdGhlIGNsa19zY2FsaW5nX2xvY2ssIHNvIHRoYXQgd2UNCj4gY2FuIHVzZSB0aGlzIGZs
-YWcgYW5kIGNsa19zY2FsaW5nX2xvY2sgdG8gY29udHJvbCBhbmQgc3luY2hyb25pemUgY2xvY2sN
-Cj4gc2NhbGluZyBpbnZva2VkIHRocm91Z2ggZGV2ZnJlcSBzeXNmcyBub2Rlcy4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoNClJldmlld2VkLWJ5
-OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQo=
+Add the ingenic,jz4760-phy and ingenic,jz4760b-phy compatible strings,
+and make the ingenic,jz4770-phy compatible string require
+ingenic,jz4760-phy as a fallback, since both work the same, and the
+JZ4760 SoC is older.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ .../bindings/phy/ingenic,phy-usb.yaml         | 22 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+index 0fd93d71fe5a..3c65dfcf352b 100644
+--- a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
++++ b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+@@ -15,13 +15,19 @@ properties:
+     pattern: '^usb-phy@.*'
+ 
+   compatible:
+-    enum:
+-      - ingenic,jz4770-phy
+-      - ingenic,jz4775-phy
+-      - ingenic,jz4780-phy
+-      - ingenic,x1000-phy
+-      - ingenic,x1830-phy
+-      - ingenic,x2000-phy
++    oneOf:
++      - enum:
++        - ingenic,jz4760-phy
++        - ingenic,jz4775-phy
++        - ingenic,jz4780-phy
++        - ingenic,x1000-phy
++        - ingenic,x1830-phy
++        - ingenic,x2000-phy
++      - items:
++        - enum:
++          - ingenic,jz4760b-phy
++          - ingenic,jz4770-phy
++        - const: ingenic,jz4760-phy
+ 
+   reg:
+     maxItems: 1
+@@ -48,7 +54,7 @@ examples:
+   - |
+     #include <dt-bindings/clock/jz4770-cgu.h>
+     otg_phy: usb-phy@3c {
+-      compatible = "ingenic,jz4770-phy";
++      compatible = "ingenic,jz4770-phy", "ingenic,jz4760-phy";
+       reg = <0x3c 0x10>;
+ 
+       vcc-supply = <&vcc>;
+-- 
+2.29.2
 
