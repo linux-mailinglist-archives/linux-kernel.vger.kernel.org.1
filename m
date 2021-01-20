@@ -2,180 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCE2FD7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B0A2FD7D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 19:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391905AbhATSI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 13:08:26 -0500
-Received: from mout.gmx.net ([212.227.17.22]:59725 "EHLO mout.gmx.net"
+        id S2391878AbhATSHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 13:07:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404304AbhATSGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 13:06:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611165873;
-        bh=IrAz5mOTQmsM3rsPA45KaPwOEB3FHXkB2MRnguBbGww=;
-        h=X-UI-Sender-Class:Subject:From:In-Reply-To:Date:Cc:References:To;
-        b=KmBiDG+Z5gHR0SUFcO/9PuKAivZLXzglGFZPZE55kByxr1rpgydAhvosSuQ2Rv5Xc
-         W9bOCn+c6UorY8XWNJkW2SHlKlP2KQdWGNarOoG9BCA0LZClwaVuhMjgk+j69Z0WSh
-         PhrpC/7nqEb/l2OJPEkCvbpGphkx6tfpipXSVRIc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.42.0.78] ([83.204.192.78]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJVG-1lhf0B0z6k-00fWGg; Wed, 20
- Jan 2021 19:04:33 +0100
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.5\))
-Subject: Re: [RFC PATCH 4/7] irqchip/apple-aic: Add support for Apple AIC
-From:   Mohamed Mediouni <mohamed.mediouni@caramail.com>
-In-Reply-To: <171d8c3f-aa0c-4416-b0d7-d35a47c7acc3@amazon.com>
-Date:   Wed, 20 Jan 2021 19:04:28 +0100
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S1729053AbhATSHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 13:07:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEAE5223E0;
+        Wed, 20 Jan 2021 18:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611165986;
+        bh=9Vin9NRkZZzzDyAGorPhv/gc4XEgMJMyu7SN6/Dh5VA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QOKEXn49xZDqA25NftPpO/RhkxJETDjVf8IwHpQ4c4PgKIITTSzpWMbDaeojhBUwL
+         AMaTuXDNO63mTUWNbY24M3Yn+7DyKVZ+gNfV0aq/Dzc3g78RdLXK2k3Lz68zw0dayF
+         k7KgU0ssARtxoZRDbM1Vkbm4DhO+09bX/vNuWT48iYJOiZWGLNIHuLQ+Ux7Pvm6XEn
+         AkJ1UdNPkKGmiwayZz5VG0HmLINNNDg1ACGZNK0ueBC5/dAPUdQaItmbr7SFs+ZPGG
+         1Apd7L7ou+VlQSz5qSDqD7pRid/TVYdrpQc3rI6lz7TGhDv8myM1uigOLdVZovjahF
+         Nd4So8+S5XcJA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Stan Skowronek <stan@corellium.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <78D5E843-42FC-4186-9D94-30F067FA9EAD@caramail.com>
-References: <20210120132717.395873-1-mohamed.mediouni@caramail.com>
- <20210120132717.395873-5-mohamed.mediouni@caramail.com>
- <171d8c3f-aa0c-4416-b0d7-d35a47c7acc3@amazon.com>
-To:     Alexander Graf <graf@amazon.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.5)
-X-Provags-ID: V03:K1:khflWZYUyO9KxEBLFkUpj+hzYUKIv+CRC+tFI+L9NwEbo7MhNAW
- 9cykUCMQVYhi8pvgk6qAfptW6yhtxSKzg6c7e+upqNMIggtglHd7kHEFWY+sDtizmv/O7jg
- NX+Lep2wUMo7Gn39a4IGYRERSfewFvSokMKlEMrt7VXLq8bVbxIkjnWrKiewoNvI8VV9mID
- l6/mPoROrmk+Qc6AIX38g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gKhJj9jjUNE=:IIoyMmaf0OsPcOAwbQoYZF
- 7KjXN1Dp8OSHZeNnOdXVHsGH5xdTnAzgg33NJclFPWvbWYRiX7ucyUATf7szuKDNzP6venbPB
- w4hDsARA2EpZN+OAZP/dI5tvuzkRF2B9jn6FO6WAbB3SnjNSR9mSRUb0o6FI2suzuHj5ffssa
- jZTgUvE0rrlv6l1fGj+iUY5nuYBLdW9gkHn9qUIREzAA00Q9si56JC90av134jNdpp+TKet1q
- 548fL7HKe3qeKnAgA8RshdG17NLYnDwrWhzt48oZinA22GY3WOCLvDxqFtB2LCO16AG7B6JZG
- 84Whh+XxNYe4J6ffeufn9MFG1bj/3g+V49aO9MmWw7puZGkfEymBA5ZwBBYjv/G35Js1fiXM+
- lQVry4HoK9RG0l6QQE9zWjNrDrk2JL8ylUN+I85ps+wimaEo1CQ4IAv5lMLev5d7nydg9mJkE
- QEG5pRqZqN7qVoAeTe2GMOPvTweR6sKx+3Dyrb0WULiAcN7b0/6YrM5pWXeoYuHihCEOewMjO
- gLkx/88uG0ZGMr5B5pRUbzi7jZc80D5F/pbzU4W0JpEgD61gcBUfYIKJYD9ZPJ7P5KAdRV8ah
- BFR3hJwZ03WQJW46E9Np3DjToC6madRfs11VbJJsD7sS6STDMOQT09b82h1aOy88Rb3Rgl8Av
- fE8i4UeHVQg5BELtS4OZzd+X9fSejV+GVH2jxWqerC8VqjubhwQgVtcEiM3aMmhs5F4MbQISX
- hK9e0DP2SIWifZozlj5jU6DHAaGqBYmKEkVIy0JMSpcwSWh4wPXPLqt1hEMtjxuEfJThaUav/
- d5GNvSqoivrRi6hauwykcjmrjO3DjlBGe8elH9LlkHVySrmmNbubY3rFiQ6CbppBNfUT1R+2x
- yhhorEUemZ29PS+8yxMweKsKiNcYhSnyrUroCtDSY=
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v15 00/11] mm: introduce memfd_secret system call to create "secret" memory areas
+Date:   Wed, 20 Jan 2021 20:06:01 +0200
+Message-Id: <20210120180612.1058-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mike Rapoport <rppt@linux.ibm.com>
 
+Hi,
 
-> On 20 Jan 2021, at 18:11, Alexander Graf <graf@amazon.com> wrote:
->=20
-> On 20.01.21 14:27, Mohamed Mediouni wrote:
->> From: Stan Skowronek <stan@corellium.com>
->> Apple SoCs use the Apple AIC interrupt controller.
->> The Arm architectural timers is wired over FIQ on that hardware.
->> Signed-off-by: Stan Skowronek <stan@corellium.com>
->> Signed-off-by: Mohamed Mediouni <mohamed.mediouni@caramail.com>
->> ---
->>  .../interrupt-controller/apple,aic.yaml       |  49 ++++
->>  MAINTAINERS                                   |   6 +
->>  drivers/irqchip/Kconfig                       |   6 +
->>  drivers/irqchip/Makefile                      |   1 +
->>  drivers/irqchip/irq-apple-aic.c               | 211 =
-++++++++++++++++++
->>  5 files changed, 273 insertions(+)
->>  create mode 100644 =
-Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->>  create mode 100644 drivers/irqchip/irq-apple-aic.c
->> diff --git =
-a/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml =
-b/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->> new file mode 100644
->> index 000000000000..e615eaaca869
->> --- /dev/null
->> +++ =
-b/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->> @@ -0,0 +1,49 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: =
-http://devicetree.org/schemas/interrupt-controller/apple,aic.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Apple Advanced Interrupt Controller (AIC)
->> +
->> +description:
->> +  Interrupt controller present on Apple processors. AIC
->> +  is used by Apple on their AArch64 SoCs since the Apple A7.
->> +
->> +maintainers:
->> +  - Stan Skowronek <stan@corellium.com>
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - const: apple,aic
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  '#interrupt-cells':
->> +    const: 3
->> +
->> +  interrupt-controller: true
->> +
->> +  fast-ipi:
->> +    description:
->> +      Fast IPI support.
->> +
->> +required:
->> +  - compatible
->> +  - '#interrupt-cells'
->> +  - interrupt-controller
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +        aic: interrupt-controller@23b100000 {
->> +             compatible =3D "apple,aic";
->> +             #interrupt-cells =3D <3>;
->> +             interrupt-controller;
->> +             reg =3D <0x2 0x3b100000 0x0 0x8000>;
->> +             fast-ipi;
->> +         };
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 00836f6452f0..e609ede99dd4 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -1218,6 +1218,12 @@ T:	git =
-git://git.kernel.org/pub/scm/linux/kernel/git/jj/linux-apparmor
->>  F:	Documentation/admin-guide/LSM/apparmor.rst
->>  F:	security/apparmor/
->> +APPLE ADVANCED INTERRUPT CONTROLLER DRIVER
->> +M:	Stan Skowronek <stan@corellium.com>
->=20
-> Signing someone else up for maintainership is ... unusual :). Do you =
-have buy in from Stan that he'll be responsive and handle patch reviews?
+@Andrew, this is based on v5.11-rc4-mmots-2021-01-19-13-54 with secretmem
+patches dropped from there, I can rebase whatever way you prefer.
 
-Yeah, I asked Corellium about it explicitly. :)
+This is an implementation of "secret" mappings backed by a file descriptor.
 
->> +L:	linux-arm-kernel@lists.infradead.org
->> +S:	Maintained
->> +F:	drivers/irqchip/irq-apple-aic.c
->> +
->=20
->=20
-> Alex
->=20
->=20
->=20
-> Amazon Development Center Germany GmbH
-> Krausenstr. 38
-> 10117 Berlin
-> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-> Sitz: Berlin
-> Ust-ID: DE 289 237 879
+The file descriptor backing secret memory mappings is created using a
+dedicated memfd_secret system call The desired protection mode for the
+memory is configured using flags parameter of the system call. The mmap()
+of the file descriptor created with memfd_secret() will create a "secret"
+memory mapping. The pages in that mapping will be marked as not present in
+the direct map and will be present only in the page table of the owning mm.
+
+Although normally Linux userspace mappings are protected from other users,
+such secret mappings are useful for environments where a hostile tenant is
+trying to trick the kernel into giving them access to other tenants
+mappings.
+
+Additionally, in the future the secret mappings may be used as a mean to
+protect guest memory in a virtual machine host.
+
+For demonstration of secret memory usage we've created a userspace library
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git
+
+that does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+keys get automatically protected this way and the other thing it does is
+expose the API to the user who needs it. We anticipate that a lot of the
+use cases would be like the openssl one: many toolkits that deal with
+secret keys already have special handling for the memory to try to give
+them greater protection, so this would simply be pluggable into the
+toolkits without any need for user application modification.
+
+Hiding secret memory mappings behind an anonymous file allows (ab)use of
+the page cache for tracking pages allocated for the "secret" mappings as
+well as using address_space_operations for e.g. page migration callbacks.
+
+The anonymous file may be also used implicitly, like hugetlb files, to
+implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+ABIs in the future.
+
+To limit fragmentation of the direct map to splitting only PUD-size pages,
+I've added an amortizing cache of PMD-size pages to each file descriptor
+that is used as an allocation pool for the secret memory areas.
+
+As the memory allocated by secretmem becomes unmovable, we use CMA to back
+large page caches so that page allocator won't be surprised by failing attempt
+to migrate these pages.
+
+v15:
+* Add riscv/Kconfig update to disable set_memory operations for nommu
+  builds (patch 3)
+* Update the code around add_to_page_cache() per Matthew's comments
+  (patches 6,7)
+* Add fixups for build/checkpatch errors discovered by CI systems
+
+v14: https://lore.kernel.org/lkml/20201203062949.5484-1-rppt@kernel.org
+* Finally s/mod_node_page_state/mod_lruvec_page_state/
+
+v13: https://lore.kernel.org/lkml/20201201074559.27742-1-rppt@kernel.org
+* Added Reviewed-by, thanks Catalin and David
+* s/mod_node_page_state/mod_lruvec_page_state/ as Shakeel suggested
+
+v12: https://lore.kernel.org/lkml/20201125092208.12544-1-rppt@kernel.org
+* Add detection of whether set_direct_map has actual effect on arm64 and bail
+  out of CMA allocation for secretmem and the memfd_secret() syscall if pages
+  would not be removed from the direct map
+
+v11: https://lore.kernel.org/lkml/20201124092556.12009-1-rppt@kernel.org
+* Drop support for uncached mappings
+
+Older history:
+v10: https://lore.kernel.org/lkml/20201123095432.5860-1-rppt@kernel.org
+v9: https://lore.kernel.org/lkml/20201117162932.13649-1-rppt@kernel.org
+v8: https://lore.kernel.org/lkml/20201110151444.20662-1-rppt@kernel.org
+v7: https://lore.kernel.org/lkml/20201026083752.13267-1-rppt@kernel.org
+v6: https://lore.kernel.org/lkml/20200924132904.1391-1-rppt@kernel.org
+v5: https://lore.kernel.org/lkml/20200916073539.3552-1-rppt@kernel.org
+v4: https://lore.kernel.org/lkml/20200818141554.13945-1-rppt@kernel.org
+v3: https://lore.kernel.org/lkml/20200804095035.18778-1-rppt@kernel.org
+v2: https://lore.kernel.org/lkml/20200727162935.31714-1-rppt@kernel.org
+v1: https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org
+
+Mike Rapoport (11):
+  mm: add definition of PMD_PAGE_ORDER
+  mmap: make mlock_future_check() global
+  riscv/Kconfig: make direct map manipulation options depend on MMU
+  set_memory: allow set_direct_map_*_noflush() for multiple pages
+  set_memory: allow querying whether set_direct_map_*() is actually enabled
+  mm: introduce memfd_secret system call to create "secret" memory areas
+  secretmem: use PMD-size pages to amortize direct map fragmentation
+  secretmem: add memcg accounting
+  PM: hibernate: disable when there are active secretmem users
+  arch, mm: wire up memfd_secret system call where relevant
+  secretmem: test: add basic selftest for memfd_secret(2)
+
+ arch/arm64/include/asm/Kbuild             |   1 -
+ arch/arm64/include/asm/cacheflush.h       |   6 -
+ arch/arm64/include/asm/set_memory.h       |  17 +
+ arch/arm64/include/uapi/asm/unistd.h      |   1 +
+ arch/arm64/kernel/machine_kexec.c         |   1 +
+ arch/arm64/mm/mmu.c                       |   6 +-
+ arch/arm64/mm/pageattr.c                  |  23 +-
+ arch/riscv/Kconfig                        |   4 +-
+ arch/riscv/include/asm/set_memory.h       |   4 +-
+ arch/riscv/include/asm/unistd.h           |   1 +
+ arch/riscv/mm/pageattr.c                  |   8 +-
+ arch/x86/entry/syscalls/syscall_32.tbl    |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl    |   1 +
+ arch/x86/include/asm/set_memory.h         |   4 +-
+ arch/x86/mm/pat/set_memory.c              |   8 +-
+ fs/dax.c                                  |  11 +-
+ include/linux/pgtable.h                   |   3 +
+ include/linux/secretmem.h                 |  30 ++
+ include/linux/set_memory.h                |  16 +-
+ include/linux/syscalls.h                  |   1 +
+ include/uapi/asm-generic/unistd.h         |   6 +-
+ include/uapi/linux/magic.h                |   1 +
+ kernel/power/hibernate.c                  |   5 +-
+ kernel/power/snapshot.c                   |   4 +-
+ kernel/sys_ni.c                           |   2 +
+ mm/Kconfig                                |   5 +
+ mm/Makefile                               |   1 +
+ mm/filemap.c                              |   3 +-
+ mm/gup.c                                  |  10 +
+ mm/internal.h                             |   3 +
+ mm/mmap.c                                 |   5 +-
+ mm/secretmem.c                            | 444 ++++++++++++++++++++++
+ mm/vmalloc.c                              |   5 +-
+ scripts/checksyscalls.sh                  |   4 +
+ tools/testing/selftests/vm/.gitignore     |   1 +
+ tools/testing/selftests/vm/Makefile       |   3 +-
+ tools/testing/selftests/vm/memfd_secret.c | 296 +++++++++++++++
+ tools/testing/selftests/vm/run_vmtests    |  17 +
+ 38 files changed, 910 insertions(+), 52 deletions(-)
+ create mode 100644 arch/arm64/include/asm/set_memory.h
+ create mode 100644 include/linux/secretmem.h
+ create mode 100644 mm/secretmem.c
+ create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+
+-- 
+2.28.0
 
