@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FBC2FD1EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03032FD1EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388365AbhATNtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:49:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48012 "EHLO mx2.suse.de"
+        id S2388170AbhATNtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:49:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730263AbhATNaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:30:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3B33AAAE;
-        Wed, 20 Jan 2021 13:28:43 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Waiman Long <longman@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: Fix build error in paravirt.h
-Date:   Wed, 20 Jan 2021 14:28:38 +0100
-Message-Id: <20210120132838.15589-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S2389952AbhATNay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:30:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31FC423380;
+        Wed, 20 Jan 2021 13:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611149414;
+        bh=7Dxbf+n+CfQW9d60CkGSPLQL848nYMr0VqI4bSkYekE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WoJm4T5pej/KOmtgQNjRwTeXHoGCpQYYRdjvf4UVdwwdA5aSBD3034Esi4JfSo7Jz
+         A8lvC5/RfGPf5cxMt039r7uBkU5C70X+7sDMFfu2O4bywJh6aSoX74cvGERxJZ9lFz
+         edVbTVwNHmKg0F+LvkYODWNfU/wnl+QTK7VGHB6HsiT/UjPlbWlphcq7kQTX0Trere
+         RBvU8OCKiu2Ns/I0gfPnwAy/xsklGc8V28Bs1QYKOApusXcI2hw/g1GqWP0WJKAr4m
+         /cEu2Zjox59Mb5ZqCwCIbw/iAGJSLf3QiHEwM8ywmC6ZI95Eu12Zl6iXEf8e0qrWa1
+         ffic9kHzYET2A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/2] irqchip: Remove obsolete drivers
+Date:   Wed, 20 Jan 2021 14:30:06 +0100
+Message-Id: <20210120133008.2421897-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./arch/powerpc/include/asm/paravirt.h:83:44: error: implicit declaration
-of function 'smp_processor_id'; did you mean 'raw_smp_processor_id'?
+From: Arnd Bergmann <arnd@arndb.de>
 
-smp_processor_id is defined in linux/smp.h but it is not included.
+A few Arm platforms are getting removed in v5.12, this removes
+the corresponding irqchip drivers.
 
-The build error happens only when the patch is applied to 5.3 kernel but
-it only works by chance in mainline.
+Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
 
-Fixes: ca3f969dcb11 ("powerpc/paravirt: Use is_kvm_guest() in vcpu_is_preempted()")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- arch/powerpc/include/asm/paravirt.h | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index edc08f04aef7..5d1726bb28e7 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -10,6 +10,7 @@
- #endif
- 
- #ifdef CONFIG_PPC_SPLPAR
-+#include <linux/smp.h>
- #include <asm/kvm_guest.h>
- #include <asm/cputhreads.h>
- 
+Arnd Bergmann (2):
+  irqchip: remove sigma tango driver
+  irqchip: remove sirfsoc driver
+
+ .../sigma,smp8642-intc.txt                    |  48 ----
+ drivers/irqchip/Kconfig                       |   5 -
+ drivers/irqchip/Makefile                      |   2 -
+ drivers/irqchip/irq-sirfsoc.c                 | 134 -----------
+ drivers/irqchip/irq-tango.c                   | 227 ------------------
+ 5 files changed, 416 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/sigma,smp8642-intc.txt
+ delete mode 100644 drivers/irqchip/irq-sirfsoc.c
+ delete mode 100644 drivers/irqchip/irq-tango.c
+
 -- 
-2.26.2
+2.29.2
 
