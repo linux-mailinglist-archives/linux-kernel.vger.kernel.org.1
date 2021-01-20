@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356B92FCB10
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD6A2FCB11
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbhATG1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S1729751AbhATG2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728894AbhATGUV (ORCPT
+        with ESMTP id S1728982AbhATGVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:20:21 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B26C0613C1;
-        Tue, 19 Jan 2021 22:19:40 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u21so24761413lja.0;
-        Tue, 19 Jan 2021 22:19:40 -0800 (PST)
+        Wed, 20 Jan 2021 01:21:10 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B140C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 22:20:23 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id m6so13863339pfm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 22:20:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PARrbZXSNPN7iNNTTbIUXkMdIWWiNGrwyhvH2ICpw70=;
-        b=cvDh1YnmWCtuZPaobOb+KO/SRwfhUe0xzem75hfNE2O1qc56S117a4Gv0tLvCh3oBv
-         8sgTo+SU/GZ72AATutIJrw46s6VjdQqptaRTCYV771Uc1MQCZo36AzPvIWXJ5ClD5QUA
-         Z90aP+mNi86jt03axnaxk5AqRNFQmdnHhnv3xxE42UeWjHoakd6Twq4KQgqKNIwfaK4p
-         2JViDBLQJJqbg5+wsdZ2F+TV+yEjUM+Jdi1WMd8jcUdiI0HebQkweEn8z3QZSbS4iq7U
-         eWqIz1GtJK6/b0Ossz/Zwu+Ip4sb2SOoYWmYjOt5VaOJEsZ4Kr+z9D47UkVGA1PobkgN
-         XMCA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=s6C+mbhedQCP+zudi5mxquluGRK7D+VGS5SgYthRSds=;
+        b=WgYhoD8yxocJ85iXXmVyCBnc24BrEivMRF1Tb8iCP7Uda5K63BkrHdCjTqppP/WbCA
+         zI2onxF6t3pfa2MTQMPIVzMcCtPfE3zhIoEdsNh5CWE8uECvpKXRewnhVQnjT7B/+mwk
+         rIU0TpWE/YqQyWwzP/xTAmTQRTndEF+vK/v0ymWR/DQtzwqz9XzYQICA11Y70fBgYS+l
+         8g8JeQeEjmtg0veHXZRqAuTosQUaByNm8iLNxxIn4YXf5Ps8YsIvk+TJNdwOqyW5so8p
+         LyYZrYiF4x0MdQx0tl35ZBr1N4mKau2k/l4ae+N57NAJzrysiCr1uENk7QPQI+WgPqLd
+         O5RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PARrbZXSNPN7iNNTTbIUXkMdIWWiNGrwyhvH2ICpw70=;
-        b=T5lM5h88mlzXd8/31AO0jYT/CtJ2PLT2S19dQWP/uVVoUuJ4T9tCH6yY8BmEEnMquO
-         8bcUhzxNrfkvedW0BP6evr3/ri9dpd9NCOZ4WvJf1sZUjVkO7h/Bg/hd67d2UMA/5Lvk
-         7i6anN2G/DftCq7S7WmgdMpQGJW7ILwkuPy6c/Sr5CFotF85+bRha60scoGwApVUdPoo
-         qu3NLUGh8dRiGJl5uA9GzOJ2Mn0B6dcbu2ZVpukUbnBGANL2YFhCCWFg+K9saLE2I1Re
-         PApgqt7VYxcHvO5lEZMdBjlPczuEl0X8dWAsdqQ1a9iPwcJpKnKjYahZGet9ko7LuomA
-         S9vA==
-X-Gm-Message-State: AOAM531qJiKrfp1Kvz/j5GQ4sUTIraaQkvFDIKpJ1vD3mia75n8bWi5o
-        2wtyaAjMGWQBsphl5XxZfay7GFjKseY+qILQf+Hc5HlFmko=
-X-Google-Smtp-Source: ABdhPJyQeipgMjf45WphthUA64/VG3eMczoqG/IWWzwquSsNcAGkQesT9BEf2op8DUHh+CEi8vjMIZBiZQaLcQttYqw=
-X-Received: by 2002:a05:651c:28d:: with SMTP id b13mr3645167ljo.75.1611123578236;
- Tue, 19 Jan 2021 22:19:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s6C+mbhedQCP+zudi5mxquluGRK7D+VGS5SgYthRSds=;
+        b=k96Ql19odd+v9viiMAGvPcTU1eWBhzaQNWQAF/AzrFONyyPvcnpOjXH1qCpQ2pGYns
+         QwgQMmjNwb4GVgNroT44s2cnBlFXgFEaOphylrC11T1AlrZ9VgtFI4VV5NvVMIdvXALs
+         CdXHHzWnmz+5wPOmGunDKdF/mQdtO1rntpfKZYYy8T71TmJu2I3dcFURPFPDMaCfHLBG
+         2+VHQuF0d6+tMRMbKbgW+HeoCZ3Qr1UHTSLkOWp5bATZfz4vCdHmLLOzg+lXEHwqFm/F
+         Z7cvvyw8l5Delcp27kuJiHhRKQJl3AjZPejDH+45WCXBGhmwWzSDince8nCenph2PlO3
+         JIvg==
+X-Gm-Message-State: AOAM530I7gs9qH5OPjp0sOVcgYZEROUfciTQWZHzgvHqC/deiSlvlLha
+        6Z/QZ2X8tb1Y5KbEEyw0IqHuPQ==
+X-Google-Smtp-Source: ABdhPJxLMUyE+2pwrS0UVGPFMaBcYi/uM33r5JfTx1Pgy3Xp8LXpTj6aZrSgZfqJw/i9I+XYAOqi5g==
+X-Received: by 2002:a65:458e:: with SMTP id o14mr7834909pgq.444.1611123622455;
+        Tue, 19 Jan 2021 22:20:22 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id n8sm1015976pjo.18.2021.01.19.22.20.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Jan 2021 22:20:21 -0800 (PST)
+Date:   Wed, 20 Jan 2021 11:50:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+Message-ID: <20210120062019.itpakykj2ah5oxp3@vireshk-i7>
+References: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <20210119022154.2338781-1-frowand.list@gmail.com>
+ <20210119080546.dzec3jatsz2662qs@vireshk-i7>
+ <f7133d16-510b-f730-a43b-89edab08aabe@gmail.com>
+ <20210120050606.b2m4jssh73wexybx@vireshk-i7>
 MIME-Version: 1.0
-References: <20210117114313.141428-1-krzk@kernel.org>
-In-Reply-To: <20210117114313.141428-1-krzk@kernel.org>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Wed, 20 Jan 2021 14:19:33 +0800
-Message-ID: <CADBw62pML49WTTmv7GSzMhJAsAJnujnReH70Kb1nCj2bt1voDA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: sprd:: depend on COMMON_CLK to fix compile tests
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120050606.b2m4jssh73wexybx@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 20-01-21, 10:36, Viresh Kumar wrote:
+> On 19-01-21, 09:44, Frank Rowand wrote:
+> > No.  overlay_base.dts is intentionally compiled into a base FDT, not
+> > an overlay.  Unittest intentionally unflattens this FDT in early boot,
+> > in association with unflattening the system FDT.  One key intent
+> > behind this is to use the same memory allocation method that is
+> > used for the system FDT.
+> > 
+> > Do not try to convert overlay_base.dts into an overlay.
+> 
+> Okay, but why does it have /plugin/; specified in it then ?
+> 
+> And shouldn't we create two separate dtb-s now, static_test.dtb and
+> static_overlay_test.dtb ? As fdtoverlay will not be able to merge it with
+> testcase.dtb anyway.
+> 
+> Or maybe we can create another file static_overlay.dts (like testcases.dts)
+> which can include both testcases.dts and overlay_base.dts, and then we can
+> create static_test.dtb out of it ? That won't impact the runtime tests at all.
 
-On Sun, Jan 17, 2021 at 7:43 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> The I2C_SPRD uses Common Clock Framework thus it cannot be built on
-> platforms without it (e.g. compile test on MIPS with LANTIQ):
->
->     /usr/bin/mips-linux-gnu-ld: drivers/i2c/busses/i2c-sprd.o: in function `sprd_i2c_probe':
->     i2c-sprd.c:(.text.sprd_i2c_probe+0x254): undefined reference to `clk_set_parent'
->
-> Fixes: 4a2d5f663dab ("i2c: Enable compile testing for more drivers")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-LGTM. Thanks.
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-
-> ---
->  drivers/i2c/busses/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index d4d60ad0eda0..ab1f39ac39f4 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -1013,6 +1013,7 @@ config I2C_SIRF
->  config I2C_SPRD
->         tristate "Spreadtrum I2C interface"
->         depends on I2C=y && (ARCH_SPRD || COMPILE_TEST)
-> +       depends on COMMON_CLK
->         help
->           If you say yes to this option, support will be included for the
->           Spreadtrum I2C interface.
-> --
-> 2.25.1
->
-
+Hmm, I noticed just now that you have kept overlay.dtb out of the build,
+probably we should then drop overlay_base.dtb as well ?
 
 -- 
-Baolin Wang
+viresh
