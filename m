@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB262FDFA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47E42FDF90
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 03:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbhAUCc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 21:32:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404283AbhATXyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:54:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D032224D1;
-        Wed, 20 Jan 2021 23:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611186801;
-        bh=KaAIzngTFdJOggqeK7loFLhsbvngspe0/HlURAXHAgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SHaQCXddx55iPn4zzRZ4h369HDxx+f10wwgXlwvnOYnceCMv/Tgt7UkQTt7vPpHk7
-         9CkGiWZx82+8Ue2VivIz/zDsRM1gPo/2HhcS3pGRiQXyOqSLeiqI9Ts6LiBwaOLTrQ
-         3Xa7oxqO6LpkXGVzVDW+mpRMD8BxILd9xkCAEoT6Rw8sYFkCSiWrMZvHlK5G+urMGs
-         FTZbWHiobojD4DtlCkJ6qO/JQmwjGQufBxqTNqrDSUt6sQ9QJbaBDeFUJ/I+zhepfk
-         ob0gCIqOmAffaeGFmUtLSFMuQHhyPWzrA567O6CJGCrFI8Mzty5QfSqaYbOG3FPrsF
-         XkJXSzsRDlatg==
-Date:   Thu, 21 Jan 2021 01:53:16 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v3 08/10] certs: Check that builtin blacklist hashes are
- valid
-Message-ID: <YAjCbKwQf8nS+Nuu@kernel.org>
-References: <20210114151909.2344974-1-mic@digikod.net>
- <20210114151909.2344974-9-mic@digikod.net>
- <YAe9egzT5D7B0swR@kernel.org>
- <11ce77c9-7b43-e2a0-55bc-c0035bf3d681@digikod.net>
+        id S2436841AbhAUC1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 21:27:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404368AbhATXy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 18:54:29 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AB2C0613CF;
+        Wed, 20 Jan 2021 15:53:48 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D75E522727;
+        Thu, 21 Jan 2021 00:53:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611186825;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbC26yrUSBeEpdGi0edZbsHLuIDHX8po3yB5+FOa+20=;
+        b=oIjOfYEnvu/uhmimKD0tBrhgRlbrxb59Q+txl0qAblKBiHK2hbECe1FTHWyrZdpvHYbSl+
+        8jBYl0ViNdmos6QQ/8ZlVz+/hgazuJ/BStuZ5HbkQf2APpzlQVht6qdkhfKiZ775YxN4OC
+        nUNn9sMFWIP52XutqqWl1Sc2xQKuBMI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <11ce77c9-7b43-e2a0-55bc-c0035bf3d681@digikod.net>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Jan 2021 00:53:44 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc>
+ <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <f706c0e4b684e07635396fcf02f4c9a6@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:57:55PM +0100, Mickaël Salaün wrote:
+Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc> 
+> wrote:
+>> 
+>> [RESEND, fat-fingered the buttons of my mail client and converted
+>> all CCs to BCCs :(]
+>> 
+>> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+>> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+>> >>
+>> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+>> >> wrote:
+>> >> >
+>> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+>> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+>> >> > deferral. Convert it to builtin_platform_driver().
+>> >>
+>> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+>> >> shouldn't it be fixed or removed?
+>> >
+>> > I was actually thinking about this too. The problem with fixing
+>> > builtin_platform_driver_probe() to behave like
+>> > builtin_platform_driver() is that these probe functions could be
+>> > marked with __init. But there are also only 20 instances of
+>> > builtin_platform_driver_probe() in the kernel:
+>> > $ git grep ^builtin_platform_driver_probe | wc -l
+>> > 20
+>> >
+>> > So it might be easier to just fix them to not use
+>> > builtin_platform_driver_probe().
+>> >
+>> > Michael,
+>> >
+>> > Any chance you'd be willing to help me by converting all these to
+>> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+>> 
+>> If it just moving the probe function to the _driver struct and
+>> remove the __init annotations. I could look into that.
 > 
-> On 20/01/2021 06:19, Jarkko Sakkinen wrote:
-> > On Thu, Jan 14, 2021 at 04:19:07PM +0100, Mickaël Salaün wrote:
-> >> From: Mickaël Salaün <mic@linux.microsoft.com>
-> >>
-> >> Add and use a check-blacklist-hashes.awk script to make sure that the
-> >> builtin blacklist hashes will be approved by the run time blacklist
-> >> description checks.  This is useful to debug invalid hash formats, and
-> >> it make sure that previous hashes which could have been loaded in the
-> >> kernel (but ignored) are now noticed and deal with by the user.
-> >>
-> >> Cc: David Howells <dhowells@redhat.com>
-> >> Cc: David Woodhouse <dwmw2@infradead.org>
-> >> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> >> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > I get this with a self-signed cert:
-> > 
-> > certs/Makefile:18: *** target pattern contains no '%'.  Stop.
-> > 
-> > CONFIG_SYSTEM_BLACKLIST_HASH_LIST="tbs:8eed1340eef37c1dc84d996406ad05c7dbb3eade19132d688408ca2f63904869"
+> Yup. That's pretty much it AFAICT.
 > 
-> As said in the Kconfig documentation for
-> CONFIG_SYSTEM_BLACKLIST_HASH_LIST, you need to provide a file with the
-> list, not to set the string directly in the configuration variable. This
-> patch series didn't change this behavior. The same kind of macros are
-> used for CONFIG_MODULE_SIG_KEY.
+> builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> for async probe, etc. But I doubt anyone is actually setting async
+> flags and still using builtin_platform_driver_probe().
 
-OK, the documentation just states that:
+Hasn't module_platform_driver_probe() the same problem? And there
+are ~80 drivers which uses that.
 
-"Hashes to be preloaded into the system blacklist keyring"
-
-No mention about a file. I'd add a patch to update this documentation.
-
-> 
-> > 
-> > I used the script in 10/10 to test this, which is another
-> > reamark: the patches are in invalid order, as you need to
-> > apply 10/10 before you can test  8/10.
-> 
-> I'll move patch 10/10 earlier but this kind of formatting was already
-> required (but silently ignored) for this option to be really taken into
-> account. Only the kernel code was available to understand how to
-> effectively create such hash.
-
-Great, thanks.
-
-
-> > 
-> > /Jarkko
-> > 
-
-
-/Jarkko
-
+-michael
