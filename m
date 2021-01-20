@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E772FE2E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1236B2FE2FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 07:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbhAUGar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 01:30:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20332 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726669AbhAUG35 (ORCPT
+        id S1731983AbhATXqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 18:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729042AbhATV1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:29:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611210505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A/Nv6GHCQlumzPaFQAXiaHrHMfj3/YhSy2fwNasMTmw=;
-        b=M1J+EPI7mHjM6cRLfs87FiBA+Uwj1FKJMZum8tfZohO4H4u+htuk3PahQg4ohO50P6B4Tj
-        yIFuWkNiACFRf/058nwGEpgh4r1qdbhY7A61tb0HYdOOtEtoY+0xniMvt1+2/nMupczz52
-        pPQOg+l6DPsmaa0vdadLpp0gN67njXE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-bL4ljgdHNC-2KRyhqNKf9g-1; Thu, 21 Jan 2021 01:28:23 -0500
-X-MC-Unique: bL4ljgdHNC-2KRyhqNKf9g-1
-Received: by mail-ed1-f71.google.com with SMTP id u17so582754edi.18
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 22:28:23 -0800 (PST)
+        Wed, 20 Jan 2021 16:27:36 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA91C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:11 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id q2so48219573iow.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YXXV9c9WKgadxq6Z4uVJs3qrKStMf5F06B0reLAMGUg=;
+        b=obICub08u3TKWOIQP8jWfqoQ65pQAelEhsWLTsxpQ9mflzxooSx1BtRS3lyh9PJuYD
+         1VyMyg8xLR1wMSUVXSBXj1N3Wd19xOOciQMCfo9U574wFO6zRWC0EvUe4+UzgpzwgX19
+         e2JABF15y2eiQ7jmqu+PGuWjon+e1CvSa3p+Ld0dezU5lO3WYI6XcLAv4Z1w2Nqa95/9
+         52w94SX2lv9xF1M8Qa+Uvykw+sCgJSd7RoL7IT6swChFD2u8x5jJgPfT5XwBxvx7ABTB
+         ZCDEINHZlv8Oe79UyxKSqJJgztthWZVMZwONgDhuV2dQbfbaEZMhwWJzc+CTVe9t/g8u
+         i4ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A/Nv6GHCQlumzPaFQAXiaHrHMfj3/YhSy2fwNasMTmw=;
-        b=gp1PAJeKEa/L39GHoFnSdR0+mMclhHJRUqvUSXIB3XjTpQ22MY982Y2bRMNIRwIbdO
-         3b/wDyGQ5X0B4O/yZGj9TxgoPyAqmvmh9DO2cPUduwFJNw59nlzaaT5qCspq1S7JBZOH
-         fD1TqSNYEDin69wjWY4SUPxojDNvtMQpuGDp1ks5iX0eRzFMiPmczjQB0SLuBPzSQQe8
-         2EdQI0BRtQ6ZkURh/vmlW4t1PGETIUv+oqrW+tyZyH758rPd5jvCkHjU6fPQuhjAiFL3
-         HcBlM6aq04v5zAkNCOglhzJ7NqkTnxeoNQEXmi5Bz15tspQ6H6Rp4X8leHh4wG3r4l8L
-         hYqQ==
-X-Gm-Message-State: AOAM531aBJhQIIBY3PeQhFOkiT3fZXqrtqyddn1nCFOA/yUSbzsrb2L6
-        bUCWcZ0osA36NfVyLzXk6wJ+4OLfcaB1IsN1rsyM7eIIKyDnOrrkgmk/gEgfXv2q3wn6RLC1v7i
-        U64jhV5mqAPpsV2XGOMn2TSvJ
-X-Received: by 2002:a17:906:aec1:: with SMTP id me1mr8805629ejb.114.1611210502430;
-        Wed, 20 Jan 2021 22:28:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwgvwiFmsXss14kPoPcd+j0USA1s+mP/BikoSlDkv7eXGzd0l3lQAShgpK3XYQfPcSWmez7cw==
-X-Received: by 2002:a17:906:aec1:: with SMTP id me1mr8805619ejb.114.1611210502205;
-        Wed, 20 Jan 2021 22:28:22 -0800 (PST)
-Received: from localhost.localdomain ([151.29.110.43])
-        by smtp.gmail.com with ESMTPSA id d8sm2231050edm.75.2021.01.20.22.28.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YXXV9c9WKgadxq6Z4uVJs3qrKStMf5F06B0reLAMGUg=;
+        b=Faddxe3cSuIeYJ5AAeq8Qgx7uU8knc9bfe0rnA1KhJrgaec1x2NY74HSsK+T7S5hGY
+         8aa/ooRtR8cM4OH878j7Vunz7UGQ7pZjSdG8/Y76UZ2QtgspaoKkLzB7werE/iN7ZYnC
+         VMGy2ufpLByJxX1KlL1Wbf/ij0g3cGuMoIBwxvfZhmzb+Paw+OV6sPimtbEa6vYuZKf5
+         Pu7ckKXAhG+c3PcqFgDF5jcLkB4v9eBH2WEY5BXLk9RGbFXWan4x7lqepgRJ52wD8BJ1
+         3oB/VmlOuQsDiZ3pDIM61ezeDr7P8OmYwpiZ71Q+o3PwGxdHD/cUQumwHbykvr2tT/9s
+         3KOw==
+X-Gm-Message-State: AOAM533OHQ8dB7MffVSwHW3yprKd6wZ4OBChXMNquACSkPel4Mb8NKw9
+        kK/UG+muDXxda9QOLwgKGD7piQ==
+X-Google-Smtp-Source: ABdhPJydebF8rvITp21O4iWGarRssmn+Okq1r/VxSdQjhCSwnLHM6s5tJW9QDIJIE4KeuSZZvp8q4w==
+X-Received: by 2002:a92:a010:: with SMTP id e16mr9038816ili.38.1611177970421;
+        Wed, 20 Jan 2021 13:26:10 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id q196sm1335687iod.27.2021.01.20.13.26.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 22:28:21 -0800 (PST)
-Date:   Thu, 21 Jan 2021 07:28:19 +0100
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH] sched/deadline: Reduce rq lock contention in
- dl_add_task_root_domain()
-Message-ID: <20210121062819.GH10569@localhost.localdomain>
-References: <20210119083542.19856-1-dietmar.eggemann@arm.com>
+        Wed, 20 Jan 2021 13:26:09 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, robh+dt@kernel.org, rdunlap@infradead.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v3 net-next 0/4] net: ipa: remove a build dependency
+Date:   Wed, 20 Jan 2021 15:26:02 -0600
+Message-Id: <20210120212606.12556-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119083542.19856-1-dietmar.eggemann@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+(David/Jakub, please take these all through net-next if they are
+acceptable to you, once Rob has acked the binding.  Rob, please ack
+if the binding looks OK to you.)
 
-On 19/01/21 09:35, Dietmar Eggemann wrote:
-> dl_add_task_root_domain() is called during sched domain rebuild:
-> 
->   rebuild_sched_domains_locked()
->     partition_and_rebuild_sched_domains()
->       rebuild_root_domains()
->          for all top_cpuset descendants:
->            update_tasks_root_domain()
->              for all tasks of cpuset:
->                dl_add_task_root_domain()
-> 
-> Change it so that only the task pi lock is taken to check if the task
-> has a SCHED_DEADLINE (DL) policy. In case that p is a DL task take the
-> rq lock as well to be able to safely de-reference root domain's DL
-> bandwidth structure.
-> 
-> Most of the tasks will have another policy (namely SCHED_NORMAL) and
-> can now bail without taking the rq lock.
-> 
-> One thing to note here: Even in case that there aren't any DL user
-> tasks, a slow frequency switching system with cpufreq gov schedutil has
-> a DL task (sugov) per frequency domain running which participates in DL
-> bandwidth management.
-> 
-> Reviewed-by: Quentin Perret <qperret@google.com>
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Version 3 removes the "Fixes" tag from the first patch, and updates
+the addressee list to include some people I apparently missed.
 
-Looks good to me, thanks!
+Version 2 includes <.../arm-gic.h> rather than <.../irq.h> in the
+example section of the DT binding, to ensure GIC_SPI is defined.
+I verified this passes "make dt_bindings_check".
 
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
+The rest of the series is unchanged.  Below is the original cover
+letter.
 
-Best,
-Juri
+---
+
+Unlike the original (temporary) IPA notification mechanism, the
+generic remoteproc SSR notification code does not require the IPA
+driver to maintain a pointer to the modem subsystem remoteproc
+structure.
+
+The IPA driver was converted to use the newer SSR notifiers, but the
+specification and use of a phandle for the modem subsystem was never
+removed.
+
+This series removes the lookup of the remoteproc pointer, and that
+removes the need for the modem DT property.  It also removes the
+reference to the "modem-remoteproc" property from the DT binding,
+and from the DT files that specified them.
+
+David/Jakub, please take these all through net-next if they are
+acceptable to you, once Rob has acked the binding and DT patches.
+
+Thanks.
+
+					-Alex
+
+Alex Elder (4):
+  net: ipa: remove a remoteproc dependency
+  dt-bindings: net: remove modem-remoteproc property
+  arm64: dts: qcom: sc7180: kill IPA modem-remoteproc property
+  arm64: dts: qcom: sdm845: kill IPA modem-remoteproc property
+
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 15 ++------
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |  2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  2 -
+ drivers/net/ipa/ipa.h                         |  2 -
+ drivers/net/ipa/ipa_main.c                    | 38 +------------------
+ 5 files changed, 5 insertions(+), 54 deletions(-)
+
+-- 
+2.20.1
 
