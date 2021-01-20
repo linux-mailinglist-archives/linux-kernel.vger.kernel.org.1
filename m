@@ -2,242 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1B92FD266
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EFA2FD25D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389701AbhATOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:11:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55808 "EHLO mail.kernel.org"
+        id S2388685AbhATOJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:09:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43980 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730131AbhATN0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:26:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D728F23357;
-        Wed, 20 Jan 2021 13:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611149157;
-        bh=MTwp3yZFTXYKExZ+xtafwqzMan0PWaN1CqvmS2w1BAw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Y6t4DpQToAjr0LvtfsAqK/VjXr0hPuUUWyDA9m1furti62nTO8Zm9zHw3AUWTCH6a
-         pYyrwyYOfYaweN2BurzuilFWQJS9PznLiPg6bEU0pAC/E9drFhlxUWm73ZQmUIBb3P
-         BABLVAx4jfahXw338RfIviWe3ANM7WY9ZaexCHGAjacdTQ3mGvB0tlfG4uDW9FjgfS
-         vSaoksjJdkJJ/zpCZrVnZS7fnKqrge6SdlRM3lpzAv17yl7I28c7epNYe3+XjvWrFw
-         IMBw3X3Fq4hrf3G1HR/odHLlc0rJrS5S478tRReEIyqs3m5dPYSHTavgbGcnEsPvT6
-         VegAS2CCE5wAA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>, Barry Song <baohua@kernel.org>
-Subject: [PATCH] hwspinlock: remove sirf driver
-Date:   Wed, 20 Jan 2021 14:25:37 +0100
-Message-Id: <20210120132537.2285157-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2387649AbhATN1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:27:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611149174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HFz2mXiWK9cyR0546fhkjVi2i/3VDJZ0f5MwdCEislA=;
+        b=oq4KdSETm7KlSxMAdvuhhuzXTf336XqEUsaNhLQtad4gUY1o5n0G1u7zJG3CIb3dxjPPlG
+        Rzlr3THm9RIHG/hKRH8axNMRpiPiOHrP05k6GvKS054/bankadvacssUjDlGEHkYaJKqAK
+        B6uo+q6gVbvU3mYwzvbjIcoqgzardhA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2253BAD6A;
+        Wed, 20 Jan 2021 13:26:14 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     bpetkov@suse.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 01/15] static_call: Pull some static_call declarations to the type headers
+Date:   Wed, 20 Jan 2021 14:25:59 +0100
+Message-Id: <20210120132613.31487-2-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210120132613.31487-1-jgross@suse.com>
+References: <20210120132613.31487-1-jgross@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Peter Zijlstra <peterz@infradead.org>
 
-The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-is no longer needed.
+Some static call declarations are going to be needed on low level header
+files. Move the necessary material to the dedicated static call types
+header to avoid inclusion dependency hell.
 
-Cc: Barry Song <baohua@kernel.org>
-Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[jgross@suse.com: updated tools/include/linux/static_call_types.h, too]
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
-(resending because I missed the maintainers on the first submission)
+ include/linux/static_call.h             | 20 ------------------
+ include/linux/static_call_types.h       | 27 +++++++++++++++++++++++++
+ tools/include/linux/static_call_types.h | 27 +++++++++++++++++++++++++
+ 3 files changed, 54 insertions(+), 20 deletions(-)
 
- .../bindings/hwlock/sirf,hwspinlock.txt       |  28 -----
- drivers/hwspinlock/Kconfig                    |  11 --
- drivers/hwspinlock/Makefile                   |   1 -
- drivers/hwspinlock/sirf_hwspinlock.c          | 105 ------------------
- 4 files changed, 145 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
- delete mode 100644 drivers/hwspinlock/sirf_hwspinlock.c
-
-diff --git a/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt b/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
-deleted file mode 100644
-index 9bb1240a68e0..000000000000
---- a/Documentation/devicetree/bindings/hwlock/sirf,hwspinlock.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--SIRF Hardware spinlock device Binding
-------------------------------------------------
--
--Required properties :
--- compatible : shall contain only one of the following:
--	"sirf,hwspinlock"
--
--- reg : the register address of hwspinlock
--
--- #hwlock-cells : hwlock users only use the hwlock id to represent a specific
--	hwlock, so the number of cells should be <1> here.
--
--Please look at the generic hwlock binding for usage information for consumers,
--"Documentation/devicetree/bindings/hwlock/hwlock.txt"
--
--Example of hwlock provider:
--	hwlock {
--		compatible = "sirf,hwspinlock";
--		reg = <0x13240000 0x00010000>;
--		#hwlock-cells = <1>;
--	};
--
--Example of hwlock users:
--	node {
--		...
--		hwlocks = <&hwlock 2>;
--		...
--	};
-diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-index 32cd26352f38..53e13476e831 100644
---- a/drivers/hwspinlock/Kconfig
-+++ b/drivers/hwspinlock/Kconfig
-@@ -28,17 +28,6 @@ config HWSPINLOCK_QCOM
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index 695da4c9b338..39f39920bb29 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -107,26 +107,11 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
  
- 	  If unsure, say N.
+ #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
  
--config HWSPINLOCK_SIRF
--	tristate "SIRF Hardware Spinlock device"
--	depends on ARCH_SIRF || COMPILE_TEST
--	help
--	  Say y here to support the SIRF Hardware Spinlock device, which
--	  provides a synchronisation mechanism for the various processors
--	  on the SoC.
--
--	  It's safe to say n here if you're not interested in SIRF hardware
--	  spinlock or just want a bare minimum kernel.
--
- config HWSPINLOCK_SPRD
- 	tristate "SPRD Hardware Spinlock device"
- 	depends on ARCH_SPRD || COMPILE_TEST
-diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
-index ed053e3f02be..1f8dd6f5814f 100644
---- a/drivers/hwspinlock/Makefile
-+++ b/drivers/hwspinlock/Makefile
-@@ -6,7 +6,6 @@
- obj-$(CONFIG_HWSPINLOCK)		+= hwspinlock_core.o
- obj-$(CONFIG_HWSPINLOCK_OMAP)		+= omap_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_QCOM)		+= qcom_hwspinlock.o
--obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
- obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
-diff --git a/drivers/hwspinlock/sirf_hwspinlock.c b/drivers/hwspinlock/sirf_hwspinlock.c
-deleted file mode 100644
-index a3f77120bad7..000000000000
---- a/drivers/hwspinlock/sirf_hwspinlock.c
-+++ /dev/null
-@@ -1,105 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
 -/*
-- * SIRF hardware spinlock driver
-- *
-- * Copyright (c) 2015 Cambridge Silicon Radio Limited, a CSR plc group company.
+- * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
+- * the symbol table so that objtool can reference it when it generates the
+- * .static_call_sites section.
 - */
+-#define __static_call(name)						\
+-({									\
+-	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
+-	&STATIC_CALL_TRAMP(name);					\
+-})
 -
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/device.h>
--#include <linux/io.h>
--#include <linux/slab.h>
--#include <linux/spinlock.h>
--#include <linux/hwspinlock.h>
--#include <linux/platform_device.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
+ #else
+ #define STATIC_CALL_TRAMP_ADDR(name) NULL
+ #endif
+ 
+ 
+-#define DECLARE_STATIC_CALL(name, func)					\
+-	extern struct static_call_key STATIC_CALL_KEY(name);		\
+-	extern typeof(func) STATIC_CALL_TRAMP(name);
 -
--#include "hwspinlock_internal.h"
+ #define static_call_update(name, func)					\
+ ({									\
+ 	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
+@@ -174,7 +159,6 @@ extern int static_call_text_reserved(void *start, void *end);
+ 	};								\
+ 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
+ 
+-#define static_call(name)	__static_call(name)
+ #define static_call_cond(name)	(void)__static_call(name)
+ 
+ #define EXPORT_STATIC_CALL(name)					\
+@@ -207,7 +191,6 @@ struct static_call_key {
+ 	};								\
+ 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
+ 
+-#define static_call(name)	__static_call(name)
+ #define static_call_cond(name)	(void)__static_call(name)
+ 
+ static inline
+@@ -252,9 +235,6 @@ struct static_call_key {
+ 		.func = NULL,						\
+ 	}
+ 
+-#define static_call(name)						\
+-	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
 -
--struct sirf_hwspinlock {
--	void __iomem *io_base;
--	struct hwspinlock_device bank;
--};
--
--/* Number of Hardware Spinlocks*/
--#define	HW_SPINLOCK_NUMBER	30
--
--/* Hardware spinlock register offsets */
--#define HW_SPINLOCK_BASE	0x404
--#define HW_SPINLOCK_OFFSET(x)	(HW_SPINLOCK_BASE + 0x4 * (x))
--
--static int sirf_hwspinlock_trylock(struct hwspinlock *lock)
--{
--	void __iomem *lock_addr = lock->priv;
--
--	/* attempt to acquire the lock by reading value == 1 from it */
--	return !!readl(lock_addr);
--}
--
--static void sirf_hwspinlock_unlock(struct hwspinlock *lock)
--{
--	void __iomem *lock_addr = lock->priv;
--
--	/* release the lock by writing 0 to it */
--	writel(0, lock_addr);
--}
--
--static const struct hwspinlock_ops sirf_hwspinlock_ops = {
--	.trylock = sirf_hwspinlock_trylock,
--	.unlock = sirf_hwspinlock_unlock,
--};
--
--static int sirf_hwspinlock_probe(struct platform_device *pdev)
--{
--	struct sirf_hwspinlock *hwspin;
--	struct hwspinlock *hwlock;
--	int idx;
--
--	if (!pdev->dev.of_node)
--		return -ENODEV;
--
--	hwspin = devm_kzalloc(&pdev->dev,
--			      struct_size(hwspin, bank.lock,
--					  HW_SPINLOCK_NUMBER),
--			      GFP_KERNEL);
--	if (!hwspin)
--		return -ENOMEM;
--
--	/* retrieve io base */
--	hwspin->io_base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(hwspin->io_base))
--		return PTR_ERR(hwspin->io_base);
--
--	for (idx = 0; idx < HW_SPINLOCK_NUMBER; idx++) {
--		hwlock = &hwspin->bank.lock[idx];
--		hwlock->priv = hwspin->io_base + HW_SPINLOCK_OFFSET(idx);
--	}
--
--	platform_set_drvdata(pdev, hwspin);
--
--	return devm_hwspin_lock_register(&pdev->dev, &hwspin->bank,
--					 &sirf_hwspinlock_ops, 0,
--					 HW_SPINLOCK_NUMBER);
--}
--
--static const struct of_device_id sirf_hwpinlock_ids[] = {
--	{ .compatible = "sirf,hwspinlock", },
--	{},
--};
--MODULE_DEVICE_TABLE(of, sirf_hwpinlock_ids);
--
--static struct platform_driver sirf_hwspinlock_driver = {
--	.probe = sirf_hwspinlock_probe,
--	.driver = {
--		.name = "atlas7_hwspinlock",
--		.of_match_table = sirf_hwpinlock_ids,
--	},
--};
--
--module_platform_driver(sirf_hwspinlock_driver);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("SIRF Hardware spinlock driver");
--MODULE_AUTHOR("Wei Chen <wei.chen@csr.com>");
+ static inline void __static_call_nop(void) { }
+ 
+ /*
+diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
+index 89135bb35bf7..08f78b1b88b4 100644
+--- a/include/linux/static_call_types.h
++++ b/include/linux/static_call_types.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/stringify.h>
++#include <linux/compiler.h>
+ 
+ #define STATIC_CALL_KEY_PREFIX		__SCK__
+ #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
+@@ -32,4 +33,30 @@ struct static_call_site {
+ 	s32 key;
+ };
+ 
++#define DECLARE_STATIC_CALL(name, func)					\
++	extern struct static_call_key STATIC_CALL_KEY(name);		\
++	extern typeof(func) STATIC_CALL_TRAMP(name);
++
++#ifdef CONFIG_HAVE_STATIC_CALL
++
++/*
++ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
++ * the symbol table so that objtool can reference it when it generates the
++ * .static_call_sites section.
++ */
++#define __static_call(name)						\
++({									\
++	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
++	&STATIC_CALL_TRAMP(name);					\
++})
++
++#define static_call(name)	__static_call(name)
++
++#else
++
++#define static_call(name)						\
++	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
++
++#endif /* CONFIG_HAVE_STATIC_CALL */
++
+ #endif /* _STATIC_CALL_TYPES_H */
+diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
+index 89135bb35bf7..08f78b1b88b4 100644
+--- a/tools/include/linux/static_call_types.h
++++ b/tools/include/linux/static_call_types.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/stringify.h>
++#include <linux/compiler.h>
+ 
+ #define STATIC_CALL_KEY_PREFIX		__SCK__
+ #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
+@@ -32,4 +33,30 @@ struct static_call_site {
+ 	s32 key;
+ };
+ 
++#define DECLARE_STATIC_CALL(name, func)					\
++	extern struct static_call_key STATIC_CALL_KEY(name);		\
++	extern typeof(func) STATIC_CALL_TRAMP(name);
++
++#ifdef CONFIG_HAVE_STATIC_CALL
++
++/*
++ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
++ * the symbol table so that objtool can reference it when it generates the
++ * .static_call_sites section.
++ */
++#define __static_call(name)						\
++({									\
++	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
++	&STATIC_CALL_TRAMP(name);					\
++})
++
++#define static_call(name)	__static_call(name)
++
++#else
++
++#define static_call(name)						\
++	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
++
++#endif /* CONFIG_HAVE_STATIC_CALL */
++
+ #endif /* _STATIC_CALL_TYPES_H */
 -- 
-2.29.2
+2.26.2
 
