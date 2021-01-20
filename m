@@ -2,111 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9376B2FDDC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8D32FDDBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 01:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390172AbhAUATo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 19:19:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403811AbhATXTN (ORCPT
+        id S2392845AbhAUAPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 19:15:32 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:45632 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390855AbhATW6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:19:13 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6192C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:50:30 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id 34so14183904otd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 14:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4idyrgOjbPCo0xIvVDxnoQX1+7++2YYqASwzmUbTSIg=;
-        b=FwpFBEdguoiC+d4juDT3vyfKfWHn9cZAGK9cR+YsoPIdAANOkVKQvzUBgY460yF0YW
-         Y1W7EeLTIwQWdYygIyO03+K/O3PKuFQTfhmBhhxhL2TPN9rltmJru4ry5loGDnXVO8+s
-         ohSkXH6uOH/MLP/ksrmbF+ncN5DQM+fWvWEscvZ3efjMIIt9QhE3imCLLwtvsKL/w88Y
-         vfegYkpMwCQ7mFNiKBAs6ME7NLKJ4hxJiFvcPtHYx++uQuODT6MEHD/fHvM7zeQqErkg
-         ZKUS4iMInVT5/QgI+yogRUDCaSZk31f5VZY7KLJIBBnV2WhXqvnUWH6ZVJx9NniH7b88
-         ZVOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4idyrgOjbPCo0xIvVDxnoQX1+7++2YYqASwzmUbTSIg=;
-        b=DQTmbNB/C7D2qdFqiWFvMrHBVV2ZnWBdf+YOvkjiYhStsvKcygiChixNDE7fDcRHDz
-         e8PBJGzPoGGUbGMhf30KYHtqeoqqbwrFW5qBFAuilATL7ZmTMRMJclOc6xbHLBw77XtF
-         oSbqyT4QfiaYrQu/U247x6xR8OKXHBcgM4zRALRBlkqCnA9XPCJyg8e3oOYrlDqKn2ln
-         wrxprTixV23x40dC2zOH2LDGMaXw6Ei99PBHtLTxEMOAhs+N18rsRUjey03YNa3ihQlm
-         /OpeMCIdqAm4InhUEdAFPAwQc0jgkokeMUsmW6FURBbBzCkWujbyebyEfNn4YzBNnjTe
-         vHmA==
-X-Gm-Message-State: AOAM530rJZeLWM2NZOkNo4qTfxq9AqXLB1wpXzwCHGVzD7fQSH073mRm
-        orCjlVTH+G5zdNlWPTqVNae0zGXcDP8DIw==
-X-Google-Smtp-Source: ABdhPJyI5wePjhle5rg1W7f9Ny2WB6bW1HhAX6OhimdlyLMDYG/NNtvs8dUtFT6bjs4SeTFn/jGw6Q==
-X-Received: by 2002:a9d:4b03:: with SMTP id q3mr8362686otf.88.1611183030357;
-        Wed, 20 Jan 2021 14:50:30 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r133sm677632oia.17.2021.01.20.14.50.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 14:50:29 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] soc: qcom: rpmhpd: Add SC8180X
-Date:   Wed, 20 Jan 2021 14:50:37 -0800
-Message-Id: <20210120225037.1611353-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120225037.1611353-1-bjorn.andersson@linaro.org>
-References: <20210120225037.1611353-1-bjorn.andersson@linaro.org>
+        Wed, 20 Jan 2021 17:58:12 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l2MPp-009WxF-JN; Wed, 20 Jan 2021 15:57:29 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l2MPn-00GoMG-Fv; Wed, 20 Jan 2021 15:57:29 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     John Johansen <john.johansen@canonical.com>
+Cc:     linux-security-module@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Kees Cook <keescook@chromium.org>,
+        James Morris <james.l.morris@oracle.com>,
+        apparmor@lists.ubuntu.com, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        James Morris <jmorris@namei.org>
+References: <87lfcn5mfz.fsf@x220.int.ebiederm.org>
+        <c887b7f1-7c50-cd9d-fd97-b89274c2765c@canonical.com>
+Date:   Wed, 20 Jan 2021 16:56:16 -0600
+In-Reply-To: <c887b7f1-7c50-cd9d-fd97-b89274c2765c@canonical.com> (John
+        Johansen's message of "Wed, 20 Jan 2021 14:32:35 -0800")
+Message-ID: <878s8n43qn.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1l2MPn-00GoMG-Fv;;;mid=<878s8n43qn.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18BBQjsIm9t3nEXl7UMRAlNaYT0CE290Fg=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;John Johansen <john.johansen@canonical.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1152 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 11 (0.9%), b_tie_ro: 9 (0.8%), parse: 1.42 (0.1%),
+         extract_message_metadata: 19 (1.7%), get_uri_detail_list: 6 (0.5%),
+        tests_pri_-1000: 14 (1.2%), tests_pri_-950: 1.29 (0.1%),
+        tests_pri_-900: 0.98 (0.1%), tests_pri_-90: 229 (19.9%), check_bayes:
+        209 (18.1%), b_tokenize: 19 (1.7%), b_tok_get_all: 15 (1.3%),
+        b_comp_prob: 5 (0.5%), b_tok_touch_all: 163 (14.1%), b_finish: 1.04
+        (0.1%), tests_pri_0: 856 (74.3%), check_dkim_signature: 0.91 (0.1%),
+        check_dkim_adsp: 3.1 (0.3%), poll_dns_idle: 1.11 (0.1%), tests_pri_10:
+        2.2 (0.2%), tests_pri_500: 13 (1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] apparmor: Enforce progressively tighter permissions for no_new_privs
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the power domains exposed by RPMH in the Qualcomm SC8180X platform.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/soc/qcom/rpmhpd.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+TL;DR ????selinux and apparmor ignore no_new_privs????
 
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index 7ce06356d24c..18d5180c0ca0 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -217,8 +217,29 @@ static const struct rpmhpd_desc sc7180_desc = {
- 	.num_pds = ARRAY_SIZE(sc7180_rpmhpds),
- };
- 
-+/* SC8180x RPMH powerdomains */
-+static struct rpmhpd *sc8180x_rpmhpds[] = {
-+	[SC8180X_CX] = &sdm845_cx,
-+	[SC8180X_CX_AO] = &sdm845_cx_ao,
-+	[SC8180X_EBI] = &sdm845_ebi,
-+	[SC8180X_GFX] = &sdm845_gfx,
-+	[SC8180X_LCX] = &sdm845_lcx,
-+	[SC8180X_LMX] = &sdm845_lmx,
-+	[SC8180X_MMCX] = &sm8150_mmcx,
-+	[SC8180X_MMCX_AO] = &sm8150_mmcx_ao,
-+	[SC8180X_MSS] = &sdm845_mss,
-+	[SC8180X_MX] = &sdm845_mx,
-+	[SC8180X_MX_AO] = &sdm845_mx_ao,
-+};
-+
-+static const struct rpmhpd_desc sc8180x_desc = {
-+	.rpmhpds = sc8180x_rpmhpds,
-+	.num_pds = ARRAY_SIZE(sc8180x_rpmhpds),
-+};
-+
- static const struct of_device_id rpmhpd_match_table[] = {
- 	{ .compatible = "qcom,sc7180-rpmhpd", .data = &sc7180_desc },
-+	{ .compatible = "qcom,sc8180x-rpmhpd", .data = &sc8180x_desc },
- 	{ .compatible = "qcom,sdm845-rpmhpd", .data = &sdm845_desc },
- 	{ .compatible = "qcom,sdx55-rpmhpd", .data = &sdx55_desc},
- 	{ .compatible = "qcom,sm8150-rpmhpd", .data = &sm8150_desc },
--- 
-2.29.2
+What?????
 
+
+John Johansen <john.johansen@canonical.com> writes:
+
+> On 1/20/21 1:26 PM, Eric W. Biederman wrote:
+>> 
+>> The current understanding of apparmor with respect to no_new_privs is at
+>> odds with how no_new_privs is implemented and understood by the rest of
+>> the kernel.
+>> 
+>> The documentation of no_new_privs states:
+>>> With ``no_new_privs`` set, ``execve()`` promises not to grant the
+>>> privilege to do anything that could not have been done without the
+>>> execve call.
+>> 
+>> And reading through the kernel except for apparmor that description
+>> matches what is implemented.
+>> 
+>
+> That is not correct.
+>
+> commit 7b0d0b40cd78 ("selinux: Permit bounded transitions under
+>     NO_NEW_PRIVS or NOSUID.")
+>
+> Allows for bound transitions under selinux
+> and
+
+As I understand a bound transition it is a transition to a state with
+a set of permissions that are a subset of what was previously held.
+Which is consistent with the mandate of no_new_privs.
+
+> commit af63f4193f9f selinux: Generalize support for NNP/nosuid SELinux
+>     domain transitions
+>
+> goes further and "Decouple NNP/nosuid from SELinux transitions".
+
+Yes.  Looking at that commit I do see that selinux appears to be
+deliberately ignoring no_new_privs in specific cases.
+
+WTF.
+
+>> There are two major divergences of apparmor from this definition:
+>> - proc_setattr enforces limitations when no_new_privs are set.
+>> - the limitation is enforced from the apparent time when no_new_privs is
+>>   set instead of guaranteeing that each execve has progressively more
+>>   narrow permissions.
+>> 
+>> The code in apparmor that attempts to discover the apparmor label at the
+>> point where no_new_privs is set is not robust.  The capture happens a
+>> long time after no_new_privs is set.
+>> 
+>
+> yes, but that shouldn't matter. As apparmor has not changed its label
+> at any point between when no_new_privs was set and when the check is
+> done. AppArmor is attempting to change it label, and if it finds NNP
+> has been set we capture what the confinement was.
+>
+>> Capturing the label at the point where no_new_privs is set is
+>> practically impossible to implement robustly.  Today the rule is struct
+>> cred can only be changed by it's current task.  Today
+>
+> right, and apparmor only ever has the task update its own label.
+>
+>> SECCOMP_FILTER_FLAG_TSYNC sets no_new_privs from another thread.  A
+>> robust implementation would require changing something fundamental in
+>> how creds are managed for SECCOMP_FILTER_FLAG_TSYNC to be able to
+>> capture the cred at the point it is set.
+>> 
+> I am open to supporting something like that.
+
+I can't see how it would be possible to be robust without completely
+changing the locking.  Locking that right now in a simpler model we have
+not figured out how to make obviously correct.
+
+>> Futhermore given the consistent documentation and how everything else
+>> implements no_new_privs, not having the permissions get progressively
+>
+> Again see above
+
+Except where selinux deliberately ignores no_new_privs this is
+consitent.
+
+>> tighter is a footgun aimed at userspace.  I fully expect it to break any
+>
+> tighter is somewhat relative, nor is it only progressively tighter it
+> is bounded against the snapshot of the label that was on the task.
+
+Which is the BUG I am reporting.  It should be progressingly tighter.
+
+>> security sensitive software that uses no_new_privs and was not
+>> deliberately designed and tested against apparmor.
+>> 
+>
+> Currently the situation has become either an either or choice between
+> the LSM and NNP. We are trying to walk a balance. Ideally apparmor
+> would like to do something similar to selinux and decouple the label
+> transition from NNP and nosuid via an internal capability, but we
+> have not gone there yet.
+
+Why do you need to escape no_new_privs.  Why does anyone need to escape
+no_new_privs?
+
+>> Avoid the questionable and hard to fix implementation and the
+>> potential to confuse userspace by having no_new_privs enforce
+>> progressinvely tighter permissions.
+>> 
+>
+> This would completely break several use cases.
+
+Enforcing no_new_privs as documented would break userspace?
+
+Isn't the opposite true that you are breaking people by not enforcing
+it?
+
+>> Fixes: 9fcf78cca198 ("apparmor: update domain transitions that are subsets of confinement at nnp")
+>> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+>> ---
+>> 
+>> I came accross this while examining the places cred_guard_mutex is
+>> used and trying to find a way to make those code paths less insane.
+>> 
+>> If it would be more pallatable I would not mind removing the
+>> task_no_new_privs test entirely from aa_change_hat and aa_change_profile
+>> as those are not part of exec, so arguably no_new_privs should not care
+>> about them at all.
+>> 
+>> Can we please get rid of the huge semantic wart and pain in the implementation?
+>> 
+>>  security/apparmor/domain.c       | 39 ++++----------------------------
+>>  security/apparmor/include/task.h |  4 ----
+>>  security/apparmor/task.c         |  7 ------
+>>  3 files changed, 4 insertions(+), 46 deletions(-)
+>> 
+>> diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
+>> index f919ebd042fd..8f77059bf890 100644
+>> --- a/security/apparmor/domain.c
+>> +++ b/security/apparmor/domain.c
+>> @@ -869,17 +869,6 @@ int apparmor_bprm_creds_for_exec(struct linux_binprm *bprm)
+>>  
+>>  	label = aa_get_newest_label(cred_label(bprm->cred));
+>>  
+>> -	/*
+>> -	 * Detect no new privs being set, and store the label it
+>> -	 * occurred under. Ideally this would happen when nnp
+>> -	 * is set but there isn't a good way to do that yet.
+>> -	 *
+>> -	 * Testing for unconfined must be done before the subset test
+>> -	 */
+>> -	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) && !unconfined(label) &&
+>> -	    !ctx->nnp)
+>> -		ctx->nnp = aa_get_label(label);
+>> -
+>>  	/* buffer freed below, name is pointer into buffer */
+>>  	buffer = aa_get_buffer(false);
+>>  	if (!buffer) {
+>> @@ -915,7 +904,7 @@ int apparmor_bprm_creds_for_exec(struct linux_binprm *bprm)
+>>  	 */
+>>  	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) &&
+>>  	    !unconfined(label) &&
+>> -	    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
+>> +	    !aa_label_is_unconfined_subset(new, label)) {
+>>  		error = -EPERM;
+>>  		info = "no new privs";
+>>  		goto audit;
+>> @@ -1158,16 +1147,6 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
+>>  	label = aa_get_newest_cred_label(cred);
+>>  	previous = aa_get_newest_label(ctx->previous);
+>>  
+>> -	/*
+>> -	 * Detect no new privs being set, and store the label it
+>> -	 * occurred under. Ideally this would happen when nnp
+>> -	 * is set but there isn't a good way to do that yet.
+>> -	 *
+>> -	 * Testing for unconfined must be done before the subset test
+>> -	 */
+>> -	if (task_no_new_privs(current) && !unconfined(label) && !ctx->nnp)
+>> -		ctx->nnp = aa_get_label(label);
+>> -
+>>  	if (unconfined(label)) {
+>>  		info = "unconfined can not change_hat";
+>>  		error = -EPERM;
+>> @@ -1193,7 +1172,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
+>>  		 * reduce restrictions.
+>>  		 */
+>>  		if (task_no_new_privs(current) && !unconfined(label) &&
+>> -		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
+>> +		    !aa_label_is_unconfined_subset(new, label)) {
+>>  			/* not an apparmor denial per se, so don't log it */
+>>  			AA_DEBUG("no_new_privs - change_hat denied");
+>>  			error = -EPERM;
+>> @@ -1214,7 +1193,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
+>>  		 * reduce restrictions.
+>>  		 */
+>>  		if (task_no_new_privs(current) && !unconfined(label) &&
+>> -		    !aa_label_is_unconfined_subset(previous, ctx->nnp)) {
+>> +		    !aa_label_is_unconfined_subset(previous, label)) {
+>>  			/* not an apparmor denial per se, so don't log it */
+>>  			AA_DEBUG("no_new_privs - change_hat denied");
+>>  			error = -EPERM;
+>> @@ -1303,16 +1282,6 @@ int aa_change_profile(const char *fqname, int flags)
+>>  
+>>  	label = aa_get_current_label();
+>>  
+>> -	/*
+>> -	 * Detect no new privs being set, and store the label it
+>> -	 * occurred under. Ideally this would happen when nnp
+>> -	 * is set but there isn't a good way to do that yet.
+>> -	 *
+>> -	 * Testing for unconfined must be done before the subset test
+>> -	 */
+>> -	if (task_no_new_privs(current) && !unconfined(label) && !ctx->nnp)
+>> -		ctx->nnp = aa_get_label(label);
+>> -
+>>  	if (!fqname || !*fqname) {
+>>  		aa_put_label(label);
+>>  		AA_DEBUG("no profile name");
+>> @@ -1409,7 +1378,7 @@ int aa_change_profile(const char *fqname, int flags)
+>>  		 * reduce restrictions.
+>>  		 */
+>>  		if (task_no_new_privs(current) && !unconfined(label) &&
+>> -		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
+>> +		    !aa_label_is_unconfined_subset(new, label)) {
+>>  			/* not an apparmor denial per se, so don't log it */
+>>  			AA_DEBUG("no_new_privs - change_hat denied");
+>>  			error = -EPERM;
+>> diff --git a/security/apparmor/include/task.h b/security/apparmor/include/task.h
+>> index f13d12373b25..8a9c258e2018 100644
+>> --- a/security/apparmor/include/task.h
+>> +++ b/security/apparmor/include/task.h
+>> @@ -17,13 +17,11 @@ static inline struct aa_task_ctx *task_ctx(struct task_struct *task)
+>>  
+>>  /*
+>>   * struct aa_task_ctx - information for current task label change
+>> - * @nnp: snapshot of label at time of no_new_privs
+>>   * @onexec: profile to transition to on next exec  (MAY BE NULL)
+>>   * @previous: profile the task may return to     (MAY BE NULL)
+>>   * @token: magic value the task must know for returning to @previous_profile
+>>   */
+>>  struct aa_task_ctx {
+>> -	struct aa_label *nnp;
+>>  	struct aa_label *onexec;
+>>  	struct aa_label *previous;
+>>  	u64 token;
+>> @@ -42,7 +40,6 @@ struct aa_label *aa_get_task_label(struct task_struct *task);
+>>  static inline void aa_free_task_ctx(struct aa_task_ctx *ctx)
+>>  {
+>>  	if (ctx) {
+>> -		aa_put_label(ctx->nnp);
+>>  		aa_put_label(ctx->previous);
+>>  		aa_put_label(ctx->onexec);
+>>  	}
+>> @@ -57,7 +54,6 @@ static inline void aa_dup_task_ctx(struct aa_task_ctx *new,
+>>  				   const struct aa_task_ctx *old)
+>>  {
+>>  	*new = *old;
+>> -	aa_get_label(new->nnp);
+>>  	aa_get_label(new->previous);
+>>  	aa_get_label(new->onexec);
+>>  }
+>> diff --git a/security/apparmor/task.c b/security/apparmor/task.c
+>> index d17130ee6795..4b9ec370a171 100644
+>> --- a/security/apparmor/task.c
+>> +++ b/security/apparmor/task.c
+>> @@ -41,7 +41,6 @@ struct aa_label *aa_get_task_label(struct task_struct *task)
+>>  int aa_replace_current_label(struct aa_label *label)
+>>  {
+>>  	struct aa_label *old = aa_current_raw_label();
+>> -	struct aa_task_ctx *ctx = task_ctx(current);
+>>  	struct cred *new;
+>>  
+>>  	AA_BUG(!label);
+>> @@ -56,12 +55,6 @@ int aa_replace_current_label(struct aa_label *label)
+>>  	if (!new)
+>>  		return -ENOMEM;
+>>  
+>> -	if (ctx->nnp && label_is_stale(ctx->nnp)) {
+>> -		struct aa_label *tmp = ctx->nnp;
+>> -
+>> -		ctx->nnp = aa_get_newest_label(tmp);
+>> -		aa_put_label(tmp);
+>> -	}
+>>  	if (unconfined(label) || (labels_ns(old) != labels_ns(label)))
+>>  		/*
+>>  		 * if switching to unconfined or a different label namespace
+>> 
+
+Eric
