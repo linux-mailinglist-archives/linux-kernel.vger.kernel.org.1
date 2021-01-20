@@ -2,189 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857672FCDF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4642FCDF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbhATKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:14:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731053AbhATJRS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:17:18 -0500
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95DAC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:16:22 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 919761F63C;
-        Wed, 20 Jan 2021 10:16:17 +0100 (CET)
-Subject: Re: [PATCH V1] clk: qcom: gcc-sc7180: Mark the MM XO clocks to be
- always ON
-To:     Taniya Das <tdas@codeaurora.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <e6843147-514b-8901-a04c-b1d6e3ebf1c2@somainline.org>
-Date:   Wed, 20 Jan 2021 10:16:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1731049AbhATKOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:14:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43942 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731181AbhATJUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 04:20:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611134358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=52em1yn/Qr5akNgNbjF28oF+osSjM05q1X0waiVX+8Y=;
+        b=uAubqB3b+wP1NRPQjAFc1KnUyU92GvRYO4WPyNa1wjhvNCkhOmKBG8nLkR8duTbhMpcW3Z
+        d9gsXFWpuv7yaKythsHoIn3i7J/k36UlKernz0z9tjTlSI2INh4OzRMOf1BiKZCMHsMkfb
+        Nv9TKsPH1rMx5a7dp52QhLUseUnNFyc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 37CE7AF3E;
+        Wed, 20 Jan 2021 09:19:18 +0000 (UTC)
+Date:   Wed, 20 Jan 2021 10:19:17 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        roman.fietze@magna.com, Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <YAf1lS8zsHwhShCr@alley>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210118182635.GD2260413@casper.infradead.org>
+ <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
+ <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+ <20210119014725.GH2260413@casper.infradead.org>
+ <202101191135.A78A570@keescook>
+ <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1611128871-5898-1-git-send-email-tdas@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29122c86-bfea-2f25-d111-00641cc660ba@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 20/01/21 08:47, Taniya Das ha scritto:
-> There are intermittent GDSC power-up failures observed for titan top
-> gdsc, which requires the XO clock. Thus mark all the MM XO clocks always
-> enabled from probe.
+On Tue 2021-01-19 13:55:29, Timur Tabi wrote:
+> On 1/19/21 1:45 PM, Kees Cook wrote:
+> > How about this so the base address is hashed once, with the offset added
+> > to it for each line instead of each line having a "new" hash that makes
+> > no sense:
+> > 
+> > diff --git a/lib/hexdump.c b/lib/hexdump.c
+> > index 9301578f98e8..20264828752d 100644
+> > --- a/lib/hexdump.c
+> > +++ b/lib/hexdump.c
+> > @@ -242,12 +242,17 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+> >   		    const void *buf, size_t len, bool ascii)
+> >   {
+> >   	const u8 *ptr = buf;
+> > +	const u8 *addr;
+> >   	int i, linelen, remaining = len;
+> >   	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
+> >   	if (rowsize != 16 && rowsize != 32)
+> >   		rowsize = 16;
+> > +	if (prefix_type == DUMP_PREFIX_ADDRESS &&
+> > +	    ptr_to_hashval(ptr, &addr))
+> > +		addr = 0;
+> > +
+> >   	for (i = 0; i < len; i += rowsize) {
+> >   		linelen = min(remaining, rowsize);
+> >   		remaining -= rowsize;
+> > @@ -258,7 +263,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+> >   		switch (prefix_type) {
+> >   		case DUMP_PREFIX_ADDRESS:
+> >   			printk("%s%s%p: %s\n",
+> > -			       level, prefix_str, ptr + i, linebuf);
+> > +			       level, prefix_str, addr + i, linebuf);
 > 
-
-Hello Tanya,
-
-> Fixes: 8d4025943e13 ("clk: qcom: camcc-sc7180: Use runtime PM ops instead of clk ones")
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->   drivers/clk/qcom/gcc-sc7180.c | 47 ++++---------------------------------------
->   1 file changed, 4 insertions(+), 43 deletions(-)
+> Well, this is better than nothing, but not by much.  Again, as long as %px
+> exists for printk(), I just cannot understand any resistance to allowing it
+> in print_hex_dump().
 > 
-> --
-> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-> of the Code Aurora Forum, hosted by the  Linux Foundation.
-> 
-> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
-> index b05901b..88e896a 100644
-> --- a/drivers/clk/qcom/gcc-sc7180.c
-> +++ b/drivers/clk/qcom/gcc-sc7180.c
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0-only
->   /*
-> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
->    */
-> 
->   #include <linux/clk-provider.h>
-> @@ -919,19 +919,6 @@ static struct clk_branch gcc_camera_throttle_hf_axi_clk = {
->   	},
->   };
-> 
-> -static struct clk_branch gcc_camera_xo_clk = {
-> -	.halt_reg = 0xb02c,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb02c,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_camera_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
+> Frankly, I think this patch and my patch should both be added.  During
+> debugging, it's very difficult if not impossible to work with hashed
+> addresses.  I use print_hex_dump() with an unhashed address all the time,
+> either by applying my patch to my own kernel or just replacing the %p with
+> %px.
 
-Why are you avoiding to register these clocks entirely?
-If this is needed by the Titan GDSC, this clock "does indeed exist".
+This was my view as well. People should not need to add features into
+hexdump code when they want to use is for debugging. And the address
+is pretty useful.
 
-If these clocks shall never be turned off, then you should add the
-CLK_IS_CRITICAL flag and perhaps add a comment explaining why.
+A solution might be to prevent using this in the mainline:
 
->   static struct clk_branch gcc_ce1_ahb_clk = {
->   	.halt_reg = 0x4100c,
->   	.halt_check = BRANCH_HALT_VOTED,
-> @@ -1096,19 +1083,6 @@ static struct clk_branch gcc_disp_throttle_hf_axi_clk = {
->   	},
->   };
-> 
-> -static struct clk_branch gcc_disp_xo_clk = {
-> -	.halt_reg = 0xb030,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb030,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_disp_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
+   + it might be reported by checkpatch.pl
 
-Same here.
+   + it might print some bold warning on the first use, similar to
+     trace_printk().
 
->   static struct clk_branch gcc_gp1_clk = {
->   	.halt_reg = 0x64000,
->   	.halt_check = BRANCH_HALT,
-> @@ -2159,19 +2133,6 @@ static struct clk_branch gcc_video_throttle_axi_clk = {
->   	},
->   };
-> 
-> -static struct clk_branch gcc_video_xo_clk = {
-> -	.halt_reg = 0xb028,
-> -	.halt_check = BRANCH_HALT,
-> -	.clkr = {
-> -		.enable_reg = 0xb028,
-> -		.enable_mask = BIT(0),
-> -		.hw.init = &(struct clk_init_data){
-> -			.name = "gcc_video_xo_clk",
-> -			.ops = &clk_branch2_ops,
-> -		},
-> -	},
-> -};
-> -
+Or we need this in the mainline. Then the use of %pK looks
+like the best compromise to me. We could also add some warning
+as a comment and use some provocative name for the flag
+as suggested by Matthew.
 
-...and here.
+And we should definitely add Linus into CC when sending v2.
+His expected opinion has been mentioned several times in this
+thread. It would be better to avoid these speculations
+and get his real opinion. IMHO, it is too late to add
+him in this long thread.
 
->   static struct clk_branch gcc_mss_cfg_ahb_clk = {
->   	.halt_reg = 0x8a000,
->   	.halt_check = BRANCH_HALT,
-> @@ -2304,7 +2265,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->   	[GCC_BOOT_ROM_AHB_CLK] = &gcc_boot_rom_ahb_clk.clkr,
->   	[GCC_CAMERA_HF_AXI_CLK] = &gcc_camera_hf_axi_clk.clkr,
->   	[GCC_CAMERA_THROTTLE_HF_AXI_CLK] = &gcc_camera_throttle_hf_axi_clk.clkr,
-> -	[GCC_CAMERA_XO_CLK] = &gcc_camera_xo_clk.clkr,
->   	[GCC_CE1_AHB_CLK] = &gcc_ce1_ahb_clk.clkr,
->   	[GCC_CE1_AXI_CLK] = &gcc_ce1_axi_clk.clkr,
->   	[GCC_CE1_CLK] = &gcc_ce1_clk.clkr,
-> @@ -2317,7 +2277,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->   	[GCC_DISP_GPLL0_DIV_CLK_SRC] = &gcc_disp_gpll0_div_clk_src.clkr,
->   	[GCC_DISP_HF_AXI_CLK] = &gcc_disp_hf_axi_clk.clkr,
->   	[GCC_DISP_THROTTLE_HF_AXI_CLK] = &gcc_disp_throttle_hf_axi_clk.clkr,
-> -	[GCC_DISP_XO_CLK] = &gcc_disp_xo_clk.clkr,
->   	[GCC_GP1_CLK] = &gcc_gp1_clk.clkr,
->   	[GCC_GP1_CLK_SRC] = &gcc_gp1_clk_src.clkr,
->   	[GCC_GP2_CLK] = &gcc_gp2_clk.clkr,
-> @@ -2413,7 +2372,6 @@ static struct clk_regmap *gcc_sc7180_clocks[] = {
->   	[GCC_VIDEO_AXI_CLK] = &gcc_video_axi_clk.clkr,
->   	[GCC_VIDEO_GPLL0_DIV_CLK_SRC] = &gcc_video_gpll0_div_clk_src.clkr,
->   	[GCC_VIDEO_THROTTLE_AXI_CLK] = &gcc_video_throttle_axi_clk.clkr,
-> -	[GCC_VIDEO_XO_CLK] = &gcc_video_xo_clk.clkr,
->   	[GPLL0] = &gpll0.clkr,
->   	[GPLL0_OUT_EVEN] = &gpll0_out_even.clkr,
->   	[GPLL6] = &gpll6.clkr,
-> @@ -2510,6 +2468,9 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
->   	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
->   	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
->   	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
-> +	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
-
-IMO, "Magic" regmap writes like these ones, even if documented, should
-be avoided in this specific case, since the clocks framework accounts
-for clocks that should be always-on, if provided with the right flags.
-
->   	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-> 
->   	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
-> 
-
+Best Regards,
+Petr
