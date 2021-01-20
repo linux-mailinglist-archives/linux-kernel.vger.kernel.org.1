@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C742FC9F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC5D2FC9F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbhATEZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:25:06 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35560 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729157AbhATEWu (ORCPT
+        id S1731634AbhATEZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:25:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727140AbhATEXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:22:50 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9A05C813;
-        Wed, 20 Jan 2021 05:21:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611116518;
-        bh=xhG0Y3xPv2al0xrkpAKnJ3S/80XPtXaxYvS8LXRwiAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kl20bCBwXdoxZzHIeFzzsb/xpwi/HDn+SJXTa7MWIKPSnl/ljPFChTmea3Krj3XqA
-         CVQOhBXlHYmiwNTZLsksFAp3kgGNKUJZNIA7dLn628IvrnrTJcxN8Ju+r6h6kARPIJ
-         hyzWsx2NnslhwR1UyQwM+fQva7p1pFKM1vjtZyh4=
-Date:   Wed, 20 Jan 2021 06:21:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        andy@kernel.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, lee.jones@linaro.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, sakari.ailus@linux.intel.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
-Message-ID: <YAev1YviLVfEHSg6@pendragon.ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-7-djrscally@gmail.com>
- <YAVRqWeUsLjvU62P@pendragon.ideasonboard.com>
- <20210118144606.GO4077@smile.fi.intel.com>
- <75e99a06-4579-44ee-5f20-8f2ee3309a68@gmail.com>
- <20210119092448.GN4077@smile.fi.intel.com>
- <a735380b-57ac-1950-b29a-07fe6cb708d2@gmail.com>
- <20210119110837.GT4077@smile.fi.intel.com>
- <YAcNT1d5zQHGsoe6@pendragon.ideasonboard.com>
- <YAccEtQIBrbKPSmv@smile.fi.intel.com>
+        Tue, 19 Jan 2021 23:23:30 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEC1C061575;
+        Tue, 19 Jan 2021 20:22:43 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id x71so7931656oia.9;
+        Tue, 19 Jan 2021 20:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GP6CcfjV/nEcKJK3Rxlv4zO7l7XOzbH7ZH19Z8QJF8E=;
+        b=Vcth5JiSXjuEHV3SJWLTc9nv/u3U5+IPgeWg9LYr2lj7oCtkjGxId8yuC5GIa4rw9h
+         q3oIvUyQHXsbeBV1dgvUKkROI2nVhlN9aFhr+iB/DW+2QVG8TivGlMoYzlcG09cCNA62
+         vKIRA06CBPIG1i7tkFwPI5sjiIZA7Xrj6QjL90opwNum4WTc8vXUbx392ZwVca9xmH0K
+         eK7hX5gDGKnUhK3L+lzlnXqqMNpf66YbfyTBtV8vH2d2f7j5bWQ9eWtgp43RUsdqYr3O
+         p/RyRtcPn77FOgCRW1VCP3M1VRVVQFAIKxPizO/SMELy0YkoQHHcg/u5c+rgcroC9onH
+         IOvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GP6CcfjV/nEcKJK3Rxlv4zO7l7XOzbH7ZH19Z8QJF8E=;
+        b=PzjCwiQbLrY4UUSR6TVozfLwnCN/81IVYlWayfcpAP063WFnfZ5Y80kUrUcsTZez/A
+         umQ5ytsAo441XJfn4KnE/1UA1vo9jyxy4s0DYSAYtbI4gt9fxtJh8CNDc9/S3QRg5BMB
+         qG9ihCVmn8gbYx6vB2M6a8tGd5Woxhc5WwJLyiZsJFh89KbgThIzIgJp1IIdtltNeSG9
+         Rb23OYtCd18jsCQqCzUEw/ruL42yJ5TXR8vdRsLDepesKwRV6V2pVpC38NOGd+5Tfbeb
+         p2R0y8vSoX81AJsw9EBBfbbYQEOLIP7M0yHjTTjAdQ6AEY1lXswdSeGFOcK/dGtJMkid
+         NiBw==
+X-Gm-Message-State: AOAM5313yo2kFI1wheJv4pF+74URom7LBohO43lb9MaMd6oPlo3EX9km
+        1GN9Bjd+gFp//v3qF+BmCv8=
+X-Google-Smtp-Source: ABdhPJy7cUXT/3a2USlFCorl1HDBicSLZCXIdOyOaH/EPPttM5sW7Yg2soQ/slabJaZe6wm5dgC44w==
+X-Received: by 2002:aca:be54:: with SMTP id o81mr1806904oif.67.1611116562271;
+        Tue, 19 Jan 2021 20:22:42 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.20.123.12])
+        by smtp.googlemail.com with ESMTPSA id f3sm185743otq.42.2021.01.19.20.22.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 20:22:41 -0800 (PST)
+Subject: Re: [PATCH v2 net-next 1/1] Allow user to set metric on default route
+ learned via Router Advertisement.
+To:     praveen chaudhary <praveen5582@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhenggen Xu <zxu@linkedin.com>
+References: <20210115080203.8889-1-pchaudhary@linkedin.com>
+ <0f64942e-debd-81bd-b29c-7d2728a5bd4b@gmail.com>
+ <A2DE27CF-A988-4003-8A95-60CC101086DA@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <7839be40-6555-3e5a-3459-c3f0e4726795@gmail.com>
+Date:   Tue, 19 Jan 2021 21:22:40 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <A2DE27CF-A988-4003-8A95-60CC101086DA@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YAccEtQIBrbKPSmv@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Tue, Jan 19, 2021 at 07:51:14PM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 19, 2021 at 06:48:15PM +0200, Laurent Pinchart wrote:
-> > On Tue, Jan 19, 2021 at 01:08:37PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Jan 19, 2021 at 10:40:42AM +0000, Daniel Scally wrote:
-> > > > On 19/01/2021 09:24, Andy Shevchenko wrote:
-> > > > >>>>> +static struct i2c_driver int3472_tps68470 = {
-> > > > >>>>> +	.driver = {
-> > > > >>>>> +		.name = "int3472-tps68470",
-> > > > >>>>> +		.acpi_match_table = int3472_device_id,
-> > > > >>>>> +	},
-> > > > >>>>> +	.probe_new = skl_int3472_tps68470_probe,
-> > > > >>>>> +};
-> > > > >>> I'm not sure we want to have like this. If I'm not mistaken the I²C driver can
-> > > > >>> be separated without ACPI IDs (just having I²C IDs) and you may instantiate it
-> > > > >>> via i2c_new_client_device() or i2c_acpi_new_device() whichever suits better...
-> > > > >> Sorry, I'm a bit confused by this. The i2c device is already
-> > > > >> present...we just want the driver to bind to them, so what role do those
-> > > > >> functions have there?
-> > > > > What I meant is something like
-> > > > >
-> > > > >  *_i2c.c
-> > > > > 	real I²C driver for the TPS chip, but solely with I²C ID table, no ACPI
-> > > > > 	involved (and it sounds like it should be mfd/tps one, in which you
-> > > > > 	just cut out ACPI IDs and convert to pure I²C one, that what I had
-> > > > > 	suggested in the first place)
-> > > > 
-> > > > Ahh; sorry - i misunderstood what you meant there. I understand now I
-> > > > think, but there is one complication; the ACPI subsystem already creates
-> > > > a client for that i2c adapter and address; i2c_new_client_device()
-> > > > includes a check to see whether that adapter / address combination has
-> > > > an i2c device already.  So we would have to have the platform driver
-> > > > with ACPI ID first find the existing i2c_client and unregister it before
-> > > > registering the new one...the existing clients have a name matching the
-> > > > ACPI device instance name (e.g i2c-INT3472:00) which we can't use as an
-> > > > i2c_device_id of course.
-> > > 
-> > > See how INT33FE is being handled. Hint: drivers/acpi/scan.c:~1600
-> > > 
-> > > static const struct acpi_device_id i2c_multi_instantiate_ids[] = {
-> > > 	{"BSG1160", },
-> > > 	{"BSG2150", },
-> > > 	{"INT33FE", },
-> > > 	{"INT3515", },
-> > > 	{}
-> > > };
-> > > 
-> > > So, we quirklist it here and instantiate manually from platform driver (new
-> > > coming one).
-> > 
-> > This is documented as used for devices that have multiple I2cSerialBus
-> > resources. That's not the case for the INT3472 as far as I can tell. I
-> > don't think we should abuse this mechanism.
+On 1/19/21 3:17 PM, praveen chaudhary wrote:
+>>> ----------------------------------------------------------------
+>>> For IPv4:
+>>> ----------------------------------------------------------------
+>>>
+>>> Config in etc/network/interfaces
+>>> ----------------------------------------------------------------
+>>> ```
+>>> auto eth0
+>>> iface eth0 inet dhcp
+>>>    metric 4261413864
+>>
+>> how does that work for IPv4? Is the metric passed to the dhclient and it
+>> inserts the route with the given metric or is a dhclient script used to
+>> replace the route after insert?
+>>
+>>
 > 
-> This is quite a similar case to that one. Let's avoid yak shaving, right?
+> Yes, DHCP client picks config under “iface eth0 inet dhcp” line and if metric is configured, then it adds the metric for all added routes.
 
-Exactly my point, that's why I think this patch is good overall, I don't
-think it requires a complete rewrite.
+As I recall ifupdown{2} forks dhclient as a process to handle dhcp
+config, and I believe there is a script that handles adding the default
+route with metric. Meaning ... it is not comparable to an RA.
 
-> > Don't forget that the TPS68470 I2C driver needs to be ACPI-aware, as it
-> > has to register an OpRegion for ACPI-based Chrome OS devices. On other
-> > platforms (including DT platforms), it should only register regulators,
-> > clocks and GPIOs. Given the differences between those platforms, I don't
-> > think a TPS68470 driver that would fake being unaware of being probed
-> > through ACPI would be a good idea. We can always refactor the code later
-> > when we'll have a non-ACPI based platform using the TPS68470, without
-> > such a platform there's no way we can test the I2C driver without ACPI
-> > anyway.
 > 
-> Are you agree that MFD approach should stay? How then we can manage to have an
-> MFD driver cohabit with our new driver? I proposed a clean solution which will
-> handle all possible cases via quirk driver. Having two drivers enumerated by
-> different scenarios is a call for troubles (we have already with one of that
-> sensors).
+> Thanks a lot again for spending time for this Review,
+> This feature will help SONiC OS [and others Linux flavors] for better IPv6 support, so thanks again.
 
-I think we should solve this problem when it will arise. Solving
-problems with complex architectures without a platform to test the code
-on is a pretty sure way to get the architecture design wrong. Let's get
-this merged, it's an improvement compared to the current situation, and
-then let's improve it further on top when we'll need to support more use
-cases.
+I think SONiC is an abomination, so that is definitely not the
+motivation for my reviews. :-)
 
-> And there is no "faking" anything, it's rather gating it depending on the
-> platform.
-
--- 
-Regards,
-
-Laurent Pinchart
