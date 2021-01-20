@@ -2,113 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045E62FD2A0
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9A2FD2A1
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390534AbhATOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:25:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732989AbhATOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:07:37 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5051223340;
-        Wed, 20 Jan 2021 13:54:59 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l2Dwn-008xaY-2s; Wed, 20 Jan 2021 13:54:57 +0000
+        id S2390575AbhATO0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:26:12 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11035 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbhATOPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:15:52 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DLSDq6CRjzj9vB;
+        Wed, 20 Jan 2021 22:13:47 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
+ 22:14:44 +0800
+Subject: Re: [PATCH 1/2] perf/smmuv3: Don't reserve the register space that
+ overlaps with the SMMUv3
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210119015951.1042-1-thunder.leizhen@huawei.com>
+ <20210119015951.1042-2-thunder.leizhen@huawei.com>
+ <30665cd6-b438-1d1d-7445-9e45e240f79a@arm.com>
+ <a2d7d94c-8e4e-d91d-8587-7a5b3594b4ca@huawei.com>
+ <9ad3c863-ec80-e177-4d11-24d1f706b4af@huawei.com>
+ <f6fde527-8c87-1128-52ca-77d096194eb6@arm.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <2a577c5e-25bb-5feb-d745-f25007b5a213@huawei.com>
+Date:   Wed, 20 Jan 2021 22:14:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 Jan 2021 13:54:57 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, kernel-team@android.com,
-        Theodore Ts'o <tytso@mit.edu>, Mark Brown <broonie@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kvmarm@lists.cs.columbia.edu,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 0/5] ARM: arm64: Add SMCCC TRNG entropy service
-In-Reply-To: <20210120134904.GA20315@willie-the-truck>
-References: <20210106103453.152275-1-andre.przywara@arm.com>
- <161114590396.218530.9227813162726341261.b4-ty@kernel.org>
- <d2423ab6e44855846a8f61f327932784@kernel.org>
- <20210120134524.0c47139a@slackpad.fritz.box>
- <20210120134904.GA20315@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <9d451a24ed4c6348ea3fbea732644d15@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, andre.przywara@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, ardb@kernel.org, kernel-team@android.com, tytso@mit.edu, broonie@kernel.org, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, kvmarm@lists.cs.columbia.edu, lorenzo.pieralisi@arm.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <f6fde527-8c87-1128-52ca-77d096194eb6@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-20 13:49, Will Deacon wrote:
-> On Wed, Jan 20, 2021 at 01:45:24PM +0000, Andre Przywara wrote:
->> On Wed, 20 Jan 2021 13:26:26 +0000
->> Marc Zyngier <maz@kernel.org> wrote:
->> 
->> Hi,
->> 
->> > On 2021-01-20 13:01, Will Deacon wrote:
->> > > On Wed, 6 Jan 2021 10:34:48 +0000, Andre Przywara wrote:
->> > >> a fix to v5, now *really* fixing the wrong priority of SMCCC vs.
->> > >> RNDR in arch_get_random_seed_long_early(). Apologies for messing
->> > >> this up in v5 and thanks to broonie for being on the watch!
->> > >>
->> > >> Will, Catalin: it would be much appreciated if you could consider
->> > >> taking
->> > >> patch 1/5. This contains the common definitions, and is a
->> > >> prerequisite for every other patch, although they are somewhat
->> > >> independent and likely
->> > >> will need to go through different subsystems.
->> > >>
->> > >> [...]
->> > >
->> > > Applied the first patch only to arm64 (for-next/rng), thanks!
->> > >
->> > > [1/5] firmware: smccc: Add SMCCC TRNG function call IDs
->> > >       https://git.kernel.org/arm64/c/67c6bb56b649
->> >
->> > I can't see how the rest of the patches can go via any other tree
->> > if all the definitions are in the first one.
->> >
->> > Andre, can you explain what your plan is?
->> 
->> Well, I don't really have a great solution for that, other than hoping
->> that 1/5 makes it into Linus' master at some point.
->> 
->> I see that it's a stretch, but pulling 1/5 into 5.11 now would
->> prepare the stage for the others to go via any tree, into 5.12-rc1?
->> 
->> Or you could maybe take both 1/5 and 5/5 into your kvm-arm tree, and
->> would hope that a git rebase later would sort this out for you?
->> 
->> But I think you are much more experienced in those kind of issues, so
->> happy to hear about any other solutions.
+
+
+On 2021/1/20 21:27, Robin Murphy wrote:
+> On 2021-01-20 09:26, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2021/1/20 11:37, Leizhen (ThunderTown) wrote:
+>>>
+>>>
+>>> On 2021/1/19 20:32, Robin Murphy wrote:
+>>>> On 2021-01-19 01:59, Zhen Lei wrote:
+>>>>> Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
+>>>>> inside the first 64kB region of the SMMU. Since SMMU and PMCG are managed
+>>>>> by two separate drivers, and this driver depends on ARM_SMMU_V3, so the
+>>>>> SMMU driver reserves the corresponding resource first, this driver should
+>>>>> not reserve the corresponding resource again. Otherwise, a resource
+>>>>> reservation conflict is reported during boot.
+>>>>>
+>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>> ---
+>>>>>    drivers/perf/arm_smmuv3_pmu.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+>>>>>    1 file changed, 40 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+>>>>> index 74474bb322c3f26..dcce085431c6ce8 100644
+>>>>> --- a/drivers/perf/arm_smmuv3_pmu.c
+>>>>> +++ b/drivers/perf/arm_smmuv3_pmu.c
+>>>>> @@ -761,6 +761,44 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+>>>>>        dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
+>>>>>    }
+>>>>>    +static void __iomem *
+>>>>> +smmu_pmu_get_and_ioremap_resource(struct platform_device *pdev,
+>>>>> +                  unsigned int index,
+>>>>> +                  struct resource **out_res)
+>>>>> +{
+>>>>> +    int ret;
+>>>>> +    void __iomem *base;
+>>>>> +    struct resource *res;
+>>>>> +
+>>>>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+>>>>> +    if (!res) {
+>>>>> +        dev_err(&pdev->dev, "invalid resource\n");
+>>>>> +        return IOMEM_ERR_PTR(-EINVAL);
+>>>>> +    }
+>>>>> +    if (out_res)
+>>>>> +        *out_res = res;
+>>>>> +
+>>>>> +    ret = region_intersects(res->start, resource_size(res),
+>>>>> +                IORESOURCE_MEM, IORES_DESC_NONE);
+>>>>> +    if (ret == REGION_INTERSECTS) {
+>>>>> +        /*
+>>>>> +         * The resource has already been reserved by the SMMUv3 driver.
+>>>>> +         * Don't reserve it again, just do devm_ioremap().
+>>>>> +         */
+>>>>> +        base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>>>>> +    } else {
+>>>>> +        /*
+>>>>> +         * The resource may have not been reserved by any driver, or
+>>>>> +         * has been reserved but not type IORESOURCE_MEM. In the latter
+>>>>> +         * case, devm_ioremap_resource() reports a conflict and returns
+>>>>> +         * IOMEM_ERR_PTR(-EBUSY).
+>>>>> +         */
+>>>>> +        base = devm_ioremap_resource(&pdev->dev, res);
+>>>>> +    }
+>>>>
+>>>> What if the PMCG driver simply happens to probe first?
+>>>
+>>> There are 4 cases:
+>>> 1) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=y
+>>>     It's not allowed. Becase: ARM_SMMU_V3_PMU depends on ARM_SMMU_V3
+>>>     config ARM_SMMU_V3_PMU
+>>>           tristate "ARM SMMUv3 Performance Monitors Extension"
+>>>           depends on ARM64 && ACPI && ARM_SMMU_V3
+>>>
+>>> 2) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=m
+>>>     No problem, SMMUv3 will be initialized first.
+>>>
+>>> 3) ARM_SMMU_V3=y, ARM_SMMU_V3_PMU=y
+>>>     vi drivers/Makefile
+>>>     60 obj-y                           += iommu/
+>>>     172 obj-$(CONFIG_PERF_EVENTS)       += perf/
+>>>
+>>>     This link sequence ensure that SMMUv3 driver will be initialized first.
+>>>     They are currently at the same initialization level.
+>>>
+>>> 4) ARM_SMMU_V3=m, ARM_SMMU_V3_PMU=m
+>>>     Sorry, I thought module dependencies were generated based on "depends on".
+>>>     But I tried it today，module dependencies are generated only when symbol
+>>>     dependencies exist. I should use MODULE_SOFTDEP() to explicitly mark the
+>>>     dependency. I will send V2 later.
+>>>
+>>
+>> Hi Robin:
+>>    I think I misunderstood your question. The probe() instead of module_init()
+>> determines the time for reserving register space resources.  So we'd better
+>> reserve multiple small blocks of resources in SMMUv3 but perform ioremap() for
+>> the entire resource, if the probe() of the PMCG occurs first.
+>>    I'll refine these patches to make both initialization sequences work well.
+>> I'm trying to send V2 this week.
 > 
-> for-next/rng is a stable branch, so anybody who wants the first patch 
-> can
-> just pull it (without anything I queue on top).
+> There's still the possibility that a PMCG is implemented in a root complex or some other device that isn't an SMMU, so as I've said before, none of this trickery really scales.
+> 
+> As far as I understand it, the main point of reserving resources is to catch bugs where things definitely should not be overlapping. PMCGs are by definition part of some other device, so in general they *can* be expected to overlap with whatever device that is. I still think it's most logical to simply *not* try to reserve PMCG resources at all.
 
-OK. I'll pull that branch and stash the KVM stuff on top.
+If PMCG resources may overlap with other devices, that's really going to be a very tricky thing. OK, I'll follow your advice，just do ioremap() for the PMCG resources.
 
-Thanks,
+I know that I/O resource information can be queried by running "cat /proc/iomem". If we do not reserve PMCG resources, should we provide an additional fs query interface?
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> 
+> Robin.
+> 
+>>>>> +
+>>>>> +    return base;
+>>>>> +}
+>>>>> +
+>>>>>    static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>    {
+>>>>>        struct smmu_pmu *smmu_pmu;
+>>>>> @@ -793,7 +831,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>            .capabilities    = PERF_PMU_CAP_NO_EXCLUDE,
+>>>>>        };
+>>>>>    -    smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
+>>>>> +    smmu_pmu->reg_base = smmu_pmu_get_and_ioremap_resource(pdev, 0, &res_0);
+>>>>>        if (IS_ERR(smmu_pmu->reg_base))
+>>>>>            return PTR_ERR(smmu_pmu->reg_base);
+>>>>>    @@ -801,7 +839,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>>>>>          /* Determine if page 1 is present */
+>>>>>        if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
+>>>>> -        smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
+>>>>> +        smmu_pmu->reloc_base = smmu_pmu_get_and_ioremap_resource(pdev, 1, NULL);
+>>>>>            if (IS_ERR(smmu_pmu->reloc_base))
+>>>>>                return PTR_ERR(smmu_pmu->reloc_base);
+>>>>>        } else {
+>>>>>
+>>>>
+>>>> .
+>>>>
+>>
+> 
+> .
+> 
+
