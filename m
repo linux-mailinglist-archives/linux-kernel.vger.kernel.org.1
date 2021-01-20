@@ -2,114 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A106B2FDA61
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2B62FDA62
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 21:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732139AbhATUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 15:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S2392768AbhATUHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 15:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732178AbhATT6S (ORCPT
+        with ESMTP id S2387823AbhATT6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:58:18 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CE2C061757;
-        Wed, 20 Jan 2021 11:57:37 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id y19so49305183iov.2;
-        Wed, 20 Jan 2021 11:57:37 -0800 (PST)
+        Wed, 20 Jan 2021 14:58:32 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A7C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:57:46 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id i141so13133715yba.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 11:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tFAzucvwTgKhltZQcovBVjnsARW7ZpX0kzW41n4VbCA=;
-        b=LLLxc5ua6JWaH0ovVLfPkZT5o4iQ+TYpBigrCwUQGCwHbVpCEBbQ4OaHwMjsE4fJlx
-         APHpFT1R8s4BbSRyGNnziHhXW7ZoBslo3mFokxG5zpaxInDmGTJR8rJYg8enzASu9Pv1
-         uSMPt7K8wc53s1bROHiOz/01NrdXGu6/QNqsxDiPBFtUzJZ7ZZLQmTQzShna4ZL2UESY
-         vLSJyUzWh4efUmmwfvt3PMTctTiGRwvdQ0BMFaPVKzYXSKlSXgnhv1fNG9LEXx3uZUTS
-         nnCfV36BsTSJsshKbA1CiHN0twFRT91JjmmbeGszC99A3dsrAiV8RRniXCEhFHmHbu7q
-         Oy/w==
+        bh=Ya1LpK8/RXmf6DXoqwnu4lj4b1TvWkLPwrDTMUqdfN4=;
+        b=YHVP0fFZTcVomhP8RD9OiXpFhB+5PLESu8BFdFDW0Q7a6onwnLIICmTSzADYmL0cOZ
+         xxy+XkQVQMoB3XPv6PYKYsLgbWPjq/w3URgj/RK4sklLbZ44pdmz8WZTxFhE58GVCmH5
+         +be9JC1nCx9pc0IyA8pQfCzPPJo+FtFitcd9RaRhO0NztcFpRaihJA3K2I/FCT0fM7yW
+         hrZ1vtGyV4+xI/+n2HhjE+Hf/MmYxBuWpi/K0bTnjWyrl4kr30atZLkF05ISiey5hfId
+         O0biVxUnq2vzb+9ouatgNK8m9zsZBf9rH+25f469cWinWHEYJiq4v3LoZAP7/ab70Zsr
+         Akpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tFAzucvwTgKhltZQcovBVjnsARW7ZpX0kzW41n4VbCA=;
-        b=UmEiEs2TTIp2JH8AzaT7y8xqOD0Ds2FmxaM5ubDMXrLCcRFcuYuWzdfidcDELKxDOn
-         CpLhrY46Y0mNThGd7lh6/rzsdbq4KTOWTYL2TiMlRR35fElDmnlROk+AA8/1UEBTGrS7
-         ofngUcWioTzBVB+g4Y6KtF1+iRU1MIB6aDj8m8MHfKBuJCH6EhQCTeS1HKVzKC1Z+bDy
-         jaSxnUcWM/HNKXzw5b2xrwDGpnzx/k+F7el6AtFEvP70fqv4UvrT3p/QUWo2GaTr8LwL
-         BpW0EjZLP0kKNiuI8XouzMT4+4sSgt3rDiUmhy+2bRhvz+/KLMLeXIaGiOT2K5E1Tkk9
-         xL1w==
-X-Gm-Message-State: AOAM5317H3XGGcMPpjPQ4KzZTgPhaoLewie9sFmjabLbOuungQSAIuxV
-        hYpFzJFABOUgZVIz7kPsPDPc2NSgc6jtSQaV2yI=
-X-Google-Smtp-Source: ABdhPJzkrs5gKJjCgGvS4n4G9ht49JRTpAbNNmjyY5M7srxT8Kg/bD5ZxXNomZJvU4LKP2s2zOsVsiIjg8TZcdcN4FU=
-X-Received: by 2002:a92:cd8c:: with SMTP id r12mr9091476ilb.221.1611172657270;
- Wed, 20 Jan 2021 11:57:37 -0800 (PST)
+        bh=Ya1LpK8/RXmf6DXoqwnu4lj4b1TvWkLPwrDTMUqdfN4=;
+        b=t+3J+t982fnm8XWa2nuusWrz8GrIvoYLB8sW+3XGizDjUzLsHgO1w0yT06fKZbAfxt
+         vGqDN0XtWBd3yyf2Uu0Ti3FNawyvAb02mC4K3sY6dfPukC7l1ySojgT8GEsqC2yWUBSn
+         G4oXutkUCcgatzzthx0mDitf16XSfflia6YNq1o2oKQBBR9IAwmC8zxhNGVYUuXddVnW
+         f2lXAC1nMjCTnPIbmGoEm5enEuF+0FpTuGmWnZBvwAYHfZnDmtnltAA08Yge9J6tChvV
+         mohFB+/qP+6k/goDE3yBGVXG2+sungNUVVekELCqHyHJHApX4K8h8FDrALZlHedcgPVU
+         pLYg==
+X-Gm-Message-State: AOAM530nOJeBmmoHMhzVDnGWczQdjM0J3h+RcZzMukxpHcdFv6KCJPxT
+        9dUjpVbDUOv7RDCA2suAXmBbIgTUKs42q8VUL2M=
+X-Google-Smtp-Source: ABdhPJxGQQnZL9zTpV6vNovU0E1SMjAfecQoZtovzYm5OeBSJVHvNlGoGtLCZJZjlL93a0aqpvdjkBnvmSfDpgAywPY=
+X-Received: by 2002:a25:3bd2:: with SMTP id i201mr15745831yba.302.1611172666185;
+ Wed, 20 Jan 2021 11:57:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120133946.2107897-1-jackmanb@google.com> <20210120133946.2107897-3-jackmanb@google.com>
-In-Reply-To: <20210120133946.2107897-3-jackmanb@google.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 20 Jan 2021 20:57:28 +0100
-Message-ID: <CAKXUXMxw4JP4q-iGTMsnS2j4KYfU7WDRTLbAdWu4DrvCa=R+NQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] docs: bpf: Clarify -mcpu=v3 requirement
- for atomic ops
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
+References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
+ <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com> <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
+ <298485e2-01de-048d-5515-44ac254167e4@oracle.com> <CAFcO6XOvx2W1EvN7PORomgYj4U7kcyzjBC=OiQp9bfRZ33gBMg@mail.gmail.com>
+ <225bea89-73ed-5227-3ca1-d74fc86e986f@oracle.com>
+In-Reply-To: <225bea89-73ed-5227-3ca1-d74fc86e986f@oracle.com>
+From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Date:   Thu, 21 Jan 2021 03:57:35 +0800
+Message-ID: <CAFcO6XPunmpMRk03eVzbG3HwPj6oFrRSu1CCW_vMGihU33GKOw@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 2:39 PM Brendan Jackman <jackmanb@google.com> wrote:
->
-> Alexei pointed out [1] that this wording is pretty confusing. Here's
-> an attempt to be more explicit and clear.
->
-> [1] https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/T/#m07264fc18fdc43af02fc1320968afefcc73d96f4
->
+This was assigned CVE-2020-27815 via redhat.
 
-It is common practice to use "Link: URL" to refer to other mail
-threads; and to use the "permalink":
-
-https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/
-
-which is a bit shorter than the link you provided.
-
-If you follow that convention with "Link: URL", checkpatch.pl will not
-complain about this long line :)
+Regards.
+butt3rflyh4ck.
 
 
-Lukas
-
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  Documentation/networking/filter.rst | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+On Fri, Nov 20, 2020 at 11:01 PM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
 >
-> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-> index 4c2bb4c6364d..b3f457802836 100644
-> --- a/Documentation/networking/filter.rst
-> +++ b/Documentation/networking/filter.rst
-> @@ -1081,9 +1081,10 @@ before is loaded back to ``R0``.
+> On 11/20/20 3:52 AM, butt3rflyh4ck wrote:
+> > You are welcome and have you submitted the patch to linux upstream ?
+> > If you have no time do that and I can do it.
 >
->  Note that 1 and 2 byte atomic operations are not supported.
+> Yes, it's in linux-next now. I'll push it to upstream in the v5.11 window.
 >
-> -Except ``BPF_ADD`` *without* ``BPF_FETCH`` (for legacy reasons), all 4 byte
-> -atomic operations require alu32 mode. Clang enables this mode by default in
-> -architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
-> +Clang can generate atomic instructions by default when ``-mcpu=v3`` is
-> +enabled. If a lower version for ``-mcpu`` is set, the only atomic instruction
-> +Clang can generate is ``BPF_ADD`` *without* ``BPF_FETCH``. If you need to enable
-> +the atomics features, while keeping a lower ``-mcpu`` version, you can use
->  ``-Xclang -target-feature -Xclang +alu32``.
+> Shaggy
 >
->  You may encounter ``BPF_XADD`` - this is a legacy name for ``BPF_ATOMIC``,
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+> >
+> > Regard,
+> >  butt3rflyh4ck.
+> >
+> > On Sun, Nov 15, 2020 at 12:17 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
+> >>
+> >> Thanks for reporting and testing this!
+> >>
+> >> Shaggy
+> >>
+> >> On 11/14/20 7:55 AM, butt3rflyh4ck wrote:
+> >>> Yes, I have tested the patch, it seem to fix the problem.
+> >>>
+> >>> Regard,
+> >>>  butt3rflyh4ck.
+> >>>
+> >>> On Sat, Nov 14, 2020 at 5:16 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
+> >>>>
+> >>>> On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
+> >>>>> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
+> >>>>> kernel fuzz.
+> >>>>>
+> >>>>> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
+> >>>>>
+> >>>>> and can reproduce.
+> >>>>>
+> >>>>> the dmtree_t is that
+> >>>>> typedef union dmtree {
+> >>>>> struct dmaptree t1;
+> >>>>> struct dmapctl t2;
+> >>>>> } dmtree_t;
+> >>>>>
+> >>>>> the dmaptree is that
+> >>>>> struct dmaptree {
+> >>>>> __le32 nleafs; /* 4: number of tree leafs */
+> >>>>> __le32 l2nleafs; /* 4: l2 number of tree leafs */
+> >>>>> __le32 leafidx; /* 4: index of first tree leaf */
+> >>>>> __le32 height; /* 4: height of the tree */
+> >>>>> s8 budmin; /* 1: min l2 tree leaf value to combine */
+> >>>>> s8 stree[TREESIZE]; /* TREESIZE: tree */
+> >>>>> u8 pad[2]; /* 2: pad to word boundary */
+> >>>>> };
+> >>>>> the TREESIZE is totally 341, but the leafidx type is __le32.
+> >>>>
+> >>>> Does this patch fix the problem?
+> >>>>
+> >>>> jfs: Fix array index bounds check in dbAdjTree
+> >>>>
+> >>>> Bounds checking tools can flag a bug in dbAdjTree() for an array index
+> >>>> out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
+> >>>> both structures dmaptree and dmapctl, use the larger array to eliminate
+> >>>> the false positive.
+> >>>>
+> >>>> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+> >>>> ---
+> >>>>  fs/jfs/jfs_dmap.h | 2 +-
+> >>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
+> >>>> index 29891fad3f09..aa03a904d5ab 100644
+> >>>> --- a/fs/jfs/jfs_dmap.h
+> >>>> +++ b/fs/jfs/jfs_dmap.h
+> >>>> @@ -183,7 +183,7 @@ typedef union dmtree {
+> >>>>  #define        dmt_leafidx     t1.leafidx
+> >>>>  #define        dmt_height      t1.height
+> >>>>  #define        dmt_budmin      t1.budmin
+> >>>> -#define        dmt_stree       t1.stree
+> >>>> +#define        dmt_stree       t2.stree
+> >>>>
+> >>>>  /*
+> >>>>   *     on-disk aggregate disk allocation map descriptor.
+> >>>> --
+> >>>> 2.29.2
+> >>>>
