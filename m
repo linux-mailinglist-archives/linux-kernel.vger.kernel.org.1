@@ -2,283 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5FC2FCB39
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F49C2FCB2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725823AbhATG4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:56:40 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:45700 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhATG4a (ORCPT
+        id S1726700AbhATGsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:48:32 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:50143 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbhATGpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:56:30 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210120065546epoutp03c26d63c45e4a9958fb2000131ba3d3dd~b3lSSmtvp2845528455epoutp03T
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:55:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210120065546epoutp03c26d63c45e4a9958fb2000131ba3d3dd~b3lSSmtvp2845528455epoutp03T
+        Wed, 20 Jan 2021 01:45:50 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210120064452epoutp01842560f7d4e741b898e3aaeb94be3d58~b3bxfeYUR2319623196epoutp01h
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:44:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210120064452epoutp01842560f7d4e741b898e3aaeb94be3d58~b3bxfeYUR2319623196epoutp01h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611125746;
-        bh=Y3t1Ru221BzeFTMjn0qEsdpY63KR+oSgn/Go4kpEcyY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=iy56PfdEcbU7A5S5oev5TLdmw+Qu8NONgrRr2o0Qw3hD5xkogOVMyj82VD4T/a7gv
-         nl6m0V3c4cnVNVYh9qTgupI0fBmHD2C5MkAAApquAa0/gEnsUGJJKNQbE0m8qFjWOX
-         8qmB4fIrohlgdIUg5H3NyNitg+CESdoWJpE0fxTQ=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210120065546epcas2p2e656b2b6c56ebd7a6a58dbb7be8421a8~b3lR1rx-R0033000330epcas2p2n;
-        Wed, 20 Jan 2021 06:55:46 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DLGWM5B1sz4x9QH; Wed, 20 Jan
-        2021 06:55:43 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        22.DD.05262.FE3D7006; Wed, 20 Jan 2021 15:55:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210120065543epcas2p48248b4b8590b6f5c45f93b7048087e05~b3lPSidc81483814838epcas2p4P;
-        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210120065543epsmtrp196830196692c8e2251f2927c3da8ed43~b3lPRuMJQ0242102421epsmtrp1B;
-        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
-X-AuditID: b6c32a47-b97ff7000000148e-fc-6007d3ef3e46
+        s=mail20170921; t=1611125092;
+        bh=OpEdYODaMr3s1N6gkFWXLr0B/tXSAti22x4LWgLdmFs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S4pw2w+YSxZgJ1z0DjbWu6MH4dxpkkhSyUbRMVkTW9v2EJYA0ZM94F/cWAzgCJYm1
+         WfJmr8To13s/wWqfyQiNWZVewG3ziX3WQlXOvEwnTeSU7dnl59Dvo7Y36V+iflp3RO
+         bUPvbFtF28LFVLq2FwrQdpye6XxebQuUNPtbp+5g=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210120064451epcas1p39a2541c5d9c89455975e56a66fc2a86d~b3bwaaZa_0331103311epcas1p3n;
+        Wed, 20 Jan 2021 06:44:51 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DLGGp5BbMz4x9QJ; Wed, 20 Jan
+        2021 06:44:50 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F3.91.09582.261D7006; Wed, 20 Jan 2021 15:44:50 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210120064450epcas1p1b00b7a040e0951a2da44abce916e1698~b3bu3c8am0078500785epcas1p1h;
+        Wed, 20 Jan 2021 06:44:50 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210120064450epsmtrp233ed4989ecc58a5e9aa46fd4683c8acd~b3bu2SIPl1904619046epsmtrp2T;
+        Wed, 20 Jan 2021 06:44:50 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-ba-6007d16223a2
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A1.4A.13470.FE3D7006; Wed, 20 Jan 2021 15:55:43 +0900 (KST)
-Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210120065543epsmtip2703a746694828fe5496c77f1efee99d7~b3lPFHBGJ0775007750epsmtip2I;
-        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
-From:   "Dongseok Yi" <dseok.yi@samsung.com>
-To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
-Cc:     "'David S. Miller'" <davem@davemloft.net>,
-        "'Alexander Lobakin'" <alobakin@pm.me>, <namkyu78.kim@samsung.com>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
-        "'Willem de Bruijn'" <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210118132736.GM3576117@gauss3.secunet.de>
-Subject: RE: [PATCH net v2] udp: ipv4: manipulate network header of NATed
- UDP GRO fraglist
-Date:   Wed, 20 Jan 2021 15:55:42 +0900
-Message-ID: <012d01d6eef9$45516d40$cff447c0$@samsung.com>
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A1.DC.08745.161D7006; Wed, 20 Jan 2021 15:44:49 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.98.109]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210120064449epsmtip28e3dd560a8414182a36a372d416b2e10~b3bumYJ3V0436304363epsmtip2E;
+        Wed, 20 Jan 2021 06:44:49 +0000 (GMT)
+From:   Manjong Lee <mj0123.lee@samsung.com>
+To:     mj0123.lee@samsung.com, hch@lst.de, michael.christie@oracle.com,
+        damien.lemoal@wdc.com, oneukum@suse.com, arnd@arndb.de,
+        martin.petersen@oracle.com
+Cc:     jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, nanich.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: RE: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
+ max_xfer_blocks is available
+Date:   Thu, 21 Jan 2021 00:49:46 +0900
+Message-Id: <20210113155009.9592-1-mj0123.lee@samsung.com> (raw)
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <CGME20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8@epcas1p3.samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJT4Rp7bAvF1bGeZTYGN+mZAmy16AFN1KutAr+8QJepFb/3kA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmhe77y+wJBhfPqFmserydxWLO+RYW
-        iwvb+lgtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
-        7doqJo+je86xefRtWcXosal1CavH501yARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYG
-        hrqGlhbmSgp5ibmptkouPgG6bpk5QNcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtS
-        cgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMtb0GhScN6j4Mm8qawPjNOUuRk4OCQETiZ9f
-        drF3MXJxCAnsYJR482sZC4TziVFi9qY1TBDON0aJTQdAHIiW7k1HoKr2MkocfDuHDcJ5wShx
-        fPMUNpAqNgEtiTez2llBbBEBc4nVr6aBjWIW2Mok8fDrVBaQBKeApUTj6y2MILawQIzE00md
-        YM0sAqoSi9sWgzXzAtWsWzSBDcIWlDg58wlYL7OAgcT7c/OZIWx5ie1v5zBDnKcg8fPpMqBe
-        DqDFThIrf2pClIhIzO5sgyrZwyGx9EAMhO0isWfuPkYIW1ji1fEt7BC2lMTL/jZ2kDESAvUS
-        rd0xIOdLCPQwSlzZB3GChICxxKxn7YwQNcoSR25BXcYn0XH4L1Qrr0RHmxCEqSQx8Us8RKOE
-        xIuTk1kmMCrNQvLWLCRvzULy1iwk9y9gZFnFKJZaUJybnlpsVGCMHNebGMEJV8t9B+OMtx/0
-        DjEycTAeYpTgYFYS4W36y5YgxJuSWFmVWpQfX1Sak1p8iNEUGNITmaVEk/OBKT+vJN7Q1MjM
-        zMDS1MLUzMhCSZy32OBBvJBAemJJanZqakFqEUwfEwenVANTzgYz/vDt396vPVz0T+i5b/DK
-        Xfv04l3FGj0FJnmd7MiJ3/joTE5a5JueR9oG+vN9up8Hz9/AIrvytXLh3mIuoZ4/qyYXWK2K
-        Mn0u7GE+Z3HJzKVzBbO+KZgkJav5ue5gfZ6nNo3VYaLyYYGNqnvPfOM5H627R63i6sdMxjKb
-        7MDaYhM2wyvaZ86fUDrY4af7wymmSaHF+FzFR7MVnd4+PjOCi4psbP9Z2vXwrHdezTLb8rq4
-        /P0bs0+VXzR9f9+B11N9x+UzdhMSjt/bvfLrLjfnlWq9B1kX7JNgzs5uOHnprZf0f897C2ZG
-        Xcj68D6tJin790yHzUlVLkU88tf1j6c+23pEv5n3gLvD8S4lluKMREMt5qLiRABKybQKQQQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO77y+wJBr+n8liserydxWLO+RYW
-        iwvb+lgtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
-        7doqJo+je86xefRtWcXosal1CavH501yARxRXDYpqTmZZalF+nYJXBlreg0KzhtUfJk3lbWB
-        cZpyFyMnh4SAiUT3piMsXYxcHEICuxklVrUsYe1i5ABKSEjs2uwKUSMscb/lCCtEzTNGiZaj
-        n5hBEmwCWhJvZrWzgtgiAuYSq19NYwIpYhbYzSTxtec+M0THEUaJ1w2NYFWcApYSja+3MILY
-        wgJREr1t78AmsQioSixuWwxWwwtUs27RBDYIW1Di5MwnLCA2s4CRxLlD+9kgbHmJ7W/nMEOc
-        pyDx8+kysKtFBJwkVv7UhCgRkZjd2cY8gVF4FpJJs5BMmoVk0iwkLQsYWVYxSqYWFOem5xYb
-        FhjmpZbrFSfmFpfmpesl5+duYgTHnpbmDsbtqz7oHWJk4mA8xCjBwawkwtv0ly1BiDclsbIq
-        tSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqZV/7W0VBOusit7nNTz
-        vG2kUX8wT9Pwv/OcrkILsx1fGmJlZB/nSllE/E2+rm6pp7dJr8a/87fg3D9y1u+iEoOYHJTd
-        ryucm/jgwvzfPSFVYTfnbDznZW5Yvrq1KzR1Wkxlk82uyxf+5PLs7v+yNGVnwOsfc/Vj2W0e
-        ZrV9v7Z8y9NgNm233bW+Ze/MXRbbWS88xsayJt68MOyHT9/UHdM3mmkVvGnjXVSQkJ/8MPLG
-        hPA1kuFMJ8LjilafOh4/4Vfui9v7nzMum9G4aMXkCWUbfm389Yr5rcK+1p3TzTKOtcgu+quz
-        7dJ34U/LmiXzhPds+6v7YM5Ti7NLP8aKiE4tYar5eknyX9kfry1nohcqsRRnJBpqMRcVJwIA
-        6K1ZcSwDAAA=
-X-CMS-MailID: 20210120065543epcas2p48248b4b8590b6f5c45f93b7048087e05
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNJsWRmVeSWpSXmKPExsWy7bCmrm7SRfYEg6Z16hZ/Jx1jt2ht/8Zk
+        sXL1USaLRTe2MVn0PGlitfj6sNji8q45bBbd13ewWSw//o8JqPYGq8X0zXOYLa7dP8Nu0fV4
+        JZvFuZOfWC3mPXawOLVjMrPF+r0/2RwEPX7/msToMWHRAUaP3Tcb2Dw+Pr3F4tG3ZRWjx/ot
+        V1k8Pm+S82g/0M0UwBGVY5ORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtq
+        q+TiE6DrlpkD9IWSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQoECvODG3uDQv
+        XS85P9fK0MDAyBSoMiEn4+8Ry4Lf0hXbFgk0MPaLdzFycEgImEi038roYuTiEBLYwSjx+Vor
+        E4TziVHi+dUeIIcTyPnMKLFwNpgN0vBv0mkWiPguRonrnwMgGoBq5rVMBUuwCWhJLH92gR0k
+        ISIwm1Fi69OvzCAOs0Ank8Sv/ousIFXCAukS7Z9awDpYBFQlrm95zAhi8wo4SOxf3ssIsU5e
+        4s/9HmYQm1MgTuLpmVlMEDWCEidnPgHrZQaqad46G2yBhMAJDolz386wQjS7SNyd28wGYQtL
+        vDq+hR3ClpL4/G4vG0RDM6NE76dzUA0tjBI7LpZB2MYSnz5/ZgSFErOApsT6XfoQYUWJnb/n
+        MkIs5pN497WHFRKQvBIdbUIQJSoSu5u/wa168+oA1C8eEgvf7mKBBFcfo8TNNTPZJzAqzELy
+        zywk/8xC2LyAkXkVo1hqQXFuemqxYYExcgRvYgSnai3zHYzT3n7QO8TIxMF4iFGCg1lJhLfp
+        L1uCEG9KYmVValF+fFFpTmrxIUZTYGhPZJYSTc4HZou8knhDUyNjY2MLEzNzM1NjJXHeJIMH
+        8UIC6YklqdmpqQWpRTB9TBycUg1MPk7CC1VqGrV3JW64fcZXc2n0rcP/NP9t3+9R+7LpiZWQ
+        M6vZQ98di7eG+HDWXb+jV7Ek0kQyZ3lbx3LLz5zCjqrJPD0LCl+Vfl8xkc1YJGbFxw1aV08d
+        No6ri7J4Mf3Yq+Tz9y7Mf26llS8pbpKj1zjNMKXlxiphzcbCDr/VBQXvIrt++0SVxm+O+DMn
+        h+Mf9zdDBfmK6R6/Xk4UUmXk3rNJlfnkwrmT7t24mRkxa/eCZXmnNp/c8KBh1rUeFe/1onOv
+        Sa2cZ9xZsixpgq3+pctFs+47lLE7fvqxl5vFWb3VrzZgxp1j/6d+cn1cfcJ00V6OT76JXq93
+        7jJ4EZjDltZ21vpu9YIb12UnHqw4rMRSnJFoqMVcVJwIAEt9+kleBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmkeLIzCtJLcpLzFFi42LZdlhJXjfxInuCwcd+c4u/k46xW7S2f2Oy
+        WLn6KJPFohvbmCx6njSxWnx9WGxxedccNovu6zvYLJYf/8cEVHuD1WL65jnMFtfun2G36Hq8
+        ks3i3MlPrBbzHjtYnNoxmdli/d6fbA6CHr9/TWL0mLDoAKPH7psNbB4fn95i8ejbsorRY/2W
+        qywenzfJebQf6GYK4IjisklJzcksSy3St0vgyvh7xLLgt3TFtkUCDYz94l2MnBwSAiYS/yad
+        Zuli5OIQEtjBKLFx/ycmiISUxLy1DWxdjBxAtrDE4cPFIGEhgY+MEuufh4DYbAJaEsufXWAH
+        sUUEFjNKXFggCTKHWWAqk8TKv/PA5ggLpErsuPaeFcRmEVCVuL7lMSOIzSvgILF/eS8jxC55
+        iT/3e5hBbE6BOImnZ2YxQSyzkui8PYcVol5Q4uTMJywgNjNQffPW2cwTGAVmIUnNQpJawMi0
+        ilEytaA4Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOJ60tHYw7ln1Qe8QIxMH4yFGCQ5mJRHe
+        pr9sCUK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwuYnO
+        qJ8vU7Fay9fSMmjq/Ovy/aYNrldD0zKeJWW05iyuD9wdqe3V1xTxQXxtR8L81V1yH08Zcy2a
+        a/DzYfAGpT9nMho/S1v0La7ottmV3BbK93jVgd9y56xZVs3bbjFxTbLYV1k/tj1Pbwc5Bjzd
+        89pSUOnH1qdXRBZEyt97slj+2BWDTzqTq2ZZbrFNkHnwcmfHSfGPR5xvrXTT/qwV+P1viN35
+        b5vr6j13TNp4xfLg3V1hu70dlz5mmxsSwrfkQIt2zzbJiUnR0ZUnrZ/6p+2V1j6w959m5+bV
+        0tK/2TjEj6ZMlPnLytch1799t/SyljqNa4WH57dy7V7wnGFTp72A6Hv2RcVy69s/3ZOPV2Ip
+        zkg01GIuKk4EAMrYAnAWAwAA
+X-CMS-MailID: 20210120064450epcas1p1b00b7a040e0951a2da44abce916e1698
 X-Msg-Generator: CA
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
-References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
-        <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
-        <20210118132736.GM3576117@gauss3.secunet.de>
+X-CMS-RootMailID: 20210120064450epcas1p1b00b7a040e0951a2da44abce916e1698
+References: <20210113155009.9592-1-mj0123.lee@samsung.com>
+        <CGME20210120064450epcas1p1b00b7a040e0951a2da44abce916e1698@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-18 22:27, Steffen Klassert wrote:
-> On Fri, Jan 15, 2021 at 10:20:35PM +0900, Dongseok Yi wrote:
-> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> > skb_gso_segment is updated but following frag_skbs are not updated.
-> >
-> > A call path skb_mac_gso_segment -> inet_gso_segment ->
-> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> > does not try to update UDP/IP header of the segment list but copy
-> > only the MAC header.
-> >
-> > Update dport, daddr and checksums of each skb of the segment list
-> > in __udp_gso_segment_list. It covers both SNAT and DNAT.
-> >
-> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > ---
-> > v1:
-> > Steffen Klassert said, there could be 2 options.
-> > https://lore.kernel.org/patchwork/patch/1362257/
-> > I was trying to write a quick fix, but it was not easy to forward
-> > segmented list. Currently, assuming DNAT only.
-> >
-> > v2:
-> > Per Steffen Klassert request, move the procedure from
-> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-> >
-> > To Alexander Lobakin, I've checked your email late. Just use this
-> > patch as a reference. It support SNAT too, but does not support IPv6
-> > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
-> > to the file is in IPv4 directory.
-> >
-> >  include/net/udp.h      |  2 +-
-> >  net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
-> >  net/ipv6/udp_offload.c |  2 +-
-> >  3 files changed, 59 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/include/net/udp.h b/include/net/udp.h
-> > index 877832b..01351ba 100644
-> > --- a/include/net/udp.h
-> > +++ b/include/net/udp.h
-> > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
-> >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
-> >
-> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> > -				  netdev_features_t features);
-> > +				  netdev_features_t features, bool is_ipv6);
-> >
-> >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
-> >  {
-> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> > index ff39e94..c532d3b 100644
-> > --- a/net/ipv4/udp_offload.c
-> > +++ b/net/ipv4/udp_offload.c
-> > @@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
-> >  }
-> >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
-> >
-> > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-> > +				     __be32 *oldip, __be32 *newip,
-> > +				     __be16 *oldport, __be16 *newport)
-> > +{
-> > +	struct udphdr *uh = udp_hdr(seg);
-> > +	struct iphdr *iph = ip_hdr(seg);
-> > +
-> > +	if (uh->check) {
-> > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-> > +					 true);
-> > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-> > +					 false);
-> > +		if (!uh->check)
-> > +			uh->check = CSUM_MANGLED_0;
-> > +	}
-> > +	uh->dest = *newport;
-> > +
-> > +	csum_replace4(&iph->check, *oldip, *newip);
-> > +	iph->daddr = *newip;
-> > +}
-> 
-> Can't we just do the checksum recalculation for this case as it is done
-> with standard GRO?
+Add recipients for more reviews.
 
-If I understand standard GRO correctly, it calculates full checksum.
-Should we adopt the same method to UDP GRO fraglist? I did not find
-a simple method for the incremental checksum update.
-
-> 
-> > +
-> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-> > +{
-> > +	struct sk_buff *seg;
-> > +	struct udphdr *uh, *uh2;
-> > +	struct iphdr *iph, *iph2;
-> > +
-> > +	seg = segs;
-> > +	uh = udp_hdr(seg);
-> > +	iph = ip_hdr(seg);
-> > +
-> > +	while ((seg = seg->next)) {
-> > +		uh2 = udp_hdr(seg);
-> > +		iph2 = ip_hdr(seg);
-> > +
-> > +		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
-> > +			__udpv4_gso_segment_csum(seg,
-> > +						 &iph2->saddr, &iph->saddr,
-> > +						 &uh2->source, &uh->source);
-> > +
-> > +		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
-> > +			__udpv4_gso_segment_csum(seg,
-> > +						 &iph2->daddr, &iph->daddr,
-> > +						 &uh2->dest, &uh->dest);
-> > +	}
-> 
-> You don't need to check the addresses and ports of all packets in the
-> segment list. If the addresses and ports are equal for the first and
-> second packet in the list, then this also holds for the rest of the
-> packets.
-
-I think we can try this with an additional flag (seg_csum).
-
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 36b7e30..3f892df 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -213,25 +213,36 @@ static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-        struct sk_buff *seg;
-        struct udphdr *uh, *uh2;
-        struct iphdr *iph, *iph2;
-+       bool seg_csum = false;
-
-        seg = segs;
-        uh = udp_hdr(seg);
-        iph = ip_hdr(seg);
-
--       while ((seg = seg->next)) {
-+       seg = seg->next;
-+       do {
-+               if (!seg)
-+                       break;
-+
-                uh2 = udp_hdr(seg);
-                iph2 = ip_hdr(seg);
-
--               if (uh->source != uh2->source || iph->saddr != iph2->saddr)
-+               if (uh->source != uh2->source || iph->saddr != iph2->saddr) {
-                        __udpv4_gso_segment_csum(seg,
-                                                 &iph2->saddr, &iph->saddr,
-                                                 &uh2->source, &uh->source);
-+                       seg_csum = true;
-+               }
-
--               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
-+               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr) {
-                        __udpv4_gso_segment_csum(seg,
-                                                 &iph2->daddr, &iph->daddr,
-                                                 &uh2->dest, &uh->dest);
--       }
-+                       seg_csum = true;
-+               }
-+
-+               seg = seg->next;
-+       } while (seg_csum);
-
-        return segs;
- }
-
+>SCSI device has max_xfer_size and opt_xfer_size,
+>but current kernel uses only opt_xfer_size.
+>
+>It causes the limitation on setting IO chunk size,
+>although it can support larger one.
+>
+>So, I propose this patch to use max_xfer_size in case it has valid value.
+>It can support to use the larger chunk IO on SCSI device.
+>
+>For example,
+>This patch is effective in case of some SCSI device like UFS
+>with opt_xfer_size 512KB, queue depth 32 and max_xfer_size over 512KB.
+>
+>I expect both the performance improvement
+>and the efficiency use of smaller command queue depth.
+>
+>Signed-off-by: Manjong Lee <mj0123.lee@samsung.com>
+>---
+>drivers/scsi/sd.c | 56 +++++++++++++++++++++++++++++++++++++++++++----
+>1 file changed, 52 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+>index 679c2c025047..de59f01c1304 100644
+>--- a/drivers/scsi/sd.c
+>+++ b/drivers/scsi/sd.c
+>@@ -3108,6 +3108,53 @@ static void sd_read_security(struct scsi_disk *sdkp, unsigned char *buffer)
+>sdkp->security = 1;
+>}
+>
+>+static bool sd_validate_max_xfer_size(struct scsi_disk *sdkp,
+>+				      unsigned int dev_max)
+>+{
+>+	struct scsi_device *sdp = sdkp->device;
+>+	unsigned int max_xfer_bytes =
+>+		logical_to_bytes(sdp, sdkp->max_xfer_blocks);
+>+
+>+	if (sdkp->max_xfer_blocks == 0)
+>+		return false;
+>+
+>+	if (sdkp->max_xfer_blocks > SD_MAX_XFER_BLOCKS) {
+>+		sd_first_printk(KERN_WARNING, sdkp,
+>+				"Maximal transfer size %u logical blocks " \
+>+				"> sd driver limit (%u logical blocks)\n",
+>+				sdkp->max_xfer_blocks, SD_DEF_XFER_BLOCKS);
+>+		return false;
+>+	}
+>+
+>+	if (sdkp->max_xfer_blocks > dev_max) {
+>+		sd_first_printk(KERN_WARNING, sdkp,
+>+				"Maximal transfer size %u logical blocks "
+>+				"> dev_max (%u logical blocks)\n",
+>+				sdkp->max_xfer_blocks, dev_max);
+>+		return false;
+>+	}
+>+
+>+	if (max_xfer_bytes < PAGE_SIZE) {
+>+		sd_first_printk(KERN_WARNING, sdkp,
+>+				"Maximal transfer size %u bytes < " \
+>+				"PAGE_SIZE (%u bytes)\n",
+>+				max_xfer_bytes, (unsigned int)PAGE_SIZE);
+>+		return false;
+>+	}
+>+
+>+	if (max_xfer_bytes & (sdkp->physical_block_size - 1)) {
+>+		sd_first_printk(KERN_WARNING, sdkp,
+>+				"Maximal transfer size %u bytes not a " \
+>+				"multiple of physical block size (%u bytes)\n",
+>+				max_xfer_bytes, sdkp->physical_block_size);
+>+		return false;
+>+	}
+>+
+>+	sd_first_printk(KERN_INFO, sdkp, "Maximal transfer size %u bytes\n",
+>+			max_xfer_bytes);
+>+	return true;
+>+}
+>+
+>/*
+>* Determine the device's preferred I/O size for reads and writes
+>* unless the reported value is unreasonably small, large, not a
+>@@ -3233,12 +3280,13 @@ static int sd_revalidate_disk(struct gendisk *disk)
+>
+>/* Initial block count limit based on CDB TRANSFER LENGTH field size. */
+>dev_max = sdp->use_16_for_rw ? SD_MAX_XFER_BLOCKS : SD_DEF_XFER_BLOCKS;
+>-
+>-	/* Some devices report a maximum block count for READ/WRITE requests. */
+>-	dev_max = min_not_zero(dev_max, sdkp->max_xfer_blocks);
+>q->limits.max_dev_sectors = logical_to_sectors(sdp, dev_max);
+>
+>-	if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
+>+	if (sd_validate_max_xfer_size(sdkp, dev_max)) {
+>+		q->limits.io_opt = 0;
+>+		rw_max = logical_to_sectors(sdp, sdkp->max_xfer_blocks);
+>+		q->limits.max_dev_sectors = rw_max;
+>+	} else if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
+>q->limits.io_opt = logical_to_bytes(sdp, sdkp->opt_xfer_blocks);
+>rw_max = logical_to_sectors(sdp, sdkp->opt_xfer_blocks);
+>} else {
+>-- 
+>2.29.0
+>
+>
