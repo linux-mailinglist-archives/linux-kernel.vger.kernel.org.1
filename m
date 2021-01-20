@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76CA2FCA1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E186B2FCA1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 05:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbhATEum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 23:50:42 -0500
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:52082 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727683AbhATErs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:47:48 -0500
-Received: from dread.disaster.area (pa49-180-243-77.pa.nsw.optusnet.com.au [49.180.243.77])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id C28BD114056B;
-        Wed, 20 Jan 2021 15:47:01 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1l25OW-000Pbc-9B; Wed, 20 Jan 2021 15:47:00 +1100
-Date:   Wed, 20 Jan 2021 15:47:00 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Zhongwei Cai <sunrise_l@sjtu.edu.cn>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Mingkai Dong <mingkaidong@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        Rajesh Tadakamadla <rajesh.tadakamadla@hpe.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: Expense of read_iter
-Message-ID: <20210120044700.GA4626@dread.disaster.area>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
- <20210107151125.GB5270@casper.infradead.org>
- <17045315-CC1F-4165-B8E3-BA55DD16D46B@gmail.com>
- <2041983017.5681521.1610459100858.JavaMail.zimbra@sjtu.edu.cn>
- <alpine.LRH.2.02.2101131008530.27448@file01.intranet.prod.int.rdu2.redhat.com>
- <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1224425872.715547.1610703643424.JavaMail.zimbra@sjtu.edu.cn>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=juxvdbeFDU67v5YkIhU0sw==:117 a=juxvdbeFDU67v5YkIhU0sw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=9YBCWnU3LXitusiQSpoA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1728325AbhATEvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 23:51:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728307AbhATEvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:51:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 20C6B23137;
+        Wed, 20 Jan 2021 04:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611118222;
+        bh=rd3vLXIH9asFrOl/woIo1LuABsCpeFAqzuVO0FSk7I8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Tz9IpALO2cTocnGYPbvgZIv6Gc0SN1P3chDIovOz2yNsW/QpuKmzFnGuxZwqDinh2
+         KgOuZTIYsVZ5HU5mtXHdkdYcUvyYKOkyqEimW4NS6dmYftDs8LM0rlVmS5CMF3xuP0
+         IzcQujLMbHeU2RrcAwf9t1DEx4fUDgsWduONDH6/c5RmQI6NxDrIrsq3NcbrQHJLGc
+         Vs+D6E6d+3ex9613zwLUW/lF1G4N57+2CywUU0TxDu0E3LWeSQG169DDkS3msHpxIu
+         kDhfCOyveoBewHlfdgQfJs0Wf6Pg9lka/hOY0Q98ZjCFRjigm84vxtr9GRByxupvCH
+         LXMd0DmUM4Onw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 0609F6036C;
+        Wed, 20 Jan 2021 04:50:22 +0000 (UTC)
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.11-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210119113040.cy7x6hilvts56xan@liuwe-devbox-debian-v2>
+References: <20210119113040.cy7x6hilvts56xan@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210119113040.cy7x6hilvts56xan@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210119
+X-PR-Tracked-Commit-Id: fff7b5e6ee63c5d20406a131b260c619cdd24fd1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 28df858033484b830c2ea146c03da67d2d659405
+Message-Id: <161111822195.31434.2452040472483337572.pr-tracker-bot@kernel.org>
+Date:   Wed, 20 Jan 2021 04:50:21 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:40:43PM +0800, Zhongwei Cai wrote:
-> On Thu, 14 Jan 2021, Mikulas wrote:
-> For Ext4-dax, the overhead of dax_iomap_rw is significant
-> compared to the overhead of struct iov_iter. Although methods
-> proposed by Mikulas can eliminate the overhead of iov_iter
-> well, they can not be applied in Ext4-dax unless we implement an
-> internal "read" method in Ext4-dax.
-> 
-> For Ext4-dax, there could be two approaches to optimizing:
-> 1) implementing the internal "read" method without the complexity
-> of iterators and dax_iomap_rw;
+The pull request you sent on Tue, 19 Jan 2021 11:30:40 +0000:
 
-Please do not go an re-invent the wheel just for ext4. If there's a
-problem in a shared path - ext2, FUSE and XFS all use dax_iomap_rw()
-as well, so any improvements to that path benefit all DAX users, not
-just ext4.
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210119
 
-> 2) optimizing how dax_iomap_rw works.
-> Since dax_iomap_rw requires ext4_iomap_begin, which further involves
-> the iomap structure and others (e.g., journaling status locks in Ext4),
-> we think implementing the internal "read" method would be easier.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/28df858033484b830c2ea146c03da67d2d659405
 
-Maybe it is, but it's also very selfish. The DAX iomap path was
-written to be correct for all users, not inecessarily provide
-optimal performance. There will be lots of things that could be done
-to optimise it, so rather than creating a special snowflake in ext4
-that makes DAX in ext4 much harder to maintain for non-ext4 DAX
-developers, please work to improve the common DAX IO path and so
-provide the same benefit to all the filesystems that use it.
+Thank you!
 
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
