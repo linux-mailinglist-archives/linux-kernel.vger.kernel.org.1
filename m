@@ -2,277 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC702FD12D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A7D2FD12E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 14:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389738AbhATNM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 08:12:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733079AbhATMiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 07:38:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7557A2250E;
-        Wed, 20 Jan 2021 12:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611146250;
-        bh=zEal5AfdI/Rm+1NfYsRg9g/lWhZKyI4Iw1B0IEsL9tY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hFkoCorW0zbS+fl7gL0mq80mZ1QbKwQht6W89xgyjiC+R+ibc9a+y3e3bioncwSLl
-         XgIohRIBGTSNYbEpc+XuOnqgsoD1LKV70+ukQnYUCzlrc6ShTB9hQLDVmQYCesVVLJ
-         V0Ypj6pL9jpdR8oGBTG4GwJr6zn8zcFv/njPKJ11WnTox9XhAKLhp7gfLsFAt8IlRR
-         TidzemaP7HffQ+tTPPmpFtrZxuSzDFV3eEb+JTzOplSOs0M1yLiD0QZnlEpDM6kmDU
-         LWB6N3XFKuZfbIpQ/IbbaTPGej+0l+v+rKw1CWc4cVbFKFpTQLOe75MyUx+CS4BJ/c
-         keTD3R2TkNZwQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4FA2F40CE2; Wed, 20 Jan 2021 09:37:27 -0300 (-03)
-Date:   Wed, 20 Jan 2021 09:37:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v7 3/3] perf-stat: enable counting events for BPF programs
-Message-ID: <20210120123727.GR12699@kernel.org>
-References: <20201229214214.3413833-1-songliubraving@fb.com>
- <20201229214214.3413833-4-songliubraving@fb.com>
- <20210118193817.GG12699@kernel.org>
- <379919CC-594F-40C5-A10E-97E048F73AE2@fb.com>
- <20210119143143.GJ12699@kernel.org>
- <20210119144249.GK12699@kernel.org>
- <20210119163123.GM12699@kernel.org>
- <417ABE57-E527-4944-BE16-35AB92D071E9@fb.com>
- <20210119223021.GO12699@kernel.org>
+        id S2389768AbhATNNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 08:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbhATMiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 07:38:50 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00961C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:38:09 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id d189so24813744oig.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 04:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cUvq+3j2UZsZMpqSR7hZFwIpt01vjr1BcAn5QPI98HI=;
+        b=JVRsRUNObTpASX4m1samBC1mklhZy/jQS2Omjrbh3aPUgrmW/63lHzLRHRqFip9OYI
+         1bhPk86QOLo9KEGMI61x5hBjdnmBd1UQ6H1RjTadiLLz1b5aObuyok2rCgLLcas2gI6y
+         YRVrgt1aZN9mOeIP+9/M1PYwW1LgWQrKbAsdQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cUvq+3j2UZsZMpqSR7hZFwIpt01vjr1BcAn5QPI98HI=;
+        b=Q/EM32LvVolM0PHUwc5ZY8jrf0kkI7P/dhso8Otapl8gaDdLjofcHiiWYCNxzbqwAt
+         goO9YqO5GaIvnsb4yeKwm6uH4lLg5dgRAwd8fQuYYB7QNRVrIa639KmL9zQgpCo5KPKo
+         XCHvTKzbf8tAocVGIvj0AMuBNHHAveOtGW3qPaCgc3bJuqivmWfrfyR6y0R+bTO53kP0
+         YwIdUfcaNoPDIVbmteS/eOE9Z/0iQtFkbqAYu/mfGGP03d/L6DtYT60JPAvWYcR+LUD0
+         6DVr6aNEe1aPnH4dgtGLeNaLNCFC3UDb6txjZI6d1vFn688O042VQ0eaUmzjGKx59DTx
+         xl0A==
+X-Gm-Message-State: AOAM533HIsZExRurOcdk8GXBmjAI1pdMpeLu9pS3q6numUCLtXSiLn9S
+        Q5nhVYlDtlk/d9bctrdl/U87+8izdivyDtX/Pj9y1A==
+X-Google-Smtp-Source: ABdhPJyLEhvQVDZvawZb4fB5BWgVVbsvjXs0uZbHyF2fRaWuYnahTZBfwUesFW975l8pjFlccP3Tw3QDeGrbbX911GA=
+X-Received: by 2002:aca:4ac5:: with SMTP id x188mr2636242oia.14.1611146289366;
+ Wed, 20 Jan 2021 04:38:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119223021.GO12699@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
+ <20210118234057.270930-1-zzyiwei@android.com> <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
+ <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
+ <YAfzxS95Yy86qnBi@phenom.ffwll.local> <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
+In-Reply-To: <CAKB3++ZYacAN2ZVSGGm0uEDQtowcS9LDPPYCqt6Pj+-WEFxMSQ@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 20 Jan 2021 13:37:57 +0100
+Message-ID: <CAKMK7uE3xF80AsJ1zGfSM-KTry=ikJ-S-Dn6nK8ZAvCSWw2FHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
+To:     Yiwei Zhang <zzyiwei@android.com>
+Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 19, 2021 at 07:30:21PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Jan 19, 2021 at 09:54:50PM +0000, Song Liu escreveu:
-> > 
-> > 
-> > > On Jan 19, 2021, at 8:31 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > 
-> > > Em Tue, Jan 19, 2021 at 11:42:49AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > >> Em Tue, Jan 19, 2021 at 11:31:44AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > >>> Em Tue, Jan 19, 2021 at 12:48:19AM +0000, Song Liu escreveu:
-> > >>>>> On Jan 18, 2021, at 11:38 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > >>>> We are looking at two issues:
-> > >>>> 1. Cannot recursively attach;
-> > >>>> 2. prog FD 3 doesn't have valid btf. 
-> > >> 
-> > >>>> #1 was caused by the verifier disallowing attaching fentry/fexit program 
-> > >>>> to program with type BPF_PROG_TYPE_TRACING (in bpf_check_attach_target). 
-> > >>>> This constraint was added when we only had fentry/fexit in the TRACING
-> > >>>> type. We have extended the TRACING type to many other use cases, like 
-> > >>>> "tp_btf/", "fmod_ret" and "iter/". Therefore, it is good time to revisit 
-> > >>>> this constraint. I will work on this. 
-> > >> 
-> > >>>> For #2, we require the target program to have BTF. I guess we won't remove
-> > >>>> this requirement.
-> > >> 
-> > >>>> While I work on improving #1, could you please test with some kprobe 
-> > >>>> programs? For example, we can use fileslower.py from bcc. 
-> > >> 
-> > >>> Sure, and please consider improving the error messages to state what you
-> > >>> described above.
-> > >> 
-> > >> Terminal 1:
-> > >> 
-> > >> [root@five perf]# perf trace -e 5sec.c
-> > >> ^C
-> > >> [root@five perf]# cat 5sec.c
-> > >> #include <bpf.h>
-> > >> 
-> > >> #define NSEC_PER_SEC	1000000000L
-> > >> 
-> > >> int probe(hrtimer_nanosleep, rqtp)(void *ctx, int err, long long sec)
-> > >> {
-> > >> 	return sec / NSEC_PER_SEC == 5;
-> > >> }
-> > >> 
-> > >> license(GPL);
-> > >> [root@five perf]# perf trace -e 5sec.c/max-stack=16/
-> > >>     0.000 sleep/3739435 perf_bpf_probe:hrtimer_nanosleep(__probe_ip: -1743337312, rqtp: 5000000000)
-> > >>                                       hrtimer_nanosleep ([kernel.kallsyms])
-> > >>                                       common_nsleep ([kernel.kallsyms])
-> > >>                                       __x64_sys_clock_nanosleep ([kernel.kallsyms])
-> > >>                                       do_syscall_64 ([kernel.kallsyms])
-> > >>                                       entry_SYSCALL_64_after_hwframe ([kernel.kallsyms])
-> > >>                                       __clock_nanosleep_2 (/usr/lib64/libc-2.32.so)
-> > >> 
-> > >> 
-> > >> Terminal 2:
-> > >> 
-> > >> [root@five ~]# perf stat -e cycles -b 180 -I 1000
-> > >> libbpf: elf: skipping unrecognized data section(9) .eh_frame
-> > >> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-> > >> perf: util/bpf_counter.c:227: bpf_program_profiler__read: Assertion `skel != NULL' failed.
-> > >> Aborted (core dumped)
-> > > 
-> > > Out to lunch, will continue later, but this may help you figure this out
-> > > till then :)
-> > > 
-> > > Starting program: /root/bin/perf stat -e cycles -b 244 -I 1000
-> > > [Thread debugging using libthread_db enabled]
-> > > Using host libthread_db library "/lib64/libthread_db.so.1".
-> > > 
-> > > Breakpoint 1, bpf_program_profiler_load_one (evsel=0xce02c0, prog_id=244) at util/bpf_counter.c:96
-> > > 96	{
-> > > (gdb) n
-> > > 104		prog_fd = bpf_prog_get_fd_by_id(prog_id);
-> > > (gdb) 
-> > > 105		if (prog_fd < 0) {
-> > > (gdb) 
-> > > 109		counter = bpf_counter_alloc();
-> > > (gdb) 
-> > > 110		if (!counter) {
-> > > (gdb) n
-> > > 115		skel = bpf_prog_profiler_bpf__open();
-> > > (gdb) p counter
-> > > $9 = (struct bpf_counter *) 0xce09e0
-> > > (gdb) p *counter
-> > > $10 = {skel = 0x0, list = {next = 0xce09e8, prev = 0xce09e8}}
-> > > (gdb) p *counter
-> > > $11 = {skel = 0x0, list = {next = 0xce09e8, prev = 0xce09e8}}
-> > > (gdb) n
-> > > libbpf: elf: skipping unrecognized data section(9) .eh_frame
-> > > libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
-> > > 116		if (!skel) {
-> > > (gdb) 
-> > > 121		skel->rodata->num_cpu = evsel__nr_cpus(evsel);
-> > > (gdb) 
-> > > 123		bpf_map__resize(skel->maps.events, evsel__nr_cpus(evsel));
-> > > (gdb) 
-> > > 124		bpf_map__resize(skel->maps.fentry_readings, 1);
-> > > (gdb) 
-> > > 125		bpf_map__resize(skel->maps.accum_readings, 1);
-> > > (gdb) 
-> > > 127		prog_name = bpf_target_prog_name(prog_fd);
-> > > (gdb) 
-> > > 128		if (!prog_name) {
-> > > (gdb) 
-> > > 133		bpf_object__for_each_program(prog, skel->obj) {
-> > > (gdb) 
-> > > 134			err = bpf_program__set_attach_target(prog, prog_fd, prog_name);
-> > > (gdb) 
-> > > 135			if (err) {
-> > > (gdb) 
-> > > 133		bpf_object__for_each_program(prog, skel->obj) {
-> > > (gdb) p evsel
-> > > $12 = (struct evsel *) 0xce02c0
-> > > (gdb) p evsel->name
-> > > $13 = 0xce04e0 "cycles"
-> > > (gdb) n
-> > > 134			err = bpf_program__set_attach_target(prog, prog_fd, prog_name);
-> > > (gdb) 
-> > > 135			if (err) {
-> > > (gdb) 
-> > > 133		bpf_object__for_each_program(prog, skel->obj) {
-> > > (gdb) 
-> > > 141		set_max_rlimit();
-> > > (gdb) 
-> > > 142		err = bpf_prog_profiler_bpf__load(skel);
-> > > (gdb) 
-> > > 143		if (err) {
-> > > (gdb) 
-> > > 148		assert(skel != NULL);
-> > > (gdb) 
-> > > 149		counter->skel = skel;
-> > > (gdb) 
-> > > 150		list_add(&counter->list, &evsel->bpf_counter_list);
-> > > (gdb) c
-> > > Continuing.
-> > > 
-> > > Breakpoint 4, bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:247
-> > > 247	{
-> > > (gdb) n
-> > > 252		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-> > > (gdb) 
-> > > 253			skel = counter->skel;
-> > > (gdb) watch counter->skel
-> > > Hardware watchpoint 6: counter->skel
-> > > (gdb) p counter->skel
-> > > $14 = (void *) 0xce0a00
-> > > (gdb) n
-> > > 254			assert(skel != NULL);
-> > > (gdb) p skel
-> > > $15 = (struct bpf_prog_profiler_bpf *) 0xce0a00
-> > > (gdb) c
-> > > Continuing.
-> > > 
-> > > Hardware watchpoint 6: counter->skel
-> > > 
-> > > Old value = (void *) 0xce0a00
-> > > New value = (void *) 0x0
-> > > 0x00000000005cf45e in bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=0, fd=3) at util/bpf_counter.c:252
-> > > 252		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-> > 
-> > So it was the list operation that set counter->skel to NULL? I am really confused...
-> 
-> Yep, I'm confused as well and trying to reproduce this, but got
-> sidetracked...
+On Wed, Jan 20, 2021 at 10:51 AM Yiwei Zhang=E2=80=8E <zzyiwei@android.com>=
+ wrote:
+>
+> On Wed, Jan 20, 2021 at 1:11 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Tue, Jan 19, 2021 at 11:08:12AM -0800, Yiwei Zhang wrote:
+> > > On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrot=
+e:
+> > > >
+> > > > On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> =
+wrote:
+> > > > >
+> > > > > On the success of virtio_gpu_object_create, add size of newly all=
+ocated
+> > > > > bo to the tracled total_mem. In drm_gem_object_funcs.free, after =
+the gem
+> > > > > bo lost its last refcount, subtract the bo size from the tracked
+> > > > > total_mem if the original underlying memory allocation is success=
+ful.
+> > > > >
+> > > > > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> > > >
+> > > > Isn't this something that ideally we'd for everyone? Also tracepoin=
+t
+> > > > for showing the total feels like tracepoint abuse, usually we show
+> > > > totals somewhere in debugfs or similar, and tracepoint just for wha=
+t's
+> > > > happening (i.e. which object got deleted/created).
+> > > >
+> > > > What is this for exactly?
+> > > > -Daniel
+> > > >
+> > > > > ---
+> > > > >  drivers/gpu/drm/virtio/Kconfig          |  1 +
+> > > > >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
+> > > > >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
+> > > > >  3 files changed, 24 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/vir=
+tio/Kconfig
+> > > > > index b925b8b1da16..e103b7e883b1 100644
+> > > > > --- a/drivers/gpu/drm/virtio/Kconfig
+> > > > > +++ b/drivers/gpu/drm/virtio/Kconfig
+> > > > > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+> > > > >         select DRM_KMS_HELPER
+> > > > >         select DRM_GEM_SHMEM_HELPER
+> > > > >         select VIRTIO_DMA_SHARED_BUFFER
+> > > > > +       select TRACE_GPU_MEM
+> > > > >         help
+> > > > >            This is the virtual GPU driver for virtio.  It can be =
+used with
+> > > > >            QEMU based VMMs (like KVM or Xen).
+> > > > > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/d=
+rm/virtio/virtgpu_drv.h
+> > > > > index 6a232553c99b..7c60e7486bc4 100644
+> > > > > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > > > > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > > > > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
+> > > > >         spinlock_t resource_export_lock;
+> > > > >         /* protects map state and host_visible_mm */
+> > > > >         spinlock_t host_visible_lock;
+> > > > > +
+> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > > > +       atomic64_t total_mem;
+> > > > > +#endif
+> > > > >  };
+> > > > >
+> > > > >  struct virtio_gpu_fpriv {
+> > > > > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gp=
+u/drm/virtio/virtgpu_object.c
+> > > > > index d69a5b6da553..1e16226cebbe 100644
+> > > > > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> > > > > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > > > > @@ -25,12 +25,29 @@
+> > > > >
+> > > > >  #include <linux/dma-mapping.h>
+> > > > >  #include <linux/moduleparam.h>
+> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > > > +#include <trace/events/gpu_mem.h>
+> > > > > +#endif
+> > > > >
+> > > > >  #include "virtgpu_drv.h"
+> > > > >
+> > > > >  static int virtio_gpu_virglrenderer_workaround =3D 1;
+> > > > >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaroun=
+d, int, 0400);
+> > > > >
+> > > > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_=
+device *vgdev,
+> > > > > +                                             s64 delta)
+> > > > > +{
+> > > > > +       u64 total_mem =3D atomic64_add_return(delta, &vgdev->tota=
+l_mem);
+> > > > > +
+> > > > > +       trace_gpu_mem_total(0, 0, total_mem);
+> > > > > +}
+> > > > > +#else
+> > > > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_=
+device *, s64)
+> > > > > +{
+> > > > > +}
+> > > > > +#endif
+> > > > > +
+> > > > >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, =
+uint32_t *resid)
+> > > > >  {
+> > > > >         if (virtio_gpu_virglrenderer_workaround) {
+> > > > > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm=
+_gem_object *obj)
+> > > > >         struct virtio_gpu_device *vgdev =3D bo->base.base.dev->de=
+v_private;
+> > > > >
+> > > > >         if (bo->created) {
+> > > > > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+> > > > >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+> > > > >                 virtio_gpu_notify(vgdev);
+> > > > >                 /* completion handler calls virtio_gpu_cleanup_ob=
+ject() */
+> > > > > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gp=
+u_device *vgdev,
+> > > > >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+> > > > >         }
+> > > > >
+> > > > > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+> > > > >         *bo_ptr =3D bo;
+> > > > >         return 0;
+> > > > >
+> > > > > --
+> > > > > 2.30.0.284.gd98b1dd5eaa7-goog
+> > > > >
+> > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> > >
+> > > Thanks for your reply! Android Cuttlefish virtual platform is using
+> > > the virtio-gpu driver, and we currently are carrying this small patch
+> > > at the downstream side. This is essential for us because:
+> > > (1) Android has deprecated debugfs on production devices already
+> > > (2) Android GPU drivers are not DRM based, and this won't change in a
+> > > short term.
+> > >
+> > > Android relies on this tracepoint + eBPF to make the GPU memory total=
+s
+> > > available at runtime on production devices, which has been enforced
+> > > already. Not only game developers can have a reliable kernel total GP=
+U
+> > > memory to look at, but also Android leverages this to take GPU memory
+> > > usage out from the system lost ram.
+> > >
+> > > I'm not sure whether the other DRM drivers would like to integrate
+> > > this tracepoint(maybe upstream drivers will move away from debugfs
+> > > later as well?), but at least we hope virtio-gpu can take this.
+> >
+> > There's already another proposal from Android people for tracking dma-b=
+uf
+> > (in dma-buf heaps/ion) usage. I think we need something which is overal=
+l
+> > integrated, otherwise we have a complete mess of partial solutions.
+> >
+> > Also there's work going on to add cgroups support to gpu drivers (pushe=
+d
+> > by amd and intel folks, latest rfc have been quite old), so that's anot=
+her
+> > proposal for gpu memory usage tracking.
+> >
+> > Also for upstream we need something which works with upstream gpu drive=
+rs
+> > (even if you don't end up using that in shipping products). So that's
+> > another reason maybe why a quick hack in the virtio gpu driver isn't th=
+e
+> > best approach here.
+> >
+> > I guess a good approach would be if Android at least can get to somethi=
+ng
+> > unified (gpu driver, virtio-gpu, dma-buf heaps), and then we need to
+> > figure out how to mesh that with the cgroups side somehow.
+> >
+> > Also note that at least on dma-buf we already have some other debug
+> > features (for android), so an overall "how does this all fit together"
+> > would be good.
+> > -Daniel
+> >
+> > >
+> > > Many thanks!
+> > > Yiwei
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+>
+> The entire story is to better explain Android system memory usage.
+> They fit together so that the dma-bufs overlap can be removed.
+>
+> Android GPU vendors have integrated this tracepoint to track gpu
+> memory usage total(mapped into the gpu address space), which consists
+> of below:
+> (1) directly allocated via physical page allocator
+> (2) imported external memory backed by dma-bufs
+> (3) allocated exportable memory backed by dma-bufs
+>
+> Our Android kernel team is leading the other side of effort to help
+> remove the dma-bufs overlap(those mapped into a gpu device) as a joint
+> effort, so that we can accurately explain the memory usage of the
+> entire Android system.
+>
+> For virtio-gpu, since that's used by our reference platform
+> Cuttlefish(Cloud Android), we have to integrate the same tracepoint as
+> well to enforce the use of this tracepoint and the eBPF stuff built on
+> top to support runtime query of gpu memory on production devices. For
+> virtio-gpu at this moment, we only want to track GEM allocations since
+> PRIME import is currently not supported/used in Cuttlefish. That's all
+> we are doing in this small patch.
 
-Coming back to this, now it is exploding later:
+Ok if the plan is to have that as a hard requirement for android
+across all android uapi drivers, then
+- this needs to be done across all upstream drivers too (otherwise we
+don't have that uapi)
+- usual open source requirements for new uapi (but I don't think that
+should be a problem, these parts of android are all open I think)
+- figuring out the overlap with the dma-buf account, before we merge either
 
-Breakpoint 8, bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=22, fd=32) at util/bpf_counter.c:254
-254			assert(skel != NULL);
-(gdb) p skel
-$52 = (struct bpf_prog_profiler_bpf *) 0xce0a00
-(gdb) c
-Continuing.
-
-Breakpoint 4, bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=23, fd=33) at util/bpf_counter.c:247
-247	{
-(gdb) p skel
-$53 = (struct bpf_prog_profiler_bpf *) 0xce04c0
-(gdb) c
-Continuing.
-
-Breakpoint 8, bpf_program_profiler__install_pe (evsel=0xce02c0, cpu=23, fd=33) at util/bpf_counter.c:254
-254			assert(skel != NULL);
-(gdb) p skel
-$54 = (struct bpf_prog_profiler_bpf *) 0xce0a00
-(gdb) c
-Continuing.
-
-Breakpoint 2, bpf_program_profiler__enable (evsel=0xce02c0) at util/bpf_counter.c:192
-192	{
-(gdb) n
-196		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-(gdb)
-197			assert(counter->skel != NULL);
-(gdb)
-198			ret = bpf_prog_profiler_bpf__attach(counter->skel);
-(gdb) c
-Continuing.
-
-Breakpoint 3, bpf_program_profiler__read (evsel=0xce02c0) at util/bpf_counter.c:208
-208	{
-(gdb) c
-Continuing.
-
-Program received signal SIGSEGV, Segmentation fault.
-0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-224		list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-(gdb) p evsel
-$55 = (struct evsel *) 0x0
-(gdb) bt
-#0  0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-#1  0x0000000000000000 in ?? ()
-(gdb) bt
-#0  0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-#1  0x0000000000000000 in ?? ()
-(gdb)
-(gdb) info threads
-  Id   Target Id                                  Frame
-* 1    Thread 0x7ffff647f900 (LWP 1725711) "perf" 0x00000000005cf34b in bpf_program_profiler__read (evsel=0x0) at util/bpf_counter.c:224
-(gdb)
+Otherwise I don't see how this can work and be backed with upstreams
+"never break uapi" guarantee.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
