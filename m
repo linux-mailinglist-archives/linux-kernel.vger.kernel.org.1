@@ -2,127 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF8E2FC617
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C592FC61D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 01:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730831AbhATAtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 19:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729070AbhATArM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:47:12 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCC7C061757;
-        Tue, 19 Jan 2021 16:46:14 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id q8so178647lfm.10;
-        Tue, 19 Jan 2021 16:46:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yTAnXtjPrGxO02YmxJ6XSfUB2dhdEl68apWpq9Pbuk=;
-        b=aWR9uj6s3zndMEFoZ0kLGAmhuCaTsnAHptSyzcafSG7fqIryWI9a5yiM/dJtg7cQ31
-         xBuT1njrtSKCDJUwwVbAM2PunBKhKs/LSzcG2bV3C5PKxh5sZ2pMdNKFXtT11CXBXTQc
-         95xFXZCtrb0KGKUpfj2P3YJXOyHL9aSDk7y715K94Mkv/aCxnUwZR+pkgLrvbP63yZ4a
-         tvYyVQr4BuxHVXuPEO+soQnt9V+9ZXse1vcmQ9YKTou5lId/bjyqGWdoAvog9pRNWIWf
-         P7nGzwbSjXFPbF9maU7JyKVY5oMqYdEo7YspHvXT/4qdjqEeUmnkxEVgIdaVWZjfr9Bs
-         bNYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yTAnXtjPrGxO02YmxJ6XSfUB2dhdEl68apWpq9Pbuk=;
-        b=mKglqnXoEdfVnkP8iWm5KxLzPmWRmmRQBzFZy1lF75hlCKQgy+oKRdkqEl3zOpDvfo
-         mFIPGYZ8MLoODaxoDw8SUmXKlEzQiLs5mg17wEVuvTskYmqfLjuYM/jU+7Zx8Q+EcAAX
-         vU8yLAGB+71kwT0DLGXxpV7cE+wLQKm35fOVxuH/15eMr379gEJLhSTROMoW6j34AKMf
-         HnqZCbUT0kUV3S2GJLVasnoow9W9yvIC9Q97hSSMIslFYyP3lpXdJTskSTvzLw5wHy7c
-         C9kkqnX+Mrs7J3n/lAHbxBFT1ovKQwPZXj5Pja5FY6AzmhdWKvT0i0ZMQo8FHphvKKNY
-         LUVw==
-X-Gm-Message-State: AOAM532ajCvapBTfGnrskUkXUztnXUbudQyiWzae5CwIliETVELsbaVT
-        Ibr4LNVTZqXFLf2fZ7IrklE=
-X-Google-Smtp-Source: ABdhPJy8eIsMtMERKkZrAhe3XZuLfuFDeOMsJR2MapSRDZs82HYp5fV158YEgPkRzK0K5NOueIL+tA==
-X-Received: by 2002:a19:ee09:: with SMTP id g9mr995874lfb.272.1611103572917;
-        Tue, 19 Jan 2021 16:46:12 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id v23sm21046ljg.97.2021.01.19.16.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 16:46:12 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] gpio: tegra: Fix irq_set_affinity
-Date:   Wed, 20 Jan 2021 03:45:48 +0300
-Message-Id: <20210120004548.31692-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1730988AbhATAvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 19:51:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730549AbhATAuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 19:50:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C15B623109;
+        Wed, 20 Jan 2021 00:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611103809;
+        bh=LtxxyRIHpoZ8pyHYd8BJeEaCUydeJtYDQL+hjWN0aIo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=risNMGVbLJGgt5RVQssCjMl9yj+0u24htDhumTh/XAJbj66H0MA2IU4E/6XwsgYmw
+         3NzpDChv9L0szesGt3aqrMDDAZfQTpfc4uwGXjnLb+odpgN9QIOFSTFVZ+w59S8Z8h
+         ecyxPMgUju2IEjN9if0SOF41lYEleppeKY9qUx1hmMEOWxdGJRL0BfqXihAtKPsN0J
+         ovTY4jijhAMJqf+EUTZppGg2DNGFfuZhm+ffAyj0NSUwn9sRhqxTIXrGM0nDD2uXvn
+         l0AskOuujthgU4yAe65D6cJutxMBBD1z8Jkbr9UGqsmKi302euKOr66Kb6RlVxD57e
+         kAXR+TLwNm7kA==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id B4F5860584;
+        Wed, 20 Jan 2021 00:50:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] sh_eth: Fix power down vs. is_opened flag ordering
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161110380973.31620.4370293921348341314.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Jan 2021 00:50:09 +0000
+References: <20210118150812.796791-1-geert+renesas@glider.be>
+In-Reply-To: <20210118150812.796791-1-geert+renesas@glider.be>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     sergei.shtylyov@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        horms+renesas@verge.net.au, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The irq_set_affinity callback should not be set if parent IRQ domain
-doesn't present because gpio-tegra driver callback fails in this case,
-causing a noisy error messages on system suspend:
+Hello:
 
- Disabling non-boot CPUs ...
- IRQ 26: no longer affine to CPU1
- IRQ128: set affinity failed(-22).
- IRQ130: set affinity failed(-22).
- IRQ131: set affinity failed(-22).
- IRQ 27: no longer affine to CPU2
- IRQ128: set affinity failed(-22).
- IRQ130: set affinity failed(-22).
- IRQ131: set affinity failed(-22).
- IRQ 28: no longer affine to CPU3
- IRQ128: set affinity failed(-22).
- IRQ130: set affinity failed(-22).
- IRQ131: set affinity failed(-22).
- Entering suspend state LP1
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Hence just don't specify the irq_set_affinity callback if parent PMC
-IRQ domain is missing. Tegra isn't capable of setting affinity per GPIO,
-affinity could be set only per GPIO bank, thus there is nothing to do
-for gpio-tegra in regards to CPU affinity without the parent IRQ domain.
+On Mon, 18 Jan 2021 16:08:12 +0100 you wrote:
+> sh_eth_close() does a synchronous power down of the device before
+> marking it closed.  Revert the order, to make sure the device is never
+> marked opened while suspended.
+> 
+> While at it, use pm_runtime_put() instead of pm_runtime_put_sync(), as
+> there is no reason to do a synchronous power down.
+> 
+> [...]
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-Fixes: efcdca286eef ("gpio: tegra: Convert to gpio_irq_chip")
-Reported-by: Matt Merhar <mattmerhar@protonmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpio/gpio-tegra.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Here is the summary with links:
+  - sh_eth: Fix power down vs. is_opened flag ordering
+    https://git.kernel.org/netdev/net/c/f6a2e94b3f9d
 
-diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
-index 6c79e9d2f932..9a43129313fa 100644
---- a/drivers/gpio/gpio-tegra.c
-+++ b/drivers/gpio/gpio-tegra.c
-@@ -701,7 +701,6 @@ static int tegra_gpio_probe(struct platform_device *pdev)
- #ifdef CONFIG_PM_SLEEP
- 	tgi->ic.irq_set_wake		= tegra_gpio_irq_set_wake;
- #endif
--	tgi->ic.irq_set_affinity	= tegra_gpio_irq_set_affinity;
- 	tgi->ic.irq_request_resources	= tegra_gpio_irq_request_resources;
- 	tgi->ic.irq_release_resources	= tegra_gpio_irq_release_resources;
- 
-@@ -754,6 +753,8 @@ static int tegra_gpio_probe(struct platform_device *pdev)
- 
- 		if (!irq->parent_domain)
- 			return -EPROBE_DEFER;
-+
-+		tgi->ic.irq_set_affinity = tegra_gpio_irq_set_affinity;
- 	}
- 
- 	tgi->regs = devm_platform_ioremap_resource(pdev, 0);
--- 
-2.29.2
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
