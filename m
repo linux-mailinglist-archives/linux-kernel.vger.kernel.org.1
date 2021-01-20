@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0BD2FCC00
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7ED2FCBF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbhATHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:48:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49556 "EHLO mx2.suse.de"
+        id S1730003AbhATHqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:46:37 -0500
+Received: from mga17.intel.com ([192.55.52.151]:7116 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728736AbhATHrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:47:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611128814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ueiYHJsmAMlmc2zh0uWWVeND9IJsp4Ikx2aN0R8JzWU=;
-        b=NuEMbEzrVLOY7iFauN0i3IO+XiSQoKmLRgTV4/nlOhqMGSpYxzoa/uqAUKdU2rZcWE/8Th
-        kepjL7JgQneqEisWC3a+ZTlc/PoLnRY1HZJeqN+e1boS6z/8V/F89I09q/oe+rUY+Zwfzl
-        ZcpQ2gzDJr4fnumXgoj+ARJajabcLpY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8E3CCAAAE;
-        Wed, 20 Jan 2021 07:46:54 +0000 (UTC)
-Date:   Wed, 20 Jan 2021 08:46:52 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] swap: Check nrexceptional of swap cache before being
- freed
-Message-ID: <20210120074652.GA9371@dhcp22.suse.cz>
-References: <20210120072711.209099-1-ying.huang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120072711.209099-1-ying.huang@intel.com>
+        id S1728215AbhATHqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 02:46:34 -0500
+IronPort-SDR: ZK9AsS1uldtu4kCYV1dvvyPLZU2EE/QxruDnGSjX9Hx8NpfE+SN1PXd9rnVHexHNisRhI07VfE
+ PKy0jr3puuCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158836353"
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="158836353"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 23:45:54 -0800
+IronPort-SDR: +44SCZeZpBzqKfP3WQ9/Wys4rNcePPXriBEVdg6h6gAjCiD2aSza9OTs6qRByYDhda8IRATNij
+ raOZSHbevbxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,360,1602572400"; 
+   d="scan'208";a="466994219"
+Received: from host.sh.intel.com ([10.239.154.115])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 23:45:52 -0800
+From:   Ye Xiang <xiang.ye@intel.com>
+To:     jikos@kernel.org, jic23@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
+Subject: [PATCH 0/3] resolve read hystersis return invalid argument issue for hid sensors
+Date:   Wed, 20 Jan 2021 15:47:03 +0800
+Message-Id: <20210120074706.23199-1-xiang.ye@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-01-21 15:27:11, Huang Ying wrote:
-> To catch the error in updating the swap cache shadow entries or their count.
+This patch series move get sensitivity attribute to common layer and
+resolve read hystersis return invalid argument issue for hid sensors als,
+incli-3d, rotation, and press on intel ISH Platform.
 
-What is the error? Can it happens in the real life? Why do we need this
-patch? Is crashing the kernel the right way to handle the situation?
+Ye Xiang (3):
+  iio: hid-sensors: Move get sensitivity attribute to hid-sensor-common
+  hid-sensor-common: Add relative sensitivity check
+  hid-sensors: Add more data fields for sensitivity checking
 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-> Cc: Johannes Weiner <hannes@cmpxchg.org>,
-> Cc: Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
-> Cc: Mel Gorman <mgorman@techsingularity.net>,
-> Cc: Michal Hocko <mhocko@kernel.org>,
-> Cc: Dan Williams <dan.j.williams@intel.com>,
-> Cc: Christoph Hellwig <hch@lst.de>, Ilya Dryomov <idryomov@gmail.com>,
-> ---
->  mm/swap_state.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index d0d417efeecc..240a4f97594a 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -703,7 +703,12 @@ int init_swap_address_space(unsigned int type, unsigned long nr_pages)
->  
->  void exit_swap_address_space(unsigned int type)
->  {
-> -	kvfree(swapper_spaces[type]);
-> +	int i;
-> +	struct address_space *spaces = swapper_spaces[type];
-> +
-> +	for (i = 0; i < nr_swapper_spaces[type]; i++)
-> +		VM_BUG_ON(spaces[i].nrexceptional);
-> +	kvfree(spaces);
->  	nr_swapper_spaces[type] = 0;
->  	swapper_spaces[type] = NULL;
->  }
-> -- 
-> 2.29.2
+ drivers/iio/accel/hid-sensor-accel-3d.c       | 23 +++++--------
+ .../hid-sensors/hid-sensor-attributes.c       | 26 +++++++++++++-
+ drivers/iio/gyro/hid-sensor-gyro-3d.c         | 19 ++++-------
+ drivers/iio/humidity/hid-sensor-humidity.c    | 16 ++++-----
+ drivers/iio/light/hid-sensor-als.c            | 20 +++++------
+ drivers/iio/light/hid-sensor-prox.c           | 27 +++++----------
+ drivers/iio/magnetometer/hid-sensor-magn-3d.c | 34 ++++++-------------
+ drivers/iio/orientation/hid-sensor-incl-3d.c  | 20 +++++------
+ drivers/iio/orientation/hid-sensor-rotation.c | 24 ++++++-------
+ .../position/hid-sensor-custom-intel-hinge.c  | 20 ++++-------
+ drivers/iio/pressure/hid-sensor-press.c       | 20 +++++------
+ .../iio/temperature/hid-sensor-temperature.c  | 16 ++++-----
+ drivers/rtc/rtc-hid-sensor-time.c             |  4 ++-
+ include/linux/hid-sensor-hub.h                |  4 ++-
+ include/linux/hid-sensor-ids.h                |  1 +
+ 15 files changed, 122 insertions(+), 152 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
