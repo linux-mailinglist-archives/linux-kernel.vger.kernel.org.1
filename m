@@ -2,823 +2,580 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7512FD3A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDF72FD3EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 16:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390897AbhATPNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 10:13:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390272AbhATPGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:06:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2212336E;
-        Wed, 20 Jan 2021 15:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611155162;
-        bh=oMU98zVbwV+NSKJw+ZB65S0eX4Ca97owmagKupOLvKs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=p52JgYPqX//UBdzdQafDCuVa9CITCPRVFJwH4jVsr7fHT4ZKh28rgU8OyLBBVlkzW
-         MqsORHhorMTa2YJ9h5KLukISDauTp0hbgIlX6HvKUjKGaKLwq9e0S1bg4l9dBypoyL
-         W/C9+cI8t/PSynAbRqnMw68mBPAvV8q3Rg2/6jY5OPkyNzsKa37TWolMF34CH/ZBFp
-         R+dkgF4TDWkfQrBTS89AIcXK3LT9WW/KplKS3Ph8Q0gpUDlOq7+tFUCuotBA/5a5Jn
-         7R+Xni2SJtsnG4xr1blQGX+HuonvkPWdncXr5VDpGw1aEf7ENNx+Xqrcc1jCPNjyM7
-         ffLGj46am2MMQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] nand: raw: remove tango driver
-Date:   Wed, 20 Jan 2021 16:05:26 +0100
-Message-Id: <20210120150555.1610132-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2403796AbhATPXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 10:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391014AbhATPHf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:07:35 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844AFC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:06:51 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id h18so13190382vsg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 07:06:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=etFse3w70ie3lr1cLnk3F36cA3MsGqSTTP463EZ/Y+4=;
+        b=nM83DKfcWRrsp8S5PfNczbpWc/nWiJp4rKJ416eMFp5nE3a33HhwBAzkxzfE05nlYy
+         K2lblq4E4xEVQnfwsn9eGmDjB1oF4CNXdCd9WQM4r9NbqGwyi43GOakOj0pRijfvnOqi
+         gqbCG1ga2KDB4kR9IDPzl7N64FOB99DD+7hzxZiAS3K72up9S6qp58T5IuEZtQHaXt9S
+         /jjX8bcTwJtlhSqC3ncktkJsFEFDAE2mu3qaQCIG1xXbXfi2mPeE/YD0AeqXfDLUNMHT
+         6nutMmjEqVGXel+6G3AAsOyFkZ70l8JDUWXsbpgAGknQ7SIk/oUWwih/2Gft6Xx9x5m6
+         mMsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=etFse3w70ie3lr1cLnk3F36cA3MsGqSTTP463EZ/Y+4=;
+        b=tyIpcyYlxt7CyKZ3H4by2wbc0d/1hX5l4sB4hhsC5itlRlGgFikRN6ZsW2UgrXQpT3
+         jtjfVTQGCLlMlNL9akyHBBQWZ0peVApgjIDc7A+NMiVS+FD08fyO3R3jL6dIfJvD3aiY
+         HqqzMpTfVQqIx8nzCzWG6+KjSZHTmATVBYYlEOkvpzYuu+7EzansiGkubKovVMHZ66nN
+         6ShA2519FbASwUGHgxxNp9lot1Q59eCks0bpvZhFKMTnsjjCwAAkTwnhvA2q0K+nRVMr
+         vCiQ07lsTsQJhWz9EN/V1aO5hBO2K1UAMQ3jSaEI/kYgtyk83xngt2eQIJhJFUI8p1pA
+         mdOQ==
+X-Gm-Message-State: AOAM533jjY1vdYNvL6C5ZBTr0F2qRHDBQGDSoc6gOUsXXYxlUwLpynsX
+        R6ThXmZg5GuWLXzcQKD42nQSpcVLk6QKLKsMgnbQ1A==
+X-Google-Smtp-Source: ABdhPJz3r5WhASJ+dRp1kroCWCnCTfRsvCymMZ8xrs/qcrYy+YxxRkSQIy4gJpJkHOKOjRe6Gqw72a8BlJTjtjiKZ6c=
+X-Received: by 2002:a67:facb:: with SMTP id g11mr7073680vsq.19.1611155210410;
+ Wed, 20 Jan 2021 07:06:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210120121047.2601-1-bbudiredla@marvell.com> <20210120121047.2601-2-bbudiredla@marvell.com>
+In-Reply-To: <20210120121047.2601-2-bbudiredla@marvell.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 20 Jan 2021 16:06:13 +0100
+Message-ID: <CAPDyKFoF7jz-mbsY8kPUGca5civFKRRyPpHbRkj9P=xevRRfbA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
++ linux-block, Jens, Christoph
 
-The tango platform is getting removed, so the driver is no
-longer needed.
+On Wed, 20 Jan 2021 at 13:11, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
+>
+> This patch introduces to mmcpstore. The functioning of mmcpstore
+> is similar to mtdpstore. mmcpstore works on FTL based flash devices
+> whereas mtdpstore works on raw flash devices. When the system crashes,
+> mmcpstore stores the kmsg panic and oops logs to a user specified
+> MMC device.
+>
+> It collects the details about the host MMC device through pstore/blk
+> "blkdev" parameter. The user can specify the MMC device in many ways
+> by checking in Documentation/admin-guide/pstore-blk.rst.
+>
+> The individual mmc host drivers have to define suitable polling and
+> cleanup subroutines to write kmsg panic/oops logs through mmcpstore.
+> These new host operations are needed as pstore panic write runs with
+> interrupts disabled.
 
-Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-Cc: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/nand/raw/Kconfig      |   7 -
- drivers/mtd/nand/raw/Makefile     |   1 -
- drivers/mtd/nand/raw/tango_nand.c | 727 ------------------------------
- 3 files changed, 735 deletions(-)
- delete mode 100644 drivers/mtd/nand/raw/tango_nand.c
+Okay, let me again try to clarify on how I see this to move this forward.
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 4b84fd36e384..30f061939560 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -102,13 +102,6 @@ config MTD_NAND_S3C2410_CLKSTOP
- 	  when the is NAND chip selected or released, but will save
- 	  approximately 5mA of power when there is nothing happening.
- 
--config MTD_NAND_TANGO
--	tristate "Tango NAND controller"
--	depends on ARCH_TANGO || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  Enables the NAND Flash controller on Tango chips.
--
- config MTD_NAND_SHARPSL
- 	tristate "Sharp SL Series (C7xx + others) NAND controller"
- 	depends on ARCH_PXA || COMPILE_TEST
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 32475a28d8f8..d011c6c53f8f 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -10,7 +10,6 @@ obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
- obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
- obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
- obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
--obj-$(CONFIG_MTD_NAND_TANGO)		+= tango_nand.o
- obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
- obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
- obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
-diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-deleted file mode 100644
-index 359187b5a4be..000000000000
---- a/drivers/mtd/nand/raw/tango_nand.c
-+++ /dev/null
-@@ -1,727 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2016 Sigma Designs
-- */
--
--#include <linux/io.h>
--#include <linux/of.h>
--#include <linux/clk.h>
--#include <linux/iopoll.h>
--#include <linux/module.h>
--#include <linux/mtd/rawnand.h>
--#include <linux/dmaengine.h>
--#include <linux/dma-mapping.h>
--#include <linux/platform_device.h>
--
--/* Offsets relative to chip->base */
--#define PBUS_CMD	0
--#define PBUS_ADDR	4
--#define PBUS_DATA	8
--
--/* Offsets relative to reg_base */
--#define NFC_STATUS	0x00
--#define NFC_FLASH_CMD	0x04
--#define NFC_DEVICE_CFG	0x08
--#define NFC_TIMING1	0x0c
--#define NFC_TIMING2	0x10
--#define NFC_XFER_CFG	0x14
--#define NFC_PKT_0_CFG	0x18
--#define NFC_PKT_N_CFG	0x1c
--#define NFC_BB_CFG	0x20
--#define NFC_ADDR_PAGE	0x24
--#define NFC_ADDR_OFFSET	0x28
--#define NFC_XFER_STATUS	0x2c
--
--/* NFC_STATUS values */
--#define CMD_READY	BIT(31)
--
--/* NFC_FLASH_CMD values */
--#define NFC_READ	1
--#define NFC_WRITE	2
--
--/* NFC_XFER_STATUS values */
--#define PAGE_IS_EMPTY	BIT(16)
--
--/* Offsets relative to mem_base */
--#define METADATA	0x000
--#define ERROR_REPORT	0x1c0
--
--/*
-- * Error reports are split in two bytes:
-- * byte 0 for the first packet in the page (PKT_0)
-- * byte 1 for other packets in the page (PKT_N, for N > 0)
-- * ERR_COUNT_PKT_N is the max error count over all but the first packet.
-- */
--#define ERR_COUNT_PKT_0(v)	(((v) >> 0) & 0x3f)
--#define ERR_COUNT_PKT_N(v)	(((v) >> 8) & 0x3f)
--#define DECODE_FAIL_PKT_0(v)	(((v) & BIT(7)) == 0)
--#define DECODE_FAIL_PKT_N(v)	(((v) & BIT(15)) == 0)
--
--/* Offsets relative to pbus_base */
--#define PBUS_CS_CTRL	0x83c
--#define PBUS_PAD_MODE	0x8f0
--
--/* PBUS_CS_CTRL values */
--#define PBUS_IORDY	BIT(31)
--
--/*
-- * PBUS_PAD_MODE values
-- * In raw mode, the driver communicates directly with the NAND chips.
-- * In NFC mode, the NAND Flash controller manages the communication.
-- * We use NFC mode for read and write; raw mode for everything else.
-- */
--#define MODE_RAW	0
--#define MODE_NFC	BIT(31)
--
--#define METADATA_SIZE	4
--#define BBM_SIZE	6
--#define FIELD_ORDER	15
--
--#define MAX_CS		4
--
--struct tango_nfc {
--	struct nand_controller hw;
--	void __iomem *reg_base;
--	void __iomem *mem_base;
--	void __iomem *pbus_base;
--	struct tango_chip *chips[MAX_CS];
--	struct dma_chan *chan;
--	int freq_kHz;
--};
--
--#define to_tango_nfc(ptr) container_of(ptr, struct tango_nfc, hw)
--
--struct tango_chip {
--	struct nand_chip nand_chip;
--	void __iomem *base;
--	u32 timing1;
--	u32 timing2;
--	u32 xfer_cfg;
--	u32 pkt_0_cfg;
--	u32 pkt_n_cfg;
--	u32 bb_cfg;
--};
--
--#define to_tango_chip(ptr) container_of(ptr, struct tango_chip, nand_chip)
--
--#define XFER_CFG(cs, page_count, steps, metadata_size)	\
--	((cs) << 24 | (page_count) << 16 | (steps) << 8 | (metadata_size))
--
--#define PKT_CFG(size, strength) ((size) << 16 | (strength))
--
--#define BB_CFG(bb_offset, bb_size) ((bb_offset) << 16 | (bb_size))
--
--#define TIMING(t0, t1, t2, t3) ((t0) << 24 | (t1) << 16 | (t2) << 8 | (t3))
--
--static void tango_select_target(struct nand_chip *chip, unsigned int cs)
--{
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--	struct tango_chip *tchip = to_tango_chip(chip);
--
--	writel_relaxed(tchip->timing1, nfc->reg_base + NFC_TIMING1);
--	writel_relaxed(tchip->timing2, nfc->reg_base + NFC_TIMING2);
--	writel_relaxed(tchip->xfer_cfg, nfc->reg_base + NFC_XFER_CFG);
--	writel_relaxed(tchip->pkt_0_cfg, nfc->reg_base + NFC_PKT_0_CFG);
--	writel_relaxed(tchip->pkt_n_cfg, nfc->reg_base + NFC_PKT_N_CFG);
--	writel_relaxed(tchip->bb_cfg, nfc->reg_base + NFC_BB_CFG);
--}
--
--static int tango_waitrdy(struct nand_chip *chip, unsigned int timeout_ms)
--{
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--	u32 status;
--
--	return readl_relaxed_poll_timeout(nfc->pbus_base + PBUS_CS_CTRL,
--					  status, status & PBUS_IORDY, 20,
--					  timeout_ms);
--}
--
--static int tango_exec_instr(struct nand_chip *chip,
--			    const struct nand_op_instr *instr)
--{
--	struct tango_chip *tchip = to_tango_chip(chip);
--	unsigned int i;
--
--	switch (instr->type) {
--	case NAND_OP_CMD_INSTR:
--		writeb_relaxed(instr->ctx.cmd.opcode, tchip->base + PBUS_CMD);
--		return 0;
--	case NAND_OP_ADDR_INSTR:
--		for (i = 0; i < instr->ctx.addr.naddrs; i++)
--			writeb_relaxed(instr->ctx.addr.addrs[i],
--				       tchip->base + PBUS_ADDR);
--		return 0;
--	case NAND_OP_DATA_IN_INSTR:
--		ioread8_rep(tchip->base + PBUS_DATA, instr->ctx.data.buf.in,
--			    instr->ctx.data.len);
--		return 0;
--	case NAND_OP_DATA_OUT_INSTR:
--		iowrite8_rep(tchip->base + PBUS_DATA, instr->ctx.data.buf.out,
--			     instr->ctx.data.len);
--		return 0;
--	case NAND_OP_WAITRDY_INSTR:
--		return tango_waitrdy(chip,
--				     instr->ctx.waitrdy.timeout_ms);
--	default:
--		break;
--	}
--
--	return -EINVAL;
--}
--
--static int tango_exec_op(struct nand_chip *chip,
--			 const struct nand_operation *op,
--			 bool check_only)
--{
--	unsigned int i;
--	int ret = 0;
--
--	if (check_only)
--		return 0;
--
--	tango_select_target(chip, op->cs);
--	for (i = 0; i < op->ninstrs; i++) {
--		ret = tango_exec_instr(chip, &op->instrs[i]);
--		if (ret)
--			break;
--	}
--
--	return ret;
--}
--
--/*
-- * The controller does not check for bitflips in erased pages,
-- * therefore software must check instead.
-- */
--static int check_erased_page(struct nand_chip *chip, u8 *buf)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	u8 *meta = chip->oob_poi + BBM_SIZE;
--	u8 *ecc = chip->oob_poi + BBM_SIZE + METADATA_SIZE;
--	const int ecc_size = chip->ecc.bytes;
--	const int pkt_size = chip->ecc.size;
--	int i, res, meta_len, bitflips = 0;
--
--	for (i = 0; i < chip->ecc.steps; ++i) {
--		meta_len = i ? 0 : METADATA_SIZE;
--		res = nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
--						  meta, meta_len,
--						  chip->ecc.strength);
--		if (res < 0)
--			mtd->ecc_stats.failed++;
--		else
--			mtd->ecc_stats.corrected += res;
--
--		bitflips = max(res, bitflips);
--		buf += pkt_size;
--		ecc += ecc_size;
--	}
--
--	return bitflips;
--}
--
--static int decode_error_report(struct nand_chip *chip)
--{
--	u32 status, res;
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--
--	status = readl_relaxed(nfc->reg_base + NFC_XFER_STATUS);
--	if (status & PAGE_IS_EMPTY)
--		return 0;
--
--	res = readl_relaxed(nfc->mem_base + ERROR_REPORT);
--
--	if (DECODE_FAIL_PKT_0(res) || DECODE_FAIL_PKT_N(res))
--		return -EBADMSG;
--
--	/* ERR_COUNT_PKT_N is max, not sum, but that's all we have */
--	mtd->ecc_stats.corrected +=
--		ERR_COUNT_PKT_0(res) + ERR_COUNT_PKT_N(res);
--
--	return max(ERR_COUNT_PKT_0(res), ERR_COUNT_PKT_N(res));
--}
--
--static void tango_dma_callback(void *arg)
--{
--	complete(arg);
--}
--
--static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
--		  const void *buf, int len, int page)
--{
--	void __iomem *addr = nfc->reg_base + NFC_STATUS;
--	struct dma_chan *chan = nfc->chan;
--	struct dma_async_tx_descriptor *desc;
--	enum dma_transfer_direction tdir;
--	struct scatterlist sg;
--	struct completion tx_done;
--	int err = -EIO;
--	u32 res, val;
--
--	sg_init_one(&sg, buf, len);
--	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
--		return -EIO;
--
--	tdir = dir == DMA_TO_DEVICE ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
--	desc = dmaengine_prep_slave_sg(chan, &sg, 1, tdir, DMA_PREP_INTERRUPT);
--	if (!desc)
--		goto dma_unmap;
--
--	desc->callback = tango_dma_callback;
--	desc->callback_param = &tx_done;
--	init_completion(&tx_done);
--
--	writel_relaxed(MODE_NFC, nfc->pbus_base + PBUS_PAD_MODE);
--
--	writel_relaxed(page, nfc->reg_base + NFC_ADDR_PAGE);
--	writel_relaxed(0, nfc->reg_base + NFC_ADDR_OFFSET);
--	writel_relaxed(cmd, nfc->reg_base + NFC_FLASH_CMD);
--
--	dmaengine_submit(desc);
--	dma_async_issue_pending(chan);
--
--	res = wait_for_completion_timeout(&tx_done, HZ);
--	if (res > 0)
--		err = readl_poll_timeout(addr, val, val & CMD_READY, 0, 1000);
--
--	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
--
--dma_unmap:
--	dma_unmap_sg(chan->device->dev, &sg, 1, dir);
--
--	return err;
--}
--
--static int tango_read_page(struct nand_chip *chip, u8 *buf,
--			   int oob_required, int page)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--	int err, res, len = mtd->writesize;
--
--	tango_select_target(chip, chip->cur_cs);
--	if (oob_required)
--		chip->ecc.read_oob(chip, page);
--
--	err = do_dma(nfc, DMA_FROM_DEVICE, NFC_READ, buf, len, page);
--	if (err)
--		return err;
--
--	res = decode_error_report(chip);
--	if (res < 0) {
--		chip->ecc.read_oob_raw(chip, page);
--		res = check_erased_page(chip, buf);
--	}
--
--	return res;
--}
--
--static int tango_write_page(struct nand_chip *chip, const u8 *buf,
--			    int oob_required, int page)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--	const struct nand_sdr_timings *timings;
--	int err, len = mtd->writesize;
--	u8 status;
--
--	/* Calling tango_write_oob() would send PAGEPROG twice */
--	if (oob_required)
--		return -ENOTSUPP;
--
--	tango_select_target(chip, chip->cur_cs);
--	writel_relaxed(0xffffffff, nfc->mem_base + METADATA);
--	err = do_dma(nfc, DMA_TO_DEVICE, NFC_WRITE, buf, len, page);
--	if (err)
--		return err;
--
--	timings = nand_get_sdr_timings(nand_get_interface_config(chip));
--	err = tango_waitrdy(chip, PSEC_TO_MSEC(timings->tR_max));
--	if (err)
--		return err;
--
--	err = nand_status_op(chip, &status);
--	if (err)
--		return err;
--
--	return (status & NAND_STATUS_FAIL) ? -EIO : 0;
--}
--
--static void aux_read(struct nand_chip *chip, u8 **buf, int len, int *pos)
--{
--	*pos += len;
--
--	if (!*buf) {
--		/* skip over "len" bytes */
--		nand_change_read_column_op(chip, *pos, NULL, 0, false);
--	} else {
--		struct tango_chip *tchip = to_tango_chip(chip);
--
--		ioread8_rep(tchip->base + PBUS_DATA, *buf, len);
--		*buf += len;
--	}
--}
--
--static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
--{
--	*pos += len;
--
--	if (!*buf) {
--		/* skip over "len" bytes */
--		nand_change_write_column_op(chip, *pos, NULL, 0, false);
--	} else {
--		struct tango_chip *tchip = to_tango_chip(chip);
--
--		iowrite8_rep(tchip->base + PBUS_DATA, *buf, len);
--		*buf += len;
--	}
--}
--
--/*
-- * Physical page layout (not drawn to scale)
-- *
-- * NB: Bad Block Marker area splits PKT_N in two (N1, N2).
-- *
-- * +---+-----------------+-------+-----+-----------+-----+----+-------+
-- * | M |      PKT_0      | ECC_0 | ... |     N1    | BBM | N2 | ECC_N |
-- * +---+-----------------+-------+-----+-----------+-----+----+-------+
-- *
-- * Logical page layout:
-- *
-- *       +-----+---+-------+-----+-------+
-- * oob = | BBM | M | ECC_0 | ... | ECC_N |
-- *       +-----+---+-------+-----+-------+
-- *
-- *       +-----------------+-----+-----------------+
-- * buf = |      PKT_0      | ... |      PKT_N      |
-- *       +-----------------+-----+-----------------+
-- */
--static void raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	u8 *oob_orig = oob;
--	const int page_size = mtd->writesize;
--	const int ecc_size = chip->ecc.bytes;
--	const int pkt_size = chip->ecc.size;
--	int pos = 0; /* position within physical page */
--	int rem = page_size; /* bytes remaining until BBM area */
--
--	if (oob)
--		oob += BBM_SIZE;
--
--	aux_read(chip, &oob, METADATA_SIZE, &pos);
--
--	while (rem > pkt_size) {
--		aux_read(chip, &buf, pkt_size, &pos);
--		aux_read(chip, &oob, ecc_size, &pos);
--		rem = page_size - pos;
--	}
--
--	aux_read(chip, &buf, rem, &pos);
--	aux_read(chip, &oob_orig, BBM_SIZE, &pos);
--	aux_read(chip, &buf, pkt_size - rem, &pos);
--	aux_read(chip, &oob, ecc_size, &pos);
--}
--
--static void raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	const u8 *oob_orig = oob;
--	const int page_size = mtd->writesize;
--	const int ecc_size = chip->ecc.bytes;
--	const int pkt_size = chip->ecc.size;
--	int pos = 0; /* position within physical page */
--	int rem = page_size; /* bytes remaining until BBM area */
--
--	if (oob)
--		oob += BBM_SIZE;
--
--	aux_write(chip, &oob, METADATA_SIZE, &pos);
--
--	while (rem > pkt_size) {
--		aux_write(chip, &buf, pkt_size, &pos);
--		aux_write(chip, &oob, ecc_size, &pos);
--		rem = page_size - pos;
--	}
--
--	aux_write(chip, &buf, rem, &pos);
--	aux_write(chip, &oob_orig, BBM_SIZE, &pos);
--	aux_write(chip, &buf, pkt_size - rem, &pos);
--	aux_write(chip, &oob, ecc_size, &pos);
--}
--
--static int tango_read_page_raw(struct nand_chip *chip, u8 *buf,
--			       int oob_required, int page)
--{
--	tango_select_target(chip, chip->cur_cs);
--	nand_read_page_op(chip, page, 0, NULL, 0);
--	raw_read(chip, buf, chip->oob_poi);
--	return 0;
--}
--
--static int tango_write_page_raw(struct nand_chip *chip, const u8 *buf,
--				int oob_required, int page)
--{
--	tango_select_target(chip, chip->cur_cs);
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
--	raw_write(chip, buf, chip->oob_poi);
--	return nand_prog_page_end_op(chip);
--}
--
--static int tango_read_oob(struct nand_chip *chip, int page)
--{
--	tango_select_target(chip, chip->cur_cs);
--	nand_read_page_op(chip, page, 0, NULL, 0);
--	raw_read(chip, NULL, chip->oob_poi);
--	return 0;
--}
--
--static int tango_write_oob(struct nand_chip *chip, int page)
--{
--	tango_select_target(chip, chip->cur_cs);
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
--	raw_write(chip, NULL, chip->oob_poi);
--	return nand_prog_page_end_op(chip);
--}
--
--static int oob_ecc(struct mtd_info *mtd, int idx, struct mtd_oob_region *res)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (idx >= ecc->steps)
--		return -ERANGE;
--
--	res->offset = BBM_SIZE + METADATA_SIZE + ecc->bytes * idx;
--	res->length = ecc->bytes;
--
--	return 0;
--}
--
--static int oob_free(struct mtd_info *mtd, int idx, struct mtd_oob_region *res)
--{
--	return -ERANGE; /* no free space in spare area */
--}
--
--static const struct mtd_ooblayout_ops tango_nand_ooblayout_ops = {
--	.ecc	= oob_ecc,
--	.free	= oob_free,
--};
--
--static u32 to_ticks(int kHz, int ps)
--{
--	return DIV_ROUND_UP_ULL((u64)kHz * ps, NSEC_PER_SEC);
--}
--
--static int tango_set_timings(struct nand_chip *chip, int csline,
--			     const struct nand_interface_config *conf)
--{
--	const struct nand_sdr_timings *sdr = nand_get_sdr_timings(conf);
--	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
--	struct tango_chip *tchip = to_tango_chip(chip);
--	u32 Trdy, Textw, Twc, Twpw, Tacc, Thold, Trpw, Textr;
--	int kHz = nfc->freq_kHz;
--
--	if (IS_ERR(sdr))
--		return PTR_ERR(sdr);
--
--	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
--		return 0;
--
--	Trdy = to_ticks(kHz, sdr->tCEA_max - sdr->tREA_max);
--	Textw = to_ticks(kHz, sdr->tWB_max);
--	Twc = to_ticks(kHz, sdr->tWC_min);
--	Twpw = to_ticks(kHz, sdr->tWC_min - sdr->tWP_min);
--
--	Tacc = to_ticks(kHz, sdr->tREA_max);
--	Thold = to_ticks(kHz, sdr->tREH_min);
--	Trpw = to_ticks(kHz, sdr->tRC_min - sdr->tREH_min);
--	Textr = to_ticks(kHz, sdr->tRHZ_max);
--
--	tchip->timing1 = TIMING(Trdy, Textw, Twc, Twpw);
--	tchip->timing2 = TIMING(Tacc, Thold, Trpw, Textr);
--
--	return 0;
--}
--
--static int tango_attach_chip(struct nand_chip *chip)
--{
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--	ecc->algo = NAND_ECC_ALGO_BCH;
--	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
--
--	ecc->read_page_raw = tango_read_page_raw;
--	ecc->write_page_raw = tango_write_page_raw;
--	ecc->read_page = tango_read_page;
--	ecc->write_page = tango_write_page;
--	ecc->read_oob = tango_read_oob;
--	ecc->write_oob = tango_write_oob;
--
--	return 0;
--}
--
--static const struct nand_controller_ops tango_controller_ops = {
--	.attach_chip = tango_attach_chip,
--	.setup_interface = tango_set_timings,
--	.exec_op = tango_exec_op,
--};
--
--static int chip_init(struct device *dev, struct device_node *np)
--{
--	u32 cs;
--	int err, res;
--	struct mtd_info *mtd;
--	struct nand_chip *chip;
--	struct tango_chip *tchip;
--	struct nand_ecc_ctrl *ecc;
--	struct tango_nfc *nfc = dev_get_drvdata(dev);
--
--	tchip = devm_kzalloc(dev, sizeof(*tchip), GFP_KERNEL);
--	if (!tchip)
--		return -ENOMEM;
--
--	res = of_property_count_u32_elems(np, "reg");
--	if (res < 0)
--		return res;
--
--	if (res != 1)
--		return -ENOTSUPP; /* Multi-CS chips are not supported */
--
--	err = of_property_read_u32_index(np, "reg", 0, &cs);
--	if (err)
--		return err;
--
--	if (cs >= MAX_CS)
--		return -EINVAL;
--
--	chip = &tchip->nand_chip;
--	ecc = &chip->ecc;
--	mtd = nand_to_mtd(chip);
--
--	chip->options = NAND_USES_DMA |
--			NAND_NO_SUBPAGE_WRITE |
--			NAND_WAIT_TCCS;
--	chip->controller = &nfc->hw;
--	tchip->base = nfc->pbus_base + (cs * 256);
--
--	nand_set_flash_node(chip, np);
--	mtd_set_ooblayout(mtd, &tango_nand_ooblayout_ops);
--	mtd->dev.parent = dev;
--
--	err = nand_scan(chip, 1);
--	if (err)
--		return err;
--
--	tchip->xfer_cfg = XFER_CFG(cs, 1, ecc->steps, METADATA_SIZE);
--	tchip->pkt_0_cfg = PKT_CFG(ecc->size + METADATA_SIZE, ecc->strength);
--	tchip->pkt_n_cfg = PKT_CFG(ecc->size, ecc->strength);
--	tchip->bb_cfg = BB_CFG(mtd->writesize, BBM_SIZE);
--
--	err = mtd_device_register(mtd, NULL, 0);
--	if (err) {
--		nand_cleanup(chip);
--		return err;
--	}
--
--	nfc->chips[cs] = tchip;
--
--	return 0;
--}
--
--static int tango_nand_remove(struct platform_device *pdev)
--{
--	struct tango_nfc *nfc = platform_get_drvdata(pdev);
--	struct nand_chip *chip;
--	int cs, ret;
--
--	dma_release_channel(nfc->chan);
--
--	for (cs = 0; cs < MAX_CS; ++cs) {
--		if (nfc->chips[cs]) {
--			chip = &nfc->chips[cs]->nand_chip;
--			ret = mtd_device_unregister(nand_to_mtd(chip));
--			WARN_ON(ret);
--			nand_cleanup(chip);
--		}
--	}
--
--	return 0;
--}
--
--static int tango_nand_probe(struct platform_device *pdev)
--{
--	int err;
--	struct clk *clk;
--	struct resource *res;
--	struct tango_nfc *nfc;
--	struct device_node *np;
--
--	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
--	if (!nfc)
--		return -ENOMEM;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	nfc->reg_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(nfc->reg_base))
--		return PTR_ERR(nfc->reg_base);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	nfc->mem_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(nfc->mem_base))
--		return PTR_ERR(nfc->mem_base);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
--	nfc->pbus_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(nfc->pbus_base))
--		return PTR_ERR(nfc->pbus_base);
--
--	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
--
--	clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
--
--	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
--	if (IS_ERR(nfc->chan))
--		return PTR_ERR(nfc->chan);
--
--	platform_set_drvdata(pdev, nfc);
--	nand_controller_init(&nfc->hw);
--	nfc->hw.ops = &tango_controller_ops;
--	nfc->freq_kHz = clk_get_rate(clk) / 1000;
--
--	for_each_child_of_node(pdev->dev.of_node, np) {
--		err = chip_init(&pdev->dev, np);
--		if (err) {
--			tango_nand_remove(pdev);
--			of_node_put(np);
--			return err;
--		}
--	}
--
--	return 0;
--}
--
--static const struct of_device_id tango_nand_ids[] = {
--	{ .compatible = "sigma,smp8758-nand" },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, tango_nand_ids);
--
--static struct platform_driver tango_nand_driver = {
--	.probe	= tango_nand_probe,
--	.remove	= tango_nand_remove,
--	.driver	= {
--		.name		= "tango-nand",
--		.of_match_table	= tango_nand_ids,
--	},
--};
--
--module_platform_driver(tango_nand_driver);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Sigma Designs");
--MODULE_DESCRIPTION("Tango4 NAND Flash controller driver");
--- 
-2.29.2
+1)
+In my opinion, pstore shouldn't be using callbacks for *regular* I/O
+read/writes. It's upside-down of how the storage stack is designed to
+work.
 
+Instead, pstore should be implemented as a regular filesystem, that
+can be mounted on top of a regular block device partition. In this
+way, the lower layer block device drivers (as mmc), don't need special
+support for pstore, the regular I/O block read/write path will just
+work as is.
+
+2)
+When it comes to supporting *panic* writes for pstore, things become a
+bit more complicated. For sure some adaptations are needed in each
+block device driver to support this.
+
+However, the current method means relying on the lower level block
+device driver to figure out the pstore partition. Based on that, it
+should then register itself for pstore support and hook up callbacks
+for the corresponding block device driver instance, at least that is
+what it looks like to me. Again, I think this is upside-down from the
+storage stack perspective. The partition to use for pstore, should be
+based upon its file system mount point.
+
+Furthermore, I think the responsibility for lower layer block device
+drivers should instead be to just "register/announce" themselves as
+capable of supporting "panic writes", if they can. Exactly how to best
+do this, probably needs to be discussed further with the block device
+people, I think. I have looped in Jens and Christoph, perhaps they can
+share their opinion in this.
+
+That said, it looks to me that pstore needs more work before it's
+ready to be adopted for generic support in block device drivers.
+
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+> ---
+>  drivers/mmc/core/Kconfig     |  14 ++-
+>  drivers/mmc/core/Makefile    |   1 +
+>  drivers/mmc/core/block.c     |  19 +++
+>  drivers/mmc/core/block.h     |   9 ++
+>  drivers/mmc/core/core.c      |  44 +++++++
+>  drivers/mmc/core/mmcpstore.c | 227 +++++++++++++++++++++++++++++++++++
+>  include/linux/mmc/core.h     |   5 +
+>  include/linux/mmc/host.h     |  12 ++
+>  8 files changed, 330 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mmc/core/mmcpstore.c
+>
+> diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
+> index c12fe13e4b14..4c651da4f2d2 100644
+> --- a/drivers/mmc/core/Kconfig
+> +++ b/drivers/mmc/core/Kconfig
+> @@ -34,9 +34,22 @@ config PWRSEQ_SIMPLE
+>           This driver can also be built as a module. If so, the module
+>           will be called pwrseq_simple.
+>
+> +config MMC_PSTORE_BACKEND
+> +       bool "Log panic/oops to a MMC buffer"
+> +       depends on MMC_BLOCK
+> +       help
+> +         This option will let you create platform backend to store kmsg
+> +         crash dumps to a user specified MMC device. This is primarily
+> +         based on pstore/blk.
+> +
+> +config MMC_PSTORE
+> +       tristate
+> +       select PSTORE_BLK
+> +
+>  config MMC_BLOCK
+>         tristate "MMC block device driver"
+>         depends on BLOCK
+> +       select MMC_PSTORE if MMC_PSTORE_BACKEND=y
+>         default y
+>         help
+>           Say Y here to enable the MMC block device driver support.
+> @@ -80,4 +93,3 @@ config MMC_TEST
+>
+>           This driver is only of interest to those developing or
+>           testing a host driver. Most people should say N here.
+> -
+> diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
+> index 95ffe008ebdf..7cb9a3af4827 100644
+> --- a/drivers/mmc/core/Makefile
+> +++ b/drivers/mmc/core/Makefile
+> @@ -16,5 +16,6 @@ obj-$(CONFIG_PWRSEQ_EMMC)     += pwrseq_emmc.o
+>  mmc_core-$(CONFIG_DEBUG_FS)    += debugfs.o
+>  obj-$(CONFIG_MMC_BLOCK)                += mmc_block.o
+>  mmc_block-objs                 := block.o queue.o
+> +mmc_block-$(CONFIG_MMC_PSTORE) += mmcpstore.o
+>  obj-$(CONFIG_MMC_TEST)         += mmc_test.o
+>  obj-$(CONFIG_SDIO_UART)                += sdio_uart.o
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 42e27a298218..6592722cd7b2 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2870,6 +2870,21 @@ static void mmc_blk_remove_debugfs(struct mmc_card *card,
+>
+>  #endif /* CONFIG_DEBUG_FS */
+>
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size)
+> +{
+> +       struct mmc_blk_data *md = dev_get_drvdata(&card->dev);
+> +       struct gendisk *disk = md->disk;
+> +       struct disk_part_tbl *part_tbl = disk->part_tbl;
+> +
+> +       if (part_num < 0 || part_num >= part_tbl->len)
+> +               return 0;
+> +
+> +       *size = part_tbl->part[part_num]->nr_sects << SECTOR_SHIFT;
+> +       return part_tbl->part[part_num]->start_sect;
+> +}
+> +#endif
+> +
+>  static int mmc_blk_probe(struct mmc_card *card)
+>  {
+>         struct mmc_blk_data *md, *part_md;
+> @@ -2913,6 +2928,9 @@ static int mmc_blk_probe(struct mmc_card *card)
+>                         goto out;
+>         }
+>
+> +       if (mmc_card_mmc(card) || mmc_card_sd(card))
+> +               mmcpstore_card_set(card, md->disk->disk_name);
+> +
+>         /* Add two debugfs entries */
+>         mmc_blk_add_debugfs(card, md);
+>
+> @@ -3060,6 +3078,7 @@ static void __exit mmc_blk_exit(void)
+>         unregister_blkdev(MMC_BLOCK_MAJOR, "mmc");
+>         unregister_chrdev_region(mmc_rpmb_devt, MAX_DEVICES);
+>         bus_unregister(&mmc_rpmb_bus_type);
+> +       unregister_mmcpstore();
+>  }
+>
+>  module_init(mmc_blk_init);
+> diff --git a/drivers/mmc/core/block.h b/drivers/mmc/core/block.h
+> index 31153f656f41..2a4ee5568194 100644
+> --- a/drivers/mmc/core/block.h
+> +++ b/drivers/mmc/core/block.h
+> @@ -16,5 +16,14 @@ void mmc_blk_mq_recovery(struct mmc_queue *mq);
+>  struct work_struct;
+>
+>  void mmc_blk_mq_complete_work(struct work_struct *work);
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size);
+> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name);
+> +void unregister_mmcpstore(void);
+> +#else
+> +static inline void mmcpstore_card_set(struct mmc_card *card,
+> +                                       const char *disk_name) {}
+> +static inline void unregister_mmcpstore(void) {}
+> +#endif
+>
+>  #endif
+> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> index 19f1ee57fb34..7ad7ff1cab8c 100644
+> --- a/drivers/mmc/core/core.c
+> +++ b/drivers/mmc/core/core.c
+> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)
+>  }
+>  EXPORT_SYMBOL(mmc_cqe_recovery);
+>
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +/**
+> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
+> + *     @host: MMC host to start command
+> + *     @mrq: MMC request to start
+> + *
+> + *     Start a blocking MMC request for a host and wait for the request
+> + *     to complete that is based on polling and timeout.
+> + */
+> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq)
+> +{
+> +       unsigned int timeout;
+> +
+> +       host->ops->req_cleanup_pending(host);
+> +       mmc_start_request(host, mrq);
+> +
+> +       if (mrq->data) {
+> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
+> +               host->ops->req_completion_poll(host, timeout);
+> +       }
+> +}
+> +EXPORT_SYMBOL(mmc_wait_for_pstore_req);
+> +#endif
+> +
+>  /**
+>   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is done
+>   *     @host: MMC host
+> @@ -817,6 +841,26 @@ int __mmc_claim_host(struct mmc_host *host, struct mmc_ctx *ctx,
+>  }
+>  EXPORT_SYMBOL(__mmc_claim_host);
+>
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +/**
+> + *     mmc_claim_host_async - claim host in atomic context
+> + *     @host: mmc host to claim
+> + *
+> + *     This routine may be called in panic/oops scenarios.
+> + *     Return zero with host claim success, else busy status.
+> + */
+> +int mmc_claim_host_async(struct mmc_host *host)
+> +{
+> +       if (!host->claimed && pm_runtime_active(mmc_dev(host))) {
+> +               host->claimed = 1;
+> +               return 0;
+> +       }
+> +
+> +       return -EBUSY;
+> +}
+> +EXPORT_SYMBOL(mmc_claim_host_async);
+> +#endif
+> +
+>  /**
+>   *     mmc_release_host - release a host
+>   *     @host: mmc host to release
+> diff --git a/drivers/mmc/core/mmcpstore.c b/drivers/mmc/core/mmcpstore.c
+> new file mode 100644
+> index 000000000000..f783ea215f18
+> --- /dev/null
+> +++ b/drivers/mmc/core/mmcpstore.c
+> @@ -0,0 +1,227 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * MMC pstore support based on pstore/blk
+> + *
+> + * Copyright (c) 2020 Marvell.
+> + * Author: Bhaskara Budiredla <bbudiredla@marvell.com>
+> + */
+> +
+> +#define pr_fmt(fmt) "mmcpstore: " fmt
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pstore_blk.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/mount.h>
+> +#include <linux/slab.h>
+> +#include <linux/mmc/mmc.h>
+> +#include <linux/mmc/host.h>
+> +#include <linux/mmc/card.h>
+> +#include <linux/scatterlist.h>
+> +#include "block.h"
+> +#include "card.h"
+> +#include "core.h"
+> +
+> +static struct mmcpstore_context {
+> +       char dev_name[BDEVNAME_SIZE];
+> +       int partno;
+> +       sector_t start_sect;
+> +       sector_t size;
+> +       struct pstore_blk_config conf;
+> +       struct pstore_blk_info info;
+> +
+> +       struct mmc_card *card;
+> +       struct mmc_request *mrq;
+> +} oops_cxt;
+> +
+> +static void mmc_prep_req(struct mmc_request *mrq,
+> +               unsigned int sect_offset, unsigned int nsects,
+> +               struct scatterlist *sg, u32 opcode, unsigned int flags)
+> +{
+> +       mrq->cmd->opcode = opcode;
+> +       mrq->cmd->arg = sect_offset;
+> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> +
+> +       if (nsects == 1) {
+> +               mrq->stop = NULL;
+> +       } else {
+> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
+> +               mrq->stop->arg = 0;
+> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
+> +       }
+> +
+> +       mrq->data->blksz = SECTOR_SIZE;
+> +       mrq->data->blocks = nsects;
+> +       mrq->data->flags = flags;
+> +       mrq->data->sg = sg;
+> +       mrq->data->sg_len = 1;
+> +}
+> +
+> +static int mmcpstore_panic_write_req(const char *buf,
+> +               unsigned int nsects, unsigned int sect_offset)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct mmc_request *mrq = cxt->mrq;
+> +       struct mmc_card *card = cxt->card;
+> +       struct mmc_host *host = card->host;
+> +       struct scatterlist sg;
+> +       u32 opcode;
+> +       int ret;
+> +
+> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, MMC_DATA_WRITE);
+> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> +
+> +       ret = mmc_claim_host_async(host);
+> +       if (ret)
+> +               return ret;
+> +
+> +       mmc_wait_for_pstore_req(host, mrq);
+> +       return 0;
+> +}
+> +
+> +static int mmcpstore_panic_write(const char *buf, sector_t off, sector_t sects)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       int ret;
+> +
+> +       ret = mmcpstore_panic_write_req(buf, sects, cxt->start_sect + off);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return 0;
+> +}
+> +
+> +static struct block_device *mmcpstore_open_backend(const char *device)
+> +{
+> +       struct block_device *bdev;
+> +       dev_t devt;
+> +
+> +       bdev = blkdev_get_by_path(device, FMODE_READ, NULL);
+> +       if (IS_ERR(bdev)) {
+> +               devt = name_to_dev_t(device);
+> +               if (devt == 0)
+> +                       return ERR_PTR(-ENODEV);
+> +
+> +               bdev = blkdev_get_by_dev(devt, FMODE_READ, NULL);
+> +               if (IS_ERR(bdev))
+> +                       return bdev;
+> +       }
+> +
+> +       return bdev;
+> +}
+> +
+> +static void mmcpstore_close_backend(struct block_device *bdev)
+> +{
+> +       if (!bdev)
+> +               return;
+> +       blkdev_put(bdev, FMODE_READ);
+> +}
+> +
+> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct pstore_blk_config *conf = &cxt->conf;
+> +       struct pstore_blk_info *info = &cxt->info;
+> +       struct block_device *bdev;
+> +       struct mmc_command *stop;
+> +       struct mmc_command *cmd;
+> +       struct mmc_request *mrq;
+> +       struct mmc_data *data;
+> +       int ret;
+> +
+> +       ret = pstore_blk_get_config(conf);
+> +       if (!conf->device[0]) {
+> +               pr_debug("psblk backend is empty\n");
+> +               return;
+> +       }
+> +
+> +       /* Multiple backend devices not allowed */
+> +       if (cxt->dev_name[0])
+> +               return;
+> +
+> +       bdev =  mmcpstore_open_backend(conf->device);
+> +       if (IS_ERR(bdev)) {
+> +               pr_err("%s failed to open with %ld\n",
+> +                               conf->device, PTR_ERR(bdev));
+> +               return;
+> +       }
+> +
+> +       bdevname(bdev, cxt->dev_name);
+> +       cxt->partno = bdev->bd_part->partno;
+> +       mmcpstore_close_backend(bdev);
+> +
+> +       if (strncmp(cxt->dev_name, disk_name, strlen(disk_name)))
+> +               return;
+> +
+> +       cxt->start_sect = mmc_blk_get_part(card, cxt->partno, &cxt->size);
+> +       if (!cxt->start_sect) {
+> +               pr_err("Non-existent partition %d selected\n", cxt->partno);
+> +               return;
+> +       }
+> +
+> +       /* Check for host mmc panic write polling function definitions */
+> +       if (!card->host->ops->req_cleanup_pending ||
+> +                       !card->host->ops->req_completion_poll)
+> +               return;
+> +
+> +       cxt->card = card;
+> +
+> +       mrq = kzalloc(sizeof(struct mmc_request), GFP_KERNEL);
+> +       if (!mrq)
+> +               goto out;
+> +
+> +       cmd = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> +       if (!cmd)
+> +               goto free_mrq;
+> +
+> +       stop = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> +       if (!stop)
+> +               goto free_cmd;
+> +
+> +       data = kzalloc(sizeof(struct mmc_data), GFP_KERNEL);
+> +       if (!data)
+> +               goto free_stop;
+> +
+> +       mrq->cmd = cmd;
+> +       mrq->data = data;
+> +       mrq->stop = stop;
+> +       cxt->mrq = mrq;
+> +
+> +       info->major = MMC_BLOCK_MAJOR;
+> +       info->flags = PSTORE_FLAGS_DMESG;
+> +       info->panic_write = mmcpstore_panic_write;
+> +       ret = register_pstore_blk(info);
+> +       if (ret) {
+> +               pr_err("%s registering with psblk failed (%d)\n",
+> +                               cxt->dev_name, ret);
+> +               goto free_data;
+> +       }
+> +
+> +       pr_info("%s registered as psblk backend\n", cxt->dev_name);
+> +       return;
+> +
+> +free_data:
+> +       kfree(data);
+> +free_stop:
+> +       kfree(stop);
+> +free_cmd:
+> +       kfree(cmd);
+> +free_mrq:
+> +       kfree(mrq);
+> +out:
+> +       return;
+> +}
+> +
+> +void unregister_mmcpstore(void)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +
+> +       unregister_pstore_blk(MMC_BLOCK_MAJOR);
+> +       kfree(cxt->mrq->data);
+> +       kfree(cxt->mrq->stop);
+> +       kfree(cxt->mrq->cmd);
+> +       kfree(cxt->mrq);
+> +       cxt->card = NULL;
+> +}
+> diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
+> index 29aa50711626..53840a361b5a 100644
+> --- a/include/linux/mmc/core.h
+> +++ b/include/linux/mmc/core.h
+> @@ -166,6 +166,11 @@ struct mmc_request {
+>
+>  struct mmc_card;
+>
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq);
+> +int mmc_claim_host_async(struct mmc_host *host);
+> +#endif
+> +
+>  void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq);
+>  int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd,
+>                 int retries);
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 01bba36545c5..ba9001498e03 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -178,6 +178,18 @@ struct mmc_host_ops {
+>
+>         /* Initialize an SD express card, mandatory for MMC_CAP2_SD_EXP. */
+>         int     (*init_sd_express)(struct mmc_host *host, struct mmc_ios *ios);
+> +
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +       /*
+> +        * The following two APIs are introduced to support mmcpstore
+> +        * functionality. Cleanup API to terminate the ongoing and
+> +        * pending requests before a panic write post, and polling API
+> +        * to ensure that write succeeds before the Kernel dies.
+> +        */
+> +       void    (*req_cleanup_pending)(struct mmc_host *host);
+> +       int     (*req_completion_poll)(struct mmc_host *host,
+> +                                      unsigned long timeout);
+> +#endif
+>  };
+>
+>  struct mmc_cqe_ops {
+> --
+> 2.17.1
+>
