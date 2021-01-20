@@ -2,262 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9E52FDCF7
+	by mail.lfdr.de (Postfix) with ESMTP id AA8BA2FDCF8
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Jan 2021 00:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388656AbhATVd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S2390085AbhATVgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729797AbhATVJm (ORCPT
+        with ESMTP id S1732997AbhATVKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:09:42 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AF7C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:08:55 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id a1so3117955wrq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:08:55 -0800 (PST)
+        Wed, 20 Jan 2021 16:10:49 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B329C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:45 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id c22so16020221pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:09:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jrbC4RQ9Vok9Ff5kzMzZA0o/riiO5zLn1Sc/26Ew/aU=;
-        b=QoYootZ5afbRD+mZ8W7Gt/qW8cMhpVtTEbLrtpN+i64RDPLI1e9oTyXyxEQGtXbmJ6
-         k+x4xSlixiY1CzrRf/elwYY1lK5GjyRQIHi06FP4m4hNdCDq4T4vpqJ7LwTogtgAxvGB
-         +JXKRnEhzWaamXTAbsH6eq7vgHEjRXWDRzl1C7Sm4FFXar4Q32m+Nmjf4xobx5H8ktR+
-         NrjuewS7iw7awksZVHJ6/wCEGxLUTSvvD6BCbP529nk63OKZOlLQVe7SUWTCLh4zf9qH
-         64qlp7i1/q0h6qdewFa0RK+BM4H6eGNlkao43HgKGKDoGUTolT1cIZlqRXSWpuLOul3a
-         DTig==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=70VHM4qOcLMs7abWCHQ8/cB/OWCqfqACUfmBJLnT76E=;
+        b=jI4fSVLQvKGQwgXsM931OypebHN0gXP+30HiABCi/YAmKN2A/X/jpIuDzgMishcIrg
+         TOLzFWyrZMSMXvtHBziBBL1b/Hqa6qfJU5so9K3j1L30wPOuXhn70FHpVhq5Wo0e76E0
+         LQDfErM3vHRVtQj0PVspAb0lrCDIYFU3kjSf0ZFTCGhOr7kTOFOsLbKFX4oJuRhIltFq
+         Eiz5VMO8TyyeoHgMrRhBGXqvnfmBnK7Fcnptm/S0oHRW4vSsOw/MTkzZ+G+XC2Lf4AzW
+         MBHKkRp/PiomeKihLmLr3apkv2m6VkzTokGRz3njt42Al+RUNRGQUpsPdL8JUXuH8dEp
+         DLVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jrbC4RQ9Vok9Ff5kzMzZA0o/riiO5zLn1Sc/26Ew/aU=;
-        b=CB63favgI6FOMLT0Lkblw9Ta4jgic2iCf0kFhZHPJlsm6o+CHLjx2a0a3DYSIyVwKV
-         MLeag6z2+u/ij9mD2x9W0VHZLKbiM5mHusywyGVRzCru8Rude4svqxuG8waY0peYOaJ6
-         uEGD6hkWGcBSYZlNZr6OymmKUCq8SBuvbiX+p4HbBORmKIL7pllUJJZH1A8NUustqAyU
-         low3Dxna/3FM0Hqkflfk5B/fGUX6bOFhDtZqtVCncbcGUixk1M+1SsOlikVFEWSW0IMI
-         +ru+rMRyQluM/h3ekZV/27uAYiYXVFyVE4yfkSQJDz91H9mrUAVKgZUgT1frPomzJpzM
-         DhrQ==
-X-Gm-Message-State: AOAM5336R26rHDwkfaw8NmlGBfj4pdx6Zf5RqlKDY2K/3kuzmllbGdqU
-        Ta7Zfmyugi+uv12ntOVuUnYwf93WYEaIUAwme2itlg==
-X-Google-Smtp-Source: ABdhPJzpNTD/eRhFnqsHsu0kpBD4XUvd2ZJ/N0uNyXjPU5OqeBdtTyyA5s3E/fp6fj4VyjMrWg3XY8rFJdwuJACJcbI=
-X-Received: by 2002:a5d:4ecb:: with SMTP id s11mr4891114wrv.334.1611176933928;
- Wed, 20 Jan 2021 13:08:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20210113012143.1201105-1-minchan@kernel.org> <20210113012143.1201105-2-minchan@kernel.org>
-In-Reply-To: <20210113012143.1201105-2-minchan@kernel.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 20 Jan 2021 13:08:43 -0800
-Message-ID: <CAJuCfpHDxgG6ZPK9KmMd64sdDTjFwDq5CCUjfbfN8Ta54Vq-SQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] mm: cma: introduce gfp flag in cma_alloc instead
- of no_warn
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hyesoo Yu <hyesoo.yu@samsung.com>, david@redhat.com,
-        Michal Hocko <mhocko@suse.com>,
-        =?UTF-8?B?7KGw6rK97Zi4?= <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Stultz <john.stultz@linaro.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=70VHM4qOcLMs7abWCHQ8/cB/OWCqfqACUfmBJLnT76E=;
+        b=SvHfJrJ5IEZXpWRdDaxi3vOV1pUuBcyGCVC+3QDZWV2drTQItrHtu3rwPZcpI7FPTG
+         dlV7TqAYafnaFJoTc2r5jBB3ngCJPSwH2e5upfa1AaRJpJrt32aZpE6F7bhtQCGyUlnH
+         ZArqZMRkKX1RV4iW/DxTzreyuT6h6uOkRu5weFMCHDYo2bzzEN0iO/7Ch+VZW4iCJ7Hw
+         Dk7VCNXrv6+EiRLPi3owmtvKltWRz7uyRgI+F2rLqaPslHGC8gNPTpl1y3AQz37ce59c
+         KZz6XBOI/kERkRDtl27n8K8XAbGbSL1/L727HDQcX8gLfZCRJ05OrtsPzEc24uGTK3E9
+         Xtwg==
+X-Gm-Message-State: AOAM532rMWG2kzm1XA5g3PTShRokXZqML0SBqaOXkg7YO60y8yaQtUBb
+        IFdiqyboqlr5+BgCwcpdny/iFBpAgZ5bGg==
+X-Google-Smtp-Source: ABdhPJwLg0H5Ihwkfb9pFIwPEFrOx7Mr1rq28WBlhMkbxwiGEReRjpIzEN/k9w5o8dBXSgJHlSpcRA==
+X-Received: by 2002:a63:4746:: with SMTP id w6mr10957460pgk.377.1611176984206;
+        Wed, 20 Jan 2021 13:09:44 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id f15sm3265629pja.24.2021.01.20.13.09.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 13:09:43 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        Bing Song <bing.song@nxp.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 2/3] dma-buf: system_heap: Add a system-uncached heap re-using the system heap
+Date:   Wed, 20 Jan 2021 21:09:36 +0000
+Message-Id: <20210120210937.15069-3-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210120210937.15069-1-john.stultz@linaro.org>
+References: <20210120210937.15069-1-john.stultz@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:21 PM Minchan Kim <minchan@kernel.org> wrote:
->
-> The upcoming patch will introduce __GFP_NORETRY semantic
-> in alloc_contig_range which is a failfast mode of the API.
-> Instead of adding a additional parameter for gfp, replace
-> no_warn with gfp flag.
->
-> To keep old behaviors, it follows the rule below.
->
->   no_warn                       gfp_flags
->
->   false                         GFP_KERNEL
->   true                          GFP_KERNEL|__GFP_NOWARN
->   gfp & __GFP_NOWARN            GFP_KERNEL | (gfp & __GFP_NOWARN)
->
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
+This adds a heap that allocates non-contiguous buffers that are
+marked as writecombined, so they are not cached by the CPU.
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+This is useful, as most graphics buffers are usually not touched
+by the CPU or only written into once by the CPU. So when mapping
+the buffer over and over between devices, we can skip the CPU
+syncing, which saves a lot of cache management overhead, greatly
+improving performance.
 
-> ---
->  drivers/dma-buf/heaps/cma_heap.c |  2 +-
->  drivers/s390/char/vmcp.c         |  2 +-
->  include/linux/cma.h              |  2 +-
->  kernel/dma/contiguous.c          |  3 ++-
->  mm/cma.c                         | 12 ++++++------
->  mm/cma_debug.c                   |  2 +-
->  mm/hugetlb.c                     |  6 ++++--
->  mm/secretmem.c                   |  3 ++-
->  8 files changed, 18 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-> index 364fc2f3e499..0afc1907887a 100644
-> --- a/drivers/dma-buf/heaps/cma_heap.c
-> +++ b/drivers/dma-buf/heaps/cma_heap.c
-> @@ -298,7 +298,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
->         if (align > CONFIG_CMA_ALIGNMENT)
->                 align = CONFIG_CMA_ALIGNMENT;
->
-> -       cma_pages = cma_alloc(cma_heap->cma, pagecount, align, false);
-> +       cma_pages = cma_alloc(cma_heap->cma, pagecount, align, GFP_KERNEL);
->         if (!cma_pages)
->                 goto free_buffer;
->
-> diff --git a/drivers/s390/char/vmcp.c b/drivers/s390/char/vmcp.c
-> index 9e066281e2d0..78f9adf56456 100644
-> --- a/drivers/s390/char/vmcp.c
-> +++ b/drivers/s390/char/vmcp.c
-> @@ -70,7 +70,7 @@ static void vmcp_response_alloc(struct vmcp_session *session)
->          * anymore the system won't work anyway.
->          */
->         if (order > 2)
-> -               page = cma_alloc(vmcp_cma, nr_pages, 0, false);
-> +               page = cma_alloc(vmcp_cma, nr_pages, 0, GFP_KERNEL);
->         if (page) {
->                 session->response = (char *)page_to_phys(page);
->                 session->cma_alloc = 1;
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 217999c8a762..d6c02d08ddbc 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -45,7 +45,7 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->                                         const char *name,
->                                         struct cma **res_cma);
->  extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> -                             bool no_warn);
-> +                             gfp_t gfp_mask);
->  extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
->
->  extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
-> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-> index 3d63d91cba5c..552ed531c018 100644
-> --- a/kernel/dma/contiguous.c
-> +++ b/kernel/dma/contiguous.c
-> @@ -260,7 +260,8 @@ struct page *dma_alloc_from_contiguous(struct device *dev, size_t count,
->         if (align > CONFIG_CMA_ALIGNMENT)
->                 align = CONFIG_CMA_ALIGNMENT;
->
-> -       return cma_alloc(dev_get_cma_area(dev), count, align, no_warn);
-> +       return cma_alloc(dev_get_cma_area(dev), count, align, GFP_KERNEL |
-> +                       (no_warn ? __GFP_NOWARN : 0));
->  }
->
->  /**
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 0ba69cd16aeb..35053b82aedc 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -419,13 +419,13 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
->   * @cma:   Contiguous memory region for which the allocation is performed.
->   * @count: Requested number of pages.
->   * @align: Requested alignment of pages (in PAGE_SIZE order).
-> - * @no_warn: Avoid printing message about failed allocation
-> + * @gfp_mask: GFP mask to use during during the cma allocation.
->   *
->   * This function allocates part of contiguous memory on specific
->   * contiguous memory area.
->   */
->  struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> -                      bool no_warn)
-> +                      gfp_t gfp_mask)
->  {
->         unsigned long mask, offset;
->         unsigned long pfn = -1;
-> @@ -438,8 +438,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->         if (!cma || !cma->count || !cma->bitmap)
->                 return NULL;
->
-> -       pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-> -                count, align);
-> +       pr_debug("%s(cma %p, count %zu, align %d gfp_mask 0x%x)\n", __func__,
-> +                       (void *)cma, count, align, gfp_mask);
->
->         if (!count)
->                 return NULL;
-> @@ -471,7 +471,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->
->                 pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
->                 ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-> -                                    GFP_KERNEL | (no_warn ? __GFP_NOWARN : 0));
-> +                                               gfp_mask);
->
->                 if (ret == 0) {
->                         page = pfn_to_page(pfn);
-> @@ -500,7 +500,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->                         page_kasan_tag_reset(page + i);
->         }
->
-> -       if (ret && !no_warn) {
-> +       if (ret && !(gfp_mask & __GFP_NOWARN)) {
->                 pr_err("%s: alloc failed, req-size: %zu pages, ret: %d\n",
->                         __func__, count, ret);
->                 cma_debug_show_areas(cma);
-> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
-> index d5bf8aa34fdc..00170c41cf81 100644
-> --- a/mm/cma_debug.c
-> +++ b/mm/cma_debug.c
-> @@ -137,7 +137,7 @@ static int cma_alloc_mem(struct cma *cma, int count)
->         if (!mem)
->                 return -ENOMEM;
->
-> -       p = cma_alloc(cma, count, 0, false);
-> +       p = cma_alloc(cma, count, 0, GFP_KERNEL);
->         if (!p) {
->                 kfree(mem);
->                 return -ENOMEM;
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 737b2dce19e6..695af33aa66c 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1266,7 +1266,8 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->
->                 if (hugetlb_cma[nid]) {
->                         page = cma_alloc(hugetlb_cma[nid], nr_pages,
-> -                                       huge_page_order(h), true);
-> +                                       huge_page_order(h),
-> +                                       GFP_KERNEL | __GFP_NOWARN);
->                         if (page)
->                                 return page;
->                 }
-> @@ -1277,7 +1278,8 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->                                         continue;
->
->                                 page = cma_alloc(hugetlb_cma[node], nr_pages,
-> -                                               huge_page_order(h), true);
-> +                                               huge_page_order(h),
-> +                                               GFP_KERNEL | __GFP_NOWARN);
->                                 if (page)
->                                         return page;
->                         }
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index b8a32954ac68..585d55b9f9d8 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -86,7 +86,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->         struct page *page;
->         int err;
->
-> -       page = cma_alloc(secretmem_cma, nr_pages, PMD_SIZE, gfp & __GFP_NOWARN);
-> +       page = cma_alloc(secretmem_cma, nr_pages, PMD_SIZE,
-> +                               GFP_KERNEL | (gfp & __GFP_NOWARN));
->         if (!page)
->                 return -ENOMEM;
->
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+For folk using ION, there was a ION_FLAG_CACHED flag, which
+signaled if the returned buffer should be CPU cacheable or not.
+With DMA-BUF heaps, we do not yet have such a flag, and by default
+the current heaps (system and cma) produce CPU cachable buffers.
+So for folks transitioning from ION to DMA-BUF Heaps, this fills
+in some of that missing functionality.
+
+There has been a suggestion to make this functionality a flag
+(DMAHEAP_FLAG_UNCACHED?) on the system heap, similar to how
+ION used the ION_FLAG_CACHED. But I want to make sure an
+_UNCACHED flag would truely be a generic attribute across all
+heaps. So far that has been unclear, so having it as a separate
+heap seemes better for now. (But I'm open to discussion on this
+point!)
+
+This is a rework of earlier efforts to add a uncached system heap,
+done utilizing the exisitng system heap, adding just a bit of
+logic to handle the uncached case.
+
+Feedback would be very welcome!
+
+Many thanks to Liam Mark for his help to get this working.
+
+Pending opensource users of this code include:
+* AOSP HiKey960 gralloc:
+  - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
+  - Visibly improves performance over the system heap
+* AOSP Codec2:
+  - https://android-review.googlesource.com/c/platform/frameworks/av/+/1543685
+
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: Bing Song <bing.song@nxp.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+v4:
+* Make sys_uncached_heap static, as
+    Reported-by: kernel test robot <lkp@intel.com>
+* Fix wrong return value, caught by smatch
+    Reported-by: kernel test robot <lkp@intel.com>
+    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+* Ensure we call flush/invalidate_kernel_vmap_range() in the
+  uncached cases to try to address feedback about VIVT caches
+  from Christoph
+* Reorder a few lines as suggested by BrianS
+* Avoid holding the initial mapping for the lifetime of the buffer
+  as suggested by BrianS
+* Fix a unlikely race between allocate and updating the dma_mask
+  that BrianS noticed.
+---
+ drivers/dma-buf/heaps/system_heap.c | 111 ++++++++++++++++++++++++----
+ 1 file changed, 95 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 17e0e9a68baf..3548b20cb98c 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -22,6 +22,7 @@
+ #include <linux/vmalloc.h>
+ 
+ static struct dma_heap *sys_heap;
++static struct dma_heap *sys_uncached_heap;
+ 
+ struct system_heap_buffer {
+ 	struct dma_heap *heap;
+@@ -31,6 +32,8 @@ struct system_heap_buffer {
+ 	struct sg_table sg_table;
+ 	int vmap_cnt;
+ 	void *vaddr;
++
++	bool uncached;
+ };
+ 
+ struct dma_heap_attachment {
+@@ -38,6 +41,8 @@ struct dma_heap_attachment {
+ 	struct sg_table *table;
+ 	struct list_head list;
+ 	bool mapped;
++
++	bool uncached;
+ };
+ 
+ #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+@@ -100,7 +105,7 @@ static int system_heap_attach(struct dma_buf *dmabuf,
+ 	a->dev = attachment->dev;
+ 	INIT_LIST_HEAD(&a->list);
+ 	a->mapped = false;
+-
++	a->uncached = buffer->uncached;
+ 	attachment->priv = a;
+ 
+ 	mutex_lock(&buffer->lock);
+@@ -130,9 +135,13 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = a->table;
++	int attr = 0;
+ 	int ret;
+ 
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	if (a->uncached)
++		attr = DMA_ATTR_SKIP_CPU_SYNC;
++
++	ret = dma_map_sgtable(attachment->dev, table, direction, attr);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -145,9 +154,12 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				      enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attr = 0;
+ 
++	if (a->uncached)
++		attr = DMA_ATTR_SKIP_CPU_SYNC;
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attr);
+ }
+ 
+ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+@@ -161,10 +173,12 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+ 	if (buffer->vmap_cnt)
+ 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+-	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
++	if (!buffer->uncached) {
++		list_for_each_entry(a, &buffer->attachments, list) {
++			if (!a->mapped)
++				continue;
++			dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+@@ -182,10 +196,12 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+ 	if (buffer->vmap_cnt)
+ 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+-	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_device(a->dev, a->table, direction);
++	if (!buffer->uncached) {
++		list_for_each_entry(a, &buffer->attachments, list) {
++			if (!a->mapped)
++				continue;
++			dma_sync_sgtable_for_device(a->dev, a->table, direction);
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+@@ -200,6 +216,9 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+ 	struct sg_page_iter piter;
+ 	int ret;
+ 
++	if (buffer->uncached)
++		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++
+ 	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
+ 		struct page *page = sg_page_iter_page(&piter);
+ 
+@@ -221,17 +240,21 @@ static void *system_heap_do_vmap(struct system_heap_buffer *buffer)
+ 	struct page **pages = vmalloc(sizeof(struct page *) * npages);
+ 	struct page **tmp = pages;
+ 	struct sg_page_iter piter;
++	pgprot_t pgprot = PAGE_KERNEL;
+ 	void *vaddr;
+ 
+ 	if (!pages)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	if (buffer->uncached)
++		pgprot = pgprot_writecombine(PAGE_KERNEL);
++
+ 	for_each_sgtable_page(table, &piter, 0) {
+ 		WARN_ON(tmp - pages >= npages);
+ 		*tmp++ = sg_page_iter_page(&piter);
+ 	}
+ 
+-	vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
++	vaddr = vmap(pages, npages, VM_MAP, pgprot);
+ 	vfree(pages);
+ 
+ 	if (!vaddr)
+@@ -331,10 +354,11 @@ static struct page *alloc_largest_available(unsigned long size,
+ 	return NULL;
+ }
+ 
+-static int system_heap_allocate(struct dma_heap *heap,
+-				unsigned long len,
+-				unsigned long fd_flags,
+-				unsigned long heap_flags)
++static int system_heap_do_allocate(struct dma_heap *heap,
++				   unsigned long len,
++				   unsigned long fd_flags,
++				   unsigned long heap_flags,
++				   bool uncached)
+ {
+ 	struct system_heap_buffer *buffer;
+ 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
+@@ -355,6 +379,7 @@ static int system_heap_allocate(struct dma_heap *heap,
+ 	mutex_init(&buffer->lock);
+ 	buffer->heap = heap;
+ 	buffer->len = len;
++	buffer->uncached = uncached;
+ 
+ 	INIT_LIST_HEAD(&pages);
+ 	i = 0;
+@@ -404,6 +429,18 @@ static int system_heap_allocate(struct dma_heap *heap,
+ 		/* just return, as put will call release and that will free */
+ 		return ret;
+ 	}
++
++	/*
++	 * For uncached buffers, we need to initially flush cpu cache, since
++	 * the __GFP_ZERO on the allocation means the zeroing was done by the
++	 * cpu and thus it is likely cached. Map (and implicitly flush) and
++	 * unmap it now so we don't get corruption later on.
++	 */
++	if (buffer->uncached) {
++		dma_map_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
++		dma_unmap_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
++	}
++
+ 	return ret;
+ 
+ free_pages:
+@@ -421,10 +458,40 @@ static int system_heap_allocate(struct dma_heap *heap,
+ 	return ret;
+ }
+ 
++static int system_heap_allocate(struct dma_heap *heap,
++				unsigned long len,
++				unsigned long fd_flags,
++				unsigned long heap_flags)
++{
++	return system_heap_do_allocate(heap, len, fd_flags, heap_flags, false);
++}
++
+ static const struct dma_heap_ops system_heap_ops = {
+ 	.allocate = system_heap_allocate,
+ };
+ 
++static int system_uncached_heap_allocate(struct dma_heap *heap,
++					 unsigned long len,
++					 unsigned long fd_flags,
++					 unsigned long heap_flags)
++{
++	return system_heap_do_allocate(heap, len, fd_flags, heap_flags, true);
++}
++
++/* Dummy function to be used until we can call coerce_mask_and_coherent */
++static int system_uncached_heap_not_initialized(struct dma_heap *heap,
++						unsigned long len,
++						unsigned long fd_flags,
++						unsigned long heap_flags)
++{
++	return -EBUSY;
++}
++
++static struct dma_heap_ops system_uncached_heap_ops = {
++	/* After system_heap_create is complete, we will swap this */
++	.allocate = system_uncached_heap_not_initialized,
++};
++
+ static int system_heap_create(void)
+ {
+ 	struct dma_heap_export_info exp_info;
+@@ -437,6 +504,18 @@ static int system_heap_create(void)
+ 	if (IS_ERR(sys_heap))
+ 		return PTR_ERR(sys_heap);
+ 
++	exp_info.name = "system-uncached";
++	exp_info.ops = &system_uncached_heap_ops;
++	exp_info.priv = NULL;
++
++	sys_uncached_heap = dma_heap_add(&exp_info);
++	if (IS_ERR(sys_uncached_heap))
++		return PTR_ERR(sys_uncached_heap);
++
++	dma_coerce_mask_and_coherent(dma_heap_get_dev(sys_uncached_heap), DMA_BIT_MASK(64));
++	mb(); /* make sure we only set allocate after dma_mask is set */
++	system_uncached_heap_ops.allocate = system_uncached_heap_allocate;
++
+ 	return 0;
+ }
+ module_init(system_heap_create);
+-- 
+2.17.1
+
