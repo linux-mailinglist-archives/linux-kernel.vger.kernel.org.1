@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0946B2FD98C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116272FD998
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 20:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392397AbhATTZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 14:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        id S2391985AbhATT0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 14:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731961AbhATTXh (ORCPT
+        with ESMTP id S2392088AbhATTYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 14:23:37 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1667DC061575;
-        Wed, 20 Jan 2021 11:22:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=KZ0iCEv8dO4oaEcXXlKBGTHYzPM9i6Lr3e34zMPgxiw=; b=s0r1NF4bIp0KXSj/YxPnbiRQlC
-        5lsms4Jhix04Cgj4F3NEehgwMENlKw5VroDWGNkpT773VXJOPlxSYPvhKlPnj8smmJpKebTqufPzs
-        +P79bRD+2C/Zedy/9Ea/VeKmgEA0L667/+TkXmALu1CeiDQ73oPrQhlnT6wZ1xGFNfvGRzznhgEF5
-        R/6zgAuOtaUIwDNsMwL1Mvd3joURqhLI3qvDt+p5jOu6AA6QSMJJHczDuXotztySw0+BPrBI0gM5E
-        2j0P386+6qzwI2C+KwQu58wBaUxQvA/YqLPpqeCU1LM5OQaI/WSDSJrkmRC08vs70fieMVONK7JUD
-        e6uo5r1w==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2J49-0003PH-CD; Wed, 20 Jan 2021 19:22:53 +0000
-Subject: Re: [PATCH] drivers: base: power: Fix resposible -> responsible in
- runtime.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rjw@rjwysocki.net,
-        len.brown@intel.com, pavel@ucw.cz, gregkh@linuxfoundation.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210120143312.3229181-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <50d66599-bd99-1402-a387-2c4d37ce1a61@infradead.org>
-Date:   Wed, 20 Jan 2021 11:22:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 20 Jan 2021 14:24:20 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCFFC061757;
+        Wed, 20 Jan 2021 11:23:40 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id h205so35618256lfd.5;
+        Wed, 20 Jan 2021 11:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FB9rCEvUKKLUEE3zDbbNHWd1Ms8+O71NKBDL0wI3PRE=;
+        b=ps5alcIMVpBMxN05bXhD0FFEmNIACfekcJyE8TgUCjMhUrOzsr32oHcHFZjqqjVBzU
+         T59rlG+opjxX3+JnutUYZmv7mz5NYgPDYG3oZtdR+VD5F2p1CbzlatTg2XAVxJ39baoz
+         /BzTaX0MUwog4ymAGp4Ak97lbRFHbetd/xAmj4HWhTxXzrPrgZ6ReHE6OW+UuGXzm6DV
+         ci7GpkMoEa5QIJMs8e2/fHRiKS3xwvRp3zaCTenaxKWDqOt2VnjlSoJxDaJqqzz35mDY
+         55QrwejvWxwThNrkHbCLv6ZP2tHv3PeLX3kRB4dAcVLppuiHIjC1KkZdvN8gSxlcNsNC
+         iUmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FB9rCEvUKKLUEE3zDbbNHWd1Ms8+O71NKBDL0wI3PRE=;
+        b=ox6B8QLtTcsM8dAPSYghMoCTjFFTioabs9zzIGLJFL9Xuhjq8jRe3bLxMF66WtlzIO
+         oNe4QHvZL6E+uvwC3cSkVbCIMiCQZa0+541c5lZ4zKRH3SDGb7cLXNV5UWoOk3fH9b2+
+         VWunIJKfgto4y+LXVAKAfyfuA9CF5nX1MbAJKBmwBbpTeJs4uLMI2/bVSQ5UpSZsVTus
+         A2W5Bye+oPNTeEFrswNa74rlzaw6yyK6eIhxv0/4HqGZDI0IUHXi+S4BCRufCmMd2tEH
+         VwyQNniQS/4ShOU5Vqx8e+itHWXW1ciYB4TCFbO9mOcLNtk3kf2sVfKFyFt4Dm7X9hpf
+         BY+g==
+X-Gm-Message-State: AOAM5312N6RUtg9JGhBexPmiXJ3Y/SbKAS0vBDrT4EtsXfUbGPf2bPM/
+        VrOZcG2x10E2de3o9WEXf0mQSBu4qjc+76mbS+Q=
+X-Google-Smtp-Source: ABdhPJwhrYUxdKjAh1i9WyZDqPgsq/8sEaSggDumv1OtuzGfyXnhLwa61GVUp6rmLs04sbMCDL4mQsNFqz3d8uIb1D8=
+X-Received: by 2002:a19:8983:: with SMTP id l125mr4672224lfd.182.1611170618663;
+ Wed, 20 Jan 2021 11:23:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210120143312.3229181-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210119114624.60400-1-bianpan2016@163.com>
+In-Reply-To: <20210119114624.60400-1-bianpan2016@163.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 20 Jan 2021 11:23:27 -0800
+Message-ID: <CAADnVQJr0idctwt53eD3dFmbZ_upLT6_7jc4raD825aPi640sA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: put file handler if no storage found
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/20/21 6:33 AM, Bhaskar Chowdhury wrote:
-> s/resposible/responsible/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-thanks.
-
+On Tue, Jan 19, 2021 at 4:03 AM Pan Bian <bianpan2016@163.com> wrote:
+>
+> Put file f if inode_storage_ptr() returns NULL.
+>
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 > ---
->  drivers/base/power/runtime.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index bfda153b1a41..a46a7e30881b 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -1100,7 +1100,7 @@ EXPORT_SYMBOL_GPL(__pm_runtime_resume);
->   * suspending the device when both its runtime PM status is %RPM_ACTIVE and its
->   * runtime PM usage counter is not zero.
->   *
-> - * The caller is resposible for decrementing the runtime PM usage counter of
-> + * The caller is responsible for decrementing the runtime PM usage counter of
->   * @dev after this function has returned a positive value for it.
->   */
->  int pm_runtime_get_if_active(struct device *dev, bool ign_usage_count)
-> --
-> 2.30.0
-> 
+>  kernel/bpf/bpf_inode_storage.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+> index 6edff97ad594..089d5071d4fc 100644
+> --- a/kernel/bpf/bpf_inode_storage.c
+> +++ b/kernel/bpf/bpf_inode_storage.c
+> @@ -125,8 +125,12 @@ static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
+>
+>         fd = *(int *)key;
+>         f = fget_raw(fd);
+> -       if (!f || !inode_storage_ptr(f->f_inode))
+> +       if (!f)
+> +               return -EBADF;
+> +       if (!inode_storage_ptr(f->f_inode)) {
+> +               fput(f);
+>                 return -EBADF;
+> +       }
 
-
--- 
-~Randy
-"He closes his eyes and drops the goggles.  You can't get hurt
-by looking at a bitmap.  Or can you?"
-(Neal Stephenson: Snow Crash)
+Good catch.
+Somehow the patch is not in patchwork.
+Could you please resubmit with Fixes tag and reduce cc list?
+I guess it's hitting some spam filters in vger.
