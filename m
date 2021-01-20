@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16CB2FCB45
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F1E2FCB47
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 08:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbhATHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 02:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        id S1727832AbhATHIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 02:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbhATHIV (ORCPT
+        with ESMTP id S1727120AbhATHIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 02:08:21 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D36DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:40 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id c22so14555549pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:40 -0800 (PST)
+        Wed, 20 Jan 2021 02:08:23 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C09C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:43 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id v19so14570059pgj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Jan 2021 23:07:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9smo0xuaPm7gfHG1uvtUQgG4c1Mt5zbBVDBw98pRJd0=;
-        b=XzW+00TuT50HE4l265/PY4mooymj9tShL6kJ4Y59thj3dfuUohyGcUAs3VTwDS+cmW
-         45h64uIwLytvu890QRFBxqB9u73d1fO51lXdodCWzm45ATnQEcT1wvfo0XT1oChLQRhU
-         E4QvgIATATDVQk9fF9J/uBxCVgdpLJSyYbMiwL3xpNzGncOORVR+4NWFO44BMv7/A+LR
-         qhlB7RIvUyy6ZWmt+xDA6zlYXOh0yhg46EP/puldooroBUpy+PnceCTtPw5G+QG+cb1y
-         xH76S6OKFQgc12glvV+95vm7h8pwNMuyfMoqsjydjrrmhWfW8Fz0QOULJ16wVkSOiC9E
-         nEYA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PYJHN29z38YJQy9+aRfXhxK7SVaDLVhX0WgONtRAors=;
+        b=c2S19u75v9Chts0QzKMx+ZayKXIoNAlL8ZNL3dQyLlx3STuOpzebHm8DZqg1ADQi4X
+         tQkAJpsSFnVkiU4O3W+lIDUNH4+ZgZg2jaIJl4iRr4C+6Z0nioL/8zVyD8moRU+Xkeaj
+         NH76BrNCubz6XhRsPzTfuMZhfhipO1MoZQditsYpd7ppALsgjGALC33iMDONcHYylAWd
+         e/y/VKma9J2vHDBeX7dg1C2R1ej9u3P4G2eVZfLkkytSd3N5UC5vo2lDvo0LQ+oL/I+k
+         YNvRgEh9+i6XVkmBZXeCajH1xfaJSNxTLfozDVNzG6P4ZPjbcW4Rp7hre7l3AdtORYOI
+         X3VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9smo0xuaPm7gfHG1uvtUQgG4c1Mt5zbBVDBw98pRJd0=;
-        b=o2hCkaO7T65qjmx7gu0cYqKi26g5svlYiPwc9iUJ8KqPC8jgHMqy1cthtLkE/Hqn+O
-         1kOPEOko5U9X6e4nNfot+SyHPhhigPTEMOI0n2S/X/Z4fVW1u2gLkHb6lFyDwhS/troU
-         u8qSaZ27oSDtfnBKT4wKU8TnhUIz7UfP6gwjpm2HUZYx3VY1M0Rx40kDVCh8O/Nhkz+x
-         Tl4FhL9/iS1as/NGxGtQJWgMDiWkyH091FLolaWSc3Nr5WtPENCFuwaPTyUN1qj7x/do
-         LW9Zt9BKqfFrmpP8gDb8bvA3xBe1lIFzgIl/K0tiK54Tc6ibr4OciQsmTeTf4Kts7j6D
-         H7XQ==
-X-Gm-Message-State: AOAM530NQ18GHvftrNGXTgqyBgRWV3q8VOufnklyfj5iStyuBujBDNuq
-        1hTmb2aOTYmYwnTU+oPnOYbxiw==
-X-Google-Smtp-Source: ABdhPJwGqpBdM988Q6vHDKu/RDWzUrXvL064DnDiT4hBd0PAr/oHn86c94kzcZVOTl57yz1p4pVbtw==
-X-Received: by 2002:a63:5d3:: with SMTP id 202mr8010895pgf.286.1611126459450;
-        Tue, 19 Jan 2021 23:07:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PYJHN29z38YJQy9+aRfXhxK7SVaDLVhX0WgONtRAors=;
+        b=FUSkvJang8PZLQB0NiOjTchG+v/tvM4IsoNC5D8YUZJ/xbfGJHISe33oTGaFXoldpY
+         ZI+xY2NjnYOXnF3oNXZisq2i+fkzuYqui+YO+JsVYtMpg9DbKKcy+2ew046dYGDC7tH5
+         C+n2vyG+JEnRQ6dMaC4E4Y0Wn6SUquDyfrAQNOQiZWN4tn4DPGmcdBlLq8nXeki6sUjp
+         O6lWeVn9KO/ducKADyiaXC+8m1n7Su6Fr44KREZD+pfMnQ6Ey46cFI7juY/3uEfPU9xL
+         WKPG5pKCYaIzMdVVTfifBGw0OKnx+hJysp8b8QO28WE0zw/Y9LR9482Tfceyie/2MtMV
+         D+Og==
+X-Gm-Message-State: AOAM533CwsAA+VhqCA6P9H+68TgdZBgWr1bUl+DEC9ND0qrn1V/WJDf3
+        Tn1ICNEmpV9jtuLAPeVMhc2QWQ==
+X-Google-Smtp-Source: ABdhPJzdkC+jsZ70UpYPYA7LIpEA5AYpkuoU3Y/7RHpSB5FsjgMt+4M03fg4o3GDqg4zjl8DI+/e8w==
+X-Received: by 2002:a63:1401:: with SMTP id u1mr7879221pgl.229.1611126462652;
+        Tue, 19 Jan 2021 23:07:42 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id h11sm1122242pjg.46.2021.01.19.23.07.38
+        by smtp.gmail.com with ESMTPSA id 17sm1146822pgy.53.2021.01.19.23.07.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 23:07:38 -0800 (PST)
+        Tue, 19 Jan 2021 23:07:42 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Frank Rowand <frowand.list@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         David Gibson <david@gibson.dropbear.id.au>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH V5 0/5] dt: build overlays
-Date:   Wed, 20 Jan 2021 12:36:42 +0530
-Message-Id: <cover.1611124778.git.viresh.kumar@linaro.org>
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: [PATCH V5 1/5] scripts: dtc: Fetch fdtoverlay.c from external DTC project
+Date:   Wed, 20 Jan 2021 12:36:43 +0530
+Message-Id: <41f7158a707f20980e71a8d254c1d7aed84ad371.1611124778.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1611124778.git.viresh.kumar@linaro.org>
+References: <cover.1611124778.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank/Rob,
+We will start building overlays for platforms soon in the kernel and
+would need fdtoverlay tool going forward. Lets start fetching it.
 
-I have picked all the related patches together into a single patchset,
-so they can be properly reviewed/tested.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ scripts/dtc/update-dtc-source.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-This patchset makes necessary changes to the kernel to add support for
-building overlays (%.dtbo) and the required fdtoverlay tool. This also
-builds static_test.dtb using some of the existing overlay tests present
-in drivers/of/unittest-data/ for better test coverage.
-
-Note that in order for anyone to test this stuff, you need to manually
-run the ./update-dtc-source.sh script once to fetch the necessary
-changes from the external DTC project (i.e. fdtoverlay.c and this[1]
-patch).
-
-Also note that Frank has already shared his concerns towards the error
-reporting done by fdtoverlay tool [2], I have still included the patch
-in this series for completeness, will see how to get that sorted out.
-
-V5:
-
-- Don't reuse DTC_SOURCE for fdtoverlay.c in patch 1/5 (Frank).
-
-- Update .gitignore and scripts/Makefile.dtbinst, drop dtbo-y syntax and
-  DTC_FLAGS += -@ in patch 4/5 (Masahiro).
-
-- Remove the intermediate dtb, rename output to static_test.dtb, don't
-  use overlay.dtb and overlay_base.dtb for static builds, improved
-  layout/comments in Makefile for patch 5/5 (Frank).
-
---
-Viresh
-
-[1] https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
-[2] https://lore.kernel.org/lkml/74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com/
-
-Viresh Kumar (5):
-  scripts: dtc: Fetch fdtoverlay.c from external DTC project
-  scripts: dtc: Build fdtoverlay tool
-  scripts: dtc: Remove the unused fdtdump.c file
-  kbuild: Add support to build overlays (%.dtbo)
-  of: unittest: Statically apply overlays using fdtoverlay
-
- .gitignore                        |   3 +-
- Makefile                          |   4 +-
- drivers/of/unittest-data/Makefile |  50 +++++++++
- scripts/Makefile.dtbinst          |   3 +
- scripts/Makefile.lib              |   4 +-
- scripts/dtc/Makefile              |   6 +-
- scripts/dtc/fdtdump.c             | 163 ------------------------------
- scripts/dtc/update-dtc-source.sh  |   3 +-
- 8 files changed, 66 insertions(+), 170 deletions(-)
- delete mode 100644 scripts/dtc/fdtdump.c
-
+diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
+index bc704e2a6a4a..32ff17ffd089 100755
+--- a/scripts/dtc/update-dtc-source.sh
++++ b/scripts/dtc/update-dtc-source.sh
+@@ -37,6 +37,7 @@ DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c
+ LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
+ 		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
+ 		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
++FDTOVERLAY_SOURCE=fdtoverlay.c
+ 
+ get_last_dtc_version() {
+ 	git log --oneline scripts/dtc/ | grep 'upstream' | head -1 | sed -e 's/^.* \(.*\)/\1/'
+@@ -54,7 +55,7 @@ dtc_log=$(git log --oneline ${last_dtc_ver}..)
+ 
+ # Copy the files into the Linux tree
+ cd $DTC_LINUX_PATH
+-for f in $DTC_SOURCE; do
++for f in $DTC_SOURCE $FDTOVERLAY_SOURCE; do
+ 	cp ${DTC_UPSTREAM_PATH}/${f} ${f}
+ 	git add ${f}
+ done
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
