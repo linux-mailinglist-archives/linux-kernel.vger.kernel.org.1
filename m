@@ -2,121 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2612FCDEF
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2272FCDEE
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730530AbhATKNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:13:41 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:38465 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729520AbhATJM1 (ORCPT
+        id S1730152AbhATKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbhATJM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:12:27 -0500
-Received: by mail-oi1-f176.google.com with SMTP id n186so16424648oia.5;
-        Wed, 20 Jan 2021 01:12:11 -0800 (PST)
+        Wed, 20 Jan 2021 04:12:26 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5126EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:11:37 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id e15so2151876wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jnHw/9ZfOUdDPDIVRz58fMDvzkElIsdRxNOVrSA30u0=;
+        b=SGoQ9256qHzwYxJkdrl57cIN/rchQtnhGfDJQqGJl6DxiHNa08K0KF4sF3C0FAf2A7
+         YLk9qmb/uL5XHhHwCi5Iajxw6DXC6CyegFsLorVcMW701MtboWCBTXBqCUNuBfIbJ9eE
+         t3oQ+hDZvWjkNetM7HNtZSBdWv6X+pzHEvJwE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yo/48ruDH77ObKqel524FXQ0YODRZACkl5fGRtnXUUs=;
-        b=tVd6g2k/IFF21tWPMYSv8qLPHkThdLEK8hr5J4rJI8lUnKbQ39NBjO8faItsR7MG2M
-         kzrKWG0XdKDiRfKY2aF+pg4ZX9FDTMD+TOzcHrvtj2t9ittYdgtSsv8AgDEcvQ/f/gTL
-         tU2jr7VWjqz09mVTQmwdhCVC1GkfOfL4iuxqjo60av5TcG54ebmZvhZuGSsfYkWgfaXW
-         JFEqTNrk6PtsX3dynCuh97WFksRgA/wua5nzQpDKgp0wbfkkFLl1DkIXb0YDvM41pms5
-         Q4Z9s/fyMXEDK15TdQ7PbhaVUs5m6CWJBKFaPGSVOsgXtLK1CIDWawWSMrf3JOsevgmc
-         Iz6g==
-X-Gm-Message-State: AOAM531VmNOr7vCGmxnxAPJQ7S8Qre37NwqJncarEifX4pMLL7obAo/D
-        RzskxCV+8MiIqVHIBkJe0ZInNG02kAi/zgYbZ7o=
-X-Google-Smtp-Source: ABdhPJzRJgdF4qi71TnSMaTn7Qe+KMxIgl/SG8Nhdbvw2IsGIji4/fwqAyZ2R5mDx0iNrYUL3eeQVmlDmOYHX4zsAt8=
-X-Received: by 2002:aca:31d5:: with SMTP id x204mr2253713oix.153.1611133894341;
- Wed, 20 Jan 2021 01:11:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <20201218031703.3053753-6-saravanak@google.com> <CAMuHMdWDAg6+utMDLunPXmVtnP+13G2s0E-Fcnkc9bkNBs-cEg@mail.gmail.com>
- <86db7747ea6d48eebbf40a5855240d14@kernel.org> <CAMuHMdUUX22D7gV-LtDJ4jcxD=TD6soWzP=gUy4EqdFFAntoGA@mail.gmail.com>
- <CAGETcx_aroLLf_U50=KgfOBL-DW+VrgvgrSNEyHAyeSxWKZTgQ@mail.gmail.com>
- <CAMuHMdVTKEy3rbdYYUKS+L1pY0y0ctMWRXNf7o+hJWyGR7L-Dg@mail.gmail.com> <CAGETcx-ax00kGq=u_XCaQ0phgc_iCqtqD7k2aiQ1qSLFmrQG=g@mail.gmail.com>
-In-Reply-To: <CAGETcx-ax00kGq=u_XCaQ0phgc_iCqtqD7k2aiQ1qSLFmrQG=g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Jan 2021 10:11:22 +0100
-Message-ID: <CAMuHMdXGLqN4ZYjgCvK-yGDPtzcJTpAhXq7ffh9MWYwyAAnAfQ@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=jnHw/9ZfOUdDPDIVRz58fMDvzkElIsdRxNOVrSA30u0=;
+        b=rhg8sLHMOV+9lFs/Cfu8tvDBNMzgz7+6OXC5iRB7p8kZLty/jxiJsU0AQB4w926e8P
+         9+kDnQse6qauaePxvMZnaf5RKCZ25IP2vw/Ai5Xt6vvOGwUehGQ9BGGdZt3PatoZfW0y
+         EAB3uDtSDTmQeaG582uwpFyf2Dm9gYIdqSu/RS+XrGC3/SxfUUVcLmXvNISfMsLiThCu
+         oj7s8UhXoWjusu0vV5wDlaYEEUtrBgF80Xiji47Pbx7qSUkVpUGiCdKbMrVPILxc8wtA
+         eJ3MRekpvs+cYo0Q5FyYaiDle5PgYKkuqkSQJvFDAhw/uBmGw4PwrWH1lBBEVDkoStA8
+         7MPw==
+X-Gm-Message-State: AOAM531t70dI5e9rm3FIveE+pdL8x9K13wksjDljbJkIFbhjwYt/+TMS
+        PCx/oxbHaha7BVxp+h3CwCfv1O1i9jexZg==
+X-Google-Smtp-Source: ABdhPJzE7C10TNLXpBnvYdfGRuBE9aOqbzxwogIQA7eNkIY+mSb+2vFm6RbVRZNIKOZzXPQKUScUyQ==
+X-Received: by 2002:a05:600c:258:: with SMTP id 24mr3297878wmj.161.1611133895972;
+        Wed, 20 Jan 2021 01:11:35 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b64sm2775341wmb.26.2021.01.20.01.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 01:11:34 -0800 (PST)
+Date:   Wed, 20 Jan 2021 10:11:33 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Yiwei Zhang <zzyiwei@android.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v2] drm/virtio: Track total GPU memory for virtio driver
+Message-ID: <YAfzxS95Yy86qnBi@phenom.ffwll.local>
+Mail-Followup-To: Yiwei Zhang <zzyiwei@android.com>,
+        David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <CAKB3++adfpdBHFEyGZ3v2V6zyW+ayg86CLDRKx1ty+OytjYFNw@mail.gmail.com>
+ <20210118234057.270930-1-zzyiwei@android.com>
+ <CAKMK7uE+7S5q8bU0ibyepb8yQL3QYNjZE+Jwf13+bVfAmoSuhw@mail.gmail.com>
+ <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKB3++aNtrjzFoq4icMWSUvXw7bL69FRM+9t69firXHkiuTwDQ@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Tue, Jan 19, 2021 at 11:08:12AM -0800, Yiwei Zhang wrote:
+> On Mon, Jan 18, 2021 at 11:03 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Tue, Jan 19, 2021 at 12:41 AM Yiwei Zhang <zzyiwei@android.com> wrote:
+> > >
+> > > On the success of virtio_gpu_object_create, add size of newly allocated
+> > > bo to the tracled total_mem. In drm_gem_object_funcs.free, after the gem
+> > > bo lost its last refcount, subtract the bo size from the tracked
+> > > total_mem if the original underlying memory allocation is successful.
+> > >
+> > > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> >
+> > Isn't this something that ideally we'd for everyone? Also tracepoint
+> > for showing the total feels like tracepoint abuse, usually we show
+> > totals somewhere in debugfs or similar, and tracepoint just for what's
+> > happening (i.e. which object got deleted/created).
+> >
+> > What is this for exactly?
+> > -Daniel
+> >
+> > > ---
+> > >  drivers/gpu/drm/virtio/Kconfig          |  1 +
+> > >  drivers/gpu/drm/virtio/virtgpu_drv.h    |  4 ++++
+> > >  drivers/gpu/drm/virtio/virtgpu_object.c | 19 +++++++++++++++++++
+> > >  3 files changed, 24 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+> > > index b925b8b1da16..e103b7e883b1 100644
+> > > --- a/drivers/gpu/drm/virtio/Kconfig
+> > > +++ b/drivers/gpu/drm/virtio/Kconfig
+> > > @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+> > >         select DRM_KMS_HELPER
+> > >         select DRM_GEM_SHMEM_HELPER
+> > >         select VIRTIO_DMA_SHARED_BUFFER
+> > > +       select TRACE_GPU_MEM
+> > >         help
+> > >            This is the virtual GPU driver for virtio.  It can be used with
+> > >            QEMU based VMMs (like KVM or Xen).
+> > > diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > > index 6a232553c99b..7c60e7486bc4 100644
+> > > --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > > +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> > > @@ -249,6 +249,10 @@ struct virtio_gpu_device {
+> > >         spinlock_t resource_export_lock;
+> > >         /* protects map state and host_visible_mm */
+> > >         spinlock_t host_visible_lock;
+> > > +
+> > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > +       atomic64_t total_mem;
+> > > +#endif
+> > >  };
+> > >
+> > >  struct virtio_gpu_fpriv {
+> > > diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > > index d69a5b6da553..1e16226cebbe 100644
+> > > --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> > > +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> > > @@ -25,12 +25,29 @@
+> > >
+> > >  #include <linux/dma-mapping.h>
+> > >  #include <linux/moduleparam.h>
+> > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > +#include <trace/events/gpu_mem.h>
+> > > +#endif
+> > >
+> > >  #include "virtgpu_drv.h"
+> > >
+> > >  static int virtio_gpu_virglrenderer_workaround = 1;
+> > >  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+> > >
+> > > +#ifdef CONFIG_TRACE_GPU_MEM
+> > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
+> > > +                                             s64 delta)
+> > > +{
+> > > +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
+> > > +
+> > > +       trace_gpu_mem_total(0, 0, total_mem);
+> > > +}
+> > > +#else
+> > > +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *, s64)
+> > > +{
+> > > +}
+> > > +#endif
+> > > +
+> > >  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+> > >  {
+> > >         if (virtio_gpu_virglrenderer_workaround) {
+> > > @@ -104,6 +121,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+> > >         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+> > >
+> > >         if (bo->created) {
+> > > +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+> > >                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+> > >                 virtio_gpu_notify(vgdev);
+> > >                 /* completion handler calls virtio_gpu_cleanup_object() */
+> > > @@ -265,6 +283,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+> > >                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+> > >         }
+> > >
+> > > +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+> > >         *bo_ptr = bo;
+> > >         return 0;
+> > >
+> > > --
+> > > 2.30.0.284.gd98b1dd5eaa7-goog
+> > >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> 
+> Thanks for your reply! Android Cuttlefish virtual platform is using
+> the virtio-gpu driver, and we currently are carrying this small patch
+> at the downstream side. This is essential for us because:
+> (1) Android has deprecated debugfs on production devices already
+> (2) Android GPU drivers are not DRM based, and this won't change in a
+> short term.
+> 
+> Android relies on this tracepoint + eBPF to make the GPU memory totals
+> available at runtime on production devices, which has been enforced
+> already. Not only game developers can have a reliable kernel total GPU
+> memory to look at, but also Android leverages this to take GPU memory
+> usage out from the system lost ram.
+> 
+> I'm not sure whether the other DRM drivers would like to integrate
+> this tracepoint(maybe upstream drivers will move away from debugfs
+> later as well?), but at least we hope virtio-gpu can take this.
 
-On Tue, Jan 19, 2021 at 7:09 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Jan 19, 2021 at 1:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > BTW, you are aware IOMMUs and DMA controllers are optional?
-> > I.e. device drivers with iommus and/or dmas DT properties where the
-> > targets of these properties do not have a driver should still be probed,
-> > eventually.  But if the IOMMU or DMA drivers are present, they should be
-> > probed first, so the device drivers can make use of them.
->
-> Yeah, this is going to be a problem then. How is this handled in
-> static kernels today? Do we just try to make sure the iommus driver
-> probes the iommu device before the consumers? And then the consumers
-> simply don't defer probe on failure to get iommu?
+There's already another proposal from Android people for tracking dma-buf
+(in dma-buf heaps/ion) usage. I think we need something which is overall
+integrated, otherwise we have a complete mess of partial solutions.
 
-Iommus are handled by the iommu framework, not by the driver.
-So the framework decides if/when it's OK to probe a device tied to an
-iommu.  Hence the consumers' drivers don't return -EPROBE_DEFER, the
-framework takes care of that, before drivers' probe() functions are
-called.
+Also there's work going on to add cgroups support to gpu drivers (pushed
+by amd and intel folks, latest rfc have been quite old), so that's another
+proposal for gpu memory usage tracking.
 
-DMA is handled by consumer drivers, and driver-specific.  Many consumer
-drivers consider DMA optional, and fall back to PIO if getting the DMA
-channel failed.  Some drivers retry getting the DMA channel when the
-device is used, and thus may start using DMA when the DMAC driver
-appears and probes.
+Also for upstream we need something which works with upstream gpu drivers
+(even if you don't end up using that in shipping products). So that's
+another reason maybe why a quick hack in the virtio gpu driver isn't the
+best approach here.
 
-> I can make this work if modules are not enabled (needs some code
-> changes), but it's not going to work when there are modules. There's
-> no way to tell if an iommu module won't be loaded soon. Also, device
-> links doing this behavior only for iommu/dma is probably not a good
-> idea. So, whatever we do will have to be common behavior. :(
+I guess a good approach would be if Android at least can get to something
+unified (gpu driver, virtio-gpu, dma-buf heaps), and then we need to
+figure out how to mesh that with the cgroups side somehow.
 
-The iommu driver definitely needs to be built-in.
-Modular DMAC drivers currently work with consumer drivers that
-either consider DMA mandatory, or retry obtaining DMA channels.
+Also note that at least on dma-buf we already have some other debug
+features (for android), so an overall "how does this all fit together"
+would be good.
+-Daniel
 
-> Also, can you try deleting "iommu" and "dma" parsing in
-> of_supplier_bindings[] in driver/of/property.c and see if it helps?
-> Then we'd know this is the reason for things not working in your case.
-
-It also fails on another system without "iommus" properties:
-
-    182 supplier e6180000.system-controller not ready
-     18 supplier e6055400.gpio not ready
-     15 supplier e6055800.gpio not ready
-     15 supplier e6052000.gpio not ready
-      6 supplier e6055000.gpio not ready
-
-The system controller is the culprit, and is a dependency for all
-devices due to power-domains.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+> 
+> Many thanks!
+> Yiwei
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
