@@ -2,134 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5C82FCB33
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5FC2FCB39
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 07:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbhATGxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 01:53:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbhATGwR (ORCPT
+        id S1725823AbhATG4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 01:56:40 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:45700 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbhATG4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 01:52:17 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD2FC061757;
-        Tue, 19 Jan 2021 22:51:37 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id j12so6753621pfj.12;
-        Tue, 19 Jan 2021 22:51:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=hSTCljo+6s3Mzjwr6y147WsbBzkNmoKUysS7Dm9EnPo=;
-        b=XNNytEFUyXePR6IQR+Jxq5BP1WOIxasXa3YTi2Khe0bUs8UyT7fdXbQXhNGt4aLHuR
-         9rtopzEiyth+6uK6wJmd1DuYLgR6pfAePg31H3IoWJzNN0qWbAy4zfKNIHObeZ2HSUbu
-         WrgIuOTikpTwU7MxMquqAcoB0AoLPbroLWaCVCWv1nhhUyAMXYj8mzOxllijS6Eq9iDB
-         uhkIsOyuBym9P6lqzQRl3W83/YHmyV4FVqwq+tZeiQOLPGmxF0FgdVLErscaYJhBRY+e
-         8qLvznM2JCc+s8oBL4953rnsOH1NOV3RInOz5CUXlx7rkFipiY425MtcX/lwTEhQ5VmV
-         FNJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=hSTCljo+6s3Mzjwr6y147WsbBzkNmoKUysS7Dm9EnPo=;
-        b=pVKy89bCgYfj7CXgNL4L6/qBmTXpojjSmfd7cC9QBKOe68ARC0Lk5lJJIt0ius3lyL
-         a7mW3Mpl5qTGnRa221No+omQUXbuLEEU7mCopnMS4bXuTwMLrzN1+F2G7cYDEo0tcuPI
-         dKZneCznOjXB/rJnHHoR2pzqrLKD2pLn4MkDXZ3kqcFbNv7G8bSFJa7mWMtcBfS5K0ME
-         LZ6zPOQwa75Uj5/OC0cgGFyz9Hl/w+UKV0c32mjDmJVszDK+sebFr9fi2qrGWeRaQSJL
-         0wi5IkRD1+GxvOm9Q2w1vSpLZlKr8STDbSwTwDz5XchmhPSDJxBpY9JC5VhcAKXn+tXS
-         SPAA==
-X-Gm-Message-State: AOAM533eUd7s+QzR6YOuSmcWfRd2kZjdqM0x9faMvg3SScZbG4sx9wHA
-        plyZYuYh22U+fp57ynCziBYfFgc+epblYQY=
-X-Google-Smtp-Source: ABdhPJzKOsQbJVr1v9ePySXk3FER8Vs0Fw+MDRTfejpxFhT40eigUQIAOqD5IlwjvF5fDiLbTAHICQ==
-X-Received: by 2002:a62:790a:0:b029:1b4:80d4:c246 with SMTP id u10-20020a62790a0000b02901b480d4c246mr7783312pfc.71.1611125496871;
-        Tue, 19 Jan 2021 22:51:36 -0800 (PST)
-Received: from ?IPv6:2600:1700:cda0:4340:8831:6d69:57a3:bbfb? ([2600:1700:cda0:4340:8831:6d69:57a3:bbfb])
-        by smtp.gmail.com with ESMTPSA id m3sm1043704pfa.134.2021.01.19.22.51.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Jan 2021 22:51:36 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2 net-next 1/1] Allow user to set metric on default route
- learned via Router Advertisement.
-From:   praveen chaudhary <praveen5582@gmail.com>
-In-Reply-To: <7839be40-6555-3e5a-3459-c3f0e4726795@gmail.com>
-Date:   Tue, 19 Jan 2021 22:51:27 -0800
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhenggen Xu <zxu@linkedin.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A54CD4CD-9280-4969-ACD3-592A6933E745@gmail.com>
-References: <20210115080203.8889-1-pchaudhary@linkedin.com>
- <0f64942e-debd-81bd-b29c-7d2728a5bd4b@gmail.com>
- <A2DE27CF-A988-4003-8A95-60CC101086DA@gmail.com>
- <7839be40-6555-3e5a-3459-c3f0e4726795@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Wed, 20 Jan 2021 01:56:30 -0500
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210120065546epoutp03c26d63c45e4a9958fb2000131ba3d3dd~b3lSSmtvp2845528455epoutp03T
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 06:55:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210120065546epoutp03c26d63c45e4a9958fb2000131ba3d3dd~b3lSSmtvp2845528455epoutp03T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611125746;
+        bh=Y3t1Ru221BzeFTMjn0qEsdpY63KR+oSgn/Go4kpEcyY=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=iy56PfdEcbU7A5S5oev5TLdmw+Qu8NONgrRr2o0Qw3hD5xkogOVMyj82VD4T/a7gv
+         nl6m0V3c4cnVNVYh9qTgupI0fBmHD2C5MkAAApquAa0/gEnsUGJJKNQbE0m8qFjWOX
+         8qmB4fIrohlgdIUg5H3NyNitg+CESdoWJpE0fxTQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210120065546epcas2p2e656b2b6c56ebd7a6a58dbb7be8421a8~b3lR1rx-R0033000330epcas2p2n;
+        Wed, 20 Jan 2021 06:55:46 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DLGWM5B1sz4x9QH; Wed, 20 Jan
+        2021 06:55:43 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        22.DD.05262.FE3D7006; Wed, 20 Jan 2021 15:55:43 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210120065543epcas2p48248b4b8590b6f5c45f93b7048087e05~b3lPSidc81483814838epcas2p4P;
+        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210120065543epsmtrp196830196692c8e2251f2927c3da8ed43~b3lPRuMJQ0242102421epsmtrp1B;
+        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-fc-6007d3ef3e46
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A1.4A.13470.FE3D7006; Wed, 20 Jan 2021 15:55:43 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210120065543epsmtip2703a746694828fe5496c77f1efee99d7~b3lPFHBGJ0775007750epsmtip2I;
+        Wed, 20 Jan 2021 06:55:43 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
+Cc:     "'David S. Miller'" <davem@davemloft.net>,
+        "'Alexander Lobakin'" <alobakin@pm.me>, <namkyu78.kim@samsung.com>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210118132736.GM3576117@gauss3.secunet.de>
+Subject: RE: [PATCH net v2] udp: ipv4: manipulate network header of NATed
+ UDP GRO fraglist
+Date:   Wed, 20 Jan 2021 15:55:42 +0900
+Message-ID: <012d01d6eef9$45516d40$cff447c0$@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJT4Rp7bAvF1bGeZTYGN+mZAmy16AFN1KutAr+8QJepFb/3kA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmhe77y+wJBhfPqFmserydxWLO+RYW
+        iwvb+lgtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
+        7doqJo+je86xefRtWcXosal1CavH501yARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYG
+        hrqGlhbmSgp5ibmptkouPgG6bpk5QNcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtS
+        cgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMtb0GhScN6j4Mm8qawPjNOUuRk4OCQETiZ9f
+        drF3MXJxCAnsYJR482sZC4TziVFi9qY1TBDON0aJTQdAHIiW7k1HoKr2MkocfDuHDcJ5wShx
+        fPMUNpAqNgEtiTez2llBbBEBc4nVr6aBjWIW2Mok8fDrVBaQBKeApUTj6y2MILawQIzE00md
+        YM0sAqoSi9sWgzXzAtWsWzSBDcIWlDg58wlYL7OAgcT7c/OZIWx5ie1v5zBDnKcg8fPpMqBe
+        DqDFThIrf2pClIhIzO5sgyrZwyGx9EAMhO0isWfuPkYIW1ji1fEt7BC2lMTL/jZ2kDESAvUS
+        rd0xIOdLCPQwSlzZB3GChICxxKxn7YwQNcoSR25BXcYn0XH4L1Qrr0RHmxCEqSQx8Us8RKOE
+        xIuTk1kmMCrNQvLWLCRvzULy1iwk9y9gZFnFKJZaUJybnlpsVGCMHNebGMEJV8t9B+OMtx/0
+        DjEycTAeYpTgYFYS4W36y5YgxJuSWFmVWpQfX1Sak1p8iNEUGNITmaVEk/OBKT+vJN7Q1MjM
+        zMDS1MLUzMhCSZy32OBBvJBAemJJanZqakFqEUwfEwenVANTzgYz/vDt396vPVz0T+i5b/DK
+        Xfv04l3FGj0FJnmd7MiJ3/joTE5a5JueR9oG+vN9up8Hz9/AIrvytXLh3mIuoZ4/qyYXWK2K
+        Mn0u7GE+Z3HJzKVzBbO+KZgkJav5ue5gfZ6nNo3VYaLyYYGNqnvPfOM5H627R63i6sdMxjKb
+        7MDaYhM2wyvaZ86fUDrY4af7wymmSaHF+FzFR7MVnd4+PjOCi4psbP9Z2vXwrHdezTLb8rq4
+        /P0bs0+VXzR9f9+B11N9x+UzdhMSjt/bvfLrLjfnlWq9B1kX7JNgzs5uOHnprZf0f897C2ZG
+        Xcj68D6tJin790yHzUlVLkU88tf1j6c+23pEv5n3gLvD8S4lluKMREMt5qLiRABKybQKQQQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO77y+wJBr+n8liserydxWLO+RYW
+        iwvb+lgtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
+        7doqJo+je86xefRtWcXosal1CavH501yARxRXDYpqTmZZalF+nYJXBlreg0KzhtUfJk3lbWB
+        cZpyFyMnh4SAiUT3piMsXYxcHEICuxklVrUsYe1i5ABKSEjs2uwKUSMscb/lCCtEzTNGiZaj
+        n5hBEmwCWhJvZrWzgtgiAuYSq19NYwIpYhbYzSTxtec+M0THEUaJ1w2NYFWcApYSja+3MILY
+        wgJREr1t78AmsQioSixuWwxWwwtUs27RBDYIW1Di5MwnLCA2s4CRxLlD+9kgbHmJ7W/nMEOc
+        pyDx8+kysKtFBJwkVv7UhCgRkZjd2cY8gVF4FpJJs5BMmoVk0iwkLQsYWVYxSqYWFOem5xYb
+        FhjmpZbrFSfmFpfmpesl5+duYgTHnpbmDsbtqz7oHWJk4mA8xCjBwawkwtv0ly1BiDclsbIq
+        tSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqZV/7W0VBOusit7nNTz
+        vG2kUX8wT9Pwv/OcrkILsx1fGmJlZB/nSllE/E2+rm6pp7dJr8a/87fg3D9y1u+iEoOYHJTd
+        ryucm/jgwvzfPSFVYTfnbDznZW5Yvrq1KzR1Wkxlk82uyxf+5PLs7v+yNGVnwOsfc/Vj2W0e
+        ZrV9v7Z8y9NgNm233bW+Ze/MXRbbWS88xsayJt68MOyHT9/UHdM3mmkVvGnjXVSQkJ/8MPLG
+        hPA1kuFMJ8LjilafOh4/4Vfui9v7nzMum9G4aMXkCWUbfm389Yr5rcK+1p3TzTKOtcgu+quz
+        7dJ34U/LmiXzhPds+6v7YM5Ti7NLP8aKiE4tYar5eknyX9kfry1nohcqsRRnJBpqMRcVJwIA
+        6K1ZcSwDAAA=
+X-CMS-MailID: 20210120065543epcas2p48248b4b8590b6f5c45f93b7048087e05
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2
+References: <CGME20210115133200epcas2p1f52efe7bbc2826ed12da2fde4e03e3b2@epcas2p1.samsung.com>
+        <1610716836-140533-1-git-send-email-dseok.yi@samsung.com>
+        <20210118132736.GM3576117@gauss3.secunet.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-18 22:27, Steffen Klassert wrote:
+> On Fri, Jan 15, 2021 at 10:20:35PM +0900, Dongseok Yi wrote:
+> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> > skb_gso_segment is updated but following frag_skbs are not updated.
+> >
+> > A call path skb_mac_gso_segment -> inet_gso_segment ->
+> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> > does not try to update UDP/IP header of the segment list but copy
+> > only the MAC header.
+> >
+> > Update dport, daddr and checksums of each skb of the segment list
+> > in __udp_gso_segment_list. It covers both SNAT and DNAT.
+> >
+> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > ---
+> > v1:
+> > Steffen Klassert said, there could be 2 options.
+> > https://lore.kernel.org/patchwork/patch/1362257/
+> > I was trying to write a quick fix, but it was not easy to forward
+> > segmented list. Currently, assuming DNAT only.
+> >
+> > v2:
+> > Per Steffen Klassert request, move the procedure from
+> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+> >
+> > To Alexander Lobakin, I've checked your email late. Just use this
+> > patch as a reference. It support SNAT too, but does not support IPv6
+> > yet. I cannot make IPv6 header changes in __udp_gso_segment_list due
+> > to the file is in IPv4 directory.
+> >
+> >  include/net/udp.h      |  2 +-
+> >  net/ipv4/udp_offload.c | 62 ++++++++++++++++++++++++++++++++++++++++++++++----
+> >  net/ipv6/udp_offload.c |  2 +-
+> >  3 files changed, 59 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/net/udp.h b/include/net/udp.h
+> > index 877832b..01351ba 100644
+> > --- a/include/net/udp.h
+> > +++ b/include/net/udp.h
+> > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+> >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
+> >
+> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> > -				  netdev_features_t features);
+> > +				  netdev_features_t features, bool is_ipv6);
+> >
+> >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+> >  {
+> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > index ff39e94..c532d3b 100644
+> > --- a/net/ipv4/udp_offload.c
+> > +++ b/net/ipv4/udp_offload.c
+> > @@ -187,8 +187,57 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+> >  }
+> >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
+> >
+> > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
+> > +				     __be32 *oldip, __be32 *newip,
+> > +				     __be16 *oldport, __be16 *newport)
+> > +{
+> > +	struct udphdr *uh = udp_hdr(seg);
+> > +	struct iphdr *iph = ip_hdr(seg);
+> > +
+> > +	if (uh->check) {
+> > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
+> > +					 true);
+> > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
+> > +					 false);
+> > +		if (!uh->check)
+> > +			uh->check = CSUM_MANGLED_0;
+> > +	}
+> > +	uh->dest = *newport;
+> > +
+> > +	csum_replace4(&iph->check, *oldip, *newip);
+> > +	iph->daddr = *newip;
+> > +}
+> 
+> Can't we just do the checksum recalculation for this case as it is done
+> with standard GRO?
 
+If I understand standard GRO correctly, it calculates full checksum.
+Should we adopt the same method to UDP GRO fraglist? I did not find
+a simple method for the incremental checksum update.
 
-> On Jan 19, 2021, at 8:22 PM, David Ahern <dsahern@gmail.com> wrote:
->=20
-> On 1/19/21 3:17 PM, praveen chaudhary wrote:
->>>> ----------------------------------------------------------------
->>>> For IPv4:
->>>> ----------------------------------------------------------------
->>>>=20
->>>> Config in etc/network/interfaces
->>>> ----------------------------------------------------------------
->>>> ```
->>>> auto eth0
->>>> iface eth0 inet dhcp
->>>>   metric 4261413864
->>>=20
->>> how does that work for IPv4? Is the metric passed to the dhclient =
-and it
->>> inserts the route with the given metric or is a dhclient script used =
-to
->>> replace the route after insert?
->>>=20
->>>=20
->>=20
->> Yes, DHCP client picks config under =E2=80=9Ciface eth0 inet dhcp=E2=80=
-=9D line and if metric is configured, then it adds the metric for all =
-added routes.
->=20
-> As I recall ifupdown{2} forks dhclient as a process to handle dhcp
-> config, and I believe there is a script that handles adding the =
-default
-> route with metric. Meaning ... it is not comparable to an RA.
->=20
+> 
+> > +
+> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+> > +{
+> > +	struct sk_buff *seg;
+> > +	struct udphdr *uh, *uh2;
+> > +	struct iphdr *iph, *iph2;
+> > +
+> > +	seg = segs;
+> > +	uh = udp_hdr(seg);
+> > +	iph = ip_hdr(seg);
+> > +
+> > +	while ((seg = seg->next)) {
+> > +		uh2 = udp_hdr(seg);
+> > +		iph2 = ip_hdr(seg);
+> > +
+> > +		if (uh->source != uh2->source || iph->saddr != iph2->saddr)
+> > +			__udpv4_gso_segment_csum(seg,
+> > +						 &iph2->saddr, &iph->saddr,
+> > +						 &uh2->source, &uh->source);
+> > +
+> > +		if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
+> > +			__udpv4_gso_segment_csum(seg,
+> > +						 &iph2->daddr, &iph->daddr,
+> > +						 &uh2->dest, &uh->dest);
+> > +	}
+> 
+> You don't need to check the addresses and ports of all packets in the
+> segment list. If the addresses and ports are equal for the first and
+> second packet in the list, then this also holds for the rest of the
+> packets.
 
-I hope, we both will agree that a fixed metric value on default route =
-learned via RA=20
-restricts Network Administrators today. And such issues hinder the =
-deployment
-of IPv6 only networks. So if we agree that in future we may need to =
-allow  a
-configurable value for metric then this fix makes good sense.
-BTW, kindly let me know if there is a better way to configure this =
-metric. I think,
-sysctl is the only way.
+I think we can try this with an additional flag (seg_csum).
 
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index 36b7e30..3f892df 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -213,25 +213,36 @@ static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+        struct sk_buff *seg;
+        struct udphdr *uh, *uh2;
+        struct iphdr *iph, *iph2;
++       bool seg_csum = false;
 
->>=20
->> Thanks a lot again for spending time for this Review,
->> This feature will help SONiC OS [and others Linux flavors] for better =
-IPv6 support, so thanks again.
->=20
-> I think SONiC is an abomination, so that is definitely not the
-> motivation for my reviews. :-)
->=20
+        seg = segs;
+        uh = udp_hdr(seg);
+        iph = ip_hdr(seg);
 
-Trying to make things better day by day. That is the only solace for =
-Software Engineers :-).=20
+-       while ((seg = seg->next)) {
++       seg = seg->next;
++       do {
++               if (!seg)
++                       break;
++
+                uh2 = udp_hdr(seg);
+                iph2 = ip_hdr(seg);
 
-I really appreciate for your time to review this patch. Cheers.
+-               if (uh->source != uh2->source || iph->saddr != iph2->saddr)
++               if (uh->source != uh2->source || iph->saddr != iph2->saddr) {
+                        __udpv4_gso_segment_csum(seg,
+                                                 &iph2->saddr, &iph->saddr,
+                                                 &uh2->source, &uh->source);
++                       seg_csum = true;
++               }
 
+-               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr)
++               if (uh->dest != uh2->dest || iph->daddr != iph2->daddr) {
+                        __udpv4_gso_segment_csum(seg,
+                                                 &iph2->daddr, &iph->daddr,
+                                                 &uh2->dest, &uh->dest);
+-       }
++                       seg_csum = true;
++               }
++
++               seg = seg->next;
++       } while (seg_csum);
+
+        return segs;
+ }
 
