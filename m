@@ -2,349 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB1E2FCC78
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD752FCC7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 09:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbhATIMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 03:12:50 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11418 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730342AbhATILa (ORCPT
+        id S1730565AbhATIN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 03:13:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21368 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730336AbhATIMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 03:11:30 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DLJ8p6Dmrzj8Rb;
-        Wed, 20 Jan 2021 16:09:46 +0800 (CST)
-Received: from [10.174.177.2] (10.174.177.2) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Wed, 20 Jan 2021
- 16:10:37 +0800
-Subject: Re: [PATCH v2 1/5] hugetlb: use page.private for hugetlb specific
- page flags
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "David Hildenbrand" <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210120013049.311822-1-mike.kravetz@oracle.com>
- <20210120013049.311822-2-mike.kravetz@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <2c1d4815-6dc9-bd32-b564-8dbe7efb7705@huawei.com>
-Date:   Wed, 20 Jan 2021 16:10:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 20 Jan 2021 03:12:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611130268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WYlBb00a1Y6CTzqOK72/0+v2yGyDzKaR7ND9mWSLlUg=;
+        b=QbgljwxRGaISt7lRdc4GVMNp66ntUirPu9hYkqUcvtOqW6d5XuUrKYTQX0MSVDgd6Hpyj4
+        7/8AB3gvqWuTbreHWUYhaIuKOMn1a0uX0WQesyzXdvzpmmILv3ufwoRFV1lh+S4XaemEwZ
+        g6sHQ0hjaUAU64py5Y+QKBZLqOgl7es=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-2JDFj4r_Pa-ZDlvDim9z3w-1; Wed, 20 Jan 2021 03:11:06 -0500
+X-MC-Unique: 2JDFj4r_Pa-ZDlvDim9z3w-1
+Received: by mail-wr1-f72.google.com with SMTP id z8so11088706wrh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 00:11:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WYlBb00a1Y6CTzqOK72/0+v2yGyDzKaR7ND9mWSLlUg=;
+        b=ifzvQuo/jtG6H4l42SfOTq9uiLm0rS3bgjIB82UU29IbdSyTeCXD88mAY8w1Yy1QHE
+         fMdvEm3TRWov+23LZMBJ/Zl8GwXiL3FVmyPnhLKy39dS/7ljeZUzbSda5oiTJbZnW1Jl
+         RN99xat9Txpr707ymhGilJfclbqgT21MfjS/iX1rTBfX6/kwxEYrqu4Ce12o0ds9WcKE
+         DEMpvX4vSYO7/1xP2H8SmUbPQOQOUErnRG9KMkfqU0TSNqqSxX5uhOuzV1/L7Zp7n0OH
+         Q4f+sFHRdsqQFDm4NMikTEEk/bNpTjMpwoXOPDz4OhwI1FvCHtn62pX2Yrz6pn085yc2
+         eOkw==
+X-Gm-Message-State: AOAM5303DWSoZj/lh+gWBjkRRGPCBUVKcDghIBDpbFwC+2H7Esi7O3wg
+        5ROjXzSlgzdTxKABsuy1QM7rBfaYk6CA2e8mTF7JFmxR032br1czXfSSMQznn+0uhweHsmTjVSA
+        o4dR5ZWAzfuCdacUZ5QFUvKYA
+X-Received: by 2002:a05:6000:108b:: with SMTP id y11mr7802692wrw.379.1611130264807;
+        Wed, 20 Jan 2021 00:11:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwDkrxOIJwK6Xun2twNrtjYorn/nFwJo1WNi898JtlETus/g4f0F8ik3DrV6+aLfPMu0mMKvg==
+X-Received: by 2002:a05:6000:108b:: with SMTP id y11mr7802669wrw.379.1611130264602;
+        Wed, 20 Jan 2021 00:11:04 -0800 (PST)
+Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
+        by smtp.gmail.com with ESMTPSA id u26sm2380200wmm.24.2021.01.20.00.11.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 00:11:03 -0800 (PST)
+Date:   Wed, 20 Jan 2021 03:10:59 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 3/3] xsk: build skb by page
+Message-ID: <20210120030418-mutt-send-email-mst@kernel.org>
+References: <cover.1611128806.git.xuanzhuo@linux.alibaba.com>
+ <6787e9a100eba47efbff81939e21e97fef492d07.1611128806.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210120013049.311822-2-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.2]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6787e9a100eba47efbff81939e21e97fef492d07.1611128806.git.xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/20 9:30, Mike Kravetz wrote:
-> As hugetlbfs evolved, state information about hugetlb pages was added.
-> One 'convenient' way of doing this was to use available fields in tail
-> pages.  Over time, it has become difficult to know the meaning or contents
-> of fields simply by looking at a small bit of code.  Sometimes, the
-> naming is just confusing.  For example: The PagePrivate flag indicates
-> a huge page reservation was consumed and needs to be restored if an error
-> is encountered and the page is freed before it is instantiated.  The
-
-This PagePrivate flag really confused me for a long time. :(
-
-> page.private field contains the pointer to a subpool if the page is
-> associated with one.
+On Wed, Jan 20, 2021 at 03:50:01PM +0800, Xuan Zhuo wrote:
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
 > 
-> In an effort to make the code more readable, use page.private to contain
-> hugetlb specific page flags.  These flags will have test, set and clear
-> functions similar to those used for 'normal' page flags.  More importantly,
-> an enum of flag values will be created with names that actually reflect
-> their purpose.
+> This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+> network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+> directly construct skb. If this feature is not supported, it is still
+> necessary to copy data to construct skb.
+> 
+> ---------------- Performance Testing ------------
+> 
+> The test environment is Aliyun ECS server.
+> Test cmd:
+> ```
+> xdpsock -i eth0 -t  -S -s <msg size>
+> ```
+> 
+> Test result data:
+> 
+> size    64      512     1024    1500
+> copy    1916747 1775988 1600203 1440054
+> page    1974058 1953655 1945463 1904478
+> percent 3.0%    10.0%   21.58%  32.3%
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 
-Thanks for doing this. This would make life easier.
+I can't see the cover letter or 1/3 in this series - was probably
+threaded incorrectly?
 
-> 
-> In this patch,
-> - Create infrastructure for hugetlb specific page flag functions
-> - Move subpool pointer to page[1].private to make way for flags
->   Create routines with meaningful names to modify subpool field
-> - Use new HPageRestoreReserve flag instead of PagePrivate
-> 
-> Conversion of other state information will happen in subsequent patches.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+
 > ---
->  fs/hugetlbfs/inode.c    | 12 ++-----
->  include/linux/hugetlb.h | 72 +++++++++++++++++++++++++++++++++++++++++
->  mm/hugetlb.c            | 45 +++++++++++++-------------
->  3 files changed, 97 insertions(+), 32 deletions(-)
+>  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 86 insertions(+), 18 deletions(-)
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 740693d7f255..b8a661780c4a 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -955,15 +955,9 @@ static int hugetlbfs_migrate_page(struct address_space *mapping,
->  	if (rc != MIGRATEPAGE_SUCCESS)
->  		return rc;
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 8037b04..817a3a5 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  	sock_wfree(skb);
+>  }
 >  
-> -	/*
-> -	 * page_private is subpool pointer in hugetlb pages.  Transfer to
-> -	 * new page.  PagePrivate is not associated with page_private for
-> -	 * hugetlb pages and can not be set here as only page_huge_active
-> -	 * pages can be migrated.
-> -	 */
-> -	if (page_private(page)) {
-> -		set_page_private(newpage, page_private(page));
-> -		set_page_private(page, 0);
-> +	if (hugetlb_page_subpool(page)) {
-> +		hugetlb_set_page_subpool(newpage, hugetlb_page_subpool(page));
-> +		hugetlb_set_page_subpool(page, NULL);
->  	}
->  
->  	if (mode != MIGRATE_SYNC_NO_COPY)
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ef5b144b8aac..be71a00ee2a0 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -472,6 +472,64 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
->  					unsigned long flags);
->  #endif /* HAVE_ARCH_HUGETLB_UNMAPPED_AREA */
->  
-> +/*
-> + * huegtlb page specific state flags.  These flags are located in page.private
-> + * of the hugetlb head page.  Functions created via the below macros should be
-> + * used to manipulate these flags.
-> + *
-> + * HPG_restore_reserve - Set when a hugetlb page consumes a reservation at
-> + *	allocation time.  Cleared when page is fully instantiated.  Free
-> + *	routine checks flag to restore a reservation on error paths.
-> + */
-> +enum hugetlb_page_flags {
-> +	HPG_restore_reserve = 0,
-> +	__NR_HPAGEFLAGS,
-> +};
-> +
-> +/*
-> + * Macros to create test, set and clear function definitions for
-> + * hugetlb specific page flags.
-> + */
-> +#ifdef CONFIG_HUGETLB_PAGE
-> +#define TESTHPAGEFLAG(uname, flname)				\
-> +static inline int HPage##uname(struct page *page)		\
-> +	{ BUILD_BUG_ON(sizeof_field(struct page, private) *	\
-> +			BITS_PER_BYTE < __NR_HPAGEFLAGS);	\
-> +	return test_bit(HPG_##flname, &(page->private)); }
-> +
-> +#define SETHPAGEFLAG(uname, flname)				\
-> +static inline void SetHPage##uname(struct page *page)		\
-> +	{ set_bit(HPG_##flname, &(page->private)); }
-> +
-> +#define CLEARHPAGEFLAG(uname, flname)				\
-> +static inline void ClearHPage##uname(struct page *page)		\
-> +	{ clear_bit(HPG_##flname, &(page->private)); }
-> +#else
-> +#define TESTHPAGEFLAG(uname, flname)				\
-> +static inline int HPage##uname(struct page *page)		\
-> +	{ BUILD_BUG_ON(sizeof_field(struct page, private) *	\
-> +			BITS_PER_BYTE < __NR_HPAGEFLAGS);	\
-> +	return 0 }
-> +
-> +#define SETHPAGEFLAG(uname, flname)				\
-> +static inline void SetHPage##uname(struct page *page)		\
-> +	{ }
-> +
-> +#define CLEARHPAGEFLAG(uname, flname)				\
-> +static inline void ClearHPage##uname(struct page *page)		\
-> +	{ }
-> +#endif
-> +
-> +#define HPAGEFLAG(uname, flname)				\
-> +	TESTHPAGEFLAG(uname, flname)				\
-> +	SETHPAGEFLAG(uname, flname)				\
-> +	CLEARHPAGEFLAG(uname, flname)				\
-> +
-> +/*
-> + * Create functions associated with hugetlb page flags
-> + */
-> +HPAGEFLAG(RestoreReserve, restore_reserve)
-> +
->  #ifdef CONFIG_HUGETLB_PAGE
->  
->  #define HSTATE_NAME_LEN 32
-> @@ -531,6 +589,20 @@ extern unsigned int default_hstate_idx;
->  
->  #define default_hstate (hstates[default_hstate_idx])
->  
-> +/*
-> + * hugetlb page subpool pointer located in hpage[1].private
-> + */
-> +static inline struct hugepage_subpool *hugetlb_page_subpool(struct page *hpage)
+> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> +					      struct xdp_desc *desc)
 > +{
-> +	return (struct hugepage_subpool *)(hpage+1)->private;
+> +	u32 len, offset, copy, copied;
+> +	struct sk_buff *skb;
+> +	struct page *page;
+> +	char *buffer;
+
+Actually, make this void *, this way you will not need
+casts down the road. I know this is from xsk_generic_xmit -
+I don't know why it's char * there, either.
+
+> +	int err, i;
+> +	u64 addr;
+> +
+> +	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> +	if (unlikely(!skb))
+> +		return ERR_PTR(err);
+> +
+> +	addr = desc->addr;
+> +	len = desc->len;
+> +
+> +	buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> +	offset = offset_in_page(buffer);
+> +	addr = buffer - (char *)xs->pool->addrs;
+> +
+> +	for (copied = 0, i = 0; copied < len; i++) {
+> +		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +		get_page(page);
+> +
+> +		copy = min_t(u32, PAGE_SIZE - offset, len - copied);
+> +
+> +		skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +		copied += copy;
+> +		addr += copy;
+> +		offset = 0;
+> +	}
+> +
+> +	skb->len += len;
+> +	skb->data_len += len;
+> +	skb->truesize += len;
+> +
+> +	refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +	return skb;
 > +}
 > +
-> +static inline void hugetlb_set_page_subpool(struct page *hpage,
-> +					struct hugepage_subpool *subpool)
+> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> +				     struct xdp_desc *desc)
 > +{
-> +	set_page_private(hpage+1, (unsigned long)subpool);
+> +	struct sk_buff *skb = NULL;
+> +
+> +	if (xs->dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+> +		skb = xsk_build_skb_zerocopy(xs, desc);
+> +		if (IS_ERR(skb))
+> +			return skb;
+> +	} else {
+> +		char *buffer;
+> +		u32 len;
+> +		int err;
+> +
+> +		len = desc->len;
+> +		skb = sock_alloc_send_skb(&xs->sk, len, 1, &err);
+> +		if (unlikely(!skb))
+> +			return ERR_PTR(err);
+> +
+> +		skb_put(skb, len);
+> +		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
+> +		err = skb_store_bits(skb, 0, buffer, len);
+> +		if (unlikely(err)) {
+> +			kfree_skb(skb);
+> +			return ERR_PTR(err);
+> +		}
+> +	}
+> +
+> +	skb->dev = xs->dev;
+> +	skb->priority = xs->sk.sk_priority;
+> +	skb->mark = xs->sk.sk_mark;
+> +	skb_shinfo(skb)->destructor_arg = (void *)(long)desc->addr;
+> +	skb->destructor = xsk_destruct_skb;
+> +
+> +	return skb;
 > +}
 > +
->  static inline struct hstate *hstate_file(struct file *f)
+>  static int xsk_generic_xmit(struct sock *sk)
 >  {
->  	return hstate_inode(file_inode(f));
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 737b2dce19e6..8bed6b5202d2 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1133,7 +1133,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
->  	nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
->  	page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
->  	if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
-> -		SetPagePrivate(page);
-> +		SetHPageRestoreReserve(page);
->  		h->resv_huge_pages--;
->  	}
+>  	struct xdp_sock *xs = xdp_sk(sk);
+> @@ -446,43 +527,30 @@ static int xsk_generic_xmit(struct sock *sk)
+>  		goto out;
 >  
-> @@ -1407,20 +1407,19 @@ static void __free_huge_page(struct page *page)
->  	 */
->  	struct hstate *h = page_hstate(page);
->  	int nid = page_to_nid(page);
-> -	struct hugepage_subpool *spool =
-> -		(struct hugepage_subpool *)page_private(page);
-> +	struct hugepage_subpool *spool = hugetlb_page_subpool(page);
->  	bool restore_reserve;
->  
->  	VM_BUG_ON_PAGE(page_count(page), page);
->  	VM_BUG_ON_PAGE(page_mapcount(page), page);
->  
-> -	set_page_private(page, 0);
-> +	hugetlb_set_page_subpool(page, NULL);
->  	page->mapping = NULL;
-> -	restore_reserve = PagePrivate(page);
-> -	ClearPagePrivate(page);
-> +	restore_reserve = HPageRestoreReserve(page);
-> +	ClearHPageRestoreReserve(page);
->  
->  	/*
-> -	 * If PagePrivate() was set on page, page allocation consumed a
-> +	 * If HPageRestoreReserve was set on page, page allocation consumed a
->  	 * reservation.  If the page was associated with a subpool, there
->  	 * would have been a page reserved in the subpool before allocation
->  	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
-> @@ -2254,24 +2253,24 @@ static long vma_add_reservation(struct hstate *h,
->   * This routine is called to restore a reservation on error paths.  In the
->   * specific error paths, a huge page was allocated (via alloc_huge_page)
->   * and is about to be freed.  If a reservation for the page existed,
-> - * alloc_huge_page would have consumed the reservation and set PagePrivate
-> - * in the newly allocated page.  When the page is freed via free_huge_page,
-> - * the global reservation count will be incremented if PagePrivate is set.
-> - * However, free_huge_page can not adjust the reserve map.  Adjust the
-> - * reserve map here to be consistent with global reserve count adjustments
-> - * to be made by free_huge_page.
-> + * alloc_huge_page would have consumed the reservation and set
-> + * HPageRestoreReserve in the newly allocated page.  When the page is freed
-> + * via free_huge_page, the global reservation count will be incremented if
-> + * HPageRestoreReserve is set.  However, free_huge_page can not adjust the
-> + * reserve map.  Adjust the reserve map here to be consistent with global
-> + * reserve count adjustments to be made by free_huge_page.
->   */
->  static void restore_reserve_on_error(struct hstate *h,
->  			struct vm_area_struct *vma, unsigned long address,
->  			struct page *page)
->  {
-> -	if (unlikely(PagePrivate(page))) {
-> +	if (unlikely(HPageRestoreReserve(page))) {
->  		long rc = vma_needs_reservation(h, vma, address);
->  
->  		if (unlikely(rc < 0)) {
->  			/*
->  			 * Rare out of memory condition in reserve map
-> -			 * manipulation.  Clear PagePrivate so that
-> +			 * manipulation.  Clear HPageRestoreReserve so that
->  			 * global reserve count will not be incremented
->  			 * by free_huge_page.  This will make it appear
->  			 * as though the reservation for this page was
-> @@ -2280,7 +2279,7 @@ static void restore_reserve_on_error(struct hstate *h,
->  			 * is better than inconsistent global huge page
->  			 * accounting of reserve counts.
->  			 */
-> -			ClearPagePrivate(page);
-> +			ClearHPageRestoreReserve(page);
->  		} else if (rc) {
->  			rc = vma_add_reservation(h, vma, address);
->  			if (unlikely(rc < 0))
-> @@ -2288,7 +2287,7 @@ static void restore_reserve_on_error(struct hstate *h,
->  				 * See above comment about rare out of
->  				 * memory condition.
->  				 */
-> -				ClearPagePrivate(page);
-> +				ClearHPageRestoreReserve(page);
->  		} else
->  			vma_end_reservation(h, vma, address);
->  	}
-> @@ -2369,7 +2368,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
->  		if (!page)
->  			goto out_uncharge_cgroup;
->  		if (!avoid_reserve && vma_has_reserves(vma, gbl_chg)) {
-> -			SetPagePrivate(page);
-> +			SetHPageRestoreReserve(page);
->  			h->resv_huge_pages--;
+>  	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -		char *buffer;
+> -		u64 addr;
+> -		u32 len;
+> -
+>  		if (max_batch-- == 0) {
+>  			err = -EAGAIN;
+>  			goto out;
 >  		}
->  		spin_lock(&hugetlb_lock);
-> @@ -2387,7 +2386,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
 >  
->  	spin_unlock(&hugetlb_lock);
+> -		len = desc.len;
+> -		skb = sock_alloc_send_skb(sk, len, 1, &err);
+> -		if (unlikely(!skb))
+> +		skb = xsk_build_skb(xs, &desc);
+> +		if (IS_ERR(skb)) {
+> +			err = PTR_ERR(skb);
+>  			goto out;
+> +		}
 >  
-> -	set_page_private(page, (unsigned long)spool);
-> +	hugetlb_set_page_subpool(page, spool);
+> -		skb_put(skb, len);
+> -		addr = desc.addr;
+> -		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> -		err = skb_store_bits(skb, 0, buffer, len);
+>  		/* This is the backpressure mechanism for the Tx path.
+>  		 * Reserve space in the completion queue and only proceed
+>  		 * if there is space in it. This avoids having to implement
+>  		 * any buffering in the Tx path.
+>  		 */
+>  		spin_lock_irqsave(&xs->pool->cq_lock, flags);
+> -		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +		if (xskq_prod_reserve(xs->pool->cq)) {
+>  			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>  			kfree_skb(skb);
+>  			goto out;
+>  		}
+>  		spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
 >  
->  	map_commit = vma_commit_reservation(h, vma, addr);
->  	if (unlikely(map_chg > map_commit)) {
-> @@ -4212,7 +4211,7 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
->  	spin_lock(ptl);
->  	ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
->  	if (likely(ptep && pte_same(huge_ptep_get(ptep), pte))) {
-> -		ClearPagePrivate(new_page);
-> +		ClearHPageRestoreReserve(new_page);
->  
->  		/* Break COW */
->  		huge_ptep_clear_flush(vma, haddr, ptep);
-> @@ -4279,7 +4278,7 @@ int huge_add_to_page_cache(struct page *page, struct address_space *mapping,
->  
->  	if (err)
->  		return err;
-> -	ClearPagePrivate(page);
-> +	ClearHPageRestoreReserve(page);
->  
->  	/*
->  	 * set page dirty so that it will not be removed from cache/file
-> @@ -4441,7 +4440,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->  		goto backout;
->  
->  	if (anon_rmap) {
-> -		ClearPagePrivate(page);
-> +		ClearHPageRestoreReserve(page);
->  		hugepage_add_new_anon_rmap(page, vma, haddr);
->  	} else
->  		page_dup_rmap(page, true);
-> @@ -4755,7 +4754,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->  	if (vm_shared) {
->  		page_dup_rmap(page, true);
->  	} else {
-> -		ClearPagePrivate(page);
-> +		ClearHPageRestoreReserve(page);
->  		hugepage_add_new_anon_rmap(page, dst_vma, dst_addr);
->  	}
->  
-> 
+> -		skb->dev = xs->dev;
+> -		skb->priority = sk->sk_priority;
+> -		skb->mark = sk->sk_mark;
+> -		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+> -		skb->destructor = xsk_destruct_skb;
+> -
+>  		err = __dev_direct_xmit(skb, xs->queue_id);
+>  		if  (err == NETDEV_TX_BUSY) {
+>  			/* Tell user-space to retry the send */
+> -- 
+> 1.8.3.1
 
-Looks good to me.Thanks.
-
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
