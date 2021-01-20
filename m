@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3408C2FD333
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C0E2FD32C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 15:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388339AbhATOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 09:52:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390597AbhATOfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:35:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E0AF23329;
-        Wed, 20 Jan 2021 14:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611153299;
-        bh=iFdLpwpKeZkJepwYerrVF40vWRJ3GSqvzjorTDnVdD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ll53owdsB6m2x9i4robbS/FM07EzmKvW/7Iy/ycMt5rkzITycq9dnrnFdP+AL4q1P
-         cK+Clib06xz7LXRK9hzzM5GaP7fI7s3urYUPLNHkohZRf8DGauG3MiE4vtW/VU/B/6
-         e7xH/jQf/ZJlJ3uNK4QWDsACg6SQOcDKunvFaxU8pyfksjeDclo08iukFItIDqve6w
-         xA5binXJ584bFr5CpU+YcBfqp8WLH6Bvw4T+HnF+h8Sw2C18hFqSpFjmSaDDPmB1aD
-         F6pIoNgn0XkCzGxitIzuR0R1ekQPGnNtnoTUJrhekjhch9cznVHIOeR9m0FzHnT+Pg
-         nfMh51c56T6iw==
-Date:   Wed, 20 Jan 2021 16:34:53 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH] selftests/x86: Simplify the code of getting vdso base
- address in sgx
-Message-ID: <YAg/jfoCdE0GanNQ@kernel.org>
-References: <20210118133321.98655-1-tianjia.zhang@linux.alibaba.com>
+        id S1733278AbhATOvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 09:51:48 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:48415 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729274AbhATOfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:35:38 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id B4D2322727;
+        Wed, 20 Jan 2021 15:34:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611153295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ErNlhMUQaNtjrr+RiOGSDOM6D+LTE0johCMOlQNCxY=;
+        b=WZaDu7hc4Vc3km9qkbg5toDFDmKXGV2ULtxLkNgUTqUeQksL5QLILdCzjwaKqPU37mjFts
+        8nkwzttm2IkgaoRrEts68UksVlkzgav3IlfVzn3JjHLGZ+MLCABqDLAdW9+aRhIVqHyAre
+        OU6INGrNNP7V5NiFIjrW0ZcLuJwERv8=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118133321.98655-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Jan 2021 15:34:54 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <2495e985839f3b05ef5e00b58a05ecb7@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:33:21PM +0800, Tianjia Zhang wrote:
-> The base address of vDSO can be obtained through the library function
-> `getauxval()`, so use `getauxval(AT_SYSINFO_EHDR)` instead of a custom
-> implementation to simplify the code.
+Am 2021-01-20 15:23, schrieb Rob Herring:
+> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc> wrote:
+>> 
+>> fw_devlink will defer the probe until all suppliers are ready. We 
+>> can't
+>> use builtin_platform_driver_probe() because it doesn't retry after 
+>> probe
+>> deferral. Convert it to builtin_platform_driver().
 > 
-> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> shouldn't it be fixed or removed? Then we're not fixing drivers later
+> when folks start caring about deferred probe and devlink.
+> 
+> I'd really prefer if we convert this to a module instead. (And all the
+> other PCI host drivers.)
 
-- Remove reported-by, as there is no regression.
-- Please write to the long description what the commit does.
-  It's lacking that. I.e. instead of passive form: "Obtain the
-  base address...".
+I briefly looked into adding a remove() op. But I don't know what will
+have to be undo of the ls_pcie_host_init(). That would be up to the
+maintainers of this driver.
 
-/Jarkko
+_But_ I'd really like to see PCI working on my board again ;) At
+least until the end of this development cycle.
 
-> ---
->  tools/testing/selftests/sgx/main.c | 24 ++++--------------------
->  1 file changed, 4 insertions(+), 20 deletions(-)
+-michael
+
+>> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
 > 
-> diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-> index 724cec700926..365d01dea67b 100644
-> --- a/tools/testing/selftests/sgx/main.c
-> +++ b/tools/testing/selftests/sgx/main.c
-> @@ -15,6 +15,7 @@
->  #include <sys/stat.h>
->  #include <sys/time.h>
->  #include <sys/types.h>
-> +#include <sys/auxv.h>
->  #include "defines.h"
->  #include "main.h"
->  #include "../kselftest.h"
-> @@ -28,24 +29,6 @@ struct vdso_symtab {
->  	Elf64_Word *elf_hashtab;
->  };
->  
-> -static void *vdso_get_base_addr(char *envp[])
-> -{
-> -	Elf64_auxv_t *auxv;
-> -	int i;
-> -
-> -	for (i = 0; envp[i]; i++)
-> -		;
-> -
-> -	auxv = (Elf64_auxv_t *)&envp[i + 1];
-> -
-> -	for (i = 0; auxv[i].a_type != AT_NULL; i++) {
-> -		if (auxv[i].a_type == AT_SYSINFO_EHDR)
-> -			return (void *)auxv[i].a_un.a_val;
-> -	}
-> -
-> -	return NULL;
-> -}
-> -
->  static Elf64_Dyn *vdso_get_dyntab(void *addr)
->  {
->  	Elf64_Ehdr *ehdr = addr;
-> @@ -162,7 +145,7 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
->  	return 0;
->  }
->  
-> -int main(int argc, char *argv[], char *envp[])
-> +int main(int argc, char *argv[])
->  {
->  	struct sgx_enclave_run run;
->  	struct vdso_symtab symtab;
-> @@ -203,7 +186,8 @@ int main(int argc, char *argv[], char *envp[])
->  	memset(&run, 0, sizeof(run));
->  	run.tcs = encl.encl_base;
->  
-> -	addr = vdso_get_base_addr(envp);
-> +	/* Get vDSO base address */
-> +	addr = (void *)(uintptr_t)getauxval(AT_SYSINFO_EHDR);
->  	if (!addr)
->  		goto err;
->  
-> -- 
-> 2.19.1.3.ge56e4f7
+> This happened!?
 > 
-> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/pci/controller/dwc/pci-layerscape.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c 
+>> b/drivers/pci/controller/dwc/pci-layerscape.c
+>> index 44ad34cdc3bc..5b9c625df7b8 100644
+>> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+>> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+>> @@ -232,7 +232,7 @@ static const struct of_device_id 
+>> ls_pcie_of_match[] = {
+>>         { },
+>>  };
+>> 
+>> -static int __init ls_pcie_probe(struct platform_device *pdev)
+>> +static int ls_pcie_probe(struct platform_device *pdev)
+>>  {
+>>         struct device *dev = &pdev->dev;
+>>         struct dw_pcie *pci;
+>> @@ -271,10 +271,11 @@ static int __init ls_pcie_probe(struct 
+>> platform_device *pdev)
+>>  }
+>> 
+>>  static struct platform_driver ls_pcie_driver = {
+>> +       .probe = ls_pcie_probe,
+>>         .driver = {
+>>                 .name = "layerscape-pcie",
+>>                 .of_match_table = ls_pcie_of_match,
+>>                 .suppress_bind_attrs = true,
+>>         },
+>>  };
+>> -builtin_platform_driver_probe(ls_pcie_driver, ls_pcie_probe);
+>> +builtin_platform_driver(ls_pcie_driver);
+>> --
+>> 2.20.1
+>> 
