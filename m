@@ -2,270 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDE72FC66C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE142FC6BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 02:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbhATB0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Jan 2021 20:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbhATBYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Jan 2021 20:24:53 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED56C0613CF;
-        Tue, 19 Jan 2021 17:24:13 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id q8so279618lfm.10;
-        Tue, 19 Jan 2021 17:24:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vOBlnVG2mbipegIz2h2sKNzx6kmvDT8PSag/nFDKqZQ=;
-        b=pJ28pxWDj6u3K/XIN/GhvqSg+e2ZsUwCWfShWLbVYW57AKjhRNy9PxZ1bOEgBV/HHC
-         Xx+W//CGWyL+9tzr7NpqngwXp8mdi5ZnkzzAH4uZBLQEF8dOc4ATwM2tjN1V4cQpj3eQ
-         5o3TRCl7BwrkuHQux9O8tcQOcy1OPvlDuK2g+VRD4/+M1AQcUrx9ePeAqo6yqsD+mLtr
-         LKEBNcIKboWhOIoTuDG6fIn+Il+fnwMOU7BfxhKS1CWfnA3EAp+qajZr8WHX3vbLmYHT
-         FNZlklAsu89O+9sGBVw3YrDW3WWsE+Kh2niZFvZ+Db1IeBaHBaTi5wzbvmDPpMTRB8Pu
-         zq+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vOBlnVG2mbipegIz2h2sKNzx6kmvDT8PSag/nFDKqZQ=;
-        b=eg+WERzSi7kmMQmEVjkM4hfPa7cVcDF5E6rTHtUTIF83C/QzlOP/bREXWF0UZpK327
-         qsGANkZj5HbKwUeV8LjDI5SW1ley19uxGUKJXO0JjgsCfRz8eFtgIy24Ag6kEqjxz+xO
-         5zRxdtDRyjcwSGh8b6Y2YkE00K1nmN2+FUtsX75q4O8DNjLR0dc5kRu2TOO/9dc/v3V9
-         kcxtznCNsfrtJ90WX3w7ZgZi549tD9PLFBEuUa1DRn0mIEV++G0TgkqhYyMV7OC/YG+e
-         2vcdJk6VoUf0cfT2RNgPpf1Sg3PJtKf+zgeZvOrhEFdJ0E6hsXilkAIM0RsjBIUN5VTB
-         bMOA==
-X-Gm-Message-State: AOAM533vSSqsvFDBMABpl2fCRmImeVsJ6YrTXApXvp3o6eXsJccHHRh4
-        CfZr9QXolgVkmlXilCj9JEk=
-X-Google-Smtp-Source: ABdhPJwMIWXpSzN7ZM5SnODQK2C9knx5sGoyDBoAwTTSYr+c/MdJaNT+jNhK/Hu1sZVllxRoI8f4bw==
-X-Received: by 2002:ac2:4a6f:: with SMTP id q15mr3257974lfp.301.1611105851851;
-        Tue, 19 Jan 2021 17:24:11 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id c8sm28416lja.80.2021.01.19.17.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 17:24:11 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/5] soc/tegra: pmc: Ensure that clock rates aren't too high
-Date:   Wed, 20 Jan 2021 04:23:55 +0300
-Message-Id: <20210120012357.11038-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120012357.11038-1-digetx@gmail.com>
-References: <20210120012357.11038-1-digetx@gmail.com>
+        id S1729495AbhATB1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Jan 2021 20:27:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726580AbhATB0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:26:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9664223109;
+        Wed, 20 Jan 2021 01:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611105964;
+        bh=HmkN0mm9wbN/TCVJTimhHdMI1XEsCsdxLiIIZk5t0hQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gGhhP42zJgjqLRPVs79DVu3aXg0iu5vMzBO+51S1vhqWpfX2cUHxb0vKO5u696JRX
+         mfHcrYAU+nEzAgp1+udbwg14OJP8XfXtvDpnM22HEn8pG2xHZEmhKPGTa4OVVtugbo
+         ToxAxu8ebqPadsA1HgEUPS6MF3uRy1W/RWBWM+lmMqUlPjqC5xRVcmRWyBGUG32kXM
+         Chtx+ec4rc/nQ2PJYXCB7XZ3D+IKT06hnxjmR4dTh5bJw0PFwd3aDjNB0dCBTmZnq3
+         vEU6ybA1s2HK+nxRtuDSSmlyJw2O5sgUOr8UWGEnLDi8G+ksuuDKyG2tdXunaZw8N0
+         ReQBwrnXc2K9g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 01/45] ASoC: Intel: haswell: Add missing pm_ops
+Date:   Tue, 19 Jan 2021 20:25:18 -0500
+Message-Id: <20210120012602.769683-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch all clocks of a power domain to a safe rate which is suitable
-for all possible voltages in order to ensure that hardware constraints
-aren't violated when power domain state toggles.
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-[this patch was also boot-tested on some other T20/30/114 devices]
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
+
+haswell machine board is missing pm_ops what prevents it from undergoing
+suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
+this is no longer the case.
+
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/tegra/pmc.c | 92 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 90 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/haswell.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index f970b615ee27..a87645fac735 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -237,6 +237,7 @@ struct tegra_powergate {
- 	unsigned int id;
- 	struct clk **clks;
- 	unsigned int num_clks;
-+	unsigned long *clk_rates;
- 	struct reset_control *reset;
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
+index c55d1239e705b..c763bfeb1f38f 100644
+--- a/sound/soc/intel/boards/haswell.c
++++ b/sound/soc/intel/boards/haswell.c
+@@ -189,6 +189,7 @@ static struct platform_driver haswell_audio = {
+ 	.probe = haswell_audio_probe,
+ 	.driver = {
+ 		.name = "haswell-audio",
++		.pm = &snd_soc_pm_ops,
+ 	},
  };
  
-@@ -641,6 +642,57 @@ static int __tegra_powergate_remove_clamping(struct tegra_pmc *pmc,
- 	return 0;
- }
- 
-+static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
-+{
-+	unsigned long safe_rate = 100 * 1000 * 1000;
-+	unsigned int i;
-+	int err;
-+
-+	for (i = 0; i < pg->num_clks; i++) {
-+		pg->clk_rates[i] = clk_get_rate(pg->clks[i]);
-+
-+		if (!pg->clk_rates[i]) {
-+			err = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (pg->clk_rates[i] <= safe_rate)
-+			continue;
-+
-+		/*
-+		 * We don't know whether voltage state is okay for the
-+		 * current clock rate, hence it's better to temporally
-+		 * switch clock to a safe rate which is suitable for
-+		 * all voltages, before enabling the clock.
-+		 */
-+		err = clk_set_rate(pg->clks[i], safe_rate);
-+		if (err)
-+			goto out;
-+	}
-+
-+	return 0;
-+
-+out:
-+	while (i--)
-+		clk_set_rate(pg->clks[i], pg->clk_rates[i]);
-+
-+	return err;
-+}
-+
-+static int tegra_powergate_unprepare_clocks(struct tegra_powergate *pg)
-+{
-+	unsigned int i;
-+	int err;
-+
-+	for (i = 0; i < pg->num_clks; i++) {
-+		err = clk_set_rate(pg->clks[i], pg->clk_rates[i]);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static void tegra_powergate_disable_clocks(struct tegra_powergate *pg)
- {
- 	unsigned int i;
-@@ -691,10 +743,14 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
- 
- 	usleep_range(10, 20);
- 
--	err = tegra_powergate_enable_clocks(pg);
-+	err = tegra_powergate_prepare_clocks(pg);
- 	if (err)
- 		goto powergate_off;
- 
-+	err = tegra_powergate_enable_clocks(pg);
-+	if (err)
-+		goto unprepare_clks;
-+
- 	usleep_range(10, 20);
- 
- 	err = __tegra_powergate_remove_clamping(pg->pmc, pg->id);
-@@ -717,12 +773,19 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
- 	if (disable_clocks)
- 		tegra_powergate_disable_clocks(pg);
- 
-+	err = tegra_powergate_unprepare_clocks(pg);
-+	if (err)
-+		return err;
-+
- 	return 0;
- 
- disable_clks:
- 	tegra_powergate_disable_clocks(pg);
- 	usleep_range(10, 20);
- 
-+unprepare_clks:
-+	tegra_powergate_unprepare_clocks(pg);
-+
- powergate_off:
- 	tegra_powergate_set(pg->pmc, pg->id, false);
- 
-@@ -733,10 +796,14 @@ static int tegra_powergate_power_down(struct tegra_powergate *pg)
- {
- 	int err;
- 
--	err = tegra_powergate_enable_clocks(pg);
-+	err = tegra_powergate_prepare_clocks(pg);
- 	if (err)
- 		return err;
- 
-+	err = tegra_powergate_enable_clocks(pg);
-+	if (err)
-+		goto unprepare_clks;
-+
- 	usleep_range(10, 20);
- 
- 	err = reset_control_assert(pg->reset);
-@@ -753,6 +820,10 @@ static int tegra_powergate_power_down(struct tegra_powergate *pg)
- 	if (err)
- 		goto assert_resets;
- 
-+	err = tegra_powergate_unprepare_clocks(pg);
-+	if (err)
-+		return err;
-+
- 	return 0;
- 
- assert_resets:
-@@ -764,6 +835,9 @@ static int tegra_powergate_power_down(struct tegra_powergate *pg)
- disable_clks:
- 	tegra_powergate_disable_clocks(pg);
- 
-+unprepare_clks:
-+	tegra_powergate_unprepare_clocks(pg);
-+
- 	return err;
- }
- 
-@@ -881,6 +955,12 @@ int tegra_powergate_sequence_power_up(unsigned int id, struct clk *clk,
- 	if (!pg)
- 		return -ENOMEM;
- 
-+	pg->clk_rates = kzalloc(sizeof(*pg->clk_rates), GFP_KERNEL);
-+	if (!pg->clk_rates) {
-+		kfree(pg->clks);
-+		return -ENOMEM;
-+	}
-+
- 	pg->id = id;
- 	pg->clks = &clk;
- 	pg->num_clks = 1;
-@@ -892,6 +972,7 @@ int tegra_powergate_sequence_power_up(unsigned int id, struct clk *clk,
- 		dev_err(pmc->dev, "failed to turn on partition %d: %d\n", id,
- 			err);
- 
-+	kfree(pg->clk_rates);
- 	kfree(pg);
- 
- 	return err;
-@@ -1042,6 +1123,12 @@ static int tegra_powergate_of_get_clks(struct tegra_powergate *pg,
- 	if (!pg->clks)
- 		return -ENOMEM;
- 
-+	pg->clk_rates = kcalloc(count, sizeof(*pg->clk_rates), GFP_KERNEL);
-+	if (!pg->clk_rates) {
-+		kfree(pg->clks);
-+		return -ENOMEM;
-+	}
-+
- 	for (i = 0; i < count; i++) {
- 		pg->clks[i] = of_clk_get(np, i);
- 		if (IS_ERR(pg->clks[i])) {
-@@ -1058,6 +1145,7 @@ static int tegra_powergate_of_get_clks(struct tegra_powergate *pg,
- 	while (i--)
- 		clk_put(pg->clks[i]);
- 
-+	kfree(pg->clk_rates);
- 	kfree(pg->clks);
- 
- 	return err;
 -- 
-2.29.2
+2.27.0
 
