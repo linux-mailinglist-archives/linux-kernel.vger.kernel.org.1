@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB4B2FCE2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC422FCE2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 11:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732471AbhATKSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 05:18:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730430AbhATJ7W (ORCPT
+        id S1732440AbhATKSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 05:18:44 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:40058 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726634AbhATJ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 04:59:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611136673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rI/aNUF4iX6rJBo6zJ7zLcisnPIn2Cuehxm+ovurTIg=;
-        b=EP0BwrKbVjhEkaKI3E+NFXg3YV3ouJ9Ofs2m0UYaNCwBxHe0KesLg/ujvkSotIvqq6dFCY
-        bQQrS/bCnz5Q9zBIJmn25xIWm+HdSCgAIvEiUDWiVd6r6i6mQ76BrOzsYryZYcfRzaxoIk
-        IEs7b5DL5mzRDzPXXuQEeepmCRlWCUw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-nkNpEo95MwunsUlXB_5DgQ-1; Wed, 20 Jan 2021 04:57:51 -0500
-X-MC-Unique: nkNpEo95MwunsUlXB_5DgQ-1
-Received: by mail-wr1-f69.google.com with SMTP id j5so11180170wro.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 01:57:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rI/aNUF4iX6rJBo6zJ7zLcisnPIn2Cuehxm+ovurTIg=;
-        b=lGoyjdlo2goMoSjkh9ZLxrtSYZWaJyZhoqPFLwt5Z3pzkad5CoiVISnM0wAyb763/r
-         ddrYMnG1mk6hCo6uoQRo8HPbzOvkJAHg0/jUcggxWjg+M85fE42bj5rjcsReVoj76dA2
-         1lXgMssTlkLCQZxy/s192oVf4/J86Bp/uY7OyuZq0Yp7MghejkS3ZXxncJsvkKnlgNu9
-         Q9YnIErlcJVuPaMEhu+80eH7yq/mk0+SDw854V6BOSYNsR3u+JuKits2SKnPBplU9MOb
-         98QDInCgg1mmDIqcoOt8jChcCbyLDLslGG+WOwgRRSwWuJJl9F77BXlI/jIvm/7ITKBO
-         Ryqg==
-X-Gm-Message-State: AOAM532olLZgDzXvCWrpR2ow3Anj3MV9aR7gQ/pDkFX0FKbSGvzTScKE
-        biIr+jSvTBQrZDsVtoaCg5veGAifuREpFFKBNtoqlyZI1kSc3sqTkdfYJ9moPeiaVA3uTgypMN9
-        C43VXpJRlyDQJZcvFeDYbdNdy
-X-Received: by 2002:a1c:7c06:: with SMTP id x6mr3522127wmc.67.1611136670202;
-        Wed, 20 Jan 2021 01:57:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysojSYIU7BmwnZJ8v236DSByDjL3pHaRMW50WuxQGh9a57i9zHGHQkBa+2n+gsCeWAmYp1Fg==
-X-Received: by 2002:a1c:7c06:: with SMTP id x6mr3522104wmc.67.1611136670014;
-        Wed, 20 Jan 2021 01:57:50 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id q15sm2875475wrw.75.2021.01.20.01.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 01:57:49 -0800 (PST)
-Date:   Wed, 20 Jan 2021 04:57:46 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] virtio-mem: Assign boolean values to a bool variable
-Message-ID: <20210120045736-mutt-send-email-mst@kernel.org>
-References: <1611129031-82818-1-git-send-email-abaci-bugfix@linux.alibaba.com>
- <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
+        Wed, 20 Jan 2021 04:58:56 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K9mWD3191390;
+        Wed, 20 Jan 2021 09:58:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=5uRrrgWyIgytuqolSTvGY83GZ1TKvBn02elPXkSu0ZY=;
+ b=T4OuFbTdmt7dThjjIReLVYcxAC9iWS7Q8JVpLQwbrx5lbgI1zGSstFzYw1hhPV7ZDBd5
+ wn/JdKw7POBb/sNblU4MH8FUTvYf5iFBuL6MbS9aiFJxkTrJdpCbX/iFpplABLbYiI/r
+ BvBSuR0O3U8CQGZID1QJj33LXSNU5/JEQ97N6LhTC4VKNSGPy6Cv+LGucglRdttAYn1O
+ /bRu1cWAueNhrctBQKmMIvmbWAiDQO1OUBaHwTSiA9d8I83vEH+w8aaX1INHZEJdVrey
+ 8gBkwgRjgG6H6OErB5+MtVGwus22CBlBUw9wT5cBY2nVkqXPZZXB8zInslr5bH/cFBKt uA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 3668qr9q62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 09:58:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K9sceA125867;
+        Wed, 20 Jan 2021 09:58:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 3668quxvxr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 09:58:06 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10K9w4BD019202;
+        Wed, 20 Jan 2021 09:58:04 GMT
+Received: from mwanda (/10.175.34.136)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 Jan 2021 01:58:03 -0800
+Date:   Wed, 20 Jan 2021 12:57:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andy Gross <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] soc: qcom: socinfo: Fix an off by one in
+ qcom_show_pmic_model()
+Message-ID: <YAf+o85Z9lgkq3Nw@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <81a1817d-a1f5-dfca-550c-3e3f62cf3a9d@redhat.com>
+In-Reply-To: <20210118113651.71955-1-colin.king@canonical.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200056
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101200055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:40:37AM +0100, David Hildenbrand wrote:
-> On 20.01.21 08:50, Jiapeng Zhong wrote:
-> > Fix the following coccicheck warnings:
-> > 
-> > ./drivers/virtio/virtio_mem.c:2580:2-25: WARNING: Assignment
-> > of 0/1 to bool variable.
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> > ---
-> >  drivers/virtio/virtio_mem.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> > index 9fc9ec4..85a272c 100644
-> > --- a/drivers/virtio/virtio_mem.c
-> > +++ b/drivers/virtio/virtio_mem.c
-> > @@ -2577,7 +2577,7 @@ static int virtio_mem_probe(struct virtio_device *vdev)
-> >  	 * actually in use (e.g., trying to reload the driver).
-> >  	 */
-> >  	if (vm->plugged_size) {
-> > -		vm->unplug_all_required = 1;
-> > +		vm->unplug_all_required = true;
-> >  		dev_info(&vm->vdev->dev, "unplugging all memory is required\n");
-> >  	}
-> >  
-> > 
-> 
-> Hi,
-> 
-> we already had a fix on the list for quite a while:
-> 
-> https://lkml.kernel.org/r/1609233239-60313-1-git-send-email-tiantao6@hisilicon.com
+These need to be < ARRAY_SIZE() instead of <= ARRAY_SIZE() to prevent
+accessing one element beyond the end of the array.
 
-Can't find that one.
+Fixes: e9247e2ce577 ("soc: qcom: socinfo: fix printing of pmic_model")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/soc/qcom/socinfo.c | 2 +-
+ 1 file changed, 1 insertions(+), 1 deletions(-)
 
-> However, looks like Michael queued your patch on the vhost tree instead.
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index a985ed064669..5b4ad24a022b 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -309,7 +309,7 @@ static int qcom_show_pmic_model(struct seq_file *seq, void *p)
+ 	if (model < 0)
+ 		return -EINVAL;
+ 
+-	if (model <= ARRAY_SIZE(pmic_models) && pmic_models[model])
++	if (model < ARRAY_SIZE(pmic_models) && pmic_models[model])
+ 		seq_printf(seq, "%s\n", pmic_models[model]);
+ 	else
+ 		seq_printf(seq, "unknown (%d)\n", model);
+-- 
+2.29.2
 
