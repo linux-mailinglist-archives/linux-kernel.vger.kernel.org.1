@@ -2,167 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAA12FDC0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DC22FDC08
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Jan 2021 22:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732353AbhATVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Jan 2021 16:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S1731214AbhATVlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Jan 2021 16:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731779AbhATVRZ (ORCPT
+        with ESMTP id S2388549AbhATVRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:17:25 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8760C061793;
-        Wed, 20 Jan 2021 13:16:44 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 3so122044ljc.4;
-        Wed, 20 Jan 2021 13:16:44 -0800 (PST)
+        Wed, 20 Jan 2021 16:17:06 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0D0C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:16:25 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i30so11874063ota.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Jan 2021 13:16:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DF5/8mvzSfiGycoIma/P/kossQy+bTKj7uhIK5+9g84=;
-        b=SEM2f1XTZnmxQc8DDftrsvO5tknEgmo7q0X9sMV39nJGNqqWPpMyWZw9Y8Ol+7dDsv
-         1ESPFWj8y+XS+vGPCuF9NIIhMrkEiCvvkqJl8+EDKGUH9d/ZMLZoTyiwtswb1o80OW41
-         b7jhTis9Cf4OCE/RwfpUXcS5GqpoYEXU4wox7jxR34Ffj+sIpHPqJR74JR4VdIxOtf82
-         c77GrrL8UZJD4RuCmZmqY0HIf1bDI7sACfaHZG3I4gjsgMW9mD43J4E99pRo3HSi82N0
-         sdSNl9l8suD84WU8P+ncf0Q2KMTt16UeT4NMR5fIO0aEGI1C18OK/N92C2pKqBlrSVuB
-         qBrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sqJQj8k3vfWMQlZ/PSNAuaLZe+ukwJ9aG6srW46wlAI=;
+        b=tuweO45nJgUG/JrL7B42/+1T6FCIv5MhnfmqVoQMbhbLADiuqqBMCz3UDZW0dbRIID
+         tUJbW6u6rYIJ+9FOoXJah2ITElhVopukfgzwkh+iqHhoEQP8Hsa5jMoqy03pKwrO38PW
+         BLiGRZSmRYwQcNdnVzjIlpgYe97ryWepD7AEQ3vuFtfxxfeBWXzVsSlhOf2igcJo5NJW
+         Wd5qUdgTWH1csV2Bk0CdVofpBU7wO4vzxqHuBLjKjudOOEzKA2Agc3mDhHEOSJgBDOo9
+         kNVOn28L/JLtHFNlxAG9uDrsGt9wr876K0HY8HkfJGyTqh54fkaiiGttKIRriCA25iAo
+         7UFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DF5/8mvzSfiGycoIma/P/kossQy+bTKj7uhIK5+9g84=;
-        b=MvOo9DuvbBnKZjtubGEGEtBn5+aG5r3kp+s3/4c2YDjBk72K4K9onsCQMYddFYnvnT
-         r/7XNmmrzr1aLmz8fGfPcFT70CCeuY9U/j/tt2FXs2Qebdfd5AlA/mPckb22H5I71uJ5
-         HaDy0cBl+BCfZygekg7tfk1E45pSe4Bm2d5dY+47bxCSaYf5Bgih/6TQG6m7dCSwfNYz
-         DTzzYHRoAUtgn7BKPjCX8gWOHW3clLUr0M4tTCj6oSdxc/PZMuTNOTl47/uT0VE9kSqI
-         EMSX+4locolxyEt0V2tK64Bht1WJSs6/xd2NYNxtqUaRxvWu1o90YlmoG2rR6yAoteWw
-         z6nw==
-X-Gm-Message-State: AOAM532wX0h866Bh+4FxysQy9kHSIEDRlHmep4LYq66+RSUWmqGEgdFi
-        CxC2S6FfGhpqPnfgV+hnLV4=
-X-Google-Smtp-Source: ABdhPJzzLIF6ZpLXnsyzomeFZ5w/ZoMkgCgSocdkBNEfk2QGoygsqtLeD9z/z1HxfQ61b6G9qMJN6A==
-X-Received: by 2002:a2e:9749:: with SMTP id f9mr5073277ljj.118.1611177403452;
-        Wed, 20 Jan 2021 13:16:43 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id e20sm341986lja.123.2021.01.20.13.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 13:16:43 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-rtc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ARM: tegra: Specify tps65911 as wakeup source
-Date:   Thu, 21 Jan 2021 00:16:03 +0300
-Message-Id: <20210120211603.18555-2-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120211603.18555-1-digetx@gmail.com>
-References: <20210120211603.18555-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sqJQj8k3vfWMQlZ/PSNAuaLZe+ukwJ9aG6srW46wlAI=;
+        b=ozhQpz1uCuF/VjHkGT2CwHxgNbwO/p8N+vjRbMXMJtR7tS5F+I4qN8uKl4/7d8bcBZ
+         SixBppVWmesh3cWFSqgFyCMQEkdQW6EWy7c39D5ORe4SU7VJjh4l8kGL+ADF7bnjI+qz
+         UQGhEpJYQuv2EF1Abaz3Z9TOMB/QIqsXduP8cCllEllbKzktdKd2ywGOMk8e4FHW2LzC
+         gZ18WJnDU8sWVpPVy5nm8k+XKZcQ29vyEeA9jjaegLUPP9yVp/FuODlF1+VoTdpK5ZfY
+         Es61P0gDHYb1C5JYBJIjVVOD0LVDTrIBowLpDiZ8eP7QwqsOGF5Ej7qcRndrFo/laeoZ
+         KIAg==
+X-Gm-Message-State: AOAM531kFsw9sMOelI8h/yf8avkLzohfCXsXGzjWcPftTQyb+CWdaERk
+        mduYBNN9+elUBUj8gp5fmTkcbWSsLYZU2r3lZBzjZg==
+X-Google-Smtp-Source: ABdhPJyxD8xMNTy67Z87//Tx9+mIxtKk1Hn0gB417dL+U71Ysa7fbfor8j/1k0quFAXArSR7qzimz2qXZOMQD5v0iY8=
+X-Received: by 2002:a05:6830:1da4:: with SMTP id z4mr8177761oti.295.1611177384908;
+ Wed, 20 Jan 2021 13:16:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+ <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+ <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+ <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
+ <f40e5d23-88b6-01c0-60f9-5419dac703a2@redhat.com> <CALMp9eRGBiQDPr1wpAY34V=T6Jjij_iuHOX+_-QQPP=5SEw3GQ@mail.gmail.com>
+ <4463f391-0a25-017e-f913-69c297e13c5e@redhat.com> <CALMp9eRnjdJtmU9bBosGNAxa2pvMzB8mHjtbYa-yb2uNoAkgdA@mail.gmail.com>
+In-Reply-To: <CALMp9eRnjdJtmU9bBosGNAxa2pvMzB8mHjtbYa-yb2uNoAkgdA@mail.gmail.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 20 Jan 2021 13:16:13 -0800
+Message-ID: <CALMp9eR2ONSpz__H2+ZpM4qqT7FNowNwOfe4x9o-ocfhwRnEhw@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify TPS65911 as wakeup source on Tegra devices in order to allow
-its RTC to wake up system from suspend by default instead of requiring
-wakeup to be enabled manually via sysfs.
+On Fri, Jan 15, 2021 at 11:35 AM Jim Mattson <jmattson@google.com> wrote:
+>
+> On Fri, Oct 23, 2020 at 10:43 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > On 23/10/20 19:23, Jim Mattson wrote:
+> > >> The information that we need is _not_ that provided by the advanced
+> > >> VM-exit information (or by a page walk).  If a page is neither writable
+> > >> nor executable, the advanced information doesn't say if the injected #PF
+> > >> should be a W=1 or a F=1 fault.  We need the information in bits 0..2 of
+> > >> the exit qualification for the final access, which however is not
+> > >> available for the paging-structure access.
+> > >>
+> > > Are you planning to extend the emulator, then, to support all
+> > > instructions? I'm not sure where you are going with this.
+> >
+> > I'm going to fix the bit 8=1 case, but for bit 8=0 there's not much that
+> > you can do.  In all likelihood the guest is buggy anyway.
+>
+> Did this drop off your radar? Are you still planning to fix the bit8=1
+> case to use advanced EPT exit qualification information? Or did I just
+> miss it?
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-[Matt and Peter tested this change on Tegra30 Ouya]
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
-
-Changelog:
-
-v2: - No changes.
-
- arch/arm/boot/dts/tegra30-apalis.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi | 1 +
- arch/arm/boot/dts/tegra30-beaver.dts                       | 1 +
- arch/arm/boot/dts/tegra30-cardhu.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-colibri.dtsi                     | 1 +
- arch/arm/boot/dts/tegra30-ouya.dts                         | 1 +
- 6 files changed, 6 insertions(+)
-
-diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
-index 6544ce70b46f..b2ac51fb15b1 100644
---- a/arch/arm/boot/dts/tegra30-apalis.dtsi
-+++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
-@@ -860,6 +860,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-index bfc06b988781..b97da45ebdb4 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-@@ -12,6 +12,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 0 1 0 0 0 0 0 0>;
- 			ti,system-power-controller;
-diff --git a/arch/arm/boot/dts/tegra30-beaver.dts b/arch/arm/boot/dts/tegra30-beaver.dts
-index e0624b74fb50..e159feeedef7 100644
---- a/arch/arm/boot/dts/tegra30-beaver.dts
-+++ b/arch/arm/boot/dts/tegra30-beaver.dts
-@@ -1776,6 +1776,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-index dab9989fa760..788f16d2a0fa 100644
---- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-@@ -240,6 +240,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
-index e36aa3ce6c3d..413e35215804 100644
---- a/arch/arm/boot/dts/tegra30-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
-@@ -737,6 +737,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index 74da1360d297..8f66b16a786f 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -139,6 +139,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 1 1 1 1 1 0 0 1>;
- 			ti,system-power-controller;
--- 
-2.29.2
-
+Paolo,
+If you're not working on this, do you mind if I ask Aaron to take a look at it?
